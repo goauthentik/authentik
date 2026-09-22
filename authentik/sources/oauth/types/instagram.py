@@ -67,7 +67,9 @@ class InstagramType(SourceType):
 
     authorization_code_auth_method = AuthorizationCodeAuthMethod.POST_BODY
 
-    def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
+    def get_base_user_properties(
+        self, response: dict[str, Any], info: dict[str, Any], **kwargs
+    ) -> dict[str, Any]:
         # Instagram exposes no email address for the authenticated user
         return {
             "username": info.get("username"),
