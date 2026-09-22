@@ -19,18 +19,6 @@ from tests.decorators import retry
 from tests.selenium import ChannelsSeleniumTestCase
 
 ENROLLMENT_KEY = "test-enroll-key"  # nosec
-# Run the authentik agent as a device to connect to. The agent brings the sshd
-# configuration which validates authentik's certificates, sshd itself is not part of
-# the image. Without NSS the authentik user has to exist locally.
-AGENT_MACHINE = """set -e
-apt-get update -qq && apt-get install -y -qq openssh-server
-useradd -m -s /bin/bash "$AK_USER" || useradd -m -s /bin/bash --badname "$AK_USER"
-ssh-keygen -A
-/usr/bin/ak-sysd agent &
-sleep 2
-ak-sysd domains join ak -a "$AUTHENTIK_HOST"
-exec /usr/sbin/sshd -D -e
-"""
 
 
 class TestProviderRAC(ChannelsSeleniumTestCase):
@@ -39,6 +27,20 @@ class TestProviderRAC(ChannelsSeleniumTestCase):
     def setUp(self):
         super().setUp()
         self.password = generate_id()
+
+    def join_domain(self, machine: Container):
+        """Enroll a machine with authentik, as a user would. The agent is started by
+        the machine itself, so this waits for it to come up."""
+        output = b""
+        for _ in range(20):
+            code, output = machine.exec_run(
+                f"ak-sysd domains join ak -a {self.live_server_url}",
+                environment={"AK_SYS_INSECURE_ENV_TOKEN": ENROLLMENT_KEY},
+            )
+            if code == 0:
+                return
+            sleep(3)
+        self.fail(f"failed to enroll machine: {output}")
 
     def start_rac(self, outpost: Outpost):
         """Start rac container based on outpost created"""
@@ -131,16 +133,19 @@ class TestProviderRAC(ChannelsSeleniumTestCase):
         EnrollmentToken.objects.create(name=generate_id(), key=ENROLLMENT_KEY, connector=connector)
         name = f"device-{generate_id(10)}"
         machine = self.run_container(
-            image=self.pinned_image("chromium", "e2e/compose.yml"),
+            # Brings sshd and the agent, which validates authentik's certificates
+            image=self.pinned_image("platform-ssh", "e2e/compose.yml"),
             name=name,
             hostname=name,
-            user="root",
-            entrypoint=["/bin/bash", "-c", AGENT_MACHINE],
-            environment={
-                "AK_USER": self.user.username,
-                "AK_SYS_INSECURE_ENV_TOKEN": ENROLLMENT_KEY,
-            },
         )
+        # The machine resolves users locally, it has no connection to a directory.
+        # Usernames of authentik users are not restricted the way local ones are.
+        code, output = machine.exec_run(
+            f"sh -c 'useradd -m -s /bin/bash {self.user.username} "
+            f"|| useradd -m -s /bin/bash --badname {self.user.username}'"
+        )
+        self.assertEqual(code, 0, output)
+        self.join_domain(machine)
         # The agent reports the host keys of its device once it has enrolled, which is
         # what authentik connects to it with
         for _ in range(30):
