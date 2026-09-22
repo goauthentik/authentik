@@ -379,8 +379,28 @@ export abstract class SearchSelectBase<T>
         this.dispatchChangeEvent(this.selectedObject);
     }
 
+    /**
+     * The fetched objects, plus the current selection when the fetch did not include it.
+     *
+     * `fetchObjects` returns a single page, so an object selected out of band -- one just
+     * created through the dropdown's own action, say -- is often absent from it. The view
+     * resolves a value's label from the options alone and prints the raw value when it
+     * finds none, so without this the control shows a bare primary key.
+     */
+    private withSelectedObject(objects: T[]): T[] {
+        const { selectedObject } = this;
+
+        if (!selectedObject) return objects;
+
+        const selectedValue = `${this.value(selectedObject)}`;
+
+        const alreadyListed = objects.some((object) => `${this.value(object)}` === selectedValue);
+
+        return alreadyListed ? objects : [selectedObject, ...objects];
+    }
+
     private getGroupedItems(): GroupedOptions {
-        const groupedItems = this.groupBy(this.objects || []);
+        const groupedItems = this.groupBy(this.withSelectedObject(this.objects || []));
 
         const makeSearchTuples = (items: T[]): SelectOption[] =>
             items.map((item) => [
