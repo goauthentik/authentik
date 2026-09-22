@@ -188,6 +188,7 @@ export interface LifecycleUserExpirationRulesListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
+    pbmUuid?: string;
     /**
      * A search term.
      */
@@ -1104,6 +1105,10 @@ export class LifecycleApi extends runtime.BaseAPI {
 
         if (requestParameters["pageSize"] != null) {
             queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["pbmUuid"] != null) {
+            queryParameters["pbm_uuid"] = requestParameters["pbmUuid"];
         }
 
         if (requestParameters["search"] != null) {
