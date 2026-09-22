@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,41 +12,24 @@
 
 /**
  * PolicyBinding Serializer
+ *
  * @export
  * @interface PolicyBindingRequest
  */
 export interface PolicyBindingRequest {
-    /**
-     *
-     */
     policy?: string | null;
-    /**
-     *
-     */
     group?: string | null;
-    /**
-     *
-     */
     user?: number | null;
-    /**
-     *
-     */
     target: string;
     /**
      * Negates the outcome of the policy. Messages are unaffected.
      */
     negate?: boolean;
-    /**
-     *
-     */
     enabled?: boolean;
     /**
      * Execute the policy but ignore its result.
      */
     dryRun?: boolean;
-    /**
-     *
-     */
     order: number;
     /**
      * Timeout after which Policy execution is terminated.

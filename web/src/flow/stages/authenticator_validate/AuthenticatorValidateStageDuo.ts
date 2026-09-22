@@ -1,5 +1,4 @@
 import "#elements/EmptyState";
-
 import { BaseDeviceStage } from "#flow/stages/authenticator_validate/base";
 
 import {
@@ -31,6 +30,7 @@ export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
 
         if (changedProperties.has("challenge") && this.challenge) {
             this.authenticating = true;
+
             this.host
                 ?.submit(
                     {
@@ -51,23 +51,29 @@ export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
         if (!this.challenge) {
             return html`<ak-empty-state loading> </ak-empty-state>`;
         }
+
         const errors = this.challenge.responseErrors?.duo || [];
         const errorMessage = errors.map((err) => err.string);
+
         return html` <form class="pf-c-form" @submit=${this.submitForm}>
             ${this.renderUserInfo()}
             <ak-empty-state ?loading="${this.authenticating}" icon="fas fa-times"
                 ><span
-                    >${this.authenticating
-                        ? msg("Sending Duo push notification...")
-                        : errorMessage.join(", ") || msg("Failed to authenticate")}</span
+                    >${
+                        this.authenticating
+                            ? msg("Sending Duo push notification...")
+                            : errorMessage.join(", ") || msg("Failed to authenticate")
+                    }</span
                 >
             </ak-empty-state>
-            ${this.showBackButton
-                ? html`<fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
-                      <legend class="sr-only">${msg("Form actions")}</legend>
-                      ${this.renderReturnToDevicePicker()}
-                  </fieldset>`
-                : nothing}
+            ${
+                this.showBackButton
+                    ? html`<fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
+                          <legend class="sr-only">${msg("Form actions")}</legend>
+                          ${this.renderReturnToDevicePicker()}
+                      </fieldset>`
+                    : nothing
+            }
         </form>`;
     }
 }

@@ -1,7 +1,6 @@
 import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 
 import { RenderFlowOption } from "#admin/flows/utils";
@@ -116,10 +115,13 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
                                     ordering: "slug",
                                     designation: FlowDesignationEnum.StageConfiguration,
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const flows = await aki(FlowsApi).flowsInstancesList(args);
+
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {

@@ -8,6 +8,7 @@ import "#elements/ak-table/ak-select-table";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#admin/applications/wizard/steps/bindings/ak-application-wizard-bindings-toolbar";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { SelectTable } from "#elements/ak-table/ak-select-table";
 
@@ -22,8 +23,6 @@ import { msg, str } from "@lit/localize";
 import { css, html } from "lit";
 import { customElement, query } from "lit/decorators.js";
 
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-
 const COLUMNS = [
     [msg("Order"), "order"],
     [msg("Binding")],
@@ -34,7 +33,7 @@ const COLUMNS = [
 ];
 
 /**
- * @prop wizard - The current state of the application wizard, shared across all steps.
+ * @property wizard - The current state of the application wizard, shared across all steps.
  */
 @customElement("ak-application-wizard-bindings-step")
 export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
@@ -64,6 +63,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
             const { order, enabled, dryRun, timeout } = binding;
 
             const isSet = P.union(P.string.minLength(1), P.number);
+
             const policy = match(binding)
                 .with({ policy: isSet }, (v) => msg(str`Policy ${v.policyObj?.name}`))
                 .with({ group: isSet }, (v) => msg(str`Group ${v.groupObj?.name}`))
@@ -100,7 +100,10 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
         const toDelete = this.selectTable
             .toJSON()
             .map((i) => (typeof i === "string" ? parseInt(i, 10) : i));
-        const bindings = this.wizard.bindings.filter((binding, index) => !toDelete.includes(index));
+
+        const bindings = this.wizard.bindings.filter(
+            (_binding, index) => !toDelete.includes(index),
+        );
 
         return this.dispatchEvents({
             update: { bindings },
@@ -168,6 +171,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
         if ((this.wizard.bindings ?? []).length === 0) {
             return this.renderEmptyCollection();
         }
+
         return this.renderCollection();
     }
 }

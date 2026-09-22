@@ -1,4 +1,9 @@
 import "#elements/Divider";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
+import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -42,20 +47,15 @@ import { css, html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
-
 const _submitStates = ["reviewing", "running", "submitted"] as const;
+
 type SubmitStates = (typeof _submitStates)[number];
 
 type StrictProviderModelEnum = Exclude<ProviderModelEnum, "11184809">;
 
 const providerMap: Map<string, StrictProviderModelEnum> = Object.values(ProviderModelEnum)
     .filter((value): value is StrictProviderModelEnum => {
-        return /^authentik_providers_/.test(value) && /provider$/.test(value);
+        return value.startsWith("authentik_providers_") && value.endsWith("provider");
     })
     .reduce((acc: Map<string, StrictProviderModelEnum>, value) => {
         const key = value.split(".")[1];
@@ -136,6 +136,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             // Step 3: Create policy bindings
             for (const binding of this.wizard.bindings ?? []) {
                 const bindingData = cleanBinding(binding);
+
                 await policiesApi.policiesBindingsCreate({
                     policyBindingRequest: {
                         ...bindingData,
@@ -152,6 +153,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             if (!instanceOfValidationError(parsedError)) {
                 showAPIErrorMessage(parsedError);
                 this.state = "reviewing";
+
                 return;
             }
 
@@ -435,11 +437,14 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
     renderMain() {
         const app = this.wizard.app;
         const provider = this.wizard.provider;
+
         if (!(this.wizard && app && provider)) {
             throw new Error("Submit step received uninitialized wizard context");
         }
+
         // An empty object is truthy, an empty array is falsey. *WAT JavaScript*.
         const keys = Object.keys(this.wizard.errors);
+
         return match([this.state, keys])
             .with(["submitted", P._], () =>
                 this.renderInfo("success", msg("Your application has been saved"), [

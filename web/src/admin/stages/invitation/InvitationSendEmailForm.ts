@@ -1,5 +1,6 @@
 import "#elements/buttons/SpinnerButton/index";
 import "#components/ak-textarea-input";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
 import { MessageLevel } from "#common/messages";
@@ -14,8 +15,6 @@ import { Invitation, StagesApi, TypeCreate } from "@goauthentik/api";
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 interface InvitationSendEmailRequestWithTemplate {
     emailAddresses: string;
@@ -74,6 +73,7 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
                 message: msg("Please enter at least one email address"),
                 level: MessageLevel.error,
             });
+
             return;
         }
 

@@ -24,6 +24,7 @@ export class FipsStatusCard extends AdminStatusCard<SystemInfo> {
 
     setStatus(summary: string, content: StatusContent): Promise<AdminStatus> {
         this.statusSummary = summary;
+
         return Promise.resolve<AdminStatus>(content);
     }
 
