@@ -7,8 +7,8 @@ import { series } from "@goauthentik/core/promises";
 interface Names {
     providerName: string;
     appName: string;
-    endpointA: string;
-    endpointB: string;
+    deviceA: string;
+    deviceB: string;
 }
 
 test.describe("RAC", () => {
@@ -21,19 +21,19 @@ test.describe("RAC", () => {
         fixtures.set(testId, {
             providerName: `${base} RAC (${seed})`,
             appName: `${base} RAC App (${seed})`,
-            endpointA: `rac-vnc-a-${seed}`,
-            endpointB: `rac-vnc-b-${seed}`,
+            deviceA: `rac-vnc-a-${seed}`,
+            deviceB: `rac-vnc-b-${seed}`,
         });
     });
 
-    test("Configure provider, add endpoints, attach to application, and launch from user library", async ({
+    test("Configure provider, add devices, attach to application, and launch from user library", async ({
         session,
         navigator,
         form,
         pointer,
         page,
     }, testInfo) => {
-        const { providerName, appName, endpointA, endpointB } = fixtures.get(testInfo.testId)!;
+        const { providerName, appName, deviceA, deviceB } = fixtures.get(testInfo.testId)!;
         const { fill, search, selectSearchValue, setRadio } = form;
         const { click } = pointer;
 
@@ -43,7 +43,9 @@ test.describe("RAC", () => {
 
         //#region Create RAC provider via the wizard
 
-        const providerDialog = page.getByRole("dialog", { name: "New Provider Wizard" });
+        const providerDialog = page.getByRole("dialog", {
+            name: "New Provider Wizard",
+        });
 
         await test.step("Create RAC provider", async () => {
             await expect(providerDialog, "Provider wizard is initially closed").toBeHidden();
@@ -66,49 +68,43 @@ test.describe("RAC", () => {
             await expect(providerDialog, "Provider wizard closes after creation").toBeHidden();
         });
 
-        const $providerRow = await test.step("Find provider in table", () => search(providerName));
-
-        await expect($providerRow, "Provider row is visible").toBeVisible();
+        await test.step("Find provider in table", async () => {
+            await expect(await search(providerName), "Provider row is visible").toBeVisible();
+        });
 
         //#endregion
 
-        //#region Add two endpoints from the provider detail page
+        //#region Add two devices to connect to
 
-        await test.step("Open provider detail page", async () => {
-            await $providerRow.getByRole("link", { name: providerName }).click();
-
-            await expect(
-                page.getByRole("heading", { name: providerName }),
-                "Provider detail page renders",
-            ).toBeVisible();
+        await test.step("Navigate to devices", async () => {
+            await navigator.navigate("/if/admin/endpoints/devices");
         });
 
-        const endpointDialog = page.getByRole("dialog", { name: /New RAC Endpoint/i });
-        const endpointList = page.locator("ak-rac-endpoint-list");
+        const deviceDialog = page.getByRole("dialog", { name: /New Device/i });
+        const deviceList = page.locator("ak-endpoints-device-list");
 
-        for (const endpointName of [endpointA, endpointB]) {
-            await test.step(`Create endpoint ${endpointName}`, async () => {
-                await expect(endpointDialog, "Endpoint dialog is initially closed").toBeHidden();
+        for (const deviceName of [deviceA, deviceB]) {
+            await test.step(`Create device ${deviceName}`, async () => {
+                await expect(deviceDialog, "Device dialog is initially closed").toBeHidden();
 
-                await endpointList
-                    .getByRole("button", { name: "New RAC Endpoint" })
-                    .first()
-                    .click();
+                await deviceList.getByRole("button", { name: "New Device" }).first().click();
 
-                await expect(endpointDialog, "Endpoint dialog opens").toBeVisible();
+                await expect(deviceDialog, "Device dialog opens").toBeVisible();
 
+                // A device which is added by hand cannot report how it is reached, so
+                // the host and protocol are required
                 await series(
-                    [fill, "Endpoint Name", endpointName, endpointDialog],
-                    [setRadio, "Protocol", "VNC", endpointDialog],
-                    [fill, "Host", "localhost:5900", endpointDialog],
-                    [click, "Create RAC Endpoint", "button", endpointDialog],
+                    [fill, "Device name", deviceName, deviceDialog],
+                    [fill, "Host", "localhost:5900", deviceDialog],
+                    [setRadio, "Protocol", "VNC", deviceDialog],
+                    [click, "Create Device", "button", deviceDialog],
                 );
 
-                await expect(endpointDialog, "Endpoint dialog closes after creation").toBeHidden();
+                await expect(deviceDialog, "Device dialog closes after creation").toBeHidden();
 
                 await expect(
-                    endpointList.getByRole("cell", { name: endpointName }),
-                    `Endpoint ${endpointName} appears in the sub-table`,
+                    await search(deviceName),
+                    `Device ${deviceName} appears in the table`,
                 ).toBeVisible();
             });
         }
@@ -168,39 +164,50 @@ test.describe("RAC", () => {
         // Newly created apps can take several seconds to surface in the
         // user-facing application list, so allow extra time for the card to
         // appear once the search filter is applied.
-        const launchButton = page.getByRole("button", { name: `Open "${appName}"` });
+        const launchButton = page.getByRole("button", {
+            name: `Open "${appName}"`,
+        });
 
         await expect(
             launchButton,
             "Application launch button appears in the filtered library",
         ).toBeVisible({ timeout: 15_000 });
 
-        const launchDialog = page.getByRole("dialog", { name: /Launch Endpoint/i });
+        const launchDialog = page.getByRole("dialog", {
+            name: /Launch Device/i,
+        });
 
         // Click the card rather than relying on the library's single-match
         // auto-launch: that fires from the search input's `change` event, and
         // `locator.fill()` dispatches only `input`, so it never runs under
         // Playwright. Activating the card is what a user does anyway.
-        await test.step("Endpoint launcher opens for the single match", async () => {
+        await test.step("Device launcher opens for the single match", async () => {
             await launchButton.click();
 
-            await expect(launchDialog, "Launch Endpoint dialog opens").toBeVisible({
+            await expect(launchDialog, "Launch Device dialog opens").toBeVisible({
                 timeout: 15_000,
             });
         });
 
-        // Both endpoints must render on first open — no manual refresh, no
-        // re-navigation. Two endpoints are required because a single endpoint
-        // auto-launches and closes the modal.
-        await test.step("Endpoint list populates on first open", async () => {
+        // Both devices must render on first open — no manual refresh, no
+        // re-navigation. Two devices are required because a single device with a
+        // single protocol auto-launches and closes the modal. Every device the user can
+        // reach is launchable through the provider, so each one is searched for by name.
+        await test.step("Device list populates on first open", async () => {
             await expect(
-                launchDialog.getByRole("cell", { name: endpointA }),
-                `Endpoint ${endpointA} is visible in the launcher`,
+                await search(deviceA, launchDialog),
+                `Device ${deviceA} is visible in the launcher`,
             ).toBeVisible();
+        });
+
+        await test.step("Device is launchable with the protocol it is reached with", async () => {
+            const $deviceRow = await search(deviceB, launchDialog);
+
+            await expect($deviceRow, `Device ${deviceB} is visible in the launcher`).toBeVisible();
 
             await expect(
-                launchDialog.getByRole("cell", { name: endpointB }),
-                `Endpoint ${endpointB} is visible in the launcher`,
+                $deviceRow.getByRole("button", { name: "VNC" }),
+                `Device ${deviceB} can be launched with VNC`,
             ).toBeVisible();
         });
 
