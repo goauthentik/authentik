@@ -6,9 +6,15 @@ draft: true
 
 ## Highlights
 
+- **User expiration**: :ak-enterprise Automatically deactivate or delete users who have been inactive for a configurable period, with an optional warning to the user.
+
 <!-- ## Breaking changes -->
 
 ## New features and improvements
+
+### User expiration :ak-enterprise
+
+User expiration rules build on scheduled user offboarding. A rule selects users by group and user type, and schedules an offboarding for anyone who has not logged in within the configured inactivity duration. If a warning period is set, the user is notified before their account expires, and a login before the scheduled time cancels the pending offboarding. If you rely on API tokens for some accounts, note that token usage does not count as activity, so service accounts are excluded by default. For more details, refer to the [user expiration documentation](../../sys-mgmt/user-expiration.mdx).
 
 ## Upgrading
 
