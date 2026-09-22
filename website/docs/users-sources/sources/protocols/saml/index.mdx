@@ -35,13 +35,18 @@ If you have the provider metadata, you can extract the values that you need from
 
 ## Transient users and account lifetime
 
-When the IdP sends a NameID with the `transient` format, authentik creates a temporary user account in its database and connects it to the SAML source. This behavior depends on the NameID format in the assertion, even if the source's **NameID Policy** requests a different format.
+When the IdP sends a `transient` NameID, authentik creates a temporary user linked to the SAML source. This is determined by the NameID format in the assertion, even if the source's **NameID Policy** requests another format.
 
-authentik deletes the temporary account when the user logs out of authentik. If the user does not log out, a periodic cleanup task deletes the account after its expiration time. Cleanup does not check whether the user still has an active session, so an active temporary account can also be deleted.
+Temporary users are deleted:
 
-The source's **Delete temporary users after** setting determines the expiration time, measured from account creation. It defaults to `days=1`. Use a duration such as `hours=8` or `hours=1;minutes=30`. This setting applies to temporary users created for transient NameIDs; it does not delay deletion on logout. Expiration is a fixed account lifetime, not an inactivity timeout. Deletion happens when the cleanup task runs after expiration, rather than at the exact expiration time.
+- when they log out of authentik, or
+- by a cleanup task after they expire.
 
-Use **Persistent** NameIDs when users need to keep the same authentik account across logins, including account-specific settings and group memberships. Configure the IdP to send a stable persistent NameID and set the source's **NameID Policy** to **Persistent**. authentik uses the NameID to look up the source connection on subsequent logins. Mapping a transient user's username or email to a stable value does not make the account persistent or remove its deletion behavior.
+The **Delete temporary users after** setting determines the expiration time from account creation. The default is `days=1`; you can set values such as `hours=8` or `hours=1;minutes=30`. This setting does not delay deletion on logout. Cleanup tasks run periodically, rather than at the exact expiration time, and do not check for active sessions, so an expired temporary user can be deleted while still logged in.
+
+Mapping a transient user's username or email to a stable value does not make the account persistent or prevent deletion.
+
+Use **Persistent** NameIDs when users need to keep the same authentik account across logins. Configure the IdP to send a stable persistent NameID and set the source's **NameID Policy** to **Persistent**. authentik uses the NameID to find the existing source connection on subsequent logins.
 
 ## Add authentik as a service provider with your IdP
 
