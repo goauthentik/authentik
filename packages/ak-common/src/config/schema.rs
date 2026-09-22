@@ -1,6 +1,6 @@
 use std::{
-    collections::HashMap, fmt::Display, net::SocketAddr, num::NonZeroUsize,
-    path::PathBuf, str::FromStr,
+    collections::HashMap, fmt::Display, net::SocketAddr, num::NonZeroUsize, path::PathBuf,
+    str::FromStr,
 };
 
 use ipnet::IpNet;
