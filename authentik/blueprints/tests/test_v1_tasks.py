@@ -214,7 +214,7 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
 
     @CONFIG.patch("blueprints_dir", TMP)
     def test_file_tag_content_unchanged(self):
-        """Test hash is stable when a referenced `!File` does not change (control)"""
+        """Test hash is stable when a referenced `!File` does not change"""
         with NamedTemporaryFile(mode="w+", dir=TMP) as secret:
             secret.write("initial")
             secret.flush()
@@ -227,7 +227,7 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
 
     @CONFIG.patch("blueprints_dir", TMP)
     def test_file_tag_missing(self):
-        """Test hash is stable when a referenced `!File` does not exist (control)"""
+        """Test hash is stable when a referenced `!File` does not exist"""
         with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
             reference = f"!File {Path(TMP) / generate_id()}"
             self.assertEqual(
@@ -237,7 +237,7 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
 
     @CONFIG.patch("blueprints_dir", TMP)
     def test_file_tag_path_from_tag(self):
-        """Test a `!File` whose path is itself a tag is still discovered (control)"""
+        """Test a `!File` whose path is itself a tag is still discovered"""
         with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
             reference = f'!File [!Env [{generate_id()}, "{TMP}/fallback"], "default"]'
             self.assertEqual(
@@ -288,18 +288,18 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
     @CONFIG.patch("blueprints_dir", TMP)
     def test_file_tag_path_from_mapping(self):
         """Test a `!File` built from a mapping node is skipped rather than raising, so
-        discovery of other blueprints continues (control)"""
+        discovery of other blueprints continues"""
         self.assert_discovery_survives(f'!File {{path: "{TMP}/fallback"}}')
 
     @CONFIG.patch("blueprints_dir", TMP)
     def test_file_tag_path_unopenable(self):
         """Test a `!File` whose path cannot be opened by any syscall is skipped rather
-        than raising, so discovery of other blueprints continues (control)"""
+        than raising, so discovery of other blueprints continues"""
         self.assert_discovery_survives('!File "\\0"')
 
     @CONFIG.patch("blueprints_dir", TMP)
     def test_file_tag_path_from_mapping_stable(self):
-        """Test the hash of a `!File` built from a mapping node is stable (control)"""
+        """Test the hash of a `!File` built from a mapping node is stable"""
         with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
             reference = f'!File {{path: "{TMP}/fallback"}}'
             self.assertEqual(
@@ -309,7 +309,7 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
 
     @CONFIG.patch("blueprints_dir", TMP)
     def test_file_tag_path_unopenable_stable(self):
-        """Test the hash of a `!File` with an unopenable path is stable (control)"""
+        """Test the hash of a `!File` with an unopenable path is stable"""
         with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
             reference = '!File "\\0"'
             self.assertEqual(
@@ -363,7 +363,7 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
 
     @CONFIG.patch("blueprints_dir", TMP)
     def test_file_tag_deeply_nested(self):
-        """Test a deeply nested blueprint with no cycle is hashed (control)"""
+        """Test a deeply nested blueprint with no cycle is hashed"""
         with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
             reference = "[" * 50 + f'!File "{TMP}/fallback"' + "]" * 50
             self.assertEqual(
