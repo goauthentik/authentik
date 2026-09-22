@@ -83,7 +83,8 @@ jobs:
           if [ -n "${missing}" ]; then
             # A branch has no image until its own ci-main publish job runs, so
             # this is normal right after a branch-off and while that branch is
-            # red. It is not a migration problem, so it must not open an issue.
+            # red. It is not a migration problem, so the step exits zero and
+            # nothing is posted to Slack.
             note="No published image for ${missing}, skipped ${OLD_BRANCH} -> ${NEW_BRANCH}."
             echo "::warning::${note}"
             echo "${note}" >> "$GITHUB_STEP_SUMMARY"
@@ -156,87 +157,61 @@ jobs:
             -e AUTHENTIK_AVATARS=none \
             --entrypoint bash "${IMAGE}" \
             -c 'cd / && python -m lifecycle.migrate'
-  report-migration-divergence:
-    name: Report migration divergence
-    # Only the nightly run files an issue. A manual run and the pull request
-    # that edits this file show their result in the Actions tab instead.
-    if: ${{ always() && github.event_name == 'schedule' }}
+  notify-migration-divergence:
+    name: Notify migration divergence
+    # Only the nightly run posts to Slack, and only when something failed. A
+    # manual run and the pull request that edits this file show their result in
+    # the Actions tab instead.
+    if: >-
+      ${{ always() && github.event_name == 'schedule'
+      && (needs.discover-release-branches.result != 'success'
+      || needs.test-migrations-cross-branch.result != 'success') }}
     needs:
       - discover-release-branches
       - test-migrations-cross-branch
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      issues: write
     steps:
-      - name: Upsert the tracking issue
+      - name: Build the Slack message
         env:
-          GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          GH_REPO: "${{ github.repository }}"
           DISCOVERY_RESULT: "${{ needs.discover-release-branches.result }}"
-          MIGRATION_RESULT: "${{ needs.test-migrations-cross-branch.result }}"
           PAIRS: "${{ needs.discover-release-branches.outputs.pairs }}"
+          REPO: "${{ github.repository }}"
           RUN_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         run: |
           set -euo pipefail
 
-          label="ci/migration-divergence"
-          title="Migration history diverges between release branches"
-
-          # Idempotent, so the first nightly run does not need a manual step.
-          gh label create "${label}" \
-            --description "Filed by the nightly cross-branch migration check" \
-            --color B60205 >/dev/null 2>&1 || true
-
-          existing="$(gh issue list --state open --label "${label}" --limit 1 \
-            --json number --jq '.[0].number // empty')"
-
-          if [ "${DISCOVERY_RESULT}" = "success" ] && [ "${MIGRATION_RESULT}" = "success" ]; then
-            if [ -n "${existing}" ]; then
-              gh issue comment "${existing}" \
-                --body "The nightly cross-branch migration check passed in ${RUN_URL}. Closing."
-              gh issue close "${existing}"
-            fi
-            exit 0
-          fi
-
-          checked=""
-          if [ -n "${PAIRS:-}" ]; then
-            checked="$(printf '%s' "${PAIRS}" \
-              | jq -r '.include[] | "- `\(.old)` -> `\(.new)`"' 2>/dev/null || true)"
-          fi
-          if [ -z "${checked}" ]; then
-            checked="- unknown, branch discovery did not finish"
-          fi
-
-          body="$(cat <<EOF
-          The nightly cross-branch migration check failed. A database migrated by
-          the older branch image cannot migrate to the newer one. Django rejects
-          the upgrade in \`check_consistent_history()\` before it applies anything,
-          so the server crash-loops on start.
-
-          Pairs checked in this run:
-
-          ${checked}
-
-          Failing run: ${RUN_URL}
-
-          The usual cause is a migration cherry-picked to an older release branch
-          with a rewritten \`dependencies\` list. The file keeps its name, so both
-          branches write the same row into \`django_migrations\` while declaring
-          different parents.
-
-          This issue is opened, updated and closed by
-          \`.github/workflows/ci-main-daily.yml\`. Edits to the body are
-          overwritten on the next run.
-          EOF
-          )"
-
-          if [ -n "${existing}" ]; then
-            # Edit the body rather than comment, so a long outage does not send
-            # a notification every night.
-            gh issue edit "${existing}" --body "${body}"
+          if [ "${DISCOVERY_RESULT}" = "success" ]; then
+            headline="Cross-branch migration check failed"
+            detail="$(printf '%s' "${PAIRS:-}" \
+              | jq -r '[.include[] | "`\(.old)` -> `\(.new)`"] | join(" · ")' \
+              2>/dev/null || true)"
+            [ -n "${detail}" ] || detail="pairs unknown"
           else
-            gh issue create --title "${title}" --body "${body}" \
-              --label "${label}" --label "area:infrastructure"
+            headline="Cross-branch migration check could not run"
+            detail="branch discovery finished with \`${DISCOVERY_RESULT}\`"
           fi
+
+          jq -n \
+            --arg headline "${headline}" \
+            --arg detail "${detail}" \
+            --arg repo "${REPO}" \
+            --arg run_url "${RUN_URL}" \
+            '{
+              text: $headline,
+              blocks: [
+                {type: "section", text: {type: "mrkdwn",
+                  text: ("*" + $headline + "*\n<" + $run_url + "|Open the failing run>")}},
+                {type: "context", elements: [
+                  {type: "mrkdwn", text: ("`" + $repo + "` · " + $detail)}
+                ]}
+              ]
+            }' > "${RUNNER_TEMP}/slack-payload.json"
+      - name: Post to Slack
+        uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
+        with:
+          webhook: "${{ secrets.RELEASE_SLACK_WEBHOOK_URL }}"
+          webhook-type: incoming-webhook
+          payload-file-path: "${{ runner.temp }}/slack-payload.json"
+          errors: "true"
