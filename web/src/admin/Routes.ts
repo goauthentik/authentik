@@ -432,6 +432,15 @@ export const ROUTES: RouteLike[] = [
         },
         "offboardings",
     ),
+    new Route(
+        "/events/expiration-rules",
+        async () => {
+            await import("#admin/lifecycle/UserExpirationRuleListPage");
+
+            return html`<ak-user-expiration-rule-list></ak-user-expiration-rule-list>`;
+        },
+        "expiration-rules",
+    ),
 
     new Route(
         "/outpost/outposts",

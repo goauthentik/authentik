@@ -12292,9 +12292,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s39689ea96631ed97">
   <source>Scheduled for</source>
 </trans-unit>
-<trans-unit id="scae52d94b155a605">
-  <source>Scheduled by</source>
-</trans-unit>
 <trans-unit id="s116de51b09153006">
   <source>Offboarding(s)</source>
 </trans-unit>
@@ -13103,6 +13100,171 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa9f8a401cf399e4b">
   <source>Altered behavior for usage with GitLab.</source>
+</trans-unit>
+<trans-unit id="offboarding.source.all">
+  <source>All offboardings</source>
+</trans-unit>
+<trans-unit id="offboarding.source.manual">
+  <source>Scheduled by an administrator</source>
+</trans-unit>
+<trans-unit id="offboarding.source.automatic">
+  <source>Scheduled by an expiration rule</source>
+</trans-unit>
+<trans-unit id="offboarding.source.rule-fallback">
+  <source>Expiration rule</source>
+</trans-unit>
+<trans-unit id="user-expiration.form.verbose-name">
+  <source>User Expiration Rule</source>
+</trans-unit>
+<trans-unit id="user-expiration.form.verbose-name-plural">
+  <source>User Expiration Rules</source>
+</trans-unit>
+<trans-unit id="user-expiration.form.update.success">
+  <source>Successfully updated expiration rule.</source>
+</trans-unit>
+<trans-unit id="user-expiration.form.create.success">
+  <source>Successfully created expiration rule.</source>
+</trans-unit>
+<trans-unit id="user-expiration.field.name.label">
+  <source>Name</source>
+</trans-unit>
+<trans-unit id="user-expiration.field.name.placeholder">
+  <source>Type a name for this expiration rule...</source>
+</trans-unit>
+<trans-unit id="user-expiration.field.enabled.label">
+  <source>Enabled</source>
+</trans-unit>
+<trans-unit id="user-expiration.field.enabled.description">
+  <source>A disabled rule expires nobody and cancels the expirations it has already scheduled.</source>
+</trans-unit>
+<trans-unit id="user-expiration.field.group.label">
+  <source>Group</source>
+</trans-unit>
+<trans-unit id="user-expiration.field.group.description">
+  <source>Only expire members of this group, including members of its child groups. Leave empty to apply the rule to every user.</source>
+</trans-unit>
+<trans-unit id="user-expiration.field.user-types.label">
+  <source>User types</source>
+</trans-unit>
+<trans-unit id="user-expiration.field.user-types.description">
+  <source>Only expire users of these types. Signing in with a token does not count as activity, so service accounts are excluded by default.</source>
+</trans-unit>
+<trans-unit id="user-expiration.field.inactivity-duration.label">
+  <source>Inactivity duration</source>
+</trans-unit>
+<trans-unit id="user-expiration.field.inactivity-duration.description">
+  <source>How long a user may go without signing in before they are expired. Measured from their last login, or from the date they were created if they have never signed in.</source>
+</trans-unit>
+<trans-unit id="user-expiration.field.exclude-superusers.label">
+  <source>Exclude superusers</source>
+</trans-unit>
+<trans-unit id="user-expiration.field.exclude-superusers.description">
+  <source>Never expire members of a superuser group.</source>
+</trans-unit>
+<trans-unit id="user-expiration.field.warn-before.label">
+  <source>Warning period</source>
+</trans-unit>
+<trans-unit id="user-expiration.field.warn-before.placeholder">
+  <source>e.g. days=7</source>
+</trans-unit>
+<trans-unit id="user-expiration.field.warn-before.description">
+  <source>Schedule the offboarding and notify the user this long before they expire. Leave empty to expire users without warning. Must be shorter than the inactivity duration.</source>
+</trans-unit>
+<trans-unit id="user-expiration.field.notification-transports.label">
+  <source>Notification transports</source>
+</trans-unit>
+<trans-unit id="user-expiration.field.notification-transports.available-label">
+  <source>Available Transports</source>
+</trans-unit>
+<trans-unit id="user-expiration.field.notification-transports.selected-label">
+  <source>Selected Transports</source>
+</trans-unit>
+<trans-unit id="user-expiration.field.notification-transports.description">
+  <source>Select which transports should be used to warn the user. If none are selected, the notification is only shown in the authentik UI.</source>
+</trans-unit>
+<trans-unit id="user-expiration.field.policy-engine-mode.label">
+  <source>Policy engine mode</source>
+</trans-unit>
+<trans-unit id="user-expiration.field.policy-engine-mode.description">
+  <source>How the policies bound to this rule are combined. A user is only expired if they pass them.</source>
+</trans-unit>
+<trans-unit id="user-expiration.list.search-placeholder">
+  <source>Search for an expiration rule by name...</source>
+</trans-unit>
+<trans-unit id="user-expiration.list.title">
+  <source>User Expiration Rules</source>
+</trans-unit>
+<trans-unit id="user-expiration.list.description">
+  <source>Automatically deactivate or delete users who have not signed in for a configurable period.</source>
+</trans-unit>
+<trans-unit id="user-expiration.column.applies-to">
+  <source>Applies to</source>
+</trans-unit>
+<trans-unit id="common.table.actions">
+  <source>Actions</source>
+</trans-unit>
+<trans-unit id="user-expiration.object-label">
+  <source>Expiration rule(s)</source>
+</trans-unit>
+<trans-unit id="common.actions.delete">
+  <source>Delete</source>
+</trans-unit>
+<trans-unit id="user-expiration.scope.all-users">
+  <source>All users</source>
+</trans-unit>
+<trans-unit id="user-expiration.preview.trigger">
+  <source>Preview</source>
+</trans-unit>
+<trans-unit id="user-expiration.policies.description">
+  <source>Users must pass these policies to be expired. With no bindings, every user in scope is expired.</source>
+</trans-unit>
+<trans-unit id="user-expiration.preview.empty">
+  <source>No users are due to expire under this rule right now.</source>
+</trans-unit>
+<trans-unit id="user-expiration.preview.more">
+  <source>and <x id="0" equiv-text="${hidden}"/> more</source>
+</trans-unit>
+<trans-unit id="user-expiration.preview.error">
+  <source>The preview could not be loaded.</source>
+</trans-unit>
+<trans-unit id="user-expiration.preview.count">
+  <source>The next run of this rule would schedule an offboarding for <x id="0" equiv-text="${count}"/> user(s).</source>
+</trans-unit>
+<trans-unit id="user-expiration.preview.exclusions">
+  <source>Users who already have an offboarding scheduled, and users exempted by a canceled one, are not listed.</source>
+</trans-unit>
+<trans-unit id="user-expiration.preview.header">
+  <source>Expiration preview</source>
+</trans-unit>
+<trans-unit id="common.form.actions">
+  <source>Form actions</source>
+</trans-unit>
+<trans-unit id="common.actions.close">
+  <source>Close</source>
+</trans-unit>
+<trans-unit id="s946a93c38d62252f">
+  <source>Expiration Rules</source>
+</trans-unit>
+<trans-unit id="user-expiration.cancel.trigger.label">
+  <source>Cancel Expiration</source>
+</trans-unit>
+<trans-unit id="user-expiration.cancel.tooltip">
+  <source>Expires on <x id="0" equiv-text="${offboarding.scheduledAt.toLocaleString()}"/> due to inactivity (rule <x id="1" equiv-text="${ruleName}"/>)</source>
+</trans-unit>
+<trans-unit id="user-expiration.cancel.header">
+  <source>Cancel scheduled expiration</source>
+</trans-unit>
+<trans-unit id="offboarding.column.scheduled-by">
+  <source>Scheduled by</source>
+</trans-unit>
+<trans-unit id="user-expiration.cancel.scheduled-by">
+  <source>expiration rule <x id="0" equiv-text="${ruleName}"/></source>
+</trans-unit>
+<trans-unit id="user-expiration.event.warning">
+  <source>User will be offboarded due to inactivity</source>
+</trans-unit>
+<trans-unit id="user-expiration.cancel.exemption.description">
+  <source>Canceling exempts this user from automatic expiration until they sign in again. They can expire again after another period of inactivity. If they never sign in again, they remain exempt.</source>
 </trans-unit>
 </body>
 </file>

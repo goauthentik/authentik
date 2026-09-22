@@ -182,6 +182,23 @@ export class UserInfoCard extends AKElement {
                     ? msg("Yes", { id: "common.boolean.yes" })
                     : msg("No", { id: "common.boolean.no" });
 
+            // An offboarding an expiration rule scheduled is worded as an expiry, since
+            // the administrator did not pick the date and the user's next login clears it.
+            const ruleName = offboarding.rule ? offboarding.ruleObj?.name : null;
+
+            const triggerLabel = ruleName
+                ? msg("Cancel Expiration", { id: "user-expiration.cancel.trigger.label" })
+                : msg("Cancel Offboarding", { id: "offboarding.cancel.trigger.label" });
+
+            const triggerTooltip = ruleName
+                ? msg(
+                      str`Expires on ${offboarding.scheduledAt.toLocaleString()} due to inactivity (rule ${ruleName})`,
+                      { id: "user-expiration.cancel.tooltip" },
+                  )
+                : msg(str`Offboarding scheduled for ${offboarding.scheduledAt.toLocaleString()}`, {
+                      id: "offboarding.cancel.tooltip",
+                  });
+
             return html`<ak-forms-confirm
                 successMessage=${msg("Successfully cancelled offboarding.", {
                     id: "offboarding.cancel.success",
@@ -194,9 +211,15 @@ export class UserInfoCard extends AKElement {
                 .onConfirm=${this.cancelOffboarding}
             >
                 <span slot="header"
-                    >${msg("Cancel scheduled offboarding", {
-                        id: "offboarding.cancel.header",
-                    })}</span
+                    >${
+                        ruleName
+                            ? msg("Cancel scheduled expiration", {
+                                  id: "user-expiration.cancel.header",
+                              })
+                            : msg("Cancel scheduled offboarding", {
+                                  id: "offboarding.cancel.header",
+                              })
+                    }</span
                 >
                 <div slot="body" class="pf-c-content">
                     <p>
@@ -227,21 +250,35 @@ export class UserInfoCard extends AKElement {
                             })}:
                             <strong>${yesNo(offboarding.revokeTokens)}</strong>
                         </li>
+                        ${
+                            ruleName
+                                ? html`<li>
+                                      ${msg("Scheduled by", {
+                                          id: "offboarding.column.scheduled-by",
+                                      })}:
+                                      <strong
+                                          >${msg(str`expiration rule ${ruleName}`, {
+                                              id: "user-expiration.cancel.scheduled-by",
+                                          })}</strong
+                                      >
+                                  </li>`
+                                : nothing
+                        }
                     </ul>
+                    ${
+                        ruleName
+                            ? html`<p>
+                                  ${msg(
+                                      "Canceling exempts this user from automatic expiration until they sign in again. They can expire again after another period of inactivity. If they never sign in again, they remain exempt.",
+                                      { id: "user-expiration.cancel.exemption.description" },
+                                  )}
+                              </p>`
+                            : nothing
+                    }
                 </div>
                 <button slot="trigger" class="pf-c-button pf-m-warning pf-m-block" type="button">
-                    <pf-tooltip
-                        position="top"
-                        content=${msg(
-                            str`Offboarding scheduled for ${offboarding.scheduledAt.toLocaleString()}`,
-                            { id: "offboarding.cancel.tooltip" },
-                        )}
-                    >
-                        <span
-                            >${msg("Cancel Offboarding", {
-                                id: "offboarding.cancel.trigger.label",
-                            })}</span
-                        >
+                    <pf-tooltip position="top" content=${triggerTooltip}>
+                        <span>${triggerLabel}</span>
                     </pf-tooltip>
                 </button>
                 <div slot="modal"></div>
