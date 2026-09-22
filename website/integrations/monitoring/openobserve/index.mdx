@@ -1,0 +1,309 @@
+---
+title: Integrate with OpenObserve
+sidebar_label: OpenObserve
+support_level: community
+---
+
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+## What is OpenObserve?
+
+> OpenObserve is an open source observability platform for logs, metrics, traces, and real user monitoring. It stores data in object storage and provides search, dashboards, and alerting on top of it.
+>
+> -- https://openobserve.ai/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `openobserve.company` is the FQDN of the OpenObserve installation.
+- `dex.company` is the FQDN of the Dex installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info Dex required
+Single sign-on is only available in OpenObserve Enterprise, and OpenObserve does not connect to an identity provider directly. It delegates authentication to [Dex](https://dexidp.io/), which in turn authenticates with authentik. The login path is browser to OpenObserve to Dex to authentik.
+
+This means you need to run a Dex instance alongside OpenObserve, and integrate authentik with Dex rather than with OpenObserve.
+:::
+
+Dex can integrate with authentik via either:
+
+- **OpenID Connect**: Dex acts as an OpenID Connect client of authentik. Users are redirected to authentik to sign in, so the full authentik login flow applies, including multi-factor authentication and any policies bound to the application.
+- **LDAP**: Dex binds to an authentik [LDAP provider](/docs/add-secure-apps/providers/ldap/) served by an [LDAP outpost](/docs/add-secure-apps/outposts/). Users type their credentials into Dex's own login form and are never redirected to authentik.
+
+Prefer OpenID Connect unless something in your environment requires LDAP. Select a connector below and complete both the authentik and OpenObserve configuration in that tab.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+<Tabs
+  groupId="connector"
+  defaultValue="oidc"
+  values={[
+    {label: 'OpenID Connect', value: 'oidc'},
+    {label: 'LDAP', value: 'ldap'},
+  ]}>
+<TabItem value="oidc">
+
+## authentik configuration
+
+<RedirectURI20265Note />
+
+To support the integration of OpenObserve with authentik using OpenID Connect, you need to create an application/provider pair in authentik.
+
+### Create an application and provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it will be required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://dex.company/dex/callback`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+3. Click **Submit** to save the new application and provider.
+
+Dex reads group membership from the `groups` claim that authentik includes in the standard `profile` scope, so no additional scope mapping is required.
+
+## OpenObserve configuration
+
+### Configure Dex
+
+Create a Dex configuration file with the following contents, replacing the placeholders:
+
+```yaml title="dex-config.yml"
+issuer: https://dex.company/dex
+
+storage:
+    type: sqlite3
+    config:
+        file: /var/dex/dex.db
+
+web:
+    http: 0.0.0.0:5556
+
+expiry:
+    idTokens: 10m
+    refreshTokens:
+        validIfNotUsedFor: 30m
+
+staticClients:
+    - id: openobserve
+      name: OpenObserve
+      secret: <a secret shared with OpenObserve>
+      redirectURIs:
+          - https://openobserve.company/config/redirect
+
+oauth2:
+    responseTypes:
+        - code
+    skipApprovalScreen: true
+
+connectors:
+    - type: oidc
+      id: authentik
+      name: authentik
+      config:
+          issuer: https://authentik.company/application/o/<application_slug>/
+          clientID: <Client ID from authentik>
+          clientSecret: <Client Secret from authentik>
+          redirectURI: https://dex.company/dex/callback
+          insecureEnableGroups: true
+          insecureSkipEmailVerified: true
+          scopes:
+              - openid
+              - profile
+              - email
+          userNameKey: preferred_username
+```
+
+:::warning Email verification
+`insecureSkipEmailVerified: true` is required. authentik's default `email` scope mapping always returns `"email_verified": false`, and Dex rejects the login with `email not verified` unless this setting is enabled.
+:::
+
+Restart Dex after saving the configuration.
+
+### Configure OpenObserve
+
+Set the following environment variables on the OpenObserve Enterprise instance and restart it:
+
+```env title=".env"
+O2_DEX_ENABLED=true
+O2_DEX_CLIENT_ID=openobserve
+O2_DEX_CLIENT_SECRET=<the same secret you set in dex-config.yml>
+O2_DEX_BASE_URL=https://dex.company/dex
+O2_DEX_REDIRECT_URL=https://openobserve.company/config/redirect
+O2_CALLBACK_URL=https://openobserve.company/web/cb
+```
+
+:::warning Client secret encoding
+The OpenObserve documentation describes `O2_DEX_CLIENT_SECRET` as a base64-encoded secret, but OpenObserve sends the value to Dex verbatim. Set it to the same string as `secret:` in `dex-config.yml`.
+:::
+
+After restarting OpenObserve, the login page shows a **Login with SSO** button.
+
+### Map authentik groups to OpenObserve roles _(optional)_
+
+OpenObserve stores roles in [OpenFGA](https://openfga.dev/), so role mapping requires a reachable OpenFGA instance. Add the following variables alongside the ones above:
+
+```env title=".env"
+O2_OPENFGA_ENABLED=true
+O2_OPENFGA_BASE_URL=http://openfga:8080
+O2_MAP_GROUP_TO_ROLE=true
+O2_MAP_GROUP_TO_ROLE_SKIP_CREATION=false
+```
+
+With this configuration, each authentik group that a user belongs to becomes an OpenObserve role in the default organization on their first login. Non-alphanumeric characters in a group name are replaced with underscores, so an authentik group named `OpenObserve Admins` becomes the role `OpenObserve_Admins`.
+
+Roles created this way start with no permissions. Grant them in OpenObserve under **IAM** > **Roles** after the first login has created them. Set `O2_MAP_GROUP_TO_ROLE_SKIP_CREATION` to `true` instead if you prefer to create and permission the roles up front and have OpenObserve only assign the ones that already exist.
+
+</TabItem>
+<TabItem value="ldap">
+
+## authentik configuration
+
+To support the integration of OpenObserve with authentik over LDAP, you need an LDAP application/provider pair, a service account for Dex to bind with, and an LDAP outpost to serve the directory.
+
+### Create an application and provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **LDAP Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the bind flow to use for this provider, and note the **Base DN** because it will be required later.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+3. Click **Submit** to save the new application and provider.
+
+### Create a service account and LDAP outpost
+
+After creating the application/provider pair, follow the LDAP provider setup to create a [service account](/docs/add-secure-apps/providers/ldap/create-ldap-provider/#create-a-service-account), assign the [LDAP search permission](/docs/add-secure-apps/providers/ldap/create-ldap-provider/#assign-the-ldap-search-permission-to-the-service-account) to the service account, and [create an LDAP outpost](/docs/add-secure-apps/providers/ldap/create-ldap-provider/#create-an-ldap-outpost) for the OpenObserve LDAP provider.
+
+Use a descriptive service account name such as `openobserve-ldap-user`, and note the service account's full Bind DN and password. Dex uses this account to search for a matching user DN before binding as that user.
+
+If you configure application bindings, ensure that the service account and the users who should authenticate to OpenObserve have access to the application.
+
+Deploy the outpost where Dex can reach it. Only Dex talks to the outpost, so it does not need to be published to the internet. The outpost serves plain LDAP on port `3389` and LDAPS on port `6636`.
+
+## OpenObserve configuration
+
+### Configure Dex
+
+Create a Dex configuration file with the following contents, replacing the placeholders. The DNs below use authentik's default Base DN of `dc=ldap,dc=goauthentik,dc=io`. Replace them with the **Base DN** that you noted when creating the provider.
+
+```yaml title="dex-config.yml"
+issuer: https://dex.company/dex
+
+storage:
+    type: sqlite3
+    config:
+        file: /var/dex/dex.db
+
+web:
+    http: 0.0.0.0:5556
+
+expiry:
+    idTokens: 10m
+    refreshTokens:
+        validIfNotUsedFor: 30m
+
+staticClients:
+    - id: openobserve
+      name: OpenObserve
+      secret: <a secret shared with OpenObserve>
+      redirectURIs:
+          - https://openobserve.company/config/redirect
+
+oauth2:
+    responseTypes:
+        - code
+    skipApprovalScreen: true
+
+connectors:
+    - type: ldap
+      id: ldap
+      name: authentik
+      config:
+          host: <hostname of the LDAP outpost>:3389
+          insecureNoSSL: true
+          bindDN: cn=openobserve-ldap-user,ou=users,dc=ldap,dc=goauthentik,dc=io
+          bindPW: <app password of the service account>
+          usernamePrompt: Username
+          userSearch:
+              baseDN: ou=users,dc=ldap,dc=goauthentik,dc=io
+              filter: "(objectClass=user)"
+              username: cn
+              idAttr: uid
+              emailAttr: mail
+              nameAttr: displayName
+          groupSearch:
+              baseDN: ou=groups,dc=ldap,dc=goauthentik,dc=io
+              filter: "(objectClass=group)"
+              userMatchers:
+                  - userAttr: DN
+                    groupAttr: member
+              nameAttr: cn
+```
+
+`insecureNoSSL: true` tells Dex to use the outpost's plain LDAP port. To use LDAPS instead, remove that setting, set the port to `6636`, and make sure Dex trusts the certificate that the outpost presents.
+
+`nameAttr: cn` under `groupSearch` returns the bare group name rather than the full DN, which is what the role mapping below expects.
+
+Restart Dex after saving the configuration.
+
+### Configure OpenObserve
+
+Set the following environment variables on the OpenObserve Enterprise instance and restart it:
+
+```env title=".env"
+O2_DEX_ENABLED=true
+O2_DEX_CLIENT_ID=openobserve
+O2_DEX_CLIENT_SECRET=<the same secret you set in dex-config.yml>
+O2_DEX_BASE_URL=https://dex.company/dex
+O2_DEX_REDIRECT_URL=https://openobserve.company/config/redirect
+O2_CALLBACK_URL=https://openobserve.company/web/cb
+```
+
+:::warning Client secret encoding
+The OpenObserve documentation describes `O2_DEX_CLIENT_SECRET` as a base64-encoded secret, but OpenObserve sends the value to Dex verbatim. Set it to the same string as `secret:` in `dex-config.yml`.
+:::
+
+After restarting OpenObserve, the login page shows a **Login with SSO** button.
+
+### Map authentik groups to OpenObserve roles _(optional)_
+
+OpenObserve stores roles in [OpenFGA](https://openfga.dev/), so role mapping requires a reachable OpenFGA instance. Add the following variables alongside the ones above:
+
+```env title=".env"
+O2_OPENFGA_ENABLED=true
+O2_OPENFGA_BASE_URL=http://openfga:8080
+O2_MAP_GROUP_TO_ROLE=true
+O2_MAP_GROUP_TO_ROLE_SKIP_CREATION=false
+```
+
+With this configuration, each authentik group that a user belongs to becomes an OpenObserve role in the default organization on their first login. Non-alphanumeric characters in a group name are replaced with underscores, so an authentik group named `OpenObserve Admins` becomes the role `OpenObserve_Admins`.
+
+Roles created this way start with no permissions. Grant them in OpenObserve under **IAM** > **Roles** after the first login has created them. Set `O2_MAP_GROUP_TO_ROLE_SKIP_CREATION` to `true` instead if you prefer to create and permission the roles up front and have OpenObserve only assign the ones that already exist.
+
+</TabItem>
+</Tabs>
+
+## Configuration verification
+
+To confirm that authentik is properly configured with OpenObserve, open OpenObserve and click **Login with SSO**.
+
+- With the OpenID Connect connector, you are redirected to authentik to log in.
+- With the LDAP connector, Dex shows its own login form. Enter an authentik username and password.
+
+Either way you are returned to the OpenObserve home page, and the new account appears under **IAM** > **Users** as an external user.
+
+## Resources
+
+- [OpenObserve documentation - Single Sign-On (SSO)](https://openobserve.ai/docs/user-guide/account-administration/identity-and-access-management/sso/)
+- [OpenObserve documentation - Enable RBAC](https://openobserve.ai/docs/user-guide/account-administration/identity-and-access-management/enable-rbac-in-openobserve-enterprise/)
+- [OpenObserve documentation - Environment variables reference](https://openobserve.ai/docs/administration/configuration/environment-variables/)
+- [Dex documentation - Authentication through an OpenID Connect provider](https://dexidp.io/docs/connectors/oidc/)
+- [Dex documentation - Authentication through LDAP](https://dexidp.io/docs/connectors/ldap/)

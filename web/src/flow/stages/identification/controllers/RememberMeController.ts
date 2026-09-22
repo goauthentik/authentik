@@ -2,14 +2,16 @@ import { StorageAccessor } from "#common/storage";
 import { getCookie } from "#common/utils";
 
 import { ReactiveElementHost } from "#elements/types";
+import { findEmptyFocusCandidate } from "#elements/utils/focus";
 
 import type { IdentificationStage } from "#flow/stages/identification/IdentificationStage";
 
 import { ConsoleLogger } from "#logger/browser";
 
+import { createRef, Ref } from "lit-html/directives/ref.js";
+
 import { msg } from "@lit/localize";
 import { css, html, ReactiveController } from "lit";
-import { createRef, Ref } from "lit-html/directives/ref.js";
 
 export class RememberMeStorage {
     static readonly user = StorageAccessor.local("authentik-remember-me-user");
@@ -36,17 +38,14 @@ export interface RememberMeControllerInit {
  *
  * @remarks
  *
- * If enabled by the site configuration, provides a feature to "remember this user on this device."
- * When active, it will attempt to find the user's claimed identity in the device & domain
- * localstorage.
- *
- * If claimed identity is present: automatically forward the user to the "prove your identity"
- * phase. If not present: record the username as it is typed in, and store it when the user proceeds
- * to the next phase.
- *
- * Uses a "we've been here before during the current session" heuristic to determine if the user
- * came back to this view after reaching the identity proof phase, indicating they pressed the "not
- * you?" link, at which point it begins again to record the username as it is typed in.
+ *   If enabled by the site configuration, provides a feature to "remember this user on this
+ *   device." When active, it will attempt to find the user's claimed identity in the device &
+ *   domain localstorage. If claimed identity is present: automatically forward the user to the
+ *   "prove your identity" phase. If not present: record the username as it is typed in, and store
+ *   it when the user proceeds to the next phase. Uses a "we've been here before during the current
+ *   session" heuristic to determine if the user came back to this view after reaching the identity
+ *   proof phase, indicating they pressed the "not you?" link, at which point it begins again to
+ *   record the username as it is typed in.
  */
 export class RememberMeController implements ReactiveController {
     static readonly styles = [
@@ -130,8 +129,8 @@ export class RememberMeController implements ReactiveController {
      * submitted on future visits. Additionally, every keystroke in the username field will update
      * the stored username.
      *
-     * When toggled off, any stored username is cleared from localStorage, and the keystroke listener
-     * is removed to stop updating the stored username.
+     * When toggled off, any stored username is cleared from localStorage, and the keystroke
+     * listener is removed to stop updating the stored username.
      */
     public toggleChangeListener = (event: Event) => {
         const checkbox = event.target as HTMLInputElement;
@@ -153,10 +152,11 @@ export class RememberMeController implements ReactiveController {
 
         if (!usernameField) {
             this.logger.warn("Cannot enable remember me: no username field found");
+
             return;
         }
 
-        const focusTarget = passwordField && usernameField?.value ? passwordField : usernameField;
+        const focusTarget = findEmptyFocusCandidate(usernameField, passwordField);
 
         if (focusTarget) {
             focusTarget.focus();
@@ -185,12 +185,15 @@ export class RememberMeController implements ReactiveController {
         const { challenge } = this.host;
 
         if (!challenge) return false;
+
         if (!challenge.enableRememberMe) return false;
 
         if (challenge.passwordFields) return false;
+
         if (challenge.passwordlessUrl) return false;
 
         if (!this.defaultChecked) return false;
+
         return !!this.usernameField?.value;
     }
 

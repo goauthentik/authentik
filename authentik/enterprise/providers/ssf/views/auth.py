@@ -8,6 +8,7 @@ from rest_framework.request import Request
 
 from authentik.core.models import Token, TokenIntents, User
 from authentik.enterprise.providers.ssf.models import SSFProvider
+from authentik.lib.tracing import active_tracer
 from authentik.providers.oauth2.models import AccessToken
 
 if TYPE_CHECKING:
@@ -52,6 +53,7 @@ class SSFTokenAuth(BaseAuthentication):
         self.view.provider = ssf_provider
         return token
 
+    @active_tracer().instrument()
     def authenticate(self, request: Request) -> tuple[User, Any] | None:
         auth = get_authorization_header(request).decode()
         auth_type, _, key = auth.partition(" ")

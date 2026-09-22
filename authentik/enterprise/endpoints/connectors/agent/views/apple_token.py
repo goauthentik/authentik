@@ -41,6 +41,15 @@ class TokenView(View):
     device_connection: AgentDeviceConnection
     connector: AgentConnector
 
+    def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        # This is a plain Django View, so DRF's exception handler never runs and a
+        # ValidationError raised below would surface as a 500 instead of a 400.
+        try:
+            return super().dispatch(request, *args, **kwargs)
+        except ValidationError as exc:
+            LOGGER.warning("Invalid Platform SSO token request", exc=exc)
+            return HttpResponse(status=400)
+
     def post(self, request: HttpRequest) -> HttpResponse:
         assertion = request.POST.get("assertion", request.POST.get("request"))
         if not assertion:
@@ -51,6 +60,8 @@ class TokenView(View):
         except PyJWTError as exc:
             LOGGER.warning("failed to parse JWT", exc=exc)
             raise ValidationError("Invalid request") from None
+        if self.jwt_request is None:
+            return HttpResponse(status=400)
         version = request.POST.get("platform_sso_version")
         grant_type = request.POST.get("grant_type")
         handler_func = (
@@ -66,7 +77,7 @@ class TokenView(View):
         LOGGER.debug("sending to handler", handler=handler_func)
         return handler()
 
-    def validate_request_token(self, assertion: str) -> dict[str, Any]:
+    def validate_request_token(self, assertion: str) -> dict[str, Any] | None:
         # Decode without validation to get header
         header = get_unverified_header(assertion)
         LOGGER.debug("token header", header=header)
@@ -77,6 +88,9 @@ class TokenView(View):
             .select_related("device")
             .first()
         )
+        if not self.device_connection:
+            LOGGER.warning("No device connection found for key ID", kid=expected_kid)
+            return None
         self.connector = AgentConnector.objects.get(pk=self.device_connection.connector.pk)
         LOGGER.debug("got device", device=self.device_connection.device)
 

@@ -1,7 +1,6 @@
 /**
+ * @import {LLMSDocInfo} from "./common.mjs"
  * @file Pure node-side logic for the llms.txt plugin: discovery, parsing, URLs.
- *
- * @import { LLMSDocInfo } from "./common.mjs"
  */
 
 import { readFileSync } from "node:fs";
@@ -16,6 +15,7 @@ import FastGlob from "fast-glob";
  * Convert OS path separators to POSIX.
  *
  * @param {string} p
+ *
  * @returns {string}
  */
 export function normalizePath(p) {
@@ -27,6 +27,7 @@ export function normalizePath(p) {
  *
  * @param {string} absDir Absolute directory to scan.
  * @param {string[]} [ignoreFiles] Extra glob patterns to exclude.
+ *
  * @returns {string[]} Absolute file paths.
  */
 export function collectDocFiles(absDir, ignoreFiles = []) {
@@ -53,6 +54,7 @@ export function collectDocFiles(absDir, ignoreFiles = []) {
  * @param {Record<string, any>} frontMatter
  * @param {string} body
  * @param {string} relPathNoExt
+ *
  * @returns {string}
  */
 function extractTitle(frontMatter, body, relPathNoExt) {
@@ -75,6 +77,7 @@ function extractTitle(frontMatter, body, relPathNoExt) {
  * with linked, bolded prose; both should read as plain text in the index.
  *
  * @param {string} text
+ *
  * @returns {string}
  */
 function cleanDescriptionText(text) {
@@ -98,6 +101,7 @@ function cleanDescriptionText(text) {
  * don't split. Returns the input unchanged when no sentence terminator is found.
  *
  * @param {string} text
+ *
  * @returns {string}
  */
 function firstSentence(text) {
@@ -110,6 +114,7 @@ function firstSentence(text) {
  * prerequisite or feature enumerations, not a usable one-line description.
  *
  * @param {string} block
+ *
  * @returns {boolean}
  */
 function isListBlock(block) {
@@ -128,6 +133,7 @@ function isListBlock(block) {
  *
  * @param {Record<string, any>} frontMatter
  * @param {string} body
+ *
  * @returns {string}
  */
 function extractDescription(frontMatter, body) {
@@ -157,6 +163,7 @@ function extractDescription(frontMatter, body) {
  * degrades to letters rather than dropping them.
  *
  * @param {string} slug
+ *
  * @returns {string}
  */
 function humanizeSlug(slug) {
@@ -176,13 +183,14 @@ function humanizeSlug(slug) {
  *
  * @param {string} filePath Absolute file path.
  * @param {string} baseDir Absolute scan root.
+ *
  * @returns {LLMSDocInfo | null}
  */
 export function parseDocFile(filePath, baseDir) {
     const raw = readFileSync(filePath, "utf-8");
     const { frontMatter, content } = parseFileContentFrontMatter(raw);
 
-    if (frontMatter.draft === true) {
+    if (frontMatter.draft) {
         return null;
     }
 
@@ -197,12 +205,14 @@ export function parseDocFile(filePath, baseDir) {
         url: "",
         description: extractDescription(frontMatter, content),
         content,
+        slug: typeof frontMatter.slug === "string" ? frontMatter.slug : undefined,
     };
 }
 
 /**
  * @param {string[]} routesPaths
  * @param {string} tail
+ *
  * @returns {string | undefined}
  */
 function findMatchingRoute(routesPaths, tail) {
@@ -220,6 +230,7 @@ function findMatchingRoute(routesPaths, tail) {
 
 /**
  * @param {string} urlPath
+ *
  * @returns {string}
  */
 function collapseMatchingTrailingSegment(urlPath) {
@@ -236,6 +247,7 @@ function collapseMatchingTrailingSegment(urlPath) {
 
 /**
  * @param {string} pathStr
+ *
  * @returns {string}
  */
 function removeNumberedPrefixes(pathStr) {
@@ -252,8 +264,12 @@ function removeNumberedPrefixes(pathStr) {
  * into its own `## Glossary` section.
  *
  * @param {{ path: string }} doc
- * @param {{ groupBy?: "topic"|"category", categories?: readonly (readonly [string,string])[],
- *   regroup?: readonly (readonly [string,string])[] }} opts
+ * @param {{
+ *     groupBy?: "topic" | "category";
+ *     categories?: readonly (readonly [string, string])[];
+ *     regroup?: readonly (readonly [string, string])[];
+ * }} opts
+ *
  * @returns {string}
  */
 export function assignGroup(doc, opts) {
@@ -270,7 +286,11 @@ export function assignGroup(doc, opts) {
  * `categories` label if present, otherwise a title-cased form of the slug.
  *
  * @param {string} group The group slug.
- * @param {{ groupBy?: "topic"|"category", categories?: readonly (readonly [string,string])[] }} opts
+ * @param {{
+ *     groupBy?: "topic" | "category";
+ *     categories?: readonly (readonly [string, string])[];
+ * }} opts
+ *
  * @returns {string}
  */
 export function groupLabel(group, opts) {
@@ -280,24 +300,96 @@ export function groupLabel(group, opts) {
 }
 
 /**
- * Resolve a site-relative path to its rendered route URL.
+ * @param {string} routeBasePath
  *
- * @param {string} relPathNoExt Site-relative path, POSIX, no extension.
+ * @returns {string}
+ */
+function normalizeRouteBasePath(routeBasePath) {
+    if (!routeBasePath || routeBasePath === "/") {
+        return "/";
+    }
+
+    let start = 0;
+    let end = routeBasePath.length;
+    while (start < end && routeBasePath[start] === "/") {
+        start++;
+    }
+    while (end > start && routeBasePath[end - 1] === "/") {
+        end--;
+    }
+
+    return `/${routeBasePath.slice(start, end)}/`;
+}
+
+/**
+ * @param {string} routePath
+ *
+ * @returns {string}
+ */
+function normalizeRoutePath(routePath) {
+    const normalized = `/${routePath.replace(/^\/+/, "")}`.replace(/\/{2,}/g, "/");
+    if (normalized === "/") {
+        return normalized;
+    }
+    return normalized.endsWith("/") ? normalized : `${normalized}/`;
+}
+
+/**
+ * Resolve a route from source metadata when Docusaurus' final route list is not
+ * available, such as during the dev server's content loading phase.
+ *
+ * @param {LLMSDocInfo} doc
+ * @param {string} routeBasePath
+ *
+ * @returns {string}
+ */
+export function resolveDocumentUrlFromSource(doc, routeBasePath) {
+    if (doc.slug) {
+        if (doc.slug.startsWith("/")) {
+            return normalizeRoutePath(doc.slug);
+        }
+        return normalizeRoutePath(`${normalizeRouteBasePath(routeBasePath)}${doc.slug}`);
+    }
+
+    if (doc.path === "" || doc.path === "index") {
+        return normalizeRouteBasePath(routeBasePath);
+    }
+
+    return normalizeRoutePath(`${normalizeRouteBasePath(routeBasePath)}${doc.path}`);
+}
+
+/**
+ * Resolve a document to its rendered route URL.
+ *
+ * Prefer the route declared by the document's source metadata, including a
+ * frontmatter slug override. Fall back to matching the source path for routes
+ * transformed by Docusaurus conventions such as numbered prefixes.
+ *
+ * @param {LLMSDocInfo} doc
+ * @param {string} routeBasePath
  * @param {string[]} routesPaths Resolved routes from Docusaurus postBuild props.
+ *
  * @returns {string | undefined}
  */
-export function resolveDocumentUrl(relPathNoExt, routesPaths) {
+export function resolveDocumentUrl(doc, routeBasePath, routesPaths) {
     if (!routesPaths || routesPaths.length === 0) return undefined;
+
+    const sourceRoute = resolveDocumentUrlFromSource(doc, routeBasePath);
+    const normalizedSourceRoute = trimTrailingSlashes(sourceRoute.toLowerCase());
+    const exactRoute = routesPaths.find(
+        (route) => trimTrailingSlashes(route.toLowerCase()) === normalizedSourceRoute,
+    );
+    if (exactRoute) return exactRoute;
 
     // The root index page has the bare path "index" (no leading "/index" to
     // strip), so it never suffix-matches a route. Map it to the site root.
-    if (relPathNoExt === "" || relPathNoExt === "index") {
+    if (doc.path === "" || doc.path === "index") {
         return routesPaths.includes("/") ? "/" : undefined;
     }
 
-    const tails = new Set([relPathNoExt]);
-    tails.add(collapseMatchingTrailingSegment(relPathNoExt));
-    tails.add(removeNumberedPrefixes(relPathNoExt));
+    const tails = new Set([doc.path]);
+    tails.add(collapseMatchingTrailingSegment(doc.path));
+    tails.add(removeNumberedPrefixes(doc.path));
 
     for (const tail of tails) {
         const match = findMatchingRoute(routesPaths, tail);

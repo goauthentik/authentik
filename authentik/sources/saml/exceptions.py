@@ -1,9 +1,9 @@
 """authentik saml source exceptions"""
 
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 
 
-class SAMLException(SentryIgnoredException):
+class SAMLException(TracingIgnoredException):
     """Base SAML Exception"""
 
     default_message = "An unspecified SAML error occurred."
@@ -30,6 +30,12 @@ class MismatchedRequestID(SAMLException):
     """Exception raised when the returned request ID doesn't match the saved ID."""
 
     default_message = "The SAML Response ID does not match the original request ID."
+
+
+class MismatchedBinding(SAMLException):
+    """Exception raised when the Response is not addressed to this Source."""
+
+    default_message = "The SAML Response is not addressed to this Source."
 
 
 class MissingSAMLResponse(SAMLException):

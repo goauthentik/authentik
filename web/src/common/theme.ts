@@ -4,16 +4,15 @@
 
 import { setAdoptedStyleSheets, type StyleRoot } from "#common/stylesheets";
 
-import { UiThemeEnum } from "@goauthentik/api";
+import { type ThemedUrls, UiThemeEnum } from "@goauthentik/api";
 
 //#region Scheme Types
 
 /**
  * Valid CSS color scheme values.
  *
- * @link {@link https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme | MDN}
- *
  * @category CSS
+ * @link {@link https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme | MDN}
  */
 export type CSSColorSchemeValue = "dark" | "light" | "auto";
 
@@ -31,7 +30,7 @@ export type ResolvedCSSColorSchemeValue = Exclude<CSSColorSchemeValue, "auto">;
 /**
  * A UI color scheme value that can be preferred by the user.
  *
- * i.e. not an lack of preference or unknown value.
+ * I.e. not an lack of preference or unknown value.
  *
  * @category CSS
  */
@@ -59,12 +58,11 @@ export type UIThemeHint = CSSColorSchemeValue | UiThemeEnum;
 /**
  * Creates an event target for the given color scheme.
  *
- * @param colorScheme The color scheme to target.
- * @returns A {@linkcode MediaQueryList} that can be used to listen for changes to the color scheme.
- *
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList | MDN}
- *
  * @category CSS
+ * @param colorScheme The color scheme to target.
+ *
+ * @returns A {@linkcode MediaQueryList} that can be used to listen for changes to the color scheme.
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList | MDN}
  */
 export function createColorSchemeTarget(colorScheme: ResolvedCSSColorSchemeValue): MediaQueryList {
     return window.matchMedia(`(prefers-color-scheme: ${colorScheme})`);
@@ -78,10 +76,13 @@ export function createColorSchemeTarget(colorScheme: ResolvedCSSColorSchemeValue
  * @category CSS
  */
 export function formatColorScheme(theme: ResolvedUITheme): ResolvedCSSColorSchemeValue;
+
 export function formatColorScheme(
     colorScheme: ResolvedCSSColorSchemeValue,
 ): ResolvedCSSColorSchemeValue;
+
 export function formatColorScheme(hint?: string): CSSColorSchemeValue;
+
 export function formatColorScheme(hint?: string): CSSColorSchemeValue {
     if (!hint) return "auto";
 
@@ -108,9 +109,8 @@ export function formatColorScheme(hint?: string): CSSColorSchemeValue {
 /**
  * Resolve the current UI theme based on the user's preference or the provided color scheme.
  *
- * @param hint The color scheme hint to use.
- *
  * @category CSS
+ * @param hint The color scheme hint to use.
  */
 export function resolveUITheme(
     hint?: string,
@@ -131,6 +131,20 @@ export function resolveUITheme(
     const mediaQueryList = createColorSchemeTarget(colorSchemeInversion);
 
     return mediaQueryList.matches ? colorSchemeInversion : defaultUITheme;
+}
+
+/**
+ * Resolve the URL for the given theme, falling back to the raw URL
+ * when no themed variants are available.
+ *
+ * @category CSS
+ */
+export function resolveThemedUrl(
+    theme: ResolvedUITheme,
+    themedUrls?: ThemedUrls | null,
+    fallback?: string | null,
+): string | null {
+    return themedUrls?.[theme] ?? fallback ?? null;
 }
 
 /**
@@ -167,6 +181,7 @@ export function createUIThemeEffect(
             console.debug(
                 `authentik/theme (document): skipping media query change due to explicit choice (${themeChoice})`,
             );
+
             return;
         }
 
@@ -222,11 +237,11 @@ export function createUIThemeEffect(
 /**
  * Applies the current UI theme to the given style root.
  *
+ * @category CSS
  * @param styleRoot The style root to apply the theme to.
  * @param currentUITheme The current UI theme to apply.
- * @param additionalStyleSheets Additional style sheets to apply, in addition to the theme's base sheets.
- * @category CSS
- *
+ * @param additionalStyleSheets Additional style sheets to apply, in addition to the theme's base
+ *   sheets.
  * @see {@linkcode setAdoptedStyleSheets} for caveats.
  */
 export function applyUITheme(
@@ -293,20 +308,17 @@ export const applyDocumentTheme = ((
 /**
  * Applies the given theme choice to the document element.
  *
+ * @remarks
+ *   There are a few scenarios that this function covers:
+ *
+ *   - No hint, `"auto"` (via a media query), or `"automatic"` (via a user attribute)
+ *   - `"dark"` or `"light"` (explicit user choice) This may appear redundantly defensive when
+ *     following this logic through the codebase. However, there are some cases that only appear in
+ *     development, such as...
+ *   - The developer tools overriding the system color scheme
+ *   - The attribute is manually changed to an invalid value
  * @param hint The theme choice hint to apply.
  * @param documentElement The document element to apply the theme choice to.
- *
- * @remarks
- * There are a few scenarios that this function covers:
- *
- * - No hint, `"auto"` (via a media query), or `"automatic"` (via a user attribute)
- * - `"dark"` or `"light"` (explicit user choice)
- *
- * This may appear redundantly defensive when following this logic through the codebase.
- * However, there are some cases that only appear in development, such as...
- *
- * - The developer tools overriding the system color scheme
- * - The attribute is manually changed to an invalid value
  */
 export function applyThemeChoice(hint?: CSSColorSchemeValue, doc: Document = document): void {
     const themeChoice = !hint || hint === "auto" ? "auto" : resolveUITheme(hint);
@@ -325,6 +337,7 @@ export const AKBackgroundImageProperty = "--ak-global--background-image";
  *
  * @param backgroundValue The CSS background-image property value.
  * @param baseOrigin The base origin to use for relative URLs.
+ *
  * @returns The plucked URL, if any.
  */
 function pluckCurrentBackgroundURL(
@@ -372,6 +385,7 @@ export function applyBackgroundImageProperty(
     const { backgroundImage } = getComputedStyle(target, "::before");
 
     const currentURL = pluckCurrentBackgroundURL(backgroundImage, baseOrigin);
+
     if (currentURL?.href === nextURL.href) {
         return;
     }
