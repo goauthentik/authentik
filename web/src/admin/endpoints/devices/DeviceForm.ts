@@ -1,4 +1,5 @@
 import "#components/ak-text-input";
+import "#components/ak-radio-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/FormGroup";
 import "#elements/utils/TimeDeltaHelp";
@@ -8,7 +9,7 @@ import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
-import { EndpointDevice, EndpointsApi } from "@goauthentik/api";
+import { EndpointDevice, EndpointsApi, ProtocolEnum } from "@goauthentik/api";
 
 import YAML from "yaml";
 
@@ -54,6 +55,38 @@ export class EndpointDeviceForm extends ModelForm<EndpointDevice, string> {
                 value=${ifDefined(this.instance?.name)}
                 required
             ></ak-text-input>
+            <ak-text-input
+                name="rac.host"
+                placeholder=${msg("e.g. myserver.example.com, 10.0.0.1:22")}
+                label=${msg("Host")}
+                value=${ifDefined(this.instance?.rac?.host)}
+                input-hint="code"
+                ?required=${!this.instance}
+                help=${msg(
+                    "Hostname/IP to connect to. Optionally specify the port. Devices which are enrolled through a connector report this themselves.",
+                )}
+            ></ak-text-input>
+            <ak-radio-input
+                label=${msg("Protocol")}
+                name="rac.protocol"
+                ?required=${!this.instance}
+                .options=${[
+                    {
+                        label: msg("RDP"),
+                        value: ProtocolEnum.Rdp,
+                    },
+                    {
+                        label: msg("SSH"),
+                        value: ProtocolEnum.Ssh,
+                    },
+                    {
+                        label: msg("VNC"),
+                        value: ProtocolEnum.Vnc,
+                    },
+                ]}
+                .value=${this.instance?.rac?.protocol}
+            >
+            </ak-radio-input>
             <ak-form-element-horizontal label=${msg("Device Group")} name="accessGroup">
                 <ak-endpoints-device-group-search
                     .group=${this.instance?.accessGroup}
