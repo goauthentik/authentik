@@ -55,7 +55,8 @@ def available_protocols(device: Device) -> list[str]:
     can be connected to with either protocol, as there is nothing that says they
     can't."""
     if override := connection_override(device):
-        return [override.protocol]
+        if override.protocol:
+            return [override.protocol]
     vendor = (device.facts_data.get("vendor") or {}).get(
         AgentConnectorController.vendor_identifier()
     ) or {}
