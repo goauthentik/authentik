@@ -7,6 +7,7 @@ from unittest.mock import MagicMock, patch
 from daphne.testing import DaphneProcess
 from django import setup as django_setup
 from django.conf import settings
+from django.core.signals import request_started
 from django.utils.timezone import now
 
 from authentik.lib.config import CONFIG
@@ -17,6 +18,11 @@ class TestDatabaseProcess(DaphneProcess):
     """Channels does not correctly switch to the test database by default.
     https://github.com/django/channels/issues/2048"""
 
+    def _clear_ct_cache(self):
+        from django.contrib.contenttypes.models import ContentType
+
+        ContentType.objects.clear_cache()
+
     def run(self):
         if not settings.configured:  # Fix For raise AppRegistryNotReady("Apps aren't loaded yet.")
             django_setup()  # Ensure Django is fully set up before using settings
@@ -24,6 +30,10 @@ class TestDatabaseProcess(DaphneProcess):
             for _, db_settings in settings.DATABASES.items():
                 db_settings["NAME"] = f"test_{db_settings['NAME']}"
         settings.TEST = True
+
+        # In e2e tests, make sure subprocesses can't have stale caches
+        request_started.connect(self._clear_ct_cache, weak=False)
+
         from authentik.enterprise.license import LicenseKey
         from authentik.root.test_runner import patched__get_ct_cached
 
