@@ -51,7 +51,9 @@ def available_protocols(device: Device) -> list[str]:
     can't."""
     if override := connection_override(device):
         return [override.protocol]
-    vendor = (device.facts_data.get("vendor") or {}).get(AgentConnectorController.vendor_identifier()) or {}
+    vendor = (device.facts_data.get("vendor") or {}).get(
+        AgentConnectorController.vendor_identifier()
+    ) or {}
     protocols = []
     if vendor.get("rdp_cert_fingerprint"):
         protocols.append(Protocols.RDP)

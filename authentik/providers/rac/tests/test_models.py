@@ -4,9 +4,9 @@ from django.test import TransactionTestCase
 
 from authentik.core.models import Application, AuthenticatedSession, Session
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.endpoints.connectors.agent.controller import AgentConnectorController
 from authentik.lib.generators import generate_id
 from authentik.providers.rac.models import (
-    PLATFORM_VENDOR,
     ConnectionToken,
     Protocols,
     RACPropertyMapping,
@@ -86,7 +86,14 @@ class TestConnectionResolution(TransactionTestCase):
         rdp = create_test_device()
         set_device_facts(
             rdp,
-            {"vendor": {PLATFORM_VENDOR: {"rdp_cert_fingerprint": "aa:bb", "ssh_host_keys": []}}},
+            {
+                "vendor": {
+                    AgentConnectorController.vendor_identifier(): {
+                        "rdp_cert_fingerprint": "aa:bb",
+                        "ssh_host_keys": [],
+                    }
+                }
+            },
         )
         self.assertEqual(available_protocols(rdp), [Protocols.RDP])
 
@@ -95,7 +102,7 @@ class TestConnectionResolution(TransactionTestCase):
             ssh,
             {
                 "vendor": {
-                    PLATFORM_VENDOR: {
+                    AgentConnectorController.vendor_identifier(): {
                         "rdp_cert_fingerprint": "",
                         "ssh_host_keys": ["localhost ssh-ed25519 AAAA"],
                     }
@@ -109,7 +116,7 @@ class TestConnectionResolution(TransactionTestCase):
             both,
             {
                 "vendor": {
-                    PLATFORM_VENDOR: {
+                    AgentConnectorController.vendor_identifier(): {
                         "rdp_cert_fingerprint": "aa:bb",
                         "ssh_host_keys": ["localhost ssh-ed25519 AAAA"],
                     }
