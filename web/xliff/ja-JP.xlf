@@ -12499,11 +12499,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="user-expiration.cancel.scheduled-by">
   <source>expiration rule <x id="0" equiv-text="${ruleName}"/></source>
 </trans-unit>
-<trans-unit id="user-expiration.cancel.reschedule-warning">
-  <source>The rule reschedules this expiration on its next run unless the user signs in, or unless you change the rule so it no longer covers them.</source>
-</trans-unit>
 <trans-unit id="user-expiration.event.warning">
   <source>User will be offboarded due to inactivity</source>
+</trans-unit>
+<trans-unit id="user-expiration.cancel.exemption.description">
+  <source>Canceling exempts this user from automatic expiration until they sign in again. They can expire again after another period of inactivity. If they never sign in again, they remain exempt.</source>
 </trans-unit>
 </body>
 </file>
