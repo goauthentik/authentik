@@ -7064,6 +7064,31 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: endpoints_devices_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointDeviceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointDevice'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/devices/{device_uuid}/:
     get:
       operationId: endpoints_devices_retrieve
@@ -40545,7 +40570,9 @@ components:
           format: uuid
           nullable: true
         access_group_obj:
-          $ref: '#/components/schemas/DeviceAccessGroup'
+          allOf:
+          - $ref: '#/components/schemas/DeviceAccessGroup'
+          readOnly: true
         expiring:
           type: boolean
         expires:
@@ -40566,6 +40593,7 @@ components:
           readOnly: true
           nullable: true
       required:
+      - access_group_obj
       - facts
       - name
       - pbm_uuid
@@ -40587,7 +40615,9 @@ components:
           format: uuid
           nullable: true
         access_group_obj:
-          $ref: '#/components/schemas/DeviceAccessGroup'
+          allOf:
+          - $ref: '#/components/schemas/DeviceAccessGroup'
+          readOnly: true
         expiring:
           type: boolean
         expires:
@@ -40624,6 +40654,7 @@ components:
             format: uuid
           readOnly: true
       required:
+      - access_group_obj
       - connections
       - connections_obj
       - facts
@@ -40644,8 +40675,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        access_group_obj:
-          $ref: '#/components/schemas/DeviceAccessGroupRequest'
         expiring:
           type: boolean
         expires:
@@ -51166,8 +51195,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        access_group_obj:
-          $ref: '#/components/schemas/DeviceAccessGroupRequest'
         expiring:
           type: boolean
         expires:

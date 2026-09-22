@@ -28,12 +28,20 @@ export class EndpointDeviceForm extends ModelForm<EndpointDevice, string> {
     }
 
     getSuccessMessage(): string {
-        return msg("Successfully updated device.");
+        return this.instance
+            ? msg("Successfully updated device.")
+            : msg("Successfully created device.");
     }
 
     async send(data: EndpointDevice): Promise<EndpointDevice> {
+        if (!this.instance) {
+            return aki(EndpointsApi).endpointsDevicesCreate({
+                endpointDeviceRequest: data,
+            });
+        }
+
         return aki(EndpointsApi).endpointsDevicesPartialUpdate({
-            deviceUuid: this.instance!.deviceUuid!,
+            deviceUuid: this.instance.deviceUuid!,
             patchedEndpointDeviceRequest: data,
         });
     }
