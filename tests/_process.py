@@ -18,7 +18,7 @@ class TestDatabaseProcess(DaphneProcess):
     """Channels does not correctly switch to the test database by default.
     https://github.com/django/channels/issues/2048"""
 
-    def _clear_ct_cache(self):
+    def _clear_ct_cache(self, **_):
         from django.contrib.contenttypes.models import ContentType
 
         ContentType.objects.clear_cache()
