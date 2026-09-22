@@ -18,6 +18,25 @@ import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
+/**
+ * Which offboardings the list shows: every one, only those an administrator scheduled
+ * by hand, or only those an expiration rule scheduled.
+ */
+const OffboardingSource = {
+    All: "all",
+    Manual: "manual",
+    Automatic: "automatic",
+} as const;
+
+type OffboardingSource = (typeof OffboardingSource)[keyof typeof OffboardingSource];
+
+// Maps the selected source onto the API's `rule__isnull` filter.
+const OFFBOARDING_SOURCE_FILTER: Record<OffboardingSource, boolean | undefined> = {
+    [OffboardingSource.All]: undefined,
+    [OffboardingSource.Manual]: true,
+    [OffboardingSource.Automatic]: false,
+};
+
 @customElement("ak-offboarding-list")
 export class OffboardingListPage extends TablePage<UserOffboarding> {
     public override checkbox = true;
@@ -36,6 +55,9 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
     @state()
     showOnlyPending = true;
 
+    @state()
+    protected source: OffboardingSource = OffboardingSource.All;
+
     // Shared by the bulk and per-row cancel paths so they stay in sync.
     #cancelOffboarding = (item: UserOffboarding) =>
         aki(LifecycleApi).lifecycleUserOffboardingDestroy({ id: item.id });
@@ -49,11 +71,20 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
         return aki(LifecycleApi).lifecycleUserOffboardingList({
             ...(await this.defaultEndpointConfig()),
             status: this.showOnlyPending ? OffboardingStatusEnum.Pending : undefined,
+            // `rule` is null on an offboarding an administrator scheduled by hand, and
+            // set on one an expiration rule scheduled.
+            ruleIsnull: OFFBOARDING_SOURCE_FILTER[this.source],
         });
     }
 
     protected togglePendingOffboardingFilter = (): void => {
         this.showOnlyPending = !this.showOnlyPending;
+        this.page = 1;
+        this.fetch();
+    };
+
+    protected sourceChangeListener = (event: Event): void => {
+        this.source = (event.target as HTMLSelectElement).value as OffboardingSource;
         this.page = 1;
         this.fetch();
     };
@@ -66,6 +97,39 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
                 @change=${this.togglePendingOffboardingFilter}
             >
             </ak-switch-input>
+            <div class="pf-c-toolbar__item">
+                <label class="sr-only" for="offboarding-source-filter"
+                    >${msg("Scheduled by", { id: "offboarding.column.scheduled-by" })}</label
+                >
+                <select
+                    id="offboarding-source-filter"
+                    class="pf-c-form-control"
+                    @change=${this.sourceChangeListener}
+                >
+                    <option
+                        value=${OffboardingSource.All}
+                        ?selected=${this.source === OffboardingSource.All}
+                    >
+                        ${msg("All offboardings", { id: "offboarding.source.all" })}
+                    </option>
+                    <option
+                        value=${OffboardingSource.Manual}
+                        ?selected=${this.source === OffboardingSource.Manual}
+                    >
+                        ${msg("Scheduled by an administrator", {
+                            id: "offboarding.source.manual",
+                        })}
+                    </option>
+                    <option
+                        value=${OffboardingSource.Automatic}
+                        ?selected=${this.source === OffboardingSource.Automatic}
+                    >
+                        ${msg("Scheduled by an expiration rule", {
+                            id: "offboarding.source.automatic",
+                        })}
+                    </option>
+                </select>
+            </div>
             ${super.renderToolbar()}`;
     }
 
@@ -74,7 +138,7 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
         [msg("Action"), "action"],
         [msg("Scheduled for"), "scheduled_at"],
         [msg("Status"), "status"],
-        [msg("Scheduled by")],
+        [msg("Scheduled by", { id: "offboarding.column.scheduled-by" })],
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
@@ -93,6 +157,23 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
                 ${msg("Cancel Offboardings")}
             </button>
         </ak-forms-delete-bulk>`;
+    }
+
+    /**
+     * An offboarding is either scheduled by an administrator or by an expiration rule;
+     * `createdBy` is only set in the first case, and `rule` only in the second.
+     */
+    protected renderScheduledBy(item: UserOffboarding): SlottedTemplateResult {
+        if (item.rule) {
+            return html`<a href=${toAdminInterface("events/expiration-rules")}
+                >${
+                    item.ruleObj?.name ??
+                    msg("Expiration rule", { id: "offboarding.source.rule-fallback" })
+                }</a
+            >`;
+        }
+
+        return item.createdByObj?.username ?? msg("-");
     }
 
     protected renderRowActions(item: UserOffboarding): SlottedTemplateResult {
@@ -125,7 +206,7 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
             offboardingActionLabel(item.action),
             html`<ak-timestamp .timestamp=${item.scheduledAt} datetime></ak-timestamp>`,
             OffboardingStatus({ status: item.status }),
-            item.createdByObj?.username ?? msg("-"),
+            this.renderScheduledBy(item),
             this.renderRowActions(item),
         ];
     }
