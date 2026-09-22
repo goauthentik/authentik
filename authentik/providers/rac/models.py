@@ -14,6 +14,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import PropertyMapping, Provider, User, default_token_key
+from authentik.endpoints.connectors.agent.controller import AgentConnectorController
 from authentik.endpoints.models import Device
 from authentik.events.models import Event, EventAction
 from authentik.lib.models import ExpiringModel, InternallyManagedMixin
@@ -21,9 +22,6 @@ from authentik.lib.utils.time import timedelta_string_validator
 from authentik.outposts.models import OutpostModel
 
 LOGGER = get_logger()
-
-# Vendor key the authentik agent reports its facts under
-PLATFORM_VENDOR = "goauthentik.io/platform"
 
 
 class Protocols(models.TextChoices):
@@ -53,7 +51,7 @@ def available_protocols(device: Device) -> list[str]:
     can't."""
     if override := connection_override(device):
         return [override.protocol]
-    vendor = (device.facts_data.get("vendor") or {}).get(PLATFORM_VENDOR) or {}
+    vendor = (device.facts_data.get("vendor") or {}).get(AgentConnectorController.vendor_identifier()) or {}
     protocols = []
     if vendor.get("rdp_cert_fingerprint"):
         protocols.append(Protocols.RDP)
@@ -183,7 +181,7 @@ class RACPropertyMapping(PropertyMapping):
         verbose_name_plural = _("RAC Provider Property Mappings")
 
 
-class RACConnectionOverride(models.Model):
+class RACConnectionOverride(InternallyManagedMixin, models.Model):
     """How to reach a single device, for devices which don't report an address and
     protocol themselves."""
 
