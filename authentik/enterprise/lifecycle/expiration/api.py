@@ -9,6 +9,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.users import PartialGroupSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import UserTypes
 from authentik.enterprise.api import EnterpriseRequiredMixin
@@ -19,13 +20,17 @@ PREVIEW_LIMIT = 20
 
 
 class UserExpirationRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
+    group_obj = PartialGroupSerializer(source="group", read_only=True)
+
     class Meta:
         model = UserExpirationRule
         fields = [
             "pk",
+            "pbm_uuid",
             "name",
             "enabled",
             "group",
+            "group_obj",
             "user_types",
             "inactivity_duration",
             "action",
@@ -68,12 +73,12 @@ class UserExpirationRulePreviewSerializer(PassiveSerializer):
 
 
 class UserExpirationRuleViewSet(UsedByMixin, ModelViewSet):
-    queryset = UserExpirationRule.objects.all()
+    queryset = UserExpirationRule.objects.select_related("group").all()
     serializer_class = UserExpirationRuleSerializer
     search_fields = ["name"]
     ordering = ["name"]
     ordering_fields = ["name", "enabled", "action"]
-    filterset_fields = ["enabled", "group", "action"]
+    filterset_fields = ["enabled", "group", "action", "pbm_uuid"]
 
     @extend_schema(responses={200: UserExpirationRulePreviewSerializer})
     @action(detail=True, methods=["GET"], pagination_class=None, filter_backends=[])
