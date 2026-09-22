@@ -416,7 +416,14 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             # they have to be written together.
             with transaction.atomic():
                 super().save(*args, **kwargs)
-                self.password_device.save()
+                device = self.password_device
+                device.save(
+                    update_fields=(
+                        None
+                        if device._state.adding
+                        else ["password", "password_change_date", "failed_attempts"]
+                    )
+                )
             self._password_device_dirty = False
         else:
             super().save(*args, **kwargs)
@@ -596,6 +603,8 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             device = PasswordDevice(user=self, name="Password")
             self.password_device = device
         device.password = password_hash
+        # A new password restarts the failed-attempt count towards lockout
+        device.failed_attempts = 0
         self._password_device_dirty = True
 
     @property
@@ -647,7 +656,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             # Password hash upgrades shouldn't be considered password changes, so only the
             # device is written and password_change_date is left alone.
             self.password = make_password(raw_password)
-            self.password_device.save()
+            self.password_device.save(update_fields=["password", "failed_attempts"])
             self._password_device_dirty = False
 
         return check_password(raw_password, self.password, setter)

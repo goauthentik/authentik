@@ -60,6 +60,9 @@ pub struct User {
     pub uuid: uuid::Uuid,
     #[serde(rename = "password_change_date")]
     pub password_change_date: chrono::DateTime<chrono::FixedOffset>,
+    /// Whether the user's password currently refuses authentication.
+    #[serde(rename = "password_locked")]
+    pub password_locked: bool,
     #[serde(rename = "last_updated")]
     pub last_updated: chrono::DateTime<chrono::FixedOffset>,
 }
@@ -78,6 +81,7 @@ impl User {
         uid: String,
         uuid: uuid::Uuid,
         password_change_date: chrono::DateTime<chrono::FixedOffset>,
+        password_locked: bool,
         last_updated: chrono::DateTime<chrono::FixedOffset>,
     ) -> User {
         User {
@@ -100,6 +104,7 @@ impl User {
             r#type: None,
             uuid,
             password_change_date,
+            password_locked,
             last_updated,
         }
     }
