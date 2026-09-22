@@ -18,13 +18,7 @@ from authentik.enterprise.lifecycle.offboarding.models import (
     OffboardingStatus,
     UserOffboarding,
 )
-from authentik.events.models import (
-    Event,
-    EventAction,
-    Notification,
-    NotificationSeverity,
-    NotificationTransport,
-)
+from authentik.events.models import Event, EventAction, NotificationSeverity, NotificationTransport
 from authentik.lib.models import SerializerModel, SimpleThroughModel
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
@@ -227,16 +221,10 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         event.save()
         transports = list(self.notification_transports.all())
         if not transports:
-            # Use local delivery even when no persistent transport is configured.
-            NotificationTransport().send_local(
-                Notification(
-                    severity=NotificationSeverity.NOTICE,
-                    body=event.summary,
-                    event=event,
-                    user=user,
-                    hyperlink=event.hyperlink,
-                    hyperlink_label=event.hyperlink_label,
-                )
+            # The task uses a transient local transport for in-app-only delivery.
+            send_notification.send_with_options(
+                args=(None, event.pk, user.pk, NotificationSeverity.NOTICE),
+                rel_obj=self,
             )
         for transport in transports:
             send_notification.send_with_options(
@@ -244,12 +232,15 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                 rel_obj=transport,
             )
 
-    def reconcile_offboarding(self, row: UserOffboarding) -> bool:
-        """Refresh a locked pending row owned by this rule; return whether it is kept.
+    def reconcile_offboarding(self, row: UserOffboarding) -> tuple[bool, bool]:
+        """Refresh a locked pending row owned by this rule.
 
         Both the sweep and execution use this, so execution need not wait for a sweep
         to pick up changed settings. Moving a deadline later is silent; moving it
-        earlier or changing the action warns the user again.
+        earlier or changing the action requests another warning. The caller sends it
+        after releasing the row lock.
+
+        Returns whether the row was kept and whether another warning is needed.
         """
         if (
             not self.enabled
@@ -257,7 +248,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
             or (row.user.last_login is not None and row.user.last_login >= row.created_at)
         ):
             row.delete()
-            return False
+            return False, False
         due_at = self.due_at(row.user)
         rewarn = due_at < row.scheduled_at or row.action != self.action
         values = {
@@ -271,9 +262,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
             for field in changed:
                 setattr(row, field, values[field])
             row.save(update_fields=changed)
-        if rewarn:
-            self._warn(row.user, row)
-        return True
+        return True, rewarn
 
     def _revisit_owned_rows(self):
         """Reconcile only rows this rule still owns after acquiring the row lock."""
@@ -288,8 +277,11 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                     .select_related("user")
                     .first()
                 )
-                if row is not None:
-                    self.reconcile_offboarding(row)
+                if row is None:
+                    continue
+                _, rewarn = self.reconcile_offboarding(row)
+            if rewarn:
+                self._warn(row.user, row)
 
     def _tighten_foreign_rows(self, threshold: datetime):
         """Tightening pass: take over pending rows of other rules when this rule would

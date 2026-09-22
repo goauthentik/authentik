@@ -274,6 +274,14 @@ class TestSelection(ExpirationTestCase):
         self.assertEqual(notification.body, event.summary)
         self.assertFalse(notification.seen)
 
+    def test_local_warning_uses_notification_actor(self):
+        rule = self._rule(warn_before="days=7")
+        _dormant_user(85)
+        with patch(SEND_NOTIFICATION) as send:
+            rule.apply()
+        send.assert_called_once()
+        self.assertIsNone(send.call_args.kwargs["args"][0])
+
 
 class TestOverlapAndChange(ExpirationTestCase):
     def test_shortened_duration_updates_owned_row_and_rewarns_once(self):
@@ -311,6 +319,21 @@ class TestOverlapAndChange(ExpirationTestCase):
         execute_offboarding(str(pending.pk))
         user.refresh_from_db()
         self.assertFalse(user.is_active)
+
+    def test_revisit_warns_after_releasing_row_lock(self):
+        rule = self._rule(warn_before="days=14")
+        _dormant_user(85)
+        rule.apply()
+        rule.inactivity_duration = "days=80"
+        rule.save()
+        outer_savepoints = len(connection.savepoint_ids)
+
+        def assert_lock_released(*_args):
+            self.assertEqual(len(connection.savepoint_ids), outer_savepoints)
+
+        with patch.object(rule, "_warn", side_effect=assert_lock_released) as warn:
+            rule._revisit_owned_rows()
+        warn.assert_called_once()
 
     def test_revisit_rechecks_ownership_and_status_before_writing(self):
         original_iterator = QuerySet.iterator
@@ -553,6 +576,36 @@ class TestExecution(ExpirationTestCase):
         event = Event.objects.get(action=EventAction.USER_OFFBOARDED)
         self.assertFalse(event.context["revoke_sessions"])
         self.assertFalse(event.context["revoke_tokens"])
+
+    def test_execution_does_not_warn_immediately_before_offboarding(self):
+        rule = self._rule(inactivity_duration="days=120", warn_before="days=30")
+        user = _dormant_user(100)
+        rule.apply()
+        row = _pending(user)
+        rule.inactivity_duration = "days=90"
+        rule.save()
+        with patch.object(UserExpirationRule, "_warn") as warn:
+            execute_offboarding(str(row.pk))
+        warn.assert_not_called()
+        user.refresh_from_db()
+        self.assertFalse(user.is_active)
+
+    def test_execution_rewarns_changed_action_after_releasing_lock(self):
+        rule = self._rule(action=OffboardingAction.DELETE, warn_before="days=14")
+        user = _dormant_user(85)
+        rule.apply()
+        row = _pending(user)
+        rule.action = OffboardingAction.DEACTIVATE
+        rule.save()
+        with patch.object(UserExpirationRule, "_warn") as warn:
+            with self.captureOnCommitCallbacks(execute=True):
+                execute_offboarding(str(row.pk))
+                warn.assert_not_called()
+        warn.assert_called_once()
+        user.refresh_from_db()
+        row.refresh_from_db()
+        self.assertTrue(user.is_active)
+        self.assertEqual(row.action, OffboardingAction.DEACTIVATE)
 
     def test_generated_row_executes_with_rule_context(self):
         rule = self._rule()
