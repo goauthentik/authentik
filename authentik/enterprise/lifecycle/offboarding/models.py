@@ -139,11 +139,18 @@ class UserOffboarding(SerializerModel):
             # leaves the user untouched.
             if not apps.get_app_config("authentik_enterprise").enabled():
                 return
-            if not self.rule.reconcile_offboarding(self):
+            kept, rewarn = self.rule.reconcile_offboarding(self)
+            if not kept:
                 return
             # Eligibility for a warning is not eligibility for execution. A queued
             # task can outlive an edit that moves the actual expiry into the future.
             if self.scheduled_at > timezone.now():
+                if rewarn:
+                    # Execution holds this row lock. Queue the warning only after
+                    # the transaction commits and the lock has been released.
+                    transaction.on_commit(
+                        lambda rule=self.rule, user=self.user, row=self: rule._warn(user, row)
+                    )
                 return
             context["rule"] = self.rule
         # `delete` removes this row via cascade, so capture the action first.
