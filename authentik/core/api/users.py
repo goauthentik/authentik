@@ -6,15 +6,16 @@ from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import AnonymousUser, Permission
+from django.db import models
 from django.db.models import Exists, OuterRef, Prefetch, Q
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
-from django.utils.translation import gettext_lazy
 from django_filters.filters import (
     BooleanFilter,
     CharFilter,
@@ -65,6 +66,7 @@ from authentik.api.search.fields import (
 from authentik.api.validation import validate
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.brands.models import Brand
+from authentik.core import user_switching
 from authentik.core.api.object_attributes import AttributesMixinSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
@@ -82,13 +84,14 @@ from authentik.core.models import (
     USER_PATH_SERVICE_ACCOUNT,
     USERNAME_MAX_LENGTH,
     Group,
-    Session,
     Token,
     TokenIntents,
     User,
     UserTypes,
     default_token_duration,
 )
+from authentik.core.signals import impersonation_changed
+from authentik.core.views.user_switch import start_user_switch_flow
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
@@ -98,6 +101,7 @@ from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
+from authentik.lib.validators import validate_password_hash
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import Role, get_permission_choices
@@ -107,10 +111,6 @@ from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger()
-
-INVALID_PASSWORD_HASH_MESSAGE = gettext_lazy(
-    "Invalid password hash format. Must be a valid Django password hash."
-)
 
 
 class ParamUserSerializer(PassiveSerializer):
@@ -213,7 +213,6 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             password = validated_data.pop("password", None)
             password_hash = validated_data.pop("password_hash", None)
             permissions = validated_data.pop("permissions", [])
-            self._validate_password_inputs(password, password_hash)
 
         instance: User = super().create(validated_data)
         if is_blueprint:
@@ -233,7 +232,6 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             password = validated_data.pop("password", None)
             password_hash = validated_data.pop("password_hash", None)
             permissions = validated_data.pop("permissions", [])
-            self._validate_password_inputs(password, password_hash)
 
         instance = super().update(instance, validated_data)
         if is_blueprint:
@@ -245,18 +243,6 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             instance.assign_perms_to_managed_role(perms_list)
         self._ensure_password_not_empty(instance)
         return instance
-
-    def _validate_password_inputs(self, password: str | None, password_hash: str | None):
-        """Validate mutually-exclusive password inputs before any model mutation."""
-        if password is not None and password_hash is not None:
-            raise ValidationError(_("Cannot set both password and password_hash. Use only one."))
-        if password_hash is None:
-            return
-        try:
-            User.validate_password_hash(password_hash)
-        except ValueError as exc:
-            LOGGER.warning("Failed to identify password hash format", exc_info=exc)
-            raise ValidationError(INVALID_PASSWORD_HASH_MESSAGE) from exc
 
     def _set_password(self, instance: User, password: str | None, password_hash: str | None = None):
         """Set password from plain text or hash."""
@@ -304,20 +290,21 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         return user_type
 
     def validate_groups(self, groups: list) -> list:
-        """Require enable_group_superuser permission when adding a user to a superuser group."""
+        """Require enable_group_superuser permission when adding a user to a group which grants
+        superuser status."""
         request: Request = self.context.get("request", None)
         if not request:
             return groups
-        current_groups = set(self.instance.groups.all()) if self.instance else set()
-        for group in groups:
-            if not group.is_superuser:
-                continue
-            if group in current_groups:
-                continue
-            if not request.user.has_perm("authentik_core.enable_group_superuser"):
-                raise ValidationError(
-                    _("User does not have permission to add members to a superuser group.")
-                )
+        new_groups = Group.objects.filter(pk__in=[group.pk for group in groups])
+        if self.instance:
+            new_groups = new_groups.exclude(pk__in=self.instance.groups.all())
+        ancestry = new_groups.with_ancestors()
+        if ancestry.filter(is_superuser=True).exists() and not request.user.has_perm(
+            "authentik_core.enable_group_superuser"
+        ):
+            raise ValidationError(
+                _("User does not have permission to add members to a superuser group.")
+            )
         return groups
 
     def validate_roles(self, roles: list) -> list:
@@ -334,6 +321,12 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         return roles
 
     def validate(self, attrs: dict) -> dict:
+        if (
+            SERIALIZER_CONTEXT_BLUEPRINT in self.context
+            and attrs.get("password") is not None
+            and attrs.get("password_hash") is not None
+        ):
+            raise ValidationError(_("Cannot set both password and password_hash. Use only one."))
         if self.instance and self.instance.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
             raise ValidationError(_("Can't modify internal service account users"))
         return super().validate(attrs)
@@ -373,6 +366,7 @@ class UserSelfSerializer(ModelSerializer):
     """User Serializer for information a user can retrieve about themselves"""
 
     is_superuser = BooleanField(read_only=True)
+    is_current = SerializerMethodField()
     avatar = SerializerMethodField()
     groups = SerializerMethodField()
     roles = SerializerMethodField()
@@ -383,6 +377,10 @@ class UserSelfSerializer(ModelSerializer):
     def get_avatar(self, user: User) -> str:
         """User's avatar, either a http/https URL or a data URI"""
         return get_avatar(user, self.context.get("request"))
+
+    def get_is_current(self, _: User) -> bool:
+        """Return whether this user owns the current browser session."""
+        return self.context.get("is_current", False)
 
     @extend_schema_field(
         ListSerializer(
@@ -442,6 +440,7 @@ class UserSelfSerializer(ModelSerializer):
             "name",
             "is_active",
             "is_superuser",
+            "is_current",
             "groups",
             "roles",
             "email",
@@ -457,6 +456,31 @@ class UserSelfSerializer(ModelSerializer):
         }
 
 
+class UserSwitchAction(models.TextChoices):
+    """Actions supported by the user switch endpoint."""
+
+    ADD = "add"
+    SWITCH = "switch"
+
+
+class UserSwitchSerializer(PassiveSerializer):
+    """Request to add or switch users in the current browser."""
+
+    action = ChoiceField(choices=UserSwitchAction.choices, default=UserSwitchAction.SWITCH)
+    user_pk = IntegerField(required=False)
+
+    def validate(self, attrs: dict) -> dict:
+        if attrs["action"] == UserSwitchAction.SWITCH and "user_pk" not in attrs:
+            raise ValidationError({"user_pk": _("This field is required.")})
+        return attrs
+
+
+class UserSwitchResponseSerializer(PassiveSerializer):
+    """Redirect returned after planning a user switch."""
+
+    redirect = CharField(read_only=True)
+
+
 class SessionUserSerializer(PassiveSerializer):
     """Response for the /user/me endpoint, returns the currently active user (as `user` property)
     and, if this user is being impersonated, the original user in the `original` property.
@@ -464,6 +488,7 @@ class SessionUserSerializer(PassiveSerializer):
 
     user = UserSelfSerializer()
     original = UserSelfSerializer(required=False)
+    users = UserSelfSerializer(many=True)
 
 
 class UserPasswordSetSerializer(PassiveSerializer):
@@ -475,7 +500,7 @@ class UserPasswordSetSerializer(PassiveSerializer):
 class UserPasswordHashSetSerializer(PassiveSerializer):
     """Payload to set a users' password hash directly"""
 
-    password = CharField(required=True)
+    password = CharField(required=True, validators=[validate_password_hash])
 
 
 class UserServiceAccountSerializer(PassiveSerializer):
@@ -532,7 +557,7 @@ class UsersFilter(FilterSet):
     uuid = UUIDFilter(field_name="uuid")
 
     path = CharFilter(field_name="path")
-    path_startswith = CharFilter(field_name="path", lookup_expr="startswith")
+    path_startswith = CharFilter(field_name="path", method="filter_path_startswith")
 
     type = MultipleChoiceFilter(choices=UserTypes.choices, field_name="type")
 
@@ -560,6 +585,15 @@ class UsersFilter(FilterSet):
         if value:
             return queryset.filter(groups__is_superuser=True).distinct()
         return queryset.exclude(groups__is_superuser=True).distinct()
+
+    def filter_path_startswith(self, queryset, name, value):
+        """Filter users by the given path and any of its sub-paths. A plain `startswith`
+        lookup would also match sibling paths sharing the same prefix, so that `foo/bar`
+        would incorrectly match users in `foo/bar2`."""
+        value = value.rstrip("/")
+        if not value:
+            return queryset
+        return queryset.filter(Q(path=value) | Q(path__startswith=f"{value}/"))
 
     def filter_attributes(self, queryset, name, value):
         """Filter attributes by query args"""
@@ -666,6 +700,31 @@ class UserViewSet(
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+
+    @extend_schema(
+        parameters=[OpenApiParameter("next", str, required=False)],
+        request=UserSwitchSerializer,
+        responses={200: UserSwitchResponseSerializer},
+    )
+    @action(
+        detail=False,
+        methods=["POST"],
+        permission_classes=[IsAuthenticated],
+        pagination_class=None,
+        filter_backends=[],
+    )
+    @validate(UserSwitchSerializer)
+    def switch(self, request: Request, body: UserSwitchSerializer) -> HttpResponse | Response:
+        """Start browser user switching."""
+        user_pk = (
+            None
+            if body.validated_data["action"] == UserSwitchAction.ADD
+            else body.validated_data["user_pk"]
+        )
+        response = start_user_switch_flow(request._request, user_pk)
+        if isinstance(response, HttpResponseRedirect):
+            return Response({"redirect": response.url})
+        return response
 
     def _create_recovery_link(
         self, token_duration: str | None, for_email=False
@@ -812,14 +871,34 @@ class UserViewSet(
     )
     def user_me(self, request: Request) -> Response:
         """Get information about current user"""
-        context = {"request": request}
+        context = {"request": request, "is_current": True}
+        users = []
+        user_switching_token = getattr(request._request, "user_switching_token", None)
+        if request.user.is_authenticated and user_switching_token:
+            sessions = (
+                user_switching.live_sessions(user_switching_token)
+                .exclude(user_id=request.user.pk)
+                .select_related("session", "user")
+                .order_by("user_id", "-session__last_used")
+                .distinct("user_id")
+            )
+            users = [
+                UserSelfSerializer(
+                    instance=authenticated_session.user,
+                    context={"request": request},
+                ).data
+                for authenticated_session in sessions
+            ]
         serializer = SessionUserSerializer(
-            data={"user": UserSelfSerializer(instance=request.user, context=context).data}
+            data={
+                "user": UserSelfSerializer(instance=request.user, context=context).data,
+                "users": users,
+            }
         )
         if SESSION_KEY_IMPERSONATE_USER in request._request.session:
             serializer.initial_data["original"] = UserSelfSerializer(
                 instance=request._request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER],
-                context=context,
+                context={"request": request},
             ).data
         self.request.session.modified = True
         return Response(serializer.initial_data)
@@ -884,9 +963,6 @@ class UserViewSet(
         try:
             user.set_password_from_hash(body.validated_data["password"], request=request)
             user.save()
-        except ValueError as exc:
-            LOGGER.debug("Failed to set password hash", exc=exc)
-            return Response(data={"password": [INVALID_PASSWORD_HASH_MESSAGE]}, status=400)
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password hash", exc=exc)
             return Response(status=400)
@@ -995,6 +1071,10 @@ class UserViewSet(
 
         Event.new(EventAction.IMPERSONATION_STARTED, reason=reason).from_http(request, user_to_be)
 
+        # Persist the new identity before outposts can start reauthorization.
+        request.session.save()
+        impersonation_changed.send(sender=self.__class__, session_key=request.session.session_key)
+
         return Response(status=204)
 
     @extend_schema(
@@ -1019,6 +1099,9 @@ class UserViewSet(
         del request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER]
 
         Event.new(EventAction.IMPERSONATION_ENDED).from_http(request, original_user)
+
+        request.session.save()
+        impersonation_changed.send(sender=self.__class__, session_key=request.session.session_key)
 
         return Response(status=204)
 
@@ -1051,11 +1134,3 @@ class UserViewSet(
                 )
             }
         )
-
-    def partial_update(self, request: Request, *args, **kwargs) -> Response:
-        response = super().partial_update(request, *args, **kwargs)
-        instance: User = self.get_object()
-        if not instance.is_active:
-            Session.objects.filter(authenticatedsession__user=instance).delete()
-            LOGGER.debug("Deleted user's sessions", user=instance.username)
-        return response

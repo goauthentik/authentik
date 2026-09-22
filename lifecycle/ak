@@ -15,23 +15,7 @@ function wait_for_db {
 
 function run_authentik {
     case "$1" in
-    server)
-        shift 1
-        echo -n server >"$MODE_FILE"
-        if [[ -x "$(command -v authentik-server)" ]]; then
-            echo authentik-server "$@"
-        else
-            echo go run ./cmd/server "$@"
-        fi
-        ;;
-    healthcheck)
-        if [[ -x "$(command -v authentik)" ]]; then
-            echo authentik "$@"
-        else
-            echo cargo run -- "$@"
-        fi
-        ;;
-    allinone | worker)
+    server | healthcheck | allinone | worker)
         if [[ -x "$(command -v authentik)" ]]; then
             echo authentik "$@"
         else

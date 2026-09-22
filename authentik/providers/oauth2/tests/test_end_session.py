@@ -1,8 +1,10 @@
 """Test OAuth2 End Session (RP-Initiated Logout) implementation"""
 
+from unittest.mock import Mock, patch
+
 from django.test import RequestFactory
 from django.urls import reverse
-from django.utils.timezone import now
+from requests import Response
 
 from authentik.core.models import Application, AuthenticatedSession, Session
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
@@ -10,17 +12,17 @@ from authentik.flows.models import FlowDesignation, FlowStageBinding, in_memory_
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
-from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.models import (
-    AccessToken,
     OAuth2LogoutMethod,
     OAuth2Provider,
+    OAuth2SessionLogin,
     RedirectURI,
     RedirectURIMatchingMode,
     RedirectURIType,
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.views.end_session import EndSessionView
+from authentik.stages.dummy.models import DummyStage
 from authentik.stages.dummy.stage import DummyStageView
 from authentik.stages.user_login.models import UserLoginStage
 from authentik.stages.user_logout.models import UserLogoutStage
@@ -190,6 +192,31 @@ class TestEndSessionView(OAuthTestCase):
         )
         self.assertEqual(response.status_code, 302)
 
+    def test_unauthenticated_logout_runs_invalidation_flow(self):
+        """An unauthenticated logout request must run the provider's invalidation flow,
+        instead of redirecting the user into the authentication flow to log in first."""
+        authentication_flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        FlowStageBinding.objects.create(
+            target=authentication_flow,
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=0,
+        )
+        self.provider.authentication_flow = authentication_flow
+        self.provider.save()
+
+        # No force_login: the request is unauthenticated.
+        response = self.client.get(
+            reverse(
+                "authentik_providers_oauth2:end-session",
+                kwargs={"application_slug": self.app.slug},
+            ),
+            HTTP_HOST=self.brand.domain,
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(f"/if/flow/{self.invalidation_flow.slug}/", response.url)
+        self.assertNotIn(authentication_flow.slug, response.url)
+
     def _brand_authentication_flow(self) -> None:
         """Give the brand a usable authentication flow.
 
@@ -266,14 +293,12 @@ class TestEndSessionView(OAuthTestCase):
         self.client.force_login(self.user)
         session = Session.objects.filter(session_key=self.client.session.session_key).first()
         auth_session = AuthenticatedSession.objects.filter(session=session).first()
-        AccessToken.objects.create(
+        # The RP is found via its login and not its tokens, which might have expired by now
+        OAuth2SessionLogin.objects.create(
             provider=self.provider,
-            user=self.user,
             session=auth_session,
-            token=generate_id(),
-            _scope="openid",
-            auth_time=now(),
-            expires=now() + timedelta_from_string("days=1"),
+            iss="http://testserver",
+            sub=str(self.user.uid),
         )
 
         executor = reverse("authentik_api:flow-executor", kwargs={"flow_slug": logout_flow.slug})
@@ -301,6 +326,54 @@ class TestEndSessionView(OAuthTestCase):
         )
         response = self.client.get(executor)
         self.assertEqual(response.json()["component"], "ak-stage-dummy")
+
+    @patch("authentik.providers.oauth2.tasks.get_http_session")
+    def test_backchannel_logout_without_access_token(self, mock_get_session):
+        """RP-initiated logout sends a single back-channel logout, without needing a token"""
+        mock_session = Mock()
+        mock_get_session.return_value = mock_session
+        mock_response = Mock(spec=Response)
+        mock_response.status_code = 200
+        mock_response.raise_for_status.return_value = None
+        mock_session.post.return_value = mock_response
+
+        self._brand_authentication_flow()
+        logout_flow = create_test_flow(FlowDesignation.INVALIDATION)
+        FlowStageBinding.objects.create(
+            target=logout_flow,
+            stage=UserLogoutStage.objects.create(name=generate_id()),
+            order=0,
+        )
+        self.provider.logout_method = OAuth2LogoutMethod.BACKCHANNEL
+        self.provider.logout_uri = "https://rp.example.com/backchannel_logout"
+        self.provider.invalidation_flow = logout_flow
+        self.provider.save()
+
+        self.client.force_login(self.user)
+        session = Session.objects.filter(session_key=self.client.session.session_key).first()
+        auth_session = AuthenticatedSession.objects.filter(session=session).first()
+        OAuth2SessionLogin.objects.create(
+            provider=self.provider,
+            session=auth_session,
+            iss="http://testserver",
+            sub=str(self.user.uid),
+        )
+
+        self.client.get(
+            reverse(
+                "authentik_providers_oauth2:end-session",
+                kwargs={"application_slug": self.app.slug},
+            ),
+        )
+        mock_session.post.assert_called_once()
+        self.assertEqual(mock_session.post.call_args[0][0], self.provider.logout_uri)
+        self.assertFalse(OAuth2SessionLogin.objects.filter(provider=self.provider).exists())
+
+        # UserLogoutStage deletes the session, which must not notify the RP a second time
+        executor = reverse("authentik_api:flow-executor", kwargs={"flow_slug": logout_flow.slug})
+        self.client.get(executor, follow=True)
+        self.assertFalse(AuthenticatedSession.objects.filter(pk=auth_session.pk).exists())
+        mock_session.post.assert_called_once()
 
 
 class TestEndSessionAPI(OAuthTestCase):

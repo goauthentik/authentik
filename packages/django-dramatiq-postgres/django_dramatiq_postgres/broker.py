@@ -32,6 +32,7 @@ from psycopg import sql
 from psycopg.errors import AdminShutdown
 from structlog.stdlib import get_logger
 
+from authentik.lib.utils.db import chunked_queryset
 from django_dramatiq_postgres.conf import Conf
 from django_dramatiq_postgres.models import CHANNEL_PREFIX, ChannelIdentifier, TaskBase, TaskState
 
@@ -617,11 +618,17 @@ class _PostgresConsumer(Consumer):
         if timezone.now() - self.task_purge_last_run < self.task_purge_interval:
             return
         self.logger.debug("Running garbage collector")
-        count = self.query_set.filter(
-            state__in=(TaskState.DONE, TaskState.REJECTED),
-            mtime__lte=timezone.now() - timedelta(seconds=Conf().task_expiration),
-            result_expiry__lte=timezone.now(),
-        ).delete()
+        count = 0
+        for task in chunked_queryset(
+            self.query_set.filter(
+                state__in=(TaskState.DONE, TaskState.REJECTED),
+                mtime__lte=timezone.now() - timedelta(seconds=Conf().task_expiration),
+                result_expiry__lte=timezone.now(),
+            ),
+            chunk_size=100,
+        ):
+            task.delete()
+            count += 1
         self.logger.info("Purged messages in all queues", count=count)
         self.task_purge_last_run = timezone.now()
 

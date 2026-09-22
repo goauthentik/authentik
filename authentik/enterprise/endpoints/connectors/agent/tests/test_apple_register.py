@@ -8,6 +8,7 @@ from authentik.core.tests.utils import create_test_user
 from authentik.endpoints.connectors.agent.models import (
     AgentConnector,
     AgentDeviceConnection,
+    AgentDeviceUserBinding,
     DeviceAuthenticationToken,
     DeviceToken,
     EnrollmentToken,
@@ -69,15 +70,40 @@ class TestAppleRegister(APITestCase):
             user=self.user,
             token=generate_id(),
         )
+        enclave_key = generate_id()
+        enclave_key_id = generate_id()
         response = self.client.post(
             reverse("authentik_api:psso-register-user"),
             data={
                 "user_auth": device_auth.token,
-                "user_secure_enclave_key": generate_id(),
-                "enclave_key_id": generate_id(),
+                "user_secure_enclave_key": enclave_key,
+                "enclave_key_id": enclave_key_id,
             },
             HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
         )
         self.assertEqual(response.status_code, 200)
         body = loads(response.content)
         self.assertEqual(body["username"], self.user.username)
+        # The binding is created here for the first time, so the enclave key must be
+        # persisted by the create branch of update_or_create()
+        binding = AgentDeviceUserBinding.objects.get(target=self.device, user=self.user)
+        self.assertEqual(binding.apple_secure_enclave_key, enclave_key)
+        self.assertEqual(binding.apple_enclave_key_id, enclave_key_id)
+        self.assertTrue(binding.is_primary)
+
+        # Re-registering an existing binding must replace the enclave key
+        new_enclave_key = generate_id()
+        new_enclave_key_id = generate_id()
+        response = self.client.post(
+            reverse("authentik_api:psso-register-user"),
+            data={
+                "user_auth": device_auth.token,
+                "user_secure_enclave_key": new_enclave_key,
+                "enclave_key_id": new_enclave_key_id,
+            },
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
+        )
+        self.assertEqual(response.status_code, 200)
+        binding.refresh_from_db()
+        self.assertEqual(binding.apple_secure_enclave_key, new_enclave_key)
+        self.assertEqual(binding.apple_enclave_key_id, new_enclave_key_id)

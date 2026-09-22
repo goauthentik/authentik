@@ -10,7 +10,7 @@ DOCKER_IMAGE ?= "authentik:test"
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)
-	SED_INPLACE = sed -i ''
+	SED_INPLACE = /usr/bin/sed -i ''
 else
 	SED_INPLACE = sed -i
 endif
@@ -88,8 +88,11 @@ lint-fix: lint-fix-rust  ## Lint and automatically fix errors in the python sour
 lint-spellcheck:  ## Reports spelling errors.
 	npm run lint:spellcheck
 
-lint-catalogs:  ## Reports pnpm catalog pins that drifted between the root, web, and website workspaces.
+lint-catalogs:  ## Reports pnpm catalog pins, and pnpm's own version pin, that drifted between workspaces.
 	node ./scripts/node/lint-catalogs.ts
+
+lint-check-types:  ## Type-check the repository's Node.js scripts.
+	pnpm run build:types
 
 lint: ci-lint-bandit ci-lint-mypy ci-lint-cargo-deny ci-lint-cargo-machete  ## Lint the python and golang sources
 	golangci-lint run -v
@@ -117,7 +120,7 @@ run:  ## Run the main authentik server and worker processes
 	$(UV) run ak allinone
 
 run-watch:  ## Run the authentik server and worker, with auto reloading
-	watchexec --on-busy-update=restart --stop-signal=SIGINT --exts py,rs,go --no-meta --notify -- $(UV) run ak allinone
+	watchexec --on-busy-update=restart --stop-signal=SIGINT --exts py,rs --no-meta --notify -- $(UV) run ak allinone
 
 core-i18n-extract:
 	$(UV) run ak makemessages \
@@ -193,7 +196,7 @@ gen-changelog:  ## (Release) generate the changelog based from the commits since
 	rm merged_to_current
 	rm merged_to_last
 	rm cherry_picked_to_last
-	npx prettier --write changelog.md
+	pnpm exec oxfmt --write changelog.md
 
 gen-diff:  ## (Release) generate the changelog diff between the current schema and the last version
 	$(eval last_version := $(shell git tag --list 'version/*' --sort 'version:refname' | grep -vE 'rc[0-9]+$$' | tail -1))
@@ -206,7 +209,7 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 	rm schema-old.yml
 	$(SED_INPLACE) 's/{/\&#123;/g' diff.md
 	$(SED_INPLACE) 's/}/\&#125;/g' diff.md
-	npx prettier --write diff.md
+	pnpm exec oxfmt --write diff.md
 
 gen-client-go:  ## Build and install the authentik API for Golang
 	$(UV) run make -C "${PWD}/packages/client-go" build
@@ -237,10 +240,11 @@ gen-dev-config:  ## Generate a local development config file
 # grants it arbitrary code execution at install — audit at review time.
 
 node-preinstall:  ## Verify the active Node.js and pnpm versions match what's in package.json.
-	node ./scripts/node/lint-runtime.mjs
+	node ./scripts/node/lint-runtime.ts
 
 node-install: node-preinstall  ## Install the necessary libraries to build Node.js packages
 	pnpm install --frozen-lockfile
+	pnpm run build:lint-config
 
 #########################
 ## Web
@@ -263,7 +267,7 @@ web-storybook-watch:  ## Build and run the storybook documentation server
 	pnpm --dir web run storybook
 
 web-lint-fix:
-	pnpm --dir web run prettier
+	pnpm --dir web run format
 
 web-lint:
 	pnpm --dir web run lint
@@ -285,10 +289,10 @@ docs-install: node-install  ## Install the necessary libraries to build the Auth
 	pnpm --dir website install --frozen-lockfile
 
 docs-lint-fix: lint-spellcheck
-	pnpm --dir website run prettier
+	pnpm --dir website run format
 
 docs-build:
-	node ./scripts/node/lint-runtime.mjs website
+	node ./scripts/node/lint-runtime.ts website
 	pnpm --dir website run build
 
 docs-watch:  ## Build and watch the topics documentation
@@ -361,10 +365,17 @@ ci-lint-rustfmt: ci--meta-debug
 	$(CARGO) +nightly fmt --all --check -- --config-path "${PWD}/.cargo/rustfmt.toml"
 
 ci-lint-clippy: ci--meta-debug
-	$(CARGO) clippy --workspace -- -D warnings
+	$(CARGO) clippy --workspace --all-targets -- -D warnings
 
 ci-lint-catalogs: ci--meta-debug
 	node ./scripts/node/lint-catalogs.ts
+
+ci-lint-oxlint-fixtures: ci--meta-debug
+	pnpm --filter @goauthentik/oxlint-config run build
+	pnpm --filter @goauthentik/oxlint-config run verify
+
+ci-lint-check-types: ci--meta-debug
+	pnpm run build:types
 
 ci-test: ci--meta-debug
 	$(UV) run coverage run manage.py test --keepdb --parallel auto authentik

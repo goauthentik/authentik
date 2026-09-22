@@ -1,8 +1,8 @@
 import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
-import "#components/ak-hidden-text-input";
 import "#components/ak-radio-input";
+import "#components/ak-secret-text-input";
 import "#components/ak-text-input";
 import "#components/ak-textarea-input";
 import "#elements/ak-array-input";
@@ -15,7 +15,6 @@ import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 import "#admin/providers/oauth2/OAuth2ProviderRedirectURI";
 import "#elements/ak-checkbox-group/ak-checkbox-group";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuth2ProviderFormHelpers.js";
 import { oauth2ProvidersProvider, oauth2ProvidersSelector } from "./OAuth2ProvidersProvider.js";
 import { oauth2SourcesProvider, oauth2SourcesSelector } from "./OAuth2Sources.js";
@@ -27,10 +26,12 @@ import { ifPresent } from "#elements/utils/attributes";
 
 import { AKLabel } from "#components/ak-label";
 
+import { JWEEncryptionKeyTypes, JWTSigningKeyTypes } from "#admin/common/certificate-key-types";
+
 import {
     ClientTypeEnum,
     FlowDesignationEnum,
-    GrantTypesEnum,
+    GrantTypeEnum,
     IssuerModeEnum,
     MatchingModeEnum,
     OAuth2Provider,
@@ -134,28 +135,29 @@ const redirectUriHelpMessages: string[] = [
 ];
 
 const grantTypes = [
-    [GrantTypesEnum.AuthorizationCode, msg("Authorization Code")],
-    [GrantTypesEnum.Implicit, msg("Implicit")],
-    [GrantTypesEnum.Hybrid, msg("Hybrid")],
-    [GrantTypesEnum.RefreshToken, msg("Refresh token")],
-    [GrantTypesEnum.ClientCredentials, msg("Client credentials")],
-    [GrantTypesEnum.Password, msg("Password")],
-    [GrantTypesEnum.UrnIetfParamsOauthGrantTypeDeviceCode, msg("Device-code")],
-    [GrantTypesEnum.UrnIetfParamsOauthGrantTypeTokenExchange, msg("Token exchange")],
+    [GrantTypeEnum.AuthorizationCode, msg("Authorization Code")],
+    [GrantTypeEnum.Implicit, msg("Implicit")],
+    [GrantTypeEnum.Hybrid, msg("Hybrid")],
+    [GrantTypeEnum.RefreshToken, msg("Refresh token")],
+    [GrantTypeEnum.ClientCredentials, msg("Client credentials")],
+    [GrantTypeEnum.Password, msg("Password")],
+    [GrantTypeEnum.UrnIetfParamsOauthGrantTypeDeviceCode, msg("Device-code")],
+    [GrantTypeEnum.UrnIetfParamsOauthGrantTypeTokenExchange, msg("Token exchange")],
 ];
 
 const defaultGrantTypes = [
     // TODO: Clean up defaults after 2026
-    GrantTypesEnum.AuthorizationCode,
-    GrantTypesEnum.Implicit,
-    GrantTypesEnum.Hybrid,
-    GrantTypesEnum.RefreshToken,
-    GrantTypesEnum.ClientCredentials,
-    GrantTypesEnum.Password,
-    GrantTypesEnum.UrnIetfParamsOauthGrantTypeDeviceCode,
+    GrantTypeEnum.AuthorizationCode,
+    GrantTypeEnum.Implicit,
+    GrantTypeEnum.Hybrid,
+    GrantTypeEnum.RefreshToken,
+    GrantTypeEnum.ClientCredentials,
+    GrantTypeEnum.Password,
+    GrantTypeEnum.UrnIetfParamsOauthGrantTypeDeviceCode,
 ];
 
 type ShowClientSecret = (show: boolean) => void;
+
 type ShowLogoutMethod = (show: boolean) => void;
 
 export interface OAuth2ProviderFormProps {
@@ -177,6 +179,7 @@ export function renderForm({
 }: OAuth2ProviderFormProps) {
     provider ||= {};
     errors ||= {};
+
     return html` <ak-text-input
             name="name"
             placeholder=${msg("Type a provider name...")}
@@ -233,15 +236,20 @@ export function renderForm({
                     .errorMessages=${errors.clientId}
                 >
                 </ak-text-input>
-                <ak-hidden-text-input
+                <ak-secret-text-input
                     name="clientSecret"
-                    autocomplete="off"
                     label=${msg("Client Secret")}
-                    value="${provider.clientSecret ?? randomString(128, ascii_letters + digits)}"
+                    value=${ifDefined(
+                        provider.pk
+                            ? provider.clientSecret
+                            : randomString(128, ascii_letters + digits),
+                    )}
                     input-hint="code"
+                    plaintext
+                    ?revealed=${!provider.pk}
                     ?hidden=${!showClientSecret}
                 >
-                </ak-hidden-text-input>
+                </ak-secret-text-input>
                 <ak-form-element-horizontal label=${msg("Grant Types")} required name="grantTypes">
                     <ak-checkbox-group
                         name="users"
@@ -304,19 +312,23 @@ export function renderForm({
                     }}
                 ></ak-text-input>
 
-                ${showLogoutMethod
-                    ? html`<ak-radio-input
-                          label=${msg("Logout Method")}
-                          name="logoutMethod"
-                          .value=${provider.logoutMethod ||
-                          OAuth2ProviderLogoutMethodEnum.Backchannel}
-                          required
-                          .options=${logoutMethodOptions}
-                          .help=${msg(
-                              "The logout method determines how the logout URI is called — back-channel (server-to-server) or front-channel (browser iframe).",
-                          )}
-                      ></ak-radio-input>`
-                    : html``}
+                ${
+                    showLogoutMethod
+                        ? html`<ak-radio-input
+                              label=${msg("Logout Method")}
+                              name="logoutMethod"
+                              .value=${
+                                  provider.logoutMethod ||
+                                  OAuth2ProviderLogoutMethodEnum.Backchannel
+                              }
+                              required
+                              .options=${logoutMethodOptions}
+                              .help=${msg(
+                                  "The logout method determines how the logout URI is called — back-channel (server-to-server) or front-channel (browser iframe).",
+                              )}
+                          ></ak-radio-input>`
+                        : html``
+                }
 
                 <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
                     <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->
@@ -324,9 +336,14 @@ export function renderForm({
                         label=${msg("Signing Key")}
                         placeholder=${msg("Select a signing key...")}
                         certificate=${ifPresent(provider.signingKey)}
+                        .allowedKeyTypes=${JWTSigningKeyTypes}
                         singleton
                     ></ak-crypto-certificate-search>
-                    <p class="pf-c-form__helper-text">${msg("Key used to sign the tokens.")}</p>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Key used to sign tokens. If no signing key is selected, tokens are signed with HS256 using this provider's client secret.",
+                        )}
+                    </p>
                 </ak-form-element-horizontal>
             </div>
         </ak-form-group>
@@ -442,6 +459,7 @@ export function renderForm({
                         label=${msg("Encryption Key")}
                         placeholder=${msg("Select an encryption key...")}
                         certificate=${ifPresent(provider.encryptionKey)}
+                        .allowedKeyTypes=${JWEEncryptionKeyTypes}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(

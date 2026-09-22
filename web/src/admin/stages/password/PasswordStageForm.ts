@@ -1,9 +1,9 @@
+import "#components/ak-text-input";
 import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 
 import { AKLabel } from "#components/ak-label";
@@ -39,6 +39,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
         if (!this.instance) {
             return true;
         }
+
         return (
             this.instance.backends.filter((isField) => {
                 return field === isField;
@@ -69,14 +70,18 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
         return html` <span>
                 ${msg("Validate the user's password against the selected backend(s).")}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${this.instance?.name || ""}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal required name="backends">
@@ -112,10 +117,13 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                                     ordering: "slug",
                                     designation: FlowDesignationEnum.StageConfiguration,
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const flows = await aki(FlowsApi).flowsInstancesList(args);
+
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {
@@ -129,6 +137,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                             }}
                             .selected=${(flow: Flow): boolean => {
                                 let selected = this.instance?.configureFlow === flow.pk;
+
                                 if (
                                     !this.instance?.pk &&
                                     !this.instance?.configureFlow &&
@@ -136,6 +145,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                                 ) {
                                     selected = true;
                                 }
+
                                 return selected;
                             }}
                             blankable

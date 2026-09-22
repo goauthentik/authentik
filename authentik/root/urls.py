@@ -1,12 +1,13 @@
 """authentik URL Configuration"""
 
 from django.urls import include, path
+from django.views import View
 from structlog.stdlib import get_logger
 
 from authentik.core.views import error
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.reflection import get_apps
-from authentik.root.monitoring import LiveView, MetricsView, ReadyView
+from authentik.root.monitoring import MetricsView, ReadyView
 
 LOGGER = get_logger()
 
@@ -44,10 +45,11 @@ for _authentik_app in get_apps():
             namespace=namespace,
         )
 
-_urlpatterns += [
+urlpatterns = [
+    path(CONFIG.get("web.path", "/")[1:], include(_urlpatterns)),
     path("-/metrics/", MetricsView.as_view(), name="metrics"),
-    path("-/health/live/", LiveView.as_view(), name="health-live"),
+    # Stub view, this is handled by `LivenessMiddleware`, this path is merely here
+    # for reversing the URL
+    path("-/health/live/", View.as_view(), name="health-live"),
     path("-/health/ready/", ReadyView.as_view(), name="health-ready"),
 ]
-
-urlpatterns = [path(CONFIG.get("web.path", "/")[1:], include(_urlpatterns))]

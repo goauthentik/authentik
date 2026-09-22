@@ -2,7 +2,6 @@ declare module "rapidoc" {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     type Booleanish = "true" | "false";
 
-    // spellchecker:disable
     /**
      * Web Component based Swagger & OpenAPI Spec Viewer
      *
@@ -73,22 +72,24 @@ declare module "rapidoc" {
      * @attr {string} api-key-value - Value of the API key (can be overwritten from UI).
      * @attr {"omit" | "same-origin" | "include"} fetch-credentials - Credentials mode for cross-domain calls.
      */
-    // spellchecker:enable
     class RapiDoc extends HTMLElement {
         /**
          * Programmatically load a spec.
+         *
          * @param spec - URL string or JSON object representing a valid OpenAPI spec.
          */
         loadSpec(spec: string | object): void;
 
         /**
          * Programmatically scroll to a section identified by method and path.
+         *
          * @param path - Path in format {method}-{path} (e.g., "get-/user/login").
          */
         scrollToPath(path: string): void;
 
         /**
          * Programmatically provide HTTP Basic username and password.
+         *
          * @param securitySchemeId - A valid securityScheme ID defined in the spec.
          * @param username - The username.
          * @param password - The password.
@@ -101,6 +102,7 @@ declare module "rapidoc" {
 
         /**
          * Programmatically provide an API key.
+         *
          * @param securitySchemeId - A valid securityScheme ID defined in the spec.
          * @param token - The API key token.
          */
@@ -108,6 +110,7 @@ declare module "rapidoc" {
 
         /**
          * Programmatically set the API server.
+         *
          * @param apiServerUrl - A valid server URL defined in the spec.
          */
         setApiServer(apiServerUrl: string): void;

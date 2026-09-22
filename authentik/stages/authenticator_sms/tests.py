@@ -3,6 +3,7 @@
 from unittest.mock import MagicMock, patch
 from urllib.parse import parse_qsl
 
+from django.db.models.deletion import ProtectedError
 from django.test import TestCase
 from django.urls import reverse
 from requests_mock import Mocker
@@ -54,6 +55,16 @@ class AuthenticatorSMSStageTests(FlowTestCase):
             component="ak-stage-authenticator-sms",
             phone_number_required=True,
         )
+
+    def test_stage_deletion_is_protected(self):
+        """A setup stage with enrolled devices cannot be deleted."""
+        device = SMSDevice.objects.create(user=self.user, stage=self.stage, phone_number="+1234")
+
+        with self.assertRaises(ProtectedError):
+            self.stage.delete()
+
+        self.assertTrue(AuthenticatorSMSStage.objects.filter(pk=self.stage.pk).exists())
+        self.assertTrue(SMSDevice.objects.filter(pk=device.pk).exists())
 
     def test_stage_submit(self):
         """test stage (submit)"""

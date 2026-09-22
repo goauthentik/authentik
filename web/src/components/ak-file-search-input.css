@@ -1,0 +1,8 @@
+.ak-file-search-input__select {
+    flex: 1;
+    min-width: 0;
+}
+
+.ak-file-search-input__documentation {
+    margin-inline-start: var(--pf-global--spacer--sm);
+}

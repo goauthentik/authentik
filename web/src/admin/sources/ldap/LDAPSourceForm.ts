@@ -7,7 +7,6 @@ import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./LDAPSourceFormHelpers.js";
 
 import { aki } from "#common/api/client";
@@ -23,6 +22,7 @@ import {
     Group,
     LDAPSource,
     LDAPSourceRequest,
+    ServiceBindMethodEnum,
     SourcesApi,
     SyncOutgoingTriggerModeEnum,
 } from "@goauthentik/api";
@@ -119,6 +119,12 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                 ?checked=${this.instance?.syncGroups ?? true}
             ></ak-switch-input>
             <ak-switch-input
+                name="syncGroupHierarchy"
+                label=${msg("Sync Group Hierarchy")}
+                ?checked=${this.instance?.syncGroupHierarchy ?? true}
+                help=${msg("Sync group hierarchy from LDAP directories.")}
+            ></ak-switch-input>
+            <ak-switch-input
                 name="deleteNotFoundObjects"
                 label=${msg("Delete Not Found Objects")}
                 ?checked=${this.instance?.deleteNotFoundObjects ?? false}
@@ -157,6 +163,44 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         help=${msg("Required for servers using TLS 1.3+")}
                     ></ak-switch-input>
                     <ak-form-element-horizontal
+                        label=${msg("Service bind method", {
+                            id: "ldap-source.service-bind-method.label",
+                        })}
+                        required
+                        name="serviceBindMethod"
+                    >
+                        <select class="pf-c-form-control">
+                            <option
+                                value=${ServiceBindMethodEnum.Simple}
+                                ?selected=${
+                                    !this.instance?.serviceBindMethod ||
+                                    this.instance.serviceBindMethod === ServiceBindMethodEnum.Simple
+                                }
+                            >
+                                ${msg("Simple or anonymous bind", {
+                                    id: "ldap-source.service-bind-method.simple.label",
+                                })}
+                            </option>
+                            <option
+                                value=${ServiceBindMethodEnum.SaslExternal}
+                                ?selected=${
+                                    this.instance?.serviceBindMethod ===
+                                    ServiceBindMethodEnum.SaslExternal
+                                }
+                            >
+                                ${msg("SASL EXTERNAL", {
+                                    id: "ldap-source.service-bind-method.sasl-external.label",
+                                })}
+                            </option>
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Simple bind uses the Bind CN and password, or binds anonymously when both are empty. SASL EXTERNAL uses the TLS client certificate for synchronization and writeback.",
+                                { id: "ldap-source.service-bind-method.description" },
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
                         label=${msg("TLS Verification Certificate")}
                         name="peerCertificate"
                     >
@@ -179,7 +223,8 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Client certificate keypair to authenticate against the LDAP Server's Certificate.",
+                                "Client certificate keypair presented to the LDAP server. Required when the service bind method is SASL EXTERNAL.",
+                                { id: "ldap-source.client-certificate.description" },
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -243,17 +288,23 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
             </ak-form-group>
             <ak-form-group label="${msg("Additional settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Parent Group")} name="syncParentGroup">
+                    <ak-form-element-horizontal
+                        label=${msg("Additional Parent Group")}
+                        name="additionalParentGroup"
+                    >
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {
                                     ordering: "name",
                                     includeUsers: false,
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const groups = await aki(CoreApi).coreGroupsList(args);
+
                                 return groups.results;
                             }}
                             .renderElement=${(group: Group): string => {
@@ -275,8 +326,9 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
                         <input
                             type="text"
-                            value="${this.instance?.userPathTemplate ??
-                            "goauthentik.io/sources/%(slug)s"}"
+                            value="${
+                                this.instance?.userPathTemplate ?? "goauthentik.io/sources/%(slug)s"
+                            }"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">${placeholderHelperText}</p>

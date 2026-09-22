@@ -2,7 +2,6 @@ import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 
@@ -32,16 +31,22 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
 
     async send(data: EventMatcherPolicy): Promise<EventMatcherPolicy> {
         if (data.query?.toString() === "") data.query = null;
+
         if (data.action?.toString() === "") data.action = null;
+
         if (data.clientIp?.toString() === "") data.clientIp = null;
+
         if (data.app?.toString() === "") data.app = null;
+
         if (data.model?.toString() === "") data.model = null;
+
         if (this.instance) {
             return aki(PoliciesApi).policiesEventMatcherUpdate({
                 policyUuid: this.instance.pk || "",
                 eventMatcherPolicyRequest: data,
             });
         }
+
         return aki(PoliciesApi).policiesEventMatcherCreate({
             eventMatcherPolicyRequest: data,
         });
@@ -97,6 +102,7 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<TypeCreate[]> => {
                                 const items = await aki(EventsApi).eventsEventsActionsList();
+
                                 return items.filter((item) =>
                                     query
                                         ? item.name.toLowerCase().includes(query.toLowerCase())
@@ -139,6 +145,7 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<App[]> => {
                                 const items = await aki(AdminApi).adminAppsList();
+
                                 return items.filter((item) =>
                                     query ? item.name.includes(query) : true,
                                 );
@@ -165,11 +172,14 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<App[]> => {
                                 const items = await aki(AdminApi).adminModelsList();
+
                                 return items
                                     .filter((item) => (query ? item.name.includes(query) : true))
                                     .sort((a, b) => {
                                         if (a.name < b.name) return -1;
+
                                         if (a.name > b.name) return 1;
+
                                         return 0;
                                     });
                             }}

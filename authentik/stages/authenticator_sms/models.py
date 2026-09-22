@@ -78,7 +78,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
 
     def get_message(self, token: str) -> str:
         """Get SMS message"""
-        return _("Use this code to authenticate in authentik: {token}".format_map({"token": token}))
+        return _("Use this code to authenticate in authentik: {token}").format(token=token)
 
     def send_twilio(self, request: HttpRequest, token: str, device: SMSDevice):
         """send sms via twilio provider"""
@@ -203,7 +203,7 @@ class SMSDevice(SerializerModel, ThrottlingMixin, SideChannelDevice):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     # Connect to the stage to when validating access we know the API Credentials
-    stage = models.ForeignKey(AuthenticatorSMSStage, on_delete=models.CASCADE)
+    stage = models.ForeignKey(AuthenticatorSMSStage, on_delete=models.PROTECT)
 
     phone_number = models.TextField()
 

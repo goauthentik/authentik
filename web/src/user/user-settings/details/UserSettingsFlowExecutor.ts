@@ -1,4 +1,8 @@
 import "#user/user-settings/details/stages/prompt/PromptStage";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
@@ -11,6 +15,7 @@ import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithSession } from "#elements/mixins/session";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { flowMessages } from "#flow/messages";
 import type { StageHost } from "#flow/types";
 
 import {
@@ -26,11 +31,6 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-user-settings-flow-executor")
 export class UserSettingsFlowExecutor
@@ -48,6 +48,12 @@ export class UserSettingsFlowExecutor
 
         this.#challenge = value;
 
+        // Messages ride along with the challenge they were queued during, and the server
+        // considers them delivered once sent, so each challenge is shown exactly once.
+        for (const message of flowMessages(value?.flowInfo?.messages)) {
+            showMessage(message);
+        }
+
         this.requestUpdate("challenge", previousValue);
     }
 
@@ -62,10 +68,12 @@ export class UserSettingsFlowExecutor
 
     submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
         if (!payload) return Promise.reject();
+
         if (!this.challenge) return Promise.reject();
         // @ts-expect-error Component is too generic for Typescript here.
         payload.component = this.challenge.component;
         this.loading = true;
+
         return aki(FlowsApi)
             .flowsExecutorSolve({
                 flowSlug: this.flowSlug || "",
@@ -75,6 +83,7 @@ export class UserSettingsFlowExecutor
             .then((data) => {
                 this.challenge = data;
                 delete this.challenge.flowInfo;
+
                 return !this.challenge.responseErrors;
             })
             .catch(async (error: unknown) => {
@@ -86,6 +95,7 @@ export class UserSettingsFlowExecutor
             })
             .finally(() => {
                 this.loading = false;
+
                 return false;
             });
     }
@@ -151,6 +161,7 @@ export class UserSettingsFlowExecutor
         if (!this.challenge) {
             return nothing;
         }
+
         switch (this.challenge.component) {
             case "ak-stage-prompt":
                 return html`<ak-user-stage-prompt
@@ -190,9 +201,11 @@ export class UserSettingsFlowExecutor
         if (!this.flowSlug) {
             return html`<p>${msg("No settings flow configured.")}</p> `;
         }
+
         if (!this.challenge || this.loading) {
             return html`<ak-empty-state default-label></ak-empty-state>`;
         }
+
         return html` ${this.renderChallenge()} `;
     }
 

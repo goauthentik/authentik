@@ -84,6 +84,20 @@
     /* #endregion */
 }
 
+/* #region Native select popup */
+
+/*
+ * Chromium uses the select's computed colors for its native popup. Keep the pair
+ * opaque and contrasting; flat selectors also cover Lit shadow roots.
+ */
+[data-theme="dark"] select.pf-c-form-control:not(:disabled),
+:host([theme="dark"]) select.pf-c-form-control:not(:disabled) {
+    background-color: var(--pf-global--BackgroundColor--dark-100);
+    color: var(--pf-global--Color--light-100);
+}
+
+/* #endregion */
+
 .pf-c-form__helper-text {
     text-wrap: pretty;
 }

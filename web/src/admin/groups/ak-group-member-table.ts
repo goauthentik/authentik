@@ -1,8 +1,9 @@
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
-
+import "#elements/table/ak-table-filter-select";
 import { aki } from "#common/api/client";
 
+import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -17,6 +18,7 @@ import { customElement } from "lit/decorators.js";
 // Leaving room in the future for a multi-state control if someone somehow needs to filter inactive
 // users as well.
 type UserListFilter = "active" | "all";
+
 type UserListRequestFilter = Partial<Pick<CoreUsersListRequest, "isActive">>;
 
 @customElement("ak-group-member-table")
@@ -24,10 +26,6 @@ export class GroupMemberSelectTable extends Table<User> {
     static styles = [
         ...super.styles,
         css`
-            .show-disabled-toggle-group {
-                margin-inline-start: 0.5rem;
-            }
-
             [part="toolbar"] {
                 gap: var(--pf-global--spacer--md);
             }
@@ -75,30 +73,21 @@ export class GroupMemberSelectTable extends Table<User> {
     ];
 
     renderToolbarAfter() {
-        const toggleShowDisabledUsers = () => {
-            this.userListFilter = this.userListFilter === "all" ? "active" : "all";
-            this.page = 1;
-            this.fetch();
-        };
-
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
-                <div class="pf-c-input-group show-disabled-toggle-group">
-                    <label class="pf-c-switch">
-                        <input
-                            class="pf-c-switch__input"
-                            type="checkbox"
-                            ?checked=${this.userListFilter === "all"}
-                            @change=${toggleShowDisabledUsers}
-                        />
-                        <span class="pf-c-switch__toggle">
-                            <span class="pf-c-switch__toggle-icon">
-                                <i class="fas fa-check" aria-hidden="true"></i>
-                            </span>
-                        </span>
-                        <span class="pf-c-switch__label">${msg("Show inactive users")}</span>
-                    </label>
-                </div>
+                <ak-table-filter-select
+                    .options=${[
+                        { label: msg("Active"), value: "active" as const },
+                        { label: msg("All"), value: "all" as const },
+                    ]}
+                    group=${msg("User status")}
+                    .value=${this.userListFilter}
+                    @change=${(ev: CustomEvent<FilterOption<UserListFilter>>) => {
+                        this.userListFilter = ev.detail.value;
+                        this.page = 1;
+                        this.fetch();
+                    }}
+                ></ak-table-filter-select>
             </div>
         </div>`;
     }

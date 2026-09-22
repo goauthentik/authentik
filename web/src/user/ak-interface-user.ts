@@ -2,17 +2,29 @@ import "#components/ak-nav-buttons";
 import "#elements/banner/EnterpriseStatusBanner";
 import "#components/notifications/APIDrawer";
 import "#components/notifications/NotificationDrawer";
-import "#elements/router/RouterOutlet";
+import "#elements/router/core/RouterView";
+import "#components/ak-nav-tabs";
+import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
+import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import { globalAK } from "#common/global";
-import { configureSentry } from "#common/sentry/index";
 import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
 
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
 import { listen } from "#elements/decorators/listen";
 import { WithBrandConfig } from "#elements/mixins/branding";
+import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
+import { formatInterfacePrefix, toUserInterface } from "#elements/router/core/interfaces";
+import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
@@ -25,26 +37,21 @@ import {
 } from "#components/notifications/utils";
 
 import Styles from "#user/ak-interface-user.css";
-import { ROUTES } from "#user/Routes";
+import { DEFAULT_PATH, ROUTES } from "#user/Routes";
 
 import { ConsoleLogger } from "#logger/browser";
 
+import { CapabilitiesEnum, LicenseSummaryStatusEnum } from "@goauthentik/api";
+
 import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 
-import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
-import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
-import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
-import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-
 @customElement("ak-interface-user")
-class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface)) {
+class UserInterface extends WithLicenseSummary(
+    WithBrandConfig(WithSession(WithCapabilitiesConfig(AuthenticatedInterface))),
+) {
     public static readonly styles = [
         PFDisplay,
         PFBrand,
@@ -55,6 +62,11 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
         PFDropdown,
         PFNotificationBadge,
         Styles,
+        css`
+            .pf-c-page__header-nav {
+                --pf-c-page__header-nav--BackgroundColor: transparent;
+            }
+        `,
     ];
 
     #logger = ConsoleLogger.prefix("user-interface");
@@ -71,8 +83,6 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
     //#region Lifecycle
 
     constructor() {
-        configureSentry();
-
         super();
 
         WebsocketClient.connect();
@@ -96,20 +106,47 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
 
             const { base } = globalAK().api;
 
-            return html`<a
-                    class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
-                    href="${base}if/admin/"
-                    slot="extra"
+            return html`<a class="pf-c-button pf-m-secondary pf-m-small" href="${base}if/admin/">
+                <span class="pf-u-display-none pf-u-display-block-on-md"
+                    >${msg("Admin interface")}</span
                 >
-                    ${msg("Admin interface")}
-                </a>
-                <a
-                    class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none-on-md pf-u-display-block"
-                    href="${base}if/admin/"
-                    slot="extra"
-                >
-                    ${msg("Admin")}
-                </a>`;
+                <span class="pf-u-display-none-on-md pf-u-display-block">${msg("Admin")}</span>
+            </a>`;
+        });
+    }
+
+    protected renderNavTabs(): SlottedTemplateResult {
+        const licensed = this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed;
+        const { requests, agents } = this.uiConfig.enabledFeatures;
+
+        // Capabilities can resolve after the feature flags settle, so they must be part of the guard's dependencies.
+        // Otherwise late-arriving permissions won't re-render the tabs.
+        const canRequest = this.can(CapabilitiesEnum.CanRequest);
+        const canAgentSelfService = this.can(CapabilitiesEnum.CanAgentSelfService);
+
+        return guard([licensed, requests, agents, canRequest, canAgentSelfService], () => {
+            if (licensed) return null;
+
+            const navItems = [];
+
+            // Requests are an enterprise feature, can be disabled for the user interface
+            // and are only shown when the admin has configured at least one request rule
+            // We can't easily check if this user actually has something they can request,
+            // that is a semi-expensive request.
+            if (requests && canRequest) {
+                navItems.push({ label: msg("Discover"), link: "/requests" });
+            }
+
+            if (agents && canAgentSelfService) {
+                navItems.push({ label: msg("Agents"), link: "/agents" });
+            }
+
+            if (!navItems.length) return null;
+
+            return html`<ak-nav-tabs
+                class="pf-c-page__header-nav"
+                .items=${[{ label: msg("Applications"), link: "/library" }, ...navItems]}
+            ></ak-nav-tabs>`;
         });
     }
 
@@ -135,9 +172,11 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
         return html`<ak-enterprise-status interface="user"></ak-enterprise-status>
             <div part="page" class="pf-c-page">
                 <div part="background-wrapper" style=${ifPresent(backgroundStyles)}>
-                    ${!backgroundStyles
-                        ? html`<div part="background-default-slant"></div>`
-                        : nothing}
+                    ${
+                        !backgroundStyles
+                            ? html`<div part="background-default-slant"></div>`
+                            : nothing
+                    }
                 </div>
                 <header
                     role="banner"
@@ -146,7 +185,7 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
                     class="pf-c-page__header"
                 >
                     <div part="brand" class="pf-c-page__header-brand">
-                        <a href="#/" class="pf-c-page__header-brand-link">
+                        <a href=${toUserInterface()} class="pf-c-page__header-brand-link">
                             ${ThemedImage({
                                 src: this.brandingLogo,
                                 alt: this.brandingTitle,
@@ -156,25 +195,32 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
                             })}
                         </a>
                     </div>
+                    ${this.renderNavTabs()}
                     <ak-nav-buttons>${this.renderAdminInterfaceLink()}</ak-nav-buttons>
                 </header>
                 <div class="pf-c-page__drawer">
                     <div
-                        class="pf-c-drawer ${this.drawer.notifications || this.drawer.api
-                            ? "pf-m-expanded"
-                            : "pf-m-collapsed"}"
+                        class="pf-c-drawer ${
+                            this.drawer.notifications || this.drawer.api
+                                ? "pf-m-expanded"
+                                : "pf-m-collapsed"
+                        }"
                     >
                         <div class="pf-c-drawer__main">
                             <div class="pf-c-drawer__content">
                                 <div class="pf-c-drawer__body">
-                                    <ak-router-outlet
+                                    <ak-router-view
                                         class="pf-l-bullseye__item pf-c-page__main"
                                         tabindex="-1"
                                         id="main-content"
-                                        default-url="/library"
                                         .routes=${ROUTES}
+                                        .prefix=${formatInterfacePrefix(
+                                            globalAK().api.relBase,
+                                            "user",
+                                        )}
+                                        .defaultPath=${DEFAULT_PATH}
                                     >
-                                    </ak-router-outlet>
+                                    </ak-router-view>
                                 </div>
                             </div>
                             ${renderNotificationDrawerPanel(this.drawer)}

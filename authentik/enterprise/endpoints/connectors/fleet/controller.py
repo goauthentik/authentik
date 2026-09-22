@@ -67,9 +67,11 @@ class FleetController(BaseController[DBC]):
                     params={
                         "order_key": "hardware_serial",
                         "page": page,
-                        "per_page": 50,
+                        # Small page size as Fleet's API response, with the populate fields below
+                        # can be quite large and eat a lot of memory
+                        "per_page": 1,
                         "device_mapping": "true",
-                        "populate_software": "true",
+                        "populate_software": "without_vulnerability_details",
                         "populate_users": "true",
                         "populate_policies": "true",
                     },
@@ -125,8 +127,8 @@ class FleetController(BaseController[DBC]):
             self.logger.warning("Failed to sync conditional access CA", exc=exc)
         for host in self._paginate_hosts():
             serial = host["hardware_serial"]
-            device, _ = Device.objects.get_or_create(
-                identifier=serial, defaults={"name": host["hostname"], "expiring": False}
+            device = Device.get_or_create(
+                identifier=serial, name=host["hostname"], defaults={"expiring": False}
             )
             connection, _ = DeviceConnection.objects.update_or_create(
                 device=device,
@@ -240,11 +242,11 @@ class FleetController(BaseController[DBC]):
                 "fleetdm.com": {
                     "policies": [
                         delete_none_values({"name": policy["name"], "status": policy["response"]})
-                        for policy in host.get("policies", [])
+                        for policy in (host.get("policies") or [])
                     ],
                     "agent_version": fleet_version,
                     # Host UUID is required for conditional access matching
-                    "uuid": host.get("uuid", "").lower(),
+                    "uuid": (host.get("uuid") or "").lower(),
                 },
             },
         }
