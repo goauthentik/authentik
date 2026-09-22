@@ -98,7 +98,6 @@ jobs:
             echo "new-image=${new_image}"
             echo "ready=true"
           } >> "$GITHUB_OUTPUT"
-          exit 1 # TEMPORARY: force a failure to see the Slack message
       - name: Start PostgreSQL
         if: ${{ steps.images.outputs.ready == 'true' }}
         run: |
@@ -163,9 +162,8 @@ jobs:
     # Only the nightly run posts to Slack, and only when something failed. A
     # manual run and the pull request that edits this file show their result in
     # the Actions tab instead.
-    # TEMPORARY: pull_request instead of schedule, to see the Slack message
     if: >-
-      ${{ always() && github.event_name == 'pull_request'
+      ${{ always() && github.event_name == 'schedule'
       && (needs.discover-release-branches.result != 'success'
       || needs.test-migrations-cross-branch.result != 'success') }}
     needs:
@@ -213,7 +211,7 @@ jobs:
       - name: Post to Slack
         uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
         with:
-          webhook: "${{ secrets.CI_MIGRATIONS_CROSS_BRANCH_WEBHOOK_URL }}"
+          webhook: "${{ secrets.RELEASE_SLACK_WEBHOOK_URL }}"
           webhook-type: incoming-webhook
           payload-file-path: "${{ runner.temp }}/slack-payload.json"
           errors: "true"
