@@ -4,6 +4,7 @@ import (
 	"crypto/ed25519"
 	"crypto/rand"
 	"encoding/pem"
+	"sync"
 	"time"
 
 	"golang.org/x/crypto/ssh"
@@ -22,9 +23,31 @@ const (
 	certValidity = 5 * time.Minute
 )
 
-// sshCertificate replaces the token authentik sent with an ephemeral key and a
-// self-signed certificate carrying it. The device accepts the key which signed the
-// certificate for this one login, once its agent validated the token with authentik.
+type sshKey struct {
+	signer     ssh.Signer
+	privateKey string
+}
+
+var outpostSSHKey = sync.OnceValues(newSSHKey)
+
+func newSSHKey() (*sshKey, error) {
+	_, private, err := ed25519.GenerateKey(rand.Reader)
+	if err != nil {
+		return nil, err
+	}
+	signer, err := ssh.NewSignerFromKey(private)
+	if err != nil {
+		return nil, err
+	}
+	block, err := ssh.MarshalPrivateKey(private, "")
+	if err != nil {
+		return nil, err
+	}
+	return &sshKey{signer: signer, privateKey: string(pem.EncodeToMemory(block))}, nil
+}
+
+// sshCertificate replaces the token authentik sent with a certificate carrying it,
+// which the device accepts once its agent validated the token with authentik.
 func sshCertificate(params map[string]string) error {
 	token, ok := params[paramSSHToken]
 	if !ok {
@@ -34,21 +57,13 @@ func sshCertificate(params map[string]string) error {
 	delete(params, paramSSHToken)
 	delete(params, paramSSHHostKey)
 
-	public, private, err := ed25519.GenerateKey(rand.Reader)
-	if err != nil {
-		return err
-	}
-	signer, err := ssh.NewSignerFromKey(private)
-	if err != nil {
-		return err
-	}
-	publicKey, err := ssh.NewPublicKey(public)
+	key, err := outpostSSHKey()
 	if err != nil {
 		return err
 	}
 	username := params["username"]
 	cert := &ssh.Certificate{
-		Key:             publicKey,
+		Key:             key.signer.PublicKey(),
 		CertType:        ssh.UserCert,
 		KeyId:           username,
 		ValidPrincipals: []string{username},
@@ -62,14 +77,10 @@ func sshCertificate(params map[string]string) error {
 			},
 		},
 	}
-	if err := cert.SignCert(rand.Reader, signer); err != nil {
+	if err := cert.SignCert(rand.Reader, key.signer); err != nil {
 		return err
 	}
-	block, err := ssh.MarshalPrivateKey(private, "")
-	if err != nil {
-		return err
-	}
-	params["private-key"] = string(pem.EncodeToMemory(block))
+	params["private-key"] = key.privateKey
 	params["public-key"] = string(ssh.MarshalAuthorizedKey(cert))
 	return nil
 }

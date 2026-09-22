@@ -13,6 +13,17 @@ func TestSSHCertificateNoToken(t *testing.T) {
 	assert.Equal(t, map[string]string{"username": "foo"}, params)
 }
 
+func TestSSHCertificateReusesKey(t *testing.T) {
+	first := map[string]string{"username": "foo", paramSSHToken: "a-token"}
+	second := map[string]string{"username": "bar", paramSSHToken: "another-token"}
+	assert.NoError(t, sshCertificate(first))
+	assert.NoError(t, sshCertificate(second))
+
+	// Every connection costs a certificate, not a key
+	assert.Equal(t, first["private-key"], second["private-key"])
+	assert.NotEqual(t, first["public-key"], second["public-key"])
+}
+
 func TestSSHCertificate(t *testing.T) {
 	params := map[string]string{
 		"username":      "foo",
