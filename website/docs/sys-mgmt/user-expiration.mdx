@@ -35,9 +35,9 @@ Before enabling a rule, use the **Preview** action to see how many users the nex
 
 authentik evaluates enabled rules every hour. For each user who crossed the inactivity threshold, the rule creates a pending offboarding scheduled for the user's last activity plus the inactivity duration. From that point on, the offboarding behaves like a [manually scheduled offboarding](./user-offboarding.mdx): it is listed under **Events** > **Offboardings**, it can be canceled, and it is retried on failure. On the user's page, the offboarding appears as **Cancel Expiration** and names the rule that scheduled it.
 
-When a rule has a **Warning period**, the offboarding is created that long before the due time, and a **User Expiration Warning** event is written for the user and delivered through the selected notification transports. Without a warning period, the offboarding is created when it is due and runs within five minutes.
+When a rule has a **Warning period**, the offboarding is created that long before the due time, and a **User Expiration Warning** event is written for the user and delivered through the selected notification transports. If no transports are selected, the user receives an in-app notification. Without a warning period, the offboarding is created when it is due and runs within five minutes.
 
-If the user logs in before the scheduled time, the pending offboarding is removed and the inactivity clock restarts. Right before an offboarding runs, authentik re-checks that the rule still applies to the user, so a disabled rule, a group change, or a login that was not otherwise noticed leaves the user untouched.
+If the user logs in before the scheduled time, the pending offboarding is removed and the inactivity clock restarts. Right before an offboarding runs, authentik re-checks that the rule still applies to the user and that the current inactivity duration has elapsed. A disabled rule, a group change, or a login that was not otherwise noticed leaves the user untouched. Extending the inactivity duration postpones execution, even if an execution task was already queued.
 
 The **User Offboarded** event written when the offboarding runs includes the rule that scheduled it.
 
@@ -50,7 +50,11 @@ A rule skips the following users:
 - Users who already have a pending offboarding, whether manual or automatic.
 - Users whose most recent automatic offboarding is newer than their last activity. Canceling an automatic offboarding therefore exempts the user until they log in again, and a user who is reactivated after an automatic deactivation is not expired again until they log in and become inactive again.
 
+A canceled or reactivated user who never logs in again remains exempt indefinitely. You can still schedule a manual offboarding for that user.
+
 If several rules apply to the same user, the rule that expires them earliest wins. It takes over the pending offboarding, updates the date and action, and warns the user again. If a rule becomes less strict, for example because its inactivity duration was increased, pending offboardings are moved to the later date without a new warning.
+
+Editing a rule also updates its pending offboardings to use the current inactivity duration, action, and session and token revocation settings. Moving the expiration earlier or changing the action sends a new warning. Execution uses the current settings even if the next rule evaluation has not run yet.
 
 Deleting a rule removes its pending offboardings and keeps completed ones in the audit history.
 
