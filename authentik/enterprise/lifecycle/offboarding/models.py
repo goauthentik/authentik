@@ -139,8 +139,11 @@ class UserOffboarding(SerializerModel):
             # leaves the user untouched.
             if not apps.get_app_config("authentik_enterprise").enabled():
                 return
-            if not self.rule.qualifies(self.user):
-                self.delete()
+            if not self.rule.reconcile_offboarding(self):
+                return
+            # Eligibility for a warning is not eligibility for execution. A queued
+            # task can outlive an edit that moves the actual expiry into the future.
+            if self.scheduled_at > timezone.now():
                 return
             context["rule"] = self.rule
         # `delete` removes this row via cascade, so capture the action first.
