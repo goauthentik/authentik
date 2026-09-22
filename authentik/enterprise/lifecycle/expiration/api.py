@@ -53,7 +53,12 @@ class UserExpirationRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
     def validate(self, attrs: dict) -> dict:
         attrs = super().validate(attrs)
         duration = attrs.get(
-            "inactivity_duration", getattr(self.instance, "inactivity_duration", None)
+            "inactivity_duration",
+            getattr(
+                self.instance,
+                "inactivity_duration",
+                UserExpirationRule._meta.get_field("inactivity_duration").get_default(),
+            ),
         )
         warn_before = attrs.get("warn_before", getattr(self.instance, "warn_before", None))
         if (
