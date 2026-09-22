@@ -9,6 +9,7 @@ from rest_framework.decorators import action
 from rest_framework.fields import IntegerField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.used_by import UsedByMixin
@@ -18,6 +19,8 @@ from authentik.endpoints.api.device_connections import DeviceConnectionSerialize
 from authentik.endpoints.api.device_fact_snapshots import DeviceFactSnapshotSerializer
 from authentik.endpoints.api.device_user_bindings import DeviceUserBindingSerializer
 from authentik.endpoints.models import Device, DeviceFactSnapshot, DeviceUserBinding
+from authentik.providers.rac.api.connection_overrides import RACConnectionOverrideSerializer
+from authentik.providers.rac.models import RACConnectionOverride
 
 
 class EndpointDeviceSerializer(ModelSerializer):
@@ -30,18 +33,38 @@ class EndpointDeviceSerializer(ModelSerializer):
         source="primary_user_binding", read_only=True, allow_null=True
     )
 
+    rac = RACConnectionOverrideSerializer(source="rac_override", allow_null=True)
+
     def get_facts(self, instance: Device) -> DeviceFactSnapshotSerializer:
         try:
             return DeviceFactSnapshotSerializer(instance.cached_facts).data
         except KeyError, AttributeError:
             return None
 
+    def validate(self, attrs: dict) -> dict:
+        attrs = super().validate(attrs)
+        # A device which is added through the API is not enrolled by a connector, so it
+        # cannot report how it is reached and has to be told
+        if not self.instance and not attrs.get("rac_override"):
+            raise ValidationError({"rac": "This field is required."})
+        return attrs
+
     def create(self, validated_data: dict) -> Device:
         """Devices created through the API are not enrolled by a connector, so they get
         a generated identifier and don't expire."""
+        override = validated_data.pop("rac_override")
         validated_data.setdefault("identifier", f"manual://{uuid4()}")
         validated_data.setdefault("expiring", False)
-        return super().create(validated_data)
+        device = super().create(validated_data)
+        RACConnectionOverride.objects.create(device=device, **override)
+        return device
+
+    def update(self, instance: Device, validated_data: dict) -> Device:
+        override = validated_data.pop("rac_override", None)
+        device = super().update(instance, validated_data)
+        if override:
+            RACConnectionOverride.objects.update_or_create(device=device, defaults=override)
+        return device
 
     class Meta:
         model = Device
@@ -56,6 +79,7 @@ class EndpointDeviceSerializer(ModelSerializer):
             "facts",
             "attributes",
             "primary_binding_obj",
+            "rac",
         ]
         extra_kwargs = {
             "pbm_uuid": {"read_only": True},

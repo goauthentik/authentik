@@ -20,9 +20,6 @@ import { ProtocolEnumFromJSON, ProtocolEnumToJSON } from "./ProtocolEnum";
  * @interface RACConnectionOverride
  */
 export interface RACConnectionOverride {
-    readonly pk: number;
-    readonly name: string;
-    device?: string;
     /**
      * Hostname/IP to connect to. Optionally specify the port.
      */
@@ -34,8 +31,6 @@ export interface RACConnectionOverride {
  * Check if a given object implements the RACConnectionOverride interface.
  */
 export function instanceOfRACConnectionOverride(value: object): value is RACConnectionOverride {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
     if (!("host" in value) || value["host"] === undefined) return false;
     if (!("protocol" in value) || value["protocol"] === undefined) return false;
     return true;
@@ -53,9 +48,6 @@ export function RACConnectionOverrideFromJSONTyped(
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        device: json["device"] == null ? undefined : json["device"],
         host: json["host"],
         protocol: ProtocolEnumFromJSON(json["protocol"]),
     };
@@ -66,7 +58,7 @@ export function RACConnectionOverrideToJSON(json: any): RACConnectionOverride {
 }
 
 export function RACConnectionOverrideToJSONTyped(
-    value?: Omit<RACConnectionOverride, "pk" | "name"> | null,
+    value?: RACConnectionOverride | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -74,7 +66,6 @@ export function RACConnectionOverrideToJSONTyped(
     }
 
     return {
-        device: value["device"],
         host: value["host"],
         protocol: ProtocolEnumToJSON(value["protocol"]),
     };

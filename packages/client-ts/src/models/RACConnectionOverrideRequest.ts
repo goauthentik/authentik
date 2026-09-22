@@ -20,15 +20,6 @@ import { ProtocolEnumFromJSON, ProtocolEnumToJSON } from "./ProtocolEnum";
  * @interface RACConnectionOverrideRequest
  */
 export interface RACConnectionOverrideRequest {
-    device?: string;
-    /**
-     * Name of the device to create. Only used when no device is set.
-     */
-    deviceName?: string;
-    /**
-     * Access group of the device to create. Only used when no device is set.
-     */
-    accessGroup?: string;
     /**
      * Hostname/IP to connect to. Optionally specify the port.
      */
@@ -59,9 +50,6 @@ export function RACConnectionOverrideRequestFromJSONTyped(
         return json;
     }
     return {
-        device: json["device"] == null ? undefined : json["device"],
-        deviceName: json["device_name"] == null ? undefined : json["device_name"],
-        accessGroup: json["access_group"] == null ? undefined : json["access_group"],
         host: json["host"],
         protocol: ProtocolEnumFromJSON(json["protocol"]),
     };
@@ -80,9 +68,6 @@ export function RACConnectionOverrideRequestToJSONTyped(
     }
 
     return {
-        device: value["device"],
-        device_name: value["deviceName"],
-        access_group: value["accessGroup"],
         host: value["host"],
         protocol: ProtocolEnumToJSON(value["protocol"]),
     };

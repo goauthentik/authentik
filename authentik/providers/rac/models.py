@@ -16,7 +16,7 @@ from authentik.core.expression.exceptions import PropertyMappingExpressionExcept
 from authentik.core.models import PropertyMapping, Provider, User, default_token_key
 from authentik.endpoints.models import Device
 from authentik.events.models import Event, EventAction
-from authentik.lib.models import ExpiringModel, InternallyManagedMixin, SerializerModel
+from authentik.lib.models import ExpiringModel, InternallyManagedMixin
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.outposts.models import OutpostModel
 
@@ -183,7 +183,7 @@ class RACPropertyMapping(PropertyMapping):
         verbose_name_plural = _("RAC Provider Property Mappings")
 
 
-class RACConnectionOverride(SerializerModel):
+class RACConnectionOverride(models.Model):
     """How to reach a single device, for devices which don't report an address and
     protocol themselves."""
 
@@ -195,20 +195,12 @@ class RACConnectionOverride(SerializerModel):
     host = models.TextField(help_text=_("Hostname/IP to connect to. Optionally specify the port."))
     protocol = models.TextField(choices=Protocols.choices)
 
-    @property
-    def serializer(self) -> type[Serializer]:
-        from authentik.providers.rac.api.connection_overrides import (
-            RACConnectionOverrideSerializer,
-        )
-
-        return RACConnectionOverrideSerializer
-
-    def __str__(self):
-        return f"RAC Connection override for device {self.device_id}"
-
     class Meta:
         verbose_name = _("RAC Connection override")
         verbose_name_plural = _("RAC Connection overrides")
+
+    def __str__(self):
+        return f"RAC Connection override for device {self.device_id}"
 
 
 class ConnectionToken(InternallyManagedMixin, ExpiringModel):

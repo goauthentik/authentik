@@ -21407,199 +21407,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /rac/connection_overrides/:
-    get:
-      operationId: rac_connection_overrides_list
-      description: RACConnectionOverride Viewset
-      parameters:
-      - in: query
-        name: device
-        schema:
-          type: string
-          format: uuid
-      - $ref: '#/components/parameters/QueryPaginationOrdering'
-      - $ref: '#/components/parameters/QueryPaginationPage'
-      - $ref: '#/components/parameters/QueryPaginationPageSize'
-      - in: query
-        name: protocol
-        schema:
-          $ref: '#/components/schemas/ProtocolEnum'
-      - $ref: '#/components/parameters/QuerySearch'
-      tags:
-      - rac
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedRACConnectionOverrideList'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    post:
-      operationId: rac_connection_overrides_create
-      description: RACConnectionOverride Viewset
-      tags:
-      - rac
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RACConnectionOverrideRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RACConnectionOverride'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /rac/connection_overrides/{id}/:
-    get:
-      operationId: rac_connection_overrides_retrieve
-      description: RACConnectionOverride Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this RAC Connection override.
-        required: true
-      tags:
-      - rac
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RACConnectionOverride'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    put:
-      operationId: rac_connection_overrides_update
-      description: RACConnectionOverride Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this RAC Connection override.
-        required: true
-      tags:
-      - rac
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RACConnectionOverrideRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RACConnectionOverride'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    patch:
-      operationId: rac_connection_overrides_partial_update
-      description: RACConnectionOverride Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this RAC Connection override.
-        required: true
-      tags:
-      - rac
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedRACConnectionOverrideRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RACConnectionOverride'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    delete:
-      operationId: rac_connection_overrides_destroy
-      description: RACConnectionOverride Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this RAC Connection override.
-        required: true
-      tags:
-      - rac
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /rac/connection_overrides/{id}/used_by/:
-    get:
-      operationId: rac_connection_overrides_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this RAC Connection override.
-        required: true
-      tags:
-      - rac
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /rac/connection_tokens/:
     get:
       operationId: rac_connection_tokens_list
@@ -40604,12 +40411,17 @@ components:
           - $ref: '#/components/schemas/DeviceUserBinding'
           readOnly: true
           nullable: true
+        rac:
+          allOf:
+          - $ref: '#/components/schemas/RACConnectionOverride'
+          nullable: true
       required:
       - access_group_obj
       - facts
       - name
       - pbm_uuid
       - primary_binding_obj
+      - rac
     EndpointDeviceDetails:
       type: object
       properties:
@@ -40649,6 +40461,10 @@ components:
           - $ref: '#/components/schemas/DeviceUserBinding'
           readOnly: true
           nullable: true
+        rac:
+          allOf:
+          - $ref: '#/components/schemas/RACConnectionOverride'
+          nullable: true
         connections_obj:
           type: array
           items:
@@ -40674,6 +40490,7 @@ components:
       - pbm_uuid
       - policies
       - primary_binding_obj
+      - rac
     EndpointDeviceRequest:
       type: object
       properties:
@@ -40696,8 +40513,13 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+        rac:
+          allOf:
+          - $ref: '#/components/schemas/RACConnectionOverrideRequest'
+          nullable: true
       required:
       - name
+      - rac
     EndpointStage:
       type: object
       description: EndpointStage Serializer
@@ -45660,7 +45482,6 @@ components:
       - authentik_providers_proxy.proxyprovider
       - authentik_providers_rac.racprovider
       - authentik_providers_rac.racpropertymapping
-      - authentik_providers_rac.racconnectionoverride
       - authentik_providers_radius.radiusprovider
       - authentik_providers_radius.radiusproviderpropertymapping
       - authentik_providers_saml.samlprovider
@@ -48940,21 +48761,6 @@ components:
       - autocomplete
       - pagination
       - results
-    PaginatedRACConnectionOverrideList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/RACConnectionOverride'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
     PaginatedRACDeviceList:
       type: object
       properties:
@@ -51216,6 +51022,10 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+        rac:
+          allOf:
+          - $ref: '#/components/schemas/RACConnectionOverrideRequest'
+          nullable: true
     PatchedEndpointStageRequest:
       type: object
       description: EndpointStage Serializer
@@ -53149,30 +52959,6 @@ components:
           minLength: 1
           description: 'Tokens not valid on or after current time + this value (Format:
             hours=1;minutes=2;seconds=3).'
-    PatchedRACConnectionOverrideRequest:
-      type: object
-      description: RACConnectionOverride Serializer
-      properties:
-        device:
-          type: string
-          format: uuid
-        device_name:
-          type: string
-          writeOnly: true
-          minLength: 1
-          description: Name of the device to create. Only used when no device is set.
-        access_group:
-          type: string
-          format: uuid
-          writeOnly: true
-          description: Access group of the device to create. Only used when no device
-            is set.
-        host:
-          type: string
-          minLength: 1
-          description: Hostname/IP to connect to. Optionally specify the port.
-        protocol:
-          $ref: '#/components/schemas/ProtocolEnum'
     PatchedRACPropertyMappingRequest:
       type: object
       description: RACPropertyMapping Serializer
@@ -55940,16 +55726,6 @@ components:
       type: object
       description: RACConnectionOverride Serializer
       properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        name:
-          type: string
-          readOnly: true
-        device:
-          type: string
-          format: uuid
         host:
           type: string
           description: Hostname/IP to connect to. Optionally specify the port.
@@ -55957,27 +55733,11 @@ components:
           $ref: '#/components/schemas/ProtocolEnum'
       required:
       - host
-      - name
-      - pk
       - protocol
     RACConnectionOverrideRequest:
       type: object
       description: RACConnectionOverride Serializer
       properties:
-        device:
-          type: string
-          format: uuid
-        device_name:
-          type: string
-          writeOnly: true
-          minLength: 1
-          description: Name of the device to create. Only used when no device is set.
-        access_group:
-          type: string
-          format: uuid
-          writeOnly: true
-          description: Access group of the device to create. Only used when no device
-            is set.
         host:
           type: string
           minLength: 1

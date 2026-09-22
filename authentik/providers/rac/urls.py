@@ -3,7 +3,6 @@
 from django.urls import path
 
 from authentik.outposts.channels import TokenOutpostMiddleware
-from authentik.providers.rac.api.connection_overrides import RACConnectionOverrideViewSet
 from authentik.providers.rac.api.connection_tokens import ConnectionTokenViewSet
 from authentik.providers.rac.api.devices import RACDeviceViewSet
 from authentik.providers.rac.api.property_mappings import RACPropertyMappingViewSet
@@ -47,6 +46,5 @@ api_urlpatterns = [
     ("providers/rac", RACProviderViewSet),
     ("propertymappings/provider/rac", RACPropertyMappingViewSet),
     ("rac/devices", RACDeviceViewSet, "rac_device"),
-    ("rac/connection_overrides", RACConnectionOverrideViewSet),
     ("rac/connection_tokens", ConnectionTokenViewSet),
 ]

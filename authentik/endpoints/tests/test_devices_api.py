@@ -7,6 +7,7 @@ from rest_framework.test import APITestCase
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.endpoints.models import Connector, Device, DeviceConnection
 from authentik.lib.generators import generate_id
+from authentik.providers.rac.models import Protocols, RACConnectionOverride
 
 
 class TestDevicesAPI(APITestCase):
@@ -57,9 +58,73 @@ class TestDevicesAPI(APITestCase):
         name = generate_id()
         res = self.client.post(
             reverse("authentik_api:endpoint_device-list"),
-            data={"name": name},
+            data={
+                "name": name,
+                "rac": {"host": "host.example.com", "protocol": Protocols.SSH},
+            },
+            content_type="application/json",
         )
         self.assertEqual(res.status_code, 201)
         device = Device.objects.get(name=name)
         self.assertTrue(device.identifier.startswith("manual://"))
         self.assertFalse(device.expiring)
+        # A device which is added by hand has to say how it is reached
+        self.assertEqual(device.rac_override.host, "host.example.com")
+        self.assertEqual(device.rac_override.protocol, Protocols.SSH)
+
+    def test_create_without_connection(self):
+        """A device which is added by hand cannot report how it is reached, so it has
+        to be told"""
+        user = create_test_admin_user()
+        self.client.force_login(user)
+        res = self.client.post(
+            reverse("authentik_api:endpoint_device-list"),
+            data={"name": generate_id()},
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(set(res.json().keys()), {"rac"})
+
+    def test_list_without_connection(self):
+        """A device which is enrolled by a connector has no connection settings"""
+        user = create_test_admin_user()
+        self.client.force_login(user)
+        device = Device.objects.create(identifier=generate_id(), name=generate_id())
+        res = self.client.get(
+            reverse("authentik_api:endpoint_device-detail", kwargs={"pk": device.device_uuid})
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertIsNone(res.json()["rac"])
+
+    def test_update(self):
+        """A device which is enrolled reports how it is reached, so updating one does
+        not require it"""
+        user = create_test_admin_user()
+        self.client.force_login(user)
+        device = Device.objects.create(identifier=generate_id(), name=generate_id())
+        name = generate_id()
+        res = self.client.patch(
+            reverse("authentik_api:endpoint_device-detail", kwargs={"pk": device.device_uuid}),
+            data={"name": name},
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 200)
+        device.refresh_from_db()
+        self.assertEqual(device.name, name)
+
+    def test_update_connection(self):
+        """How a device is reached can be changed after it was added"""
+        user = create_test_admin_user()
+        self.client.force_login(user)
+        device = Device.objects.create(identifier=generate_id(), name=generate_id())
+        RACConnectionOverride.objects.create(
+            device=device, host="host.example.com", protocol=Protocols.SSH
+        )
+        res = self.client.patch(
+            reverse("authentik_api:endpoint_device-detail", kwargs={"pk": device.device_uuid}),
+            data={"rac": {"host": "other.example.com", "protocol": Protocols.RDP}},
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 200)
+        device.rac_override.refresh_from_db()
+        self.assertEqual(device.rac_override.host, "other.example.com")
+        self.assertEqual(device.rac_override.protocol, Protocols.RDP)

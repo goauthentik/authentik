@@ -2624,46 +2624,6 @@
                     ],
                     "properties": {
                         "model": {
-                            "const": "authentik_providers_rac.racconnectionoverride"
-                        },
-                        "id": {
-                            "type": "string"
-                        },
-                        "state": {
-                            "type": "string",
-                            "enum": [
-                                "absent",
-                                "created",
-                                "must_created",
-                                "present"
-                            ],
-                            "default": "present"
-                        },
-                        "conditions": {
-                            "type": "array",
-                            "items": {
-                                "type": "boolean"
-                            }
-                        },
-                        "permissions": {
-                            "$ref": "#/definitions/model_authentik_providers_rac.racconnectionoverride_permissions"
-                        },
-                        "attrs": {
-                            "$ref": "#/definitions/model_authentik_providers_rac.racconnectionoverride"
-                        },
-                        "identifiers": {
-                            "$ref": "#/definitions/model_authentik_providers_rac.racconnectionoverride"
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "required": [
-                        "model",
-                        "identifiers"
-                    ],
-                    "properties": {
-                        "model": {
                             "const": "authentik_providers_rac.racpropertymapping"
                         },
                         "id": {
@@ -11201,7 +11161,6 @@
                         "authentik_providers_proxy.proxyprovider",
                         "authentik_providers_rac.racprovider",
                         "authentik_providers_rac.racpropertymapping",
-                        "authentik_providers_rac.racconnectionoverride",
                         "authentik_providers_radius.radiusprovider",
                         "authentik_providers_radius.radiusproviderpropertymapping",
                         "authentik_providers_saml.samlprovider",
@@ -12662,70 +12621,6 @@
                             "change_proxyprovider",
                             "delete_proxyprovider",
                             "view_proxyprovider"
-                        ]
-                    },
-                    "user": {
-                        "type": "integer"
-                    },
-                    "role": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "model_authentik_providers_rac.racconnectionoverride": {
-            "type": "object",
-            "properties": {
-                "device": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Device"
-                },
-                "device_name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Device name",
-                    "description": "Name of the device to create. Only used when no device is set."
-                },
-                "access_group": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Access group",
-                    "description": "Access group of the device to create. Only used when no device is set."
-                },
-                "host": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Host",
-                    "description": "Hostname/IP to connect to. Optionally specify the port."
-                },
-                "protocol": {
-                    "type": "string",
-                    "enum": [
-                        "rdp",
-                        "vnc",
-                        "ssh"
-                    ],
-                    "title": "Protocol"
-                }
-            },
-            "required": []
-        },
-        "model_authentik_providers_rac.racconnectionoverride_permissions": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "required": [
-                    "permission"
-                ],
-                "properties": {
-                    "permission": {
-                        "type": "string",
-                        "enum": [
-                            "add_racconnectionoverride",
-                            "change_racconnectionoverride",
-                            "delete_racconnectionoverride",
-                            "view_racconnectionoverride"
                         ]
                     },
                     "user": {
