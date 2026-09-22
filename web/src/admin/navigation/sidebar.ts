@@ -54,24 +54,24 @@ export function renderSidebarItem([
 
 // prettier-ignore
 export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
-    [null, msg("Dashboards"), { "?expanded": true }, [
+    [null, msg("Dashboards"), { key: "dashboards", "?expanded": true }, [
         ["/administration/overview", msg("Overview")],
         ["/administration/dashboard/users", msg("User Statistics")],
         ["/administration/system-tasks", msg("System Tasks")]]
     ],
-    [null, msg("Applications"), null, [
+    [null, msg("Applications"), { key: "applications" }, [
         ["/core/applications", msg("Applications"), [`^/core/applications/(?<slug>${SLUG_PATTERN})$`]],
         ["/core/providers", msg("Providers"), [`^/core/providers/(?<id>${ID_PATTERN})$`]],
         ["/outpost/outposts", msg("Outposts"), [`^/outpost/outposts/(?<id>${UUID_PATTERN})$`]],
         ["/requests/rules", msg("Request Rules"), {enterprise:true}],
         ["/requests/access-requests", msg("Access Requests"), {enterprise:true}],]
     ],
-    [null, msg("Endpoint Devices"), null, [
+    [null, msg("Endpoint Devices"), { key: "endpoint-devices" }, [
         ["/endpoints/devices", msg("Devices"), [`^/endpoints/devices/(?<uuid>${UUID_PATTERN})$`]],
         ["/endpoints/groups", msg("Device access groups")],
         ["/endpoints/connectors", msg("Connectors"), [`^/endpoints/connectors/(?<uuid>${UUID_PATTERN})$`]],
     ]],
-    [null, msg("Events"), null, [
+    [null, msg("Events"), { key: "events" }, [
         ["/events/log", msg("Logs"), [`^/events/log/(?<id>${UUID_PATTERN})$`]],
         ["/events/rules", msg("Notification Rules")],
         ["/events/transports", msg("Notification Transports")],
@@ -80,19 +80,19 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
         ["/events/offboardings", msg("Offboardings"), {enterprise:true}],
         ["/events/exports", msg("Data Exports"), {enterprise:true}]]
     ],
-    [null, msg("Customization"), null, [
+    [null, msg("Customization"), { key: "customization" }, [
         ["/policy/policies", msg("Policies")],
         ["/core/property-mappings", msg("Property Mappings")],
         ["/blueprints/instances", msg("Blueprints")],
         ["/files", msg("Files")],
         ["/policy/reputation", msg("Reputation scores")]],
     ],
-    [null, msg("Flows and Stages"), null, [
+    [null, msg("Flows and Stages"), { key: "flows-stages" }, [
         ["/flow/flows", msg("Flows"), [`^/flow/flows/(?<slug>${SLUG_PATTERN})$`]],
         ["/flow/stages", msg("Stages")],
         ["/flow/stages/prompts", msg("Prompts")]]
     ],
-    [null, msg("Directory"), null, [
+    [null, msg("Directory"), { key: "directory" }, [
         ["/identity/users", msg("Users"), [`^/identity/users/(?<id>${ID_PATTERN})$`]],
         ["/identity/groups", msg("Groups"), [`^/identity/groups/(?<id>${UUID_PATTERN})$`]],
         ["/identity/roles", msg("Roles"), [`^/identity/roles/(?<id>${UUID_PATTERN})$`]],
@@ -103,7 +103,7 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
         ["/core/tokens", msg("Tokens and App passwords")],
         ["/flow/stages/invitations", msg("Invitations")]]
     ],
-    [null, msg("System"), null, [
+    [null, msg("System"), { key: "system" }, [
         ["/core/brands", msg("Brands")],
         ["/crypto/certificates", msg("Certificates")],
         ["/outpost/integrations", msg("Outpost Integrations")],
@@ -113,7 +113,7 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
 
 // prettier-ignore
 export const createAdminSidebarEnterpriseEntries = (): readonly SidebarEntry[] => [
-    [null, msg("Enterprise"), null, [
+    [null, msg("Enterprise"), { key: "enterprise" }, [
         ["/enterprise/licenses", msg("Licenses"), null]
     ],
-]]
+]];

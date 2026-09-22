@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,6 +12,7 @@
 
 /**
  * Simplified related target object
+ *
  * @export
  * @interface RelatedTarget
  */
@@ -30,13 +29,7 @@ export interface RelatedTarget {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly pbmUuid: string;
-    /**
-     *
-     */
     readonly label: string;
 }
 

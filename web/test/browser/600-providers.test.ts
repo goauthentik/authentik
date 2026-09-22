@@ -25,7 +25,15 @@ test.describe("Provider Wizard", () => {
         await test.step("Navigate to provider wizard", async () => {
             await expect(dialog, "Dialog is initially closed").toBeHidden();
 
-            await page.getByRole("button", { name: "New Provider" }).click();
+            // Scoped to the toolbar: `Table` renders the create control twice —
+            // once here and once inside the empty state it shows while the rows
+            // are still loading (`renderEmpty`). An unscoped locator matches both
+            // and fails strict mode, which is timing-dependent and so only bites
+            // when the request is slow.
+            await page
+                .locator('[part="toolbar-secondary"]')
+                .getByRole("button", { name: "New Provider" })
+                .click();
 
             await expect(dialog, "Dialog opens after clicking on New Provider").toBeVisible();
 

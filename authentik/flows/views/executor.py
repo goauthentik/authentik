@@ -1,6 +1,7 @@
 """authentik multi-stage authentication engine"""
 
 from copy import deepcopy
+from urllib.parse import urlencode, urlsplit, urlunsplit
 
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -21,6 +22,7 @@ from rest_framework.views import APIView
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.brands.models import Brand
+from authentik.common.oauth.constants import QS_LOGIN_HINT
 from authentik.events.models import Event, EventAction, cleanse_dict
 from authentik.flows.apps import HIST_FLOW_EXECUTION_STAGE_TIME
 from authentik.flows.challenge import (
@@ -510,6 +512,17 @@ class FlowExecutorView(APIView):
 class CancelView(View):
     """View which cancels the currently active plan"""
 
+    def clean_next_url(self, url: str) -> str:
+        """Remove any user identifiers from the URL to prevent loops"""
+        qs_to_remove = [QS_LOGIN_HINT]
+        parts = urlsplit(url)
+        if not any(x in parts.query for x in qs_to_remove):
+            return url
+        query = QueryDict(parts.query, mutable=True)
+        for qs in qs_to_remove:
+            query.pop(qs, None)
+        return urlunsplit(parts._replace(query=urlencode(sorted(query.items()), doseq=True)))
+
     def get(self, request: HttpRequest) -> HttpResponse:
         """View which canels the currently active plan"""
         if SESSION_KEY_PLAN in request.session:
@@ -517,7 +530,8 @@ class CancelView(View):
             LOGGER.debug("Canceled current plan")
         next_url = self.request.GET.get(NEXT_ARG_NAME)
         if next_url and not is_url_absolute(next_url):
-            return redirect(next_url)
+            # Ensure that we get rid of any user identifiers from the URL
+            return redirect(self.clean_next_url(next_url))
         return redirect("authentik_flows:default-invalidation")
 
 

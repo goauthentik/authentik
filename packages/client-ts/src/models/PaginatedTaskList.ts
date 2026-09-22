@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { Task } from "./Task";
 import { TaskFromJSON, TaskToJSON } from "./Task";
 
 /**
- *
  * @export
  * @interface PaginatedTaskList
  */
 export interface PaginatedTaskList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<Task>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

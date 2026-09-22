@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,29 +19,19 @@ import { UserAttributeEnumFromJSON, UserAttributeEnumToJSON } from "./UserAttrib
 
 /**
  * MutualTLSStage Serializer
+ *
  * @export
  * @interface PatchedMutualTLSStageRequest
  */
 export interface PatchedMutualTLSStageRequest {
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     mode?: StageModeEnum;
     /**
-     * Configure certificate authorities to validate the certificate against. This option has a higher priority than the `client_certificate` option on `Brand`.
+     * Configure certificate authorities to validate the certificate against. This option has a
+     * higher priority than the `client_certificate` option on `Brand`.
      */
     certificateAuthorities?: Array<string>;
-    /**
-     *
-     */
     certAttribute?: CertAttributeEnum;
-    /**
-     *
-     */
     userAttribute?: UserAttributeEnum;
 }
 

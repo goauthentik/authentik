@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,13 +12,11 @@
 
 /**
  * Tenant admin group creation request serializer
+ *
  * @export
  * @interface TenantAdminGroupRequestRequest
  */
 export interface TenantAdminGroupRequestRequest {
-    /**
-     *
-     */
     user: string;
 }
 
