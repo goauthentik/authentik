@@ -6,6 +6,8 @@ draft: true
 
 ## Highlights
 
+- **User expiration**: :ak-enterprise Automatically deactivate or delete users who have been inactive for a configurable period, with an optional warning to the user.
+
 ## Breaking changes
 
 ### RAC endpoints are now devices
@@ -95,6 +97,9 @@ A RAC provider signs into devices which are enrolled through the authentik agent
 authentik now disables PostgreSQL's just-in-time (JIT) compilation for its own database user when it starts. In load tests, disabling JIT resolved a slowdown that built up over several hours. PostgreSQL 19 makes the same change to its default.
 
 authentik only changes `jit` while it has PostgreSQL's built-in default, and only for the user that authentik connects as, in the authentik database. If you have set `jit` explicitly, authentik leaves it unchanged. For details, including how to keep JIT enabled, see [authentik disables JIT compilation](../../troubleshooting/postgres/slow-queries.mdx#authentik-disables-jit-compilation).
+### User expiration :ak-enterprise
+
+User expiration rules build on scheduled user offboarding. A rule selects users by group and user type, and schedules an offboarding for anyone who has not logged in within the configured inactivity duration. If a warning period is set, the user is notified before their account expires, and a login before the scheduled time cancels the pending offboarding. If you rely on API tokens for some accounts, note that token usage does not count as activity, so service accounts are excluded by default. For more details, refer to the [user expiration documentation](../../sys-mgmt/user-expiration.mdx).
 
 ## Upgrading
 
