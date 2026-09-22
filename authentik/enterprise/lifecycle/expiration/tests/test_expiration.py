@@ -3,6 +3,7 @@ from threading import Barrier, Thread
 from unittest.mock import patch
 
 from django.db import connection
+from django.db.models import QuerySet
 from django.test import TransactionTestCase
 from django.urls import reverse
 from django.utils.timezone import now
@@ -23,7 +24,7 @@ from authentik.enterprise.lifecycle.offboarding.models import (
 )
 from authentik.enterprise.lifecycle.offboarding.tasks import execute_offboarding
 from authentik.enterprise.tests import enterprise_test
-from authentik.events.models import Event, EventAction
+from authentik.events.models import Event, EventAction, Notification
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
@@ -229,6 +230,7 @@ class TestSelection(ExpirationTestCase):
         self.assertEqual(
             Event.objects.filter(action=EventAction.USER_EXPIRATION_WARNING).count(), 1
         )
+        self.assertEqual(Notification.objects.count(), 1)
 
     def test_policy_bindings_filter_candidates(self):
         rule = self._rule()
@@ -261,9 +263,98 @@ class TestSelection(ExpirationTestCase):
         with patch(SEND_NOTIFICATION) as send:
             rule.apply()
         send.assert_called_once()
+        self.assertFalse(Notification.objects.exists())
+
+    def test_warning_without_transports_is_delivered_locally(self):
+        rule = self._rule(warn_before="days=7")
+        user = _dormant_user(85)
+        rule.apply()
+        event = Event.objects.get(action=EventAction.USER_EXPIRATION_WARNING)
+        notification = Notification.objects.get(user=user, event=event)
+        self.assertEqual(notification.body, event.summary)
+        self.assertFalse(notification.seen)
 
 
 class TestOverlapAndChange(ExpirationTestCase):
+    def test_shortened_duration_updates_owned_row_and_rewarns_once(self):
+        rule = self._rule(warn_before="days=14")
+        user = _dormant_user(85)
+        rule.apply()
+        first = _pending(user)
+        rule.inactivity_duration = "days=80"
+        rule.save()
+        rule.apply()
+        pending = _pending(user)
+        self.assertEqual(pending.pk, first.pk)
+        self.assertEqual(pending.scheduled_at, user.last_login + timedelta(days=80))
+        rule.apply()
+        self.assertEqual(
+            Event.objects.filter(action=EventAction.USER_EXPIRATION_WARNING).count(), 2
+        )
+
+    def test_changed_action_and_revocations_update_owned_row(self):
+        rule = self._rule(action=OffboardingAction.DELETE)
+        user = _dormant_user()
+        rule.apply()
+        rule.action = OffboardingAction.DEACTIVATE
+        rule.revoke_sessions = False
+        rule.revoke_tokens = False
+        rule.save()
+        rule.apply()
+        pending = _pending(user)
+        self.assertEqual(pending.action, OffboardingAction.DEACTIVATE)
+        self.assertFalse(pending.revoke_sessions)
+        self.assertFalse(pending.revoke_tokens)
+        self.assertEqual(
+            Event.objects.filter(action=EventAction.USER_EXPIRATION_WARNING).count(), 2
+        )
+        execute_offboarding(str(pending.pk))
+        user.refresh_from_db()
+        self.assertFalse(user.is_active)
+
+    def test_revisit_rechecks_ownership_and_status_before_writing(self):
+        original_iterator = QuerySet.iterator
+        for change in ("duration", "scope", "cancel"):
+            with self.subTest(change=change):
+                group = Group.objects.create(name=generate_id())
+                loose = self._rule(
+                    group=group, inactivity_duration="days=180", warn_before="days=14"
+                )
+                user = _dormant_user(170)
+                user.groups.add(group)
+                loose.apply()
+                row = _pending(user)
+                tight = self._rule()
+                loose.inactivity_duration = "days=210"
+                loose.save()
+                if change == "scope":
+                    user.groups.remove(group)
+
+                def stale_owned_rows(
+                    queryset, *args, change=change, row=row, tight=tight, **kwargs
+                ):
+                    rows = original_iterator(queryset, *args, **kwargs)
+                    if queryset.model is not UserOffboarding:
+                        return rows
+                    # Simulate a change after discovery, before the row lock is taken.
+                    pks = list(rows)
+                    if change == "cancel":
+                        row.cancel()
+                    else:
+                        tight._tighten_foreign_rows(tight._threshold())
+                    return iter(pks)
+
+                with patch.object(QuerySet, "iterator", stale_owned_rows):
+                    loose._revisit_owned_rows()
+                row.refresh_from_db()
+                if change == "cancel":
+                    self.assertEqual(row.status, OffboardingStatus.CANCELED)
+                    self.assertEqual(row.scheduled_at, user.last_login + timedelta(days=180))
+                else:
+                    self.assertEqual(row.rule, tight)
+                    self.assertEqual(row.status, OffboardingStatus.PENDING)
+                    self.assertEqual(row.scheduled_at, user.last_login + timedelta(days=90))
+
     def test_tighter_rule_takes_over_and_rewarns(self):
         loose = self._rule(inactivity_duration="days=180", warn_before="days=14")
         user = _dormant_user(170)
@@ -420,6 +511,49 @@ class TestWithdrawal(ExpirationTestCase):
 
 
 class TestExecution(ExpirationTestCase):
+    def test_execution_waits_for_revised_expiry_with_or_without_sweep(self):
+        for sweep in (False, True):
+            with self.subTest(sweep=sweep), freeze_time() as clock:
+                group = Group.objects.create(name=generate_id())
+                rule = self._rule(group=group, warn_before="days=14")
+                user = _dormant_user(100)
+                user.groups.add(group)
+                rule.apply()
+                row = _pending(user)
+                rule.inactivity_duration = "days=105"
+                rule.save()
+                if sweep:
+                    rule.apply()
+                execute_offboarding(str(row.pk))
+                user.refresh_from_db()
+                row.refresh_from_db()
+                self.assertTrue(user.is_active)
+                self.assertEqual(row.status, OffboardingStatus.PENDING)
+                self.assertEqual(row.scheduled_at, user.last_login + timedelta(days=105))
+                clock.tick(timedelta(days=5))
+                execute_offboarding(str(row.pk))
+                user.refresh_from_db()
+                self.assertFalse(user.is_active)
+
+    def test_execution_applies_current_action_and_revocations_without_sweep(self):
+        rule = self._rule(action=OffboardingAction.DELETE)
+        user = _dormant_user()
+        rule.apply()
+        row = _pending(user)
+        rule.action = OffboardingAction.DEACTIVATE
+        rule.revoke_sessions = False
+        rule.revoke_tokens = False
+        rule.save()
+        execute_offboarding(str(row.pk))
+        user.refresh_from_db()
+        self.assertFalse(user.is_active)
+        row.refresh_from_db()
+        self.assertEqual(row.status, OffboardingStatus.COMPLETED)
+        self.assertEqual(row.action, OffboardingAction.DEACTIVATE)
+        event = Event.objects.get(action=EventAction.USER_OFFBOARDED)
+        self.assertFalse(event.context["revoke_sessions"])
+        self.assertFalse(event.context["revoke_tokens"])
+
     def test_generated_row_executes_with_rule_context(self):
         rule = self._rule()
         user = _dormant_user()
@@ -531,6 +665,33 @@ class TestAPI(ExpirationTestCase):
         response = self.client.post(
             reverse("authentik_api:userexpirationrule-list"),
             {"name": generate_id(), "inactivity_duration": "days=7", "warn_before": "days=7"},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("warn_before", response.data)
+
+    def test_warn_before_validated_against_default_duration(self):
+        for days in (90, 100):
+            with self.subTest(days=days):
+                response = self.client.post(
+                    reverse("authentik_api:userexpirationrule-list"),
+                    {"name": generate_id(), "warn_before": f"days={days}"},
+                )
+                self.assertEqual(response.status_code, 400)
+                self.assertIn("warn_before", response.data)
+
+    def test_warn_before_shorter_than_default_duration_accepted(self):
+        response = self.client.post(
+            reverse("authentik_api:userexpirationrule-list"),
+            {"name": generate_id(), "warn_before": "days=7"},
+        )
+        self.assertEqual(response.status_code, 201, response.data)
+        self.assertEqual(response.data["inactivity_duration"], "days=90")
+
+    def test_partial_update_validates_against_existing_duration(self):
+        rule = self._rule(inactivity_duration="days=30")
+        response = self.client.patch(
+            reverse("authentik_api:userexpirationrule-detail", kwargs={"pk": rule.pk}),
+            {"warn_before": "days=31"},
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn("warn_before", response.data)
