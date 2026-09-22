@@ -100,6 +100,25 @@ class TestResponseProcessor(TestCase):
         )
 
     @freeze_time("2022-10-14T14:15:00")
+    def test_success_no_name_id_format(self):
+        """Test success with a NameID that has no Format attribute"""
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_success_no_nameid_format.xml").encode()
+                ).decode()
+            },
+        )
+
+        self.source.issuer_override = "https://accounts.google.com/o/saml2?idpid="
+        with patch.object(SAMLSource, "build_full_url", return_value=GOOGLE_ACS_URL):
+            parser = ResponseProcessor(self.source, request)
+            parser.parse()
+            sfm = parser.prepare_flow_manager()
+        self.assertEqual(sfm.user_properties["username"], "jens@goauthentik.io")
+
+    @freeze_time("2022-10-14T14:15:00")
     def test_audience_mismatch(self):
         """Test that an assertion whose audience doesn't match our entity ID is rejected"""
         request = self.factory.post(
