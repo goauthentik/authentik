@@ -54,7 +54,7 @@ A canceled or reactivated user who never logs in again remains exempt indefinite
 
 If several rules apply to the same user, the rule that expires them earliest wins. It takes over the pending offboarding, updates the date and action, and warns the user again. If a rule becomes less strict, for example because its inactivity duration was increased, pending offboardings are moved to the later date without a new warning.
 
-Editing a rule also updates its pending offboardings to use the current inactivity duration, action, and session and token revocation settings. Moving the expiration earlier or changing the action sends a new warning. Execution uses the current settings even if the next rule evaluation has not run yet.
+Editing a rule also updates its pending offboardings to use the current inactivity duration, action, and session and token revocation settings. Moving the expiration earlier or changing the action sends a new warning. Execution uses the current settings even if the next rule evaluation has not run yet. If execution itself discovers that changed settings make the expiration immediately due, authentik proceeds without sending another warning at the same time.
 
 Deleting a rule removes its pending offboardings and keeps completed ones in the audit history.
 
