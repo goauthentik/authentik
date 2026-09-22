@@ -385,3 +385,53 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                 for _ in range(2):
                     expected.update(sha512(b"initial").digest())
                 self.assertEqual(self.write_blueprint(file, alias), expected.hexdigest())
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_removed(self):
+        """Test hash changes when a referenced `!File` that existed disappears"""
+        with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
+            secret_path = Path(TMP) / generate_id()
+            secret_path.write_text("present")
+            reference = f"!File {secret_path}"
+            try:
+                before = self.write_blueprint(file, reference)
+            finally:
+                secret_path.unlink()
+            after = self.write_blueprint(file, reference)
+            self.assertNotEqual(before, after)
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_contents_swapped(self):
+        """Test hash changes when two referenced `!File`s exchange their contents"""
+        with (
+            NamedTemporaryFile(mode="w+", dir=TMP) as first,
+            NamedTemporaryFile(mode="w+", dir=TMP) as second,
+        ):
+            first.write("alpha")
+            first.flush()
+            second.write("beta")
+            second.flush()
+            with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
+                reference = f"[!File {first.name}, !File {second.name}]"
+                before = self.write_blueprint(file, reference)
+                for secret, value in ((first, "beta"), (second, "alpha")):
+                    secret.seek(0)
+                    secret.truncate()
+                    secret.write(value)
+                    secret.flush()
+                after = self.write_blueprint(file, reference)
+                self.assertNotEqual(before, after)
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_cycle_hashed_once(self):
+        """Test a `!File` beside a node that contains itself is folded into the hash
+        exactly once, however many times the cycle could be followed"""
+        with NamedTemporaryFile(mode="w+", dir=TMP) as secret:
+            secret.write("initial")
+            secret.flush()
+            with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
+                cycle = f"&anchor [*anchor, !File {secret.name}]"
+                content = f"version: 1\nentries: []\ncontext:\n  secret: {cycle}\n"
+                expected = sha512(content.encode())
+                expected.update(sha512(b"initial").digest())
+                self.assertEqual(self.write_blueprint(file, cycle), expected.hexdigest())
