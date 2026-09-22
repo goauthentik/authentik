@@ -34,6 +34,8 @@ If you enable **Verify only**, phone numbers enrolled through this stage cannot 
 
 ## Notes
 
+SMS authenticators created through this stage are tied to it, so the stage cannot be deleted while any of those authenticators still exist. Delete the authenticators first, then delete the stage.
+
 ### Twilio
 
 For the Twilio provider, create a messaging service and collect the **Account SID**, **Auth token**, and a usable sender number from the Twilio console.

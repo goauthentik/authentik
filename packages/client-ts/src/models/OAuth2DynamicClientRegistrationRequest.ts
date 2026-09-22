@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,13 +17,11 @@ import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngine
 
 /**
  * Serializer for OAuth2DynamicClientRegistration
+ *
  * @export
  * @interface OAuth2DynamicClientRegistrationRequest
  */
 export interface OAuth2DynamicClientRegistrationRequest {
-    /**
-     *
-     */
     provider: number;
     /**
      * Group to assign to automatically created applications.
@@ -35,9 +31,6 @@ export interface OAuth2DynamicClientRegistrationRequest {
      * Authorization flow applied to dynamically registered clients.
      */
     overrideAuthorizationFlow?: string | null;
-    /**
-     *
-     */
     overrideInvalidationFlow?: string | null;
     /**
      * Scope mappings applied to dynamically registered clients.
@@ -55,9 +48,6 @@ export interface OAuth2DynamicClientRegistrationRequest {
      * If empty, all grant types are allowed.
      */
     allowedGrantTypes?: Array<GrantTypeEnum>;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -22,17 +20,12 @@ import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngine
 
 /**
  * FlowStageBinding Serializer
+ *
  * @export
  * @interface PatchedFlowStageBindingRequest
  */
 export interface PatchedFlowStageBindingRequest {
-    /**
-     *
-     */
     target?: string;
-    /**
-     *
-     */
     stage?: string;
     /**
      * Evaluate policies during the Flow planning process.
@@ -42,16 +35,13 @@ export interface PatchedFlowStageBindingRequest {
      * Evaluate policies when the Stage is presented to the user.
      */
     reEvaluatePolicies?: boolean;
-    /**
-     *
-     */
     order?: number;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
     /**
-     * Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.
+     * Configure how the flow executor should handle an invalid response to a challenge. RETRY
+     * returns the error message and a similar challenge to the executor. RESTART restarts the flow
+     * from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current
+     * context.
      */
     invalidResponseAction?: InvalidResponseActionEnum;
 }

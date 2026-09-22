@@ -1,5 +1,5 @@
 /**
- * @import { SidebarItemConfig } from "@docusaurus/plugin-content-docs/src/sidebars/types.js"
+ * @import {SidebarItemConfig} from "@docusaurus/plugin-content-docs/src/sidebars/types.js"
  */
 
 import categories from "./categories.mjs";
