@@ -10083,6 +10083,11 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
       - $ref: '#/components/parameters/QuerySearch'
       tags:
       - lifecycle
@@ -60709,6 +60714,10 @@ components:
           type: string
           format: uuid
           title: Id
+        pbm_uuid:
+          type: string
+          format: uuid
+          readOnly: true
         name:
           type: string
         enabled:
@@ -60719,6 +60728,10 @@ components:
           nullable: true
           description: Only expire members of this group (including descendant groups).
             Leave empty to apply to every user.
+        group_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialGroup'
+          readOnly: true
         user_types:
           type: array
           items:
@@ -60754,7 +60767,9 @@ components:
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
       required:
+      - group_obj
       - name
+      - pbm_uuid
     UserExpirationRulePreview:
       type: object
       description: Base serializer class which doesn't implement create/update methods
