@@ -42,9 +42,7 @@ def normalize_addresses(addr: Address) -> list[tuple[str, str]] | None:
     """
     if addr is None:
         return None
-    if isinstance(addr, str):
-        return [_normalize_single_address(addr)]
-    if isinstance(addr, tuple):
+    if isinstance(addr, str | tuple):
         return [_normalize_single_address(addr)]
     if isinstance(addr, list):
         if not addr:
