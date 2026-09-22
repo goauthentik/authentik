@@ -23,6 +23,8 @@ pub enum EventActions {
     UserWrite,
     #[serde(rename = "user_offboarded")]
     UserOffboarded,
+    #[serde(rename = "user_expiration_warning")]
+    UserExpirationWarning,
     #[serde(rename = "suspicious_request")]
     SuspiciousRequest,
     #[serde(rename = "password_set")]
@@ -99,6 +101,7 @@ impl std::fmt::Display for EventActions {
             Self::Logout => write!(f, "logout"),
             Self::UserWrite => write!(f, "user_write"),
             Self::UserOffboarded => write!(f, "user_offboarded"),
+            Self::UserExpirationWarning => write!(f, "user_expiration_warning"),
             Self::SuspiciousRequest => write!(f, "suspicious_request"),
             Self::PasswordSet => write!(f, "password_set"),
             Self::SecretView => write!(f, "secret_view"),
