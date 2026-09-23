@@ -44,7 +44,9 @@ For more information, see [Secrets in the API and blueprints](../../sys-mgmt/sec
 
 ### Secrets
 
-Secrets used by providers, sources, stages, and connectors can now be managed under **System** > **Secrets**. Each secret has its own permissions. Text secrets can be rotated through the Admin interface or API. See [Secrets](../../sys-mgmt/secrets/index.mdx).
+Secrets used by providers, sources, stages, and connectors can now be managed under **System** > **Secrets**. Grant access to view or rotate a credential separately from permission to edit the object that uses it. You can reuse a secret across objects and create one directly from a referencing form. Viewing a value and rotating it are audited.
+
+Text secrets can be rotated through the Admin interface or API. Rotation updates authentik only; update external systems separately. See [Secrets](../../sys-mgmt/secrets/index.mdx).
 
 ## Upgrading
 
