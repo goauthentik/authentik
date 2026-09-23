@@ -13521,9 +13521,10 @@
                     "title": "Auth basic user",
                     "description": "Username used for Basic authentication"
                 },
-                "auth_basic_password": {
+                "auth_basic_password_ref": {
                     "type": "string",
-                    "title": "Auth basic password",
+                    "format": "uuid",
+                    "title": "Password",
                     "description": "Password used for Basic authentication"
                 },
                 "auth_oauth": {

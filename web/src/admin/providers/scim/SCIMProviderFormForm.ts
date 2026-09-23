@@ -61,15 +61,15 @@ export function renderAuthBasic(provider?: Partial<SCIMProvider>, errors: Valida
             help=${msg("Username to authenticate with.")}
             input-hint="code"
         ></ak-text-input>
-        <ak-secret-text-input
-            name="authBasicPassword"
+        <ak-secret-search-input
+            name="authBasicPasswordRef"
             label=${msg("Password")}
-            .errorMessages=${errors?.authBasicPassword}
-            ?required=${!provider}
-            ?revealed=${!provider}
-            help=${msg("Password to authenticate with.")}
-            input-hint="code"
-        ></ak-secret-text-input>`;
+            value=${ifPresent(provider?.authBasicPasswordRef ?? undefined)}
+            blankable
+            help=${msg("Password to authenticate with.", {
+                id: "provider.scim.form.basic-password.description",
+            })}
+        ></ak-secret-search-input>`;
 }
 
 export function renderAuthOAuth(provider?: Partial<SCIMProvider>, _errors: ValidationError = {}) {
