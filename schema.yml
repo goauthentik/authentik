@@ -2721,6 +2721,12 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: for_user
+        schema:
+          type: string
+        description: Entitlements assigned to this user, directly or through a group,
+          regardless of the user's access to the application.
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -2922,6 +2928,12 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: for_user
+        schema:
+          type: string
+        description: Entitlements assigned to this user, directly or through a group,
+          regardless of the user's access to the application.
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
