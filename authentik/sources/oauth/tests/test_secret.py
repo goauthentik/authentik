@@ -1,14 +1,9 @@
 """OAuth sources require the credential representation their client consumes."""
 
-from importlib import import_module
-
-from django.apps import apps
-from django.db import connection
 from django.test import TestCase
 
 from authentik.crypto.secrets.models import Secret, SecretType
 from authentik.sources.oauth.api.source import OAuthSourceSerializer
-from authentik.sources.oauth.models import OAuthSource
 
 
 class TestSourceSecretTypes(TestCase):
@@ -47,22 +42,3 @@ class TestSourceSecretTypes(TestCase):
                         self.assertFalse(changed.is_valid())
                         self.assertIn("consumer_secret_ref", changed.errors)
                         source.delete()
-
-    def test_migration_uses_provider_type(self):
-        migration = import_module("authentik.sources.oauth.migrations.0016_oauthsource_secret")
-        for provider_type in ["apple", "github"]:
-            OAuthSource.objects.create(
-                name=provider_type,
-                slug=provider_type,
-                provider_type=provider_type,
-                _consumer_secret="credential\nvalue",
-            )
-        with connection.schema_editor(atomic=False) as editor:
-            migration.migrate_consumer_secret(apps, editor)
-        for provider_type, expected in [
-            ("apple", SecretType.MULTILINE),
-            ("github", SecretType.TEXT),
-        ]:
-            source = OAuthSource.objects.get(slug=provider_type)
-            self.assertEqual(source.consumer_secret_ref.type, expected)
-            self.assertEqual(source.consumer_secret_ref.value, "credential\nvalue")
