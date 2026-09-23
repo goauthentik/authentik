@@ -70,4 +70,10 @@ The required permissions for this integration are documented in the Helm chart:
 
 To connect a remote cluster, install the [`authentik-remote-cluster` Helm chart](https://artifacthub.io/packages/helm/goauthentik/authentik-remote-cluster) in the target cluster and namespace.
 
-After installation, the chart outputs an example kubeconfig file. Create a Kubernetes service connection in authentik and select a secret in **Kubeconfig**. Upload the kubeconfig as a **File** secret, or paste its YAML into a **Multi-line text** secret.
+After installation, the chart outputs an example kubeconfig file. Store this file as an authentik secret and select it when configuring the remote connection:
+
+1. In the Admin interface, go to **System** > **Outpost Integrations**.
+2. Click **New Outpost Integration** and choose **Kubernetes**.
+3. Enter a name and disable **Local connection**.
+4. Beside the **Kubeconfig** selector, click **Create secret**. Upload the kubeconfig as a **File** secret, or paste its YAML into a **Multi-line text** secret.
+5. Select the new secret and save the integration.
