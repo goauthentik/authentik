@@ -22,7 +22,7 @@ if [[ -v BUILD ]]; then
     docker buildx install
     touch lifecycle/container/.env
 
-    docker build --target debug-image -t "${AUTHENTIK_IMAGE}:${AUTHENTIK_TAG}" -f lifecycle/container/Dockerfile .
+    docker build --target debug -t "${AUTHENTIK_IMAGE}:${AUTHENTIK_TAG}" -f lifecycle/container/Dockerfile .
 fi
 
 docker compose -f lifecycle/container/compose.yml up --no-start
