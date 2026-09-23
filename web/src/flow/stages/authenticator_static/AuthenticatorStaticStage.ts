@@ -21,6 +21,14 @@ import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
+/**
+ * Split a token into groups of four, e.g. `abcd-efgh-ijkl`, so it's easier to read back
+ * and type by hand. The backend ignores the hyphens when the token is used.
+ */
+function formatToken(token: string): string {
+    return token.match(/.{1,4}/g)?.join("-") ?? token;
+}
+
 @customElement("ak-stage-authenticator-static")
 export class AuthenticatorStaticStage extends BaseStage<
     AuthenticatorStaticChallenge,
@@ -60,7 +68,7 @@ export class AuthenticatorStaticStage extends BaseStage<
 
                 <ul class="pf-c-form__group token-list">
                     ${this.challenge.codes.map((token) => {
-                        return html`<li>${token}</li>`;
+                        return html`<li>${formatToken(token)}</li>`;
                     })}
                 </ul>
                 <p>${msg("Make sure to keep these tokens in a safe place.")}</p>
