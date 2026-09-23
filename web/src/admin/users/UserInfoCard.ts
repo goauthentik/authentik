@@ -5,6 +5,7 @@ import "#admin/users/UserOffboardingForm";
 import "#admin/users/UserPasswordForm";
 import "#components/ak-status-label";
 import "#elements/forms/ConfirmationForm";
+import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -16,6 +17,8 @@ import { formatUserDisplayName, startAccountLockdown } from "#common/users";
 
 import { AKElement } from "#elements/Base";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
+import { toAdminInterface } from "#elements/router/core/interfaces";
+import { navigate } from "#elements/router/core/navigation";
 import { Timestamp } from "#elements/table/shared";
 
 import { keyValueListStyles, renderKeyValueList } from "#components/KeyValueList";
@@ -27,6 +30,7 @@ import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 import Styles from "#admin/users/UserInfoCard.css";
 
 import {
+    CoreApi,
     LifecycleApi,
     OffboardingActionEnum,
     OffboardingStatusEnum,
@@ -59,6 +63,7 @@ export class UserInfoCard extends AKElement {
     @state()
     protected pendingOffboarding: UserOffboarding | null = null;
 
+    #api = aki(CoreApi);
     #lifecycleApi = aki(LifecycleApi);
 
     static styles: CSSResult[] = [PFButton, PFCard, PFContent, keyValueListStyles, Styles];
@@ -102,6 +107,15 @@ export class UserInfoCard extends AKElement {
         }
 
         return startAccountLockdown(this.user.pk).catch(showAPIErrorMessage);
+    };
+
+    protected deleteUser = async (user: User): Promise<unknown> => {
+        return this.#api.coreUsersDestroy({ id: user.pk });
+    };
+
+    protected handleUserDeleted = (event: Event): void => {
+        event.stopPropagation();
+        navigate(toAdminInterface("identity/users"));
     };
 
     protected cancelOffboarding = async (): Promise<void> => {
@@ -149,6 +163,38 @@ export class UserInfoCard extends AKElement {
                     : nothing
             }
             ${showEnterpriseActions ? this.renderOffboardingButton(user) : nothing}
+            <ak-forms-delete-bulk
+                object-label=${msg("User")}
+                .objects=${[user]}
+                .metadata=${(item: User) => [
+                    { key: msg("Username"), value: item.username },
+                    { key: msg("ID"), value: item.pk.toString() },
+                    { key: msg("UID"), value: item.uid },
+                ]}
+                .usedBy=${(item: User) => this.#api.coreUsersUsedByList({ id: item.pk })}
+                .delete=${this.deleteUser}
+                @ak-refresh=${this.handleUserDeleted}
+            >
+                ${
+                    user.pk === this.currentUserPk
+                        ? html`<div slot="notice" class="pf-c-form__alert">
+                              <div class="pf-c-alert pf-m-inline pf-m-warning">
+                                  <div class="pf-c-alert__icon">
+                                      <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+                                  </div>
+                                  <h4 class="pf-c-alert__title">
+                                      ${msg(
+                                          str`Warning: You are about to delete user ${user.username}, but you are currently logged in as this user. Proceed at your own risk.`,
+                                      )}
+                                  </h4>
+                              </div>
+                          </div>`
+                        : nothing
+                }
+                <button slot="trigger" class="pf-c-button pf-m-danger pf-m-block" type="button">
+                    ${msg("Delete")}
+                </button>
+            </ak-forms-delete-bulk>
             ${
                 showImpersonate
                     ? html`<button
