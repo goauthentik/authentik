@@ -56,5 +56,15 @@ The following variables are available to OAuth source property mappings:
         "nickname": "user",
     }
     ```
-- `client`: An OAuth client object to make requests to the Source with authentication built-in.
-- `token`: A Python dictionary containing OAuth tokens.
+- `client`: The OAuth client for this login. Call `client.do_request(method, url, token=token, **kwargs)` to make an authenticated request to the identity provider. It accepts request options such as `params` and `headers` and returns a `requests.Response`. Call `raise_for_status()` before reading the response if an API error should stop the mapping.
+- `token`: A Python dictionary containing the OAuth tokens for this login. Pass it to `client.do_request` when making an authenticated request.
+
+For example, a user property mapping can retrieve a field that the profile response does not include:
+
+```python
+response = client.do_request("GET", "https://source.company/api/user", token=token)
+response.raise_for_status()
+return {"attributes": {"department": response.json().get("department")}}
+```
+
+Replace the URL and response field with values from your identity provider's API. For a working provider-specific example, see [GitHub organization membership](../../social-logins/github/index.mdx#check-for-membership-of-a-github-organization).
