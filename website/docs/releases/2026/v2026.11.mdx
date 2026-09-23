@@ -32,13 +32,7 @@ During migration, authentik creates a Secret for each existing credential and pr
 The previous credential database columns will be retained until 2027.2 to support downgrades.
 :::
 
-The previous string and JSON API fields, such as `client_secret`, `shared_secret`, `bind_password`, and `token`, have been removed from the API and blueprints. Use the corresponding `_ref` field, such as `client_secret_ref`, `shared_secret_ref`, `bind_password_ref`, or `token_ref`, and point it to a Secret object.
-
-Objects that store multiple credentials use separate Secret references. For example, Kerberos sources use `sync_keytab_ref` and `spnego_ccache_ref`.
-
-In blueprints, define the Secret as a separate entry and reference it using `!KeyOf` or `!Find`. If a text secret's `value` is omitted, authentik generates one server-side.
-
-For more information, see [Secrets in the API and blueprints](../../sys-mgmt/secrets/api-and-blueprints.mdx).
+For more information, see [Secrets](../../sys-mgmt/secrets/index.mdx).
 
 ## New features and improvements
 
