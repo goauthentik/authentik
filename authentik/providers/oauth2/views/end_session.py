@@ -31,6 +31,7 @@ from authentik.providers.oauth2.models import (
     JWTAlgorithms,
     OAuth2LogoutMethod,
     OAuth2Provider,
+    OAuth2SessionLogin,
     RedirectURIMatchingMode,
 )
 from authentik.providers.oauth2.tasks import send_backchannel_logout_request
@@ -166,25 +167,25 @@ class EndSessionView(PolicyAccessView):
                     self.provider, request, session_key
                 )
 
+            login = OAuth2SessionLogin.objects.filter(
+                session=auth_session,
+                provider=self.provider,
+            ).first()
             if (
-                self.provider.logout_method == OAuth2LogoutMethod.BACKCHANNEL
+                login
+                and self.provider.logout_method == OAuth2LogoutMethod.BACKCHANNEL
                 and self.provider.logout_uri
             ):
-                access_token = AccessToken.objects.filter(
-                    user=request.user,
-                    provider=self.provider,
-                    session=auth_session,
-                ).first()
-                if access_token and access_token.id_token:
-                    send_backchannel_logout_request.send(
-                        self.provider.pk,
-                        access_token.id_token.iss,
-                        access_token.id_token.sub,
-                        session_key,
-                    )
-                    # Delete the token to prevent duplicate backchannel logout
-                    # when UserLogoutStage triggers the session deletion signal
-                    access_token.delete()
+                send_backchannel_logout_request.send(
+                    self.provider.pk,
+                    login.iss,
+                    login.sub,
+                    session_key,
+                )
+            if login:
+                # The RP is logged out of this session now. This also prevents a duplicate
+                # logout when UserLogoutStage triggers the logout and session deletion signals
+                login.delete()
 
             if frontchannel_logout_url:
                 context[PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS] = [

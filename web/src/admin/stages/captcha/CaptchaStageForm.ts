@@ -11,6 +11,8 @@ import { Level } from "#elements/Alert";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
+import { AKLabel } from "#components/ak-label";
+
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 import {
     CAPTCHA_PROVIDERS,
@@ -127,8 +129,20 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
     //#region Rendering
 
     protected renderProviderSelector(): SlottedTemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("Provider Type")} name="providerType">
-            <select class="pf-c-form-control" @change=${this.#providerChangeListener}>
+        return html`<ak-form-element-horizontal name="providerType">
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                    htmlFor: "captcha-provider-type",
+                },
+                msg("Provider Type"),
+            )}
+            <select
+                id="captcha-provider-type"
+                class="pf-c-form-control"
+                @change=${this.#providerChangeListener}
+            >
                 ${Array.from(CaptchaProviderKeys, (key) => {
                     const preset = CAPTCHA_PROVIDERS[key];
 

@@ -6,7 +6,7 @@
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { copyAssets } from "../scripts/build-assets.mjs";
+import { copyAssets } from "../scripts/build-assets.ts";
 
 /**
  * @param {TemplateStringsArray} strings

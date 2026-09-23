@@ -2,6 +2,7 @@
  * @file Playwright e2e test helpers.
  */
 
+import { CaptchaFixture } from "#e2e/fixtures/CaptchaFixture";
 import { FormFixture } from "#e2e/fixtures/FormFixture";
 import { LicenseFixture } from "#e2e/fixtures/LicenseFixture";
 import { NavigatorFixture } from "#e2e/fixtures/NavigatorFixture";
@@ -23,6 +24,7 @@ interface E2EFixturesTestScope {
     pointer: PointerFixture;
     form: FormFixture;
     passkey: PasskeyFixture;
+    captcha: CaptchaFixture;
     switcher: UserSwitcherFixture;
 }
 
@@ -49,6 +51,10 @@ export const test = base.extend<E2EFixturesTestScope, E2EWorkerScope>({
 
     pointer: async ({ page }, use, { title: testName }) => {
         await use(new PointerFixture({ page, testName }));
+    },
+
+    captcha: async ({ page, form, pointer, navigator }, use, { title: testName }) => {
+        await use(new CaptchaFixture({ page, testName, form, pointer, navigator }));
     },
 
     passkey: async ({ page, context }, use, { title: testName }) => {
