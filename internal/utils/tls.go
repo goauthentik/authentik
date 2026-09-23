@@ -11,6 +11,7 @@ func GetTLSConfig() *tls.Config {
 	tlsConfig := &tls.Config{
 		MinVersion: tls.VersionTLS12,
 		CurvePreferences: []tls.CurveID{
+			tls.X25519MLKEM768,
 			tls.X25519,
 			tls.CurveP256,
 			tls.CurveP384,
