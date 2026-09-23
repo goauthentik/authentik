@@ -12353,6 +12353,18 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 <trans-unit id="sa9f8a401cf399e4b">
   <source>Altered behavior for usage with GitLab.</source>
 </trans-unit>
+<trans-unit id="s480085c16f6574fd">
+  <source>Username to authenticate with.</source>
+</trans-unit>
+<trans-unit id="sdc5dbccf72670824">
+  <source>Password to authenticate with.</source>
+</trans-unit>
+<trans-unit id="sed2d45e3f811c81d">
+  <source>Basic</source>
+</trans-unit>
+<trans-unit id="sde5560a5466240ce">
+  <source>Authenticate SCIM requests using HTTP Basic authentication.</source>
+</trans-unit>
 </body>
 </file>
 </xliff>

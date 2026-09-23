@@ -295,6 +295,8 @@ A configuration error occurs, for example during the authorization of an applica
 
 Logged when any model is created/updated/deleted, including the user that sent the request.
 
+You can use these events in notification rule expression policies to automate actions, such as [creating LDAP users from authentik events](./notification_rule_expression_policies.mdx#create-ldap-users-from-authentik-events).
+
 :::info
 Starting with authentik 2024.2, when a valid enterprise license is installed, these entries will contain additional audit data, including which fields were changed with this event, their previous values and their new values.
 :::
