@@ -289,8 +289,10 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
         for label, reference in (
             ("path from a mapping", f'!File {{path: "{TMP}/fallback"}}'),
             ("path no syscall can take", '!File "\\0"'),
+            ("path outside the filesystem encoding", '!File "\\ud800"'),
             ("sequence containing itself", "&anchor [*anchor]"),
             ("mapping containing itself", "&anchor {key: *anchor}"),
+            ("two anchors containing each other", "&outer [{inner: &inner [*outer]}, *inner]"),
         ):
             with (
                 self.subTest(label),
