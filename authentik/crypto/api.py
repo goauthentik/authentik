@@ -36,7 +36,11 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import UserTypes
 from authentik.crypto.apps import MANAGED_KEY
-from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
+from authentik.crypto.builder import (
+    CertificateBuilder,
+    KeyAlgorithmUnavailableError,
+    PrivateKeyAlg,
+)
 from authentik.crypto.models import CertificateKeyPair, KeyType
 from authentik.events.models import Event, EventAction
 from authentik.rbac.decorators import permission_required
@@ -250,12 +254,17 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
                 subject_alt_names=sans,
                 validity_days=int(body.validated_data["validity_days"]),
             )
-        except ValueError as exc:
+        except KeyAlgorithmUnavailableError as exc:
             # Raised when the selected algorithm cannot be generated in the current OpenSSL
-            # configuration, for example ML-DSA under the validated FIPS provider
+            # configuration, for example ML-DSA under the validated FIPS provider. We hopefully
+            # can delete this once we have proper support with python and OpenSSL with FIPS enabled.
             LOGGER.warning("Failed to generate certificate keypair", error=str(exc))
             raise ValidationError(
-                {"alg": [_("The selected algorithm is not supported in the current configuration.")]}
+                {
+                    "alg": [
+                        _("The selected algorithm is not supported in the current configuration.")
+                    ]
+                }
             ) from exc
         instance = builder.save()
         serializer = self.get_serializer(instance)

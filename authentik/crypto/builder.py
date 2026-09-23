@@ -34,6 +34,11 @@ PKCS8_ONLY_KEY_TYPES = (
 )
 
 
+class KeyAlgorithmUnavailableError(ValueError):
+    """The selected key algorithm cannot be generated in the current OpenSSL configuration,
+    for example ML-DSA under a FIPS provider that predates it."""
+
+
 class PrivateKeyAlg(models.TextChoices):
     """Algorithm to create private key with"""
 
@@ -101,10 +106,7 @@ class CertificateBuilder:
         try:
             return key_classes[self.alg].generate()
         except InternalError as exc:
-            raise ValueError(
-                "ML-DSA keys are not available in the current OpenSSL configuration. "
-                "The validated FIPS provider does not implement ML-DSA."
-            ) from exc
+            raise KeyAlgorithmUnavailableError(self.alg) from exc
 
     def build(
         self,
