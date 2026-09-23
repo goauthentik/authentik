@@ -66,10 +66,8 @@ class BlueprintFile:
 
 def iter_file_tags(value: Any, ancestors: frozenset[int] = frozenset()) -> Generator[File]:
     """Find all `!File` tags in a loaded blueprint, including tags used as arguments
-    of other tags. Anchors and aliases let a node contain itself, so a node already on
-    the path from the root is not descended into again; a node shared by two disjoint
-    routes is not its own ancestor and is still walked from each of them, as it is
-    without this check."""
+    of other tags. A node is not descended into again below itself; a node reached by
+    several routes is visited once per route."""
     if id(value) in ancestors:
         return
     ancestors = ancestors | {id(value)}
@@ -88,34 +86,23 @@ def iter_file_tags(value: Any, ancestors: frozenset[int] = frozenset()) -> Gener
 
 
 def blueprint_hash(content: str) -> str:
-    """Hash a blueprint's content, including the contents of the files it references with
-    `!File` tags. Those files are not part of the blueprint itself, so hashing the content
-    alone means a changed file (such as a rotated secret mounted into the container) is
-    never detected as a change and the blueprint is never re-applied."""
+    """Hash a blueprint's content and the contents of the files it references with
+    `!File` tags"""
     hasher = sha512(content.encode())
     try:
         raw_blueprint = load(content, BlueprintLoader)
     except YAMLError:
         return hasher.hexdigest()
     for tag in iter_file_tags(raw_blueprint):
-        # `File.__init__` assigns `path` only for scalar and sequence nodes, so a `!File`
-        # built from any other node has no `path` attribute at all, and a path taken from
-        # a nested tag is a tag rather than a string. Neither can be read without an entry
-        # and a blueprint. Hashing must never fail on a blueprint that can be loaded, so
-        # skip them; the tag's own content is part of the content hashed above. Read the
-        # attribute defensively - the check itself must not be what raises.
+        # Mapping-node tags have no path; nested tags cannot be resolved here
         path = getattr(tag, "path", None)
         if not isinstance(path, str):
             continue
         try:
             referenced = Path(path).read_bytes()
         except OSError, ValueError:
-            # The file can't be read - `ValueError` for a path no syscall can take, such
-            # as one containing a null byte - so the tag resolves to its default value,
-            # which is part of the content hashed above
+            # Unreadable references contribute only their blueprint source text
             continue
-        # Only the referenced contents need digesting; the path itself is a substring of
-        # the content already hashed above
         hasher.update(sha512(referenced).digest())
     return hasher.hexdigest()
 
