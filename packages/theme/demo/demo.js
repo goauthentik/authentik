@@ -1,5 +1,5 @@
 const CSS_URL = "./index.css";
-const DARK_SELECTOR = 'html[data-theme="dark"]';
+const DARK_THEME = "dark";
 
 const clamp = (v) => Math.min(1, Math.max(0, v));
 
@@ -333,16 +333,30 @@ const PROSE =
 
 const blocks = parseStylesheet(await fetch(CSS_URL).then((r) => r.text()));
 
-/** The unconditional :root block — the canonical token list, in order. */
+// The unconditional :root block — the canonical token list, in order. */
 const rootBlock = blocks.find((b) => b.path.length === 1 && b.path[0].includes(":root"));
 if (!rootBlock) throw new Error(`no top-level :root block in ${CSS_URL}`);
 
 const TOKENS = rootBlock.decls;
+
+// Styleframe emits a theme as a list of selectors, and we've got several. Check them all.
+const isThemeSelector = (selector, theme) => {
+    const branches = new Set([`.${theme}-theme`, `[data-theme="${theme}"]`]);
+    return selector.split(",").some((branch) => branches.has(branch.trim()));
+};
+
 const darkNames = new Set(
     blocks
-        .filter((b) => b.path.at(-1) === DARK_SELECTOR)
+        .filter((b) => isThemeSelector(b.path.at(-1) ?? "", DARK_THEME))
         .flatMap((b) => b.decls.map((d) => d.name)),
 );
+
+if (!darkNames.size) {
+    console.warn(
+        `[demo] no ${DARK_THEME}-theme block in ${CSS_URL}; every token will read as un-themed`,
+    );
+}
+
 const mediaNames = new Set(
     blocks
         .filter((b) => b.path.some((p) => p.startsWith("@media")))
@@ -622,7 +636,7 @@ function renderShape() {
 
 function renderSurfaces() {
     const planes = byPrefix("--ak-global--color--surface");
-    const shadows = byPrefix("--ak-global--shadow--");
+    const shadows = byPrefix("--ak-global--box-shadow--");
 
     document.getElementById("surface-planes").replaceChildren(
         ...planes.map((token) => {
@@ -811,7 +825,7 @@ function renderAudit() {
             el(
                 "div",
                 {},
-                `${unknownDark.length} token(s) are defined only in ${DARK_SELECTOR}, with no :root default:`,
+                `${unknownDark.length} token(s) are defined only in the ${DARK_THEME} theme, with no :root default:`,
                 el(
                     "ul",
                     {},

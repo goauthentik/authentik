@@ -101,7 +101,6 @@
         "build:assets": "node ./build.mjs",
         "build:demo": "node ./build-demo.mjs",
         "build:dtcg": "styleframe dtcg export --config styleframe.config.ts --output dist/dtcg --collection authentik",
-        "build:format": "oxfmt --write ./dist",
         "build:src": "tsgo -p .",
         "check": "run-s lint:check format:check lint-output",
         "clean": "rimraf ./public",
@@ -118,7 +117,7 @@
     },
     "wireit": {
         "build": {
-            "command": "run-s build:src build:assets build:dtcg build:format",
+            "command": "run-s build:src build:assets build:dtcg",
             "files": [
                 "src/**/*.ts",
                 "build.mjs",
