@@ -68,11 +68,15 @@ export function variableType(
     ref: ConditionVariableRef,
 ): ValueType | null {
     const variable = findVariable(catalog, ref.key);
+
     if (!variable) return null;
+
     if (variable.type.kind === ConditionTypeKindEnum.Any) {
         if (!ref.cast) return null;
+
         return { kind: ref.cast as ConditionTypeKindEnum };
     }
+
     return variable.type;
 }
 
@@ -81,6 +85,7 @@ export function operatorsFor(
     type: ValueType | null,
 ): ConditionOperator[] {
     if (!catalog || !type) return [];
+
     return catalog.operators.filter((operator) => operator.kinds.includes(type.kind));
 }
 
@@ -98,6 +103,7 @@ export function operandType(
 ): ValueType | null {
     if (!operator || !type) return null;
     const any: ValueType = { kind: ConditionTypeKindEnum.Any };
+
     switch (operator.operand) {
         case ConditionOperandShapeEnum.Same:
             return type;
@@ -123,7 +129,9 @@ export function operandType(
 
 export function isTextual(type: ValueType | null): boolean {
     if (!type) return false;
+
     if (type.kind === ConditionTypeKindEnum.List) return isTextual(type.item ?? null);
+
     return type.kind === ConditionTypeKindEnum.String || type.kind === ConditionTypeKindEnum.Enum;
 }
 
@@ -136,11 +144,13 @@ export function factsForTarget(
 ): Set<string> | null {
     if (!catalog || !target) return null;
     const found = catalog.targets.find((t: ConditionTarget) => t.model === target);
+
     return found ? new Set(found.facts) : null;
 }
 
 export function isAvailable(variable: ConditionVariable, facts: Set<string> | null): boolean {
     if (!facts) return true;
+
     return variable.requires.some((fact) => facts.has(fact));
 }
 
@@ -154,11 +164,14 @@ export function unavailableVariables(
 ): string[] {
     if (!facts || !catalog) return [];
     const result = new Set<string>();
+
     const check = (ref?: ConditionVariableRef | null) => {
         if (!ref) return;
         const variable = findVariable(catalog, ref.key);
+
         if (variable && !isAvailable(variable, facts)) result.add(variable.key);
     };
+
     const walk = (current: ConditionNode) => {
         switch (current.type) {
             case "group":
@@ -173,18 +186,23 @@ export function unavailableVariables(
                 break;
         }
     };
+
     walk(node);
+
     return [...result].sort();
 }
 
 function describeRef(catalog: ConditionCatalog | undefined, ref: ConditionVariableRef) {
     const label = findVariable(catalog, ref.key)?.label ?? ref.key;
+
     return ref.param ? `${label} "${ref.param}"` : label;
 }
 
 function describeValue(value: unknown): string {
     if (Array.isArray(value)) return `[${value.map(describeValue).join(", ")}]`;
+
     if (typeof value === "string") return `"${value}"`;
+
     return String(value);
 }
 
@@ -197,6 +215,7 @@ export function describe(catalog: ConditionCatalog | undefined, node: ConditionN
             if (node.children.length === 0) return "()";
             const joiner = node.op === "all" ? " AND " : " OR ";
             const inner = node.children.map((child) => describe(catalog, child)).join(joiner);
+
             return node.children.length > 1 ? `(${inner})` : inner;
         }
         case "not":
@@ -206,12 +225,15 @@ export function describe(catalog: ConditionCatalog | undefined, node: ConditionN
         case "condition": {
             const operator =
                 catalog?.operators.find((op) => op.name === node.operator)?.label ?? node.operator;
+
             let text = `${describeRef(catalog, node.variable)} ${operator}`;
+
             if (node.value?.type === "literal") {
                 text += ` ${describeValue(node.value.value)}`;
             } else if (node.value?.type === "variable") {
                 text += ` ${describeRef(catalog, node.value.variable)}`;
             }
+
             return text;
         }
         default:

@@ -2,7 +2,6 @@ import "#admin/policies/conditional/ak-condition-builder";
 import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-
 import { aki } from "#common/api/client";
 
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
@@ -90,8 +89,9 @@ export class ConditionalPolicyForm extends BasePolicyForm<ConditionalPolicy> {
                         <select class="pf-c-form-control">
                             <option
                                 value=${MissingBehaviorEnum.Fail}
-                                ?selected=${this.instance?.missingBehavior !==
-                                MissingBehaviorEnum.False}
+                                ?selected=${
+                                    this.instance?.missingBehavior !== MissingBehaviorEnum.False
+                                }
                             >
                                 ${msg("Fail the policy", {
                                     id: "policies.conditional.missing-behavior.fail",
@@ -99,8 +99,9 @@ export class ConditionalPolicyForm extends BasePolicyForm<ConditionalPolicy> {
                             </option>
                             <option
                                 value=${MissingBehaviorEnum.False}
-                                ?selected=${this.instance?.missingBehavior ===
-                                MissingBehaviorEnum.False}
+                                ?selected=${
+                                    this.instance?.missingBehavior === MissingBehaviorEnum.False
+                                }
                             >
                                 ${msg("Treat the condition as false", {
                                     id: "policies.conditional.missing-behavior.false",

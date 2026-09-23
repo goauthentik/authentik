@@ -1926,7 +1926,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/conditional/catalog/`;
+        const urlPath = `/policies/conditional/catalog/`;
 
         return {
             path: urlPath,
@@ -1988,7 +1988,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/conditional/`;
+        const urlPath = `/policies/conditional/`;
 
         return {
             path: urlPath,
@@ -2135,7 +2135,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/conditional/`;
+        const urlPath = `/policies/conditional/`;
 
         return {
             path: urlPath,

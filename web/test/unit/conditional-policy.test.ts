@@ -113,6 +113,7 @@ describe("variableType", () => {
 
     it("requires a cast for variables without a fixed type", () => {
         expect(variableType(catalog, { key: "user.attributes", param: "foo" })).toBeNull();
+
         expect(
             variableType(catalog, { key: "user.attributes", param: "foo", cast: "number" })?.kind,
         ).toBe("number");
@@ -184,6 +185,7 @@ describe("describe", () => {
                 },
             ],
         };
+
         expect(describeNode(catalog, tree)).toBe(
             '(Email is one of ["a", "b"] OR NOT Attribute "dept" equals Email)',
         );
