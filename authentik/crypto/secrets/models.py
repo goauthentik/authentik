@@ -7,11 +7,11 @@ from uuid import uuid4
 
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, models, transaction
-from django.dispatch import Signal
 from django.utils.translation import gettext_lazy as _
 from yaml import YAMLError, safe_load
 
 from authentik.blueprints.models import ManagedModel
+from authentik.crypto.secrets.signals import secret_value_changed, secret_value_validating
 from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
@@ -23,15 +23,16 @@ if TYPE_CHECKING:
 
 
 class SecretType(models.TextChoices):
-    """How a secret value is entered and displayed."""
+    """Input form and generation policy, not a content format.
+
+    Text values can be generated and rotated. Multiline and file values must
+    be supplied by the administrator and are never replaced with random text.
+    Consumers validate content such as JSON or YAML separately.
+    """
 
     TEXT = "text", _("Text")
     MULTILINE = "multiline", _("Multi-line text")
     FILE = "file", _("File")
-
-
-secret_value_changed = Signal()
-secret_value_validating = Signal()
 
 
 def generate_secret_value() -> str:

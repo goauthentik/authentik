@@ -5,7 +5,7 @@ use std::net::IpAddr;
 use axum::{
     body::Body,
     http::{
-        Request, Response, StatusCode,
+        Request, Response, StatusCode, Version,
         header::{
             CONNECTION, Entry, HOST, HeaderMap, HeaderName, HeaderValue, InvalidHeaderValue,
             PROXY_AUTHENTICATE, PROXY_AUTHORIZATION, TE, TRAILER, TRANSFER_ENCODING, UPGRADE,
@@ -137,6 +137,9 @@ fn create_proxied_request<B>(
         });
 
     *request.uri_mut() = forward_uri(forward_url, &request).parse()?;
+    // The upstream client is HTTP/1.1 only; an inbound HTTP/2 request would
+    // otherwise be rejected by the pool with `UserUnsupportedVersion`.
+    *request.version_mut() = Version::HTTP_11;
 
     remove_hop_headers(request.headers_mut());
     remove_connection_headers(request.headers_mut());
@@ -206,7 +209,13 @@ where
 
     // Protocol upgrade: bridge the two upgraded connections.
     let response_upgrade_type = upgrade_type(response.headers());
-    if request_upgrade_type != response_upgrade_type {
+    // Protocol names are case-insensitive (RFC 9110 7.8); a backend answering
+    // `Upgrade: WebSocket` must not be treated as a mismatch.
+    if !request_upgrade_type
+        .as_deref()
+        .zip(response_upgrade_type.as_deref())
+        .is_some_and(|(req, res)| req.eq_ignore_ascii_case(res))
+    {
         return Err(ProxyError::Upgrade(format!(
             "backend switched to {response_upgrade_type:?} when {request_upgrade_type:?} was \
              requested"
@@ -238,4 +247,110 @@ where
     });
 
     Ok(response.map(Body::new))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn request(uri: &str) -> Request<Body> {
+        Request::builder()
+            .uri(uri)
+            .header(HOST, "app.example.com")
+            .body(Body::empty())
+            .expect("valid request")
+    }
+
+    fn proxied(request: Request<Body>, forward_url: &str) -> Request<Body> {
+        create_proxied_request(
+            "203.0.113.7".parse().expect("valid ip"),
+            forward_url,
+            request,
+            None,
+            None,
+        )
+        .expect("request builds")
+    }
+
+    /// Regression test for the HTTP/2-to-upstream defect.
+    ///
+    /// The upstream client is HTTP/1.1 only. If an inbound HTTP/2 request keeps
+    /// its version, `hyper_util`'s pool rejects it with `UserUnsupportedVersion`.
+    #[test]
+    fn proxied_request_is_pinned_to_http_1_1() {
+        let mut inbound = request("https://app.example.com/thing");
+        *inbound.version_mut() = Version::HTTP_2;
+
+        let out = proxied(inbound, "https://10.0.0.1:8443");
+
+        assert_eq!(out.version(), Version::HTTP_11);
+    }
+
+    /// The inbound `Host` names the external hostname and is deliberately
+    /// forwarded (`set_host(false)` on the client). Upstreams that validate it —
+    /// name-based vhosts, and `UniFi` OS, which requires `Origin`'s host to equal
+    /// `Host` on a WebSocket upgrade — depend on this.
+    #[test]
+    fn inbound_host_is_forwarded_unchanged() {
+        let out = proxied(request("https://app.example.com/"), "https://10.0.0.1:8443");
+
+        assert_eq!(
+            out.headers().get(HOST).map(|v| v.to_str().expect("utf-8")),
+            Some("app.example.com"),
+        );
+    }
+
+    /// An explicit `host_header` property mapping still wins over the inbound one.
+    #[test]
+    fn host_override_replaces_inbound_host() {
+        let out = create_proxied_request(
+            "203.0.113.7".parse().expect("valid ip"),
+            "https://10.0.0.1:8443",
+            request("https://app.example.com/"),
+            None,
+            Some("backend.internal"),
+        )
+        .expect("request builds");
+
+        assert_eq!(
+            out.headers().get(HOST).map(|v| v.to_str().expect("utf-8")),
+            Some("backend.internal"),
+        );
+    }
+
+    /// Hop-by-hop headers must not reach the upstream.
+    #[test]
+    fn hop_by_hop_headers_are_removed() {
+        let mut inbound = request("https://app.example.com/");
+        inbound
+            .headers_mut()
+            .insert(TRANSFER_ENCODING, HeaderValue::from_static("chunked"));
+
+        let out = proxied(inbound, "https://10.0.0.1:8443");
+
+        assert!(out.headers().get(TRANSFER_ENCODING).is_none());
+    }
+
+    /// Protocol names are case-insensitive (RFC 9110 7.8), so a backend
+    /// answering `Upgrade: WebSocket` must not read as a mismatch.
+    #[test]
+    fn upgrade_type_comparison_is_case_insensitive() {
+        let mut headers = HeaderMap::new();
+        headers.insert(CONNECTION, HeaderValue::from_static("Upgrade"));
+        headers.insert(UPGRADE, HeaderValue::from_static("WebSocket"));
+        let response_type = upgrade_type(&headers);
+
+        let mut headers = HeaderMap::new();
+        headers.insert(CONNECTION, HeaderValue::from_static("upgrade"));
+        headers.insert(UPGRADE, HeaderValue::from_static("websocket"));
+        let request_type = upgrade_type(&headers);
+
+        assert!(
+            request_type
+                .as_deref()
+                .zip(response_type.as_deref())
+                .is_some_and(|(req, res)| req.eq_ignore_ascii_case(res)),
+            "differently-cased websocket tokens must compare equal",
+        );
+    }
 }

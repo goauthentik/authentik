@@ -60,7 +60,7 @@ COPY ./SECURITY.md /work/
 RUN  --mount=type=bind,target=/work/packages/docusaurus-config/,src=./packages/docusaurus-config/ \
     pnpm run build
 
-FROM docker.io/library/nginx:1.31.6-trixie@sha256:63a925a5a2927ec6415e39390b2f6041407c92b70f22b2c9ba71b797d6881d81
+FROM docker.io/library/nginx:1.31.6-trixie@sha256:908dc23e643a1447dbfb2e189ed268bfde6a51a5bf9a34d3dd3440a24f58ccf7
 LABEL org.opencontainers.image.authors="Authentik Security Inc." \
     org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
     org.opencontainers.image.description="authentik product documentation" \

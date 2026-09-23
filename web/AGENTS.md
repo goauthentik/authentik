@@ -91,7 +91,7 @@ scripts/        # Build scripts (esbuild config, localization)
 - `src/elements/Interface.ts` — Base interface class with context management
 - `src/common/global.ts` — Global authentik config and state
 - `src/flow/FlowExecutor.ts` — Flow execution engine
-- `scripts/build-web.mjs` — Main ESBuild configuration
+- `scripts/build-web.ts` — Main ESBuild configuration
 
 ### Conventions
 
