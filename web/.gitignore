@@ -32,6 +32,8 @@ lib-cov
 # Coverage directory used by tools like istanbul
 coverage
 playwright-report
+# Local visual comparison store (scripts/visual.ts)
+.visual/
 playwright-traces
 test-results
 *.lcov

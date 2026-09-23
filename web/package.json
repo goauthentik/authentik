@@ -66,6 +66,7 @@
         "test": "vitest",
         "test:e2e": "playwright test",
         "test:unit": "vitest run",
+        "test:visual": "node scripts/visual.ts",
         "tsc": "wireit",
         "watch": "run-s build-locales bundler:watch"
     },
@@ -141,7 +142,10 @@
             "command": "storybook build",
             "env": {
                 "NODE_OPTIONS": "--max_old_space_size=8192"
-            }
+            },
+            "dependencies": [
+                "build-locales"
+            ]
         },
         "tsc": {
             "command": "tsgo -p .",
