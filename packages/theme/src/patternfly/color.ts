@@ -17,7 +17,7 @@ usePfColor(instance, {
     "light-200": "@color.ink.pin-dark.muted",
     "light-300": "@color.ink.pin-dark.subtle",
     "dark-100": "@color.ink.pin-light",
-    "dark-200": "@color.ink.pin-light",
+    "dark-200": "@color.ink.pin-light.muted",
     "dark-300": "@color.ink.pin-light",
 });
 

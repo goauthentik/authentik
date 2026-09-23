@@ -27,7 +27,8 @@ export const colors = useColorDesignTokens(instance, {
     "ink.muted":  "#6a6e73",  // Color-200, helper text, de-emphasized text
     "ink.subtle": "#8a8d90",  // Faintest ink, Color-400
 
-    "ink.pin-light": "#151515",
+    "ink.pin-light":       "#151515",
+    "ink.pin-light.muted": "#6a6e73",
 
     "ink.pin-dark":        "#ffffff",
     "ink.pin-dark.muted":  "#f0f0f0",
