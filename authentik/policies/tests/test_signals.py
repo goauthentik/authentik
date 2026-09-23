@@ -115,3 +115,70 @@ class TestInvalidatePolicyCache(TestCase):
 
         mock_cache.keys.assert_any_call(f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}_*")
         mock_cache.delete_many.assert_any_call(["policy-cache-key"])
+
+
+class TestInvalidateUserApplicationCacheMembership(TestCase):
+    """Test application-cache invalidation for group membership changes."""
+
+    def test_user_side_add_invalidates_all_list_variants(self):
+        """Adding a group through ``user.groups`` invalidates that user only."""
+        user = _FakeUser()
+        with mock.patch.object(signals, "cache") as mock_cache:
+            mock_cache.keys.return_value = ["cached-page", "cached-launch-page"]
+
+            signals.invalidate_user_application_cache_membership(
+                sender=object,
+                instance=user,
+                action="post_add",
+                reverse=False,
+                pk_set={2},
+            )
+
+        mock_cache.keys.assert_called_once_with(f"{signals.user_app_cache_key(user.pk)}/*")
+        mock_cache.delete_many.assert_called_once_with(["cached-page", "cached-launch-page"])
+
+    def test_group_side_remove_invalidates_affected_users(self):
+        """Removing users through ``group.users`` invalidates each affected user."""
+        with mock.patch.object(signals, "cache") as mock_cache:
+            mock_cache.keys.side_effect = [["user-1-page"], ["user-2-page"]]
+
+            signals.invalidate_user_application_cache_membership(
+                sender=object,
+                instance=object(),
+                action="post_remove",
+                reverse=True,
+                pk_set={1, 2},
+            )
+
+        self.assertEqual(mock_cache.keys.call_count, 2)
+        mock_cache.delete_many.assert_called_once_with(["user-1-page", "user-2-page"])
+
+    def test_group_side_clear_resolves_users_before_clear(self):
+        """Reverse ``clear`` resolves affected users during ``pre_clear``."""
+        group = mock.Mock()
+        group.users.values_list.return_value = [1, 2]
+        with mock.patch.object(signals, "invalidate_user_application_cache") as invalidate:
+            signals.invalidate_user_application_cache_membership(
+                sender=object,
+                instance=group,
+                action="pre_clear",
+                reverse=True,
+                pk_set=None,
+            )
+
+        group.users.values_list.assert_called_once_with("pk", flat=True)
+        invalidate.assert_called_once_with([1, 2])
+
+    def test_unrelated_m2m_phase_does_not_invalidate(self):
+        """Pre-add and post-clear phases do not duplicate invalidation."""
+        with mock.patch.object(signals, "invalidate_user_application_cache") as invalidate:
+            for action in ("pre_add", "pre_remove", "post_clear"):
+                signals.invalidate_user_application_cache_membership(
+                    sender=object,
+                    instance=_FakeUser(),
+                    action=action,
+                    reverse=False,
+                    pk_set={2},
+                )
+
+        invalidate.assert_not_called()

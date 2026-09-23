@@ -5,8 +5,8 @@ from json import loads
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.models import Application, Group
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
@@ -137,6 +137,28 @@ class TestApplicationsAPI(APITestCase):
                 ],
             },
         )
+
+    def test_list_cache_invalidated_after_group_membership_change(self):
+        """Group membership changes invalidate the user's cached application list."""
+        user = create_test_user()
+        group = Group.objects.create(name=generate_id())
+        app = Application.objects.create(name=generate_id(), slug=generate_id())
+        PolicyBinding.objects.create(target=app, group=group, order=0)
+        self.client.force_login(user)
+
+        def listed_slugs() -> set[str]:
+            response = self.client.get(reverse("authentik_api:application-list"))
+            self.assertEqual(response.status_code, 200)
+            return {item["slug"] for item in response.json()["results"]}
+
+        initial = listed_slugs()
+        self.assertIn(self.allowed.slug, initial)
+        self.assertNotIn(app.slug, initial)
+        group.users.add(user)
+        self.assertIn(app.slug, listed_slugs())
+
+        group.users.remove(user)
+        self.assertNotIn(app.slug, listed_slugs())
 
     def test_list_superuser_full_list(self):
         """Test list operation with superuser_full_list"""

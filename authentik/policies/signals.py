@@ -1,8 +1,10 @@
 """authentik policy signals"""
 
+from collections.abc import Iterable
+
 from django.core.cache import cache
 from django.db import connection
-from django.db.models.signals import post_save, pre_delete
+from django.db.models.signals import m2m_changed, post_save, pre_delete
 from django.dispatch import receiver
 from structlog.stdlib import get_logger
 
@@ -14,6 +16,32 @@ from authentik.policies.types import CACHE_PREFIX
 from authentik.root.monitoring import monitoring_set
 
 LOGGER = get_logger()
+
+
+def invalidate_user_application_cache(user_pks: Iterable[int]) -> None:
+    """Invalidate every paginated application-list variant for the given users."""
+    keys = []
+    for user_pk in sorted(user_pks):
+        keys.extend(cache.keys(f"{user_app_cache_key(user_pk)}/*") or [])
+    cache.delete_many(keys)
+
+
+@receiver(m2m_changed, sender=User.groups.through)
+def invalidate_user_application_cache_membership(
+    sender, instance: User | Group, action: str, reverse: bool, pk_set: set | None, **_
+):
+    """Invalidate application access after direct group membership changes."""
+    if action not in ("post_add", "post_remove", "pre_clear"):
+        return
+
+    if not reverse:
+        user_pks = [instance.pk]
+    elif pk_set is not None:
+        user_pks = pk_set
+    else:
+        # ``post_clear`` has no removed PKs, so resolve them before the relation is cleared.
+        user_pks = instance.users.values_list("pk", flat=True)
+    invalidate_user_application_cache(user_pks)
 
 
 @receiver(monitoring_set)
