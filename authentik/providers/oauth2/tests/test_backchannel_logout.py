@@ -385,7 +385,7 @@ class TestBackChannelLogoutSessionDeleted(BackChannelLogoutSessionTestCase):
     def _redeem_code(self, session: AuthenticatedSession | None):
         """Redeem an authorization code issued for `session`"""
         header = b64encode(
-            f"{self.provider.client_id}:{self.provider.client_secret}".encode()
+            f"{self.provider.client_id}:{self.provider.client_secret_ref.value}".encode()
         ).decode()
         code = AuthorizationCode.objects.create(
             code=generate_id(),
