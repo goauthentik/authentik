@@ -47,6 +47,10 @@ To support the integration of Seerr with authentik, you need to create an applic
 
 ## Seerr configuration
 
+:::warning
+If you access Seerr over HTTPS through a reverse proxy, enable proxy support in **Settings** > **Network**. Otherwise, Seerr can send an HTTP redirect URI to authentik.
+:::
+
 :::warning Preview feature
 Seerr OpenID Connect support is currently experimental. Use the `preview-new-oidc` Docker tag and back up your Seerr configuration before changing it.
 :::

@@ -62,6 +62,7 @@ from authentik.providers.oauth2.models import (
     AuthorizationCode,
     GrantType,
     OAuth2Provider,
+    OAuth2SessionLogin,
     RedirectURIMatchingMode,
     ResponseMode,
     ResponseTypes,
@@ -792,6 +793,7 @@ class OAuthFulfillmentStage(StageView):
             token._id_token = dumps(id_token.to_dict())
 
         token.save()
+        OAuth2SessionLogin.record(token, id_token)
 
         # Code parameter must be present if it's Hybrid Flow.
         if self.params.grant_type == GrantType.HYBRID:
