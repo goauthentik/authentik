@@ -20,6 +20,7 @@
 @import "@goauthentik/fonts/icons.css" layer(vendor);
 
 @import "#styles/global/theme/variables.css" layer(theme);
+@import "@goauthentik/theme/index.css" layer(theme);
 @import "#styles/global/reset/scrollbars.css" layer(reset);
 @import "#styles/global/reset/globals.css" layer(reset);
 
