@@ -14,13 +14,27 @@ import { snakeCase } from "change-case";
 const DEFAULT_BRAND_DOMAIN = "authentik-default";
 
 /**
- * The flow seeded by `test/blueprints/test-account-lockdown-flow.yaml`.
+ * The lockdown flow this suite builds for itself.
  *
- * Nothing ships a lockdown flow by default, and the feature is inert until the brand
- * points at one, so the blueprint supplies the flow and its stage and this suite drives
- * the one field an operator actually configures.
+ * Nothing ships a lockdown flow by default and the feature stays inert until a brand
+ * points at one, so the suite creates the flow, its stage, and the binding through the
+ * admin UI before any test runs, then drives the one field an operator configures.
  */
-const LOCKDOWN_FLOW = /test-account-lockdown/;
+const LOCKDOWN_FLOW_SLUG = "test-account-lockdown";
+const LOCKDOWN_FLOW_NAME = "Test - Account lockdown";
+const LOCKDOWN_STAGE_NAME = "test-account-lockdown-stage";
+const LOCKDOWN_FLOW = new RegExp(LOCKDOWN_FLOW_SLUG);
+
+/**
+ * Where the lockdown stage sends a user whose own session it just deleted. Any
+ * unauthenticated flow works; the default authentication flow always exists.
+ *
+ * A string, not a pattern: `selectSearchValue` only types into the control when given
+ * one, and without typing it matches against whichever options the picker happened to
+ * load first. The stage saves silently without this and only fails much later, when a
+ * self-lockdown is denied for having no completion flow.
+ */
+const COMPLETION_FLOW = "default-authentication-flow";
 
 /**
  * The password given to the account each test locks down, so that the lockdown's effect
@@ -46,6 +60,131 @@ function activeStatus(page: Page) {
         .locator("dt", { hasText: /^Active$/ })
         .locator("xpath=following-sibling::dd")
         .getByRole("status");
+}
+
+/**
+ * Create the lockdown flow, its stage, and the binding between them, unless a previous
+ * run already left them behind.
+ *
+ * Driven through the admin UI rather than seeded, so the suite carries its own
+ * prerequisite and does not depend on a blueprint the test runner never applies.
+ */
+async function ensureLockdownFlow(
+    page: Page,
+    form: FormFixture,
+    navigator: NavigatorFixture,
+): Promise<void> {
+    await navigator.navigate("/if/admin/flow/flows");
+
+    // `form.search` retries for ~15s before throwing. On a fresh instance that cost is
+    // paid once, for the whole suite, and it keeps the probe on the sanctioned fixture
+    // rather than a hand-rolled table query.
+    const alreadySeeded = await test.step("Look for an existing lockdown flow", () =>
+        form
+            .search(LOCKDOWN_FLOW_SLUG)
+            .then(() => true)
+            .catch(() => false));
+
+    if (!alreadySeeded) {
+        await test.step("Create the lockdown flow", async () => {
+            const dialog = page.getByRole("dialog", { name: "New Flow" });
+
+            // The probe leaves the table filtered to nothing, and its empty state offers
+            // a second "New Flow" button beside the toolbar's.
+            await page.getByRole("button", { name: "New Flow" }).first().click();
+            await expect(dialog, "New Flow dialog opens").toBeVisible();
+
+            await series(
+                [form.fill, "Flow Name", LOCKDOWN_FLOW_NAME, dialog],
+                [form.fill, "Title", "Account lockdown", dialog],
+                [form.fill, "Slug", LOCKDOWN_FLOW_SLUG, dialog],
+            );
+
+            await dialog.locator("select#designation").selectOption("stage_configuration");
+            // The stage deletes the target's sessions, so the flow must not require an
+            // authenticated session of its own.
+            await dialog.locator("select#authentication").selectOption("none");
+
+            await dialog.getByRole("button", { name: "Create Flow" }).click();
+            await expect(dialog, "New Flow dialog closes").toBeHidden({ timeout: 15_000 });
+        });
+    }
+
+    await test.step("Open the lockdown flow", async () => {
+        const row = await form.search(LOCKDOWN_FLOW_SLUG);
+
+        await row.getByRole("link").first().click();
+
+        await expect(page.locator("ak-flow-view"), "Flow detail page opens").toBeVisible({
+            timeout: 15_000,
+        });
+
+        await page.getByRole("tab", { name: "Stage Bindings" }).click();
+    });
+
+    const binding = page.getByRole("row", { name: new RegExp(LOCKDOWN_STAGE_NAME) });
+
+    // Checked separately from the flow: a run interrupted between creating the flow and
+    // binding its stage leaves a flow that exists but does nothing, and the suite would
+    // then skip setup and fail much later on an inert lockdown.
+    const alreadyBound = await binding
+        .first()
+        .waitFor({ state: "visible", timeout: 5_000 })
+        .then(() => true)
+        .catch(() => false);
+
+    if (alreadyBound) return;
+
+    await test.step("Create and bind the lockdown stage", async () => {
+        const dialog = page.getByRole("dialog", { name: "New Stage Wizard" });
+
+        await page
+            .getByRole("button", { name: /Create or bind/i })
+            .first()
+            .click();
+
+        await expect(dialog, "Stage wizard opens").toBeVisible();
+
+        // Slotted content keeps Playwright from considering the radio visible, the same
+        // reason `300-users.test.ts` forces its "Internal" click. Choosing a type
+        // advances the wizard on its own.
+        await dialog
+            .getByRole("radio", { name: "Account Lockdown Stage", exact: true })
+            .click({ force: true });
+
+        // Suffixed, so a partially-completed earlier run cannot collide on the stage
+        // name and bounce the wizard back with a uniqueness error.
+        const stageName = `${LOCKDOWN_STAGE_NAME}-${IDGenerator.randomID(6)}`;
+
+        await test.step("Describe the stage", async () => {
+            await form.fill("Stage Name", stageName, dialog);
+            await form.selectSearchValue("Completion flow", COMPLETION_FLOW, dialog);
+
+            await dialog.getByRole("button", { name: "Next" }).click();
+        });
+
+        await test.step("Bind it to the flow", async () => {
+            // The wizard creates the stage on leaving the previous step but does not
+            // carry it into the binding, and the picker's options were fetched before it
+            // existed — so pass the name as a string, which types into the search select
+            // and refetches, rather than a pattern that only filters what is loaded.
+            // Addressed by placeholder: the visible "Stage" label is loose text with no
+            // association to the control, so a "Stage" name match lands on the previous
+            // step's "Stage Name" box, which the wizard keeps mounted.
+            await form.selectSearchValue(/Select a stage/i, stageName, dialog);
+
+            // Order and policy mode keep their defaults. "Create" rather than "Next":
+            // this is the wizard's last step.
+            await dialog.getByRole("button", { name: "Create", exact: true }).click();
+        });
+
+        await expect(dialog, "Stage wizard closes").toBeHidden({ timeout: 15_000 });
+
+        await expect(
+            page.getByRole("row", { name: new RegExp(stageName) }),
+            "Stage is bound to the lockdown flow",
+        ).toBeVisible({ timeout: 15_000 });
+    });
 }
 
 test.describe("Account lockdown", () => {
@@ -77,6 +216,10 @@ test.describe("Account lockdown", () => {
             }
 
             test.skip(!licensed, "A valid enterprise license is required");
+
+            await ensureLockdownFlow(page, form, navigator);
+
+            await navigator.navigate("/if/admin/core/brands");
 
             const $brand = await test.step("Find the default brand via search", () =>
                 form.search(DEFAULT_BRAND_DOMAIN, page));

@@ -7,6 +7,10 @@
         "types": ["node"],
         "checkJs": true,
         "allowJs": true,
+        // Build scripts and bundler plugins run straight from source under
+        // Node's type stripping, which does not rewrite `.js` specifiers back
+        // to `.ts`. Their relative imports name the real file on disk.
+        "allowImportingTsExtensions": true,
         "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
         "emitDeclarationOnly": true,
@@ -74,11 +78,6 @@
         // packages/client-ts) into every `tsc -p .` for no benefit.
         "packages/client-ts",
         "packages/sfe",
-        // TODO: @lit/localize-tools v0.8.0 has a nullish coalescing typing error.
-        // Remove when we upgrade past that.
-        "scripts/pseudolocalize.mjs",
-        "scripts/build-locales.mjs",
-
         // TODO: Remove after monorepo cleanup.
         "src/**/*.comp.ts"
     ]
