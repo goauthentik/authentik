@@ -81,9 +81,17 @@ export function IconRotateSecretButton({
         return renderModal(
             html`<p>
                     ${msg(
-                        "This replaces the value for every object using this secret. Update any external systems that use it.",
+                        "This replaces the value in authentik for every object using this secret.",
                         { id: "secret-rotate.confirm.warning" },
                     )}
+                </p>
+                <p>
+                    <strong
+                        >${msg(
+                            "This does not update external systems or software. Update them yourself to use the new value.",
+                            { id: "secret-rotate.confirm.external-systems.description" },
+                        )}</strong
+                    >
                 </p>
                 <p>
                     ${msg(
