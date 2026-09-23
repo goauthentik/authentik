@@ -13,9 +13,12 @@ class AuthentikProviderProxyConfig(ManagedAppConfig):
 
     @ManagedAppConfig.reconcile_tenant
     def proxy_set_defaults(self):
+        from django.db import transaction
+
         from authentik.providers.proxy.models import ProxyProvider
 
         # TODO: figure out if this can be in pre_save + post_save signals
-        for provider in ProxyProvider.objects.all():
-            provider.set_oauth_defaults()
-            provider.save()
+        with transaction.atomic():
+            for provider in ProxyProvider.objects.all().select_for_update():
+                provider.set_oauth_defaults()
+                provider.save()

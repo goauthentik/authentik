@@ -30,7 +30,7 @@ axum-extra = { version = "= 0.12.6", default-features = false, features = [
   "cookie-key-expansion",
 ] }
 base64 = "= 0.23.1"
-clap = { version = "= 4.6.6", features = ["derive", "env"] }
+clap = { version = "= 4.6.7", features = ["derive", "env"] }
 chrono = { version = "0.4.45", features = ["serde"] }
 color-eyre = "= 0.6.5"
 colored = "= 3.1.1"
@@ -40,7 +40,7 @@ config-rs = { package = "config", version = "= 0.15.22", default-features = fals
 ] }
 console-subscriber = "= 0.5.0"
 dotenvy = "= 0.15.7"
-durstr = "= 0.5.1"
+durstr = "= 0.6.0"
 eyre = "= 0.6.14"
 futures = "= 0.3.34"
 glob = "= 0.3.4"
