@@ -31,6 +31,7 @@ class Command(BaseCommand):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         if readline is None:
+            self.stderr.write("readline is not available, line editing and history are disabled")
             return
         histfolder = Path("~").expanduser() / Path(".local/share/authentik")
         histfolder.mkdir(parents=True, exist_ok=True)
