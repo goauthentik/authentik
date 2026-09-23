@@ -37,7 +37,7 @@ class AuthentikCryptoConfig(ManagedAppConfig):
             },
         )
 
-    @ManagedAppConfig.reconcile_tenant
+    @ManagedAppConfig.reconcile
     def managed_jwt_cert(self):
         """Ensure managed JWT certificate"""
         from authentik.crypto.models import CertificateKeyPair
@@ -48,7 +48,7 @@ class AuthentikCryptoConfig(ManagedAppConfig):
         if not cert:
             self._create_update_cert()
 
-    @ManagedAppConfig.reconcile_tenant
+    @ManagedAppConfig.reconcile
     def self_signed(self):
         """Create self-signed keypair"""
         from authentik.crypto.builder import CertificateBuilder
@@ -67,14 +67,14 @@ class AuthentikCryptoConfig(ManagedAppConfig):
             },
         )
 
-    @ManagedAppConfig.reconcile_global
+    @ManagedAppConfig.reconcile
     def tasks_middlewares(self):
         from authentik.crypto.tasks import CertificateWatcherMiddleware
 
         get_broker().add_middleware(CertificateWatcherMiddleware())
 
     @property
-    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+    def schedule_specs(self) -> list[ScheduleSpec]:
         from authentik.crypto.tasks import certificate_discovery
 
         return [

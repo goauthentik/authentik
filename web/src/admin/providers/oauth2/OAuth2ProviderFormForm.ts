@@ -535,7 +535,7 @@ export function renderForm({
                     ></ak-dual-select-dynamic-selected>
                     <p class="pf-c-form__helper-text">
                         ${msg(
-                            "JWTs signed by the selected providers can be used to authenticate to this provider.",
+                            "Selected providers can authenticate to this provider with their JWTs, request its tokens via token exchange, and introspect or revoke them.",
                         )}
                     </p>
                 </ak-form-element-horizontal>

@@ -1,6 +1,7 @@
 import { PageFixture } from "#e2e/fixtures/PageFixture";
 
-import { Page } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
+import type { LitElement } from "lit-element/lit-element.js";
 
 export interface LoginInit {
     username?: string;
@@ -14,6 +15,61 @@ export class NavigatorFixture extends PageFixture {
     constructor(page: Page, testName: string) {
         super({ page, testName });
     }
+
+    public waitForRender = async (): Promise<void> => {
+        await this.page.evaluate(async () => {
+            const isLitElementLike = (element: Element): element is LitElement => {
+                return "updateComplete" in element && !!element.updateComplete;
+            };
+
+            await document.fonts.ready;
+
+            for (let pass = 0; pass < 5; pass++) {
+                const pending: Promise<boolean | void | null>[] = [];
+
+                const visit = (root: Document | ShadowRoot) => {
+                    for (const element of root.querySelectorAll("*")) {
+                        if (isLitElementLike(element)) {
+                            pending.push(element.updateComplete);
+                        }
+
+                        if (element instanceof HTMLImageElement && !element.complete) {
+                            pending.push(element.decode().catch(() => null));
+                        }
+
+                        if (element.shadowRoot) {
+                            visit(element.shadowRoot);
+                        }
+                    }
+                };
+
+                visit(document);
+
+                const results = await Promise.all(pending);
+
+                if (results.every((result) => result !== false)) {
+                    break;
+                }
+            }
+
+            await new Promise((resolve) =>
+                requestAnimationFrame(() => requestAnimationFrame(resolve)),
+            );
+        });
+    };
+
+    public waitForContent = async ({ allowLoading = false } = {}): Promise<void> => {
+        await this.page.waitForLoadState("networkidle");
+
+        if (!allowLoading) {
+            await expect(
+                this.page.getByText("Loading", { exact: true }),
+                "Content finished loading",
+            ).toHaveCount(0);
+        }
+
+        await this.waitForRender();
+    };
 
     /**
      * Wait for the current page to navigate to the given pathname.
