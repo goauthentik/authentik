@@ -266,7 +266,7 @@ ENTRYPOINT [ "dumb-init", "--", "ak" ]
 
 # Stage: Run
 # The default target, so it has to stay last
-FROM runtime-assemble AS final-image
+FROM runtime-assemble AS final
 
 ARG VERSION
 ARG GIT_BUILD_HASH
