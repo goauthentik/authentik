@@ -98,6 +98,30 @@ class TestSecretsAPI(APITestCase):
         self.assertEqual(response.json()["value"], self.secret.value)
         self.assertNotEqual(self.secret.value, previous)
 
+    def test_global_permissions_allow_replacement_and_rotation_disclosure(self):
+        self.user.assign_perms_to_managed_role(
+            [
+                "authentik_crypto_secrets.view_secret",
+                "authentik_crypto_secrets.change_secret",
+                "authentik_crypto_secrets.rotate_secret",
+                "authentik_crypto_secrets.view_secret_value",
+            ]
+        )
+        self.client.force_login(self.user)
+        response = self.client.patch(
+            reverse("authentik_api:secret-detail", kwargs={"pk": self.secret.pk}),
+            {"value": "replacement"},
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        self.secret.refresh_from_db()
+        self.assertEqual(self.secret.value, "replacement")
+        response = self.client.post(
+            reverse("authentik_api:secret-rotate", kwargs={"pk": self.secret.pk})
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        self.secret.refresh_from_db()
+        self.assertEqual(response.json()["value"], self.secret.value)
+
     def test_type_cannot_change_after_creation(self):
         self.client.force_login(self.admin)
         response = self.client.patch(

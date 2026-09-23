@@ -6,7 +6,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
 
-import { modalInvoker } from "#elements/dialogs";
+import { ModalInvokerButton, modalInvoker } from "#elements/dialogs";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -146,7 +146,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
                         : nothing
                 }
             </a>`,
-            html`${item.facts?.data.os?.name} ${item.facts?.data.os?.version}`,
+            html`${item.facts?.data.os ? html`${item.facts?.data.os?.name} ${item.facts?.data.os?.version}` : html`-`}`,
             item.primaryBindingObj ? getPolicyUserGroupRow(item.primaryBindingObj) : html`-`,
             html`${item.accessGroupObj?.name || "-"}`,
             item.facts?.created ? Timestamp(item.facts?.created) : html`-`,
@@ -159,6 +159,10 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
                 </pf-tooltip>
             </button>`,
         ];
+    }
+
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return ModalInvokerButton(EndpointDeviceForm);
     }
 
     renderToolbarSelected() {

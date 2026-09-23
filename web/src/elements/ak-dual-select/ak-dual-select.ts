@@ -1,13 +1,13 @@
 import "./components/ak-dual-select-available-pane.js";
 import "./components/ak-dual-select-controls.js";
 import "./components/ak-dual-select-selected-pane.js";
-import "./components/ak-pagination.js";
-import "./components/ak-search-bar.js";
+import "#elements/Paginator";
 import { AkDualSelectAvailablePane } from "./components/ak-dual-select-available-pane.js";
+import "./components/ak-search-bar.js";
+
 import { AkDualSelectSelectedPane } from "./components/ak-dual-select-selected-pane.js";
 import { globalVariables, mainStyles } from "./components/styles.js";
 import {
-    BasePagination,
     DualSelectEventType,
     DualSelectPair,
     SearchbarEventDetail,
@@ -16,6 +16,7 @@ import {
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 import { AKElement } from "#elements/Base";
+import { pageBounds } from "#elements/Paginator";
 import { CustomEmitterElement, CustomListenerElement } from "#elements/utils/eventEmitter";
 
 import { match } from "ts-pattern";
@@ -78,8 +79,14 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     @property({ type: Array })
     selected: DualSelectPair[] = [];
 
-    @property({ type: Object })
-    pages?: BasePagination;
+    @property({ type: Number, attribute: "item-count" })
+    itemCount = 0;
+
+    @property({ type: Number, attribute: "items-per-page" })
+    itemsPerPage = 20;
+
+    @property({ type: Number })
+    page = 1;
 
     @property({ attribute: "available-label" })
     availableLabel = msg("Available options");
@@ -279,7 +286,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     }
 
     get needPagination() {
-        return (this.pages?.next ?? 0) > 0 || (this.pages?.previous ?? 0) > 0;
+        return pageBounds(this.itemCount, this.itemsPerPage, this.page).totalPages > 1;
     }
 
     //#endregion
@@ -362,7 +369,12 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
                     ></ak-dual-select-available-pane>
                     ${
                         this.needPagination
-                            ? html`<ak-pagination .pages=${this.pages}></ak-pagination>`
+                            ? html`<ak-paginator
+                                  compact
+                                  item-count=${this.itemCount}
+                                  items-per-page=${this.itemsPerPage}
+                                  page=${this.page}
+                              ></ak-paginator>`
                             : nothing
                     }
                 </div>

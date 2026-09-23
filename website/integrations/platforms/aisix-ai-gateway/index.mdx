@@ -1,0 +1,143 @@
+---
+title: Integrate with AISIX AI Gateway
+sidebar_label: AISIX AI Gateway
+support_level: community
+---
+
+## What is AISIX AI Gateway?
+
+> AISIX is an Apache-2.0-licensed open source AI gateway maintained by API7.ai. It accepts OpenAI- and Anthropic-compatible API requests and applies gateway policies before forwarding requests to configured model providers.
+>
+> -- https://api7.ai/ai-gateway
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+- `aisix.company` is the FQDN of the AISIX AI Gateway installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+This guide configures machine-to-machine authentication for workloads calling the open-source AISIX gateway. AISIX validates access tokens issued by authentik and maps each token's `sub` claim to a caller API key, which determines model access and rate limits.
+
+To complete this guide, you need an AISIX installation that loads a `resources.yaml` file, an existing model resource, and `curl` and `jq` installed locally.
+
+## authentik configuration
+
+To support the integration of AISIX with authentik, create an application/provider pair that issues signed access tokens to a machine workload.
+
+### Create an application and provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it is required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect**.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values. Store the client secret in the workload's secret store.
+        - Under **Grant Types**, select only **Client credentials**.
+        - Under **Protocol settings**, select an RSA **Signing Key**. AISIX uses the provider's JSON Web Key Set (JWKS) to verify token signatures.
+    - **Configure Bindings** _(optional)_: after the first token request creates the generated service account, you can add a [binding](/docs/add-secure-apps/bindings-overview/) to restrict access to the application.
+
+3. Click **Submit** to save the application and provider.
+
+### Generate and inspect an access token
+
+Request an access token using the provider's **Client ID** and **Client Secret**. The first request [automatically creates a service account](/docs/add-secure-apps/providers/oauth2/machine_to_machine/#automatic-service-account-creation) for the provider.
+
+```bash
+AUTHENTIK_CLIENT_ID="<Client ID from authentik>"
+AUTHENTIK_CLIENT_SECRET="<Client Secret from authentik>"
+
+TOKEN_RESPONSE="$(curl --silent --show-error --fail \
+  --request POST https://authentik.company/application/o/token/ \
+  --header "Content-Type: application/x-www-form-urlencoded" \
+  --data-urlencode "grant_type=client_credentials" \
+  --data-urlencode "client_id=${AUTHENTIK_CLIENT_ID}" \
+  --data-urlencode "client_secret=${AUTHENTIK_CLIENT_SECRET}" \
+  --data-urlencode "scope=openid")"
+
+ACCESS_TOKEN="$(printf '%s' "${TOKEN_RESPONSE}" | jq --exit-status --raw-output '.access_token')"
+printf '%s' "${ACCESS_TOKEN}" | \
+  jq --raw-input 'split(".")[1] | gsub("-"; "+") | gsub("_"; "/") | @base64d | fromjson'
+```
+
+Confirm that the decoded access token contains these claims:
+
+- `iss`: `https://authentik.company/application/o/<application_slug>/`
+- `sub`: the workload identifier produced by the provider's **Subject mode**; copy the exact value rather than assuming it is the service account username
+- `aud`: the authentik **Client ID**
+- `exp`: a future timestamp
+
+Copy the `sub` value for the AISIX configuration. The issuer must match exactly, including its trailing slash.
+
+## AISIX AI Gateway configuration
+
+Add the following entries to `api_keys` and `oidc_providers` in your existing AISIX resources file. Use the authentik application's **Slug**, the provider's **Client ID**, and the `sub` value that you copied earlier. Preserve your existing resources.
+
+Replace `<aisix_model_alias>` with the `display_name` of an existing AISIX model resource.
+
+```yaml title="/etc/aisix/resources.yaml"
+api_keys:
+    - display_name: authentik-workload
+      key_env: WORKLOAD_FALLBACK_API_KEY
+      allowed_models: ["<aisix_model_alias>"]
+      rate_limit:
+          rps: 5
+      jwt_subject: "<sub from access token>"
+      jwt_provider: authentik
+
+oidc_providers:
+    - name: authentik
+      issuer: "https://authentik.company/application/o/<application_slug>/"
+      audiences: ["<Client ID from authentik>"]
+      jwks_uri: "https://authentik.company/application/o/<application_slug>/jwks/"
+```
+
+Set `WORKLOAD_FALLBACK_API_KEY` to a randomly generated secret value in the gateway process environment. AISIX requires this value to load the caller API key, even when the workload authenticates with access tokens.
+
+:::warning Fallback API key
+This value remains a valid long-lived AISIX credential. Keep it private to the gateway; the workload does not need it. If you rename the environment variable, avoid the reserved `AISIX_` prefix, which AISIX treats as a runtime configuration override.
+:::
+
+With the environment variable set, validate the complete resources file:
+
+```bash
+aisix validate --resources /etc/aisix/resources.yaml
+```
+
+Restart AISIX to load the new environment variable and resources. Ensure that AISIX can reach the authentik JWKS endpoint over HTTPS.
+
+## Configuration verification
+
+Request a fresh access token with the command in [Generate and inspect an access token](#generate-and-inspect-an-access-token), then use it as the bearer token for an AISIX request:
+
+```bash
+curl --silent --show-error --fail-with-body --include \
+  https://aisix.company/v1/chat/completions \
+  --header "Authorization: Bearer ${ACCESS_TOKEN}" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "model": "<aisix_model_alias>",
+    "messages": [
+      {"role": "user", "content": "Reply with the word ready."}
+    ]
+  }'
+```
+
+A successful request returns `200 OK` with a chat completion from the configured model. Request a new access token before the current token expires.
+
+To verify that AISIX enforces the configuration:
+
+- Change the first character in the access token's signature segment and repeat the request. AISIX should return `401` with `jwt_invalid`.
+- Using a valid access token, request an existing model that is not listed in `allowed_models`. AISIX should return `403` without forwarding the request to the model provider.
+
+If AISIX returns `503` with `jwks_unavailable`, check network and TLS access from AISIX to the authentik JWKS endpoint.
+
+## Resources
+
+- [AISIX documentation - JWT authentication](https://docs.api7.ai/ai-gateway/traffic-controls/jwt-authentication)
+- [AISIX documentation - Resource model](https://docs.api7.ai/ai-gateway/models/resource-model)
+- [AISIX documentation - Resources file](https://docs.api7.ai/ai-gateway/reference/resources-file)

@@ -165,7 +165,7 @@ export class FormFixture extends PageFixture {
      * @param pattern The text to match against the search select entry.
      */
     public selectSearchValue = async (
-        fieldLabel: string,
+        fieldLabel: string | RegExp,
         pattern: string | RegExp,
         parent: LocatorContext = this.page,
     ): Promise<void> => {
@@ -186,7 +186,7 @@ export class FormFixture extends PageFixture {
         await control.click();
 
         if (typeof pattern === "string") {
-            this.fill(control, pattern, parent);
+            await this.fill(control, pattern, parent);
         }
 
         const button = this.page

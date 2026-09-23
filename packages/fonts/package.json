@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/fonts",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "The typefaces authentik ships: the RedHat variable faces and the PatternFly icon faces.",
     "license": "MIT AND OFL-1.1 AND CC-BY-4.0",
     "repository": {
@@ -27,6 +27,7 @@
         "access": "public"
     },
     "scripts": {
+        "build": "exit 0",
         "check": "run-s format:check",
         "fix": "run-s format",
         "format": "oxfmt --write .",
