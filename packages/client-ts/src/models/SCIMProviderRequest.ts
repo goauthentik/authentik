@@ -51,7 +51,7 @@ export interface SCIMProviderRequest {
     /**
      * Password used for Basic authentication
      */
-    authBasicPassword?: string;
+    authBasicPasswordRef?: string | null;
     /**
      * OAuth Source used for authentication
      */
@@ -130,8 +130,12 @@ export function SCIMProviderRequestFromJSONTyped(
                 ? undefined
                 : SCIMAuthenticationModeEnumFromJSON(json["auth_mode"]),
         authBasicUser: json["auth_basic_user"] == null ? undefined : json["auth_basic_user"],
-        authBasicPassword:
-            json["auth_basic_password"] == null ? undefined : json["auth_basic_password"],
+        authBasicPasswordRef:
+            json["auth_basic_password_ref"] === undefined
+                ? undefined
+                : json["auth_basic_password_ref"] === null
+                  ? null
+                  : json["auth_basic_password_ref"],
         authOauth:
             json["auth_oauth"] === undefined
                 ? undefined
@@ -180,7 +184,7 @@ export function SCIMProviderRequestToJSONTyped(
         token_ref: value["tokenRef"],
         auth_mode: SCIMAuthenticationModeEnumToJSON(value["authMode"]),
         auth_basic_user: value["authBasicUser"],
-        auth_basic_password: value["authBasicPassword"],
+        auth_basic_password_ref: value["authBasicPasswordRef"],
         auth_oauth: value["authOauth"],
         auth_oauth_params: value["authOauthParams"],
         compatibility_mode: CompatibilityModeEnumToJSON(value["compatibilityMode"]),

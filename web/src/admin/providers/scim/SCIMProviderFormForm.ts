@@ -61,15 +61,15 @@ export function renderAuthBasic(provider?: Partial<SCIMProvider>, errors: Valida
             help=${msg("Username to authenticate with.")}
             input-hint="code"
         ></ak-text-input>
-        <ak-secret-text-input
-            name="authBasicPassword"
+        <ak-secret-search-input
+            name="authBasicPasswordRef"
             label=${msg("Password")}
-            .errorMessages=${errors?.authBasicPassword}
-            ?required=${!provider}
-            ?revealed=${!provider}
-            help=${msg("Password to authenticate with.")}
-            input-hint="code"
-        ></ak-secret-text-input>`;
+            value=${ifPresent(provider?.authBasicPasswordRef ?? undefined)}
+            blankable
+            help=${msg("Password to authenticate with.", {
+                id: "provider.scim.form.basic-password.description",
+            })}
+        ></ak-secret-search-input>`;
 }
 
 export function renderAuthOAuth(provider?: Partial<SCIMProvider>, _errors: ValidationError = {}) {
@@ -117,13 +117,9 @@ export function renderAuth(provider?: Partial<SCIMProvider>, errors: ValidationE
     switch (provider?.authMode) {
         default:
         case SCIMAuthenticationModeEnum.Token:
-<<<<<<< HEAD
             return renderAuthToken(provider);
-=======
-            return renderAuthToken(provider, errors);
         case SCIMAuthenticationModeEnum.Basic:
             return renderAuthBasic(provider, errors);
->>>>>>> refs/rewritten/onto
         case SCIMAuthenticationModeEnum.Oauth:
         case SCIMAuthenticationModeEnum.OauthInteractive:
             return renderAuthOAuth(provider, errors);
