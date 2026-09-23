@@ -4,7 +4,8 @@ from django.core.exceptions import ValidationError
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
-from authentik.crypto.secrets.models import Secret, secret_value_validating
+from authentik.crypto.secrets.models import Secret
+from authentik.crypto.secrets.signals import secret_value_validating
 from authentik.enterprise.providers.google_workspace.models import GoogleWorkspaceProvider
 from authentik.enterprise.providers.google_workspace.tasks import (
     google_workspace_sync_delete_dispatch,

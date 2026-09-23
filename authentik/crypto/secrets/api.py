@@ -39,10 +39,7 @@ class SecretReferenceField(PrimaryKeyRelatedField):
         if (
             request
             and not unchanged
-            and not (
-                request.user.has_perm("authentik_crypto_secrets.view_secret_value")
-                or request.user.has_perm("authentik_crypto_secrets.view_secret_value", secret)
-            )
+            and not request.user.has_perm("authentik_crypto_secrets.view_secret_value", secret)
         ):
             raise PermissionDenied(_("You do not have permission to use this secret."))
         if secret.type not in self.allowed_types:
@@ -74,9 +71,8 @@ class SecretSerializer(ManagedSerializer, ModelSerializer):
         if not instance:
             return value
         request = self.context.get("request")
-        if request and not (
-            request.user.has_perm("authentik_crypto_secrets.rotate_secret")
-            or request.user.has_perm("authentik_crypto_secrets.rotate_secret", instance)
+        if request and not request.user.has_perm(
+            "authentik_crypto_secrets.rotate_secret", instance
         ):
             raise PermissionDenied(_("You do not have permission to replace this value."))
         return value
@@ -185,7 +181,5 @@ class SecretViewSet(UsedByMixin, ModelViewSet):
             value = secret.rotate(request)
         except DjangoValidationError as exc:
             raise ValidationError({"non_field_errors": exc.messages}) from exc
-        can_view = request.user.has_perm("authentik_crypto_secrets.view_secret_value") or (
-            request.user.has_perm("authentik_crypto_secrets.view_secret_value", secret)
-        )
+        can_view = request.user.has_perm("authentik_crypto_secrets.view_secret_value", secret)
         return Response(RotatedSecretSerializer({"value": value if can_view else None}).data)

@@ -20,6 +20,20 @@ export class FormWizardPage<S extends WizardPageState = WizardPageState> extends
     public override activeCallback = async () => {
         this.host.valid = true;
 
+        // A Form renders nothing until `visible`, and that flag is driven by an
+        // IntersectionObserver on the form itself. Rendering nothing leaves the element
+        // 0x0, so the observer never reports it as intersecting and it never becomes
+        // visible -- a step that lands in that state stays blank for good. `ModalForm`
+        // and `ak-modal` set the flag for the same reason when they slot a form in;
+        // nothing did so for a form slotted into a wizard.
+        const form = Iterator.from(this.children).find((childElement) => {
+            return childElement instanceof Form;
+        });
+
+        if (form) {
+            form.visible = true;
+        }
+
         this.activePageCallback(this);
     };
 
