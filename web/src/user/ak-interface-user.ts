@@ -134,18 +134,18 @@ class UserInterface extends WithLicenseSummary(
             // We can't easily check if this user actually has something they can request,
             // that is a semi-expensive request.
             if (requests && canRequest) {
-                navItems.push({ label: msg("Discover"), link: "/requests" });
+                navItems.push({ label: msg("Discover"), link: toUserInterface("requests") });
             }
 
             if (agents && canAgentSelfService) {
-                navItems.push({ label: msg("Agents"), link: "/agents" });
+                navItems.push({ label: msg("Agents"), link: toUserInterface("agents") });
             }
 
             if (!navItems.length) return null;
 
             return html`<ak-nav-tabs
                 class="pf-c-page__header-nav"
-                .items=${[{ label: msg("Applications"), link: "/library" }, ...navItems]}
+                .items=${[{ label: msg("Applications"), link: toUserInterface("library") }, ...navItems]}
             ></ak-nav-tabs>`;
         });
     }
