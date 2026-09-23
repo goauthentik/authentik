@@ -272,14 +272,7 @@ class KerberosSource(IncomingSyncSource):
     @property
     def tempdir(self) -> Path:
         """Get temporary storage for Kerberos files"""
-        path = (
-            Path(gettempdir())
-            / "authentik"
-            / connection.schema_name
-            / "sources"
-            / "kerberos"
-            / str(self.pk)
-        )
+        path = Path(gettempdir()) / "authentik" / "sources" / "kerberos" / str(self.pk)
         path.mkdir(mode=0o700, parents=True, exist_ok=True)
         return path
 

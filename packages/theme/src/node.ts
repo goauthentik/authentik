@@ -18,7 +18,7 @@ import { transpile } from "@styleframe/transpiler";
 // `import { build } from "@goauthentik/theme/build"` (Node-only) from the
 // same package without juggling subpaths.
 export * from "./shared.js";
-export * from "./tokens/index.js";
+export * from "./index.js";
 
 interface BuildOptions {
     /**

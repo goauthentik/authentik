@@ -62,9 +62,12 @@ export class AKStageWizard extends CreateWizard {
 
         if (!bindingForm) return;
 
-        if (context.host.state[createSlot]) {
+        const stage = context.host.state[createSlot] as Stage | undefined;
+
+        if (stage) {
             bindingForm.instance = {
-                stage: (context.host.state[createSlot] as Stage).pk,
+                stage: stage.pk,
+                stageObj: stage,
             } as FlowStageBinding;
         }
     };

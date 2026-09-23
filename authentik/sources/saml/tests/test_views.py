@@ -26,7 +26,7 @@ class TestViews(TestCase):
         self.source = SAMLSource.objects.create(
             name=generate_id(),
             slug=generate_id(),
-            issuer_override="authentik",
+            issuer_override="https://accounts.google.com/o/saml2?idpid=",
             allow_idp_initiated=True,
             pre_authentication_flow=create_test_flow(),
         )
@@ -57,6 +57,25 @@ class TestViews(TestCase):
         )
         plan: FlowPlan = self.client.session.get(SESSION_KEY_PLAN)
         self.assertIsNotNone(plan)
+
+    @freeze_time("2022-10-14T15:00:00")
+    def test_expired_assertion(self):
+        """An expired assertion should return a 400, not an unhandled error"""
+        response = self.client.post(
+            reverse(
+                "authentik_sources_saml:acs",
+                kwargs={
+                    "source_slug": self.source.slug,
+                },
+            ),
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_success.xml").encode()
+                ).decode()
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(b"The SAML assertion is not valid yet or has expired.", response.content)
 
     @freeze_time("2022-10-14T14:15:00")
     def test_enroll_redirect(self):
