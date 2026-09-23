@@ -29,7 +29,7 @@ entries:
     model: authentik_stages_captcha.captchastage
     attrs:
       public_key: 6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
-      secret: !KeyOf default-authentication-flow-captcha-private-key
+      private_key_ref: !KeyOf default-authentication-flow-captcha-private-key
   - identifiers:
       name: default-authentication-identification
     id: default-authentication-identification
