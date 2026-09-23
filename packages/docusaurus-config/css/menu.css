@@ -2,9 +2,16 @@
     --ifm-menu-link-padding-vertical: 0.5em;
 }
 
-.menu__list-item {
+.menu {
     font-family: var(--ifm-heading-font-family);
+    /* Fallback for non-variable supporting browsers */
     font-weight: 400;
+    font-weight: 450;
+}
+
+.menu__list-item.theme-doc-sidebar-item-link-level-1,
+.menu__list-item-collapsible > .menu__link--sublist {
+    font-weight: var(--ifm-font-weight-bold);
 }
 
 .navbar-sidebar__items:not(.navbar-sidebar__items--show-secondary) {
