@@ -26,4 +26,3 @@ export * from "./SourcesApi";
 export * from "./SsfApi";
 export * from "./StagesApi";
 export * from "./TasksApi";
-export * from "./TenantsApi";
