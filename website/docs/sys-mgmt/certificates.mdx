@@ -31,8 +31,11 @@ Not every key algorithm is suitable for every use case. When a certificate is ge
 | Ed25519        | Yes                       | No           | Yes                         |
 | Ed448          | Yes                       | No           | No                          |
 | DSA            | No                        | Yes          | No                          |
+| ML-DSA         | No                        | No           | Yes                         |
 
 Ed25519 and Ed448 are both signed as `EdDSA`. Before selecting one, check that your application supports it, as `EdDSA` is not as widely supported as `RS256`.
+
+ML-DSA (FIPS 204) is a post-quantum signature algorithm, available in the ML-DSA-44, ML-DSA-65, and ML-DSA-87 parameter sets. authentik can generate ML-DSA certificates and serve TLS with them, but browsers and public certificate authorities do not support ML-DSA certificates yet, so they are currently only useful for connections between components you control, such as outposts and mutual TLS with a private certificate authority. ML-DSA certificates are also much larger than RSA or elliptic curve certificates, and outposts must run the same authentik version or newer, as older outposts cannot verify them. When FIPS mode is enabled (`compliance.fips.enabled`), ML-DSA keys cannot be generated, because the validated OpenSSL FIPS provider does not yet implement ML-DSA.
 
 ## Certificate considerations
 
