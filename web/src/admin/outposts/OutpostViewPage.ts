@@ -206,7 +206,10 @@ export class OutpostViewPage extends AKElement {
                 </div>
                 ${this.renderOutpostDeploymentInfo()}
                 <div
-                    class="pf-c-card pf-l-grid__item ${this.outpost?.managed === embeddedOutpostManaged ? "pf-m-12-col" : "pf-m-9-col"}"
+                    class="pf-c-card pf-l-grid__item ${this.outpost?.managed ===
+                    embeddedOutpostManaged
+                        ? "pf-m-12-col"
+                        : "pf-m-9-col"}"
                 >
                     <div class="pf-c-card__title">
                         ${msg("Detailed health (data is cached so may be out of date)")}
