@@ -155,6 +155,11 @@ export interface CoreApplicationEntitlementsDestroyRequest {
 
 export interface CoreApplicationEntitlementsListRequest {
     app?: string;
+    /**
+     * Entitlements assigned to this user, directly or through a group, regardless of the user's
+     * access to the application.
+     */
+    forUser?: string;
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -185,6 +190,11 @@ export interface CoreApplicationEntitlementsPartialUpdateRequest {
 
 export interface CoreApplicationEntitlementsRequestableListRequest {
     app?: string;
+    /**
+     * Entitlements assigned to this user, directly or through a group, regardless of the user's
+     * access to the application.
+     */
+    forUser?: string;
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -1023,6 +1033,10 @@ export class CoreApi extends runtime.BaseAPI {
             queryParameters["app"] = requestParameters["app"];
         }
 
+        if (requestParameters["forUser"] != null) {
+            queryParameters["for_user"] = requestParameters["forUser"];
+        }
+
         if (requestParameters["name"] != null) {
             queryParameters["name"] = requestParameters["name"];
         }
@@ -1185,6 +1199,10 @@ export class CoreApi extends runtime.BaseAPI {
 
         if (requestParameters["app"] != null) {
             queryParameters["app"] = requestParameters["app"];
+        }
+
+        if (requestParameters["forUser"] != null) {
+            queryParameters["for_user"] = requestParameters["forUser"];
         }
 
         if (requestParameters["name"] != null) {
