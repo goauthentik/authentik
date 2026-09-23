@@ -12,7 +12,8 @@ from rest_framework.request import Request
 
 from authentik.core.models import AuthenticatedSession, User
 from authentik.core.signals import login_failed, password_changed, password_hash_changed
-from authentik.crypto.secrets.models import Secret, secret_value_validating
+from authentik.crypto.secrets.models import Secret
+from authentik.crypto.secrets.signals import secret_value_validating
 from authentik.events.models import Event, EventAction, TransportMode
 from authentik.flows.models import Stage
 from authentik.flows.planner import (
