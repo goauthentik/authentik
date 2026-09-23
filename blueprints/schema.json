@@ -2104,6 +2104,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_policies_conditional.conditionalpolicy"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_policies_conditional.conditionalpolicy_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_policies_conditional.conditionalpolicy"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_policies_conditional.conditionalpolicy"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_policies_dummy.dummypolicy"
                         },
                         "id": {
@@ -5970,6 +6010,10 @@
                             "authentik_policies.view_policy_cache",
                             "authentik_policies.view_policybinding",
                             "authentik_policies.view_policybindingmodel",
+                            "authentik_policies_conditional.add_conditionalpolicy",
+                            "authentik_policies_conditional.change_conditionalpolicy",
+                            "authentik_policies_conditional.delete_conditionalpolicy",
+                            "authentik_policies_conditional.view_conditionalpolicy",
                             "authentik_policies_dummy.add_dummypolicy",
                             "authentik_policies_dummy.change_dummypolicy",
                             "authentik_policies_dummy.delete_dummypolicy",
@@ -7368,6 +7412,10 @@
                             "authentik_policies.view_policy_cache",
                             "authentik_policies.view_policybinding",
                             "authentik_policies.view_policybindingmodel",
+                            "authentik_policies_conditional.add_conditionalpolicy",
+                            "authentik_policies_conditional.change_conditionalpolicy",
+                            "authentik_policies_conditional.delete_conditionalpolicy",
+                            "authentik_policies_conditional.view_conditionalpolicy",
                             "authentik_policies_dummy.add_dummypolicy",
                             "authentik_policies_dummy.change_dummypolicy",
                             "authentik_policies_dummy.delete_dummypolicy",
@@ -10939,6 +10987,338 @@
                 }
             }
         },
+        "conditional_policy_node": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "condition"
+                            ],
+                            "title": "Type"
+                        },
+                        "variable": {
+                            "type": "object",
+                            "properties": {
+                                "key": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "title": "Key"
+                                },
+                                "param": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "title": "Param"
+                                },
+                                "cast": {
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "enum": [
+                                        null,
+                                        "string",
+                                        "number",
+                                        "boolean",
+                                        "datetime",
+                                        "ip"
+                                    ],
+                                    "title": "Cast",
+                                    "description": "Type to convert the value to, required for variables of type `any`."
+                                }
+                            },
+                            "required": [
+                                "key"
+                            ],
+                            "title": "Variable"
+                        },
+                        "operator": {
+                            "type": "string",
+                            "enum": [
+                                "is_set",
+                                "is_not_set",
+                                "eq",
+                                "ne",
+                                "in",
+                                "not_in",
+                                "contains",
+                                "starts_with",
+                                "ends_with",
+                                "matches",
+                                "lt",
+                                "lte",
+                                "gt",
+                                "gte",
+                                "between",
+                                "is_true",
+                                "is_false",
+                                "within_last",
+                                "older_than",
+                                "in_network",
+                                "has_item",
+                                "has_any",
+                                "has_all",
+                                "is_empty",
+                                "length_eq",
+                                "length_gt",
+                                "length_lt"
+                            ],
+                            "title": "Operator"
+                        },
+                        "value": {
+                            "$ref": "#/$defs/conditional_policy_operand",
+                            "title": "Value"
+                        },
+                        "options": {
+                            "type": "object",
+                            "properties": {
+                                "case_sensitive": {
+                                    "type": "boolean",
+                                    "title": "Case sensitive"
+                                }
+                            },
+                            "title": "Options"
+                        }
+                    },
+                    "required": [
+                        "type",
+                        "variable",
+                        "operator"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "group"
+                            ],
+                            "title": "Type"
+                        },
+                        "op": {
+                            "type": "string",
+                            "enum": [
+                                "all",
+                                "any"
+                            ],
+                            "title": "Op"
+                        },
+                        "children": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/conditional_policy_node"
+                            },
+                            "title": "Children"
+                        }
+                    },
+                    "required": [
+                        "type",
+                        "op",
+                        "children"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "not"
+                            ],
+                            "title": "Type"
+                        },
+                        "child": {
+                            "$ref": "#/$defs/conditional_policy_node",
+                            "title": "Child"
+                        }
+                    },
+                    "required": [
+                        "type",
+                        "child"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "policy"
+                            ],
+                            "title": "Type"
+                        },
+                        "policy": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Policy"
+                        }
+                    },
+                    "required": [
+                        "type",
+                        "policy"
+                    ]
+                }
+            ]
+        },
+        "conditional_policy_operand": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "literal"
+                            ],
+                            "title": "Type"
+                        },
+                        "value": {
+                            "type": "object",
+                            "additionalProperties": true,
+                            "title": "Value"
+                        }
+                    },
+                    "required": [
+                        "type",
+                        "value"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "variable"
+                            ],
+                            "title": "Type"
+                        },
+                        "variable": {
+                            "type": "object",
+                            "properties": {
+                                "key": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "title": "Key"
+                                },
+                                "param": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "title": "Param"
+                                },
+                                "cast": {
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "enum": [
+                                        null,
+                                        "string",
+                                        "number",
+                                        "boolean",
+                                        "datetime",
+                                        "ip"
+                                    ],
+                                    "title": "Cast",
+                                    "description": "Type to convert the value to, required for variables of type `any`."
+                                }
+                            },
+                            "required": [
+                                "key"
+                            ],
+                            "title": "Variable"
+                        }
+                    },
+                    "required": [
+                        "type",
+                        "variable"
+                    ]
+                }
+            ]
+        },
+        "model_authentik_policies_conditional.conditionalpolicy": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "execution_logging": {
+                    "type": "boolean",
+                    "title": "Execution logging",
+                    "description": "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
+                },
+                "conditions": {
+                    "type": "object",
+                    "properties": {
+                        "version": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 1,
+                            "title": "Version"
+                        },
+                        "root": {
+                            "$ref": "#/$defs/conditional_policy_node",
+                            "title": "Root"
+                        }
+                    },
+                    "required": [
+                        "version",
+                        "root"
+                    ],
+                    "title": "Conditions"
+                },
+                "missing_behavior": {
+                    "type": "string",
+                    "enum": [
+                        "fail",
+                        "false"
+                    ],
+                    "title": "Missing behavior",
+                    "description": "How to handle conditions whose variable is not available in the request."
+                },
+                "failure_message": {
+                    "type": "string",
+                    "title": "Failure message",
+                    "description": "Message shown to the user when the policy does not pass."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_policies_conditional.conditionalpolicy_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_conditionalpolicy",
+                            "change_conditionalpolicy",
+                            "delete_conditionalpolicy",
+                            "view_conditionalpolicy"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_policies_dummy.dummypolicy": {
             "type": "object",
             "properties": {
@@ -11089,6 +11469,7 @@
                         "authentik.admin.files",
                         "authentik.flows",
                         "authentik.outposts",
+                        "authentik.policies.conditional",
                         "authentik.policies.dummy",
                         "authentik.policies.event_matcher",
                         "authentik.policies.expiry",
@@ -11194,6 +11575,7 @@
                         "authentik_outposts.dockerserviceconnection",
                         "authentik_outposts.kubernetesserviceconnection",
                         "authentik_outposts.outpost",
+                        "authentik_policies_conditional.conditionalpolicy",
                         "authentik_policies_dummy.dummypolicy",
                         "authentik_policies_event_matcher.eventmatcherpolicy",
                         "authentik_policies_expiry.passwordexpirypolicy",
@@ -13883,6 +14265,10 @@
                             "authentik_policies.view_policy_cache",
                             "authentik_policies.view_policybinding",
                             "authentik_policies.view_policybindingmodel",
+                            "authentik_policies_conditional.add_conditionalpolicy",
+                            "authentik_policies_conditional.change_conditionalpolicy",
+                            "authentik_policies_conditional.delete_conditionalpolicy",
+                            "authentik_policies_conditional.view_conditionalpolicy",
                             "authentik_policies_dummy.add_dummypolicy",
                             "authentik_policies_dummy.change_dummypolicy",
                             "authentik_policies_dummy.delete_dummypolicy",

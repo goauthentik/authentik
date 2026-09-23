@@ -43,6 +43,8 @@ export const ModelEnum = {
     AuthentikOutpostsDockerserviceconnection: "authentik_outposts.dockerserviceconnection",
     AuthentikOutpostsKubernetesserviceconnection: "authentik_outposts.kubernetesserviceconnection",
     AuthentikOutpostsOutpost: "authentik_outposts.outpost",
+    AuthentikPoliciesConditionalConditionalpolicy:
+        "authentik_policies_conditional.conditionalpolicy",
     AuthentikPoliciesDummyDummypolicy: "authentik_policies_dummy.dummypolicy",
     AuthentikPoliciesEventMatcherEventmatcherpolicy:
         "authentik_policies_event_matcher.eventmatcherpolicy",
