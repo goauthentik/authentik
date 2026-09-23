@@ -7,11 +7,11 @@ from uuid import uuid4
 
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, models, transaction
-from django.dispatch import Signal
 from django.utils.translation import gettext_lazy as _
 from yaml import YAMLError, safe_load
 
 from authentik.blueprints.models import ManagedModel
+from authentik.crypto.secrets.signals import secret_value_changed
 from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
@@ -28,9 +28,6 @@ class SecretType(models.TextChoices):
     TEXT = "text", _("Text")
     MULTILINE = "multiline", _("Multi-line text")
     FILE = "file", _("File")
-
-
-secret_value_changed = Signal()
 
 
 def generate_secret_value() -> str:
