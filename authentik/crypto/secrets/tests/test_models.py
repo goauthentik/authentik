@@ -87,7 +87,7 @@ class TestSecret(TestCase):
         previous_updated = secret.last_updated
         with (
             patch(
-                "authentik.crypto.secrets.models.secret_value_changed.send",
+                "authentik.crypto.secrets.signals.secret_value_changed.send",
                 side_effect=RuntimeError("consumer failed"),
             ),
             self.assertRaises(RuntimeError),
@@ -113,7 +113,7 @@ class TestCommittedSecret(TransactionTestCase):
 
         with (
             patch(
-                "authentik.crypto.secrets.models.secret_value_changed.send",
+                "authentik.crypto.secrets.signals.secret_value_changed.send",
                 side_effect=schedule_failure,
             ),
             self.assertRaises(RuntimeError),

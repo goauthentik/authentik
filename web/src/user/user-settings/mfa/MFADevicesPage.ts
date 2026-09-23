@@ -35,6 +35,8 @@ export class MFADevicesPage extends Table<Device> {
     public override clearOnRefresh = true;
 
     public override label = msg("MFA Devices");
+    public override makeItemKey = (i: Device) => `${i.type}/${i.pk}`;
+
     protected override emptyStateMessage = msg("No MFA devices enrolled.");
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {

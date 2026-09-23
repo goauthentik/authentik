@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/triple-slash-reference */
 /// <reference types="turnstile-types"/>
 import { CaptchaController } from "#flow/stages/captcha/controllers/CaptchaController";
+import { CaptchaVendor, CaptchaVendorGlobal } from "#flow/stages/captcha/shared";
 
 import { TurnstileObject } from "turnstile-types";
-
-import { html } from "lit";
 
 declare global {
     interface Window {
@@ -13,9 +12,15 @@ declare global {
 }
 
 export class TurnstileController extends CaptchaController {
-    public static readonly globalName = "turnstile";
+    public static override readonly vendor = CaptchaVendor.turnstile;
 
-    public prepareURL = (): URL | null => {
+    public static readonly globalName = CaptchaVendorGlobal[CaptchaVendor.turnstile];
+
+    protected static override logPrefix = "turnstile";
+
+    #widgetID: string | null = null;
+
+    public override prepareURL = (): URL | null => {
         const input = this.host.challenge?.jsUrl;
 
         if (!input || !URL.canParse(input)) return null;
@@ -25,7 +30,6 @@ export class TurnstileController extends CaptchaController {
         // Use explicit rendering to prevent Turnstile's 3-hour self-upgrade
         // from calling implicitRenderAll() and duplicating widgets.
         url.searchParams.set("render", "explicit");
-        url.searchParams.set("onload", "onTurnstileReady");
 
         return url;
     };
@@ -39,51 +43,49 @@ export class TurnstileController extends CaptchaController {
     };
 
     /**
-     * Renders the Turnstile captcha frame.
-     *
-     * Uses explicit rendering to avoid Turnstile's self-upgrade mechanism
-     * (every ~3 hours) from calling `implicitRenderAll()` and duplicating widgets.
-     *
      * @remarks
      *
      *   Turnstile will log a warning if the `language` option
      *   is not in lower-case format.
      * @see {@link https://developers.cloudflare.com/turnstile/reference/supported-languages/ Turnstile Supported Languages}
      */
-    public interactive = () => {
-        const siteKey = this.host.challenge?.siteKey ?? "";
-        const theme = this.host.activeTheme;
-        const language = this.host.activeLanguageTag.toLowerCase();
-
-        return html`<div id="ak-container"></div>
-            <script>
-                function onTurnstileReady() {
-                    turnstile.render("#ak-container", {
-                        sitekey: "${siteKey}",
-                        theme: "${theme}",
-                        language: "${language}",
-                        size: "flexible",
-                        callback,
-                    });
-                    loadListener();
-                }
-            </script>`;
-    };
-
-    public refreshInteractive = async () => {
-        return this.host.iframeRef.value?.contentWindow?.turnstile.reset();
-    };
-
-    public execute = async () => {
-        window.turnstile.render(this.host.captchaDocumentContainer, {
+    public mount = async (container: HTMLElement): Promise<void> => {
+        this.#widgetID = window.turnstile.render(container, {
             "sitekey": this.host.challenge?.siteKey ?? "",
             "callback": this.host.onTokenChange,
             "error-callback": this.#delegateError,
             "theme": this.host.activeTheme,
+            "language": this.host.activeLanguageTag.toLowerCase(),
+            "size": "flexible",
+        });
+
+        this.host.onWidgetLoad();
+    };
+
+    public execute = async (container: HTMLElement): Promise<void> => {
+        this.#widgetID = window.turnstile.render(container, {
+            "sitekey": this.host.challenge?.siteKey ?? "",
+            "callback": this.host.onTokenChange,
+            "error-callback": this.#delegateError,
+            "theme": this.host.activeTheme,
+            "language": this.host.activeLanguageTag.toLowerCase(),
         });
     };
 
-    public refresh = async () => {
-        return window.turnstile.reset();
+    public reset = async (): Promise<void> => {
+        if (this.#widgetID === null) {
+            this.logger.warn("Skipping reset: no widget rendered");
+
+            return;
+        }
+
+        window.turnstile.reset(this.#widgetID);
     };
+
+    public override unmount(): void {
+        if (this.#widgetID === null) return;
+
+        window.turnstile.remove(this.#widgetID);
+        this.#widgetID = null;
+    }
 }
