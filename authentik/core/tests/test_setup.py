@@ -6,6 +6,8 @@ from django.contrib.auth.hashers import make_password
 from django.urls import reverse
 from rest_framework.exceptions import ValidationError
 
+from authentik.admin.flags import patch_flag
+from authentik.admin.utils import get_system_settings
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.apps import Setup
 from authentik.core.models import Token, TokenIntents, User
@@ -13,8 +15,6 @@ from authentik.flows.models import Flow
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.root.signals import post_startup, pre_startup
-from authentik.tenants.flags import patch_flag
-from authentik.tenants.utils import get_current_tenant
 
 
 class TestSetup(FlowTestCase):
@@ -129,7 +129,7 @@ class TestSetup(FlowTestCase):
         user = User.objects.get(username="akadmin")
         self.assertTrue(user.check_password(pw))
 
-        self.assertEqual(get_current_tenant().base_url, "https://authentik.company")
+        self.assertEqual(get_system_settings().base_url, "https://authentik.company")
 
     @apply_blueprint("default/flow-oobe.yaml")
     @apply_blueprint("system/bootstrap.yaml")
@@ -163,7 +163,7 @@ class TestSetup(FlowTestCase):
 
         # Setup did not complete and no base_url was written to the tenant.
         self.assertFalse(Setup.get())
-        self.assertEqual(get_current_tenant().base_url, "")
+        self.assertEqual(get_system_settings().base_url, "")
 
     @patch_flag(Setup, False)
     @apply_blueprint("default/flow-oobe.yaml")
@@ -242,4 +242,4 @@ class TestSetup(FlowTestCase):
             post_startup.send(sender=self)
 
         self.assertFalse(Setup.get())
-        warning.assert_any_call("Failed to apply bootstrap blueprint", tenant="public")
+        warning.assert_any_call("Failed to apply bootstrap blueprint")
