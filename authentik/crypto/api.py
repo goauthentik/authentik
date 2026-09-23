@@ -253,7 +253,10 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         except ValueError as exc:
             # Raised when the selected algorithm cannot be generated in the current OpenSSL
             # configuration, for example ML-DSA under the validated FIPS provider
-            raise ValidationError({"alg": [str(exc)]}) from exc
+            LOGGER.warning("Failed to generate certificate keypair", error=str(exc))
+            raise ValidationError(
+                {"alg": [_("The selected algorithm is not supported in the current configuration.")]}
+            ) from exc
         instance = builder.save()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
