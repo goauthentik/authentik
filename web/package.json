@@ -25,18 +25,9 @@
         "#e2e": "./e2e/index.ts",
         "#e2e/*": "./e2e/*.ts",
         "#types/*": "./types/*/index.d.ts",
-        "#*/browser": {
-            "types": "./out/*/browser.d.ts",
-            "import": "./*/browser.js"
-        },
-        "#*/node": {
-            "types": "./out/*/node.d.ts",
-            "import": "./*/node.js"
-        },
-        "#*": {
-            "types": "./out/*/index.d.ts",
-            "import": "./*/index.js"
-        }
+        "#*/browser": "./*/browser.ts",
+        "#*/node": "./*/node.ts",
+        "#*": "./*/index.ts"
     },
     "exports": {
         "./package.json": "./package.json",
@@ -48,26 +39,17 @@
         "./locales/*": "./src/locales/*",
         "./user/*": "./src/user/*",
         "./admin/*": "./src/admin/*",
-        "./*/browser": {
-            "types": "./out/*/browser.d.ts",
-            "import": "./*/browser.js"
-        },
-        "./*/node": {
-            "types": "./out/*/node.d.ts",
-            "import": "./*/node.js"
-        },
-        "./*": {
-            "types": "./out/*/index.d.ts",
-            "import": "./*/index.js"
-        }
+        "./*/browser": "./*/browser.ts",
+        "./*/node": "./*/node.ts",
+        "./*": "./*/index.ts"
     },
     "scripts": {
         "build": "wireit",
-        "build-locales": "node scripts/build-locales.mjs",
+        "build-locales": "node scripts/build-locales.ts",
         "build-proxy": "wireit",
         "build:sfe": "pnpm --filter @goauthentik/web-sfe run build",
         "build:types": "wireit",
-        "bundler:watch": "node scripts/build-web.mjs --watch",
+        "bundler:watch": "node scripts/build-web.ts --watch",
         "check": "run-s lint:check format:check",
         "extract-locales": "lit-localize extract",
         "fix": "run-s lint format",
@@ -78,7 +60,7 @@
         "lint:imports": "knip --config scripts/knip.config.ts",
         "lit-analyse": "wireit",
         "precommit": "wireit",
-        "pseudolocalize": "node ./scripts/pseudolocalize.mjs",
+        "pseudolocalize": "node ./scripts/pseudolocalize.ts",
         "storybook": "storybook dev -p 6006",
         "storybook:build": "wireit",
         "test": "vitest",
@@ -89,7 +71,7 @@
     },
     "wireit": {
         "build": {
-            "command": "${NODE_RUNNER} scripts/build-web.mjs",
+            "command": "${NODE_RUNNER} scripts/build-web.ts",
             "dependencies": [
                 "build-locales"
             ],
@@ -127,7 +109,7 @@
             }
         },
         "build-proxy": {
-            "command": "node scripts/build-web.mjs --styles-only",
+            "command": "node scripts/build-web.ts --styles-only",
             "dependencies": [
                 "build-locales"
             ]
@@ -207,8 +189,8 @@
         "@types/grecaptcha": "^3.0.9",
         "@types/guacamole-common-js": "^1.5.5",
         "@types/node": "catalog:",
-        "@types/react": "^19.2.17",
-        "@types/react-dom": "^19.2.3",
+        "@types/react": "^19.3.0",
+        "@types/react-dom": "^19.3.0",
         "@typescript/native-preview": "7.0.0-dev.20260707.2",
         "@vitest/browser": "catalog:",
         "@vitest/browser-playwright": "catalog:",
@@ -281,9 +263,9 @@
         "@esbuild/linux-x64": "^0.28.1",
         "@goauthentik/oxfmt-config-dev": "link:../packages/oxfmt-config",
         "@goauthentik/oxlint-config-dev": "link:../packages/oxlint-config",
-        "@rollup/rollup-darwin-arm64": "^4.63.1",
-        "@rollup/rollup-linux-arm64-gnu": "^4.63.1",
-        "@rollup/rollup-linux-x64-gnu": "^4.63.1"
+        "@rollup/rollup-darwin-arm64": "^4.63.3",
+        "@rollup/rollup-linux-arm64-gnu": "^4.63.3",
+        "@rollup/rollup-linux-x64-gnu": "^4.63.3"
     },
     "devEngines": {
         "runtime": {
