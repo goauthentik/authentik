@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from pydantic import AnyUrl, BaseModel, ConfigDict, Field, model_validator
 from pydanticscim.group import Group as BaseGroup
+from pydanticscim.group import GroupMember as BaseGroupMember
 from pydanticscim.responses import PatchOperation as BasePatchOperation
 from pydanticscim.responses import PatchRequest as BasePatchRequest
 from pydanticscim.responses import SCIMError as BaseSCIMError
@@ -160,10 +161,25 @@ class Group(BaseGroup):
     schemas: list[str] = [SCIM_GROUP_SCHEMA]
     externalId: str | None = None
     meta: dict | None = None
+    members: list[GroupMember] | None = Field(None, description="A list of members of the Group.")
+
+
+class GroupMember(BaseGroupMember):
+    """Modified GroupMember that allows extra fields"""
+
+    model_config = ConfigDict(extra="allow")
 
 
 class Bulk(BaseBulk):
-    maxOperations: int = Field()
+    # RFC 7644 Section 5 only defines the bulk limits alongside bulk support, so a
+    # service provider that answers `"bulk": {"supported": false}` and nothing else is
+    # conforming. Requiring the field made that response fail validation, which sent
+    # `get_service_provider_config()` to its fallback and reported `patch` and `filter`
+    # as unsupported regardless of what the provider actually advertised.
+    #
+    # 0 is the value the fallback itself uses, and `_patch_chunked` already reads any
+    # value below 1 as "no limit declared".
+    maxOperations: int = Field(default=0)
 
 
 class ServiceProviderConfiguration(BaseServiceProviderConfiguration):
@@ -181,15 +197,17 @@ class ServiceProviderConfiguration(BaseServiceProviderConfiguration):
     @staticmethod
     def default() -> ServiceProviderConfiguration:
         """Get default configuration, which doesn't support any optional features as fallback"""
-        return ServiceProviderConfiguration(
+        config = ServiceProviderConfiguration(
             patch=Patch(supported=False),
             bulk=Bulk(supported=False, maxOperations=0),
             filter=Filter(supported=False),
             changePassword=ChangePassword(supported=False),
             sort=Sort(supported=False),
             authenticationSchemes=[],
-            _is_fallback=True,
         )
+        # Private attributes cannot be set through the constructor
+        config._is_fallback = True
+        return config
 
 
 class PatchOp(StrEnum):
@@ -210,6 +228,7 @@ class PatchRequest(BasePatchRequest):
     """PatchRequest which correctly sets schemas"""
 
     schemas: tuple[str] = ("urn:ietf:params:scim:api:messages:2.0:PatchOp",)
+    Operations: list[PatchOperation]
 
 
 class PatchOperation(BasePatchOperation):

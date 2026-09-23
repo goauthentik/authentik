@@ -15,6 +15,7 @@ from django.core.cache import cache
 from django.db.models.query import QuerySet
 from django.utils.timezone import now
 from jwt import PyJWTError, decode, get_unverified_header
+from jwt.algorithms import ECAlgorithm
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
     ChoiceField,
@@ -37,7 +38,7 @@ from authentik.enterprise.models import (
 from authentik.tenants.utils import get_unique_identifier
 
 CACHE_KEY_ENTERPRISE_LICENSE = "goauthentik.io/enterprise/license"
-CACHE_EXPIRY_ENTERPRISE_LICENSE = 3 * 60 * 60  # 2 Hours
+CACHE_EXPIRY_ENTERPRISE_LICENSE = 12 * 60 * 60  # 12 Hours
 
 
 @lru_cache
@@ -109,13 +110,20 @@ class LicenseKey:
             intermediate.verify_directly_issued_by(get_licensing_key())
         except InvalidSignature, TypeError, ValueError, Error:
             raise ValidationError("Unable to verify license") from None
+        _validate_curve_original = ECAlgorithm._validate_curve
         try:
+            # authentik's license are generated with `algorithm="ES512"` and signed with
+            # a key of curve `secp384r1`. Starting with version 2.11.0, pyjwt enforces the spec, see
+            # https://github.com/jpadilla/pyjwt/commit/5b8622773358e56d3d3c0a9acf404809ff34433a
+            # authentik will change its license generation to `algorithm="ES384"` in 2026.
+            # TODO: remove this when the last incompatible license runs out.
+            ECAlgorithm._validate_curve = lambda *_: True
             body = from_dict(
                 LicenseKey,
                 decode(
                     jwt,
                     our_cert.public_key(),
-                    algorithms=["ES512"],
+                    algorithms=["ES384", "ES512"],
                     audience=get_license_aud(),
                     options={"verify_exp": check_expiry, "verify_signature": check_expiry},
                 ),
@@ -125,6 +133,8 @@ class LicenseKey:
             if unverified["aud"] != get_license_aud():
                 raise ValidationError("Invalid Install ID in license") from None
             raise ValidationError("Unable to verify license") from None
+        finally:
+            ECAlgorithm._validate_curve = _validate_curve_original
         return body
 
     @staticmethod
@@ -209,22 +219,25 @@ class LicenseKey:
                 external_user_count=self.get_external_user_count(),
                 status=self.status(),
             )
-        summary = asdict(self.summary())
-        # Also cache the latest summary for the middleware
-        cache.set(CACHE_KEY_ENTERPRISE_LICENSE, summary, timeout=CACHE_EXPIRY_ENTERPRISE_LICENSE)
         return usage
 
     def summary(self) -> LicenseSummary:
         """Summary of license status"""
         status = self.status()
         latest_valid = datetime.fromtimestamp(self.exp).replace(tzinfo=UTC)
-        return LicenseSummary(
+        summary = LicenseSummary(
             latest_valid=latest_valid,
             internal_users=self.internal_users,
             external_users=self.external_users,
             status=status,
             license_flags=self.license_flags,
         )
+        cache.set(
+            CACHE_KEY_ENTERPRISE_LICENSE,
+            asdict(summary),
+            timeout=CACHE_EXPIRY_ENTERPRISE_LICENSE,
+        )
+        return summary
 
     @staticmethod
     def cached_summary() -> LicenseSummary:

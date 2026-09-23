@@ -19,6 +19,7 @@ from authentik.endpoints.connectors.agent.models import (
     AgentConnector,
     AgentDeviceConnection,
     AgentDeviceUserBinding,
+    AppleIndependentSecureEnclave,
     AppleNonce,
     DeviceAuthenticationToken,
 )
@@ -40,6 +41,15 @@ class TokenView(View):
     device_connection: AgentDeviceConnection
     connector: AgentConnector
 
+    def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        # This is a plain Django View, so DRF's exception handler never runs and a
+        # ValidationError raised below would surface as a 500 instead of a 400.
+        try:
+            return super().dispatch(request, *args, **kwargs)
+        except ValidationError as exc:
+            LOGGER.warning("Invalid Platform SSO token request", exc=exc)
+            return HttpResponse(status=400)
+
     def post(self, request: HttpRequest) -> HttpResponse:
         assertion = request.POST.get("assertion", request.POST.get("request"))
         if not assertion:
@@ -50,6 +60,8 @@ class TokenView(View):
         except PyJWTError as exc:
             LOGGER.warning("failed to parse JWT", exc=exc)
             raise ValidationError("Invalid request") from None
+        if self.jwt_request is None:
+            return HttpResponse(status=400)
         version = request.POST.get("platform_sso_version")
         grant_type = request.POST.get("grant_type")
         handler_func = (
@@ -65,7 +77,7 @@ class TokenView(View):
         LOGGER.debug("sending to handler", handler=handler_func)
         return handler()
 
-    def validate_request_token(self, assertion: str) -> dict[str, Any]:
+    def validate_request_token(self, assertion: str) -> dict[str, Any] | None:
         # Decode without validation to get header
         header = get_unverified_header(assertion)
         LOGGER.debug("token header", header=header)
@@ -76,6 +88,9 @@ class TokenView(View):
             .select_related("device")
             .first()
         )
+        if not self.device_connection:
+            LOGGER.warning("No device connection found for key ID", kid=expected_kid)
+            return None
         self.connector = AgentConnector.objects.get(pk=self.device_connection.connector.pk)
         LOGGER.debug("got device", device=self.device_connection.device)
 
@@ -96,14 +111,16 @@ class TokenView(View):
         self.remote_nonce = decoded.get("nonce")
 
         # Check that the nonce hasn't been used before
-        nonce = AppleNonce.filter_not_expired(nonce=decoded["request_nonce"]).first()
+        nonce = AppleNonce.objects.filter(nonce=decoded["request_nonce"]).first()
         if not nonce:
             raise ValidationError("Invalid nonce")
         self.nonce = nonce
         nonce.delete()
         return decoded
 
-    def validate_embedded_assertion(self, assertion: str) -> tuple[AgentDeviceUserBinding, dict]:
+    def validate_embedded_assertion(
+        self, assertion: str
+    ) -> tuple[AgentDeviceUserBinding | AppleIndependentSecureEnclave, dict]:
         """Decode an embedded assertion and validate it by looking up the matching device user"""
         decode_unvalidated = get_unverified_header(assertion)
         expected_kid = decode_unvalidated["kid"]
@@ -112,8 +129,13 @@ class TokenView(View):
             target=self.device_connection.device, apple_enclave_key_id=expected_kid
         ).first()
         if not device_user:
-            LOGGER.warning("Could not find device user binding for user")
-            raise ValidationError("Invalid request")
+            independent_user = AppleIndependentSecureEnclave.objects.filter(
+                apple_enclave_key_id=expected_kid
+            ).first()
+            if not independent_user:
+                LOGGER.warning("Could not find device user binding or independent enclave for user")
+                raise ValidationError("Invalid request")
+            device_user = independent_user
         decoded: dict[str, Any] = decode(
             assertion,
             device_user.apple_secure_enclave_key,

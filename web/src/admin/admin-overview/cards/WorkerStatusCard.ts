@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
 
@@ -14,7 +14,7 @@ export class WorkersStatusCard extends AdminStatusCard<Worker[]> {
     public override label = msg("Workers");
 
     getPrimaryValue(): Promise<Worker[]> {
-        return new TasksApi(DEFAULT_CONFIG).tasksWorkersList();
+        return aki(TasksApi).tasksWorkersList();
     }
 
     getStatus(value: Worker[]): Promise<AdminStatus> {
@@ -29,6 +29,7 @@ export class WorkersStatusCard extends AdminStatusCard<Worker[]> {
                 message: html`${msg("Worker with incorrect version connected.")}`,
             });
         }
+
         return Promise.resolve<AdminStatus>({
             icon: "fa fa-check-circle pf-m-success",
         });

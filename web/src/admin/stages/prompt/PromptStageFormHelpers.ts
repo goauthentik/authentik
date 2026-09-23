@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { DualSelectPair } from "#elements/ak-dual-select/types";
 
@@ -14,7 +14,7 @@ const promptToSelect = (p: Prompt) => [
 ];
 
 export async function promptFieldsProvider(page = 1, search = "") {
-    const prompts = await new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsList({
+    const prompts = await aki(StagesApi).stagesPromptPromptsList({
         ordering: "field_name,order",
         pageSize: 20,
         search: search.trim(),
@@ -32,13 +32,16 @@ export function promptFieldsSelector(instanceFields: string[] | undefined) {
         return async (options: DualSelectPair<Prompt>[]) =>
             options.filter(([_0, _1, _2, prompt]: DualSelectPair<Prompt>) => prompt !== undefined);
     }
+
     return async () => {
-        const stages = new StagesApi(DEFAULT_CONFIG);
+        const stages = aki(StagesApi);
+
         const prompts = await Promise.allSettled(
             instanceFields.map((instanceId) =>
                 stages.stagesPromptPromptsRetrieve({ promptUuid: instanceId }),
             ),
         );
+
         return prompts
             .filter((p) => p.status === "fulfilled")
             .map((p) => p.value)
@@ -49,7 +52,7 @@ export function promptFieldsSelector(instanceFields: string[] | undefined) {
 const policyToSelect = (p: Policy) => [p.pk, `${p.name} (${p.verboseName})`, p.name, p];
 
 export async function policiesProvider(page = 1, search = "") {
-    const policies = await new PoliciesApi(DEFAULT_CONFIG).policiesAllList({
+    const policies = await aki(PoliciesApi).policiesAllList({
         ordering: "name",
         pageSize: 20,
         search: search.trim(),
@@ -69,12 +72,14 @@ export function policiesSelector(instancePolicies: string[] | undefined) {
     }
 
     return async () => {
-        const policy = new PoliciesApi(DEFAULT_CONFIG);
+        const policy = aki(PoliciesApi);
+
         const policies = await Promise.allSettled(
             instancePolicies.map((instanceId) =>
                 policy.policiesAllRetrieve({ policyUuid: instanceId }),
             ),
         );
+
         return policies
             .filter((p) => p.status === "fulfilled")
             .map((p) => p.value)

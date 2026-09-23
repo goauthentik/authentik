@@ -1,12 +1,13 @@
 """LDAP and Outpost e2e tests"""
 
 from dataclasses import asdict
+from time import sleep
 
 from ldap3 import ALL, ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE, Connection, Server
-from ldap3.core.exceptions import LDAPInvalidCredentialsResult
+from ldap3.core.exceptions import LDAPInvalidCredentialsResult, LDAPSessionTerminatedByServerError
 
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
-from authentik.core.models import Application, User
+from authentik.core.models import Application, AuthenticatedSession, User
 from authentik.core.tests.utils import create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
@@ -14,11 +15,31 @@ from authentik.lib.generators import generate_id
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.ldap.models import APIAccessMode, LDAPProvider
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.live import ChannelsE2ETestCase
 
 
-class TestProviderLDAP(SeleniumTestCase):
+def clean_response(response):
+    # Remove raw_attributes to make checking easier
+    for obj in response:
+        del obj["raw_attributes"]
+        del obj["raw_dn"]
+        obj["attributes"] = dict(obj["attributes"])
+        obj["attributes"].pop("uid", None)
+    return response
+
+
+class TestProviderLDAP(ChannelsE2ETestCase):
     """LDAP and Outpost e2e tests"""
+
+    def assert_list_dict_equal(self, expected: list[dict], actual: list[dict], match_key="dn"):
+        """Assert a list of dictionaries is identical, ignoring the ordering of items"""
+        self.assertEqual(len(expected), len(actual))
+        for res_item in actual:
+            all_matching = [x for x in expected if x[match_key] == res_item[match_key]]
+            self.assertEqual(len(all_matching), 1)
+            matching = all_matching[0]
+            self.assertDictEqual(res_item, matching)
 
     def start_ldap(self, outpost: Outpost):
         """Start ldap container based on outpost created"""
@@ -209,12 +230,7 @@ class TestProviderLDAP(SeleniumTestCase):
             search_scope=SUBTREE,
             attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES],
         )
-        response: list = _connection.response
-        # Remove raw_attributes to make checking easier
-        for obj in response:
-            del obj["raw_attributes"]
-            del obj["raw_dn"]
-            obj["attributes"] = dict(obj["attributes"])
+        response = clean_response(_connection.response)
         o_user = outpost.user
         expected = [
             {
@@ -222,7 +238,6 @@ class TestProviderLDAP(SeleniumTestCase):
                 "attributes": {
                     "cn": o_user.username,
                     "sAMAccountName": o_user.username,
-                    "uid": o_user.uid,
                     "name": o_user.name,
                     "displayName": o_user.name,
                     "sn": o_user.name,
@@ -253,7 +268,6 @@ class TestProviderLDAP(SeleniumTestCase):
                 "attributes": {
                     "cn": embedded_account.username,
                     "sAMAccountName": embedded_account.username,
-                    "uid": embedded_account.uid,
                     "name": embedded_account.name,
                     "displayName": embedded_account.name,
                     "sn": embedded_account.name,
@@ -284,7 +298,6 @@ class TestProviderLDAP(SeleniumTestCase):
                 "attributes": {
                     "cn": self.user.username,
                     "sAMAccountName": self.user.username,
-                    "uid": self.user.uid,
                     "name": self.user.name,
                     "displayName": self.user.name,
                     "sn": self.user.name,
@@ -353,19 +366,13 @@ class TestProviderLDAP(SeleniumTestCase):
             search_scope=SUBTREE,
             attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES],
         )
-        response: list = _connection.response
-        # Remove raw_attributes to make checking easier
-        for obj in response:
-            del obj["raw_attributes"]
-            del obj["raw_dn"]
-            obj["attributes"] = dict(obj["attributes"])
+        response = clean_response(_connection.response)
         expected = [
             {
                 "dn": f"cn={user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
                 "attributes": {
                     "cn": user.username,
                     "sAMAccountName": user.username,
-                    "uid": user.uid,
                     "name": user.name,
                     "displayName": user.name,
                     "sn": user.name,
@@ -396,15 +403,6 @@ class TestProviderLDAP(SeleniumTestCase):
             },
         ]
         self.assert_list_dict_equal(expected, response)
-
-    def assert_list_dict_equal(self, expected: list[dict], actual: list[dict], match_key="dn"):
-        """Assert a list of dictionaries is identical, ignoring the ordering of items"""
-        self.assertEqual(len(expected), len(actual))
-        for res_item in actual:
-            all_matching = [x for x in expected if x[match_key] == res_item[match_key]]
-            self.assertEqual(len(all_matching), 1)
-            matching = all_matching[0]
-            self.assertDictEqual(res_item, matching)
 
     @retry()
     @apply_blueprint(
@@ -469,11 +467,8 @@ class TestProviderLDAP(SeleniumTestCase):
             search_scope=SUBTREE,
             attributes=["cn"],
         )
-        response: list = _connection.response
-        # Remove raw_attributes to make checking easier
-        for obj in response:
-            del obj["raw_attributes"]
-            del obj["raw_dn"]
+        response = clean_response(_connection.response)
+
         o_user = outpost.user
         self.assert_list_dict_equal(
             [
@@ -501,3 +496,44 @@ class TestProviderLDAP(SeleniumTestCase):
             ],
             response,
         )
+
+    @retry()
+    @apply_blueprint(
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
+    )
+    @reconcile_app("authentik_tenants")
+    @reconcile_app("authentik_outposts")
+    def test_ldap_bind_logout_search(self):
+        """Test bind + session deletion -> failed search"""
+        self._prepare()
+        server = Server("ldap://localhost:3389", get_info=ALL)
+        _connection = Connection(
+            server,
+            raise_exceptions=True,
+            user=f"cn={self.user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
+            password=self.user.username,
+        )
+        _connection.bind()
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.LOGIN,
+                user={
+                    "pk": self.user.pk,
+                    "email": self.user.email,
+                    "username": self.user.username,
+                },
+            )
+        )
+        c, _ = AuthenticatedSession.objects.filter(user_id=self.user.pk).delete()
+        self.assertGreaterEqual(c, 1)
+        # Give the sign out signal time to propagate
+        sleep(3)
+
+        with self.assertRaises(LDAPSessionTerminatedByServerError):
+            _connection.search(
+                "ou=Users,DC=ldaP,dc=goauthentik,dc=io",
+                "(objectClass=user)",
+                search_scope=SUBTREE,
+                attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES],
+            )

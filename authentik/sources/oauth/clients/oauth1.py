@@ -45,7 +45,7 @@ class OAuthClient(BaseOAuthClient):
                 LOGGER.warning(
                     "Unable to fetch access token",
                     exc=exc,
-                    response=exc.response.text if exc.response else str(exc),
+                    response=exc.response.text if exc.response is not None else str(exc),
                 )
                 return None
             return self.parse_raw_token(response.text)
@@ -67,7 +67,7 @@ class OAuthClient(BaseOAuthClient):
             response.raise_for_status()
         except RequestException as exc:
             raise OAuthSourceException(
-                exc.response.text if exc.response else str(exc),
+                exc.response.text if exc.response is not None else str(exc),
             ) from exc
         return response.text
 

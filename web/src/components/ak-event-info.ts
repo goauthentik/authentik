@@ -1,11 +1,19 @@
 import "#elements/Expand";
 import "#elements/Spinner";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFTable from "@patternfly/patternfly/components/Table/table.css";
+import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
+import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 import { EventContext, EventContextProperty, EventModel, EventWithContext } from "#common/events";
 
 import { AKElement } from "#elements/Base";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { EventActions, FlowsApi } from "@goauthentik/api";
@@ -15,14 +23,6 @@ import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 import { until } from "lit/directives/until.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFTable from "@patternfly/patternfly/components/Table/table.css";
-import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
-import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
 
 // TODO: Settle these types. It's too hard to make sense of what we're expecting here.
 type EventSlotValueType =
@@ -266,7 +266,9 @@ export class EventInfo extends AKElement {
                 clear?: boolean;
             };
         };
+
         let diffBody: SlottedTemplateResult = nothing;
+
         if (diff) {
             diffBody = html`<div class="pf-l-split__item pf-m-fill">
                     <div class="pf-c-card__title">${msg("Changes made:")}</div>
@@ -281,20 +283,25 @@ export class EventInfo extends AKElement {
                         <tbody role="rowgroup">
                             ${Object.keys(diff).map((key) => {
                                 const value = diff[key];
+
                                 const previousCol =
                                     value.previous_value !== null
                                         ? JSON.stringify(value.previous_value, null, 4)
                                         : msg("-");
+
                                 let newCol: SlottedTemplateResult = nothing;
+
                                 if (value.add || value.remove) {
                                     newCol = html`<ul class="pf-c-list">
                                         ${(value.add || value.remove)?.map((item) => {
                                             let itemLabel = "";
+
                                             if (value.add) {
                                                 itemLabel = msg(str`Added ID ${item}`);
                                             } else if (value.remove) {
                                                 itemLabel = msg(str`Removed ID ${item}`);
                                             }
+
                                             return html`<li>${itemLabel}</li>`;
                                         })}
                                     </ul>`;
@@ -302,9 +309,9 @@ export class EventInfo extends AKElement {
                                     newCol = html`${msg("Cleared")}`;
                                 } else {
                                     newCol = html`<pre>
-${JSON.stringify(value.new_value, null, 4)}</pre
-                                    >`;
+${JSON.stringify(value.new_value, null, 4)}</pre>`;
                                 }
+
                                 return html` <tr>
                                     <td><pre>${key}</pre></td>
                                     <td>
@@ -318,6 +325,7 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
                 </div>
                 </div>`;
         }
+
         return html`
             <div class="pf-l-split">
                 <div class="pf-l-split__item pf-m-fill">
@@ -348,12 +356,15 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
                     <div class="pf-c-card__body">
                         <span
                             >${until(
-                                new FlowsApi(DEFAULT_CONFIG)
+                                aki(FlowsApi)
                                     .flowsInstancesList({
                                         flowUuid: this.event.context.flow as string,
                                     })
                                     .then((resp) => {
-                                        return html`<a href="#/flow/flows/${resp.results[0].slug}"
+                                        return html`<a
+                                            href=${toAdminInterface(
+                                                `flow/flows/${resp.results[0].slug}`,
+                                            )}
                                             >${resp.results[0].name}</a
                                         >`;
                                     }),
@@ -369,6 +380,7 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
     renderEmailSent() {
         let body = this.event.context.body as string;
         body = body.replace("cid:logo", "/static/dist/assets/icons/icon_left_brand.png");
+
         return html`<div class="pf-c-card__title">${msg("Email info:")}</div>
             <div class="pf-c-card__body">${this.getEmailInfo(this.event.context)}</div>
             <ak-expand>
@@ -525,9 +537,11 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
 
     renderUpdateAvailable() {
         let url = `https://github.com/goauthentik/authentik/releases/tag/version%2F${this.event.context.new_version}`;
+
         if (this.event.context.changelog) {
             url = this.event.context.changelog as string;
         }
+
         return html`<div class="pf-c-card__title">${msg("New version available")}</div>
             <div class="pf-c-card__body">
                 <a target="_blank" href=${url}> ${this.event.context.new_version} </a>
@@ -543,6 +557,7 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
                 </div>
             </div>`;
         }
+
         return this.renderDefaultResponse();
     }
 
@@ -557,6 +572,7 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
         if (Object.keys(this.event.context).length === 0) {
             return html`<span>${msg("No additional data available.")}</span>`;
         }
+
         return this.renderDefaultResponse();
     }
 

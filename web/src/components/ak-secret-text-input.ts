@@ -10,6 +10,22 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref } from "lit/directives/ref.js";
 import { styleMap } from "lit/directives/style-map.js";
 
+/**
+ * This component switches between a display of asterisks indicating a secret value, and an input
+ * control. By default, the input control is type 'password'; the attribute 'plaintext' will change
+ * it to type 'text.'
+ *
+ * @class AkSecretTextInput
+ * @property {String} value - The value of the component
+ * @property {Boolean} plaintext - Use a `type="text"` input field instead of `type="password"` when
+ *   input allowed.
+ * @property {Boolean} revealed - Puts component in read-write mode. When plaintext is true, will
+ *   show the secret.
+ * @property {Number} maxLength
+ * @property {Number} minLength
+ * @element ak-secret-text-input
+ */
+
 @customElement("ak-secret-text-input")
 export class AkSecretTextInput extends HorizontalLightComponent<string> {
     @property({ type: String })
@@ -17,6 +33,9 @@ export class AkSecretTextInput extends HorizontalLightComponent<string> {
 
     @property({ type: Boolean, reflect: true })
     public revealed = false;
+
+    @property({ type: Boolean, reflect: true })
+    public plaintext = false;
 
     @property({ type: String })
     public placeholder = "";
@@ -86,6 +105,7 @@ export class AkSecretTextInput extends HorizontalLightComponent<string> {
 
     protected renderVisibleInput() {
         const code = this.inputHint === "code";
+
         const classes = {
             "pf-c-form-control": true,
             "pf-m-monospace": code,
@@ -93,7 +113,7 @@ export class AkSecretTextInput extends HorizontalLightComponent<string> {
 
         return html`<input
             ${ref(this.#ref)}
-            type="text"
+            type=${this.plaintext ? "text" : "password"}
             id=${this.fieldID}
             aria-describedby=${this.helpID}
             @input=${this.#inputListener}

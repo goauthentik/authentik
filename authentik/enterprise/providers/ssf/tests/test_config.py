@@ -44,3 +44,15 @@ class TestConfiguration(APITestCase):
         self.assertEqual(res.status_code, 200)
         content = json.loads(res.content)
         self.assertEqual(content["spec_version"], "1_0-ID2")
+
+    def test_config_not_found(self):
+        """test SSF configuration (authenticated)"""
+        self.provider.delete()
+        res = self.client.get(
+            reverse(
+                "authentik_providers_ssf:configuration",
+                kwargs={"application_slug": self.application.slug},
+            ),
+            HTTP_AUTHORIZATION=f"Bearer {self.provider.token.key}",
+        )
+        self.assertEqual(res.status_code, 404)

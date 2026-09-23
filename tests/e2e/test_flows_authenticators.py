@@ -18,7 +18,8 @@ from authentik.stages.authenticator_static.models import (
     StaticToken,
 )
 from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage, TOTPDevice
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.selenium import SeleniumTestCase
 
 
 class TestFlowsAuthenticator(SeleniumTestCase):
@@ -124,7 +125,10 @@ class TestFlowsAuthenticator(SeleniumTestCase):
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
         authenticator_stage = self.get_shadow_root("ak-stage-authenticator-static", flow_executor)
-        token = authenticator_stage.find_element(By.CSS_SELECTOR, "ul li:nth-child(1)").text
+        displayed = authenticator_stage.find_element(By.CSS_SELECTOR, "ul li:nth-child(1)").text
+        # Tokens are displayed in hyphenated groups of four but stored without the hyphens
+        self.assertRegex(displayed, r"^[a-zA-Z0-9]{4}(-[a-zA-Z0-9]{1,4})+$")
+        token = displayed.replace("-", "")
 
         authenticator_stage.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 

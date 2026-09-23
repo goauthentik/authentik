@@ -22,13 +22,20 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
+from authentik.crypto.validators import (
+    JWE_ENCRYPTION_KEY_TYPES,
+    JWT_SIGNING_KEY_TYPES,
+    KeyTypeValidator,
+)
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
     OAuth2Provider,
     RedirectURIMatchingMode,
+    RedirectURIType,
     ScopeMapping,
 )
+from authentik.providers.oauth2.utils import is_all_vschar
 from authentik.rbac.decorators import permission_required
 
 
@@ -37,12 +44,25 @@ class RedirectURISerializer(PassiveSerializer):
 
     matching_mode = ChoiceField(choices=RedirectURIMatchingMode.choices)
     url = CharField()
+    redirect_uri_type = ChoiceField(
+        choices=RedirectURIType.choices, default=RedirectURIType.AUTHORIZATION, required=False
+    )
 
 
 class OAuth2ProviderSerializer(ProviderSerializer):
     """OAuth2Provider Serializer"""
 
     redirect_uris = RedirectURISerializer(many=True, source="_redirect_uris")
+
+    def validate_client_id(self, secret: str) -> str:
+        if not is_all_vschar(secret):
+            raise ValidationError("Client ID must consist of only ASCII characters.")
+        return secret
+
+    def validate_client_secret(self, secret: str) -> str:
+        if not is_all_vschar(secret):
+            raise ValidationError("Client secret must consist of only ASCII characters.")
+        return secret
 
     def validate_redirect_uris(self, data: list) -> list:
         for entry in data:
@@ -61,6 +81,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
         fields = ProviderSerializer.Meta.fields + [
             "authorization_flow",
             "client_type",
+            "grant_types",
             "client_id",
             "client_secret",
             "access_code_validity",
@@ -79,7 +100,12 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "jwt_federation_sources",
             "jwt_federation_providers",
         ]
-        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
+        secret_fields = ["client_secret"]
+        extra_kwargs = {
+            **ProviderSerializer.Meta.extra_write_kwargs,
+            "signing_key": {"validators": [KeyTypeValidator(*JWT_SIGNING_KEY_TYPES)]},
+            "encryption_key": {"validators": [KeyTypeValidator(*JWE_ENCRYPTION_KEY_TYPES)]},
+        }
 
 
 class OAuth2ProviderSetupURLs(PassiveSerializer):
@@ -92,12 +118,15 @@ class OAuth2ProviderSetupURLs(PassiveSerializer):
     provider_info = CharField(read_only=True)
     logout = CharField(read_only=True)
     jwks = CharField(read_only=True)
+    dcr_registration = CharField(read_only=True, allow_null=True)
 
 
 class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
     """OAuth2Provider Viewset"""
 
-    queryset = OAuth2Provider.objects.all()
+    queryset = OAuth2Provider.objects.select_related(
+        "application", "backchannel_application"
+    ).prefetch_related("property_mappings", "jwt_federation_sources", "jwt_federation_providers")
     serializer_class = OAuth2ProviderSerializer
     filterset_fields = [
         "name",
@@ -165,6 +194,12 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
             data["jwks"] = request.build_absolute_uri(
                 reverse(
                     "authentik_providers_oauth2:jwks",
+                    kwargs={"application_slug": provider.application.slug},
+                )
+            )
+            data["dcr_registration"] = request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_oauth2:dynamic-client-registration",
                     kwargs={"application_slug": provider.application.slug},
                 )
             )

@@ -1,4 +1,4 @@
-import type { WizardStepState } from "./types.js";
+import type { WizardStepState } from "./shared.js";
 
 import { createContext } from "@lit/context";
 

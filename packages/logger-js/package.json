@@ -1,0 +1,100 @@
+{
+    "name": "@goauthentik/logger-js",
+    "version": "3.0.0",
+    "description": "Pino-based logger for authentik",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/logger-js"
+    },
+    "files": [
+        "out/**/*",
+        "types/**/*"
+    ],
+    "type": "module",
+    "types": "./out/index.d.ts",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "node": {
+                "types": "./out/lib/node.d.ts",
+                "default": "./lib/node.ts"
+            },
+            "browser": {
+                "types": "./out/index.d.ts",
+                "default": "./out/index.js"
+            },
+            "default": {
+                "types": "./out/index.d.ts",
+                "default": "./out/index.js"
+            }
+        }
+    },
+    "publishConfig": {
+        "exports": {
+            "./package.json": "./package.json",
+            ".": {
+                "node": {
+                    "types": "./out/lib/node.d.ts",
+                    "default": "./out/lib/node.js"
+                },
+                "browser": {
+                    "types": "./out/index.d.ts",
+                    "default": "./out/index.js"
+                },
+                "default": {
+                    "types": "./out/index.d.ts",
+                    "default": "./out/index.js"
+                }
+            }
+        },
+        "access": "public"
+    },
+    "scripts": {
+        "build": "tsc -p .",
+        "fix": "run-s lint format",
+        "check": "run-s lint:check format:check",
+        "format": "oxfmt --write .",
+        "format:check": "oxfmt --check .",
+        "lint": "oxlint --fix",
+        "lint:check": "oxlint --max-warnings=0",
+        "watch": "tsc -p . --watch"
+    },
+    "devDependencies": {
+        "@goauthentik/oxfmt-config": "link:../oxfmt-config",
+        "@goauthentik/oxlint-config": "link:../oxlint-config",
+        "@goauthentik/tsconfig": "link:../tsconfig",
+        "@types/node": "catalog:",
+        "npm-run-all": "^4.1.5",
+        "oxfmt": "catalog:",
+        "oxlint": "catalog:",
+        "pino": "^10.3.1",
+        "pino-pretty": "^13.1.3",
+        "typescript": "catalog:"
+    },
+    "peerDependencies": {
+        "pino": "^10.3.1",
+        "pino-pretty": "^13.1.2"
+    },
+    "peerDependenciesMeta": {
+        "pino": {
+            "optional": true
+        },
+        "pino-pretty": {
+            "optional": true
+        }
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "version": ">=24.20",
+            "onFail": "error"
+        }
+    },
+    "engines": {
+        "node": ">=24",
+        "pnpm": ">=12.4.0"
+    },
+    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c"
+}

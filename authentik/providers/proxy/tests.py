@@ -9,7 +9,7 @@ from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import Outpost, OutpostType
-from authentik.providers.oauth2.models import ClientTypes
+from authentik.providers.oauth2.models import ClientType
 from authentik.providers.proxy.models import ProxyMode, ProxyProvider
 
 
@@ -96,7 +96,7 @@ class ProxyProviderTests(APITestCase):
         )
         self.assertEqual(response.status_code, 201)
         provider: ProxyProvider = ProxyProvider.objects.get(name=name)
-        self.assertEqual(provider.client_type, ClientTypes.CONFIDENTIAL)
+        self.assertEqual(provider.client_type, ClientType.CONFIDENTIAL)
 
     def test_update_defaults(self):
         """Test create"""
@@ -114,8 +114,8 @@ class ProxyProviderTests(APITestCase):
         )
         self.assertEqual(response.status_code, 201)
         provider: ProxyProvider = ProxyProvider.objects.get(name=name)
-        self.assertEqual(provider.client_type, ClientTypes.CONFIDENTIAL)
-        provider.client_type = ClientTypes.PUBLIC
+        self.assertEqual(provider.client_type, ClientType.CONFIDENTIAL)
+        provider.client_type = ClientType.PUBLIC
         provider.save()
         response = self.client.put(
             reverse("authentik_api:proxyprovider-detail", kwargs={"pk": provider.pk}),
@@ -130,7 +130,7 @@ class ProxyProviderTests(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
         provider: ProxyProvider = ProxyProvider.objects.get(name=name)
-        self.assertEqual(provider.client_type, ClientTypes.CONFIDENTIAL)
+        self.assertEqual(provider.client_type, ClientType.CONFIDENTIAL)
 
     def test_sa_fetch(self):
         """Test fetching the outpost config as the service account"""

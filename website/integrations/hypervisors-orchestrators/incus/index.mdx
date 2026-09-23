@@ -1,0 +1,83 @@
+---
+title: Integrate with Incus
+sidebar_label: Incus
+support_level: community
+---
+
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
+## What is Incus?
+
+> Incus is an open-source manager for Linux system containers, application containers, and virtual machines.
+>
+> -- https://linuxcontainers.org/incus/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `incus.company` is the FQDN of the Incus server.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::warning Incus authorization
+By default, every user who authenticates through the configured OIDC provider has full access to Incus. Before allowing untrusted users to authenticate, configure Incus to authorize OIDC clients with OpenFGA, which is the only authorization method that Incus supports for OIDC clients.
+:::
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+<RedirectURI20265Note />
+
+To support the integration of Incus with authentik, you need to create an application/provider pair and configure a device code flow in authentik.
+
+### Create an application and provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it is required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** value because it is required later.
+        - Set **Client type** to `Public`.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://incus.company/oidc/callback`.
+        - Add a **Redirect URI** of type `Strict` `Post Logout` as `https://incus.company`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage access to Incus and its listing on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+If users access Incus through a port other than `443`, include that port in both redirect URIs. For example, use `https://incus.company:8443/oidc/callback` and `https://incus.company:8443` when connecting directly to the Incus server on port `8443`.
+
+### Apply a device code flow
+
+The Incus CLI uses the OAuth device authorization grant, which requires a device code flow on the brand that serves `authentik.company`. This flow is set per brand and is shared by every application that uses this grant, so it is not specific to Incus. If the brand already has one, skip this section; otherwise follow [Create and apply a device code flow](/docs/add-secure-apps/providers/oauth2/device_code/#create-and-apply-a-device-code-flow).
+
+## Incus configuration
+
+From an Incus client that has administrative access to the server, set the authentik issuer and the Incus provider's client ID:
+
+```bash
+incus config set oidc.issuer "https://authentik.company/application/o/<application_slug>/"
+incus config set oidc.client.id "<client_id_from_authentik>"
+```
+
+If you use an Incus cluster, these settings are applied to all cluster members.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Incus, add the Incus server as a remote from a client that is not already trusted:
+
+```bash
+incus remote add incus https://incus.company
+```
+
+Follow the displayed URL to complete the device code flow in authentik. After authentication, run `incus list incus:` and confirm that Incus returns the instance list.
+
+## Resources
+
+- [Incus documentation - Remote API authentication](https://linuxcontainers.org/incus/docs/main/authentication/#openid-connect-authentication)
+- [Incus documentation - OpenID Connect server configuration](https://linuxcontainers.org/incus/docs/main/server_config/#openid-connect-configuration)
+- [Incus documentation - Authorization](https://linuxcontainers.org/incus/docs/main/authorization/)

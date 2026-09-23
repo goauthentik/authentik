@@ -74,6 +74,10 @@ class FileManager:
     ) -> str:
         """
         Get URL for accessing the file.
+
+        Set ``use_cache=False`` when the caller needs a fresh signed URL instead
+        of a cached one, for example when serializing flow/login payloads that
+        may be refreshed after the previous JWT has expired.
         """
         if not name:
             return ""
@@ -83,7 +87,7 @@ class FileManager:
 
         for backend in self.backends:
             if backend.supports_file(name):
-                return backend.file_url(name, request)
+                return backend.file_url(name, request, use_cache=use_cache)
 
         LOGGER.warning(f"Could not find file backend for file: {name}")
         return ""
@@ -92,9 +96,13 @@ class FileManager:
         self,
         name: str | None,
         request: HttpRequest | Request | None = None,
+        use_cache: bool = True,
     ) -> dict[str, str] | None:
         """
         Get URLs for each theme variant when filename contains %(theme)s.
+
+        ``use_cache`` has the same semantics as ``file_url()`` and allows
+        callers to force regeneration of expiring signed URLs.
 
         Returns dict mapping theme to URL if %(theme)s present, None otherwise.
         """
@@ -106,7 +114,7 @@ class FileManager:
 
         for backend in self.backends:
             if backend.supports_file(name):
-                return backend.themed_urls(name, request)
+                return backend.themed_urls(name, request, use_cache=use_cache)
 
         return None
 

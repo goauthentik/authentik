@@ -3,22 +3,23 @@ import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-branded-flow-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
-import "#components/ak-hidden-text-input";
+import "#components/ak-secret-text-input";
 import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-import "#admin/common/ak-license-notice";
-
+import "#elements/LicenseNotice";
 import { propertyMappingsProvider, propertyMappingsSelector } from "./RadiusProviderFormHelpers.js";
 
 import { ascii_letters, digits, randomString } from "#common/utils";
 
 import { ifPresent } from "#elements/utils/attributes";
 
+import { TLSKeyTypes } from "#admin/common/certificate-key-types";
+
 import {
     CurrentBrand,
-    FlowsInstancesListDesignationEnum,
+    FlowDesignationEnum,
     RadiusProvider,
     ValidationError,
 } from "@goauthentik/api";
@@ -32,13 +33,13 @@ const mfaSupportHelp = msg(
 );
 
 const clientNetworksHelp = msg(
-    "List of CIDRs (comma-seperated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.",
+    "List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.",
 );
 
 export interface RADIUSProviderFormProps {
-    provider?: Partial<RadiusProvider>;
-    errors?: ValidationError;
-    brand?: CurrentBrand;
+    provider?: Partial<RadiusProvider> | null;
+    errors?: ValidationError | null;
+    brand?: CurrentBrand | null;
 }
 
 // All Provider objects have an Authorization flow, but not all providers have an Authentication
@@ -48,7 +49,10 @@ export interface RADIUSProviderFormProps {
 // weird-- we're looking up Authentication flows, but we're storing them in the Authorization
 // field of the target Provider.
 
-export function renderForm({ provider = {}, errors = {}, brand }: RADIUSProviderFormProps) {
+export function renderForm({ provider, errors, brand }: RADIUSProviderFormProps) {
+    provider ||= {};
+    errors ||= {};
+
     return html`
         <ak-text-input
             name="name"
@@ -62,15 +66,15 @@ export function renderForm({ provider = {}, errors = {}, brand }: RADIUSProvider
         </ak-text-input>
 
         <ak-form-element-horizontal
-            label=${msg("Authentication flow")}
+            label=${msg("Authentication Flow")}
             required
             name="authorizationFlow"
             .errorMessages=${errors.authorizationFlow}
         >
             <ak-branded-flow-search
-                label=${msg("Authentication flow")}
+                label=${msg("Authentication Flow")}
                 placeholder=${msg("Select an authentication flow...")}
-                flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                flowType=${FlowDesignationEnum.Authentication}
                 .currentFlow=${provider.authorizationFlow}
                 .brandFlow=${brand?.flowAuthentication}
                 required
@@ -88,14 +92,20 @@ export function renderForm({ provider = {}, errors = {}, brand }: RADIUSProvider
 
         <ak-form-group open label="${msg("Protocol settings")}">
             <div class="pf-c-form">
-                <ak-hidden-text-input
+                <ak-secret-text-input
                     name="sharedSecret"
                     label=${msg("Shared secret")}
                     .errorMessages=${errors.sharedSecret}
-                    value=${provider.sharedSecret ?? randomString(128, ascii_letters + digits)}
-                    required
+                    value=${ifDefined(
+                        provider.pk
+                            ? provider.sharedSecret
+                            : randomString(128, ascii_letters + digits),
+                    )}
                     input-hint="code"
-                ></ak-hidden-text-input>
+                    plaintext
+                    ?required=${!provider.pk}
+                    ?revealed=${!provider.pk}
+                ></ak-secret-text-input>
                 <ak-text-input
                     name="clientNetworks"
                     label=${msg("Client Networks")}
@@ -108,6 +118,7 @@ export function renderForm({ provider = {}, errors = {}, brand }: RADIUSProvider
                 <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
                     <ak-crypto-certificate-search
                         certificate=${ifPresent(provider?.certificate)}
+                        .allowedKeyTypes=${TLSKeyTypes}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(
@@ -132,14 +143,14 @@ export function renderForm({ provider = {}, errors = {}, brand }: RADIUSProvider
         <ak-form-group label="${msg("Advanced flow settings")}">
             <div class="pf-c-form">
                 <ak-form-element-horizontal
-                    label=${msg("Invalidation flow")}
+                    label=${msg("Invalidation Flow")}
                     name="invalidationFlow"
                     required
                 >
                     <ak-flow-search
-                        label=${msg("Invalidation flow")}
+                        label=${msg("Invalidation Flow")}
                         placeholder=${msg("Select an invalidation flow...")}
-                        flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                        flowType=${FlowDesignationEnum.Invalidation}
                         .currentFlow=${provider.invalidationFlow}
                         .errorMessages=${errors.invalidationFlow}
                         defaultFlowSlug="default-invalidation-flow"

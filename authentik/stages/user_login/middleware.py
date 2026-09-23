@@ -6,10 +6,11 @@ from django.contrib.auth.views import redirect_to_login
 from django.http.request import HttpRequest
 from structlog.stdlib import get_logger
 
+from authentik.core.middleware import get_user
 from authentik.core.models import Session
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.root.middleware import ClientIPMiddleware, SessionMiddleware
 from authentik.stages.user_login.models import GeoIPBinding, NetworkBinding
 
@@ -18,7 +19,7 @@ SESSION_KEY_BINDING_GEO = "authentik/stages/user_login/binding/geo"
 LOGGER = get_logger()
 
 
-class SessionBindingBroken(SentryIgnoredException):
+class SessionBindingBroken(TracingIgnoredException):
     """Session binding was broken due to specified `reason`"""
 
     def __init__(  # noqa: PLR0913
@@ -54,11 +55,13 @@ class SessionBindingBroken(SentryIgnoredException):
 
 def logout_extra(request: HttpRequest, exc: SessionBindingBroken):
     """Similar to django's logout method, but able to carry more info to the signal"""
-    # Dispatch the signal before the user is logged out so the receivers have a
-    # chance to find out *who* logged out.
-    user = getattr(request, "user", None)
+    # Since this middleware runs before the AuthenticationMiddleware, we can't use `request.user`
+    # as it hasn't been populated yet.
+    user = get_user(request)
     if not getattr(user, "is_authenticated", True):
         user = None
+    # Dispatch the signal before the user is logged out so the receivers have a
+    # chance to find out *who* logged out.
     user_logged_out.send(
         sender=user.__class__, request=request, user=user, event_extra=exc.to_event()
     )

@@ -1,37 +1,37 @@
-import { AkControlElement } from "#elements/AkControlElement";
+import PFCheck from "@patternfly/patternfly/components/Check/check.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+
+import Styles from "#elements/ak-checkbox-group/ak-checkbox-group.css";
+import { AKControlElement } from "#elements/ControlElement";
+import { SlottedTemplateResult } from "#elements/types";
 import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
 import { PropertyValues } from "@lit/reactive-element";
-import { css, html, TemplateResult } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement, property, queryAll, state } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
-import PFCheck from "@patternfly/patternfly/components/Check/check.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
+export type CheckboxItem<T extends string = string> = { name: T; label: string | TemplateResult };
 
-type CheckboxKv = { name: string; label: string | TemplateResult };
-type CheckboxPr = [string, string | TemplateResult];
-export type CheckboxPair = CheckboxKv | CheckboxPr;
+export type CheckboxPair<T extends string = string> = [name: T, label: string | TemplateResult];
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isCheckboxPr = (t: any): t is CheckboxPr => Array.isArray(t);
-function* kvToPairs(items: CheckboxPair[]): Iterable<CheckboxPr> {
+export type CheckboxItemInit<T extends string = string> = CheckboxItem<T> | CheckboxPair<T>;
+
+function* generateCheckboxKeyValuePairs(items: Iterable<CheckboxItemInit>): Iterable<CheckboxPair> {
     for (const item of items) {
-        yield isCheckboxPr(item) ? item : [item.name, item.label];
+        yield Array.isArray(item) ? item : [item.name, item.label];
     }
 }
 
-const AkElementWithCustomEvents = CustomEmitterElement(AkControlElement);
+const AkElementWithCustomEvents = CustomEmitterElement(AKControlElement);
 
 /**
- * @element ak-checkbox-group
- *
- * @class CheckboxGroup
- *
- * @description
  * CheckboxGroup renders a collection of checkboxes in a linear list. Multiple
  * checkboxes may be picked.
+ *
+ * @class CheckboxGroup
+ * @element ak-checkbox-group
  *
  * @attr {options} - An array of either `[string, string | TemplateResult]` or
  *     `{ name: string, label: string | TemplateResult }`. The first value or
@@ -73,76 +73,65 @@ const AkElementWithCustomEvents = CustomEmitterElement(AkControlElement);
  * form of `name=value1&name=value2` format, and must be unpacked into an array
  * correctly on the server side according to the CGI (common gateway interface)
  * protocol.
- *
  */
-
 @customElement("ak-checkbox-group")
 export class CheckboxGroup extends AkElementWithCustomEvents {
-    static styles = [
-        PFForm,
-        PFCheck,
-        css`
-            .pf-c-form__group-control {
-                padding-top: calc(
-                    var(--pf-c-form--m-horizontal__group-label--md--PaddingTop) * 1.3
-                );
-            }
-        `,
-    ];
+    static styles = [PFForm, PFCheck, Styles];
 
     static get formAssociated() {
         return true;
     }
 
     @property({ type: Array })
-    options: CheckboxPair[] = [];
+    public options: CheckboxItemInit[] = [];
 
     @property({ type: Array })
-    value: string[] = [];
+    public value: string[] = [];
 
     @property({ type: String })
-    name?: string;
+    public name: string | null = null;
 
     @property({ type: Boolean })
-    required = false;
+    public required = false;
 
     @queryAll('input[type="checkbox"]')
-    checkboxes!: NodeListOf<HTMLInputElement>;
+    protected checkboxes!: NodeListOf<HTMLInputElement>;
 
     @state()
-    values: string[] = [];
+    protected values: string[] = [];
 
-    internals?: ElementInternals;
-    doneFirstUpdate = false;
+    protected internals?: ElementInternals;
+    protected doneFirstUpdate = false;
 
-    json() {
+    public toJSON() {
         return this.values;
     }
 
-    private get formValue() {
-        if (this.name === undefined) {
+    protected get formValue() {
+        if (typeof this.name !== "string") {
             throw new Error("This cannot be called without having the name set.");
         }
+
         const name = this.name;
         const entries = new FormData();
         this.values.forEach((v) => entries.append(name, v));
+
         return entries;
     }
 
-    constructor() {
-        super();
-        this.onClick = this.onClick.bind(this);
-    }
-
-    onClick(ev: Event) {
+    protected clickListener = (ev: Event) => {
         ev.stopPropagation();
+
         this.values = Array.from(this.checkboxes)
             .filter((checkbox) => checkbox.checked)
             .map((checkbox) => checkbox.name);
+
         this.dispatchCustomEvent("change", this.values);
         this.dispatchCustomEvent("input", this.values);
+
         if (this.internals) {
             this.internals.setValidity({});
+
             if (this.required && this.values.length === 0) {
                 this.internals.setValidity(
                     {
@@ -152,34 +141,40 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
                     this,
                 );
             }
+
             this.internals.setFormValue(this.formValue);
         }
+
         // Doing a write-back so anyone examining the checkbox.value field will get something
         // meaningful. Doesn't do anything for anyone, usually, but it's nice to have.
         this.value = this.values;
-    }
+    };
 
-    willUpdate(changed: PropertyValues<this>) {
+    protected override willUpdate(changed: PropertyValues<this>) {
         if (changed.has("value") && !this.doneFirstUpdate) {
             this.doneFirstUpdate = true;
             this.values = this.value;
         }
     }
 
-    connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         this.dataset.akControl = "true";
+
         if (this.name && !this.internals) {
             this.internals = this.attachInternals();
         }
+
         if (this.internals && this.name) {
             this.internals.ariaRequired = this.required ? "true" : "false";
         }
+
         if (this.required && !this.internals) {
             console.warn(
                 "Setting `required` on ak-checkbox-group has no effect when the `name` attribute is unset",
             );
         }
+
         // These are necessary to prevent the input components' own events from
         // leaking out. This helps maintain the illusion that this component
         // behaves similarly to the multiple selection behavior of, well,
@@ -187,37 +182,42 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
         this.addEventListener("input", (ev) => {
             ev.stopPropagation();
         });
+
         this.addEventListener("change", (ev) => {
             ev.stopPropagation();
         });
     }
 
-    render() {
-        const renderOne = ([name, label]: CheckboxPr) => {
-            const selected = this.values.includes(name);
-            const blockFwd = (e: Event) => {
-                e.stopImmediatePropagation();
-            };
+    protected renderCheckbox = ([name, label]: CheckboxPair): SlottedTemplateResult => {
+        const selected = this.values.includes(name);
 
-            return html` <div part="checkbox" class="pf-c-check" @click=${this.onClick}>
-                <input
-                    part="input"
-                    @change=${blockFwd}
-                    @input=${blockFwd}
-                    name="${name}"
-                    class="pf-c-check__input"
-                    type="checkbox"
-                    ?checked=${selected}
-                    id="ak-check-${name}"
-                />
-                <label part="label" class="pf-c-check__label" for="ak-check-${name}"
-                    >${label}</label
-                >
-            </div>`;
+        const blockFwd = (e: Event) => {
+            e.stopImmediatePropagation();
         };
 
+        return html`<label
+            part="label"
+            for="ak-check-${name}"
+            class="pf-c-check"
+            @click=${this.clickListener}
+        >
+            <input
+                part="input"
+                @change=${blockFwd}
+                @input=${blockFwd}
+                name=${name}
+                class="pf-c-check__input"
+                type="checkbox"
+                ?checked=${selected}
+                id="ak-check-${name}"
+            />
+            <div class="pf-c-check__label">${label}</div>
+        </label>`;
+    };
+
+    protected override render(): SlottedTemplateResult {
         return html`<div part="checkbox-group" class="pf-c-form__group-control pf-m-stack">
-            ${map(kvToPairs(this.options), renderOne)}
+            ${map(generateCheckboxKeyValuePairs(this.options), this.renderCheckbox)}
         </div>`;
     }
 }

@@ -1,7 +1,7 @@
 """logout response tests"""
 
 from defusedxml import ElementTree
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.common.saml.constants import (
@@ -9,10 +9,13 @@ from authentik.common.saml.constants import (
     NS_SAML_PROTOCOL,
     NS_SIGNATURE,
 )
+from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert, create_test_flow
+from authentik.lib.generators import generate_id
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.logout_request_parser import LogoutRequest
 from authentik.providers.saml.processors.logout_response_processor import LogoutResponseProcessor
+from authentik.providers.saml.processors.metadata import MetadataProcessor
 
 
 class TestLogoutResponse(TestCase):
@@ -21,6 +24,7 @@ class TestLogoutResponse(TestCase):
     @apply_blueprint("system/providers-saml.yaml")
     def setUp(self):
         cert = create_test_cert()
+        self.factory = RequestFactory()
         self.provider: SAMLProvider = SAMLProvider.objects.create(
             authorization_flow=create_test_flow(),
             acs_url="http://testserver/source/saml/provider/acs/",
@@ -30,17 +34,31 @@ class TestLogoutResponse(TestCase):
         )
         self.provider.property_mappings.set(SAMLPropertyMapping.objects.all())
         self.provider.save()
+        self.application = Application.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+            provider=self.provider,
+        )
 
     def test_build_response(self):
-        """Test building a LogoutResponse"""
+        """Test building a LogoutResponse uses the generated issuer from the assertion"""
+        # Generate the issuer the same way the assertion/metadata processors would
+        request = self.factory.get("/")
+        metadata_processor = MetadataProcessor(self.provider, request)
+        generated_issuer = metadata_processor._get_issuer_value()
+
         logout_request = LogoutRequest(
             id="test-request-id",
             issuer="test-sp",
             relay_state="test-relay-state",
         )
 
+        # Pass the generated issuer as if it came from SAMLSession.issuer
         processor = LogoutResponseProcessor(
-            self.provider, logout_request, destination=self.provider.sls_url
+            self.provider,
+            logout_request,
+            destination=self.provider.sls_url,
+            issuer=generated_issuer,
         )
         response_xml = processor.build_response(status="Success")
 
@@ -51,9 +69,9 @@ class TestLogoutResponse(TestCase):
         self.assertEqual(root.attrib["Destination"], self.provider.sls_url)
         self.assertEqual(root.attrib["InResponseTo"], "test-request-id")
 
-        # Check Issuer
+        # Check Issuer matches the generated issuer from the assertion processor
         issuer = root.find(f"{{{NS_SAML_ASSERTION}}}Issuer")
-        self.assertEqual(issuer.text, self.provider.issuer)
+        self.assertEqual(issuer.text, generated_issuer)
 
         # Check Status
         status = root.find(f".//{{{NS_SAML_PROTOCOL}}}StatusCode")

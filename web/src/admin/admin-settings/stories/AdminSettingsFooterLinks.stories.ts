@@ -1,6 +1,5 @@
 import "#elements/messages/MessageContainer";
 import "../AdminSettingsFooterLinks.js";
-
 import { FooterLinkInput } from "../AdminSettingsFooterLinks.js";
 
 import { Meta, StoryObj, WebComponentsRenderer } from "@storybook/web-components";
@@ -25,16 +24,20 @@ const metadata: Meta<FooterLinkInput> = {
         (story: Decorator) => {
             window.setTimeout(() => {
                 const control = document.getElementById("footer-link");
+
                 if (!control) {
                     throw new Error("Test was not initialized correctly.");
                 }
+
                 const messages = document.getElementById("reported-value");
+
                 control.addEventListener("change", (event: Event) => {
                     if (!event.target) {
                         return;
                     }
+
                     const target = event.target as FooterLinkInput;
-                    messages!.innerText = `${JSON.stringify(target.json(), null, 2)}\n\nValid: ${target.isValid ? "Yes" : "No"}`;
+                    messages!.innerText = `${JSON.stringify(target.toJSON(), null, 2)}\n\nValid: ${target.valid ? "Yes" : "No"}`;
                 });
             }, 250);
 

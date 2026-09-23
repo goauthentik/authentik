@@ -83,8 +83,8 @@ func normalizeAttributes(attributes []string) []string {
 	for _, attr := range attributes {
 		if strings.Contains(attr, ",") {
 			// Split comma-separated attributes and add them individually
-			parts := strings.Split(attr, ",")
-			for _, part := range parts {
+			parts := strings.SplitSeq(attr, ",")
+			for part := range parts {
 				part = strings.TrimSpace(part)
 				if part != "" {
 					result = append(result, part)

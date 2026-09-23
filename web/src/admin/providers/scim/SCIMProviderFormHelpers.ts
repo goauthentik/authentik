@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { DualSelectPair } from "#elements/ak-dual-select/types";
 
@@ -8,14 +8,13 @@ const mappingToSelect = (m: SCIMMapping) => [m.pk, m.name, m.name, m];
 const groupToSelect = (g: Group) => [g.pk, g.name, g.name, g];
 
 export async function propertyMappingsProvider(page = 1, search = "") {
-    const propertyMappings = await new PropertymappingsApi(
-        DEFAULT_CONFIG,
-    ).propertymappingsProviderScimList({
+    const propertyMappings = await aki(PropertymappingsApi).propertymappingsProviderScimList({
         ordering: "managed",
         pageSize: 20,
         search: search.trim(),
         page,
     });
+
     return {
         pagination: propertyMappings.pagination,
         options: propertyMappings.results.map(mappingToSelect),
@@ -35,7 +34,8 @@ export function propertyMappingsSelector(
     }
 
     return async () => {
-        const pm = new PropertymappingsApi(DEFAULT_CONFIG);
+        const pm = aki(PropertymappingsApi);
+
         const mappings = await Promise.allSettled(
             instanceMappings.map((instanceId) =>
                 pm.propertymappingsProviderScimRetrieve({ pmUuid: instanceId }),
@@ -50,13 +50,14 @@ export function propertyMappingsSelector(
 }
 
 export async function groupsProvider(page = 1, search = "") {
-    const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList({
+    const groups = await aki(CoreApi).coreGroupsList({
         ordering: "name",
         includeUsers: false,
         pageSize: 20,
         search: search.trim(),
         page,
     });
+
     return {
         pagination: groups.pagination,
         options: groups.results.map(groupToSelect),
@@ -80,7 +81,7 @@ export function groupsSelector(
     return async () => {
         const groups = await Promise.allSettled(
             instanceGroups.map((groupId) =>
-                new CoreApi(DEFAULT_CONFIG).coreGroupsRetrieve({ groupUuid: groupId }),
+                aki(CoreApi).coreGroupsRetrieve({ groupUuid: groupId }),
             ),
         );
 

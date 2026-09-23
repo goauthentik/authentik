@@ -16,13 +16,13 @@
     position: relative;
 }
 
-@media (width >= 1200px) {
+@media (width > 1210px) {
     .pf-c-page__sidebar.pf-m-expanded {
         --pf-c-page__sidebar--BoxShadow: var(--pf-global--BoxShadow--sm-right);
     }
 }
 
-@media (width < 1200px) {
+@media (width <= 1210px) {
     .pf-c-page__sidebar.pf-m-expanded ~ .pf-c-page__drawer .pf-c-page__sidebar-backdrop::after {
         background-color: var(--pf-global--BackgroundColor--dark-transparent-100);
         content: "";

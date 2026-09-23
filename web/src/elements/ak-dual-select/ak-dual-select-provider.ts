@@ -1,9 +1,9 @@
 import "./ak-dual-select.js";
-
 import { AkDualSelect } from "./ak-dual-select.js";
 import { type DataProvider, DualSelectEventType, type DualSelectPair } from "./types.js";
 
-import { AkControlElement } from "#elements/AkControlElement";
+import { AKControlElement } from "#elements/ControlElement";
+import { toPaginator, PageChangeEvent } from "#elements/Paginator";
 import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
 import type { Pagination } from "@goauthentik/api";
@@ -23,7 +23,7 @@ import { createRef, ref } from "lit/directives/ref.js";
  * about authentik at all and could be dropped into Gravity unchanged.)
  */
 @customElement("ak-dual-select-provider")
-export class AkDualSelectProvider extends CustomListenerElement(AkControlElement) {
+export class AkDualSelectProvider extends CustomListenerElement(AKControlElement) {
     //#region Properties
 
     /**
@@ -60,6 +60,33 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
     @property({ attribute: "selected-label" })
     public selectedLabel = msg("Selected options");
 
+    @property({ type: String })
+    public name: string | null = null;
+
+    /**
+     * When true, the selected pane preserves insertion order instead of sorting alphabetically.
+     *
+     * @attr
+     */
+    @property({ type: Boolean, attribute: "preserve-order" })
+    public preserveOrder = false;
+
+    /**
+     * When true, hides the search bars in both the available and selected panes.
+     *
+     * @attr
+     */
+    @property({ type: Boolean, attribute: "no-search" })
+    public noSearch = false;
+
+    /**
+     * When true, hides the item count status displays in both panes.
+     *
+     * @attr
+     */
+    @property({ type: Boolean, attribute: "no-status" })
+    public noStatus = false;
+
     /**
      * The debounce for the search as the user is typing in a request
      *
@@ -68,12 +95,18 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
     @property({ attribute: "search-delay", type: Number })
     public searchDelay = 250;
 
-    public get value() {
+    public get value(): Array<string | number> {
         return this.dualSelector.value!.selected.map(([k, _]) => k);
     }
 
-    public json() {
+    public toJSON(): Array<string | number> {
         return this.value;
+    }
+
+    public get pageState() {
+        return this.pagination
+            ? toPaginator(this.pagination)
+            : { itemCount: 0, itemsPerPage: 1, page: 1 };
     }
 
     //#endregion
@@ -92,6 +125,8 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
 
     protected pagination?: Pagination;
 
+    protected abortController: AbortController | null = null;
+
     //#endregion
 
     //#region Refs
@@ -102,13 +137,24 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
 
     //#region Lifecycle
 
-    public connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
-        this.addCustomListener(DualSelectEventType.NavigateTo, this.#navigationListener);
+        this.abortController?.abort();
+        this.abortController = new AbortController();
+
+        this.addEventListener(PageChangeEvent.eventName, this.#navigationListener, {
+            signal: this.abortController.signal,
+        });
+
         this.addCustomListener(DualSelectEventType.Change, this.#changeListener);
         this.addCustomListener(DualSelectEventType.Search, this.#searchListener);
-
         this.#fetch(1);
+    }
+
+    public override disconnectedCallback() {
+        super.disconnectedCallback();
+        this.abortController?.abort();
+        this.abortController = null;
     }
 
     willUpdate(changedProperties: PropertyValues<this>) {
@@ -153,8 +199,8 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
 
     //#region Event Listeners
 
-    #navigationListener = (event: CustomEvent<number>) => {
-        this.#fetch(event.detail, this.#previousSearchValue);
+    #navigationListener = ({ page }: PageChangeEvent) => {
+        this.#fetch(page, this.#previousSearchValue);
     };
 
     #changeListener = (event: CustomEvent<{ value: DualSelectPair[] }>) => {
@@ -183,10 +229,15 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
         return html`<ak-dual-select
             ${ref(this.dualSelector)}
             .options=${this.options}
-            .pages=${this.pagination}
             .selected=${this.#selected}
+            item-count=${this.pageState.itemCount}
+            items-per-page=${this.pageState.itemsPerPage}
+            page=${this.pageState.page}
             available-label=${this.availableLabel}
             selected-label=${this.selectedLabel}
+            ?preserve-order=${this.preserveOrder}
+            ?no-search=${this.noSearch}
+            ?no-status=${this.noStatus}
         ></ak-dual-select>`;
     }
 }

@@ -8,22 +8,20 @@ from docker.types import Healthcheck
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.http import get_http_session
 from authentik.sources.scim.models import SCIMSource
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.live import E2ETestCase
 
 TEST_POLL_MAX = 25
 
 
-class TestSourceSCIM(SeleniumTestCase):
+class TestSourceSCIM(E2ETestCase):
     """test SCIM Source flow"""
 
     def setUp(self):
         self.slug = generate_id()
         super().setUp()
         self.run_container(
-            image=(
-                "ghcr.io/suvera/scim2-compliance-test-utility@sha256:eca913bb73"
-                "c46892cd1fb2dfd2fef1c5881e6abc5cb0eec7e92fb78c1b933ece"
-            ),
+            image=self.pinned_image("scim2-compliance-test-utility", "e2e/compose.yml"),
             ports={"8080": "8080"},
             healthcheck=Healthcheck(
                 test=["CMD", "curl", "http://localhost:8080"],

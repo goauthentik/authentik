@@ -1,21 +1,27 @@
-from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
-
+from django.core.cache import cache
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from structlog.stdlib import get_logger
 
-from authentik.common.oauth.constants import PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS
-from authentik.core.models import AuthenticatedSession, User
+from authentik.common.oauth.constants import (
+    OAUTH2_BINDING,
+    PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS,
+)
+from authentik.core.models import AuthenticatedSession, ProviderPropertyMapping, User
+from authentik.core.signals import deactivation_token_cleanup_inhibited
 from authentik.flows.models import in_memory_stage
-from authentik.outposts.tasks import hash_session_key
 from authentik.providers.iframe_logout import IframeLogoutStageView
 from authentik.providers.oauth2.models import (
     AccessToken,
     DeviceToken,
     OAuth2LogoutMethod,
+    OAuth2SessionLogin,
     RefreshToken,
+    ScopeMapping,
 )
 from authentik.providers.oauth2.tasks import backchannel_logout_notification_dispatch
+from authentik.providers.oauth2.utils import build_frontchannel_logout_url
+from authentik.providers.oauth2.views.provider import claims_cache_key
 from authentik.stages.user_logout.models import UserLogoutStage
 from authentik.stages.user_logout.stage import flow_pre_user_logout
 
@@ -37,9 +43,8 @@ def handle_flow_pre_user_logout(sender, request, user, executor, **kwargs):
     if not auth_session:
         return
 
-    oidc_access_tokens = (
-        AccessToken.objects.filter(
-            user=user,
+    oidc_logins = (
+        OAuth2SessionLogin.objects.filter(
             session=auth_session,
             provider__logout_method=OAuth2LogoutMethod.FRONTCHANNEL,
         )
@@ -47,47 +52,26 @@ def handle_flow_pre_user_logout(sender, request, user, executor, **kwargs):
         .select_related("provider")
     )
 
-    if not oidc_access_tokens.exists():
+    if not oidc_logins.exists():
         LOGGER.debug("No sessions requiring IFrame frontchannel logout")
         return
 
+    session_key = auth_session.session.session_key if auth_session.session else None
     oidc_sessions = []
 
-    for token in oidc_access_tokens:
-        # Parse the logout URI and add query parameters
-        parsed_url = urlparse(token.provider.logout_uri)
-
-        query_params = {}
-        query_params["iss"] = token.provider.get_issuer(request)
-        if auth_session.session:
-            query_params["sid"] = hash_session_key(auth_session.session.session_key)
-
-        # Combine existing query params with new ones
-        if parsed_url.query:
-            existing_params = parse_qs(parsed_url.query, keep_blank_values=True)
-            for key, value in existing_params.items():
-                if key not in query_params:
-                    query_params[key] = value[0] if len(value) == 1 else value
-
-        # Build the final URL with query parameters
-        logout_url = urlunparse(
-            (
-                parsed_url.scheme,
-                parsed_url.netloc,
-                parsed_url.path,
-                parsed_url.params,
-                urlencode(query_params),
-                parsed_url.fragment,
+    for login in oidc_logins:
+        logout_url = build_frontchannel_logout_url(login.provider, request, session_key)
+        if logout_url:
+            oidc_sessions.append(
+                {
+                    "url": logout_url,
+                    "provider_name": login.provider.name,
+                    "binding": OAUTH2_BINDING,
+                    "provider_type": (
+                        f"{login.provider._meta.app_label}.{login.provider._meta.model_name}"
+                    ),
+                }
             )
-        )
-
-        logout_data = {
-            "url": logout_url,
-            "provider_name": token.provider.name,
-            "binding": "redirect",
-            "provider_type": "oidc",
-        }
-        oidc_sessions.append(logout_data)
 
     if oidc_sessions:
         executor.plan.context[PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS] = oidc_sessions
@@ -114,18 +98,20 @@ def user_session_deleted_oauth_backchannel_logout_and_tokens_removal(
         session__session__session_key=instance.session.session_key,
     )
 
+    # Look up RPs via the session's logins and not its tokens, as the RP's own session
+    # usually outlives the access token it was issued.
     # Only send backchannel logout notifications for providers that have
     # logout_uri configured and backchannel logout method set
     backchannel_tokens = [
         (
-            token.provider_id,
-            token.id_token.iss,
-            token.id_token.sub,
+            login.provider_id,
+            login.iss,
+            login.sub,
             instance.session.session_key,
         )
-        for token in access_tokens
-        if token.provider.logout_uri
-        and token.provider.logout_method == OAuth2LogoutMethod.BACKCHANNEL
+        for login in OAuth2SessionLogin.objects.select_related("provider").filter(session=instance)
+        if login.provider.logout_uri
+        and login.provider.logout_method == OAuth2LogoutMethod.BACKCHANNEL
     ]
 
     if backchannel_tokens:
@@ -139,6 +125,21 @@ def user_deactivated(sender, instance: User, **_):
     """Remove user tokens when deactivated"""
     if instance.is_active:
         return
-    AccessToken.objects.filter(user=instance).delete()
-    RefreshToken.objects.filter(user=instance).delete()
-    DeviceToken.objects.filter(user=instance).delete()
+    if deactivation_token_cleanup_inhibited():
+        return
+    AccessToken.objects.including_expired().filter(user=instance).delete()
+    RefreshToken.objects.including_expired().filter(user=instance).delete()
+    DeviceToken.objects.including_expired().filter(user=instance).delete()
+
+
+@receiver(post_save, sender=ScopeMapping)
+@receiver(post_save, sender=ProviderPropertyMapping)
+def scope_mapping_post_save_cache(sender, instance: ScopeMapping | ProviderPropertyMapping, **_):
+    """Clean up provider config claims cache"""
+    keys = []
+    if isinstance(instance, ScopeMapping):
+        for provider in instance.provider_set.all():
+            keys.append(claims_cache_key(provider))
+    if isinstance(instance, ProviderPropertyMapping):
+        keys.append(claims_cache_key(instance.provider))
+    cache.delete_many(keys)

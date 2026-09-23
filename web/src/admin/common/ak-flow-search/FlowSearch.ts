@@ -1,9 +1,9 @@
 import "#elements/forms/SearchSelect/index";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
 import type { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
+import type { SearchSelectBase } from "#elements/forms/SearchSelect/SearchSelect";
 import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
 import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
@@ -11,7 +11,7 @@ import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
 import { RenderFlowOption } from "#admin/flows/utils";
 
 import type { Flow, FlowsInstancesListRequest } from "@goauthentik/api";
-import { FlowsApi, FlowsInstancesListDesignationEnum } from "@goauthentik/api";
+import { FlowDesignationEnum, FlowsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -34,8 +34,8 @@ export function getFlowValue(flow: Flow | null): string {
  * FlowSearch
  *
  * A wrapper around SearchSelect that understands the basic semantics of querying about Flows. This
- * code eliminates the long blocks of unreadable invocation that were embedded in every provider, as well as in
- * sources, brands, and applications.
+ * code eliminates the long blocks of unreadable invocation that were embedded in every provider, as
+ * well as in sources, brands, and applications.
  */
 export abstract class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement) {
     //#region Properties
@@ -46,7 +46,7 @@ export abstract class FlowSearch<T extends Flow> extends CustomListenerElement(A
      * @attr
      */
     @property({ type: String })
-    public flowType?: FlowsInstancesListDesignationEnum;
+    public flowType?: FlowDesignationEnum;
 
     /**
      * The id of the current flow, if any. For stages where the flow is already defined.
@@ -71,7 +71,8 @@ export abstract class FlowSearch<T extends Flow> extends CustomListenerElement(A
     required = false;
 
     /**
-     * When specified and the object instance does not have a flow selected, auto-select the flow with the given slug.
+     * When specified and the object instance does not have a flow selected, auto-select the flow
+     * with the given slug.
      *
      * @attr
      */
@@ -98,10 +99,41 @@ export abstract class FlowSearch<T extends Flow> extends CustomListenerElement(A
     @property({ type: String })
     public placeholder = msg("Select a flow...");
 
+    /**
+     * An optional label for a pinned action item rendered at the end of the dropdown, e.g.
+     * "Create new...". Activating it fires an `ak-search-select-action` event
+     * instead of changing the selection.
+     *
+     * @attr
+     */
+    @property({ type: String, attribute: "action-label" })
+    public actionLabel?: string;
+
     protected selectedFlow?: T;
 
     get value() {
         return this.selectedFlow ? getFlowValue(this.selectedFlow) : null;
+    }
+
+    /**
+     * Re-fetch the available flows, optionally retargeting the selection.
+     *
+     * @param flow When provided, the flow is selected immediately, without
+     *   waiting for the fetch to settle.
+     */
+    public refresh(flow?: T | null): Promise<void> {
+        const search = this.renderRoot.querySelector<SearchSelectBase<T>>("ak-search-select");
+
+        if (typeof flow !== "undefined") {
+            this.currentFlow = flow?.pk ?? null;
+            this.selectedFlow = flow ?? undefined;
+
+            if (search) {
+                search.selectedObject = flow ?? null;
+            }
+        }
+
+        return search?.updateData() ?? Promise.resolve();
     }
 
     //#endregion
@@ -132,7 +164,9 @@ export abstract class FlowSearch<T extends Flow> extends CustomListenerElement(A
             ...(query ? { search: query } : {}),
         };
 
-        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args).then((flows) => flows.results);
+        return aki(FlowsApi)
+            .flowsInstancesList(args)
+            .then((flows) => flows.results);
     };
 
     /**
@@ -151,11 +185,11 @@ export abstract class FlowSearch<T extends Flow> extends CustomListenerElement(A
     /**
      * This is the most commonly overridden method of this class.
      *
-     *  About half of the Flow Searches use this method, but several have more complex needs,
+     * About half of the Flow Searches use this method, but several have more complex needs,
      * such as relating to the brand, or just returning false.
      *
-     * @param flow The flow to compare against.
      * @abstract
+     * @param flow The flow to compare against.
      */
     protected selected = (flow: Flow): boolean => {
         return this.match(flow);
@@ -195,6 +229,7 @@ export abstract class FlowSearch<T extends Flow> extends CustomListenerElement(A
                 placeholder=${ifDefined(this.placeholder)}
                 label=${ifDefined(this.label)}
                 name=${ifDefined(this.name)}
+                action-label=${ifDefined(this.actionLabel)}
                 @ak-change=${this.searchUpdateListener}
                 ?blankable=${!this.required}
             >

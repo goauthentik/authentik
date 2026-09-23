@@ -1,4 +1,7 @@
-import { AkControlElement } from "#elements/AkControlElement";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
+
+import { AKControlElement } from "#elements/ControlElement";
 import { type Spread } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -10,19 +13,17 @@ import { msg } from "@lit/localize";
 import { css, html } from "lit";
 import { customElement, property, queryAll } from "lit/decorators.js";
 
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
-
 export interface IFooterLinkInput {
     footerLink: FooterLink;
 }
 
 const LEGAL_SCHEMES = ["http://", "https://", "mailto:"];
+
 const hasLegalScheme = (url: string) =>
     LEGAL_SCHEMES.some((scheme) => url.substr(0, scheme.length).toLowerCase() === scheme);
 
 @customElement("ak-admin-settings-footer-link")
-export class FooterLinkInput extends AkControlElement<FooterLink> {
+export class FooterLinkInput extends AKControlElement<FooterLink> {
     static styles = [
         PFInputGroup,
         PFFormControl,
@@ -43,14 +44,18 @@ export class FooterLinkInput extends AkControlElement<FooterLink> {
     @queryAll(".ak-form-control")
     controls?: HTMLInputElement[];
 
-    json() {
+    @property({ type: String })
+    public name: string | null = null;
+
+    toJSON(): FooterLink {
         return Object.fromEntries(
             Array.from(this.controls ?? []).map((control) => [control.name, control.value]),
         ) as unknown as FooterLink;
     }
 
-    get isValid() {
-        const href = this.json()?.href ?? "";
+    get valid() {
+        const href = this.toJSON()?.href ?? "";
+
         return hasLegalScheme(href) && URL.canParse(href);
     }
 

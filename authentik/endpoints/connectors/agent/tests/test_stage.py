@@ -1,5 +1,6 @@
 from hashlib import sha256
 from json import loads
+from unittest.mock import PropertyMock, patch
 
 from django.urls import reverse
 from jwt import encode
@@ -232,3 +233,43 @@ class TestEndpointStage(FlowTestCase):
         plan = plan()
         self.assertNotIn(PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE, plan.context)
         self.assertEqual(plan.context[PLAN_CONTEXT_DEVICE], self.device)
+
+    def test_endpoint_stage_connector_no_stage_optional(self):
+        flow = create_test_flow()
+        stage = EndpointStage.objects.create(connector=self.connector, mode=StageMode.OPTIONAL)
+        FlowStageBinding.objects.create(stage=stage, target=flow, order=0)
+
+        with patch(
+            "authentik.endpoints.connectors.agent.models.AgentConnector.stage",
+            PropertyMock(return_value=None),
+        ):
+            with self.assertFlowFinishes() as plan:
+                res = self.client.get(
+                    reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+                )
+                self.assertStageRedirects(res, reverse("authentik_core:root-redirect"))
+            plan = plan()
+            self.assertNotIn(PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE, plan.context)
+            self.assertNotIn(PLAN_CONTEXT_DEVICE, plan.context)
+
+    def test_endpoint_stage_connector_no_stage_required(self):
+        flow = create_test_flow()
+        stage = EndpointStage.objects.create(connector=self.connector, mode=StageMode.REQUIRED)
+        FlowStageBinding.objects.create(stage=stage, target=flow, order=0)
+
+        with patch(
+            "authentik.endpoints.connectors.agent.models.AgentConnector.stage",
+            PropertyMock(return_value=None),
+        ):
+            with self.assertFlowFinishes() as plan:
+                res = self.client.get(
+                    reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+                )
+                self.assertStageResponse(
+                    res,
+                    component="ak-stage-access-denied",
+                    error_message="Invalid stage configuration",
+                )
+            plan = plan()
+            self.assertNotIn(PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE, plan.context)
+            self.assertNotIn(PLAN_CONTEXT_DEVICE, plan.context)

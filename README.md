@@ -36,6 +36,8 @@ Our [enterprise offering](https://goauthentik.io/pricing) is available for organ
 
 See the [Developer Documentation](https://docs.goauthentik.io/docs/developer-docs/) for information about setting up local build environments, testing your contributions, and our contribution process.
 
+When you contribute documentation, either to accompany a code change or as a standalone contribution, please be sure to follow our documentation [Style Guide](website/docs/developer-docs/docs/style-guide.mdx).
+
 ## Security
 
 Please see [SECURITY.md](SECURITY.md).

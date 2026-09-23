@@ -32,21 +32,21 @@ func NewSessionBinder(si server.LDAPServerInstance, oldBinder bind.Binder) *Sess
 		if oldSb, ok := oldBinder.(*SessionBinder); ok {
 			sb.DirectBinder = oldSb.DirectBinder
 			sb.sessions = oldSb.sessions
-			sb.log.Debug("re-initialised session binder")
+			sb.log.Debug("re-initialized session binder")
 			return sb
 		}
 	}
 	sb.sessions = ttlcache.New(ttlcache.WithDisableTouchOnHit[Credentials, ldap.LDAPResultCode]())
 	sb.DirectBinder = *direct.NewDirectBinder(si)
 	go sb.sessions.Start()
-	sb.log.Debug("initialised session binder")
+	sb.log.Debug("initialized session binder")
 	return sb
 }
 
 func (sb *SessionBinder) Bind(username string, req *bind.Request) (ldap.LDAPResultCode, error) {
 	item := sb.sessions.Get(Credentials{
 		DN:       req.BindDN,
-		Password: req.BindPW,
+		Password: req.Password,
 	})
 	if item != nil {
 		sb.log.WithField("bindDN", req.BindDN).Info("authenticated from session")
@@ -63,7 +63,7 @@ func (sb *SessionBinder) Bind(username string, req *bind.Request) (ldap.LDAPResu
 		}
 		sb.sessions.Set(Credentials{
 			DN:       req.BindDN,
-			Password: req.BindPW,
+			Password: req.Password,
 		}, result, time.Until(flags.Session.Expires))
 	}
 	return result, err

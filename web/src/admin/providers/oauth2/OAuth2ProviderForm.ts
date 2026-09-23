@@ -1,6 +1,6 @@
 import { renderForm } from "./OAuth2ProviderFormForm.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { DualSelectPair } from "#elements/ak-dual-select/types";
 
@@ -14,7 +14,7 @@ import { customElement, state } from "lit/decorators.js";
 const providerToSelect = (provider: OAuth2Provider) => [provider.pk, provider.name];
 
 export async function oauth2ProvidersProvider(page = 1, search = "") {
-    const oauthProviders = await new ProvidersApi(DEFAULT_CONFIG).providersOauth2List({
+    const oauthProviders = await aki(ProvidersApi).providersOauth2List({
         ordering: "name",
         pageSize: 20,
         search: search.trim(),
@@ -36,7 +36,8 @@ export function oauth2ProviderSelector(instanceProviders: number[] | undefined) 
     }
 
     return async () => {
-        const oauthSources = new ProvidersApi(DEFAULT_CONFIG);
+        const oauthSources = aki(ProvidersApi);
+
         const mappings = await Promise.allSettled(
             instanceProviders.map((instanceId) =>
                 oauthSources.providersOauth2Retrieve({ id: instanceId }),
@@ -54,7 +55,6 @@ export function oauth2ProviderSelector(instanceProviders: number[] | undefined) 
  * Form page for OAuth2 Authentication Method
  *
  * @element ak-provider-oauth2-form
- *
  */
 
 @customElement("ak-provider-oauth2-form")
@@ -82,22 +82,25 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
     ];
 
     async loadInstance(pk: number): Promise<OAuth2Provider> {
-        const provider = await new ProvidersApi(DEFAULT_CONFIG).providersOauth2Retrieve({
+        const provider = await aki(ProvidersApi).providersOauth2Retrieve({
             id: pk,
         });
+
         this.showClientSecret = provider.clientType === ClientTypeEnum.Confidential;
         this.showLogoutMethod = !!provider.logoutUri;
+
         return provider;
     }
 
     async send(data: OAuth2Provider): Promise<OAuth2Provider> {
         if (this.instance) {
-            return new ProvidersApi(DEFAULT_CONFIG).providersOauth2Update({
+            return aki(ProvidersApi).providersOauth2PartialUpdate({
                 id: this.instance.pk,
-                oAuth2ProviderRequest: data,
+                patchedOAuth2ProviderRequest: data,
             });
         }
-        return new ProvidersApi(DEFAULT_CONFIG).providersOauth2Create({
+
+        return aki(ProvidersApi).providersOauth2Create({
             oAuth2ProviderRequest: data,
         });
     }
@@ -106,9 +109,11 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
         const showClientSecretCallback = (show: boolean) => {
             this.showClientSecret = show;
         };
+
         const showLogoutMethodCallback = (show: boolean) => {
             this.showLogoutMethod = show;
         };
+
         return renderForm({
             provider: this.instance,
             showClientSecret: this.showClientSecret,

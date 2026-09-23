@@ -5,6 +5,10 @@ from unittest.mock import Mock
 
 from django.test import RequestFactory, TestCase
 
+from authentik.common.oauth.constants import (
+    OAUTH2_BINDING,
+    PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS,
+)
 from authentik.common.saml.constants import (
     RSA_SHA256,
     SAML_NAME_ID_FORMAT_EMAIL,
@@ -17,6 +21,7 @@ from authentik.providers.iframe_logout import (
     IframeLogoutChallenge,
     IframeLogoutStageView,
 )
+from authentik.providers.oauth2.models import OAuth2Provider
 from authentik.providers.saml.models import SAMLLogoutMethods, SAMLProvider
 from authentik.providers.saml.native_logout import (
     NativeLogoutChallenge,
@@ -42,7 +47,7 @@ class TestNativeLogoutStageView(TestCase):
             authorization_flow=self.flow,
             acs_url="https://sp1.example.com/acs",
             sls_url="https://sp1.example.com/sls",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
             sp_binding="redirect",
             sls_binding="redirect",
             logout_method=SAMLLogoutMethods.FRONTCHANNEL_NATIVE,
@@ -53,7 +58,7 @@ class TestNativeLogoutStageView(TestCase):
             authorization_flow=self.flow,
             acs_url="https://sp2.example.com/acs",
             sls_url="https://sp2.example.com/sls",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
             sp_binding="post",
             sls_binding="post",
             logout_method=SAMLLogoutMethods.FRONTCHANNEL_NATIVE,
@@ -213,7 +218,7 @@ class TestIframeLogoutStageView(TestCase):
             authorization_flow=self.flow,
             acs_url="https://sp1.example.com/acs",
             sls_url="https://sp1.example.com/sls",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
             sp_binding="redirect",
             sls_binding="redirect",
             logout_method="frontchannel_iframe",
@@ -224,7 +229,7 @@ class TestIframeLogoutStageView(TestCase):
             authorization_flow=self.flow,
             acs_url="https://sp2.example.com/acs",
             sls_url="https://sp2.example.com/sls",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
             sp_binding="post",
             sls_binding="post",
             logout_method="frontchannel_iframe",
@@ -295,14 +300,14 @@ class TestIframeLogoutStageView(TestCase):
             },
         ]
         # OIDC sessions (pre-processed)
-        from authentik.common.oauth.constants import PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS
-
         plan.context[PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS] = [
             {
                 "url": "https://oidc.example.com/logout?iss=authentik&sid=abc123",
                 "provider_name": "oidc-provider",
-                "binding": "redirect",
-                "provider_type": "oidc",
+                "binding": OAUTH2_BINDING,
+                "provider_type": (
+                    f"{OAuth2Provider._meta.app_label}" f".{OAuth2Provider._meta.model_name}"
+                ),
             },
         ]
         stage_view = IframeLogoutStageView(
@@ -367,7 +372,7 @@ class TestIdPLogoutIntegration(FlowTestCase):
             authorization_flow=self.flow,
             acs_url="https://sp.example.com/acs",
             sls_url="https://sp.example.com/sls",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
             sp_binding="redirect",
             sls_binding="redirect",
             signing_kp=self.keypair,

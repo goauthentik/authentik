@@ -5,9 +5,9 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer, Serializer
 
-from authentik.core.models import Application, ExpiringModel, User
+from authentik.core.models import Application, User
 from authentik.flows.models import Stage
-from authentik.lib.models import InternallyManagedMixin, SerializerModel
+from authentik.lib.models import ExpiringModel, InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 
 

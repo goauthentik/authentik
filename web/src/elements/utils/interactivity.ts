@@ -1,5 +1,12 @@
-export function isInteractiveElement(target: Element | null | undefined): target is HTMLElement {
-    if (!target || !(target instanceof HTMLElement)) {
+export const InteractiveElementsQuery =
+    "[href],input,button,i,[role='button'],select,textarea,[tabindex]:not([tabindex='-1'])";
+
+export function isInteractiveElement(
+    target: EventTarget | Element | null | undefined,
+): target is HTMLElement {
+    if (!target) return false;
+
+    if (!(target instanceof HTMLElement)) {
         return false;
     }
 
@@ -7,16 +14,45 @@ export function isInteractiveElement(target: Element | null | undefined): target
         return false;
     }
 
-    const { tabIndex } = target;
-
     // Despite our type definitions, this method isn't available in all browsers,
     // so we fallback to assuming the element is visible.
     const visible = target.checkVisibility?.() ?? true;
 
+    const { tabIndex } = target;
+
     return (
-        visible &&
-        (tabIndex === 0 ||
-            tabIndex === -1 ||
-            target.matches("button, [role='button'], a[href], input, select, textarea"))
+        visible && (tabIndex === 0 || tabIndex === -1 || target.matches(InteractiveElementsQuery))
     );
+}
+
+const TextLikeInputTypes = new Set([
+    "text",
+    "url",
+    "password",
+    "email",
+    "date",
+    "month",
+    "week",
+    "number",
+    "tel",
+    "time",
+]);
+
+/**
+ * Type predicate to determine if a given a target element is shaped like a text field.
+ *
+ * @see {@linkcode isInteractiveElement} to narrow the input to this function.
+ */
+export function isInteractiveTextElement(
+    target: HTMLElement,
+): target is HTMLInputElement | HTMLTextAreaElement {
+    if (target instanceof HTMLTextAreaElement) {
+        return true;
+    }
+
+    if (target instanceof HTMLInputElement) {
+        return TextLikeInputTypes.has(target.type);
+    }
+
+    return false;
 }

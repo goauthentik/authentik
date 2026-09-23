@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { writeToClipboard } from "#common/clipboard";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
@@ -16,20 +16,20 @@ import { customElement, property } from "lit/decorators.js";
  * Automatically pushes tokens to the clipboard, if the clipboard is available; otherwise displays
  * them in the notifications.
  *
- * @element ak-token-copy-button
- *
- * @slot - The label for the button
- *
  * @fires ak-button-click - When the button is first clicked.
  * @fires ak-button-success - When the async process succeeds
  * @fires ak-button-failure - When the async process fails
  * @fires ak-button-reset - When the button is reset after the async process completes
+ * @element ak-token-copy-button
+ *
+ * @slot - The label for the button
  */
 
 @customElement("ak-token-copy-button")
-export class TokenCopyButton extends BaseTaskButton<null> {
+export class AKTokenCopyButton extends BaseTaskButton<null> {
     /**
      * The identifier key associated with this token.
+     *
      * @attr
      */
     @property({ type: String })
@@ -39,20 +39,18 @@ export class TokenCopyButton extends BaseTaskButton<null> {
     public entityLabel: string = msg("Token");
 
     public override callAction() {
-        if (!this.identifier) {
+        const { identifier } = this;
+
+        if (!identifier) {
             throw new TypeError("No `identifier` set for `TokenCopyButton`");
         }
 
         // Safari permission hack.
-        const text = new ClipboardItem({
-            "text/plain": new CoreApi(DEFAULT_CONFIG)
-                .coreTokensViewKeyRetrieve({
-                    identifier: this.identifier,
-                })
-                .then((tokenView) => new Blob([tokenView.key], { type: "text/plain" })),
-        });
+        const data = aki(CoreApi)
+            .coreTokensViewKeyRetrieve({ identifier })
+            .then((tokenView) => new Blob([tokenView.key], { type: "text/plain" }));
 
-        return writeToClipboard(text, this.entityLabel).then(() => null);
+        return writeToClipboard(data, this.entityLabel).then(() => null);
     }
 
     protected async onError(error: unknown) {
@@ -69,10 +67,10 @@ export class TokenCopyButton extends BaseTaskButton<null> {
     }
 }
 
-export default TokenCopyButton;
+export default AKTokenCopyButton;
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-token-copy-button": TokenCopyButton;
+        "ak-token-copy-button": AKTokenCopyButton;
     }
 }
