@@ -289,16 +289,34 @@ async function scheduleOffboarding(
     });
 }
 
+/**
+ * The raw JSON block on an event detail page.
+ *
+ * Scoped to `ak-event-view`: the dev-mode "consecutive requests" notification also
+ * renders a `<pre>`, so a bare `page.locator("pre")` is ambiguous whenever one is
+ * on screen.
+ */
+function rawEventJSON(page: Page) {
+    return page.locator("ak-event-view").locator("pre");
+}
+
 async function openOffboardingList(context: BrowserContext) {
     return openAdminPage(context, "Events", "Offboardings", "User Offboardings");
 }
 
-async function setOnlyPending(list: ReturnType<Page["getByRole"]>, value: boolean): Promise<void> {
-    const filter = list.getByRole("checkbox", { name: "Only show pending offboardings" });
+const ONLY_PENDING_FILTER = "Only show pending offboardings";
 
-    if ((await filter.isChecked()) !== value) {
-        await filter.click();
-    }
+async function setOnlyPending(
+    { form }: BrowserContext,
+    list: ReturnType<Page["getByRole"]>,
+    value: boolean,
+): Promise<void> {
+    // Through the fixture, not by clicking the checkbox: `ak-switch-input` renders
+    // the PatternFly switch, whose `.pf-c-switch__toggle` covers the `<input>` and
+    // intercepts the pointer event.
+    await form.setInputCheck(ONLY_PENDING_FILTER, value, list);
+
+    const filter = list.getByRole("checkbox", { name: ONLY_PENDING_FILTER });
 
     if (value) {
         await expect(filter, "Only pending offboardings filter is enabled").toBeChecked();
@@ -311,12 +329,26 @@ async function searchRows(
     { form }: BrowserContext,
     list: ReturnType<Page["getByRole"]>,
     query: string,
+    expected: number,
 ) {
     const searchInput = await form.findTextualInput(/search/i, list);
-    await form.fill(searchInput, query);
-    await searchInput.press("Enter");
+    const rows = list.getByRole("row").filter({ hasText: query });
 
-    return list.getByRole("row").filter({ hasText: query });
+    // Submitting refetches even when the query has not changed, so re-submitting is how
+    // a row created after the last fetch gets picked up. Without that the table holds
+    // its previous result set and a short count never settles on its own, however long
+    // the assertion waits -- the DOM simply stops changing.
+    await expect(async () => {
+        await form.fill(searchInput, query);
+        await searchInput.press("Enter");
+
+        await expect(rows).toHaveCount(expected, { timeout: 2_000 });
+    }, `Table settles on ${expected} row(s) matching "${query}"`).toPass({
+        timeout: 30_000,
+        intervals: [1_000, 2_000],
+    });
+
+    return rows;
 }
 
 async function waitUntilDue(scheduledAt: Date): Promise<void> {
@@ -345,7 +377,12 @@ async function runDueOffboardings(context: BrowserContext) {
         const schedules = systemTasks.getByRole("tabpanel", { name: "Schedules" });
         await expect(schedules, "Schedules tab is visible").toBeVisible();
 
-        const scheduleRow = await form.search("Execute due user offboardings.", schedules);
+        // By actor name, not by the schedule's description. The schedules API searches
+        // id/identifier/_uid/actor_name (authentik/tasks/schedules/api.py), so the
+        // human-readable description matches nothing and filters the table to empty --
+        // which this step survived only while the search intermittently failed to
+        // submit and left the table unfiltered.
+        const scheduleRow = await form.search("execute_due_offboardings", schedules);
         await expect(scheduleRow, "Due offboarding schedule is visible").toBeVisible();
 
         const runButton = scheduleRow.locator("ak-action-button").getByRole("button");
@@ -364,14 +401,20 @@ async function waitForOffboardingEvent(
     username: string,
     action: "deactivate" | "delete",
 ) {
-    const { form } = context;
+    const { form, page } = context;
     const eventLog = await openAdminPage(context, "Events", "Logs", "Event Log");
 
     const searchInput = await form.findTextualInput(/search/i, eventLog);
     const query = `action = "user_offboarded" and context.message = "User ${username} was offboarded (${action})"`;
+    // The row shows the action label and the acting admin, never the target, so a
+    // row left over from an earlier test's search is indistinguishable from this
+    // one's. Reload each attempt: it clears any filtered result the nav-link click
+    // preserved, and refetches when the query is unchanged between attempts.
     const eventRow = eventLog.getByRole("row", { name: /User was offboarded/ });
 
     await expect(async () => {
+        await page.reload();
+
         await form.fill(searchInput, query);
         await searchInput.press("Enter");
 
@@ -391,6 +434,12 @@ async function waitForOffboardingEvent(
 }
 
 test.describe("User offboarding", () => {
+    // Serial, because "Execute due user offboardings" is a single instance-wide
+    // schedule: running it drains every due offboarding, including ones another
+    // test just scheduled and has not asserted on yet. `playwright.config.js` sets
+    // `fullyParallel`, so without this the workers race through each other's state.
+    test.describe.configure({ mode: "serial" });
+
     const identities = new Map<string, UserIdentity>();
 
     test.beforeEach(
@@ -496,7 +545,7 @@ test.describe("User offboarding", () => {
         });
 
         list = await openOffboardingList(context);
-        await setOnlyPending(list, false);
+        await setOnlyPending(context, list, false);
         row = await form.search(identity.username, list);
         await expect(row, "Canceled offboarding remains in history").toContainText("Canceled");
 
@@ -591,7 +640,7 @@ test.describe("User offboarding", () => {
         }
 
         const list = await openOffboardingList(context);
-        const rows = await searchRows(context, list, sharedUsername);
+        const rows = await searchRows(context, list, sharedUsername, 2);
 
         await expect(rows, "Both pending offboardings are listed").toHaveCount(2, {
             timeout: 10_000,
@@ -623,8 +672,8 @@ test.describe("User offboarding", () => {
             timeout: 10_000,
         });
 
-        await setOnlyPending(list, false);
-        const canceledRows = await searchRows(context, list, sharedUsername);
+        await setOnlyPending(context, list, false);
+        const canceledRows = await searchRows(context, list, sharedUsername, 2);
 
         await expect(canceledRows, "Canceled offboardings remain in history").toHaveCount(2, {
             timeout: 10_000,
@@ -666,7 +715,7 @@ test.describe("User offboarding", () => {
         const eventRow = await waitForOffboardingEvent(context, identity.username, "deactivate");
         await eventRow.getByRole("link").last().click();
 
-        await expect(page.locator("pre"), "Audit event retains the target username").toContainText(
+        await expect(rawEventJSON(page), "Audit event retains the target username").toContainText(
             identity.username,
         );
 
@@ -699,7 +748,7 @@ test.describe("User offboarding", () => {
             await page.reload();
             await expect(list, "Offboarding list is visible").toBeVisible({ timeout: 10_000 });
 
-            await setOnlyPending(list, false);
+            await setOnlyPending(context, list, false);
 
             const completedRow = await form.search(identity.username, list);
 
@@ -736,7 +785,7 @@ test.describe("User offboarding", () => {
         const eventRow = await waitForOffboardingEvent(context, identity.username, "delete");
         await eventRow.getByRole("link").last().click();
 
-        const rawEvent = page.locator("pre");
+        const rawEvent = rawEventJSON(page);
 
         await expect(rawEvent, "Delete audit event remains available").toContainText(
             identity.username,
@@ -747,7 +796,7 @@ test.describe("User offboarding", () => {
         );
 
         const usersList = await openUsers(context);
-        const deletedRows = await searchRows(context, usersList, identity.username);
+        const deletedRows = await searchRows(context, usersList, identity.username, 0);
 
         await expect(deletedRows, "Deleted user is removed from the users list").toHaveCount(0, {
             timeout: 10_000,

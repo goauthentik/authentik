@@ -40,6 +40,8 @@ For more information, see [Secrets in the API and blueprints](../../sys-mgmt/sec
 
 ## New features and improvements
 
+- **Display names in `ak_send_email` recipients**: The `address`, `cc`, and `bcc` parameters of `ak_send_email` now accept `(name, email)` tuples and `"Name <email>"` strings, so emails sent from expressions can include a display name in the `To` and `CC` headers, matching the Email stage. See [`ak_send_email`](../../customize/policies/types/expression/reference.mdx).
+
 ### Secrets
 
 Secrets used by providers, sources, stages, and connectors can now be managed under **System** > **Secrets**. Each secret has its own permissions. Text secrets can be rotated through the Admin interface or API. See [Secrets](../../sys-mgmt/secrets/index.mdx).
