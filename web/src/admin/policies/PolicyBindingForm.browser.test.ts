@@ -1,3 +1,5 @@
+import { PolicyBindingCheckTarget } from "#common/policies/utils";
+
 import { PolicyBindingForm } from "#admin/policies/PolicyBindingForm";
 
 import { CoreApi, PoliciesApi, type PolicyBinding } from "@goauthentik/api";
@@ -53,6 +55,31 @@ async function mount(instance: PolicyBinding | null = null) {
 }
 
 describe("PolicyBindingForm", () => {
+    it.each([PolicyBindingCheckTarget.User, PolicyBindingCheckTarget.Group])(
+        "offers and preserves dry-run for a %s binding",
+        async (target) => {
+            const create = vi
+                .spyOn(PoliciesApi.prototype, "policiesBindingsCreate")
+                .mockResolvedValue({} as PolicyBinding);
+
+            const { form, checkbox } = await mount();
+            form.policyGroupUser = target;
+            await form.updateComplete;
+
+            expect(
+                form.renderRoot.querySelector<HTMLElement>('ak-switch-input[name="dryRun"]')
+                    ?.hidden,
+            ).toBe(false);
+
+            checkbox.click();
+            await form.send({ ...form.toJSON(), user: 1, group: "group" });
+
+            expect(create).toHaveBeenCalledWith({
+                policyBindingRequest: expect.objectContaining({ dryRun: true, policy: null }),
+            });
+        },
+    );
+
     it("defaults to enforcement and sends an explicitly enabled dry-run on creation", async () => {
         const create = vi
             .spyOn(PoliciesApi.prototype, "policiesBindingsCreate")

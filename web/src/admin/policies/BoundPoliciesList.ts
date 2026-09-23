@@ -135,7 +135,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
     }
 
     protected getDryRunEventsButton(item: PolicyBinding): SlottedTemplateResult {
-        if (!item.policy || !item.dryRun) {
+        if (!item.dryRun) {
             return nothing;
         }
 
@@ -144,7 +144,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         const query = [
             `action = "${EventActions.PolicyExecution}"`,
             "context.dry_run = True",
-            `context.binding.policy_binding_uuid = "${bindingUuid}"`,
+            `context.binding.pk = "${bindingUuid}"`,
         ].join(" and ");
 
         return html`<a href=${toAdminInterface("events/log", { q: query })}>

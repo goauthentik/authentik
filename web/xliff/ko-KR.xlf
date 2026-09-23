@@ -11764,7 +11764,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>View dry-run results</source>
 </trans-unit>
 <trans-unit id="policies.bindings.dry-run.description">
-  <source>Evaluate this policy without including its result or messages in the final decision. Results are recorded in the Event Log. Policy side effects are not prevented.</source>
+  <source>Evaluate this binding without including its result or messages in the final decision. Results are recorded in the Event Log. Policy side effects are not prevented.</source>
 </trans-unit>
 <trans-unit id="s752d5cd8886fc545">
   <source>Selected providers can authenticate to this provider with their JWTs, request its tokens via token exchange, and introspect or revoke them.</source>

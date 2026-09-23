@@ -58,12 +58,10 @@ export function cleanBindingForSend(
         case PolicyBindingCheckTarget.Group:
             data.policy = null;
             data.user = null;
-            data.dryRun = false;
             break;
         case PolicyBindingCheckTarget.User:
             data.policy = null;
             data.group = null;
-            data.dryRun = false;
             break;
     }
 
@@ -332,9 +330,8 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                 name="dryRun"
                 label=${msg("Dry-run", { id: "policies.bindings.dry-run.label" })}
                 ?checked=${this.instance?.dryRun ?? false}
-                ?hidden=${this.policyGroupUser !== PolicyBindingCheckTarget.Policy}
                 help=${msg(
-                    "Evaluate this policy without including its result or messages in the final decision. Results are recorded in the Event Log. Policy side effects are not prevented.",
+                    "Evaluate this binding without including its result or messages in the final decision. Results are recorded in the Event Log. Policy side effects are not prevented.",
                     { id: "policies.bindings.dry-run.description" },
                 )}
             >
