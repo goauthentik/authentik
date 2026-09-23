@@ -158,7 +158,7 @@ Every PR gets a Netlify Deploy Preview — use it to verify rendering, links, an
 | Site generator | Docusaurus 3.x (classic preset + Mermaid)                                           |
 | Content        | MDX + React                                                                         |
 | API reference  | `docusaurus-plugin-openapi-docs` (from schema)                                      |
-| Build runtime  | Node ≥ 24, pnpm ≥ 12.4 (pinned via `packageManager`)                                |
+| Build runtime  | Node ≥ 24, pnpm ≥ 11.20 (pinned via `packageManager`)                               |
 | Package layout | pnpm workspace (`docs`, `integrations`, `api`, `docusaurus-theme`)                  |
 | Lint / format  | ESLint 9 (`@goauthentik/eslint-config`) + Prettier (`@goauthentik/prettier-config`) |
 | Spell check    | cspell + shared dictionaries                                                        |

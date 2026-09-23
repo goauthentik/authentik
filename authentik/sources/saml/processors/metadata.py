@@ -9,7 +9,7 @@ from authentik.common.saml.constants import (
     NS_SIGNATURE,
     SAML_BINDING_POST,
 )
-from authentik.providers.saml.utils.encoding import strip_pem_header
+from authentik.common.saml.utils import x509_certificate_b64
 from authentik.sources.saml.models import SAMLSource
 
 
@@ -32,9 +32,7 @@ class MetadataProcessor:
             key_info = SubElement(key_descriptor, f"{{{NS_SIGNATURE}}}KeyInfo")
             x509_data = SubElement(key_info, f"{{{NS_SIGNATURE}}}X509Data")
             x509_certificate = SubElement(x509_data, f"{{{NS_SIGNATURE}}}X509Certificate")
-            x509_certificate.text = strip_pem_header(
-                self.source.signing_kp.certificate_data.replace("\r", "")
-            ).replace("\n", "")
+            x509_certificate.text = x509_certificate_b64(self.source.signing_kp.certificate)
             return key_descriptor
         return None
 
@@ -46,9 +44,7 @@ class MetadataProcessor:
             key_info = SubElement(key_descriptor, f"{{{NS_SIGNATURE}}}KeyInfo")
             x509_data = SubElement(key_info, f"{{{NS_SIGNATURE}}}X509Data")
             x509_certificate = SubElement(x509_data, f"{{{NS_SIGNATURE}}}X509Certificate")
-            x509_certificate.text = strip_pem_header(
-                self.source.encryption_kp.certificate_data.replace("\r", "")
-            ).replace("\n", "")
+            x509_certificate.text = x509_certificate_b64(self.source.encryption_kp.certificate)
             return key_descriptor
         return None
 
