@@ -2,7 +2,7 @@
    This file is intended as a check against what the style engine produces.
  */
 
-export const patternflyLightTheme = {
+export const patternflyLightTheme: Record<string, string> = {
     "pf-global.BackgroundColor.100": "#ffffff",
     "pf-global.BackgroundColor.150": "#fafafa",
     "pf-global.BackgroundColor.200": "#f0f0f0",

@@ -1,8 +1,8 @@
 /*
  * ⚠️  GENERATED FILE — do not edit directly.
  *
- * Source:   packages/theme/src/tokens/*.ts
- * Builder:  packages/theme/build.mjs
+ * Source:   packages/theme/src/
+ * Builder:  packages/theme/build.ts
  */
 
 :root {
@@ -123,9 +123,9 @@
 	--ak-global--color--active--fill: oklch(0.890562 0.045171 231.677291 / 1) /* #bee1f4 */;
 	--ak-global--color--active--hover: oklch(0.668869 0.16303 248.119843 / 1) /* #2b9af3 */;
 	--ak-global--color--active--hint: oklch(0.77059 0.112238 244.373202 / 1) /* #73bcf7 */;
-	--ak-global--color--disabled: ;
-	--ak-global--color--disabled--fill: ;
-	--ak-global--color--disabled--readonly: ;
+	--ak-global--color--disabled: oklch(0.536441 0.009214 253.905106 / 1) /* #6a6e73 */;
+	--ak-global--color--disabled--fill: oklch(0.86378 0 0 / 1) /* #d2d2d2 */;
+	--ak-global--color--disabled--readonly: oklch(0.95514 0 0 / 1) /* #f0f0f0 */;
 	--ak-global--color--neutral: oklch(0.606842 0.103456 195.611606 / 1) /* #009596 */;
 	--ak-global--color--neutral--fill: oklch(0.963151 0.009311 286.223539 / 1) /* #f2f2f9 */;
 	--ak-global--color--neutral--surface: oklch(0.963151 0.009311 286.223539 / 1) /* #f2f2f9 */;
@@ -319,9 +319,9 @@
 	--pf-global--palette--red-400: var(--ak-global--palette--red-400);
 	--pf-global--palette--red-500: var(--ak-global--palette--red-500);
 	--pf-global--palette--white: var(--ak-global--palette--white);
+	--pf-global--Color--300: #3c3f42;
 	--pf-global--Color--100: var(--ak-global--color--ink);
 	--pf-global--Color--200: var(--ak-global--color--ink--muted);
-	--pf-global--Color--300: var(--ak-global--color--ink--subtle);
 	--pf-global--Color--400: var(--ak-global--color--ink--subtle);
 	--pf-global--Color--light-100: var(--ak-global--color--ink--pin-dark);
 	--pf-global--Color--light-200: var(--ak-global--color--ink--pin-dark--muted);
@@ -349,7 +349,7 @@
 	--pf-global--primary-color--200: var(--ak-global--color--primary--active);
 	--pf-global--primary-color--300: #0066cc;
 	--pf-global--primary-color--light-100: var(--ak-global--color--primary--pin-dark);
-	--pf-global--primary-color--dark--100: var(--ak-global--color--primary--pin-light);
+	--pf-global--primary-color--dark-100: var(--ak-global--color--primary--pin-light);
 	--pf-global--active-color--100: var(--ak-global--color--active);
 	--pf-global--active-color--200: var(--ak-global--color--active--fill);
 	--pf-global--active-color--300: var(--ak-global--color--active--hover);
@@ -361,11 +361,14 @@
 	--pf-global--default-color--200: #009596;
 	--pf-global--default-color--300: var(--ak-global--color--neutral--deep);
 	--pf-global--success-color--100: var(--ak-global--color--success);
-	--pf-global--success-color--200: var(--ak-global--color--success--fill);
-	--pf-global--success-color--300: var(--ak-global--color--success--deep);
-	--pf-global--info-color--100: var(--ak-global--color--info--deep);
-	--pf-global--warning-color--100: var(--ak-global--color--warning--deep);
-	--pf-global--danger-color--100: var(--ak-global--color--danger--deep);
+	--pf-global--success-color--200: var(--ak-global--color--success--deep);
+	--pf-global--info-color--100: var(--ak-global--color--info);
+	--pf-global--info-color--200: var(--ak-global--color--info--deep);
+	--pf-global--warning-color--100: var(--ak-global--color--warning);
+	--pf-global--warning-color--200: var(--ak-global--color--warning--deep);
+	--pf-global--danger-color--100: var(--ak-global--color--danger);
+	--pf-global--danger-color--200: var(--ak-global--color--danger--deep);
+	--pf-global--danger-color--300: #470000;
 	--pf-global--BorderWidth--sm: var(--ak-global--border-width--sm);
 	--pf-global--BorderWidth--md: var(--ak-global--border-width--md);
 	--pf-global--BorderWidth--lg: var(--ak-global--border-width--lg);

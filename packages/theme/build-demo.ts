@@ -29,8 +29,8 @@ const DEMO_SRCS = readdirSync(DEMO_SRC_PATH)
 const FONT_PATH = dirname(FONTS_CSS);
 const CSS_URL_RE = /url\("(\.\/[^"]+)"\)/g;
 
-function findFontFiles() {
-    const fontFiles = new Set();
+function findFontFiles(): string[] {
+    const fontFiles = new Set<string>();
     for (const sheet of [FONTS_CSS, ICONS_CSS]) {
         const css = readFileSync(sheet, "utf-8");
         const fontpaths = Array.from(css.matchAll(CSS_URL_RE));

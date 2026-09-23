@@ -12,20 +12,23 @@ const OUT_DIR = resolve(PACKAGE_ROOT, "dist");
 const HEADER = `/*
  * ⚠️  GENERATED FILE — do not edit directly.
  *
- * Source:   packages/theme/src/tokens/*.ts
- * Builder:  packages/theme/build.mjs
+ * Source:   packages/theme/src/
+ * Builder:  packages/theme/build.ts
  */
 `;
 
-/**
- * @typedef {object} Category
- * @property {string} name Slug used for the output filename.
- * @property {string[]} prefixes Token-name prefixes (after the `--ak-` strip) that belong to this
- *   category.
- */
+interface Category {
+    /**
+     * Slug used for the output filename.
+     */
+    name: string;
+    /**
+     * Token-name prefixes (after the `--ak-` strip) that belong to this category.
+     */
+    prefixes: string[];
+}
 
-/** @type {Category[]} */
-const CATEGORIES = [
+const CATEGORIES: Category[] = [
     { name: "color", prefixes: ["global--color--"] },
     {
         name: "typography",
@@ -46,11 +49,11 @@ const CATEGORIES = [
 /**
  * One emitted block within the styleframe CSS output. `header` is the line
  * that opens the block (`:root {`, `@media (...) {`, `html[data-theme="..."] {`).
- *
- * @typedef {object} ParsedBlock
- * @property {string} header
- * @property {string[]} declarations
  */
+interface ParsedBlock {
+    header: string;
+    declarations: string[];
+}
 
 /**
  * Split the styleframe CSS output into top-level blocks. Each block is one of:
@@ -58,17 +61,13 @@ const CATEGORIES = [
  * :root { … }
  * html[data-theme="…"] { … }
  *
- * @param {string} css
- *
- * @returns {ParsedBlock[]}
  * @media (…) { :root { … } }
  *
  * Nested `:root` inside `@media` is preserved as part of the block — the
  * inner declarations are kept as a flat list and re-wrapped on emit.
  */
-function parseBlocks(css) {
-    /** @type {ParsedBlock[]} */
-    const blocks = [];
+function parseBlocks(css: string): ParsedBlock[] {
+    const blocks: ParsedBlock[] = [];
 
     // Top-level blocks separated by blank lines in styleframe's output. Each
     // block ends with a balanced closing brace at column zero. We don't need a
@@ -90,8 +89,7 @@ function parseBlocks(css) {
 
         const openerIndent = opener.match(/^\s*/)?.[0] ?? "";
         i++;
-        /** @type {string[]} */
-        const innerLines = [];
+        const innerLines: string[] = [];
         while (i < lines.length) {
             const line = lines[i] ?? "";
             const trimmed = line.trim();
@@ -113,12 +111,8 @@ function parseBlocks(css) {
 /**
  * Extract every `--ak-*: …;` declaration from a flat list of lines (which may
  * include a nested `:root { … }` wrapper from an `@media` block).
- *
- * @param {string[]} lines
- *
- * @returns {string[]}
  */
-function flattenDeclarations(lines) {
+function flattenDeclarations(lines: string[]): string[] {
     return lines.filter((line) => /^\s*--ak-[a-z0-9-]+\s*:/.test(line));
 }
 
@@ -126,23 +120,16 @@ function flattenDeclarations(lines) {
  * Build the CSS for one category by filtering each parsed block to that
  * category's declarations and re-wrapping them. Returns null when no token in
  * the tree matches the category.
- *
- * @param {Category} category
- * @param {ParsedBlock[]} blocks
- *
- * @returns {string | null}
  */
-function buildCategoryFile(category, blocks) {
-    /** @param {string} line */
-    const matches = (line) => {
+function buildCategoryFile(category: Category, blocks: ParsedBlock[]): string | null {
+    const matches = (line: string) => {
         const declaration = line.match(/--ak-([a-z0-9-]+):/);
         if (!declaration || !declaration[1]) return false;
         const name = declaration[1];
         return category.prefixes.some((prefix) => name.startsWith(prefix));
     };
 
-    /** @type {string[]} */
-    const sections = [];
+    const sections: string[] = [];
 
     for (const block of blocks) {
         if (block.header.startsWith("@media")) {
@@ -179,7 +166,7 @@ await writeFile(resolve(OUT_DIR, "index.css"), `${HEADER}\n${css}\n`, "utf-8");
 // Per-category files: lean slices for consumers that want to cherry-pick —
 // e.g. the docs site pulling color + typography on their own.
 const blocks = parseBlocks(css);
-const emitted = [];
+const emitted: string[] = [];
 for (const category of CATEGORIES) {
     const content = buildCategoryFile(category, blocks);
     if (content === null) {
