@@ -44,13 +44,20 @@ You should only import files from trusted sources and review blueprints before i
 
 ## Blueprint execution
 
-When a blueprint is applied, all entries are processed within a single **atomic database transaction**. This means:
+A Blueprint is a list of entries to create, update, or delete object instances in the authentik database.
+
+Internally, authentik is an object-oriented system of relationships which are sometimes ordered. To give just a few examples:
+
+- Flows have ordered Bindings to Stages
+- Stages have ordered Bindings to Policies
+- Users have Permissions
+
+When a blueprint is applied, to ensure database consistency and prevent incomplete configurations, all entries are processed within a single **atomic database transaction**. This means:
 
 - If any entry fails validation or encounters an error, the **entire blueprint is rolled back**
 - No partial changes are committed - it's all-or-nothing
-- This ensures database consistency and prevents incomplete configurations
 
-Additionally, all blueprints have access to built-in context variables:
+All blueprints have access to these built-in context variables:
 
 - `goauthentik.io/enterprise/licensed`: Boolean indicating if an enterprise license is active
 - `goauthentik.io/rbac/models`: Dictionary of available RBAC models
@@ -63,6 +70,8 @@ When you create or edit a blueprint instance, these context variables can be acc
 conditions:
     - !Context goauthentik.io/enterprise/licensed
 ```
+
+The order inside a Blueprint matters. To create relationships between objects, whether defined in the Blueprint or part of the existing authentik instance, authentik provides the `!KeyOf` and `!Find` operators. These operators can only resolve an entry that already exists in the database or was already applied as an earlier entry in the current Blueprint execution transaction. For example, to create a Flow, the Flow and its Stages must come first, and then the Bindings to establish the connections between the Flow and its Stages.
 
 ## Blueprint storage
 
