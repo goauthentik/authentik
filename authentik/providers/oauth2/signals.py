@@ -9,13 +9,15 @@ from authentik.common.oauth.constants import (
 )
 from authentik.core.models import AuthenticatedSession, ProviderPropertyMapping, User
 from authentik.core.signals import deactivation_token_cleanup_inhibited
-from authentik.crypto.secrets.models import Secret, secret_value_validating
+from authentik.crypto.secrets.models import Secret
+from authentik.crypto.secrets.signals import secret_value_validating
 from authentik.flows.models import in_memory_stage
 from authentik.providers.iframe_logout import IframeLogoutStageView
 from authentik.providers.oauth2.models import (
     AccessToken,
     DeviceToken,
     OAuth2LogoutMethod,
+    OAuth2SessionLogin,
     RefreshToken,
     ScopeMapping,
 )
@@ -43,9 +45,8 @@ def handle_flow_pre_user_logout(sender, request, user, executor, **kwargs):
     if not auth_session:
         return
 
-    oidc_access_tokens = (
-        AccessToken.objects.filter(
-            user=user,
+    oidc_logins = (
+        OAuth2SessionLogin.objects.filter(
             session=auth_session,
             provider__logout_method=OAuth2LogoutMethod.FRONTCHANNEL,
         )
@@ -53,23 +54,23 @@ def handle_flow_pre_user_logout(sender, request, user, executor, **kwargs):
         .select_related("provider")
     )
 
-    if not oidc_access_tokens.exists():
+    if not oidc_logins.exists():
         LOGGER.debug("No sessions requiring IFrame frontchannel logout")
         return
 
     session_key = auth_session.session.session_key if auth_session.session else None
     oidc_sessions = []
 
-    for token in oidc_access_tokens:
-        logout_url = build_frontchannel_logout_url(token.provider, request, session_key)
+    for login in oidc_logins:
+        logout_url = build_frontchannel_logout_url(login.provider, request, session_key)
         if logout_url:
             oidc_sessions.append(
                 {
                     "url": logout_url,
-                    "provider_name": token.provider.name,
+                    "provider_name": login.provider.name,
                     "binding": OAUTH2_BINDING,
                     "provider_type": (
-                        f"{token.provider._meta.app_label}.{token.provider._meta.model_name}"
+                        f"{login.provider._meta.app_label}.{login.provider._meta.model_name}"
                     ),
                 }
             )
@@ -99,18 +100,20 @@ def user_session_deleted_oauth_backchannel_logout_and_tokens_removal(
         session__session__session_key=instance.session.session_key,
     )
 
+    # Look up RPs via the session's logins and not its tokens, as the RP's own session
+    # usually outlives the access token it was issued.
     # Only send backchannel logout notifications for providers that have
     # logout_uri configured and backchannel logout method set
     backchannel_tokens = [
         (
-            token.provider_id,
-            token.id_token.iss,
-            token.id_token.sub,
+            login.provider_id,
+            login.iss,
+            login.sub,
             instance.session.session_key,
         )
-        for token in access_tokens
-        if token.provider.logout_uri
-        and token.provider.logout_method == OAuth2LogoutMethod.BACKCHANNEL
+        for login in OAuth2SessionLogin.objects.select_related("provider").filter(session=instance)
+        if login.provider.logout_uri
+        and login.provider.logout_method == OAuth2LogoutMethod.BACKCHANNEL
     ]
 
     if backchannel_tokens:
