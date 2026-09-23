@@ -167,6 +167,7 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                 f"version: 1\r\nentries: []\r\nmetadata:\r\n  name: {blueprint_id}\r\n".encode()
             )
             file.flush()
+            file_hash = sha512(Path(file.name).read_text(encoding="utf-8").encode()).hexdigest()
             for _ in range(2):
                 blueprints_discovery.send()
                 instance = BlueprintInstance.objects.filter(name=blueprint_id).first()
@@ -174,6 +175,7 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                 found = next(
                     found for found in blueprints_find() if found.path == Path(file.name).name
                 )
+                self.assertEqual(found.hash, file_hash)
                 self.assertEqual(instance.last_applied_hash, found.hash)
             file.seek(0)
             self.assertIn(b"\r\n", file.read())
