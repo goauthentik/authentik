@@ -78,7 +78,7 @@ To support the integration of Entra ID with authentik, you need to create an Ent
 3. Click **Save**.
 
 :::info Group Membership
-When group membership information is synced from Entra ID, authentik creates all groups that a user is a member of. This sync process is carried out upon each user login, which can cause login delays for organizations with large numbers of groups.
+When group membership information is synced from Entra ID, authentik creates the groups returned by Microsoft Graph's `/me/memberOf` response. The OAuth source currently reads only the first page of that response, so a user with more memberships than the page contains will have incomplete group sync. The sync runs on each user login, which can also delay logins for organizations with many groups.
 
 For organizations with larger numbers of users and groups, we recommend using the [Entra ID SCIM integration](../scim/) to provision users and groups. These users are then automatically linked to matching users logging in via this Entra ID OAuth source.
 :::
@@ -88,7 +88,7 @@ For instructions on how to display the new source on the authentik login page, r
 :::
 
 :::info Embed new source in flow :ak-enterprise
-For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../../add-secure-apps/flows-stages/stages/source).
+For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source/).
 :::
 
 ### Machine-to-machine authentication
@@ -108,11 +108,28 @@ scope=api://<application_client_id>/.default&
 client_secret=<application_client_secret>
 ```
 
-The JWT returned from the request above can be used in authentik and exchanged for an [authentik JWT](../../../../../../add-secure-apps/providers/oauth2/machine_to_machine/#authentik-issued-jwts).
+The JWT returned from the request above can be used in authentik and exchanged for an [authentik JWT](../../../../../add-secure-apps/providers/oauth2/machine_to_machine.mdx#authentik-issued-jwts).
 
 ## Source property mappings
 
-Source property mappings allow you to modify or gather extra information from sources. See the [overview](../../../property-mappings/index.mdx) for more information.
+The Entra ID OAuth source already maps the Microsoft Graph `/me` response to the user's username, email, and name. If you enable the `GroupMember.Read.All` permission and scope above, it also retrieves the user's direct group memberships from `/me/memberOf` and synchronizes those groups on login. You do not need a custom mapping for these fields.
+
+Use an OAuth source property mapping for additional fields in the profile response. For example, this user mapping stores the Graph `jobTitle` field as a user attribute:
+
+```python
+return {"attributes": {"job_title": info.get("jobTitle")}}
+```
+
+To add it, open **Customization** > **Property Mappings**, create an **OAuth Source Property Mapping** with the expression above, and then edit the Entra ID OAuth source. Under **OAuth Attribute mapping** > **User Property Mappings**, add it to **Selected User Property Mappings** and click **Update**.
+
+The source uses each Graph group ID as the stable group identifier and the group's `displayName` as its name. A group property mapping can use `group_id` and the corresponding entry in `info["raw_groups"]` to store more group data. For example:
+
+```python
+group = info.get("raw_groups", {}).get(group_id, {})
+return {"attributes": {"entra_id": group_id, "description": group.get("description")}}
+```
+
+Add that mapping under the source's **Group Property Mappings**. It runs only for groups returned by the Entra ID source; the Graph group permission and scope are still required. See [source property mappings](../../../property-mappings/index.mdx#group-synchronization) and [OAuth expression data](../../../protocols/oauth/index.mdx#expression-data) for details.
 
 ## Resources
 
