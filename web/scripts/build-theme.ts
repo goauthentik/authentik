@@ -18,7 +18,17 @@ const logger = ConsoleLogger.child({ name: "Theme" });
 
 const ThemeRoot = resolve(MonoRepoRoot, "packages", "theme");
 const Source = resolve(ThemeRoot, "dist", "index.css");
-const Destination = resolve(PackageRoot, "src", "styles", "global", "theme", "generated", "theme.css");
+
+const Destination = resolve(
+    PackageRoot,
+    "src",
+    "styles",
+    "global",
+    "theme",
+    "generated",
+    "theme.css",
+);
+
 const DestinationLabel = relative(PackageRoot, Destination);
 
 execFileSync("pnpm", ["run", "build"], { cwd: ThemeRoot, stdio: "inherit" });
