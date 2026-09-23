@@ -172,7 +172,7 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
                     conn.prepared_max = None  # No limit on the number of prepared statements
 
                 self._pool = AsyncConnectionPool(
-                    conninfo=self.make_conninfo(),
+                    conninfo=self.make_conninfo,
                     open=False,
                     configure=_configure_connection,
                     min_size=1,

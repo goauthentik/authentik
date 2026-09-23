@@ -26,6 +26,18 @@ class InvalidSignature(SAMLException):
     default_message = "The signature of the SAML object is either missing or invalid."
 
 
+class InvalidTime(SAMLException):
+    """Exception raised when the current time is outside the Assertion's validity window."""
+
+    default_message = "The SAML assertion is not valid yet or has expired."
+
+
+class MismatchedAudience(SAMLException):
+    """Exception raised when none of the assertion's audiences match the source's entity ID."""
+
+    default_message = "The SAML assertion audience does not match the entity ID of this source."
+
+
 class MismatchedRequestID(SAMLException):
     """Exception raised when the returned request ID doesn't match the saved ID."""
 

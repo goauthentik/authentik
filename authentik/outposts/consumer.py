@@ -94,7 +94,6 @@ class OutpostConsumer(JsonWebsocketConsumer):
             self.channel_name,
         )
         GAUGE_OUTPOSTS_CONNECTED.labels(
-            tenant=connection.schema_name,
             outpost=self.outpost.name,
             uid=self.instance_uid,
             expected=self.outpost.config.kubernetes_replicas,
@@ -112,7 +111,6 @@ class OutpostConsumer(JsonWebsocketConsumer):
                 )
         if self.outpost and self.instance_uid:
             GAUGE_OUTPOSTS_CONNECTED.labels(
-                tenant=connection.schema_name,
                 outpost=self.outpost.name,
                 uid=self.instance_uid,
                 expected=self.outpost.config.kubernetes_replicas,
@@ -138,7 +136,6 @@ class OutpostConsumer(JsonWebsocketConsumer):
         elif msg.instruction == WebsocketMessageInstruction.ACK:
             return
         GAUGE_OUTPOSTS_LAST_UPDATE.labels(
-            tenant=connection.schema_name,
             outpost=self.outpost.name,
             uid=self.instance_uid or "",
             version=state.version or "",
