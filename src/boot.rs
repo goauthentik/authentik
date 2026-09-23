@@ -13,7 +13,7 @@ use std::{
 };
 
 use argh::FromArgs;
-use eyre::{Report, Result, WrapErr as _, eyre};
+use eyre::{Result, WrapErr as _, eyre};
 use nix::{
     fcntl::{AT_FDCWD, AtFlags},
     unistd::{Gid, Group, Uid, User, execve, execvpe, getuid, setgid, setgroups, setuid},
@@ -114,21 +114,6 @@ fn exec(argv: &[String], extra_env: &[(&str, String)]) -> Result<()> {
         execvpe(&program, &cargv, &cenv)?;
     }
     unreachable!("exec returned without an error")
-}
-
-/// The shell the debug image has. The production image has none
-fn find_shell() -> Option<PathBuf> {
-    ["/bin/bash", "/usr/bin/bash", "/bin/sh", "/usr/bin/sh"]
-        .into_iter()
-        .map(PathBuf::from)
-        .find(|shell| shell.is_file())
-}
-
-fn no_shell_error(command: &str) -> Report {
-    eyre!(
-        "'{command}' is not available in the production image, which ships no shell. Use the \
-         server-debug image: it is the same build with apt, a shell and the dev dependency group."
-    )
 }
 
 /// `chown -R`, skipping entries that already have the right owner.
@@ -267,19 +252,12 @@ pub(crate) fn run(cli: &Cli) -> Result<()> {
     };
 
     match command {
-        // These need a shell, which only the -debug image ships.
         "bash" | "sh" => {
-            let Some(shell) = find_shell() else {
-                return Err(no_shell_error(command));
-            };
-            let mut target = vec![shell.to_string_lossy().into_owned()];
+            let mut target = vec![command.to_owned()];
             target.extend_from_slice(&args[1..]);
             exec(&target, &env)
         }
         "test-all" => {
-            if find_shell().is_none() {
-                return Err(no_shell_error(command));
-            }
             // The bash entrypoint opened up /root first, because the suite
             // writes there, then ran `manage test authentik`.
             if getuid().is_root() {
