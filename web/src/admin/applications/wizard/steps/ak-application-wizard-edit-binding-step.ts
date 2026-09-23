@@ -73,6 +73,10 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
                 [policyKey]: policyObject,
             };
 
+            if (this.policyGroupUser !== PolicyBindingCheckTarget.Policy) {
+                newBinding.dryRun = false;
+            }
+
             const bindings = [...(this.wizard.bindings ?? [])];
 
             if (this.instanceId === -1) {
@@ -202,9 +206,10 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
                 <ak-switch-input
                     name="dryRun"
                     ?checked=${instance?.dryRun ?? false}
+                    ?hidden=${this.policyGroupUser !== PolicyBindingCheckTarget.Policy}
                     label=${msg("Dry-run", { id: "policies.bindings.dry-run.label" })}
                     help=${msg(
-                        "Evaluate this binding without including its result or messages in the final policy decision. Policy results remain available in flow context. Policy side effects are not prevented.",
+                        "Evaluate this policy without including its result or messages in the final decision. Results are recorded in the Event Log. Policy side effects are not prevented.",
                         { id: "policies.bindings.dry-run.description" },
                     )}
                 ></ak-switch-input>

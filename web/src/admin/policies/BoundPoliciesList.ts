@@ -7,6 +7,7 @@ import "#components/ak-status-label";
 import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
 import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#common/policies/utils";
 
@@ -23,7 +24,7 @@ import { PolicyBindingForm, PolicyBindingNotice } from "#admin/policies/PolicyBi
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { UserForm } from "#admin/users/UserForm";
 
-import { ModelEnum, PoliciesApi, PolicyBinding } from "@goauthentik/api";
+import { EventActions, ModelEnum, PoliciesApi, PolicyBinding } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
@@ -133,6 +134,31 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         return null;
     }
 
+    protected getDryRunEventsButton(item: PolicyBinding): SlottedTemplateResult {
+        if (!item.policy || !item.dryRun) {
+            return nothing;
+        }
+
+        const bindingUuid = item.pk.replaceAll("-", "");
+
+        const query = [
+            `action = "${EventActions.PolicyExecution}"`,
+            "context.dry_run = True",
+            `context.binding.policy_binding_uuid = "${bindingUuid}"`,
+        ].join(" and ");
+
+        return html`<a href=${toAdminInterface("events/log", { q: query })}>
+            <pf-tooltip
+                position="top"
+                content=${msg("View dry-run results", {
+                    id: "policies.bindings.dry-run.view-results.label",
+                })}
+            >
+                <i class="fas fa-vial" aria-hidden="true"></i>
+            </pf-tooltip>
+        </a>`;
+    }
+
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
 
@@ -205,7 +231,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             html`<ak-status-label type="neutral" ?good=${item.dryRun}></ak-status-label>`,
             html`${item.timeout}`,
             html`<div class="ak-c-table__actions">
-                ${this.getObjectEditButton(item)}
+                ${this.getDryRunEventsButton(item)} ${this.getObjectEditButton(item)}
                 ${IconEditButtonByTagName(this.bindingEditForm, item.pk, null, {
                     modalProps: {
                         // @ts-expect-error Attribute passthrough does not handle generics well

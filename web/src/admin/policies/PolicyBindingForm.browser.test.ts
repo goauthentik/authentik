@@ -19,6 +19,7 @@ beforeEach(() => {
             endIndex: 0,
         },
     };
+
     vi.spyOn(PoliciesApi.prototype, "policiesBindingsList").mockResolvedValue(empty);
     vi.spyOn(PoliciesApi.prototype, "policiesAllList").mockResolvedValue(empty);
     vi.spyOn(CoreApi.prototype, "coreGroupsList").mockResolvedValue(empty);
@@ -40,11 +41,14 @@ async function mount(instance: PolicyBinding | null = null) {
     await expect
         .poll(() => form.renderRoot.querySelector('ak-switch-input[name="dryRun"]'))
         .not.toBeNull();
+
     const control = form.renderRoot.querySelector<HTMLElementTagNameMap["ak-switch-input"]>(
         'ak-switch-input[name="dryRun"]',
     );
+
     if (!control) throw new Error("Dry-run switch did not render");
     await control.updateComplete;
+
     return { form, checkbox: control.checkbox };
 }
 
@@ -53,6 +57,7 @@ describe("PolicyBindingForm", () => {
         const create = vi
             .spyOn(PoliciesApi.prototype, "policiesBindingsCreate")
             .mockResolvedValue({} as PolicyBinding);
+
         const { form, checkbox } = await mount();
 
         expect(checkbox.checked).toBe(false);
@@ -68,6 +73,7 @@ describe("PolicyBindingForm", () => {
         const update = vi
             .spyOn(PoliciesApi.prototype, "policiesBindingsUpdate")
             .mockResolvedValue({} as PolicyBinding);
+
         const { form, checkbox } = await mount({ pk: "binding", dryRun: true } as PolicyBinding);
 
         expect(checkbox.checked).toBe(true);

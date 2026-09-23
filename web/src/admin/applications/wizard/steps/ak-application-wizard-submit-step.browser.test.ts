@@ -17,6 +17,7 @@ afterEach(() => vi.restoreAllMocks());
 
 function step(dryRun: boolean, providerModel: string) {
     const element = new ApplicationWizardSubmitStep();
+
     element.wizard = {
         app: { name: "Dry-run test", slug: "dry-run-test" },
         providerModel,
@@ -26,6 +27,7 @@ function step(dryRun: boolean, providerModel: string) {
         currentBinding: -1,
         errors: {},
     };
+
     return element;
 }
 
@@ -48,9 +50,11 @@ describe("ApplicationWizardSubmitStep", () => {
         vi.spyOn(ProvidersApi.prototype, "providersSamlImportMetadataCreate").mockResolvedValue({
             pk: 1,
         } as SAMLProvider);
+
         vi.spyOn(CoreApi.prototype, "coreApplicationsCreate").mockResolvedValue({
             pk: "application",
         } as Application);
+
         const createBinding = vi
             .spyOn(PoliciesApi.prototype, "policiesBindingsCreate")
             .mockResolvedValue({} as PolicyBinding);
