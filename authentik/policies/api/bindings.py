@@ -28,14 +28,8 @@ class PolicyBindingModelForeignKey(PrimaryKeyRelatedField):
         if self.pk_field is not None:
             data = self.pk_field.to_internal_value(data)
         try:
-            # Due to inheritance, a direct DB lookup for the primary key
-            # won't return anything. This is because the direct lookup
-            # checks the PK of PolicyBindingModel (for example),
-            # but we get given the Primary Key of the inheriting class
-            for model in self.get_queryset().select_subclasses().all():
-                if str(model.pk) == str(data):
-                    return model
-            # as a fallback we still try a direct lookup
+            # pbm_uuid is shared across the inheritance chain, so filtering the base
+            # table by pk resolves straight to the concrete subclass row.
             return self.get_queryset().get_subclass(pk=data)
         except ObjectDoesNotExist:
             self.fail("does_not_exist", pk_value=data)
@@ -76,6 +70,7 @@ class PolicyBindingSerializer(ModelSerializer):
             "target",
             "negate",
             "enabled",
+            "dry_run",
             "order",
             "timeout",
             "failure_result",

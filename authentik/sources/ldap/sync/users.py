@@ -120,6 +120,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 if action in (Action.AUTH, Action.LINK):
                     ak_user = connection.user
                     ak_user.update_attributes(defaults)
+                    connection.save()
                 elif action == Action.DENY:
                     continue
             except PropertyMappingExpressionException as exc:

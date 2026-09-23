@@ -16,6 +16,7 @@ import {
     type RouteParameterRecord,
     searchParamsToRecord,
 } from "#elements/router/core/parameters";
+import { stripLeadingSlash } from "#elements/router/core/paths";
 
 /**
  * Separator between the legacy hash path and its serialized parameters.
@@ -83,7 +84,7 @@ export function translateHashRoute(hash: string, scope: HashRouteScope): string 
     const rawPath = separatorIndex === -1 ? withoutHash : withoutHash.slice(0, separatorIndex);
     const rawParams = separatorIndex === -1 ? undefined : withoutHash.slice(separatorIndex + 1);
 
-    const segment = rawPath.replace(/^\/+/, "");
+    const segment = stripLeadingSlash(rawPath);
     const params = decodeLegacyParams(rawParams);
     const search = recordToSearchParams(params).toString();
 
