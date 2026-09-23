@@ -1091,6 +1091,8 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         return str(self.name)
 
     class Meta:
+        verbose_name = _("Source")
+        verbose_name_plural = _("Sources")
         indexes = [
             models.Index(
                 fields=[

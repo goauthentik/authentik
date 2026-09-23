@@ -70,7 +70,6 @@ export class ConditionalPolicyForm extends BasePolicyForm<ConditionalPolicy> {
             <ak-form-group open label="${msg("Policy-specific settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${msg("Conditions", { id: "policies.conditional.conditions.label" })}
                         required
                         name="conditions"
                     >
