@@ -38,6 +38,10 @@ export interface PolicyBinding {
      */
     negate?: boolean;
     enabled?: boolean;
+    /**
+     * Execute the policy but ignore its result.
+     */
+    dryRun?: boolean;
     order: number;
     /**
      * Timeout after which Policy execution is terminated.
