@@ -23,7 +23,12 @@ if TYPE_CHECKING:
 
 
 class SecretType(models.TextChoices):
-    """How a secret value is entered and displayed."""
+    """Input form and generation policy, not a content format.
+
+    Text values can be generated and rotated. Multiline and file values must
+    be supplied by the administrator and are never replaced with random text.
+    Consumers validate content such as JSON or YAML separately.
+    """
 
     TEXT = "text", _("Text")
     MULTILINE = "multiline", _("Multi-line text")
