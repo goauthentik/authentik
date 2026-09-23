@@ -112,7 +112,9 @@ class TestEventsAPI(APITestCase):
             reverse("authentik_api:event-list"),
             data={
                 "search": (
-                    "context.binding.policy_binding_uuid == " f'"{binding.policy_binding_uuid.hex}"'
+                    'action = "policy_execution" and context.dry_run = True and '
+                    "context.binding.policy_binding_uuid = "
+                    f'"{binding.policy_binding_uuid.hex}"'
                 )
             },
         )
