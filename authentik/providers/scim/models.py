@@ -19,7 +19,7 @@ from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.policies.engine import FilterPolicyEngine
-from authentik.providers.scim.clients.auth import SCIMTokenAuth
+from authentik.providers.scim.clients.auth import SCIMBasicAuth, SCIMTokenAuth
 
 LOGGER = get_logger()
 
@@ -72,6 +72,7 @@ class SCIMAuthenticationMode(models.TextChoices):
     """SCIM authentication modes"""
 
     TOKEN = "token", _("Token")
+    BASIC = "basic", _("Basic")
     OAUTH_SILENT = "oauth", _("OAuth (Silent)")
     OAUTH_INTERACTIVE = "oauth_interactive", _("OAuth (interactive)")
 
@@ -108,6 +109,12 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
     )
 
     token = models.TextField(help_text=_("Authentication token"), blank=True)
+    auth_basic_user = models.TextField(
+        help_text=_("Username used for Basic authentication"), blank=True
+    )
+    auth_basic_password = models.TextField(
+        help_text=_("Password used for Basic authentication"), blank=True
+    )
     auth_oauth = models.ForeignKey(
         "authentik_sources_oauth.OAuthSource",
         on_delete=models.SET_DEFAULT,
@@ -148,6 +155,8 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
     )
 
     def scim_auth(self) -> AuthBase:
+        if self.auth_mode == SCIMAuthenticationMode.BASIC:
+            return SCIMBasicAuth(self)
         if self.auth_mode in [
             SCIMAuthenticationMode.OAUTH_SILENT,
             SCIMAuthenticationMode.OAUTH_INTERACTIVE,

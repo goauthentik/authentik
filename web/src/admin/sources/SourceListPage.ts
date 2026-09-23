@@ -7,7 +7,6 @@ import "#admin/sources/saml/SAMLSourceForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, ModalInvokerButton } from "#elements/dialogs";
@@ -55,7 +54,9 @@ export class SourceListPage extends TablePage<Source> {
         const disabled =
             this.selectedElements.length < 1 ||
             this.selectedElements.some((item) => item.component === "");
+
         const nonBuiltInSources = this.selectedElements.filter((item) => item.component !== "");
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Source(s)")}
             .objects=${nonBuiltInSources}
@@ -84,11 +85,13 @@ export class SourceListPage extends TablePage<Source> {
         return [
             html`<a href=${toAdminInterface(`core/sources/${item.slug}`)}>
                 <div>${item.name}</div>
-                ${item.enabled
-                    ? nothing
-                    : html`<ak-label color=${PFColor.Orange} compact>
-                          ${msg("Disabled")}</ak-label
-                      >`}
+                ${
+                    item.enabled
+                        ? nothing
+                        : html`<ak-label color=${PFColor.Orange} compact>
+                              ${msg("Disabled")}</ak-label
+                          >`
+                }
             </a>`,
             item.verboseName,
             html`<div class="ak-c-table__actions">

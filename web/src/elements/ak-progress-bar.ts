@@ -1,3 +1,5 @@
+import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
+
 import { PFSize } from "#common/enums";
 
 import { AKElement } from "#elements/Base";
@@ -8,8 +10,6 @@ import AKFadeIn from "#styles/authentik/components/Modifiers/fade-in.css";
 import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
-
-import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
 
 /**
  * @slot description - Description text above the progress bar, on the left
@@ -87,26 +87,30 @@ export class ProgressBar extends AKElement {
 
     protected render() {
         return html`<div
-            class="pf-c-progress ${this.classList} ${this.indeterminate
-                ? "pf-m-indeterminate"
-                : ""} ${this.size}"
+            class="pf-c-progress ${this.classList} ${
+                this.indeterminate ? "pf-m-indeterminate" : ""
+            } ${this.size}"
         >
-            ${this.findSlotted("description")
-                ? html`
-                      <div class="pf-c-progress__description">
-                          <slot name="description"></slot>
-                      </div>
-                  `
-                : nothing}
-            ${this.findSlotted("status")
-                ? html`
-                      <div class="pf-c-progress__status" aria-hidden="true">
-                          <span class="pf-c-progress__measure">
-                              <slot name="status"></slot>
-                          </span>
-                      </div>
-                  `
-                : nothing}
+            ${
+                this.findSlotted("description")
+                    ? html`
+                          <div class="pf-c-progress__description">
+                              <slot name="description"></slot>
+                          </div>
+                      `
+                    : nothing
+            }
+            ${
+                this.findSlotted("status")
+                    ? html`
+                          <div class="pf-c-progress__status" aria-hidden="true">
+                              <span class="pf-c-progress__measure">
+                                  <slot name="status"></slot>
+                              </span>
+                          </div>
+                      `
+                    : nothing
+            }
             <div
                 class="pf-c-progress__bar ak-fade-in"
                 role="progressbar"

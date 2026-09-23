@@ -1,7 +1,6 @@
 import "#common/sentry/apply";
 import "#elements/messages/MessageContainer";
 import "#user/ak-interface-user";
-
 import { globalAK } from "#common/global";
 
 import { initRouter } from "#elements/router/core/config";

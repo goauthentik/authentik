@@ -1,23 +1,18 @@
 #!/usr/bin/env node
 /**
  * @file Lints the pnpm version pins that are duplicated across the repo's separate workspaces.
- *
- * Two families of pin are checked: the `catalog:` entries in each `pnpm-workspace.yaml`,
- * and the `packageManager` field plus the pnpm image tags that select pnpm itself.
- *
- * The root, `web/`, and `website/` directories are each their own pnpm workspace
- * (they diverge on `nodeLinker` — the root uses the strict isolated linker for its
- * published packages, while `web` and `website` need `hoisted` for phantom deps).
- * pnpm cannot share a catalog across workspace roots, so each file re-declares the
- * same shared pins.
- *
- * This check fails when a package pinned in more than one workspace
- * drifts out of sync — the manual "keep these in sync" comments already let eslint slip.
- *
- * Usage:
+ *   Two families of pin are checked: the `catalog:` entries in each `pnpm-workspace.yaml`,
+ *   and the `packageManager` field plus the pnpm image tags that select pnpm itself.
+ *   The root, `web/`, and `website/` directories are each their own pnpm workspace
+ *   (they diverge on `nodeLinker` — the root uses the strict isolated linker for its
+ *   published packages, while `web` and `website` need `hoisted` for phantom deps).
+ *   pnpm cannot share a catalog across workspace roots, so each file re-declares the
+ *   same shared pins.
+ *   This check fails when a package pinned in more than one workspace
+ *   drifts out of sync — the manual "keep these in sync" comments already let eslint slip.
+ *   Usage:
  *   lint-catalogs
- *
- * Exit codes:
+ *   Exit codes:
  *   0  Every pin agrees
  *   1  A shared package, or pnpm itself, is pinned inconsistently
  */

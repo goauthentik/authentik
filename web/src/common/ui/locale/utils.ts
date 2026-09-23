@@ -24,6 +24,7 @@ export function safeParseLocale(candidate: string): Intl.Locale | null {
     }
 
     let locale: Intl.Locale | null = null;
+
     try {
         locale = new Intl.Locale(candidate);
     } catch {
@@ -31,6 +32,7 @@ export function safeParseLocale(candidate: string): Intl.Locale | null {
     }
 
     localeCache.set(candidate, locale);
+
     return locale;
 }
 
@@ -69,6 +71,7 @@ function getParsedSupportedLocales(): ParsedLocale[] {
 export function getBestMatchLocale(candidate: string): TargetLanguageTag | null {
     // Normalize common variations
     const normalized = candidate.trim();
+
     if (!normalized) return null;
 
     const locale = safeParseLocale(normalized);
@@ -103,19 +106,21 @@ export function getBestMatchLocale(candidate: string): TargetLanguageTag | null 
 /**
  * Find the first supported locale from a list of candidates.
  *
- * @param candidates An array of locale strings to check.
- * @returns The first supported locale code, or null if none found.
- *
  * @remarks
- * This looks weird, but it's sensible: we have several candidates, and we want to find the first
- * one that has a supported locale. Then, from *that*, we have to extract that first supported
- * locale.
+ *   This looks weird, but it's sensible: we have several candidates, and we want to find the first
+ *   one that has a supported locale. Then, from _that_, we have to extract that first supported
+ *   locale.
+ * @param candidates An array of locale strings to check.
+ *
+ * @returns The first supported locale code, or null if none found.
  */
 export function findSupportedLocale(candidates: string[]): TargetLanguageTag | null {
     for (const candidate of candidates) {
         const match = getBestMatchLocale(candidate);
+
         if (match) return match;
     }
+
     return null;
 }
 
@@ -132,6 +137,7 @@ export function setSessionLocale(languageTag: TargetLanguageTag | null): void {
     try {
         if (!languageTag || languageTag === SourceLanguageTag) {
             sessionStorage?.removeItem?.(sessionLocaleKey);
+
             return;
         }
 
@@ -174,19 +180,19 @@ export function isTargetLanguageTag(
 /**
  * Auto-detect the best locale to use from several sources.
  *
+ * @remarks
+ *   The order of precedence is:
+ *
+ *   1. A `locale` URL parameter
+ *   2. A previously persisted session locale
+ *   3. A provided locale hint
+ *   4. The browser's navigator language
+ *   5. A provided fallback locale code
+ *   6. The source locale (English)
  * @param languageTagHint An optional locale code hint.
  * @param fallbackLanguageTag An optional fallback locale code.
+ *
  * @returns The best-matching supported locale code.
- *
- * @remarks
- * The order of precedence is:
- *
- * 1. A `locale` URL parameter
- * 2. A previously persisted session locale
- * 3. A provided locale hint
- * 4. The browser's navigator language
- * 5. A provided fallback locale code
- * 6. The source locale (English)
  */
 export function autoDetectLanguage(
     languageTagHint?: Intl.UnicodeBCP47LocaleIdentifier,
