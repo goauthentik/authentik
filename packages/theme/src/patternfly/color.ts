@@ -12,12 +12,13 @@ usePfColor(instance, {
     "200": "@color.ink.muted",
     "300": "#3c3f42",
     "400": "@color.ink.subtle",
-    "light-100": "@color.ink.pin-light",
-    "light-200": "@color.ink.pin-light",
-    "light-300": "@color.ink.pin-light",
-    "dark-100": "@color.ink.pin-dark",
-    "dark-200": "@color.ink.pin-dark.muted",
-    "dark-300": "@color.ink.pin-dark.subtle",
+    // PatternFly names text by its own color: "light" text sits on dark surfaces.
+    "light-100": "@color.ink.pin-dark",
+    "light-200": "@color.ink.pin-dark.muted",
+    "light-300": "@color.ink.pin-dark.subtle",
+    "dark-100": "@color.ink.pin-light",
+    "dark-200": "@color.ink.pin-light",
+    "dark-300": "@color.ink.pin-light",
 });
 
 usePfBackgroundColor(instance, {
