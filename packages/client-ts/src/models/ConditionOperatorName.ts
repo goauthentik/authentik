@@ -13,10 +13,10 @@
  */
 
 /**
- *
+ * Names of all operators
  * @export
  */
-export const ConditionOperatorEnum = {
+export const ConditionOperatorName = {
     IsSet: "is_set",
     IsNotSet: "is_not_set",
     Eq: "eq",
@@ -46,13 +46,13 @@ export const ConditionOperatorEnum = {
     LengthLt: "length_lt",
     UnknownDefaultOpenApi: "11184809",
 } as const;
-export type ConditionOperatorEnum =
-    (typeof ConditionOperatorEnum)[keyof typeof ConditionOperatorEnum];
+export type ConditionOperatorName =
+    (typeof ConditionOperatorName)[keyof typeof ConditionOperatorName];
 
-export function instanceOfConditionOperatorEnum(value: any): boolean {
-    for (const key in ConditionOperatorEnum) {
-        if (Object.prototype.hasOwnProperty.call(ConditionOperatorEnum, key)) {
-            if (ConditionOperatorEnum[key as keyof typeof ConditionOperatorEnum] === value) {
+export function instanceOfConditionOperatorName(value: any): boolean {
+    for (const key in ConditionOperatorName) {
+        if (Object.prototype.hasOwnProperty.call(ConditionOperatorName, key)) {
+            if (ConditionOperatorName[key as keyof typeof ConditionOperatorName] === value) {
                 return true;
             }
         }
@@ -60,24 +60,24 @@ export function instanceOfConditionOperatorEnum(value: any): boolean {
     return false;
 }
 
-export function ConditionOperatorEnumFromJSON(json: any): ConditionOperatorEnum {
-    return ConditionOperatorEnumFromJSONTyped(json, false);
+export function ConditionOperatorNameFromJSON(json: any): ConditionOperatorName {
+    return ConditionOperatorNameFromJSONTyped(json, false);
 }
 
-export function ConditionOperatorEnumFromJSONTyped(
+export function ConditionOperatorNameFromJSONTyped(
     json: any,
     ignoreDiscriminator: boolean,
-): ConditionOperatorEnum {
-    return json as ConditionOperatorEnum;
+): ConditionOperatorName {
+    return json as ConditionOperatorName;
 }
 
-export function ConditionOperatorEnumToJSON(value?: ConditionOperatorEnum | null): any {
+export function ConditionOperatorNameToJSON(value?: ConditionOperatorName | null): any {
     return value as any;
 }
 
-export function ConditionOperatorEnumToJSONTyped(
+export function ConditionOperatorNameToJSONTyped(
     value: any,
     ignoreDiscriminator: boolean,
-): ConditionOperatorEnum {
-    return value as ConditionOperatorEnum;
+): ConditionOperatorName {
+    return value as ConditionOperatorName;
 }

@@ -1,12 +1,11 @@
 """Generate JSON Schema for blueprints"""
 
-from collections.abc import Callable
 from typing import Any
 
 from django.db.models import Model, fields
 from django.db.models.fields.related import OneToOneField
 from drf_jsonschema_serializer.convert import converter, field_to_converter
-from rest_framework.fields import Field, JSONField, ListField, UUIDField
+from rest_framework.fields import Field, JSONField, UUIDField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
@@ -156,24 +155,9 @@ class SchemaBuilder:
             template["required"].remove("identifiers")
         return template
 
-    def define(self, name: str, factory: Callable[[], dict]) -> dict:
-        """Add a definition to `$defs` (if it doesn't exist yet) and return a reference to it.
-        `factory` is only called once and may itself reference the definition, which allows
-        for recursive schemas."""
-        ref = {"$ref": f"#/$defs/{name}"}
-        if name not in self.schema["$defs"]:
-            self.schema["$defs"][name] = {}
-            self.schema["$defs"][name] = factory()
-        return ref
-
     def field_to_jsonschema(self, field: Field) -> dict:
         """Convert a single field to json schema"""
-        if hasattr(field, "blueprint_schema"):
-            # Fields can provide their own schema, for example for recursive structures
-            result = field.blueprint_schema(self)
-        elif isinstance(field, ListField) and hasattr(field.child, "blueprint_schema"):
-            result = {"type": "array", "items": field.child.blueprint_schema(self)}
-        elif isinstance(field, Serializer):
+        if isinstance(field, Serializer):
             result = self.to_jsonschema(field)
         else:
             try:

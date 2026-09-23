@@ -12,8 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { ConditionCastEnum } from "./ConditionCastEnum";
-import { ConditionCastEnumFromJSON, ConditionCastEnumToJSON } from "./ConditionCastEnum";
+import type { ConditionCastKind } from "./ConditionCastKind";
+import { ConditionCastKindFromJSON, ConditionCastKindToJSON } from "./ConditionCastKind";
 
 /**
  * Reference to a variable
@@ -28,17 +28,17 @@ export interface ConditionVariableRef {
      */
     key: string;
     /**
-     *
+     * Path or key, for variables which take a parameter.
      * @type {string}
      * @memberof ConditionVariableRef
      */
     param?: string | null;
     /**
      * Type to convert the value to, required for variables of type `any`.
-     * @type {ConditionCastEnum}
+     * @type {ConditionCastKind}
      * @memberof ConditionVariableRef
      */
-    cast?: ConditionCastEnum | null;
+    cast?: ConditionCastKind | null;
 }
 
 /**
@@ -69,7 +69,7 @@ export function ConditionVariableRefFromJSONTyped(
                 ? undefined
                 : json["cast"] === null
                   ? null
-                  : ConditionCastEnumFromJSON(json["cast"]),
+                  : ConditionCastKindFromJSON(json["cast"]),
     };
 }
 
@@ -88,6 +88,6 @@ export function ConditionVariableRefToJSONTyped(
     return {
         key: value["key"],
         param: value["param"],
-        cast: ConditionCastEnumToJSON(value["cast"]),
+        cast: ConditionCastKindToJSON(value["cast"]),
     };
 }

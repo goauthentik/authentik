@@ -38812,7 +38812,8 @@ components:
       - webex
       - vcenter
       type: string
-    ConditionCastEnum:
+    ConditionCastKind:
+      description: Types a variable of kind `any` can be cast to
       enum:
       - string
       - number
@@ -38857,7 +38858,7 @@ components:
       - label
       - value
     ConditionComparisonNode:
-      type: object
+      additionalProperties: false
       description: Compare a variable against a value
       properties:
         type:
@@ -38865,41 +38866,23 @@ components:
         variable:
           $ref: '#/components/schemas/ConditionVariableRef'
         operator:
-          $ref: '#/components/schemas/ConditionOperatorEnum'
+          $ref: '#/components/schemas/ConditionOperatorName'
         value:
+          default: null
           allOf:
           - $ref: '#/components/schemas/ConditionOperand'
           nullable: true
         options:
           $ref: '#/components/schemas/ConditionOptions'
       required:
-      - operator
       - type
       - variable
-    ConditionComparisonNodeRequest:
+      - operator
       type: object
-      description: Compare a variable against a value
-      properties:
-        type:
-          $ref: '#/components/schemas/ConditionComparisonNodeTypeEnum'
-        variable:
-          $ref: '#/components/schemas/ConditionVariableRefRequest'
-        operator:
-          $ref: '#/components/schemas/ConditionOperatorEnum'
-        value:
-          allOf:
-          - $ref: '#/components/schemas/ConditionOperandRequest'
-          nullable: true
-        options:
-          $ref: '#/components/schemas/ConditionOptionsRequest'
-      required:
-      - operator
-      - type
-      - variable
     ConditionComparisonNodeTypeEnum:
+      type: string
       enum:
       - condition
-      type: string
     ConditionFact:
       type: object
       description: Data a policy request can carry
@@ -38915,42 +38898,27 @@ components:
       - key
       - label
     ConditionGroupNode:
-      type: object
+      additionalProperties: false
       description: Combine the results of multiple nodes
       properties:
         type:
           $ref: '#/components/schemas/ConditionGroupNodeTypeEnum'
         op:
-          $ref: '#/components/schemas/ConditionGroupOpEnum'
+          $ref: '#/components/schemas/ConditionGroupOp'
         children:
-          type: array
           items:
             $ref: '#/components/schemas/ConditionNode'
-      required:
-      - children
-      - op
-      - type
-    ConditionGroupNodeRequest:
-      type: object
-      description: Combine the results of multiple nodes
-      properties:
-        type:
-          $ref: '#/components/schemas/ConditionGroupNodeTypeEnum'
-        op:
-          $ref: '#/components/schemas/ConditionGroupOpEnum'
-        children:
           type: array
-          items:
-            $ref: '#/components/schemas/ConditionNodeRequest'
       required:
-      - children
-      - op
       - type
+      - op
+      - children
+      type: object
     ConditionGroupNodeTypeEnum:
+      type: string
       enum:
       - group
-      type: string
-    ConditionGroupOpEnum:
+    ConditionGroupOp:
       enum:
       - all
       - any
@@ -38972,57 +38940,36 @@ components:
       - choices
       - kind
     ConditionLiteralOperand:
-      type: object
+      additionalProperties: false
       description: Fixed value to compare against
       properties:
         type:
           $ref: '#/components/schemas/ConditionLiteralOperandTypeEnum'
-        value: {}
+        value:
+          $ref: '#/components/schemas/JsonValue'
       required:
       - type
       - value
-    ConditionLiteralOperandRequest:
       type: object
-      description: Fixed value to compare against
-      properties:
-        type:
-          $ref: '#/components/schemas/ConditionLiteralOperandTypeEnum'
-        value: {}
-      required:
-      - type
-      - value
     ConditionLiteralOperandTypeEnum:
+      type: string
       enum:
       - literal
-      type: string
     ConditionNode:
-      oneOf:
-      - $ref: '#/components/schemas/ConditionComparisonNode'
-      - $ref: '#/components/schemas/ConditionGroupNode'
-      - $ref: '#/components/schemas/ConditionNotNode'
-      - $ref: '#/components/schemas/ConditionPolicyNode'
       discriminator:
-        propertyName: type
         mapping:
           condition: '#/components/schemas/ConditionComparisonNode'
           group: '#/components/schemas/ConditionGroupNode'
           not: '#/components/schemas/ConditionNotNode'
           policy: '#/components/schemas/ConditionPolicyNode'
-    ConditionNodeRequest:
-      oneOf:
-      - $ref: '#/components/schemas/ConditionComparisonNodeRequest'
-      - $ref: '#/components/schemas/ConditionGroupNodeRequest'
-      - $ref: '#/components/schemas/ConditionNotNodeRequest'
-      - $ref: '#/components/schemas/ConditionPolicyNodeRequest'
-      discriminator:
         propertyName: type
-        mapping:
-          condition: '#/components/schemas/ConditionComparisonNodeRequest'
-          group: '#/components/schemas/ConditionGroupNodeRequest'
-          not: '#/components/schemas/ConditionNotNodeRequest'
-          policy: '#/components/schemas/ConditionPolicyNodeRequest'
+      oneOf:
+      - $ref: '#/components/schemas/ConditionComparisonNode'
+      - $ref: '#/components/schemas/ConditionGroupNode'
+      - $ref: '#/components/schemas/ConditionNotNode'
+      - $ref: '#/components/schemas/ConditionPolicyNode'
     ConditionNotNode:
-      type: object
+      additionalProperties: false
       description: Negate the result of a node
       properties:
         type:
@@ -39030,41 +38977,22 @@ components:
         child:
           $ref: '#/components/schemas/ConditionNode'
       required:
-      - child
       - type
-    ConditionNotNodeRequest:
+      - child
       type: object
-      description: Negate the result of a node
-      properties:
-        type:
-          $ref: '#/components/schemas/ConditionNotNodeTypeEnum'
-        child:
-          $ref: '#/components/schemas/ConditionNodeRequest'
-      required:
-      - child
-      - type
     ConditionNotNodeTypeEnum:
+      type: string
       enum:
       - not
-      type: string
     ConditionOperand:
-      oneOf:
-      - $ref: '#/components/schemas/ConditionLiteralOperand'
-      - $ref: '#/components/schemas/ConditionVariableOperand'
       discriminator:
-        propertyName: type
         mapping:
           literal: '#/components/schemas/ConditionLiteralOperand'
           variable: '#/components/schemas/ConditionVariableOperand'
-    ConditionOperandRequest:
-      oneOf:
-      - $ref: '#/components/schemas/ConditionLiteralOperandRequest'
-      - $ref: '#/components/schemas/ConditionVariableOperandRequest'
-      discriminator:
         propertyName: type
-        mapping:
-          literal: '#/components/schemas/ConditionLiteralOperandRequest'
-          variable: '#/components/schemas/ConditionVariableOperandRequest'
+      oneOf:
+      - $ref: '#/components/schemas/ConditionLiteralOperand'
+      - $ref: '#/components/schemas/ConditionVariableOperand'
     ConditionOperandShapeEnum:
       enum:
       - none
@@ -39097,7 +39025,8 @@ components:
       - label
       - name
       - operand
-    ConditionOperatorEnum:
+    ConditionOperatorName:
+      description: Names of all operators
       enum:
       - is_set
       - is_not_set
@@ -39128,19 +39057,12 @@ components:
       - length_lt
       type: string
     ConditionOptions:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
+      additionalProperties: false
       properties:
         case_sensitive:
-          type: boolean
           default: true
-    ConditionOptionsRequest:
+          type: boolean
       type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        case_sensitive:
-          type: boolean
-          default: true
     ConditionParamKindEnum:
       enum:
       - none
@@ -39148,33 +39070,22 @@ components:
       - key
       type: string
     ConditionPolicyNode:
-      type: object
+      additionalProperties: false
       description: Evaluate another policy
       properties:
         type:
           $ref: '#/components/schemas/ConditionPolicyNodeTypeEnum'
         policy:
-          type: string
           format: uuid
+          type: string
       required:
-      - policy
       - type
-    ConditionPolicyNodeRequest:
+      - policy
       type: object
-      description: Evaluate another policy
-      properties:
-        type:
-          $ref: '#/components/schemas/ConditionPolicyNodeTypeEnum'
-        policy:
-          type: string
-          format: uuid
-      required:
-      - policy
-      - type
     ConditionPolicyNodeTypeEnum:
+      type: string
       enum:
       - policy
-      type: string
     ConditionTarget:
       type: object
       description: Object policies can be bound to, and the facts available when they
@@ -39193,31 +39104,19 @@ components:
       - model
       - verbose_name
     ConditionTree:
-      type: object
+      additionalProperties: false
       description: Condition tree of a conditional policy
       properties:
         version:
-          type: integer
           maximum: 1
           minimum: 1
+          type: integer
         root:
           $ref: '#/components/schemas/ConditionNode'
       required:
-      - root
       - version
-    ConditionTreeRequest:
+      - root
       type: object
-      description: Condition tree of a conditional policy
-      properties:
-        version:
-          type: integer
-          maximum: 1
-          minimum: 1
-        root:
-          $ref: '#/components/schemas/ConditionNodeRequest'
-      required:
-      - root
-      - version
     ConditionTypeKindEnum:
       enum:
       - string
@@ -39285,7 +39184,7 @@ components:
       - requires
       - type
     ConditionVariableOperand:
-      type: object
+      additionalProperties: false
       description: Variable to compare against
       properties:
         type:
@@ -39295,56 +39194,32 @@ components:
       required:
       - type
       - variable
-    ConditionVariableOperandRequest:
       type: object
-      description: Variable to compare against
-      properties:
-        type:
-          $ref: '#/components/schemas/ConditionVariableOperandTypeEnum'
-        variable:
-          $ref: '#/components/schemas/ConditionVariableRefRequest'
-      required:
-      - type
-      - variable
     ConditionVariableOperandTypeEnum:
+      type: string
       enum:
       - variable
-      type: string
     ConditionVariableRef:
-      type: object
+      additionalProperties: false
       description: Reference to a variable
       properties:
         key:
           type: string
         param:
+          default: null
+          description: Path or key, for variables which take a parameter.
           type: string
           nullable: true
         cast:
-          allOf:
-          - $ref: '#/components/schemas/ConditionCastEnum'
-          nullable: true
+          default: null
           description: Type to convert the value to, required for variables of type
             `any`.
+          allOf:
+          - $ref: '#/components/schemas/ConditionCastKind'
+          nullable: true
       required:
       - key
-    ConditionVariableRefRequest:
       type: object
-      description: Reference to a variable
-      properties:
-        key:
-          type: string
-          minLength: 1
-        param:
-          type: string
-          nullable: true
-        cast:
-          allOf:
-          - $ref: '#/components/schemas/ConditionCastEnum'
-          nullable: true
-          description: Type to convert the value to, required for variables of type
-            `any`.
-      required:
-      - key
     ConditionalPolicy:
       type: object
       description: Conditional Policy Serializer
@@ -39411,7 +39286,7 @@ components:
           description: When this option is enabled, all executions of this policy
             will be logged. By default, only execution errors are logged.
         conditions:
-          $ref: '#/components/schemas/ConditionTreeRequest'
+          $ref: '#/components/schemas/ConditionTree'
         missing_behavior:
           allOf:
           - $ref: '#/components/schemas/MissingBehaviorEnum'
@@ -44529,6 +44404,7 @@ components:
       - global
       - per_provider
       type: string
+    JsonValue: {}
     KadminTypeEnum:
       enum:
       - MIT
@@ -51849,7 +51725,7 @@ components:
           description: When this option is enabled, all executions of this policy
             will be logged. By default, only execution errors are logged.
         conditions:
-          $ref: '#/components/schemas/ConditionTreeRequest'
+          $ref: '#/components/schemas/ConditionTree'
         missing_behavior:
           allOf:
           - $ref: '#/components/schemas/MissingBehaviorEnum'

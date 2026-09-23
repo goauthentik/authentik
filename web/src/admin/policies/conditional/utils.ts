@@ -6,18 +6,18 @@
  */
 
 import {
-    ConditionCastEnum,
+    ConditionCastKind,
     ConditionCatalog,
-    ConditionComparisonNodeRequest,
+    ConditionComparisonNode,
     ConditionItemType,
-    ConditionNodeRequest,
+    ConditionNode,
     ConditionOperandShapeEnum,
     ConditionOperator,
     ConditionTarget,
-    ConditionTreeRequest,
+    ConditionTree,
     ConditionTypeKindEnum,
     ConditionVariable,
-    ConditionVariableRefRequest,
+    ConditionVariableRef,
 } from "@goauthentik/api";
 
 export const SCHEMA_VERSION = 1;
@@ -33,18 +33,18 @@ export interface ValueType {
     item?: ValueType | null;
 }
 
-export const CAST_KINDS: ConditionCastEnum[] = Object.values(ConditionCastEnum).filter(
-    (kind) => kind !== ConditionCastEnum.UnknownDefaultOpenApi,
+export const CAST_KINDS: ConditionCastKind[] = Object.values(ConditionCastKind).filter(
+    (kind) => kind !== ConditionCastKind.UnknownDefaultOpenApi,
 );
 
-export function emptyTree(): ConditionTreeRequest {
+export function emptyTree(): ConditionTree {
     return {
         version: SCHEMA_VERSION,
         root: { type: "group", op: "all", children: [] },
     };
 }
 
-export function newCondition(): ConditionComparisonNodeRequest & { type: "condition" } {
+export function newCondition(): ConditionComparisonNode & { type: "condition" } {
     return {
         type: "condition",
         variable: { key: "" },
@@ -65,7 +65,7 @@ export function findVariable(
  */
 export function variableType(
     catalog: ConditionCatalog | undefined,
-    ref: ConditionVariableRefRequest,
+    ref: ConditionVariableRef,
 ): ValueType | null {
     const variable = findVariable(catalog, ref.key);
     if (!variable) return null;
@@ -149,17 +149,17 @@ export function isAvailable(variable: ConditionVariable, facts: Set<string> | nu
  */
 export function unavailableVariables(
     catalog: ConditionCatalog | undefined,
-    node: ConditionNodeRequest,
+    node: ConditionNode,
     facts: Set<string> | null,
 ): string[] {
     if (!facts || !catalog) return [];
     const result = new Set<string>();
-    const check = (ref?: ConditionVariableRefRequest | null) => {
+    const check = (ref?: ConditionVariableRef | null) => {
         if (!ref) return;
         const variable = findVariable(catalog, ref.key);
         if (variable && !isAvailable(variable, facts)) result.add(variable.key);
     };
-    const walk = (current: ConditionNodeRequest) => {
+    const walk = (current: ConditionNode) => {
         switch (current.type) {
             case "group":
                 current.children.forEach(walk);
@@ -177,7 +177,7 @@ export function unavailableVariables(
     return [...result].sort();
 }
 
-function describeRef(catalog: ConditionCatalog | undefined, ref: ConditionVariableRefRequest) {
+function describeRef(catalog: ConditionCatalog | undefined, ref: ConditionVariableRef) {
     const label = findVariable(catalog, ref.key)?.label ?? ref.key;
     return ref.param ? `${label} "${ref.param}"` : label;
 }
@@ -191,10 +191,7 @@ function describeValue(value: unknown): string {
 /**
  * Human readable, single line description of a node.
  */
-export function describe(
-    catalog: ConditionCatalog | undefined,
-    node: ConditionNodeRequest,
-): string {
+export function describe(catalog: ConditionCatalog | undefined, node: ConditionNode): string {
     switch (node.type) {
         case "group": {
             if (node.children.length === 0) return "()";

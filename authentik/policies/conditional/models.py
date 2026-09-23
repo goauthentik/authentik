@@ -15,7 +15,7 @@ from authentik.policies.conditional.evaluator import (
     iter_variables,
 )
 from authentik.policies.conditional.registry import Variable, registry
-from authentik.policies.conditional.schema import SCHEMA_VERSION, GroupOp, NodeType
+from authentik.policies.conditional.schema import SCHEMA_VERSION, ConditionGroupOp
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
@@ -24,7 +24,7 @@ from authentik.policies.types import PolicyRequest, PolicyResult
 def default_conditions() -> dict:
     return {
         "version": SCHEMA_VERSION,
-        "root": {"type": NodeType.GROUP, "op": GroupOp.ALL, "children": []},
+        "root": {"type": "group", "op": ConditionGroupOp.ALL.value, "children": []},
     }
 
 

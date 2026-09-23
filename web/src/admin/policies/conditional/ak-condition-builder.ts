@@ -24,15 +24,15 @@ import {
 import {
     Application,
     ConditionCatalog,
-    ConditionComparisonNodeRequest,
-    ConditionGroupNodeRequest,
-    ConditionNodeRequest,
-    ConditionOperatorEnum,
+    ConditionComparisonNode,
+    ConditionGroupNode,
+    ConditionNode,
+    ConditionOperatorName,
     ConditionParamKindEnum,
-    ConditionTreeRequest,
+    ConditionTree,
     ConditionTypeKindEnum,
     ConditionVariable,
-    ConditionVariableRefRequest,
+    ConditionVariableRef,
     CoreApi,
     Group,
     PoliciesApi,
@@ -51,8 +51,8 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLabel from "@patternfly/patternfly/components/Label/label.css";
 
-type Condition = ConditionComparisonNodeRequest & { type: "condition" };
-type GroupNode = ConditionGroupNodeRequest & { type: "group" };
+type Condition = ConditionComparisonNode & { type: "condition" };
+type GroupNode = ConditionGroupNode & { type: "group" };
 
 interface ModelLookup<T> {
     fetch: (search?: string) => Promise<T[]>;
@@ -108,7 +108,7 @@ function toLocalDatetime(value: unknown): string {
  * @fires input - When the tree is modified
  */
 @customElement("ak-condition-builder")
-export class AkConditionBuilder extends AKControlElement<ConditionTreeRequest> {
+export class AkConditionBuilder extends AKControlElement<ConditionTree> {
     static styles = [
         PFButton,
         PFForm,
@@ -178,15 +178,15 @@ export class AkConditionBuilder extends AKControlElement<ConditionTreeRequest> {
      * Initial value of the tree
      */
     @property({ attribute: false })
-    public set value(value: ConditionTreeRequest | undefined) {
-        const tree = value ? (structuredClone(value) as ConditionTreeRequest) : emptyTree();
+    public set value(value: ConditionTree | undefined) {
+        const tree = value ? (structuredClone(value) as ConditionTree) : emptyTree();
         if (tree.root.type !== "group") {
             tree.root = { type: "group", op: "all", children: [tree.root] };
         }
         this.tree = tree;
     }
 
-    public get value(): ConditionTreeRequest {
+    public get value(): ConditionTree {
         return this.tree;
     }
 
@@ -198,9 +198,9 @@ export class AkConditionBuilder extends AKControlElement<ConditionTreeRequest> {
     protected target: string | null = null;
 
     @state()
-    protected tree: ConditionTreeRequest = emptyTree();
+    protected tree: ConditionTree = emptyTree();
 
-    public toJSON(): ConditionTreeRequest {
+    public toJSON(): ConditionTree {
         return this.tree;
     }
 
@@ -249,8 +249,8 @@ export class AkConditionBuilder extends AKControlElement<ConditionTreeRequest> {
      * Variable picker, including parameter and cast inputs when needed.
      */
     protected renderVariableRef(
-        ref: ConditionVariableRefRequest,
-        onChange: (ref: ConditionVariableRefRequest) => void,
+        ref: ConditionVariableRef,
+        onChange: (ref: ConditionVariableRef) => void,
     ) {
         const variable = findVariable(this.catalog, ref.key);
         return html`<select
@@ -288,7 +288,7 @@ export class AkConditionBuilder extends AKControlElement<ConditionTreeRequest> {
                       })}
                       @change=${(ev: Event) => {
                           const cast = (ev.target as HTMLSelectElement).value;
-                          onChange({ ...ref, cast: cast as ConditionVariableRefRequest["cast"] });
+                          onChange({ ...ref, cast: cast as ConditionVariableRef["cast"] });
                       }}
                   >
                       <option value="" ?selected=${!ref.cast} disabled>
@@ -537,7 +537,7 @@ export class AkConditionBuilder extends AKControlElement<ConditionTreeRequest> {
                 const valid = operatorsFor(this.catalog, newType).some(
                     (op) => op.name === node.operator,
                 );
-                if (!valid) node.operator = ConditionOperatorEnum.IsSet;
+                if (!valid) node.operator = ConditionOperatorName.IsSet;
                 node.value = null;
                 this.changed();
             })}
@@ -550,7 +550,7 @@ export class AkConditionBuilder extends AKControlElement<ConditionTreeRequest> {
                         this.catalog?.operators.find((op) => op.name === node.operator),
                         type,
                     );
-                    node.operator = (ev.target as HTMLSelectElement).value as ConditionOperatorEnum;
+                    node.operator = (ev.target as HTMLSelectElement).value as ConditionOperatorName;
                     const next = operandType(
                         this.catalog?.operators.find((op) => op.name === node.operator),
                         type,
@@ -570,7 +570,7 @@ export class AkConditionBuilder extends AKControlElement<ConditionTreeRequest> {
                 )}
             </select>
             ${this.renderOperand(node, type)}
-            ${isTextual(type) && node.operator !== ConditionOperatorEnum.IsSet
+            ${isTextual(type) && node.operator !== ConditionOperatorName.IsSet
                 ? html`<label>
                       <input
                           type="checkbox"
@@ -596,7 +596,7 @@ export class AkConditionBuilder extends AKControlElement<ConditionTreeRequest> {
         </div>`;
     }
 
-    protected renderPolicyRef(node: ConditionNodeRequest & { type: "policy" }) {
+    protected renderPolicyRef(node: ConditionNode & { type: "policy" }) {
         return html`<div class="row">
             <span>${msg("Policy passes", { id: "policies.conditional.policy.label" })}</span>
             <ak-search-select
@@ -664,7 +664,7 @@ export class AkConditionBuilder extends AKControlElement<ConditionTreeRequest> {
     }
 
     protected renderGroup(group: GroupNode): TemplateResult {
-        const add = (node: ConditionNodeRequest) => {
+        const add = (node: ConditionNode) => {
             group.children.push(node);
             this.changed();
         };

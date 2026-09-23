@@ -181,10 +181,7 @@ SPECTACULAR_SETTINGS = {
         "url": "https://github.com/goauthentik/authentik/blob/main/LICENSE",
     },
     "ENUM_NAME_OVERRIDES": {
-        "ConditionCastEnum": "authentik.policies.conditional.types.CAST_KINDS",
-        "ConditionGroupOpEnum": "authentik.policies.conditional.schema.GROUP_OPS",
         "ConditionOperandShapeEnum": "authentik.policies.conditional.operators.OperandShape",
-        "ConditionOperatorEnum": "authentik.policies.conditional.operators.OPERATOR_CHOICES",
         "ConditionParamKindEnum": "authentik.policies.conditional.registry.ParamKind",
         "ConditionTypeKindEnum": "authentik.policies.conditional.types.TypeKind",
         "AppEnum": "authentik.lib.api.Apps",

@@ -3,6 +3,7 @@
 import re
 from collections.abc import Callable
 from dataclasses import dataclass
+from enum import StrEnum
 from typing import Any
 
 from django.db.models import TextChoices
@@ -35,9 +36,41 @@ class OperandShape(TextChoices):
     CIDR_LIST = "cidr_list"
 
 
+class ConditionOperatorName(StrEnum):
+    """Names of all operators"""
+
+    IS_SET = "is_set"
+    IS_NOT_SET = "is_not_set"
+    EQ = "eq"
+    NE = "ne"
+    IN = "in"
+    NOT_IN = "not_in"
+    CONTAINS = "contains"
+    STARTS_WITH = "starts_with"
+    ENDS_WITH = "ends_with"
+    MATCHES = "matches"
+    LT = "lt"
+    LTE = "lte"
+    GT = "gt"
+    GTE = "gte"
+    BETWEEN = "between"
+    IS_TRUE = "is_true"
+    IS_FALSE = "is_false"
+    WITHIN_LAST = "within_last"
+    OLDER_THAN = "older_than"
+    IN_NETWORK = "in_network"
+    HAS_ITEM = "has_item"
+    HAS_ANY = "has_any"
+    HAS_ALL = "has_all"
+    IS_EMPTY = "is_empty"
+    LENGTH_EQ = "length_eq"
+    LENGTH_GT = "length_gt"
+    LENGTH_LT = "length_lt"
+
+
 @dataclass(frozen=True)
 class Operator:
-    name: str
+    name: ConditionOperatorName
     label: str | Promise
     kinds: frozenset[TypeKind]
     operand: OperandShape
@@ -81,7 +114,7 @@ class Operator:
 
 # Operators which check for the presence of a value, and are evaluated even if the value
 # of the variable is missing
-PRESENCE_OPERATORS = frozenset({"is_set", "is_not_set"})
+PRESENCE_OPERATORS = frozenset({ConditionOperatorName.IS_SET, ConditionOperatorName.IS_NOT_SET})
 
 ALL_KINDS = frozenset(
     {
@@ -121,133 +154,191 @@ def _older_than(value, duration) -> bool:
 OPERATORS: dict[str, Operator] = {
     op.name: op
     for op in [
-        Operator("is_set", _("is set"), ALL_KINDS, OperandShape.NONE, lambda a, b: True),
-        Operator("is_not_set", _("is not set"), ALL_KINDS, OperandShape.NONE, lambda a, b: False),
-        Operator("eq", _("equals"), EQUALITY_KINDS, OperandShape.SAME, lambda a, b: a == b),
-        Operator("ne", _("does not equal"), EQUALITY_KINDS, OperandShape.SAME, lambda a, b: a != b),
         Operator(
-            "in", _("is one of"), EQUALITY_KINDS, OperandShape.LIST_OF_SAME, lambda a, b: a in b
+            ConditionOperatorName.IS_SET,
+            _("is set"),
+            ALL_KINDS,
+            OperandShape.NONE,
+            lambda a, b: True,
         ),
         Operator(
-            "not_in",
+            ConditionOperatorName.IS_NOT_SET,
+            _("is not set"),
+            ALL_KINDS,
+            OperandShape.NONE,
+            lambda a, b: False,
+        ),
+        Operator(
+            ConditionOperatorName.EQ,
+            _("equals"),
+            EQUALITY_KINDS,
+            OperandShape.SAME,
+            lambda a, b: a == b,
+        ),
+        Operator(
+            ConditionOperatorName.NE,
+            _("does not equal"),
+            EQUALITY_KINDS,
+            OperandShape.SAME,
+            lambda a, b: a != b,
+        ),
+        Operator(
+            ConditionOperatorName.IN,
+            _("is one of"),
+            EQUALITY_KINDS,
+            OperandShape.LIST_OF_SAME,
+            lambda a, b: a in b,
+        ),
+        Operator(
+            ConditionOperatorName.NOT_IN,
             _("is not one of"),
             EQUALITY_KINDS,
             OperandShape.LIST_OF_SAME,
             lambda a, b: a not in b,
         ),
-        Operator("contains", _("contains"), STRING_KINDS, OperandShape.SAME, lambda a, b: b in a),
         Operator(
-            "starts_with",
+            ConditionOperatorName.CONTAINS,
+            _("contains"),
+            STRING_KINDS,
+            OperandShape.SAME,
+            lambda a, b: b in a,
+        ),
+        Operator(
+            ConditionOperatorName.STARTS_WITH,
             _("starts with"),
             STRING_KINDS,
             OperandShape.SAME,
             lambda a, b: a.startswith(b),
         ),
         Operator(
-            "ends_with", _("ends with"), STRING_KINDS, OperandShape.SAME, lambda a, b: a.endswith(b)
+            ConditionOperatorName.ENDS_WITH,
+            _("ends with"),
+            STRING_KINDS,
+            OperandShape.SAME,
+            lambda a, b: a.endswith(b),
         ),
         # Case sensitivity for regular expressions is handled by the evaluator
         Operator(
-            "matches",
+            ConditionOperatorName.MATCHES,
             _("matches regular expression"),
             STRING_KINDS,
             OperandShape.REGEX,
             lambda a, b: re.search(b, a) is not None,
         ),
-        Operator("lt", _("is less than"), ORDERED_KINDS, OperandShape.SAME, lambda a, b: a < b),
         Operator(
-            "lte",
+            ConditionOperatorName.LT,
+            _("is less than"),
+            ORDERED_KINDS,
+            OperandShape.SAME,
+            lambda a, b: a < b,
+        ),
+        Operator(
+            ConditionOperatorName.LTE,
             _("is less than or equal to"),
             ORDERED_KINDS,
             OperandShape.SAME,
             lambda a, b: a <= b,
         ),
-        Operator("gt", _("is greater than"), ORDERED_KINDS, OperandShape.SAME, lambda a, b: a > b),
         Operator(
-            "gte",
+            ConditionOperatorName.GT,
+            _("is greater than"),
+            ORDERED_KINDS,
+            OperandShape.SAME,
+            lambda a, b: a > b,
+        ),
+        Operator(
+            ConditionOperatorName.GTE,
             _("is greater than or equal to"),
             ORDERED_KINDS,
             OperandShape.SAME,
             lambda a, b: a >= b,
         ),
         Operator(
-            "between",
+            ConditionOperatorName.BETWEEN,
             _("is between"),
             ORDERED_KINDS,
             OperandShape.RANGE,
             lambda a, b: b[0] <= a <= b[1],
         ),
         Operator(
-            "is_true",
+            ConditionOperatorName.IS_TRUE,
             _("is true"),
             frozenset({TypeKind.BOOLEAN}),
             OperandShape.NONE,
             lambda a, b: a,
         ),
         Operator(
-            "is_false",
+            ConditionOperatorName.IS_FALSE,
             _("is false"),
             frozenset({TypeKind.BOOLEAN}),
             OperandShape.NONE,
             lambda a, b: not a,
         ),
         Operator(
-            "within_last",
+            ConditionOperatorName.WITHIN_LAST,
             _("is within the last"),
             frozenset({TypeKind.DATETIME}),
             OperandShape.DURATION,
             _within_last,
         ),
         Operator(
-            "older_than",
+            ConditionOperatorName.OLDER_THAN,
             _("is older than"),
             frozenset({TypeKind.DATETIME}),
             OperandShape.DURATION,
             _older_than,
         ),
         Operator(
-            "in_network",
+            ConditionOperatorName.IN_NETWORK,
             _("is in network"),
             frozenset({TypeKind.IP}),
             OperandShape.CIDR_LIST,
             lambda a, b: any(a in network for network in b),
         ),
         Operator(
-            "has_item", _("contains item"), LIST_KINDS, OperandShape.ITEM, lambda a, b: b in a
+            ConditionOperatorName.HAS_ITEM,
+            _("contains item"),
+            LIST_KINDS,
+            OperandShape.ITEM,
+            lambda a, b: b in a,
         ),
         Operator(
-            "has_any",
+            ConditionOperatorName.HAS_ANY,
             _("contains any of"),
             LIST_KINDS,
             OperandShape.LIST_OF_ITEM,
             lambda a, b: any(item in a for item in b),
         ),
         Operator(
-            "has_all",
+            ConditionOperatorName.HAS_ALL,
             _("contains all of"),
             LIST_KINDS,
             OperandShape.LIST_OF_ITEM,
             lambda a, b: all(item in a for item in b),
         ),
         Operator(
-            "is_empty", _("is empty"), LIST_KINDS, OperandShape.NONE, lambda a, b: len(a) == 0
+            ConditionOperatorName.IS_EMPTY,
+            _("is empty"),
+            LIST_KINDS,
+            OperandShape.NONE,
+            lambda a, b: len(a) == 0,
         ),
         Operator(
-            "length_eq",
+            ConditionOperatorName.LENGTH_EQ,
             _("has length"),
             LIST_KINDS,
             OperandShape.NUMBER,
             lambda a, b: len(a) == b,
         ),
         Operator(
-            "length_gt",
+            ConditionOperatorName.LENGTH_GT,
             _("has length greater than"),
             LIST_KINDS,
             OperandShape.NUMBER,
             lambda a, b: len(a) > b,
         ),
         Operator(
-            "length_lt",
+            ConditionOperatorName.LENGTH_LT,
             _("has length less than"),
             LIST_KINDS,
             OperandShape.NUMBER,
@@ -255,9 +346,6 @@ OPERATORS: dict[str, Operator] = {
         ),
     ]
 }
-
-
-OPERATOR_CHOICES = [(op.name, op.label) for op in OPERATORS.values()]
 
 
 def operators_for(vtype: ValueType) -> list[Operator]:

@@ -8,7 +8,7 @@ import {
 
 import {
     ConditionCatalog,
-    ConditionNodeRequest,
+    ConditionNode,
     ConditionOperandShapeEnum,
     ConditionParamKindEnum,
     ConditionTypeKindEnum,
@@ -139,7 +139,7 @@ describe("operandType", () => {
 });
 
 describe("unavailableVariables", () => {
-    const tree: ConditionNodeRequest = {
+    const tree: ConditionNode = {
         type: "group",
         op: "all",
         children: [
@@ -163,7 +163,7 @@ describe("unavailableVariables", () => {
 
 describe("describe", () => {
     it("renders a readable summary", () => {
-        const tree: ConditionNodeRequest = {
+        const tree: ConditionNode = {
             type: "group",
             op: "any",
             children: [

@@ -17,8 +17,8 @@ import {
     ConditionGroupNodeTypeEnumFromJSON,
     ConditionGroupNodeTypeEnumToJSON,
 } from "./ConditionGroupNodeTypeEnum";
-import type { ConditionGroupOpEnum } from "./ConditionGroupOpEnum";
-import { ConditionGroupOpEnumFromJSON, ConditionGroupOpEnumToJSON } from "./ConditionGroupOpEnum";
+import type { ConditionGroupOp } from "./ConditionGroupOp";
+import { ConditionGroupOpFromJSON, ConditionGroupOpToJSON } from "./ConditionGroupOp";
 import type { ConditionNode } from "./ConditionNode";
 import { ConditionNodeFromJSON, ConditionNodeToJSON } from "./ConditionNode";
 
@@ -36,10 +36,10 @@ export interface ConditionGroupNode {
     type: ConditionGroupNodeTypeEnum;
     /**
      *
-     * @type {ConditionGroupOpEnum}
+     * @type {ConditionGroupOp}
      * @memberof ConditionGroupNode
      */
-    op: ConditionGroupOpEnum;
+    op: ConditionGroupOp;
     /**
      *
      * @type {Array<ConditionNode>}
@@ -71,7 +71,7 @@ export function ConditionGroupNodeFromJSONTyped(
     }
     return {
         type: ConditionGroupNodeTypeEnumFromJSON(json["type"]),
-        op: ConditionGroupOpEnumFromJSON(json["op"]),
+        op: ConditionGroupOpFromJSON(json["op"]),
         children: (json["children"] as Array<any>).map(ConditionNodeFromJSON),
     };
 }
@@ -90,7 +90,7 @@ export function ConditionGroupNodeToJSONTyped(
 
     return {
         type: ConditionGroupNodeTypeEnumToJSON(value["type"]),
-        op: ConditionGroupOpEnumToJSON(value["op"]),
+        op: ConditionGroupOpToJSON(value["op"]),
         children: (value["children"] as Array<any>).map(ConditionNodeToJSON),
     };
 }

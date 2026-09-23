@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
 from django.core.exceptions import ValidationError as DjangoValidationError
+from pydantic import ValidationError as PydanticValidationError
 from structlog.stdlib import get_logger
 
 from authentik.events.utils import cleanse_item
@@ -13,6 +14,7 @@ from authentik.policies.conditional.operators import (
     MAX_REGEX_LENGTH,
     OPERATORS,
     PRESENCE_OPERATORS,
+    ConditionOperatorName,
     Operator,
 )
 from authentik.policies.conditional.registry import (
@@ -24,13 +26,18 @@ from authentik.policies.conditional.registry import (
 from authentik.policies.conditional.schema import (
     MAX_DEPTH,
     MAX_NODES,
-    SCHEMA_VERSION,
-    GroupOp,
-    NodeType,
-    OperandType,
+    ConditionComparisonNode,
+    ConditionGroupNode,
+    ConditionGroupOp,
+    ConditionLiteralOperand,
+    ConditionNode,
+    ConditionNotNode,
+    ConditionPolicyNode,
+    ConditionTree,
+    ConditionVariableOperand,
+    ConditionVariableRef,
 )
 from authentik.policies.conditional.types import (
-    CAST_KINDS,
     MISSING,
     TypeKind,
     ValueType,
@@ -122,87 +129,73 @@ def _types_compatible(actual: ValueType, expected: ValueType) -> bool:
 
 
 class ConditionCompiler:
-    """Validate a condition tree (as validated by `ConditionTreeSerializer`) against the
-    registry, and convert it into an evaluable structure"""
+    """Validate a condition tree against the registry, and convert it into an evaluable
+    structure. Structural validation is done by the pydantic models in `schema`."""
 
     def __init__(self, reg: ConditionalPolicyRegistry | None = None):
         self.registry = reg or registry
         self.errors: list[tuple[str, str]] = []
         self.node_count = 0
 
-    def compile(self, tree: dict) -> CompiledNode:
-        if not isinstance(tree, dict) or tree.get("version") != SCHEMA_VERSION:
-            raise ConditionValidationError(
-                [("", f"Unsupported schema version, expected {SCHEMA_VERSION}")]
-            )
-        root = self._node(tree.get("root", {}), "root", 1)
+    def compile(self, tree: ConditionTree) -> CompiledNode:
+        root = self._node(tree.root, "root", 1)
         if self.node_count > MAX_NODES:
             self.errors.append(("root", f"Condition tree must have at most {MAX_NODES} nodes"))
         if self.errors:
             raise ConditionValidationError(self.errors)
         return root
 
-    def _node(self, node: dict, path: str, depth: int) -> Any:
+    def _node(self, node: ConditionNode, path: str, depth: int) -> Any:
         self.node_count += 1
         if depth > MAX_DEPTH:
             self.errors.append((path, f"Condition tree must be at most {MAX_DEPTH} levels deep"))
             return None
-        match node.get("type"):
-            case NodeType.GROUP:
-                children = node.get("children", [])
-                if not children:
+        match node:
+            case ConditionGroupNode():
+                if not node.children:
                     self.errors.append((path, "Group must contain at least one item"))
-                if node.get("op") not in (GroupOp.ALL, GroupOp.ANY):
-                    self.errors.append((path, "Invalid group operator"))
                 return CompiledGroup(
                     path=path,
-                    op=node.get("op"),
+                    op=node.op,
                     children=tuple(
                         self._node(child, f"{path}.children[{idx}]", depth + 1)
-                        for idx, child in enumerate(children)
+                        for idx, child in enumerate(node.children)
                     ),
                 )
-            case NodeType.NOT:
+            case ConditionNotNode():
                 return CompiledNot(
-                    path=path, child=self._node(node.get("child", {}), f"{path}.child", depth + 1)
+                    path=path, child=self._node(node.child, f"{path}.child", depth + 1)
                 )
-            case NodeType.POLICY:
-                return CompiledPolicyRef(path=path, policy=str(node.get("policy")))
-            case NodeType.CONDITION:
+            case ConditionPolicyNode():
+                return CompiledPolicyRef(path=path, policy=str(node.policy))
+            case ConditionComparisonNode():
                 return self._condition(node, path)
-        self.errors.append((path, "Invalid node type"))
-        return None
 
-    def _variable(self, ref: dict, path: str) -> CompiledVariable | None:
-        key = ref.get("key", "")
-        variable = self.registry.get(key)
+    def _variable(self, ref: ConditionVariableRef, path: str) -> CompiledVariable | None:
+        variable = self.registry.get(ref.key)
         if not variable:
-            self.errors.append((path, f"Unknown variable '{key}'"))
+            self.errors.append((path, f"Unknown variable '{ref.key}'"))
             return None
-        param = ref.get("param") or None
+        param = ref.param or None
         if variable.param != ParamKind.NONE and not param:
-            self.errors.append((path, f"Variable '{key}' requires a parameter"))
+            self.errors.append((path, f"Variable '{ref.key}' requires a parameter"))
         if variable.param == ParamKind.NONE and param:
-            self.errors.append((path, f"Variable '{key}' does not take a parameter"))
+            self.errors.append((path, f"Variable '{ref.key}' does not take a parameter"))
         vtype = variable.type
-        cast = ref.get("cast") or None
         if vtype.kind == TypeKind.ANY:
-            if cast not in CAST_KINDS:
+            if not ref.cast:
                 self.errors.append(
-                    (path, f"Variable '{key}' has no fixed type and must be cast to a type")
+                    (path, f"Variable '{ref.key}' has no fixed type and must be cast to a type")
                 )
                 return None
-            vtype = ValueType(TypeKind(cast))
-        elif cast:
-            self.errors.append((path, f"Variable '{key}' has a fixed type and cannot be cast"))
+            vtype = ValueType(TypeKind(ref.cast))
+        elif ref.cast:
+            self.errors.append((path, f"Variable '{ref.key}' has a fixed type and cannot be cast"))
         return CompiledVariable(variable=variable, param=param, type=vtype)
 
-    def _condition(self, node: dict, path: str) -> CompiledCondition | None:
-        variable = self._variable(node.get("variable", {}), f"{path}.variable")
-        operator = OPERATORS.get(node.get("operator", ""))
-        if not operator:
-            self.errors.append((f"{path}.operator", "Unknown operator"))
-            return None
+    def _condition(self, node: ConditionComparisonNode, path: str) -> CompiledCondition | None:
+        variable = self._variable(node.variable, f"{path}.variable")
+        operator = OPERATORS[node.operator]
         if not variable:
             return None
         if variable.type.kind not in operator.kinds:
@@ -213,36 +206,42 @@ class ConditionCompiler:
                 )
             )
             return None
-        case_sensitive = (node.get("options") or {}).get("case_sensitive", True)
+        case_sensitive = node.options.case_sensitive
         expected = operator.operand_type(variable.type)
-        raw_operand = node.get("value")
         operand: Literal | CompiledVariable | None = None
-        if expected is None:
-            if raw_operand is not None:
-                self.errors.append(
-                    (f"{path}.value", f"Operator '{operator.name}' does not take a value")
-                )
-        elif raw_operand is None:
-            self.errors.append((f"{path}.value", f"Operator '{operator.name}' requires a value"))
-        elif raw_operand.get("type") == OperandType.VARIABLE:
-            operand = self._variable(raw_operand.get("variable", {}), f"{path}.value.variable")
-            if operand and not _types_compatible(operand.type, expected):
-                self.errors.append(
-                    (
-                        f"{path}.value.variable",
-                        f"Variable has type {operand.type}, expected {expected}",
+        match node.value:
+            case _ if expected is None:
+                if node.value is not None:
+                    self.errors.append(
+                        (f"{path}.value", f"Operator '{operator.name}' does not take a value")
                     )
+            case None:
+                self.errors.append(
+                    (f"{path}.value", f"Operator '{operator.name}' requires a value")
                 )
-        else:
-            try:
-                value = coerce(raw_operand.get("value"), expected)
-                operator.validate_operand(value)
-            except ValueError as exc:
-                self.errors.append((f"{path}.value", str(exc)))
-                return None
-            if not case_sensitive and expected.is_textual and operator.name != "matches":
-                value = _fold(value)
-            operand = Literal(value)
+            case ConditionVariableOperand():
+                operand = self._variable(node.value.variable, f"{path}.value.variable")
+                if operand and not _types_compatible(operand.type, expected):
+                    self.errors.append(
+                        (
+                            f"{path}.value.variable",
+                            f"Variable has type {operand.type}, expected {expected}",
+                        )
+                    )
+            case ConditionLiteralOperand():
+                try:
+                    value = coerce(node.value.value, expected)
+                    operator.validate_operand(value)
+                except ValueError as exc:
+                    self.errors.append((f"{path}.value", str(exc)))
+                    return None
+                if (
+                    not case_sensitive
+                    and expected.is_textual
+                    and operator.name != ConditionOperatorName.MATCHES
+                ):
+                    value = _fold(value)
+                operand = Literal(value)
         return CompiledCondition(
             path=path,
             variable=variable,
@@ -252,8 +251,20 @@ class ConditionCompiler:
         )
 
 
-def compile_conditions(tree: dict) -> CompiledNode:
+def parse_conditions(data: dict) -> ConditionTree:
+    """Parse stored conditions, raising `ConditionValidationError` if they are invalid"""
+    try:
+        return ConditionTree.model_validate(data)
+    except PydanticValidationError as exc:
+        raise ConditionValidationError(
+            [(".".join(str(p) for p in err["loc"]), err["msg"]) for err in exc.errors()]
+        ) from exc
+
+
+def compile_conditions(tree: ConditionTree | dict) -> CompiledNode:
     """Compile a condition tree, raising `ConditionValidationError` if it is invalid"""
+    if not isinstance(tree, ConditionTree):
+        tree = parse_conditions(tree)
     return ConditionCompiler().compile(tree)
 
 
@@ -312,7 +323,7 @@ class ConditionEvaluator:
     def _evaluate(self, node: CompiledNode) -> bool:
         match node:
             case CompiledGroup():
-                if node.op == GroupOp.ALL:
+                if node.op == ConditionGroupOp.ALL:
                     result = all(self._evaluate(child) for child in node.children)
                 else:
                     result = any(self._evaluate(child) for child in node.children)
@@ -364,7 +375,7 @@ class ConditionEvaluator:
 
         value = self._resolve(node.variable)
         if node.operator.name in PRESENCE_OPERATORS:
-            result = (value is not MISSING) == (node.operator.name == "is_set")
+            result = (value is not MISSING) == (node.operator.name == ConditionOperatorName.IS_SET)
             self._trace(
                 node.path,
                 variable=node.variable.variable.key,
@@ -383,7 +394,7 @@ class ConditionEvaluator:
                 operand = self._resolve(node.operand)
                 if operand is MISSING:
                     raise _MissingValue(node.path, node.operand.variable.key)
-                if not node.case_sensitive and node.operator.name != "matches":
+                if not node.case_sensitive and node.operator.name != ConditionOperatorName.MATCHES:
                     operand = _fold(operand)
         except _MissingValue as exc:
             if self.missing_behavior == MissingBehavior.FAIL:
@@ -401,7 +412,7 @@ class ConditionEvaluator:
         return result
 
     def _apply(self, node: CompiledCondition, value: Any, operand: Any) -> bool:
-        if node.operator.name == "matches":
+        if node.operator.name == ConditionOperatorName.MATCHES:
             if len(operand) > MAX_REGEX_LENGTH:
                 raise PolicyException("Regular expression is too long")
             flags = 0 if node.case_sensitive else re.IGNORECASE

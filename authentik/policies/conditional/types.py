@@ -3,6 +3,7 @@
 from collections.abc import Iterable
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
+from enum import StrEnum
 from ipaddress import IPv4Address, IPv4Network, IPv6Address, IPv6Network, ip_address, ip_network
 from typing import Any
 
@@ -44,14 +45,14 @@ class TypeKind(TextChoices):
     CIDR = "cidr"
 
 
-# Types a variable of kind `any` can be cast to
-CAST_KINDS = (
-    TypeKind.STRING,
-    TypeKind.NUMBER,
-    TypeKind.BOOLEAN,
-    TypeKind.DATETIME,
-    TypeKind.IP,
-)
+class ConditionCastKind(StrEnum):
+    """Types a variable of kind `any` can be cast to"""
+
+    STRING = TypeKind.STRING.value
+    NUMBER = TypeKind.NUMBER.value
+    BOOLEAN = TypeKind.BOOLEAN.value
+    DATETIME = TypeKind.DATETIME.value
+    IP = TypeKind.IP.value
 
 
 @dataclass(frozen=True)

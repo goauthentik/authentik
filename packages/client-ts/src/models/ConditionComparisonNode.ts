@@ -19,11 +19,11 @@ import {
 } from "./ConditionComparisonNodeTypeEnum";
 import type { ConditionOperand } from "./ConditionOperand";
 import { ConditionOperandFromJSON, ConditionOperandToJSON } from "./ConditionOperand";
-import type { ConditionOperatorEnum } from "./ConditionOperatorEnum";
+import type { ConditionOperatorName } from "./ConditionOperatorName";
 import {
-    ConditionOperatorEnumFromJSON,
-    ConditionOperatorEnumToJSON,
-} from "./ConditionOperatorEnum";
+    ConditionOperatorNameFromJSON,
+    ConditionOperatorNameToJSON,
+} from "./ConditionOperatorName";
 import type { ConditionOptions } from "./ConditionOptions";
 import { ConditionOptionsFromJSON, ConditionOptionsToJSON } from "./ConditionOptions";
 import type { ConditionVariableRef } from "./ConditionVariableRef";
@@ -49,10 +49,10 @@ export interface ConditionComparisonNode {
     variable: ConditionVariableRef;
     /**
      *
-     * @type {ConditionOperatorEnum}
+     * @type {ConditionOperatorName}
      * @memberof ConditionComparisonNode
      */
-    operator: ConditionOperatorEnum;
+    operator: ConditionOperatorName;
     /**
      *
      * @type {ConditionOperand}
@@ -91,7 +91,7 @@ export function ConditionComparisonNodeFromJSONTyped(
     return {
         type: ConditionComparisonNodeTypeEnumFromJSON(json["type"]),
         variable: ConditionVariableRefFromJSON(json["variable"]),
-        operator: ConditionOperatorEnumFromJSON(json["operator"]),
+        operator: ConditionOperatorNameFromJSON(json["operator"]),
         value:
             json["value"] === undefined
                 ? undefined
@@ -117,7 +117,7 @@ export function ConditionComparisonNodeToJSONTyped(
     return {
         type: ConditionComparisonNodeTypeEnumToJSON(value["type"]),
         variable: ConditionVariableRefToJSON(value["variable"]),
-        operator: ConditionOperatorEnumToJSON(value["operator"]),
+        operator: ConditionOperatorNameToJSON(value["operator"]),
         value: ConditionOperandToJSON(value["value"]),
         options: ConditionOptionsToJSON(value["options"]),
     };

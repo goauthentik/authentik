@@ -12,8 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { ConditionTreeRequest } from "./ConditionTreeRequest";
-import { ConditionTreeRequestFromJSON, ConditionTreeRequestToJSON } from "./ConditionTreeRequest";
+import type { ConditionTree } from "./ConditionTree";
+import { ConditionTreeFromJSON, ConditionTreeToJSON } from "./ConditionTree";
 import type { MissingBehaviorEnum } from "./MissingBehaviorEnum";
 import { MissingBehaviorEnumFromJSON, MissingBehaviorEnumToJSON } from "./MissingBehaviorEnum";
 
@@ -37,10 +37,10 @@ export interface PatchedConditionalPolicyRequest {
     executionLogging?: boolean;
     /**
      *
-     * @type {ConditionTreeRequest}
+     * @type {ConditionTree}
      * @memberof PatchedConditionalPolicyRequest
      */
-    conditions?: ConditionTreeRequest;
+    conditions?: ConditionTree;
     /**
      * How to handle conditions whose variable is not available in the request.
      * @type {MissingBehaviorEnum}
@@ -81,9 +81,7 @@ export function PatchedConditionalPolicyRequestFromJSONTyped(
         name: json["name"] == null ? undefined : json["name"],
         executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
         conditions:
-            json["conditions"] == null
-                ? undefined
-                : ConditionTreeRequestFromJSON(json["conditions"]),
+            json["conditions"] == null ? undefined : ConditionTreeFromJSON(json["conditions"]),
         missingBehavior:
             json["missing_behavior"] == null
                 ? undefined
@@ -107,7 +105,7 @@ export function PatchedConditionalPolicyRequestToJSONTyped(
     return {
         name: value["name"],
         execution_logging: value["executionLogging"],
-        conditions: ConditionTreeRequestToJSON(value["conditions"]),
+        conditions: ConditionTreeToJSON(value["conditions"]),
         missing_behavior: MissingBehaviorEnumToJSON(value["missingBehavior"]),
         failure_message: value["failureMessage"],
     };

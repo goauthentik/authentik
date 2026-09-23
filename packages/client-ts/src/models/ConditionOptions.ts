@@ -13,7 +13,7 @@
  */
 
 /**
- * Base serializer class which doesn't implement create/update methods
+ *
  * @export
  * @interface ConditionOptions
  */
