@@ -39,6 +39,8 @@ class SCIMProviderSerializer(
             "verify_certificates",
             "token_ref",
             "auth_mode",
+            "auth_basic_user",
+            "auth_basic_password_ref",
             "auth_oauth",
             "auth_oauth_params",
             "auth_oauth_token_last_updated",

@@ -264,7 +264,7 @@ pub(super) async fn handle_auth_callback(
     // instead of dead-ending on an error page.
     let redeemed = async {
         let access_token = backchannel::exchange_code(
-            &app.api_config.client,
+            &app.backchannel_client,
             &app.endpoint.token_url,
             app.token_host.as_ref(),
             &code,

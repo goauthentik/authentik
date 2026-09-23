@@ -47,8 +47,10 @@ export class AkDualSelectDynamic extends AkDualSelectProvider {
         return html`<ak-dual-select
             ${ref(this.dualSelector)}
             .options=${this.options}
-            .pages=${this.pagination}
             .selected=${this.selected}
+            item-count=${this.pageState.itemCount}
+            items-per-page=${this.pageState.itemsPerPage}
+            page=${this.pageState.page}
             available-label=${this.availableLabel}
             selected-label=${this.selectedLabel}
             ?preserve-order=${this.preserveOrder}

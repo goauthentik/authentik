@@ -67,8 +67,9 @@ export class AccessRequestsPage extends AKElement {
                 ${
                     (this.toReview?.pagination.count || 0) > 0
                         ? html`<div class="pf-c-banner pf-m-info">
-                              ${msg("Requests to review: ")}
-                              <a href=${toUserInterface("requests/for-review")}>${msg("Review")}</a>
+                              <a href=${toUserInterface("requests/for-review")}
+                                  >${msg("You have access requests to review")}</a
+                              >
                           </div>`
                         : nothing
                 }
