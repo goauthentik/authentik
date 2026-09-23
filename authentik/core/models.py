@@ -18,6 +18,7 @@ from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
 from django.db import models
 from django.db.models import Q, QuerySet, options
+from django.db.models.functions import Upper
 from django.http import HttpRequest
 from django.utils.functional import cached_property
 from django.utils.timezone import now
@@ -403,6 +404,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             models.Index(fields=["date_joined"]),
             models.Index(fields=["last_updated"]),
             models.Index(fields=["username", "is_active", "type"]),
+            models.Index(Upper("email"), name="%(app_label)s_%(class)s_email_idx"),
         ]
 
     def __str__(self):
