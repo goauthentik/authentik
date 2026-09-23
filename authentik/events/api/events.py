@@ -223,7 +223,7 @@ class EventViewSet(
                     binding=JSONSearchField(
                         Event,
                         "context_binding",
-                        fixed_structure=OrderedDict(policy_binding_uuid=StrField()),
+                        fixed_structure=OrderedDict(pk=StrField()),
                     ),
                     dry_run=BoolField(),
                     cached=BoolField(),

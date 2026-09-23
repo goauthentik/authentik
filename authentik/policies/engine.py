@@ -198,6 +198,24 @@ class _PolicyEngineBase:
         return results
 
     @staticmethod
+    def _report_static_dry_run(
+        binding: PolicyBinding, request: PolicyRequest, result: PolicyResult
+    ) -> PolicyResult:
+        """Record an uncached user/group observation without contributing to enforcement."""
+        result.source_binding = binding
+        if not request.debug:
+            create_policy_event(
+                binding,
+                request,
+                EventAction.POLICY_EXECUTION,
+                message="Policy Execution (dry run)",
+                result=result,
+                dry_run=True,
+                cached=False,
+            )
+        return result
+
+    @staticmethod
     def _combine_results(
         mode: PolicyEngineMode, empty_result: bool, all_results: list[PolicyResult]
     ) -> PolicyResult:
@@ -314,6 +332,15 @@ class PolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
             self.__dynamic_results = self._evaluate_dynamic_bindings(
                 list(policy_bindings), self.request
             )
+            if isinstance(bindings, QuerySet):
+                for binding in bindings:
+                    if binding.dry_run and not binding.policy_id:
+                        result = binding.passes(self.request)
+                        if binding.negate:
+                            result.passing = not result.passing
+                        self.__dynamic_results.append(
+                            self._report_static_dry_run(binding, self.request, result)
+                        )
             return self
 
     @property
@@ -387,6 +414,24 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
 
             dynamic_bindings = [binding for binding in bindings if binding.policy_id is not None]
             dry_run_bindings = [binding for binding in dynamic_bindings if binding.dry_run]
+            # Static observations use one SQL membership query per binding, rather
+            # than a group lookup per user. They never affect the candidate set.
+            for binding in bindings:
+                if not binding.dry_run or binding.policy_id:
+                    continue
+                matching_pks = set(
+                    self._filter_static(
+                        self.__users, [binding], PolicyEngineMode.MODE_ALL
+                    ).values_list("pk", flat=True)
+                )
+                for user in self.__users:
+                    request = PolicyRequest(user)
+                    request.obj = self.__pbm
+                    if self.__http_request:
+                        request.set_http_request(self.__http_request)
+                    self._report_static_dry_run(
+                        binding, request, PolicyResult(user.pk in matching_pks)
+                    )
             static_bindings = [
                 binding
                 for binding in bindings
@@ -425,7 +470,7 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
             candidates = list(candidates)
 
             prefetched_cache = self._prefetch_cache(
-                candidates + dry_run_only_users, dynamic_bindings
+                candidates, dynamic_bindings, dry_run_only_users, dry_run_bindings
             )
 
             passing_pks = []
@@ -469,7 +514,11 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
         return self
 
     def _prefetch_cache(
-        self, candidates: list[User], dynamic_bindings: list[PolicyBinding]
+        self,
+        candidates: list[User],
+        dynamic_bindings: list[PolicyBinding],
+        dry_run_only_users: list[User] | None = None,
+        dry_run_bindings: list[PolicyBinding] | None = None,
     ) -> dict[str, PolicyResult]:
         """Bulk-fetch cached PolicyResults for every (dynamic binding, candidate) pair
         with a single cache.get_many() call.
@@ -478,17 +527,21 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
         own cache.get() per binding -- N candidates x M dynamic bindings individual
         round trips to the cache backend collapse into one.
         """
-        if not self.use_cache or not dynamic_bindings or not candidates:
+        if not self.use_cache:
             return {}
         keys = []
-        for user in candidates:
-            # Bypass set_http_request()'s context-processor enrichment (geoip etc.) --
-            # cache_key() only reads .http_request and .user, so this produces the
-            # exact same key each per-user evaluation will independently compute.
-            request = PolicyRequest(user)
-            request.http_request = self.__http_request
-            for binding in dynamic_bindings:
-                keys.append(cache_key(binding, request))
+        for users, bindings in (
+            (candidates, dynamic_bindings),
+            (dry_run_only_users or [], dry_run_bindings or []),
+        ):
+            for user in users:
+                # Cache keys don't need context-processor enrichment (geoip etc.).
+                request = PolicyRequest(user)
+                request.http_request = self.__http_request
+                for binding in bindings:
+                    keys.append(cache_key(binding, request))
+        if not keys:
+            return {}
         with HIST_POLICIES_EXECUTION_TIME.labels(
             binding_order=-1,
             binding_target_type="bulk",
@@ -660,8 +713,17 @@ class ListPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
             for pk in bindings_by_target:
                 mode = obj_by_pk[pk].policy_engine_mode
                 all_results = []
+                request.obj = obj_by_pk[pk]
+                for binding in bindings_by_target[pk]:
+                    if binding.dry_run and not binding.policy_id:
+                        all_results.append(
+                            self._report_static_dry_run(
+                                binding,
+                                request,
+                                self._static_binding_result(binding, user_group_pks),
+                            )
+                        )
                 if pk in dynamic_by_target:
-                    request.obj = obj_by_pk[pk]
                     all_results.extend(
                         self._evaluate_dynamic_bindings(
                             dynamic_by_target[pk], copy(request), prefetched_cache

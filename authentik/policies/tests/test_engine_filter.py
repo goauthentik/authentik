@@ -15,8 +15,9 @@ from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.engine import FilterPolicyEngine, PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyBindingModel, PolicyEngineMode
+from authentik.policies.process import cache_key
 from authentik.policies.tests.test_process import clear_policy_cache
-from authentik.policies.types import CACHE_PREFIX
+from authentik.policies.types import CACHE_PREFIX, PolicyRequest
 
 
 class TestFilterPolicyEngine(TestCase):
@@ -143,6 +144,28 @@ class TestFilterPolicyEngine(TestCase):
             set(cached_result.values_list("pk", flat=True)),
             {self.user_a.pk, self.user_b.pk},
         )
+
+    def test_dry_run_prefetch_only_fetches_evaluated_pairs(self):
+        """Static-failing users need only dry-run cache entries, in one bulk read."""
+        target = PolicyBindingModel.objects.create(policy_engine_mode=PolicyEngineMode.MODE_ALL)
+        PolicyBinding.objects.create(target=target, group=self.group_a, order=0)
+        enforced = PolicyBinding.objects.create(target=target, policy=self.policy_true, order=1)
+        observed = PolicyBinding.objects.create(
+            target=target, policy=self.policy_true, order=2, dry_run=True
+        )
+        with patch("authentik.policies.engine.cache.get_many", return_value={}) as get_many:
+            FilterPolicyEngine(target, self.users).build()
+        get_many.assert_called_once()
+        expected = {
+            cache_key(binding, PolicyRequest(user))
+            for user, bindings in (
+                (self.user_a, [enforced, observed]),
+                (self.user_b, [enforced, observed]),
+                (self.user_c, [observed]),
+            )
+            for binding in bindings
+        }
+        self.assertEqual(set(get_many.call_args.args[0]), expected)
 
     def test_multi_engine_mixed_static_and_policy_mode_all_prefilters(self):
         """MODE_ALL with a static binding and a real policy: static binding restricts

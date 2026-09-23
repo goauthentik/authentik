@@ -238,7 +238,7 @@ class TestPolicyProcess(TestCase):
         self.assertFalse(response.passing)
         event = Event.objects.get(
             action=EventAction.POLICY_EXECUTION,
-            context__binding__policy_binding_uuid=binding.policy_binding_uuid.hex,
+            context__binding__pk=binding.policy_binding_uuid.hex,
         )
         self.assertTrue(event.context["dry_run"])
         self.assertFalse(event.context["cached"])

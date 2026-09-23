@@ -9,6 +9,7 @@ from django.utils.http import urlencode
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
+from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.events.models import (
     Event,
@@ -97,7 +98,7 @@ class TestEventsAPI(APITestCase):
             name=generate_id(), result=False, wait_min=0, wait_max=1
         )
         binding = PolicyBinding.objects.create(
-            target=OAuth2Provider.objects.create(name=generate_id()),
+            target=Application.objects.create(name=generate_id(), slug=generate_id()),
             policy=policy,
             order=0,
         )
@@ -113,7 +114,7 @@ class TestEventsAPI(APITestCase):
             data={
                 "search": (
                     'action = "policy_execution" and context.dry_run = True and '
-                    "context.binding.policy_binding_uuid = "
+                    "context.binding.pk = "
                     f'"{binding.policy_binding_uuid.hex}"'
                 )
             },

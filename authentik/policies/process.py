@@ -33,7 +33,7 @@ def create_policy_event(
     event = Event.new(
         action=action,
         message=message,
-        policy_uuid=binding.policy.policy_uuid.hex,
+        **({"policy_uuid": binding.policy_id.hex} if binding.policy_id else {}),
         binding=binding,
         request=request,
         **kwargs,

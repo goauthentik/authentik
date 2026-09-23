@@ -133,7 +133,7 @@ class TestPolicyEngine(TestCase):
         events = list(
             Event.objects.filter(
                 action=EventAction.POLICY_EXECUTION,
-                context__binding__policy_binding_uuid=dry_run.policy_binding_uuid.hex,
+                context__binding__pk=dry_run.policy_binding_uuid.hex,
             ).order_by("created")
         )
         self.assertEqual(len(events), 2)
