@@ -158,6 +158,26 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                 BlueprintInstanceStatus.UNKNOWN,
             )
 
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_valid_crlf(self):
+        """Test discovered hash matches the applied hash for a file with CRLF line endings"""
+        blueprint_id = generate_id()
+        with NamedTemporaryFile(suffix=".yaml", dir=TMP) as file:
+            file.write(
+                f"version: 1\r\nentries: []\r\nmetadata:\r\n  name: {blueprint_id}\r\n".encode()
+            )
+            file.flush()
+            for _ in range(2):
+                blueprints_discovery.send()
+                instance = BlueprintInstance.objects.filter(name=blueprint_id).first()
+                self.assertEqual(instance.status, BlueprintInstanceStatus.SUCCESSFUL)
+                found = next(
+                    found for found in blueprints_find() if found.path == Path(file.name).name
+                )
+                self.assertEqual(instance.last_applied_hash, found.hash)
+            file.seek(0)
+            self.assertIn(b"\r\n", file.read())
+
     def write_blueprint(self, file, value: str):
         file.seek(0)
         file.truncate()
