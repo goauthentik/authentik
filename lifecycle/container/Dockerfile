@@ -230,8 +230,8 @@ RUN ln -s /ak-root/packages /packages && \
 
 # Stage: Debug
 # For `ak test-all`, AUTHENTIK_DEBUGGER and `docker exec ... bash`
-# Build it with --target debug-image as it is not the default
-FROM runtime-assemble AS debug-image
+# Build it with --target debug as it is not the default
+FROM runtime-assemble AS debug
 
 ARG VERSION
 ARG GIT_BUILD_HASH
