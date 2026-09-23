@@ -11,6 +11,7 @@ from django.utils.timezone import now
 
 from authentik.core.models import Group
 from authentik.core.tests.utils import create_test_user
+from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.engine import PolicyEngine
@@ -129,6 +130,15 @@ class TestPolicyEngine(TestCase):
                 if item.source_binding.pk == dry_run.pk
             ).passing
         )
+        events = list(
+            Event.objects.filter(
+                action=EventAction.POLICY_EXECUTION,
+                context__binding__policy_binding_uuid=dry_run.policy_binding_uuid.hex,
+            ).order_by("created")
+        )
+        self.assertEqual(len(events), 2)
+        self.assertTrue(all(event.context["dry_run"] for event in events))
+        self.assertEqual([event.context["cached"] for event in events], [False, True])
 
     def test_engine_dry_run_only_uses_empty_result(self):
         """An engine with only dry-run policies behaves like an empty engine."""

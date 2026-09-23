@@ -11,8 +11,8 @@ from django.db.models.functions import TruncHour
 from django.db.models.query_utils import Q
 from django.utils.text import slugify
 from django.utils.timezone import now
+from djangoql.schema import BoolField, IntField, StrField
 from djangoql.schema import DateTimeField as QLDateTimeFIeld
-from djangoql.schema import IntField, StrField
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import (
@@ -220,6 +220,13 @@ class EventViewSet(
                             user_agent=StrField(),
                         ),
                     ),
+                    binding=JSONSearchField(
+                        Event,
+                        "context_binding",
+                        fixed_structure=OrderedDict(policy_binding_uuid=StrField()),
+                    ),
+                    dry_run=BoolField(),
+                    cached=BoolField(),
                 ),
             ),
             QLDateTimeFIeld(Event, "created", suggest_options=True),

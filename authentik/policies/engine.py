@@ -13,12 +13,13 @@ from django.utils.timezone import now
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import Actor, ActorPolicyInheritance, Group, User, UserTypes
+from authentik.events.models import EventAction
 from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.reflection import class_to_path
 from authentik.policies.apps import HIST_POLICIES_ENGINE_TOTAL_TIME, HIST_POLICIES_EXECUTION_TIME
 from authentik.policies.exceptions import PolicyEngineException
 from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel, PolicyEngineMode
-from authentik.policies.process import PolicyProcess, cache_key
+from authentik.policies.process import PolicyProcess, cache_key, create_policy_event
 from authentik.policies.types import PolicyRequest, PolicyResult
 
 CURRENT_PROCESS = current_process()
@@ -158,6 +159,16 @@ class _PolicyEngineBase:
             cached = self._cached_result(binding, request, prefetched_cache)
             if cached is not None:
                 results[idx] = cached
+                if binding.dry_run and not request.debug:
+                    create_policy_event(
+                        binding,
+                        request,
+                        EventAction.POLICY_EXECUTION,
+                        message="Policy Execution (dry run)",
+                        result=cached,
+                        dry_run=True,
+                        cached=True,
+                    )
                 continue
             self.logger.debug("P_ENG: Evaluating policy", binding=binding, request=request)
             our_end, task_end = Pipe(False)

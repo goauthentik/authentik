@@ -19,6 +19,8 @@ from authentik.events.models import (
 )
 from authentik.events.utils import model_to_dict
 from authentik.lib.generators import generate_id
+from authentik.policies.dummy.models import DummyPolicy
+from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import OAuth2Provider
 
 
@@ -88,6 +90,36 @@ class TestEventsAPI(APITestCase):
                 body = loads(response.content)
                 self.assertEqual(body["pagination"]["count"], 1)
                 self.assertEqual(body["results"][0]["context"]["model"]["pk"], target_user.pk)
+
+    def test_search_policy_binding(self):
+        """Policy execution events can be searched by binding UUID."""
+        policy = DummyPolicy.objects.create(
+            name=generate_id(), result=False, wait_min=0, wait_max=1
+        )
+        binding = PolicyBinding.objects.create(
+            target=OAuth2Provider.objects.create(name=generate_id()),
+            policy=policy,
+            order=0,
+        )
+        Event.new(
+            EventAction.POLICY_EXECUTION,
+            binding=binding,
+            dry_run=True,
+        ).save()
+        Event.new(EventAction.POLICY_EXECUTION, dry_run=True).save()
+
+        response = self.client.get(
+            reverse("authentik_api:event-list"),
+            data={
+                "search": (
+                    "context.binding.policy_binding_uuid == " f'"{binding.policy_binding_uuid.hex}"'
+                )
+            },
+        )
+
+        self.assertEqual(response.status_code, 200, response.content)
+        body = loads(response.content)
+        self.assertEqual(body["pagination"]["count"], 1)
 
     def test_top_n(self):
         """Test top_per_user"""
