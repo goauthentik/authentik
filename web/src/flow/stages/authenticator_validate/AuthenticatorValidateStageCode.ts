@@ -45,7 +45,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                     type="text"
                     name="code"
                     inputmode=${staticDevice ? "text" : "numeric"}
-                    pattern=${staticDevice ? "[0-9a-zA-Z]*" : "[0-9]*"}
+                    pattern=${staticDevice ? "[0-9a-zA-Z\\-\\s]*" : "[0-9]*"}
                     placeholder=${msg("Type an authentication code...")}
                     autofocus
                     spellcheck="false"

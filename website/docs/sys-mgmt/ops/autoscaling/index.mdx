@@ -1,0 +1,13 @@
+---
+title: Autoscaling on Kubernetes
+slug: /sys-mgmt/ops/autoscaling
+sidebar_label: Overview
+sidebar_position: 1
+---
+
+On Kubernetes, you can automatically adjust the number of authentik server and worker replicas independently:
+
+- [Scale servers on CPU usage with the Helm chart's Horizontal Pod Autoscaler (HPA)](./hpa.mdx). This requires Kubernetes resource metrics, but does not require KEDA or Prometheus.
+- [Scale workers on queued tasks with KEDA](./keda.mdx). Queue length can reveal a backlog even when workers use little CPU, such as when they wait for external services. The metric includes delayed tasks and excludes tasks already running.
+
+Keep at least one worker running to handle scheduled tasks and file changes. For the number of tasks each replica can run concurrently, see [Worker scaling](../worker.mdx#scaling).

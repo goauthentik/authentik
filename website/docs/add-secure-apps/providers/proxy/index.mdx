@@ -79,6 +79,8 @@ additionalHeaders:
 
 For dynamic headers, see the [custom headers](./custom_headers.mdx) documentation.
 
+If an upstream application cannot handle non-ASCII header values, use a [scope mapping to percent-encode them](./custom_headers.mdx#percent-encode-non-ascii-header-values).
+
 ## HTTPS
 
 The outpost listens on port `9000` for HTTP and port `9443` for HTTPS.

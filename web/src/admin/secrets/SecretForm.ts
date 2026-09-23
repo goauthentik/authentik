@@ -4,6 +4,7 @@ import "#components/ak-radio-input";
 import "#components/ak-text-input";
 import "#components/ak-textarea-input";
 import "#elements/forms/HorizontalFormElement";
+import "#elements/Alert";
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
@@ -199,7 +200,13 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
     }
 
     protected override renderForm(): TemplateResult {
-        return html`<ak-text-input
+        return html`<ak-alert inline level="pf-m-warning">
+                ${msg(
+                    "authentik does not encrypt secret values in the database. Protect access to your database and its backups.",
+                    { id: "secret.form.storage.description" },
+                )}
+            </ak-alert>
+            <ak-text-input
                 label=${msg("Name", { id: "secret.form.name.label" })}
                 name="name"
                 required
