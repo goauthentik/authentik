@@ -26,10 +26,8 @@ Credentials stored on authentik objects are now stored in separate [Secret](../.
 - Kubernetes kubeconfig
 - Kerberos keytabs and credential caches
 
-During migration, authentik creates a Secret for each existing credential and preserves its exact value.
-
 :::info
-The previous credential database columns will be retained until 2027.2 to support downgrades.
+Credential database columns are retained until 2027.2 to support downgrades.
 :::
 
 For more information, see [Secrets](../../sys-mgmt/secrets/index.mdx).
