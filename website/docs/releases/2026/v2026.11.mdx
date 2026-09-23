@@ -8,9 +8,9 @@ draft: true
 
 ## Breaking changes
 
-### Credential fields are now Secret objects
+### Credential references
 
-Credentials stored on authentik objects are now stored in separate [Secret](../../sys-mgmt/secrets/index.mdx) objects, which are referenced by the object that uses them. This applies to credentials such as:
+Providers, sources, stages, and connectors reference [Secret](../../sys-mgmt/secrets/index.mdx) objects to store credentials such as:
 
 - OAuth2/OpenID client secrets
 - Proxy provider cookie secrets
@@ -38,7 +38,7 @@ For more information, see [Secrets](../../sys-mgmt/secrets/index.mdx).
 
 ### Secrets
 
-Secrets used by providers, sources, stages, and connectors can now be managed under **System** > **Secrets**. Grant access to view or rotate a credential separately from permission to edit the object that uses it. You can reuse a secret across objects and create one directly from a referencing form. Viewing a value and rotating it are audited.
+Manage secrets used by providers, sources, stages, and connectors under **System** > **Secrets**. Grant access to view or rotate a credential separately from permission to edit the object that uses it. You can reuse a secret across objects and create one directly from a referencing form. Viewing a value and rotating it are audited.
 
 Text secrets can be rotated through the Admin interface or API. Rotation updates authentik only; update external systems separately. See [Secrets](../../sys-mgmt/secrets/index.mdx).
 
