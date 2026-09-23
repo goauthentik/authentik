@@ -5,6 +5,7 @@ from django.conf import settings
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
+from authentik.admin.flags import patch_flag
 from authentik.core.models import Group, User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.enterprise.audit.apps import AuditIncludeExpandedDiff
@@ -12,7 +13,6 @@ from authentik.enterprise.audit.middleware import EnterpriseAuditMiddleware
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import sanitize_item
 from authentik.lib.generators import generate_id
-from authentik.tenants.flags import patch_flag
 
 
 class TestEnterpriseAudit(APITestCase):

@@ -155,6 +155,11 @@ export interface CoreApplicationEntitlementsDestroyRequest {
 
 export interface CoreApplicationEntitlementsListRequest {
     app?: string;
+    /**
+     * Entitlements assigned to this user, directly or through a group, regardless of the user's
+     * access to the application.
+     */
+    forUser?: string;
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -185,6 +190,11 @@ export interface CoreApplicationEntitlementsPartialUpdateRequest {
 
 export interface CoreApplicationEntitlementsRequestableListRequest {
     app?: string;
+    /**
+     * Entitlements assigned to this user, directly or through a group, regardless of the user's
+     * access to the application.
+     */
+    forUser?: string;
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -450,10 +460,6 @@ export interface CoreGroupsDestroyRequest {
 }
 
 export interface CoreGroupsListRequest {
-    /**
-     * Attributes
-     */
-    attributes?: string;
     includeChildren?: boolean;
     includeInheritedRoles?: boolean;
     includeParents?: boolean;
@@ -704,10 +710,6 @@ export interface CoreUsersDestroyRequest {
 }
 
 export interface CoreUsersExportCreateRequest {
-    /**
-     * Attributes
-     */
-    attributes?: string;
     dateJoined?: Date;
     dateJoinedGt?: Date;
     dateJoinedLt?: Date;
@@ -750,10 +752,6 @@ export interface CoreUsersImpersonateCreateRequest {
 }
 
 export interface CoreUsersListRequest {
-    /**
-     * Attributes
-     */
-    attributes?: string;
     dateJoined?: Date;
     dateJoinedGt?: Date;
     dateJoinedLt?: Date;
@@ -1023,6 +1021,10 @@ export class CoreApi extends runtime.BaseAPI {
             queryParameters["app"] = requestParameters["app"];
         }
 
+        if (requestParameters["forUser"] != null) {
+            queryParameters["for_user"] = requestParameters["forUser"];
+        }
+
         if (requestParameters["name"] != null) {
             queryParameters["name"] = requestParameters["name"];
         }
@@ -1185,6 +1187,10 @@ export class CoreApi extends runtime.BaseAPI {
 
         if (requestParameters["app"] != null) {
             queryParameters["app"] = requestParameters["app"];
+        }
+
+        if (requestParameters["forUser"] != null) {
+            queryParameters["for_user"] = requestParameters["forUser"];
         }
 
         if (requestParameters["name"] != null) {
@@ -3291,10 +3297,6 @@ export class CoreApi extends runtime.BaseAPI {
     ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["attributes"] != null) {
-            queryParameters["attributes"] = requestParameters["attributes"];
-        }
-
         if (requestParameters["includeChildren"] != null) {
             queryParameters["include_children"] = requestParameters["includeChildren"];
         }
@@ -5302,10 +5304,6 @@ export class CoreApi extends runtime.BaseAPI {
     ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["attributes"] != null) {
-            queryParameters["attributes"] = requestParameters["attributes"];
-        }
-
         if (requestParameters["dateJoined"] != null) {
             queryParameters["date_joined"] = runtime.serializeDateTime(
                 requestParameters["dateJoined"] as any,
@@ -5600,10 +5598,6 @@ export class CoreApi extends runtime.BaseAPI {
         requestParameters: CoreUsersListRequest,
     ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
-
-        if (requestParameters["attributes"] != null) {
-            queryParameters["attributes"] = requestParameters["attributes"];
-        }
 
         if (requestParameters["dateJoined"] != null) {
             queryParameters["date_joined"] = runtime.serializeDateTime(

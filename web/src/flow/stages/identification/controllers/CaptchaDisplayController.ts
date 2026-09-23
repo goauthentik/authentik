@@ -1,4 +1,5 @@
 import "#flow/stages/captcha/CaptchaStage";
+import { CAPTCHA_SLOT } from "#flow/stages/captcha/shared";
 import type { IdentificationHost } from "#flow/stages/identification/IdentificationStage";
 
 import { CaptchaChallenge } from "@goauthentik/api";
@@ -77,6 +78,7 @@ export class CaptchaDisplayController implements ReactiveController {
                 .refreshedAt=${this.#refreshedAt}
                 embedded
             >
+                <slot name=${CAPTCHA_SLOT} slot=${CAPTCHA_SLOT}></slot>
             </ak-stage-captcha>
             <input
                 aria-hidden="true"
