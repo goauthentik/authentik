@@ -55,7 +55,7 @@ jobs:
             dockerfile: Dockerfile
           - name: server-debug
             dockerfile: Dockerfile
-            target: debug-image
+            target: debug
           - name: proxy
             dockerfile: proxy.Dockerfile
           - name: ldap
