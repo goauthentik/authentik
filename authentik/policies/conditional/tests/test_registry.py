@@ -13,7 +13,7 @@ class TestRegistry(TestCase):
     def test_facts(self):
         """Variables and targets only reference registered facts"""
         facts = set(registry.facts)
-        self.assertTrue(DEFAULT_TARGET_FACTS <= facts)
+        self.assertLessEqual(DEFAULT_TARGET_FACTS, facts)
         for variable in registry.variables.values():
             with self.subTest(variable=variable.key):
                 self.assertTrue(variable.requires, "Variable must require at least one fact")

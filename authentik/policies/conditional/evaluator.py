@@ -173,6 +173,7 @@ class ConditionCompiler:
                 return CompiledPolicyRef(path=path, policy=str(node.policy))
             case ConditionComparisonNode():
                 return self._condition(node, path)
+        return None
 
     def _variable(self, ref: ConditionVariableRef, path: str) -> CompiledVariable | None:
         variable = self.registry.get(ref.key)
