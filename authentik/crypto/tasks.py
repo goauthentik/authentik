@@ -23,7 +23,7 @@ from watchdog.observers import Observer
 
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
-from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.middleware import CurrentTask, with_database_connection
 from authentik.tasks.models import Task
 from authentik.tasks.schedules.models import Schedule
 from authentik.tenants.models import Tenant
@@ -98,6 +98,7 @@ class CertificateEventHandler(FileSystemEventHandler):
                     continue
                 Schedule.dispatch_by_actor(certificate_discovery)
 
+    @with_database_connection
     def on_created(self, event: FileSystemEvent):
         """Process certificate file creation"""
         LOGGER.debug(
@@ -106,6 +107,7 @@ class CertificateEventHandler(FileSystemEventHandler):
         )
         self.run_tasks()
 
+    @with_database_connection
     def on_modified(self, event: FileSystemEvent):
         """Process certificate file modification"""
         LOGGER.debug(

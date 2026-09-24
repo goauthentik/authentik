@@ -1,8 +1,9 @@
 from collections.abc import Callable
+from functools import wraps
 from typing import Any, cast
 
 from django.conf import settings
-from django.db import OperationalError
+from django.db import OperationalError, close_old_connections, connections
 from django_dramatiq_postgres.middleware import (
     CurrentTask as BaseCurrentTask,
 )
@@ -14,6 +15,7 @@ from dramatiq.message import Message
 from dramatiq.middleware import Middleware
 from psycopg.errors import Error
 from structlog.stdlib import get_logger
+from watchdog.events import FileSystemEvent, FileSystemEventHandler
 
 from authentik.events.models import Event, EventAction
 from authentik.lib.tracing.exceptions import should_ignore_exception
@@ -26,6 +28,31 @@ from authentik.tenants.utils import get_current_tenant
 LOGGER = get_logger()
 HEALTHCHECK_LOGGER = get_logger("authentik.worker").bind()
 DB_ERRORS = (OperationalError, Error)
+
+
+def with_database_connection(func):
+    """Give a file watcher handler the connection hygiene of a task thread.
+
+    The watcher thread lives as long as the worker and keeps its database connection between
+    events. A connection closed while idle (pooler timeout, failover, server restart) would
+    otherwise surface as an unhandled error on the next event and kill the observer thread."""
+
+    @wraps(func)
+    def wrapper(self: FileSystemEventHandler, event: FileSystemEvent):
+        close_old_connections()
+        try:
+            return func(self, event)
+        except DB_ERRORS as exc:
+            LOGGER.warning(
+                "Failed to process file event, dropping database connection",
+                path=event.src_path,
+                exc=exc,
+            )
+            connections.close_all()
+        finally:
+            close_old_connections()
+
+    return wrapper
 
 
 class StartupSignalsMiddleware(Middleware):
