@@ -577,6 +577,9 @@ class NotificationTransport(TasksModel, SerializerModel):
         """Send notification via global email configuration"""
         from authentik.stages.email.tasks import send_mail
 
+        if not self.email_template:
+            raise NotificationTransportError("Transport has no email template configured")
+
         if notification.user.email.strip() == "":
             LOGGER.info(
                 "Discarding notification as user has no email address",
@@ -619,7 +622,7 @@ class NotificationTransport(TasksModel, SerializerModel):
             subject=self.email_subject_prefix + context["title"],
             to=[(notification.user.name, notification.user.email)],
             language=notification.user.locale(),
-            template_name=self.email_template,
+            template=self.email_template,
             template_context=context,
         )
         send_mail.send_with_options(args=(mail.__dict__,), rel_obj=self)

@@ -113,7 +113,16 @@ class EmailStageView(ChallengeStageView):
         email = self.executor.plan.context.get(PLAN_CONTEXT_EMAIL_OVERRIDE, None)
         if not email:
             email = pending_user.email
+
         current_stage: EmailStage = self.executor.current_stage
+        if not current_stage.template:
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message=_("Email stage has no template configured"),
+                stage=current_stage,
+            ).from_http(self.request)
+            raise StageInvalidException
+
         token = self.get_token()
         # Send mail to user
         try:
@@ -121,7 +130,7 @@ class EmailStageView(ChallengeStageView):
                 subject=_(current_stage.subject),
                 to=[(pending_user.name, email)],
                 language=pending_user.locale(self.request),
-                template_name=current_stage.template,
+                template=current_stage.template,
                 template_context={
                     "url": self.get_full_url(**{QS_KEY_TOKEN: token.key}),
                     "user": pending_user,
@@ -134,7 +143,7 @@ class EmailStageView(ChallengeStageView):
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
                 message=_("Exception occurred while rendering E-mail template"),
-                template=current_stage.template,
+                template=current_stage.template.name,
             ).with_exception(exc).from_http(self.request)
             raise StageInvalidException from exc
 

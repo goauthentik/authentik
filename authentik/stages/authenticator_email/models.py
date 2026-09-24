@@ -150,6 +150,14 @@ class EmailDevice(SerializerModel, ThrottlingMixin, SideChannelDevice):
         return verified
 
     def _compose_email(self) -> TemplateEmailMessage:
+        if not self.stage.template:
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message=_("Email authenticator stage has no template configured"),
+                stage=self.stage,
+            ).save()
+            raise StageInvalidException
+
         try:
             pending_user = self.user
             stage = self.stage
@@ -158,7 +166,7 @@ class EmailDevice(SerializerModel, ThrottlingMixin, SideChannelDevice):
             message = TemplateEmailMessage(
                 subject=_(stage.subject),
                 to=[(pending_user.name, email)],
-                template_name=stage.template,
+                template=stage.template,
                 template_context={
                     "user": pending_user,
                     "expires": self.valid_until,
@@ -170,8 +178,8 @@ class EmailDevice(SerializerModel, ThrottlingMixin, SideChannelDevice):
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
                 message=_("Exception occurred while rendering E-mail template"),
-                template=stage.template,
-            ).with_exception(exc).from_http(self.request)
+                template=stage.template.name,
+            ).with_exception(exc).save()
             raise StageInvalidException from exc
 
     def __str__(self):

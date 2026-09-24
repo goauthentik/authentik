@@ -994,13 +994,18 @@ class UserViewSet(
         if not request.user.has_perm("authentik_stages_email.view_emailstage", stage):
             LOGGER.debug("User has no view access to email stage")
             raise ValidationError({"non_field_errors": stage_error_message})
+        if not stage.template:
+            LOGGER.debug("Email stage has no template configured")
+            raise ValidationError(
+                {"non_field_errors": _("Email stage has no template configured.")}
+            )
         link, token = self._create_recovery_link(
             token_duration=body.validated_data.get("token_duration"), for_email=True
         )
         message = TemplateEmailMessage(
             subject=_(stage.subject),
             to=[(user.name, user.email)],
-            template_name=stage.template,
+            template=stage.template,
             language=user.locale(request),
             template_context={
                 "url": link,

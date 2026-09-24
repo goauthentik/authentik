@@ -86,12 +86,20 @@ class AuthenticatorEmailStageView(ChallengeStageView):
 
         device: EmailDevice = self.executor.plan.context[PLAN_CONTEXT_EMAIL_DEVICE]
 
+        if not stage.template:
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message=_("Email authenticator stage has no template configured"),
+                stage=stage,
+            ).from_http(self.request)
+            raise StageInvalidException
+
         try:
             message = TemplateEmailMessage(
                 subject=_(stage.subject),
                 to=[(pending_user.name, email)],
                 language=pending_user.locale(self.request),
-                template_name=stage.template,
+                template=stage.template,
                 template_context={
                     "user": pending_user,
                     "expires": device.valid_until,
@@ -104,7 +112,7 @@ class AuthenticatorEmailStageView(ChallengeStageView):
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
                 message=_("Exception occurred while rendering E-mail template"),
-                template=stage.template,
+                template=stage.template.name,
             ).with_exception(exc).from_http(self.request)
             raise StageInvalidException from exc
 
