@@ -38,7 +38,7 @@ To support the integration of FreshRSS with authentik, you need to create an app
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID** and **Client Secret** values because they will be required later.
         - Add two **Redirect URIs** of type `Strict` `Authorization` as `https://freshrss.company/i/oidc/` and `https://freshrss.company:443/i/oidc/`. If FreshRSS is exposed on a port other than `443`, update the second redirect URI accordingly.
-        - Enable **OIDC back-channel logout** _(optional)_: 
+        - Enable **OIDC back-channel logout** _(optional)_:
             - Set **Logout URI** to `https://freshrss.company/i/oidc/?logout=backchannel`.
             - Set **Logout Method** to `Back-channel`.
         - Select any available signing key.
