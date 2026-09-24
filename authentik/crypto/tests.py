@@ -18,11 +18,14 @@ from cryptography.x509 import (
 )
 from cryptography.x509.extensions import SubjectAlternativeName
 from cryptography.x509.general_name import DNSName
+from django.db import OperationalError, connection
+from django.test import TransactionTestCase
 from django.urls import reverse
 from django.utils.timezone import now
 from prometheus_client import REGISTRY
 from rest_framework.exceptions import ValidationError
 from rest_framework.test import APITestCase
+from watchdog.events import FileModifiedEvent
 
 from authentik.core.api.used_by import DeleteAction
 from authentik.core.tests.utils import (
@@ -42,12 +45,18 @@ from authentik.crypto.models import (
     generate_key_id,
     generate_key_id_legacy,
 )
-from authentik.crypto.tasks import MANAGED_DISCOVERED, certificate_discovery
+from authentik.crypto.tasks import (
+    MANAGED_DISCOVERED,
+    CertificateEventHandler,
+    certificate_discovery,
+)
 from authentik.crypto.validators import TLS_KEY_TYPES, XML_SIGNING_KEY_TYPES, KeyTypeValidator
+from authentik.events.logs import capture_logs
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id, generate_key
 from authentik.providers.oauth2.models import OAuth2Provider, RedirectURI, RedirectURIMatchingMode
 from authentik.root.monitoring import monitoring_set
+from authentik.tasks.models import Task
 
 
 class TestCrypto(APITestCase):
@@ -743,3 +752,19 @@ class TestCryptoMetrics(APITestCase):
         kp.delete()
         monitoring_set.send_robust(self)
         self.assertTrue(isnan(REGISTRY.get_sample_value(self.METRIC, labels)))
+
+
+class TestCertificateWatcher(TransactionTestCase):
+    """Test certificate file watcher"""
+
+    def test_watcher_database_error(self):
+        """Test the file watcher drops its connection after a database error"""
+        handler = CertificateEventHandler()
+        event = FileModifiedEvent("/certs/watcher/tls.crt")
+        with (
+            patch.object(Task.objects, "filter", side_effect=OperationalError("boom")),
+            capture_logs() as logs,
+        ):
+            handler.on_modified(event)
+        self.assertTrue(any("Failed to process file event" in log.event for log in logs))
+        self.assertIsNone(connection.connection)
