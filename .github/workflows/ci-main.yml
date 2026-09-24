@@ -467,6 +467,131 @@ jobs:
         with:
           name: test-rust
           path: target/llvm-cov-target/rust.json
+  test-e2e-web:
+    name: test-e2e (web)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs:
+      - build
+    permissions:
+      contents: read
+      # Required so the "Comment on PR" step can create and update the run's
+      # shared comment through the issues API.
+      pull-requests: write
+      # Required so the codecov upload below can mint an OIDC token.
+      id-token: write
+    services:
+      # setup-authentik brings authentik up through the published compose file,
+      # which pulls its image — a locally loaded tag is not pullable. Pushing the
+      # image built by `build` here first gives compose something to pull.
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+        with:
+          dependencies: node
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+        with:
+          name: container-build-server-amd64
+      - name: Push the built server image to the local registry
+        run: | # shell
+          skopeo copy --dest-tls-verify=false \
+            "oci-archive:container/server-amd64.oci.tar" \
+            "docker://localhost:5000/server:e2e"
+      - name: Resolve Playwright version
+        id: playwright-version
+        working-directory: web
+        run: | # shell
+          version=$(node -p "require('@playwright/test/package.json').version")
+          if [ -z "$version" ]; then
+            echo "Failed to resolve @playwright/test version" >&2
+            exit 1
+          fi
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
+      - name: Install Playwright browsers
+        working-directory: web
+        run: | # shell
+          if [ "${{ steps.playwright-cache.outputs.cache-hit }}" = "true" ]; then
+            pnpm exec playwright install-deps chromium
+          else
+            pnpm exec playwright install --with-deps chromium
+          fi
+      - name: Start authentik
+        id: authentik
+        uses: goauthentik/action-setup-authentik@e9b3782a8da81f3a33bbe21de97c7d3cf6c8820f # v3.2
+        with:
+          version: localhost:5000/server:e2e
+          # The image ships the repo's own `blueprints/` at /blueprints, so the
+          # defaults the tests drive are already there. This adds the one blueprint
+          # that isn't baked in: the admin account `session.login()` uses.
+          blueprints_path: web/test/blueprints
+          # The image tag is per-commit, so the cache key never hits and every run
+          # would `docker save` a gigabyte for nothing.
+          cache: false
+      - name: Run Playwright tests
+        working-directory: web
+        env:
+          AK_TEST_RUNNER_PAGE_URL: ${{ steps.authentik.outputs.http_url }}
+        run: pnpm run test:e2e
+      # Reporting / upload steps below intentionally use `!cancelled()` rather
+      # than `failure()`: a cancelled run (e.g. superseded by a newer push) is
+      # not a real result and shouldn't produce reviewer-facing artifacts or
+      # comments. `if-no-files-found: ignore` keeps the "passed" case quiet.
+      # Server logs need no step of their own: the action's post step dumps the
+      # logs of every compose service into the job log.
+      - name: Upload Playwright HTML report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-report
+          path: web/playwright-report/
+          retention-days: 14
+          if-no-files-found: ignore
+      - name: Upload Playwright traces and videos
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-traces
+          path: web/test-results/
+          retention-days: 14
+          if-no-files-found: ignore
+      # Test analytics only — no coverage is collected for the browser suite.
+      - name: Upload Playwright results to codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v5
+        with:
+          files: web/playwright-report/results.xml
+          flags: e2e-web
+          use_oidc: true
+          report_type: test_results
+      # Pass or fail, the artifacts are only useful if a reviewer knows how to get
+      # them; the results themselves live in codecov. Skipped for pushes, and for
+      # fork pull requests: those run with a read-only GITHUB_TOKEN even after
+      # maintainer approval, so commenting would 403.
+      - name: Comment on PR
+        if: "${{ !cancelled() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}"
+        uses: ./.github/actions/comment-pr
+        with:
+          section: playwright
+          body: |
+            ## Playwright e2e
+
+            Download this run's HTML report and traces, then open the report:
+
+            ```shell
+            gh run download ${{ github.run_id }} -D playwright-artifacts
+            npx playwright show-report playwright-artifacts/playwright-report
+            ```
   ci-core-mark:
     if: always()
     needs:
@@ -478,6 +603,7 @@ jobs:
       - test-unittest
       - test-integration
       - test-e2e
+      - test-e2e-web
       - test-rust
     runs-on: ubuntu-latest
     steps:
