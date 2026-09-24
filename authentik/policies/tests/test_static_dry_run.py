@@ -2,7 +2,7 @@
 
 from datetime import timedelta
 
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
 from django.utils.timezone import now
 
 from authentik.core.models import Group, User
@@ -116,3 +116,27 @@ class TestStaticDryRun(TestCase):
         engine.request.debug = True
         self.assertTrue(engine.build().result.passing)
         self.assertFalse(Event.objects.filter(context__binding__pk=binding.pk.hex).exists())
+
+    def test_http_observations_identify_evaluated_users(self):
+        """An administrator's HTTP request must not replace each evaluated subject."""
+        actor = create_test_user()
+        matching = create_test_user()
+        nonmatching = create_test_user()
+        target = PolicyBindingModel.objects.create()
+        binding = PolicyBinding.objects.create(target=target, user=matching, order=0, dry_run=True)
+        request = RequestFactory().get("/api/v3/core/users/")
+        request.user = actor
+        FilterPolicyEngine(
+            target,
+            User.objects.filter(pk__in=[matching.pk, nonmatching.pk]),
+            request,
+        ).build()
+        events = list(Event.objects.filter(context__binding__pk=binding.pk.hex))
+        self.assertEqual(len(events), 2)
+        self.assertEqual(
+            {event.user["pk"]: event.context["result"]["passing"] for event in events},
+            {matching.pk: True, nonmatching.pk: False},
+        )
+        for event in events:
+            self.assertEqual(event.context["http_request"]["path"], request.path)
+            self.assertEqual(event.context["request"]["user"]["pk"], event.user["pk"])

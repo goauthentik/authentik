@@ -38,10 +38,10 @@ def create_policy_event(
         request=request,
         **kwargs,
     )
-    event.set_user(request.user)
     if request.http_request:
-        event.from_http(request.http_request)
+        event.from_http(request.http_request, user=request.user)
     else:
+        event.set_user(request.user)
         event.save()
 
 

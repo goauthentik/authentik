@@ -253,7 +253,7 @@ class PolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
         self.request.obj = pbm
         if request:
             self.request.set_http_request(request)
-        self.__dynamic_results: list[PolicyResult] = []
+        self.__binding_results: list[PolicyResult] = []
         self.__static_result: PolicyResult | None = None
 
     def bindings(self) -> QuerySet[PolicyBinding] | Iterable[PolicyBinding]:
@@ -329,7 +329,7 @@ class PolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
             if isinstance(bindings, QuerySet):
                 self.compute_static_bindings(bindings)
                 policy_bindings = [x for x in bindings if x.policy]
-            self.__dynamic_results = self._evaluate_dynamic_bindings(
+            self.__binding_results = self._evaluate_dynamic_bindings(
                 list(policy_bindings), self.request
             )
             if isinstance(bindings, QuerySet):
@@ -338,7 +338,7 @@ class PolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
                         result = binding.passes(self.request)
                         if binding.negate:
                             result.passing = not result.passing
-                        self.__dynamic_results.append(
+                        self.__binding_results.append(
                             self._report_static_dry_run(binding, self.request, result)
                         )
             return self
@@ -346,7 +346,7 @@ class PolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
     @property
     def result(self) -> PolicyResult:
         """Get policy-checking result"""
-        all_results = list(self.__dynamic_results)
+        all_results = list(self.__binding_results)
         if self.__static_result is not None:
             all_results.append(self.__static_result)
         return self._combine_results(self.mode, self.empty_result, all_results)
@@ -441,7 +441,7 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
             ]
 
             if not dynamic_bindings:
-                # Fast path: purely static bindings -> SQL only, zero per-user evaluation
+                # Static enforcement stays in SQL; dry-run observations were reported above.
                 if not static_bindings:
                     self.__result = self.__users if self.empty_result else self.__users.none()
                 else:
