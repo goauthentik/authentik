@@ -60,7 +60,7 @@ You should only import files from trusted sources and review blueprints before i
 
 A Blueprint is a list of entries to create, update, or delete object instances in the authentik database.
 
-Internally, authentik is an object-oriented system of relationships which are sometimes ordered. To give just a few examples:
+Internally, authentik is an object-oriented system of relationships which are sometimes ordered. To give a few examples:
 
 - Flows have ordered Bindings to Stages
 - Stages have ordered Bindings to Policies
@@ -86,9 +86,6 @@ conditions:
 ```
 
 The order inside a Blueprint matters. To create relationships between objects, whether defined in the Blueprint or part of the existing authentik instance, authentik provides the `!KeyOf` and `!Find` operators. These operators can only resolve an entry that already exists in the database or was already applied as an earlier entry in the current Blueprint execution transaction. For example, to create a Flow, the Flow and its Stages must come first, and then the Bindings to establish the connections between the Flow and its Stages.
-
-The order inside a Blueprint matters. To create relationships between objects, whether defined in the Blueprint or part of the existing authentik instance, authentik provides the `!KeyOf` and `!Find` operators. These operators can only resolve an entry that already exists in the database or was already applied as an earlier entry in the current Blueprint execution transaction. For example, to create a Flow, the Flow and its Stages must come first, and then the Bindings to establish the connections between the Flow and its Stages.
-
 
 ## Blueprint storage
 
