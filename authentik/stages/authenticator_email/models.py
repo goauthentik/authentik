@@ -16,7 +16,7 @@ from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.config import CONFIG
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.email import mask_email
-from authentik.lib.utils.time import timedelta_string_validator
+from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.stages.authenticator.models import SideChannelDevice, ThrottlingMixin
 from authentik.stages.email.models import EmailTemplates
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -129,6 +129,11 @@ class EmailDevice(SerializerModel, ThrottlingMixin, SideChannelDevice):
 
     def get_challenge_for_device(self, request: HttpRequest, executor: FlowExecutorView):
         return {"email": mask_email(self.email)}
+
+    def select_challenge(self, request: HttpRequest):
+        valid_secs: int = timedelta_from_string(self.stage.token_expiry).total_seconds()
+        self.generate_token(valid_secs=valid_secs)
+        self.stage.send(self)
 
     @property
     def serializer(self) -> type[BaseSerializer]:

@@ -30,7 +30,6 @@ from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.challenge import (
     DeviceChallenge,
     get_webauthn_challenge_without_user,
-    select_challenge,
     validate_challenge_code,
     validate_challenge_duo,
     validate_challenge_webauthn,
@@ -125,12 +124,12 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
             devices = SMSDevice.objects.filter(pk=int(challenge.get("device_uid", "0")))
             if not devices.exists():
                 raise ValidationError("invalid challenge selected")
-            select_challenge(self.stage.request, devices.first())
+            devices.first().select_challenge(self.stage.request)
         elif device_class == "email":
             devices = EmailDevice.objects.filter(pk=int(challenge.get("device_uid", "0")))
             if not devices.exists():
                 raise ValidationError("invalid challenge selected")
-            select_challenge(self.stage.request, devices.first())
+            devices.first().select_challenge(self.stage.request)
         return challenge
 
     def validate_selected_stage(self, stage_pk: str) -> str:
