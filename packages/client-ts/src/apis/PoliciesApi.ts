@@ -1964,7 +1964,7 @@ export class PoliciesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Facts, targets, variables and operators available to conditional policies
+     * Facts, scenarios, variables, setters and operators available to conditional policies
      */
     async policiesConditionalCatalogRetrieveRaw(
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1978,7 +1978,7 @@ export class PoliciesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Facts, targets, variables and operators available to conditional policies
+     * Facts, scenarios, variables, setters and operators available to conditional policies
      */
     async policiesConditionalCatalogRetrieve(
         initOverrides?: RequestInit | runtime.InitOverrideFunction,

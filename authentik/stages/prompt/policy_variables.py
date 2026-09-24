@@ -20,10 +20,16 @@ registry.fact(
     _("Data entered by the user in a prompt stage."),
 )
 # Validation policies of a prompt stage are evaluated with only the prompt data
-registry.target("authentik_stages_prompt.promptstage", [FACT_HTTP_REQUEST, FACT_PROMPT_DATA])
+registry.scenario(
+    "prompt_validation",
+    [FACT_HTTP_REQUEST, FACT_PROMPT_DATA],
+    models=["authentik_stages_prompt.promptstage"],
+    label=_("Prompt validation"),
+    description=_("Validating the data a user entered in a prompt stage."),
+)
 # Prompt data is stored in the flow context, and available to all later policies
-registry.target("authentik_flows.flow", [FACT_PROMPT_DATA])
-registry.target("authentik_flows.flowstagebinding", [FACT_PROMPT_DATA])
+registry.scenario("flow_execution", [FACT_PROMPT_DATA])
+registry.scenario("flow_stage_execution", [FACT_PROMPT_DATA])
 
 
 @registry.variable(

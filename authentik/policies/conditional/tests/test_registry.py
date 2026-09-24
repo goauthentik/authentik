@@ -11,20 +11,26 @@ class TestRegistry(TestCase):
     """Ensure everything registered by apps is consistent"""
 
     def test_facts(self):
-        """Variables and targets only reference registered facts"""
+        """Variables, setters and scenarios only reference registered facts"""
         facts = set(registry.facts)
         self.assertLessEqual(DEFAULT_TARGET_FACTS, facts)
         for variable in registry.variables.values():
             with self.subTest(variable=variable.key):
                 self.assertTrue(variable.requires, "Variable must require at least one fact")
                 self.assertTrue(variable.requires <= facts, variable.requires - facts)
-        for target, target_facts in registry.targets.items():
-            with self.subTest(target=target):
-                self.assertTrue(target_facts <= facts, target_facts - facts)
+        for setter in registry.setters.values():
+            with self.subTest(setter=setter.key):
+                self.assertTrue(setter.requires <= facts, setter.requires - facts)
+        for scenario in registry.scenarios.values():
+            with self.subTest(scenario=scenario.key):
+                self.assertTrue(scenario.facts <= facts, scenario.facts - facts)
+                self.assertTrue(scenario.label)
+                self.assertTrue(scenario.models, "Scenario must be used by at least one model")
 
     def test_variables_usable(self):
-        """Every variable can be used with at least one operator, and is available somewhere"""
-        all_target_facts = [DEFAULT_TARGET_FACTS, *registry.targets.values()]
+        """Every variable can be used with at least one operator, and is available in a
+        scenario"""
+        all_target_facts = [scenario.facts for scenario in registry.scenarios.values()]
         for variable in registry.variables.values():
             with self.subTest(variable=variable.key):
                 self.assertTrue(any(variable.available_for(f) for f in all_target_facts))

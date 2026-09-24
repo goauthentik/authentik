@@ -14,7 +14,13 @@ registry.fact(
     _("Event"),
     _("The event which triggered a notification rule."),
 )
-registry.target("authentik_events.notificationrule", [FACT_EVENT])
+registry.scenario(
+    "notification_rule",
+    [FACT_EVENT],
+    models=["authentik_events.notificationrule"],
+    label=_("Notification rule"),
+    description=_("Deciding whether an event triggers a notification."),
+)
 
 
 def _context_value(request: PolicyRequest, key: str, path: str):

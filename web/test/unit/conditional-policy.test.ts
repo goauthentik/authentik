@@ -9,7 +9,7 @@ import {
     collectNodePaths,
     describe as describeNode,
     errorOwner,
-    factsForTarget,
+    factsForScenario,
     operandType,
     pluckConditionErrors,
     unavailableVariables,
@@ -29,11 +29,17 @@ import { describe, expect, it } from "vitest";
 
 const catalog: ConditionCatalog = {
     facts: [],
-    targets: [
-        { model: "authentik_flows.flow", verboseName: "Flow", facts: ["user", "flow_plan"] },
+    scenarios: [
         {
-            model: "authentik_events.notificationrule",
-            verboseName: "Rule",
+            key: "flow_execution",
+            label: "Flow execution",
+            description: "",
+            facts: ["user", "flow_plan"],
+        },
+        {
+            key: "notification_rule",
+            label: "Notification rule",
+            description: "",
             facts: ["user", "event"],
         },
     ],
@@ -197,12 +203,12 @@ describe("unavailableVariables", () => {
     };
 
     it("lists variables not available for a target", () => {
-        const facts = factsForTarget(catalog, "authentik_flows.flow");
+        const facts = factsForScenario(catalog, "flow_execution");
         expect(unavailableVariables(catalog, tree, facts)).toEqual(["event.action"]);
     });
 
     it("allows everything without a target", () => {
-        expect(unavailableVariables(catalog, tree, factsForTarget(catalog, null))).toEqual([]);
+        expect(unavailableVariables(catalog, tree, factsForScenario(catalog, null))).toEqual([]);
     });
 });
 
@@ -327,7 +333,7 @@ describe("variable picker", () => {
     });
 
     it("marks values that aren't available", () => {
-        const facts = factsForTarget(catalog, "authentik_flows.flow");
+        const facts = factsForScenario(catalog, "flow_execution");
         const device = pickerOptions(catalog, facts).find((o) => o.key === "device.facts");
 
         expect(device?.available).toBe(false);

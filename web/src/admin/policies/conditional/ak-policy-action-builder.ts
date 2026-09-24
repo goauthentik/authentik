@@ -20,7 +20,7 @@ import {
     describeAction,
     emptyActions,
     errorOwner,
-    factsForTarget,
+    factsForScenario,
     filterPickerOptions,
     findSetter,
     findVariable,
@@ -311,6 +311,16 @@ export class AkPolicyActionBuilder extends AKControlElement<PolicyActions> {
                 gap: var(--pf-global--spacer--sm);
                 margin-bottom: var(--pf-global--spacer--md);
                 color: var(--pf-global--Color--200);
+            }
+            .scenario {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: var(--pf-global--spacer--xs);
+                max-width: 28rem;
+            }
+            .scenario .help {
+                text-align: right;
             }
             .toolbar label {
                 display: flex;
@@ -615,11 +625,11 @@ export class AkPolicyActionBuilder extends AKControlElement<PolicyActions> {
     public errors: ConditionErrors = {};
 
     /**
-     * Model label of the object the policy will be bound to, used to only offer values which
-     * are available there.
+     * Key of the scenario the policy is used in, to only offer values which are available
+     * there.
      */
     @state()
-    protected target: string | null = null;
+    protected scenario: string | null = null;
 
     @state()
     protected tree: PolicyActions = emptyActions();
@@ -721,7 +731,7 @@ export class AkPolicyActionBuilder extends AKControlElement<PolicyActions> {
     }
 
     protected get facts() {
-        return factsForTarget(this.catalog, this.target);
+        return factsForScenario(this.catalog, this.scenario);
     }
 
     protected select(item: PolicyAction | ConditionNode) {
@@ -1880,29 +1890,47 @@ export class AkPolicyActionBuilder extends AKControlElement<PolicyActions> {
 
     //#endregion
 
-    protected renderTargetSelect() {
-        return html`<label>
-            ${msg("Showing values for", { id: "policies.conditional.target.label" })}
-            <select
-                class="pf-c-form-control"
-                @change=${(ev: Event) => {
-                    this.target = (ev.target as HTMLSelectElement).value || null;
-                }}
-            >
-                <option value="" ?selected=${!this.target}>
-                    ${msg("any object", { id: "policies.conditional.target.any" })}
-                </option>
-                ${(this.catalog?.targets ?? []).map(
-                    (target) =>
-                        html`<option
-                            value=${target.model}
-                            ?selected=${target.model === this.target}
-                        >
-                            ${target.verboseName}
-                        </option>`,
-                )}
-            </select>
-        </label>`;
+    protected renderScenarioSelect() {
+        const selected = this.catalog?.scenarios.find((scenario) => scenario.key === this.scenario);
+
+        return html`<div class="scenario">
+            <label>
+                ${msg("Used for", { id: "policies.actions.scenario.label" })}
+                <select
+                    class="pf-c-form-control"
+                    @change=${(ev: Event) => {
+                        this.scenario = (ev.target as HTMLSelectElement).value || null;
+                    }}
+                >
+                    <option value="" ?selected=${!this.scenario}>
+                        ${msg("Any scenario (show all values)", {
+                            id: "policies.actions.scenario.any",
+                        })}
+                    </option>
+                    ${(this.catalog?.scenarios ?? []).map(
+                        (scenario) =>
+                            html`<option
+                                value=${scenario.key}
+                                ?selected=${scenario.key === this.scenario}
+                            >
+                                ${scenario.label}
+                            </option>`,
+                    )}
+                </select>
+            </label>
+            <span class="help">
+                ${
+                    selected
+                        ? selected.description
+                        : msg(
+                              "Choose where the policy is used to only show values available there.",
+                              {
+                                  id: "policies.actions.scenario.help",
+                              },
+                          )
+                }
+            </span>
+        </div>`;
     }
 
     render() {
@@ -1933,7 +1961,7 @@ export class AkPolicyActionBuilder extends AKControlElement<PolicyActions> {
                         { id: "policies.actions.help" },
                     )}
                 </span>
-                ${this.renderTargetSelect()}
+                ${this.renderScenarioSelect()}
             </div>
             ${this.renderErrors(generalErrors)}
             <div class="layout">

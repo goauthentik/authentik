@@ -31,8 +31,20 @@ registry.fact(
     _("Flow plan"),
     _("The flow being executed and the data collected by it so far."),
 )
-registry.target("authentik_flows.flow", [FACT_HTTP_REQUEST, FACT_FLOW_PLAN])
-registry.target("authentik_flows.flowstagebinding", [FACT_HTTP_REQUEST, FACT_FLOW_PLAN])
+registry.scenario(
+    "flow_execution",
+    [FACT_HTTP_REQUEST, FACT_FLOW_PLAN],
+    models=["authentik_flows.flow"],
+    label=_("Flow execution"),
+    description=_("Deciding whether a flow can be used, when it's started."),
+)
+registry.scenario(
+    "flow_stage_execution",
+    [FACT_HTTP_REQUEST, FACT_FLOW_PLAN],
+    models=["authentik_flows.flowstagebinding"],
+    label=_("Flow stage execution"),
+    description=_("Deciding whether a stage of a flow runs, and preparing values for it."),
+)
 
 _PLAN = [FACT_FLOW_PLAN]
 

@@ -27,7 +27,13 @@ registry.fact(
     _("Application"),
     _("The application the user is accessing."),
 )
-registry.target("authentik_core.application", [FACT_HTTP_REQUEST, FACT_APPLICATION])
+registry.scenario(
+    "application_authorization",
+    [FACT_HTTP_REQUEST, FACT_APPLICATION],
+    models=["authentik_core.application"],
+    label=_("Application authorization"),
+    description=_("Deciding whether a user can access an application."),
+)
 
 _USER = [FACT_USER]
 

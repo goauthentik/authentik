@@ -1,7 +1,5 @@
 """Conditional Policy API"""
 
-from django.apps import apps
-from django.db.models import Model
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
@@ -24,7 +22,7 @@ from authentik.policies.conditional.operators import OPERATORS, OperandShape
 from authentik.policies.conditional.registry import ParamKind, registry
 from authentik.policies.conditional.schema import PolicyActionsField, condition_errors
 from authentik.policies.conditional.types import TypeKind, ValueType
-from authentik.policies.models import Policy, PolicyBindingModel
+from authentik.policies.models import Policy
 
 
 def _referenced_policies(actions: dict) -> set[str]:
@@ -162,11 +160,12 @@ class ConditionFactSerializer(PassiveSerializer):
     description = CharField()
 
 
-class ConditionTargetSerializer(PassiveSerializer):
-    """Object policies can be bound to, and the facts available when they are evaluated"""
+class ConditionScenarioSerializer(PassiveSerializer):
+    """Situation in which policies are evaluated, and the facts available in it"""
 
-    model = CharField()
-    verbose_name = CharField()
+    key = CharField()
+    label = CharField()
+    description = CharField()
     facts = ListField(child=CharField())
 
 
@@ -201,32 +200,10 @@ class ConditionCatalogSerializer(PassiveSerializer):
     """Everything available to build conditional policies"""
 
     facts = ConditionFactSerializer(many=True)
-    targets = ConditionTargetSerializer(many=True)
+    scenarios = ConditionScenarioSerializer(many=True)
     variables = ConditionVariableSerializer(many=True)
     setters = ConditionSetterSerializer(many=True)
     operators = ConditionOperatorSerializer(many=True)
-
-
-def _targets() -> list[dict]:
-    """All models policies can be bound to, and their facts"""
-    models: dict[str, type[Model]] = {}
-    for model in apps.get_models():
-        if issubclass(model, PolicyBindingModel) and model is not PolicyBindingModel:
-            models[model._meta.label_lower] = model
-    for label in registry.targets:
-        if label not in models:
-            try:
-                models[label] = apps.get_model(label)
-            except LookupError:
-                continue
-    return [
-        {
-            "model": label,
-            "verbose_name": str(model._meta.verbose_name),
-            "facts": sorted(registry.facts_for_target(label)),
-        }
-        for label, model in sorted(models.items())
-    ]
 
 
 class ConditionalPolicyViewSet(UsedByMixin, ModelViewSet):
@@ -241,13 +218,21 @@ class ConditionalPolicyViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(responses={200: ConditionCatalogSerializer})
     @action(detail=False, pagination_class=None, filter_backends=[])
     def catalog(self, request: Request) -> Response:
-        """Facts, targets, variables and operators available to conditional policies"""
+        """Facts, scenarios, variables, setters and operators available to conditional policies"""
         data = {
             "facts": [
                 {"key": fact.key, "label": str(fact.label), "description": str(fact.description)}
                 for fact in sorted(registry.facts.values(), key=lambda f: f.key)
             ],
-            "targets": _targets(),
+            "scenarios": [
+                {
+                    "key": scenario.key,
+                    "label": str(scenario.label),
+                    "description": str(scenario.description),
+                    "facts": sorted(scenario.facts),
+                }
+                for scenario in registry.scenarios.values()
+            ],
             "variables": [
                 {
                     "key": variable.key,

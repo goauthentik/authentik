@@ -138,11 +138,14 @@ class TestConditionalPolicyAPI(APITestCase):
         self.assertEqual(variables["user.email"]["app"], "authentik_core")
         self.assertEqual(variables["user.groups"]["type"]["item"]["model"], "authentik_core.group")
         self.assertEqual(variables["user.attributes"]["param"], "path")
-        targets = {target["model"]: target for target in body["targets"]}
-        self.assertIn("event", targets["authentik_events.notificationrule"]["facts"])
-        self.assertNotIn("http_request", targets["authentik_events.notificationrule"]["facts"])
-        self.assertIn("flow_plan", targets["authentik_flows.flow"]["facts"])
-        self.assertIn("authentik_stages_prompt.promptstage", targets)
+        scenarios = {scenario["key"]: scenario for scenario in body["scenarios"]}
+        self.assertEqual(scenarios["notification_rule"]["label"], "Notification rule")
+        self.assertIn("event", scenarios["notification_rule"]["facts"])
+        self.assertNotIn("http_request", scenarios["notification_rule"]["facts"])
+        self.assertIn("flow_plan", scenarios["flow_execution"]["facts"])
+        # Declared by the prompt stage, for flows which have a prompt stage
+        self.assertIn("prompt_data", scenarios["flow_stage_execution"]["facts"])
+        self.assertIn("oauth_token", scenarios["oauth2_token"]["facts"])
         self.assertIn("eq", {op["name"] for op in body["operators"]})
 
 

@@ -14,10 +14,10 @@ import type { ConditionFact } from "./ConditionFact";
 import { ConditionFactFromJSON, ConditionFactToJSON } from "./ConditionFact";
 import type { ConditionOperator } from "./ConditionOperator";
 import { ConditionOperatorFromJSON, ConditionOperatorToJSON } from "./ConditionOperator";
+import type { ConditionScenario } from "./ConditionScenario";
+import { ConditionScenarioFromJSON, ConditionScenarioToJSON } from "./ConditionScenario";
 import type { ConditionSetter } from "./ConditionSetter";
 import { ConditionSetterFromJSON, ConditionSetterToJSON } from "./ConditionSetter";
-import type { ConditionTarget } from "./ConditionTarget";
-import { ConditionTargetFromJSON, ConditionTargetToJSON } from "./ConditionTarget";
 import type { ConditionVariable } from "./ConditionVariable";
 import { ConditionVariableFromJSON, ConditionVariableToJSON } from "./ConditionVariable";
 
@@ -29,7 +29,7 @@ import { ConditionVariableFromJSON, ConditionVariableToJSON } from "./ConditionV
  */
 export interface ConditionCatalog {
     facts: Array<ConditionFact>;
-    targets: Array<ConditionTarget>;
+    scenarios: Array<ConditionScenario>;
     variables: Array<ConditionVariable>;
     setters: Array<ConditionSetter>;
     operators: Array<ConditionOperator>;
@@ -40,7 +40,7 @@ export interface ConditionCatalog {
  */
 export function instanceOfConditionCatalog(value: object): value is ConditionCatalog {
     if (!("facts" in value) || value["facts"] === undefined) return false;
-    if (!("targets" in value) || value["targets"] === undefined) return false;
+    if (!("scenarios" in value) || value["scenarios"] === undefined) return false;
     if (!("variables" in value) || value["variables"] === undefined) return false;
     if (!("setters" in value) || value["setters"] === undefined) return false;
     if (!("operators" in value) || value["operators"] === undefined) return false;
@@ -60,7 +60,7 @@ export function ConditionCatalogFromJSONTyped(
     }
     return {
         facts: (json["facts"] as Array<any>).map(ConditionFactFromJSON),
-        targets: (json["targets"] as Array<any>).map(ConditionTargetFromJSON),
+        scenarios: (json["scenarios"] as Array<any>).map(ConditionScenarioFromJSON),
         variables: (json["variables"] as Array<any>).map(ConditionVariableFromJSON),
         setters: (json["setters"] as Array<any>).map(ConditionSetterFromJSON),
         operators: (json["operators"] as Array<any>).map(ConditionOperatorFromJSON),
@@ -81,7 +81,7 @@ export function ConditionCatalogToJSONTyped(
 
     return {
         facts: (value["facts"] as Array<any>).map(ConditionFactToJSON),
-        targets: (value["targets"] as Array<any>).map(ConditionTargetToJSON),
+        scenarios: (value["scenarios"] as Array<any>).map(ConditionScenarioToJSON),
         variables: (value["variables"] as Array<any>).map(ConditionVariableToJSON),
         setters: (value["setters"] as Array<any>).map(ConditionSetterToJSON),
         operators: (value["operators"] as Array<any>).map(ConditionOperatorToJSON),

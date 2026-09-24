@@ -13,7 +13,6 @@ import {
     ConditionNode,
     ConditionOperandShapeEnum,
     ConditionOperator,
-    ConditionTarget,
     PolicyAction,
     PolicyActions,
     ConditionTypeKindEnum,
@@ -142,14 +141,14 @@ export function isTextual(type: ValueType | null): boolean {
 }
 
 /**
- * Facts available for the selected target, or `null` when no target is selected.
+ * Facts available in the selected scenario, or `null` when no scenario is selected.
  */
-export function factsForTarget(
+export function factsForScenario(
     catalog: ConditionCatalog | undefined,
-    target: string | null,
+    scenario: string | null,
 ): Set<string> | null {
-    if (!catalog || !target) return null;
-    const found = catalog.targets.find((t: ConditionTarget) => t.model === target);
+    if (!catalog || !scenario) return null;
+    const found = catalog.scenarios.find((candidate) => candidate.key === scenario);
 
     return found ? new Set(found.facts) : null;
 }

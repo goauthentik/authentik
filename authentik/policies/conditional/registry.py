@@ -5,8 +5,9 @@ automatically on startup (see `ManagedAppConfig.import_related`).
 
 - A *fact* is a piece of data a policy request may carry, for example the HTTP request,
   the flow plan or the event which triggered a notification rule.
-- A *target* is a model policies can be bound to, and declares which facts can be
-  available when policies bound to it are evaluated.
+- A *scenario* is a situation in which policies are evaluated, for example when a flow is
+  executed. It declares which facts are available, and which models' policies are evaluated
+  in it.
 - A *variable* is a typed value that can be used in a condition, resolved from the
   policy request. Variables declare which facts they require.
 - A *setter* is a target an action can set a value for, for example a key in the flow
@@ -48,6 +49,19 @@ class Fact:
     key: str
     label: str | Promise
     description: str | Promise
+
+
+@dataclass(frozen=True)
+class Scenario:
+    """A situation in which policies are evaluated, for example when an application is
+    authorized, and the facts available in it"""
+
+    key: str
+    label: str | Promise
+    description: str | Promise
+    facts: frozenset[str]
+    # Models (`app_label.model_name`) whose policies are evaluated in this scenario
+    models: frozenset[str]
 
 
 @dataclass(frozen=True)
@@ -135,7 +149,7 @@ class ConditionalPolicyRegistry:
 
     def __init__(self) -> None:
         self.facts: dict[str, Fact] = {}
-        self.targets: dict[str, frozenset[str]] = {}
+        self.scenarios: dict[str, Scenario] = {}
         self.variables: dict[str, Variable] = {}
         self.setters: dict[str, Setter] = {}
 
@@ -147,17 +161,43 @@ class ConditionalPolicyRegistry:
         self.facts[key] = fact
         return fact
 
-    def target(self, model: str, facts: Iterable[str]):
-        """Declare which facts can be available when evaluating policies bound to `model`
-        (`app_label.model_name`). The `user` fact is always available. Can be called by multiple
-        apps for the same model, in which case the facts are merged. Models which are not
-        registered are assumed to provide `DEFAULT_TARGET_FACTS`."""
-        model = model.lower()
-        existing = self.targets.get(model, frozenset({FACT_USER}))
-        self.targets[model] = existing | frozenset(facts)
+    def scenario(  # noqa: PLR0913
+        self,
+        key: str,
+        facts: Iterable[str],
+        models: Iterable[str] = (),
+        label: str | Promise | None = None,
+        description: str | Promise = "",
+    ) -> Scenario:
+        """Declare a scenario in which policies are evaluated, which facts are available in it
+        and the models (`app_label.model_name`) whose policies are evaluated in it. The `user`
+        fact is always available.
+
+        Can be called by multiple apps for the same scenario, in which case facts and models
+        are merged, for example to declare that prompt data is available in flows."""
+        existing = self.scenarios.get(key)
+        if not existing and label is None:
+            raise ValueError(f"Scenario {key} needs a label")
+        scenario = Scenario(
+            key=key,
+            label=label if label is not None else existing.label,  # type: ignore[union-attr]
+            description=description or (existing.description if existing else ""),
+            facts=(existing.facts if existing else frozenset({FACT_USER})) | frozenset(facts),
+            models=(existing.models if existing else frozenset())
+            | frozenset(model.lower() for model in models),
+        )
+        self.scenarios[key] = scenario
+        return scenario
 
     def facts_for_target(self, model: str) -> frozenset[str]:
-        return self.targets.get(model.lower(), DEFAULT_TARGET_FACTS)
+        """Facts which can be available when evaluating policies bound to `model`, from all
+        scenarios the model is used in. Models which aren't used in any scenario are assumed
+        to provide `DEFAULT_TARGET_FACTS`."""
+        facts: frozenset[str] = frozenset()
+        for scenario in self.scenarios.values():
+            if model.lower() in scenario.models:
+                facts |= scenario.facts
+        return facts or DEFAULT_TARGET_FACTS
 
     def variable(  # noqa: PLR0913
         self,

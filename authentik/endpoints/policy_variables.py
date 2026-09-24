@@ -22,7 +22,13 @@ registry.fact(
     _("Device"),
     _("The endpoint device the user is authenticating from, or which is being accessed."),
 )
-registry.target("authentik_endpoints.device", [FACT_HTTP_REQUEST, FACT_DEVICE])
+registry.scenario(
+    "device_access",
+    [FACT_HTTP_REQUEST, FACT_DEVICE],
+    models=["authentik_endpoints.device"],
+    label=_("Device access"),
+    description=_("Deciding whether a user can log in to an endpoint device."),
+)
 _DEVICE = [FACT_DEVICE, FACT_FLOW_PLAN]
 
 

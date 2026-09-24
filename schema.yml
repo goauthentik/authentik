@@ -12362,8 +12362,8 @@ paths:
   /policies/conditional/catalog/:
     get:
       operationId: policies_conditional_catalog_retrieve
-      description: Facts, targets, variables and operators available to conditional
-        policies
+      description: Facts, scenarios, variables, setters and operators available to
+        conditional policies
       tags:
       - policies
       security:
@@ -38829,10 +38829,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ConditionFact'
-        targets:
+        scenarios:
           type: array
           items:
-            $ref: '#/components/schemas/ConditionTarget'
+            $ref: '#/components/schemas/ConditionScenario'
         variables:
           type: array
           items:
@@ -38848,8 +38848,8 @@ components:
       required:
       - facts
       - operators
+      - scenarios
       - setters
-      - targets
       - variables
     ConditionChoice:
       type: object
@@ -39119,6 +39119,26 @@ components:
       type: string
       enum:
       - policy
+    ConditionScenario:
+      type: object
+      description: Situation in which policies are evaluated, and the facts available
+        in it
+      properties:
+        key:
+          type: string
+        label:
+          type: string
+        description:
+          type: string
+        facts:
+          type: array
+          items:
+            type: string
+      required:
+      - description
+      - facts
+      - key
+      - label
     ConditionSetter:
       type: object
       description: Value which actions can set
@@ -39151,23 +39171,6 @@ components:
       - param
       - requires
       - type
-    ConditionTarget:
-      type: object
-      description: Object policies can be bound to, and the facts available when they
-        are evaluated
-      properties:
-        model:
-          type: string
-        verbose_name:
-          type: string
-        facts:
-          type: array
-          items:
-            type: string
-      required:
-      - facts
-      - model
-      - verbose_name
     ConditionTypeKindEnum:
       enum:
       - string
