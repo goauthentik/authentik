@@ -13403,10 +13403,21 @@
                     "type": "string",
                     "enum": [
                         "token",
+                        "basic",
                         "oauth",
                         "oauth_interactive"
                     ],
                     "title": "Auth mode"
+                },
+                "auth_basic_user": {
+                    "type": "string",
+                    "title": "Auth basic user",
+                    "description": "Username used for Basic authentication"
+                },
+                "auth_basic_password": {
+                    "type": "string",
+                    "title": "Auth basic password",
+                    "description": "Password used for Basic authentication"
                 },
                 "auth_oauth": {
                     "type": "integer",
