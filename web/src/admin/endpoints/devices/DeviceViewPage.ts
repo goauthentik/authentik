@@ -7,6 +7,12 @@ import "#admin/endpoints/devices/facts/DeviceSoftwareTable";
 import "#admin/endpoints/devices/facts/DeviceGroupTable";
 import "#admin/endpoints/devices/DeviceEvents";
 import "#elements/Tabs";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 
 import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError } from "#common/errors/network";
@@ -26,13 +32,6 @@ import { DeviceConnection, Disk, EndpointDeviceDetails, EndpointsApi } from "@go
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 
 @customElement("ak-endpoints-device-view")
 export class DeviceViewPage extends AKElement {
@@ -66,6 +65,7 @@ export class DeviceViewPage extends AKElement {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             header: this.device?.name
                 ? msg(str`Device ${this.device?.name}`)
@@ -86,10 +86,13 @@ export class DeviceViewPage extends AKElement {
             this.device?.facts?.data.disks?.filter(
                 (d) => d.mountpoint === "/" || d.mountpoint === "C:",
             ) || [];
+
         let rootDisk: Disk | undefined = undefined;
+
         if (_rootDisk?.length > 0) {
             rootDisk = _rootDisk[0];
         }
+
         return html`<div class="pf-l-stack pf-m-gutter">
             <div class="pf-l-stack__item pf-c-card">
                 <div class="pf-c-card__title">${msg("Device details")}</div>
@@ -201,9 +204,11 @@ export class DeviceViewPage extends AKElement {
                                         ${this.agentVersion(conn) ?? "-"}
                                     </div>
                                     <div class="pf-c-description-list__text">
-                                        ${conn.latestSnapshot?.created
-                                            ? Timestamp(conn.latestSnapshot.created)
-                                            : nothing}
+                                        ${
+                                            conn.latestSnapshot?.created
+                                                ? Timestamp(conn.latestSnapshot.created)
+                                                : nothing
+                                        }
                                     </div>`,
                             ];
                         }) as DescriptionPair[],
@@ -218,10 +223,14 @@ export class DeviceViewPage extends AKElement {
 
     agentVersion(conn: DeviceConnection): string | undefined {
         const vendorContainer = conn.latestSnapshot?.data.vendor;
+
         if (!vendorContainer) return;
         const vendorData = vendorContainer[conn.latestSnapshot.vendor];
+
         if (!vendorData) return;
+
         if (!("agent_version" in vendorData)) return;
+
         return msg(str`Agent version: ${vendorData.agent_version ?? "-"}`);
     }
 
@@ -229,6 +238,7 @@ export class DeviceViewPage extends AKElement {
         if (!this.device) {
             return nothing;
         }
+
         return html`<ak-endpoints-device-process-table
             .items=${(this.device?.facts?.data.processes || []).sort(trySortNumerical)}
         ></ak-endpoints-device-process-table>`;
@@ -238,6 +248,7 @@ export class DeviceViewPage extends AKElement {
         if (!this.device) {
             return nothing;
         }
+
         return html`<ak-endpoints-device-users-table
             .items=${(this.device?.facts?.data.users || []).sort(trySortNumerical)}
         ></ak-endpoints-device-users-table>`;
@@ -247,6 +258,7 @@ export class DeviceViewPage extends AKElement {
         if (!this.device) {
             return nothing;
         }
+
         return html`<ak-endpoints-device-groups-table
             .items=${(this.device?.facts?.data.groups || []).sort(trySortNumerical)}
         ></ak-endpoints-device-groups-table>`;
@@ -256,6 +268,7 @@ export class DeviceViewPage extends AKElement {
         if (!this.device) {
             return nothing;
         }
+
         return html`<ak-endpoints-device-software-table
             .items=${(this.device?.facts?.data.software || []).sort((a, b) =>
                 a.name.localeCompare(b.name),
@@ -265,7 +278,7 @@ export class DeviceViewPage extends AKElement {
 
     render() {
         return html`<main part="main">
-            <ak-tabs part="tabs">
+            <ak-tabs routed part="tabs">
                 <div
                     role="tabpanel"
                     tabindex="0"
@@ -283,10 +296,14 @@ export class DeviceViewPage extends AKElement {
                             </div>
                             <div class="pf-l-stack__item pf-c-card">
                                 <div class="pf-c-card__title">${msg("Users / Groups")}</div>
-                                <ak-bound-device-users-list
-                                    no-wizard
-                                    .target=${this.device?.pbmUuid}
-                                ></ak-bound-device-users-list>
+                                ${
+                                    this.device
+                                        ? html`<ak-bound-device-users-list
+                                              no-wizard
+                                              .target=${this.device?.pbmUuid}
+                                          ></ak-bound-device-users-list>`
+                                        : nothing
+                                }
                             </div>
                             <div class="pf-l-stack__item pf-c-card">
                                 <ak-object-attributes-card

@@ -1,5 +1,4 @@
 import "#elements/Diagram/ak-diagram";
-
 import { Diagram } from "#elements/Diagram/ak-diagram";
 
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -61,8 +60,9 @@ describe("ak-diagram", () => {
         const element = mount(new Diagram());
         const observed: string[] = [];
 
-        element.diagramUpdatedCallback = (diagram: Diagram) =>
-            observed.push(diagram.renderRoot.querySelector("svg")?.tagName ?? "no-svg");
+        element.diagramUpdatedCallback = (diagram: Diagram) => {
+            return observed.push(diagram.renderRoot.querySelector("svg")?.tagName ?? "no-svg");
+        };
 
         element.diagram = 'graph TD\nn0["Alpha"]';
         await vi.waitFor(() => expect(observed).toHaveLength(1));

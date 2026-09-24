@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,37 +19,17 @@ import { PartialUserFromJSON } from "./PartialUser";
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface DataExport
  */
 export interface DataExport {
-    /**
-     *
-     */
     readonly id: string;
-    /**
-     *
-     */
     readonly requestedBy: PartialUser;
-    /**
-     *
-     */
     readonly requestedOn: Date;
-    /**
-     *
-     */
     readonly contentType: ContentType;
-    /**
-     *
-     */
     queryParams: { [key: string]: any };
-    /**
-     *
-     */
     readonly fileUrl: string;
-    /**
-     *
-     */
     readonly completed: boolean;
 }
 

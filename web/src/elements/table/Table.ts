@@ -3,12 +3,18 @@ import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
-import "#elements/table/TablePagination";
+import "#elements/Paginator";
 import "#elements/table/TableSearch";
 import "#elements/timestamp/ak-timestamp";
-
 import { BaseTableListRequest, TableLike } from "./shared.js";
 import { renderTableColumn, TableColumn } from "./TableColumn.js";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
+import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
+import PFTable from "@patternfly/patternfly/components/Table/table.css";
+import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
+import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 
 import { type PaginatedResponse } from "#common/api/responses";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
@@ -19,13 +25,14 @@ import { GroupResult } from "#common/utils";
 import { AKElement } from "#elements/Base";
 import { intersectionObserver } from "#elements/decorators/intersection-observer";
 import {
-    EntityDescriptorElement,
     isTransclusionParentElement,
+    NamedEntityElement,
     type TransclusionChildElement,
     TransclusionChildSymbol,
 } from "#elements/dialogs/shared";
 import { WithSession } from "#elements/mixins/session";
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { PageChangeEvent, toPaginator } from "#elements/Paginator";
+import { getSearchParam, updateSearchParams } from "#elements/router/core/search-params";
 import { AKTableRefreshEvent } from "#elements/table/events";
 import Styles from "#elements/table/Table.css";
 import { TableSearchForm } from "#elements/table/TableSearch";
@@ -47,14 +54,6 @@ import { classMap } from "lit/directives/class-map.js";
 import { guard } from "lit/directives/guard.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
-import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
-import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
-import PFTable from "@patternfly/patternfly/components/Table/table.css";
-import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
-import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
-
 export * from "./shared.js";
 export * from "./TableColumn.js";
 
@@ -75,11 +74,17 @@ export function hasPrimaryKey<T extends string | number = string | number>(
 export type TableInstance = InstanceType<typeof Table> & {
     columns: TableColumn[];
 };
+
 export type RowType =
     | SlottedTemplateResult
     | [template: SlottedTemplateResult, options: ColumnOptions];
+
 export interface ColumnOptions {
     style?: string;
+}
+
+export interface PaginatorOptions {
+    compact?: boolean;
 }
 
 /**
@@ -88,11 +93,46 @@ export interface ColumnOptions {
  * @template T The type of the items to display in the table.
  * @template D An optional `toJSON()` result type.
  */
+// Dev-only guard: warns when two connected searchable tables claim the same
+// search parameter on one document (they would clobber each other's `?q=`).
+const connectedSearchParams = new Map<string, number>();
+
+function registerSearchParam(param: string): void {
+    if (process.env.NODE_ENV === "production") {
+        return;
+    }
+
+    const next = (connectedSearchParams.get(param) ?? 0) + 1;
+
+    connectedSearchParams.set(param, next);
+
+    if (next > 1) {
+        console.warn(
+            `Multiple connected tables share the search parameter "${param}". ` +
+                `Set a distinct \`search-param\` on all but one.`,
+        );
+    }
+}
+
+function unregisterSearchParam(param: string): void {
+    if (process.env.NODE_ENV === "production") {
+        return;
+    }
+
+    const next = (connectedSearchParams.get(param) ?? 1) - 1;
+
+    if (next <= 0) {
+        connectedSearchParams.delete(param);
+    } else {
+        connectedSearchParams.set(param, next);
+    }
+}
+
 export abstract class Table<T extends object, D = T>
     extends WithSession(AKElement)
     implements TableLike, TransclusionChildElement
 {
-    declare ["constructor"]: EntityDescriptorElement;
+    declare ["constructor"]: NamedEntityElement;
 
     static styles: CSSResult[] = [
         PFTable,
@@ -231,6 +271,7 @@ export abstract class Table<T extends object, D = T>
         let nextColumnCount = this.columns.length;
 
         if (this.checkbox) nextColumnCount += 1;
+
         if (this.expandable) nextColumnCount += 1;
 
         this.columnCount = nextColumnCount;
@@ -267,7 +308,6 @@ export abstract class Table<T extends object, D = T>
     }
 
     readonly #pageParam: string;
-    readonly #searchParam: string;
 
     /**
      * A mapping of the current items to their respective identifiers.
@@ -297,13 +337,13 @@ export abstract class Table<T extends object, D = T>
     public data: PaginatedResponse<T> | null = null;
 
     @property({ type: Number, useDefault: true })
-    public page: number;
+    public page = 1;
 
     /**
      * Set if your `selectedElements` use of the selection box is to enable bulk-delete,
      * so that stale data is cleared out when the API returns a new list minus the deleted entries.
      *
-     * @prop
+     * @property
      */
     @property({ attribute: "clear-on-refresh", type: Boolean, reflect: true })
     public clearOnRefresh = false;
@@ -357,6 +397,15 @@ export abstract class Table<T extends object, D = T>
     @property({ type: String, attribute: "search-placeholder" })
     public searchPlaceholder: string | null = null;
 
+    /**
+     * The search parameter this table's search and page are serialized to.
+     *
+     * This is used to synchronize the table's state with the URL,
+     * allowing for deep-linking and back/forward navigation.
+     */
+    @property({ type: String, attribute: "search-param" })
+    public searchParam: string | null = null;
+
     //#endregion
 
     //#region Public methods
@@ -365,7 +414,8 @@ export abstract class Table<T extends object, D = T>
      * An overridable method to convert selected items to a custom JSON format,
      * for example when used in a modal with a confirm button.
      *
-     * By default, it returns the selected elements as an array, but it can be customized to return any data structure needed.
+     * By default, it returns the selected elements as an array, but it can be customized to return
+     * any data structure needed.
      */
     public toJSON(): D[] {
         return this.selectedElements as unknown as D[];
@@ -426,6 +476,7 @@ export abstract class Table<T extends object, D = T>
 
     protected refreshListener = (event?: Event) => {
         this.logger.debug("Received refresh event:", event);
+
         return this.fetch().then(() => {
             this.dispatchEvent(new AKTableRefreshEvent(this));
         });
@@ -437,8 +488,6 @@ export abstract class Table<T extends object, D = T>
         const { localName } = this;
 
         this.#pageParam = `${localName}-page`;
-        this.#searchParam = `${localName}-search`;
-        this.page = getURLParam(this.#pageParam, 1);
 
         this.logger = ConsoleLogger.prefix(localName);
     }
@@ -449,8 +498,13 @@ export abstract class Table<T extends object, D = T>
         this.addEventListener(AKRefreshEvent.eventName, this.refreshListener);
         window.addEventListener("submit", this.refreshListener);
 
-        if (this.searchEnabled) {
-            this.search = getURLParam(this.#searchParam, "");
+        if (this.searchParam) {
+            this.page = getSearchParam(this.#pageParam, 1);
+
+            if (this.searchEnabled) {
+                this.search = getSearchParam(this.searchParam, "");
+                registerSearchParam(this.searchParam);
+            }
         }
 
         // Use `fetch()` rather than `#synchronizeRefreshSchedule()` here: the
@@ -464,26 +518,30 @@ export abstract class Table<T extends object, D = T>
         super.disconnectedCallback();
         this.removeEventListener(AKRefreshEvent.eventName, this.refreshListener);
         window.removeEventListener("submit", this.refreshListener);
+
+        if (this.searchEnabled && this.searchParam) {
+            unregisterSearchParam(this.searchParam);
+        }
     }
 
     protected override willUpdate(changedProperties: PropertyValues<this>): void {
         super.willUpdate(changedProperties);
 
-        const interactive = isInteractiveElement(this);
+        const { searchParam } = this;
 
-        if (!interactive) {
+        if (!searchParam || !isInteractiveElement(this)) {
             return;
         }
 
         if (changedProperties.has("page")) {
-            updateURLParams({
+            updateSearchParams({
                 [this.#pageParam]: this.page === 1 ? null : this.page,
             });
         }
 
         if (changedProperties.has("search")) {
-            updateURLParams({
-                [this.#searchParam]: this.search,
+            updateSearchParams({
+                [searchParam]: this.search,
             });
         }
     }
@@ -610,11 +668,13 @@ export abstract class Table<T extends object, D = T>
         return html`<tr role="presentation">
             <td role="presentation" colspan=${this.columnCount}>
                 <div class="pf-l-bullseye">
-                    ${inner ??
-                    html`<ak-empty-state
-                        ><span>${this.formatEmptyStateMessage()}</span>
-                        <div slot="primary">${this.renderObjectCreate()}</div>
-                    </ak-empty-state>`}
+                    ${
+                        inner ??
+                        html`<ak-empty-state
+                            ><span>${this.formatEmptyStateMessage()}</span>
+                            <div slot="primary">${this.renderObjectCreate()}</div>
+                        </ak-empty-state>`
+                    }
                 </div>
             </td>
         </tr>`;
@@ -648,8 +708,8 @@ export abstract class Table<T extends object, D = T>
     /**
      * An overridable event listener when a row is clicked.
      *
-     * @bound
      * @abstract
+     * @bound
      */
     protected rowClickListener(item: T, event?: InputEvent | PointerEvent): void {
         if (event?.defaultPrevented) {
@@ -684,6 +744,7 @@ export abstract class Table<T extends object, D = T>
         if (this.error) {
             return this.renderEmpty(this.renderError());
         }
+
         if (!this.visible || (this.loading && this.data === null)) {
             return this.renderLoading();
         }
@@ -802,7 +863,7 @@ export abstract class Table<T extends object, D = T>
     #renderRowGroupItem(
         item: T,
         rowIndex: number,
-        items: T[],
+        _items: T[],
         groupIndex: number,
     ): SlottedTemplateResult {
         const groupHeaderID = this.groups.length > 1 ? `table-group-${groupIndex}` : null;
@@ -834,6 +895,7 @@ export abstract class Table<T extends object, D = T>
             if (!this.expandable) {
                 return nothing;
             }
+
             const expandItem = this.#toggleExpansion.bind(this, itemKey);
 
             return html`<td
@@ -886,13 +948,16 @@ export abstract class Table<T extends object, D = T>
                     const headers = groupHeaderID
                         ? `${groupHeaderID} ${columnID}`.trim()
                         : columnID;
+
                     let cellTemplate: SlottedTemplateResult;
                     let cellOptions: ColumnOptions = {};
+
                     if (Array.isArray(cell)) {
                         [cellTemplate, cellOptions] = cell;
                     } else {
                         cellTemplate = cell;
                     }
+
                     return html`<td
                         @click=${this.rowClickListener.bind(this, item)}
                         class=${ifPresent(!columnID, "presentational")}
@@ -952,17 +1017,19 @@ export abstract class Table<T extends object, D = T>
             aria-label="${label}"
             part="toolbar"
         >
-            ${primaryToolbar.length
-                ? html`<div class="pf-c-toolbar__content" part="toolbar-primary">
-                      ${primaryToolbar}
-                  </div>`
-                : nothing}
+            ${
+                primaryToolbar.length
+                    ? html`<div class="pf-c-toolbar__content" part="toolbar-primary">
+                          ${primaryToolbar}
+                      </div>`
+                    : nothing
+            }
 
             <div class="pf-c-toolbar__content" part="toolbar-secondary">
                 <div class="pf-c-toolbar__group">
                     ${this.renderToolbar()} ${this.renderToolbarSelected()}
                 </div>
-                ${this.renderTablePagination()}
+                ${this.renderTablePagination({ compact: true })}
             </div>
         </header>`;
     }
@@ -1040,6 +1107,7 @@ export abstract class Table<T extends object, D = T>
         const pageItemCount = this.data?.results?.length ?? 0;
 
         const checked = pageItemCount !== 0 && selectedCount === pageItemCount;
+
         const indeterminate =
             pageItemCount !== 0 && selectedCount !== 0 && selectedCount < pageItemCount;
 
@@ -1086,26 +1154,34 @@ export abstract class Table<T extends object, D = T>
         </ak-chip-group>`;
     }
 
+    onPageChange({ page }: PageChangeEvent) {
+        this.page = page;
+        this.fetch();
+    }
+
     /**
      * A simple pagination display, shown at both the top and bottom of the page.
      */
-    protected renderTablePagination(): SlottedTemplateResult {
+    protected renderTablePagination(
+        options: PaginatorOptions = { compact: false },
+    ): SlottedTemplateResult {
         if (!this.paginated || !this.data || this.data?.pagination.totalPages < 2) {
             return nothing;
         }
 
-        const handler = (page: number) => {
-            this.page = page;
-            this.fetch();
-        };
+        const { compact } = options;
+        const { itemCount, itemsPerPage, page } = toPaginator(this.data?.pagination);
 
-        return html`<ak-table-pagination
-            ?loading=${this.loading}
-            label=${ifPresent(this.label)}
+        return html`<ak-paginator
             class="pf-c-toolbar__item pf-m-pagination"
-            .pages=${this.data?.pagination}
-            .onPageChange=${handler}
-        ></ak-table-pagination>`;
+            ?compact=${Boolean(compact)}
+            ?disabled=${this.loading}
+            label=${ifPresent(this.label)}
+            item-count=${itemCount}
+            items-per-page=${itemsPerPage}
+            page=${page}
+            @ak-page-changed=${this.onPageChange}
+        ></ak-paginator>`;
     }
 
     protected renderLoadingBar(): SlottedTemplateResult {
@@ -1134,9 +1210,9 @@ export abstract class Table<T extends object, D = T>
                 ${this.renderTablePagination()}
             </div>`;
 
-        return html`${this.renderLoadingBar()}${this.needChipGroup
-                ? this.renderChipGroup()
-                : nothing}
+        return html`${this.renderLoadingBar()}${
+                this.needChipGroup ? this.renderChipGroup() : nothing
+            }
             ${this.renderToolbarContainer()}
             <div part="table-container">
                 <table
@@ -1150,12 +1226,14 @@ export abstract class Table<T extends object, D = T>
                     <thead aria-label=${msg("Column actions")}>
                         <tr class="pf-c-table__header-row">
                             ${this.checkbox ? this.renderAllOnThisPageCheckbox() : nothing}
-                            ${this.expandable
-                                ? html`<th
-                                      class="pf-c-table__toggle pf-m-pressable"
-                                      aria-hidden="true"
-                                  ></th>`
-                                : nothing}
+                            ${
+                                this.expandable
+                                    ? html`<th
+                                          class="pf-c-table__toggle pf-m-pressable"
+                                          aria-hidden="true"
+                                      ></th>`
+                                    : nothing
+                            }
                             ${this.columns.map((column, idx) => {
                                 const [label, orderBy, ariaLabel] = column;
                                 const columnID = this.#columnIDs.get(column) ?? `column-${idx}`;

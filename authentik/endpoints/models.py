@@ -81,6 +81,12 @@ class Device(InternallyManagedMixin, ExpiringModel, AttributesMixin, PolicyBindi
             last_updated = max(last_updated, snapshort_created)
         return DeviceFactSnapshot(data=data, created=last_updated)
 
+    @property
+    def primary_user_binding(self) -> DeviceUserBinding | None:
+        if hasattr(self, "user_bindings"):
+            return next((b for b in self.user_bindings if b.is_primary), None)
+        return DeviceUserBinding.objects.filter(target=self, is_primary=True).first()
+
     def __str__(self):
         return f"Device {self.name} {self.identifier} ({self.pk})"
 
@@ -105,17 +111,22 @@ class DeviceConnection(InternallyManagedMixin, SerializerModel):
     device = models.ForeignKey("Device", on_delete=models.CASCADE)
     connector = models.ForeignKey("Connector", on_delete=models.CASCADE)
 
+    @transaction.atomic
     def create_snapshot(self, data: dict[str, Any]):
-        expires = now() + timedelta_from_string(self.connector.snapshot_expiry)
         # If this is the first snapshot for this connection, purge the cache
         if not DeviceFactSnapshot.objects.filter(connection=self).exists():
             LOGGER.debug("Purging facts cache for device", device=self.device)
             cache.delete(self.device.cache_key_facts)
+        # The latest snapshot of a connection never expires, so a device keeps its facts
+        # even when the connector stops reporting. Superseded snapshots start expiring now.
+        DeviceFactSnapshot.objects.filter(connection=self, expiring=False).update(
+            expiring=True,
+            expires=now() + timedelta_from_string(self.connector.snapshot_expiry),
+        )
         return DeviceFactSnapshot.objects.create(
             connection=self,
             data=data,
-            expiring=True,
-            expires=expires,
+            expiring=False,
         )
 
     @property

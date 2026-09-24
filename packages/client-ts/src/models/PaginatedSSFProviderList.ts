@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { SSFProvider } from "./SSFProvider";
 import { SSFProviderFromJSON, SSFProviderToJSON } from "./SSFProvider";
 
 /**
- *
  * @export
  * @interface PaginatedSSFProviderList
  */
 export interface PaginatedSSFProviderList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<SSFProvider>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

@@ -90,6 +90,7 @@ from authentik.core.models import (
     UserTypes,
     default_token_duration,
 )
+from authentik.core.signals import impersonation_changed
 from authentik.core.views.user_switch import start_user_switch_flow
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.events.models import Event, EventAction
@@ -293,20 +294,21 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         return user_type
 
     def validate_groups(self, groups: list) -> list:
-        """Require enable_group_superuser permission when adding a user to a superuser group."""
+        """Require enable_group_superuser permission when adding a user to a group which grants
+        superuser status."""
         request: Request = self.context.get("request", None)
         if not request:
             return groups
-        current_groups = set(self.instance.groups.all()) if self.instance else set()
-        for group in groups:
-            if not group.is_superuser:
-                continue
-            if group in current_groups:
-                continue
-            if not request.user.has_perm("authentik_core.enable_group_superuser"):
-                raise ValidationError(
-                    _("User does not have permission to add members to a superuser group.")
-                )
+        new_groups = Group.objects.filter(pk__in=[group.pk for group in groups])
+        if self.instance:
+            new_groups = new_groups.exclude(pk__in=self.instance.groups.all())
+        ancestry = new_groups.with_ancestors()
+        if ancestry.filter(is_superuser=True).exists() and not request.user.has_perm(
+            "authentik_core.enable_group_superuser"
+        ):
+            raise ValidationError(
+                _("User does not have permission to add members to a superuser group.")
+            )
         return groups
 
     def validate_roles(self, roles: list) -> list:
@@ -1099,6 +1101,10 @@ class UserViewSet(
 
         Event.new(EventAction.IMPERSONATION_STARTED, reason=reason).from_http(request, user_to_be)
 
+        # Persist the new identity before outposts can start reauthorization.
+        request.session.save()
+        impersonation_changed.send(sender=self.__class__, session_key=request.session.session_key)
+
         return Response(status=204)
 
     @extend_schema(
@@ -1123,6 +1129,9 @@ class UserViewSet(
         del request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER]
 
         Event.new(EventAction.IMPERSONATION_ENDED).from_http(request, original_user)
+
+        request.session.save()
+        impersonation_changed.send(sender=self.__class__, session_key=request.session.session_key)
 
         return Response(status=204)
 

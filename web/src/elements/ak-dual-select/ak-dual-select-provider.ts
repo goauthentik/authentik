@@ -1,9 +1,9 @@
 import "./ak-dual-select.js";
-
 import { AkDualSelect } from "./ak-dual-select.js";
 import { type DataProvider, DualSelectEventType, type DualSelectPair } from "./types.js";
 
 import { AKControlElement } from "#elements/ControlElement";
+import { toPaginator, PageChangeEvent } from "#elements/Paginator";
 import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
 import type { Pagination } from "@goauthentik/api";
@@ -103,6 +103,12 @@ export class AkDualSelectProvider extends CustomListenerElement(AKControlElement
         return this.value;
     }
 
+    public get pageState() {
+        return this.pagination
+            ? toPaginator(this.pagination)
+            : { itemCount: 0, itemsPerPage: 1, page: 1 };
+    }
+
     //#endregion
 
     //#region State
@@ -119,6 +125,8 @@ export class AkDualSelectProvider extends CustomListenerElement(AKControlElement
 
     protected pagination?: Pagination;
 
+    protected abortController: AbortController | null = null;
+
     //#endregion
 
     //#region Refs
@@ -129,13 +137,24 @@ export class AkDualSelectProvider extends CustomListenerElement(AKControlElement
 
     //#region Lifecycle
 
-    public connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
-        this.addCustomListener(DualSelectEventType.NavigateTo, this.#navigationListener);
+        this.abortController?.abort();
+        this.abortController = new AbortController();
+
+        this.addEventListener(PageChangeEvent.eventName, this.#navigationListener, {
+            signal: this.abortController.signal,
+        });
+
         this.addCustomListener(DualSelectEventType.Change, this.#changeListener);
         this.addCustomListener(DualSelectEventType.Search, this.#searchListener);
-
         this.#fetch(1);
+    }
+
+    public override disconnectedCallback() {
+        super.disconnectedCallback();
+        this.abortController?.abort();
+        this.abortController = null;
     }
 
     willUpdate(changedProperties: PropertyValues<this>) {
@@ -180,8 +199,8 @@ export class AkDualSelectProvider extends CustomListenerElement(AKControlElement
 
     //#region Event Listeners
 
-    #navigationListener = (event: CustomEvent<number>) => {
-        this.#fetch(event.detail, this.#previousSearchValue);
+    #navigationListener = ({ page }: PageChangeEvent) => {
+        this.#fetch(page, this.#previousSearchValue);
     };
 
     #changeListener = (event: CustomEvent<{ value: DualSelectPair[] }>) => {
@@ -210,8 +229,10 @@ export class AkDualSelectProvider extends CustomListenerElement(AKControlElement
         return html`<ak-dual-select
             ${ref(this.dualSelector)}
             .options=${this.options}
-            .pages=${this.pagination}
             .selected=${this.#selected}
+            item-count=${this.pageState.itemCount}
+            items-per-page=${this.pageState.itemsPerPage}
+            page=${this.pageState.page}
             available-label=${this.availableLabel}
             selected-label=${this.selectedLabel}
             ?preserve-order=${this.preserveOrder}

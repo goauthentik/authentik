@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -16,30 +14,26 @@ import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum";
 import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum";
 import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum";
 import { SAMLNameIDPolicyEnumFromJSON, SAMLNameIDPolicyEnumToJSON } from "./SAMLNameIDPolicyEnum";
-import type { SamlVersionEnum } from "./SamlVersionEnum";
-import { SamlVersionEnumFromJSON, SamlVersionEnumToJSON } from "./SamlVersionEnum";
 import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum";
 import {
     SignatureAlgorithmEnumFromJSON,
     SignatureAlgorithmEnumToJSON,
 } from "./SignatureAlgorithmEnum";
+import type { WSFedSAMLVersionEnum } from "./WSFedSAMLVersionEnum";
+import { WSFedSAMLVersionEnumFromJSON, WSFedSAMLVersionEnumToJSON } from "./WSFedSAMLVersionEnum";
 
 /**
  * WSFederationProvider Serializer
+ *
  * @export
  * @interface WSFederationProvider
  */
 export interface WSFederationProvider {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     name: string;
     /**
-     * Flow used for authentication when the associated application is accessed by an un-authenticated user.
+     * Flow used for authentication when the associated application is accessed by an
+     * un-authenticated user.
      */
     authenticationFlow?: string | null;
     /**
@@ -50,9 +44,6 @@ export interface WSFederationProvider {
      * Flow used ending the session from a provider.
      */
     invalidationFlow: string;
-    /**
-     *
-     */
     propertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
@@ -86,65 +77,52 @@ export interface WSFederationProvider {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     replyUrl: string;
-    /**
-     *
-     */
     wtrealm: string;
     /**
-     * Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3).
+     * Assertion valid not before current time + this value (Format:
+     * hours=-1;minutes=-2;seconds=-3).
      */
     assertionValidNotBefore?: string;
     /**
-     * Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
+     * Assertion not valid on or after current time + this value (Format:
+     * hours=1;minutes=2;seconds=3).
      */
     assertionValidNotOnOrAfter?: string;
     /**
-     * Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
+     * Session not valid on or after current time + this value (Format:
+     * hours=1;minutes=2;seconds=3).
      */
     sessionValidNotOnOrAfter?: string;
     /**
-     * Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered
+     * Configure how the NameID value will be created. When left empty, the NameIDPolicy of the
+     * incoming request will be considered
      */
     nameIdMapping?: string | null;
     /**
-     * Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.
+     * Configure how the AuthnContextClassRef value will be created. When left empty, the
+     * AuthnContextClassRef will be set based on which authentication methods the user used to
+     * authenticate.
      */
     authnContextClassRefMapping?: string | null;
     /**
-     * SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
+     * SAML assertion version to issue in the security token. Microsoft Entra ID and classic
+     * ADFS-style relying parties typically require SAML 1.1.
      */
-    samlVersion?: SamlVersionEnum;
-    /**
-     *
-     */
+    samlVersion?: WSFedSAMLVersionEnum;
     digestAlgorithm?: DigestAlgorithmEnum;
-    /**
-     *
-     */
     signatureAlgorithm?: SignatureAlgorithmEnum;
     /**
      * Keypair used to sign outgoing Responses going to the Service Provider.
      */
     signingKp?: string | null;
     /**
-     * When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
+     * When selected, incoming assertions are encrypted by the IdP using the public key of the
+     * encryption keypair. The assertion is decrypted by the SP using the the private key.
      */
     encryptionKp?: string | null;
-    /**
-     *
-     */
     signAssertion?: boolean;
-    /**
-     *
-     */
     signLogoutRequest?: boolean;
-    /**
-     *
-     */
     defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
     /**
      * Get metadata download URL
@@ -322,7 +300,7 @@ export function WSFederationProviderFromJSONTyped(
         samlVersion:
             json["saml_version"] == null
                 ? undefined
-                : SamlVersionEnumFromJSON(json["saml_version"]),
+                : WSFedSAMLVersionEnumFromJSON(json["saml_version"]),
         digestAlgorithm:
             json["digest_algorithm"] == null
                 ? undefined
@@ -395,7 +373,7 @@ export function WSFederationProviderToJSONTyped(
         session_valid_not_on_or_after: value["sessionValidNotOnOrAfter"],
         name_id_mapping: value["nameIdMapping"],
         authn_context_class_ref_mapping: value["authnContextClassRefMapping"],
-        saml_version: SamlVersionEnumToJSON(value["samlVersion"]),
+        saml_version: WSFedSAMLVersionEnumToJSON(value["samlVersion"]),
         digest_algorithm: DigestAlgorithmEnumToJSON(value["digestAlgorithm"]),
         signature_algorithm: SignatureAlgorithmEnumToJSON(value["signatureAlgorithm"]),
         signing_kp: value["signingKp"],

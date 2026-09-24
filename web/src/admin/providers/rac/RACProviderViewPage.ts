@@ -10,6 +10,16 @@ import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -22,17 +32,6 @@ import { ModelEnum, ProvidersApi, RACProvider } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-provider-rac-view")
 export class RACProviderViewPage extends AKElement {
@@ -57,6 +56,7 @@ export class RACProviderViewPage extends AKElement {
 
     constructor() {
         super();
+
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
             this.providerID = this.provider?.pk;
@@ -81,7 +81,7 @@ export class RACProviderViewPage extends AKElement {
         }
 
         return html`<main>
-            <ak-tabs>
+            <ak-tabs routed>
                 <div
                     role="tabpanel"
                     tabindex="0"
@@ -138,16 +138,21 @@ export class RACProviderViewPage extends AKElement {
         if (!this.provider) {
             return null;
         }
-        return html`${this.provider?.assignedApplicationName
-                ? null
-                : html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${msg("Warning: Provider is not used by an Application.")}
-                  </div>`}
-            ${this.provider?.outpostSet.length < 1
-                ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${msg("Warning: Provider is not used by any Outpost.")}
-                  </div>`
-                : null}
+
+        return html`${
+                this.provider?.assignedApplicationName
+                    ? null
+                    : html`<div slot="header" class="pf-c-banner pf-m-warning">
+                          ${msg("Warning: Provider is not used by an Application.")}
+                      </div>`
+            }
+            ${
+                this.provider?.outpostSet.length < 1
+                    ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                          ${msg("Warning: Provider is not used by any Outpost.")}
+                      </div>`
+                    : null
+            }
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__body">
