@@ -168,21 +168,23 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     }
 
     #synchronizeFlowInfo() {
-        if (!this.flowInfo || this.#layoutUsesSidebarFrames) return;
+        if (!this.flowInfo) return;
 
-        const background = resolveThemedUrl(
-            this.activeTheme,
-            this.flowInfo.backgroundThemedUrls,
-            this.flowInfo.background,
-        );
+        if (!this.#layoutUsesSidebarFrames) {
+            const background = resolveThemedUrl(
+                this.activeTheme,
+                this.flowInfo.backgroundThemedUrls,
+                this.flowInfo.background,
+            );
 
-        // Storybook has a different document structure, so we need to adjust the target accordingly.
-        const target =
-            import.meta.env.AK_BUNDLER === "storybook"
-                ? this.closest<HTMLDivElement>(".docs-story")
-                : this.ownerDocument.body;
+            // Storybook has a different document structure, so we need to adjust the target accordingly.
+            const target =
+                import.meta.env.AK_BUNDLER === "storybook"
+                    ? this.closest<HTMLDivElement>(".docs-story")
+                    : this.ownerDocument.body;
 
-        applyBackgroundImageProperty(background, { target });
+            applyBackgroundImageProperty(background, { target });
+        }
 
         for (const message of flowMessages(this.challenge?.flowInfo?.messages)) {
             showMessage(message);
@@ -250,7 +252,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             this.layout = this.challenge?.flowInfo?.layout || FlowExecutor.DefaultLayout;
         }
 
-        if (changedProperties.has("flowInfo") || changedProperties.has("activeTheme")) {
+        if (changedProperties.has("challenge") || changedProperties.has("activeTheme")) {
             this.#synchronizeFlowInfo();
         }
     }
