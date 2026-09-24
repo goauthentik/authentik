@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -23,33 +21,14 @@ import { ConditionVariableFromJSON, ConditionVariableToJSON } from "./ConditionV
 
 /**
  * Everything available to build conditional policies
+ *
  * @export
  * @interface ConditionCatalog
  */
 export interface ConditionCatalog {
-    /**
-     *
-     * @type {Array<ConditionFact>}
-     * @memberof ConditionCatalog
-     */
     facts: Array<ConditionFact>;
-    /**
-     *
-     * @type {Array<ConditionTarget>}
-     * @memberof ConditionCatalog
-     */
     targets: Array<ConditionTarget>;
-    /**
-     *
-     * @type {Array<ConditionVariable>}
-     * @memberof ConditionCatalog
-     */
     variables: Array<ConditionVariable>;
-    /**
-     *
-     * @type {Array<ConditionOperator>}
-     * @memberof ConditionCatalog
-     */
     operators: Array<ConditionOperator>;
 }
 

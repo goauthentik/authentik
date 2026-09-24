@@ -51,6 +51,47 @@ class TestConditionalPolicyAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 400)
 
+    def test_error_paths(self):
+        """Errors are reported for the node (and field) they belong to"""
+        response = self.create(
+            tree(
+                group(
+                    "all",
+                    cond("user.email", "eq", "foo"),
+                    {"type": "not", "child": cond("user.email", "gt", "foo")},
+                    group("any", cond("user.last_login", "within_last", "foo")),
+                )
+            )
+        )
+        self.assertEqual(response.status_code, 400)
+        errors = response.json()["conditions"]
+        self.assertEqual(errors["detail"], "The conditions contain 2 errors.")
+        self.assertEqual(
+            set(errors["nodes"]),
+            {"root.children.1.child.operator", "root.children.2.children.0.value"},
+        )
+        # Structural errors, reported by pydantic
+        response = self.create(
+            tree(
+                group(
+                    "all",
+                    {**cond("user.email", "eq", "foo"), "operator": "nope"},
+                    {
+                        "type": "not",
+                        "child": {
+                            **cond("user.email", "eq"),
+                            "value": {"type": "variable", "variable": {}},
+                        },
+                    },
+                )
+            )
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            set(response.json()["conditions"]["nodes"]),
+            {"root.children.0.operator", "root.children.1.child.value.variable.key"},
+        )
+
     def test_create_invalid_semantics(self):
         """Structure is valid, but doesn't match registry"""
         response = self.create(tree(cond("user.email", "gt", "foo")))
@@ -74,7 +115,7 @@ class TestConditionalPolicyAPI(APITestCase):
             format="json",
         )
         self.assertEqual(response.status_code, 400)
-        self.assertIn("cannot reference itself", str(response.json()))
+        self.assertIn("would create a loop", response.json()["conditions"]["nodes"]["root"][0])
 
     def test_catalog(self):
         """Catalog of variables"""
@@ -177,4 +218,4 @@ class TestConditionalPolicyTest(APITestCase):
         body = response.json()
         self.assertFalse(body["passing"])
         nodes = [log["attributes"].get("node") for log in body["log_messages"]]
-        self.assertIn("root.children[1]", nodes)
+        self.assertIn("root.children.1", nodes)

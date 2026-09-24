@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -22,27 +20,13 @@ import {
 
 /**
  * Type of a list item
+ *
  * @export
  * @interface ConditionItemType
  */
 export interface ConditionItemType {
-    /**
-     *
-     * @type {ConditionTypeKindEnum}
-     * @memberof ConditionItemType
-     */
     kind: ConditionTypeKindEnum;
-    /**
-     *
-     * @type {string}
-     * @memberof ConditionItemType
-     */
     model?: string | null;
-    /**
-     *
-     * @type {Array<ConditionChoice>}
-     * @memberof ConditionItemType
-     */
     choices: Array<ConditionChoice>;
 }
 

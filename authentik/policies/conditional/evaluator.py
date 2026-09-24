@@ -36,6 +36,7 @@ from authentik.policies.conditional.schema import (
     ConditionTree,
     ConditionVariableOperand,
     ConditionVariableRef,
+    error_path,
 )
 from authentik.policies.conditional.types import (
     MISSING,
@@ -84,6 +85,7 @@ class CompiledCondition:
     operator: Operator
     operand: Literal | CompiledVariable | None
     case_sensitive: bool
+    message: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -91,18 +93,21 @@ class CompiledGroup:
     path: str
     op: str
     children: tuple[CompiledNode, ...]
+    message: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
 class CompiledNot:
     path: str
     child: CompiledNode
+    message: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
 class CompiledPolicyRef:
     path: str
     policy: str
+    message: str | None = None
 
 
 type CompiledNode = CompiledCondition | CompiledGroup | CompiledNot | CompiledPolicyRef
@@ -156,18 +161,21 @@ class ConditionCompiler:
                     self.errors.append((path, "Group must contain at least one item"))
                 return CompiledGroup(
                     path=path,
+                    message=node.message,
                     op=node.op,
                     children=tuple(
-                        self._node(child, f"{path}.children[{idx}]", depth + 1)
+                        self._node(child, f"{path}.children.{idx}", depth + 1)
                         for idx, child in enumerate(node.children)
                     ),
                 )
             case ConditionNotNode():
                 return CompiledNot(
-                    path=path, child=self._node(node.child, f"{path}.child", depth + 1)
+                    path=path,
+                    message=node.message,
+                    child=self._node(node.child, f"{path}.child", depth + 1),
                 )
             case ConditionPolicyNode():
-                return CompiledPolicyRef(path=path, policy=str(node.policy))
+                return CompiledPolicyRef(path=path, message=node.message, policy=str(node.policy))
             case ConditionComparisonNode():
                 return self._condition(node, path)
 
@@ -182,12 +190,7 @@ class ConditionCompiler:
         if variable.param == ParamKind.NONE and param:
             self.errors.append((path, f"Variable '{ref.key}' does not take a parameter"))
         vtype = variable.type
-        if vtype.kind == TypeKind.ANY:
-            if not ref.cast:
-                self.errors.append(
-                    (path, f"Variable '{ref.key}' has no fixed type and must be cast to a type")
-                )
-                return None
+        if vtype.kind == TypeKind.ANY and ref.cast:
             vtype = ValueType(TypeKind(ref.cast))
         elif ref.cast:
             self.errors.append((path, f"Variable '{ref.key}' has a fixed type and cannot be cast"))
@@ -197,6 +200,15 @@ class ConditionCompiler:
         variable = self._variable(node.variable, f"{path}.variable")
         operator = OPERATORS[node.operator]
         if not variable:
+            return None
+        if variable.type.kind == TypeKind.ANY and operator.name not in PRESENCE_OPERATORS:
+            self.errors.append(
+                (
+                    f"{path}.variable",
+                    f"Variable '{variable.variable.key}' has no fixed type and must be cast "
+                    "to a type",
+                )
+            )
             return None
         if variable.type.kind not in operator.kinds:
             self.errors.append(
@@ -221,7 +233,15 @@ class ConditionCompiler:
                 )
             case ConditionVariableOperand():
                 operand = self._variable(node.value.variable, f"{path}.value.variable")
-                if operand and not _types_compatible(operand.type, expected):
+                if operand and operand.type.kind == TypeKind.ANY:
+                    self.errors.append(
+                        (
+                            f"{path}.value.variable",
+                            f"Variable '{operand.variable.key}' has no fixed type and must be "
+                            "cast to a type",
+                        )
+                    )
+                elif operand and not _types_compatible(operand.type, expected):
                     self.errors.append(
                         (
                             f"{path}.value.variable",
@@ -244,6 +264,7 @@ class ConditionCompiler:
                 operand = Literal(value)
         return CompiledCondition(
             path=path,
+            message=node.message,
             variable=variable,
             operator=operator,
             operand=operand,
@@ -257,7 +278,7 @@ def parse_conditions(data: dict) -> ConditionTree:
         return ConditionTree.model_validate(data)
     except PydanticValidationError as exc:
         raise ConditionValidationError(
-            [(".".join(str(p) for p in err["loc"]), err["msg"]) for err in exc.errors()]
+            [(error_path(err["loc"]), err["msg"]) for err in exc.errors()]
         ) from exc
 
 
@@ -301,6 +322,7 @@ class ConditionEvaluator:
         self.request = request
         self.missing_behavior = missing_behavior
         self._values: dict[tuple[str, str | None, TypeKind], Any] = {}
+        self._messages: list[str] = []
         self._logger = LOGGER.bind()
 
     def evaluate(self, root: CompiledNode) -> PolicyResult:
@@ -313,7 +335,9 @@ class ConditionEvaluator:
                 raise
             self._trace(exc.path, missing=exc.key)
             return PolicyResult(False)
-        return PolicyResult(passing)
+        if passing:
+            return PolicyResult(True)
+        return PolicyResult(False, *self._messages)
 
     def _trace(self, path: str, **kwargs):
         if not self.request.debug:
@@ -321,6 +345,17 @@ class ConditionEvaluator:
         self._logger.info("Conditional policy node evaluated", node=path, **kwargs)
 
     def _evaluate(self, node: CompiledNode) -> bool:
+        """Evaluate a node, and keep track of messages explaining why nodes failed. Messages
+        of nodes within a node that passed are discarded, as they didn't cause a failure."""
+        mark = len(self._messages)
+        result = self._evaluate_node(node)
+        if result:
+            del self._messages[mark:]
+        elif node.message:
+            self._messages.append(node.message)
+        return result
+
+    def _evaluate_node(self, node: CompiledNode) -> bool:
         match node:
             case CompiledGroup():
                 if node.op == ConditionGroupOp.ALL:
@@ -441,7 +476,10 @@ class ConditionEvaluator:
             raise PolicyException(f"Referenced policy {node.policy} does not exist")
         token = _policy_depth.set(depth + 1)
         try:
-            result = policy.passes(self.request).passing
+            policy_result = policy.passes(self.request)
+            result = policy_result.passing
+            if not result:
+                self._messages.extend(policy_result.messages)
         finally:
             _policy_depth.reset(token)
         self._trace(node.path, policy=policy.name, result=result)

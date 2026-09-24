@@ -76,7 +76,7 @@ class ConditionalPolicy(Policy):
             raise PolicyException(exc) from exc
         result = ConditionEvaluator(request, self.missing_behavior).evaluate(root)
         if not result.passing and self.failure_message:
-            result.messages = (self.failure_message,)
+            result.messages = (*result.messages, self.failure_message)
         return result
 
     def used_variables(self, _seen: set[str] | None = None) -> set[Variable]:

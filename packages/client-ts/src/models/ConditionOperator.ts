@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -25,33 +23,14 @@ import {
 
 /**
  * Operator available to conditional policies
+ *
  * @export
  * @interface ConditionOperator
  */
 export interface ConditionOperator {
-    /**
-     *
-     * @type {string}
-     * @memberof ConditionOperator
-     */
     name: string;
-    /**
-     *
-     * @type {string}
-     * @memberof ConditionOperator
-     */
     label: string;
-    /**
-     *
-     * @type {Array<ConditionTypeKindEnum>}
-     * @memberof ConditionOperator
-     */
     kinds: Array<ConditionTypeKindEnum>;
-    /**
-     *
-     * @type {ConditionOperandShapeEnum}
-     * @memberof ConditionOperator
-     */
     operand: ConditionOperandShapeEnum;
 }
 

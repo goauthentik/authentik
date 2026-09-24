@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,27 +12,13 @@
 
 /**
  * Data a policy request can carry
+ *
  * @export
  * @interface ConditionFact
  */
 export interface ConditionFact {
-    /**
-     *
-     * @type {string}
-     * @memberof ConditionFact
-     */
     key: string;
-    /**
-     *
-     * @type {string}
-     * @memberof ConditionFact
-     */
     label: string;
-    /**
-     *
-     * @type {string}
-     * @memberof ConditionFact
-     */
     description: string;
 }
 

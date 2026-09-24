@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,12 @@
 
 /**
  * Base serializer class which doesn't implement create/update methods
+ *
  * @export
  * @interface ConditionChoice
  */
 export interface ConditionChoice {
-    /**
-     *
-     * @type {string}
-     * @memberof ConditionChoice
-     */
     value: string;
-    /**
-     *
-     * @type {string}
-     * @memberof ConditionChoice
-     */
     label: string;
 }
 

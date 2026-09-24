@@ -1,7 +1,11 @@
 import {
+    assignErrors,
+    collectNodePaths,
     describe as describeNode,
+    errorOwner,
     factsForTarget,
     operandType,
+    pluckConditionErrors,
     unavailableVariables,
     variableType,
 } from "#admin/policies/conditional/utils";
@@ -111,8 +115,8 @@ describe("variableType", () => {
         expect(variableType(catalog, { key: "user.email" })?.kind).toBe("string");
     });
 
-    it("requires a cast for variables without a fixed type", () => {
-        expect(variableType(catalog, { key: "user.attributes", param: "foo" })).toBeNull();
+    it("uses the cast type for variables without a fixed type", () => {
+        expect(variableType(catalog, { key: "user.attributes", param: "foo" })?.kind).toBe("any");
 
         expect(
             variableType(catalog, { key: "user.attributes", param: "foo", cast: "number" })?.kind,
@@ -189,5 +193,71 @@ describe("describe", () => {
         expect(describeNode(catalog, tree)).toBe(
             '(Email is one of ["a", "b"] OR NOT Attribute "dept" equals Email)',
         );
+    });
+});
+
+describe("validation errors", () => {
+    const negated: ConditionNode = {
+        type: "condition",
+        variable: { key: "user.email" },
+        operator: "is_set",
+    };
+
+    const tree: ConditionNode = {
+        type: "group",
+        op: "all",
+        children: [
+            { type: "condition", variable: { key: "user.email" }, operator: "is_set" },
+            { type: "not", child: negated },
+        ],
+    };
+
+    it("computes node paths like the API", () => {
+        const paths = collectNodePaths(tree);
+
+        expect([...paths.values()]).toEqual([
+            "root",
+            "root.children.0",
+            "root.children.1",
+            "root.children.1.child",
+        ]);
+
+        expect(paths.get(negated)).toBe("root.children.1.child");
+    });
+
+    it("assigns errors to the deepest matching node", () => {
+        const paths = [...collectNodePaths(tree).values()];
+
+        expect(errorOwner("root.children.1.child.operator", paths)).toBe("root.children.1.child");
+        expect(errorOwner("root.children.10.operator", paths)).toBe("root");
+        expect(errorOwner("version", paths)).toBe("");
+    });
+
+    it("groups messages and prefixes fields", () => {
+        const paths = collectNodePaths(tree).values();
+
+        const errors = assignErrors(
+            {
+                "root.children.0": ["Group must contain at least one item"],
+                "root.children.1.child.value.variable.key": ["Field required"],
+                "version": ["Input should be less than or equal to 1"],
+            },
+            paths,
+        );
+
+        expect(errors.get("root.children.0")).toEqual(["Group must contain at least one item"]);
+        expect(errors.get("root.children.1.child")).toEqual(["value.variable.key: Field required"]);
+        expect(errors.get("")).toEqual(["version: Input should be less than or equal to 1"]);
+    });
+
+    it("plucks errors from the API response", () => {
+        expect(
+            pluckConditionErrors({
+                conditions: { detail: "1 error", nodes: { "root.children.0.operator": ["x"] } },
+            }),
+        ).toEqual({ "root.children.0.operator": ["x"] });
+
+        expect(pluckConditionErrors({ name: ["required"] })).toEqual({});
+        expect(pluckConditionErrors(null)).toEqual({});
     });
 });

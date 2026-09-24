@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -22,57 +20,21 @@ import { ConditionValueTypeFromJSON, ConditionValueTypeToJSON } from "./Conditio
 
 /**
  * Variable available to conditional policies
+ *
  * @export
  * @interface ConditionVariable
  */
 export interface ConditionVariable {
-    /**
-     *
-     * @type {string}
-     * @memberof ConditionVariable
-     */
     key: string;
-    /**
-     *
-     * @type {string}
-     * @memberof ConditionVariable
-     */
     label: string;
-    /**
-     *
-     * @type {string}
-     * @memberof ConditionVariable
-     */
     description: string;
-    /**
-     *
-     * @type {ConditionValueType}
-     * @memberof ConditionVariable
-     */
     type: ConditionValueType;
     /**
      * Available when any of these facts are available.
-     * @type {Array<string>}
-     * @memberof ConditionVariable
      */
     requires: Array<string>;
-    /**
-     *
-     * @type {ConditionParamKindEnum}
-     * @memberof ConditionVariable
-     */
     param: ConditionParamKindEnum;
-    /**
-     *
-     * @type {string}
-     * @memberof ConditionVariable
-     */
     app: string;
-    /**
-     *
-     * @type {string}
-     * @memberof ConditionVariable
-     */
     appVerboseName: string;
 }
 

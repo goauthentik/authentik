@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,6 +10,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { ConditionTree } from "./ConditionTree";
 import { ConditionTreeFromJSON, ConditionTreeToJSON } from "./ConditionTree";
 import type { MissingBehaviorEnum } from "./MissingBehaviorEnum";
@@ -19,74 +18,47 @@ import { MissingBehaviorEnumFromJSON, MissingBehaviorEnumToJSON } from "./Missin
 
 /**
  * Conditional Policy Serializer
+ *
  * @export
  * @interface ConditionalPolicy
  */
 export interface ConditionalPolicy {
-    /**
-     *
-     * @type {string}
-     * @memberof ConditionalPolicy
-     */
     readonly pk: string;
-    /**
-     *
-     * @type {string}
-     * @memberof ConditionalPolicy
-     */
     name: string;
     /**
-     * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof ConditionalPolicy
+     * When this option is enabled, all executions of this policy will be logged. By default, only
+     * execution errors are logged.
      */
     executionLogging?: boolean;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof ConditionalPolicy
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof ConditionalPolicy
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof ConditionalPolicy
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof ConditionalPolicy
      */
     readonly metaModelName: string;
     /**
      * Return objects policy is bound to
-     * @type {number}
-     * @memberof ConditionalPolicy
      */
     readonly boundTo: number;
-    /**
-     *
-     * @type {ConditionTree}
-     * @memberof ConditionalPolicy
-     */
+    readonly lastUpdated: Date;
+    readonly created: Date;
     conditions: ConditionTree;
     /**
      * How to handle conditions whose variable is not available in the request.
-     * @type {MissingBehaviorEnum}
-     * @memberof ConditionalPolicy
      */
     missingBehavior?: MissingBehaviorEnum;
     /**
      * Message shown to the user when the policy does not pass.
-     * @type {string}
-     * @memberof ConditionalPolicy
      */
     failureMessage?: string;
 }
@@ -126,6 +98,14 @@ export function instanceOfConditionalPolicy(value: object): value is Conditional
             (value as Record<string, any>)["bound_to"] === undefined)
     )
         return false;
+    if (
+        (!("lastUpdated" in (value as Record<string, any>)) &&
+            !("last_updated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUpdated"] === undefined &&
+            (value as Record<string, any>)["last_updated"] === undefined)
+    )
+        return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
     if (!("conditions" in value) || value["conditions"] === undefined) return false;
     return true;
 }
@@ -150,6 +130,11 @@ export function ConditionalPolicyFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
         conditions: ConditionTreeFromJSON(json["conditions"]),
         missingBehavior:
             json["missing_behavior"] == null
@@ -166,7 +151,14 @@ export function ConditionalPolicyToJSON(json: any): ConditionalPolicy {
 export function ConditionalPolicyToJSONTyped(
     value?: Omit<
         ConditionalPolicy,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "boundTo"
+        | "pk"
+        | "component"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
+        | "boundTo"
+        | "lastUpdated"
+        | "created"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

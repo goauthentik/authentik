@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,38 +17,24 @@ import { MissingBehaviorEnumFromJSON, MissingBehaviorEnumToJSON } from "./Missin
 
 /**
  * Conditional Policy Serializer
+ *
  * @export
  * @interface ConditionalPolicyRequest
  */
 export interface ConditionalPolicyRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof ConditionalPolicyRequest
-     */
     name: string;
     /**
-     * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof ConditionalPolicyRequest
+     * When this option is enabled, all executions of this policy will be logged. By default, only
+     * execution errors are logged.
      */
     executionLogging?: boolean;
-    /**
-     *
-     * @type {ConditionTree}
-     * @memberof ConditionalPolicyRequest
-     */
     conditions: ConditionTree;
     /**
      * How to handle conditions whose variable is not available in the request.
-     * @type {MissingBehaviorEnum}
-     * @memberof ConditionalPolicyRequest
      */
     missingBehavior?: MissingBehaviorEnum;
     /**
      * Message shown to the user when the policy does not pass.
-     * @type {string}
-     * @memberof ConditionalPolicyRequest
      */
     failureMessage?: string;
 }

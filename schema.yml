@@ -38861,6 +38861,12 @@ components:
       additionalProperties: false
       description: Compare a variable against a value
       properties:
+        message:
+          default: null
+          description: Message shown to the user when this node evaluates to false
+            and causes the policy to fail.
+          type: string
+          nullable: true
         type:
           $ref: '#/components/schemas/ConditionComparisonNodeTypeEnum'
         variable:
@@ -38901,6 +38907,12 @@ components:
       additionalProperties: false
       description: Combine the results of multiple nodes
       properties:
+        message:
+          default: null
+          description: Message shown to the user when this node evaluates to false
+            and causes the policy to fail.
+          type: string
+          nullable: true
         type:
           $ref: '#/components/schemas/ConditionGroupNodeTypeEnum'
         op:
@@ -38972,6 +38984,12 @@ components:
       additionalProperties: false
       description: Negate the result of a node
       properties:
+        message:
+          default: null
+          description: Message shown to the user when this node evaluates to false
+            and causes the policy to fail.
+          type: string
+          nullable: true
         type:
           $ref: '#/components/schemas/ConditionNotNodeTypeEnum'
         child:
@@ -39048,6 +39066,9 @@ components:
       - within_last
       - older_than
       - in_network
+      - is_private
+      - is_global
+      - is_url
       - has_item
       - has_any
       - has_all
@@ -39073,6 +39094,12 @@ components:
       additionalProperties: false
       description: Evaluate another policy
       properties:
+        message:
+          default: null
+          description: Message shown to the user when this node evaluates to false
+            and causes the policy to fail.
+          type: string
+          nullable: true
         type:
           $ref: '#/components/schemas/ConditionPolicyNodeTypeEnum'
         policy:
@@ -39255,6 +39282,14 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         conditions:
           $ref: '#/components/schemas/ConditionTree'
         missing_behavior:
@@ -39269,6 +39304,8 @@ components:
       - bound_to
       - component
       - conditions
+      - created
+      - last_updated
       - meta_model_name
       - name
       - pk

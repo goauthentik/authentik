@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -22,21 +20,12 @@ import { ConditionVariableRefFromJSON, ConditionVariableRefToJSON } from "./Cond
 
 /**
  * Variable to compare against
+ *
  * @export
  * @interface ConditionVariableOperand
  */
 export interface ConditionVariableOperand {
-    /**
-     *
-     * @type {ConditionVariableOperandTypeEnum}
-     * @memberof ConditionVariableOperand
-     */
     type: ConditionVariableOperandTypeEnum;
-    /**
-     *
-     * @type {ConditionVariableRef}
-     * @memberof ConditionVariableOperand
-     */
     variable: ConditionVariableRef;
 }
 

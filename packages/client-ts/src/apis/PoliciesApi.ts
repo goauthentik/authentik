@@ -283,6 +283,9 @@ export interface PoliciesConditionalCreateRequest {
 }
 
 export interface PoliciesConditionalDestroyRequest {
+    /**
+     * A UUID string identifying this Conditional Policy.
+     */
     policyUuid: string;
 }
 
@@ -290,27 +293,51 @@ export interface PoliciesConditionalListRequest {
     executionLogging?: boolean;
     missingBehavior?: MissingBehaviorEnum;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PoliciesConditionalPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Conditional Policy.
+     */
     policyUuid: string;
     patchedConditionalPolicyRequest?: PatchedConditionalPolicyRequest;
 }
 
 export interface PoliciesConditionalRetrieveRequest {
+    /**
+     * A UUID string identifying this Conditional Policy.
+     */
     policyUuid: string;
 }
 
 export interface PoliciesConditionalUpdateRequest {
+    /**
+     * A UUID string identifying this Conditional Policy.
+     */
     policyUuid: string;
     conditionalPolicyRequest: ConditionalPolicyRequest;
 }
 
 export interface PoliciesConditionalUsedByListRequest {
+    /**
+     * A UUID string identifying this Conditional Policy.
+     */
     policyUuid: string;
 }
 

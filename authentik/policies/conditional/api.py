@@ -5,7 +5,6 @@ from django.db.models import Model
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ChoiceField, ListField
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -23,13 +22,9 @@ from authentik.policies.conditional.evaluator import (
 from authentik.policies.conditional.models import ConditionalPolicy
 from authentik.policies.conditional.operators import OPERATORS, OperandShape
 from authentik.policies.conditional.registry import ParamKind, registry
-from authentik.policies.conditional.schema import ConditionTreeField
+from authentik.policies.conditional.schema import ConditionTreeField, condition_errors
 from authentik.policies.conditional.types import TypeKind, ValueType
 from authentik.policies.models import Policy, PolicyBindingModel
-
-
-def _format_errors(exc: ConditionValidationError) -> list[str]:
-    return [f"{path}: {message}" if path else message for path, message in exc.errors]
 
 
 def _referenced_policies(tree: dict) -> set[str]:
@@ -47,39 +42,49 @@ class ConditionalPolicySerializer(PolicySerializer):
 
     def validate_conditions(self, conditions: dict) -> dict:
         try:
-            compile_conditions(conditions)
+            root = compile_conditions(conditions)
         except ConditionValidationError as exc:
-            raise ValidationError(_format_errors(exc)) from exc
-        referenced = _referenced_policies(conditions)
+            raise condition_errors(exc.errors) from exc
+        references = [node for node in iter_nodes(root) if isinstance(node, CompiledPolicyRef)]
         existing = {
-            str(pk) for pk in Policy.objects.filter(pk__in=referenced).values_list("pk", flat=True)
+            str(pk)
+            for pk in Policy.objects.filter(
+                pk__in=[node.policy for node in references]
+            ).values_list("pk", flat=True)
         }
-        if missing := referenced - existing:
-            raise ValidationError(
-                _("Referenced policies do not exist: {policies}").format(
-                    policies=", ".join(sorted(missing))
+        errors = []
+        for node in references:
+            if node.policy not in existing:
+                errors.append((node.path, _("Referenced policy does not exist.")))
+            elif self._creates_loop(node.policy):
+                errors.append(
+                    (
+                        node.path,
+                        _("Referenced policy references this policy, which would create a loop."),
+                    )
                 )
-            )
-        self._check_cycles(referenced)
+        if errors:
+            raise condition_errors(errors)
         return conditions
 
-    def _check_cycles(self, referenced: set[str]):
-        """Ensure this policy is not referenced by the policies it references"""
+    def _creates_loop(self, referenced: str) -> bool:
+        """Check if the referenced policy (indirectly) references this policy"""
         if not self.instance:
-            return
+            return False
         own_pk = str(self.instance.pk)
         seen: set[str] = set()
-        pending = set(referenced)
+        pending = {referenced}
         while pending:
             current = pending.pop()
             if current == own_pk:
-                raise ValidationError(_("Policy cannot reference itself, directly or indirectly."))
+                return True
             if current in seen:
                 continue
             seen.add(current)
             policy = ConditionalPolicy.objects.filter(pk=current).first()
             if policy:
                 pending |= _referenced_policies(policy.conditions)
+        return False
 
     class Meta:
         model = ConditionalPolicy

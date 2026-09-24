@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -26,7 +24,6 @@ import { ConditionPolicyNodeFromJSONTyped, ConditionPolicyNodeToJSON } from "./C
 
 /**
  * @type ConditionNode
- *
  * @export
  */
 export type ConditionNode =

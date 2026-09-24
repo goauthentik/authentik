@@ -2126,13 +2126,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_policies_conditional.conditionalpolicy_permissions"
+                            "$ref": "#/definitions/model_authentik_policies_conditional.conditionalpolicy_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_policies_conditional.conditionalpolicy"
+                            "$ref": "#/definitions/model_authentik_policies_conditional.conditionalpolicy"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_policies_conditional.conditionalpolicy"
+                            "$ref": "#/definitions/model_authentik_policies_conditional.conditionalpolicy"
                         }
                     }
                 },

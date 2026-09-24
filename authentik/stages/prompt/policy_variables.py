@@ -2,6 +2,8 @@
 
 from django.utils.translation import gettext_lazy as _
 
+from authentik.core.models import User
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.policies.conditional.registry import FACT_HTTP_REQUEST, ParamKind, registry
 from authentik.policies.conditional.types import MISSING, T
 from authentik.policies.types import PolicyRequest
@@ -34,3 +36,27 @@ def prompt_data(request: PolicyRequest, key: str):
     if not isinstance(data, dict):
         return MISSING
     return data.get(key, MISSING)
+
+
+@registry.variable(
+    "prompt_data.email_in_use",
+    _("Email address in use"),
+    T.BOOLEAN,
+    requires=[FACT_PROMPT_DATA],
+    param=ParamKind.KEY,
+    description=_(
+        "True when the email address entered in the prompt field with the given field key is "
+        "already used by another user."
+    ),
+)
+def prompt_data_email_in_use(request: PolicyRequest, key: str):
+    data = request.context.get(PLAN_CONTEXT_PROMPT)
+    if not isinstance(data, dict) or not data.get(key):
+        return MISSING
+    query = User.objects.filter(email__iexact=data[key])
+    pending_user = request.context.get(PLAN_CONTEXT_PENDING_USER)
+    if pending_user and pending_user.pk:
+        query = query.exclude(pk=pending_user.pk)
+    elif request.user and request.user.is_authenticated:
+        query = query.exclude(pk=request.user.pk)
+    return query.exists()

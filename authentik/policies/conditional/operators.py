@@ -6,11 +6,13 @@ from dataclasses import dataclass
 from enum import StrEnum
 from typing import Any
 
+from django.core.exceptions import ValidationError
 from django.db.models import TextChoices
 from django.utils.functional import Promise
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
+from authentik.lib.models import DomainlessURLValidator
 from authentik.policies.conditional.types import T, TypeKind, ValueType
 
 MAX_REGEX_LENGTH = 256
@@ -59,6 +61,9 @@ class ConditionOperatorName(StrEnum):
     WITHIN_LAST = "within_last"
     OLDER_THAN = "older_than"
     IN_NETWORK = "in_network"
+    IS_PRIVATE = "is_private"
+    IS_GLOBAL = "is_global"
+    IS_URL = "is_url"
     HAS_ITEM = "has_item"
     HAS_ANY = "has_any"
     HAS_ALL = "has_all"
@@ -118,6 +123,8 @@ PRESENCE_OPERATORS = frozenset({ConditionOperatorName.IS_SET, ConditionOperatorN
 
 ALL_KINDS = frozenset(
     {
+        # Presence can be checked without knowing the type of a value
+        TypeKind.ANY,
         TypeKind.STRING,
         TypeKind.NUMBER,
         TypeKind.BOOLEAN,
@@ -149,6 +156,14 @@ def _within_last(value, duration) -> bool:
 
 def _older_than(value, duration) -> bool:
     return value < now() - duration
+
+
+def _is_url(value: str, _) -> bool:
+    try:
+        DomainlessURLValidator(schemes=("http", "https"))(value)
+    except ValidationError:
+        return False
+    return True
 
 
 OPERATORS: dict[str, Operator] = {
@@ -287,6 +302,27 @@ OPERATORS: dict[str, Operator] = {
             frozenset({TypeKind.DATETIME}),
             OperandShape.DURATION,
             _older_than,
+        ),
+        Operator(
+            ConditionOperatorName.IS_PRIVATE,
+            _("is a private address"),
+            frozenset({TypeKind.IP}),
+            OperandShape.NONE,
+            lambda a, b: a.is_private,
+        ),
+        Operator(
+            ConditionOperatorName.IS_GLOBAL,
+            _("is a public address"),
+            frozenset({TypeKind.IP}),
+            OperandShape.NONE,
+            lambda a, b: a.is_global,
+        ),
+        Operator(
+            ConditionOperatorName.IS_URL,
+            _("is a valid URL"),
+            STRING_KINDS,
+            OperandShape.NONE,
+            _is_url,
         ),
         Operator(
             ConditionOperatorName.IN_NETWORK,

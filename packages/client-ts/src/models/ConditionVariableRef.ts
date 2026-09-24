@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,26 +15,18 @@ import { ConditionCastKindFromJSON, ConditionCastKindToJSON } from "./ConditionC
 
 /**
  * Reference to a variable
+ *
  * @export
  * @interface ConditionVariableRef
  */
 export interface ConditionVariableRef {
-    /**
-     *
-     * @type {string}
-     * @memberof ConditionVariableRef
-     */
     key: string;
     /**
      * Path or key, for variables which take a parameter.
-     * @type {string}
-     * @memberof ConditionVariableRef
      */
     param?: string | null;
     /**
      * Type to convert the value to, required for variables of type `any`.
-     * @type {ConditionCastKind}
-     * @memberof ConditionVariableRef
      */
     cast?: ConditionCastKind | null;
 }

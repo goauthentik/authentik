@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -25,7 +23,6 @@ import {
 
 /**
  * @type ConditionOperand
- *
  * @export
  */
 export type ConditionOperand =

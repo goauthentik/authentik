@@ -39,3 +39,23 @@ def request_user_agent(request: PolicyRequest):
     if not request.http_request:
         return MISSING
     return request.http_request.META.get("HTTP_USER_AGENT", MISSING)
+
+
+@registry.variable(
+    "request.user",
+    _("Logged in user"),
+    T.model("authentik_core.user"),
+    requires=[FACT_HTTP_REQUEST],
+    description=_(
+        "The user logged in to the browser making the request. Can differ from the user the "
+        "policy is evaluated for, for example when an administrator acts on another user. "
+        "Not set for anonymous requests."
+    ),
+)
+def request_user(request: PolicyRequest):
+    if not request.http_request:
+        return MISSING
+    user = getattr(request.http_request, "user", None)
+    if not user or not user.is_authenticated:
+        return MISSING
+    return user.pk

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,21 +18,12 @@ import {
 
 /**
  * Fixed value to compare against
+ *
  * @export
  * @interface ConditionLiteralOperand
  */
 export interface ConditionLiteralOperand {
-    /**
-     *
-     * @type {ConditionLiteralOperandTypeEnum}
-     * @memberof ConditionLiteralOperand
-     */
     type: ConditionLiteralOperandTypeEnum;
-    /**
-     *
-     * @type {any}
-     * @memberof ConditionLiteralOperand
-     */
     value: any | null;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -31,39 +29,19 @@ import { ConditionVariableRefFromJSON, ConditionVariableRefToJSON } from "./Cond
 
 /**
  * Compare a variable against a value
+ *
  * @export
  * @interface ConditionComparisonNode
  */
 export interface ConditionComparisonNode {
     /**
-     *
-     * @type {ConditionComparisonNodeTypeEnum}
-     * @memberof ConditionComparisonNode
+     * Message shown to the user when this node evaluates to false and causes the policy to fail.
      */
+    message?: string | null;
     type: ConditionComparisonNodeTypeEnum;
-    /**
-     *
-     * @type {ConditionVariableRef}
-     * @memberof ConditionComparisonNode
-     */
     variable: ConditionVariableRef;
-    /**
-     *
-     * @type {ConditionOperatorName}
-     * @memberof ConditionComparisonNode
-     */
     operator: ConditionOperatorName;
-    /**
-     *
-     * @type {ConditionOperand}
-     * @memberof ConditionComparisonNode
-     */
     value?: ConditionOperand | null;
-    /**
-     *
-     * @type {ConditionOptions}
-     * @memberof ConditionComparisonNode
-     */
     options?: ConditionOptions;
 }
 
@@ -89,6 +67,12 @@ export function ConditionComparisonNodeFromJSONTyped(
         return json;
     }
     return {
+        message:
+            json["message"] === undefined
+                ? undefined
+                : json["message"] === null
+                  ? null
+                  : json["message"],
         type: ConditionComparisonNodeTypeEnumFromJSON(json["type"]),
         variable: ConditionVariableRefFromJSON(json["variable"]),
         operator: ConditionOperatorNameFromJSON(json["operator"]),
@@ -115,6 +99,7 @@ export function ConditionComparisonNodeToJSONTyped(
     }
 
     return {
+        message: value["message"],
         type: ConditionComparisonNodeTypeEnumToJSON(value["type"]),
         variable: ConditionVariableRefToJSON(value["variable"]),
         operator: ConditionOperatorNameToJSON(value["operator"]),

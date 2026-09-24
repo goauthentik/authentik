@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,6 +12,7 @@
 
 /**
  * Types a variable of kind `any` can be cast to
+ *
  * @export
  */
 export const ConditionCastKind = {

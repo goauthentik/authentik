@@ -61,7 +61,8 @@ export function findVariable(
 }
 
 /**
- * Type of a variable reference, after an optional cast.
+ * Type of a variable reference, after an optional cast. Variables without a fixed type
+ * that aren't cast have the type `any`.
  */
 export function variableType(
     catalog: ConditionCatalog | undefined,
@@ -72,7 +73,8 @@ export function variableType(
     if (!variable) return null;
 
     if (variable.type.kind === ConditionTypeKindEnum.Any) {
-        if (!ref.cast) return null;
+        // Without a cast, only the presence of the value can be checked
+        if (!ref.cast) return { kind: ConditionTypeKindEnum.Any };
 
         return { kind: ref.cast as ConditionTypeKindEnum };
     }
@@ -239,4 +241,97 @@ export function describe(catalog: ConditionCatalog | undefined, node: ConditionN
         default:
             return "";
     }
+}
+
+//#region Validation errors
+
+/**
+ * Validation errors of a condition tree, keyed by the path of the node and field they belong
+ * to, for example `root.children.1.operator`.
+ */
+export type ConditionErrors = Record<string, string[]>;
+
+/**
+ * Paths of all nodes in a tree, in the same format the API uses for validation errors.
+ */
+export function collectNodePaths(
+    node: ConditionNode,
+    path = "root",
+    paths = new Map<ConditionNode, string>(),
+): Map<ConditionNode, string> {
+    paths.set(node, path);
+
+    if (node.type === "group") {
+        node.children.forEach((child, index) =>
+            collectNodePaths(child, `${path}.children.${index}`, paths),
+        );
+    } else if (node.type === "not") {
+        collectNodePaths(node.child, `${path}.child`, paths);
+    }
+
+    return paths;
+}
+
+/**
+ * Path of the node an error belongs to: the deepest node whose path is a prefix of the error's
+ * path. Empty if the error doesn't belong to any node.
+ */
+export function errorOwner(key: string, nodePaths: Iterable<string>): string {
+    let owner = "";
+
+    for (const path of nodePaths) {
+        if ((key === path || key.startsWith(`${path}.`)) && path.length > owner.length) {
+            owner = path;
+        }
+    }
+
+    return owner;
+}
+
+/**
+ * Group errors by the node they belong to. Messages for a field of a node are prefixed with the
+ * field, errors which don't belong to any node are grouped under an empty path.
+ */
+export function assignErrors(
+    errors: ConditionErrors,
+    nodePaths: Iterable<string>,
+): Map<string, string[]> {
+    const paths = [...nodePaths];
+    const result = new Map<string, string[]>();
+
+    for (const [key, messages] of Object.entries(errors)) {
+        const owner = errorOwner(key, paths);
+        const field = owner ? key.slice(owner.length + 1) : key;
+        const existing = result.get(owner) ?? [];
+
+        existing.push(...messages.map((message) => (field ? `${field}: ${message}` : message)));
+        result.set(owner, existing);
+    }
+
+    return result;
+}
+
+//#endregion
+
+/**
+ * Pluck the validation errors of the conditions from an API error response body, which has
+ * the shape `{"conditions": {"detail": "...", "nodes": {"<path>": ["<message>"]}}}`.
+ */
+export function pluckConditionErrors(body: unknown): ConditionErrors {
+    if (!body || typeof body !== "object" || !("conditions" in body)) return {};
+
+    const { conditions } = body;
+
+    if (!conditions || typeof conditions !== "object" || !("nodes" in conditions)) return {};
+
+    const { nodes } = conditions;
+
+    if (!nodes || typeof nodes !== "object") return {};
+
+    return Object.fromEntries(
+        Object.entries(nodes).map(([path, messages]) => [
+            path,
+            (Array.isArray(messages) ? messages : [messages]).map(String),
+        ]),
+    );
 }

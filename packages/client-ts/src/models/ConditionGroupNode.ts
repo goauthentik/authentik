@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -24,27 +22,17 @@ import { ConditionNodeFromJSON, ConditionNodeToJSON } from "./ConditionNode";
 
 /**
  * Combine the results of multiple nodes
+ *
  * @export
  * @interface ConditionGroupNode
  */
 export interface ConditionGroupNode {
     /**
-     *
-     * @type {ConditionGroupNodeTypeEnum}
-     * @memberof ConditionGroupNode
+     * Message shown to the user when this node evaluates to false and causes the policy to fail.
      */
+    message?: string | null;
     type: ConditionGroupNodeTypeEnum;
-    /**
-     *
-     * @type {ConditionGroupOp}
-     * @memberof ConditionGroupNode
-     */
     op: ConditionGroupOp;
-    /**
-     *
-     * @type {Array<ConditionNode>}
-     * @memberof ConditionGroupNode
-     */
     children: Array<ConditionNode>;
 }
 
@@ -70,6 +58,12 @@ export function ConditionGroupNodeFromJSONTyped(
         return json;
     }
     return {
+        message:
+            json["message"] === undefined
+                ? undefined
+                : json["message"] === null
+                  ? null
+                  : json["message"],
         type: ConditionGroupNodeTypeEnumFromJSON(json["type"]),
         op: ConditionGroupOpFromJSON(json["op"]),
         children: (json["children"] as Array<any>).map(ConditionNodeFromJSON),
@@ -89,6 +83,7 @@ export function ConditionGroupNodeToJSONTyped(
     }
 
     return {
+        message: value["message"],
         type: ConditionGroupNodeTypeEnumToJSON(value["type"]),
         op: ConditionGroupOpToJSON(value["op"]),
         children: (value["children"] as Array<any>).map(ConditionNodeToJSON),

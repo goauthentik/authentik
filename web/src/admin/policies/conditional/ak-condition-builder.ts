@@ -10,7 +10,11 @@ import { aki } from "#common/api/client";
 import { AKControlElement } from "#elements/ControlElement";
 
 import {
+    assignErrors,
     CAST_KINDS,
+    collectNodePaths,
+    ConditionErrors,
+    errorOwner,
     describe,
     emptyTree,
     factsForTarget,
@@ -152,6 +156,10 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
             .item > .content {
                 flex: 1;
             }
+            .item.invalid > .content {
+                border-left: 3px solid var(--pf-global--danger-color--100);
+                padding-left: var(--pf-global--spacer--sm);
+            }
             .chips {
                 display: flex;
                 flex-wrap: wrap;
@@ -208,9 +216,59 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
         return this.tree;
     }
 
-    protected changed() {
+    /**
+     * Validation errors returned by the API, keyed by the path of the node they belong to.
+     */
+    @property({ attribute: false })
+    public errors: ConditionErrors = {};
+
+    /**
+     * Paths of all nodes as of the last render, used to find the node errors belong to.
+     */
+    #paths = new Map<ConditionNode, string>();
+
+    #ownedErrors = new Map<string, string[]>();
+
+    /**
+     * Called when the tree was modified. When a single `node` was edited, only its errors are
+     * cleared. Otherwise the structure changed, and as paths of nodes may have changed, all
+     * errors are cleared.
+     */
+    protected changed(node?: ConditionNode) {
+        const path = node ? this.#paths.get(node) : undefined;
+
+        if (path === undefined) {
+            this.errors = {};
+        } else {
+            const paths = [...this.#paths.values()];
+
+            this.errors = Object.fromEntries(
+                Object.entries(this.errors).filter(([key]) => errorOwner(key, paths) !== path),
+            );
+        }
+
         this.requestUpdate();
         this.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
+    }
+
+    protected nodeErrors(...nodes: ConditionNode[]): string[] {
+        return nodes.flatMap((node) => {
+            const path = this.#paths.get(node);
+
+            return path === undefined ? [] : (this.#ownedErrors.get(path) ?? []);
+        });
+    }
+
+    protected renderErrors(errors: string[]) {
+        return errors.map(
+            (error) =>
+                html`<p class="pf-c-form__helper-text pf-m-error" role="alert">
+                    <span class="pf-c-form__helper-text-icon">
+                        <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+                    </span>
+                    ${error}
+                </p>`,
+        );
     }
 
     //#region Variables
@@ -504,7 +562,7 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
 
         const setLiteral = (value: unknown) => {
             node.value = { type: "literal", value };
-            this.changed();
+            this.changed(node);
         };
 
         const current = node.value?.type === "literal" ? node.value.value : undefined;
@@ -513,7 +571,7 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
         if (isVariable && node.value?.type === "variable") {
             editor = html`${this.renderVariableRef(node.value.variable, (variable) => {
                 node.value = { type: "variable", variable };
-                this.changed();
+                this.changed(node);
             })}`;
         } else if (operator?.operand === "range") {
             const values = Array.isArray(current) ? current : [null, null];
@@ -542,7 +600,7 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
                             ? { type: "variable", variable: { key: "" } }
                             : { type: "literal", value: null };
 
-                    this.changed();
+                    this.changed(node);
                 }}
             >
                 <option value="literal" ?selected=${!isVariable}>
@@ -576,7 +634,7 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
 
                 if (!valid) node.operator = ConditionOperatorName.IsSet;
                 node.value = null;
-                this.changed();
+                this.changed(node);
             })}
             <select
                 class="pf-c-form-control"
@@ -600,7 +658,7 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
                         node.value = null;
                     }
 
-                    this.changed();
+                    this.changed(node);
                 }}
             >
                 ${operators.map(
@@ -622,7 +680,7 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
                                       caseSensitive: !(ev.target as HTMLInputElement).checked,
                                   };
 
-                                  this.changed();
+                                  this.changed(node);
                               }}
                           />
                           ${msg("Ignore case", { id: "policies.conditional.options.ignore-case" })}
@@ -653,7 +711,7 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
                 .selected=${(policy: Policy) => policy.pk === node.policy}
                 @ak-change=${(ev: CustomEvent<{ value: Policy | null }>) => {
                     node.policy = ev.detail.value?.pk ?? "";
-                    this.changed();
+                    this.changed(node);
                 }}
             ></ak-search-select>
         </div>`;
@@ -684,19 +742,71 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
                 })}`;
         }
 
-        return html`<div class="item">
+        const showMessage = child.message !== undefined && child.message !== null;
+        const errors = this.nodeErrors(...(negated ? [child, inner] : [child]));
+
+        return html`<div class="item ${errors.length ? "invalid" : ""}">
             <button
                 type="button"
                 class="pf-c-button pf-m-small ${negated ? "pf-m-danger" : "pf-m-tertiary"}"
                 title=${msg("Negate", { id: "policies.conditional.node.negate.tooltip" })}
                 @click=${() => {
-                    parent.children[index] = negated ? inner : { type: "not", child: inner };
+                    // The message describes the result the parent sees, so it moves to the
+                    // outermost node
+                    const { message } = child;
+                    child.message = undefined;
+
+                    const replacement: ConditionNode = negated
+                        ? inner
+                        : { type: "not", child: inner };
+
+                    replacement.message = message;
+                    parent.children[index] = replacement;
                     this.changed();
                 }}
             >
                 ${msg("NOT", { id: "policies.conditional.node.negate.label" })}
             </button>
-            <div class="content">${content}</div>
+            <div class="content">
+                ${content} ${this.renderErrors(errors)}
+                ${
+                    showMessage
+                        ? html`<div class="row">
+                              <input
+                                  type="text"
+                                  class="pf-c-form-control grow"
+                                  .value=${child.message ?? ""}
+                                  placeholder=${msg("Message shown when this fails", {
+                                      id: "policies.conditional.node.message.placeholder",
+                                  })}
+                                  aria-label=${msg("Failure message", {
+                                      id: "policies.conditional.node.message.aria-label",
+                                  })}
+                                  @input=${(ev: InputEvent) => {
+                                      child.message = (ev.target as HTMLInputElement).value;
+                                      this.changed(child);
+                                  }}
+                              />
+                          </div>`
+                        : nothing
+                }
+            </div>
+            <button
+                type="button"
+                class="pf-c-button pf-m-plain ${showMessage ? "pf-m-active" : ""}"
+                title=${msg("Show a message when this fails", {
+                    id: "policies.conditional.node.message.tooltip",
+                })}
+                aria-label=${msg("Toggle failure message", {
+                    id: "policies.conditional.node.message.toggle.aria-label",
+                })}
+                @click=${() => {
+                    child.message = showMessage ? undefined : "";
+                    this.changed(child);
+                }}
+            >
+                <i class="fas fa-comment" aria-hidden="true"></i>
+            </button>
             <button
                 type="button"
                 class="pf-c-button pf-m-plain"
@@ -726,7 +836,7 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
                     })}
                     @change=${(ev: Event) => {
                         group.op = (ev.target as HTMLSelectElement).value as GroupNode["op"];
-                        this.changed();
+                        this.changed(group);
                     }}
                 >
                     <option value="all" ?selected=${group.op === "all"}>
@@ -807,8 +917,14 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
         const root = this.tree.root as GroupNode;
         const unavailable = unavailableVariables(this.catalog, root, this.facts);
 
+        this.#paths = collectNodePaths(root);
+        this.#ownedErrors = assignErrors(this.errors, this.#paths.values());
+
+        // Errors of the root group, and errors which don't belong to any node
+        const rootErrors = [...this.nodeErrors(root), ...(this.#ownedErrors.get("") ?? [])];
+
         return html`<div class="pf-c-form">
-            ${this.renderTargetSelect()} ${this.renderGroup(root)}
+            ${this.renderTargetSelect()} ${this.renderErrors(rootErrors)} ${this.renderGroup(root)}
             ${
                 unavailable.length
                     ? html`<p class="warning">

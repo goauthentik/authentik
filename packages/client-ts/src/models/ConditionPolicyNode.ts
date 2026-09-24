@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,21 +18,16 @@ import {
 
 /**
  * Evaluate another policy
+ *
  * @export
  * @interface ConditionPolicyNode
  */
 export interface ConditionPolicyNode {
     /**
-     *
-     * @type {ConditionPolicyNodeTypeEnum}
-     * @memberof ConditionPolicyNode
+     * Message shown to the user when this node evaluates to false and causes the policy to fail.
      */
+    message?: string | null;
     type: ConditionPolicyNodeTypeEnum;
-    /**
-     *
-     * @type {string}
-     * @memberof ConditionPolicyNode
-     */
     policy: string;
 }
 
@@ -59,6 +52,12 @@ export function ConditionPolicyNodeFromJSONTyped(
         return json;
     }
     return {
+        message:
+            json["message"] === undefined
+                ? undefined
+                : json["message"] === null
+                  ? null
+                  : json["message"],
         type: ConditionPolicyNodeTypeEnumFromJSON(json["type"]),
         policy: json["policy"],
     };
@@ -77,6 +76,7 @@ export function ConditionPolicyNodeToJSONTyped(
     }
 
     return {
+        message: value["message"],
         type: ConditionPolicyNodeTypeEnumToJSON(value["type"]),
         policy: value["policy"],
     };

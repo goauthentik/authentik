@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,21 +15,12 @@ import { ConditionNodeFromJSON, ConditionNodeToJSON } from "./ConditionNode";
 
 /**
  * Condition tree of a conditional policy
+ *
  * @export
  * @interface ConditionTree
  */
 export interface ConditionTree {
-    /**
-     *
-     * @type {number}
-     * @memberof ConditionTree
-     */
     version: number;
-    /**
-     *
-     * @type {ConditionNode}
-     * @memberof ConditionTree
-     */
     root: ConditionNode;
 }
 

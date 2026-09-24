@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,6 +12,7 @@
 
 /**
  * Names of all operators
+ *
  * @export
  */
 export const ConditionOperatorName = {
@@ -37,6 +36,9 @@ export const ConditionOperatorName = {
     WithinLast: "within_last",
     OlderThan: "older_than",
     InNetwork: "in_network",
+    IsPrivate: "is_private",
+    IsGlobal: "is_global",
+    IsUrl: "is_url",
     HasItem: "has_item",
     HasAny: "has_any",
     HasAll: "has_all",

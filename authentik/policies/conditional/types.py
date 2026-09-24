@@ -176,9 +176,12 @@ def coerce(value: Any, vtype: ValueType) -> Any:  # noqa: PLR0911, PLR0912
         case TypeKind.DURATION:
             if isinstance(value, timedelta):
                 return value
-            if not isinstance(value, str):
-                raise ValueError(f"'{value}' is not a valid duration")
-            return timedelta_from_string(value)
+            try:
+                return timedelta_from_string(str(value))
+            except ValueError as exc:
+                raise ValueError(
+                    f"'{value}' is not a valid duration, use a format like 'hours=1;minutes=30'"
+                ) from exc
         case TypeKind.MODEL:
             if isinstance(value, Model):
                 return str(value.pk)

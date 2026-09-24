@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,27 +12,13 @@
 
 /**
  * Object policies can be bound to, and the facts available when they are evaluated
+ *
  * @export
  * @interface ConditionTarget
  */
 export interface ConditionTarget {
-    /**
-     *
-     * @type {string}
-     * @memberof ConditionTarget
-     */
     model: string;
-    /**
-     *
-     * @type {string}
-     * @memberof ConditionTarget
-     */
     verboseName: string;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof ConditionTarget
-     */
     facts: Array<string>;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,16 +11,10 @@
  */
 
 /**
- *
  * @export
  * @interface ConditionOptions
  */
 export interface ConditionOptions {
-    /**
-     *
-     * @type {boolean}
-     * @memberof ConditionOptions
-     */
     caseSensitive?: boolean;
 }
 
