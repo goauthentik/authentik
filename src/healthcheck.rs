@@ -1,6 +1,6 @@
 use ak_common::Mode;
 use argh::FromArgs;
-use eyre::{Result, eyre};
+use eyre::{Result, WrapErr as _, eyre};
 use reqwest::blocking::Client;
 use tracing::info;
 
@@ -9,11 +9,16 @@ use tracing::info;
 #[argh(subcommand, name = "healthcheck")]
 pub(super) struct Cli {
     #[argh(positional)]
-    mode: String,
+    mode: Option<String>,
 }
 
 pub(super) fn run(args: &Cli) -> Result<()> {
-    let mode: Mode = args.mode.parse()?;
+    let mode: Mode = if let Some(mode) = &args.mode {
+        mode.parse()?
+    } else {
+        Mode::load().wrap_err("failed to read the mode of the running server or worker")?;
+        Mode::get()
+    };
     info!(%mode, "checking health");
 
     let response = match mode {

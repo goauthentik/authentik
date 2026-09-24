@@ -224,9 +224,8 @@ COPY --from=node-builder /work/web/authentik/ /web/authentik/
 COPY --from=geoip /usr/share/GeoIP /geoip
 
 # Setup 'ak'
-# /lifecycle comes first on PATH, and the binary runs its boot subcommand when invoked as `ak`
 RUN ln -s /ak-root/packages /packages && \
-    ln -sf /bin/authentik /lifecycle/ak
+    ln -sf ak.py /lifecycle/ak
 
 # Stage: Debug
 # For `ak test-all`, AUTHENTIK_DEBUGGER and `docker exec ... bash`
