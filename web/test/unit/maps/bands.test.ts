@@ -4,6 +4,7 @@ import { expect, test } from "vitest";
 
 test("bands cover z0-7 contiguously", () => {
     expect(HEX_BANDS.length).toBe(3);
+
     expect(HEX_BANDS.map((b) => [b.res, b.minzoom, b.maxzoom])).toStrictEqual([
         [3, 0, 2],
         [4, 3, 6],

@@ -2,7 +2,6 @@ import "#elements/events/LogViewer";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#components/ak-switch-input";
-
 import { aki } from "#common/api/client";
 
 import { Form } from "#elements/forms/Form";
@@ -51,6 +50,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
 
     async send(data: SyncObjectRequest): Promise<void> {
         data.syncObjectModel = this.model;
+
         this.result = await this.sync({
             id: this.provider || 0,
             syncObjectRequest: data,
@@ -64,10 +64,13 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
                     const args: CoreUsersListRequest = {
                         ordering: "username",
                     };
+
                     if (query !== undefined) {
                         args.search = query;
                     }
+
                     const users = await aki(CoreApi).coreUsersList(args);
+
                     return users.results;
                 }}
                 .renderElement=${(user: User): string => {
@@ -91,10 +94,13 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
                     const args: CoreGroupsListRequest = {
                         ordering: "name",
                     };
+
                     if (query !== undefined) {
                         args.search = query;
                     }
+
                     const groups = await aki(CoreApi).coreGroupsList(args);
+
                     return groups.results;
                 }}
                 .renderElement=${(group: Group): string => {
@@ -115,12 +121,16 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
     }
 
     renderForm() {
-        return html` ${this.model === SyncObjectModelEnum.AuthentikCoreModelsUser
-                ? this.renderSelectUser()
-                : nothing}
-            ${this.model === SyncObjectModelEnum.AuthentikCoreModelsGroup
-                ? this.renderSelectGroup()
-                : nothing}
+        return html` ${
+                this.model === SyncObjectModelEnum.AuthentikCoreModelsUser
+                    ? this.renderSelectUser()
+                    : nothing
+            }
+            ${
+                this.model === SyncObjectModelEnum.AuthentikCoreModelsGroup
+                    ? this.renderSelectGroup()
+                    : nothing
+            }
             <ak-switch-input
                 name="overrideDryRun"
                 label=${msg("Override dry-run mode")}

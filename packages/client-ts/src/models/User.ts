@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -22,89 +20,40 @@ import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
 
 /**
  * User Serializer
+ *
  * @export
  * @interface User
  */
 export interface User {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     username: string;
     /**
      * User's display name.
      */
     name: string;
     /**
-     * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+     * Designates whether this user should be treated as active. Unselect this instead of deleting
+     * accounts.
      */
     isActive?: boolean;
-    /**
-     *
-     */
     lastLogin?: Date | null;
-    /**
-     *
-     */
     readonly dateJoined: Date;
-    /**
-     *
-     */
     readonly isSuperuser: boolean;
-    /**
-     *
-     */
     groups?: Array<string>;
-    /**
-     *
-     */
     readonly groupsObj: Array<PartialGroup> | null;
-    /**
-     *
-     */
     roles?: Array<string>;
-    /**
-     *
-     */
     readonly rolesObj: Array<Role> | null;
-    /**
-     *
-     */
     email?: string;
     /**
      * User's avatar, either a http/https URL or a data URI
      */
     readonly avatar: string;
-    /**
-     *
-     */
     attributes?: { [key: string]: any };
-    /**
-     *
-     */
     readonly uid: string;
-    /**
-     *
-     */
     path?: string;
-    /**
-     *
-     */
     type?: UserTypeEnum;
-    /**
-     *
-     */
     readonly uuid: string;
-    /**
-     *
-     */
     readonly passwordChangeDate: Date;
-    /**
-     *
-     */
     readonly lastUpdated: Date;
 }
 
