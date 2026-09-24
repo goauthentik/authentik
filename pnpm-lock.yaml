@@ -493,9 +493,6 @@ importers:
 
   packages/theme:
     dependencies:
-      '@goauthentik/fonts':
-        specifier: link:../fonts
-        version: link:../fonts
       '@styleframe/core':
         specifier: ^3.5.0
         version: 3.6.2(@styleframe/license@2.0.2)
@@ -508,9 +505,6 @@ importers:
       '@styleframe/transpiler':
         specifier: ^3.3.0
         version: 3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)
-      http-server:
-        specifier: ^14.1.1
-        version: 14.1.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       rimraf:
         specifier: ^6.1.3
         version: 6.1.3
@@ -518,6 +512,9 @@ importers:
         specifier: ^3.7.0
         version: 3.9.1(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/loader@3.0.4(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)))(@styleframe/plugin@3.4.1(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(esbuild@0.28.1)(rolldown@1.2.3)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.0)(yaml@2.9.0))(webpack@5.108.4(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.26))(csso@5.0.5)(esbuild@0.28.1)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.26)))(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2))
     devDependencies:
+      '@goauthentik/fonts':
+        specifier: link:../fonts
+        version: link:../fonts
       '@goauthentik/oxfmt-config':
         specifier: link:../oxfmt-config
         version: link:../oxfmt-config
@@ -542,6 +539,9 @@ importers:
       culori:
         specifier: ^4.0.2
         version: 4.0.2
+      http-server:
+        specifier: ^14.1.1
+        version: 14.1.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       npm-run-all:
         specifier: ^4.1.5
         version: 4.1.5

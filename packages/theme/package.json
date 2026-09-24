@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/theme",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "Styleframe-based design system for authentik.",
     "license": "MIT",
     "repository": {
@@ -132,16 +132,15 @@
         }
     },
     "dependencies": {
-        "@goauthentik/fonts": "link:../fonts",
         "@styleframe/core": "^3.5.0",
         "@styleframe/dtcg": "^1.1.0",
         "@styleframe/theme": "^3.7.0",
         "@styleframe/transpiler": "^3.3.0",
-        "http-server": "^14.1.1",
         "rimraf": "^6.1.3",
         "styleframe": "^3.7.0"
     },
     "devDependencies": {
+        "@goauthentik/fonts": "link:../fonts",
         "@goauthentik/oxfmt-config": "link:../oxfmt-config",
         "@goauthentik/oxlint-config": "link:../oxlint-config",
         "@goauthentik/tsconfig": "link:../tsconfig",
@@ -150,6 +149,7 @@
         "@types/node": "catalog:",
         "@typescript/native-preview": "7.0.0-dev.20260707.2",
         "culori": "^4.0.2",
+        "http-server": "^14.1.1",
         "npm-run-all": "^4.1.5",
         "oxfmt": "catalog:",
         "oxlint": "catalog:",
@@ -157,6 +157,9 @@
         "stylelint-config-recommended": "^18.0.0",
         "typescript": "catalog:",
         "wireit": "^0.14.13"
+    },
+    "peerDependencies": {
+        "@goauthentik/fonts": "^1.0.0 || ^2.0.0"
     },
     "devEngines": {
         "runtime": {
