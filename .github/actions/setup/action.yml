@@ -42,7 +42,7 @@ runs:
         sudo rsync -a --delete /tmp/empty/ /usr/local/lib/android/
     - name: Install uv
       if: ${{ contains(inputs.dependencies, 'python') }}
-      uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v5
+      uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v5
       with:
         enable-cache: true
     - name: Setup python
