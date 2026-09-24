@@ -1,22 +1,21 @@
 //! Container entrypoint
 
 use std::{
-    collections::BTreeMap,
-    ffi::{CString, OsStr, OsString},
     fs,
     os::unix::{
-        ffi::OsStringExt as _,
         fs::{MetadataExt as _, PermissionsExt as _},
+        process::CommandExt as _,
     },
     path::{Path, PathBuf},
     process::Command,
+    time::Duration,
 };
 
 use argh::FromArgs;
 use eyre::{Result, WrapErr as _, eyre};
 use nix::{
     fcntl::{AT_FDCWD, AtFlags},
-    unistd::{Gid, Group, Uid, User, execve, execvpe, getuid, setgid, setgroups, setuid},
+    unistd::{Gid, Group, Uid, User, getuid, setgid, setgroups, setuid},
 };
 use tracing::{info, warn};
 
@@ -24,96 +23,79 @@ use tracing::{info, warn};
 const AK_USER: &str = "authentik";
 /// Mounted by deployments that let the worker manage outpost containers.
 const DOCKER_SOCKET: &str = "/var/run/docker.sock";
-/// Where the Dockerfile puts the compiled binary. Only a fallback, see `authentik_bin`.
-const AUTHENTIK_BIN: &str = "/bin/authentik";
-/// Subcommands this binary implements itself.
-const NATIVE_COMMANDS: [&str; 4] = ["server", "worker", "allinone", "healthcheck"];
+/// Where Python's prometheus client keeps the metrics of each process.
+const PROMETHEUS_MULTIPROC_DIR: &str = "PROMETHEUS_MULTIPROC_DIR";
 
 #[derive(Debug, FromArgs, PartialEq)]
-/// Prepare the container, drop privileges and exec the real process.
-#[argh(subcommand, name = "boot")]
-pub(crate) struct Cli {
-    /// the ak subcommand and its arguments
+/// Run a Django management command.
+#[argh(subcommand, name = "manage")]
+pub(crate) struct Manage {
+    /// the management command and its arguments
     #[argh(positional, greedy)]
     args: Vec<String>,
 }
 
-fn venv_python() -> PathBuf {
-    let venv = std::env::var("VENV_PATH").unwrap_or_else(|_| "/ak-root/.venv".to_owned());
-    PathBuf::from(venv).join("bin/python")
+#[derive(Debug, FromArgs, PartialEq)]
+/// Run the test suite.
+#[argh(subcommand, name = "test-all")]
+#[expect(
+    clippy::empty_structs_with_brackets,
+    reason = "argh doesn't support unit structs"
+)]
+pub(crate) struct TestAll {}
+
+#[derive(Debug, FromArgs, PartialEq)]
+/// Print the configuration, or the values of the given keys.
+#[argh(subcommand, name = "dump_config")]
+pub(crate) struct DumpConfig {
+    /// the keys to print
+    #[argh(positional, greedy)]
+    keys: Vec<String>,
 }
 
-/// The binary to exec for the commands this binary implements itself.
-///
-/// In the container this is the same file as `AUTHENTIK_BIN`, reached through the `/lifecycle/ak`
-/// symlink. In a development checkout it is the `cargo` build under `target/`.
-fn authentik_bin() -> PathBuf {
-    std::env::current_exe()
-        .ok()
-        .filter(|path| path.is_file())
-        .unwrap_or_else(|| PathBuf::from(AUTHENTIK_BIN))
+#[derive(Debug, FromArgs, PartialEq)]
+/// Run bash.
+#[argh(subcommand, name = "bash")]
+pub(crate) struct Bash {
+    /// the arguments for bash
+    #[argh(positional, greedy)]
+    args: Vec<String>,
 }
 
-fn tmpdir() -> PathBuf {
-    PathBuf::from(std::env::var("TMPDIR").unwrap_or_else(|_| "/tmp".to_owned()))
+#[derive(Debug, FromArgs, PartialEq)]
+/// Run sh.
+#[argh(subcommand, name = "sh")]
+pub(crate) struct Sh {
+    /// the arguments for sh
+    #[argh(positional, greedy)]
+    args: Vec<String>,
 }
 
-/// True when this binary was invoked through the `/lifecycle/ak` symlink.
-pub(crate) fn invoked_as_ak(argv0: &str) -> bool {
-    Path::new(argv0).file_name() == Some(OsStr::new("ak"))
+#[derive(Debug, FromArgs, PartialEq)]
+/// Idle, so that a shell can be opened in the container.
+#[argh(subcommand, name = "debug")]
+#[expect(
+    clippy::empty_structs_with_brackets,
+    reason = "argh doesn't support unit structs"
+)]
+pub(crate) struct Debug {}
+
+/// Where Python's prometheus client keeps the metrics of each process.
+fn prometheus_dir() -> Result<PathBuf> {
+    let dir = std::env::var_os(PROMETHEUS_MULTIPROC_DIR)
+        .filter(|dir| !dir.is_empty())
+        .map_or_else(
+            || std::env::temp_dir().join("authentik_prometheus_tmp"),
+            PathBuf::from,
+        );
+    fs::create_dir_all(&dir)?;
+    Ok(dir)
 }
 
-/// Map an `ak` invocation onto the argv of the program to exec.
-fn resolve_target(args: &[String]) -> Vec<String> {
-    let python = venv_python().to_string_lossy().into_owned();
-    match args.first().map(String::as_str) {
-        Some(cmd) if NATIVE_COMMANDS.contains(&cmd) => {
-            let mut target = vec![authentik_bin().to_string_lossy().into_owned()];
-            target.extend_from_slice(args);
-            target
-        }
-        Some("manage") => {
-            let mut target = vec![python, "-m".to_owned(), "manage".to_owned()];
-            target.extend_from_slice(&args[1..]);
-            target
-        }
-        _ => {
-            let mut target = vec![python, "-m".to_owned(), "manage".to_owned()];
-            target.extend_from_slice(args);
-            target
-        }
-    }
-}
-
-/// `execve` replaces the environment, so the current one is a snapshot and the overrides are
-/// applied to the copy
-fn exec(argv: &[String], extra_env: &[(&str, String)]) -> Result<()> {
-    let cargv = argv
-        .iter()
-        .map(|a| CString::new(a.as_str()))
-        .collect::<Result<Vec<_>, _>>()?;
-    let program = CString::new(argv[0].as_str())?;
-
-    let mut env: BTreeMap<OsString, OsString> = std::env::vars_os().collect();
-    for (key, value) in extra_env {
-        env.insert(OsString::from(*key), OsString::from(value));
-    }
-    let cenv = env
-        .into_iter()
-        .map(|(key, value)| {
-            let mut pair = key;
-            pair.push("=");
-            pair.push(value);
-            CString::new(pair.into_vec())
-        })
-        .collect::<Result<Vec<_>, _>>()?;
-
-    if argv[0].contains('/') {
-        execve(&program, &cargv, &cenv)?;
-    } else {
-        execvpe(&program, &cargv, &cenv)?;
-    }
-    unreachable!("exec returned without an error")
+/// Replace this process with `cmd`. Only returns when that fails.
+fn exec(mut cmd: Command) -> Result<()> {
+    let err = cmd.exec();
+    Err(err).wrap_err_with(|| format!("failed to run {}", cmd.get_program().display()))
 }
 
 /// `chown -R`, skipping entries that already have the right owner.
@@ -169,16 +151,8 @@ fn docker_socket_gid() -> Option<Gid> {
         .map(|meta| Gid::from_raw(meta.gid()))
 }
 
-/// Fix up ownership while still root, then exec the target as `authentik`.
-fn run_as_authentik(args: &[String], prometheus_dir: &str) -> Result<()> {
-    let target = resolve_target(args);
-    let mut env = vec![("PROMETHEUS_MULTIPROC_DIR", prometheus_dir.to_owned())];
-
-    if !getuid().is_root() {
-        info!("not running as root, disabling permission fixes");
-        return exec(&target, &env);
-    }
-
+/// Fix up ownership while still root, then switch to `authentik`. Returns its home directory.
+fn become_authentik(prometheus_dir: &Path) -> Result<PathBuf> {
     let user = User::from_name(AK_USER)?.ok_or_else(|| eyre!("user {AK_USER} does not exist"))?;
     let mut groups = vec![user.gid];
 
@@ -198,31 +172,28 @@ fn run_as_authentik(args: &[String], prometheus_dir: &str) -> Result<()> {
         groups.push(gid);
     }
 
-    for path in ["/data", "/certs", prometheus_dir] {
-        chown_tree(Path::new(path), user.uid, user.gid)
-            .wrap_err_with(|| format!("failed to change owner of {path}"))?;
+    for path in [Path::new("/data"), Path::new("/certs"), prometheus_dir] {
+        chown_tree(path, user.uid, user.gid)
+            .wrap_err_with(|| format!("failed to change owner of {}", path.display()))?;
     }
     // Mirrors the old `chmod ug+rwx /data` and `chmod ug+rx /certs`
     add_mode(Path::new("/data"), 0o770)?;
     // 'certs' deliberately gets no owner write bit
     add_mode(Path::new("/certs"), 0o550)?;
 
-    env.push(("HOME", user.dir.to_string_lossy().into_owned()));
-
     setgroups(&groups)?;
     setgid(user.gid)?;
     setuid(user.uid)?;
-    if getuid() != user.uid {
+    // Still being root would make `boot` loop
+    if getuid() != user.uid || getuid().is_root() {
         return Err(eyre!("failed to drop privileges to {AK_USER}"));
     }
-
-    exec(&target, &env)
+    Ok(user.dir)
 }
 
-fn wait_for_db(prometheus_dir: &str) -> Result<()> {
-    let status = Command::new(venv_python())
+fn wait_for_db() -> Result<()> {
+    let status = Command::new("python")
         .args(["-m", "lifecycle.wait_for_db"])
-        .env("PROMETHEUS_MULTIPROC_DIR", prometheus_dir)
         .status()?;
     if !status.success() {
         return Err(eyre!("wait_for_db exited with {status}"));
@@ -231,80 +202,74 @@ fn wait_for_db(prometheus_dir: &str) -> Result<()> {
     Ok(())
 }
 
-pub(crate) fn run(cli: &Cli) -> Result<()> {
-    // Keep what the deployment set, otherwise fall back to a directory under
-    // TMPDIR. Every exec below carries this to the child explicitly.
-    let prometheus_dir = match std::env::var("PROMETHEUS_MULTIPROC_DIR") {
-        Ok(dir) if !dir.is_empty() => dir,
-        _ => tmpdir()
-            .join("authentik_prometheus_tmp")
-            .to_string_lossy()
-            .into_owned(),
-    };
-    fs::create_dir_all(&prometheus_dir)?;
-    let env = [("PROMETHEUS_MULTIPROC_DIR", prometheus_dir.clone())];
+/// Get the process ready to run the server or the worker.
+pub(crate) fn boot() -> Result<()> {
+    let prometheus_dir = prometheus_dir()?;
+    let mut env = Vec::new();
+    if std::env::var_os(PROMETHEUS_MULTIPROC_DIR).as_deref() != Some(prometheus_dir.as_os_str()) {
+        env.push((PROMETHEUS_MULTIPROC_DIR, prometheus_dir.clone()));
+    }
+    if getuid().is_root() {
+        env.push(("HOME", become_authentik(&prometheus_dir)?));
+    }
+    // Changing our own environment needs unsafe code, so exec ourselves with the new one
+    if !env.is_empty() {
+        let mut cmd = Command::new(std::env::current_exe()?);
+        cmd.args(std::env::args_os().skip(1)).envs(env);
+        return exec(cmd);
+    }
+    wait_for_db()
+}
 
-    let args = &cli.args;
-    let Some(command) = args.first().map(String::as_str) else {
-        return Err(eyre!(
-            "usage: ak <server|worker|allinone|healthcheck|dump_config|MANAGE_COMMAND>"
-        ));
-    };
+pub(crate) fn manage(args: &Manage) -> Result<()> {
+    // manage.py waits for the database itself
+    let mut cmd = Command::new("python");
+    cmd.args(["-m", "manage"])
+        .args(&args.args)
+        .env(PROMETHEUS_MULTIPROC_DIR, prometheus_dir()?);
+    exec(cmd)
+}
 
-    match command {
-        "bash" | "sh" => {
-            let mut target = vec![command.to_owned()];
-            target.extend_from_slice(&args[1..]);
-            exec(&target, &env)
-        }
-        "test-all" => {
-            // The bash entrypoint opened up /root first, because the suite
-            // writes there, then ran `manage test authentik`.
-            if getuid().is_root() {
-                add_mode(Path::new("/root"), 0o777)?;
-            }
-            wait_for_db(&prometheus_dir)?;
-            let target = ["manage", "test", "authentik"].map(str::to_owned).to_vec();
-            run_as_authentik(&target, &prometheus_dir)
-        }
-        "dump_config" => {
-            let python = venv_python().to_string_lossy().into_owned();
-            let mut target = vec![python, "-m".to_owned(), "authentik.lib.config".to_owned()];
-            target.extend_from_slice(&args[1..]);
-            exec(&target, &env)
-        }
-        #[expect(
-            clippy::infinite_loop,
-            reason = "the debug entrypoint idles so a user can exec into the container"
-        )]
-        "debug" => loop {
-            std::thread::sleep(std::time::Duration::from_hours(1));
-        },
-        "allinone" | "server" | "worker" => {
-            wait_for_db(&prometheus_dir)?;
-            run_as_authentik(args, &prometheus_dir)
-        }
-        "healthcheck" => {
-            // `authentik healthcheck` takes the mode as a positional argument.
-            // The server writes it to $TMPDIR/authentik-mode on startup.
-            let mut target = args.clone();
-            if target.len() == 1 {
-                match fs::read_to_string(tmpdir().join("authentik-mode")) {
-                    Ok(mode) if !mode.trim().is_empty() => target.push(mode.trim().to_owned()),
-                    _ => warn!(
-                        "no mode file yet, the healthcheck will fail until the server writes one"
-                    ),
-                }
-            }
-            run_as_authentik(&target, &prometheus_dir)
-        }
-        _ => {
-            wait_for_db(&prometheus_dir)?;
-            let python = venv_python().to_string_lossy().into_owned();
-            let mut target = vec![python, "-m".to_owned(), "manage".to_owned()];
-            target.extend_from_slice(args);
-            exec(&target, &env)
-        }
+pub(crate) fn test_all() -> Result<()> {
+    let prometheus_dir = prometheus_dir()?;
+    // manage.py waits for the database itself
+    let mut cmd = Command::new("python");
+    cmd.args(["-m", "manage", "test", "authentik"])
+        .env(PROMETHEUS_MULTIPROC_DIR, &prometheus_dir);
+    if getuid().is_root() {
+        // The bash entrypoint opened up /root first, because the suite writes there
+        add_mode(Path::new("/root"), 0o777)?;
+        cmd.env("HOME", become_authentik(&prometheus_dir)?);
+    }
+    exec(cmd)
+}
+
+pub(crate) fn dump_config(args: &DumpConfig) -> Result<()> {
+    let mut cmd = Command::new("python");
+    cmd.args(["-m", "authentik.lib.config"])
+        .args(&args.keys)
+        .env(PROMETHEUS_MULTIPROC_DIR, prometheus_dir()?);
+    exec(cmd)
+}
+
+fn shell(program: &str, args: &[String]) -> Result<()> {
+    let mut cmd = Command::new(program);
+    cmd.args(args)
+        .env(PROMETHEUS_MULTIPROC_DIR, prometheus_dir()?);
+    exec(cmd)
+}
+
+pub(crate) fn bash(args: &Bash) -> Result<()> {
+    shell("bash", &args.args)
+}
+
+pub(crate) fn sh(args: &Sh) -> Result<()> {
+    shell("sh", &args.args)
+}
+
+pub(crate) fn idle() -> ! {
+    loop {
+        std::thread::sleep(Duration::from_hours(1));
     }
 }
 
@@ -312,54 +277,24 @@ pub(crate) fn run(cli: &Cli) -> Result<()> {
 mod tests {
     use super::*;
 
-    fn owned(args: &[&str]) -> Vec<String> {
-        args.iter().map(|a| (*a).to_owned()).collect()
-    }
-
+    // `lifecycle/ak.py` puts a `--` in front of these, so that argh keeps what follows as it is
     #[test]
-    fn native_commands_go_to_the_binary() {
-        let bin = authentik_bin().to_string_lossy().into_owned();
-        for cmd in NATIVE_COMMANDS {
-            let argv = resolve_target(&owned(&[cmd]));
-            assert_eq!(argv[0], bin);
-            assert_eq!(argv[1], cmd);
+    fn arguments_after_the_separator_are_kept() {
+        for args in [
+            &["--help"][..],
+            &["help"],
+            &["shell", "-c", "print(1)"],
+            &["migrate", "--", "--fake"],
+        ] {
+            let argv: Vec<&str> = std::iter::once("--").chain(args.iter().copied()).collect();
+            let manage = Manage::from_args(&["manage"], &argv).expect("failed to parse");
+            assert_eq!(manage.args, args);
         }
     }
 
     #[test]
-    fn healthcheck_keeps_its_mode_argument() {
-        let bin = authentik_bin().to_string_lossy().into_owned();
-        let argv = resolve_target(&owned(&["healthcheck", "worker"]));
-        assert_eq!(
-            argv,
-            vec![bin, "healthcheck".to_owned(), "worker".to_owned()]
-        );
-    }
-
-    #[test]
-    fn management_commands_go_to_django() {
-        let argv = resolve_target(&owned(&["test_email", "a@b.c"]));
-        assert!(argv[0].ends_with("/bin/python"));
-        assert_eq!(&argv[1..], ["-m", "manage", "test_email", "a@b.c"]);
-    }
-
-    #[test]
-    fn an_explicit_manage_prefix_is_not_repeated() {
-        let argv = resolve_target(&owned(&["manage", "migrate"]));
-        assert_eq!(&argv[1..], ["-m", "manage", "migrate"]);
-    }
-
-    #[test]
-    fn flags_survive_the_dispatch() {
-        let argv = resolve_target(&owned(&["shell", "-c", "print(1)"]));
-        assert_eq!(&argv[1..], ["-m", "manage", "shell", "-c", "print(1)"]);
-    }
-
-    #[test]
-    fn the_ak_symlink_is_recognized() {
-        assert!(invoked_as_ak("/lifecycle/ak"));
-        assert!(invoked_as_ak("ak"));
-        assert!(!invoked_as_ak("/bin/authentik"));
-        assert!(!invoked_as_ak("authentik"));
+    fn shell_flags_are_kept() {
+        let bash = Bash::from_args(&["bash"], &["--", "-c", "echo hi"]).expect("failed to parse");
+        assert_eq!(bash.args, ["-c", "echo hi"]);
     }
 }
