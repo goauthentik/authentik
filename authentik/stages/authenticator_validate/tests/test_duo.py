@@ -11,12 +11,10 @@ from authentik.core.tests.utils import RequestFactory, create_test_admin_user, c
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from authentik.flows.stage import StageView
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.generators import generate_id, generate_key
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
-from authentik.stages.authenticator_validate.challenge import validate_challenge_duo
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.user_login.models import UserLoginStage
 
@@ -60,14 +58,12 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
         ):
             self.assertEqual(
                 duo_device,
-                validate_challenge_duo(
+                duo_device.validate_challenge(
+                    request,
                     duo_device.pk,
-                    StageView(
-                        FlowExecutorView(
-                            current_stage=stage,
-                            plan=FlowPlan(generate_id(), [], {}),
-                        ),
-                        request=request,
+                    FlowExecutorView(
+                        current_stage=stage,
+                        plan=FlowPlan(generate_id(), [], {}),
                     ),
                     self.user,
                 ),
@@ -87,14 +83,12 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
             ),
         ):
             with self.assertRaises(ValidationError):
-                validate_challenge_duo(
+                duo_device.validate_challenge(
+                    request,
                     duo_device.pk,
-                    StageView(
-                        FlowExecutorView(
-                            current_stage=stage,
-                            plan=FlowPlan(generate_id(), [], {}),
-                        ),
-                        request=request,
+                    FlowExecutorView(
+                        current_stage=stage,
+                        plan=FlowPlan(generate_id(), [], {}),
                     ),
                     self.user,
                 )
