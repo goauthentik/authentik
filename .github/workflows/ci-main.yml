@@ -536,6 +536,7 @@ jobs:
           # would `docker save` a gigabyte for nothing.
           cache: false
           wait: true
+          enterprise_license: true
       - name: Run Playwright tests
         working-directory: web
         env:
