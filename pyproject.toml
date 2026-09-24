@@ -61,7 +61,7 @@ dependencies = [
   "psycopg[c,pool]==3.3.6",
   "pydantic-scim==0.0.8",
   "pydantic==2.13.5",
-  "pyjwt==2.14.0",
+  "pyjwt==2.15.0",
   "pyrad==2.5.4",
   "pyroscope-io==1.2.3",
   "pyroscope-otel==1.1.0",
