@@ -531,13 +531,11 @@ jobs:
         uses: goauthentik/action-setup-authentik@e9b3782a8da81f3a33bbe21de97c7d3cf6c8820f # v3.2
         with:
           version: localhost/server:e2e
-          # The image ships the repo's own `blueprints/` at /blueprints, so the
-          # defaults the tests drive are already there. This adds the one blueprint
-          # that isn't baked in: the admin account `session.login()` uses.
           blueprints_path: web/test/blueprints
           # The image tag is per-commit, so the cache key never hits and every run
           # would `docker save` a gigabyte for nothing.
           cache: false
+          wait: true
       - name: Run Playwright tests
         working-directory: web
         env:
