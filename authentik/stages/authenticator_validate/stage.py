@@ -29,7 +29,6 @@ from authentik.stages.authenticator_email.models import EmailDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.challenge import (
     DeviceChallenge,
-    get_challenge_for_device,
     get_webauthn_challenge_without_user,
     select_challenge,
     validate_challenge_code,
@@ -225,7 +224,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 data={
                     "device_class": device_class,
                     "device_uid": device.pk,
-                    "challenge": get_challenge_for_device(self, stage, device),
+                    "challenge": device.get_challenge_for_device(self, stage),
                     "last_used": device.last_used,
                 }
             )

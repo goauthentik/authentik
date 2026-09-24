@@ -15,7 +15,6 @@ from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.generators import generate_id
 from authentik.stages.authenticator_validate.challenge import (
-    get_challenge_for_device,
     get_webauthn_challenge_without_user,
     validate_challenge_webauthn,
 )
@@ -103,10 +102,8 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
             webauthn_user_verification=UserVerification.PREFERRED,
         )
         plan = FlowPlan("")
-        stage_view = AuthenticatorValidateStageView(
-            FlowExecutorView(flow=None, current_stage=stage, plan=plan), request=request
-        )
-        challenge = get_challenge_for_device(stage_view, stage, webauthn_device)
+        executor = FlowExecutorView(flow=None, current_stage=stage, plan=plan)
+        challenge = webauthn_device.get_challenge_for_device(request, executor)
         del challenge["challenge"]
         self.assertEqual(
             challenge,
@@ -202,10 +199,8 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
         plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = base64url_to_bytes(
             "g98I51mQvZXo5lxLfhrD2zfolhZbLRyCgqkkYap1jwSaJ13BguoJWCF9_Lg3AgO4Wh-Bqa556JE20oKsYbl6RA"
         )
-        stage_view = AuthenticatorValidateStageView(
-            FlowExecutorView(flow=None, current_stage=stage, plan=plan), request=request
-        )
-        challenge = get_challenge_for_device(stage_view, stage, webauthn_device)
+        executor = FlowExecutorView(flow=None, current_stage=stage, plan=plan)
+        challenge = webauthn_device.get_challenge_for_device(request, executor)
         self.assertEqual(
             challenge["allowCredentials"],
             [
@@ -278,10 +273,8 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
             webauthn_hints=[WebAuthnHint.CLIENT_DEVICE, WebAuthnHint.HYBRID],
         )
         plan = FlowPlan("")
-        stage_view = AuthenticatorValidateStageView(
-            FlowExecutorView(flow=None, current_stage=stage, plan=plan), request=request
-        )
-        challenge = get_challenge_for_device(stage_view, stage, webauthn_device)
+        executor = FlowExecutorView(flow=None, current_stage=stage, plan=plan)
+        challenge = webauthn_device.get_challenge_for_device(request, executor)
         self.assertEqual(challenge["hints"], ["client-device", "hybrid"])
 
     def test_device_challenge_webauthn_no_hints(self):
@@ -304,10 +297,8 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
             webauthn_user_verification=UserVerification.PREFERRED,
         )
         plan = FlowPlan("")
-        stage_view = AuthenticatorValidateStageView(
-            FlowExecutorView(flow=None, current_stage=stage, plan=plan), request=request
-        )
-        challenge = get_challenge_for_device(stage_view, stage, webauthn_device)
+        executor = FlowExecutorView(flow=None, current_stage=stage, plan=plan)
+        challenge = webauthn_device.get_challenge_for_device(request, executor)
         self.assertNotIn("hints", challenge)
 
     def test_get_challenge_userless_with_hints(self):
@@ -350,10 +341,8 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
             ],
         )
         plan = FlowPlan("")
-        stage_view = AuthenticatorValidateStageView(
-            FlowExecutorView(flow=None, current_stage=stage, plan=plan), request=request
-        )
-        challenge = get_challenge_for_device(stage_view, stage, webauthn_device)
+        executor = FlowExecutorView(flow=None, current_stage=stage, plan=plan)
+        challenge = webauthn_device.get_challenge_for_device(request, executor)
         self.assertEqual(challenge["hints"], ["hybrid", "security-key", "client-device"])
 
     def test_validate_challenge_unrestricted(self):

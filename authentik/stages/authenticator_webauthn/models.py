@@ -1,20 +1,28 @@
 """WebAuthn stage"""
 
+from typing import cast
+
 from cryptography.x509 import Certificate, load_pem_x509_certificate
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields.array import ArrayField
 from django.db import models
+from django.http import HttpRequest
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer, Serializer
+from webauthn import generate_authentication_options
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
-from webauthn.helpers.structs import PublicKeyCredentialDescriptor
+from webauthn.helpers.options_to_json_dict import options_to_json_dict
+from webauthn.helpers.structs import PublicKeyCredentialDescriptor, UserVerificationRequirement
 
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
+from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.models import InternallyManagedMixin, SerializerModel, SimpleThroughModel
 from authentik.stages.authenticator.models import Device
+from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
+from authentik.stages.authenticator_webauthn.utils import get_rp_id
 
 UNKNOWN_DEVICE_TYPE_AAGUID = "00000000-0000-0000-0000-000000000000"
 
@@ -168,6 +176,32 @@ class WebAuthnDevice(SerializerModel, Device):
     device_type = models.ForeignKey(
         "WebAuthnDeviceType", on_delete=models.SET_DEFAULT, null=True, default=None
     )
+
+    def get_challenge_for_device(self, request: HttpRequest, executor: FlowExecutorView):
+        """Send the client a challenge that we'll check later"""
+        executor.plan.context.pop(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, None)
+        stage = cast(AuthenticatorWebAuthnStage, executor.current_stage)
+
+        allowed_credentials = []
+
+        if self.pk:
+            # We want all the user's WebAuthn devices and merge their challenges
+            for user_device in WebAuthnDevice.objects.filter(user=self.user).order_by("name"):
+                user_device: WebAuthnDevice
+                allowed_credentials.append(user_device.descriptor)
+
+        authentication_options = generate_authentication_options(
+            rp_id=get_rp_id(request),
+            allow_credentials=allowed_credentials,
+            user_verification=UserVerificationRequirement(stage.webauthn_user_verification),
+        )
+
+        executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = authentication_options.challenge
+
+        options_dict = options_to_json_dict(authentication_options)
+        if stage.webauthn_hints:
+            options_dict["hints"] = list(stage.webauthn_hints)
+        return options_dict
 
     @property
     def descriptor(self) -> PublicKeyCredentialDescriptor:

@@ -27,7 +27,6 @@ from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.flows.stage import StageView
-from authentik.lib.utils.email import mask_email
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.authenticator import devices_for_user
@@ -55,18 +54,6 @@ class DeviceChallenge(PassiveSerializer):
     last_used = DateTimeField(allow_null=True)
 
 
-def get_challenge_for_device(
-    stage_view: AuthenticatorValidateStageView, stage: AuthenticatorValidateStage, device: Device
-) -> dict:
-    """Generate challenge for a single device"""
-    if isinstance(device, WebAuthnDevice):
-        return get_webauthn_challenge(stage_view, stage, device)
-    if isinstance(device, EmailDevice):
-        return {"email": mask_email(device.email)}
-    # Code-based challenges have no hints
-    return {}
-
-
 def get_webauthn_challenge_without_user(
     stage_view: AuthenticatorValidateStageView, stage: AuthenticatorValidateStage
 ) -> dict:
@@ -78,38 +65,6 @@ def get_webauthn_challenge_without_user(
         allow_credentials=[],
         user_verification=UserVerificationRequirement(stage.webauthn_user_verification),
     )
-    stage_view.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = (
-        authentication_options.challenge
-    )
-
-    options_dict = options_to_json_dict(authentication_options)
-    if stage.webauthn_hints:
-        options_dict["hints"] = list(stage.webauthn_hints)
-    return options_dict
-
-
-def get_webauthn_challenge(
-    stage_view: AuthenticatorValidateStageView,
-    stage: AuthenticatorValidateStage,
-    device: WebAuthnDevice | None = None,
-) -> dict:
-    """Send the client a challenge that we'll check later"""
-    stage_view.executor.plan.context.pop(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, None)
-
-    allowed_credentials = []
-
-    if device:
-        # We want all the user's WebAuthn devices and merge their challenges
-        for user_device in WebAuthnDevice.objects.filter(user=device.user).order_by("name"):
-            user_device: WebAuthnDevice
-            allowed_credentials.append(user_device.descriptor)
-
-    authentication_options = generate_authentication_options(
-        rp_id=get_rp_id(stage_view.request),
-        allow_credentials=allowed_credentials,
-        user_verification=UserVerificationRequirement(stage.webauthn_user_verification),
-    )
-
     stage_view.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = (
         authentication_options.challenge
     )

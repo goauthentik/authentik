@@ -1,14 +1,17 @@
 """Base authenticator models"""
 
 from datetime import timedelta
+from typing import Any
 
 from django.apps import apps
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
+from django.http import HttpRequest
 from django.utils import timezone
 from django.utils.functional import cached_property
 
 from authentik.core.models import User
+from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.models import CreatedUpdatedModel
 from authentik.stages.authenticator.util import random_number_token
 
@@ -89,6 +92,21 @@ class Device(CreatedUpdatedModel):
     last_used = models.DateTimeField(null=True)
 
     objects = DeviceManager()
+
+    def get_challenge_for_device(
+        self, request: HttpRequest, executor: FlowExecutorView
+    ) -> dict[str, Any]:
+        return {}
+
+    def select_challenge(self, request: HttpRequest): ...
+
+    def validate_challenge(
+        self,
+        request: HttpRequest,
+        input: Any,
+        executor: FlowExecutorView,
+        user: User,
+    ): ...
 
     class Meta:
         abstract = True
