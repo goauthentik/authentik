@@ -7,6 +7,7 @@ import "#components/ak-status-label";
 import "#elements/forms/ConfirmationForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
+import "#elements/Label";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -17,8 +18,6 @@ import { formatUserDisplayName, startAccountLockdown } from "#common/users";
 
 import { AKElement } from "#elements/Base";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
-import { toAdminInterface } from "#elements/router/core/interfaces";
-import { navigate } from "#elements/router/core/navigation";
 import { Timestamp } from "#elements/table/shared";
 
 import { keyValueListStyles, renderKeyValueList } from "#components/KeyValueList";
@@ -115,7 +114,7 @@ export class UserInfoCard extends AKElement {
 
     protected handleUserDeleted = (event: Event): void => {
         event.stopPropagation();
-        navigate(toAdminInterface("identity/users"));
+        window.history.back();
     };
 
     protected cancelOffboarding = async (): Promise<void> => {
@@ -177,18 +176,12 @@ export class UserInfoCard extends AKElement {
             >
                 ${
                     user.pk === this.currentUserPk
-                        ? html`<div slot="notice" class="pf-c-form__alert">
-                              <div class="pf-c-alert pf-m-inline pf-m-warning">
-                                  <div class="pf-c-alert__icon">
-                                      <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
-                                  </div>
-                                  <h4 class="pf-c-alert__title">
-                                      ${msg(
-                                          str`Warning: You are about to delete user ${user.username}, but you are currently logged in as this user. Proceed at your own risk.`,
-                                      )}
-                                  </h4>
-                              </div>
-                          </div>`
+                        ? html`<ak-label slot="notice" color="warning">
+                              ${msg(
+                                  str`Warning: You are about to delete user ${user.username}, but you are currently logged in as this user. Proceed at your own risk.`,
+                                  { id: "users.delete.self-warning.description" },
+                              )}
+                          </ak-label>`
                         : nothing
                 }
                 <button slot="trigger" class="pf-c-button pf-m-danger pf-m-block" type="button">
