@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-17 00:14+0000\n"
+"POT-Creation-Date: 2026-09-23 00:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2834,6 +2834,14 @@ msgid "OAuth2 Refresh Tokens"
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
+msgid "OAuth2 Session Login"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Session Logins"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
 msgid "Provider"
 msgstr ""
 
@@ -3355,6 +3363,10 @@ msgid "SAML Sessions"
 msgstr ""
 
 #: authentik/providers/scim/models.py
+msgid "Basic"
+msgstr ""
+
+#: authentik/providers/scim/models.py
 msgid "OAuth (Silent)"
 msgstr ""
 
@@ -3400,6 +3412,14 @@ msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "Authentication token"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "Username used for Basic authentication"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "Password used for Basic authentication"
 msgstr ""
 
 #: authentik/providers/scim/models.py

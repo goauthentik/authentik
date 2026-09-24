@@ -82,7 +82,7 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     cargo --version
 
 # Stage: Download uv
-FROM ghcr.io/astral-sh/uv:0.12.17@sha256:10787c682e4184e4f290de1171fd4703dc63de99221f10fe1c99002ce7fa9acc AS uv
+FROM ghcr.io/astral-sh/uv:0.12.18@sha256:3adc3706091ce7c2fe595e669628caedd6d951551b92b258b7e7dbe06d9440bc AS uv
 # Stage: Base python image
 # TEMPORARY: pinned to goauthentik/fips#178 (remove wget/curl). Revert before merge.
 FROM ghcr.io/goauthentik/fips-python:3.14.7-slim-trixie-fips-pr-178@sha256:395b057183f7e567f3cef6b06e7dffd5e10b7e8bedb94866b613449e1ca5ab28 AS python-base
@@ -221,9 +221,8 @@ COPY --from=node-builder /work/web/authentik/ /web/authentik/
 COPY --from=geoip /usr/share/GeoIP /geoip
 
 # Setup 'ak'
-# /lifecycle comes first on PATH, and the binary runs its boot subcommand when invoked as `ak`
 RUN ln -s /ak-root/packages /packages && \
-    ln -sf /bin/authentik /lifecycle/ak
+    ln -sf ak.py /lifecycle/ak
 
 # Prune everything that is not needed
 RUN --mount=type=bind,target=/tmp/prune.sh,src=./lifecycle/container/prune.sh \
@@ -234,8 +233,8 @@ RUN --mount=type=bind,target=/tmp/prune.sh,src=./lifecycle/container/prune.sh \
 
 # Stage: Debug
 # For `ak test-all`, AUTHENTIK_DEBUGGER and `docker exec ... bash`
-# Build it with --target debug-image as it is not the default
-FROM runtime-assemble AS debug-image
+# Build it with --target debug as it is not the default
+FROM runtime-assemble AS debug
 
 ARG VERSION
 ARG GIT_BUILD_HASH
@@ -268,7 +267,8 @@ ENTRYPOINT [ "dumb-init", "--", "ak" ]
 
 # Stage: Run
 # Contains only what's needed at runtime and nothing more
-FROM scratch AS final-image
+# The default target, so it has to stay last
+FROM scratch AS final
 
 ARG VERSION
 ARG GIT_BUILD_HASH
