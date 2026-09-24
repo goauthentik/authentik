@@ -14,7 +14,10 @@ import { aki } from "#common/api/client";
 import { SlottedTemplateResult } from "#elements/types";
 import { StrictUnsafe } from "#elements/utils/unsafe";
 
-import { shouldResetSelectedChallenge } from "#flow/stages/authenticator_validate/challenge-selection";
+import {
+    findMatchingChallenge,
+    requiresSelectionNotification,
+} from "#flow/stages/authenticator_validate/challenge-selection";
 import { BaseStage } from "#flow/stages/base";
 import { PasswordManagerPrefill } from "#flow/stages/identification/IdentificationStage";
 import type { StageHost, SubmitOptions } from "#flow/types";
@@ -136,6 +139,11 @@ export class AuthenticatorValidateStage
 
     #selectedDeviceChallenge: DeviceChallenge | null = null;
 
+    /**
+     * The in-flight request notifying the backend of the selected challenge, if any.
+     */
+    #pendingSelectionNotification: Promise<unknown> | null = null;
+
     @state()
     protected set selectedDeviceChallenge(value: DeviceChallenge | null) {
         const previousChallenge = this.#selectedDeviceChallenge;
@@ -145,10 +153,14 @@ export class AuthenticatorValidateStage
             return;
         }
 
+        value.lastUsed ??= new Date();
+
+        if (!requiresSelectionNotification(value)) {
+            return;
+        }
+
         const component = (this.challenge?.component ||
             "") as unknown as "ak-stage-authenticator-validate";
-
-        value.lastUsed ??= new Date();
 
         const flowChallengeResponseRequest = {
             component,
@@ -157,22 +169,41 @@ export class AuthenticatorValidateStage
 
         // We don't use this.submit here, as we don't want to advance the flow.
         // We just want to notify the backend which challenge has been selected.
-        this.#api.flowsExecutorSolve({
-            flowSlug: this.host?.flowSlug || "",
-            query: window.location.search.substring(1),
-            flowChallengeResponseRequest,
-        });
+        const notification = this.#api
+            .flowsExecutorSolve({
+                flowSlug: this.host?.flowSlug || "",
+                query: window.location.search.substring(1),
+                flowChallengeResponseRequest,
+            })
+            .catch((error: unknown) => {
+                this.logger.warn("Failed to notify backend of selected challenge", error);
+            })
+            .finally(() => {
+                if (this.#pendingSelectionNotification === notification) {
+                    this.#pendingSelectionNotification = null;
+                }
+            });
+
+        this.#pendingSelectionNotification = notification;
     }
 
     protected get selectedDeviceChallenge(): DeviceChallenge | null {
         return this.#selectedDeviceChallenge;
     }
 
-    public submit(
+    public async submit(
         payload: AuthenticatorValidationChallengeResponseRequest,
         options?: SubmitOptions,
     ): Promise<boolean> {
-        return this.host?.submit(payload, options) || Promise.resolve();
+        // Both requests go through the flow executor, which persists the session with the
+        // flow plan it loaded. Answering the challenge while the selection notification is
+        // still being processed would let whichever request finishes last overwrite the other's
+        // flow plan, so wait for the notification to settle first.
+        if (this.#pendingSelectionNotification) {
+            await this.#pendingSelectionNotification;
+        }
+
+        return this.host?.submit(payload, options) ?? false;
     }
 
     public reset(): void {
@@ -182,12 +213,24 @@ export class AuthenticatorValidateStage
     protected override willUpdate(changed: PropertyValues<this>) {
         // When moving between multiple authenticator-validate stages in one flow, the element
         // instance is reused. Reset selection if it is no longer valid in the new challenge.
-        if (changed.has("challenge")) {
+        if (changed.has("challenge") && this.selectedDeviceChallenge) {
             const allowedChallenges = this.challenge?.deviceChallenges ?? [];
 
-            if (shouldResetSelectedChallenge(this.selectedDeviceChallenge, allowedChallenges)) {
+            const matchingChallenge = findMatchingChallenge(
+                this.selectedDeviceChallenge,
+                allowedChallenges,
+            );
+
+            if (!matchingChallenge) {
                 this.selectedDeviceChallenge = null;
                 this.initialized = false;
+            } else if (matchingChallenge !== this.selectedDeviceChallenge) {
+                // The backend sent new challenge data for the selected device, e.g. after an
+                // invalid response. Swap in the new challenge without notifying the backend
+                // again, otherwise the device stage keeps answering challenge data the backend
+                // no longer accepts.
+                matchingChallenge.lastUsed ??= this.selectedDeviceChallenge.lastUsed;
+                this.#selectedDeviceChallenge = matchingChallenge;
             }
         }
 

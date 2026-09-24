@@ -37,6 +37,7 @@ from authentik.stages.authenticator_validate.challenge import (
 )
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
+from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 from authentik.tenants.utils import get_unique_identifier
 
@@ -262,6 +263,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             try:
                 challenges = self.get_device_challenges()
             except FlowSkipStageException:
+                self.executor.plan.context.pop(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, None)
                 return self.executor.stage_ok()
         else:
             if self.executor.flow.designation != FlowDesignation.AUTHENTICATION:
@@ -425,6 +427,8 @@ class AuthenticatorValidateStageView(ChallengeStageView):
 
     def challenge_valid(self, response: AuthenticatorValidationChallengeResponse) -> HttpResponse:
         # All validation is done by the serializer
+        # The WebAuthn challenge has been answered, don't allow it to be answered again
+        self.executor.plan.context.pop(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, None)
         user = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
         if not user and "webauthn" in response.data:
             webauthn_device: WebAuthnDevice = response.device
