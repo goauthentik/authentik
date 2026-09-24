@@ -487,7 +487,7 @@ jobs:
       registry:
         image: registry:2
         ports:
-          - 5000:5000
+          - 80:5000
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
@@ -501,7 +501,7 @@ jobs:
         run: | # shell
           skopeo copy --dest-tls-verify=false \
             "oci-archive:container/server-amd64.oci.tar" \
-            "docker://localhost:5000/server:e2e"
+            "docker://localhost/server:e2e"
       - name: Resolve Playwright version
         id: playwright-version
         working-directory: web
@@ -530,7 +530,7 @@ jobs:
         id: authentik
         uses: goauthentik/action-setup-authentik@e9b3782a8da81f3a33bbe21de97c7d3cf6c8820f # v3.2
         with:
-          version: localhost:5000/server:e2e
+          version: localhost/server:e2e
           # The image ships the repo's own `blueprints/` at /blueprints, so the
           # defaults the tests drive are already there. This adds the one blueprint
           # that isn't baked in: the admin account `session.login()` uses.
