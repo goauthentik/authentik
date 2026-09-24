@@ -264,6 +264,9 @@ importers:
       '@docusaurus/types':
         specifier: ^3.10.2
         version: 3.10.2(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.26))(csso@5.0.5)(esbuild@0.28.1)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.26)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@8.1.1)
+      '@goauthentik/fonts':
+        specifier: link:../fonts
+        version: link:../fonts
       '@goauthentik/oxfmt-config':
         specifier: link:../oxfmt-config
         version: link:../oxfmt-config

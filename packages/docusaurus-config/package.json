@@ -49,6 +49,7 @@
         "@docusaurus/theme-common": "^3.10.2",
         "@docusaurus/theme-search-algolia": "^3.10.2",
         "@docusaurus/types": "^3.10.2",
+        "@goauthentik/fonts": "link:../fonts",
         "@goauthentik/oxfmt-config": "link:../oxfmt-config",
         "@goauthentik/oxlint-config": "link:../oxlint-config",
         "@goauthentik/tsconfig": "link:../tsconfig",
@@ -65,6 +66,7 @@
         "@docusaurus/theme-common": "^3.10.1",
         "@docusaurus/theme-search-algolia": "^3.10.1",
         "@docusaurus/types": "^3.10.1",
+        "@goauthentik/fonts": "^1.0.0 || ^2.0.0",
         "react": ">=19",
         "react-dom": ">=19"
     },
