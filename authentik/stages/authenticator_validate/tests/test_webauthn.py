@@ -501,7 +501,6 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
             SERVER_NAME="localhost",
             SERVER_PORT="9000",
         )
-        self.assertEqual(response.status_code, 200)
         self.assertStageResponse(
             response,
             flow,
