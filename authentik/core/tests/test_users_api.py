@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 from json import loads
 
 from django.contrib.auth.hashers import make_password
+from django.db import connection
+from django.test.utils import CaptureQueriesContext
 from django.urls.base import reverse
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
@@ -107,6 +109,66 @@ class TestUsersAPI(APITestCase):
         body = loads(response.content)
         self.assertEqual(len(body["results"]), 1, body)
         self.assertEqual(body["results"][0]["username"], user.username)
+
+    def _create_superuser_hierarchy(self) -> dict[int, bool]:
+        """Create users with direct, inherited and no superuser status, and return the
+        expected is_superuser value for each of them"""
+        superuser_group = Group.objects.create(name=generate_id(), is_superuser=True)
+        child = Group.objects.create(name=generate_id())
+        child.parents.add(superuser_group)
+        grandchild = Group.objects.create(name=generate_id())
+        grandchild.parents.add(child)
+        parent = Group.objects.create(name=generate_id())
+        non_superuser_child = Group.objects.create(name=generate_id())
+        non_superuser_child.parents.add(parent)
+
+        direct = create_test_user()
+        superuser_group.users.add(direct)
+        via_child = create_test_user()
+        child.users.add(via_child)
+        via_grandchild = create_test_user()
+        grandchild.users.add(via_grandchild)
+        via_non_superuser_child = create_test_user()
+        non_superuser_child.users.add(via_non_superuser_child)
+        no_groups = create_test_user()
+        return {
+            direct.pk: True,
+            via_child.pk: True,
+            via_grandchild.pk: True,
+            via_non_superuser_child.pk: False,
+            no_groups.pk: False,
+        }
+
+    def test_list_is_superuser(self):
+        """Test is_superuser in the user list and detail for direct and inherited superuser
+        group membership"""
+        expected = self._create_superuser_hierarchy()
+        self.client.force_login(self.admin)
+        response = self.client.get(reverse("authentik_api:user-list"), {"page_size": 100})
+        self.assertEqual(response.status_code, 200)
+        listed = {user["pk"]: user["is_superuser"] for user in loads(response.content)["results"]}
+        for pk, is_superuser in expected.items():
+            self.assertEqual(User.objects.get(pk=pk).is_superuser, is_superuser, pk)
+            self.assertEqual(listed[pk], is_superuser, pk)
+            response = self.client.get(reverse("authentik_api:user-detail", kwargs={"pk": pk}))
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(loads(response.content)["is_superuser"], is_superuser, pk)
+
+    def test_list_is_superuser_query_count(self):
+        """Test is_superuser in the user list doesn't add group queries per user"""
+
+        def group_queries(ctx: CaptureQueriesContext) -> int:
+            return len([q for q in ctx.captured_queries if "authentik_core_group" in q["sql"]])
+
+        self._create_superuser_hierarchy()
+        self.client.force_login(self.admin)
+        url = reverse("authentik_api:user-list")
+        with CaptureQueriesContext(connection) as before:
+            self.assertEqual(self.client.get(url).status_code, 200)
+        self._create_superuser_hierarchy()
+        with CaptureQueriesContext(connection) as after:
+            self.assertEqual(self.client.get(url).status_code, 200)
+        self.assertEqual(group_queries(after), group_queries(before))
 
     def test_list_with_groups(self):
         """Test listing with groups"""
