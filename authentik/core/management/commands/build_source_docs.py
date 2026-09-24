@@ -14,7 +14,7 @@ class Command(BaseCommand):
         configure(
             docformat="markdown",
             mermaid=True,
-            logo="https://goauthentik.io/img/icon_top_brand_colour.svg",
+            logo="https://goauthentik.io/img/icon_top_brand_color.svg",
         )
         pdoc(
             "authentik",
