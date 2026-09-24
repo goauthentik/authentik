@@ -1,9 +1,20 @@
 """Conditional Policy API"""
 
+from collections import defaultdict
+
+from django.apps import apps
+from django.core.exceptions import ValidationError as DjangoValidationError
+from django.db.models import Model
 from django.utils.translation import gettext_lazy as _
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, extend_schema_field
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, ChoiceField, ListField
+from rest_framework.fields import (
+    CharField,
+    ChoiceField,
+    DictField,
+    ListField,
+    SerializerMethodField,
+)
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -12,8 +23,11 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.policies.api.policies import PolicySerializer
 from authentik.policies.conditional.evaluator import (
+    CompiledAction,
+    CompiledCondition,
     CompiledPolicyRef,
     ConditionValidationError,
+    Literal,
     compile_actions,
     iter_conditions,
 )
@@ -35,8 +49,62 @@ def _referenced_policies(actions: dict) -> set[str]:
     }
 
 
+def _label(obj: Model) -> str:
+    for attr in ("name", "username"):
+        value = getattr(obj, attr, None)
+        if value:
+            return str(value)
+    return str(obj)
+
+
+def object_labels(actions: tuple[CompiledAction, ...]) -> dict[str, str]:
+    """Names of all objects referenced by actions, keyed by `<model>:<pk>`, so that they can
+    be shown instead of their primary keys"""
+    references: dict[str, set[str]] = defaultdict(set)
+    for node in iter_conditions(actions):
+        if isinstance(node, CompiledPolicyRef):
+            references["authentik_policies.policy"].add(node.policy)
+        if not isinstance(node, CompiledCondition) or not isinstance(node.operand, Literal):
+            continue
+        expected = node.operator.operand_type(node.variable.type)
+        if not expected:
+            continue
+        model = expected.model or (expected.item.model if expected.item else None)
+        if not model:
+            continue
+        values = node.operand.value
+        references[model].update(
+            str(value) for value in (values if isinstance(values, list) else [values])
+        )
+    labels = {}
+    for model, pks in references.items():
+        try:
+            model_class = apps.get_model(model)
+        except LookupError:
+            continue
+        queryset = model_class.objects.filter(pk__in=pks)
+        if hasattr(queryset, "select_subclasses"):
+            queryset = queryset.select_subclasses()
+        try:
+            for obj in queryset:
+                labels[f"{model}:{obj.pk}"] = _label(obj)
+        except DjangoValidationError, ValueError:
+            continue
+    return labels
+
+
 class ConditionalPolicySerializer(PolicySerializer):
     """Conditional Policy Serializer"""
+
+    labels = SerializerMethodField()
+
+    @extend_schema_field(DictField(child=CharField()))
+    def get_labels(self, instance: ConditionalPolicy) -> dict[str, str]:
+        """Names of objects referenced by the actions, keyed by `<model>:<pk>`"""
+        try:
+            return object_labels(instance.compiled())
+        except ConditionValidationError:
+            return {}
 
     actions = PolicyActionsField()
 
@@ -91,6 +159,7 @@ class ConditionalPolicySerializer(PolicySerializer):
     class Meta:
         model = ConditionalPolicy
         fields = PolicySerializer.Meta.fields + [
+            "labels",
             "actions",
             "missing_behavior",
             "failure_message",

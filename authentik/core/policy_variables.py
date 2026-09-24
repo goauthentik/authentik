@@ -1,5 +1,7 @@
 """Policy variables provided by core"""
 
+from collections.abc import Iterator
+
 from django.utils.translation import gettext_lazy as _
 from guardian.conf import settings as guardian_settings
 
@@ -8,12 +10,14 @@ from authentik.core.models import (
     USER_ATTRIBUTE_CHANGE_NAME,
     USER_ATTRIBUTE_CHANGE_USERNAME,
     Application,
+    ObjectAttribute,
     User,
     UserTypes,
 )
 from authentik.policies.conditional.registry import (
     FACT_HTTP_REQUEST,
     FACT_USER,
+    KnownParam,
     ParamKind,
     registry,
 )
@@ -136,12 +140,37 @@ def user_groups(request: PolicyRequest):
     return list(user.all_groups().values_list("pk", flat=True))
 
 
+def object_attribute_params(model: str) -> Iterator[KnownParam]:
+    """Well-defined parameters for the `attributes` of `model` (`app_label.model_name`), from
+    the enabled object attributes defined for it"""
+    app_label, model_name = model.split(".")
+    types = {
+        ObjectAttribute.AttributeType.TEXT: T.STRING,
+        ObjectAttribute.AttributeType.NUMBER: T.NUMBER,
+        ObjectAttribute.AttributeType.BOOLEAN: T.BOOLEAN,
+    }
+    attributes = ObjectAttribute.objects.filter(
+        enabled=True, object_type__app_label=app_label, object_type__model=model_name
+    ).order_by("group", "label")
+    for attribute in attributes:
+        vtype = types.get(attribute.type)
+        if not vtype:
+            continue
+        label = f"{attribute.group} › {attribute.label}" if attribute.group else attribute.label
+        yield KnownParam(
+            key=attribute.key,
+            label=f"{_('Attribute')} › {label}",
+            type=T.list(vtype) if attribute.is_array else vtype,
+        )
+
+
 @registry.variable(
     "user.attributes",
     _("Attribute"),
     T.ANY,
     requires=_USER,
     param=ParamKind.PATH,
+    params=lambda: object_attribute_params("authentik_core.user"),
     description=_("Value of the user's attributes at the given dotted path."),
 )
 def user_attributes(request: PolicyRequest, path: str):

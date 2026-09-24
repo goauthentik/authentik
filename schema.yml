@@ -39322,6 +39322,11 @@ components:
           type: string
           format: date-time
           readOnly: true
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+          readOnly: true
         actions:
           $ref: '#/components/schemas/PolicyActions'
         missing_behavior:
@@ -39336,6 +39341,7 @@ components:
       - bound_to
       - component
       - created
+      - labels
       - last_updated
       - meta_model_name
       - name

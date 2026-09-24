@@ -444,3 +444,36 @@ describe("actions", () => {
         );
     });
 });
+
+describe("object labels", () => {
+    it("describes referenced objects by name", () => {
+        const group = "c53ee9ac-3bf3-4e58-891e-e4b72e9fe378";
+
+        const labels = {
+            [`authentik_core.group:${group}`]: "Engineering",
+            "authentik_policies.policy:p1": "other-policy",
+        };
+
+        const node: ConditionNode = {
+            type: "group",
+            op: "all",
+            children: [
+                {
+                    type: "compare",
+                    variable: { key: "user.groups" },
+                    operator: "has_item",
+                    value: { type: "literal", value: group },
+                },
+                { type: "policy", policy: "p1" },
+            ],
+        };
+
+        expect(describeNode(catalog, node, labels)).toBe(
+            '(Groups contains item "Engineering" AND Policy "other-policy" passes)',
+        );
+
+        expect(describeNode(catalog, node)).toBe(
+            `(Groups contains item "${group}" AND Policy "p1" passes)`,
+        );
+    });
+});

@@ -137,6 +137,7 @@ export class ConditionalPolicyForm extends BasePolicyForm<ConditionalPolicy> {
                             name="actions"
                             .catalog=${this.catalog}
                             .value=${this.instance?.actions}
+                            .labels=${this.instance?.labels}
                         ></ak-policy-action-builder>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal

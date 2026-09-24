@@ -86,9 +86,19 @@ class Variable:
     # Module which registered this variable
     module: str = ""
     # Well-defined parameters, for variables whose structure is known
-    params: tuple[KnownParam, ...] = ()
+    static_params: tuple[KnownParam, ...] = ()
+    # Parameters which are loaded when needed, for example from the database
+    dynamic_params: Callable[[], Iterable[KnownParam]] | None = None
+
+    @property
+    def params(self) -> tuple[KnownParam, ...]:
+        if not self.dynamic_params:
+            return self.static_params
+        return (*self.static_params, *self.dynamic_params())
 
     def known_param(self, key: str | None) -> KnownParam | None:
+        if not key:
+            return None
         return next((param for param in self.params if param.key == key), None)
 
     def resolve(self, request: PolicyRequest, param: str | None = None) -> Any:
@@ -207,7 +217,7 @@ class ConditionalPolicyRegistry:
         requires: Iterable[str],
         description: str | Promise = "",
         param: ParamKind = ParamKind.NONE,
-        params: Iterable[KnownParam] = (),
+        params: Iterable[KnownParam] | Callable[[], Iterable[KnownParam]] = (),
     ) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
         """Decorator to register a variable resolver.
 
@@ -226,7 +236,8 @@ class ConditionalPolicyRegistry:
                 resolver=resolver,
                 description=description,
                 param=param,
-                params=tuple(params),
+                static_params=() if callable(params) else tuple(params),
+                dynamic_params=params if callable(params) else None,
                 module=module,
             )
             return resolver

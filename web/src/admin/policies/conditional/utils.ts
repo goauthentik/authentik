@@ -202,13 +202,36 @@ function describeRef(catalog: ConditionCatalog | undefined, ref: ConditionVariab
     const label = variable?.label ?? ref.key;
     const known = variable?.params.find((param) => param.key === ref.param);
 
-    if (known) return `${label} ${known.label}`;
+    if (known) {
+        // Labels of parameters may already include the variable, for example
+        // "Attribute › Organization › Department"
+        return known.label.startsWith(label) ? known.label : `${label} › ${known.label}`;
+    }
 
     return ref.param ? `${label} "${ref.param}"` : label;
 }
 
-function describeValue(value: unknown): string {
-    if (Array.isArray(value)) return `[${value.map(describeValue).join(", ")}]`;
+/**
+ * Names of objects referenced by actions, keyed by `<model>:<pk>`.
+ */
+export type ObjectLabels = Record<string, string>;
+
+export const POLICY_MODEL = "authentik_policies.policy";
+
+export function objectLabelKey(model: string, pk: unknown): string {
+    return `${model}:${String(pk)}`;
+}
+
+function describeValue(value: unknown, labels?: ObjectLabels, model?: string | null): string {
+    if (Array.isArray(value)) {
+        return `[${value.map((item) => describeValue(item, labels, model)).join(", ")}]`;
+    }
+
+    if (model) {
+        const label = labels?.[objectLabelKey(model, value)];
+
+        if (label) return `"${label}"`;
+    }
 
     if (typeof value === "string") return `"${value}"`;
 
@@ -218,21 +241,31 @@ function describeValue(value: unknown): string {
 /**
  * Human readable, single line description of a node.
  */
-export function describe(catalog: ConditionCatalog | undefined, node: ConditionNode): string {
+export function describe(
+    catalog: ConditionCatalog | undefined,
+    node: ConditionNode,
+    labels?: ObjectLabels,
+): string {
     switch (node.type) {
         case "group": {
             if (node.children.length === 0) return "()";
             const joiner = node.op === "all" ? " AND " : " OR ";
-            const inner = node.children.map((child) => describe(catalog, child)).join(joiner);
+
+            const inner = node.children
+                .map((child) => describe(catalog, child, labels))
+                .join(joiner);
 
             if (node.op === "none") return `NOT (${inner})`;
 
             return node.children.length > 1 ? `(${inner})` : inner;
         }
         case "not":
-            return `NOT ${describe(catalog, node.child)}`;
-        case "policy":
-            return `policy(${node.policy})`;
+            return `NOT ${describe(catalog, node.child, labels)}`;
+        case "policy": {
+            const name = labels?.[objectLabelKey(POLICY_MODEL, node.policy)] ?? node.policy;
+
+            return name ? `Policy "${name}" passes` : "Policy …";
+        }
         case "compare": {
             const found = catalog?.operators.find((op) => op.name === node.operator);
 
@@ -242,7 +275,10 @@ export function describe(catalog: ConditionCatalog | undefined, node: ConditionN
             let text = `${describeRef(catalog, node.variable)} ${operator}`;
 
             if (node.value?.type === "literal") {
-                text += ` ${describeValue(node.value.value)}`;
+                const expected = operandType(found, variableType(catalog, node.variable));
+                const model = expected?.model ?? expected?.item?.model;
+
+                text += ` ${describeValue(node.value.value, labels, model)}`;
             } else if (node.value?.type === "variable") {
                 text += ` ${describeRef(catalog, node.value.variable)}`;
             }
@@ -637,12 +673,13 @@ function describeOperand(
 export function describeAction(
     catalog: ConditionCatalog | undefined,
     action: PolicyAction,
+    labels?: ObjectLabels,
 ): string {
     switch (action.type) {
         case "condition":
-            return describe(catalog, action.condition);
+            return describe(catalog, action.condition, labels);
         case "if":
-            return `If ${describe(catalog, action.condition)}`;
+            return `If ${describe(catalog, action.condition, labels)}`;
         case "set": {
             const setter = findSetter(catalog, action.target.key);
             const label = setter?.label ?? (action.target.key || "…");

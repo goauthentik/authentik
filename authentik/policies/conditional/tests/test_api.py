@@ -1,9 +1,10 @@
 """Conditional policy API tests"""
 
+from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import Application
+from authentik.core.models import Application, Group, ObjectAttribute, User
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.events.models import NotificationRule
 from authentik.lib.generators import generate_id
@@ -127,6 +128,50 @@ class TestConditionalPolicyAPI(APITestCase):
         self.assertIn(
             "would create a loop", response.json()["actions"]["nodes"]["actions.0.condition"][0]
         )
+
+    def test_labels(self):
+        """Names of referenced objects are returned"""
+        members = Group.objects.create(name=generate_id())
+        other = ConditionalPolicy.objects.create(
+            name=generate_id(), actions=tree(cond("user.is_active", "is_true"))
+        )
+        response = self.create(
+            tree(
+                group(
+                    "all",
+                    cond("user.groups", "has_item", str(members.pk)),
+                    {"type": "policy", "policy": str(other.pk)},
+                )
+            )
+        )
+        self.assertEqual(response.status_code, 201, response.content)
+        self.assertEqual(
+            response.json()["labels"],
+            {
+                f"authentik_core.group:{members.pk}": members.name,
+                f"authentik_policies.policy:{other.pk}": other.name,
+            },
+        )
+
+    def test_object_attributes(self):
+        """Object attributes of users are offered as user attributes"""
+        ObjectAttribute.objects.create(
+            object_type=ContentType.objects.get_for_model(User),
+            key="org.department",
+            label="Department",
+            group="Organization",
+            type=ObjectAttribute.AttributeType.TEXT,
+        )
+        response = self.client.get(reverse("authentik_api:conditionalpolicy-catalog"))
+        variables = {variable["key"]: variable for variable in response.json()["variables"]}
+        params = {param["key"]: param for param in variables["user.attributes"]["params"]}
+        self.assertEqual(params["org.department"]["label"], "Attribute › Organization › Department")
+        self.assertEqual(params["org.department"]["type"]["kind"], "string")
+        # The attribute has a type, so it doesn't need to be cast
+        response = self.create(
+            tree(cond("user.attributes", "eq", "Engineering", param="org.department"))
+        )
+        self.assertEqual(response.status_code, 201, response.content)
 
     def test_catalog(self):
         """Catalog of variables"""

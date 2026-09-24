@@ -31,7 +31,10 @@ import {
     operatorChoiceId,
     operatorChoices,
     operatorsFor,
+    objectLabelKey,
+    ObjectLabels,
     PickerOption,
+    POLICY_MODEL,
     pickerOptionId,
     pickerOptions,
     removeNotNodesFromActions,
@@ -619,6 +622,21 @@ export class AkPolicyActionBuilder extends AKControlElement<PolicyActions> {
     }
 
     /**
+     * Names of objects referenced by actions, keyed by `<model>:<pk>`, to show them instead of
+     * their primary keys. Names of objects picked in the editor are added.
+     */
+    @property({ attribute: false })
+    public set labels(value: ObjectLabels | undefined) {
+        Object.assign(this.#labels, value);
+    }
+
+    public get labels(): ObjectLabels {
+        return this.#labels;
+    }
+
+    #labels: ObjectLabels = {};
+
+    /**
      * Validation errors returned by the API, keyed by the path of the item they belong to.
      */
     @property({ attribute: false })
@@ -882,8 +900,16 @@ export class AkPolicyActionBuilder extends AKControlElement<PolicyActions> {
             .renderElement=${lookup.render}
             .value=${lookup.value}
             .selected=${(obj: Application | Group | Source | User) => lookup.value(obj) === current}
-            @ak-change=${(ev: CustomEvent<{ value: Application | Group | Source | User | null }>) =>
-                onChange(lookup.value(ev.detail.value))}
+            @ak-change=${(
+                ev: CustomEvent<{ value: Application | Group | Source | User | null }>,
+            ) => {
+                const obj = ev.detail.value;
+                const pk = lookup.value(obj);
+
+                if (obj && pk) this.labels[objectLabelKey(model, pk)] = lookup.render(obj);
+
+                onChange(pk);
+            }}
         ></ak-search-select>`;
     }
 
@@ -1262,7 +1288,11 @@ export class AkPolicyActionBuilder extends AKControlElement<PolicyActions> {
                 .value=${(policy: Policy | null) => policy?.pk}
                 .selected=${(policy: Policy) => policy.pk === node.policy}
                 @ak-change=${(ev: CustomEvent<{ value: Policy | null }>) => {
-                    node.policy = ev.detail.value?.pk ?? "";
+                    const policy = ev.detail.value;
+
+                    if (policy) this.labels[objectLabelKey(POLICY_MODEL, policy.pk)] = policy.name;
+
+                    node.policy = policy?.pk ?? "";
                     this.changed(node);
                 }}
             ></ak-search-select>
@@ -1612,10 +1642,10 @@ export class AkPolicyActionBuilder extends AKControlElement<PolicyActions> {
                 return action.type === "if" ? `If ${label.toLowerCase()}` : label;
             }
 
-            return describeAction(this.catalog, action);
+            return describeAction(this.catalog, action, this.labels);
         }
 
-        return describe(this.catalog, item as ConditionNode);
+        return describe(this.catalog, item as ConditionNode, this.labels);
     }
 
     protected renderMenu(item: object, entries: [string, string, () => void, boolean?][]) {

@@ -52,6 +52,7 @@ export interface ConditionalPolicy {
     readonly boundTo: number;
     readonly lastUpdated: Date;
     readonly created: Date;
+    readonly labels: { [key: string]: string };
     actions: PolicyActions;
     /**
      * How to handle values which are not available in the request.
@@ -106,6 +107,7 @@ export function instanceOfConditionalPolicy(value: object): value is Conditional
     )
         return false;
     if (!("created" in value) || value["created"] === undefined) return false;
+    if (!("labels" in value) || value["labels"] === undefined) return false;
     if (!("actions" in value) || value["actions"] === undefined) return false;
     return true;
 }
@@ -135,6 +137,7 @@ export function ConditionalPolicyFromJSONTyped(
                 ? json["last_updated"]
                 : parseDateTime(json["last_updated"]),
         created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
+        labels: json["labels"],
         actions: PolicyActionsFromJSON(json["actions"]),
         missingBehavior:
             json["missing_behavior"] == null
@@ -159,6 +162,7 @@ export function ConditionalPolicyToJSONTyped(
         | "boundTo"
         | "lastUpdated"
         | "created"
+        | "labels"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
