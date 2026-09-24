@@ -21,8 +21,12 @@ from authentik.stages.authenticator_webauthn.models import (
     WebAuthnDeviceType,
     WebAuthnHint,
 )
-from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
+from authentik.stages.authenticator_webauthn.stage import (
+    PLAN_CONTEXT_WEBAUTHN_CHALLENGE,
+    SUPPORTED_PUB_KEY_ALGS,
+)
 from authentik.stages.authenticator_webauthn.tasks import webauthn_mds_import
+from authentik.stages.authenticator_webauthn.tests.mldsa import MLDSACredential
 
 
 class TestAuthenticatorWebAuthnStage(FlowTestCase):
@@ -81,6 +85,9 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
                     {"type": "public-key", "alg": -8},
                     {"type": "public-key", "alg": -7},
                     {"type": "public-key", "alg": -257},
+                    {"type": "public-key", "alg": -48},
+                    {"type": "public-key", "alg": -49},
+                    {"type": "public-key", "alg": -50},
                 ],
                 "timeout": 60000,
                 "excludeCredentials": [],
@@ -565,3 +572,45 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
             ),
         )
         self.assertFalse(WebAuthnDevice.objects.filter(user=self.user).exists())
+
+    def test_registration_options_algorithms(self):
+        """Registration offers the classical algorithms first and the ML-DSA sets last"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        params = response.json()["registration"]["pubKeyCredParams"]
+        self.assertEqual([p["alg"] for p in params], [int(alg) for alg in SUPPORTED_PUB_KEY_ALGS])
+        self.assertEqual([p["alg"] for p in params][-3:], [-48, -49, -50])
+
+    def test_register_mldsa(self):
+        """Test registration of an ML-DSA-44 (FIPS 204) credential"""
+        credential = MLDSACredential(rp_id="localhost", origin="http://localhost:9000")
+        challenge = b"\x01" * 64
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = challenge
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            data={
+                "component": "ak-stage-authenticator-webauthn",
+                "response": credential.registration_response(challenge),
+            },
+            SERVER_NAME="localhost",
+            SERVER_PORT="9000",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        device = WebAuthnDevice.objects.filter(user=self.user).first()
+        self.assertIsNotNone(device)
+        self.assertEqual(device.credential_id, bytes_to_base64url(credential.credential_id))
+        self.assertEqual(device.public_key, bytes_to_base64url(credential.cose_public_key))
+        self.assertIsNone(device.attestation_certificate_pem)

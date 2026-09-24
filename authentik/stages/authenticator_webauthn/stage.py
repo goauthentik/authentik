@@ -12,6 +12,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
+from webauthn.helpers.cose import COSEAlgorithmIdentifier
 from webauthn.helpers.exceptions import WebAuthnException
 from webauthn.helpers.options_to_json_dict import options_to_json_dict
 from webauthn.helpers.parse_attestation_object import parse_attestation_object
@@ -46,6 +47,18 @@ from authentik.stages.authenticator_webauthn.models import (
     WebAuthnDeviceType,
 )
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
+
+# Algorithms offered to authenticators during registration, in order of preference. An
+# authenticator picks the first one it supports, so the classical algorithms stay first and the
+# post-quantum ML-DSA sets (FIPS 204) are only chosen by an authenticator that offers nothing else.
+SUPPORTED_PUB_KEY_ALGS = [
+    COSEAlgorithmIdentifier.EDDSA,
+    COSEAlgorithmIdentifier.ECDSA_SHA_256,
+    COSEAlgorithmIdentifier.RSASSA_PKCS1_v1_5_SHA_256,
+    COSEAlgorithmIdentifier.ML_DSA_44,
+    COSEAlgorithmIdentifier.ML_DSA_65,
+    COSEAlgorithmIdentifier.ML_DSA_87,
+]
 
 PLAN_CONTEXT_WEBAUTHN_CHALLENGE = "goauthentik.io/stages/authenticator_webauthn/challenge"
 PLAN_CONTEXT_WEBAUTHN_ATTEMPT = "goauthentik.io/stages/authenticator_webauthn/attempt"
@@ -84,6 +97,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
                 expected_challenge=challenge,
                 expected_rp_id=get_rp_id(self.request),
                 expected_origin=get_origin(self.request),
+                supported_pub_key_algs=SUPPORTED_PUB_KEY_ALGS,
             )
         except WebAuthnException as exc:
             self.stage.logger.warning("registration failed", exc=exc)
@@ -183,6 +197,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
             ),
             attestation=AttestationConveyancePreference.DIRECT,
             hints=hints,
+            supported_pub_key_algs=SUPPORTED_PUB_KEY_ALGS,
         )
 
         self.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = registration_options.challenge
