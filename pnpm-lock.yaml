@@ -245,6 +245,9 @@ importers:
 
   packages/docusaurus-config:
     dependencies:
+      '@goauthentik/brand-assets':
+        specifier: ^2.0.0
+        version: 2.0.0
       deepmerge-ts:
         specifier: ^8.0.0
         version: 8.0.0
@@ -2140,6 +2143,9 @@ packages:
 
   '@gerrit0/mini-shiki@3.23.0':
     resolution: {integrity: sha512-bEMORlG0cqdjVyCEuU0cDQbORWX+kYCeo0kV1lbxF5bt4r7SID2l9bqsxJEM0zndaxpOUT7riCyIVEuqq/Ynxg==}
+
+  '@goauthentik/brand-assets@2.0.0':
+    resolution: {integrity: sha512-yRJrV+KuGrz7MNcRzAkZa4e7LuciuFZBVSyPFRd/EndxgiqcFuFHyn+6tEurKNmianBNURhe2qm5ytoLFgEWFQ==}
 
   '@hapi/hoek@9.3.0':
     resolution: {integrity: sha512-/c6rf4UJlmHlC9b5BaNvzAcFv7HZ2QHaV0D4/HNlBdvFnvQq8RI4kYdhyPCl7Xj+oWvTWQ8ujhqS53LIgAe6KQ==}
@@ -9957,6 +9963,8 @@ snapshots:
       '@shikijs/themes': 3.23.0
       '@shikijs/types': 3.23.0
       '@shikijs/vscode-textmate': 10.0.2
+
+  '@goauthentik/brand-assets@2.0.0': {}
 
   '@hapi/hoek@9.3.0': {}
 
