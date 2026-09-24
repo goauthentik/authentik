@@ -10,6 +10,8 @@ draft: true
 
 ## New features and improvements
 
+- **Display names in `ak_send_email` recipients**: The `address`, `cc`, and `bcc` parameters of `ak_send_email` now accept `(name, email)` tuples and `"Name <email>"` strings, so emails sent from expressions can include a display name in the `To` and `CC` headers, matching the Email stage. See [`ak_send_email`](../../customize/policies/types/expression/reference.mdx).
+
 ### New `server-debug` image
 
 There is a new container image, `ghcr.io/goauthentik/server-debug`. It's based on the server image, plus the development dependency group, the Kerberos server tools, and a few interactive tools. Use it for `ak test-all`, for `AUTHENTIK_DEBUGGER`, and for an interactive shell in a container.

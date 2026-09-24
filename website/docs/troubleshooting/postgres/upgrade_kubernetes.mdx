@@ -137,6 +137,7 @@ After everything starts again:
 - confirm the PostgreSQL pod is healthy
 - check the PostgreSQL, server, and worker logs for startup or migration errors
 - log in to authentik through the UI to verify the application is functioning normally
+- refresh PostgreSQL's planner statistics if authentik requests are slow after the upgrade. See [Troubleshoot slow PostgreSQL queries](./slow-queries.mdx).
 
 ## Troubleshooting
 
