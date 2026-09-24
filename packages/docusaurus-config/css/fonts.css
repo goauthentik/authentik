@@ -1,7 +1,3 @@
-/*
- * Binds Docusaurus's font variables to the brand faces. The @font-face
- * rules themselves come from @goauthentik/fonts, imported by index.css.
- */
 :root {
     /* We prefer system fonts for the base to ensure the user's preference is respected. */
     --ifm-font-family-base:

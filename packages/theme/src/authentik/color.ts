@@ -6,8 +6,6 @@
  *   cascade to links without separate overrides. The dark theme intentionally
  *   re-points links to their own values rather than chaining through primary
  *   because dark mode links need higher luminance than primary buttons.
- *   `warning` and `danger` deliberately stay on light values in dark mode — state
- *   colors keep consistent intensity across themes so warnings read as urgent.
  *   Values are authored as hex and transformed to `oklch()` on emit (see
  *   `./color-libs.ts`). Read the maps below as a spreadsheet: one group per
  *   concern, light values first, dark overrides in the theme block underneath.
@@ -21,11 +19,11 @@ import { oklchTransform, useColorDesignTokens, type VPPair } from "./color-libs.
 
 // prettier-ignore
 export const colors = useColorDesignTokens(instance, {
-    "accent": "#fd4b2d",  // authentik brand color.
+    "accent": "#fd4b2d",
 
-    "ink":        "#151515",  // Color-100, everywhere
-    "ink.muted":  "#6a6e73",  // Color-200, helper text, de-emphasized text
-    "ink.subtle": "#8a8d90",  // Faintest ink, Color-400
+    "ink":        "#151515",
+    "ink.muted":  "#6a6e73",
+    "ink.subtle": "#8a8d90",
 
     "ink.pin-light":       "#151515",
     "ink.pin-light.muted": "#6a6e73",
@@ -40,10 +38,10 @@ export const colors = useColorDesignTokens(instance, {
     "link.hover":   "@color.primary.active",
     "link.visited": "#40199a",
 
-    "surface":        "#ffffff",  // BackgroundColor-100, Main Background
-    "surface.raised": "#fafafa",  // BackgroundColor-150, 
-    "surface.muted":  "#f0f0f0",  // BackgroundColor-200, 
-    "surface.nested": "#f1f9ff",  // Unique to authentik
+    "surface":        "#ffffff",
+    "surface.raised": "#fafafa",
+    "surface.muted":  "#f0f0f0",
+    "surface.nested": "#f1f9ff",
 
     "surface.pin-light":        "#ffffff",
     "surface.pin-light.raised": "#fafafa",
@@ -53,8 +51,8 @@ export const colors = useColorDesignTokens(instance, {
     "surface.pin-dark.raised": "#3c3f42",
     "surface.pin-dark.muted":  "#212427",
 
-    "scrim":       "rgba(3, 3, 3, 0.62)",  // Heavy backdrop for modals
-    "scrim.light": "rgba(3, 3, 3, 0.32)",  // Light backdrop for modals
+    "scrim":       "rgba(3, 3, 3, 0.62)",
+    "scrim.light": "rgba(3, 3, 3, 0.32)",
 
     "border":        "#d2d2d2",
     "border.edge":   "#8a8d90",
@@ -64,15 +62,15 @@ export const colors = useColorDesignTokens(instance, {
     "border.pin-light": "#d2d2d2",
 
     "primary":        "#0066cc", 
-    "primary.active": "#004080", // Used for "pressed"
+    "primary.active": "#004080",
 
     "primary.pin-dark":  "#73bcf7",
     "primary.pin-light": "#0066cc",
 
-    "active":       "#0066cc", // Selection indicator
-    "active.fill":  "#bee1f4", // Fill color for controls
-    "active.hover": "#2b9af3", // Hover indicator
-    "active.hint":  "#73bcf7", // Hover borders
+    "active":       "#0066cc",
+    "active.fill":  "#bee1f4",
+    "active.hover": "#2b9af3",
+    "active.hint":  "#73bcf7",
 
     "disabled":          "#6a6e73",
     "disabled.fill":     "#d2d2d2",
@@ -118,7 +116,6 @@ theme("dark", (ctx) => {
 
         [c.colorInkPinDark, "#e0e0e0"],
 
-        // This annoys me for reasons I cannot articulate clearly.
         [c.colorInkPlaceholder, "#aaabac"],
 
         [c.colorLink,          "#20a9f8"],

@@ -1,8 +1,3 @@
-/**
- * @file Static server for a built Storybook.
- * @runtime node
- */
-
 import { createReadStream, statSync } from "node:fs";
 import { createServer } from "node:http";
 import { extname, join, normalize, sep } from "node:path";

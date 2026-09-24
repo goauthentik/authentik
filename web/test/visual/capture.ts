@@ -1,7 +1,3 @@
-/**
- * @file Capture helpers for the visual specs.
- */
-
 import { existsSync } from "node:fs";
 
 import { type Page, type TestInfo } from "@playwright/test";
@@ -10,9 +6,6 @@ export const ColorSchemes = ["light", "dark"] as const;
 
 const FixedTime = new Date("2026-01-15T12:00:00Z");
 
-/**
- * Fix the clock and `Math.random`, and block requests to other origins.
- */
 export async function pinNondeterminism(page: Page, origin: string): Promise<void> {
     await page.route(
         (url) => url.origin !== origin,
@@ -32,9 +25,6 @@ export async function pinNondeterminism(page: Page, origin: string): Promise<voi
     });
 }
 
-/**
- * Skip screenshots that have no baseline yet.
- */
 export function skipWithoutBaseline(testInfo: TestInfo, name: string): void {
     if (testInfo.config.updateSnapshots !== "none") return;
 

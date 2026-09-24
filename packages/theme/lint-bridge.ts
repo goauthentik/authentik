@@ -1,7 +1,3 @@
-/**
- * @file Compare the PatternFly variables the bridge emits against PatternFly 4's defaults.
- */
-
 import { instance } from "./dist/node.js";
 import { patternflyLightTheme } from "./reference.css.ts";
 
@@ -32,8 +28,6 @@ function lookup(name: string, scope: Scope | undefined, root: Root) {
     return undefined;
 }
 
-// type TokenValue = PrimitiveTokenValue | Reference | CSS | Array<PrimitiveTokenValue | Reference | CSS>
-
 function getValue(value: unknown, scope: Scope, root: Root, seen: Set<string>): Resolution {
     if (value == null) {
         return ["null", ""];
@@ -47,8 +41,7 @@ function getValue(value: unknown, scope: Scope, root: Root, seen: Set<string>): 
         return ["value", value.value.map((v) => getValue(v, scope, root, seen)[1]).join("")];
     }
 
-    // This is broken. I had to find this one myself. Apparently, the type from @styleframe/core is
-    // wrong.
+    // @styleframe/core's type for this value is wrong.
     if (isVariable(value)) {
         return getValue(value.value, lookup(value.name, scope, root)?.scope ?? scope, root, seen);
     }

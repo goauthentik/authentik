@@ -1,7 +1,3 @@
-/**
- * @file Shape tokens — border radii and stroke widths.
- */
-
 import { instance } from "../shared.js";
 
 import { createUseVariable } from "@styleframe/theme";

@@ -1,9 +1,3 @@
-/**
- * @file Compare screenshots of the working tree against the merge-base with a base branch.
- * @runtime node
- * @see test/visual/AGENTS.md
- */
-
 import { execFileSync, spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
@@ -247,9 +241,6 @@ async function record(
     await writeManifest(commit, suite, specHash);
 }
 
-/**
- * Build `commit`'s Storybook in a temporary worktree and record it with the current specs.
- */
 async function recordStorybookFromWorktree(commit: string, specHash: string): Promise<void> {
     const worktree = join(tmpdir(), `authentik-visual-${commit.slice(0, 12)}`);
     const worktreeWeb = join(worktree, relative(git("rev-parse", "--show-toplevel"), PackageRoot));

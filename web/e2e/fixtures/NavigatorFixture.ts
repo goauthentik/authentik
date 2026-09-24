@@ -16,9 +16,6 @@ export class NavigatorFixture extends PageFixture {
         super({ page, testName });
     }
 
-    /**
-     * Wait for fonts, images, and Lit element updates to finish.
-     */
     public waitForRender = async (): Promise<void> => {
         await this.page.evaluate(async () => {
             const isLitElementLike = (element: Element): element is LitElement => {
@@ -61,9 +58,6 @@ export class NavigatorFixture extends PageFixture {
         });
     };
 
-    /**
-     * Wait for network requests and loading placeholders to finish, then for rendering.
-     */
     public waitForContent = async ({ allowLoading = false } = {}): Promise<void> => {
         await this.page.waitForLoadState("networkidle");
 

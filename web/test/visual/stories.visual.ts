@@ -1,7 +1,3 @@
-/**
- * @file Screenshots of every story tagged `test`, in light and dark.
- */
-
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 

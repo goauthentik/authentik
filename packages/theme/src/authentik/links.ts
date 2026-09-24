@@ -1,7 +1,3 @@
-/**
- * @file Link tokens — decorations and colors for links
- */
-
 import { instance } from "../shared.js";
 
 import { createUseVariable } from "@styleframe/theme";

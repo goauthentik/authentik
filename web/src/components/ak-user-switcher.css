@@ -37,7 +37,6 @@
     align-items: center;
     gap: 0;
     min-height: 2rem;
-    /* Gives the avatar box-shadow some breathing room. */
     padding-block: 2px;
     padding-inline: var(--pf-global--spacer--sm);
     font-size: var(--pf-global--FontSize--md);

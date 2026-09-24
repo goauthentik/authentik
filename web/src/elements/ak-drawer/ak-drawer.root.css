@@ -1,16 +1,11 @@
 /* ----------- CSS Custom Properties for DRAWER  --------------------------- */
 
 :root {
-    /* Component-local directional shadows for the panel's expanded state.
-     * Defined here so the drawer carries its own shadow values rather than
-     * exposing four directional shadow tokens on the public --ak-* surface. */
     --_drawer-shadow-top: 0 -0.75rem 0.75rem -0.5rem rgba(3, 3, 3, 0.18);
     --_drawer-shadow-right: 0.75rem 0 0.75rem -0.5rem rgba(3, 3, 3, 0.18);
     --_drawer-shadow-bottom: 0 0.75rem 0.75rem -0.5rem rgba(3, 3, 3, 0.18);
     --_drawer-shadow-left: -0.75rem 0 0.75rem -0.5rem rgba(3, 3, 3, 0.18);
 
-    /* Flips translateX() offsets in the RTL-scoped rules of
-     * ak-drawer.styles.ts; only those rules consume it. */
     --_drawer-inverse-multiplier: -1;
 
     --ak-v2-c-drawer__content--FlexBasis: 100%;
@@ -149,7 +144,6 @@ html[data-theme="dark"],
     --ak-v2-c-drawer__panel--BackgroundColor: var(--ak-global--color--surface);
     --ak-v2-c-drawer__splitter--BackgroundColor: transparent;
 
-    /* Dark theme: shadows need stronger opacity to read against dark surfaces. */
     --_drawer-shadow-top: 0 -0.75rem 0.75rem -0.5rem rgba(3, 3, 3, 0.72);
     --_drawer-shadow-right: 0.75rem 0 0.75rem -0.5rem rgba(3, 3, 3, 0.72);
     --_drawer-shadow-bottom: 0 0.75rem 0.75rem -0.5rem rgba(3, 3, 3, 0.72);

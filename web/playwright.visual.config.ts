@@ -1,8 +1,3 @@
-/**
- * @file Playwright configuration for visual comparisons.
- * @see test/visual/AGENTS.md
- */
-
 import {
     MaxDiffPixelRatio,
     ViewportSize,

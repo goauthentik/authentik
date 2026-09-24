@@ -18,13 +18,7 @@ const HEADER = `/*
 `;
 
 interface Category {
-    /**
-     * Slug used for the output filename.
-     */
     name: string;
-    /**
-     * Token-name prefixes (after the `--ak-` strip) that belong to this category.
-     */
     prefixes: string[];
 }
 

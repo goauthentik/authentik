@@ -36,16 +36,9 @@ export const authentikStyleframeOptions: StyleframeOptions = {
 
 /**
  * Singleton styleframe instance used by every token module.
- *
- * Importing any module under `./authentik/` or `./patternfly/` triggers the
- * side-effects that register variables and themes against this instance.
  */
 export const instance = styleframe(authentikStyleframeOptions);
 
-/**
- * Builds a `useVariable` helper bound to one `pf-global.<category>` namespace, so the
- * PatternFly bridge modules can declare variables without repeating the prefix.
- */
 export const createPfGlobal = (category: string) => createUseVariable(`pf-global.${category}`);
 
 export const {

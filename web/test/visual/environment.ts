@@ -1,8 +1,3 @@
-/**
- * @file Paths and environment for the visual suites.
- * @runtime node
- */
-
 import { arch, platform } from "node:os";
 import { resolve } from "node:path";
 
@@ -12,15 +7,6 @@ export type VisualSuite = "storybook" | "pages";
 
 export const VisualSuites = ["storybook", "pages"] as const satisfies VisualSuite[];
 
-/**
- * Local, git-ignored screenshot store.
- *
- *     .visual/
- *       <commit>/<platform>-<arch>/<suite>/
- *         manifest.json
- *         <name>.png
- *       report/
- */
 export const VisualStoreRoot = resolve(PackageRoot, ".visual");
 
 export const PlatformKey = `${platform()}-${arch()}`;
@@ -35,16 +21,11 @@ export function suiteDirectory(commit: string, suite: VisualSuite): string {
 
 export const VisualReportDirectory = resolve(VisualStoreRoot, "report");
 
-/**
- * Screen sizes the suites capture at.
- */
 export const ViewportSize = {
     Desktop: { width: 1280, height: 800 },
 } as const;
 
-/**
- * Share of pixels allowed to differ. Admin screens show subpixel layout drift between loads.
- */
+// Admin screens show subpixel layout drift between loads.
 export const MaxDiffPixelRatio = {
     Storybook: 0,
     Pages: 0.01,

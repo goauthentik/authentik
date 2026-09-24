@@ -26,9 +26,6 @@ import "./authentik/z-index.js";
 import "./authentik/typography.js";
 import "./authentik/breakpoint.js";
 import "./authentik/misc.js";
-/*
- * The patternfly bridges
- */
 import "./patternfly/palette.js";
 import "./patternfly/color.js";
 import "./patternfly/straight.js";

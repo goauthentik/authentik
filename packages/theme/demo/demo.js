@@ -333,13 +333,12 @@ const PROSE =
 
 const blocks = parseStylesheet(await fetch(CSS_URL).then((r) => r.text()));
 
-// The unconditional :root block — the canonical token list, in order. */
 const rootBlock = blocks.find((b) => b.path.length === 1 && b.path[0].includes(":root"));
 if (!rootBlock) throw new Error(`no top-level :root block in ${CSS_URL}`);
 
 const TOKENS = rootBlock.decls;
 
-// Styleframe emits a theme as a list of selectors, and we've got several. Check them all.
+// Styleframe emits each theme under several comma-separated selectors.
 const isThemeSelector = (selector, theme) => {
     const branches = new Set([`.${theme}-theme`, `[data-theme="${theme}"]`]);
     return selector.split(",").some((branch) => branches.has(branch.trim()));

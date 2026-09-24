@@ -1,7 +1,3 @@
-/* Patternfly's default variable collection; this is what ships with Patternfly 4.
-   This file is intended as a check against what the style engine produces.
- */
-
 export const patternflyLightTheme: Record<string, string> = {
     "pf-global.BackgroundColor.100": "#ffffff",
     "pf-global.BackgroundColor.150": "#fafafa",
@@ -132,22 +128,6 @@ export const patternflyLightTheme: Record<string, string> = {
     "pf-global.FontFamily.heading.sans-serif": '"RedHatDisplay", helvetica, arial, sans-serif',
     "pf-global.FontFamily.monospace":
         '"RedHatMono", "Liberation Mono", consolas, "SFMono-Regular", menlo, monaco, "Courier New", monospace',
-    //     "pf-global.FontFamily.redhat-updated.sans-serif":
-    //         '"RedHatTextUpdated", "Overpass", overpass, helvetica, arial, sans-serif"',
-    //     "pf-global.FontFamily.redhat-updated.heading.sans-serif":
-    //         '"RedHatDisplayUpdated", "Overpass", overpass, helvetica, arial, sans-serif"',
-    //     "pf-global.FontFamily.redhat.monospace":
-    //         '"RedHatMono", "Liberation Mono", consolas, "SFMono-Regular", menlo, monaco, "Courier New", monospace"',
-    //     "pf-global.FontFamily.redhatVF.sans-serif":
-    //         '"RedHatTextVF", "RedHatText", "Overpass", overpass, helvetica, arial, sans-serif"',
-    //     "pf-global.FontFamily.redhatVF.heading.sans-serif":
-    //         '"RedHatDisplayVF", "RedHatDisplay", "Overpass", overpass, helvetica, arial, sans-serif"',
-    //     "pf-global.FontFamily.redhatVF.monospace":
-    //         '"RedHatMonoVF", "RedHatMono", "Liberation Mono", consolas, "SFMono-Regular", menlo, monaco, "Courier New", monospace"',
-    //     "pf-global.FontFamily.overpass.sans-serif":
-    //         '"overpass", overpass, "open sans", -apple-system, blinkmacsystemfont, "Segoe UI", roboto, "Helvetica Neue", arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
-    //     "pf-global.FontFamily.overpass.monospace":
-    //         '"overpass-mono", overpass-mono, "SFMono-Regular", menlo, monaco, consolas, "Liberation Mono", "Courier New", monospace"',
     "pf-global.FontSize.4xl": "2.25rem",
     "pf-global.FontSize.3xl": "1.75rem",
     "pf-global.FontSize.2xl": "1.5rem",
@@ -159,9 +139,7 @@ export const patternflyLightTheme: Record<string, string> = {
     "pf-global.FontWeight.light": "300",
     "pf-global.FontWeight.normal": "400",
     "pf-global.FontWeight.semi-bold": "500",
-    //    "pf-global.FontWeight.overpass.semi-bold": "500",
     "pf-global.FontWeight.bold": "700",
-    //     "pf-global.FontWeight.overpass.bold": "600",
     "pf-global.LineHeight.sm": "1.3",
     "pf-global.LineHeight.md": "1.5",
     "pf-global.ListStyle": "disc outside",

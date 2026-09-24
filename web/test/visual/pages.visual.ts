@@ -1,7 +1,3 @@
-/**
- * @file Screenshots of admin screens that don't show generated data.
- */
-
 import { ColorSchemes, skipWithoutBaseline } from "./capture.ts";
 
 import { expect, test } from "#e2e";

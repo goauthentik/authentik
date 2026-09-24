@@ -2,8 +2,7 @@ import { createPfGlobal, instance, ref } from "../shared.js";
 
 const usePfBackgroundColor = createPfGlobal("BackgroundColor");
 
-// Every single `ref` you see here is a color that Authentik has yet to define, which
-// is why the fallback is provided.
+// These refs point at colors authentik doesn't define yet, hence the fallbacks.
 
 usePfBackgroundColor(instance, {
     "100": "@color.surface",
