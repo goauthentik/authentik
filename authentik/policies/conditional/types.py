@@ -202,10 +202,19 @@ def coerce(value: Any, vtype: ValueType) -> Any:  # noqa: PLR0911, PLR0912
 
 
 def dig(root: Any, path: str) -> Any:
-    """Get the value at the dotted `path` in nested dictionaries, or `MISSING`"""
-    value = root
-    for part in path.split("."):
-        if not isinstance(value, dict) or part not in value:
+    """Get the value at the dotted `path` in nested dictionaries, or `MISSING`. A `*` segment
+    collects the rest of the path from every item of a list, for example `software.*.name`."""
+    return _dig(root, path.split("."))
+
+
+def _dig(value: Any, parts: list[str]) -> Any:
+    if not parts:
+        return value
+    head, rest = parts[0], parts[1:]
+    if head == "*":
+        if not isinstance(value, list):
             return MISSING
-        value = value[part]
-    return value
+        return [item for item in (_dig(item, rest) for item in value) if item is not MISSING]
+    if not isinstance(value, dict) or head not in value:
+        return MISSING
+    return _dig(value[head], rest)

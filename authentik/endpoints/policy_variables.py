@@ -2,10 +2,16 @@
 
 from django.utils.translation import gettext_lazy as _
 
+from authentik.endpoints.facts import DeviceFacts
 from authentik.endpoints.models import Device
 from authentik.flows.planner import PLAN_CONTEXT_DEVICE
 from authentik.flows.policy_variables import FACT_FLOW_PLAN
-from authentik.policies.conditional.registry import FACT_HTTP_REQUEST, ParamKind, registry
+from authentik.policies.conditional.registry import (
+    FACT_HTTP_REQUEST,
+    ParamKind,
+    known_params_from_serializer,
+    registry,
+)
 from authentik.policies.conditional.types import MISSING, T, dig
 from authentik.policies.types import PolicyRequest
 
@@ -45,6 +51,7 @@ def device_name(request: PolicyRequest):
     T.ANY,
     requires=_DEVICE,
     param=ParamKind.PATH,
+    params=known_params_from_serializer(DeviceFacts()),
     description=_(
         "Fact reported for the endpoint device at the given dotted path, for example "
         "'hardware.manufacturer' or 'os.family'."

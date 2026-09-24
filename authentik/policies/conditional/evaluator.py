@@ -85,6 +85,7 @@ class CompiledCondition:
     operator: Operator
     operand: Literal | CompiledVariable | None
     case_sensitive: bool
+    negate: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -184,7 +185,10 @@ class ConditionCompiler:
         if variable.param == ParamKind.NONE and param:
             self.errors.append((path, f"Variable '{ref.key}' does not take a parameter"))
         vtype = variable.type
-        if vtype.kind == TypeKind.ANY and ref.cast:
+        known = variable.known_param(param)
+        if known and not ref.cast:
+            vtype = known.type
+        elif vtype.kind == TypeKind.ANY and ref.cast:
             vtype = ValueType(TypeKind(ref.cast))
         elif ref.cast:
             self.errors.append((path, f"Variable '{ref.key}' has a fixed type and cannot be cast"))
@@ -213,6 +217,11 @@ class ConditionCompiler:
             )
             return None
         case_sensitive = node.options.case_sensitive
+        if node.options.negate and not operator.negated_label:
+            self.errors.append(
+                (f"{path}.operator", f"Operator '{operator.name}' cannot be negated")
+            )
+            return None
         expected = operator.operand_type(variable.type)
         operand: Literal | CompiledVariable | None = None
         match node.value:
@@ -262,6 +271,7 @@ class ConditionCompiler:
             operator=operator,
             operand=operand,
             case_sensitive=case_sensitive,
+            negate=node.options.negate,
         )
 
 
@@ -351,8 +361,10 @@ class ConditionEvaluator:
             case CompiledGroup():
                 if node.op == ConditionGroupOp.ALL:
                     result = all(self._evaluate(child) for child in node.children)
-                else:
+                elif node.op == ConditionGroupOp.ANY:
                     result = any(self._evaluate(child) for child in node.children)
+                else:
+                    result = not any(self._evaluate(child) for child in node.children)
                 self._trace(node.path, group=node.op, result=result)
                 return result
             case CompiledNot():
@@ -428,6 +440,8 @@ class ConditionEvaluator:
             self._trace(node.path, missing=exc.key, result=False)
             return False
         result = self._apply(node, value, operand)
+        if node.negate:
+            result = not result
         self._trace(
             node.path,
             variable=node.variable.variable.key,

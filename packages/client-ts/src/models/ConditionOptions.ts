@@ -16,6 +16,10 @@
  */
 export interface ConditionOptions {
     caseSensitive?: boolean;
+    /**
+     * Invert the result of the comparison, for example 'does not contain'.
+     */
+    negate?: boolean;
 }
 
 /**
@@ -38,6 +42,7 @@ export function ConditionOptionsFromJSONTyped(
     }
     return {
         caseSensitive: json["case_sensitive"] == null ? undefined : json["case_sensitive"],
+        negate: json["negate"] == null ? undefined : json["negate"],
     };
 }
 
@@ -55,5 +60,6 @@ export function ConditionOptionsToJSONTyped(
 
     return {
         case_sensitive: value["caseSensitive"],
+        negate: value["negate"],
     };
 }

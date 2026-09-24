@@ -2,7 +2,7 @@
 
 from django.utils.translation import gettext_lazy as _
 
-from authentik.policies.conditional.registry import ParamKind, registry
+from authentik.policies.conditional.registry import KnownParam, ParamKind, registry
 from authentik.policies.conditional.types import MISSING, T, dig
 from authentik.policies.types import PolicyRequest
 
@@ -58,6 +58,14 @@ def oauth_redirect_uri(request: PolicyRequest):
     T.ANY,
     requires=[FACT_OAUTH_TOKEN],
     param=ParamKind.PATH,
+    params=[
+        KnownParam("iss", _("Issuer"), T.STRING),
+        KnownParam("sub", _("Subject"), T.STRING),
+        KnownParam("azp", _("Authorized party"), T.STRING),
+        KnownParam("email", _("Email"), T.STRING),
+        KnownParam("iat", _("Issued at (timestamp)"), T.NUMBER),
+        KnownParam("exp", _("Expires at (timestamp)"), T.NUMBER),
+    ],
     description=_(
         "Claim of a JWT issued by a federated provider, used for machine-to-machine "
         "authentication, at the given dotted path."

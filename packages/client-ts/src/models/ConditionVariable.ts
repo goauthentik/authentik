@@ -10,6 +10,8 @@
  * Do not edit the class manually.
  */
 
+import type { ConditionKnownParam } from "./ConditionKnownParam";
+import { ConditionKnownParamFromJSON, ConditionKnownParamToJSON } from "./ConditionKnownParam";
 import type { ConditionParamKindEnum } from "./ConditionParamKindEnum";
 import {
     ConditionParamKindEnumFromJSON,
@@ -34,6 +36,7 @@ export interface ConditionVariable {
      */
     requires: Array<string>;
     param: ConditionParamKindEnum;
+    params: Array<ConditionKnownParam>;
     app: string;
     appVerboseName: string;
 }
@@ -48,6 +51,7 @@ export function instanceOfConditionVariable(value: object): value is ConditionVa
     if (!("type" in value) || value["type"] === undefined) return false;
     if (!("requires" in value) || value["requires"] === undefined) return false;
     if (!("param" in value) || value["param"] === undefined) return false;
+    if (!("params" in value) || value["params"] === undefined) return false;
     if (!("app" in value) || value["app"] === undefined) return false;
     if (
         (!("appVerboseName" in (value as Record<string, any>)) &&
@@ -77,6 +81,7 @@ export function ConditionVariableFromJSONTyped(
         type: ConditionValueTypeFromJSON(json["type"]),
         requires: json["requires"],
         param: ConditionParamKindEnumFromJSON(json["param"]),
+        params: (json["params"] as Array<any>).map(ConditionKnownParamFromJSON),
         app: json["app"],
         appVerboseName: json["app_verbose_name"],
     };
@@ -101,6 +106,7 @@ export function ConditionVariableToJSONTyped(
         type: ConditionValueTypeToJSON(value["type"]),
         requires: value["requires"],
         param: ConditionParamKindEnumToJSON(value["param"]),
+        params: (value["params"] as Array<any>).map(ConditionKnownParamToJSON),
         app: value["app"],
         app_verbose_name: value["appVerboseName"],
     };

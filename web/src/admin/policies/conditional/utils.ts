@@ -72,6 +72,10 @@ export function variableType(
 
     if (!variable) return null;
 
+    const known = variable.params.find((param) => param.key === ref.param);
+
+    if (known && !ref.cast) return known.type;
+
     if (variable.type.kind === ConditionTypeKindEnum.Any) {
         // Without a cast, only the presence of the value can be checked
         if (!ref.cast) return { kind: ConditionTypeKindEnum.Any };
@@ -195,7 +199,11 @@ export function unavailableVariables(
 }
 
 function describeRef(catalog: ConditionCatalog | undefined, ref: ConditionVariableRef) {
-    const label = findVariable(catalog, ref.key)?.label ?? ref.key;
+    const variable = findVariable(catalog, ref.key);
+    const label = variable?.label ?? ref.key;
+    const known = variable?.params.find((param) => param.key === ref.param);
+
+    if (known) return `${label} ${known.label}`;
 
     return ref.param ? `${label} "${ref.param}"` : label;
 }
@@ -218,6 +226,8 @@ export function describe(catalog: ConditionCatalog | undefined, node: ConditionN
             const joiner = node.op === "all" ? " AND " : " OR ";
             const inner = node.children.map((child) => describe(catalog, child)).join(joiner);
 
+            if (node.op === "none") return `NOT (${inner})`;
+
             return node.children.length > 1 ? `(${inner})` : inner;
         }
         case "not":
@@ -225,8 +235,10 @@ export function describe(catalog: ConditionCatalog | undefined, node: ConditionN
         case "policy":
             return `policy(${node.policy})`;
         case "condition": {
+            const found = catalog?.operators.find((op) => op.name === node.operator);
+
             const operator =
-                catalog?.operators.find((op) => op.name === node.operator)?.label ?? node.operator;
+                (node.options?.negate ? found?.negatedLabel : found?.label) ?? node.operator;
 
             let text = `${describeRef(catalog, node.variable)} ${operator}`;
 
@@ -335,3 +347,220 @@ export function pluckConditionErrors(body: unknown): ConditionErrors {
         ]),
     );
 }
+
+//#region Picker
+
+/**
+ * Category a variable is shown under in the picker, based on the first segment of its key.
+ */
+export function variableCategory(variable: ConditionVariable): string {
+    const prefix = variable.key.split(".")[0];
+
+    switch (prefix) {
+        case "user":
+            return "User";
+        case "request":
+            return "Request";
+        case "application":
+            return "Application";
+        case "flow":
+        case "plan":
+            return "Flow";
+        case "prompt_data":
+            return "Prompt";
+        case "event":
+            return "Event";
+        case "device":
+            return "Device";
+        case "oauth":
+            return "OAuth2";
+        case "invitation":
+            return "Invitation";
+        default:
+            return variable.appVerboseName || variable.app;
+    }
+}
+
+/**
+ * An entry of the variable picker: a variable, or a well-defined parameter of a variable.
+ */
+export interface PickerOption {
+    id: string;
+    key: string;
+    param: string | null;
+    category: string;
+    label: string;
+    description: string;
+    type: ValueType;
+    available: boolean;
+}
+
+export function pickerOptionId(ref: Pick<ConditionVariableRef, "key" | "param">): string {
+    return `${ref.key}|${ref.param ?? ""}`;
+}
+
+/**
+ * All entries of the variable picker. Variables with well-defined parameters (like device
+ * facts) get an entry per parameter, next to the entry for a custom path.
+ */
+export function pickerOptions(
+    catalog: ConditionCatalog | undefined,
+    facts: Set<string> | null,
+): PickerOption[] {
+    if (!catalog) return [];
+
+    return catalog.variables.flatMap((variable) => {
+        const category = variableCategory(variable);
+        const available = isAvailable(variable, facts);
+
+        const options: PickerOption[] = variable.params.map((param) => ({
+            id: pickerOptionId({ key: variable.key, param: param.key }),
+            key: variable.key,
+            param: param.key,
+            category,
+            label: param.label,
+            description: variable.description,
+            type: param.type,
+            available,
+        }));
+
+        options.push({
+            id: pickerOptionId({ key: variable.key, param: null }),
+            key: variable.key,
+            param: null,
+            category,
+            label:
+                variable.params.length && variable.param !== "none"
+                    ? `${variable.label} (custom path)`
+                    : variable.label,
+            description: variable.description,
+            type: variable.type,
+            available,
+        });
+
+        return options;
+    });
+}
+
+/**
+ * Filter picker entries by a search query, matching the label, category and key.
+ */
+export function filterPickerOptions(options: PickerOption[], query?: string): PickerOption[] {
+    const terms = (query ?? "").toLowerCase().split(/\s+/).filter(Boolean);
+
+    return options.filter((option) => {
+        const haystack =
+            `${option.category} ${option.label} ${option.key} ${option.param ?? ""}`.toLowerCase();
+
+        return terms.every((term) => haystack.includes(term));
+    });
+}
+
+//#endregion
+
+//#region Operators
+
+/**
+ * An entry of the operator dropdown. Operators which can be negated get a second entry.
+ */
+export interface OperatorChoice {
+    id: string;
+    name: ConditionOperator["name"];
+    negate: boolean;
+    label: string;
+}
+
+export function operatorChoiceId(name: string, negate?: boolean): string {
+    return negate ? `${name}:not` : name;
+}
+
+export function operatorChoices(
+    catalog: ConditionCatalog | undefined,
+    type: ValueType | null,
+): OperatorChoice[] {
+    return operatorsFor(catalog, type).flatMap((operator) => {
+        const choices: OperatorChoice[] = [
+            {
+                id: operatorChoiceId(operator.name),
+                name: operator.name,
+                negate: false,
+                label: operator.label,
+            },
+        ];
+
+        if (operator.negatedLabel) {
+            choices.push({
+                id: operatorChoiceId(operator.name, true),
+                name: operator.name,
+                negate: true,
+                label: operator.negatedLabel,
+            });
+        }
+
+        return choices;
+    });
+}
+
+/**
+ * Operators which have an explicit opposite, used to remove `not` nodes.
+ */
+const OPPOSITE_OPERATORS: Record<string, ConditionOperator["name"]> = {
+    eq: "ne",
+    ne: "eq",
+    in: "not_in",
+    not_in: "in",
+    is_set: "is_not_set",
+    is_not_set: "is_set",
+    is_true: "is_false",
+    is_false: "is_true",
+};
+
+/**
+ * Negate a single node without using a `not` node, if possible.
+ */
+function negate(catalog: ConditionCatalog, node: ConditionNode): ConditionNode {
+    if (node.type === "condition") {
+        const opposite = OPPOSITE_OPERATORS[node.operator];
+
+        if (opposite && !node.options?.negate) {
+            return { ...node, operator: opposite };
+        }
+
+        const operator = catalog.operators.find((op) => op.name === node.operator);
+
+        if (operator?.negatedLabel) {
+            return {
+                ...node,
+                options: { ...node.options, negate: !node.options?.negate },
+            };
+        }
+    }
+
+    if (node.type === "group" && node.op !== "all") {
+        return { ...node, op: node.op === "any" ? "none" : "any" };
+    }
+
+    if (node.type === "not") return node.child;
+
+    return { type: "group", op: "none", children: [node] };
+}
+
+/**
+ * Replace `not` nodes, which the editor doesn't show, with equivalent nodes: negated
+ * operators, or groups where none of the children may pass.
+ */
+export function removeNotNodes(catalog: ConditionCatalog, node: ConditionNode): ConditionNode {
+    switch (node.type) {
+        case "not":
+            return negate(catalog, removeNotNodes(catalog, node.child));
+        case "group":
+            return {
+                ...node,
+                children: node.children.map((child) => removeNotNodes(catalog, child)),
+            };
+        default:
+            return node;
+    }
+}
+
+//#endregion

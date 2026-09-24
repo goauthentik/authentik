@@ -1,6 +1,7 @@
 """Conditional policy evaluator tests"""
 
 from datetime import timedelta
+from unittest.mock import MagicMock, PropertyMock, patch
 from uuid import uuid4
 
 from django.test import RequestFactory, TestCase
@@ -8,6 +9,7 @@ from django.utils.timezone import now
 
 from authentik.core.models import Group
 from authentik.core.tests.utils import create_test_user
+from authentik.endpoints.models import Device
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.policies.conditional.evaluator import ConditionValidationError, compile_conditions
@@ -216,6 +218,56 @@ class TestConditionalEvaluator(TestCase):
         with self.assertRaises(PolicyException):
             policy.passes(self.request)
 
+    def test_negate(self):
+        """Operators can be negated with an option"""
+        self.assertFalse(
+            self.passes(cond("user.email", "contains", "Doe", options={"negate": True}))
+        )
+        self.assertTrue(
+            self.passes(cond("user.email", "contains", "nope", options={"negate": True}))
+        )
+        # Negation doesn't turn missing values into a pass
+        self.assertFalse(
+            self.passes(
+                cond(
+                    "prompt_data",
+                    "contains",
+                    "foo",
+                    param="username",
+                    cast="string",
+                    options={"negate": True},
+                )
+            )
+        )
+
+    def test_group_none(self):
+        """None groups pass when no child passes"""
+        true = cond("user.is_active", "is_true")
+        false = cond("user.is_active", "is_false")
+        self.assertTrue(self.passes(group("none", false, false)))
+        self.assertFalse(self.passes(group("none", false, true)))
+
+    def test_known_params(self):
+        """Well-defined parameters are typed without a cast, and `*` collects from lists"""
+        self.request.context["device"] = Device.objects.create(
+            name=generate_id(), identifier=generate_id()
+        )
+        facts = {
+            "hardware": {"manufacturer": "Apple", "cpu_count": 8},
+            "software": [{"name": "Firefox"}, {"name": "Slack"}],
+        }
+        with patch(
+            "authentik.endpoints.models.Device.cached_facts",
+            PropertyMock(return_value=MagicMock(data=facts)),
+        ):
+            self.assertTrue(
+                self.passes(cond("device.facts", "eq", "Apple", param="hardware.manufacturer"))
+            )
+            self.assertTrue(self.passes(cond("device.facts", "gte", 4, param="hardware.cpu_count")))
+            self.assertTrue(
+                self.passes(cond("device.facts", "has_item", "Slack", param="software.*.name"))
+            )
+
     def test_invalid_stored(self):
         """Invalid stored conditions raise a PolicyException"""
         with self.assertRaises(PolicyException):
@@ -249,6 +301,9 @@ class TestConditionalCompiler(TestCase):
         self.assertInvalid(cond("user.email", "is_set", param="foo"), "does not take a parameter")
         self.assertInvalid(cond("user.email", "is_set", cast="string"), "cannot be cast")
         self.assertInvalid(group("all"), "at least one item")
+        self.assertInvalid(
+            cond("user.email", "eq", "foo", options={"negate": True}), "cannot be negated"
+        )
         self.assertInvalid(cond("user.last_login", "between", ["2020-01-01"]), "exactly two")
 
     def test_limits(self):

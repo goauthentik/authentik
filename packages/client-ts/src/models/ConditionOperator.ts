@@ -32,6 +32,10 @@ export interface ConditionOperator {
     label: string;
     kinds: Array<ConditionTypeKindEnum>;
     operand: ConditionOperandShapeEnum;
+    /**
+     * Label when negated, null if it can't be negated.
+     */
+    negatedLabel: string | null;
 }
 
 /**
@@ -42,6 +46,13 @@ export function instanceOfConditionOperator(value: object): value is ConditionOp
     if (!("label" in value) || value["label"] === undefined) return false;
     if (!("kinds" in value) || value["kinds"] === undefined) return false;
     if (!("operand" in value) || value["operand"] === undefined) return false;
+    if (
+        (!("negatedLabel" in (value as Record<string, any>)) &&
+            !("negated_label" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["negatedLabel"] === undefined &&
+            (value as Record<string, any>)["negated_label"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -61,6 +72,7 @@ export function ConditionOperatorFromJSONTyped(
         label: json["label"],
         kinds: (json["kinds"] as Array<any>).map(ConditionTypeKindEnumFromJSON),
         operand: ConditionOperandShapeEnumFromJSON(json["operand"]),
+        negatedLabel: json["negated_label"],
     };
 }
 
@@ -81,5 +93,6 @@ export function ConditionOperatorToJSONTyped(
         label: value["label"],
         kinds: (value["kinds"] as Array<any>).map(ConditionTypeKindEnumToJSON),
         operand: ConditionOperandShapeEnumToJSON(value["operand"]),
+        negated_label: value["negatedLabel"],
     };
 }

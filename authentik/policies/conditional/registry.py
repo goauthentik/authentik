@@ -49,6 +49,15 @@ class Fact:
 
 
 @dataclass(frozen=True)
+class KnownParam:
+    """Parameter of a variable with a well-defined value, which can be picked directly"""
+
+    key: str
+    label: str | Promise
+    type: ValueType
+
+
+@dataclass(frozen=True)
 class Variable:
     key: str
     label: str | Promise
@@ -60,6 +69,11 @@ class Variable:
     param: ParamKind = ParamKind.NONE
     # Module which registered this variable
     module: str = ""
+    # Well-defined parameters, for variables whose structure is known
+    params: tuple[KnownParam, ...] = ()
+
+    def known_param(self, key: str | None) -> KnownParam | None:
+        return next((param for param in self.params if param.key == key), None)
 
     def resolve(self, request: PolicyRequest, param: str | None = None) -> Any:
         if self.param == ParamKind.NONE:
@@ -116,6 +130,7 @@ class ConditionalPolicyRegistry:
         requires: Iterable[str],
         description: str | Promise = "",
         param: ParamKind = ParamKind.NONE,
+        params: Iterable[KnownParam] = (),
     ) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
         """Decorator to register a variable resolver.
 
@@ -134,6 +149,7 @@ class ConditionalPolicyRegistry:
                 resolver=resolver,
                 description=description,
                 param=param,
+                params=tuple(params),
                 module=module,
             )
             return resolver
@@ -145,3 +161,82 @@ class ConditionalPolicyRegistry:
 
 
 registry = ConditionalPolicyRegistry()
+
+
+_ACRONYMS = {"Os": "OS", "Cpu": "CPU", "Id": "ID", "Ip": "IP", "Dns": "DNS", "Url": "URL"}
+
+
+def _label(label: str) -> str:
+    return " ".join(_ACRONYMS.get(word, word) for word in str(label).split(" "))
+
+
+def _serializer_field_type(field: Any) -> ValueType | None:
+    """Value type of a scalar DRF serializer field, if it can be compared"""
+    from rest_framework.fields import (
+        BooleanField,
+        CharField,
+        ChoiceField,
+        DateTimeField,
+        FloatField,
+        IntegerField,
+        IPAddressField,
+    )
+
+    from authentik.policies.conditional.types import T
+
+    if isinstance(field, ChoiceField):
+        return T.enum(field.choices.items())
+    if isinstance(field, BooleanField):
+        return T.BOOLEAN
+    if isinstance(field, IntegerField | FloatField):
+        return T.NUMBER
+    if isinstance(field, DateTimeField):
+        return T.DATETIME
+    if isinstance(field, IPAddressField):
+        return T.IP
+    if isinstance(field, CharField):
+        return T.STRING
+    return None
+
+
+def known_params_from_serializer(
+    serializer: Any, prefix: str = "", label_prefix: str = "", in_list: bool = False
+) -> list[KnownParam]:
+    """Build the well-defined parameters of a variable from the fields of a DRF serializer.
+    Nested serializers become dotted paths, lists of serializers become `*` paths which collect
+    the value from every item (for example `software.*.name`)."""
+    from rest_framework.fields import ListField
+    from rest_framework.serializers import BaseSerializer
+
+    from authentik.policies.conditional.types import T
+
+    params: list[KnownParam] = []
+    for name, field in serializer.fields.items():
+        key = f"{prefix}{name}"
+        label = f"{label_prefix}{_label(field.label or name)}"
+        if isinstance(field, BaseSerializer):
+            params.extend(known_params_from_serializer(field, f"{key}.", f"{label} › ", in_list))
+            continue
+        if isinstance(field, ListField):
+            if in_list:
+                # Lists within lists can't be compared in a useful way
+                continue
+            if isinstance(field.child, BaseSerializer):
+                params.extend(
+                    known_params_from_serializer(
+                        field.child, f"{key}.*.", f"{label} › ", in_list=True
+                    )
+                )
+                continue
+            item = _serializer_field_type(field.child)
+            if item:
+                params.append(KnownParam(key=key, label=label, type=T.list(item)))
+            continue
+        vtype = _serializer_field_type(field)
+        if not vtype:
+            continue
+        if in_list:
+            params.append(KnownParam(key=key, label=f"{label} (all)", type=T.list(vtype)))
+        else:
+            params.append(KnownParam(key=key, label=label, type=vtype))
+    return params

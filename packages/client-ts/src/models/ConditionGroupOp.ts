@@ -16,6 +16,7 @@
 export const ConditionGroupOp = {
     All: "all",
     Any: "any",
+    None: "none",
     UnknownDefaultOpenApi: "11184809",
 } as const;
 export type ConditionGroupOp = (typeof ConditionGroupOp)[keyof typeof ConditionGroupOp];

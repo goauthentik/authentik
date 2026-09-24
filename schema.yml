@@ -38922,6 +38922,7 @@ components:
       enum:
       - all
       - any
+      - none
       type: string
     ConditionItemType:
       type: object
@@ -38939,6 +38940,20 @@ components:
       required:
       - choices
       - kind
+    ConditionKnownParam:
+      type: object
+      description: Well-defined parameter of a variable, which can be picked directly
+      properties:
+        key:
+          type: string
+        label:
+          type: string
+        type:
+          $ref: '#/components/schemas/ConditionValueType'
+      required:
+      - key
+      - label
+      - type
     ConditionLiteralOperand:
       additionalProperties: false
       description: Fixed value to compare against
@@ -39020,10 +39035,15 @@ components:
             $ref: '#/components/schemas/ConditionTypeKindEnum'
         operand:
           $ref: '#/components/schemas/ConditionOperandShapeEnum'
+        negated_label:
+          type: string
+          nullable: true
+          description: Label when negated, null if it can't be negated.
       required:
       - kinds
       - label
       - name
+      - negated_label
       - operand
     ConditionOperatorName:
       description: Names of all operators
@@ -39064,6 +39084,11 @@ components:
       properties:
         case_sensitive:
           default: true
+          type: boolean
+        negate:
+          default: false
+          description: Invert the result of the comparison, for example 'does not
+            contain'.
           type: boolean
       type: object
     ConditionParamKindEnum:
@@ -39173,6 +39198,10 @@ components:
           description: Available when any of these facts are available.
         param:
           $ref: '#/components/schemas/ConditionParamKindEnum'
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConditionKnownParam'
         app:
           type: string
         app_verbose_name:
@@ -39184,6 +39213,7 @@ components:
       - key
       - label
       - param
+      - params
       - requires
       - type
     ConditionVariableOperand:

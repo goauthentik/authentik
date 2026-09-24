@@ -1,5 +1,9 @@
 import {
     assignErrors,
+    filterPickerOptions,
+    operatorChoices,
+    pickerOptions,
+    removeNotNodes,
     collectNodePaths,
     describe as describeNode,
     errorOwner,
@@ -32,12 +36,30 @@ const catalog: ConditionCatalog = {
     ],
     variables: [
         {
+            key: "device.facts",
+            label: "Device fact",
+            description: "",
+            type: { kind: ConditionTypeKindEnum.Any, choices: [], item: null },
+            requires: ["device"],
+            param: ConditionParamKindEnum.Path,
+            params: [
+                {
+                    key: "hardware.manufacturer",
+                    label: "Hardware › Manufacturer",
+                    type: { kind: ConditionTypeKindEnum.String, choices: [], item: null },
+                },
+            ],
+            app: "authentik_endpoints",
+            appVerboseName: "Endpoints",
+        },
+        {
             key: "user.email",
             label: "Email",
             description: "",
             type: { kind: ConditionTypeKindEnum.String, choices: [], item: null },
             requires: ["user"],
             param: ConditionParamKindEnum.None,
+            params: [],
             app: "authentik_core",
             appVerboseName: "Core",
         },
@@ -56,6 +78,7 @@ const catalog: ConditionCatalog = {
             },
             requires: ["user"],
             param: ConditionParamKindEnum.None,
+            params: [],
             app: "authentik_core",
             appVerboseName: "Core",
         },
@@ -66,6 +89,7 @@ const catalog: ConditionCatalog = {
             type: { kind: ConditionTypeKindEnum.Any, choices: [], item: null },
             requires: ["user"],
             param: ConditionParamKindEnum.Path,
+            params: [],
             app: "authentik_core",
             appVerboseName: "Core",
         },
@@ -76,34 +100,46 @@ const catalog: ConditionCatalog = {
             type: { kind: ConditionTypeKindEnum.Enum, choices: [], item: null },
             requires: ["event"],
             param: ConditionParamKindEnum.None,
+            params: [],
             app: "authentik_events",
             appVerboseName: "Events",
         },
     ],
     operators: [
         {
+            name: "contains",
+            label: "contains",
+            kinds: [ConditionTypeKindEnum.String],
+            operand: ConditionOperandShapeEnum.Same,
+            negatedLabel: "does not contain",
+        },
+        {
             name: "eq",
             label: "equals",
             kinds: [ConditionTypeKindEnum.String, ConditionTypeKindEnum.Enum],
             operand: ConditionOperandShapeEnum.Same,
+            negatedLabel: null,
         },
         {
             name: "in",
             label: "is one of",
             kinds: [ConditionTypeKindEnum.String],
             operand: ConditionOperandShapeEnum.ListOfSame,
+            negatedLabel: null,
         },
         {
             name: "has_item",
             label: "contains item",
             kinds: [ConditionTypeKindEnum.List],
             operand: ConditionOperandShapeEnum.Item,
+            negatedLabel: null,
         },
         {
             name: "is_set",
             label: "is set",
             kinds: [ConditionTypeKindEnum.String],
             operand: ConditionOperandShapeEnum.None,
+            negatedLabel: null,
         },
     ],
 };
@@ -259,5 +295,108 @@ describe("validation errors", () => {
 
         expect(pluckConditionErrors({ name: ["required"] })).toEqual({});
         expect(pluckConditionErrors(null)).toEqual({});
+    });
+});
+
+describe("variable picker", () => {
+    it("offers well-defined parameters as separate entries", () => {
+        const options = pickerOptions(catalog, null);
+        const device = options.filter((option) => option.key === "device.facts");
+
+        expect(device.map((option) => [option.label, option.param])).toEqual([
+            ["Hardware › Manufacturer", "hardware.manufacturer"],
+            ["Device fact (custom path)", null],
+        ]);
+
+        expect(device[0].type.kind).toBe("string");
+        expect(device[0].category).toBe("Device");
+    });
+
+    it("types known parameters without a cast", () => {
+        expect(
+            variableType(catalog, { key: "device.facts", param: "hardware.manufacturer" })?.kind,
+        ).toBe("string");
+
+        expect(variableType(catalog, { key: "device.facts", param: "other" })?.kind).toBe("any");
+    });
+
+    it("marks values that aren't available", () => {
+        const facts = factsForTarget(catalog, "authentik_flows.flow");
+        const device = pickerOptions(catalog, facts).find((o) => o.key === "device.facts");
+
+        expect(device?.available).toBe(false);
+    });
+
+    it("filters by category, label and key", () => {
+        const options = pickerOptions(catalog, null);
+
+        expect(filterPickerOptions(options, "device manuf").map((o) => o.param)).toEqual([
+            "hardware.manufacturer",
+        ]);
+
+        expect(filterPickerOptions(options, "user.email").map((o) => o.key)).toEqual([
+            "user.email",
+        ]);
+    });
+});
+
+describe("operators", () => {
+    it("lists negated forms after the operator", () => {
+        const email = variableType(catalog, { key: "user.email" });
+
+        expect(operatorChoices(catalog, email).map((choice) => choice.label)).toEqual([
+            "contains",
+            "does not contain",
+            "equals",
+            "is one of",
+            "is set",
+        ]);
+    });
+
+    it("replaces not nodes", () => {
+        const tree: ConditionNode = {
+            type: "group",
+            op: "all",
+            children: [
+                {
+                    type: "not",
+                    child: {
+                        type: "condition",
+                        variable: { key: "user.email" },
+                        operator: "contains",
+                    },
+                },
+                {
+                    type: "not",
+                    child: { type: "condition", variable: { key: "user.email" }, operator: "eq" },
+                },
+                {
+                    type: "not",
+                    child: { type: "group", op: "any", children: [] },
+                },
+                {
+                    type: "not",
+                    child: { type: "policy", policy: "foo" },
+                },
+            ],
+        };
+
+        const result = removeNotNodes(catalog, tree);
+
+        expect(result).toEqual({
+            type: "group",
+            op: "all",
+            children: [
+                {
+                    type: "condition",
+                    variable: { key: "user.email" },
+                    operator: "contains",
+                    options: { negate: true },
+                },
+                { type: "condition", variable: { key: "user.email" }, operator: "ne" },
+                { type: "group", op: "none", children: [] },
+                { type: "group", op: "none", children: [{ type: "policy", policy: "foo" }] },
+            ],
+        });
     });
 });

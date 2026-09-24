@@ -106,6 +106,7 @@ export * from "./ConditionGroupNode";
 export * from "./ConditionGroupNodeTypeEnum";
 export * from "./ConditionGroupOp";
 export * from "./ConditionItemType";
+export * from "./ConditionKnownParam";
 export * from "./ConditionLiteralOperand";
 export * from "./ConditionLiteralOperandTypeEnum";
 export * from "./ConditionNode";

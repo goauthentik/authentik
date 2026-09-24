@@ -80,6 +80,9 @@ class Operator:
     kinds: frozenset[TypeKind]
     operand: OperandShape
     func: Callable[[Any, Any], bool]
+    # Label of the inverted operator, if the operator can be negated with the `negate` option.
+    # Operators with an explicit opposite (like `eq` and `ne`) don't set this.
+    negated_label: str | Promise | None = None
 
     def operand_type(self, vtype: ValueType) -> ValueType | None:
         """Type of the operand this operator expects for a variable of type `vtype`"""
@@ -217,6 +220,7 @@ OPERATORS: dict[str, Operator] = {
             STRING_KINDS,
             OperandShape.SAME,
             lambda a, b: b in a,
+            negated_label=_("does not contain"),
         ),
         Operator(
             ConditionOperatorName.STARTS_WITH,
@@ -224,6 +228,7 @@ OPERATORS: dict[str, Operator] = {
             STRING_KINDS,
             OperandShape.SAME,
             lambda a, b: a.startswith(b),
+            negated_label=_("does not start with"),
         ),
         Operator(
             ConditionOperatorName.ENDS_WITH,
@@ -231,6 +236,7 @@ OPERATORS: dict[str, Operator] = {
             STRING_KINDS,
             OperandShape.SAME,
             lambda a, b: a.endswith(b),
+            negated_label=_("does not end with"),
         ),
         # Case sensitivity for regular expressions is handled by the evaluator
         Operator(
@@ -239,6 +245,7 @@ OPERATORS: dict[str, Operator] = {
             STRING_KINDS,
             OperandShape.REGEX,
             lambda a, b: re.search(b, a) is not None,
+            negated_label=_("does not match regular expression"),
         ),
         Operator(
             ConditionOperatorName.LT,
@@ -274,6 +281,7 @@ OPERATORS: dict[str, Operator] = {
             ORDERED_KINDS,
             OperandShape.RANGE,
             lambda a, b: b[0] <= a <= b[1],
+            negated_label=_("is not between"),
         ),
         Operator(
             ConditionOperatorName.IS_TRUE,
@@ -309,6 +317,7 @@ OPERATORS: dict[str, Operator] = {
             frozenset({TypeKind.IP}),
             OperandShape.NONE,
             lambda a, b: a.is_private,
+            negated_label=_("is not a private address"),
         ),
         Operator(
             ConditionOperatorName.IS_GLOBAL,
@@ -316,6 +325,7 @@ OPERATORS: dict[str, Operator] = {
             frozenset({TypeKind.IP}),
             OperandShape.NONE,
             lambda a, b: a.is_global,
+            negated_label=_("is not a public address"),
         ),
         Operator(
             ConditionOperatorName.IS_URL,
@@ -323,6 +333,7 @@ OPERATORS: dict[str, Operator] = {
             STRING_KINDS,
             OperandShape.NONE,
             _is_url,
+            negated_label=_("is not a valid URL"),
         ),
         Operator(
             ConditionOperatorName.IN_NETWORK,
@@ -330,6 +341,7 @@ OPERATORS: dict[str, Operator] = {
             frozenset({TypeKind.IP}),
             OperandShape.CIDR_LIST,
             lambda a, b: any(a in network for network in b),
+            negated_label=_("is not in network"),
         ),
         Operator(
             ConditionOperatorName.HAS_ITEM,
@@ -337,6 +349,7 @@ OPERATORS: dict[str, Operator] = {
             LIST_KINDS,
             OperandShape.ITEM,
             lambda a, b: b in a,
+            negated_label=_("does not contain item"),
         ),
         Operator(
             ConditionOperatorName.HAS_ANY,
@@ -344,6 +357,7 @@ OPERATORS: dict[str, Operator] = {
             LIST_KINDS,
             OperandShape.LIST_OF_ITEM,
             lambda a, b: any(item in a for item in b),
+            negated_label=_("contains none of"),
         ),
         Operator(
             ConditionOperatorName.HAS_ALL,
@@ -351,6 +365,7 @@ OPERATORS: dict[str, Operator] = {
             LIST_KINDS,
             OperandShape.LIST_OF_ITEM,
             lambda a, b: all(item in a for item in b),
+            negated_label=_("does not contain all of"),
         ),
         Operator(
             ConditionOperatorName.IS_EMPTY,
@@ -358,6 +373,7 @@ OPERATORS: dict[str, Operator] = {
             LIST_KINDS,
             OperandShape.NONE,
             lambda a, b: len(a) == 0,
+            negated_label=_("is not empty"),
         ),
         Operator(
             ConditionOperatorName.LENGTH_EQ,

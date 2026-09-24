@@ -6,6 +6,7 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFLabel from "@patternfly/patternfly/components/Label/label.css";
 
 import { aki } from "#common/api/client";
+import { groupBy } from "#common/utils";
 
 import { AKControlElement } from "#elements/ControlElement";
 
@@ -14,17 +15,23 @@ import {
     CAST_KINDS,
     collectNodePaths,
     ConditionErrors,
-    errorOwner,
     describe,
     emptyTree,
+    errorOwner,
     factsForTarget,
+    filterPickerOptions,
     findVariable,
     isAvailable,
     isTextual,
     newCondition,
     operandType,
+    operatorChoiceId,
+    operatorChoices,
     operatorsFor,
-    unavailableVariables,
+    PickerOption,
+    pickerOptionId,
+    pickerOptions,
+    removeNotNodes,
     ValueType,
     variableType,
 } from "#admin/policies/conditional/utils";
@@ -37,9 +44,9 @@ import {
     ConditionNode,
     ConditionOperatorName,
     ConditionParamKindEnum,
+    ConditionPolicyNode,
     ConditionTree,
     ConditionTypeKindEnum,
-    ConditionVariable,
     ConditionVariableRef,
     CoreApi,
     Group,
@@ -50,13 +57,15 @@ import {
     User,
 } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { css, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 type Condition = ConditionComparisonNode & { type: "condition" };
 
 type GroupNode = ConditionGroupNode & { type: "group" };
+
+type PolicyNode = ConditionPolicyNode & { type: "policy" };
 
 interface ModelLookup<T> {
     fetch: (search?: string) => Promise<T[]>;
@@ -98,18 +107,48 @@ const MODEL_LOOKUPS: Record<string, AnyLookup> = {
     },
 };
 
+const CAST_LABELS: Record<string, string> = {
+    string: msg("as text", { id: "policies.conditional.cast.string" }),
+    number: msg("as number", { id: "policies.conditional.cast.number" }),
+    boolean: msg("as yes/no", { id: "policies.conditional.cast.boolean" }),
+    datetime: msg("as date", { id: "policies.conditional.cast.datetime" }),
+    ip: msg("as IP address", { id: "policies.conditional.cast.ip" }),
+};
+
+const TYPE_LABELS: Record<string, string> = {
+    string: msg("text", { id: "policies.conditional.type.string" }),
+    number: msg("number", { id: "policies.conditional.type.number" }),
+    boolean: msg("yes/no", { id: "policies.conditional.type.boolean" }),
+    datetime: msg("date", { id: "policies.conditional.type.datetime" }),
+    ip: msg("IP address", { id: "policies.conditional.type.ip" }),
+    enum: msg("choice", { id: "policies.conditional.type.enum" }),
+    model: msg("object", { id: "policies.conditional.type.model" }),
+    any: msg("any value", { id: "policies.conditional.type.any" }),
+};
+
+function typeLabel(type: ValueType): string {
+    if (type.kind === ConditionTypeKindEnum.List && type.item) {
+        return msg(str`list of ${typeLabel(type.item)}`, { id: "policies.conditional.type.list" });
+    }
+
+    return TYPE_LABELS[type.kind] ?? type.kind;
+}
+
 function toLocalDatetime(value: unknown): string {
     if (typeof value !== "string" || !value) return "";
+
     const date = new Date(value);
 
     if (isNaN(date.getTime())) return "";
+
     const offset = date.getTimezoneOffset() * 60_000;
 
     return new Date(date.getTime() - offset).toISOString().slice(0, 16);
 }
 
 /**
- * Visual editor for the condition tree of a conditional policy.
+ * Visual editor for the condition tree of a conditional policy. Each condition is shown as a
+ * row which reads like a sentence, less common options are in a menu per row.
  *
  * @fires input - When the tree is modified
  */
@@ -121,44 +160,102 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
         PFFormControl,
         PFLabel,
         css`
-            .group {
-                border-left: 3px solid var(--pf-global--primary-color--100);
-                padding: var(--pf-global--spacer--sm) 0 var(--pf-global--spacer--sm)
-                    var(--pf-global--spacer--md);
+            :host {
+                display: block;
+            }
+            .builder {
+                border: 1px solid var(--pf-global--BorderColor--100);
+                background: var(--pf-global--BackgroundColor--200);
+                padding: var(--pf-global--spacer--md);
                 display: flex;
                 flex-direction: column;
                 gap: var(--pf-global--spacer--sm);
             }
-            .group.any {
-                border-left-color: var(--pf-global--palette--orange-300);
+            .toolbar,
+            .sentence {
+                display: flex;
+                align-items: center;
+                gap: var(--pf-global--spacer--sm);
+                flex-wrap: wrap;
+            }
+            .toolbar {
+                justify-content: space-between;
+            }
+            .toolbar .target {
+                white-space: nowrap;
+                display: flex;
+                align-items: center;
+                gap: var(--pf-global--spacer--sm);
+                color: var(--pf-global--Color--200);
+                font-size: var(--pf-global--FontSize--sm);
+            }
+            select.op-select {
+                width: auto;
+                font-weight: var(--pf-global--FontWeight--bold);
+                color: var(--pf-global--primary-color--100);
+            }
+            .rows {
+                display: flex;
+                flex-direction: column;
+                gap: var(--pf-global--spacer--sm);
             }
             .row {
+                position: relative;
+                background: var(--pf-global--BackgroundColor--100);
+                border: 1px solid var(--pf-global--BorderColor--100);
+                border-radius: var(--pf-global--BorderRadius--sm);
+                padding: var(--pf-global--spacer--sm);
+                display: grid;
+                grid-template-columns: 1fr auto;
+                gap: var(--pf-global--spacer--xs) var(--pf-global--spacer--sm);
+            }
+            .row.invalid {
+                border-color: var(--pf-global--danger-color--100);
+            }
+            .row.group {
+                border-left: 3px solid var(--pf-global--palette--orange-300);
+            }
+            .row.group.none {
+                border-left-color: var(--pf-global--danger-color--100);
+            }
+            .row .details {
+                grid-column: 1 / -1;
+            }
+            .parts {
                 display: flex;
                 flex-wrap: wrap;
                 align-items: center;
                 gap: var(--pf-global--spacer--sm);
             }
-            .row > select,
-            .row > input,
-            .row > ak-search-select {
+            .parts > select,
+            .parts > input {
+                flex: 0 1 auto;
                 width: auto;
-                min-width: 10rem;
-                max-width: 22rem;
+                max-width: 16rem;
             }
-            .row .grow {
-                flex: 1 1 12rem;
+            .parts > ak-search-select {
+                flex: 0 1 15rem;
+                min-width: 11rem;
             }
-            .item {
-                display: flex;
-                align-items: flex-start;
-                gap: var(--pf-global--spacer--sm);
+            .parts > .value {
+                flex: 1 1 9rem;
+                min-width: 9rem;
+                max-width: 24rem;
             }
-            .item > .content {
-                flex: 1;
+            .parts > .chips.value {
+                flex: 1 1 16rem;
+                max-width: none;
             }
-            .item.invalid > .content {
-                border-left: 3px solid var(--pf-global--danger-color--100);
-                padding-left: var(--pf-global--spacer--sm);
+            .chips input {
+                width: 7rem;
+                flex: 0 1 7rem;
+            }
+            .tag {
+                font-size: var(--pf-global--FontSize--xs);
+                color: var(--pf-global--Color--200);
+                background: var(--pf-global--BackgroundColor--200);
+                border-radius: var(--pf-global--BorderRadius--sm);
+                padding: 0 var(--pf-global--spacer--xs);
             }
             .chips {
                 display: flex;
@@ -166,14 +263,65 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
                 gap: var(--pf-global--spacer--xs);
                 align-items: center;
             }
+            .menu {
+                position: absolute;
+                right: 0;
+                top: calc(100% + 2px);
+                z-index: 10;
+                min-width: 16rem;
+                background: var(--pf-global--BackgroundColor--100);
+                border: 1px solid var(--pf-global--BorderColor--100);
+                box-shadow: var(--pf-global--BoxShadow--md);
+                padding: var(--pf-global--spacer--xs) 0;
+            }
+            .menu button {
+                display: flex;
+                gap: var(--pf-global--spacer--sm);
+                align-items: center;
+                width: 100%;
+                text-align: left;
+                background: none;
+                border: none;
+                padding: var(--pf-global--spacer--sm) var(--pf-global--spacer--md);
+                font: inherit;
+                color: inherit;
+                cursor: pointer;
+            }
+            .menu button:hover {
+                background: var(--pf-global--BackgroundColor--200);
+            }
+            .menu button.danger {
+                color: var(--pf-global--danger-color--100);
+            }
+            .menu hr {
+                border: none;
+                border-top: 1px solid var(--pf-global--BorderColor--100);
+                margin: var(--pf-global--spacer--xs) 0;
+            }
+            .menu .icon {
+                width: 1rem;
+                text-align: center;
+            }
+            .add {
+                display: flex;
+                flex-wrap: wrap;
+                gap: var(--pf-global--spacer--xs);
+            }
             .summary {
-                font-family: var(--pf-global--FontFamily--monospace);
+                background: var(--pf-global--BackgroundColor--100);
+                border: 1px dashed var(--pf-global--BorderColor--100);
+                border-radius: var(--pf-global--BorderRadius--sm);
+                padding: var(--pf-global--spacer--sm) var(--pf-global--spacer--md);
                 font-size: var(--pf-global--FontSize--sm);
-                color: var(--pf-global--Color--200);
                 word-break: break-word;
+            }
+            .empty {
+                color: var(--pf-global--Color--200);
+                padding: var(--pf-global--spacer--sm) 0;
             }
             .warning {
                 color: var(--pf-global--warning-color--200);
+                font-size: var(--pf-global--FontSize--sm);
             }
         `,
     ];
@@ -196,11 +344,18 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
         }
 
         this.tree = tree;
+        this.#normalized = false;
     }
 
     public get value(): ConditionTree {
         return this.tree;
     }
+
+    /**
+     * Validation errors returned by the API, keyed by the path of the node they belong to.
+     */
+    @property({ attribute: false })
+    public errors: ConditionErrors = {};
 
     /**
      * Model label of the object the policy will be bound to, used to only offer variables
@@ -212,15 +367,16 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
     @state()
     protected tree: ConditionTree = emptyTree();
 
-    public toJSON(): ConditionTree {
-        return this.tree;
-    }
+    /**
+     * The node whose menu is open.
+     */
+    @state()
+    protected openMenu: ConditionNode | null = null;
 
     /**
-     * Validation errors returned by the API, keyed by the path of the node they belong to.
+     * Whether `not` nodes have been replaced, which requires the catalog.
      */
-    @property({ attribute: false })
-    public errors: ConditionErrors = {};
+    #normalized = false;
 
     /**
      * Paths of all nodes as of the last render, used to find the node errors belong to.
@@ -228,6 +384,24 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
     #paths = new Map<ConditionNode, string>();
 
     #ownedErrors = new Map<string, string[]>();
+
+    #closeMenu = () => {
+        this.openMenu = null;
+    };
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+        document.addEventListener("click", this.#closeMenu);
+    }
+
+    public override disconnectedCallback(): void {
+        document.removeEventListener("click", this.#closeMenu);
+        super.disconnectedCallback();
+    }
+
+    public toJSON(): ConditionTree {
+        return this.tree;
+    }
 
     /**
      * Called when the tree was modified. When a single `node` was edited, only its errors are
@@ -247,16 +421,15 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
             );
         }
 
+        this.openMenu = null;
         this.requestUpdate();
         this.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
     }
 
-    protected nodeErrors(...nodes: ConditionNode[]): string[] {
-        return nodes.flatMap((node) => {
-            const path = this.#paths.get(node);
+    protected nodeErrors(node: ConditionNode): string[] {
+        const path = this.#paths.get(node);
 
-            return path === undefined ? [] : (this.#ownedErrors.get(path) ?? []);
-        });
+        return path === undefined ? [] : (this.#ownedErrors.get(path) ?? []);
     }
 
     protected renderErrors(errors: string[]) {
@@ -271,111 +444,123 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
         );
     }
 
-    //#region Variables
-
     protected get facts() {
         return factsForTarget(this.catalog, this.target);
     }
 
-    protected renderVariableOptions(selected: string, onlyAvailable = true) {
-        const facts = this.facts;
-        const groups = new Map<string, ConditionVariable[]>();
+    //#region Variables
 
-        for (const variable of this.catalog?.variables ?? []) {
-            if (onlyAvailable && !isAvailable(variable, facts) && variable.key !== selected) {
-                continue;
-            }
+    /**
+     * Search select to pick a variable, or a well-defined parameter of a variable.
+     */
+    protected renderVariablePicker(
+        ref: ConditionVariableRef,
+        onChange: (ref: ConditionVariableRef) => void,
+    ) {
+        const options = pickerOptions(this.catalog, this.facts);
+        const selectedId = ref.key ? pickerOptionId(ref) : null;
+        const variable = findVariable(this.catalog, ref.key);
+        const isKnown = !!variable?.params.some((param) => param.key === ref.param);
 
-            const app = variable.appVerboseName || variable.app;
-            groups.set(app, [...(groups.get(app) ?? []), variable]);
-        }
+        // Values with a custom path are shown as the "custom path" entry
+        const currentId =
+            ref.key && !isKnown ? pickerOptionId({ key: ref.key, param: null }) : selectedId;
 
-        return html`<option value="" ?selected=${!selected} disabled>
-                ${msg("Select a variable...", { id: "policies.conditional.variable.placeholder" })}
-            </option>
-            ${[...groups.entries()].map(
-                ([app, variables]) =>
-                    html`<optgroup label=${app}>
-                        ${variables.map(
-                            (variable) =>
-                                html`<option
-                                    value=${variable.key}
-                                    ?selected=${variable.key === selected}
-                                    title=${variable.description}
-                                >
-                                    ${variable.label} (${variable.key})
-                                </option>`,
-                        )}
-                    </optgroup>`,
-            )}`;
+        return html`<ak-search-select
+            placeholder=${msg("Choose a value...", {
+                id: "policies.conditional.variable.placeholder",
+            })}
+            .fetchObjects=${async (query?: string) =>
+                filterPickerOptions(
+                    options.filter((option) => option.available || option.id === currentId),
+                    query,
+                )}
+            .groupBy=${(items: PickerOption[]) => groupBy(items, (option) => option.category)}
+            .renderElement=${(option: PickerOption) => `${option.category} › ${option.label}`}
+            .renderDescription=${(option: PickerOption) =>
+                html`<code>${option.param ? `${option.key}.${option.param}` : option.key}</code> ·
+                    ${typeLabel(option.type)}`}
+            .value=${(option: PickerOption | null) => option?.id}
+            .selected=${(option: PickerOption) => option.id === currentId}
+            @ak-change=${(ev: CustomEvent<{ value: PickerOption | null }>) => {
+                const option = ev.detail.value;
+
+                if (!option || option.id === currentId) return;
+
+                onChange({ key: option.key, param: option.param, cast: null });
+            }}
+        ></ak-search-select>`;
     }
 
     /**
-     * Variable picker, including parameter and cast inputs when needed.
+     * Inputs for the parameter (for example an attribute path) and type of a variable, when
+     * they're not defined by the variable.
      */
-    protected renderVariableRef(
+    protected renderVariableDetails(
         ref: ConditionVariableRef,
         onChange: (ref: ConditionVariableRef) => void,
     ) {
         const variable = findVariable(this.catalog, ref.key);
 
-        return html`<select
-                class="pf-c-form-control"
-                aria-label=${msg("Variable", { id: "policies.conditional.variable.aria-label" })}
-                @change=${(ev: Event) => {
-                    const key = (ev.target as HTMLSelectElement).value;
-                    onChange({ key, param: null, cast: null });
-                }}
-            >
-                ${this.renderVariableOptions(ref.key)}
-            </select>
-            ${
-                variable && variable.param !== ConditionParamKindEnum.None
-                    ? html`<input
-                          type="text"
-                          class="pf-c-form-control"
-                          .value=${ref.param ?? ""}
-                          placeholder=${
-                              variable.param === ConditionParamKindEnum.Path
-                                  ? msg("Path, e.g. department.name", {
-                                        id: "policies.conditional.variable.param-path.placeholder",
-                                    })
-                                  : msg("Key", {
-                                        id: "policies.conditional.variable.param-key.placeholder",
-                                    })
-                          }
-                          @input=${(ev: InputEvent) => {
-                              onChange({ ...ref, param: (ev.target as HTMLInputElement).value });
-                          }}
-                      />`
-                    : nothing
-            }
-            ${
-                variable?.type.kind === ConditionTypeKindEnum.Any
-                    ? html`<select
-                          class="pf-c-form-control"
-                          aria-label=${msg("Treat value as", {
-                              id: "policies.conditional.variable.cast.aria-label",
-                          })}
-                          @change=${(ev: Event) => {
-                              const cast = (ev.target as HTMLSelectElement).value;
-                              onChange({ ...ref, cast: cast as ConditionVariableRef["cast"] });
-                          }}
-                      >
-                          <option value="" ?selected=${!ref.cast} disabled>
-                              ${msg("Treat as...", {
-                                  id: "policies.conditional.variable.cast.placeholder",
-                              })}
-                          </option>
-                          ${CAST_KINDS.map(
-                              (kind) =>
-                                  html`<option value=${kind} ?selected=${ref.cast === kind}>
-                                      ${kind}
-                                  </option>`,
-                          )}
-                      </select>`
-                    : nothing
-            }`;
+        if (!variable) return nothing;
+
+        const known = variable.params.find((param) => param.key === ref.param);
+
+        if (known) return nothing;
+
+        const param =
+            variable.param !== ConditionParamKindEnum.None
+                ? html`<input
+                      type="text"
+                      class="pf-c-form-control"
+                      .value=${ref.param ?? ""}
+                      placeholder=${
+                          variable.param === ConditionParamKindEnum.Path
+                              ? msg("Path, e.g. department.name", {
+                                    id: "policies.conditional.variable.param-path.placeholder",
+                                })
+                              : msg("Field key", {
+                                    id: "policies.conditional.variable.param-key.placeholder",
+                                })
+                      }
+                      aria-label=${msg("Path or key", {
+                          id: "policies.conditional.variable.param.aria-label",
+                      })}
+                      @input=${(ev: InputEvent) => {
+                          onChange({ ...ref, param: (ev.target as HTMLInputElement).value });
+                      }}
+                  />`
+                : nothing;
+
+        const cast =
+            variable.type.kind === ConditionTypeKindEnum.Any
+                ? html`<select
+                      class="pf-c-form-control"
+                      aria-label=${msg("Type of the value", {
+                          id: "policies.conditional.variable.cast.aria-label",
+                      })}
+                      @change=${(ev: Event) => {
+                          const value = (ev.target as HTMLSelectElement).value;
+
+                          onChange({
+                              ...ref,
+                              cast: (value || null) as ConditionVariableRef["cast"],
+                          });
+                      }}
+                  >
+                      <option value="" ?selected=${!ref.cast}>
+                          ${msg("as any value", { id: "policies.conditional.cast.none" })}
+                      </option>
+                      ${CAST_KINDS.map(
+                          (kind) =>
+                              html`<option value=${kind} ?selected=${ref.cast === kind}>
+                                  ${CAST_LABELS[kind] ?? kind}
+                              </option>`,
+                      )}
+                  </select>`
+                : nothing;
+
+        return html`${param} ${cast}`;
     }
 
     //#endregion
@@ -392,7 +577,7 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
         if (!lookup) {
             return html`<input
                 type="text"
-                class="pf-c-form-control"
+                class="pf-c-form-control value"
                 placeholder=${msg("Primary key", {
                     id: "policies.conditional.value.pk.placeholder",
                 })}
@@ -402,6 +587,7 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
         }
 
         return html`<ak-search-select
+            class="value"
             .fetchObjects=${lookup.fetch}
             .renderElement=${lookup.render}
             .value=${lookup.value}
@@ -426,26 +612,28 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
                 return html`<input
                     type="number"
                     step="any"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control value"
                     .value=${current === undefined || current === null ? "" : String(current)}
                     @input=${(ev: InputEvent) => {
                         const raw = (ev.target as HTMLInputElement).value;
+
                         onChange(raw === "" ? null : Number(raw));
                     }}
                 />`;
             case ConditionTypeKindEnum.Datetime:
                 return html`<input
                     type="datetime-local"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control value"
                     .value=${toLocalDatetime(current)}
                     @input=${(ev: InputEvent) => {
                         const raw = (ev.target as HTMLInputElement).value;
+
                         onChange(raw ? new Date(raw).toISOString() : null);
                     }}
                 />`;
             case ConditionTypeKindEnum.Enum:
                 return html`<select
-                    class="pf-c-form-control"
+                    class="pf-c-form-control value"
                     @change=${(ev: Event) => onChange((ev.target as HTMLSelectElement).value)}
                 >
                     <option value="" ?selected=${!current} disabled>---------</option>
@@ -464,7 +652,7 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
             case ConditionTypeKindEnum.Duration:
                 return html`<input
                     type="text"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control value"
                     placeholder="hours=1;minutes=30"
                     .value=${(current as string) ?? ""}
                     @input=${onInput}
@@ -472,7 +660,7 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
             case ConditionTypeKindEnum.Cidr:
                 return html`<input
                     type="text"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control value"
                     placeholder="10.0.0.0/8"
                     .value=${(current as string) ?? ""}
                     @input=${onInput}
@@ -480,7 +668,7 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
             default:
                 return html`<input
                     type="text"
-                    class="pf-c-form-control grow"
+                    class="pf-c-form-control value"
                     .value=${current === undefined || current === null ? "" : String(current)}
                     @input=${onInput}
                 />`;
@@ -508,7 +696,31 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
         const label = (value: unknown) =>
             item.choices?.find((choice) => choice.value === value)?.label ?? String(value);
 
-        return html`<div class="chips grow">
+        const input =
+            item.kind === ConditionTypeKindEnum.Enum || item.kind === ConditionTypeKindEnum.Model
+                ? this.renderScalarInput(item, null, (value) => {
+                      pending = value;
+                      add();
+                  })
+                : html`${this.renderScalarInput(item, null, (value) => {
+                          pending = value;
+                      })}
+                      <button
+                          type="button"
+                          class="pf-c-button pf-m-secondary pf-m-small"
+                          @click=${(ev: Event) => {
+                              add();
+
+                              const previous = (ev.target as HTMLElement)
+                                  .previousElementSibling as HTMLInputElement | null;
+
+                              if (previous) previous.value = "";
+                          }}
+                      >
+                          ${msg("Add", { id: "policies.conditional.value.add.label" })}
+                      </button>`;
+
+        return html`<div class="chips value">
             ${values.map(
                 (value, idx) =>
                     html`<span class="pf-c-label pf-m-outline">
@@ -525,31 +737,7 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
                         </button>
                     </span>`,
             )}
-            ${
-                item.kind === ConditionTypeKindEnum.Enum ||
-                item.kind === ConditionTypeKindEnum.Model
-                    ? this.renderScalarInput(item, null, (value) => {
-                          pending = value;
-                          add();
-                      })
-                    : html`${this.renderScalarInput(item, null, (value) => {
-                              pending = value;
-                          })}
-                          <button
-                              type="button"
-                              class="pf-c-button pf-m-secondary pf-m-small"
-                              @click=${(ev: Event) => {
-                                  add();
-
-                                  const input = (ev.target as HTMLElement)
-                                      .previousElementSibling as HTMLInputElement | null;
-
-                                  if (input) input.value = "";
-                              }}
-                          >
-                              ${msg("Add", { id: "policies.conditional.value.add.label" })}
-                          </button>`
-            }
+            ${input}
         </div>`;
     }
 
@@ -558,7 +746,19 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
         const expected = operandType(operator, type);
 
         if (!expected) return nothing;
-        const isVariable = node.value?.type === "variable";
+
+        if (node.value?.type === "variable") {
+            const ref = node.value.variable;
+
+            return html`${this.renderVariablePicker(ref, (variable) => {
+                node.value = { type: "variable", variable };
+                this.changed(node);
+            })}
+            ${this.renderVariableDetails(ref, (variable) => {
+                node.value = { type: "variable", variable };
+                this.changed(node);
+            })}`;
+        }
 
         const setLiteral = (value: unknown) => {
             node.value = { type: "literal", value };
@@ -566,266 +766,363 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
         };
 
         const current = node.value?.type === "literal" ? node.value.value : undefined;
-        let editor: TemplateResult;
 
-        if (isVariable && node.value?.type === "variable") {
-            editor = html`${this.renderVariableRef(node.value.variable, (variable) => {
-                node.value = { type: "variable", variable };
-                this.changed(node);
-            })}`;
-        } else if (operator?.operand === "range") {
+        if (operator?.operand === "range" && type) {
             const values = Array.isArray(current) ? current : [null, null];
 
-            editor = html`${this.renderScalarInput(type!, values[0], (value) =>
-                setLiteral([value, values[1]]),
-            )}
-            ${msg("and", { id: "policies.conditional.value.range.separator" })}
-            ${this.renderScalarInput(type!, values[1], (value) => setLiteral([values[0], value]))}`;
-        } else if (expected.kind === ConditionTypeKindEnum.List && expected.item) {
-            editor = this.renderListInput(expected.item, current, setLiteral);
-        } else {
-            editor = this.renderScalarInput(expected, current, setLiteral);
+            return html`${this.renderScalarInput(type, values[0], (value) =>
+                    setLiteral([value, values[1]]),
+                )}
+                <span>${msg("and", { id: "policies.conditional.value.range.separator" })}</span>
+                ${this.renderScalarInput(type, values[1], (value) => setLiteral([values[0], value]))}`;
         }
 
-        return html`<select
-                class="pf-c-form-control"
-                aria-label=${msg("Compare with", {
-                    id: "policies.conditional.value.source.aria-label",
-                })}
-                @change=${(ev: Event) => {
-                    const source = (ev.target as HTMLSelectElement).value;
+        if (expected.kind === ConditionTypeKindEnum.List && expected.item) {
+            return this.renderListInput(expected.item, current, setLiteral);
+        }
 
-                    node.value =
-                        source === "variable"
-                            ? { type: "variable", variable: { key: "" } }
-                            : { type: "literal", value: null };
+        return this.renderScalarInput(expected, current, setLiteral);
+    }
 
-                    this.changed(node);
-                }}
-            >
-                <option value="literal" ?selected=${!isVariable}>
-                    ${msg("value", { id: "policies.conditional.value.source.literal" })}
-                </option>
-                <option value="variable" ?selected=${isVariable}>
-                    ${msg("variable", { id: "policies.conditional.value.source.variable" })}
-                </option>
-            </select>
-            ${editor}`;
+    //#endregion
+
+    //#region Menus
+
+    protected renderMenuButton(node: ConditionNode) {
+        return html`<button
+            type="button"
+            class="pf-c-button pf-m-plain"
+            aria-label=${msg("Actions", { id: "policies.conditional.menu.aria-label" })}
+            aria-expanded=${this.openMenu === node ? "true" : "false"}
+            @click=${(ev: Event) => {
+                ev.stopPropagation();
+                this.openMenu = this.openMenu === node ? null : node;
+            }}
+        >
+            <i class="fas fa-ellipsis-h" aria-hidden="true"></i>
+        </button>`;
+    }
+
+    protected renderMenuItem(
+        icon: string,
+        label: string,
+        action: () => void,
+        className = "",
+    ): TemplateResult {
+        return html`<button
+            type="button"
+            role="menuitem"
+            class=${className}
+            @click=${(ev: Event) => {
+                ev.stopPropagation();
+                action();
+            }}
+        >
+            <span class="icon"><i class="fas ${icon}" aria-hidden="true"></i></span>${label}
+        </button>`;
+    }
+
+    /**
+     * Actions shared by all nodes in a group.
+     */
+    protected renderCommonMenuItems(parent: GroupNode, index: number): TemplateResult {
+        const node = parent.children[index];
+
+        return html`${this.renderMenuItem(
+                "fa-object-group",
+                msg("Wrap in group", { id: "policies.conditional.menu.wrap" }),
+                () => {
+                    parent.children[index] = { type: "group", op: "any", children: [node] };
+                    this.changed();
+                },
+            )}
+            ${this.renderMenuItem(
+                "fa-copy",
+                msg("Duplicate", { id: "policies.conditional.menu.duplicate" }),
+                () => {
+                    parent.children.splice(index + 1, 0, structuredClone(node));
+                    this.changed();
+                },
+            )}
+            <hr />
+            ${this.renderMenuItem(
+                "fa-trash",
+                msg("Delete", { id: "policies.conditional.menu.delete" }),
+                () => {
+                    parent.children.splice(index, 1);
+                    this.changed();
+                },
+                "danger",
+            )}`;
+    }
+
+    protected renderConditionMenu(parent: GroupNode, index: number, node: Condition) {
+        if (this.openMenu !== node) return nothing;
+
+        const type = variableType(this.catalog, node.variable);
+        const operator = this.catalog?.operators.find((op) => op.name === node.operator);
+        const comparesVariable = node.value?.type === "variable";
+
+        return html`<div class="menu" role="menu">
+            ${
+                isTextual(type)
+                    ? this.renderMenuItem(
+                          node.options?.caseSensitive === false ? "fa-check" : "",
+                          msg("Ignore upper/lower case", {
+                              id: "policies.conditional.menu.ignore-case",
+                          }),
+                          () => {
+                              node.options = {
+                                  ...node.options,
+                                  caseSensitive: node.options?.caseSensitive === false,
+                              };
+
+                              this.changed(node);
+                          },
+                      )
+                    : nothing
+            }
+            ${
+                operandType(operator, type)
+                    ? this.renderMenuItem(
+                          "fa-exchange-alt",
+                          comparesVariable
+                              ? msg("Compare with a fixed value", {
+                                    id: "policies.conditional.menu.compare-literal",
+                                })
+                              : msg("Compare with another value", {
+                                    id: "policies.conditional.menu.compare-variable",
+                                }),
+                          () => {
+                              node.value = comparesVariable
+                                  ? { type: "literal", value: null }
+                                  : { type: "variable", variable: { key: "" } };
+
+                              this.changed(node);
+                          },
+                      )
+                    : nothing
+            }
+            ${this.renderCommonMenuItems(parent, index)}
+        </div>`;
+    }
+
+    protected renderGroupMenu(parent: GroupNode, index: number, node: GroupNode) {
+        if (this.openMenu !== node) return nothing;
+
+        return html`<div class="menu" role="menu">
+            ${this.renderMenuItem(
+                "fa-object-ungroup",
+                msg("Ungroup", { id: "policies.conditional.menu.ungroup" }),
+                () => {
+                    parent.children.splice(index, 1, ...node.children);
+                    this.changed();
+                },
+            )}
+            ${this.renderCommonMenuItems(parent, index)}
+        </div>`;
     }
 
     //#endregion
 
     //#region Nodes
 
-    protected renderCondition(node: Condition) {
+    protected renderCondition(parent: GroupNode, index: number, node: Condition) {
         const type = variableType(this.catalog, node.variable);
-        const operators = operatorsFor(this.catalog, type);
+        const choices = operatorChoices(this.catalog, type);
         const variable = findVariable(this.catalog, node.variable.key);
-        const facts = this.facts;
+        const errors = this.nodeErrors(node);
+        const selectedChoice = operatorChoiceId(node.operator, node.options?.negate);
 
-        return html`<div class="row">
-            ${this.renderVariableRef(node.variable, (ref) => {
-                node.variable = ref;
-                const newType = variableType(this.catalog, ref);
+        return html`<div class="row ${errors.length ? "invalid" : ""}">
+            <div class="parts">
+                ${this.renderVariablePicker(node.variable, (ref) => {
+                    node.variable = ref;
 
-                const valid = operatorsFor(this.catalog, newType).some(
-                    (op) => op.name === node.operator,
-                );
-
-                if (!valid) node.operator = ConditionOperatorName.IsSet;
-                node.value = null;
-                this.changed(node);
-            })}
-            <select
-                class="pf-c-form-control"
-                aria-label=${msg("Operator", { id: "policies.conditional.operator.aria-label" })}
-                ?disabled=${!type}
-                @change=${(ev: Event) => {
-                    const previous = operandType(
-                        this.catalog?.operators.find((op) => op.name === node.operator),
-                        type,
+                    const valid = operatorsFor(this.catalog, variableType(this.catalog, ref)).some(
+                        (op) => op.name === node.operator,
                     );
 
-                    node.operator = (ev.target as HTMLSelectElement).value as ConditionOperatorName;
-
-                    const next = operandType(
-                        this.catalog?.operators.find((op) => op.name === node.operator),
-                        type,
-                    );
-
-                    // Keep the value if the operand has the same shape
-                    if (!next || JSON.stringify(previous) !== JSON.stringify(next)) {
-                        node.value = null;
+                    if (!valid) {
+                        node.operator = ConditionOperatorName.IsSet;
+                        node.options = { ...node.options, negate: false };
                     }
 
+                    node.value = null;
                     this.changed(node);
-                }}
-            >
-                ${operators.map(
-                    (op) =>
-                        html`<option value=${op.name} ?selected=${op.name === node.operator}>
-                            ${op.label}
-                        </option>`,
-                )}
-            </select>
-            ${this.renderOperand(node, type)}
-            ${
-                isTextual(type) && node.operator !== ConditionOperatorName.IsSet
-                    ? html`<label>
-                          <input
-                              type="checkbox"
-                              .checked=${node.options?.caseSensitive === false}
-                              @change=${(ev: Event) => {
-                                  node.options = {
-                                      caseSensitive: !(ev.target as HTMLInputElement).checked,
-                                  };
-
-                                  this.changed(node);
-                              }}
-                          />
-                          ${msg("Ignore case", { id: "policies.conditional.options.ignore-case" })}
-                      </label>`
-                    : nothing
-            }
-            ${
-                variable && !isAvailable(variable, facts)
-                    ? html`<span class="warning">
-                          <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
-                          ${msg("Not available for the selected object", {
-                              id: "policies.conditional.variable.unavailable",
-                          })}
-                      </span>`
-                    : nothing
-            }
-        </div>`;
-    }
-
-    protected renderPolicyRef(node: ConditionNode & { type: "policy" }) {
-        return html`<div class="row">
-            <span>${msg("Policy passes", { id: "policies.conditional.policy.label" })}</span>
-            <ak-search-select
-                .fetchObjects=${async (search?: string): Promise<Policy[]> =>
-                    (await aki(PoliciesApi).policiesAllList({ search, ordering: "name" })).results}
-                .renderElement=${(policy: Policy) => policy.name}
-                .value=${(policy: Policy | null) => policy?.pk}
-                .selected=${(policy: Policy) => policy.pk === node.policy}
-                @ak-change=${(ev: CustomEvent<{ value: Policy | null }>) => {
-                    node.policy = ev.detail.value?.pk ?? "";
+                })}
+                ${this.renderVariableDetails(node.variable, (ref) => {
+                    node.variable = ref;
                     this.changed(node);
-                }}
-            ></ak-search-select>
-        </div>`;
-    }
-
-    /**
-     * Render a child of a group, with controls to negate or remove it.
-     */
-    protected renderChild(parent: GroupNode, index: number): TemplateResult {
-        const child = parent.children[index];
-        const negated = child.type === "not";
-        const inner = negated ? child.child : child;
-        let content: TemplateResult;
-
-        switch (inner.type) {
-            case "group":
-                content = this.renderGroup(inner as GroupNode);
-                break;
-            case "policy":
-                content = this.renderPolicyRef(inner);
-                break;
-            case "condition":
-                content = this.renderCondition(inner as Condition);
-                break;
-            default:
-                content = html`${msg("Unsupported node", {
-                    id: "policies.conditional.node.unsupported",
-                })}`;
-        }
-
-        const errors = this.nodeErrors(...(negated ? [child, inner] : [child]));
-
-        return html`<div class="item ${errors.length ? "invalid" : ""}">
-            <button
-                type="button"
-                class="pf-c-button pf-m-small ${negated ? "pf-m-danger" : "pf-m-tertiary"}"
-                title=${msg("Negate", { id: "policies.conditional.node.negate.tooltip" })}
-                @click=${() => {
-                    const replacement: ConditionNode = negated
-                        ? inner
-                        : { type: "not", child: inner };
-
-                    parent.children[index] = replacement;
-                    this.changed();
-                }}
-            >
-                ${msg("NOT", { id: "policies.conditional.node.negate.label" })}
-            </button>
-            <div class="content">${content} ${this.renderErrors(errors)}</div>
-            <button
-                type="button"
-                class="pf-c-button pf-m-plain"
-                aria-label=${msg("Remove", { id: "policies.conditional.node.remove.aria-label" })}
-                @click=${() => {
-                    parent.children.splice(index, 1);
-                    this.changed();
-                }}
-            >
-                <i class="fas fa-trash" aria-hidden="true"></i>
-            </button>
-        </div>`;
-    }
-
-    protected renderGroup(group: GroupNode): TemplateResult {
-        const add = (node: ConditionNode) => {
-            group.children.push(node);
-            this.changed();
-        };
-
-        return html`<div class="group ${group.op}">
-            <div class="row">
+                })}
                 <select
                     class="pf-c-form-control"
-                    aria-label=${msg("Group operator", {
-                        id: "policies.conditional.group.op.aria-label",
+                    aria-label=${msg("Comparison", {
+                        id: "policies.conditional.operator.aria-label",
                     })}
+                    ?disabled=${!type}
                     @change=${(ev: Event) => {
-                        group.op = (ev.target as HTMLSelectElement).value as GroupNode["op"];
-                        this.changed(group);
+                        const choice = choices.find(
+                            (c) => c.id === (ev.target as HTMLSelectElement).value,
+                        );
+
+                        if (!choice) return;
+
+                        const previous = operandType(
+                            this.catalog?.operators.find((op) => op.name === node.operator),
+                            type,
+                        );
+
+                        node.operator = choice.name;
+                        node.options = { ...node.options, negate: choice.negate };
+
+                        const next = operandType(
+                            this.catalog?.operators.find((op) => op.name === node.operator),
+                            type,
+                        );
+
+                        // Keep the value if the operand has the same shape
+                        if (!next || JSON.stringify(previous) !== JSON.stringify(next)) {
+                            node.value = null;
+                        }
+
+                        this.changed(node);
                     }}
                 >
-                    <option value="all" ?selected=${group.op === "all"}>
-                        ${msg("All of the following", { id: "policies.conditional.group.op.all" })}
-                    </option>
-                    <option value="any" ?selected=${group.op === "any"}>
-                        ${msg("Any of the following", { id: "policies.conditional.group.op.any" })}
-                    </option>
+                    ${choices.map(
+                        (choice) =>
+                            html`<option
+                                value=${choice.id}
+                                ?selected=${choice.id === selectedChoice}
+                            >
+                                ${choice.label}
+                            </option>`,
+                    )}
                 </select>
+                ${this.renderOperand(node, type)}
+                ${
+                    isTextual(type) && node.options?.caseSensitive === false
+                        ? html`<span class="tag">
+                              ${msg("Aa ignored", { id: "policies.conditional.ignore-case.tag" })}
+                          </span>`
+                        : nothing
+                }
             </div>
-            ${group.children.map((_, index) => this.renderChild(group, index))}
-            <div class="row">
+            <div>${this.renderMenuButton(node)}</div>
+            ${this.renderConditionMenu(parent, index, node)}
+            <div class="details">
+                ${
+                    variable && !isAvailable(variable, this.facts)
+                        ? html`<p class="warning">
+                              <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                              ${msg("Not available for the selected object", {
+                                  id: "policies.conditional.variable.unavailable",
+                              })}
+                          </p>`
+                        : nothing
+                }
+                ${this.renderErrors(errors)}
+            </div>
+        </div>`;
+    }
+
+    protected renderPolicyRef(parent: GroupNode, index: number, node: PolicyNode) {
+        const errors = this.nodeErrors(node);
+
+        return html`<div class="row ${errors.length ? "invalid" : ""}">
+            <div class="parts">
+                <span>${msg("The policy", { id: "policies.conditional.policy.prefix" })}</span>
+                <ak-search-select
+                    .fetchObjects=${async (search?: string): Promise<Policy[]> =>
+                        (await aki(PoliciesApi).policiesAllList({ search, ordering: "name" }))
+                            .results}
+                    .renderElement=${(policy: Policy) => policy.name}
+                    .value=${(policy: Policy | null) => policy?.pk}
+                    .selected=${(policy: Policy) => policy.pk === node.policy}
+                    @ak-change=${(ev: CustomEvent<{ value: Policy | null }>) => {
+                        node.policy = ev.detail.value?.pk ?? "";
+                        this.changed(node);
+                    }}
+                ></ak-search-select>
+                <span>${msg("passes", { id: "policies.conditional.policy.suffix" })}</span>
+            </div>
+            <div>${this.renderMenuButton(node)}</div>
+            ${
+                this.openMenu === node
+                    ? html`<div class="menu" role="menu">
+                          ${this.renderCommonMenuItems(parent, index)}
+                      </div>`
+                    : nothing
+            }
+            <div class="details">${this.renderErrors(errors)}</div>
+        </div>`;
+    }
+
+    protected renderGroupOp(group: GroupNode) {
+        return html`<select
+            class="pf-c-form-control op-select"
+            aria-label=${msg("How conditions are combined", {
+                id: "policies.conditional.group.op.aria-label",
+            })}
+            @change=${(ev: Event) => {
+                group.op = (ev.target as HTMLSelectElement).value as GroupNode["op"];
+                this.changed(group);
+            }}
+        >
+            <option value="all" ?selected=${group.op === "all"}>
+                ${msg("all", { id: "policies.conditional.group.op.all" })}
+            </option>
+            <option value="any" ?selected=${group.op === "any"}>
+                ${msg("any", { id: "policies.conditional.group.op.any" })}
+            </option>
+            <option value="none" ?selected=${group.op === "none"}>
+                ${msg("none", { id: "policies.conditional.group.op.none" })}
+            </option>
+        </select>`;
+    }
+
+    protected renderChildren(group: GroupNode): TemplateResult {
+        return html`<div class="rows">
+            ${group.children.map((child, index) => {
+                switch (child.type) {
+                    case "group":
+                        return this.renderNestedGroup(group, index, child as GroupNode);
+                    case "policy":
+                        return this.renderPolicyRef(group, index, child as PolicyNode);
+                    case "condition":
+                        return this.renderCondition(group, index, child as Condition);
+                    default:
+                        // `not` nodes are replaced when the catalog is loaded
+                        return nothing;
+                }
+            })}
+        </div>`;
+    }
+
+    protected renderNestedGroup(parent: GroupNode, index: number, group: GroupNode) {
+        const errors = this.nodeErrors(group);
+
+        return html`<div class="row group ${group.op} ${errors.length ? "invalid" : ""}">
+            <div class="sentence">
+                ${this.renderGroupOp(group)}
+                <span
+                    >${msg("of these are true", { id: "policies.conditional.group.suffix" })}</span
+                >
+            </div>
+            <div>${this.renderMenuButton(group)}</div>
+            ${this.renderGroupMenu(parent, index, group)}
+            <div class="details">
+                ${this.renderChildren(group)} ${this.renderErrors(errors)}
                 <button
                     type="button"
                     class="pf-c-button pf-m-link pf-m-small"
-                    @click=${() => add(newCondition())}
+                    @click=${() => {
+                        group.children.push(newCondition());
+                        this.changed();
+                    }}
                 >
                     <i class="fas fa-plus" aria-hidden="true"></i>
                     ${msg("Condition", { id: "policies.conditional.group.add-condition" })}
-                </button>
-                <button
-                    type="button"
-                    class="pf-c-button pf-m-link pf-m-small"
-                    @click=${() => add({ type: "group", op: "any", children: [newCondition()] })}
-                >
-                    <i class="fas fa-plus" aria-hidden="true"></i>
-                    ${msg("Group", { id: "policies.conditional.group.add-group" })}
-                </button>
-                <button
-                    type="button"
-                    class="pf-c-button pf-m-link pf-m-small"
-                    @click=${() => add({ type: "policy", policy: "" })}
-                >
-                    <i class="fas fa-plus" aria-hidden="true"></i>
-                    ${msg("Policy", { id: "policies.conditional.group.add-policy" })}
                 </button>
             </div>
         </div>`;
@@ -834,21 +1131,16 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
     //#endregion
 
     protected renderTargetSelect() {
-        return html`<div class="row">
-            <label for="target"
-                >${msg("Used with", { id: "policies.conditional.target.label" })}</label
-            >
+        return html`<label class="target">
+            ${msg("Showing values for", { id: "policies.conditional.target.label" })}
             <select
-                id="target"
                 class="pf-c-form-control"
                 @change=${(ev: Event) => {
                     this.target = (ev.target as HTMLSelectElement).value || null;
                 }}
             >
                 <option value="" ?selected=${!this.target}>
-                    ${msg("Any object (show all variables)", {
-                        id: "policies.conditional.target.any",
-                    })}
+                    ${msg("any object", { id: "policies.conditional.target.any" })}
                 </option>
                 ${(this.catalog?.targets ?? []).map(
                     (target) =>
@@ -860,7 +1152,7 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
                         </option>`,
                 )}
             </select>
-        </div>`;
+        </label>`;
     }
 
     render() {
@@ -868,8 +1160,12 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
             return html`<ak-spinner></ak-spinner>`;
         }
 
+        if (!this.#normalized) {
+            this.tree.root = removeNotNodes(this.catalog, this.tree.root);
+            this.#normalized = true;
+        }
+
         const root = this.tree.root as GroupNode;
-        const unavailable = unavailableVariables(this.catalog, root, this.facts);
 
         this.#paths = collectNodePaths(root);
         this.#ownedErrors = assignErrors(this.errors, this.#paths.values());
@@ -877,21 +1173,65 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
         // Errors of the root group, and errors which don't belong to any node
         const rootErrors = [...this.nodeErrors(root), ...(this.#ownedErrors.get("") ?? [])];
 
-        return html`<div class="pf-c-form">
-            ${this.renderTargetSelect()} ${this.renderErrors(rootErrors)} ${this.renderGroup(root)}
-            ${
-                unavailable.length
-                    ? html`<p class="warning">
-                          ${msg("These variables are not available for the selected object:", {
-                              id: "policies.conditional.target.unavailable",
-                          })}
-                          ${unavailable.join(", ")}
-                      </p>`
-                    : nothing
-            }
+        const add = (node: ConditionNode) => {
+            root.children.push(node);
+            this.changed();
+        };
+
+        return html`<div class="builder">
+            <div class="toolbar">
+                <div class="sentence">
+                    <span>${msg("Pass when", { id: "policies.conditional.root.prefix" })}</span>
+                    ${this.renderGroupOp(root)}
+                    <span>
+                        ${msg("of these are true", { id: "policies.conditional.group.suffix" })}
+                    </span>
+                </div>
+                ${this.renderTargetSelect()}
+            </div>
+            ${this.renderErrors(rootErrors)}
             ${
                 root.children.length
-                    ? html`<p class="summary">${describe(this.catalog, root)}</p>`
+                    ? this.renderChildren(root)
+                    : html`<p class="empty">
+                          ${msg("Add a condition to get started.", {
+                              id: "policies.conditional.empty",
+                          })}
+                      </p>`
+            }
+            <div class="add">
+                <button
+                    type="button"
+                    class="pf-c-button pf-m-secondary pf-m-small"
+                    @click=${() => add(newCondition())}
+                >
+                    <i class="fas fa-plus" aria-hidden="true"></i>
+                    ${msg("Add condition", { id: "policies.conditional.add-condition" })}
+                </button>
+                <button
+                    type="button"
+                    class="pf-c-button pf-m-link pf-m-small"
+                    @click=${() => add({ type: "group", op: "any", children: [newCondition()] })}
+                >
+                    <i class="fas fa-plus" aria-hidden="true"></i>
+                    ${msg("Add group", { id: "policies.conditional.add-group" })}
+                </button>
+                <button
+                    type="button"
+                    class="pf-c-button pf-m-link pf-m-small"
+                    @click=${() => add({ type: "policy", policy: "" })}
+                >
+                    <i class="fas fa-plus" aria-hidden="true"></i>
+                    ${msg("Include another policy", { id: "policies.conditional.add-policy" })}
+                </button>
+            </div>
+            ${
+                root.children.length
+                    ? html`<div class="summary">
+                          ${msg(str`Reads as: ${describe(this.catalog, root)}`, {
+                              id: "policies.conditional.summary",
+                          })}
+                      </div>`
                     : nothing
             }
         </div>`;

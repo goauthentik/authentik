@@ -21,6 +21,7 @@ MAX_NODES = 200
 class ConditionGroupOp(StrEnum):
     ALL = "all"
     ANY = "any"
+    NONE = "none"
 
 
 class _Model(BaseModel):
@@ -61,6 +62,10 @@ ConditionOperand = Annotated[
 
 class ConditionOptions(_Model):
     case_sensitive: bool = True
+    negate: bool = Field(
+        default=False,
+        description="Invert the result of the comparison, for example 'does not contain'.",
+    )
 
 
 class ConditionComparisonNode(_Model):

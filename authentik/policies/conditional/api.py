@@ -126,6 +126,14 @@ class ConditionValueTypeSerializer(ConditionItemTypeSerializer):
         return data
 
 
+class ConditionKnownParamSerializer(PassiveSerializer):
+    """Well-defined parameter of a variable, which can be picked directly"""
+
+    key = CharField()
+    label = CharField()
+    type = ConditionValueTypeSerializer()
+
+
 class ConditionVariableSerializer(PassiveSerializer):
     """Variable available to conditional policies"""
 
@@ -137,6 +145,7 @@ class ConditionVariableSerializer(PassiveSerializer):
         child=CharField(), help_text=_("Available when any of these facts are available.")
     )
     param = ChoiceField(choices=ParamKind.choices)
+    params = ConditionKnownParamSerializer(many=True)
     app = CharField(source="app_label")
     app_verbose_name = CharField()
 
@@ -164,6 +173,9 @@ class ConditionOperatorSerializer(PassiveSerializer):
     label = CharField()
     kinds = ListField(child=ChoiceField(choices=TypeKind.choices))
     operand = ChoiceField(choices=OperandShape.choices)
+    negated_label = CharField(
+        allow_null=True, help_text=_("Label when negated, null if it can't be negated.")
+    )
 
 
 class ConditionCatalogSerializer(PassiveSerializer):
@@ -224,6 +236,10 @@ class ConditionalPolicyViewSet(UsedByMixin, ModelViewSet):
                     "type": variable.type,
                     "requires": sorted(variable.requires),
                     "param": str(variable.param),
+                    "params": [
+                        {"key": param.key, "label": str(param.label), "type": param.type}
+                        for param in variable.params
+                    ],
                     "app_label": variable.app_label,
                     "app_verbose_name": variable.app_verbose_name,
                 }
@@ -235,6 +251,7 @@ class ConditionalPolicyViewSet(UsedByMixin, ModelViewSet):
                     "label": str(op.label),
                     "kinds": sorted(str(kind) for kind in op.kinds),
                     "operand": str(op.operand),
+                    "negated_label": str(op.negated_label) if op.negated_label else None,
                 }
                 for op in OPERATORS.values()
             ],
