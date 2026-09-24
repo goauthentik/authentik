@@ -14,6 +14,8 @@ import type { ConditionFact } from "./ConditionFact";
 import { ConditionFactFromJSON, ConditionFactToJSON } from "./ConditionFact";
 import type { ConditionOperator } from "./ConditionOperator";
 import { ConditionOperatorFromJSON, ConditionOperatorToJSON } from "./ConditionOperator";
+import type { ConditionSetter } from "./ConditionSetter";
+import { ConditionSetterFromJSON, ConditionSetterToJSON } from "./ConditionSetter";
 import type { ConditionTarget } from "./ConditionTarget";
 import { ConditionTargetFromJSON, ConditionTargetToJSON } from "./ConditionTarget";
 import type { ConditionVariable } from "./ConditionVariable";
@@ -29,6 +31,7 @@ export interface ConditionCatalog {
     facts: Array<ConditionFact>;
     targets: Array<ConditionTarget>;
     variables: Array<ConditionVariable>;
+    setters: Array<ConditionSetter>;
     operators: Array<ConditionOperator>;
 }
 
@@ -39,6 +42,7 @@ export function instanceOfConditionCatalog(value: object): value is ConditionCat
     if (!("facts" in value) || value["facts"] === undefined) return false;
     if (!("targets" in value) || value["targets"] === undefined) return false;
     if (!("variables" in value) || value["variables"] === undefined) return false;
+    if (!("setters" in value) || value["setters"] === undefined) return false;
     if (!("operators" in value) || value["operators"] === undefined) return false;
     return true;
 }
@@ -58,6 +62,7 @@ export function ConditionCatalogFromJSONTyped(
         facts: (json["facts"] as Array<any>).map(ConditionFactFromJSON),
         targets: (json["targets"] as Array<any>).map(ConditionTargetFromJSON),
         variables: (json["variables"] as Array<any>).map(ConditionVariableFromJSON),
+        setters: (json["setters"] as Array<any>).map(ConditionSetterFromJSON),
         operators: (json["operators"] as Array<any>).map(ConditionOperatorFromJSON),
     };
 }
@@ -78,6 +83,7 @@ export function ConditionCatalogToJSONTyped(
         facts: (value["facts"] as Array<any>).map(ConditionFactToJSON),
         targets: (value["targets"] as Array<any>).map(ConditionTargetToJSON),
         variables: (value["variables"] as Array<any>).map(ConditionVariableToJSON),
+        setters: (value["setters"] as Array<any>).map(ConditionSetterToJSON),
         operators: (value["operators"] as Array<any>).map(ConditionOperatorToJSON),
     };
 }

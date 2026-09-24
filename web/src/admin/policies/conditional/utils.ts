@@ -14,13 +14,14 @@ import {
     ConditionOperandShapeEnum,
     ConditionOperator,
     ConditionTarget,
-    ConditionTree,
+    PolicyAction,
+    PolicyActions,
     ConditionTypeKindEnum,
     ConditionVariable,
     ConditionVariableRef,
 } from "@goauthentik/api";
 
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 /**
  * A resolved value type. Unlike the API's `ConditionValueType`, the item type of a list may
@@ -37,16 +38,15 @@ export const CAST_KINDS: ConditionCastKind[] = Object.values(ConditionCastKind).
     (kind) => kind !== ConditionCastKind.UnknownDefaultOpenApi,
 );
 
-export function emptyTree(): ConditionTree {
-    return {
-        version: SCHEMA_VERSION,
-        root: { type: "group", op: "all", children: [] },
-    };
+export function emptyActions(): PolicyActions {
+    return { version: SCHEMA_VERSION, actions: [] };
 }
 
-export function newCondition(): ConditionComparisonNode & { type: "condition" } {
+export type CompareNode = ConditionComparisonNode & { type: "compare" };
+
+export function newCondition(): CompareNode {
     return {
-        type: "condition",
+        type: "compare",
         variable: { key: "" },
         operator: "is_set",
         value: null,
@@ -186,7 +186,7 @@ export function unavailableVariables(
             case "not":
                 walk(current.child);
                 break;
-            case "condition":
+            case "compare":
                 check(current.variable);
                 if (current.value?.type === "variable") check(current.value.variable);
                 break;
@@ -234,7 +234,7 @@ export function describe(catalog: ConditionCatalog | undefined, node: ConditionN
             return `NOT ${describe(catalog, node.child)}`;
         case "policy":
             return `policy(${node.policy})`;
-        case "condition": {
+        case "compare": {
             const found = catalog?.operators.find((op) => op.name === node.operator);
 
             const operator =
@@ -268,9 +268,9 @@ export type ConditionErrors = Record<string, string[]>;
  */
 export function collectNodePaths(
     node: ConditionNode,
-    path = "root",
-    paths = new Map<ConditionNode, string>(),
-): Map<ConditionNode, string> {
+    path: string,
+    paths = new Map<object, string>(),
+): Map<object, string> {
     paths.set(node, path);
 
     if (node.type === "group") {
@@ -280,6 +280,32 @@ export function collectNodePaths(
     } else if (node.type === "not") {
         collectNodePaths(node.child, `${path}.child`, paths);
     }
+
+    return paths;
+}
+
+/**
+ * Paths of all actions and conditions, in the same format the API uses for validation errors.
+ */
+export function collectPaths(
+    actions: PolicyAction[],
+    path = "actions",
+    paths = new Map<object, string>(),
+): Map<object, string> {
+    actions.forEach((action, index) => {
+        const actionPath = `${path}.${index}`;
+
+        paths.set(action, actionPath);
+
+        if (action.type === "condition" || action.type === "if") {
+            collectNodePaths(action.condition, `${actionPath}.condition`, paths);
+        }
+
+        if (action.type === "if") {
+            collectPaths(action.thenActions ?? [], `${actionPath}.then_actions`, paths);
+            collectPaths(action.elseActions ?? [], `${actionPath}.else_actions`, paths);
+        }
+    });
 
     return paths;
 }
@@ -327,16 +353,16 @@ export function assignErrors(
 
 /**
  * Pluck the validation errors of the conditions from an API error response body, which has
- * the shape `{"conditions": {"detail": "...", "nodes": {"<path>": ["<message>"]}}}`.
+ * the shape `{"actions": {"detail": "...", "nodes": {"<path>": ["<message>"]}}}`.
  */
 export function pluckConditionErrors(body: unknown): ConditionErrors {
-    if (!body || typeof body !== "object" || !("conditions" in body)) return {};
+    if (!body || typeof body !== "object" || !("actions" in body)) return {};
 
-    const { conditions } = body;
+    const { actions } = body;
 
-    if (!conditions || typeof conditions !== "object" || !("nodes" in conditions)) return {};
+    if (!actions || typeof actions !== "object" || !("nodes" in actions)) return {};
 
-    const { nodes } = conditions;
+    const { nodes } = actions;
 
     if (!nodes || typeof nodes !== "object") return {};
 
@@ -519,7 +545,7 @@ const OPPOSITE_OPERATORS: Record<string, ConditionOperator["name"]> = {
  * Negate a single node without using a `not` node, if possible.
  */
 function negate(catalog: ConditionCatalog, node: ConditionNode): ConditionNode {
-    if (node.type === "condition") {
+    if (node.type === "compare") {
         const opposite = OPPOSITE_OPERATORS[node.operator];
 
         if (opposite && !node.options?.negate) {
@@ -560,6 +586,80 @@ export function removeNotNodes(catalog: ConditionCatalog, node: ConditionNode): 
             };
         default:
             return node;
+    }
+}
+
+//#endregion
+
+/**
+ * Replace `not` nodes in all conditions of `actions`.
+ */
+export function removeNotNodesFromActions(
+    catalog: ConditionCatalog,
+    actions: PolicyAction[],
+): PolicyAction[] {
+    return actions.map((action) => {
+        switch (action.type) {
+            case "condition":
+                return { ...action, condition: removeNotNodes(catalog, action.condition) };
+            case "if":
+                return {
+                    ...action,
+                    condition: removeNotNodes(catalog, action.condition),
+                    thenActions: removeNotNodesFromActions(catalog, action.thenActions ?? []),
+                    elseActions: removeNotNodesFromActions(catalog, action.elseActions ?? []),
+                };
+            default:
+                return action;
+        }
+    });
+}
+
+//#region Actions
+
+export function findSetter(catalog: ConditionCatalog | undefined, key: string) {
+    return catalog?.setters.find((setter) => setter.key === key);
+}
+
+function describeOperand(
+    catalog: ConditionCatalog | undefined,
+    operand: ConditionComparisonNode["value"],
+): string {
+    if (operand?.type === "literal") return describeValue(operand.value);
+
+    if (operand?.type === "variable") return describeRef(catalog, operand.variable);
+
+    return "…";
+}
+
+/**
+ * Human readable, single line description of an action.
+ */
+export function describeAction(
+    catalog: ConditionCatalog | undefined,
+    action: PolicyAction,
+): string {
+    switch (action.type) {
+        case "condition":
+            return describe(catalog, action.condition);
+        case "if":
+            return `If ${describe(catalog, action.condition)}`;
+        case "set": {
+            const setter = findSetter(catalog, action.target.key);
+            const label = setter?.label ?? (action.target.key || "…");
+            const target = action.target.param ? `${label} "${action.target.param}"` : label;
+
+            return `Set ${target} to ${describeOperand(catalog, action.value)}`;
+        }
+        case "stop": {
+            const result = action.result === "pass" ? "pass" : "fail";
+
+            return action.message
+                ? `Stop and ${result}: "${action.message}"`
+                : `Stop and ${result}`;
+        }
+        default:
+            return "";
     }
 }
 

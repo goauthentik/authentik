@@ -1,5 +1,7 @@
 import {
     assignErrors,
+    collectPaths,
+    describeAction,
     filterPickerOptions,
     operatorChoices,
     pickerOptions,
@@ -17,6 +19,7 @@ import {
 import {
     ConditionCatalog,
     ConditionNode,
+    PolicyAction,
     ConditionOperandShapeEnum,
     ConditionParamKindEnum,
     ConditionTypeKindEnum,
@@ -105,6 +108,7 @@ const catalog: ConditionCatalog = {
             appVerboseName: "Events",
         },
     ],
+    setters: [],
     operators: [
         {
             name: "contains",
@@ -184,10 +188,10 @@ describe("unavailableVariables", () => {
         type: "group",
         op: "all",
         children: [
-            { type: "condition", variable: { key: "user.email" }, operator: "is_set" },
+            { type: "compare", variable: { key: "user.email" }, operator: "is_set" },
             {
                 type: "not",
-                child: { type: "condition", variable: { key: "event.action" }, operator: "is_set" },
+                child: { type: "compare", variable: { key: "event.action" }, operator: "is_set" },
             },
         ],
     };
@@ -209,7 +213,7 @@ describe("describe", () => {
             op: "any",
             children: [
                 {
-                    type: "condition",
+                    type: "compare",
                     variable: { key: "user.email" },
                     operator: "in",
                     value: { type: "literal", value: ["a", "b"] },
@@ -217,7 +221,7 @@ describe("describe", () => {
                 {
                     type: "not",
                     child: {
-                        type: "condition",
+                        type: "compare",
                         variable: { key: "user.attributes", param: "dept", cast: "string" },
                         operator: "eq",
                         value: { type: "variable", variable: { key: "user.email" } },
@@ -234,7 +238,7 @@ describe("describe", () => {
 
 describe("validation errors", () => {
     const negated: ConditionNode = {
-        type: "condition",
+        type: "compare",
         variable: { key: "user.email" },
         operator: "is_set",
     };
@@ -243,26 +247,28 @@ describe("validation errors", () => {
         type: "group",
         op: "all",
         children: [
-            { type: "condition", variable: { key: "user.email" }, operator: "is_set" },
+            { type: "compare", variable: { key: "user.email" }, operator: "is_set" },
             { type: "not", child: negated },
         ],
     };
 
     it("computes node paths like the API", () => {
-        const paths = collectNodePaths(tree);
+        const action: PolicyAction = { type: "condition", condition: tree };
+        const paths = collectPaths([action]);
 
         expect([...paths.values()]).toEqual([
-            "root",
-            "root.children.0",
-            "root.children.1",
-            "root.children.1.child",
+            "actions.0",
+            "actions.0.condition",
+            "actions.0.condition.children.0",
+            "actions.0.condition.children.1",
+            "actions.0.condition.children.1.child",
         ]);
 
-        expect(paths.get(negated)).toBe("root.children.1.child");
+        expect(paths.get(negated)).toBe("actions.0.condition.children.1.child");
     });
 
     it("assigns errors to the deepest matching node", () => {
-        const paths = [...collectNodePaths(tree).values()];
+        const paths = [...collectNodePaths(tree, "root").values()];
 
         expect(errorOwner("root.children.1.child.operator", paths)).toBe("root.children.1.child");
         expect(errorOwner("root.children.10.operator", paths)).toBe("root");
@@ -270,7 +276,7 @@ describe("validation errors", () => {
     });
 
     it("groups messages and prefixes fields", () => {
-        const paths = collectNodePaths(tree).values();
+        const paths = collectNodePaths(tree, "root").values();
 
         const errors = assignErrors(
             {
@@ -289,7 +295,7 @@ describe("validation errors", () => {
     it("plucks errors from the API response", () => {
         expect(
             pluckConditionErrors({
-                conditions: { detail: "1 error", nodes: { "root.children.0.operator": ["x"] } },
+                actions: { detail: "1 error", nodes: { "root.children.0.operator": ["x"] } },
             }),
         ).toEqual({ "root.children.0.operator": ["x"] });
 
@@ -361,14 +367,14 @@ describe("operators", () => {
                 {
                     type: "not",
                     child: {
-                        type: "condition",
+                        type: "compare",
                         variable: { key: "user.email" },
                         operator: "contains",
                     },
                 },
                 {
                     type: "not",
-                    child: { type: "condition", variable: { key: "user.email" }, operator: "eq" },
+                    child: { type: "compare", variable: { key: "user.email" }, operator: "eq" },
                 },
                 {
                     type: "not",
@@ -388,15 +394,47 @@ describe("operators", () => {
             op: "all",
             children: [
                 {
-                    type: "condition",
+                    type: "compare",
                     variable: { key: "user.email" },
                     operator: "contains",
                     options: { negate: true },
                 },
-                { type: "condition", variable: { key: "user.email" }, operator: "ne" },
+                { type: "compare", variable: { key: "user.email" }, operator: "ne" },
                 { type: "group", op: "none", children: [] },
                 { type: "group", op: "none", children: [{ type: "policy", policy: "foo" }] },
             ],
         });
+    });
+});
+
+describe("actions", () => {
+    it("computes paths of nested actions like the API", () => {
+        const stop: PolicyAction = { type: "stop", result: "fail" };
+
+        const paths = collectPaths([
+            {
+                type: "if",
+                condition: { type: "compare", variable: { key: "user.email" }, operator: "is_set" },
+                thenActions: [],
+                elseActions: [stop],
+            },
+        ]);
+
+        expect(paths.get(stop)).toBe("actions.0.else_actions.0");
+        expect([...paths.values()]).toContain("actions.0.condition");
+    });
+
+    it("describes actions", () => {
+        expect(
+            describeAction(catalog, {
+                type: "set",
+                target: { key: "plan.context", param: "foo" },
+                value: { type: "literal", value: "bar" },
+            }),
+        ).toBe('Set plan.context "foo" to "bar"');
+
+        expect(describeAction(catalog, { type: "stop", result: "fail", message: "No" })).toBe(
+            'Stop and fail: "No"',
+        );
     });
 });

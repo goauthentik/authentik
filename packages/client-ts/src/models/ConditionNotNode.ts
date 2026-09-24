@@ -19,7 +19,7 @@ import {
 } from "./ConditionNotNodeTypeEnum";
 
 /**
- * Negate the result of a node
+ * Negate the result of a condition
  *
  * @export
  * @interface ConditionNotNode

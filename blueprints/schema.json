@@ -11000,10 +11000,10 @@
                     "title": "Execution logging",
                     "description": "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
                 },
-                "conditions": {
+                "actions": {
                     "type": "object",
                     "additionalProperties": true,
-                    "title": "Conditions"
+                    "title": "Actions"
                 },
                 "missing_behavior": {
                     "type": "string",
@@ -11012,7 +11012,7 @@
                         "false"
                     ],
                     "title": "Missing behavior",
-                    "description": "How to handle conditions whose variable is not available in the request."
+                    "description": "How to handle values which are not available in the request."
                 },
                 "failure_message": {
                     "type": "string",

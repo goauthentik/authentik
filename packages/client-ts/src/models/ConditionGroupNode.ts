@@ -21,7 +21,7 @@ import type { ConditionNode } from "./ConditionNode";
 import { ConditionNodeFromJSON, ConditionNodeToJSON } from "./ConditionNode";
 
 /**
- * Combine the results of multiple nodes
+ * Combine the results of multiple conditions
  *
  * @export
  * @interface ConditionGroupNode

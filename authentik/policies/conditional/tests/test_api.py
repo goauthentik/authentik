@@ -23,7 +23,7 @@ class TestConditionalPolicyAPI(APITestCase):
     def create(self, conditions: dict):
         return self.client.post(
             reverse("authentik_api:conditionalpolicy-list"),
-            data={"name": generate_id(), "conditions": conditions},
+            data={"name": generate_id(), "actions": conditions},
             format="json",
         )
 
@@ -39,15 +39,18 @@ class TestConditionalPolicyAPI(APITestCase):
         response = self.create(conditions)
         self.assertEqual(response.status_code, 201, response.content)
         policy = ConditionalPolicy.objects.get(pk=response.json()["pk"])
-        self.assertEqual(policy.conditions["root"]["children"][0]["variable"]["key"], "user.email")
+        self.assertEqual(
+            policy.actions["actions"][0]["condition"]["children"][0]["variable"]["key"],
+            "user.email",
+        )
         self.assertEqual(response.json()["component"], "ak-policy-conditional-form")
 
     def test_create_invalid_shape(self):
         """Invalid structure"""
-        response = self.create({"version": 1, "root": {"type": "foo"}})
+        response = self.create({"version": 2, "actions": [{"type": "foo"}]})
         self.assertEqual(response.status_code, 400)
         response = self.create(
-            tree(group("all", {"type": "condition", "operator": "eq", "variable": {}}))
+            tree(group("all", {"type": "compare", "operator": "eq", "variable": {}}))
         )
         self.assertEqual(response.status_code, 400)
 
@@ -64,11 +67,14 @@ class TestConditionalPolicyAPI(APITestCase):
             )
         )
         self.assertEqual(response.status_code, 400)
-        errors = response.json()["conditions"]
-        self.assertEqual(errors["detail"], "The conditions contain 2 errors.")
+        errors = response.json()["actions"]
+        self.assertEqual(errors["detail"], "The actions contain 2 errors.")
         self.assertEqual(
             set(errors["nodes"]),
-            {"root.children.1.child.operator", "root.children.2.children.0.value"},
+            {
+                "actions.0.condition.children.1.child.operator",
+                "actions.0.condition.children.2.children.0.value",
+            },
         )
         # Structural errors, reported by pydantic
         response = self.create(
@@ -88,8 +94,11 @@ class TestConditionalPolicyAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
-            set(response.json()["conditions"]["nodes"]),
-            {"root.children.0.operator", "root.children.1.child.value.variable.key"},
+            set(response.json()["actions"]["nodes"]),
+            {
+                "actions.0.condition.children.0.operator",
+                "actions.0.condition.children.1.child.value.variable.key",
+            },
         )
 
     def test_create_invalid_semantics(self):
@@ -104,18 +113,20 @@ class TestConditionalPolicyAPI(APITestCase):
         self.assertEqual(response.status_code, 400)
 
         first = ConditionalPolicy.objects.create(
-            name=generate_id(), conditions=tree(cond("user.is_active", "is_true"))
+            name=generate_id(), actions=tree(cond("user.is_active", "is_true"))
         )
         second = ConditionalPolicy.objects.create(
-            name=generate_id(), conditions=tree({"type": "policy", "policy": str(first.pk)})
+            name=generate_id(), actions=tree({"type": "policy", "policy": str(first.pk)})
         )
         response = self.client.patch(
             reverse("authentik_api:conditionalpolicy-detail", kwargs={"pk": first.pk}),
-            data={"conditions": tree({"type": "policy", "policy": str(second.pk)})},
+            data={"actions": tree({"type": "policy", "policy": str(second.pk)})},
             format="json",
         )
         self.assertEqual(response.status_code, 400)
-        self.assertIn("would create a loop", response.json()["conditions"]["nodes"]["root"][0])
+        self.assertIn(
+            "would create a loop", response.json()["actions"]["nodes"]["actions.0.condition"][0]
+        )
 
     def test_catalog(self):
         """Catalog of variables"""
@@ -142,10 +153,10 @@ class TestConditionalPolicyTargets(APITestCase):
         self.user = create_test_admin_user()
         self.client.force_login(self.user)
         self.event_policy = ConditionalPolicy.objects.create(
-            name=generate_id(), conditions=tree(cond("event.action", "eq", "login"))
+            name=generate_id(), actions=tree(cond("event.action", "eq", "login"))
         )
         self.user_policy = ConditionalPolicy.objects.create(
-            name=generate_id(), conditions=tree(cond("user.is_active", "is_true"))
+            name=generate_id(), actions=tree(cond("user.is_active", "is_true"))
         )
 
     def bind(self, policy: ConditionalPolicy, target):
@@ -168,7 +179,7 @@ class TestConditionalPolicyTargets(APITestCase):
         """Variables of referenced policies are checked"""
         outer = ConditionalPolicy.objects.create(
             name=generate_id(),
-            conditions=tree({"type": "policy", "policy": str(self.event_policy.pk)}),
+            actions=tree({"type": "policy", "policy": str(self.event_policy.pk)}),
         )
         app = Application.objects.create(name=generate_id(), slug=generate_id())
         self.assertEqual(self.bind(outer, app).status_code, 400)
@@ -177,7 +188,7 @@ class TestConditionalPolicyTargets(APITestCase):
         """Validation policies of a prompt stage"""
         prompt_policy = ConditionalPolicy.objects.create(
             name=generate_id(),
-            conditions=tree(cond("prompt_data", "eq", "foo", param="username", cast="string")),
+            actions=tree(cond("prompt_data", "eq", "foo", param="username", cast="string")),
         )
         stage = PromptStage.objects.create(name=generate_id())
         url = reverse("authentik_api:promptstage-detail", kwargs={"pk": stage.pk})
@@ -202,7 +213,7 @@ class TestConditionalPolicyTest(APITestCase):
     def test_trace(self):
         policy = ConditionalPolicy.objects.create(
             name=generate_id(),
-            conditions=tree(
+            actions=tree(
                 group(
                     "all",
                     cond("user.is_active", "is_true"),
@@ -218,4 +229,4 @@ class TestConditionalPolicyTest(APITestCase):
         body = response.json()
         self.assertFalse(body["passing"])
         nodes = [log["attributes"].get("node") for log in body["log_messages"]]
-        self.assertIn("root.children.1", nodes)
+        self.assertIn("actions.0.condition.children.1", nodes)

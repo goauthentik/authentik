@@ -1,5 +1,7 @@
 """Policy variables provided by flows"""
 
+from typing import Any
+
 from django.db.models import Max
 from django.utils.translation import gettext_lazy as _
 
@@ -15,9 +17,11 @@ from authentik.flows.planner import (
     PLAN_CONTEXT_SSO,
     PLAN_CONTEXT_USER_SWITCH_FROM_USER,
     PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION,
+    FlowPlan,
 )
 from authentik.policies.conditional.registry import FACT_HTTP_REQUEST, ParamKind, registry
 from authentik.policies.conditional.types import MISSING, T
+from authentik.policies.exceptions import PolicyException
 from authentik.policies.types import PolicyRequest
 
 FACT_FLOW_PLAN = "flow_plan"
@@ -168,3 +172,30 @@ def plan_user_switch_target_last_used(request: PolicyRequest):
         .get("last_used")
     )
     return last_used or MISSING
+
+
+def plan_for_request(request: PolicyRequest) -> FlowPlan:
+    """The flow plan of the flow being executed, to modify its context"""
+    plan = request.context.get("flow_plan")
+    if not isinstance(plan, FlowPlan):
+        raise PolicyException("Values can only be set while a flow is being executed")
+    return plan
+
+
+def set_plan_context(request: PolicyRequest, key: str, value: Any):
+    """Set a key in the context of the flow being executed, and in the policy request so that
+    later actions see the new value"""
+    plan_for_request(request).context[key] = value
+    request.context[key] = value
+
+
+@registry.setter(
+    "plan.context",
+    _("Flow context value"),
+    T.ANY,
+    requires=_PLAN,
+    param=ParamKind.KEY,
+    description=_("Set a key in the context of the flow being executed."),
+)
+def setter_plan_context(request: PolicyRequest, key: str, value: Any):
+    set_plan_context(request, key, value)

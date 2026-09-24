@@ -78,7 +78,7 @@ class TestExpressionParity(TestCase):
         **kwargs,
     ):
         expression_policy = ExpressionPolicy(name=generate_id(), expression=expression)
-        conditional = ConditionalPolicy(name=generate_id(), conditions=tree(root), **kwargs)
+        conditional = ConditionalPolicy(name=generate_id(), actions=tree(root), **kwargs)
         for scenario, passing in zip(scenarios, expected, strict=True):
             with self.subTest(scenario=scenario.name):
                 conditional_result = conditional.passes(self.build_request(scenario))
@@ -676,7 +676,7 @@ return not is_user_switch""",
             # The expression treats guardian's anonymous user as authenticated
             [True, None, False],
         )
-        conditional = ConditionalPolicy(conditions=tree(cond("user.is_authenticated", "is_false")))
+        conditional = ConditionalPolicy(actions=tree(cond("user.is_authenticated", "is_false")))
         self.assertTrue(conditional.passes(PolicyRequest(get_anonymous_user())).passing)
 
     def test_docs_password_repeat(self):
@@ -739,4 +739,176 @@ return False""",  # noqa: E501
             {"type": "policy", "policy": str(referenced.pk)},
             [Scenario("active"), Scenario("inactive", user=create_test_user(is_active=False))],
             [True, False],
+        )
+
+
+def set_action(key: str, value: dict, param: str | None = None) -> dict:
+    return {"type": "set", "target": {"key": key, "param": param}, "value": value}
+
+
+def literal(value) -> dict:
+    return {"type": "literal", "value": value}
+
+
+class TestExpressionParityActions(TestCase):
+    """Expression policies which modify the flow, re-built with actions"""
+
+    def setUp(self):
+        self.user = create_test_user()
+
+    def build_request(self, context: dict) -> PolicyRequest:
+        plan = FlowPlan(flow_pk=generate_id())
+        plan.context = context
+        request = PolicyRequest(self.user)
+        request.http_request = RequestFactory().get("/")
+        request.context = {**context, "flow_plan": plan}
+        return request
+
+    def assertActionParity(  # noqa: N802
+        self,
+        expression: str,
+        actions: list[dict],
+        contexts: list[Callable[[], dict]],
+        expected: list[bool],
+        **kwargs,
+    ):
+        expression_policy = ExpressionPolicy(name=generate_id(), expression=expression)
+        conditional = ConditionalPolicy(
+            name=generate_id(), actions={"version": 2, "actions": actions}, **kwargs
+        )
+        for idx, (context, passing) in enumerate(zip(contexts, expected, strict=True)):
+            with self.subTest(scenario=idx):
+                expression_request = self.build_request(context())
+                conditional_request = self.build_request(context())
+                expression_result = expression_policy.passes(expression_request)
+                conditional_result = conditional.passes(conditional_request)
+                self.assertEqual(expression_result.passing, passing, "expression")
+                self.assertEqual(conditional_result.passing, passing, "conditional")
+                self.assertEqual(
+                    list(expression_result.messages), list(conditional_result.messages)
+                )
+                self.assertEqual(
+                    expression_request.context["flow_plan"].context,
+                    conditional_request.context["flow_plan"].context,
+                )
+
+    def test_docs_consent_header(self):
+        """add-secure-apps/flows-stages/stages/consent"""
+        header = "Are you OK with your IdP provider sharing your user identification data?"
+        self.assertActionParity(
+            f"""request.context["flow_plan"].context["consent_header"] = "{header}"
+return True""",
+            [set_action("plan.consent_header", literal(header))],
+            [dict],
+            [True],
+        )
+
+    def test_docs_redirect_stage_target(self):
+        """customize/policies/types/expression/managing_flow_context_keys"""
+        self.assertActionParity(
+            """context["flow_plan"].context["redirect_stage_target"] = "ak-flow://redirected-authentication-flow"
+return True""",  # noqa: E501
+            [
+                set_action(
+                    "plan.context",
+                    literal("ak-flow://redirected-authentication-flow"),
+                    param="redirect_stage_target",
+                )
+            ],
+            [dict],
+            [True],
+        )
+
+    def test_docs_email_override(self):
+        """add-secure-apps/flows-stages/stages/email"""
+        self.assertActionParity(
+            """request.context["flow_plan"].context["email"] = request.context["prompt_data"]["email"]
+return True""",  # noqa: E501
+            [
+                set_action(
+                    "plan.email_override",
+                    {
+                        "type": "variable",
+                        "variable": {"key": "prompt_data", "param": "email", "cast": "string"},
+                    },
+                )
+            ],
+            [lambda: {"prompt_data": {"email": "other@goauthentik.io"}}],
+            [True],
+        )
+
+    def test_docs_google_username(self):
+        """users-sources/sources/social-logins/google/cloud"""
+        self.assertActionParity(
+            """email = request.context["prompt_data"]["email"]
+request.context["prompt_data"]["username"] = email
+return False""",
+            [
+                set_action(
+                    "prompt_data",
+                    {
+                        "type": "variable",
+                        "variable": {"key": "prompt_data", "param": "email", "cast": "string"},
+                    },
+                    param="username",
+                ),
+                {"type": "stop", "result": "fail"},
+            ],
+            [lambda: {"prompt_data": {"email": "foo@goauthentik.io"}}],
+            [False],
+        )
+
+    def test_docs_email_domain_enrollment(self):
+        """customize/policies/types/expression/whitelist_email"""
+        self.assertActionParity(
+            """allowed_domains = ["example.org", "example.net", "example.com"]
+
+current_domain = request.context["prompt_data"]["email"].split("@")[1] if request.context.get("prompt_data", {}).get("email") else None
+if current_domain in allowed_domains:
+    email = request.context["prompt_data"]["email"]
+    request.context["prompt_data"]["username"] = email
+    return ak_is_sso_flow
+else:
+    ak_message("Enrollment denied for this email domain")
+    return False""",  # noqa: E501
+            [
+                {
+                    "type": "if",
+                    "condition": cond(
+                        "prompt_data",
+                        "matches",
+                        r"@(example\.org|example\.net|example\.com)$",
+                        param="email",
+                        cast="string",
+                    ),
+                    "then_actions": [
+                        set_action(
+                            "prompt_data",
+                            {
+                                "type": "variable",
+                                "variable": {
+                                    "key": "prompt_data",
+                                    "param": "email",
+                                    "cast": "string",
+                                },
+                            },
+                            param="username",
+                        ),
+                        {"type": "condition", "condition": cond("plan.is_sso", "is_true")},
+                    ],
+                    "else_actions": [
+                        {
+                            "type": "stop",
+                            "result": "fail",
+                            "message": "Enrollment denied for this email domain",
+                        }
+                    ],
+                }
+            ],
+            [
+                lambda: {"prompt_data": {"email": "foo@example.org"}, "is_sso": True},
+                lambda: {"prompt_data": {"email": "foo@example.org"}},
+                lambda: {"prompt_data": {"email": "foo@other.org"}, "is_sso": True},
+            ],
+            [True, False, False],
         )

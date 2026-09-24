@@ -1,8 +1,9 @@
-import "#admin/policies/conditional/ak-condition-builder";
+import "#admin/policies/conditional/ak-policy-action-builder";
 import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import { aki } from "#common/api/client";
+import { PFSize } from "#common/enums";
 import { APIError, findCause, HTTPStatusCode, isResponseErrorLike } from "#common/errors/network";
 import { APIMessage } from "#common/messages";
 
@@ -27,7 +28,7 @@ export class ConditionalPolicyForm extends BasePolicyForm<ConditionalPolicy> {
         ...super.styles,
         css`
             /* The condition builder has no label and uses the full width of the form */
-            ak-form-element-horizontal.conditions::part(form-group) {
+            ak-form-element-horizontal.actions::part(form-group) {
                 grid-template-columns: 1fr;
             }
         `,
@@ -35,6 +36,12 @@ export class ConditionalPolicyForm extends BasePolicyForm<ConditionalPolicy> {
 
     @state()
     protected catalog?: ConditionCatalog;
+
+    constructor() {
+        super();
+        // The action editor shows a side panel, which needs more space
+        this.size = PFSize.XLarge;
+    }
 
     protected endpoints = {
         load: (policyUuid: string) =>
@@ -53,11 +60,11 @@ export class ConditionalPolicyForm extends BasePolicyForm<ConditionalPolicy> {
     };
 
     /**
-     * Send the policy, and show validation errors of the conditions on the nodes they
+     * Send the policy, and show validation errors of the actions on the actions they
      * belong to. The generic form only shows a summary for the whole field.
      */
     protected override async send(data: ConditionalPolicy): Promise<ConditionalPolicy> {
-        const builder = this.renderRoot.querySelector("ak-condition-builder");
+        const builder = this.renderRoot.querySelector("ak-policy-action-builder");
 
         if (builder) builder.errors = {};
 
@@ -81,15 +88,15 @@ export class ConditionalPolicyForm extends BasePolicyForm<ConditionalPolicy> {
     }
 
     /**
-     * Errors of the conditions are an object with a summary and errors per node, which the
+     * Errors of the actions are an object with a summary and errors per action, which the
      * generic form can't describe.
      */
     protected override formatAPIErrorMessage(error: APIError): APIMessage | null {
         const message = super.formatAPIErrorMessage(error);
-        const conditions: unknown = (error as Record<string, unknown>).conditions;
+        const actions: unknown = (error as Record<string, unknown>).actions;
 
-        if (message && conditions && typeof conditions === "object" && "detail" in conditions) {
-            message.description = String(conditions.detail);
+        if (message && actions && typeof actions === "object" && "detail" in actions) {
+            message.description = String(actions.detail);
         }
 
         return message;
@@ -102,8 +109,8 @@ export class ConditionalPolicyForm extends BasePolicyForm<ConditionalPolicy> {
     protected override renderForm(): TemplateResult {
         return html`<span>
                 ${msg(
-                    "Checks conditions on the user, the request and the object being accessed, without writing code.",
-                    { id: "policies.conditional.form.description" },
+                    "Checks conditions and sets values using the user, the request and the object being accessed, without writing code.",
+                    { id: "policies.actions.form.description" },
                 )}
             </span>
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
@@ -125,12 +132,12 @@ export class ConditionalPolicyForm extends BasePolicyForm<ConditionalPolicy> {
             </ak-switch-input>
             <ak-form-group open label="${msg("Policy-specific settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal class="conditions" required name="conditions">
-                        <ak-condition-builder
-                            name="conditions"
+                    <ak-form-element-horizontal class="actions" required name="actions">
+                        <ak-policy-action-builder
+                            name="actions"
                             .catalog=${this.catalog}
-                            .value=${this.instance?.conditions}
-                        ></ak-condition-builder>
+                            .value=${this.instance?.actions}
+                        ></ak-policy-action-builder>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("When a value is missing", {

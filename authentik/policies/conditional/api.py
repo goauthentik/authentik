@@ -16,36 +16,40 @@ from authentik.policies.api.policies import PolicySerializer
 from authentik.policies.conditional.evaluator import (
     CompiledPolicyRef,
     ConditionValidationError,
-    compile_conditions,
-    iter_nodes,
+    compile_actions,
+    iter_conditions,
 )
 from authentik.policies.conditional.models import ConditionalPolicy
 from authentik.policies.conditional.operators import OPERATORS, OperandShape
 from authentik.policies.conditional.registry import ParamKind, registry
-from authentik.policies.conditional.schema import ConditionTreeField, condition_errors
+from authentik.policies.conditional.schema import PolicyActionsField, condition_errors
 from authentik.policies.conditional.types import TypeKind, ValueType
 from authentik.policies.models import Policy, PolicyBindingModel
 
 
-def _referenced_policies(tree: dict) -> set[str]:
+def _referenced_policies(actions: dict) -> set[str]:
     try:
-        root = compile_conditions(tree)
+        compiled = compile_actions(actions)
     except ConditionValidationError:
         return set()
-    return {node.policy for node in iter_nodes(root) if isinstance(node, CompiledPolicyRef)}
+    return {
+        node.policy for node in iter_conditions(compiled) if isinstance(node, CompiledPolicyRef)
+    }
 
 
 class ConditionalPolicySerializer(PolicySerializer):
     """Conditional Policy Serializer"""
 
-    conditions = ConditionTreeField()
+    actions = PolicyActionsField()
 
-    def validate_conditions(self, conditions: dict) -> dict:
+    def validate_actions(self, actions: dict) -> dict:
         try:
-            root = compile_conditions(conditions)
+            compiled = compile_actions(actions)
         except ConditionValidationError as exc:
             raise condition_errors(exc.errors) from exc
-        references = [node for node in iter_nodes(root) if isinstance(node, CompiledPolicyRef)]
+        references = [
+            node for node in iter_conditions(compiled) if isinstance(node, CompiledPolicyRef)
+        ]
         existing = {
             str(pk)
             for pk in Policy.objects.filter(
@@ -65,7 +69,7 @@ class ConditionalPolicySerializer(PolicySerializer):
                 )
         if errors:
             raise condition_errors(errors)
-        return conditions
+        return actions
 
     def _creates_loop(self, referenced: str) -> bool:
         """Check if the referenced policy (indirectly) references this policy"""
@@ -83,13 +87,13 @@ class ConditionalPolicySerializer(PolicySerializer):
             seen.add(current)
             policy = ConditionalPolicy.objects.filter(pk=current).first()
             if policy:
-                pending |= _referenced_policies(policy.conditions)
+                pending |= _referenced_policies(policy.actions)
         return False
 
     class Meta:
         model = ConditionalPolicy
         fields = PolicySerializer.Meta.fields + [
-            "conditions",
+            "actions",
             "missing_behavior",
             "failure_message",
         ]
@@ -178,12 +182,28 @@ class ConditionOperatorSerializer(PassiveSerializer):
     )
 
 
+class ConditionSetterSerializer(PassiveSerializer):
+    """Value which actions can set"""
+
+    key = CharField()
+    label = CharField()
+    description = CharField()
+    type = ConditionValueTypeSerializer()
+    requires = ListField(
+        child=CharField(), help_text=_("Available when any of these facts are available.")
+    )
+    param = ChoiceField(choices=ParamKind.choices)
+    app = CharField(source="app_label")
+    app_verbose_name = CharField()
+
+
 class ConditionCatalogSerializer(PassiveSerializer):
     """Everything available to build conditional policies"""
 
     facts = ConditionFactSerializer(many=True)
     targets = ConditionTargetSerializer(many=True)
     variables = ConditionVariableSerializer(many=True)
+    setters = ConditionSetterSerializer(many=True)
     operators = ConditionOperatorSerializer(many=True)
 
 
@@ -244,6 +264,19 @@ class ConditionalPolicyViewSet(UsedByMixin, ModelViewSet):
                     "app_verbose_name": variable.app_verbose_name,
                 }
                 for variable in sorted(registry.variables.values(), key=lambda v: v.key)
+            ],
+            "setters": [
+                {
+                    "key": setter.key,
+                    "label": str(setter.label),
+                    "description": str(setter.description),
+                    "type": setter.type,
+                    "requires": sorted(setter.requires),
+                    "param": str(setter.param),
+                    "app_label": setter.app_label,
+                    "app_verbose_name": setter.app_verbose_name,
+                }
+                for setter in sorted(registry.setters.values(), key=lambda s: s.key)
             ],
             "operators": [
                 {

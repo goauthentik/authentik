@@ -9,6 +9,8 @@ automatically on startup (see `ManagedAppConfig.import_related`).
   available when policies bound to it are evaluated.
 - A *variable* is a typed value that can be used in a condition, resolved from the
   policy request. Variables declare which facts they require.
+- A *setter* is a target an action can set a value for, for example a key in the flow
+  context. Setters declare which facts they require.
 """
 
 import sys
@@ -94,6 +96,40 @@ class Variable:
         return str(app.verbose_name) if app else ""
 
 
+@dataclass(frozen=True)
+class Setter:
+    """A value which can be set by an action, for example a key in the flow context"""
+
+    key: str
+    label: str | Promise
+    type: ValueType
+    # The target is available when any of these facts are available
+    requires: frozenset[str]
+    applier: Callable[..., None]
+    description: str | Promise = ""
+    param: ParamKind = ParamKind.NONE
+    module: str = ""
+
+    def apply(self, request: PolicyRequest, param: str | None, value: Any):
+        if self.param == ParamKind.NONE:
+            self.applier(request, value)
+        else:
+            self.applier(request, param, value)
+
+    def available_for(self, facts: Iterable[str]) -> bool:
+        return not self.requires.isdisjoint(facts)
+
+    @property
+    def app_label(self) -> str:
+        app = apps.get_containing_app_config(self.module)
+        return app.label if app else ""
+
+    @property
+    def app_verbose_name(self) -> str:
+        app = apps.get_containing_app_config(self.module)
+        return str(app.verbose_name) if app else ""
+
+
 class ConditionalPolicyRegistry:
     """Registry of facts, targets and variables"""
 
@@ -101,6 +137,7 @@ class ConditionalPolicyRegistry:
         self.facts: dict[str, Fact] = {}
         self.targets: dict[str, frozenset[str]] = {}
         self.variables: dict[str, Variable] = {}
+        self.setters: dict[str, Setter] = {}
 
     def fact(self, key: str, label: str | Promise, description: str | Promise = "") -> Fact:
         """Register a fact"""
@@ -158,6 +195,41 @@ class ConditionalPolicyRegistry:
 
     def get(self, key: str) -> Variable | None:
         return self.variables.get(key)
+
+    def setter(  # noqa: PLR0913
+        self,
+        key: str,
+        label: str | Promise,
+        type: ValueType,
+        requires: Iterable[str],
+        description: str | Promise = "",
+        param: ParamKind = ParamKind.NONE,
+    ) -> Callable[[Callable[..., None]], Callable[..., None]]:
+        """Decorator to register a target which actions can set a value for.
+
+        The function is called with the `PolicyRequest`, the parameter (if `param` is set) and
+        the value."""
+        module = sys._getframe(1).f_globals.get("__name__", "")
+
+        def wrapper(applier: Callable[..., None]) -> Callable[..., None]:
+            if key in self.setters:
+                raise ValueError(f"Target {key} is already registered")
+            self.setters[key] = Setter(
+                key=key,
+                label=label,
+                type=type,
+                requires=frozenset(requires),
+                applier=applier,
+                description=description,
+                param=param,
+                module=module,
+            )
+            return applier
+
+        return wrapper
+
+    def get_setter(self, key: str) -> Setter | None:
+        return self.setters.get(key)
 
 
 registry = ConditionalPolicyRegistry()

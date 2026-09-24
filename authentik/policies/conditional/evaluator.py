@@ -1,4 +1,4 @@
-"""Compile and evaluate condition trees"""
+"""Compile and run the actions of conditional policies"""
 
 import re
 from contextvars import ContextVar
@@ -20,6 +20,7 @@ from authentik.policies.conditional.operators import (
 from authentik.policies.conditional.registry import (
     ConditionalPolicyRegistry,
     ParamKind,
+    Setter,
     Variable,
     registry,
 )
@@ -33,9 +34,15 @@ from authentik.policies.conditional.schema import (
     ConditionNode,
     ConditionNotNode,
     ConditionPolicyNode,
-    ConditionTree,
     ConditionVariableOperand,
     ConditionVariableRef,
+    PolicyAction,
+    PolicyActionCondition,
+    PolicyActionIf,
+    PolicyActions,
+    PolicyActionSet,
+    PolicyActionStop,
+    PolicyActionStopResult,
     error_path,
 )
 from authentik.policies.conditional.types import (
@@ -110,6 +117,49 @@ class CompiledPolicyRef:
 type CompiledNode = CompiledCondition | CompiledGroup | CompiledNot | CompiledPolicyRef
 
 
+@dataclass(frozen=True, slots=True)
+class CompiledSetter:
+    setter: Setter
+    param: str | None
+
+
+@dataclass(frozen=True, slots=True)
+class CompiledActionCondition:
+    path: str
+    enabled: bool
+    condition: CompiledNode
+
+
+@dataclass(frozen=True, slots=True)
+class CompiledActionIf:
+    path: str
+    enabled: bool
+    condition: CompiledNode
+    then: tuple[CompiledAction, ...]
+    otherwise: tuple[CompiledAction, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class CompiledActionSet:
+    path: str
+    enabled: bool
+    target: CompiledSetter
+    value: Literal | CompiledVariable
+
+
+@dataclass(frozen=True, slots=True)
+class CompiledActionStop:
+    path: str
+    enabled: bool
+    passing: bool
+    message: str | None
+
+
+type CompiledAction = (
+    CompiledActionCondition | CompiledActionIf | CompiledActionSet | CompiledActionStop
+)
+
+
 def _fold(value: Any) -> Any:
     """Normalize strings for case-insensitive comparison"""
     if isinstance(value, str):
@@ -131,21 +181,99 @@ def _types_compatible(actual: ValueType, expected: ValueType) -> bool:
 
 
 class ConditionCompiler:
-    """Validate a condition tree against the registry, and convert it into an evaluable
-    structure. Structural validation is done by the pydantic models in `schema`."""
+    """Validate actions against the registry, and convert them into a structure which can be
+    run. Structural validation is done by the pydantic models in `schema`."""
 
     def __init__(self, reg: ConditionalPolicyRegistry | None = None):
         self.registry = reg or registry
         self.errors: list[tuple[str, str]] = []
         self.node_count = 0
 
-    def compile(self, tree: ConditionTree) -> CompiledNode:
-        root = self._node(tree.root, "root", 1)
+    def compile(self, actions: PolicyActions) -> tuple[CompiledAction, ...]:
+        if not actions.actions:
+            self.errors.append(("actions", "Add at least one action"))
+        compiled = self._actions(actions.actions, "actions", 1)
         if self.node_count > MAX_NODES:
-            self.errors.append(("root", f"Condition tree must have at most {MAX_NODES} nodes"))
+            self.errors.append(("actions", f"Policy can have at most {MAX_NODES} items"))
         if self.errors:
             raise ConditionValidationError(self.errors)
-        return root
+        return compiled
+
+    def _actions(
+        self, actions: list[PolicyAction], path: str, depth: int
+    ) -> tuple[CompiledAction, ...]:
+        return tuple(
+            self._action(action, f"{path}.{idx}", depth) for idx, action in enumerate(actions)
+        )
+
+    def _action(self, action: PolicyAction, path: str, depth: int) -> Any:
+        self.node_count += 1
+        if depth > MAX_DEPTH:
+            self.errors.append((path, f"Actions can be nested at most {MAX_DEPTH} levels deep"))
+            return None
+        match action:
+            case PolicyActionCondition():
+                return CompiledActionCondition(
+                    path=path,
+                    enabled=action.enabled,
+                    condition=self._node(action.condition, f"{path}.condition", depth + 1),
+                )
+            case PolicyActionIf():
+                return CompiledActionIf(
+                    path=path,
+                    enabled=action.enabled,
+                    condition=self._node(action.condition, f"{path}.condition", depth + 1),
+                    then=self._actions(action.then_actions, f"{path}.then_actions", depth + 1),
+                    otherwise=self._actions(action.else_actions, f"{path}.else_actions", depth + 1),
+                )
+            case PolicyActionSet():
+                return self._set(action, path)
+            case PolicyActionStop():
+                return CompiledActionStop(
+                    path=path,
+                    enabled=action.enabled,
+                    passing=action.result == PolicyActionStopResult.PASS,
+                    message=action.message or None,
+                )
+
+    def _set(self, action: PolicyActionSet, path: str) -> CompiledActionSet | None:
+        setter = self.registry.get_setter(action.target.key)
+        if not setter:
+            self.errors.append((f"{path}.target", f"Unknown target '{action.target.key}'"))
+            return None
+        param = action.target.param or None
+        if setter.param != ParamKind.NONE and not param:
+            self.errors.append((f"{path}.target", f"Target '{setter.key}' requires a key"))
+        if setter.param == ParamKind.NONE and param:
+            self.errors.append((f"{path}.target", f"Target '{setter.key}' does not take a key"))
+        value: Literal | CompiledVariable | None = None
+        match action.value:
+            case ConditionVariableOperand():
+                value = self._variable(action.value.variable, f"{path}.value.variable")
+                if (
+                    value
+                    and setter.type.kind != TypeKind.ANY
+                    and not _types_compatible(value.type, setter.type)
+                ):
+                    self.errors.append(
+                        (
+                            f"{path}.value.variable",
+                            f"Variable has type {value.type}, expected {setter.type}",
+                        )
+                    )
+            case ConditionLiteralOperand():
+                try:
+                    value = Literal(coerce(action.value.value, setter.type))
+                except ValueError as exc:
+                    self.errors.append((f"{path}.value", str(exc)))
+        if value is None:
+            return None
+        return CompiledActionSet(
+            path=path,
+            enabled=action.enabled,
+            target=CompiledSetter(setter=setter, param=param),
+            value=value,
+        )
 
     def _node(self, node: ConditionNode, path: str, depth: int) -> Any:
         self.node_count += 1
@@ -276,25 +404,26 @@ class ConditionCompiler:
         )
 
 
-def parse_conditions(data: dict) -> ConditionTree:
-    """Parse stored conditions, raising `ConditionValidationError` if they are invalid"""
+def parse_actions(data: dict) -> PolicyActions:
+    """Parse stored actions, raising `ConditionValidationError` if they are invalid"""
     try:
-        return ConditionTree.model_validate(data)
+        return PolicyActions.model_validate(data)
     except PydanticValidationError as exc:
         raise ConditionValidationError(
             [(error_path(err["loc"]), err["msg"]) for err in exc.errors()]
         ) from exc
 
 
-def compile_conditions(tree: ConditionTree | dict) -> CompiledNode:
-    """Compile a condition tree, raising `ConditionValidationError` if it is invalid"""
-    if not isinstance(tree, ConditionTree):
-        tree = parse_conditions(tree)
-    return ConditionCompiler().compile(tree)
+def compile_actions(actions: PolicyActions | dict) -> tuple[CompiledAction, ...]:
+    """Compile the actions of a policy, raising `ConditionValidationError` if they are
+    invalid"""
+    if not isinstance(actions, PolicyActions):
+        actions = parse_actions(actions)
+    return ConditionCompiler().compile(actions)
 
 
 def iter_nodes(node: CompiledNode):
-    """Iterate over all nodes of a compiled tree"""
+    """Iterate over all nodes of a compiled condition"""
     yield node
     if isinstance(node, CompiledGroup):
         for child in node.children:
@@ -303,13 +432,35 @@ def iter_nodes(node: CompiledNode):
         yield from iter_nodes(node.child)
 
 
-def iter_variables(node: CompiledNode):
-    """Iterate over all variables used in a compiled tree (excluding referenced policies)"""
-    for child in iter_nodes(node):
-        if isinstance(child, CompiledCondition):
-            yield child.variable.variable
-            if isinstance(child.operand, CompiledVariable):
-                yield child.operand.variable
+def iter_actions(actions: tuple[CompiledAction, ...]):
+    """Iterate over all actions, including nested actions"""
+    for action in actions:
+        yield action
+        if isinstance(action, CompiledActionIf):
+            yield from iter_actions(action.then)
+            yield from iter_actions(action.otherwise)
+
+
+def iter_conditions(actions: tuple[CompiledAction, ...]):
+    """Iterate over all condition nodes used by actions"""
+    for action in iter_actions(actions):
+        if isinstance(action, CompiledActionCondition | CompiledActionIf):
+            yield from iter_nodes(action.condition)
+
+
+def iter_requirements(actions: tuple[CompiledAction, ...]):
+    """Iterate over all variables and setters used by actions (excluding referenced
+    policies), which each require some facts to be available"""
+    for node in iter_conditions(actions):
+        if isinstance(node, CompiledCondition):
+            yield node.variable.variable
+            if isinstance(node.operand, CompiledVariable):
+                yield node.operand.variable
+    for action in iter_actions(actions):
+        if isinstance(action, CompiledActionSet):
+            yield action.target.setter
+            if isinstance(action.value, CompiledVariable):
+                yield action.value.variable
 
 
 class _MissingValue(Exception):
@@ -319,34 +470,91 @@ class _MissingValue(Exception):
         self.key = key
 
 
-class ConditionEvaluator:
-    """Evaluate a compiled condition tree for a policy request"""
+class _Stop(Exception):
+    def __init__(self, passing: bool, message: str | None = None):
+        super().__init__()
+        self.passing = passing
+        self.message = message
 
-    def __init__(self, request: PolicyRequest, missing_behavior: MissingBehavior):
+
+class ConditionEvaluator:
+    """Run compiled actions for a policy request"""
+
+    def __init__(
+        self,
+        request: PolicyRequest,
+        missing_behavior: MissingBehavior,
+        failure_message: str | None = None,
+    ):
         self.request = request
         self.missing_behavior = missing_behavior
+        self.failure_message = failure_message
         self._values: dict[tuple[str, str | None, TypeKind], Any] = {}
         self._messages: list[str] = []
         self._logger = LOGGER.bind()
 
-    def evaluate(self, root: CompiledNode) -> PolicyResult:
+    def run(self, actions: tuple[CompiledAction, ...]) -> PolicyResult:
+        """Run actions in order, until an action stops. The policy passes when all actions
+        were run, or an action stopped with a passing result."""
+        try:
+            self._run(actions)
+        except _Stop as stop:
+            if stop.passing:
+                return PolicyResult(True, *([stop.message] if stop.message else []))
+            messages = list(self._messages)
+            if stop.message:
+                messages.append(stop.message)
+            elif self.failure_message:
+                messages.append(self.failure_message)
+            return PolicyResult(False, *messages)
+        except _MissingValue as exc:
+            self._trace(exc.path, missing=exc.key)
+            return PolicyResult(False, *([self.failure_message] if self.failure_message else []))
+        return PolicyResult(True)
+
+    def _run(self, actions: tuple[CompiledAction, ...]):
+        for action in actions:
+            if not action.enabled:
+                continue
+            match action:
+                case CompiledActionCondition():
+                    if not self._evaluate(action.condition):
+                        self._trace(action.path, action="condition", result=False)
+                        raise _Stop(False)
+                case CompiledActionIf():
+                    result = self._evaluate(action.condition)
+                    self._trace(action.path, action="if", result=result)
+                    self._run(action.then if result else action.otherwise)
+                case CompiledActionSet():
+                    self._set(action)
+                case CompiledActionStop():
+                    self._trace(action.path, action="stop", result=action.passing)
+                    raise _Stop(action.passing, action.message)
+
+    def _set(self, action: CompiledActionSet):
         from authentik.policies.conditional.models import MissingBehavior
 
+        if isinstance(action.value, Literal):
+            value = action.value.value
+        else:
+            value = self._resolve(action.value)
+            if value is MISSING:
+                if self.missing_behavior == MissingBehavior.FAIL:
+                    raise _MissingValue(action.path, action.value.variable.key)
+                self._trace(action.path, action="set", missing=action.value.variable.key)
+                return
         try:
-            passing = self._evaluate(root)
-        except _MissingValue as exc:
-            if self.missing_behavior != MissingBehavior.FAIL:  # pragma: no cover
-                raise
-            self._trace(exc.path, missing=exc.key)
-            return PolicyResult(False)
-        if passing:
-            return PolicyResult(True)
-        return PolicyResult(False, *self._messages)
+            action.target.setter.apply(self.request, action.target.param, value)
+        except PolicyException:
+            raise
+        except Exception as exc:
+            raise PolicyException(exc) from exc
+        self._trace(action.path, action="set", target=action.target.setter.key)
 
     def _trace(self, path: str, **kwargs):
         if not self.request.debug:
             return
-        self._logger.info("Conditional policy node evaluated", node=path, **kwargs)
+        self._logger.info("Conditional policy evaluated", node=path, **kwargs)
 
     def _evaluate(self, node: CompiledNode) -> bool:
         """Evaluate a node, and keep track of messages of referenced policies which failed.

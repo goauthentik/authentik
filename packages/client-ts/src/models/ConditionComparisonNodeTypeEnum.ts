@@ -14,7 +14,7 @@
  * @export
  */
 export const ConditionComparisonNodeTypeEnum = {
-    Condition: "condition",
+    Compare: "compare",
     UnknownDefaultOpenApi: "11184809",
 } as const;
 export type ConditionComparisonNodeTypeEnum =

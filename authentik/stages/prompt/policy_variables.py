@@ -1,9 +1,12 @@
 """Policy variables provided by the prompt stage"""
 
+from typing import Any
+
 from django.utils.translation import gettext_lazy as _
 
 from authentik.core.models import User
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+from authentik.flows.policy_variables import FACT_FLOW_PLAN
 from authentik.policies.conditional.registry import FACT_HTTP_REQUEST, ParamKind, registry
 from authentik.policies.conditional.types import MISSING, T
 from authentik.policies.types import PolicyRequest
@@ -60,3 +63,24 @@ def prompt_data_email_in_use(request: PolicyRequest, key: str):
     elif request.user and request.user.is_authenticated:
         query = query.exclude(pk=request.user.pk)
     return query.exists()
+
+
+@registry.setter(
+    "prompt_data",
+    _("Prompt field"),
+    T.ANY,
+    requires=[FACT_PROMPT_DATA, FACT_FLOW_PLAN],
+    param=ParamKind.KEY,
+    description=_(
+        "Set the value of a prompt field, for example to use the email address as username."
+    ),
+)
+def setter_prompt_data(request: PolicyRequest, key: str, value: Any):
+    data = request.context.get(PLAN_CONTEXT_PROMPT)
+    if not isinstance(data, dict):
+        data = {}
+        request.context[PLAN_CONTEXT_PROMPT] = data
+    plan = request.context.get("flow_plan")
+    if isinstance(plan, FlowPlan) and plan.context.get(PLAN_CONTEXT_PROMPT) is not data:
+        plan.context.setdefault(PLAN_CONTEXT_PROMPT, {})[key] = value
+    data[key] = value

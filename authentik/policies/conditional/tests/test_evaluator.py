@@ -11,8 +11,9 @@ from authentik.core.models import Group
 from authentik.core.tests.utils import create_test_user
 from authentik.endpoints.models import Device
 from authentik.events.models import Event, EventAction
+from authentik.flows.planner import FlowPlan
 from authentik.lib.generators import generate_id
-from authentik.policies.conditional.evaluator import ConditionValidationError, compile_conditions
+from authentik.policies.conditional.evaluator import ConditionValidationError, compile_actions
 from authentik.policies.conditional.models import ConditionalPolicy, MissingBehavior
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.expression.models import ExpressionPolicy
@@ -20,12 +21,13 @@ from authentik.policies.types import PolicyRequest
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 
-def tree(root: dict) -> dict:
-    return {"version": 1, "root": root}
+def tree(root: dict, *actions: dict) -> dict:
+    """Actions of a policy which checks the condition `root`, followed by `actions`"""
+    return {"version": 2, "actions": [{"type": "condition", "condition": root}, *actions]}
 
 
 def cond(key: str, operator: str, value=None, **extra) -> dict:
-    node = {"type": "condition", "variable": {"key": key}, "operator": operator}
+    node = {"type": "compare", "variable": {"key": key}, "operator": operator}
     if "param" in extra:
         node["variable"]["param"] = extra.pop("param")
     if "cast" in extra:
@@ -52,7 +54,7 @@ class TestConditionalEvaluator(TestCase):
         self.request.http_request = RequestFactory().get("/", REMOTE_ADDR="10.1.2.3")
 
     def passes(self, root: dict, **kwargs) -> bool:
-        policy = ConditionalPolicy(name=generate_id(), conditions=tree(root), **kwargs)
+        policy = ConditionalPolicy(name=generate_id(), actions=tree(root), **kwargs)
         return policy.passes(self.request).passing
 
     def test_string_operators(self):
@@ -172,7 +174,7 @@ class TestConditionalEvaluator(TestCase):
         """Failure message is returned when the policy doesn't pass"""
         policy = ConditionalPolicy(
             name=generate_id(),
-            conditions=tree(cond("user.is_active", "is_false")),
+            actions=tree(cond("user.is_active", "is_false")),
             failure_message="nope",
         )
         result = policy.passes(self.request)
@@ -189,7 +191,7 @@ class TestConditionalEvaluator(TestCase):
         request.context["event"] = event
         policy = ConditionalPolicy(
             name=generate_id(),
-            conditions=tree(
+            actions=tree(
                 group(
                     "all",
                     cond("event.action", "eq", EventAction.LOGIN_FAILED),
@@ -213,7 +215,7 @@ class TestConditionalEvaluator(TestCase):
     def test_policy_reference_loop(self):
         """Reference loops are stopped"""
         policy = ConditionalPolicy.objects.create(name=generate_id())
-        policy.conditions = tree({"type": "policy", "policy": str(policy.pk)})
+        policy.actions = tree({"type": "policy", "policy": str(policy.pk)})
         policy.save()
         with self.assertRaises(PolicyException):
             policy.passes(self.request)
@@ -268,6 +270,123 @@ class TestConditionalEvaluator(TestCase):
                 self.passes(cond("device.facts", "has_item", "Slack", param="software.*.name"))
             )
 
+    def run_actions(self, *actions: dict, request: PolicyRequest | None = None, **kwargs):
+        policy = ConditionalPolicy(
+            name=generate_id(), actions={"version": 2, "actions": list(actions)}, **kwargs
+        )
+        return policy.passes(request or self.request)
+
+    def flow_request(self, **context) -> PolicyRequest:
+        plan = FlowPlan(flow_pk=generate_id())
+        plan.context = dict(context)
+        request = PolicyRequest(self.user)
+        request.context = {**context, "flow_plan": plan}
+        return request
+
+    def test_actions_sequence(self):
+        """Actions run in order, a failing condition stops"""
+        request = self.flow_request()
+        set_first = {
+            "type": "set",
+            "target": {"key": "plan.context", "param": "first"},
+            "value": {"type": "literal", "value": "a"},
+        }
+        set_second = {
+            "type": "set",
+            "target": {"key": "plan.context", "param": "second"},
+            "value": {"type": "literal", "value": "b"},
+        }
+        result = self.run_actions(
+            set_first,
+            {"type": "condition", "condition": cond("user.is_active", "is_false")},
+            set_second,
+            request=request,
+            failure_message="nope",
+        )
+        self.assertFalse(result.passing)
+        self.assertEqual(result.messages, ("nope",))
+        plan = request.context["flow_plan"]
+        self.assertEqual(plan.context["first"], "a")
+        self.assertNotIn("second", plan.context)
+
+    def test_actions_if(self):
+        """If actions run the matching branch"""
+
+        def branch(condition: dict):
+            request = self.flow_request()
+            result = self.run_actions(
+                {
+                    "type": "if",
+                    "condition": condition,
+                    "then_actions": [
+                        {
+                            "type": "set",
+                            "target": {"key": "plan.email_override"},
+                            "value": {
+                                "type": "variable",
+                                "variable": {"key": "user.email"},
+                            },
+                        }
+                    ],
+                    "else_actions": [{"type": "stop", "result": "fail", "message": "no"}],
+                },
+                request=request,
+            )
+            return result, request.context["flow_plan"].context
+
+        result, context = branch(cond("user.is_active", "is_true"))
+        self.assertTrue(result.passing)
+        self.assertEqual(context["email"], self.user.email)
+        result, context = branch(cond("user.is_active", "is_false"))
+        self.assertFalse(result.passing)
+        self.assertEqual(result.messages, ("no",))
+        self.assertNotIn("email", context)
+
+    def test_actions_prompt_data(self):
+        """Prompt fields can be set, and later actions see the new value"""
+        prompt = {"email": "foo@goauthentik.io"}
+        request = self.flow_request(prompt_data=prompt)
+        result = self.run_actions(
+            {
+                "type": "set",
+                "target": {"key": "prompt_data", "param": "username"},
+                "value": {
+                    "type": "variable",
+                    "variable": {"key": "prompt_data", "param": "email", "cast": "string"},
+                },
+            },
+            {
+                "type": "condition",
+                "condition": cond(
+                    "prompt_data", "eq", "foo@goauthentik.io", param="username", cast="string"
+                ),
+            },
+            request=request,
+        )
+        self.assertTrue(result.passing)
+        self.assertEqual(prompt["username"], "foo@goauthentik.io")
+
+    def test_actions_stop_and_disabled(self):
+        """Stop ends with a result, disabled actions are skipped"""
+        result = self.run_actions(
+            {"type": "stop", "result": "fail", "enabled": False},
+            {"type": "stop", "result": "pass", "message": "welcome"},
+            {"type": "stop", "result": "fail"},
+        )
+        self.assertTrue(result.passing)
+        self.assertEqual(result.messages, ("welcome",))
+
+    def test_actions_set_outside_flow(self):
+        """Values of flows can only be set while a flow is executed"""
+        with self.assertRaises(PolicyException):
+            self.run_actions(
+                {
+                    "type": "set",
+                    "target": {"key": "plan.context", "param": "foo"},
+                    "value": {"type": "literal", "value": "bar"},
+                }
+            )
+
     def test_invalid_stored(self):
         """Invalid stored conditions raise a PolicyException"""
         with self.assertRaises(PolicyException):
@@ -279,11 +398,11 @@ class TestConditionalCompiler(TestCase):
 
     def assertInvalid(self, root: dict, message: str):
         with self.assertRaises(ConditionValidationError) as ctx:
-            compile_conditions(tree(root))
+            compile_actions(tree(root))
         self.assertIn(message, str(ctx.exception))
 
     def test_valid(self):
-        compile_conditions(tree(cond("user.email", "eq", "foo")))
+        compile_actions(tree(cond("user.email", "eq", "foo")))
 
     def test_invalid(self):
         self.assertInvalid(cond("foo", "eq", "bar"), "Unknown variable 'foo'")
@@ -306,11 +425,47 @@ class TestConditionalCompiler(TestCase):
         )
         self.assertInvalid(cond("user.last_login", "between", ["2020-01-01"]), "exactly two")
 
+    def test_invalid_actions(self):
+        def assert_invalid(actions: list[dict], message: str):
+            with self.assertRaises(ConditionValidationError) as ctx:
+                compile_actions({"version": 2, "actions": actions})
+            self.assertIn(message, str(ctx.exception))
+
+        literal = {"type": "literal", "value": "x"}
+        assert_invalid([], "at least one action")
+        assert_invalid(
+            [{"type": "set", "target": {"key": "foo"}, "value": literal}], "Unknown target"
+        )
+        assert_invalid(
+            [{"type": "set", "target": {"key": "plan.context"}, "value": literal}],
+            "requires a key",
+        )
+        assert_invalid(
+            [
+                {
+                    "type": "set",
+                    "target": {"key": "plan.email_override"},
+                    "value": {"type": "literal", "value": {"a": 1}},
+                }
+            ],
+            "is not a string",
+        )
+        assert_invalid(
+            [
+                {
+                    "type": "if",
+                    "condition": cond("user.email", "gt", "x"),
+                    "then_actions": [{"type": "stop", "result": "pass"}],
+                }
+            ],
+            "actions.0.condition.operator",
+        )
+
     def test_limits(self):
         node = cond("user.is_active", "is_true")
         for _ in range(12):
             node = {"type": "not", "child": node}
         self.assertInvalid(node, "levels deep")
         self.assertInvalid(
-            group("all", *[cond("user.is_active", "is_true")] * 250), "at most 200 nodes"
+            group("all", *[cond("user.is_active", "is_true")] * 250), "at most 200 items"
         )

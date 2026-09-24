@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { ConditionTree } from "./ConditionTree";
-import { ConditionTreeFromJSON, ConditionTreeToJSON } from "./ConditionTree";
 import type { MissingBehaviorEnum } from "./MissingBehaviorEnum";
 import { MissingBehaviorEnumFromJSON, MissingBehaviorEnumToJSON } from "./MissingBehaviorEnum";
+import type { PolicyActions } from "./PolicyActions";
+import { PolicyActionsFromJSON, PolicyActionsToJSON } from "./PolicyActions";
 
 /**
  * Conditional Policy Serializer
@@ -28,9 +28,9 @@ export interface ConditionalPolicyRequest {
      * execution errors are logged.
      */
     executionLogging?: boolean;
-    conditions: ConditionTree;
+    actions: PolicyActions;
     /**
-     * How to handle conditions whose variable is not available in the request.
+     * How to handle values which are not available in the request.
      */
     missingBehavior?: MissingBehaviorEnum;
     /**
@@ -46,7 +46,7 @@ export function instanceOfConditionalPolicyRequest(
     value: object,
 ): value is ConditionalPolicyRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("conditions" in value) || value["conditions"] === undefined) return false;
+    if (!("actions" in value) || value["actions"] === undefined) return false;
     return true;
 }
 
@@ -64,7 +64,7 @@ export function ConditionalPolicyRequestFromJSONTyped(
     return {
         name: json["name"],
         executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
-        conditions: ConditionTreeFromJSON(json["conditions"]),
+        actions: PolicyActionsFromJSON(json["actions"]),
         missingBehavior:
             json["missing_behavior"] == null
                 ? undefined
@@ -88,7 +88,7 @@ export function ConditionalPolicyRequestToJSONTyped(
     return {
         name: value["name"],
         execution_logging: value["executionLogging"],
-        conditions: ConditionTreeToJSON(value["conditions"]),
+        actions: PolicyActionsToJSON(value["actions"]),
         missing_behavior: MissingBehaviorEnumToJSON(value["missingBehavior"]),
         failure_message: value["failureMessage"],
     };

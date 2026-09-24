@@ -27,7 +27,7 @@ import { ConditionPolicyNodeFromJSONTyped, ConditionPolicyNodeToJSON } from "./C
  * @export
  */
 export type ConditionNode =
-    | ({ type: "condition" } & ConditionComparisonNode)
+    | ({ type: "compare" } & ConditionComparisonNode)
     | ({ type: "group" } & ConditionGroupNode)
     | ({ type: "not" } & ConditionNotNode)
     | ({ type: "policy" } & ConditionPolicyNode);
@@ -41,9 +41,9 @@ export function ConditionNodeFromJSONTyped(json: any, ignoreDiscriminator: boole
         return json;
     }
     switch (json["type"]) {
-        case "condition":
+        case "compare":
             return Object.assign({}, ConditionComparisonNodeFromJSONTyped(json, true), {
-                type: "condition",
+                type: "compare",
             } as const);
         case "group":
             return Object.assign({}, ConditionGroupNodeFromJSONTyped(json, true), {
@@ -74,9 +74,9 @@ export function ConditionNodeToJSONTyped(
         return value;
     }
     switch (value["type"]) {
-        case "condition":
+        case "compare":
             return Object.assign({}, ConditionComparisonNodeToJSON(value), {
-                type: "condition",
+                type: "compare",
             } as const);
         case "group":
             return Object.assign({}, ConditionGroupNodeToJSON(value), { type: "group" } as const);

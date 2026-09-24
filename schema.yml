@@ -12172,7 +12172,7 @@ paths:
           allOf:
           - $ref: '#/components/schemas/MissingBehaviorEnum'
           description: |+
-            How to handle conditions whose variable is not available in the request.
+            How to handle values which are not available in the request.
 
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
@@ -38837,6 +38837,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ConditionVariable'
+        setters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConditionSetter'
         operators:
           type: array
           items:
@@ -38844,6 +38848,7 @@ components:
       required:
       - facts
       - operators
+      - setters
       - targets
       - variables
     ConditionChoice:
@@ -38882,7 +38887,7 @@ components:
     ConditionComparisonNodeTypeEnum:
       type: string
       enum:
-      - condition
+      - compare
     ConditionFact:
       type: object
       description: Data a policy request can carry
@@ -38899,7 +38904,7 @@ components:
       - label
     ConditionGroupNode:
       additionalProperties: false
-      description: Combine the results of multiple nodes
+      description: Combine the results of multiple conditions
       properties:
         type:
           $ref: '#/components/schemas/ConditionGroupNodeTypeEnum'
@@ -38973,7 +38978,7 @@ components:
     ConditionNode:
       discriminator:
         mapping:
-          condition: '#/components/schemas/ConditionComparisonNode'
+          compare: '#/components/schemas/ConditionComparisonNode'
           group: '#/components/schemas/ConditionGroupNode'
           not: '#/components/schemas/ConditionNotNode'
           policy: '#/components/schemas/ConditionPolicyNode'
@@ -38985,7 +38990,7 @@ components:
       - $ref: '#/components/schemas/ConditionPolicyNode'
     ConditionNotNode:
       additionalProperties: false
-      description: Negate the result of a node
+      description: Negate the result of a condition
       properties:
         type:
           $ref: '#/components/schemas/ConditionNotNodeTypeEnum'
@@ -39114,6 +39119,38 @@ components:
       type: string
       enum:
       - policy
+    ConditionSetter:
+      type: object
+      description: Value which actions can set
+      properties:
+        key:
+          type: string
+        label:
+          type: string
+        description:
+          type: string
+        type:
+          $ref: '#/components/schemas/ConditionValueType'
+        requires:
+          type: array
+          items:
+            type: string
+          description: Available when any of these facts are available.
+        param:
+          $ref: '#/components/schemas/ConditionParamKindEnum'
+        app:
+          type: string
+        app_verbose_name:
+          type: string
+      required:
+      - app
+      - app_verbose_name
+      - description
+      - key
+      - label
+      - param
+      - requires
+      - type
     ConditionTarget:
       type: object
       description: Object policies can be bound to, and the facts available when they
@@ -39131,20 +39168,6 @@ components:
       - facts
       - model
       - verbose_name
-    ConditionTree:
-      additionalProperties: false
-      description: Condition tree of a conditional policy
-      properties:
-        version:
-          maximum: 1
-          minimum: 1
-          type: integer
-        root:
-          $ref: '#/components/schemas/ConditionNode'
-      required:
-      - version
-      - root
-      type: object
     ConditionTypeKindEnum:
       enum:
       - string
@@ -39296,20 +39319,19 @@ components:
           type: string
           format: date-time
           readOnly: true
-        conditions:
-          $ref: '#/components/schemas/ConditionTree'
+        actions:
+          $ref: '#/components/schemas/PolicyActions'
         missing_behavior:
           allOf:
           - $ref: '#/components/schemas/MissingBehaviorEnum'
-          description: How to handle conditions whose variable is not available in
-            the request.
+          description: How to handle values which are not available in the request.
         failure_message:
           type: string
           description: Message shown to the user when the policy does not pass.
       required:
+      - actions
       - bound_to
       - component
-      - conditions
       - created
       - last_updated
       - meta_model_name
@@ -39328,18 +39350,17 @@ components:
           type: boolean
           description: When this option is enabled, all executions of this policy
             will be logged. By default, only execution errors are logged.
-        conditions:
-          $ref: '#/components/schemas/ConditionTree'
+        actions:
+          $ref: '#/components/schemas/PolicyActions'
         missing_behavior:
           allOf:
           - $ref: '#/components/schemas/MissingBehaviorEnum'
-          description: How to handle conditions whose variable is not available in
-            the request.
+          description: How to handle values which are not available in the request.
         failure_message:
           type: string
           description: Message shown to the user when the policy does not pass.
       required:
-      - conditions
+      - actions
       - name
     Config:
       type: object
@@ -51767,13 +51788,12 @@ components:
           type: boolean
           description: When this option is enabled, all executions of this policy
             will be logged. By default, only execution errors are logged.
-        conditions:
-          $ref: '#/components/schemas/ConditionTree'
+        actions:
+          $ref: '#/components/schemas/PolicyActions'
         missing_behavior:
           allOf:
           - $ref: '#/components/schemas/MissingBehaviorEnum'
-          description: How to handle conditions whose variable is not available in
-            the request.
+          description: How to handle values which are not available in the request.
         failure_message:
           type: string
           description: Message shown to the user when the policy does not pass.
@@ -55768,6 +55788,153 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    PolicyAction:
+      discriminator:
+        mapping:
+          condition: '#/components/schemas/PolicyActionCondition'
+          if: '#/components/schemas/PolicyActionIf'
+          set: '#/components/schemas/PolicyActionSet'
+          stop: '#/components/schemas/PolicyActionStop'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/PolicyActionCondition'
+      - $ref: '#/components/schemas/PolicyActionIf'
+      - $ref: '#/components/schemas/PolicyActionSet'
+      - $ref: '#/components/schemas/PolicyActionStop'
+    PolicyActionCondition:
+      additionalProperties: false
+      description: Check a condition, and stop with a failing result if it doesn't
+        pass
+      properties:
+        enabled:
+          default: true
+          description: Disabled actions are skipped.
+          type: boolean
+        type:
+          $ref: '#/components/schemas/PolicyActionConditionTypeEnum'
+        condition:
+          $ref: '#/components/schemas/ConditionNode'
+      required:
+      - type
+      - condition
+      type: object
+    PolicyActionConditionTypeEnum:
+      type: string
+      enum:
+      - condition
+    PolicyActionIf:
+      additionalProperties: false
+      description: Run actions depending on a condition
+      properties:
+        enabled:
+          default: true
+          description: Disabled actions are skipped.
+          type: boolean
+        type:
+          $ref: '#/components/schemas/PolicyActionIfTypeEnum'
+        condition:
+          $ref: '#/components/schemas/ConditionNode'
+        then_actions:
+          description: Actions run when the condition passes.
+          items:
+            $ref: '#/components/schemas/PolicyAction'
+          type: array
+        else_actions:
+          description: Actions run when the condition doesn't pass.
+          items:
+            $ref: '#/components/schemas/PolicyAction'
+          type: array
+      required:
+      - type
+      - condition
+      type: object
+    PolicyActionIfTypeEnum:
+      type: string
+      enum:
+      - if
+    PolicyActionSet:
+      additionalProperties: false
+      description: Set a value, for example a key in the flow context
+      properties:
+        enabled:
+          default: true
+          description: Disabled actions are skipped.
+          type: boolean
+        type:
+          $ref: '#/components/schemas/PolicyActionSetTypeEnum'
+        target:
+          $ref: '#/components/schemas/PolicyActionTarget'
+        value:
+          $ref: '#/components/schemas/ConditionOperand'
+      required:
+      - type
+      - target
+      - value
+      type: object
+    PolicyActionSetTypeEnum:
+      type: string
+      enum:
+      - set
+    PolicyActionStop:
+      additionalProperties: false
+      description: Stop, and return a result
+      properties:
+        enabled:
+          default: true
+          description: Disabled actions are skipped.
+          type: boolean
+        type:
+          $ref: '#/components/schemas/PolicyActionStopTypeEnum'
+        result:
+          $ref: '#/components/schemas/PolicyActionStopResult'
+        message:
+          default: null
+          description: Message shown to the user.
+          type: string
+          nullable: true
+      required:
+      - type
+      - result
+      type: object
+    PolicyActionStopResult:
+      enum:
+      - pass
+      - fail
+      type: string
+    PolicyActionStopTypeEnum:
+      type: string
+      enum:
+      - stop
+    PolicyActionTarget:
+      additionalProperties: false
+      description: Reference to a value that can be set by an action
+      properties:
+        key:
+          type: string
+        param:
+          default: null
+          description: Key, for targets which take a parameter.
+          type: string
+          nullable: true
+      required:
+      - key
+      type: object
+    PolicyActions:
+      additionalProperties: false
+      description: Actions of a conditional policy
+      properties:
+        version:
+          maximum: 2
+          minimum: 2
+          type: integer
+        actions:
+          items:
+            $ref: '#/components/schemas/PolicyAction'
+          type: array
+      required:
+      - version
+      - actions
+      type: object
     PolicyBehaviorEnum:
       enum:
       - mirror
