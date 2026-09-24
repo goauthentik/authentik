@@ -332,6 +332,7 @@ dependencies = [
  "pyo3",
  "pyo3-build-config",
  "rand 0.10.3",
+ "rcgen",
  "regex",
  "reqwest",
  "reqwest-middleware",
