@@ -214,6 +214,48 @@ class TestPostgresConsumer(SimpleTestCase):
         )
         self.assertEqual(pending, {"00000000-0000-0000-0000-000000000001"})
 
+    def test_reconciles_pending_messages_during_continuous_notifications(self):
+        consumer = self._consumer()
+        missed_message_id = "00000000-0000-0000-0000-000000000001"
+        notified_message_id = "00000000-0000-0000-0000-000000000002"
+        missed_message = Message(
+            queue_name="default",
+            actor_name="test.actor",
+            args=(),
+            kwargs={},
+            options={"task": MagicMock()},
+            message_id=missed_message_id,
+        )
+        consumer.pending = set()
+        consumer._listen_connection = MagicMock()
+        consumer.prefetch = 1
+        consumer.misses = 0
+        consumer.timeout = 30
+        consumer._next_pending_reconciliation = 5
+        consumer._scheduler = MagicMock()
+        consumer._purge_locks = MagicMock()
+        consumer._auto_purge = MagicMock()
+        consumer._backlog_waiting_for_dependencies = MagicMock()
+        consumer._poll_for_notify = MagicMock(side_effect=lambda: {notified_message_id})
+        consumer._fetch_pending_messages = MagicMock(return_value={missed_message_id})
+        consumer._consume_one = MagicMock(
+            side_effect=lambda message_id: (
+                missed_message if message_id == missed_message_id else None
+            )
+        )
+
+        with patch(
+            "django_dramatiq_postgres.broker.time.monotonic",
+            side_effect=(4, 5, 5),
+        ):
+            self.assertIsNone(next(consumer))
+            message = next(consumer)
+
+        self.assertEqual(message.message_id, missed_message_id)
+        self.assertEqual(consumer._next_pending_reconciliation, 35)
+        consumer._poll_for_notify.assert_called_once_with()
+        consumer._fetch_pending_messages.assert_called_once_with()
+
 
 class TestPostgresConsumerAdvisoryLocks(TransactionTestCase):
     """Consumers racing for the same message, with real advisory locks.
