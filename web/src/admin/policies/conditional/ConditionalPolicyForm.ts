@@ -43,6 +43,13 @@ export class ConditionalPolicyForm extends BasePolicyForm<ConditionalPolicy> {
         this.size = PFSize.XLarge;
     }
 
+    public override connectedCallback(): void {
+        super.connectedCallback();
+        // Keep the dialog at full height, so that it doesn't resize while actions are edited
+        // eslint-disable-next-line wc/no-self-class
+        this.classList.add("ak-m-dialog--full-height");
+    }
+
     protected endpoints = {
         load: (policyUuid: string) =>
             aki(PoliciesApi).policiesConditionalRetrieve({

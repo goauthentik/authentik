@@ -57,7 +57,9 @@ def _field(request: PolicyRequest, name: str):
     user = _user(request)
     if not user:
         return MISSING
-    return getattr(user, name) or MISSING
+    value = getattr(user, name)
+    # Empty text is a value, for example a user without an email address
+    return MISSING if value is None else value
 
 
 @registry.variable(

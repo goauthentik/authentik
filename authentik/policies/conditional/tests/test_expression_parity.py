@@ -5,8 +5,11 @@ requests and checks that both return the same result and messages."""
 
 from collections.abc import Callable
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
 
+import yaml
+from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.test import RequestFactory, TestCase
 
@@ -22,6 +25,41 @@ from authentik.policies.types import PolicyRequest
 from authentik.stages.authenticator_static.models import StaticDevice
 from authentik.stages.authenticator_totp.models import TOTPDevice
 from authentik.tenants.utils import get_current_tenant
+
+
+class _BlueprintLoader(yaml.SafeLoader):
+    """Load blueprints without resolving their tags"""
+
+
+_BlueprintLoader.add_multi_constructor(
+    "!",
+    lambda loader, suffix, node: (
+        loader.construct_scalar(node)
+        if isinstance(node, yaml.ScalarNode)
+        else (
+            loader.construct_sequence(node)
+            if isinstance(node, yaml.SequenceNode)
+            else loader.construct_mapping(node)
+        )
+    ),
+)
+
+
+def blueprint_policy(path: str, name: str) -> dict:
+    """Attributes of the conditional policy `name` in the blueprint at `path`"""
+    with open(Path(settings.BASE_DIR) / "blueprints" / path, encoding="utf-8") as blueprint:
+        data = yaml.load(blueprint, Loader=_BlueprintLoader)  # noqa: S506
+    entries = data["entries"]
+    if isinstance(entries, dict):
+        entries = [entry for group in entries.values() for entry in group]
+    for entry in entries:
+        if (
+            entry.get("model") == "authentik_policies_conditional.conditionalpolicy"
+            and entry.get("state", "present") != "absent"
+            and name in (entry.get("identifiers", {}).get("name"), entry["attrs"].get("name"))
+        ):
+            return entry["attrs"]
+    raise ValueError(f"Policy {name} not found in {path}")
 
 
 def neg(node: dict) -> dict:
@@ -71,14 +109,22 @@ class TestExpressionParity(TestCase):
     def assertParity(  # noqa: N802
         self,
         expression: str,
-        root: dict,
+        root: dict | None,
         scenarios: list[Scenario],
         expected: list[bool | None],
         compare_messages: bool = True,
+        blueprint: tuple[str, str] | None = None,
         **kwargs,
     ):
+        """Compare an expression with a conditional policy, which checks the condition `root`
+        or is loaded from `blueprint` (path and name of the policy)"""
         expression_policy = ExpressionPolicy(name=generate_id(), expression=expression)
-        conditional = ConditionalPolicy(name=generate_id(), actions=tree(root), **kwargs)
+        if blueprint:
+            attrs = blueprint_policy(*blueprint)
+            kwargs.setdefault("missing_behavior", attrs.get("missing_behavior", "fail"))
+            conditional = ConditionalPolicy(name=generate_id(), actions=attrs["actions"], **kwargs)
+        else:
+            conditional = ConditionalPolicy(name=generate_id(), actions=tree(root), **kwargs)
         for scenario, passing in zip(scenarios, expected, strict=True):
             with self.subTest(scenario=scenario.name):
                 conditional_result = conditional.passes(self.build_request(scenario))
@@ -106,14 +152,17 @@ class TestExpressionParity(TestCase):
 if not flow_plan:
     return True
 return not hasattr(flow_plan.context.get("pending_user"), "backend")""",
-            neg(cond("plan.pending_user_authenticated", "is_true")),
+            None,
             [
                 Scenario("not authenticated"),
                 Scenario("authenticated", user=create_test_user(), setup=authenticated),
                 Scenario("no flow", in_flow=False),
             ],
             [True, False, True],
-            missing_behavior=MissingBehavior.FALSE,
+            blueprint=(
+                "default/flow-default-authentication-flow.yaml",
+                "default-authentication-flow-password-stage",
+            ),
         )
 
     def test_default_authentication_flow_authenticator_validate(self):
@@ -123,39 +172,50 @@ return not hasattr(flow_plan.context.get("pending_user"), "backend")""",
 if not flow_plan:
     return True
 return not (flow_plan.context.get("auth_method") == "auth_webauthn_pwl")""",
-            neg(cond("plan.auth_method", "eq", "auth_webauthn_pwl")),
+            None,
             [
                 Scenario("password", context={"auth_method": "password"}),
                 Scenario("passwordless", context={"auth_method": "auth_webauthn_pwl"}),
                 Scenario("not set"),
             ],
             [True, False, True],
-            missing_behavior=MissingBehavior.FALSE,
+            blueprint=(
+                "default/flow-default-authentication-flow.yaml",
+                "default-authentication-flow-authenticator-validate-stage",
+            ),
         )
 
     def test_default_source_if_sso(self):
         """blueprints/default/flow-default-source-{authentication,enrollment}.yaml"""
         self.assertParity(
             "return ak_is_sso_flow",
-            cond("plan.is_sso", "is_true"),
+            None,
             [
                 Scenario("sso", context={"is_sso": True}),
                 Scenario("not sso", context={"is_sso": False}),
                 Scenario("not set"),
             ],
             [True, False, False],
+            blueprint=(
+                "default/flow-default-source-authentication.yaml",
+                "default-source-authentication-if-sso",
+            ),
         )
 
     def test_default_source_enrollment_if_username(self):
         """blueprints/default/flow-default-source-enrollment.yaml"""
         self.assertParity(
             "return 'username' not in context.get('prompt_data', {})",
-            cond("prompt_data", "is_not_set", param="username"),
+            None,
             [
                 Scenario("no username", context={"prompt_data": {"email": "foo@bar.baz"}}),
                 Scenario("username", context={"prompt_data": {"username": "foo"}}),
             ],
             [True, False],
+            blueprint=(
+                "default/flow-default-source-enrollment.yaml",
+                "default-source-enrollment-if-username",
+            ),
         )
 
     def test_default_user_settings_authorization(self):
@@ -166,19 +226,6 @@ return not (flow_plan.context.get("auth_method") == "auth_webauthn_pwl")""",
             user.save()
 
         user = create_test_user()
-
-        def field(name: str) -> dict:
-            node = group(
-                "any",
-                cond(f"user.can_change_{name}", "is_true"),
-                cond(
-                    f"user.{name}",
-                    "eq",
-                    value=None,
-                ),
-            )
-            node["children"][1]["value"] = var("prompt_data", param=name, cast="string")
-            return node
 
         def prompt(target: User = user, **overrides):
             return {
@@ -191,6 +238,7 @@ return not (flow_plan.context.get("auth_method") == "auth_webauthn_pwl")""",
             }
 
         other = create_test_user()
+        no_email = create_test_user(email="")
 
         self.assertParity(
             """from authentik.core.models import (
@@ -222,12 +270,7 @@ if not request.user.group_attributes(request.http_request).get(
         return False
 
 return True""",
-            group(
-                "all",
-                field("email"),
-                field("name"),
-                field("username"),
-            ),
+            None,
             [
                 Scenario("unchanged", user=user, context=prompt()),
                 # Changing the name is allowed by default
@@ -240,43 +283,49 @@ return True""",
                     context=prompt(other, email="new@bar.baz"),
                     setup=allow_email_change,
                 ),
+                # Users without email address can change their name
+                Scenario(
+                    "no email",
+                    user=no_email,
+                    context=prompt(no_email, name="New Name"),
+                ),
             ],
-            [True, True, False, True],
-            # The expression shows a message per field, the conditional policy only has a
-            # single failure message
-            compare_messages=False,
-            failure_message="Not allowed to change this value.",
+            [True, True, False, True, True],
+            blueprint=(
+                "default/flow-default-user-settings-flow.yaml",
+                "default-user-settings-authorization",
+            ),
         )
 
     def test_login_2fa_not_app_password(self):
         """blueprints/example/flows-login-2fa.yaml"""
         self.assertParity(
             'return context.get("auth_method") != "app_password"',
-            neg(cond("plan.auth_method", "eq", "app_password")),
+            None,
             [
                 Scenario("app password", context={"auth_method": "app_password"}),
                 Scenario("password", context={"auth_method": "password"}),
                 Scenario("not set"),
             ],
             [False, True, True],
-            missing_behavior=MissingBehavior.FALSE,
+            blueprint=("example/flows-login-2fa.yaml", "test-not-app-password"),
         )
 
     def test_recovery_skip_if_restored(self):
         """blueprints/example/flows-recovery-email-*.yaml"""
         self.assertParity(
             "return bool(request.context.get('is_restored', True))",
-            group(
-                "any",
-                cond("plan.is_restored", "is_not_set"),
-                cond("plan.is_restored", "is_true"),
-            ),
+            None,
             [
                 Scenario("not set"),
                 Scenario("restored", context={"is_restored": "token"}),
                 Scenario("not restored", context={"is_restored": None}),
             ],
             [True, True, False],
+            blueprint=(
+                "example/flows-recovery-email-verification.yaml",
+                "default-recovery-skip-if-restored",
+            ),
         )
 
     def test_account_lockdown_admin(self):
@@ -286,21 +335,17 @@ return True""",
             """actor_uuid = str(getattr(request.http_request.user, "pk", ""))
 target_uuid = str(getattr(request.user, "pk", ""))
 return bool(target_uuid) and target_uuid != actor_uuid""",
-            group(
-                "all",
-                cond("user.id", "is_set"),
-                group(
-                    "any",
-                    cond("request.user", "is_not_set"),
-                    {**cond("user.id", "ne"), "value": var("request.user")},
-                ),
-            ),
+            None,
             [
                 Scenario("self service"),
                 Scenario("admin", http_user=admin),
                 Scenario("anonymous actor", http_user=AnonymousUser()),
             ],
             [False, True, True],
+            blueprint=(
+                "example/flow-default-account-lockdown.yaml",
+                "default-account-lockdown-admin-policy",
+            ),
         )
 
     def test_oobe_base_url_valid(self):
