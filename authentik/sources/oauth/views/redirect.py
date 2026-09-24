@@ -64,4 +64,5 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
             else:
                 params["scope"] += source.additional_scopes.split(" ")
         params.update(self._try_login_hint_extract())
+        params.update(source.source_type().get_forwarded_query_parameters(source, self.request))
         return client.get_redirect_url(params)
