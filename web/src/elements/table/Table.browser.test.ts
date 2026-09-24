@@ -45,6 +45,7 @@ const rows: Row[] = [
 function createTable(): InstrumentedTable {
     const table = document.createElement("ak-test-instrumented-table");
     table.items = rows;
+
     return table;
 }
 
@@ -93,7 +94,7 @@ describe("Table observation", () => {
         offscreenTable.scrollIntoView();
 
         await vi.waitFor(() =>
-            expect(offscreenTable.visible, "The remaining table still receives entries").toBe(true)
+            expect(offscreenTable.visible, "The remaining table still receives entries").toBe(true),
         );
 
         expect(offscreenTable.fetchCount, "The deferred fetch runs once visible").toBe(1);
