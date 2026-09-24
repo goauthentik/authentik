@@ -25,10 +25,6 @@ import {
  * @interface ConditionNotNode
  */
 export interface ConditionNotNode {
-    /**
-     * Message shown to the user when this node evaluates to false and causes the policy to fail.
-     */
-    message?: string | null;
     type: ConditionNotNodeTypeEnum;
     child: ConditionNode;
 }
@@ -54,12 +50,6 @@ export function ConditionNotNodeFromJSONTyped(
         return json;
     }
     return {
-        message:
-            json["message"] === undefined
-                ? undefined
-                : json["message"] === null
-                  ? null
-                  : json["message"],
         type: ConditionNotNodeTypeEnumFromJSON(json["type"]),
         child: ConditionNodeFromJSON(json["child"]),
     };
@@ -78,7 +68,6 @@ export function ConditionNotNodeToJSONTyped(
     }
 
     return {
-        message: value["message"],
         type: ConditionNotNodeTypeEnumToJSON(value["type"]),
         child: ConditionNodeToJSON(value["child"]),
     };

@@ -27,10 +27,6 @@ import { ConditionNodeFromJSON, ConditionNodeToJSON } from "./ConditionNode";
  * @interface ConditionGroupNode
  */
 export interface ConditionGroupNode {
-    /**
-     * Message shown to the user when this node evaluates to false and causes the policy to fail.
-     */
-    message?: string | null;
     type: ConditionGroupNodeTypeEnum;
     op: ConditionGroupOp;
     children: Array<ConditionNode>;
@@ -58,12 +54,6 @@ export function ConditionGroupNodeFromJSONTyped(
         return json;
     }
     return {
-        message:
-            json["message"] === undefined
-                ? undefined
-                : json["message"] === null
-                  ? null
-                  : json["message"],
         type: ConditionGroupNodeTypeEnumFromJSON(json["type"]),
         op: ConditionGroupOpFromJSON(json["op"]),
         children: (json["children"] as Array<any>).map(ConditionNodeFromJSON),
@@ -83,7 +73,6 @@ export function ConditionGroupNodeToJSONTyped(
     }
 
     return {
-        message: value["message"],
         type: ConditionGroupNodeTypeEnumToJSON(value["type"]),
         op: ConditionGroupOpToJSON(value["op"]),
         children: (value["children"] as Array<any>).map(ConditionNodeToJSON),

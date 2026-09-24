@@ -742,7 +742,6 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
                 })}`;
         }
 
-        const showMessage = child.message !== undefined && child.message !== null;
         const errors = this.nodeErrors(...(negated ? [child, inner] : [child]));
 
         return html`<div class="item ${errors.length ? "invalid" : ""}">
@@ -751,62 +750,17 @@ export class AkConditionBuilder extends AKControlElement<ConditionTree> {
                 class="pf-c-button pf-m-small ${negated ? "pf-m-danger" : "pf-m-tertiary"}"
                 title=${msg("Negate", { id: "policies.conditional.node.negate.tooltip" })}
                 @click=${() => {
-                    // The message describes the result the parent sees, so it moves to the
-                    // outermost node
-                    const { message } = child;
-                    child.message = undefined;
-
                     const replacement: ConditionNode = negated
                         ? inner
                         : { type: "not", child: inner };
 
-                    replacement.message = message;
                     parent.children[index] = replacement;
                     this.changed();
                 }}
             >
                 ${msg("NOT", { id: "policies.conditional.node.negate.label" })}
             </button>
-            <div class="content">
-                ${content} ${this.renderErrors(errors)}
-                ${
-                    showMessage
-                        ? html`<div class="row">
-                              <input
-                                  type="text"
-                                  class="pf-c-form-control grow"
-                                  .value=${child.message ?? ""}
-                                  placeholder=${msg("Message shown when this fails", {
-                                      id: "policies.conditional.node.message.placeholder",
-                                  })}
-                                  aria-label=${msg("Failure message", {
-                                      id: "policies.conditional.node.message.aria-label",
-                                  })}
-                                  @input=${(ev: InputEvent) => {
-                                      child.message = (ev.target as HTMLInputElement).value;
-                                      this.changed(child);
-                                  }}
-                              />
-                          </div>`
-                        : nothing
-                }
-            </div>
-            <button
-                type="button"
-                class="pf-c-button pf-m-plain ${showMessage ? "pf-m-active" : ""}"
-                title=${msg("Show a message when this fails", {
-                    id: "policies.conditional.node.message.tooltip",
-                })}
-                aria-label=${msg("Toggle failure message", {
-                    id: "policies.conditional.node.message.toggle.aria-label",
-                })}
-                @click=${() => {
-                    child.message = showMessage ? undefined : "";
-                    this.changed(child);
-                }}
-            >
-                <i class="fas fa-comment" aria-hidden="true"></i>
-            </button>
+            <div class="content">${content} ${this.renderErrors(errors)}</div>
             <button
                 type="button"
                 class="pf-c-button pf-m-plain"

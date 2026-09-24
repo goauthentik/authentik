@@ -74,6 +74,7 @@ class TestExpressionParity(TestCase):
         root: dict,
         scenarios: list[Scenario],
         expected: list[bool | None],
+        compare_messages: bool = True,
         **kwargs,
     ):
         expression_policy = ExpressionPolicy(name=generate_id(), expression=expression)
@@ -87,9 +88,10 @@ class TestExpressionParity(TestCase):
                 expression_result = expression_policy.passes(self.build_request(scenario))
                 self.assertEqual(expression_result.passing, passing, "expression")
                 self.assertEqual(conditional_result.passing, passing, "conditional")
-                self.assertEqual(
-                    list(expression_result.messages), list(conditional_result.messages)
-                )
+                if compare_messages:
+                    self.assertEqual(
+                        list(expression_result.messages), list(conditional_result.messages)
+                    )
 
     # Blueprints
 
@@ -165,7 +167,7 @@ return not (flow_plan.context.get("auth_method") == "auth_webauthn_pwl")""",
 
         user = create_test_user()
 
-        def field(name: str, message: str) -> dict:
+        def field(name: str) -> dict:
             node = group(
                 "any",
                 cond(f"user.can_change_{name}", "is_true"),
@@ -176,7 +178,6 @@ return not (flow_plan.context.get("auth_method") == "auth_webauthn_pwl")""",
                 ),
             )
             node["children"][1]["value"] = var("prompt_data", param=name, cast="string")
-            node["message"] = message
             return node
 
         def prompt(target: User = user, **overrides):
@@ -223,9 +224,9 @@ if not request.user.group_attributes(request.http_request).get(
 return True""",
             group(
                 "all",
-                field("email", "Not allowed to change email address."),
-                field("name", "Not allowed to change name."),
-                field("username", "Not allowed to change username."),
+                field("email"),
+                field("name"),
+                field("username"),
             ),
             [
                 Scenario("unchanged", user=user, context=prompt()),
@@ -241,6 +242,10 @@ return True""",
                 ),
             ],
             [True, True, False, True],
+            # The expression shows a message per field, the conditional policy only has a
+            # single failure message
+            compare_messages=False,
+            failure_message="Not allowed to change this value.",
         )
 
     def test_login_2fa_not_app_password(self):
@@ -314,20 +319,18 @@ except ValidationError as exc:
     ak_message(exc.messages[0])
     return False
 return True""",
-            {
-                **group(
-                    "any",
-                    cond("prompt_data", "is_not_set", param="base_url"),
-                    cond("prompt_data", "is_url", param="base_url", cast="string"),
-                ),
-                "message": "Enter a valid URL, for example https://authentik.company",
-            },
+            group(
+                "any",
+                cond("prompt_data", "is_not_set", param="base_url"),
+                cond("prompt_data", "is_url", param="base_url", cast="string"),
+            ),
             [
                 Scenario("not set", context={"prompt_data": {}}),
                 Scenario("valid", context={"prompt_data": {"base_url": "https://auth.local"}}),
                 Scenario("invalid", context={"prompt_data": {"base_url": "not a url"}}),
             ],
             [True, True, False],
+            failure_message="Enter a valid URL, for example https://authentik.company",
         )
 
     # Documentation
@@ -347,13 +350,13 @@ return False""",
                 r"^\s*\+\s*1\s*2\s*3\s*4",
                 param="phone",
                 cast="string",
-                message="Invalid phone number or missing region code",
             ),
             [
                 Scenario("valid", context={"prompt_data": {"phone": "+1 234 5678"}}),
                 Scenario("invalid", context={"prompt_data": {"phone": "+49 123 4567"}}),
             ],
             [True, False],
+            failure_message="Invalid phone number or missing region code",
         )
 
     def test_docs_authenticator_validate_two_types(self):
@@ -527,15 +530,13 @@ if query.exists():
     return False
 
 return True""",
-            {
-                **neg(cond("prompt_data.email_in_use", "is_true", param="email")),
-                "message": "Email address in use",
-            },
+            neg(cond("prompt_data.email_in_use", "is_true", param="email")),
             [
                 Scenario("taken", context={"prompt_data": {"email": "TAKEN@goauthentik.io"}}),
                 Scenario("free", context={"prompt_data": {"email": "free@goauthentik.io"}}),
             ],
             [False, True],
+            failure_message="Email address in use",
         )
 
     def test_docs_email_domain_allowlist(self):
@@ -556,7 +557,6 @@ else:
                     "user.email",
                     "matches",
                     r"@(example\.org|example\.net|example\.com)$",
-                    message="Authentication denied for this email domain",
                 ),
                 cond("plan.is_sso", "is_true"),
             ),
@@ -566,6 +566,9 @@ else:
                 Scenario("denied"),
             ],
             [True, False, False],
+            # The expression only shows a message when the domain is not allowed
+            compare_messages=False,
+            failure_message="Authentication denied for this email domain",
         )
 
     def test_docs_notification_unknown_device(self):
@@ -683,7 +686,6 @@ return not is_user_switch""",
             "eq",
             param="password",
             cast="string",
-            message="Passwords don't match.",
         )
         node["value"] = var("prompt_data", param="password_repeat", cast="string")
         self.assertParity(
@@ -702,6 +704,7 @@ return False""",  # noqa: E501
                 ),
             ],
             [True, False],
+            failure_message="Passwords don't match.",
         )
 
     def test_docs_group_membership_and_authenticator(self):

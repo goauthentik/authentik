@@ -85,7 +85,6 @@ class CompiledCondition:
     operator: Operator
     operand: Literal | CompiledVariable | None
     case_sensitive: bool
-    message: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -93,21 +92,18 @@ class CompiledGroup:
     path: str
     op: str
     children: tuple[CompiledNode, ...]
-    message: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
 class CompiledNot:
     path: str
     child: CompiledNode
-    message: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
 class CompiledPolicyRef:
     path: str
     policy: str
-    message: str | None = None
 
 
 type CompiledNode = CompiledCondition | CompiledGroup | CompiledNot | CompiledPolicyRef
@@ -161,7 +157,6 @@ class ConditionCompiler:
                     self.errors.append((path, "Group must contain at least one item"))
                 return CompiledGroup(
                     path=path,
-                    message=node.message,
                     op=node.op,
                     children=tuple(
                         self._node(child, f"{path}.children.{idx}", depth + 1)
@@ -171,11 +166,10 @@ class ConditionCompiler:
             case ConditionNotNode():
                 return CompiledNot(
                     path=path,
-                    message=node.message,
                     child=self._node(node.child, f"{path}.child", depth + 1),
                 )
             case ConditionPolicyNode():
-                return CompiledPolicyRef(path=path, message=node.message, policy=str(node.policy))
+                return CompiledPolicyRef(path=path, policy=str(node.policy))
             case ConditionComparisonNode():
                 return self._condition(node, path)
 
@@ -264,7 +258,6 @@ class ConditionCompiler:
                 operand = Literal(value)
         return CompiledCondition(
             path=path,
-            message=node.message,
             variable=variable,
             operator=operator,
             operand=operand,
@@ -345,14 +338,12 @@ class ConditionEvaluator:
         self._logger.info("Conditional policy node evaluated", node=path, **kwargs)
 
     def _evaluate(self, node: CompiledNode) -> bool:
-        """Evaluate a node, and keep track of messages explaining why nodes failed. Messages
-        of nodes within a node that passed are discarded, as they didn't cause a failure."""
+        """Evaluate a node, and keep track of messages of referenced policies which failed.
+        Messages from within a node that passed are discarded, as they didn't cause a failure."""
         mark = len(self._messages)
         result = self._evaluate_node(node)
         if result:
             del self._messages[mark:]
-        elif node.message:
-            self._messages.append(node.message)
         return result
 
     def _evaluate_node(self, node: CompiledNode) -> bool:

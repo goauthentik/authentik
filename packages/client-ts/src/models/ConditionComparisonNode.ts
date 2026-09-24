@@ -34,10 +34,6 @@ import { ConditionVariableRefFromJSON, ConditionVariableRefToJSON } from "./Cond
  * @interface ConditionComparisonNode
  */
 export interface ConditionComparisonNode {
-    /**
-     * Message shown to the user when this node evaluates to false and causes the policy to fail.
-     */
-    message?: string | null;
     type: ConditionComparisonNodeTypeEnum;
     variable: ConditionVariableRef;
     operator: ConditionOperatorName;
@@ -67,12 +63,6 @@ export function ConditionComparisonNodeFromJSONTyped(
         return json;
     }
     return {
-        message:
-            json["message"] === undefined
-                ? undefined
-                : json["message"] === null
-                  ? null
-                  : json["message"],
         type: ConditionComparisonNodeTypeEnumFromJSON(json["type"]),
         variable: ConditionVariableRefFromJSON(json["variable"]),
         operator: ConditionOperatorNameFromJSON(json["operator"]),
@@ -99,7 +89,6 @@ export function ConditionComparisonNodeToJSONTyped(
     }
 
     return {
-        message: value["message"],
         type: ConditionComparisonNodeTypeEnumToJSON(value["type"]),
         variable: ConditionVariableRefToJSON(value["variable"]),
         operator: ConditionOperatorNameToJSON(value["operator"]),

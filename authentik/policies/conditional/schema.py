@@ -63,17 +63,7 @@ class ConditionOptions(_Model):
     case_sensitive: bool = True
 
 
-class _Node(_Model):
-    message: str | None = Field(
-        default=None,
-        description=(
-            "Message shown to the user when this node evaluates to false and causes the "
-            "policy to fail."
-        ),
-    )
-
-
-class ConditionComparisonNode(_Node):
+class ConditionComparisonNode(_Model):
     """Compare a variable against a value"""
 
     type: Literal["condition"]
@@ -83,7 +73,7 @@ class ConditionComparisonNode(_Node):
     options: ConditionOptions = Field(default_factory=ConditionOptions)
 
 
-class ConditionGroupNode(_Node):
+class ConditionGroupNode(_Model):
     """Combine the results of multiple nodes"""
 
     type: Literal["group"]
@@ -91,14 +81,14 @@ class ConditionGroupNode(_Node):
     children: list[ConditionNode]
 
 
-class ConditionNotNode(_Node):
+class ConditionNotNode(_Model):
     """Negate the result of a node"""
 
     type: Literal["not"]
     child: ConditionNode
 
 
-class ConditionPolicyNode(_Node):
+class ConditionPolicyNode(_Model):
     """Evaluate another policy"""
 
     type: Literal["policy"]
