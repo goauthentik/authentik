@@ -53,7 +53,6 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.outposts.docker_tls import DockerInlineTLS
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
-from authentik.stages.email.models import EmailTemplates
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tasks.models import TasksModel
 
@@ -368,7 +367,13 @@ class NotificationTransport(TasksModel, SerializerModel):
     )
 
     email_subject_prefix = models.TextField(default="authentik Notification: ", blank=True)
-    email_template = models.TextField(default=EmailTemplates.EVENT_NOTIFICATION)
+    email_template = models.ForeignKey(
+        "authentik_stages_email.EmailTemplate",
+        null=True,
+        blank=True,
+        default=None,
+        on_delete=models.PROTECT,
+    )
 
     webhook_url = models.TextField(blank=True, validators=[DomainlessURLValidator()])
     webhook_ca = models.ForeignKey(

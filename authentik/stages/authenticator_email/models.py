@@ -15,7 +15,6 @@ from authentik.lib.config import CONFIG
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.stages.authenticator.models import SideChannelDevice, ThrottlingMixin
-from authentik.stages.email.models import EmailTemplates
 from authentik.stages.email.utils import TemplateEmailMessage
 
 
@@ -45,7 +44,13 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
         help_text=_("Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."),
     )
     subject = models.TextField(default="authentik Sign-in code")
-    template = models.TextField(default=EmailTemplates.EMAIL_OTP)
+    template = models.ForeignKey(
+        "authentik_stages_email.EmailTemplate",
+        null=True,
+        blank=True,
+        default=None,
+        on_delete=models.PROTECT,
+    )
 
     @property
     def serializer(self) -> type[BaseSerializer]:
