@@ -2,6 +2,7 @@
     "extends": "@goauthentik/tsconfig",
     "compilerOptions": {
         "lib": ["ESNext"],
+        "types": ["node"],
         "composite": false,
         "incremental": false,
         "resolveJsonModule": true,
