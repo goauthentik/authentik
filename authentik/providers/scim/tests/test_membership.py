@@ -7,6 +7,7 @@ from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
 from authentik.providers.scim.models import (
@@ -39,7 +40,7 @@ class SCIMMembershipTests(TestCase):
         self.provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),
             url="https://localhost",
-            token=generate_id(),
+            token_ref=create_test_secret(generate_id()),
             **kwargs,
         )
         self.app: Application = Application.objects.create(

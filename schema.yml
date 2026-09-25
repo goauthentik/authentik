@@ -53587,9 +53587,11 @@ components:
           description: List of CIDRs (comma-separated) that clients can connect from.
             A more specific CIDR will match before a looser one. Clients connecting
             from a non-specified CIDR will be dropped.
-        shared_secret:
+        shared_secret_ref:
           type: string
-          minLength: 1
+          format: uuid
+          nullable: true
+          title: Shared Secret
           description: Shared secret between clients and server to hash packets.
         mfa_support:
           type: boolean
@@ -54058,18 +54060,22 @@ components:
           description: Base URL to SCIM requests, usually ends in /v2
         verify_certificates:
           type: boolean
-        token:
+        token_ref:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: Token
           description: Authentication token
         auth_mode:
           $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
         auth_basic_user:
           type: string
           description: Username used for Basic authentication
-        auth_basic_password:
+        auth_basic_password_ref:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: Password
           description: Password used for Basic authentication
         auth_oauth:
           type: string
@@ -56473,7 +56479,7 @@ components:
             from a non-specified CIDR will be dropped.
         shared_secret:
           type: string
-          description: Shared secret between clients and server to hash packets.
+          readOnly: true
         mfa_support:
           type: boolean
           description: When enabled, code-based multi-factor authentication can be
@@ -56490,6 +56496,7 @@ components:
       - auth_flow_slug
       - name
       - pk
+      - shared_secret
     RadiusProvider:
       type: object
       description: RadiusProvider Serializer
@@ -56560,8 +56567,11 @@ components:
           description: List of CIDRs (comma-separated) that clients can connect from.
             A more specific CIDR will match before a looser one. Clients connecting
             from a non-specified CIDR will be dropped.
-        shared_secret:
+        shared_secret_ref:
           type: string
+          format: uuid
+          nullable: true
+          title: Shared Secret
           description: Shared secret between clients and server to hash packets.
         outpost_set:
           type: array
@@ -56692,9 +56702,11 @@ components:
           description: List of CIDRs (comma-separated) that clients can connect from.
             A more specific CIDR will match before a looser one. Clients connecting
             from a non-specified CIDR will be dropped.
-        shared_secret:
+        shared_secret_ref:
           type: string
-          minLength: 1
+          format: uuid
+          nullable: true
+          title: Shared Secret
           description: Shared secret between clients and server to hash packets.
         mfa_support:
           type: boolean
@@ -58444,11 +58456,23 @@ components:
           description: Base URL to SCIM requests, usually ends in /v2
         verify_certificates:
           type: boolean
+        token_ref:
+          type: string
+          format: uuid
+          nullable: true
+          title: Token
+          description: Authentication token
         auth_mode:
           $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
         auth_basic_user:
           type: string
           description: Username used for Basic authentication
+        auth_basic_password_ref:
+          type: string
+          format: uuid
+          nullable: true
+          title: Password
+          description: Password used for Basic authentication
         auth_oauth:
           type: string
           format: uuid
@@ -58593,18 +58617,22 @@ components:
           description: Base URL to SCIM requests, usually ends in /v2
         verify_certificates:
           type: boolean
-        token:
+        token_ref:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: Token
           description: Authentication token
         auth_mode:
           $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
         auth_basic_user:
           type: string
           description: Username used for Basic authentication
-        auth_basic_password:
+        auth_basic_password_ref:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: Password
           description: Password used for Basic authentication
         auth_oauth:
           type: string

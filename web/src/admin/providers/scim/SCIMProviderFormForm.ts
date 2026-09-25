@@ -1,5 +1,5 @@
-import "#components/ak-secret-text-input";
 import "#components/ak-radio-input";
+import "#components/ak-secret-search-input";
 import "#components/ak-switch-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
@@ -20,6 +20,8 @@ import {
 
 import { aki } from "#common/api/client";
 
+import { ifPresent } from "#elements/utils/attributes";
+
 import {
     CompatibilityModeEnum,
     OAuthSource,
@@ -36,16 +38,16 @@ import { msg } from "@lit/localize";
 import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-export function renderAuthToken(provider?: Partial<SCIMProvider>, errors: ValidationError = {}) {
-    return html`<ak-secret-text-input
-        name="token"
+export function renderAuthToken(provider?: Partial<SCIMProvider>) {
+    return html`<ak-secret-search-input
+        name="tokenRef"
         label=${msg("Token")}
-        .errorMessages=${errors?.token}
-        ?required=${!provider}
-        ?revealed=${!provider}
-        help=${msg("Token to authenticate with.")}
-        input-hint="code"
-    ></ak-secret-text-input>`;
+        value=${ifPresent(provider?.tokenRef ?? undefined)}
+        blankable
+        help=${msg("Token to authenticate with.", {
+            id: "provider.scim.form.secret.description",
+        })}
+    ></ak-secret-search-input>`;
 }
 
 export function renderAuthBasic(provider?: Partial<SCIMProvider>, errors: ValidationError = {}) {
@@ -59,15 +61,15 @@ export function renderAuthBasic(provider?: Partial<SCIMProvider>, errors: Valida
             help=${msg("Username to authenticate with.")}
             input-hint="code"
         ></ak-text-input>
-        <ak-secret-text-input
-            name="authBasicPassword"
+        <ak-secret-search-input
+            name="authBasicPasswordRef"
             label=${msg("Password")}
-            .errorMessages=${errors?.authBasicPassword}
-            ?required=${!provider}
-            ?revealed=${!provider}
-            help=${msg("Password to authenticate with.")}
-            input-hint="code"
-        ></ak-secret-text-input>`;
+            value=${ifPresent(provider?.authBasicPasswordRef ?? undefined)}
+            blankable
+            help=${msg("Password to authenticate with.", {
+                id: "provider.scim.form.basic-password.description",
+            })}
+        ></ak-secret-search-input>`;
 }
 
 export function renderAuthOAuth(provider?: Partial<SCIMProvider>, _errors: ValidationError = {}) {
@@ -115,7 +117,7 @@ export function renderAuth(provider?: Partial<SCIMProvider>, errors: ValidationE
     switch (provider?.authMode) {
         default:
         case SCIMAuthenticationModeEnum.Token:
-            return renderAuthToken(provider, errors);
+            return renderAuthToken(provider);
         case SCIMAuthenticationModeEnum.Basic:
             return renderAuthBasic(provider, errors);
         case SCIMAuthenticationModeEnum.Oauth:

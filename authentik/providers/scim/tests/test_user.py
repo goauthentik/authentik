@@ -9,6 +9,7 @@ from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User, UserTypes
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.base import SAFE_METHODS
 from authentik.lib.sync.outgoing.exceptions import TransientSyncException
@@ -33,7 +34,7 @@ class SCIMUserTests(TestCase):
         self.provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),
             url="https://localhost",
-            token=generate_id(),
+            token_ref=create_test_secret(generate_id()),
             exclude_users_service_account=True,
         )
         self.app: Application = Application.objects.create(
@@ -206,7 +207,7 @@ class SCIMUserTests(TestCase):
         provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),
             url="https://localhost",
-            token=generate_id(),
+            token_ref=create_test_secret(generate_id()),
             exclude_users_service_account=True,
         )
         app: Application = Application.objects.create(
