@@ -48,6 +48,7 @@
         "build-locales": "node scripts/build-locales.ts",
         "build-proxy": "wireit",
         "build:sfe": "pnpm --filter @goauthentik/web-sfe run build",
+        "build:theme": "node scripts/build-theme.ts",
         "build:types": "wireit",
         "bundler:watch": "node scripts/build-web.ts --watch",
         "check": "run-s lint:check format:check",
@@ -58,6 +59,7 @@
         "lint": "oxlint --fix",
         "lint:check": "oxlint --max-warnings=0",
         "lint:imports": "knip --config scripts/knip.config.ts",
+        "lint:theme": "node scripts/build-theme.ts --check",
         "lit-analyse": "wireit",
         "precommit": "wireit",
         "pseudolocalize": "node ./scripts/pseudolocalize.ts",
@@ -66,6 +68,7 @@
         "test": "vitest",
         "test:e2e": "playwright test",
         "test:unit": "vitest run",
+        "test:visual": "node scripts/visual.ts",
         "tsc": "wireit",
         "watch": "run-s build-locales bundler:watch"
     },
@@ -141,7 +144,10 @@
             "command": "storybook build",
             "env": {
                 "NODE_OPTIONS": "--max_old_space_size=8192"
-            }
+            },
+            "dependencies": [
+                "build-locales"
+            ]
         },
         "tsc": {
             "command": "tsgo -p .",
