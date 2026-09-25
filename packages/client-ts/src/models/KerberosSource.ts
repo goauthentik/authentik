@@ -121,6 +121,12 @@ export interface KerberosSource {
      */
     syncPrincipal?: string;
     /**
+     * Password to authenticate to kadmin for sync
+     */
+    syncPasswordRef?: string | null;
+    syncKeytabRef?: string | null;
+    syncCcacheRef?: string | null;
+    /**
      * Get cached source connectivity
      */
     readonly connectivity: { [key: string]: string } | null;
@@ -128,6 +134,8 @@ export interface KerberosSource {
      * Force the use of a specific server name for SPNEGO. Must be in the form HTTP@hostname
      */
     spnegoServerName?: string;
+    spnegoKeytabRef?: string | null;
+    spnegoCcacheRef?: string | null;
     /**
      * If enabled, the authentik-stored password will be updated upon login with the Kerberos
      * password backend
@@ -251,9 +259,39 @@ export function KerberosSourceFromJSONTyped(
         syncUsersPassword:
             json["sync_users_password"] == null ? undefined : json["sync_users_password"],
         syncPrincipal: json["sync_principal"] == null ? undefined : json["sync_principal"],
+        syncPasswordRef:
+            json["sync_password_ref"] === undefined
+                ? undefined
+                : json["sync_password_ref"] === null
+                  ? null
+                  : json["sync_password_ref"],
+        syncKeytabRef:
+            json["sync_keytab_ref"] === undefined
+                ? undefined
+                : json["sync_keytab_ref"] === null
+                  ? null
+                  : json["sync_keytab_ref"],
+        syncCcacheRef:
+            json["sync_ccache_ref"] === undefined
+                ? undefined
+                : json["sync_ccache_ref"] === null
+                  ? null
+                  : json["sync_ccache_ref"],
         connectivity: json["connectivity"],
         spnegoServerName:
             json["spnego_server_name"] == null ? undefined : json["spnego_server_name"],
+        spnegoKeytabRef:
+            json["spnego_keytab_ref"] === undefined
+                ? undefined
+                : json["spnego_keytab_ref"] === null
+                  ? null
+                  : json["spnego_keytab_ref"],
+        spnegoCcacheRef:
+            json["spnego_ccache_ref"] === undefined
+                ? undefined
+                : json["spnego_ccache_ref"] === null
+                  ? null
+                  : json["spnego_ccache_ref"],
         passwordLoginUpdateInternalPassword:
             json["password_login_update_internal_password"] == null
                 ? undefined
@@ -308,7 +346,12 @@ export function KerberosSourceToJSONTyped(
         sync_users: value["syncUsers"],
         sync_users_password: value["syncUsersPassword"],
         sync_principal: value["syncPrincipal"],
+        sync_password_ref: value["syncPasswordRef"],
+        sync_keytab_ref: value["syncKeytabRef"],
+        sync_ccache_ref: value["syncCcacheRef"],
         spnego_server_name: value["spnegoServerName"],
+        spnego_keytab_ref: value["spnegoKeytabRef"],
+        spnego_ccache_ref: value["spnegoCcacheRef"],
         password_login_update_internal_password: value["passwordLoginUpdateInternalPassword"],
         sync_outgoing_trigger_mode: SyncOutgoingTriggerModeEnumToJSON(
             value["syncOutgoingTriggerMode"],

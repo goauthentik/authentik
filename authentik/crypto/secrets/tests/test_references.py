@@ -3,11 +3,11 @@
 from django.apps import apps
 from django.test import TestCase
 from django.urls import reverse
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.test import APIRequestFactory, APITestCase
 
 from authentik.core.tests.utils import create_test_user
-from authentik.crypto.secrets.models import Secret
+from authentik.crypto.secrets.models import Secret, SecretType
 from authentik.providers.oauth2.models import OAuth2Provider
 
 
@@ -16,22 +16,35 @@ class TestSecretReferenceFields(TestCase):
 
     def test_consumer_fields(self):
         user = create_test_user()
-        secret = Secret.objects.create(name="restricted", value="{}")
-        other = Secret.objects.create(name="other", value="{}")
+        secrets = {
+            secret_type: [
+                Secret.objects.create(
+                    name=f"{name}-{secret_type}",
+                    type=secret_type,
+                    value="e30=" if secret_type == SecretType.FILE else "{}",
+                )
+                for name in ("restricted", "other")
+            ]
+            for secret_type in SecretType
+        }
         request = APIRequestFactory().patch("/")
         request.user = user
-        user.assign_perms_to_managed_role("authentik_crypto_secrets.view_secret", secret)
         for model in apps.get_models():
             for relation in model._meta.fields:
                 if relation.related_model is not Secret:
                     continue
                 self.assertTrue(relation.name.endswith("_ref"), f"{model.__name__}.{relation.name}")
-                instance = model(**{relation.name: secret})
+                instance = model()
                 serializer = instance.serializer(context={"request": request})
                 if relation.name not in serializer.fields:
                     continue
                 with self.subTest(model=model._meta.label, field=relation.name):
                     field = serializer.fields[relation.name]
+                    secret, other = secrets[field.allowed_types[0]]
+                    setattr(instance, relation.name, secret)
+                    user.assign_perms_to_managed_role(
+                        "authentik_crypto_secrets.view_secret", secret
+                    )
                     with self.assertRaises(PermissionDenied):
                         field.run_validation(str(secret.pk))
                     serializer.instance = instance
@@ -45,6 +58,16 @@ class TestSecretReferenceFields(TestCase):
                     user.remove_perms_from_managed_role(
                         "authentik_crypto_secrets.view_secret_value", other
                     )
+                    for secret_type in set(SecretType) - set(field.allowed_types):
+                        wrong_type = secrets[secret_type][1]
+                        user.assign_perms_to_managed_role(
+                            "authentik_crypto_secrets.view_secret_value", wrong_type
+                        )
+                        with self.assertRaises(ValidationError):
+                            field.run_validation(str(wrong_type.pk))
+                        user.remove_perms_from_managed_role(
+                            "authentik_crypto_secrets.view_secret_value", wrong_type
+                        )
 
 
 class TestSecretReferenceAPI(APITestCase):
