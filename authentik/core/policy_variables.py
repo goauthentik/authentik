@@ -1,7 +1,10 @@
 """Policy variables provided by core"""
 
 from collections.abc import Iterator
+from time import monotonic
 
+from django.db.models.signals import post_delete, post_save
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from guardian.conf import settings as guardian_settings
 
@@ -142,9 +145,30 @@ def user_groups(request: PolicyRequest):
     return list(user.all_groups().values_list("pk", flat=True))
 
 
-def object_attribute_params(model: str) -> Iterator[KnownParam]:
+# Object attributes rarely change, but are needed when compiling policies which use them.
+# Keep them in memory for a short time, and clear them when they're changed in this process.
+OBJECT_ATTRIBUTE_PARAMS_TIMEOUT = 60
+_object_attribute_params: dict[str, tuple[float, tuple[KnownParam, ...]]] = {}
+
+
+@receiver(post_save, sender=ObjectAttribute)
+@receiver(post_delete, sender=ObjectAttribute)
+def clear_object_attribute_params(**_):
+    _object_attribute_params.clear()
+
+
+def object_attribute_params(model: str) -> tuple[KnownParam, ...]:
     """Well-defined parameters for the `attributes` of `model` (`app_label.model_name`), from
     the enabled object attributes defined for it"""
+    cached = _object_attribute_params.get(model)
+    if cached and cached[0] > monotonic():
+        return cached[1]
+    params = tuple(_load_object_attribute_params(model))
+    _object_attribute_params[model] = (monotonic() + OBJECT_ATTRIBUTE_PARAMS_TIMEOUT, params)
+    return params
+
+
+def _load_object_attribute_params(model: str) -> Iterator[KnownParam]:
     app_label, model_name = model.split(".")
     types = {
         ObjectAttribute.AttributeType.TEXT: T.STRING,

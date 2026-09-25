@@ -19,6 +19,7 @@ from authentik.policies.conditional.operators import (
 )
 from authentik.policies.conditional.registry import (
     ConditionalPolicyRegistry,
+    KnownParam,
     ParamKind,
     Setter,
     Variable,
@@ -188,6 +189,15 @@ class ConditionCompiler:
         self.registry = reg or registry
         self.errors: list[tuple[str, str]] = []
         self.node_count = 0
+        self._params: dict[str, dict[str, KnownParam]] = {}
+
+    def _known_param(self, variable: Variable, param: str | None) -> KnownParam | None:
+        """Look up a well-defined parameter, loading the parameters of each variable once"""
+        if not param or not (variable.static_params or variable.dynamic_params):
+            return None
+        if variable.key not in self._params:
+            self._params[variable.key] = {known.key: known for known in variable.params}
+        return self._params[variable.key].get(param)
 
     def compile(self, actions: PolicyActions) -> tuple[CompiledAction, ...]:
         if not actions.actions:
@@ -314,8 +324,10 @@ class ConditionCompiler:
         if variable.param == ParamKind.NONE and param:
             self.errors.append((path, f"Variable '{ref.key}' does not take a parameter"))
         vtype = variable.type
-        known = variable.known_param(param)
-        if known and not ref.cast:
+        # Well-defined parameters may be loaded from the database, only look them up when
+        # the type isn't given by a cast
+        known = self._known_param(variable, param) if not ref.cast else None
+        if known:
             vtype = known.type
         elif vtype.kind == TypeKind.ANY and ref.cast:
             vtype = ValueType(TypeKind(ref.cast))
