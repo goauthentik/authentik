@@ -45,7 +45,9 @@ class TestTokenPKCE(OAuthTestCase):
         user = create_test_admin_user()
         self.client.force_login(user)
         challenge = generate_id()
-        header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
+        header = b64encode(
+            f"{provider.client_id}:{provider.client_secret_ref.value}".encode()
+        ).decode()
         # Step 1, initiate params and get redirect to flow
         response = self.client.get(
             reverse("authentik_providers_oauth2:authorize"),
@@ -103,7 +105,9 @@ class TestTokenPKCE(OAuthTestCase):
         state = generate_id()
         user = create_test_admin_user()
         self.client.force_login(user)
-        header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
+        header = b64encode(
+            f"{provider.client_id}:{provider.client_secret_ref.value}".encode()
+        ).decode()
         # Step 1, initiate params and get redirect to flow
         response = self.client.get(
             reverse("authentik_providers_oauth2:authorize"),
@@ -161,7 +165,9 @@ class TestTokenPKCE(OAuthTestCase):
         user = create_test_admin_user()
         self.client.force_login(user)
         verifier = generate_id()
-        header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
+        header = b64encode(
+            f"{provider.client_id}:{provider.client_secret_ref.value}".encode()
+        ).decode()
         # Step 1, initiate params and get redirect to flow
         response = self.client.get(
             reverse("authentik_providers_oauth2:authorize"),
@@ -207,7 +213,9 @@ class TestTokenPKCE(OAuthTestCase):
         user = create_test_admin_user()
         self.client.force_login(user)
         verifier = generate_id()
-        header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
+        header = b64encode(
+            f"{provider.client_id}:{provider.client_secret_ref.value}".encode()
+        ).decode()
         # Step 1, initiate params and get redirect to flow
         response = self.client.get(
             reverse("authentik_providers_oauth2:authorize"),

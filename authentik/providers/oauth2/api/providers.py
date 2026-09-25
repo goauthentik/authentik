@@ -22,6 +22,7 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
+from authentik.crypto.secrets.models import Secret
 from authentik.crypto.validators import (
     JWE_ENCRYPTION_KEY_TYPES,
     JWT_SIGNING_KEY_TYPES,
@@ -35,7 +36,7 @@ from authentik.providers.oauth2.models import (
     RedirectURIType,
     ScopeMapping,
 )
-from authentik.providers.oauth2.utils import is_all_vschar
+from authentik.providers.oauth2.utils import is_all_vschar, validate_client_secret
 from authentik.rbac.decorators import permission_required
 
 
@@ -59,9 +60,9 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             raise ValidationError("Client ID must consist of only ASCII characters.")
         return secret
 
-    def validate_client_secret(self, secret: str) -> str:
-        if not is_all_vschar(secret):
-            raise ValidationError("Client secret must consist of only ASCII characters.")
+    def validate_client_secret_ref(self, secret: Secret | None) -> Secret | None:
+        if secret:
+            validate_client_secret(secret.value)
         return secret
 
     def validate_redirect_uris(self, data: list) -> list:
@@ -83,7 +84,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "client_type",
             "grant_types",
             "client_id",
-            "client_secret",
+            "client_secret_ref",
             "access_code_validity",
             "access_token_validity",
             "refresh_token_validity",
@@ -100,7 +101,6 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "jwt_federation_sources",
             "jwt_federation_providers",
         ]
-        secret_fields = ["client_secret"]
         extra_kwargs = {
             **ProviderSerializer.Meta.extra_write_kwargs,
             "signing_key": {"validators": [KeyTypeValidator(*JWT_SIGNING_KEY_TYPES)]},

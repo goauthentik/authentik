@@ -12418,9 +12418,9 @@
                     "minLength": 1,
                     "title": "Client ID"
                 },
-                "client_secret": {
+                "client_secret_ref": {
                     "type": "string",
-                    "maxLength": 255,
+                    "format": "uuid",
                     "title": "Client Secret"
                 },
                 "access_code_validity": {

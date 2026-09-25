@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from yaml import YAMLError, safe_load
 
 from authentik.blueprints.models import ManagedModel
-from authentik.crypto.secrets.signals import secret_value_changed
+from authentik.crypto.secrets.signals import secret_value_changed, secret_value_validating
 from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
@@ -80,6 +80,9 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
                 b64decode(value, validate=True)
             except (BinasciiError, ValueError) as exc:
                 raise ValidationError(_("Value must be base64-encoded.")) from exc
+        if self._state.adding:
+            return
+        secret_value_validating.send(sender=Secret, secret=self, value=value)
 
     def replace_value(self, value: str, request: Request | None = None) -> None:
         """Replace and audit the value, then signal consumers."""

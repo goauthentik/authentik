@@ -6,6 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
+        ("authentik_providers_ldap", "0004_alter_ldapprovider_options_and_more"),
         ("guardian", "0004_role_permissions"),
     ]
 
