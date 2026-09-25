@@ -124,7 +124,7 @@ export class CaptchaFixture extends PageFixture {
             .or(page.getByRole("link", { name: "Stage Bindings" }))
             .click();
 
-        await pointer.click("Create or bind...");
+        await pointer.click("Create or bind...", "button", page.getByRole("toolbar"));
         await expect(wizard, "Bind wizard opens").toBeVisible({ timeout: 10_000 });
 
         await wizard.getByRole("radio", { name: "Captcha Stage" }).check();
@@ -146,25 +146,11 @@ export class CaptchaFixture extends PageFixture {
 
         await page.getByTestId("wizard-navigation-next").click();
 
-        // The wizard tries to back-fill the stage it just created, but the picker only holds
-        // the first page of stages — in an environment where test stages have accumulated, a
-        // brand-new stage falls outside it and the binding would save with a null stage.
-        // Searching for it by name is both reliable and the path a user takes.
         const stageInput = wizard.getByRole("textbox", { name: "Stage" });
 
-        await stageInput.click();
-        await stageInput.fill(name);
-
-        // The picker renders its options in a portal outside the wizard, so this is scoped to
-        // the page. `.first()` because each option is a button with `role="option"` inside a
-        // list item that carries the same role.
-        const stageOption = page.getByRole("option", { name }).first();
-
-        await expect(stageOption, "Created stage is offered by the picker").toBeVisible({
+        await expect(stageInput, "Wizard back-fills the created stage").toHaveValue(name, {
             timeout: 20_000,
         });
-
-        await stageOption.click();
 
         // Filled after the stage, because adopting the stage re-renders this step and would
         // discard an order typed beforehand.
