@@ -7,6 +7,22 @@ import (
 	api "goauthentik.io/packages/client-go"
 )
 
+func getAttributeString(attributes map[string]any, key string) (string, bool) {
+	val, ok := attributes[key]
+	if !ok || val == nil {
+		return "", false
+	}
+
+	switch v := val.(type) {
+	case string:
+		return v, true
+	case float64:
+		return strconv.FormatFloat(v, 'f', -1, 64), true
+	default:
+		return "", false
+	}
+}
+
 func (pi *ProviderInstance) GroupsForUser(user api.User) []string {
 	groups := make([]string, len(user.Groups))
 	for i, group := range user.GroupsObj {
@@ -48,7 +64,7 @@ func (pi *ProviderInstance) GetVirtualGroupDN(group string) string {
 }
 
 func (pi *ProviderInstance) GetUserUidNumber(user api.User) string {
-	uidNumber, ok := user.GetAttributes()["uidNumber"].(string)
+	uidNumber, ok := getAttributeString(user.GetAttributes(), "uidNumber")
 
 	if ok {
 		return uidNumber
@@ -58,7 +74,7 @@ func (pi *ProviderInstance) GetUserUidNumber(user api.User) string {
 }
 
 func (pi *ProviderInstance) GetUserGidNumber(user api.User) string {
-	gidNumber, ok := user.GetAttributes()["gidNumber"].(string)
+	gidNumber, ok := getAttributeString(user.GetAttributes(), "gidNumber")
 
 	if ok {
 		return gidNumber
@@ -68,7 +84,7 @@ func (pi *ProviderInstance) GetUserGidNumber(user api.User) string {
 }
 
 func (pi *ProviderInstance) GetGroupGidNumber(group api.Group) string {
-	gidNumber, ok := group.GetAttributes()["gidNumber"].(string)
+	gidNumber, ok := getAttributeString(group.GetAttributes(), "gidNumber")
 
 	if ok {
 		return gidNumber
