@@ -19,9 +19,10 @@ RUN --mount=type=bind,target=/work/package.json,src=./package.json \
     node ./scripts/node/lint-runtime.ts ./website
 
 # Hoisted root install so `@goauthentik/docusaurus-config` resolves its own deps
-# (e.g. `deepmerge-ts`) during the docs build. Its source and `@goauthentik/fonts`
-# are copied rather than bind-mounted, so pnpm can write the per-package
-# node_modules it places workspace links in.
+# (e.g. `deepmerge-ts`) during the docs build. Its source, `@goauthentik/fonts`
+# and `@goauthentik/tsconfig` are copied rather than bind-mounted, so pnpm can
+# write the per-package node_modules it places workspace links in.
+COPY ./packages/tsconfig /work/packages/tsconfig/
 COPY ./packages/docusaurus-config /work/packages/docusaurus-config/
 COPY ./packages/fonts /work/packages/fonts/
 
