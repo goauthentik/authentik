@@ -24,7 +24,7 @@
 @font-face {
     font-family: "RedHatText";
     src: url("./RedHatTextVF.woff2") format("woff2-variations");
-    font-weight: 400 500;
+    font-weight: 300 700;
     font-style: normal;
     font-display: fallback;
 }
@@ -32,7 +32,7 @@
 @font-face {
     font-family: "RedHatText";
     src: url("./RedHatTextVF-Italic.woff2") format("woff2-variations");
-    font-weight: 400 500;
+    font-weight: 300 700;
     font-style: italic;
     font-display: fallback;
 }

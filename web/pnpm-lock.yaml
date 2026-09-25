@@ -256,8 +256,8 @@ importers:
         specifier: link:../packages/theme
         version: link:../packages/theme
       '@goauthentik/tsconfig':
-        specifier: ^1.0.9
-        version: 1.0.9
+        specifier: link:../packages/tsconfig
+        version: link:../packages/tsconfig
       '@hcaptcha/types':
         specifier: ^1.2.0
         version: 1.2.0
@@ -554,8 +554,8 @@ importers:
   packages/core:
     dependencies:
       '@goauthentik/tsconfig':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: link:../../../packages/tsconfig
+        version: link:../../../packages/tsconfig
       '@types/node':
         specifier: 'catalog:'
         version: 26.1.2
@@ -1032,14 +1032,6 @@ packages:
     peerDependenciesMeta:
       '@goauthentik/logger-js':
         optional: true
-
-  '@goauthentik/tsconfig@1.0.9':
-    resolution: {integrity: sha512-NxEtY6A4c/3hUCLt2YuZ1lsnTPnAvWcDXRgEQ2kotsysG6aL2PIJQZAUr4EK65aADzQenQIeLvkjN/xMQ4Dz8Q==}
-    engines: {node: '>=24', npm: '>=11.10.1'}
-
-  '@goauthentik/tsconfig@2.0.0':
-    resolution: {integrity: sha512-HiU/U9cO4Aaik3VjUHu/3PjD0m2nhIJXlENW1kbfVRFBaqAw//9UuHIel2E3vgwyua93fht36cBb8itZVsG1Vg==}
-    engines: {node: '>=24', npm: '>=11.14.1'}
 
   '@hcaptcha/types@1.2.0':
     resolution: {integrity: sha512-lyeAbHCsrPS/uf5bwKr1WmhVduEHMe+2yUg5TnpDeKAgP+Nr/GyiZjp7zgSwm0ECD9e/r0OJFo/hz4DIYQUOQw==}
@@ -6645,10 +6637,6 @@ snapshots:
     dependencies:
       esbuild: 0.28.2
       find-free-ports: 3.1.1
-
-  '@goauthentik/tsconfig@1.0.9': {}
-
-  '@goauthentik/tsconfig@2.0.0': {}
 
   '@hcaptcha/types@1.2.0': {}
 
