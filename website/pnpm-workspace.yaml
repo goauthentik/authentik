@@ -34,7 +34,7 @@ catalog:
     "@docusaurus/tsconfig": "^3.10.2"
     "@docusaurus/types": "^3.10.2"
     "@docusaurus/utils": "^3.10.2"
-    "@types/node": "^26.1.2"
+    "@types/node": "^26.6.1"
     esbuild: "^0.28.1"
     typescript: "^6.0.3"
 
