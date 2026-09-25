@@ -1,0 +1,221 @@
+---
+name: CI - Cross-branch migrations
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "41 4 * * *"
+  pull_request:
+    paths:
+      - .github/workflows/ci-migrations-cross-branch.yml
+
+jobs:
+  discover-release-branches:
+    name: Find the adjacent release branches
+    runs-on: ubuntu-latest
+    outputs:
+      pairs: "${{ steps.pairs.outputs.pairs }}"
+    steps:
+      - id: pairs
+        # Release branches are named version-<family> and sort with `sort -V`,
+        # so the supported upgrade steps are derived here instead of being
+        # listed
+        env:
+          REPO_URL: "${{ github.server_url }}/${{ github.repository }}"
+        run: |
+          set -euo pipefail
+          mapfile -t branches < <(
+            git ls-remote --heads "${REPO_URL}" 'refs/heads/version-*' \
+              | sed 's#.*refs/heads/##' \
+              | sort -V
+          )
+          if [ "${#branches[@]}" -lt 2 ]; then
+            echo "::error::Found ${#branches[@]} release branches, need at least two"
+            exit 1
+          fi
+          newest="${branches[-1]}"
+          previous="${branches[-2]}"
+          echo "::notice::Checking ${previous} -> ${newest} and ${newest} -> main"
+          pairs="$(jq -nc --arg p "${previous}" --arg n "${newest}" \
+            '{include: [{old: $p, new: $n}, {old: $n, new: "main"}]}')"
+          echo "pairs=${pairs}" >> "$GITHUB_OUTPUT"
+  test-migrations-cross-branch:
+    name: Migrate ${{ matrix.old }} to ${{ matrix.new }}
+    needs: discover-release-branches
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.discover-release-branches.outputs.pairs) }}
+    env:
+      IMAGE_REPO: ghcr.io/goauthentik/dev-server
+      PG_IMAGE: postgres:16-alpine
+      PG_NAME: ak-migrate-postgres
+      PG_NETWORK: ak-migrate
+    steps:
+      - id: images
+        name: Resolve the branch images
+        env:
+          OLD_BRANCH: "${{ matrix.old }}"
+          NEW_BRANCH: "${{ matrix.new }}"
+        run: |
+          set -euo pipefail
+
+          resolve() {
+            local branch="$1" dashed dotted tag
+            # version-2026.8 and newer replace the dot with a dash in the tag.
+            # Remove once every branch uses compute-container-tags.
+            dashed="gh-$(printf '%s' "${branch}" | sed 's/[^a-zA-Z0-9-]/-/g')"
+            dotted="gh-${branch}"
+            for tag in "${dashed}" "${dotted}"; do
+              if docker manifest inspect "${IMAGE_REPO}:${tag}" >/dev/null 2>&1; then
+                printf '%s' "${IMAGE_REPO}:${tag}"
+                return 0
+              fi
+            done
+            return 1
+          }
+
+          missing=""
+          old_image="$(resolve "${OLD_BRANCH}")" || missing="${OLD_BRANCH}"
+          new_image="$(resolve "${NEW_BRANCH}")" || missing="${missing:+${missing} and }${NEW_BRANCH}"
+
+          if [ -n "${missing}" ]; then
+            # A branch has no image until its own ci-main publish job runs, so
+            # this is normal right after a branch-off and while that branch is
+            # red. It is not a migration problem, so the step exits zero and
+            # nothing is posted to Slack.
+            note="No published image for ${missing}, skipped ${OLD_BRANCH} -> ${NEW_BRANCH}."
+            echo "::warning::${note}"
+            echo "${note}" >> "$GITHUB_STEP_SUMMARY"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "::notice::${old_image} -> ${new_image}"
+          {
+            echo "old-image=${old_image}"
+            echo "new-image=${new_image}"
+            echo "ready=true"
+          } >> "$GITHUB_OUTPUT"
+      - name: Start PostgreSQL
+        if: ${{ steps.images.outputs.ready == 'true' }}
+        run: |
+          set -euo pipefail
+          docker network create "${PG_NETWORK}"
+          docker run --detach --name "${PG_NAME}" --network "${PG_NETWORK}" \
+            -e POSTGRES_USER=authentik \
+            -e POSTGRES_PASSWORD=authentik \
+            -e POSTGRES_DB=authentik \
+            "${PG_IMAGE}"
+
+          ready=false
+          for _ in $(seq 1 60); do
+            if docker exec "${PG_NAME}" pg_isready -U authentik -d authentik >/dev/null 2>&1; then
+              ready=true
+              break
+            fi
+            sleep 1
+          done
+          if [ "${ready}" != "true" ]; then
+            docker logs "${PG_NAME}"
+            echo "::error::PostgreSQL did not become ready"
+            exit 1
+          fi
+
+          echo "AUTHENTIK_SECRET_KEY=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+      - name: Migrate to ${{ matrix.old }}
+        if: ${{ steps.images.outputs.ready == 'true' }}
+        env:
+          IMAGE: "${{ steps.images.outputs.old-image }}"
+        run: |
+          set -euo pipefail
+          # lifecycle/ sits at /lifecycle and the working directory is /, so
+          # the entrypoint is overridden rather than using `ak migrate`, which
+          # would skip the lifecycle system migrations.
+          docker run --rm --network "${PG_NETWORK}" \
+            -e AUTHENTIK_POSTGRESQL__HOST="${PG_NAME}" \
+            -e AUTHENTIK_POSTGRESQL__USER=authentik \
+            -e AUTHENTIK_POSTGRESQL__NAME=authentik \
+            -e AUTHENTIK_POSTGRESQL__PASSWORD=authentik \
+            -e AUTHENTIK_SECRET_KEY="${AUTHENTIK_SECRET_KEY}" \
+            -e AUTHENTIK_AVATARS=none \
+            --entrypoint bash "${IMAGE}" \
+            -c 'cd / && python -m lifecycle.migrate'
+      - name: Migrate to ${{ matrix.new }}
+        if: ${{ steps.images.outputs.ready == 'true' }}
+        env:
+          IMAGE: "${{ steps.images.outputs.new-image }}"
+        run: |
+          set -euo pipefail
+          docker run --rm --network "${PG_NETWORK}" \
+            -e AUTHENTIK_POSTGRESQL__HOST="${PG_NAME}" \
+            -e AUTHENTIK_POSTGRESQL__USER=authentik \
+            -e AUTHENTIK_POSTGRESQL__NAME=authentik \
+            -e AUTHENTIK_POSTGRESQL__PASSWORD=authentik \
+            -e AUTHENTIK_SECRET_KEY="${AUTHENTIK_SECRET_KEY}" \
+            -e AUTHENTIK_AVATARS=none \
+            --entrypoint bash "${IMAGE}" \
+            -c 'cd / && python -m lifecycle.migrate'
+  notify-migration-divergence:
+    name: Notify migration divergence
+    # Only the nightly run posts to Slack when something failed.
+    # A manual run/PR show up in the Actions tab.
+    if: >-
+      ${{ always() && github.event_name == 'schedule'
+      && (needs.discover-release-branches.result != 'success'
+      || needs.test-migrations-cross-branch.result != 'success') }}
+    needs:
+      - discover-release-branches
+      - test-migrations-cross-branch
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Build the Slack message
+        env:
+          DISCOVERY_RESULT: "${{ needs.discover-release-branches.result }}"
+          PAIRS: "${{ needs.discover-release-branches.outputs.pairs }}"
+          REPO: "${{ github.repository }}"
+          RUN_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        run: |
+          set -euo pipefail
+
+          if [ "${DISCOVERY_RESULT}" = "success" ]; then
+            headline="Nightly cross-branch migration check failed"
+            intro="An upgrade between two release branches is broken. Django rejects the migration history, so the server crash-loops on start."
+            pairs_list="$(printf '%s' "${PAIRS:-}" \
+              | jq -r '.include[] | "• `\(.old)` -> `\(.new)`"' 2>/dev/null || true)"
+            [ -n "${pairs_list}" ] || pairs_list="• the checked pairs are unknown"
+            body="$(printf '%s\n\n%s' "${intro}" "${pairs_list}")"
+            link_text="Open the failing run to see which pair failed"
+          else
+            headline="Nightly cross-branch migration check could not run"
+            body="Branch discovery finished with \`${DISCOVERY_RESULT}\`, so no upgrade path was checked."
+            link_text="Open the failing run"
+          fi
+
+          jq -n \
+            --arg headline "${headline}" \
+            --arg body "${body}" \
+            --arg link_text "${link_text}" \
+            --arg repo "${REPO}" \
+            --arg run_url "${RUN_URL}" \
+            '{
+              text: $headline,
+              blocks: [
+                {type: "section", text: {type: "mrkdwn",
+                  text: ("*" + $headline + "*\n" + $body)}},
+                {type: "context", elements: [
+                  {type: "mrkdwn",
+                   text: ("`" + $repo + "` · <" + $run_url + "|" + $link_text + ">")}
+                ]}
+              ]
+            }' > "${RUNNER_TEMP}/slack-payload.json"
+      - name: Post to Slack
+        uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
+        with:
+          webhook: "${{ secrets.RELEASE_SLACK_WEBHOOK_URL }}"
+          webhook-type: incoming-webhook
+          payload-file-path: "${{ runner.temp }}/slack-payload.json"
+          errors: "true"
