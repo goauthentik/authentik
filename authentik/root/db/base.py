@@ -2,7 +2,7 @@
 
 from django.core.checks import Warning
 from django.db.backends.base.validation import BaseDatabaseValidation
-from django_tenants.postgresql_backend.base import DatabaseWrapper as BaseDatabaseWrapper
+from django_prometheus.db.backends.postgresql.base import DatabaseWrapper as BaseDatabaseWrapper
 
 from authentik.lib.config import CONFIG, DIRECT_DB_ALIAS
 

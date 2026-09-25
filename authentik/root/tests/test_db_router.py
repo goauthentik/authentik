@@ -6,7 +6,7 @@ from django.db import DEFAULT_DB_ALIAS
 from django.test import TestCase
 
 from authentik.lib.config import DIRECT_DB_ALIAS
-from authentik.tenants.db import FailoverRouter
+from authentik.root.db.router import FailoverRouter
 
 
 class TestFailoverRouter(TestCase):
@@ -18,7 +18,7 @@ class TestFailoverRouter(TestCase):
 
     def _router_with_databases(self, *aliases: str) -> FailoverRouter:
         databases = {alias: {"ENGINE": "django.db.backends.postgresql"} for alias in aliases}
-        with patch("authentik.tenants.db.settings") as mock_settings:
+        with patch("authentik.root.db.router.settings") as mock_settings:
             mock_settings.DATABASES = databases
             return FailoverRouter()
 

@@ -3,8 +3,8 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
+from authentik.admin.utils import get_system_settings
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.tenants.utils import get_current_tenant
 
 
 class TestBaseURLSettings(APITestCase):
@@ -12,7 +12,7 @@ class TestBaseURLSettings(APITestCase):
 
     def setUp(self):
         super().setUp()
-        self.tenant = get_current_tenant()
+        self.tenant = get_system_settings()
         self.tenant.base_url = ""
         self.tenant.save()
         self.client.force_login(create_test_admin_user())
@@ -20,7 +20,7 @@ class TestBaseURLSettings(APITestCase):
     def test_settings_roundtrip(self):
         """base_url can be written and read back through the settings API"""
         response = self.client.patch(
-            reverse("authentik_api:tenant_settings"),
+            reverse("authentik_api:system_settings"),
             data={"base_url": "https://authentik.company"},
         )
         self.assertEqual(response.status_code, 200)
@@ -30,7 +30,7 @@ class TestBaseURLSettings(APITestCase):
     def test_settings_rejects_invalid(self):
         """A value that is not a URL is rejected"""
         response = self.client.patch(
-            reverse("authentik_api:tenant_settings"),
+            reverse("authentik_api:system_settings"),
             data={"base_url": "not-a-url"},
         )
         self.assertEqual(response.status_code, 400)
@@ -38,7 +38,7 @@ class TestBaseURLSettings(APITestCase):
     def test_settings_accepts_internal_hostname(self):
         """A hostname without a public-suffix shaped last label is accepted."""
         response = self.client.patch(
-            reverse("authentik_api:tenant_settings"),
+            reverse("authentik_api:system_settings"),
             data={"base_url": "https://auth.svr001"},
         )
         self.assertEqual(response.status_code, 200)
@@ -49,9 +49,9 @@ class TestBaseURLSettings(APITestCase):
         """An unrelated setting can still be saved."""
         self.tenant.base_url = "https://auth.svr001"
         self.tenant.save()
-        current = self.client.get(reverse("authentik_api:tenant_settings")).json()
+        current = self.client.get(reverse("authentik_api:system_settings")).json()
         response = self.client.put(
-            reverse("authentik_api:tenant_settings"),
+            reverse("authentik_api:system_settings"),
             data={**current, "avatars": "initials"},
             format="json",
         )
@@ -65,7 +65,7 @@ class TestBaseURLSettings(APITestCase):
         self.tenant.base_url = "https://auth.svr001"
         self.tenant.save()
         response = self.client.patch(
-            reverse("authentik_api:tenant_settings"),
+            reverse("authentik_api:system_settings"),
             data={"base_url": ""},
         )
         self.assertEqual(response.status_code, 200)
@@ -75,7 +75,7 @@ class TestBaseURLSettings(APITestCase):
     def test_settings_normalizes_trailing_slash(self):
         """A trailing slash is stripped when saving through the settings API"""
         response = self.client.patch(
-            reverse("authentik_api:tenant_settings"),
+            reverse("authentik_api:system_settings"),
             data={"base_url": "https://authentik.company/"},
         )
         self.assertEqual(response.status_code, 200)

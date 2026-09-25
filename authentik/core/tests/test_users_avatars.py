@@ -7,9 +7,9 @@ from django.urls.base import reverse
 from requests_mock import Mocker
 from rest_framework.test import APITestCase
 
+from authentik.admin.utils import get_system_settings
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.tenants.utils import get_current_tenant
 
 
 class TestUsersAvatars(APITestCase):
@@ -21,7 +21,7 @@ class TestUsersAvatars(APITestCase):
 
     def set_avatar_mode(self, mode: str):
         """Set the avatar mode on the current tenant."""
-        tenant = get_current_tenant()
+        tenant = get_system_settings()
         tenant.avatars = mode
         tenant.save()
 
