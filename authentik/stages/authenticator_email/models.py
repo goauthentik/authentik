@@ -22,6 +22,9 @@ from authentik.stages.email.utils import TemplateEmailMessage
 class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
     """Setup Email-based authentication for the user."""
 
+    # Remove the legacy credential columns in 2027.2.
+    _password = models.TextField(blank=True, db_column="password", default="")
+
     use_global_settings = models.BooleanField(
         default=False,
         help_text=_(
@@ -33,7 +36,15 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
     host = models.TextField(default="localhost")
     port = models.IntegerField(default=25)
     username = models.TextField(default="", blank=True)
-    password = models.TextField(default="", blank=True)
+    password_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("SMTP password"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="authenticator_email_stages",
+    )
     use_tls = models.BooleanField(default=False)
     use_ssl = models.BooleanField(default=False)
     timeout = models.IntegerField(default=10)
@@ -94,7 +105,7 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
             host=self.host,
             port=self.port,
             username=self.username,
-            password=self.password,
+            password=self.password_ref.value if self.password_ref else "",
             use_tls=self.use_tls,
             use_ssl=self.use_ssl,
             timeout=self.timeout,

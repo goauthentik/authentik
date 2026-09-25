@@ -16889,9 +16889,10 @@
                     "type": "string",
                     "title": "Username"
                 },
-                "password": {
+                "password_ref": {
                     "type": "string",
-                    "title": "Password"
+                    "format": "uuid",
+                    "title": "SMTP password"
                 },
                 "use_tls": {
                     "type": "boolean",
@@ -17605,9 +17606,9 @@
                     "title": "Public key",
                     "description": "Public key, acquired your captcha Provider."
                 },
-                "private_key": {
+                "private_key_ref": {
                     "type": "string",
-                    "minLength": 1,
+                    "format": "uuid",
                     "title": "Private key",
                     "description": "Private key, acquired your captcha Provider."
                 },
@@ -17837,9 +17838,10 @@
                     "type": "string",
                     "title": "Username"
                 },
-                "password": {
+                "password_ref": {
                     "type": "string",
-                    "title": "Password"
+                    "format": "uuid",
+                    "title": "SMTP password"
                 },
                 "use_tls": {
                     "type": "boolean",
