@@ -90,6 +90,16 @@ You can view the current version of your authentik instance by logging in to the
 
 ![](./version1.png)
 
+## Refresh PostgreSQL statistics after upgrading
+
+Database migrations during an authentik upgrade can leave PostgreSQL with outdated query-planner statistics. If dashboards or other pages in the Admin interface are slower after the upgrade, connect to the authentik database and run:
+
+```sql
+ANALYZE;
+```
+
+You can run `ANALYZE` while authentik is serving requests, although its duration depends on the size and load of your database. It refreshes the statistics that PostgreSQL uses to plan queries. If queries remain slow, see [Troubleshoot slow PostgreSQL queries](../troubleshooting/postgres/slow-queries.mdx).
+
 ## Troubleshooting your upgrade
 
 If you run the upgrade commands but your version on the Dashboard doesn't change, follow these steps:
