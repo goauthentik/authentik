@@ -343,8 +343,8 @@ importers:
         specifier: workspace:*
         version: link:../docusaurus-theme
       '@goauthentik/tsconfig':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: link:../../packages/tsconfig
+        version: link:../../packages/tsconfig
       '@mdx-js/react':
         specifier: ^3.1.1
         version: 3.1.1(@types/react@19.2.18)(react@19.2.7)
@@ -1853,10 +1853,6 @@ packages:
 
   '@goauthentik/brand-assets@2.0.0':
     resolution: {integrity: sha512-yRJrV+KuGrz7MNcRzAkZa4e7LuciuFZBVSyPFRd/EndxgiqcFuFHyn+6tEurKNmianBNURhe2qm5ytoLFgEWFQ==}
-
-  '@goauthentik/tsconfig@2.0.0':
-    resolution: {integrity: sha512-HiU/U9cO4Aaik3VjUHu/3PjD0m2nhIJXlENW1kbfVRFBaqAw//9UuHIel2E3vgwyua93fht36cBb8itZVsG1Vg==}
-    engines: {node: '>=24', npm: '>=11.14.1'}
 
   '@hapi/hoek@9.3.0':
     resolution: {integrity: sha512-/c6rf4UJlmHlC9b5BaNvzAcFv7HZ2QHaV0D4/HNlBdvFnvQq8RI4kYdhyPCl7Xj+oWvTWQ8ujhqS53LIgAe6KQ==}
@@ -10230,8 +10226,6 @@ snapshots:
   '@faker-js/faker@5.5.3': {}
 
   '@goauthentik/brand-assets@2.0.0': {}
-
-  '@goauthentik/tsconfig@2.0.0': {}
 
   '@hapi/hoek@9.3.0': {}
 

@@ -31,7 +31,7 @@
         "@docusaurus/types": "catalog:",
         "@goauthentik/docusaurus-config": "link:../../packages/docusaurus-config",
         "@goauthentik/docusaurus-theme": "workspace:*",
-        "@goauthentik/tsconfig": "^2.0.0",
+        "@goauthentik/tsconfig": "link:../../packages/tsconfig",
         "@mdx-js/react": "^3.1.1",
         "@types/postman-collection": "^3.5.11",
         "@types/react": "^19.2.16",
