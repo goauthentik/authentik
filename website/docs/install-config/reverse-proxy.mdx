@@ -72,6 +72,12 @@ If the proxy's source address is not trusted, authentik ignores its forwarded he
 - display an endless loading indicator or an authentication error because the browser blocks mixed content
 - log the reverse proxy address instead of the client address
 
+## Caching static assets
+
+If login pages load slowly, you can cache built-in `/static/*` assets at your reverse proxy or content delivery network (CDN). This optional step reduces requests to the origin and can improve load times, especially for users far from the server. A one-day time to live (TTL) is a reasonable choice for stable-name assets such as `/static/dist/assets/images/flow_background.jpg`, which can change on upgrade. Reserve longer, immutable caching for content-hashed filenames.
+
+Limit the rule to `/static/*`: do not cache authentication pages, API responses, or signed, short-lived user uploads under `/files/media/`. If authentik runs under a subpath, include that prefix in the rule; see [`AUTHENTIK_WEB__PATH`](./configuration/configuration.mdx#authentik_web__path).
+
 ## Example: nginx
 
 The following nginx configuration is a reasonable starting point. It proxies to authentik's HTTPS listener on port `9443`.
