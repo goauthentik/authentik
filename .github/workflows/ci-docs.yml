@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     env:
       NODE_ENV: production
     strategy:
@@ -47,7 +47,7 @@ jobs:
       - name: Lint
         run: pnpm --dir website run ${{ matrix.command }}
   build-docs:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     env:
       NODE_ENV: production
     steps:
@@ -72,7 +72,7 @@ jobs:
       - name: Build Documentation via Docusaurus
         run: pnpm --dir website run build
   build-integrations:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     env:
       NODE_ENV: production
     steps:
@@ -96,7 +96,7 @@ jobs:
       - name: Build Integrations via Docusaurus
         run: pnpm --dir website run build:integrations
   build-container:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       # Needed to upload container images to ghcr.io
       packages: write
@@ -141,7 +141,7 @@ jobs:
       - build-docs
       - build-integrations
       - build-container
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35 # release/v1
         with:

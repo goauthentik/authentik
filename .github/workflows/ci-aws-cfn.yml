@@ -23,7 +23,7 @@ env:
 
 jobs:
   check-changes-applied:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
@@ -48,7 +48,7 @@ jobs:
     if: always()
     needs:
       - check-changes-applied
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35 # release/v1
         with:
