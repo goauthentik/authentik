@@ -43,13 +43,14 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
 
     can_discover = True
 
-    def __init__(self, provider: SCIMProvider, *, fetch_service_provider_config: bool = True):
+    def __init__(self, provider: SCIMProvider, *, initialize: bool = True):
+        """Metadata diagnostics defer authentication and configuration until after cache lookup."""
         super().__init__(provider)
         self._json_encoder = JSONEncoder(order="deterministic")
         self._session = get_http_session()
         self._session.verify = provider.verify_certificates
         self.provider = provider
-        self.auth = provider.scim_auth()
+        self.auth = provider.scim_auth() if initialize else None
         # Remove trailing slashes as we assume the URL doesn't have any
         base_url = provider.url
         if base_url.endswith("/"):
@@ -57,7 +58,7 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
         self.base_url = base_url
         self._config = (
             self.get_service_provider_config()
-            if fetch_service_provider_config
+            if initialize
             else ServiceProviderConfiguration.default()
         )
 

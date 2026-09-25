@@ -67,7 +67,7 @@ class SCIMResourceTypesClient(SCIMClient):
     """Read destination metadata without fetching unrelated configuration or syncing objects."""
 
     def __init__(self, provider: SCIMProvider):
-        super().__init__(provider, fetch_service_provider_config=False)
+        super().__init__(provider, initialize=False)
 
     def get_resource_types(self, *, force_refresh: bool = False) -> ResourceTypeDiscovery:
         """Return a complete listing, or an explicit unavailable/error diagnostic.
@@ -81,6 +81,17 @@ class SCIMResourceTypesClient(SCIMClient):
             if cached := cache.get(key):
                 return replace(cached, cached=True)
         cache.delete(key)
+        try:
+            self.auth = self.provider.scim_auth()
+        except BaseSyncException:
+            # A token endpoint failure is not evidence that ResourceTypes is unavailable.
+            return ResourceTypeDiscovery(
+                "error",
+                [],
+                now(),
+                detail="Unable to initialize SCIM authentication. Check the provider's credentials "
+                "and OAuth configuration.",
+            )
         try:
             resources = self._fetch_resource_types()
             result = ResourceTypeDiscovery("success", resources, now())
