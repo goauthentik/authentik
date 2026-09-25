@@ -4,6 +4,8 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
+from authentik.crypto.secrets.api import JSONSecretReferenceField
+from authentik.crypto.secrets.models import Secret
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.providers.google_workspace.models import GoogleWorkspaceProvider
 from authentik.enterprise.providers.google_workspace.tasks import (
@@ -15,6 +17,10 @@ from authentik.lib.sync.outgoing.api import OutgoingSyncProviderStatusMixin
 
 class GoogleWorkspaceProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
     """GoogleWorkspaceProvider Serializer"""
+
+    credentials_ref = JSONSecretReferenceField(
+        queryset=Secret.objects.all(), required=True, allow_null=False
+    )
 
     class Meta:
         model = GoogleWorkspaceProvider
@@ -30,7 +36,7 @@ class GoogleWorkspaceProviderSerializer(EnterpriseRequiredMixin, ProviderSeriali
             "verbose_name_plural",
             "meta_model_name",
             "delegated_subject",
-            "credentials",
+            "credentials_ref",
             "scopes",
             "exclude_users_service_account",
             "filter_group",
@@ -42,8 +48,6 @@ class GoogleWorkspaceProviderSerializer(EnterpriseRequiredMixin, ProviderSeriali
             "dry_run",
             "discovery_enabled",
         ]
-        secret_fields = ["credentials"]
-        extra_kwargs = {}
 
 
 class GoogleWorkspaceProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelViewSet):

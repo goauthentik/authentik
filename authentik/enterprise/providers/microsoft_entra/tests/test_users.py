@@ -15,6 +15,7 @@ from rest_framework.test import APITestCase
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.enterprise.providers.microsoft_entra.models import (
     MicrosoftEntraProvider,
     MicrosoftEntraProviderMapping,
@@ -40,7 +41,7 @@ class MicrosoftEntraUserTests(APITestCase):
         self.provider: MicrosoftEntraProvider = MicrosoftEntraProvider.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            client_secret=generate_id(),
+            client_secret_ref=create_test_secret(generate_id()),
             tenant_id=generate_id(),
             exclude_users_service_account=True,
         )
