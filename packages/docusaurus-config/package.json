@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/docusaurus-config",
-    "version": "3.0.4",
+    "version": "3.1.0",
     "description": "authentik's Docusaurus config",
     "license": "MIT",
     "repository": {
@@ -20,9 +20,13 @@
         "./package.json": "./package.json",
         ".": {
             "types": "./out/index.d.ts",
-            "import": "./index.js"
+            "default": "./index.js"
         },
-        "./css/*.css": "./css/*.css"
+        "./css/*.css": "./css/*.css",
+        "./plugins/brand": {
+            "types": "./out/lib/plugins/brand.d.ts",
+            "default": "./lib/plugins/brand.js"
+        }
     },
     "publishConfig": {
         "access": "public"
@@ -37,6 +41,7 @@
         "lint:check": "oxlint --max-warnings=0"
     },
     "dependencies": {
+        "@goauthentik/brand-assets": "^2.0.0",
         "deepmerge-ts": "^8.0.0",
         "prism-react-renderer": "^2.4.1"
     },
@@ -44,6 +49,7 @@
         "@docusaurus/theme-common": "^3.10.2",
         "@docusaurus/theme-search-algolia": "^3.10.2",
         "@docusaurus/types": "^3.10.2",
+        "@goauthentik/fonts": "link:../fonts",
         "@goauthentik/oxfmt-config": "link:../oxfmt-config",
         "@goauthentik/oxlint-config": "link:../oxlint-config",
         "@goauthentik/tsconfig": "link:../tsconfig",
@@ -60,6 +66,7 @@
         "@docusaurus/theme-common": "^3.10.1",
         "@docusaurus/theme-search-algolia": "^3.10.1",
         "@docusaurus/types": "^3.10.1",
+        "@goauthentik/fonts": "^1.0.0 || ^2.0.0",
         "react": ">=19",
         "react-dom": ">=19"
     },
