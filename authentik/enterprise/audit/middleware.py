@@ -69,11 +69,37 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
     def diff(self, before: dict, after: dict, update_fields: list[str] | None = None) -> dict:
         """Generate diff between dicts"""
         diff = {}
+
+        def diff_attributes(
+            previous: dict[str, Any], current: dict[str, Any], path: str = "attributes"
+        ) -> dict:
+            attribute_diff = {}
+            for key in sorted(previous.keys() | current.keys()):
+                previous_value = previous.get(key)
+                current_value = current.get(key)
+                if isinstance(previous_value, dict) and isinstance(current_value, dict):
+                    attribute_diff.update(
+                        diff_attributes(previous_value, current_value, f"{path}.{key}")
+                    )
+                elif previous_value != current_value:
+                    attribute_diff[f"{path}.{key}"] = {
+                        "previous_value": previous_value,
+                        "new_value": current_value,
+                    }
+            return attribute_diff
+
         for key, value in before.items():
             if update_fields and key not in update_fields:
                 continue
             if after.get(key) != value:
-                diff[key] = {"previous_value": value, "new_value": after.get(key)}
+                if (
+                    key == "attributes"
+                    and isinstance(value, dict)
+                    and isinstance(after.get(key), dict)
+                ):
+                    diff.update(diff_attributes(value, after[key]))
+                else:
+                    diff[key] = {"previous_value": value, "new_value": after.get(key)}
         for key, value in after.items():
             if update_fields and key not in update_fields:
                 continue
