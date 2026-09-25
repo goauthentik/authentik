@@ -73,6 +73,41 @@ if [[ -z "${PROMETHEUS_MULTIPROC_DIR}" ]]; then
 fi
 mkdir -p "${PROMETHEUS_MULTIPROC_DIR}"
 
+
+# Remove only metric files from dead processes. Since filenames do not indicate
+# worker ID vs PID, keep small values and only treat larger values as PIDs for
+# cleanup. This avoids deleting live worker metric files.
+#
+# Server workers use small reused gunicorn worker IDs, so their metric files stay
+# bounded. Other commands like `ak manage`, migrations, and blueprint applies use
+# PIDs, so long-lived TMPDIRs can accumulate stale PID-based metric files.
+#
+# prometheus_client retains all multiprocess metric files and does not clean them
+# up. This function reaps orphaned metric files belonging to dead processes.
+#
+function dispose_orphaned_metric_files {
+    local metric_file writer
+    local -r worker_id_cutoff=100
+
+    for metric_file in "${PROMETHEUS_MULTIPROC_DIR}"/*.db; do
+        # No matches leaves the glob unexpanded rather than empty.
+        [[ -e "${metric_file}" ]] || continue
+
+        writer="${metric_file##*_}"
+        writer="${writer%.db}"
+
+        # Anything we cannot attribute to a single process is left alone.
+        [[ "${writer}" =~ ^[0-9]+$ ]] || continue
+        ((writer >= worker_id_cutoff)) || continue
+
+        if kill -0 "${writer}" 2>/dev/null; then
+            continue
+        fi
+
+        rm -f "${metric_file}"
+    done
+}
+
 if [[ "$(python -m authentik.lib.config debugger 2>/dev/null)" == "True" ]]; then
     prepare_debug
 fi
@@ -90,6 +125,7 @@ elif [[ "$1" == "test-all" ]]; then
     chmod 777 /root
     check_if_root_and_run manage test authentik
 elif [[ "$1" == "allinone" ]] || [[ "$1" == "server" ]] || [[ "$1" == "worker" ]]; then
+    dispose_orphaned_metric_files
     wait_for_db
     check_if_root_and_run "$@"
 elif [[ "$1" == "healthcheck" ]]; then
