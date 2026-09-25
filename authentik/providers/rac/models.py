@@ -1,6 +1,7 @@
 """RAC Models"""
 
 from typing import Any
+from urllib.parse import urlsplit
 from uuid import uuid4
 
 from deepmerge import always_merger
@@ -182,15 +183,22 @@ class ConnectionToken(InternallyManagedMixin, ExpiringModel):
     settings = models.JSONField(default=dict)
     session = models.ForeignKey("authentik_core.AuthenticatedSession", on_delete=models.CASCADE)
 
+    @staticmethod
+    def parse_host(host: str) -> tuple[str, str | None]:
+        """Split a host into (hostname, port), handling IPv6 literals"""
+        # A bare IPv6 literal (unbracketed) isn't parseable by urlsplit and has no port
+        if not host.startswith("[") and host.count(":") > 1:
+            return host, None
+        split = urlsplit(f"//{host}")
+        return split.hostname, str(split.port) if split.port is not None else None
+
     def get_settings(self) -> dict:
         """Get settings"""
         default_settings = {}
-        if ":" in self.endpoint.host:
-            host, _, port = self.endpoint.host.partition(":")
-            default_settings["hostname"] = host
-            default_settings["port"] = str(port)
-        else:
-            default_settings["hostname"] = self.endpoint.host
+        hostname, port = self.parse_host(self.endpoint.host)
+        default_settings["hostname"] = hostname
+        if port is not None:
+            default_settings["port"] = port
         if self.endpoint.protocol == Protocols.RDP:
             default_settings["resize-method"] = "display-update"
         default_settings["client-name"] = f"authentik - {self.session.user}"
