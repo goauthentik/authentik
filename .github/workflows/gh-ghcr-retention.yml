@@ -23,7 +23,7 @@ jobs:
       - name: Delete 'dev' containers older than a week
         uses: snok/container-retention-policy@d3bdcf5ce9b05f685154e4a16c39233b245e3d53 # v3.1.0
         with:
-          image-names: dev-server,dev-ldap,dev-proxy
+          image-names: dev-server,dev-server-debug,dev-ldap,dev-proxy
           image-tags: "!gh-next,!gh-main"
           cut-off: One week ago UTC
           account: goauthentik
