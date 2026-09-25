@@ -264,3 +264,162 @@ class TestEndpointsAPI(APITestCase):
         self.assertEqual(response.status_code, 200)
         pks = [result["pk"] for result in response.json()["results"]]
         self.assertIn(str(endpoint.pk), pks)
+
+    def test_list_user_with_model_permissions_sees_endpoints(self):
+        """A user with model-level RAC permissions (e.g. view_endpoint)
+        must see all endpoints in the list, even those for applications they have
+        no access to. This fixes the regression introduced by the security backport
+        that filtered the entire list by application access, which broke users
+        who only had model-level permissions but no application-level
+        access.
+
+        Sensitive fields (settings) are still redacted for users without the
+        per-instance view_endpoint permission, preserving the security fix."""
+        # Gate the application so the user has no application access.
+        PolicyBinding.objects.create(
+            target=self.app,
+            policy=DummyPolicy.objects.create(
+                name=f"deny-{generate_id()}", result=False, wait_min=1, wait_max=2
+            ),
+            order=0,
+        )
+
+        # Create a user with model-level view permission but no
+        # application access (the denied policy above blocks it).
+        user = create_test_user()
+        from django.contrib.auth.models import Permission
+
+        perm = Permission.objects.get(
+            content_type__app_label="authentik_providers_rac",
+            codename="view_endpoint",
+        )
+        user.user_permissions.add(perm)
+
+        self.assertFalse(
+            user.has_perm("authentik_providers_rac.view_application", self.app)
+        )
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("authentik_api:endpoint-list"))
+        self.assertEqual(response.status_code, 200)
+        pks = [r["pk"] for r in response.json()["results"]]
+        # The user MUST see the endpoint despite having no app access.
+        self.assertIn(str(self.allowed.pk), pks)
+        # And also the denied endpoint, because it has model-level permission.
+        self.assertIn(str(self.denied.pk), pks)
+
+    def test_list_user_with_model_permissions_settings_redacted(self):
+        """A user with model-level view_endpoint permission must
+        receive the settings only for endpoints where it also has the
+        per-instance view_permission.
+
+        This ensures the security fix (redacting sensitive settings) is
+        preserved for users that manage endpoints globally
+        but should not see credentials for all of them."""
+        endpoint_secret = generate_id()
+        endpoint = Endpoint.objects.create(
+            name=f"c-{generate_id()}",
+            host=generate_id(),
+            protocol=Protocols.RDP,
+            auth_mode="static",
+            settings={"username": "user", "password": endpoint_secret},
+            provider=self.provider,
+        )
+
+        # Create a user with model-level view permission.
+        user = create_test_user()
+        from django.contrib.auth.models import Permission
+
+        perm = Permission.objects.get(
+            content_type__app_label="authentik_providers_rac",
+            codename="view_endpoint",
+        )
+        user.user_permissions.add(perm)
+
+        # user has model-level permission but NOT per-instance permission
+        # for the endpoint (no guardian grant).
+        self.assertFalse(
+            user.has_perm("authentik_providers_rac.view_endpoint", endpoint)
+        )
+
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("authentik_api:endpoint-list"))
+        self.assertEqual(response.status_code, 200)
+        result = next(
+            r for r in response.json()["results"] if r["pk"] == str(endpoint.pk)
+        )
+
+        # The endpoint is in the list (model-level permission grants visibility).
+        # But settings must be redacted (no per-instance view_permission).
+        self.assertEqual(result["settings"], {})
+        self.assertNotIn(endpoint_secret, response.content.decode())
+
+    def test_list_user_with_change_permission_sees_endpoints(self):
+        """A user with model-level change_endpoint permission
+        must see all endpoints in the list. This is the permission that
+        the original issue (#24154) reported as broken."""
+        PolicyBinding.objects.create(
+            target=self.app,
+            policy=DummyPolicy.objects.create(
+                name=f"deny-{generate_id()}", result=False, wait_min=1, wait_max=2
+            ),
+            order=0,
+        )
+
+        user = create_test_user()
+        from django.contrib.auth.models import Permission
+
+        perm = Permission.objects.get(
+            content_type__app_label="authentik_providers_rac",
+            codename="change_endpoint",
+        )
+        user.user_permissions.add(perm)
+
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("authentik_api:endpoint-list"))
+        self.assertEqual(response.status_code, 200)
+        pks = [r["pk"] for r in response.json()["results"]]
+        self.assertIn(str(self.allowed.pk), pks)
+        self.assertIn(str(self.denied.pk), pks)
+
+    def test_list_user_with_delete_permission_sees_endpoints(self):
+        """A user with model-level delete_endpoint permission
+        must see all endpoints in the list."""
+        user = create_test_user()
+        from django.contrib.auth.models import Permission
+
+        perm = Permission.objects.get(
+            content_type__app_label="authentik_providers_rac",
+            codename="delete_endpoint",
+        )
+        user.user_permissions.add(perm)
+
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("authentik_api:endpoint-list"))
+        self.assertEqual(response.status_code, 200)
+        pks = [r["pk"] for r in response.json()["results"]]
+        self.assertIn(str(self.allowed.pk), pks)
+        self.assertIn(str(self.denied.pk), pks)
+
+    def test_list_user_with_add_permission_sees_endpoints(self):
+        """A user with model-level add_endpoint permission
+        must see all endpoints in the list."""
+        user = create_test_user()
+        from django.contrib.auth.models import Permission
+
+        perm = Permission.objects.get(
+            content_type__app_label="authentik_providers_rac",
+            codename="add_endpoint",
+        )
+        user.user_permissions.add(perm)
+
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("authentik_api:endpoint-list"))
+        self.assertEqual(response.status_code, 200)
+        pks = [r["pk"] for r in response.json()["results"]]
+        self.assertIn(str(self.allowed.pk), pks)
+        self.assertIn(str(self.denied.pk), pks)
