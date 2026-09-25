@@ -864,6 +864,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_lifecycle.userexpirationrule"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/definitions/model_authentik_lifecycle.userexpirationrule_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/definitions/model_authentik_lifecycle.userexpirationrule"
+                        },
+                        "identifiers": {
+                            "$ref": "#/definitions/model_authentik_lifecycle.userexpirationrule"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_lifecycle.useroffboarding"
                         },
                         "id": {
@@ -5914,6 +5954,8 @@
                             "authentik_lifecycle.add_lifecyclerulereviewer",
                             "authentik_lifecycle.add_lifecyclerulereviewergroup",
                             "authentik_lifecycle.add_review",
+                            "authentik_lifecycle.add_userexpirationrule",
+                            "authentik_lifecycle.add_userexpirationrulenotificationtransport",
                             "authentik_lifecycle.add_useroffboarding",
                             "authentik_lifecycle.change_lifecycleiteration",
                             "authentik_lifecycle.change_lifecyclerule",
@@ -5921,6 +5963,8 @@
                             "authentik_lifecycle.change_lifecyclerulereviewer",
                             "authentik_lifecycle.change_lifecyclerulereviewergroup",
                             "authentik_lifecycle.change_review",
+                            "authentik_lifecycle.change_userexpirationrule",
+                            "authentik_lifecycle.change_userexpirationrulenotificationtransport",
                             "authentik_lifecycle.change_useroffboarding",
                             "authentik_lifecycle.delete_lifecycleiteration",
                             "authentik_lifecycle.delete_lifecyclerule",
@@ -5928,6 +5972,8 @@
                             "authentik_lifecycle.delete_lifecyclerulereviewer",
                             "authentik_lifecycle.delete_lifecyclerulereviewergroup",
                             "authentik_lifecycle.delete_review",
+                            "authentik_lifecycle.delete_userexpirationrule",
+                            "authentik_lifecycle.delete_userexpirationrulenotificationtransport",
                             "authentik_lifecycle.delete_useroffboarding",
                             "authentik_lifecycle.view_lifecycleiteration",
                             "authentik_lifecycle.view_lifecyclerule",
@@ -5935,6 +5981,8 @@
                             "authentik_lifecycle.view_lifecyclerulereviewer",
                             "authentik_lifecycle.view_lifecyclerulereviewergroup",
                             "authentik_lifecycle.view_review",
+                            "authentik_lifecycle.view_userexpirationrule",
+                            "authentik_lifecycle.view_userexpirationrulenotificationtransport",
                             "authentik_lifecycle.view_useroffboarding",
                             "authentik_outposts.add_dockerserviceconnection",
                             "authentik_outposts.add_kubernetesserviceconnection",
@@ -7312,6 +7360,8 @@
                             "authentik_lifecycle.add_lifecyclerulereviewer",
                             "authentik_lifecycle.add_lifecyclerulereviewergroup",
                             "authentik_lifecycle.add_review",
+                            "authentik_lifecycle.add_userexpirationrule",
+                            "authentik_lifecycle.add_userexpirationrulenotificationtransport",
                             "authentik_lifecycle.add_useroffboarding",
                             "authentik_lifecycle.change_lifecycleiteration",
                             "authentik_lifecycle.change_lifecyclerule",
@@ -7319,6 +7369,8 @@
                             "authentik_lifecycle.change_lifecyclerulereviewer",
                             "authentik_lifecycle.change_lifecyclerulereviewergroup",
                             "authentik_lifecycle.change_review",
+                            "authentik_lifecycle.change_userexpirationrule",
+                            "authentik_lifecycle.change_userexpirationrulenotificationtransport",
                             "authentik_lifecycle.change_useroffboarding",
                             "authentik_lifecycle.delete_lifecycleiteration",
                             "authentik_lifecycle.delete_lifecyclerule",
@@ -7326,6 +7378,8 @@
                             "authentik_lifecycle.delete_lifecyclerulereviewer",
                             "authentik_lifecycle.delete_lifecyclerulereviewergroup",
                             "authentik_lifecycle.delete_review",
+                            "authentik_lifecycle.delete_userexpirationrule",
+                            "authentik_lifecycle.delete_userexpirationrulenotificationtransport",
                             "authentik_lifecycle.delete_useroffboarding",
                             "authentik_lifecycle.view_lifecycleiteration",
                             "authentik_lifecycle.view_lifecyclerule",
@@ -7333,6 +7387,8 @@
                             "authentik_lifecycle.view_lifecyclerulereviewer",
                             "authentik_lifecycle.view_lifecyclerulereviewergroup",
                             "authentik_lifecycle.view_review",
+                            "authentik_lifecycle.view_userexpirationrule",
+                            "authentik_lifecycle.view_userexpirationrulenotificationtransport",
                             "authentik_lifecycle.view_useroffboarding",
                             "authentik_outposts.add_dockerserviceconnection",
                             "authentik_outposts.add_kubernetesserviceconnection",
@@ -8647,6 +8703,126 @@
                             "change_googlechromeconnector",
                             "delete_googlechromeconnector",
                             "view_googlechromeconnector"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_lifecycle.userexpirationrule": {
+            "type": "object",
+            "properties": {
+                "pk": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Id"
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "title": "Enabled"
+                },
+                "group": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Group",
+                    "description": "Only expire members of this group (including descendant groups). Leave empty to apply to every user."
+                },
+                "user_types": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "internal",
+                            "external",
+                            "service_account",
+                            "internal_service_account"
+                        ],
+                        "title": "User types"
+                    },
+                    "title": "User types",
+                    "description": "Only expire users of these types. Service accounts authenticate with tokens, which does not count as activity, so they are excluded by default."
+                },
+                "inactivity_duration": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Inactivity duration",
+                    "description": "How long a user may be inactive before they are expired."
+                },
+                "action": {
+                    "type": "string",
+                    "enum": [
+                        "deactivate",
+                        "delete"
+                    ],
+                    "title": "Action"
+                },
+                "revoke_sessions": {
+                    "type": "boolean",
+                    "title": "Revoke sessions"
+                },
+                "revoke_tokens": {
+                    "type": "boolean",
+                    "title": "Revoke tokens"
+                },
+                "warn_before": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "title": "Warn before",
+                    "description": "Schedule the offboarding and notify the user this long before they expire. Leave empty to expire users without warning."
+                },
+                "notification_transports": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Select which transports should be used to warn the user. If none are selected, the notification will only be shown in the authentik UI."
+                    },
+                    "title": "Notification transports",
+                    "description": "Select which transports should be used to warn the user. If none are selected, the notification will only be shown in the authentik UI."
+                },
+                "exclude_superusers": {
+                    "type": "boolean",
+                    "title": "Exclude superusers",
+                    "description": "Never expire members of a superuser group."
+                },
+                "policy_engine_mode": {
+                    "type": "string",
+                    "enum": [
+                        "all",
+                        "any"
+                    ],
+                    "title": "Policy engine mode"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_lifecycle.userexpirationrule_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_userexpirationrule",
+                            "change_userexpirationrule",
+                            "delete_userexpirationrule",
+                            "view_userexpirationrule"
                         ]
                     },
                     "user": {
@@ -10130,6 +10306,7 @@
                         "logout",
                         "user_write",
                         "user_offboarded",
+                        "user_expiration_warning",
                         "suspicious_request",
                         "password_set",
                         "secret_view",
@@ -10257,6 +10434,7 @@
                                 "logout",
                                 "user_write",
                                 "user_offboarded",
+                                "user_expiration_warning",
                                 "suspicious_request",
                                 "password_set",
                                 "secret_view",
@@ -11022,6 +11200,7 @@
                         "logout",
                         "user_write",
                         "user_offboarded",
+                        "user_expiration_warning",
                         "suspicious_request",
                         "password_set",
                         "secret_view",
@@ -11283,6 +11462,7 @@
                         "authentik_lifecycle.lifecycleiteration",
                         "authentik_lifecycle.review",
                         "authentik_lifecycle.useroffboarding",
+                        "authentik_lifecycle.userexpirationrule",
                         "authentik_policies_unique_password.uniquepasswordpolicy",
                         "authentik_providers_google_workspace.googleworkspaceprovider",
                         "authentik_providers_google_workspace.googleworkspaceprovidermapping",
@@ -13827,6 +14007,8 @@
                             "authentik_lifecycle.add_lifecyclerulereviewer",
                             "authentik_lifecycle.add_lifecyclerulereviewergroup",
                             "authentik_lifecycle.add_review",
+                            "authentik_lifecycle.add_userexpirationrule",
+                            "authentik_lifecycle.add_userexpirationrulenotificationtransport",
                             "authentik_lifecycle.add_useroffboarding",
                             "authentik_lifecycle.change_lifecycleiteration",
                             "authentik_lifecycle.change_lifecyclerule",
@@ -13834,6 +14016,8 @@
                             "authentik_lifecycle.change_lifecyclerulereviewer",
                             "authentik_lifecycle.change_lifecyclerulereviewergroup",
                             "authentik_lifecycle.change_review",
+                            "authentik_lifecycle.change_userexpirationrule",
+                            "authentik_lifecycle.change_userexpirationrulenotificationtransport",
                             "authentik_lifecycle.change_useroffboarding",
                             "authentik_lifecycle.delete_lifecycleiteration",
                             "authentik_lifecycle.delete_lifecyclerule",
@@ -13841,6 +14025,8 @@
                             "authentik_lifecycle.delete_lifecyclerulereviewer",
                             "authentik_lifecycle.delete_lifecyclerulereviewergroup",
                             "authentik_lifecycle.delete_review",
+                            "authentik_lifecycle.delete_userexpirationrule",
+                            "authentik_lifecycle.delete_userexpirationrulenotificationtransport",
                             "authentik_lifecycle.delete_useroffboarding",
                             "authentik_lifecycle.view_lifecycleiteration",
                             "authentik_lifecycle.view_lifecyclerule",
@@ -13848,6 +14034,8 @@
                             "authentik_lifecycle.view_lifecyclerulereviewer",
                             "authentik_lifecycle.view_lifecyclerulereviewergroup",
                             "authentik_lifecycle.view_review",
+                            "authentik_lifecycle.view_userexpirationrule",
+                            "authentik_lifecycle.view_userexpirationrulenotificationtransport",
                             "authentik_lifecycle.view_useroffboarding",
                             "authentik_outposts.add_dockerserviceconnection",
                             "authentik_outposts.add_kubernetesserviceconnection",

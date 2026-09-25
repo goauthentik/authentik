@@ -20,6 +20,8 @@ import type { OffboardingStatusEnum } from "./OffboardingStatusEnum";
 import { OffboardingStatusEnumFromJSON } from "./OffboardingStatusEnum";
 import type { PartialUser } from "./PartialUser";
 import { PartialUserFromJSON } from "./PartialUser";
+import type { PartialUserExpirationRule } from "./PartialUserExpirationRule";
+import { PartialUserExpirationRuleFromJSON } from "./PartialUserExpirationRule";
 
 /**
  * Mixin to validate that a valid enterprise license
@@ -49,6 +51,8 @@ export interface UserOffboarding {
     readonly createdByObj: PartialUser;
     readonly createdAt: Date;
     readonly executedAt: Date | null;
+    readonly rule: string | null;
+    readonly ruleObj: PartialUserExpirationRule;
 }
 
 /**
@@ -93,6 +97,14 @@ export function instanceOfUserOffboarding(value: object): value is UserOffboardi
             (value as Record<string, any>)["executed_at"] === undefined)
     )
         return false;
+    if (!("rule" in value) || value["rule"] === undefined) return false;
+    if (
+        (!("ruleObj" in (value as Record<string, any>)) &&
+            !("rule_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["ruleObj"] === undefined &&
+            (value as Record<string, any>)["rule_obj"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -123,6 +135,8 @@ export function UserOffboardingFromJSONTyped(
         createdAt:
             json["created_at"] == null ? json["created_at"] : parseDateTime(json["created_at"]),
         executedAt: json["executed_at"] == null ? null : parseDateTime(json["executed_at"]),
+        rule: json["rule"],
+        ruleObj: PartialUserExpirationRuleFromJSON(json["rule_obj"]),
     };
 }
 
@@ -133,7 +147,14 @@ export function UserOffboardingToJSON(json: any): UserOffboarding {
 export function UserOffboardingToJSONTyped(
     value?: Omit<
         UserOffboarding,
-        "id" | "userObj" | "status" | "createdByObj" | "createdAt" | "executedAt"
+        | "id"
+        | "userObj"
+        | "status"
+        | "createdByObj"
+        | "createdAt"
+        | "executedAt"
+        | "rule"
+        | "ruleObj"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

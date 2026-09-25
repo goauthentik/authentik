@@ -11,6 +11,7 @@ class LifecycleConfig(EnterpriseConfig):
 
     @property
     def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.enterprise.lifecycle.expiration.tasks import apply_expiration_rules
         from authentik.enterprise.lifecycle.offboarding.tasks import execute_due_offboardings
         from authentik.enterprise.lifecycle.review.tasks import apply_lifecycle_rules
 
@@ -19,6 +20,10 @@ class LifecycleConfig(EnterpriseConfig):
                 actor=apply_lifecycle_rules,
                 crontab=f"{fqdn_rand('lifecycle_apply_lifecycle_rules')} "
                 f"{fqdn_rand('lifecycle_apply_lifecycle_rules', 24)} * * *",
+            ),
+            ScheduleSpec(
+                actor=apply_expiration_rules,
+                crontab=f"{fqdn_rand('lifecycle_apply_expiration_rules')} * * * *",
             ),
             ScheduleSpec(
                 actor=execute_due_offboardings,
