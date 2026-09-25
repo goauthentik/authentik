@@ -60,16 +60,15 @@ function documentTreeHost(node: Node): Element | null {
 /**
  * Pin a vendor frame to the size it declared.
  *
- * reCAPTCHA and hCaptcha size their anchor frames with the `width` and `height`
- * content attributes. Those are presentational hints, which lose to any author rule —
- * including PatternFly's base reset, `img, embed, iframe, ... { max-width: 100%;
- * height: auto }`, which reaches the container now that it lives in the document tree.
- * `height: auto` on an iframe is the 150px replaced-element default, so the frame's own
- * body shows as a blank band below the 78px widget. Inside the old wrapper iframe no
- * page stylesheet ever reached the vendor markup.
+ * reCAPTCHA and hCaptcha set anchor frame size through `width`/`height` attributes.
+ * Those are only hints, so author CSS can override them.
  *
- * Only frames that declare a size and have not set one inline are touched; Turnstile
- * sizes its frame inline already.
+ * PatternFly's reset applies `max-width: 100%` and `height: auto` to iframes.
+ * For iframes, `height: auto` falls back to the 150px default, which can leave a blank
+ * area below the widget.
+ *
+ * We only pin frames that declare a size and do not already set one inline.
+ * Turnstile already sets inline size.
  */
 function pinFrameSize(node: Node): void {
     if (!(node instanceof HTMLIFrameElement)) return;
@@ -84,12 +83,13 @@ function pinFrameSize(node: Node): void {
 }
 
 /**
- * Observe a container for vendor frames as they arrive, pinning each to its declared size
- * and handing it to the controller for any vendor-specific adjustment.
+ * Watch a container for vendor iframes as they are added.
  *
- * Observed rather than swept after `mount()`: `grecaptcha.render` happens to build its
- * frame synchronously, but the other vendors make no such promise, and `reset()` can
- * rebuild frames well after the initial mount.
+ * Each iframe is pinned to its declared size, then passed to the controller for
+ * vendor-specific adjustments.
+ *
+ * We observe instead of doing a one-time scan after `mount()` because frame creation
+ * timing differs by vendor, and `reset()` may recreate frames later.
  */
 function observeFrames(
     container: HTMLElement,
@@ -155,9 +155,26 @@ export class CaptchaStage
     @property({ type: Boolean })
     public embedded = false;
 
-    @property()
-    public onTokenChange: TokenListener = (token: string) => {
+    #tokenListener: TokenListener = (token: string) => {
         this.host.submit({ component: "ak-stage-captcha", token });
+    };
+
+    /**
+     * Called when the provider challenge is solved.
+     *
+     * Returns the current token listener instead of a listener captured at mount time.
+     */
+    public get onTokenChange(): TokenListener {
+        return this.#reportToken;
+    }
+
+    public set onTokenChange(listener: TokenListener) {
+        this.#tokenListener = listener;
+    }
+
+    #reportToken = (token: string): void => {
+        this.#solved = true;
+        this.#tokenListener(token);
     };
 
     @property()
@@ -195,9 +212,14 @@ export class CaptchaStage
     #loadGeneration = 0;
 
     /**
-     * Identifies the challenge the active controller was built for.
+     * The challenge the active controller was built for.
      */
-    #loadedSignature: string | null = null;
+    #loadedChallenge: CaptchaChallenge | null = null;
+
+    /**
+     * Whether the provider has issued a token for the current widget.
+     */
+    #solved = false;
 
     //#endregion
 
@@ -206,12 +228,11 @@ export class CaptchaStage
     /**
      * The element a provider renders its widget into.
      *
-     * Attached to the nearest document-tree ancestor — the flow executor — and projected
-     * back down into the card through {@linkcode CAPTCHA_SLOT}. reCAPTCHA and hCaptcha
-     * resolve their own elements through `document`, so a container whose `getRootNode()`
-     * is a `ShadowRoot` renders but can never finish verifying: the checkbox spins
-     * forever. Slotting moves nothing, so the container stays in the document tree while
-     * appearing inside the card.
+     * This container is attached to the flow executor (in the document tree), then shown
+     * inside the card through {@linkcode CAPTCHA_SLOT}. reCAPTCHA and hCaptcha look up
+     * elements through `document`; if the container lives inside a `ShadowRoot`, the
+     * widget may render but never complete verification. Slotting keeps the container in
+     * the document tree while displaying it in the card.
      */
     protected get container(): HTMLDivElement {
         if (this.#container) return this.#container;
@@ -279,8 +300,22 @@ export class CaptchaStage
 
     //#region Lifecycle
 
+    public override connectedCallback(): void {
+        super.connectedCallback();
+
+        // Lit doesn't re-run `updated` on reconnect, so a stage that was moved in the DOM
+        // would otherwise stay empty until its next challenge.
+        if (this.hasUpdated && this.challenge && !this.#loadedChallenge) {
+            this.#loadedChallenge = this.challenge;
+            this.#load();
+        }
+    }
+
     public disconnectedCallback(): void {
         this.#listenController.abort();
+
+        this.#loadGeneration++;
+        this.#loadedChallenge = null;
         this.#teardown();
 
         super.disconnectedCallback();
@@ -289,15 +324,12 @@ export class CaptchaStage
     protected override updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
 
-        // A flow can present several CAPTCHA stages in a row, and the executor reuses this
-        // element for each of them rather than replacing it — only `challenge` changes. The
-        // widget therefore has to be rebuilt here, not just when the element first renders,
-        // or the second stage keeps showing the first stage's solved widget.
-        if (
-            changedProperties.has("challenge") &&
-            this.#challengeSignature !== this.#loadedSignature
-        ) {
-            this.#loadedSignature = this.#challengeSignature;
+        // Flows can show multiple CAPTCHA stages in sequence while reusing this element.
+        // Only `challenge` changes, so the widget must be rebuilt here (not only on first
+        // render) to avoid showing a solved widget from the previous stage. A new stage
+        // always gets a new challenge object, even when provider and site key are the same.
+        if (changedProperties.has("challenge") && this.challenge !== this.#loadedChallenge) {
+            this.#loadedChallenge = this.challenge;
             this.#load();
 
             return;
@@ -308,6 +340,9 @@ export class CaptchaStage
             changedProperties.get("activeTheme") &&
             this.activeController
         ) {
+            // A rebuilt widget would be unsolved while its token has already been handed on.
+            if (this.#solved) return;
+
             this.#logger.debug(`Theme changed to \`${this.activeTheme}\``);
             this.#load();
 
@@ -320,23 +355,11 @@ export class CaptchaStage
 
         this.#logger.debug("Refresh triggered");
 
+        this.#solved = false;
+
         this.activeController?.reset().catch((error: unknown) => {
             this.#logger.warn("Failed to reset challenge", error);
         });
-    }
-
-    /**
-     * Identity of the current challenge, as far as the widget is concerned.
-     *
-     * The executor hands us a fresh object on every update, so object identity would
-     * rebuild the widget on unrelated re-renders.
-     */
-    get #challengeSignature(): string | null {
-        const { challenge } = this;
-
-        if (!challenge) return null;
-
-        return [challenge.jsUrl, challenge.siteKey, challenge.interactive].join("|");
     }
 
     #teardown() {
@@ -363,6 +386,7 @@ export class CaptchaStage
         const generation = ++this.#loadGeneration;
 
         this.#teardown();
+        this.#solved = false;
         this.error = null;
 
         const source = this.challenge?.jsUrl;
@@ -438,9 +462,25 @@ export class CaptchaStage
                 await controller.execute(this.container);
             }
 
+            // A newer load may have started while the provider rendered. Its teardown
+            // couldn't reach this controller, which isn't active yet.
+            if (generation !== this.#loadGeneration) {
+                this.#logger.debug("Stale mount, discarding.");
+                controller.unmount();
+                this.removeController(controller);
+
+                return;
+            }
+
             this.activeController = controller;
             this.#logger.debug(`[${Controller.globalName}]: mounted`);
         } catch (error) {
+            if (generation !== this.#loadGeneration) {
+                this.removeController(controller);
+
+                return;
+            }
+
             this.#logger.warn(`[${Controller.globalName}]: failed to mount`, error);
 
             this.error = pluckErrorDetail(error, "Unspecified error");
@@ -466,6 +506,9 @@ export class CaptchaStage
         }
 
         if (event.detail.status === "loading") return;
+
+        // A rebuilt widget would be unsolved while its token has already been handed on.
+        if (this.#solved) return;
 
         this.#logger.debug(`Locale changed to \`${event.detail.readyLocale}\``);
 
