@@ -44,94 +44,65 @@ For instructions on how to display the new source on the authentik login page, r
 :::
 
 :::info Embed new source in flow :ak-enterprise
-For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source).
+For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../add-secure-apps/flows-stages/stages/source/).
 :::
 
 ## Optional additional configuration
 
 ### Sync Discord roles and avatars to authentik
 
-The following property mapping allows you to synchronize roles from a Discord guild to roles in authentik.
+This mapping reads the user's role IDs in one Discord guild, links matching authentik groups, and stores an avatar URL. authentik reconciles source-linked group memberships after successful logins.
 
-Whenever a user enrolls in authentik via a Discord source, this property mapping will check the user's Discord roles and update the user's authentik groups accordingly.
+Before creating the mapping, add `guilds guilds.members.read` under **Protocol settings** > **Scopes** on the Discord OAuth source. For each authentik group to link, set an attribute named `discord_role_id` to its Discord role ID under **Directory** > **Groups** > **Your group** > **Attributes**. Enable Discord developer mode to copy the guild and role IDs.
 
-:::info Group Attribute
-Any authentik group that you want to sync with a Discord role needs to have a `discord_role_id` attribute set with the ID of the Discord role.
-Example: `discord_role_id: "<ROLE ID>"`
-
-This group attribute can be set via **Directory** > **Groups** > **Your_Group** > **Attributes**.
-:::
-
-:::info Required OAuth Scopes
-Ensure that the Discord OAuth source in **Federation and Social login** has the additional `guilds guilds.members.read` scopes added under **Protocol settings** > **Scopes**.
-:::
-
-:::info Avatar Setting
-To use the created avatar attribute in authentik you need to set the [authentik avatar configuration](../../../../sys-mgmt/settings.mdx#avatars).
-:::
-
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings**.
-3. Click **Create**, select **OAuth Source Property Mapping** and then **Next**.
-4. Provide a name for the mapping and set the following expression:
+1. In the authentik Admin interface, navigate to **Customization** > **Property Mappings**.
+2. Click **Create**, select **OAuth Source Property Mapping**, and then click **Next**.
+3. Provide a name for the mapping and enter this expression. Replace the guild ID with your own.
 
 ```python
-import base64
-import requests
 from authentik.core.models import Group
 
-# To get the guild ID number for the parameters, open Discord, go to Settings > Advanced and enable developer mode.
-# Right-click the server/guild title and select "Copy ID" to get the guild ID.
+guild_id = "123456789123456789"
+guild_url = f"https://discord.com/api/v10/users/@me/guilds/{guild_id}/member"
+response = client.do_request("GET", guild_url, token=token)
+if response.status_code == 404:
+    is_member = False
+    role_ids = []
+else:
+    response.raise_for_status()
+    is_member = True
+    role_ids = response.json()["roles"]
 
-#Set these values
-ACCEPTED_GUILD_ID = "123456789123456789" # Discord server id to fetch roles from
-AVATAR_SIZE = "64" # Valid avatar size values: 16,32,64,128,256,512,1024.
-# Larger values than 64 may cause HTTP error 431 on applications/providers
-# due to headers being too large.
-
-# Generate avatar URL and base64 avatar image
+groups = Group.objects.filter(attributes__discord_role_id__in=role_ids)
 avatar_url = None
-avatar_base64 = None
-
 if info.get("avatar"):
-    avatar_url = (f"https://cdn.discordapp.com/avatars/{info.get('id')}/"
-                  f"{info.get('avatar')}.png?size={AVATAR_SIZE}")
-    try:
-        response = client.do_request("GET", avatar_url)
-        encoded_image = base64.b64encode(response.content).decode('utf-8')
-        avatar_base64 = f"data:image/png;base64,{encoded_image}"
-    except:
-        avatar_base64 = None
+    avatar_url = (
+        f"https://cdn.discordapp.com/avatars/{info['id']}/{info['avatar']}.png?size=128"
+    )
 
-# Get guild membership
-guild_url = f"https://discord.com/api/v10/users/@me/guilds/{ACCEPTED_GUILD_ID}/member"
-guild_response = client.do_request("GET", guild_url, token=token)
-guild_data = guild_response.json()
-
-# Get matching groups
-user_groups = Group.objects.filter(attributes__discord_role_id__in=guild_data["roles"])
-
-# Return user data
 return {
-    "name": info.get("global_name"),
-    "attributes.discord": {
-        "id": info.get("id"),
-        "username": info.get("username"),
-        "discriminator": info.get("discriminator"),
-        "email": info.get("email"),
-        "avatar": info.get("avatar"),
-        "avatar_url": avatar_url
+    "name": info.get("global_name") or info.get("username"),
+    "groups": list(groups.values_list("name", flat=True)),
+    "attributes": {
+        "discord": {
+            "id": info.get("id"),
+            "username": info.get("username"),
+            "guild_id": guild_id,
+            "is_member": is_member,
+            "role_ids": role_ids,
+        },
+        "avatar": avatar_url,
     },
-    "groups": [group.name for group in user_groups],
-    "attributes.avatar": avatar_base64
 }
 ```
 
-5. Click **Finish**.
-6. Navigate to **Directory** > **Federation and Social login** and click the **Edit** icon next to your Discord OAuth Source.
-7. Set **Group matching mode** to **Link to a group with identical name**.
-8. Under **OAuth Attribute mapping** add the newly created property mapping to **Selected User Property Mappings**.
-9. Click **Update**.
+4. Click **Finish**.
+5. Edit the Discord OAuth source under **Directory** > **Federation and Social login**. Set **Group matching mode** to **Link to a group with identical name**.
+6. Under **OAuth Attribute mapping** > **User Property Mappings**, add the mapping to **Selected User Property Mappings**, and then click **Update**.
+
+Only existing authentik groups with a matching `discord_role_id` are linked. Use distinct group names, because **Link to a group with identical name** can link a group created for another source. A Discord 404 result leaves the role list empty; other API errors stop the login rather than clearing membership.
+
+To display the stored avatar, set the [avatar configuration](../../../../sys-mgmt/settings.mdx#avatars) to `attributes.avatar`.
 
 ### Check Discord Guild membership
 
