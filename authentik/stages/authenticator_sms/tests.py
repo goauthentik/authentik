@@ -9,6 +9,7 @@ from django.urls import reverse
 from requests_mock import Mocker
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import FlowPlan
 from authentik.flows.tests import FlowTestCase
@@ -104,7 +105,7 @@ class AuthenticatorSMSStageTests(FlowTestCase):
     def test_stage_submit_twilio(self):
         """test stage (submit) (twilio)"""
         self.stage.account_sid = generate_id()
-        self.stage.auth = generate_id()
+        self.stage.auth_ref = create_test_secret(generate_id())
         self.stage.from_number = generate_id()
         self.stage.save()
         self.client.get(

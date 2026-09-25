@@ -9,6 +9,7 @@ from django.test.client import RequestFactory
 from django.urls import reverse
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
@@ -28,9 +29,9 @@ class AuthenticatorDuoStageTests(FlowTestCase):
         stage = AuthenticatorDuoStage(
             name=generate_id(),
             client_id=generate_id(),
-            client_secret=generate_id(),
+            client_secret_ref=create_test_secret(generate_id()),
             admin_integration_key=generate_id(),
-            admin_secret_key=generate_id(),
+            admin_secret_key_ref=create_test_secret(generate_id()),
             api_hostname=generate_id(),
         )
         self.assertEqual(stage.auth_client().ikey, stage.client_id)
@@ -39,12 +40,26 @@ class AuthenticatorDuoStageTests(FlowTestCase):
         with self.assertRaises(ValueError):
             self.assertEqual(stage.admin_client().ikey, stage.admin_integration_key)
 
+    def test_two_secrets_one_save(self):
+        """The client and admin credentials reference separate Secret objects."""
+        stage = AuthenticatorDuoStage.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            client_secret_ref=create_test_secret("client-value"),
+            admin_integration_key=generate_id(),
+            admin_secret_key_ref=create_test_secret("admin-value"),
+            api_hostname=generate_id(),
+        )
+        self.assertNotEqual(stage.client_secret_ref, stage.admin_secret_key_ref)
+        self.assertEqual(stage.client_secret_ref.value, "client-value")
+        self.assertEqual(stage.admin_secret_key_ref.value, "admin-value")
+
     def test_stage_deletion_is_protected(self):
         """A setup stage with enrolled devices cannot be deleted."""
         stage = AuthenticatorDuoStage.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            client_secret=generate_id(),
+            client_secret_ref=create_test_secret(generate_id()),
             api_hostname=generate_id(),
         )
         device = DuoDevice.objects.create(user=self.user, stage=stage)
@@ -74,7 +89,7 @@ class AuthenticatorDuoStageTests(FlowTestCase):
         stage = AuthenticatorDuoStage.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            client_secret=generate_id(),
+            client_secret_ref=create_test_secret(generate_id()),
             api_hostname=generate_id(),
         )
         response = self.client.post(
@@ -96,7 +111,7 @@ class AuthenticatorDuoStageTests(FlowTestCase):
         stage = AuthenticatorDuoStage.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            client_secret=generate_id(),
+            client_secret_ref=create_test_secret(generate_id()),
             api_hostname=generate_id(),
         )
         device = DuoDevice.objects.create(
@@ -125,7 +140,7 @@ class AuthenticatorDuoStageTests(FlowTestCase):
         stage = AuthenticatorDuoStage.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            client_secret=generate_id(),
+            client_secret_ref=create_test_secret(generate_id()),
             api_hostname=generate_id(),
         )
         response = self.client.post(
@@ -148,7 +163,7 @@ class AuthenticatorDuoStageTests(FlowTestCase):
         stage = AuthenticatorDuoStage.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            client_secret=generate_id(),
+            client_secret_ref=create_test_secret(generate_id()),
             api_hostname=generate_id(),
         )
 
@@ -163,9 +178,18 @@ class AuthenticatorDuoStageTests(FlowTestCase):
         )
         self.assertEqual(response.status_code, 400)
 
-        # Test internal error handling
         stage.admin_integration_key = generate_id()
-        stage.admin_secret_key = generate_id()
+        stage.save()
+        response = self.client.post(
+            reverse(
+                "authentik_api:authenticatorduostage-import-devices-automatic",
+                kwargs={"pk": str(stage.pk)},
+            ),
+        )
+        self.assertEqual(response.status_code, 400)
+
+        # Test internal error handling
+        stage.admin_secret_key_ref = create_test_secret(generate_id())
         stage.save()
         with patch(
             "duo_client.admin.Admin.get_users_iterator",
@@ -199,10 +223,10 @@ class AuthenticatorDuoStageTests(FlowTestCase):
         stage = AuthenticatorDuoStage.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            client_secret=generate_id(),
+            client_secret_ref=create_test_secret(generate_id()),
             api_hostname=generate_id(),
             admin_integration_key=generate_id(),
-            admin_secret_key=generate_id(),
+            admin_secret_key_ref=create_test_secret(generate_id()),
         )
         ssl_error = SSLCertVerificationError(
             1,
@@ -240,10 +264,10 @@ class AuthenticatorDuoStageTests(FlowTestCase):
         stage = AuthenticatorDuoStage.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            client_secret=generate_id(),
+            client_secret_ref=create_test_secret(generate_id()),
             api_hostname=generate_id(),
             admin_integration_key=generate_id(),
-            admin_secret_key=generate_id(),
+            admin_secret_key_ref=create_test_secret(generate_id()),
         )
         with patch(
             "duo_client.admin.Admin.get_users_iterator",
@@ -276,10 +300,10 @@ class AuthenticatorDuoStageTests(FlowTestCase):
         stage = AuthenticatorDuoStage.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            client_secret=generate_id(),
+            client_secret_ref=create_test_secret(generate_id()),
             api_hostname=generate_id(),
             admin_integration_key=generate_id(),
-            admin_secret_key=generate_id(),
+            admin_secret_key_ref=create_test_secret(generate_id()),
         )
         with patch(
             "duo_client.admin.Admin.get_users_iterator",
@@ -308,9 +332,9 @@ class AuthenticatorDuoStageTests(FlowTestCase):
         stage = AuthenticatorDuoStage.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            client_secret=generate_id(),
+            client_secret_ref=create_test_secret(generate_id()),
             admin_integration_key=generate_id(),
-            admin_secret_key=generate_id(),
+            admin_secret_key_ref=create_test_secret(generate_id()),
             api_hostname=generate_id(),
         )
         device = DuoDevice.objects.create(
@@ -360,7 +384,7 @@ class AuthenticatorDuoStageTests(FlowTestCase):
         stage = AuthenticatorDuoStage.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            client_secret=generate_id(),
+            client_secret_ref=create_test_secret(generate_id()),
             api_hostname=generate_id(),
         )
         flow = create_test_flow()
@@ -436,7 +460,7 @@ class AuthenticatorDuoStageTests(FlowTestCase):
         stage = AuthenticatorDuoStage.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            client_secret=generate_id(),
+            client_secret_ref=create_test_secret(generate_id()),
             api_hostname=generate_id(),
         )
         flow = create_test_flow()

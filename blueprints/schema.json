@@ -16764,9 +16764,9 @@
                     "minLength": 1,
                     "title": "Client id"
                 },
-                "client_secret": {
+                "client_secret_ref": {
                     "type": "string",
-                    "minLength": 1,
+                    "format": "uuid",
                     "title": "Client secret"
                 },
                 "api_hostname": {
@@ -16778,8 +16778,9 @@
                     "type": "string",
                     "title": "Admin integration key"
                 },
-                "admin_secret_key": {
+                "admin_secret_key_ref": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Admin secret key"
                 }
             },
@@ -17033,13 +17034,14 @@
                     "minLength": 1,
                     "title": "Account sid"
                 },
-                "auth": {
+                "auth_ref": {
                     "type": "string",
-                    "minLength": 1,
-                    "title": "Auth"
+                    "format": "uuid",
+                    "title": "Auth token"
                 },
-                "auth_password": {
+                "auth_password_ref": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Auth password"
                 },
                 "auth_type": {

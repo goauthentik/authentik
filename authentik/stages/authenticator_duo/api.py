@@ -41,14 +41,13 @@ class AuthenticatorDuoStageSerializer(StageSerializer):
             "configure_flow",
             "friendly_name",
             "client_id",
-            "client_secret",
+            "client_secret_ref",
             "api_hostname",
             "admin_integration_key",
-            "admin_secret_key",
+            "admin_secret_key_ref",
         ]
         extra_kwargs = {
-            "client_secret": {"write_only": True},
-            "admin_secret_key": {"write_only": True},
+            "client_secret_ref": {"required": True, "allow_null": False},
         }
 
 
@@ -165,7 +164,7 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
     def import_devices_automatic(self, request: Request, pk: str) -> Response:
         """Import duo devices into authentik"""
         stage: AuthenticatorDuoStage = self.get_object()
-        if stage.admin_integration_key == "":
+        if not stage.admin_integration_key or not stage.admin_secret_key_ref_id:
             return Response(
                 data={
                     "non_field_errors": [
@@ -183,9 +182,6 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
         Import duo devices. This used to be a blocking task.
         """
         created = 0
-        if stage.admin_integration_key == "":
-            LOGGER.info("Stage does not have admin integration configured", stage=stage)
-            return {"error": "Stage does not have admin integration configured", "count": created}
         client = stage.admin_client()
         try:
             for duo_user in client.get_users_iterator():

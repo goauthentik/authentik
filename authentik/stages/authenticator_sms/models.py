@@ -42,13 +42,34 @@ class SMSAuthTypes(models.TextChoices):
 class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
     """Use SMS-based TOTP instead of authenticator-based."""
 
+    # Remove the legacy credential columns in 2027.2.
+    _auth_password = models.TextField(blank=True, db_column="auth_password", default="")
+
+    _auth = models.TextField(db_column="auth")
+
     provider = models.TextField(choices=SMSProviders.choices)
 
     from_number = models.TextField()
 
     account_sid = models.TextField()
-    auth = models.TextField()
-    auth_password = models.TextField(default="", blank=True)
+    auth_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Auth token"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="sms_stages_auth",
+    )
+    auth_password_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Auth password"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="sms_stages_auth_password",
+    )
     auth_type = models.TextField(choices=SMSAuthTypes.choices, default=SMSAuthTypes.BASIC)
 
     verify_only = models.BooleanField(
@@ -82,7 +103,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
 
     def send_twilio(self, request: HttpRequest, token: str, device: SMSDevice):
         """send sms via twilio provider"""
-        client = Client(self.account_sid, self.auth)
+        client = Client(self.account_sid, self.auth_ref.value)
         message_body = str(self.get_message(token))
         if self.mapping:
             payload = sanitize_item(
@@ -129,13 +150,16 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
             response = get_http_session().post(
                 self.account_sid,
                 json=payload,
-                headers={"Authorization": f"Bearer {self.auth}"},
+                headers={"Authorization": f"Bearer {self.auth_ref.value}"},
             )
         elif self.auth_type == SMSAuthTypes.BASIC:
             response = get_http_session().post(
                 self.account_sid,
                 json=payload,
-                auth=(self.auth, self.auth_password),
+                auth=(
+                    self.auth_ref.value,
+                    self.auth_password_ref.value if self.auth_password_ref else "",
+                ),
             )
         else:
             raise ValueError(f"Invalid Auth type '{self.auth_type}'")
