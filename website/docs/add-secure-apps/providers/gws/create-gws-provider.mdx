@@ -17,7 +17,7 @@ To create a Google Workspace provider in authentik, you must have already [confi
 4. On the **New Google Workspace Provider** page, set the following configurations:
     - **Name**: provide a descriptive name (e.g. `GWS provider`)
     - Under **Protocol settings**:
-        - **Credentials**: paste the contents of the JSON file that you downloaded when [configuring Google Workspace](./configure-gws.mdx)
+        - **Credentials**: create or select a secret containing the JSON file that you downloaded when [configuring Google Workspace](./configure-gws.mdx). Use the **File** type to upload it, or **Multi-line text** to paste its contents.
         - **Delegated Subject**: enter the email address of the Google Workspace user that all authentik actions will be delegated to
         - **Default group email domain**: enter a domain which will be used to generate the email address for groups synced from authentik to Google Workspace
         - **User deletion action**: determines what authentik will do when a user is deleted from authentik

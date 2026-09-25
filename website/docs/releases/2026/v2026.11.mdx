@@ -6,11 +6,41 @@ draft: true
 
 ## Highlights
 
-<!-- ## Breaking changes -->
+## Breaking changes
+
+### Credential references
+
+Providers, sources, stages, and connectors reference [Secret](../../sys-mgmt/secrets/index.mdx) objects to store credentials such as:
+
+- OAuth2/OpenID client secrets
+- Proxy provider cookie secrets
+- RADIUS shared secrets
+- LDAP and Kerberos source bind or sync passwords
+- OAuth, Plex, and Telegram source credentials
+- SCIM provider tokens and Basic authentication passwords
+- SMTP passwords
+- Duo, captcha, and SMS stage keys
+- Notification transport webhook URLs
+- Microsoft Entra and Fleet enterprise credentials
+- Google service-account JSON
+- Kubernetes kubeconfig
+- Kerberos keytabs and credential caches
+
+:::info
+Credential database columns are retained until 2027.2 to support downgrades.
+:::
+
+For more information, see [Secrets](../../sys-mgmt/secrets/index.mdx).
 
 ## New features and improvements
 
 - **Display names in `ak_send_email` recipients**: The `address`, `cc`, and `bcc` parameters of `ak_send_email` now accept `(name, email)` tuples and `"Name <email>"` strings, so emails sent from expressions can include a display name in the `To` and `CC` headers, matching the Email stage. See [`ak_send_email`](../../customize/policies/types/expression/reference.mdx).
+
+### Secrets
+
+Manage secrets used by providers, sources, stages, and connectors under **System** > **Secrets**. Grant access to view or rotate a credential separately from permission to edit the object that uses it. You can reuse a secret across objects and create one directly from a referencing form. Viewing a value and rotating it are audited.
+
+Text secrets can be rotated through the Admin interface or API. Rotation updates authentik only; update external systems separately. See [Secrets](../../sys-mgmt/secrets/index.mdx).
 
 ## Upgrading
 
