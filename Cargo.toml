@@ -2,6 +2,7 @@
 members = [
   "packages/ak-axum",
   "packages/ak-common",
+  "packages/ak-outpost-controller",
   "packages/client-rust",
   "website/scripts/docsmg",
 ]
@@ -156,6 +157,7 @@ uuid = { version = "= 1.26.1", features = ["serde", "v4"] }
 ak-axum = { package = "authentik-axum", version = "2026.11.0-rc1", path = "./packages/ak-axum" }
 ak-client = { package = "authentik-client", version = "2026.11.0-rc1", path = "./packages/client-rust" }
 ak-common = { package = "authentik-common", version = "2026.11.0-rc1", path = "./packages/ak-common", default-features = false }
+ak-outpost-controller = { package = "authentik-outpost-controller", version = "2026.11.0-rc1", path = "./packages/ak-outpost-controller" }
 
 [workspace.lints.rust]
 ambiguous_negative_literals = "warn"
@@ -315,6 +317,7 @@ pyo3-build-config.workspace = true
 ak-axum.workspace = true
 ak-client = { workspace = true, optional = true }
 ak-common.workspace = true
+ak-outpost-controller.workspace = true
 arc-swap.workspace = true
 argh.workspace = true
 askama = { workspace = true, optional = true }
@@ -339,18 +342,15 @@ nix.workspace = true
 pem.workspace = true
 percent-encoding.workspace = true
 pyo3 = { workspace = true, optional = true }
-rand.workspace = true
 regex = { workspace = true, optional = true }
 reqwest-middleware = { workspace = true, optional = true }
 reqwest.workspace = true
 rustls.workspace = true
 serde.workspace = true
 serde_json.workspace = true
-serde_repr.workspace = true
 sqlx = { workspace = true, optional = true }
 thiserror = { workspace = true, optional = true }
 time.workspace = true
-tokio-retry2.workspace = true
 tokio-tungstenite.workspace = true
 tokio.workspace = true
 tower-http.workspace = true

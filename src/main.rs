@@ -123,10 +123,11 @@ fn main() -> Result<()> {
                 }
                 #[cfg(feature = "proxy")]
                 Command::Proxy(args) => {
-                    outpost::start::<outpost::proxy::ProxyOutpost>(
+                    ak_outpost_controller::start::<outpost::proxy::ProxyOutpost>(
                         args,
                         &mut tasks,
                         Some(log_filter_handle),
+                        None,
                     )
                     .await?;
                 }

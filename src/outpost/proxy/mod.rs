@@ -8,6 +8,7 @@ use ak_common::{
     config,
     tls::{self, store::CertificateStore},
 };
+use ak_outpost_controller::{Outpost, OutpostController, event::EventSessionEnd};
 use arc_swap::ArcSwap;
 use argh::FromArgs;
 use axum::{Extension, Router, extract::Request, http::Uri, response::Response};
@@ -20,7 +21,7 @@ use rustls::{
 };
 use tracing::{debug, error, info, instrument, warn};
 
-use crate::outpost::{Outpost, OutpostController, proxy::application::Application};
+use crate::outpost::proxy::application::Application;
 
 mod allowlist;
 pub(crate) mod application;
@@ -167,7 +168,7 @@ impl Outpost for ProxyOutpost {
         Ok(())
     }
 
-    async fn end_session(&self, event: super::event::EventSessionEnd) -> Result<()> {
+    async fn end_session(&self, event: EventSessionEnd) -> Result<()> {
         let session_id = event.session_id;
         debug!(session_id, "ending sessions");
         let matches_session = move |claims: &claims::Claims| claims.sid == session_id;

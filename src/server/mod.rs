@@ -48,7 +48,7 @@ use tracing::{info, instrument, trace, warn};
 
 use crate::{
     brands::tls::BrandCertResolver,
-    outpost::{self, proxy::ProxyOutpost},
+    outpost::proxy::{self, ProxyOutpost},
     worker::Workers,
 };
 
@@ -292,7 +292,7 @@ async fn route_core_and_outpost(
 
 fn build_router(server: &Arc<Server>) -> Result<Router> {
     let core_router = core::build_router(server)?;
-    let proxy_router = outpost::proxy::embedded_router();
+    let proxy_router = proxy::embedded_router();
 
     metrics::describe_histogram!(
         "authentik_main_request_duration",
@@ -369,7 +369,7 @@ pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
 
         info!("starting embedded outpost");
         let proxy_outpost = tokio::select! {
-            res = outpost::start::<ProxyOutpost>(outpost::proxy::Cli::default(), tasks, None) => res?,
+            res = ak_outpost_controller::start::<ProxyOutpost>(proxy::Cli::default(), tasks, None, Some(socket_path())) => res?,
             () = arbiter.shutdown() => {
                 warn!("we were told to shutdown before starting the embedded outpost");
                 return Ok(server);
