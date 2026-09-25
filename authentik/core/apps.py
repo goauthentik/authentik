@@ -1,7 +1,9 @@
 """authentik core app config"""
 
 import os
+from typing import TYPE_CHECKING
 
+from django.db import DEFAULT_DB_ALIAS
 from django.utils.translation import gettext_lazy as _
 
 from authentik.blueprints.apps import ManagedAppConfig
@@ -10,15 +12,26 @@ from authentik.lib.tracing import TRACER_DEFER_POSTFORK_ENV_VAR, setup_post_fork
 from authentik.tasks.schedules.common import ScheduleSpec
 from authentik.tenants.flags import Flag
 
+if TYPE_CHECKING:
+    from authentik.tenants.models import Tenant
+
 
 class Setup(Flag[bool], key="setup"):
-
     default = False
     visibility = "system"
 
+    @classmethod
+    def set(cls, value: bool, tenant: Tenant | None = None) -> bool | None:
+        super().set(value, tenant)
+
+        if value:
+            from django.db import connections
+
+            with connections[DEFAULT_DB_ALIAS].cursor() as cursor:
+                cursor.execute("ANALYZE")
+
 
 class AppAccessWithoutBindings(Flag[bool], key="core_default_app_access"):
-
     default = True
     visibility = "none"
     description = _("Applications with no policies bound can be accessed by any user.")
