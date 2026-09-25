@@ -293,10 +293,6 @@ export abstract class Table<T extends object, D = T>
 
     #synchronizeRefreshSchedule(): Promise<void> {
         if (!this.visible) {
-            if (!this.#deferredRefreshRequestAt) {
-                this.#deferredRefreshRequestAt = new Date();
-            }
-
             return Promise.resolve();
         }
 
@@ -588,7 +584,6 @@ export abstract class Table<T extends object, D = T>
             }
 
             this.logger.debug("Scheduling fetch for when table becomes visible");
-
             this.#deferredRefreshRequestAt = new Date();
 
             return Promise.resolve();
@@ -745,7 +740,7 @@ export abstract class Table<T extends object, D = T>
             return this.renderEmpty(this.renderError());
         }
 
-        if (!this.visible || (this.loading && this.data === null)) {
+        if (this.loading && this.data === null) {
             return this.renderLoading();
         }
 
