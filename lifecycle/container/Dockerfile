@@ -60,7 +60,8 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "GEOIPUPDATE_LICENSE_KEY_FILE=/run/secrets/GEOIPUPDATE_LICENSE_KEY /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage: download Rust toolchain
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:ed780d7d3d789d7056855e8c7e3c37d21368ea42f39305fe431c19ae2e08d6a3 AS rust-toolchain
+# TEMPORARY: pinned to goauthentik/fips#178 (remove wget/curl). Revert before merge.
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips-pr-178@sha256:cd66513ddc1a2735f120db27add7dffa409f601fec3ec813a69bba9b126e845e AS rust-toolchain
 
 ARG TARGETARCH
 ARG TARGETVARIANT
@@ -72,7 +73,8 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     # Required for installing pip packages
     apt-get install -y --no-install-recommends \
     # Build essentials
-    build-essential && \
+    build-essential \
+    curl ca-certificates && \
     curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain none && \
     rustup install && \
     rustup default "$(sed -n 's/channel = "\(.*\)"/\1/p' rust-toolchain.toml)" && \
@@ -82,7 +84,8 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
 # Stage: Download uv
 FROM ghcr.io/astral-sh/uv:0.12.18@sha256:3adc3706091ce7c2fe595e669628caedd6d951551b92b258b7e7dbe06d9440bc AS uv
 # Stage: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.14.7-slim-trixie-fips@sha256:db124ee8da053e2344a260ae14f8903c7caa33b6de98fcca69d0793f7327754d AS python-base
+# TEMPORARY: pinned to goauthentik/fips#178 (remove wget/curl). Revert before merge.
+FROM ghcr.io/goauthentik/fips-python:3.14.7-slim-trixie-fips-pr-178@sha256:395b057183f7e567f3cef6b06e7dffd5e10b7e8bedb94866b613449e1ca5ab28 AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
@@ -183,28 +186,22 @@ RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
     uv sync --locked --no-install-project --no-dev
 
 # Stage: assemble the runtime filesystem
-# Shared by the debug image and the final image
+# prune.sh copies the used files into /out, and the final stage starts FROM scratch
 FROM python-base AS runtime-assemble
 
 WORKDIR /
 
-# We cannot cache this layer otherwise we'll end up with a bigger image
-RUN apt-get update && \
+# Not cached on purpose: apt-get upgrade on every build is what keeps the OS packages current
+RUN --mount=type=bind,target=/tmp/runtime-packages.txt,src=./lifecycle/container/runtime-packages.txt \
+    apt-get update && \
     apt-get upgrade -y && \
-    # Required for runtime
     apt-get install -y --no-install-recommends \
-    libpq5 libmaxminddb0 ca-certificates \
-    libkadm5clnt-mit12 libkadm5clnt7t64-heimdal \
-    libltdl7 libxslt1.1 && \
-    apt-get purge -y curl libcurl4t64 && \
-    pip3 install --no-cache-dir --upgrade pip && \
+    $(sed -e 's/#.*//' -e '/^[[:space:]]*$/d' /tmp/runtime-packages.txt) && \
     apt-get clean && \
-    rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/ && \
+    rm -rf /var/lib/apt/lists/* && \
     adduser --system --no-create-home --uid 1000 --group --home /authentik authentik && \
-    mkdir -p /certs /data /media /blueprints && \
+    mkdir -p /certs /data /media /blueprints /authentik/.ssh /ak-root && \
     ln -s /media /data/media && \
-    mkdir -p /authentik/.ssh && \
-    mkdir -p /ak-root && \
     chown authentik:authentik /certs /data /data/media /media /authentik/.ssh /ak-root
 
 COPY ./authentik/ /authentik
@@ -227,6 +224,13 @@ COPY --from=geoip /usr/share/GeoIP /geoip
 RUN ln -s /ak-root/packages /packages && \
     ln -sf ak.py /lifecycle/ak
 
+# Prune everything that is not needed
+RUN --mount=type=bind,target=/tmp/prune.sh,src=./lifecycle/container/prune.sh \
+    --mount=type=bind,target=/tmp/runtime-packages.txt,src=./lifecycle/container/runtime-packages.txt \
+    --mount=type=bind,target=/tmp/runtime-paths.txt,src=./lifecycle/container/runtime-paths.txt \
+    --mount=type=bind,target=/tmp/runtime-drop.txt,src=./lifecycle/container/runtime-drop.txt \
+    bash /tmp/prune.sh /tmp/runtime-packages.txt /tmp/runtime-paths.txt /tmp/runtime-drop.txt
+
 # Stage: Debug
 # For `ak test-all`, AUTHENTIK_DEBUGGER and `docker exec ... bash`
 # Build it with --target debug as it is not the default
@@ -241,7 +245,8 @@ LABEL org.opencontainers.image.title="authentik server image (debug)" \
 
 COPY ./tests /tests
 ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec"
-RUN apt-get update && \
+RUN rm -rf /out /out-root && \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
     bash-completion curl git less procps vim-tiny \
     krb5-user krb5-kdc krb5-admin-server libkrb5-dev gcc && \
@@ -252,20 +257,18 @@ RUN apt-get update && \
     chown authentik:authentik /unittest.xml
 
 USER 1000
-
 ENV TMPDIR=/dev/shm/ \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     GOFIPS=1 \
     RUST_BACKTRACE=full
-
 HEALTHCHECK --interval=30s --timeout=30s --start-period=120s --retries=3 CMD [ "ak", "healthcheck" ]
-
 ENTRYPOINT [ "dumb-init", "--", "ak" ]
 
 # Stage: Run
+# Contains only what's needed at runtime and nothing more
 # The default target, so it has to stay last
-FROM runtime-assemble AS final
+FROM scratch AS final
 
 ARG VERSION
 ARG GIT_BUILD_HASH
@@ -282,9 +285,32 @@ LABEL org.opencontainers.image.authors="Authentik Security Inc." \
     org.opencontainers.image.vendor="Authentik Security Inc." \
     org.opencontainers.image.version=${VERSION}
 
+# The copies are split so a rebuild does not invalidate unchanged layers
+# /out-root holds the merged-usr symlinks (bin, lib, lib64, sbin) and the top level files, trailing slash required!
+COPY --from=runtime-assemble /out-root/ /
+COPY --from=runtime-assemble /out/usr /usr
+COPY --from=runtime-assemble /out/etc /etc
+COPY --from=runtime-assemble /out/var /var
+COPY --from=runtime-assemble /out/tmp /tmp
+COPY --from=runtime-assemble /out/run /run
+COPY --from=runtime-assemble /out/geoip /geoip
+COPY --from=runtime-assemble /out/ak-root /ak-root
+COPY --from=runtime-assemble /out/web /web
+COPY --from=runtime-assemble /out/locale /locale
+COPY --from=runtime-assemble /out/schemas /schemas
+COPY --from=runtime-assemble /out/blueprints /blueprints
+COPY --from=runtime-assemble /out/lifecycle /lifecycle
+COPY --from=runtime-assemble /out/authentik /authentik
+COPY --chown=1000:1000 --from=runtime-assemble /out/certs /certs
+COPY --chown=1000:1000 --from=runtime-assemble /out/data /data
+COPY --chown=1000:1000 --from=runtime-assemble /out/media /media
+
+WORKDIR /
 USER 1000
 
-ENV TMPDIR=/dev/shm/ \
+ENV PATH="/lifecycle:/ak-root/.venv/bin:/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin" \
+    VENV_PATH="/ak-root/.venv" \
+    TMPDIR=/dev/shm/ \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     GOFIPS=1 \
