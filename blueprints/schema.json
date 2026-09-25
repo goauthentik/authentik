@@ -15530,9 +15530,9 @@
                     "minLength": 1,
                     "title": "Consumer key"
                 },
-                "consumer_secret": {
+                "consumer_secret_ref": {
                     "type": "string",
-                    "minLength": 1,
+                    "format": "uuid",
                     "title": "Consumer secret"
                 },
                 "additional_scopes": {
@@ -15849,9 +15849,9 @@
                     "title": "Allow friends",
                     "description": "Allow friends to authenticate, even if you don't share a server."
                 },
-                "plex_token": {
+                "plex_token_ref": {
                     "type": "string",
-                    "minLength": 1,
+                    "format": "uuid",
                     "title": "Plex token",
                     "description": "Plex token used to check friends"
                 }
@@ -16600,9 +16600,9 @@
                     "title": "Bot username",
                     "description": "Telegram bot username"
                 },
-                "bot_token": {
+                "bot_token_ref": {
                     "type": "string",
-                    "minLength": 1,
+                    "format": "uuid",
                     "title": "Bot token",
                     "description": "Telegram bot token"
                 },

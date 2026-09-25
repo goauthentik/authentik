@@ -24,9 +24,20 @@ from authentik.flows.models import Flow
 class TelegramSource(Source):
     """Log in with Telegram."""
 
-    bot_username = models.TextField(help_text=_("Telegram bot username"))
-    bot_token = models.TextField(help_text=_("Telegram bot token"))
+    # Remove the legacy credential columns in 2027.2.
+    _bot_token = models.TextField(db_column="bot_token", help_text=_("Telegram bot token"))
 
+    bot_username = models.TextField(help_text=_("Telegram bot username"))
+    bot_token_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Bot token"),
+        help_text=_("Telegram bot token"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="telegram_sources",
+    )
     request_message_access = models.BooleanField(
         default=False, help_text=_("Request access to send messages from your bot.")
     )

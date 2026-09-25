@@ -1,6 +1,7 @@
 """OAuth Source Serializer"""
 
 from django.urls.base import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 from django_filters.filters import BooleanFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
@@ -16,6 +17,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
+from authentik.crypto.secrets.models import SecretType
 from authentik.lib.utils.http import get_http_session
 from authentik.sources.oauth.models import OAuthSource, PKCEMethod
 from authentik.sources.oauth.types.registry import SourceType, registry
@@ -63,6 +65,14 @@ class OAuthSourceSerializer(SourceSerializer):
             "provider_type",
             self.instance.provider_type if self.instance else None,
         )
+        secret = attrs.get(
+            "consumer_secret_ref", self.instance.consumer_secret_ref if self.instance else None
+        )
+        expected_type = SecretType.MULTILINE if provider_type_name == "apple" else SecretType.TEXT
+        if secret and secret.type != expected_type:
+            raise ValidationError(
+                {"consumer_secret_ref": _("This secret type is not supported by this source.")}
+            )
         source_type = registry.find_type(provider_type_name)
 
         well_known = attrs.get("oidc_well_known_url") or source_type.oidc_well_known_url
@@ -140,7 +150,7 @@ class OAuthSourceSerializer(SourceSerializer):
             "profile_url",
             "pkce",
             "consumer_key",
-            "consumer_secret",
+            "consumer_secret_ref",
             "callback_url",
             "additional_scopes",
             "type",
@@ -150,7 +160,11 @@ class OAuthSourceSerializer(SourceSerializer):
             "authorization_code_auth_method",
         ]
         extra_kwargs = {
-            "consumer_secret": {"write_only": True},
+            "consumer_secret_ref": {
+                "required": True,
+                "allow_null": False,
+                "allowed_types": (SecretType.TEXT, SecretType.MULTILINE),
+            },
             "request_token_url": {"allow_blank": True},
             "authorization_url": {"allow_blank": True},
             "access_token_url": {"allow_blank": True},

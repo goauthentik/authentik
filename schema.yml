@@ -47100,6 +47100,10 @@ components:
           $ref: '#/components/schemas/PKCEMethodEnum'
         consumer_key:
           type: string
+        consumer_secret_ref:
+          type: string
+          format: uuid
+          title: Consumer secret
         callback_url:
           type: string
           description: Get OAuth Callback URL
@@ -47126,6 +47130,7 @@ components:
       - callback_url
       - component
       - consumer_key
+      - consumer_secret_ref
       - icon_themed_urls
       - icon_url
       - managed
@@ -47284,10 +47289,10 @@ components:
         consumer_key:
           type: string
           minLength: 1
-        consumer_secret:
+        consumer_secret_ref:
           type: string
-          writeOnly: true
-          minLength: 1
+          format: uuid
+          title: Consumer secret
         additional_scopes:
           type: string
         oidc_well_known_url:
@@ -47304,7 +47309,7 @@ components:
             token request flow
       required:
       - consumer_key
-      - consumer_secret
+      - consumer_secret_ref
       - name
       - provider_type
       - slug
@@ -53007,10 +53012,10 @@ components:
         consumer_key:
           type: string
           minLength: 1
-        consumer_secret:
+        consumer_secret_ref:
           type: string
-          writeOnly: true
-          minLength: 1
+          format: uuid
+          title: Consumer secret
         additional_scopes:
           type: string
         oidc_well_known_url:
@@ -53296,9 +53301,10 @@ components:
         allow_friends:
           type: boolean
           description: Allow friends to authenticate, even if you don't share a server.
-        plex_token:
+        plex_token_ref:
           type: string
-          minLength: 1
+          format: uuid
+          title: Plex token
           description: Plex token used to check friends
     PatchedPolicyBindingRequest:
       type: object
@@ -54487,10 +54493,10 @@ components:
           type: string
           minLength: 1
           description: Telegram bot username
-        bot_token:
+        bot_token_ref:
           type: string
-          writeOnly: true
-          minLength: 1
+          format: uuid
+          title: Bot token
           description: Telegram bot token
         request_message_access:
           type: boolean
@@ -55053,8 +55059,10 @@ components:
         allow_friends:
           type: boolean
           description: Allow friends to authenticate, even if you don't share a server.
-        plex_token:
+        plex_token_ref:
           type: string
+          format: uuid
+          title: Plex token
           description: Plex token used to check friends
       required:
       - component
@@ -55064,7 +55072,7 @@ components:
       - meta_model_name
       - name
       - pk
-      - plex_token
+      - plex_token_ref
       - slug
       - verbose_name
       - verbose_name_plural
@@ -55205,13 +55213,14 @@ components:
         allow_friends:
           type: boolean
           description: Allow friends to authenticate, even if you don't share a server.
-        plex_token:
+        plex_token_ref:
           type: string
-          minLength: 1
+          format: uuid
+          title: Plex token
           description: Plex token used to check friends
       required:
       - name
-      - plex_token
+      - plex_token_ref
       - slug
     PlexTokenRedeemRequest:
       type: object
@@ -60552,6 +60561,11 @@ components:
         bot_username:
           type: string
           description: Telegram bot username
+        bot_token_ref:
+          type: string
+          format: uuid
+          title: Bot token
+          description: Telegram bot token
         request_message_access:
           type: boolean
           description: Request access to send messages from your bot.
@@ -60560,6 +60574,7 @@ components:
           format: uuid
           description: Flow used before authentication.
       required:
+      - bot_token_ref
       - bot_username
       - component
       - icon_themed_urls
@@ -60694,10 +60709,10 @@ components:
           type: string
           minLength: 1
           description: Telegram bot username
-        bot_token:
+        bot_token_ref:
           type: string
-          writeOnly: true
-          minLength: 1
+          format: uuid
+          title: Bot token
           description: Telegram bot token
         request_message_access:
           type: boolean
@@ -60707,7 +60722,7 @@ components:
           format: uuid
           description: Flow used before authentication.
       required:
-      - bot_token
+      - bot_token_ref
       - bot_username
       - name
       - pre_authentication_flow

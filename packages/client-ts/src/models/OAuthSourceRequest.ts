@@ -90,7 +90,7 @@ export interface OAuthSourceRequest {
     profileUrl?: string | null;
     pkce?: PKCEMethodEnum;
     consumerKey: string;
-    consumerSecret: string;
+    consumerSecretRef: string;
     additionalScopes?: string;
     oidcWellKnownUrl?: string;
     oidcJwksUrl?: string;
@@ -122,10 +122,10 @@ export function instanceOfOAuthSourceRequest(value: object): value is OAuthSourc
     )
         return false;
     if (
-        (!("consumerSecret" in (value as Record<string, any>)) &&
-            !("consumer_secret" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["consumerSecret"] === undefined &&
-            (value as Record<string, any>)["consumer_secret"] === undefined)
+        (!("consumerSecretRef" in (value as Record<string, any>)) &&
+            !("consumer_secret_ref" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["consumerSecretRef"] === undefined &&
+            (value as Record<string, any>)["consumer_secret_ref"] === undefined)
     )
         return false;
     return true;
@@ -205,7 +205,7 @@ export function OAuthSourceRequestFromJSONTyped(
                   : json["profile_url"],
         pkce: json["pkce"] == null ? undefined : PKCEMethodEnumFromJSON(json["pkce"]),
         consumerKey: json["consumer_key"],
-        consumerSecret: json["consumer_secret"],
+        consumerSecretRef: json["consumer_secret_ref"],
         additionalScopes: json["additional_scopes"] == null ? undefined : json["additional_scopes"],
         oidcWellKnownUrl:
             json["oidc_well_known_url"] == null ? undefined : json["oidc_well_known_url"],
@@ -251,7 +251,7 @@ export function OAuthSourceRequestToJSONTyped(
         profile_url: value["profileUrl"],
         pkce: PKCEMethodEnumToJSON(value["pkce"]),
         consumer_key: value["consumerKey"],
-        consumer_secret: value["consumerSecret"],
+        consumer_secret_ref: value["consumerSecretRef"],
         additional_scopes: value["additionalScopes"],
         oidc_well_known_url: value["oidcWellKnownUrl"],
         oidc_jwks_url: value["oidcJwksUrl"],
