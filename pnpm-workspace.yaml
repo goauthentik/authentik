@@ -16,15 +16,15 @@ packages:
 catalog:
   "@playwright/test": "^1.62.1"
   "@types/node": "^26.1.2"
-  "@vitest/browser": "^4.1.10"
-  "@vitest/browser-playwright": "^4.1.10"
-  esbuild: "^0.28.1"
+  "@vitest/browser": "^5.0.1"
+  "@vitest/browser-playwright": "^5.0.1"
+  esbuild: "^0.28.2"
   oxfmt: "0.68.0"
   oxlint: "^1.82.0"
   playwright: "^1.62.1"
   typescript: "^6.0.3"
   vite: "^8.2.0"
-  vitest: "^4.1.10"
+  vitest: "^5.0.0"
 
 # Allow-list of dependencies whose install/postinstall scripts may run.
 # Everything else is blocked, replacing the prior `ignore-scripts=true` +
