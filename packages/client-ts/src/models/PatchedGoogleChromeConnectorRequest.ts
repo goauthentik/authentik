@@ -20,7 +20,7 @@ export interface PatchedGoogleChromeConnectorRequest {
     connectorUuid?: string;
     name?: string;
     enabled?: boolean;
-    credentials?: { [key: string]: any };
+    credentialsRef?: string;
 }
 
 /**
@@ -49,7 +49,7 @@ export function PatchedGoogleChromeConnectorRequestFromJSONTyped(
         connectorUuid: json["connector_uuid"] == null ? undefined : json["connector_uuid"],
         name: json["name"] == null ? undefined : json["name"],
         enabled: json["enabled"] == null ? undefined : json["enabled"],
-        credentials: json["credentials"] == null ? undefined : json["credentials"],
+        credentialsRef: json["credentials_ref"] == null ? undefined : json["credentials_ref"],
     };
 }
 
@@ -71,6 +71,6 @@ export function PatchedGoogleChromeConnectorRequestToJSONTyped(
         connector_uuid: value["connectorUuid"],
         name: value["name"],
         enabled: value["enabled"],
-        credentials: value["credentials"],
+        credentials_ref: value["credentialsRef"],
     };
 }

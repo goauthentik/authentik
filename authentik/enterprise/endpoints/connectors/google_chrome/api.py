@@ -6,6 +6,8 @@ from rest_framework.request import Request
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
+from authentik.crypto.secrets.api import JSONSecretReferenceField
+from authentik.crypto.secrets.models import Secret
 from authentik.endpoints.api.connectors import ConnectorSerializer
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.endpoints.connectors.google_chrome.models import GoogleChromeConnector
@@ -25,10 +27,13 @@ class GoogleChromeConnectorSerializer(EnterpriseRequiredMixin, ConnectorSerializ
             reverse("authentik_endpoints_connectors_google_chrome:chrome")
         )
 
+    credentials_ref = JSONSecretReferenceField(
+        queryset=Secret.objects.all(), required=True, allow_null=False
+    )
+
     class Meta:
         model = GoogleChromeConnector
-        fields = ConnectorSerializer.Meta.fields + ["credentials", "chrome_url"]
-        secret_fields = ["credentials"]
+        fields = ConnectorSerializer.Meta.fields + ["credentials_ref", "chrome_url"]
 
 
 class GoogleChromeConnectorViewSet(UsedByMixin, ModelViewSet):

@@ -22,13 +22,25 @@ if TYPE_CHECKING:
 class GoogleChromeConnector(Connector):
     """Verify Google Chrome Device Trust connection for the user's browser."""
 
-    credentials = models.JSONField()
+    # Remove the legacy credential columns in 2027.2.
+    credentials = models.JSONField(default=dict)
+
+    credentials_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Google credentials"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="google_chrome_connectors",
+    )
 
     def google_credentials(self):
         try:
             return {
                 "credentials": Credentials.from_service_account_info(
-                    self.credentials, scopes=["https://www.googleapis.com/auth/verifiedaccess"]
+                    self.credentials_ref.get_json(),
+                    scopes=["https://www.googleapis.com/auth/verifiedaccess"],
                 ),
             }
         except GoogleAuthError as exc:
