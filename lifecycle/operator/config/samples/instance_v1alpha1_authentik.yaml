@@ -1,0 +1,53 @@
+---
+# A minimal authentik instance.
+#
+# The operator builds the Kubernetes objects itself; it does not render the Helm
+# chart. Every field other than releaseName, migrations, autoUpdate,
+# reconcileInterval and prune uses the chart's own values.yaml key names, so a
+# values file can be moved in here largely unchanged.
+apiVersion: instance.goauthentik.io/v1alpha1
+kind: Authentik
+metadata:
+  name: authentik
+  labels:
+    app.kubernetes.io/name: authentik
+spec:
+  global:
+    image:
+      # Required, unless autoUpdate is resolving the tag. There is no chart
+      # appVersion to fall back on any more.
+      tag: 2026.8.0
+
+  authentik:
+    # Generate with: openssl rand -base64 60 | tr -d '\n'
+    # Never change this after the first install: it signs session cookies and
+    # derives unique user IDs. Prefer authentik.existingSecret in production so
+    # this does not sit in the resource.
+    secret_key: CHANGE-ME
+    log_level: info
+    postgresql:
+      password: CHANGE-ME
+
+  # Evaluation database. For anything real, leave this out and point
+  # authentik.postgresql at an external PostgreSQL you back up separately.
+  postgresql:
+    enabled: true
+    auth:
+      username: authentik
+      database: authentik
+      password: CHANGE-ME
+    primary:
+      persistence:
+        enabled: true
+        size: 8Gi
+
+  server:
+    replicas: 1
+    ingress:
+      enabled: false
+      # ingressClassName: nginx
+      # hosts:
+      #   - authentik.example.com
+
+  worker:
+    replicas: 1

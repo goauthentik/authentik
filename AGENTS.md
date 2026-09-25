@@ -11,6 +11,7 @@ It is a **polyglot monorepo**. Most work lands in one of the subtrees below; whe
 | **Rust**       | `src/`, `packages/ak-*`    | Newer server/worker/proxy outpost components and shared crates (`ak-axum`, `ak-common`, `ak-guardian`). | —                                           |
 | **TypeScript** | `web/`                     | The web UI — three Lit + PatternFly apps (Admin, User, Flow).                            | [`web/AGENTS.md`](web/AGENTS.md)            |
 | **Docs**       | `website/`                 | The documentation, integrations, and API sites (Docusaurus).                             | [`website/AGENTS.md`](website/AGENTS.md)    |
+| **Go (operator)** | `lifecycle/operator/`   | The Kubernetes operator (kubebuilder) that deploys authentik. A port of the Helm chart's templates. | [`lifecycle/operator/AGENTS.md`](lifecycle/operator/AGENTS.md) |
 
 The Python core and the web UI talk through a **generated OpenAPI client** — never hand-roll HTTP calls in either direction (see [API schema & clients](#api-schema--clients)).
 
@@ -19,6 +20,8 @@ The Python core and the web UI talk through a **generated OpenAPI client** — n
 ```
 authentik/          # Django core — the IdP itself (see "The authentik Django package" below)
 lifecycle/          # Boot/runtime: migrations, gunicorn config, the `ak` CLI, container + AWS entrypoints
+                    #   charts/    — the authentik Helm chart (+ authentik-remote-cluster)
+                    #   operator/  — kubebuilder operator, a port of that chart (own AGENTS.md)
 cmd/                # Go entrypoints: ldap/ rac/ radius/ outposts
 internal/           # Shared Go: outpost implementations, config
 src/                # Rust server/worker (ak-axum based; gated behind cargo features)
@@ -69,6 +72,7 @@ Most tasks land in one subtree and have one follow-up step. Find the row, then r
 | Change a native server/worker component or shared crate            | `src/` + `packages/ak-*` (Rust)| `make rust-test`                                                                     |
 | Seed or reconcile a managed object (flow, stage, policy, brand)    | `blueprints/` (YAML)           | prefer a blueprint over an ad-hoc data migration                                     |
 | Change boot, migration wiring, the `ak` CLI, or a container entry  | `lifecycle/`                   | `make run` to confirm the server still boots                                         |
+| Change the Helm chart or the Kubernetes operator                   | `lifecycle/charts/`, `lifecycle/operator/` | [`lifecycle/operator/AGENTS.md`](lifecycle/operator/AGENTS.md). A chart template change usually needs the matching operator builder updating too; `make test` in `lifecycle/operator` compares the two. |
 
 A change that touches more than one row usually wants more than one PR — see [Conventions](#conventions) on splitting by `CODEOWNERS`.
 
