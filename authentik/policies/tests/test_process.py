@@ -221,6 +221,29 @@ class TestPolicyProcess(TestCase):
         self.assertEqual(event.context["result"]["messages"], ["dummy"])
         self.assertEqual(event.client_ip, "127.0.0.1")
 
+    def test_dry_run_forces_execution_logging(self):
+        """Dry-run bindings create execution events without policy-level logging."""
+        policy = DummyPolicy.objects.create(
+            name=generate_id(), result=False, wait_min=0, wait_max=1
+        )
+        binding = PolicyBinding.objects.create(
+            policy=policy,
+            target=Application.objects.create(name=generate_id()),
+            dry_run=True,
+            order=0,
+        )
+
+        response = PolicyProcess(binding, PolicyRequest(self.user), None).execute()
+
+        self.assertFalse(response.passing)
+        event = Event.objects.get(
+            action=EventAction.POLICY_EXECUTION,
+            context__binding__pk=binding.policy_binding_uuid.hex,
+        )
+        self.assertTrue(event.context["dry_run"])
+        self.assertFalse(event.context["cached"])
+        self.assertFalse(event.context["result"]["passing"])
+
     def test_raises(self):
         """Test policy that raises error"""
         policy_raises = ExpressionPolicy.objects.create(name=generate_id(), expression="{{ 0/0 }}")

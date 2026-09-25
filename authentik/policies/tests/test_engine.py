@@ -1,6 +1,7 @@
 """policy engine tests"""
 
 from datetime import timedelta
+from unittest.mock import patch
 
 from django.core.cache import cache
 from django.db import connections
@@ -10,6 +11,7 @@ from django.utils.timezone import now
 
 from authentik.core.models import Group
 from authentik.core.tests.utils import create_test_user
+from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.engine import PolicyEngine
@@ -88,6 +90,76 @@ class TestPolicyEngine(TestCase):
                 "dummy",
             ),
         )
+
+    def test_engine_dry_run_dynamic(self):
+        """Dry-run policies execute but do not affect the result or messages."""
+        policy_true = ExpressionPolicy.objects.create(
+            name=generate_id(), expression='ak_message("effective")\nreturn True'
+        )
+        policy_false = ExpressionPolicy.objects.create(
+            name=generate_id(), expression='ak_message("dry run")\nreturn False'
+        )
+        pbm = PolicyBindingModel.objects.create(policy_engine_mode=PolicyEngineMode.MODE_ALL)
+        PolicyBinding.objects.create(target=pbm, policy=policy_true, order=0)
+        dry_run = PolicyBinding.objects.create(
+            target=pbm, policy=policy_false, order=1, dry_run=True
+        )
+
+        result = PolicyEngine(pbm, self.user).build().result
+
+        self.assertTrue(result.passing)
+        self.assertEqual(result.messages, ("effective",))
+        self.assertEqual(len(result.source_results), 2)
+        dry_run_result = next(
+            item for item in result.source_results if item.source_binding.pk == dry_run.pk
+        )
+        self.assertFalse(dry_run_result.passing)
+
+        with patch(
+            "authentik.policies.expression.models.ExpressionPolicy.passes",
+            side_effect=AssertionError("cached policies should not be evaluated"),
+        ):
+            cached_result = PolicyEngine(pbm, self.user).build().result
+        self.assertTrue(cached_result.passing)
+        self.assertEqual(cached_result.messages, ("effective",))
+        self.assertEqual(len(cached_result.source_results), 2)
+        self.assertFalse(
+            next(
+                item
+                for item in cached_result.source_results
+                if item.source_binding.pk == dry_run.pk
+            ).passing
+        )
+        events = list(
+            Event.objects.filter(
+                action=EventAction.POLICY_EXECUTION,
+                context__binding__pk=dry_run.policy_binding_uuid.hex,
+            ).order_by("created")
+        )
+        self.assertEqual(len(events), 2)
+        self.assertTrue(all(event.context["dry_run"] for event in events))
+        self.assertEqual([event.context["cached"] for event in events], [False, True])
+
+    def test_engine_dry_run_only_uses_empty_result(self):
+        """An engine with only dry-run policies behaves like an empty engine."""
+        pbm = PolicyBindingModel.objects.create()
+        PolicyBinding.objects.create(target=pbm, policy=self.policy_false, order=0, dry_run=True)
+
+        engine = PolicyEngine(pbm, self.user)
+        result = engine.build().result
+
+        self.assertTrue(result.passing)
+        self.assertEqual(result.messages, ())
+        self.assertEqual(len(result.source_results), 1)
+        self.assertFalse(result.source_results[0].passing)
+
+    def test_engine_dry_run_static(self):
+        """Dry-run static bindings do not affect the effective result."""
+        pbm = PolicyBindingModel.objects.create(policy_engine_mode=PolicyEngineMode.MODE_ALL)
+        PolicyBinding.objects.create(target=pbm, group=self.group_member, order=0)
+        PolicyBinding.objects.create(target=pbm, group=self.group_non_member, order=1, dry_run=True)
+
+        self.assertTrue(PolicyEngine(pbm, self.user).build().passing)
 
     def test_engine_mode_all_static(self):
         """Ensure all policies passes with OR mode (false and true -> true)"""

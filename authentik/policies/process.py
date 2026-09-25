@@ -22,6 +22,29 @@ CACHE_TIMEOUT = CONFIG.get_int("cache.timeout_policies")
 PROCESS_CLASS = FORK_CTX.Process
 
 
+def create_policy_event(
+    binding: PolicyBinding,
+    request: PolicyRequest,
+    action: str,
+    message: str,
+    **kwargs,
+) -> None:
+    """Create an event with common values from a policy request and binding."""
+    event = Event.new(
+        action=action,
+        message=message,
+        **({"policy_uuid": binding.policy_id.hex} if binding.policy_id else {}),
+        binding=binding,
+        request=request,
+        **kwargs,
+    )
+    if request.http_request:
+        event.from_http(request.http_request, user=request.user)
+    else:
+        event.set_user(request.user)
+        event.save()
+
+
 def cache_key(binding: PolicyBinding, request: PolicyRequest) -> str:
     """Generate Cache key for policy"""
     prefix = f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}_"
@@ -55,19 +78,7 @@ class PolicyProcess(PROCESS_CLASS):
 
     def create_event(self, action: str, message: str, **kwargs):
         """Create event with common values from `self.request` and `self.binding`."""
-        event = Event.new(
-            action=action,
-            message=message,
-            policy_uuid=self.binding.policy.policy_uuid.hex,
-            binding=self.binding,
-            request=self.request,
-            **kwargs,
-        )
-        event.set_user(self.request.user)
-        if self.request.http_request:
-            event.from_http(self.request.http_request)
-        else:
-            event.save()
+        create_policy_event(self.binding, self.request, action, message, **kwargs)
 
     def execute(self) -> PolicyResult:
         """Run actual policy, returns result"""
@@ -83,7 +94,7 @@ class PolicyProcess(PROCESS_CLASS):
             # Invert result if policy.negate is set
             if self.binding.negate:
                 policy_result.passing = not policy_result.passing
-            if self.binding.policy and not self.request.debug:
+            if self.binding.policy and not self.request.debug and not self.binding.dry_run:
                 if self.binding.policy.execution_logging:
                     self.create_event(
                         EventAction.POLICY_EXECUTION,
@@ -103,6 +114,14 @@ class PolicyProcess(PROCESS_CLASS):
             LOGGER.debug("P_ENG(proc): error, using failure result", exc=src_exc)
             policy_result = PolicyResult(self.binding.failure_result, str(src_exc))
         policy_result.source_binding = self.binding
+        if self.binding.dry_run and not self.request.debug:
+            self.create_event(
+                EventAction.POLICY_EXECUTION,
+                message="Policy Execution (dry run)",
+                result=policy_result,
+                dry_run=True,
+                cached=False,
+            )
         should_cache = self.request.should_cache
         if should_cache:
             key = cache_key(self.binding, self.request)
