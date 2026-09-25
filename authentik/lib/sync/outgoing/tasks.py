@@ -46,9 +46,19 @@ class SyncTasks:
     ):
         tasks = []
         time_limit = timedelta_from_string(provider.sync_page_timeout).total_seconds() * 1000
-        for page in paginator.page_range:
+        # List the in-scope primary keys once, then dispatch one message per chunk with a
+        # primary key range filter. Each page task only reads its own range, instead of
+        # re-running COUNT(*) and an OFFSET page over the full (policy-filtered) queryset.
+        pks = list(paginator.object_list.values_list("pk", flat=True))
+        page_size = paginator.per_page
+        # Without objects, still dispatch a single (empty) page like `paginator.page_range`
+        # does, so the page task behaves as before (e.g. it still sets up the client)
+        chunks = [pks[start : start + page_size] for start in range(0, len(pks), page_size)]
+        for page, chunk in enumerate(chunks or [[]], start=1):
+            range_filter = {"pk__gte": chunk[0], "pk__lte": chunk[-1]} if chunk else {}
             page_sync = sync_objects.message_with_options(
-                args=(class_to_path(object_type), page, provider.pk),
+                args=(class_to_path(object_type), 1, provider.pk),
+                kwargs=range_filter,
                 time_limit=time_limit,
                 # Assign tasks to the same schedule as the current one
                 rel_obj=current_task.rel_obj,
@@ -188,13 +198,27 @@ class SyncTasks:
             client = provider.client_for_model(_object_type)
         except TransientSyncException:
             return
-        paginator = Paginator(
-            provider.get_object_qs(_object_type, **filter),
-            provider.sync_page_size,
-        )
-        self.logger.debug("starting sync for page", page=page)
-        task.info(f"Syncing page {page} or {_object_type._meta.verbose_name_plural}")
-        for obj in paginator.page(page).object_list:
+        queryset = provider.get_object_qs(_object_type, **filter)
+        if "pk__gte" in filter or "pk__lte" in filter:
+            # Range page from sync_paginator(): the range already bounds the page, so iterate
+            # it directly (no COUNT, no OFFSET, and objects that entered the range after it
+            # was listed aren't cut off by the page size)
+            object_list = queryset
+            self.logger.debug(
+                "starting sync for range",
+                pk_gte=filter.get("pk__gte"),
+                pk_lte=filter.get("pk__lte"),
+            )
+            task.info(
+                f"Syncing {_object_type._meta.verbose_name_plural} "
+                f"from {filter.get('pk__gte')} to {filter.get('pk__lte')}"
+            )
+        else:
+            paginator = Paginator(queryset, provider.sync_page_size)
+            self.logger.debug("starting sync for page", page=page)
+            task.info(f"Syncing page {page} of {_object_type._meta.verbose_name_plural}")
+            object_list = paginator.page(page).object_list
+        for obj in object_list:
             obj: Model
             try:
                 client.write(obj)
