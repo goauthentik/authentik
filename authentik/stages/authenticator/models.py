@@ -131,6 +131,8 @@ class Device(CreatedUpdatedModel):
             this must be called inside a transaction.
 
         """
+        from authentik.stages.password.models import PasswordDevice
+
         device = None
 
         try:
@@ -138,7 +140,7 @@ class Device(CreatedUpdatedModel):
             app_label, model_name = model_label.split(".")
 
             device_cls = apps.get_model(app_label, model_name)
-            if issubclass(device_cls, Device):
+            if issubclass(device_cls, Device) and not issubclass(device_cls, PasswordDevice):
                 device_set = device_cls.objects.filter(id=int(device_id))
                 if for_verify:
                     device_set = device_set.select_for_update()
