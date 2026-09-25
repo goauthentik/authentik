@@ -11765,6 +11765,9 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 <trans-unit id="pagination.nav.aria-label">
   <source>Pagination</source>
 </trans-unit>
+<trans-unit id="users.delete.self-warning.description">
+  <source>Warning: You are about to delete user <x id="0" equiv-text="${user.username}"/>, but you are currently logged in as this user. Proceed at your own risk.</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
