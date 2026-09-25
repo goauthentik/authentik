@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/tsconfig",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "description": "authentik's base TypeScript configuration.",
     "license": "MIT",
     "repository": {
@@ -9,7 +9,7 @@
         "directory": "packages/tsconfig"
     },
     "scripts": {
-        "build": ""
+        "build": "exit 0"
     },
     "main": "tsconfig.json",
     "type": "module",
