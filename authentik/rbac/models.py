@@ -5,6 +5,7 @@ from uuid import uuid4
 from django.contrib.auth.management import _get_all_permissions
 from django.contrib.auth.models import Permission
 from django.db import models
+from django.db.models import Q, QuerySet
 from django.db.transaction import atomic
 from django.utils.translation import gettext_lazy as _
 from guardian.shortcuts import assign_perm, remove_perm
@@ -47,6 +48,18 @@ class Role(SerializerModel, ManagedModel):
 
     def __str__(self) -> str:
         return f"Role {self.name}"
+
+    def get_users(self) -> QuerySet:
+        """Get all users assigned this role, directly or via group membership."""
+        from authentik.core.models import Group, User
+
+        groups = Group.objects.filter(pk__in=self.groups.all()).with_descendants()
+        return User.objects.filter(Q(roles=self) | Q(groups__in=groups)).distinct()
+
+    @property
+    def user_count(self) -> int:
+        """Get the number of users assigned this role, directly or via group membership."""
+        return self.get_users().count()
 
     class Meta:
         verbose_name = _("Role")
