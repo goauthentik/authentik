@@ -4,6 +4,7 @@ from django.core.validators import URLValidator
 from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
+from django.template.response import TemplateResponse
 from django.utils.http import urlencode
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
@@ -54,6 +55,10 @@ class SAMLFlowFinalView(ChallengeStageView):
     (if POST is configured)."""
 
     response_class = AutoSubmitChallengeResponse
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Fulfill direct authorization requests regardless of their incoming binding."""
+        return self.get(request, *args, **kwargs)
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         application: Application = self.executor.plan.context[PLAN_CONTEXT_APPLICATION]
@@ -111,6 +116,12 @@ class SAMLFlowFinalView(ChallengeStageView):
                     REQUEST_KEY_RELAY_STATE: auth_n_request.relay_state,
                 }
             )
+            if self.executor.direct_execution:
+                return TemplateResponse(
+                    request,
+                    "if/saml_form_post.html",
+                    {"redirect_uri": provider.acs_url, "attrs": form_attrs},
+                )
             return super().get(
                 self.request,
                 **{
@@ -138,7 +149,7 @@ class SAMLFlowFinalView(ChallengeStageView):
             if auth_n_request.relay_state:
                 url_args[REQUEST_KEY_RELAY_STATE] = auth_n_request.relay_state
             querystring = urlencode(url_args)
-            if ContinuousLogin.get():
+            if ContinuousLogin.get() and not self.executor.direct_execution:
                 return HttpChallengeResponse(
                     RedirectChallenge(
                         instance={
