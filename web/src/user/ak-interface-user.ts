@@ -5,7 +5,6 @@ import "#elements/notifications/NotificationDrawer";
 import "#elements/router/RouterOutlet";
 
 import { globalAK } from "#common/global";
-import { configureSentry } from "#common/sentry/index";
 import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
 
@@ -70,8 +69,6 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
     //#region Lifecycle
 
     constructor() {
-        configureSentry();
-
         super();
 
         WebsocketClient.connect();
