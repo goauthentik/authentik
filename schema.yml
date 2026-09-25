@@ -53813,6 +53813,13 @@ components:
           description: Authentication token
         auth_mode:
           $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
+        auth_basic_user:
+          type: string
+          description: Username used for Basic authentication
+        auth_basic_password:
+          type: string
+          writeOnly: true
+          description: Password used for Basic authentication
         auth_oauth:
           type: string
           format: uuid
@@ -58038,6 +58045,7 @@ components:
     SCIMAuthenticationModeEnum:
       enum:
       - token
+      - basic
       - oauth
       - oauth_interactive
       type: string
@@ -58162,6 +58170,9 @@ components:
           type: boolean
         auth_mode:
           $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
+        auth_basic_user:
+          type: string
+          description: Username used for Basic authentication
         auth_oauth:
           type: string
           format: uuid
@@ -58312,6 +58323,13 @@ components:
           description: Authentication token
         auth_mode:
           $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
+        auth_basic_user:
+          type: string
+          description: Username used for Basic authentication
+        auth_basic_password:
+          type: string
+          writeOnly: true
+          description: Password used for Basic authentication
         auth_oauth:
           type: string
           format: uuid

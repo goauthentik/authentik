@@ -1,4 +1,4 @@
-import { sanitizeLocaleModule } from "../../scripts/unescape-locale-entities.mjs";
+import { sanitizeLocaleModule } from "../../scripts/unescape-locale-entities.ts";
 
 import { describe, expect, it } from "vitest";
 

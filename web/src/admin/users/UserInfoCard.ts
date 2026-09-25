@@ -5,7 +5,9 @@ import "#admin/users/UserOffboardingForm";
 import "#admin/users/UserPasswordForm";
 import "#components/ak-status-label";
 import "#elements/forms/ConfirmationForm";
+import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
+import "#elements/Label";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -27,6 +29,7 @@ import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 import Styles from "#admin/users/UserInfoCard.css";
 
 import {
+    CoreApi,
     LifecycleApi,
     OffboardingActionEnum,
     OffboardingStatusEnum,
@@ -59,6 +62,7 @@ export class UserInfoCard extends AKElement {
     @state()
     protected pendingOffboarding: UserOffboarding | null = null;
 
+    #api = aki(CoreApi);
     #lifecycleApi = aki(LifecycleApi);
 
     static styles: CSSResult[] = [PFButton, PFCard, PFContent, keyValueListStyles, Styles];
@@ -102,6 +106,15 @@ export class UserInfoCard extends AKElement {
         }
 
         return startAccountLockdown(this.user.pk).catch(showAPIErrorMessage);
+    };
+
+    protected deleteUser = async (user: User): Promise<unknown> => {
+        return this.#api.coreUsersDestroy({ id: user.pk });
+    };
+
+    protected handleUserDeleted = (event: Event): void => {
+        event.stopPropagation();
+        window.history.back();
     };
 
     protected cancelOffboarding = async (): Promise<void> => {
@@ -149,6 +162,32 @@ export class UserInfoCard extends AKElement {
                     : nothing
             }
             ${showEnterpriseActions ? this.renderOffboardingButton(user) : nothing}
+            <ak-forms-delete-bulk
+                object-label=${msg("User")}
+                .objects=${[user]}
+                .metadata=${(item: User) => [
+                    { key: msg("Username"), value: item.username },
+                    { key: msg("ID"), value: item.pk.toString() },
+                    { key: msg("UID"), value: item.uid },
+                ]}
+                .usedBy=${(item: User) => this.#api.coreUsersUsedByList({ id: item.pk })}
+                .delete=${this.deleteUser}
+                @ak-refresh=${this.handleUserDeleted}
+            >
+                ${
+                    user.pk === this.currentUserPk
+                        ? html`<ak-label slot="notice" color="warning">
+                              ${msg(
+                                  str`Warning: You are about to delete user ${user.username}, but you are currently logged in as this user. Proceed at your own risk.`,
+                                  { id: "users.delete.self-warning.description" },
+                              )}
+                          </ak-label>`
+                        : nothing
+                }
+                <button slot="trigger" class="pf-c-button pf-m-danger pf-m-block" type="button">
+                    ${msg("Delete")}
+                </button>
+            </ak-forms-delete-bulk>
             ${
                 showImpersonate
                     ? html`<button

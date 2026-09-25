@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/docusaurus-config",
-    "version": "3.0.4",
+    "version": "3.1.0",
     "description": "authentik's Docusaurus config",
     "license": "MIT",
     "repository": {
@@ -20,9 +20,13 @@
         "./package.json": "./package.json",
         ".": {
             "types": "./out/index.d.ts",
-            "import": "./index.js"
+            "default": "./index.js"
         },
-        "./css/*.css": "./css/*.css"
+        "./css/*.css": "./css/*.css",
+        "./plugins/brand": {
+            "types": "./out/lib/plugins/brand.d.ts",
+            "default": "./lib/plugins/brand.js"
+        }
     },
     "publishConfig": {
         "access": "public"
@@ -37,6 +41,7 @@
         "lint:check": "oxlint --max-warnings=0"
     },
     "dependencies": {
+        "@goauthentik/brand-assets": "^2.0.0",
         "deepmerge-ts": "^8.0.0",
         "prism-react-renderer": "^2.4.1"
     },
@@ -48,8 +53,8 @@
         "@goauthentik/oxlint-config": "link:../oxlint-config",
         "@goauthentik/tsconfig": "link:../tsconfig",
         "@types/node": "catalog:",
-        "@types/react": "^19.2.17",
-        "@types/react-dom": "^19.2.3",
+        "@types/react": "^19.3.0",
+        "@types/react-dom": "^19.3.0",
         "npm-run-all": "^4.1.5",
         "oxfmt": "catalog:",
         "oxlint": "catalog:",
@@ -75,8 +80,8 @@
         }
     },
     "optionalDependencies": {
-        "react": "^19.2.8",
-        "react-dom": "^19.2.8"
+        "react": "^19.3.0",
+        "react-dom": "^19.3.0"
     },
     "devEngines": {
         "runtime": {
