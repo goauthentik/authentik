@@ -12,7 +12,8 @@ from authentik.core.models import AuthenticatedSession, Provider
 from authentik.core.signals import impersonation_changed
 from authentik.crypto.models import CertificateKeyPair
 from authentik.crypto.secrets.models import Secret
-from authentik.crypto.secrets.signals import secret_value_changed
+from authentik.crypto.secrets.signals import secret_value_changed, secret_value_validating
+from authentik.outposts.controllers.k8s.utils import validate_kubeconfig
 from authentik.outposts.models import Outpost, OutpostModel, OutpostServiceConnection
 from authentik.outposts.tasks import (
     CACHE_KEY_OUTPOST_DOWN,
@@ -197,3 +198,10 @@ def outpost_impersonation_revoke(sender, session_key: str, **_):
     """Reauthorize outpost sessions after the browser's effective identity changes."""
     if Outpost.objects.exists():
         outpost_session_end.send(session_key)
+
+
+@receiver(secret_value_validating, sender=Secret)
+def validate_kubernetes_secret(sender, secret: Secret, value: str, **_):
+    """Validate kubeconfig replacements before notifying outposts."""
+    if secret.kubernetes_connections.filter(local=False).exists():
+        validate_kubeconfig(Secret(type=secret.type, value=value))

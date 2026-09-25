@@ -2,6 +2,7 @@
 
 from typing import Any
 
+from django.core.exceptions import ValidationError as DjangoValidationError
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
@@ -22,6 +23,7 @@ from authentik.events.models import (
     TransportMode,
 )
 from authentik.events.utils import get_user
+from authentik.lib.models import DomainlessURLValidator
 from authentik.rbac.decorators import permission_required
 from authentik.stages.email.models import get_template_choices
 
@@ -49,10 +51,15 @@ class NotificationTransportSerializer(ModelSerializer):
 
     def validate(self, attrs: dict[Any, str]) -> dict[Any, str]:
         """Ensure the required fields are set."""
-        mode = attrs.get("mode")
+        mode = attrs.get("mode", getattr(self.instance, "mode", None))
         if mode in [TransportMode.WEBHOOK, TransportMode.WEBHOOK_SLACK]:
-            if "webhook_url" not in attrs or attrs.get("webhook_url", "") == "":
-                raise ValidationError({"webhook_url": "Webhook URL may not be empty."})
+            secret = attrs.get("webhook_url_ref", getattr(self.instance, "webhook_url_ref", None))
+            if not secret:
+                raise ValidationError({"webhook_url_ref": "Webhook URL may not be empty."})
+            try:
+                DomainlessURLValidator()(secret.value)
+            except DjangoValidationError as exc:
+                raise ValidationError({"webhook_url_ref": exc.messages}) from exc
         return attrs
 
     class Meta:
@@ -62,7 +69,7 @@ class NotificationTransportSerializer(ModelSerializer):
             "name",
             "mode",
             "mode_verbose",
-            "webhook_url",
+            "webhook_url_ref",
             "webhook_ca",
             "webhook_mapping_body",
             "webhook_mapping_headers",
@@ -83,8 +90,8 @@ class NotificationTransportViewSet(UsedByMixin, ModelViewSet):
 
     queryset = NotificationTransport.objects.all()
     serializer_class = NotificationTransportSerializer
-    filterset_fields = ["name", "mode", "webhook_url", "send_once"]
-    search_fields = ["name", "mode", "webhook_url"]
+    filterset_fields = ["name", "mode", "send_once"]
+    search_fields = ["name", "mode"]
     ordering = ["name"]
 
     @permission_required("authentik_events.change_notificationtransport")
