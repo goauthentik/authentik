@@ -435,9 +435,7 @@ class SyncTasks:
         stale = user_client.connection_type.objects.filter(
             provider=provider,
             **{f"{user_client.connection_type_query}__pk__in": pk_set},
-        ).exclude(
-            **{f"{user_client.connection_type_query}__pk__in": in_scope}
-        )
+        ).exclude(**{f"{user_client.connection_type_query}__pk__in": in_scope})
         for connection in stale:
             try:
                 user_client.delete(connection.scim_id)
