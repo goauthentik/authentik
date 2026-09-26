@@ -23,24 +23,48 @@ entries:
     name: default-source-enrollment-field-username
   id: prompt-field-username
   model: authentik_stages_prompt.prompt
+# Replaced by conditional policies
+- identifiers:
+    name: default-source-enrollment-if-username
+  model: authentik_policies_expression.expressionpolicy
+  state: absent
+- identifiers:
+    name: default-source-enrollment-if-sso
+  model: authentik_policies_expression.expressionpolicy
+  state: absent
 - attrs:
-    expression: |
-      # Check if we''ve not been given a username by the external IdP
-      # and trigger the enrollment flow
-      return 'username' not in context.get('prompt_data', {})
+    # Check if we've not been given a username by the external IdP
+    # and trigger the enrollment flow
+    actions:
+      version: 2
+      actions:
+        - type: condition
+          condition:
+            type: compare
+            variable:
+              key: prompt_data
+              param: username
+            operator: is_not_set
   identifiers:
     name: default-source-enrollment-if-username
   id: default-source-enrollment-if-username
-  model: authentik_policies_expression.expressionpolicy
+  model: authentik_policies_conditional.conditionalpolicy
 - attrs:
-    expression: |
-      # This policy ensures that this flow can only be used when the user
-      # is in a SSO Flow (meaning they come from an external IdP)
-      return ak_is_sso_flow
+    # This policy ensures that this flow can only be used when the user
+    # is in a SSO Flow (meaning they come from an external IdP)
+    actions:
+      version: 2
+      actions:
+        - type: condition
+          condition:
+            type: compare
+            variable:
+              key: plan.is_sso
+            operator: is_true
   identifiers:
     name: default-source-enrollment-if-sso
   id: default-source-enrollment-if-sso
-  model: authentik_policies_expression.expressionpolicy
+  model: authentik_policies_conditional.conditionalpolicy
 - identifiers:
     name: default-source-enrollment-login
   id: default-source-enrollment-login

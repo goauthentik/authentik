@@ -13,13 +13,32 @@ entries:
       title: Welcome to authentik!
       designation: authentication
       authentication: require_unauthenticated
+  # Replaced by a conditional policy
+  - identifiers:
+      name: test-not-app-password
+    model: authentik_policies_expression.expressionpolicy
+    state: absent
   - identifiers:
       name: test-not-app-password
     id: test-not-app-password
-    model: authentik_policies_expression.expressionpolicy
+    model: authentik_policies_conditional.conditionalpolicy
     attrs:
-      expression: |
-        return context.get("auth_method") != "app_password"
+      missing_behavior: "false"
+      actions:
+        version: 2
+        actions:
+          - type: condition
+            condition:
+              type: group
+              op: none
+              children:
+                - type: compare
+                  variable:
+                    key: plan.auth_method
+                  operator: eq
+                  value:
+                    type: literal
+                    value: app_password
   - identifiers:
       name: default-authentication-login
     id: default-authentication-login
