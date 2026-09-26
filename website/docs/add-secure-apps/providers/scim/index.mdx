@@ -160,6 +160,16 @@ The `ServiceProviderConfig` is cached for 1 hour after it is fetched. The cache 
 
     If the service provider supports [PATCH updates](https://datatracker.ietf.org/doc/html/rfc7644#section-3.5.2), authentik will use patch requests to add/remove members of groups. For all other updates, such as user updates and other group updates, PUT requests are used.
 
+### Inspect advertised resource types
+
+To inspect the resource types advertised by a destination, open the SCIM provider's **Overview** tab in the Admin interface and click **Fetch resource types** in the **Advertised resource types** card.
+
+The card displays the name, endpoint, and schema of each resource type returned by `/ResourceTypes`. Expand **Details** to inspect its description, ID, and schema extensions. The diagnostic distinguishes a successful empty listing from an unavailable endpoint or a failed request.
+
+Discovery runs only when requested. Results use the **Service Provider Config cache timeout** setting and are cached separately from `ServiceProviderConfig`. Updating the provider clears the cache. Click **Refresh** to bypass the cache and query the destination again. Failed requests are not cached.
+
+This diagnostic does not change synchronization behavior. An advertised list containing only users does not yet prevent authentik from sending group requests.
+
 ### Using in conjunction with other providers
 
 Many applications support SCIM together with another SSO protocol such as OAuth/OIDC or SAML. With default settings, the unique user IDs in SCIM and other protocols are identical, which makes it easier for applications to link provisioned users with users who log in through SSO.

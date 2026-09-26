@@ -7,6 +7,7 @@ import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/scim/SCIMProviderForm";
 import "#admin/providers/scim/SCIMProviderGroupList";
 import "#admin/providers/scim/SCIMProviderUserList";
+import "#admin/providers/scim/SCIMResourceTypesCard";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
@@ -329,6 +330,11 @@ export class SCIMProviderViewPage extends AKElement {
                     >
                         ${this.renderSyncStatusExtra()}
                     </ak-sync-status-card>
+                </div>
+                <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
+                    <ak-provider-scim-resource-types
+                        .providerID=${this.provider.pk}
+                    ></ak-provider-scim-resource-types>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
                     ${scheduleCard(PROVIDER_TYPE, this.provider.pk)}

@@ -43,19 +43,24 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
 
     can_discover = True
 
-    def __init__(self, provider: SCIMProvider):
+    def __init__(self, provider: SCIMProvider, *, initialize: bool = True):
+        """Metadata diagnostics defer authentication and configuration until after cache lookup."""
         super().__init__(provider)
         self._json_encoder = JSONEncoder(order="deterministic")
         self._session = get_http_session()
         self._session.verify = provider.verify_certificates
         self.provider = provider
-        self.auth = provider.scim_auth()
+        self.auth = provider.scim_auth() if initialize else None
         # Remove trailing slashes as we assume the URL doesn't have any
         base_url = provider.url
         if base_url.endswith("/"):
             base_url = base_url[:-1]
         self.base_url = base_url
-        self._config = self.get_service_provider_config()
+        self._config = (
+            self.get_service_provider_config()
+            if initialize
+            else ServiceProviderConfiguration.default()
+        )
 
     def _request(self, method: str, path: str, **kwargs) -> dict:
         """Wrapper to send a request to the full URL"""
@@ -79,7 +84,7 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
             if response.status_code == HttpResponseNotFound.status_code:
                 raise NotFoundSyncException(response)
             if response.status_code in [HTTP_TOO_MANY_REQUESTS, HTTP_SERVICE_UNAVAILABLE]:
-                raise TransientSyncException()
+                raise TransientSyncException(response)
             if response.status_code == HTTP_CONFLICT:
                 raise ObjectExistsSyncException(response)
             self.logger.warning(

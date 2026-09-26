@@ -1,14 +1,24 @@
 """SCIM Provider API Views"""
 
+from drf_spectacular.utils import extend_schema
+from rest_framework.decorators import action
 from rest_framework.fields import SerializerMethodField
+from rest_framework.request import Request
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.lib.sync.outgoing.api import OutgoingSyncProviderStatusMixin
 from authentik.lib.utils.reflection import ConditionalInheritance
+from authentik.providers.scim.api.resource_types import (
+    SCIMResourceTypeDiscoveryQuerySerializer,
+    SCIMResourceTypeDiscoverySerializer,
+)
+from authentik.providers.scim.clients.resource_types import SCIMResourceTypesClient
 from authentik.providers.scim.models import SCIMProvider
 from authentik.providers.scim.tasks import scim_sync, scim_sync_objects
+from authentik.rbac.filters import ObjectFilter
 
 
 class SCIMProviderSerializer(
@@ -72,3 +82,18 @@ class SCIMProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelVie
     ordering = ["name", "url"]
     sync_task = scim_sync
     sync_objects_task = scim_sync_objects
+
+    @extend_schema(
+        parameters=[SCIMResourceTypeDiscoveryQuerySerializer],
+        responses={200: SCIMResourceTypeDiscoverySerializer()},
+    )
+    @action(methods=["GET"], detail=True, pagination_class=None, filter_backends=[ObjectFilter])
+    def resource_types(self, request: Request, pk: int) -> Response:
+        """Inspect the destination's advertised resource types without changing sync behavior."""
+        provider = self.get_object()
+        query = SCIMResourceTypeDiscoveryQuerySerializer(data=request.query_params)
+        query.is_valid(raise_exception=True)
+        result = SCIMResourceTypesClient(provider).get_resource_types(
+            force_refresh=query.validated_data["refresh"]
+        )
+        return Response(SCIMResourceTypeDiscoverySerializer(result).data)
