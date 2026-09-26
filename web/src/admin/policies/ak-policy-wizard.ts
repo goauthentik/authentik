@@ -1,3 +1,4 @@
+import "#admin/policies/conditional/ConditionalPolicyForm";
 import "#admin/policies/dummy/DummyPolicyForm";
 import "#admin/policies/event_matcher/EventMatcherPolicyForm";
 import "#admin/policies/expiry/ExpiryPolicyForm";
