@@ -13548,11 +13548,11 @@ oci://registry.domain.tld/path/to/manifest <x id="1" equiv-text="&lt;/code&gt;"/
 </trans-unit>
 <trans-unit id="user-switcher.actions.current-user.label">
   <source>Current user &quot;<x id="0" equiv-text="${label}"/>&quot;</source>
-  <target>Nuvarande användare &amp;quot; 1 &amp;quot;</target>
+  <target>Nuvarande användare &amp;quot; <x id="0" equiv-text="${label}"/> &amp;quot;</target>
 </trans-unit>
 <trans-unit id="user-switcher.actions.switch-to-user.label">
   <source>Switch to user &quot;<x id="0" equiv-text="${label}"/>&quot;</source>
-  <target>Byt till användare &amp;quot; 1 &amp;quot;</target>
+  <target>Byt till användare &amp;quot; <x id="0" equiv-text="${label}"/> &amp;quot;</target>
 </trans-unit>
 <trans-unit id="user-switcher.toggle.tooltip">
   <source>Toggle user navigation menu</source>
