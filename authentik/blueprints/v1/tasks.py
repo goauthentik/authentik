@@ -1,9 +1,11 @@
 """v1 blueprints tasks"""
 
+from collections.abc import Generator
 from dataclasses import asdict, dataclass, field
 from hashlib import sha512
 from pathlib import Path
 from sys import platform
+from typing import Any
 from uuid import UUID
 
 from dacite.core import from_dict
@@ -30,7 +32,13 @@ from authentik.blueprints.models import (
     BlueprintInstanceStatus,
     BlueprintRetrievalFailed,
 )
-from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata, EntryInvalidError
+from authentik.blueprints.v1.common import (
+    BlueprintLoader,
+    BlueprintMetadata,
+    EntryInvalidError,
+    File,
+    YAMLTag,
+)
 from authentik.blueprints.v1.importer import Importer
 from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_INSTANTIATE
 from authentik.blueprints.v1.oci import OCI_PREFIX
@@ -54,6 +62,49 @@ class BlueprintFile:
     hash: str
     last_m: int
     meta: BlueprintMetadata | None = field(default=None)
+
+
+def iter_file_tags(value: Any, ancestors: frozenset[int] = frozenset()) -> Generator[File]:
+    """Find all `!File` tags in a loaded blueprint, including tags used as arguments
+    of other tags. A node is not descended into again below itself; a node reached by
+    several routes is visited once per route."""
+    if id(value) in ancestors:
+        return
+    ancestors = ancestors | {id(value)}
+    if isinstance(value, File):
+        yield value
+    if isinstance(value, dict):
+        children = value.values()
+    elif isinstance(value, list | tuple):
+        children = value
+    elif isinstance(value, YAMLTag):
+        children = vars(value).values()
+    else:
+        return
+    for child in children:
+        yield from iter_file_tags(child, ancestors)
+
+
+def blueprint_hash(content: str) -> str:
+    """Hash a blueprint's content and the contents of the files it references with
+    `!File` tags"""
+    hasher = sha512(content.encode())
+    try:
+        raw_blueprint = load(content, BlueprintLoader)
+    except YAMLError:
+        return hasher.hexdigest()
+    for tag in iter_file_tags(raw_blueprint):
+        # Mapping-node tags have no path; nested tags cannot be resolved here
+        path = getattr(tag, "path", None)
+        if not isinstance(path, str):
+            continue
+        try:
+            referenced = Path(path).read_bytes()
+        except OSError, ValueError:
+            # Unreadable references contribute only their blueprint source text
+            continue
+        hasher.update(sha512(referenced).digest())
+    return hasher.hexdigest()
 
 
 class BlueprintWatcherMiddleware(Middleware):
@@ -129,8 +180,9 @@ def blueprints_find() -> list[BlueprintFile]:
         if any(part for part in rel_path.parts if part.startswith(".")):
             continue
         with open(path, encoding="utf-8") as blueprint_file:
+            content = blueprint_file.read()
             try:
-                raw_blueprint = load(blueprint_file.read(), BlueprintLoader)
+                raw_blueprint = load(content, BlueprintLoader)
             except YAMLError as exc:
                 raw_blueprint = None
                 LOGGER.warning("failed to parse blueprint", exc=exc, path=str(rel_path))
@@ -141,7 +193,7 @@ def blueprints_find() -> list[BlueprintFile]:
             if version != 1:
                 LOGGER.warning("invalid blueprint version", version=version, path=str(rel_path))
                 continue
-        file_hash = sha512(path.read_bytes()).hexdigest()
+        file_hash = blueprint_hash(content)
         blueprint = BlueprintFile(str(rel_path), version, file_hash, int(path.stat().st_mtime))
         blueprint.meta = from_dict(BlueprintMetadata, metadata) if metadata else None
         blueprints.append(blueprint)
@@ -202,7 +254,7 @@ def apply_blueprint(instance_pk: UUID):
             self.info(f"Blueprint {instance.name} is disabled, skipping")
             return
         blueprint_content = instance.retrieve()
-        file_hash = sha512(blueprint_content.encode()).hexdigest()
+        file_hash = blueprint_hash(blueprint_content)
         importer = Importer.from_string(blueprint_content, instance.context)
         if importer.blueprint.metadata:
             instance.metadata = asdict(importer.blueprint.metadata)
