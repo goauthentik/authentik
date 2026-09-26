@@ -1,3 +1,4 @@
+from copy import deepcopy
 from typing import Any
 
 from authentik.providers.scim.clients.schema import PatchOp, PatchOperation
@@ -13,7 +14,7 @@ class SCIMPatchProcessor:
 
     def apply_patches(self, data: dict[str, Any], patches: list[PatchOperation]) -> dict[str, Any]:
         """Apply a list of patch operations to the data"""
-        result = data.copy()
+        result = deepcopy(data)
 
         for _patch in patches:
             patch = PatchOperation.model_validate(_patch)
@@ -56,7 +57,9 @@ class SCIMPatchProcessor:
                 # Somewhat hacky workaround for the manager attribute of the enterprise schema
                 # ideally we'd do this based on the schema
                 if attr == SCIM_URN_USER_ENTERPRISE and components[0]["sub_attribute"] == "manager":
-                    data[attr][components[0]["sub_attribute"]] = {"value": value}
+                    data[attr][components[0]["sub_attribute"]] = (
+                        value if isinstance(value, dict) else {"value": value}
+                    )
                 else:
                     data[attr][components[0]["sub_attribute"]] = value
             elif attr in data:
@@ -96,7 +99,9 @@ class SCIMPatchProcessor:
                 # Somewhat hacky workaround for the manager attribute of the enterprise schema
                 # ideally we'd do this based on the schema
                 if attr == SCIM_URN_USER_ENTERPRISE and components[0]["sub_attribute"] == "manager":
-                    data[attr][components[0]["sub_attribute"]] = {"value": value}
+                    data[attr][components[0]["sub_attribute"]] = (
+                        value if isinstance(value, dict) else {"value": value}
+                    )
                 else:
                     data[attr][components[0]["sub_attribute"]] = value
             else:
