@@ -1,5 +1,6 @@
 """Crypto API Views"""
 
+from cryptography.exceptions import InternalError, UnsupportedAlgorithm
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import load_pem_x509_certificate
@@ -35,7 +36,11 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import UserTypes
 from authentik.crypto.apps import MANAGED_KEY
-from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
+from authentik.crypto.builder import (
+    CertificateBuilder,
+    KeyAlgorithmUnavailableError,
+    PrivateKeyAlg,
+)
 from authentik.crypto.models import CertificateKeyPair, KeyType
 from authentik.events.models import Event, EventAction
 from authentik.rbac.decorators import permission_required
@@ -104,6 +109,14 @@ class CertificateKeyPairSerializer(ModelSerializer):
             except (ValueError, TypeError) as exc:
                 LOGGER.warning("Failed to load private key", exc=exc)
                 raise ValidationError("Unable to load private key (possibly encrypted?).") from None
+            except (InternalError, UnsupportedAlgorithm) as exc:
+                # OpenSSL has no implementation for this key type in the current configuration,
+                # for example an ML-DSA key with a FIPS provider that predates ML-DSA
+                LOGGER.warning("Private key algorithm not available", exc=exc)
+                raise ValidationError(
+                    "The private key's algorithm is not available in the current OpenSSL "
+                    "configuration (for example ML-DSA in FIPS mode)."
+                ) from None
         return value
 
     class Meta:
@@ -236,10 +249,23 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         sans = raw_san.split(",") if raw_san != "" else []
         builder = CertificateBuilder(body.validated_data["name"])
         builder.alg = body.validated_data["alg"]
-        builder.build(
-            subject_alt_names=sans,
-            validity_days=int(body.validated_data["validity_days"]),
-        )
+        try:
+            builder.build(
+                subject_alt_names=sans,
+                validity_days=int(body.validated_data["validity_days"]),
+            )
+        except KeyAlgorithmUnavailableError as exc:
+            # Raised when the selected algorithm cannot be generated in the current OpenSSL
+            # configuration, for example ML-DSA under the validated FIPS provider. We hopefully
+            # can delete this once we have proper support with python and OpenSSL with FIPS enabled.
+            LOGGER.warning("Failed to generate certificate keypair", error=str(exc))
+            raise ValidationError(
+                {
+                    "alg": [
+                        _("The selected algorithm is not supported in the current configuration.")
+                    ]
+                }
+            ) from exc
         instance = builder.save()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)

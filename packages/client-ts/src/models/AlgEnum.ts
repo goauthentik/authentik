@@ -18,6 +18,9 @@ export const AlgEnum = {
     Ecdsa: "ecdsa",
     Ed25519: "ed25519",
     Ed448: "ed448",
+    Mldsa44: "mldsa44",
+    Mldsa65: "mldsa65",
+    Mldsa87: "mldsa87",
     UnknownDefaultOpenApi: "11184809",
 } as const;
 export type AlgEnum = (typeof AlgEnum)[keyof typeof AlgEnum];
