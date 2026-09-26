@@ -15,12 +15,19 @@ from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.errors import exception_to_string
+from authentik.policies.models import Policy
 from authentik.stages.prompt.models import Prompt, PromptStage
 from authentik.stages.prompt.stage import PromptChallenge, PromptStageView
 
 
 class PromptStageSerializer(StageSerializer):
     """PromptStage Serializer"""
+
+    def validate_validation_policies(self, policies: list[Policy]) -> list[Policy]:
+        target = self.instance or PromptStage()
+        for policy in policies:
+            Policy.objects.get_subclass(pk=policy.pk).validate_target(target)
+        return policies
 
     class Meta:
         model = PromptStage
