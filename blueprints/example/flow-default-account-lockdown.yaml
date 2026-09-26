@@ -209,18 +209,47 @@ entries:
       model: authentik_stages_prompt.promptstage
   policies:
     # Expression policy to check if this is NOT a self-service lockdown (admin)
+    # Replaced by a conditional policy
+    - identifiers:
+        name: default-account-lockdown-admin-policy
+      model: authentik_policies_expression.expressionpolicy
+      state: absent
     - conditions:
       - !Context goauthentik.io/enterprise/licensed
       attrs:
         name: default-account-lockdown-admin-policy
-        expression: |
-          actor_uuid = str(getattr(request.http_request.user, "pk", ""))
-          target_uuid = str(getattr(request.user, "pk", ""))
-          return bool(target_uuid) and target_uuid != actor_uuid
+        # Passes when an administrator locks down another user's account
+        actions:
+          version: 2
+          actions:
+            - type: condition
+              condition:
+                type: group
+                op: all
+                children:
+                  - type: compare
+                    variable:
+                      key: user.id
+                    operator: is_set
+                  - type: group
+                    op: any
+                    children:
+                      - type: compare
+                        variable:
+                          key: request.user
+                        operator: is_not_set
+                      - type: compare
+                        variable:
+                          key: user.id
+                        operator: ne
+                        value:
+                          type: variable
+                          variable:
+                            key: request.user
       identifiers:
         name: default-account-lockdown-admin-policy
       id: admin-policy
-      model: authentik_policies_expression.expressionpolicy
+      model: authentik_policies_conditional.conditionalpolicy
   bindings:
     # Stage bindings
     - conditions:
