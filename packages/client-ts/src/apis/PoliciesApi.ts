@@ -11,6 +11,12 @@
  */
 
 import { type Cache, CacheFromJSON } from "../models/Cache";
+import { type ConditionalPolicy, ConditionalPolicyFromJSON } from "../models/ConditionalPolicy";
+import {
+    type ConditionalPolicyRequest,
+    ConditionalPolicyRequestToJSON,
+} from "../models/ConditionalPolicyRequest";
+import { type ConditionCatalog, ConditionCatalogFromJSON } from "../models/ConditionCatalog";
 import { type DetailedCountry, DetailedCountryFromJSON } from "../models/DetailedCountry";
 import { type DummyPolicy, DummyPolicyFromJSON } from "../models/DummyPolicy";
 import { type DummyPolicyRequest, DummyPolicyRequestToJSON } from "../models/DummyPolicyRequest";
@@ -27,6 +33,11 @@ import {
 } from "../models/ExpressionPolicyRequest";
 import { type GeoIPPolicy, GeoIPPolicyFromJSON } from "../models/GeoIPPolicy";
 import { type GeoIPPolicyRequest, GeoIPPolicyRequestToJSON } from "../models/GeoIPPolicyRequest";
+import { type MissingBehaviorEnum } from "../models/MissingBehaviorEnum";
+import {
+    type PaginatedConditionalPolicyList,
+    PaginatedConditionalPolicyListFromJSON,
+} from "../models/PaginatedConditionalPolicyList";
 import {
     type PaginatedDummyPolicyList,
     PaginatedDummyPolicyListFromJSON,
@@ -84,6 +95,10 @@ import {
     type PasswordPolicyRequest,
     PasswordPolicyRequestToJSON,
 } from "../models/PasswordPolicyRequest";
+import {
+    type PatchedConditionalPolicyRequest,
+    PatchedConditionalPolicyRequestToJSON,
+} from "../models/PatchedConditionalPolicyRequest";
 import {
     type PatchedDummyPolicyRequest,
     PatchedDummyPolicyRequestToJSON,
@@ -261,6 +276,69 @@ export interface PoliciesBindingsUsedByListRequest {
      * A UUID string identifying this Policy Binding.
      */
     policyBindingUuid: string;
+}
+
+export interface PoliciesConditionalCreateRequest {
+    conditionalPolicyRequest: ConditionalPolicyRequest;
+}
+
+export interface PoliciesConditionalDestroyRequest {
+    /**
+     * A UUID string identifying this Conditional Policy.
+     */
+    policyUuid: string;
+}
+
+export interface PoliciesConditionalListRequest {
+    executionLogging?: boolean;
+    missingBehavior?: MissingBehaviorEnum;
+    name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
+    ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    pageSize?: number;
+    /**
+     * A search term.
+     */
+    search?: string;
+}
+
+export interface PoliciesConditionalPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Conditional Policy.
+     */
+    policyUuid: string;
+    patchedConditionalPolicyRequest?: PatchedConditionalPolicyRequest;
+}
+
+export interface PoliciesConditionalRetrieveRequest {
+    /**
+     * A UUID string identifying this Conditional Policy.
+     */
+    policyUuid: string;
+}
+
+export interface PoliciesConditionalUpdateRequest {
+    /**
+     * A UUID string identifying this Conditional Policy.
+     */
+    policyUuid: string;
+    conditionalPolicyRequest: ConditionalPolicyRequest;
+}
+
+export interface PoliciesConditionalUsedByListRequest {
+    /**
+     * A UUID string identifying this Conditional Policy.
+     */
+    policyUuid: string;
 }
 
 export interface PoliciesDummyCreateRequest {
@@ -1855,6 +1933,556 @@ export class PoliciesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Array<UsedBy>> {
         const response = await this.policiesBindingsUsedByListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for policiesConditionalCatalogRetrieve without sending the request
+     */
+    async policiesConditionalCatalogRetrieveRequestOpts(): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/policies/conditional/catalog/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Facts, scenarios, variables, setters and operators available to conditional policies
+     */
+    async policiesConditionalCatalogRetrieveRaw(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ConditionCatalog>> {
+        const requestOptions = await this.policiesConditionalCatalogRetrieveRequestOpts();
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ConditionCatalogFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Facts, scenarios, variables, setters and operators available to conditional policies
+     */
+    async policiesConditionalCatalogRetrieve(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ConditionCatalog> {
+        const response = await this.policiesConditionalCatalogRetrieveRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for policiesConditionalCreate without sending the request
+     */
+    async policiesConditionalCreateRequestOpts(
+        requestParameters: PoliciesConditionalCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["conditionalPolicyRequest"] == null) {
+            throw new runtime.RequiredError(
+                "conditionalPolicyRequest",
+                'Required parameter "conditionalPolicyRequest" was null or undefined when calling policiesConditionalCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/policies/conditional/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: ConditionalPolicyRequestToJSON(requestParameters["conditionalPolicyRequest"]),
+        };
+    }
+
+    /**
+     * Conditional Policy Viewset
+     */
+    async policiesConditionalCreateRaw(
+        requestParameters: PoliciesConditionalCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ConditionalPolicy>> {
+        const requestOptions = await this.policiesConditionalCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ConditionalPolicyFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Conditional Policy Viewset
+     */
+    async policiesConditionalCreate(
+        requestParameters: PoliciesConditionalCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ConditionalPolicy> {
+        const response = await this.policiesConditionalCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for policiesConditionalDestroy without sending the request
+     */
+    async policiesConditionalDestroyRequestOpts(
+        requestParameters: PoliciesConditionalDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
+            throw new runtime.RequiredError(
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesConditionalDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/policies/conditional/{policy_uuid}/`;
+        urlPath = urlPath.replace(
+            "{policy_uuid}",
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Conditional Policy Viewset
+     */
+    async policiesConditionalDestroyRaw(
+        requestParameters: PoliciesConditionalDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.policiesConditionalDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Conditional Policy Viewset
+     */
+    async policiesConditionalDestroy(
+        requestParameters: PoliciesConditionalDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.policiesConditionalDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for policiesConditionalList without sending the request
+     */
+    async policiesConditionalListRequestOpts(
+        requestParameters: PoliciesConditionalListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["executionLogging"] != null) {
+            queryParameters["execution_logging"] = requestParameters["executionLogging"];
+        }
+
+        if (requestParameters["missingBehavior"] != null) {
+            queryParameters["missing_behavior"] = requestParameters["missingBehavior"];
+        }
+
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/policies/conditional/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Conditional Policy Viewset
+     */
+    async policiesConditionalListRaw(
+        requestParameters: PoliciesConditionalListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedConditionalPolicyList>> {
+        const requestOptions = await this.policiesConditionalListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedConditionalPolicyListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Conditional Policy Viewset
+     */
+    async policiesConditionalList(
+        requestParameters: PoliciesConditionalListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedConditionalPolicyList> {
+        const response = await this.policiesConditionalListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for policiesConditionalPartialUpdate without sending the request
+     */
+    async policiesConditionalPartialUpdateRequestOpts(
+        requestParameters: PoliciesConditionalPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
+            throw new runtime.RequiredError(
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesConditionalPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/policies/conditional/{policy_uuid}/`;
+        urlPath = urlPath.replace(
+            "{policy_uuid}",
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedConditionalPolicyRequestToJSON(
+                requestParameters["patchedConditionalPolicyRequest"],
+            ),
+        };
+    }
+
+    /**
+     * Conditional Policy Viewset
+     */
+    async policiesConditionalPartialUpdateRaw(
+        requestParameters: PoliciesConditionalPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ConditionalPolicy>> {
+        const requestOptions =
+            await this.policiesConditionalPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ConditionalPolicyFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Conditional Policy Viewset
+     */
+    async policiesConditionalPartialUpdate(
+        requestParameters: PoliciesConditionalPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ConditionalPolicy> {
+        const response = await this.policiesConditionalPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for policiesConditionalRetrieve without sending the request
+     */
+    async policiesConditionalRetrieveRequestOpts(
+        requestParameters: PoliciesConditionalRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
+            throw new runtime.RequiredError(
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesConditionalRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/policies/conditional/{policy_uuid}/`;
+        urlPath = urlPath.replace(
+            "{policy_uuid}",
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Conditional Policy Viewset
+     */
+    async policiesConditionalRetrieveRaw(
+        requestParameters: PoliciesConditionalRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ConditionalPolicy>> {
+        const requestOptions = await this.policiesConditionalRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ConditionalPolicyFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Conditional Policy Viewset
+     */
+    async policiesConditionalRetrieve(
+        requestParameters: PoliciesConditionalRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ConditionalPolicy> {
+        const response = await this.policiesConditionalRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for policiesConditionalUpdate without sending the request
+     */
+    async policiesConditionalUpdateRequestOpts(
+        requestParameters: PoliciesConditionalUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
+            throw new runtime.RequiredError(
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesConditionalUpdate().',
+            );
+        }
+
+        if (requestParameters["conditionalPolicyRequest"] == null) {
+            throw new runtime.RequiredError(
+                "conditionalPolicyRequest",
+                'Required parameter "conditionalPolicyRequest" was null or undefined when calling policiesConditionalUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/policies/conditional/{policy_uuid}/`;
+        urlPath = urlPath.replace(
+            "{policy_uuid}",
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: ConditionalPolicyRequestToJSON(requestParameters["conditionalPolicyRequest"]),
+        };
+    }
+
+    /**
+     * Conditional Policy Viewset
+     */
+    async policiesConditionalUpdateRaw(
+        requestParameters: PoliciesConditionalUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ConditionalPolicy>> {
+        const requestOptions = await this.policiesConditionalUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ConditionalPolicyFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Conditional Policy Viewset
+     */
+    async policiesConditionalUpdate(
+        requestParameters: PoliciesConditionalUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ConditionalPolicy> {
+        const response = await this.policiesConditionalUpdateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for policiesConditionalUsedByList without sending the request
+     */
+    async policiesConditionalUsedByListRequestOpts(
+        requestParameters: PoliciesConditionalUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
+            throw new runtime.RequiredError(
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesConditionalUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/policies/conditional/{policy_uuid}/used_by/`;
+        urlPath = urlPath.replace(
+            "{policy_uuid}",
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async policiesConditionalUsedByListRaw(
+        requestParameters: PoliciesConditionalUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.policiesConditionalUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async policiesConditionalUsedByList(
+        requestParameters: PoliciesConditionalUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.policiesConditionalUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
