@@ -228,6 +228,12 @@
         height: 100dvh;
     }
 
+    /* Use the full available height, even if the content is smaller */
+    &.ak-m-dialog--full-height,
+    &:has(.ak-m-dialog--full-height) {
+        height: var(--ak-c-dialog--MaxHeight);
+    }
+
     .ak-m-dialog--full-screen {
         --ak-c-dialog--MaxHeight: 100dvh;
         /* Note that a unit is required for to perform the calculation. */
