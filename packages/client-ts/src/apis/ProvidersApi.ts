@@ -12,6 +12,7 @@
 
 import { type ClientTypeEnum } from "../models/ClientTypeEnum";
 import { type DigestAlgorithmEnum } from "../models/DigestAlgorithmEnum";
+import { type EncryptionAlgorithmEnum } from "../models/EncryptionAlgorithmEnum";
 import { type ForceBindingEnum } from "../models/ForceBindingEnum";
 import {
     type GoogleWorkspaceProvider,
@@ -1093,6 +1094,7 @@ export interface ProvidersSamlListRequest {
     defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
     defaultRelayState?: string;
     digestAlgorithm?: DigestAlgorithmEnum;
+    encryptionAlgorithm?: EncryptionAlgorithmEnum;
     encryptionKp?: string;
     invalidationFlow?: string;
     isBackchannel?: boolean;
@@ -1435,6 +1437,7 @@ export interface ProvidersWsfedListRequest {
     defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
     defaultRelayState?: string;
     digestAlgorithm?: DigestAlgorithmEnum;
+    encryptionAlgorithm?: EncryptionAlgorithmEnum;
     encryptionKp?: string;
     invalidationFlow?: string;
     isBackchannel?: boolean;
@@ -7888,6 +7891,10 @@ export class ProvidersApi extends runtime.BaseAPI {
             queryParameters["digest_algorithm"] = requestParameters["digestAlgorithm"];
         }
 
+        if (requestParameters["encryptionAlgorithm"] != null) {
+            queryParameters["encryption_algorithm"] = requestParameters["encryptionAlgorithm"];
+        }
+
         if (requestParameters["encryptionKp"] != null) {
             queryParameters["encryption_kp"] = requestParameters["encryptionKp"];
         }
@@ -10370,6 +10377,10 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         if (requestParameters["digestAlgorithm"] != null) {
             queryParameters["digest_algorithm"] = requestParameters["digestAlgorithm"];
+        }
+
+        if (requestParameters["encryptionAlgorithm"] != null) {
+            queryParameters["encryption_algorithm"] = requestParameters["encryptionAlgorithm"];
         }
 
         if (requestParameters["encryptionKp"] != null) {

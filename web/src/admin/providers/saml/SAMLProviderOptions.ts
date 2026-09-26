@@ -1,5 +1,6 @@
 import {
     DigestAlgorithmEnum,
+    EncryptionAlgorithmEnum,
     KeyTypeEnum,
     SAMLBindingsEnum,
     SAMLLogoutMethods,
@@ -60,6 +61,13 @@ export const digestAlgorithmOptions = toOptions([
     ["SHA256", DigestAlgorithmEnum.HttpWwwW3Org200104Xmlencsha256, true],
     ["SHA384", DigestAlgorithmEnum.HttpWwwW3Org200104XmldsigMoresha384],
     ["SHA512", DigestAlgorithmEnum.HttpWwwW3Org200104Xmlencsha512],
+]);
+
+export const encryptionAlgorithmOptions = toOptions([
+    ["AES128-CBC", EncryptionAlgorithmEnum.HttpWwwW3Org200104Xmlencaes128Cbc, true],
+    ["AES256-CBC", EncryptionAlgorithmEnum.HttpWwwW3Org200104Xmlencaes256Cbc],
+    ["AES128-GCM", EncryptionAlgorithmEnum.HttpWwwW3Org2009Xmlenc11aes128Gcm],
+    [msg("AES256-GCM (recommended)"), EncryptionAlgorithmEnum.HttpWwwW3Org2009Xmlenc11aes256Gcm],
 ]);
 
 export const signatureAlgorithmOptions = toOptions([

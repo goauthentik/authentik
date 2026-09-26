@@ -12,6 +12,11 @@
 
 import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum";
 import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum";
+import type { EncryptionAlgorithmEnum } from "./EncryptionAlgorithmEnum";
+import {
+    EncryptionAlgorithmEnumFromJSON,
+    EncryptionAlgorithmEnumToJSON,
+} from "./EncryptionAlgorithmEnum";
 import type { SAMLBindingsEnum } from "./SAMLBindingsEnum";
 import { SAMLBindingsEnumFromJSON, SAMLBindingsEnumToJSON } from "./SAMLBindingsEnum";
 import type { SAMLLogoutMethods } from "./SAMLLogoutMethods";
@@ -136,6 +141,11 @@ export interface SAMLProvider {
      * encryption keypair. The assertion is decrypted by the SP using the the private key.
      */
     encryptionKp?: string | null;
+    /**
+     * Block cipher used to encrypt the assertion when an encryption keypair is set. AES256-GCM is
+     * recommended; AES128-CBC is the most widely interoperable.
+     */
+    encryptionAlgorithm?: EncryptionAlgorithmEnum;
     signAssertion?: boolean;
     signResponse?: boolean;
     signLogoutRequest?: boolean;
@@ -423,6 +433,10 @@ export function SAMLProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
                 : json["encryption_kp"] === null
                   ? null
                   : json["encryption_kp"],
+        encryptionAlgorithm:
+            json["encryption_algorithm"] == null
+                ? undefined
+                : EncryptionAlgorithmEnumFromJSON(json["encryption_algorithm"]),
         signAssertion: json["sign_assertion"] == null ? undefined : json["sign_assertion"],
         signResponse: json["sign_response"] == null ? undefined : json["sign_response"],
         signLogoutRequest:
@@ -507,6 +521,7 @@ export function SAMLProviderToJSONTyped(
         signing_kp: value["signingKp"],
         verification_kp: value["verificationKp"],
         encryption_kp: value["encryptionKp"],
+        encryption_algorithm: EncryptionAlgorithmEnumToJSON(value["encryptionAlgorithm"]),
         sign_assertion: value["signAssertion"],
         sign_response: value["signResponse"],
         sign_logout_request: value["signLogoutRequest"],

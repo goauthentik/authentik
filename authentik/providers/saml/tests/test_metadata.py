@@ -8,7 +8,13 @@ from defusedxml.lxml import fromstring
 from django.test import RequestFactory, TestCase
 from lxml import etree  # nosec
 
-from authentik.common.saml.constants import ECDSA_SHA256, NS_MAP, NS_SAML_METADATA
+from authentik.common.saml.constants import (
+    AES128_CBC,
+    AES256_GCM,
+    ECDSA_SHA256,
+    NS_MAP,
+    NS_SAML_METADATA,
+)
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.crypto.builder import PrivateKeyAlg
@@ -94,6 +100,76 @@ class TestServiceProviderMetadataParser(TestCase):
             len(provider.property_mappings.all()),
             len(SAMLPropertyMapping.objects.exclude(managed__isnull=True)),
         )
+
+    def test_encryption_algorithm_selection(self):
+        """Test that the SP's advertised encryption algorithm preference is honored"""
+        parser = ServiceProviderMetadataParser()
+
+        def root_with_methods(*algorithms: str):
+            methods = "".join(
+                f'<md:EncryptionMethod Algorithm="{algorithm}"/>' for algorithm in algorithms
+            )
+            return lxml_from_string(
+                (
+                    '<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" '
+                    'entityID="http://localhost:8080/saml/metadata">'
+                    "<md:SPSSODescriptor protocolSupportEnumeration="
+                    '"urn:oasis:names:tc:SAML:2.0:protocol">'
+                    '<md:KeyDescriptor use="encryption">'
+                    f"{methods}"
+                    "</md:KeyDescriptor></md:SPSSODescriptor></md:EntityDescriptor>"
+                ).encode()
+            )
+
+        # First supported algorithm in document order wins (honoring SP preference)
+        self.assertEqual(
+            parser.get_encryption_algorithm(root_with_methods(AES256_GCM, AES128_CBC)),
+            AES256_GCM,
+        )
+        # Unsupported algorithms are skipped, next supported one is picked
+        self.assertEqual(
+            parser.get_encryption_algorithm(
+                root_with_methods("http://www.w3.org/2001/04/xmlenc#tripledes-cbc", AES128_CBC)
+            ),
+            AES128_CBC,
+        )
+        # No supported algorithm advertised -> None (caller keeps the default)
+        self.assertIsNone(
+            parser.get_encryption_algorithm(
+                root_with_methods("http://www.w3.org/2001/04/xmlenc#tripledes-cbc")
+            )
+        )
+        # No EncryptionMethod advertised at all -> None
+        self.assertIsNone(parser.get_encryption_algorithm(root_with_methods()))
+
+    def test_encryption_algorithm_to_provider(self):
+        """Test that a metadata-advertised encryption algorithm is applied to the provider"""
+        cert_body = "".join(
+            line
+            for line in load_fixture("fixtures/cert.pem").splitlines()
+            if "CERTIFICATE" not in line
+        )
+        metadata = (
+            '<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" '
+            'xmlns:ds="http://www.w3.org/2000/09/xmldsig#" '
+            'entityID="http://localhost:8080/saml/metadata">'
+            "<md:SPSSODescriptor protocolSupportEnumeration="
+            '"urn:oasis:names:tc:SAML:2.0:protocol">'
+            '<md:KeyDescriptor use="encryption">'
+            f'<md:EncryptionMethod Algorithm="{AES256_GCM}"/>'
+            f"<ds:KeyInfo><ds:X509Data><ds:X509Certificate>{cert_body}"
+            "</ds:X509Certificate></ds:X509Data></ds:KeyInfo>"
+            "</md:KeyDescriptor>"
+            "<md:AssertionConsumerService "
+            'Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" '
+            'Location="http://localhost:8080/saml/acs" index="1"/>'
+            "</md:SPSSODescriptor></md:EntityDescriptor>"
+        )
+        parsed = ServiceProviderMetadataParser().parse(metadata)
+        self.assertEqual(parsed.encryption_algorithm, AES256_GCM)
+        provider = parsed.to_provider("test", self.flow, self.flow)
+        self.assertIsNotNone(provider.encryption_kp)
+        self.assertEqual(provider.encryption_algorithm, AES256_GCM)
 
     def test_multiple_bindings(self):
         """Test metadata advertising endpoints with bindings authentik doesn't support"""

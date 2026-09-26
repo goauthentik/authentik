@@ -92,6 +92,7 @@ class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerial
             "signature_algorithm",
             "signing_kp",
             "encryption_kp",
+            "encryption_algorithm",
             "sign_assertion",
             "sign_logout_request",
             "default_name_id_policy",

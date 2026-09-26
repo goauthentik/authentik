@@ -73,3 +73,20 @@ DIGEST_ALGORITHM_TRANSLATION_MAP = {
     SHA384: xmlsec.constants.TransformSha384,
     SHA512: xmlsec.constants.TransformSha512,
 }
+
+# XML Encryption block-cipher algorithms used to encrypt assertions.
+# CBC: https://www.w3.org/TR/xmlenc-core1/#sec-Alg-Block
+# GCM: https://www.w3.org/TR/xmlenc-core1/#sec-AES-GCM (XML Encryption 1.1)
+AES128_CBC = "http://www.w3.org/2001/04/xmlenc#aes128-cbc"
+AES256_CBC = "http://www.w3.org/2001/04/xmlenc#aes256-cbc"
+AES128_GCM = "http://www.w3.org/2009/xmlenc11#aes128-gcm"
+AES256_GCM = "http://www.w3.org/2009/xmlenc11#aes256-gcm"
+
+# Maps each supported encryption algorithm to the xmlsec transform and the AES
+# session-key length (in bits) it requires.
+ENCRYPTION_ALGORITHM_TRANSLATION_MAP = {
+    AES128_CBC: (xmlsec.Transform.AES128, 128),
+    AES256_CBC: (xmlsec.Transform.AES256, 256),
+    AES128_GCM: (xmlsec.Transform.AES128_GCM, 128),
+    AES256_GCM: (xmlsec.Transform.AES256_GCM, 256),
+}

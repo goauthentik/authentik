@@ -22,6 +22,7 @@ import {
     availableHashes,
     DEFAULT_HASH_ALGORITHM,
     digestAlgorithmOptions,
+    encryptionAlgorithmOptions,
     retrieveSignatureAlgorithm,
 } from "#admin/providers/saml/SAMLProviderOptions";
 
@@ -228,6 +229,32 @@ export function renderForm({
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg("When selected, assertions will be encrypted using this keypair.")}
+                    </p>
+                </ak-form-element-horizontal>
+                <ak-form-element-horizontal
+                    label=${msg("Encryption algorithm")}
+                    required
+                    name="encryptionAlgorithm"
+                >
+                    <select class="pf-c-form-control">
+                        ${encryptionAlgorithmOptions.map(
+                            (opt) => html`
+                                <option
+                                    value=${opt.value}
+                                    ?selected=${
+                                        provider?.encryptionAlgorithm === opt.value ||
+                                        (!provider?.encryptionAlgorithm && opt.default)
+                                    }
+                                >
+                                    ${opt.label}
+                                </option>
+                            `,
+                        )}
+                    </select>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Block cipher used to encrypt the assertion. Only used when an encryption certificate is set. AES256-GCM is recommended.",
+                        )}
                     </p>
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal

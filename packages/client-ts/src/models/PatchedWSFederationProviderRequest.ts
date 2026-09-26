@@ -12,6 +12,11 @@
 
 import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum";
 import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum";
+import type { EncryptionAlgorithmEnum } from "./EncryptionAlgorithmEnum";
+import {
+    EncryptionAlgorithmEnumFromJSON,
+    EncryptionAlgorithmEnumToJSON,
+} from "./EncryptionAlgorithmEnum";
 import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum";
 import { SAMLNameIDPolicyEnumFromJSON, SAMLNameIDPolicyEnumToJSON } from "./SAMLNameIDPolicyEnum";
 import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum";
@@ -88,6 +93,11 @@ export interface PatchedWSFederationProviderRequest {
      * encryption keypair. The assertion is decrypted by the SP using the the private key.
      */
     encryptionKp?: string | null;
+    /**
+     * Block cipher used to encrypt the assertion when an encryption keypair is set. AES256-GCM is
+     * recommended; AES128-CBC is the most widely interoperable.
+     */
+    encryptionAlgorithm?: EncryptionAlgorithmEnum;
     signAssertion?: boolean;
     signLogoutRequest?: boolean;
     defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
@@ -177,6 +187,10 @@ export function PatchedWSFederationProviderRequestFromJSONTyped(
                 : json["encryption_kp"] === null
                   ? null
                   : json["encryption_kp"],
+        encryptionAlgorithm:
+            json["encryption_algorithm"] == null
+                ? undefined
+                : EncryptionAlgorithmEnumFromJSON(json["encryption_algorithm"]),
         signAssertion: json["sign_assertion"] == null ? undefined : json["sign_assertion"],
         signLogoutRequest:
             json["sign_logout_request"] == null ? undefined : json["sign_logout_request"],
@@ -219,6 +233,7 @@ export function PatchedWSFederationProviderRequestToJSONTyped(
         signature_algorithm: SignatureAlgorithmEnumToJSON(value["signatureAlgorithm"]),
         signing_kp: value["signingKp"],
         encryption_kp: value["encryptionKp"],
+        encryption_algorithm: EncryptionAlgorithmEnumToJSON(value["encryptionAlgorithm"]),
         sign_assertion: value["signAssertion"],
         sign_logout_request: value["signLogoutRequest"],
         default_name_id_policy: SAMLNameIDPolicyEnumToJSON(value["defaultNameIdPolicy"]),

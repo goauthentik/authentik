@@ -165,6 +165,7 @@ export * from "./EmailDevice";
 export * from "./EmailDeviceRequest";
 export * from "./EmailStage";
 export * from "./EmailStageRequest";
+export * from "./EncryptionAlgorithmEnum";
 export * from "./Endpoint";
 export * from "./EndpointAgentChallenge";
 export * from "./EndpointAgentChallengeResponseRequest";
