@@ -2,6 +2,7 @@
 
 from datetime import timedelta
 from pickle import dumps, loads  # nosec
+from unittest.mock import MagicMock, PropertyMock, patch
 from uuid import uuid4
 
 from django.test import RequestFactory, TestCase
@@ -9,6 +10,8 @@ from django.utils.timezone import now
 
 from authentik.core.models import Group
 from authentik.core.tests.utils import create_test_user
+from authentik.endpoints.models import Device
+from authentik.events.models import Event, EventAction
 from authentik.flows.planner import FlowPlan
 from authentik.lib.generators import generate_id
 from authentik.policies.conditional.evaluator import ConditionValidationError, compile_actions
@@ -209,6 +212,26 @@ class TestConditionalEvaluator(TestCase):
         self.assertFalse(result.passing)
         self.assertEqual(result.messages, ("nope",))
 
+    def test_event(self):
+        """Event variables"""
+        event = Event.new(EventAction.LOGIN_FAILED)
+        event.client_ip = "1.2.3.4"
+        event.save()
+        request = PolicyRequest(self.user)
+        request.obj = event
+        request.context["event"] = event
+        policy = ConditionalPolicy(
+            name=generate_id(),
+            actions=tree(
+                group(
+                    "all",
+                    cond("event.action", "eq", EventAction.LOGIN_FAILED),
+                    cond("event.client_ip", "in_network", ["1.2.3.0/24"]),
+                )
+            ),
+        )
+        self.assertTrue(policy.passes(request).passing)
+
     def test_policy_reference(self):
         """Evaluate referenced policies"""
         referenced = ExpressionPolicy.objects.create(
@@ -256,6 +279,27 @@ class TestConditionalEvaluator(TestCase):
         false = cond("user.is_active", "is_false")
         self.assertTrue(self.passes(group("none", false, false)))
         self.assertFalse(self.passes(group("none", false, true)))
+
+    def test_known_params(self):
+        """Well-defined parameters are typed without a cast, and `*` collects from lists"""
+        self.request.context["device"] = Device.objects.create(
+            name=generate_id(), identifier=generate_id()
+        )
+        facts = {
+            "hardware": {"manufacturer": "Apple", "cpu_count": 8},
+            "software": [{"name": "Firefox"}, {"name": "Slack"}],
+        }
+        with patch(
+            "authentik.endpoints.models.Device.cached_facts",
+            PropertyMock(return_value=MagicMock(data=facts)),
+        ):
+            self.assertTrue(
+                self.passes(cond("device.facts", "eq", "Apple", param="hardware.manufacturer"))
+            )
+            self.assertTrue(self.passes(cond("device.facts", "gte", 4, param="hardware.cpu_count")))
+            self.assertTrue(
+                self.passes(cond("device.facts", "has_item", "Slack", param="software.*.name"))
+            )
 
     def run_actions(self, *actions: dict, request: PolicyRequest | None = None, **kwargs):
         policy = ConditionalPolicy(
@@ -328,6 +372,30 @@ class TestConditionalEvaluator(TestCase):
         self.assertFalse(result.passing)
         self.assertEqual(result.messages, ("no",))
         self.assertNotIn("email", context)
+
+    def test_actions_prompt_data(self):
+        """Prompt fields can be set, and later actions see the new value"""
+        prompt = {"email": "foo@goauthentik.io"}
+        request = self.flow_request(prompt_data=prompt)
+        result = self.run_actions(
+            {
+                "type": "set",
+                "target": {"key": "prompt_data", "param": "username"},
+                "value": {
+                    "type": "variable",
+                    "variable": {"key": "prompt_data", "param": "email", "cast": "string"},
+                },
+            },
+            {
+                "type": "condition",
+                "condition": cond(
+                    "prompt_data", "eq", "foo@goauthentik.io", param="username", cast="string"
+                ),
+            },
+            request=request,
+        )
+        self.assertTrue(result.passing)
+        self.assertEqual(prompt["username"], "foo@goauthentik.io")
 
     def test_actions_stop_and_disabled(self):
         """Stop ends with a result, disabled actions are skipped"""
@@ -402,6 +470,16 @@ class TestConditionalCompiler(TestCase):
         assert_invalid(
             [{"type": "set", "target": {"key": "plan.context"}, "value": literal}],
             "requires a key",
+        )
+        assert_invalid(
+            [
+                {
+                    "type": "set",
+                    "target": {"key": "plan.email_override"},
+                    "value": {"type": "literal", "value": {"a": 1}},
+                }
+            ],
+            "is not a string",
         )
         assert_invalid(
             [
