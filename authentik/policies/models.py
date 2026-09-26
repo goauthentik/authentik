@@ -204,6 +204,12 @@ class Policy(SerializerModel, CreatedUpdatedModel):
         """Check if request passes this policy"""
         raise PolicyException()
 
+    def validate_target(self, target: models.Model):
+        """Check if this policy can be used with `target` (a `PolicyBindingModel`, or another
+        model policies are attached to, such as a prompt stage). Raise a `ValidationError`
+        if not."""
+        return
+
     class Meta:
         base_manager_name = "objects"
 

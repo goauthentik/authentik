@@ -2104,6 +2104,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_policies_conditional.conditionalpolicy"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/definitions/model_authentik_policies_conditional.conditionalpolicy_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/definitions/model_authentik_policies_conditional.conditionalpolicy"
+                        },
+                        "identifiers": {
+                            "$ref": "#/definitions/model_authentik_policies_conditional.conditionalpolicy"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_policies_dummy.dummypolicy"
                         },
                         "id": {
@@ -5978,6 +6018,10 @@
                             "authentik_policies.view_policy_cache",
                             "authentik_policies.view_policybinding",
                             "authentik_policies.view_policybindingmodel",
+                            "authentik_policies_conditional.add_conditionalpolicy",
+                            "authentik_policies_conditional.change_conditionalpolicy",
+                            "authentik_policies_conditional.delete_conditionalpolicy",
+                            "authentik_policies_conditional.view_conditionalpolicy",
                             "authentik_policies_dummy.add_dummypolicy",
                             "authentik_policies_dummy.change_dummypolicy",
                             "authentik_policies_dummy.delete_dummypolicy",
@@ -7384,6 +7428,10 @@
                             "authentik_policies.view_policy_cache",
                             "authentik_policies.view_policybinding",
                             "authentik_policies.view_policybindingmodel",
+                            "authentik_policies_conditional.add_conditionalpolicy",
+                            "authentik_policies_conditional.change_conditionalpolicy",
+                            "authentik_policies_conditional.delete_conditionalpolicy",
+                            "authentik_policies_conditional.view_conditionalpolicy",
                             "authentik_policies_dummy.add_dummypolicy",
                             "authentik_policies_dummy.change_dummypolicy",
                             "authentik_policies_dummy.delete_dummypolicy",
@@ -10955,6 +11003,67 @@
                 }
             }
         },
+        "model_authentik_policies_conditional.conditionalpolicy": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "execution_logging": {
+                    "type": "boolean",
+                    "title": "Execution logging",
+                    "description": "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
+                },
+                "actions": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Actions"
+                },
+                "missing_behavior": {
+                    "type": "string",
+                    "enum": [
+                        "fail",
+                        "false"
+                    ],
+                    "title": "Missing behavior",
+                    "description": "How to handle values which are not available in the request."
+                },
+                "failure_message": {
+                    "type": "string",
+                    "title": "Failure message",
+                    "description": "Message shown to the user when the policy does not pass."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_policies_conditional.conditionalpolicy_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_conditionalpolicy",
+                            "change_conditionalpolicy",
+                            "delete_conditionalpolicy",
+                            "view_conditionalpolicy"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_policies_dummy.dummypolicy": {
             "type": "object",
             "properties": {
@@ -11105,6 +11214,7 @@
                         "authentik.admin.files",
                         "authentik.flows",
                         "authentik.outposts",
+                        "authentik.policies.conditional",
                         "authentik.policies.dummy",
                         "authentik.policies.event_matcher",
                         "authentik.policies.expiry",
@@ -11210,6 +11320,7 @@
                         "authentik_outposts.dockerserviceconnection",
                         "authentik_outposts.kubernetesserviceconnection",
                         "authentik_outposts.outpost",
+                        "authentik_policies_conditional.conditionalpolicy",
                         "authentik_policies_dummy.dummypolicy",
                         "authentik_policies_event_matcher.eventmatcherpolicy",
                         "authentik_policies_expiry.passwordexpirypolicy",
@@ -13907,6 +14018,10 @@
                             "authentik_policies.view_policy_cache",
                             "authentik_policies.view_policybinding",
                             "authentik_policies.view_policybindingmodel",
+                            "authentik_policies_conditional.add_conditionalpolicy",
+                            "authentik_policies_conditional.change_conditionalpolicy",
+                            "authentik_policies_conditional.delete_conditionalpolicy",
+                            "authentik_policies_conditional.view_conditionalpolicy",
                             "authentik_policies_dummy.add_dummypolicy",
                             "authentik_policies_dummy.change_dummypolicy",
                             "authentik_policies_dummy.delete_dummypolicy",
