@@ -13,7 +13,12 @@ from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.base import SAFE_METHODS
 from authentik.lib.sync.outgoing.exceptions import TransientSyncException
 from authentik.providers.scim.clients.users import SCIMUserClient
-from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderUser
+from authentik.providers.scim.models import (
+    SCIMCompatibilityMode,
+    SCIMMapping,
+    SCIMProvider,
+    SCIMProviderUser,
+)
 from authentik.providers.scim.tasks import scim_sync, scim_sync_objects, sync_tasks
 from authentik.tasks.models import Task
 from authentik.tenants.models import Tenant
@@ -326,6 +331,126 @@ class SCIMUserTests(TestCase):
         self.assertEqual(mock.request_history[0].method, "GET")
         self.assertEqual(mock.request_history[1].method, "POST")
         self.assertEqual(mock.request_history[2].method, "PUT")
+
+    def _create_user_patch_supported(self, mock: Mocker) -> tuple[User, str]:
+        """Create a user against a service provider which supports PATCH, and which answers
+        with the created resource"""
+        scim_id = generate_id()
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={
+                "authenticationSchemes": [],
+                "patch": {"supported": True},
+                "bulk": {"supported": False},
+                "filter": {"supported": False},
+                "changePassword": {"supported": False},
+                "sort": {"supported": False},
+                "etag": {"supported": False},
+            },
+        )
+        mock.post(
+            "https://localhost/Users",
+            json=lambda request, context: loads(request.body) | {"id": scim_id},
+        )
+        uid = generate_id()
+        user = User.objects.create(
+            username=uid,
+            name=f"{uid} {uid}",
+            email=f"{uid}@goauthentik.io",
+        )
+        self.assertEqual([req.method for req in mock.request_history], ["GET", "POST"])
+        return user, scim_id
+
+    @Mocker()
+    def test_user_update_patch(self, mock: Mocker):
+        """Test that a user is updated via PATCH when supported, replacing only the changed
+        attributes, and that a 204 No Content answer is not re-sent on the next sync"""
+        user, scim_id = self._create_user_patch_supported(mock)
+        mock.patch(f"https://localhost/Users/{scim_id}", status_code=204)
+
+        user.name = "foo bar"
+        user.is_active = False
+        user.save()
+        self.assertEqual([req.method for req in mock.request_history], ["GET", "POST", "PATCH"])
+        self.assertJSONEqual(
+            mock.request_history[2].body,
+            {
+                "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+                "Operations": [
+                    {
+                        "op": "replace",
+                        "path": "name",
+                        "value": {
+                            "formatted": "foo bar",
+                            "givenName": "foo",
+                            "familyName": "bar",
+                        },
+                    },
+                    {"op": "replace", "path": "displayName", "value": "foo bar"},
+                    {"op": "replace", "path": "active", "value": False},
+                ],
+            },
+        )
+
+        user.save()
+        self.assertEqual(mock.call_count, 3)
+
+    @Mocker()
+    def test_user_update_patch_aws(self, mock: Mocker):
+        """Test that AWS compatibility mode updates users via PUT, even when PATCH is
+        advertised"""
+        self.provider.compatibility_mode = SCIMCompatibilityMode.AWS
+        self.provider.save()
+        user, scim_id = self._create_user_patch_supported(mock)
+        mock.put(f"https://localhost/Users/{scim_id}", json={})
+
+        user.name = "foo bar"
+        user.save()
+        self.assertEqual([req.method for req in mock.request_history], ["GET", "POST", "PUT"])
+
+    @Mocker()
+    def test_user_update_patch_external_id(self, mock: Mocker):
+        """Test that externalId is not replaced via PATCH"""
+        user, _ = self._create_user_patch_supported(mock)
+        connection = SCIMProviderUser.objects.get(provider=self.provider, user=user)
+        connection.attributes["externalId"] = generate_id()
+        connection.save()
+
+        user.save()
+        self.assertEqual(mock.call_count, 2)
+
+    @Mocker()
+    def test_user_update_patch_extension(self, mock: Mocker):
+        """Test that extension attributes are patched individually, and removed when unset"""
+        self.provider.property_mappings.add(
+            SCIMMapping.objects.create(
+                name=generate_id(),
+                expression="""return {
+                    "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User": {
+                        "department": request.user.attributes.get("department", "a"),
+                        "costCenter": "c",
+                    },
+                }""",
+            )
+        )
+        user, scim_id = self._create_user_patch_supported(mock)
+        mock.patch(f"https://localhost/Users/{scim_id}", status_code=204)
+        path = "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:department"
+
+        user.attributes["department"] = "b"
+        user.save()
+        self.assertEqual(
+            loads(mock.request_history[2].body)["Operations"],
+            [{"op": "replace", "path": path, "value": "b"}],
+        )
+
+        user.attributes["department"] = None
+        user.save()
+        self.assertEqual(
+            loads(mock.request_history[3].body)["Operations"],
+            [{"op": "remove", "path": path}],
+        )
+        self.assertEqual(mock.call_count, 4)
 
     @Mocker()
     def test_user_create_delete(self, mock: Mocker):

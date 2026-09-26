@@ -97,6 +97,16 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
         """Lowercase all keys in the dict to ignore casing"""
         return {k.lower(): v for k, v in raw.items()}
 
+    def _record_written_state(
+        self, connection: TConnection, payload: dict[str, Any], response: dict[str, Any]
+    ):
+        """Remember what we wrote to the remote system, so that writes which would not change
+        anything can be skipped. The response takes precedence over the sent payload, but cannot
+        be recorded alone: servers may answer 204 No Content or omit attributes such as the
+        member list."""
+        connection.attributes = payload | response
+        connection.save()
+
     def get_service_provider_config(self):
         """Get Service provider config"""
         default_config = ServiceProviderConfiguration.default()
