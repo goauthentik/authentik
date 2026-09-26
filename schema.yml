@@ -6460,6 +6460,23 @@ paths:
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/agents/psso/register/device/:
+    get:
+      operationId: endpoints_agents_psso_register_device_retrieve
+      tags:
+      - endpoints
+      security:
+      - authentik_device_auth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentPSSODeviceState'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
     post:
       operationId: endpoints_agents_psso_register_device_create
       tags:
@@ -6479,6 +6496,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/AgentPSSODeviceRegistrationResponse'
           description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: endpoints_agents_psso_register_device_destroy
+      description: |-
+        Clear this device's Platform SSO registration, used when the configuration
+        profile is removed from the device. The device stays enrolled otherwise.
+      tags:
+      - endpoints
+      security:
+      - authentik_device_auth: []
+      responses:
+        '204':
+          description: No response body
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -36122,6 +36155,38 @@ components:
       - jwks_endpoint
       - nonce_endpoint
       - token_endpoint
+    AgentPSSODeviceState:
+      type: object
+      description: |-
+        What authentik currently has stored for this device's Platform SSO
+        registration, so the client can detect drift and repair it
+      properties:
+        device_registered:
+          type: boolean
+        sign_key_id:
+          type: string
+        enc_key_id:
+          type: string
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgentPSSODeviceStateUser'
+      required:
+      - device_registered
+      - enc_key_id
+      - sign_key_id
+      - users
+    AgentPSSODeviceStateUser:
+      type: object
+      description: A user currently registered for Platform SSO on this device
+      properties:
+        username:
+          type: string
+        enclave_key_id:
+          type: string
+      required:
+      - enclave_key_id
+      - username
     AgentPSSOUserRegistrationRequest:
       type: object
       description: Register Apple device user via Platform SSO

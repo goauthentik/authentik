@@ -12,6 +12,8 @@ export * from "./AgentGrantRequestCreateRequest";
 export * from "./AgentGrantRequestCreated";
 export * from "./AgentPSSODeviceRegistrationRequest";
 export * from "./AgentPSSODeviceRegistrationResponse";
+export * from "./AgentPSSODeviceState";
+export * from "./AgentPSSODeviceStateUser";
 export * from "./AgentPSSOUserRegistrationRequest";
 export * from "./AgentRequest";
 export * from "./AgentTokenResponse";

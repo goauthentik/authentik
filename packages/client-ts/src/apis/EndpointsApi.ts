@@ -29,6 +29,10 @@ import {
     AgentPSSODeviceRegistrationResponseFromJSON,
 } from "../models/AgentPSSODeviceRegistrationResponse";
 import {
+    type AgentPSSODeviceState,
+    AgentPSSODeviceStateFromJSON,
+} from "../models/AgentPSSODeviceState";
+import {
     type AgentPSSOUserRegistrationRequest,
     AgentPSSOUserRegistrationRequestToJSON,
 } from "../models/AgentPSSOUserRegistrationRequest";
@@ -2737,6 +2741,85 @@ export class EndpointsApi extends runtime.BaseAPI {
             requestParameters,
             initOverrides,
         );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for endpointsAgentsPssoRegisterDeviceDestroy without sending the
+     * request
+     */
+    async endpointsAgentsPssoRegisterDeviceDestroyRequestOpts(): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const urlPath = `/endpoints/agents/psso/register/device/`;
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Clear this device's Platform SSO registration, used when the configuration profile is removed
+     * from the device. The device stays enrolled otherwise.
+     */
+    async endpointsAgentsPssoRegisterDeviceDestroyRaw(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.endpointsAgentsPssoRegisterDeviceDestroyRequestOpts();
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Clear this device's Platform SSO registration, used when the configuration profile is removed
+     * from the device. The device stays enrolled otherwise.
+     */
+    async endpointsAgentsPssoRegisterDeviceDestroy(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.endpointsAgentsPssoRegisterDeviceDestroyRaw(initOverrides);
+    }
+
+    /**
+     * Creates request options for endpointsAgentsPssoRegisterDeviceRetrieve without sending the
+     * request
+     */
+    async endpointsAgentsPssoRegisterDeviceRetrieveRequestOpts(): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const urlPath = `/endpoints/agents/psso/register/device/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    async endpointsAgentsPssoRegisterDeviceRetrieveRaw(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AgentPSSODeviceState>> {
+        const requestOptions = await this.endpointsAgentsPssoRegisterDeviceRetrieveRequestOpts();
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AgentPSSODeviceStateFromJSON(jsonValue),
+        );
+    }
+
+    async endpointsAgentsPssoRegisterDeviceRetrieve(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AgentPSSODeviceState> {
+        const response = await this.endpointsAgentsPssoRegisterDeviceRetrieveRaw(initOverrides);
         return await response.value();
     }
 
