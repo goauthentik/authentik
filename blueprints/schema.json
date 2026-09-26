@@ -15449,6 +15449,11 @@
                     "type": "string",
                     "title": "Additional Scopes"
                 },
+                "forward_query_parameters": {
+                    "type": "string",
+                    "title": "Forward Query Parameters",
+                    "description": "Comma-separated list of query parameter names that should be forwarded from the authorization request to the upstream Identity Provider's authorization URL."
+                },
                 "oidc_well_known_url": {
                     "type": "string",
                     "title": "Oidc well known url"

@@ -15,6 +15,18 @@ This source allows users to enroll themselves with an external OAuth-based ident
 
     Starting with authentik 2022.10, the default scopes can be replaced by prefixing the value for scopes with `*`.
 
+- Forward query parameters: A comma-separated list of query parameter names that authentik forwards to the upstream identity provider's authorization URL. Parameters that aren't in the list are ignored.
+
+    authentik forwards matching parameters in two cases:
+    - When a user opens the source login URL directly, for example `https://authentik.company/source/oauth/login/my-source/?idphint=urn:mace:incommon:uiuc.edu`.
+    - When a user clicks the source's button during an authentication flow. In this case, authentik forwards matching parameters from the request that started the flow, such as an application's request to authentik's OAuth2/OpenID `/authorize` endpoint.
+
+    Use this setting to pass provider-specific hints to the upstream provider. For example, set the field to `idphint` so that [CILogon](https://www.cilogon.org/oidc) skips its own selection screen and sends users directly to their institution's login page.
+
+    Another example is to set the field to `prompt`. An application can then send `prompt=select_account` to authentik's `/authorize` endpoint, and authentik forwards the value unchanged to an upstream provider such as Google, which then shows its account chooser. This is useful when enrollment is disabled: users who logged in with the wrong upstream account can choose a different one, instead of being logged in with the same account again. authentik doesn't handle `select_account` itself, and only forwards it when the user has to log in to authentik through the source.
+
+    authentik sets the parameters `client_id`, `redirect_uri`, `response_type`, `scope`, `state`, `code_challenge`, and `code_challenge_method` itself, so they can't be forwarded.
+
 ## OpenID Connect
 
 ### Well-known

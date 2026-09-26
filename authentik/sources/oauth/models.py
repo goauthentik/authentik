@@ -22,6 +22,21 @@ if TYPE_CHECKING:
     from authentik.sources.oauth.types.registry import SourceType
 
 
+# Query parameters which authentik sets itself on the upstream authorization request,
+# and which as such can't be forwarded from the downstream request
+FORWARD_QUERY_PARAMETERS_RESERVED = frozenset(
+    {
+        "client_id",
+        "redirect_uri",
+        "response_type",
+        "scope",
+        "state",
+        "code_challenge",
+        "code_challenge_method",
+    }
+)
+
+
 class AuthorizationCodeAuthMethod(models.TextChoices):
     BASIC_AUTH = "basic_auth", _("HTTP Basic Authentication")
     POST_BODY = "post_body", _("Include the client ID and secret as request parameters")
@@ -62,6 +77,15 @@ class OAuthSource(NonCreatableType, Source):
     additional_scopes = models.TextField(
         default="", blank=True, verbose_name=_("Additional Scopes")
     )
+    forward_query_parameters = models.TextField(
+        default="",
+        blank=True,
+        verbose_name=_("Forward Query Parameters"),
+        help_text=_(
+            "Comma-separated list of query parameter names that should be forwarded from the "
+            "authorization request to the upstream Identity Provider's authorization URL."
+        ),
+    )
     consumer_key = models.TextField()
     consumer_secret = models.TextField()
 
@@ -86,6 +110,12 @@ class OAuthSource(NonCreatableType, Source):
         from authentik.sources.oauth.types.registry import registry
 
         return registry.find_type(self.provider_type)
+
+    @property
+    def forward_query_parameter_names(self) -> list[str]:
+        """Names of query parameters to forward to the upstream authorization URL"""
+        names = (name.strip() for name in self.forward_query_parameters.split(","))
+        return [name for name in names if name and name not in FORWARD_QUERY_PARAMETERS_RESERVED]
 
     @property
     def component(self) -> str:

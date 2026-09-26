@@ -46842,6 +46842,11 @@ components:
           readOnly: true
         additional_scopes:
           type: string
+        forward_query_parameters:
+          type: string
+          description: Comma-separated list of query parameter names that should be
+            forwarded from the authorization request to the upstream Identity Provider's
+            authorization URL.
         type:
           allOf:
           - $ref: '#/components/schemas/SourceType'
@@ -47026,6 +47031,11 @@ components:
           minLength: 1
         additional_scopes:
           type: string
+        forward_query_parameters:
+          type: string
+          description: Comma-separated list of query parameter names that should be
+            forwarded from the authorization request to the upstream Identity Provider's
+            authorization URL.
         oidc_well_known_url:
           type: string
         oidc_jwks_url:
@@ -52732,6 +52742,11 @@ components:
           minLength: 1
         additional_scopes:
           type: string
+        forward_query_parameters:
+          type: string
+          description: Comma-separated list of query parameter names that should be
+            forwarded from the authorization request to the upstream Identity Provider's
+            authorization URL.
         oidc_well_known_url:
           type: string
         oidc_jwks_url:
