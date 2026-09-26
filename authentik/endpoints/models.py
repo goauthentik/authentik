@@ -31,6 +31,8 @@ if TYPE_CHECKING:
 
 LOGGER = get_logger()
 DEVICE_FACTS_CACHE_TIMEOUT = 3600
+# Addresses which are never usable to reach a device from the outside
+LOCAL_ADDRESS_PREFIXES = ("127.", "::1", "169.254.", "fe80:")
 
 
 class Device(InternallyManagedMixin, ExpiringModel, AttributesMixin, PolicyBindingModel):
@@ -80,6 +82,30 @@ class Device(InternallyManagedMixin, ExpiringModel, AttributesMixin, PolicyBindi
             MERGE_LIST_UNIQUE.merge(data, snapshot_data)
             last_updated = max(last_updated, snapshort_created)
         return DeviceFactSnapshot(data=data, created=last_updated)
+
+    @property
+    def facts_data(self) -> dict[str, Any]:
+        """Facts of this device, or an empty dict when there are none (yet)"""
+        try:
+            return self.cached_facts.data or {}
+        except KeyError, AttributeError:
+            return {}
+
+    @property
+    def address(self) -> str | None:
+        """Best-effort address to reach this device on, from its most recent facts.
+        The reported hostname is preferred over an interface address."""
+        network = self.facts_data.get("network") or {}
+        if hostname := network.get("hostname"):
+            return hostname
+        for interface in network.get("interfaces") or []:
+            for raw_address in interface.get("ip_addresses") or []:
+                # Interface addresses may carry a prefix length
+                address = raw_address.partition("/")[0]
+                if address.startswith(LOCAL_ADDRESS_PREFIXES):
+                    continue
+                return address
+        return None
 
     @property
     def primary_user_binding(self) -> DeviceUserBinding | None:

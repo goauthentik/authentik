@@ -2624,46 +2624,6 @@
                     ],
                     "properties": {
                         "model": {
-                            "const": "authentik_providers_rac.endpoint"
-                        },
-                        "id": {
-                            "type": "string"
-                        },
-                        "state": {
-                            "type": "string",
-                            "enum": [
-                                "absent",
-                                "created",
-                                "must_created",
-                                "present"
-                            ],
-                            "default": "present"
-                        },
-                        "conditions": {
-                            "type": "array",
-                            "items": {
-                                "type": "boolean"
-                            }
-                        },
-                        "permissions": {
-                            "$ref": "#/definitions/model_authentik_providers_rac.endpoint_permissions"
-                        },
-                        "attrs": {
-                            "$ref": "#/definitions/model_authentik_providers_rac.endpoint"
-                        },
-                        "identifiers": {
-                            "$ref": "#/definitions/model_authentik_providers_rac.endpoint"
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "required": [
-                        "model",
-                        "identifiers"
-                    ],
-                    "properties": {
-                        "model": {
                             "const": "authentik_providers_rac.racpropertymapping"
                         },
                         "id": {
@@ -6116,23 +6076,19 @@
                             "authentik_providers_proxy.view_proxyprovider",
                             "authentik_providers_proxy.view_proxysession",
                             "authentik_providers_rac.add_connectiontoken",
-                            "authentik_providers_rac.add_endpoint",
-                            "authentik_providers_rac.add_endpointpropertymapping",
+                            "authentik_providers_rac.add_racconnectionoverride",
                             "authentik_providers_rac.add_racpropertymapping",
                             "authentik_providers_rac.add_racprovider",
                             "authentik_providers_rac.change_connectiontoken",
-                            "authentik_providers_rac.change_endpoint",
-                            "authentik_providers_rac.change_endpointpropertymapping",
+                            "authentik_providers_rac.change_racconnectionoverride",
                             "authentik_providers_rac.change_racpropertymapping",
                             "authentik_providers_rac.change_racprovider",
                             "authentik_providers_rac.delete_connectiontoken",
-                            "authentik_providers_rac.delete_endpoint",
-                            "authentik_providers_rac.delete_endpointpropertymapping",
+                            "authentik_providers_rac.delete_racconnectionoverride",
                             "authentik_providers_rac.delete_racpropertymapping",
                             "authentik_providers_rac.delete_racprovider",
                             "authentik_providers_rac.view_connectiontoken",
-                            "authentik_providers_rac.view_endpoint",
-                            "authentik_providers_rac.view_endpointpropertymapping",
+                            "authentik_providers_rac.view_racconnectionoverride",
                             "authentik_providers_rac.view_racpropertymapping",
                             "authentik_providers_rac.view_racprovider",
                             "authentik_providers_radius.add_radiusprovider",
@@ -7522,23 +7478,19 @@
                             "authentik_providers_proxy.view_proxyprovider",
                             "authentik_providers_proxy.view_proxysession",
                             "authentik_providers_rac.add_connectiontoken",
-                            "authentik_providers_rac.add_endpoint",
-                            "authentik_providers_rac.add_endpointpropertymapping",
+                            "authentik_providers_rac.add_racconnectionoverride",
                             "authentik_providers_rac.add_racpropertymapping",
                             "authentik_providers_rac.add_racprovider",
                             "authentik_providers_rac.change_connectiontoken",
-                            "authentik_providers_rac.change_endpoint",
-                            "authentik_providers_rac.change_endpointpropertymapping",
+                            "authentik_providers_rac.change_racconnectionoverride",
                             "authentik_providers_rac.change_racpropertymapping",
                             "authentik_providers_rac.change_racprovider",
                             "authentik_providers_rac.delete_connectiontoken",
-                            "authentik_providers_rac.delete_endpoint",
-                            "authentik_providers_rac.delete_endpointpropertymapping",
+                            "authentik_providers_rac.delete_racconnectionoverride",
                             "authentik_providers_rac.delete_racpropertymapping",
                             "authentik_providers_rac.delete_racprovider",
                             "authentik_providers_rac.view_connectiontoken",
-                            "authentik_providers_rac.view_endpoint",
-                            "authentik_providers_rac.view_endpointpropertymapping",
+                            "authentik_providers_rac.view_racconnectionoverride",
                             "authentik_providers_rac.view_racpropertymapping",
                             "authentik_providers_rac.view_racprovider",
                             "authentik_providers_radius.add_radiusprovider",
@@ -11224,7 +11176,6 @@
                         "authentik_providers_oauth2.oauth2dynamicclientregistration",
                         "authentik_providers_proxy.proxyprovider",
                         "authentik_providers_rac.racprovider",
-                        "authentik_providers_rac.endpoint",
                         "authentik_providers_rac.racpropertymapping",
                         "authentik_providers_radius.radiusprovider",
                         "authentik_providers_radius.radiusproviderpropertymapping",
@@ -12697,88 +12648,6 @@
                 }
             }
         },
-        "model_authentik_providers_rac.endpoint": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Name"
-                },
-                "provider": {
-                    "type": "integer",
-                    "title": "Provider"
-                },
-                "protocol": {
-                    "type": "string",
-                    "enum": [
-                        "rdp",
-                        "vnc",
-                        "ssh"
-                    ],
-                    "title": "Protocol"
-                },
-                "host": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Host"
-                },
-                "settings": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "Settings"
-                },
-                "property_mappings": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "title": "Property mappings"
-                },
-                "auth_mode": {
-                    "type": "string",
-                    "enum": [
-                        "static",
-                        "prompt"
-                    ],
-                    "title": "Auth mode"
-                },
-                "maximum_connections": {
-                    "type": "integer",
-                    "minimum": -2147483648,
-                    "maximum": 2147483647,
-                    "title": "Maximum connections"
-                }
-            },
-            "required": []
-        },
-        "model_authentik_providers_rac.endpoint_permissions": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "required": [
-                    "permission"
-                ],
-                "properties": {
-                    "permission": {
-                        "type": "string",
-                        "enum": [
-                            "add_endpoint",
-                            "change_endpoint",
-                            "delete_endpoint",
-                            "view_endpoint"
-                        ]
-                    },
-                    "user": {
-                        "type": "integer"
-                    },
-                    "role": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
         "model_authentik_providers_rac.racpropertymapping": {
             "type": "object",
             "properties": {
@@ -12866,6 +12735,27 @@
                     "type": "object",
                     "additionalProperties": true,
                     "title": "Settings"
+                },
+                "access_group": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Access group",
+                    "description": "Only devices in this access group can be accessed through this provider. When left empty, every device the user has access to can be accessed."
+                },
+                "maximum_connections": {
+                    "type": "integer",
+                    "minimum": -2147483648,
+                    "maximum": 2147483647,
+                    "title": "Maximum connections",
+                    "description": "Maximum concurrent connections to a single device. Can be set to -1 to disable the limit."
+                },
+                "auth_mode": {
+                    "type": "string",
+                    "enum": [
+                        "static",
+                        "prompt"
+                    ],
+                    "title": "Auth mode"
                 },
                 "connection_expiry": {
                     "type": "string",
@@ -14045,23 +13935,19 @@
                             "authentik_providers_proxy.view_proxyprovider",
                             "authentik_providers_proxy.view_proxysession",
                             "authentik_providers_rac.add_connectiontoken",
-                            "authentik_providers_rac.add_endpoint",
-                            "authentik_providers_rac.add_endpointpropertymapping",
+                            "authentik_providers_rac.add_racconnectionoverride",
                             "authentik_providers_rac.add_racpropertymapping",
                             "authentik_providers_rac.add_racprovider",
                             "authentik_providers_rac.change_connectiontoken",
-                            "authentik_providers_rac.change_endpoint",
-                            "authentik_providers_rac.change_endpointpropertymapping",
+                            "authentik_providers_rac.change_racconnectionoverride",
                             "authentik_providers_rac.change_racpropertymapping",
                             "authentik_providers_rac.change_racprovider",
                             "authentik_providers_rac.delete_connectiontoken",
-                            "authentik_providers_rac.delete_endpoint",
-                            "authentik_providers_rac.delete_endpointpropertymapping",
+                            "authentik_providers_rac.delete_racconnectionoverride",
                             "authentik_providers_rac.delete_racpropertymapping",
                             "authentik_providers_rac.delete_racprovider",
                             "authentik_providers_rac.view_connectiontoken",
-                            "authentik_providers_rac.view_endpoint",
-                            "authentik_providers_rac.view_endpointpropertymapping",
+                            "authentik_providers_rac.view_racconnectionoverride",
                             "authentik_providers_rac.view_racpropertymapping",
                             "authentik_providers_rac.view_racprovider",
                             "authentik_providers_radius.add_radiusprovider",

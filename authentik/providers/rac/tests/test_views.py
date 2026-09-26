@@ -7,11 +7,13 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.endpoints.models import DeviceAccessGroup
 from authentik.lib.generators import generate_id
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
-from authentik.providers.rac.models import Endpoint, Protocols, RACProvider
+from authentik.providers.rac.models import Protocols, RACProvider
+from authentik.providers.rac.tests import create_test_device
 
 
 class TestRACViews(APITestCase):
@@ -26,22 +28,22 @@ class TestRACViews(APITestCase):
             slug=generate_id(),
             provider=self.provider,
         )
-        self.endpoint = Endpoint.objects.create(
-            name=generate_id(),
-            host=f"{generate_id()}:1324",
-            protocol=Protocols.RDP,
-            provider=self.provider,
+        self.device = create_test_device(host=f"{generate_id()}:1324")
+
+    def start_url(self, device=None, protocol=Protocols.RDP) -> str:
+        return reverse(
+            "authentik_providers_rac:start",
+            kwargs={
+                "app": self.app.slug,
+                "device": str((device or self.device).pk),
+                "protocol": protocol,
+            },
         )
 
     def test_no_policy(self):
         """Test request"""
         self.client.force_login(self.user)
-        response = self.client.get(
-            reverse(
-                "authentik_providers_rac:start",
-                kwargs={"app": self.app.slug, "endpoint": str(self.endpoint.pk)},
-            )
-        )
+        response = self.client.get(self.start_url())
         self.assertEqual(response.status_code, 302)
         flow_response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -59,28 +61,18 @@ class TestRACViews(APITestCase):
             order=0,
         )
         self.client.force_login(self.user)
-        response = self.client.get(
-            reverse(
-                "authentik_providers_rac:start",
-                kwargs={"app": self.app.slug, "endpoint": str(self.endpoint.pk)},
-            )
-        )
+        response = self.client.get(self.start_url())
         self.assertIsInstance(response, AccessDeniedResponse)
 
-    def test_endpoint_deny(self):
-        """Test request (deny on endpoint level)"""
+    def test_device_deny(self):
+        """Test request (deny on device level)"""
         PolicyBinding.objects.create(
-            target=self.endpoint,
+            target=self.device,
             policy=DummyPolicy.objects.create(name="deny", result=False, wait_min=1, wait_max=2),
             order=0,
         )
         self.client.force_login(self.user)
-        response = self.client.get(
-            reverse(
-                "authentik_providers_rac:start",
-                kwargs={"app": self.app.slug, "endpoint": str(self.endpoint.pk)},
-            )
-        )
+        response = self.client.get(self.start_url())
         self.assertEqual(response.status_code, 302)
         flow_response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -91,12 +83,7 @@ class TestRACViews(APITestCase):
     def test_different_session(self):
         """Test request"""
         self.client.force_login(self.user)
-        response = self.client.get(
-            reverse(
-                "authentik_providers_rac:start",
-                kwargs={"app": self.app.slug, "endpoint": str(self.endpoint.pk)},
-            )
-        )
+        response = self.client.get(self.start_url())
         self.assertEqual(response.status_code, 302)
         flow_response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -107,46 +94,17 @@ class TestRACViews(APITestCase):
         final_response = self.client.get(next_url)
         self.assertEqual(final_response.url, reverse("authentik_core:if-user"))
 
-    def test_cross_provider_endpoint(self):
-        """An endpoint must only be reachable through its own provider's
-        application. Pairing the slug of an application the user can access with
-        the PK of an endpoint from another provider must not resolve."""
-        other_provider = RACProvider.objects.create(
-            name=generate_id(), authorization_flow=self.flow
-        )
-        other_app = Application.objects.create(
-            name=generate_id(),
-            slug=generate_id(),
-            provider=other_provider,
-        )
-        PolicyBinding.objects.create(
-            target=other_app,
-            policy=DummyPolicy.objects.create(
-                name=f"deny-{generate_id()}", result=False, wait_min=1, wait_max=2
-            ),
-            order=0,
-        )
-        other_endpoint = Endpoint.objects.create(
-            name=generate_id(),
-            host=f"{generate_id()}:3389",
-            protocol=Protocols.RDP,
-            provider=other_provider,
-        )
+    def test_protocol_not_available(self):
+        """A device can only be connected to with a protocol it accepts"""
         self.client.force_login(self.user)
-        # Control: the endpoint's own application correctly denies access.
-        denied = self.client.get(
-            reverse(
-                "authentik_providers_rac:start",
-                kwargs={"app": other_app.slug, "endpoint": str(other_endpoint.pk)},
-            )
-        )
-        self.assertIsInstance(denied, AccessDeniedResponse)
-        # Pairing an accessible application with the other provider's endpoint
-        # must not resolve.
-        response = self.client.get(
-            reverse(
-                "authentik_providers_rac:start",
-                kwargs={"app": self.app.slug, "endpoint": str(other_endpoint.pk)},
-            )
-        )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(self.client.get(self.start_url(protocol=Protocols.SSH)).status_code, 404)
+
+    def test_device_outside_access_group(self):
+        """A provider limited to an access group must not reach devices outside it"""
+        self.provider.access_group = DeviceAccessGroup.objects.create(name=generate_id())
+        self.provider.save()
+        self.client.force_login(self.user)
+        self.assertEqual(self.client.get(self.start_url()).status_code, 404)
+
+        in_group = create_test_device(host=generate_id(), access_group=self.provider.access_group)
+        self.assertEqual(self.client.get(self.start_url(in_group)).status_code, 302)

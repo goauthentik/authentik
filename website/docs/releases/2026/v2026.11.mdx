@@ -6,7 +6,37 @@ draft: true
 
 ## Highlights
 
-<!-- ## Breaking changes -->
+## Breaking changes
+
+### RAC endpoints are now devices
+
+RAC providers now use [devices](../../endpoint-devices/index.mdx) instead of maintaining separate endpoints. This allows machines enrolled through connectors, such as the authentik agent, to be accessed directly through RAC without configuring them again.
+
+For enrolled devices, authentik uses their reported hostname or IP address and determines available connection protocols from their reported facts. These facts, including the operating system and security information, can also be evaluated by policies bound to the device to control access.
+
+For devices that are not enrolled through a connector, such as servers, you can configure a **connection override** to specify their host and protocol. Connection overrides take precedence over reported device information.
+
+#### Upgrading from RAC endpoints
+
+Existing RAC endpoints are automatically converted into devices during the upgrade, with the following changes:
+
+- **Connection configuration:** Each endpoint's host and protocol are preserved as a connection override, and its policy bindings are transferred to the new device.
+- **Device names:** Device names must be unique across the instance. If an endpoint's name conflicts with an existing device, its provider's name is appended, with an additional suffix if necessary.
+- **Property mappings:** Per-endpoint connection settings and property mappings are not migrated. Move these settings to provider-level property mappings, which now receive the `device` being accessed, or to the [credentials prompt](../../add-secure-apps/providers/rac/rac_credentials_prompt.mdx).
+- **Connection limits:** The per-endpoint connection limit is replaced by a provider-level setting that applies separately to each device.
+- **Launch URLs:** Existing endpoint identifiers are preserved, but launch URLs now include the connection protocol (`/application/rac/<app>/<device>/<protocol>/`) to support devices with multiple protocols. Update any manually configured launch URLs.
+- **Active connections:** Existing connection authorizations are deleted during the upgrade. Users with active RAC connections must launch the application again.
+- **Permissions:** Object-level permissions granted on RAC endpoints are not migrated and must be reassigned to the corresponding devices.
+
+Review your RAC providers after upgrading. By default, a provider is no longer restricted to its former endpoints and can access any device permitted by the device's policies. Use device access groups to restrict which devices are available through each provider.
+
+#### API and blueprint changes
+
+The `/rac/endpoints/` API and `authentik_providers_rac.endpoint` model have been removed.
+
+Use `/rac/devices/` to list devices accessible through a RAC provider and `/endpoints/devices/` to manage devices and their connection overrides through the `rac` field.
+
+Update any blueprints and API clients that create or manage RAC endpoints to use the new device model and API.
 
 ## New features and improvements
 

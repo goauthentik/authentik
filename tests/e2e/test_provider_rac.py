@@ -10,7 +10,8 @@ from authentik.core.models import Application
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import Outpost, OutpostType
-from authentik.providers.rac.models import Endpoint, Protocols, RACProvider
+from authentik.providers.rac.models import Protocols, RACProvider
+from authentik.providers.rac.tests import create_test_device
 from tests.decorators import retry
 from tests.selenium import ChannelsSeleniumTestCase
 
@@ -65,17 +66,12 @@ class TestProviderRAC(ChannelsSeleniumTestCase):
                 slug="default-provider-authorization-implicit-consent"
             ),
             delete_token_on_disconnect=True,
-        )
-        endpoint = Endpoint.objects.create(
-            name=generate_id(),
-            protocol=Protocols.SSH,
-            host=f"{self.host}:2222",
             settings={
                 "username": "authentik",
                 "password": self.password,
             },
-            provider=rac,
         )
+        device = create_test_device(host=f"{self.host}:2222", protocol=Protocols.SSH)
         app = Application.objects.create(name=generate_id(), slug=generate_id(), provider=rac)
         outpost: Outpost = Outpost.objects.create(
             name=generate_id(),
@@ -87,7 +83,12 @@ class TestProviderRAC(ChannelsSeleniumTestCase):
         self.start_rac(outpost)
 
         self.driver.get(
-            self.url("authentik_providers_rac:start", app=app.slug, endpoint=endpoint.pk)
+            self.url(
+                "authentik_providers_rac:start",
+                app=app.slug,
+                device=device.pk,
+                protocol=Protocols.SSH,
+            )
         )
         self.login()
         sleep(1)

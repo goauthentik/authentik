@@ -10,55 +10,55 @@
  * Do not edit the class manually.
  */
 
-import type { Endpoint } from "./Endpoint";
-import { EndpointFromJSON, EndpointToJSON } from "./Endpoint";
 import type { Pagination } from "./Pagination";
 import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { RACDevice } from "./RACDevice";
+import { RACDeviceFromJSON, RACDeviceToJSON } from "./RACDevice";
 
 /**
  * @export
- * @interface PaginatedEndpointList
+ * @interface PaginatedRACDeviceList
  */
-export interface PaginatedEndpointList {
+export interface PaginatedRACDeviceList {
     pagination: Pagination;
-    results: Array<Endpoint>;
+    results: Array<RACDevice>;
     autocomplete: { [key: string]: any };
 }
 
 /**
- * Check if a given object implements the PaginatedEndpointList interface.
+ * Check if a given object implements the PaginatedRACDeviceList interface.
  */
-export function instanceOfPaginatedEndpointList(value: object): value is PaginatedEndpointList {
+export function instanceOfPaginatedRACDeviceList(value: object): value is PaginatedRACDeviceList {
     if (!("pagination" in value) || value["pagination"] === undefined) return false;
     if (!("results" in value) || value["results"] === undefined) return false;
     if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedEndpointListFromJSON(json: any): PaginatedEndpointList {
-    return PaginatedEndpointListFromJSONTyped(json, false);
+export function PaginatedRACDeviceListFromJSON(json: any): PaginatedRACDeviceList {
+    return PaginatedRACDeviceListFromJSONTyped(json, false);
 }
 
-export function PaginatedEndpointListFromJSONTyped(
+export function PaginatedRACDeviceListFromJSONTyped(
     json: any,
     ignoreDiscriminator: boolean,
-): PaginatedEndpointList {
+): PaginatedRACDeviceList {
     if (json == null) {
         return json;
     }
     return {
         pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(EndpointFromJSON),
+        results: (json["results"] as Array<any>).map(RACDeviceFromJSON),
         autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedEndpointListToJSON(json: any): PaginatedEndpointList {
-    return PaginatedEndpointListToJSONTyped(json, false);
+export function PaginatedRACDeviceListToJSON(json: any): PaginatedRACDeviceList {
+    return PaginatedRACDeviceListToJSONTyped(json, false);
 }
 
-export function PaginatedEndpointListToJSONTyped(
-    value?: PaginatedEndpointList | null,
+export function PaginatedRACDeviceListToJSONTyped(
+    value?: PaginatedRACDeviceList | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -67,7 +67,7 @@ export function PaginatedEndpointListToJSONTyped(
 
     return {
         pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(EndpointToJSON),
+        results: (value["results"] as Array<any>).map(RACDeviceToJSON),
         autocomplete: value["autocomplete"],
     };
 }

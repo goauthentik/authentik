@@ -15,24 +15,18 @@ import {
     type ConnectionTokenRequest,
     ConnectionTokenRequestToJSON,
 } from "../models/ConnectionTokenRequest";
-import { type Endpoint, EndpointFromJSON } from "../models/Endpoint";
-import { type EndpointRequest, EndpointRequestToJSON } from "../models/EndpointRequest";
 import {
     type PaginatedConnectionTokenList,
     PaginatedConnectionTokenListFromJSON,
 } from "../models/PaginatedConnectionTokenList";
 import {
-    type PaginatedEndpointList,
-    PaginatedEndpointListFromJSON,
-} from "../models/PaginatedEndpointList";
+    type PaginatedRACDeviceList,
+    PaginatedRACDeviceListFromJSON,
+} from "../models/PaginatedRACDeviceList";
 import {
     type PatchedConnectionTokenRequest,
     PatchedConnectionTokenRequestToJSON,
 } from "../models/PatchedConnectionTokenRequest";
-import {
-    type PatchedEndpointRequest,
-    PatchedEndpointRequestToJSON,
-} from "../models/PatchedEndpointRequest";
 import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
@@ -44,7 +38,7 @@ export interface RacConnectionTokensDestroyRequest {
 }
 
 export interface RacConnectionTokensListRequest {
-    endpoint?: string;
+    device?: string;
     /**
      * Which field to use when ordering the results.
      */
@@ -95,19 +89,8 @@ export interface RacConnectionTokensUsedByListRequest {
     connectionTokenUuid: string;
 }
 
-export interface RacEndpointsCreateRequest {
-    endpointRequest: EndpointRequest;
-}
-
-export interface RacEndpointsDestroyRequest {
-    /**
-     * A UUID string identifying this RAC Endpoint.
-     */
-    pbmUuid: string;
-}
-
-export interface RacEndpointsListRequest {
-    name?: string;
+export interface RacDevicesListRequest {
+    provider: number;
     /**
      * Which field to use when ordering the results.
      */
@@ -120,42 +103,11 @@ export interface RacEndpointsListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    provider?: number;
     /**
      * A search term.
      */
     search?: string;
     superuserFullList?: boolean;
-}
-
-export interface RacEndpointsPartialUpdateRequest {
-    /**
-     * A UUID string identifying this RAC Endpoint.
-     */
-    pbmUuid: string;
-    patchedEndpointRequest?: PatchedEndpointRequest;
-}
-
-export interface RacEndpointsRetrieveRequest {
-    /**
-     * A UUID string identifying this RAC Endpoint.
-     */
-    pbmUuid: string;
-}
-
-export interface RacEndpointsUpdateRequest {
-    /**
-     * A UUID string identifying this RAC Endpoint.
-     */
-    pbmUuid: string;
-    endpointRequest: EndpointRequest;
-}
-
-export interface RacEndpointsUsedByListRequest {
-    /**
-     * A UUID string identifying this RAC Endpoint.
-     */
-    pbmUuid: string;
 }
 
 export class RacApi extends runtime.BaseAPI {
@@ -230,8 +182,8 @@ export class RacApi extends runtime.BaseAPI {
     ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["endpoint"] != null) {
-            queryParameters["endpoint"] = requestParameters["endpoint"];
+        if (requestParameters["device"] != null) {
+            queryParameters["device"] = requestParameters["device"];
         }
 
         if (requestParameters["ordering"] != null) {
@@ -594,142 +546,19 @@ export class RacApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for racEndpointsCreate without sending the request
+     * Creates request options for racDevicesList without sending the request
      */
-    async racEndpointsCreateRequestOpts(
-        requestParameters: RacEndpointsCreateRequest,
+    async racDevicesListRequestOpts(
+        requestParameters: RacDevicesListRequest,
     ): Promise<runtime.RequestOpts> {
-        if (requestParameters["endpointRequest"] == null) {
+        if (requestParameters["provider"] == null) {
             throw new runtime.RequiredError(
-                "endpointRequest",
-                'Required parameter "endpointRequest" was null or undefined when calling racEndpointsCreate().',
+                "provider",
+                'Required parameter "provider" was null or undefined when calling racDevicesList().',
             );
         }
 
         const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters["Content-Type"] = "application/json";
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        const urlPath = `/rac/endpoints/`;
-
-        return {
-            path: urlPath,
-            method: "POST",
-            headers: headerParameters,
-            query: queryParameters,
-            body: EndpointRequestToJSON(requestParameters["endpointRequest"]),
-        };
-    }
-
-    /**
-     * Endpoint Viewset
-     */
-    async racEndpointsCreateRaw(
-        requestParameters: RacEndpointsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Endpoint>> {
-        const requestOptions = await this.racEndpointsCreateRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => EndpointFromJSON(jsonValue));
-    }
-
-    /**
-     * Endpoint Viewset
-     */
-    async racEndpointsCreate(
-        requestParameters: RacEndpointsCreateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Endpoint> {
-        const response = await this.racEndpointsCreateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for racEndpointsDestroy without sending the request
-     */
-    async racEndpointsDestroyRequestOpts(
-        requestParameters: RacEndpointsDestroyRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pbmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pbmUuid",
-                'Required parameter "pbmUuid" was null or undefined when calling racEndpointsDestroy().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/rac/endpoints/{pbm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pbm_uuid}",
-            encodeURIComponent(String(requestParameters["pbmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "DELETE",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Endpoint Viewset
-     */
-    async racEndpointsDestroyRaw(
-        requestParameters: RacEndpointsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.racEndpointsDestroyRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.VoidApiResponse(response);
-    }
-
-    /**
-     * Endpoint Viewset
-     */
-    async racEndpointsDestroy(
-        requestParameters: RacEndpointsDestroyRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<void> {
-        await this.racEndpointsDestroyRaw(requestParameters, initOverrides);
-    }
-
-    /**
-     * Creates request options for racEndpointsList without sending the request
-     */
-    async racEndpointsListRequestOpts(
-        requestParameters: RacEndpointsListRequest,
-    ): Promise<runtime.RequestOpts> {
-        const queryParameters: any = {};
-
-        if (requestParameters["name"] != null) {
-            queryParameters["name"] = requestParameters["name"];
-        }
 
         if (requestParameters["ordering"] != null) {
             queryParameters["ordering"] = requestParameters["ordering"];
@@ -766,7 +595,7 @@ export class RacApi extends runtime.BaseAPI {
             }
         }
 
-        const urlPath = `/rac/endpoints/`;
+        const urlPath = `/rac/devices/`;
 
         return {
             path: urlPath,
@@ -777,297 +606,28 @@ export class RacApi extends runtime.BaseAPI {
     }
 
     /**
-     * List accessible endpoints
+     * List devices accessible through a RAC provider
      */
-    async racEndpointsListRaw(
-        requestParameters: RacEndpointsListRequest,
+    async racDevicesListRaw(
+        requestParameters: RacDevicesListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<PaginatedEndpointList>> {
-        const requestOptions = await this.racEndpointsListRequestOpts(requestParameters);
+    ): Promise<runtime.ApiResponse<PaginatedRACDeviceList>> {
+        const requestOptions = await this.racDevicesListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) =>
-            PaginatedEndpointListFromJSON(jsonValue),
+            PaginatedRACDeviceListFromJSON(jsonValue),
         );
     }
 
     /**
-     * List accessible endpoints
+     * List devices accessible through a RAC provider
      */
-    async racEndpointsList(
-        requestParameters: RacEndpointsListRequest = {},
+    async racDevicesList(
+        requestParameters: RacDevicesListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<PaginatedEndpointList> {
-        const response = await this.racEndpointsListRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for racEndpointsPartialUpdate without sending the request
-     */
-    async racEndpointsPartialUpdateRequestOpts(
-        requestParameters: RacEndpointsPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pbmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pbmUuid",
-                'Required parameter "pbmUuid" was null or undefined when calling racEndpointsPartialUpdate().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters["Content-Type"] = "application/json";
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/rac/endpoints/{pbm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pbm_uuid}",
-            encodeURIComponent(String(requestParameters["pbmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "PATCH",
-            headers: headerParameters,
-            query: queryParameters,
-            body: PatchedEndpointRequestToJSON(requestParameters["patchedEndpointRequest"]),
-        };
-    }
-
-    /**
-     * Endpoint Viewset
-     */
-    async racEndpointsPartialUpdateRaw(
-        requestParameters: RacEndpointsPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Endpoint>> {
-        const requestOptions = await this.racEndpointsPartialUpdateRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => EndpointFromJSON(jsonValue));
-    }
-
-    /**
-     * Endpoint Viewset
-     */
-    async racEndpointsPartialUpdate(
-        requestParameters: RacEndpointsPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Endpoint> {
-        const response = await this.racEndpointsPartialUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for racEndpointsRetrieve without sending the request
-     */
-    async racEndpointsRetrieveRequestOpts(
-        requestParameters: RacEndpointsRetrieveRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pbmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pbmUuid",
-                'Required parameter "pbmUuid" was null or undefined when calling racEndpointsRetrieve().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/rac/endpoints/{pbm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pbm_uuid}",
-            encodeURIComponent(String(requestParameters["pbmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Endpoint Viewset
-     */
-    async racEndpointsRetrieveRaw(
-        requestParameters: RacEndpointsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Endpoint>> {
-        const requestOptions = await this.racEndpointsRetrieveRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => EndpointFromJSON(jsonValue));
-    }
-
-    /**
-     * Endpoint Viewset
-     */
-    async racEndpointsRetrieve(
-        requestParameters: RacEndpointsRetrieveRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Endpoint> {
-        const response = await this.racEndpointsRetrieveRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for racEndpointsUpdate without sending the request
-     */
-    async racEndpointsUpdateRequestOpts(
-        requestParameters: RacEndpointsUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pbmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pbmUuid",
-                'Required parameter "pbmUuid" was null or undefined when calling racEndpointsUpdate().',
-            );
-        }
-
-        if (requestParameters["endpointRequest"] == null) {
-            throw new runtime.RequiredError(
-                "endpointRequest",
-                'Required parameter "endpointRequest" was null or undefined when calling racEndpointsUpdate().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters["Content-Type"] = "application/json";
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/rac/endpoints/{pbm_uuid}/`;
-        urlPath = urlPath.replace(
-            "{pbm_uuid}",
-            encodeURIComponent(String(requestParameters["pbmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "PUT",
-            headers: headerParameters,
-            query: queryParameters,
-            body: EndpointRequestToJSON(requestParameters["endpointRequest"]),
-        };
-    }
-
-    /**
-     * Endpoint Viewset
-     */
-    async racEndpointsUpdateRaw(
-        requestParameters: RacEndpointsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Endpoint>> {
-        const requestOptions = await this.racEndpointsUpdateRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => EndpointFromJSON(jsonValue));
-    }
-
-    /**
-     * Endpoint Viewset
-     */
-    async racEndpointsUpdate(
-        requestParameters: RacEndpointsUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Endpoint> {
-        const response = await this.racEndpointsUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for racEndpointsUsedByList without sending the request
-     */
-    async racEndpointsUsedByListRequestOpts(
-        requestParameters: RacEndpointsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pbmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pbmUuid",
-                'Required parameter "pbmUuid" was null or undefined when calling racEndpointsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/rac/endpoints/{pbm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pbm_uuid}",
-            encodeURIComponent(String(requestParameters["pbmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async racEndpointsUsedByListRaw(
-        requestParameters: RacEndpointsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.racEndpointsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async racEndpointsUsedByList(
-        requestParameters: RacEndpointsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.racEndpointsUsedByListRaw(requestParameters, initOverrides);
+    ): Promise<PaginatedRACDeviceList> {
+        const response = await this.racDevicesListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 }

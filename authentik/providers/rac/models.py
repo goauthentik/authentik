@@ -14,16 +14,12 @@ from structlog.stdlib import get_logger
 
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import PropertyMapping, Provider, User, default_token_key
+from authentik.endpoints.connectors.agent.controller import AgentConnectorController
+from authentik.endpoints.models import Device
 from authentik.events.models import Event, EventAction
-from authentik.lib.models import (
-    ExpiringModel,
-    InternallyManagedMixin,
-    SerializerModel,
-    SimpleThroughModel,
-)
+from authentik.lib.models import ExpiringModel, InternallyManagedMixin
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.outposts.models import OutpostModel
-from authentik.policies.models import PolicyBindingModel
 
 LOGGER = get_logger()
 
@@ -43,10 +39,69 @@ class AuthenticationMode(models.TextChoices):
     PROMPT = "prompt"
 
 
+def connection_override(device: Device) -> RACConnectionOverride | None:
+    """Connection override of a device, if it has one"""
+    return getattr(device, "rac_override", None)
+
+
+def available_protocols(device: Device) -> list[str]:
+    """Protocols a device can be connected to with. Set explicitly by a connection
+    override, otherwise based on what the device reports. Devices which report neither
+    can be connected to with either protocol, as there is nothing that says they
+    can't."""
+    if override := connection_override(device):
+        return [override.protocol]
+    vendor = (device.facts_data.get("vendor") or {}).get(
+        AgentConnectorController.vendor_identifier()
+    ) or {}
+    protocols = []
+    if vendor.get("rdp_cert_fingerprint"):
+        protocols.append(Protocols.RDP)
+    if vendor.get("ssh_host_keys"):
+        protocols.append(Protocols.SSH)
+    return protocols or [Protocols.RDP, Protocols.SSH]
+
+
+def address_settings(device: Device) -> dict[str, str]:
+    """Hostname and port to connect to a device on. Set explicitly for devices which
+    are not enrolled, otherwise taken from the facts the device reported."""
+    override = connection_override(device)
+    address = override.host if override else device.address
+    if not address:
+        return {}
+    # An IPv6 address with a port is bracketed: [2001:db8::1]:3389
+    if address.startswith("[") and "]:" in address:
+        host, _, port = address.partition("]:")
+        return {"hostname": host[1:], "port": port}
+    host, _, port = address.rpartition(":")
+    # Any other colon belongs to an IPv6 address, not to a port
+    if host and ":" not in host and port.isdigit():
+        return {"hostname": host, "port": port}
+    return {"hostname": address}
+
+
 class RACProvider(OutpostModel, Provider):
-    """Remotely access computers/servers via RDP/SSH/VNC."""
+    """Remotely access devices via RDP/SSH/VNC."""
 
     settings = models.JSONField(default=dict)
+    access_group = models.ForeignKey(
+        "authentik_endpoints.DeviceAccessGroup",
+        null=True,
+        blank=True,
+        default=None,
+        on_delete=models.SET_DEFAULT,
+        help_text=_(
+            "Only devices in this access group can be accessed through this provider. "
+            "When left empty, every device the user has access to can be accessed."
+        ),
+    )
+    maximum_connections = models.IntegerField(
+        default=1,
+        help_text=_(
+            "Maximum concurrent connections to a single device. Can be set to -1 to "
+            "disable the limit."
+        ),
+    )
     auth_mode = models.TextField(
         choices=AuthenticationMode.choices, default=AuthenticationMode.PROMPT
     )
@@ -63,6 +118,13 @@ class RACProvider(OutpostModel, Provider):
         default=False,
         help_text=_("When set to true, connection tokens will be deleted upon disconnect."),
     )
+
+    def devices(self) -> QuerySet[Device]:
+        """All devices this provider can connect to, before policies are checked"""
+        devices = Device.objects.all()
+        if self.access_group_id:
+            devices = devices.filter(access_group=self.access_group_id)
+        return devices
 
     @property
     def launch_url(self) -> str | None:
@@ -89,59 +151,8 @@ class RACProvider(OutpostModel, Provider):
         verbose_name_plural = _("RAC Providers")
 
 
-class Endpoint(SerializerModel, PolicyBindingModel):
-    """Remote-accessible endpoint"""
-
-    name = models.TextField()
-    host = models.TextField()
-    protocol = models.TextField(choices=Protocols.choices)
-    settings = models.JSONField(default=dict)
-    auth_mode = models.TextField(choices=AuthenticationMode.choices)
-    provider = models.ForeignKey("RACProvider", on_delete=models.CASCADE)
-    maximum_connections = models.IntegerField(default=1)
-
-    property_mappings = models.ManyToManyField(
-        "authentik_core.PropertyMapping",
-        default=None,
-        blank=True,
-        through="EndpointPropertyMapping",
-    )
-
-    @property
-    def serializer(self) -> type[Serializer]:
-        from authentik.providers.rac.api.endpoints import EndpointSerializer
-
-        return EndpointSerializer
-
-    def __str__(self):
-        return f"RAC Endpoint {self.name}"
-
-    class Meta:
-        verbose_name = _("RAC Endpoint")
-        verbose_name_plural = _("RAC Endpoints")
-
-
-class EndpointPropertyMapping(SimpleThroughModel):
-    property_mapping = models.ForeignKey(
-        PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
-    )
-    endpoint = models.ForeignKey(Endpoint, on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = "authentik_providers_rac_endpoint_property_mappings"
-        unique_together = (("property_mapping", "endpoint"),)
-        verbose_name = _("Endpoint Property Mapping")
-        verbose_name_plural = _("Endpoint Property Mappings")
-
-    def __str__(self):
-        return (
-            f"EndpointPropertyMapping for Endpoint {self.endpoint_id} "
-            f"and PropertyMapping {self.property_mapping_id}."
-        )
-
-
 class RACPropertyMapping(PropertyMapping):
-    """Configure settings for remote access endpoints."""
+    """Configure settings for remote access to devices."""
 
     static_settings = models.JSONField(default=dict)
 
@@ -172,39 +183,52 @@ class RACPropertyMapping(PropertyMapping):
         verbose_name_plural = _("RAC Provider Property Mappings")
 
 
+class RACConnectionOverride(InternallyManagedMixin, models.Model):
+    """How to reach a single device, for devices which don't report an address and
+    protocol themselves."""
+
+    device = models.OneToOneField(
+        "authentik_endpoints.Device",
+        on_delete=models.CASCADE,
+        related_name="rac_override",
+    )
+    host = models.TextField(help_text=_("Hostname/IP to connect to. Optionally specify the port."))
+    protocol = models.TextField(choices=Protocols.choices)
+
+    class Meta:
+        verbose_name = _("RAC Connection override")
+        verbose_name_plural = _("RAC Connection overrides")
+
+    def __str__(self):
+        return f"RAC Connection override for device {self.device_id}"
+
+
 class ConnectionToken(InternallyManagedMixin, ExpiringModel):
-    """Token for a single connection to a specified endpoint"""
+    """Token for a single connection to a device"""
 
     connection_token_uuid = models.UUIDField(default=uuid4, primary_key=True)
     provider = models.ForeignKey(RACProvider, on_delete=models.CASCADE)
-    endpoint = models.ForeignKey(Endpoint, on_delete=models.CASCADE)
+    device = models.ForeignKey("authentik_endpoints.Device", on_delete=models.CASCADE)
+    protocol = models.TextField(choices=Protocols.choices)
     token = models.TextField(default=default_token_key)
     settings = models.JSONField(default=dict)
     session = models.ForeignKey("authentik_core.AuthenticatedSession", on_delete=models.CASCADE)
 
     def get_settings(self) -> dict:
         """Get settings"""
-        default_settings = {}
-        if ":" in self.endpoint.host:
-            host, _, port = self.endpoint.host.partition(":")
-            default_settings["hostname"] = host
-            default_settings["port"] = str(port)
-        else:
-            default_settings["hostname"] = self.endpoint.host
-        if self.endpoint.protocol == Protocols.RDP:
-            default_settings["resize-method"] = "display-update"
-        default_settings["client-name"] = f"authentik - {self.session.user}"
         settings = {}
-        always_merger.merge(settings, default_settings)
-        always_merger.merge(settings, self.endpoint.provider.settings)
-        always_merger.merge(settings, self.endpoint.settings)
+        if self.protocol == Protocols.RDP:
+            settings["resize-method"] = "display-update"
+        settings["client-name"] = f"authentik - {self.session.user}"
+        always_merger.merge(settings, self.provider.settings)
+        always_merger.merge(settings, address_settings(self.device))
 
         def mapping_evaluator(mappings: QuerySet):
             for mapping in mappings:
                 mapping: RACPropertyMapping
                 try:
                     mapping_settings = mapping.evaluate(
-                        self.session.user, None, endpoint=self.endpoint, provider=self.provider
+                        self.session.user, None, device=self.device, provider=self.provider
                     )
                     always_merger.merge(settings, mapping_settings)
                 except PropertyMappingExpressionException as exc:
@@ -218,9 +242,6 @@ class ConnectionToken(InternallyManagedMixin, ExpiringModel):
 
         mapping_evaluator(
             RACPropertyMapping.objects.filter(provider__in=[self.provider]).order_by("name")
-        )
-        mapping_evaluator(
-            RACPropertyMapping.objects.filter(endpoint__in=[self.endpoint]).order_by("name")
         )
         always_merger.merge(settings, self.settings)
 
@@ -238,7 +259,7 @@ class ConnectionToken(InternallyManagedMixin, ExpiringModel):
         return settings
 
     def __str__(self):
-        return f"RAC Connection token {self.session_id} to {self.provider_id}/{self.endpoint_id}"
+        return f"RAC Connection token {self.session_id} to {self.provider_id}/{self.device_id}"
 
     class Meta:
         verbose_name = _("RAC Connection token")
