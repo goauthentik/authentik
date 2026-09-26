@@ -27,7 +27,7 @@ export interface RACProvider {
     /**
      * Flow used when authorizing this provider.
      */
-    authorizationFlow: string;
+    authorizationFlow?: string | null;
     propertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
@@ -80,13 +80,6 @@ export interface RACProvider {
 export function instanceOfRACProvider(value: object): value is RACProvider {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("authorizationFlow" in (value as Record<string, any>)) &&
-            !("authorization_flow" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["authorizationFlow"] === undefined &&
-            (value as Record<string, any>)["authorization_flow"] === undefined)
-    )
-        return false;
     if (!("component" in value) || value["component"] === undefined) return false;
     if (
         (!("assignedApplicationSlug" in (value as Record<string, any>)) &&
@@ -164,7 +157,12 @@ export function RACProviderFromJSONTyped(json: any, ignoreDiscriminator: boolean
                 : json["authentication_flow"] === null
                   ? null
                   : json["authentication_flow"],
-        authorizationFlow: json["authorization_flow"],
+        authorizationFlow:
+            json["authorization_flow"] === undefined
+                ? undefined
+                : json["authorization_flow"] === null
+                  ? null
+                  : json["authorization_flow"],
         propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
         component: json["component"],
         assignedApplicationSlug: json["assigned_application_slug"],

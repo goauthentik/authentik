@@ -26,7 +26,7 @@ export interface LDAPOutpostConfig {
      * DN under which objects are accessible.
      */
     baseDn?: string;
-    bindFlowSlug: string;
+    readonly bindFlowSlug: string;
     /**
      * Get slug for unbind flow, defaulting to brand's default flow.
      */
@@ -132,7 +132,10 @@ export function LDAPOutpostConfigToJSON(json: any): LDAPOutpostConfig {
 }
 
 export function LDAPOutpostConfigToJSONTyped(
-    value?: Omit<LDAPOutpostConfig, "pk" | "unbindFlowSlug" | "applicationSlug"> | null,
+    value?: Omit<
+        LDAPOutpostConfig,
+        "pk" | "bindFlowSlug" | "unbindFlowSlug" | "applicationSlug"
+    > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -142,7 +145,6 @@ export function LDAPOutpostConfigToJSONTyped(
     return {
         name: value["name"],
         base_dn: value["baseDn"],
-        bind_flow_slug: value["bindFlowSlug"],
         certificate: value["certificate"],
         tls_server_name: value["tlsServerName"],
         uid_start_number: value["uidStartNumber"],

@@ -133,7 +133,6 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
         "authorization_flow",
         "property_mappings",
         "application",
-        "authorization_flow",
         "client_type",
         "client_id",
         "access_code_validity",

@@ -26,7 +26,7 @@ export interface RadiusProviderRequest {
     /**
      * Flow used when authorizing this provider.
      */
-    authorizationFlow: string;
+    authorizationFlow?: string | null;
     /**
      * Flow used ending the session from a provider.
      */
@@ -57,13 +57,6 @@ export interface RadiusProviderRequest {
 export function instanceOfRadiusProviderRequest(value: object): value is RadiusProviderRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
     if (
-        (!("authorizationFlow" in (value as Record<string, any>)) &&
-            !("authorization_flow" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["authorizationFlow"] === undefined &&
-            (value as Record<string, any>)["authorization_flow"] === undefined)
-    )
-        return false;
-    if (
         (!("invalidationFlow" in (value as Record<string, any>)) &&
             !("invalidation_flow" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["invalidationFlow"] === undefined &&
@@ -92,7 +85,12 @@ export function RadiusProviderRequestFromJSONTyped(
                 : json["authentication_flow"] === null
                   ? null
                   : json["authentication_flow"],
-        authorizationFlow: json["authorization_flow"],
+        authorizationFlow:
+            json["authorization_flow"] === undefined
+                ? undefined
+                : json["authorization_flow"] === null
+                  ? null
+                  : json["authorization_flow"],
         invalidationFlow: json["invalidation_flow"],
         propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
         clientNetworks: json["client_networks"] == null ? undefined : json["client_networks"],
