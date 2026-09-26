@@ -27,6 +27,7 @@
         "access": "public"
     },
     "scripts": {
+        "build": "exit 0",
         "check": "run-s format:check",
         "fix": "run-s format",
         "format": "oxfmt --write .",
