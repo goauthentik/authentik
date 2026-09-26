@@ -9,6 +9,8 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.lib.generators import generate_id
 from authentik.policies.conditional.models import ConditionalPolicy
 from authentik.policies.conditional.tests.test_evaluator import cond, group, tree
+from authentik.policies.models import PolicyBinding
+from authentik.stages.prompt.models import PromptStage
 
 
 class TestConditionalPolicyAPI(APITestCase):
@@ -187,6 +189,12 @@ class TestConditionalPolicyAPI(APITestCase):
         self.assertIn("application", scenarios["application_authorization"]["facts"])
         self.assertIn("flow_plan", scenarios["flow_execution"]["facts"])
         self.assertNotIn("application", scenarios["flow_execution"]["facts"])
+        self.assertEqual(scenarios["notification_rule"]["label"], "Notification rule")
+        self.assertIn("event", scenarios["notification_rule"]["facts"])
+        self.assertNotIn("http_request", scenarios["notification_rule"]["facts"])
+        # Declared by the prompt stage, for flows which have a prompt stage
+        self.assertIn("prompt_data", scenarios["flow_stage_execution"]["facts"])
+        self.assertIn("oauth_token", scenarios["oauth2_token"]["facts"])
         self.assertIn("eq", {op["name"] for op in body["operators"]})
 
 
@@ -226,6 +234,24 @@ class TestConditionalPolicyTargets(APITestCase):
             actions=tree({"type": "policy", "policy": str(self.app_policy.pk)}),
         )
         self.assertEqual(self.bind(outer, create_test_flow()).status_code, 400)
+
+    def test_prompt_stage(self):
+        """Validation policies of a prompt stage"""
+        prompt_policy = ConditionalPolicy.objects.create(
+            name=generate_id(),
+            actions=tree(cond("prompt_data", "eq", "foo", param="username", cast="string")),
+        )
+        stage = PromptStage.objects.create(name=generate_id())
+        url = reverse("authentik_api:promptstage-detail", kwargs={"pk": stage.pk})
+        response = self.client.patch(
+            url, data={"validation_policies": [str(self.app_policy.pk)]}, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        response = self.client.patch(
+            url, data={"validation_policies": [str(prompt_policy.pk)]}, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(PolicyBinding.objects.filter(policy=prompt_policy).count(), 0)
 
 
 class TestConditionalPolicyTest(APITestCase):
