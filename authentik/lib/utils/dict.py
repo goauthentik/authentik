@@ -6,7 +6,7 @@ def get_path_from_dict(root: dict, path: str, sep=".", default=None) -> Any:
     If at any point a dict does not exist, return default"""
     walk: Any = root
     for comp in path.split(sep):
-        if walk and comp in walk:
+        if isinstance(walk, dict) and comp in walk:
             walk = walk.get(comp)
         else:
             return default

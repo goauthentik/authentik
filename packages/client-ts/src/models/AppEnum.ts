@@ -28,6 +28,7 @@ export const AppEnum = {
     AuthentikAdminFiles: "authentik.admin.files",
     AuthentikFlows: "authentik.flows",
     AuthentikOutposts: "authentik.outposts",
+    AuthentikPoliciesConditional: "authentik.policies.conditional",
     AuthentikPoliciesDummy: "authentik.policies.dummy",
     AuthentikPoliciesEventMatcher: "authentik.policies.event_matcher",
     AuthentikPoliciesExpiry: "authentik.policies.expiry",
