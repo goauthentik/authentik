@@ -14,7 +14,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import PartialGroupSerializer
 from authentik.core.api.utils import ModelSerializer
 from authentik.policies.api.policies import PolicySerializer
-from authentik.policies.models import PolicyBinding, PolicyBindingModel
+from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel
 
 
 class PolicyBindingModelForeignKey(PrimaryKeyRelatedField):
@@ -100,6 +100,10 @@ class PolicyBindingSerializer(ModelSerializer):
             raise ValidationError(f"Only one of {warning} can be set.")
         if empty:
             raise ValidationError(f"One of {warning} must be set.")
+        policy = attrs.get("policy")
+        if policy:
+            policy = Policy.objects.get_subclass(pk=policy.pk)
+            policy.validate_target(target)
         return attrs
 
 

@@ -12157,6 +12157,228 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /policies/conditional/:
+    get:
+      operationId: policies_conditional_list
+      description: Conditional Policy Viewset
+      parameters:
+      - in: query
+        name: execution_logging
+        schema:
+          type: boolean
+      - in: query
+        name: missing_behavior
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/MissingBehaviorEnum'
+          description: |+
+            How to handle values which are not available in the request.
+
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedConditionalPolicyList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: policies_conditional_create
+      description: Conditional Policy Viewset
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConditionalPolicyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConditionalPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/conditional/{policy_uuid}/:
+    get:
+      operationId: policies_conditional_retrieve
+      description: Conditional Policy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Conditional Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConditionalPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: policies_conditional_update
+      description: Conditional Policy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Conditional Policy.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConditionalPolicyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConditionalPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: policies_conditional_partial_update
+      description: Conditional Policy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Conditional Policy.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedConditionalPolicyRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConditionalPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: policies_conditional_destroy
+      description: Conditional Policy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Conditional Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/conditional/{policy_uuid}/used_by/:
+    get:
+      operationId: policies_conditional_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Conditional Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/conditional/catalog/:
+    get:
+      operationId: policies_conditional_catalog_retrieve
+      description: Facts, scenarios, variables, setters and operators available to
+        conditional policies
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConditionCatalog'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /policies/dummy/:
     get:
       operationId: policies_dummy_list
@@ -36223,6 +36445,7 @@ components:
       - authentik.admin.files
       - authentik.flows
       - authentik.outposts
+      - authentik.policies.conditional
       - authentik.policies.dummy
       - authentik.policies.event_matcher
       - authentik.policies.expiry
@@ -38589,6 +38812,547 @@ components:
       - webex
       - vcenter
       type: string
+    ConditionCastKind:
+      description: Types a variable of kind `any` can be cast to
+      enum:
+      - string
+      - number
+      - boolean
+      - datetime
+      - ip
+      type: string
+    ConditionCatalog:
+      type: object
+      description: Everything available to build conditional policies
+      properties:
+        facts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConditionFact'
+        scenarios:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConditionScenario'
+        variables:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConditionVariable'
+        setters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConditionSetter'
+        operators:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConditionOperator'
+      required:
+      - facts
+      - operators
+      - scenarios
+      - setters
+      - variables
+    ConditionChoice:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        value:
+          type: string
+        label:
+          type: string
+      required:
+      - label
+      - value
+    ConditionComparisonNode:
+      additionalProperties: false
+      description: Compare a variable against a value
+      properties:
+        type:
+          $ref: '#/components/schemas/ConditionComparisonNodeTypeEnum'
+        variable:
+          $ref: '#/components/schemas/ConditionVariableRef'
+        operator:
+          $ref: '#/components/schemas/ConditionOperatorName'
+        value:
+          default: null
+          allOf:
+          - $ref: '#/components/schemas/ConditionOperand'
+          nullable: true
+        options:
+          $ref: '#/components/schemas/ConditionOptions'
+      required:
+      - type
+      - variable
+      - operator
+      type: object
+    ConditionComparisonNodeTypeEnum:
+      type: string
+      enum:
+      - compare
+    ConditionFact:
+      type: object
+      description: Data a policy request can carry
+      properties:
+        key:
+          type: string
+        label:
+          type: string
+        description:
+          type: string
+      required:
+      - description
+      - key
+      - label
+    ConditionGroupNode:
+      additionalProperties: false
+      description: Combine the results of multiple conditions
+      properties:
+        type:
+          $ref: '#/components/schemas/ConditionGroupNodeTypeEnum'
+        op:
+          $ref: '#/components/schemas/ConditionGroupOp'
+        children:
+          items:
+            $ref: '#/components/schemas/ConditionNode'
+          type: array
+      required:
+      - type
+      - op
+      - children
+      type: object
+    ConditionGroupNodeTypeEnum:
+      type: string
+      enum:
+      - group
+    ConditionGroupOp:
+      enum:
+      - all
+      - any
+      - none
+      type: string
+    ConditionItemType:
+      type: object
+      description: Type of a list item
+      properties:
+        kind:
+          $ref: '#/components/schemas/ConditionTypeKindEnum'
+        model:
+          type: string
+          nullable: true
+        choices:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConditionChoice'
+      required:
+      - choices
+      - kind
+    ConditionKnownParam:
+      type: object
+      description: Well-defined parameter of a variable, which can be picked directly
+      properties:
+        key:
+          type: string
+        label:
+          type: string
+        type:
+          $ref: '#/components/schemas/ConditionValueType'
+      required:
+      - key
+      - label
+      - type
+    ConditionLiteralOperand:
+      additionalProperties: false
+      description: Fixed value to compare against
+      properties:
+        type:
+          $ref: '#/components/schemas/ConditionLiteralOperandTypeEnum'
+        value:
+          $ref: '#/components/schemas/JsonValue'
+      required:
+      - type
+      - value
+      type: object
+    ConditionLiteralOperandTypeEnum:
+      type: string
+      enum:
+      - literal
+    ConditionNode:
+      discriminator:
+        mapping:
+          compare: '#/components/schemas/ConditionComparisonNode'
+          group: '#/components/schemas/ConditionGroupNode'
+          policy: '#/components/schemas/ConditionPolicyNode'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/ConditionComparisonNode'
+      - $ref: '#/components/schemas/ConditionGroupNode'
+      - $ref: '#/components/schemas/ConditionPolicyNode'
+    ConditionOperand:
+      discriminator:
+        mapping:
+          literal: '#/components/schemas/ConditionLiteralOperand'
+          variable: '#/components/schemas/ConditionVariableOperand'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/ConditionLiteralOperand'
+      - $ref: '#/components/schemas/ConditionVariableOperand'
+    ConditionOperandShapeEnum:
+      enum:
+      - none
+      - same
+      - list_of_same
+      - range
+      - item
+      - list_of_item
+      - number
+      - duration
+      - regex
+      - cidr_list
+      type: string
+    ConditionOperator:
+      type: object
+      description: Operator available to conditional policies
+      properties:
+        name:
+          $ref: '#/components/schemas/ConditionOperatorName'
+        label:
+          type: string
+        kinds:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConditionTypeKindEnum'
+        operand:
+          $ref: '#/components/schemas/ConditionOperandShapeEnum'
+        negated_label:
+          type: string
+          nullable: true
+          description: Label when negated, null if it can't be negated.
+      required:
+      - kinds
+      - label
+      - name
+      - negated_label
+      - operand
+    ConditionOperatorName:
+      description: Names of all operators
+      enum:
+      - is_set
+      - is_not_set
+      - eq
+      - ne
+      - in
+      - not_in
+      - contains
+      - starts_with
+      - ends_with
+      - matches
+      - lt
+      - lte
+      - gt
+      - gte
+      - between
+      - is_true
+      - is_false
+      - within_last
+      - older_than
+      - in_network
+      - is_private
+      - is_global
+      - is_url
+      - has_item
+      - has_any
+      - has_all
+      - is_empty
+      - length_eq
+      - length_gt
+      - length_lt
+      type: string
+    ConditionOptions:
+      additionalProperties: false
+      properties:
+        case_sensitive:
+          default: true
+          type: boolean
+        negate:
+          default: false
+          description: Invert the result of the comparison, for example 'does not
+            contain'.
+          type: boolean
+      type: object
+    ConditionParamKindEnum:
+      enum:
+      - none
+      - path
+      - key
+      type: string
+    ConditionPolicyNode:
+      additionalProperties: false
+      description: Evaluate another policy
+      properties:
+        type:
+          $ref: '#/components/schemas/ConditionPolicyNodeTypeEnum'
+        policy:
+          format: uuid
+          type: string
+      required:
+      - type
+      - policy
+      type: object
+    ConditionPolicyNodeTypeEnum:
+      type: string
+      enum:
+      - policy
+    ConditionScenario:
+      type: object
+      description: Situation in which policies are evaluated, and the facts available
+        in it
+      properties:
+        key:
+          type: string
+        label:
+          type: string
+        description:
+          type: string
+        facts:
+          type: array
+          items:
+            type: string
+      required:
+      - description
+      - facts
+      - key
+      - label
+    ConditionSetter:
+      type: object
+      description: Value which actions can set
+      properties:
+        key:
+          type: string
+        label:
+          type: string
+        description:
+          type: string
+        type:
+          $ref: '#/components/schemas/ConditionValueType'
+        requires:
+          type: array
+          items:
+            type: string
+          description: Available when any of these facts are available.
+        param:
+          $ref: '#/components/schemas/ConditionParamKindEnum'
+        app:
+          type: string
+        app_verbose_name:
+          type: string
+      required:
+      - app
+      - app_verbose_name
+      - description
+      - key
+      - label
+      - param
+      - requires
+      - type
+    ConditionTypeKindEnum:
+      enum:
+      - string
+      - number
+      - boolean
+      - datetime
+      - ip
+      - enum
+      - model
+      - list
+      - any
+      - duration
+      - cidr
+      type: string
+    ConditionValueType:
+      type: object
+      description: Type of a variable
+      properties:
+        kind:
+          $ref: '#/components/schemas/ConditionTypeKindEnum'
+        model:
+          type: string
+          nullable: true
+        choices:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConditionChoice'
+        item:
+          allOf:
+          - $ref: '#/components/schemas/ConditionItemType'
+          nullable: true
+      required:
+      - choices
+      - kind
+    ConditionVariable:
+      type: object
+      description: Variable available to conditional policies
+      properties:
+        key:
+          type: string
+        label:
+          type: string
+        description:
+          type: string
+        type:
+          $ref: '#/components/schemas/ConditionValueType'
+        requires:
+          type: array
+          items:
+            type: string
+          description: Available when any of these facts are available.
+        param:
+          $ref: '#/components/schemas/ConditionParamKindEnum'
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConditionKnownParam'
+        app:
+          type: string
+        app_verbose_name:
+          type: string
+      required:
+      - app
+      - app_verbose_name
+      - description
+      - key
+      - label
+      - param
+      - params
+      - requires
+      - type
+    ConditionVariableOperand:
+      additionalProperties: false
+      description: Variable to compare against
+      properties:
+        type:
+          $ref: '#/components/schemas/ConditionVariableOperandTypeEnum'
+        variable:
+          $ref: '#/components/schemas/ConditionVariableRef'
+      required:
+      - type
+      - variable
+      type: object
+    ConditionVariableOperandTypeEnum:
+      type: string
+      enum:
+      - variable
+    ConditionVariableRef:
+      additionalProperties: false
+      description: Reference to a variable
+      properties:
+        key:
+          type: string
+        param:
+          default: null
+          description: Path or key, for variables which take a parameter.
+          type: string
+          nullable: true
+        cast:
+          default: null
+          description: Type to convert the value to, required for variables of type
+            `any`.
+          allOf:
+          - $ref: '#/components/schemas/ConditionCastKind'
+          nullable: true
+      required:
+      - key
+      type: object
+    ConditionalPolicy:
+      type: object
+      description: Conditional Policy Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Policy uuid
+        name:
+          type: string
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy
+            will be logged. By default, only execution errors are logged.
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        bound_to:
+          type: integer
+          description: Return objects policy is bound to
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+          readOnly: true
+        actions:
+          $ref: '#/components/schemas/PolicyActions'
+        missing_behavior:
+          allOf:
+          - $ref: '#/components/schemas/MissingBehaviorEnum'
+          description: How to handle values which are not available in the request.
+        failure_message:
+          type: string
+          description: Message shown to the user when the policy does not pass.
+      required:
+      - actions
+      - bound_to
+      - component
+      - created
+      - labels
+      - last_updated
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    ConditionalPolicyRequest:
+      type: object
+      description: Conditional Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy
+            will be logged. By default, only execution errors are logged.
+        actions:
+          $ref: '#/components/schemas/PolicyActions'
+        missing_behavior:
+          allOf:
+          - $ref: '#/components/schemas/MissingBehaviorEnum'
+          description: How to handle values which are not available in the request.
+        failure_message:
+          type: string
+          description: Message shown to the user when the policy does not pass.
+      required:
+      - actions
+      - name
     Config:
       type: object
       description: Serialize authentik Config into DRF Object
@@ -43695,6 +44459,7 @@ components:
       - global
       - per_provider
       type: string
+    JsonValue: {}
     KadminTypeEnum:
       enum:
       - MIT
@@ -45651,6 +46416,11 @@ components:
       - microsoft_id
       - provider
       - user
+    MissingBehaviorEnum:
+      enum:
+      - fail
+      - 'false'
+      type: string
     ModelEnum:
       enum:
       - authentik_tenants.domain
@@ -45679,6 +46449,7 @@ components:
       - authentik_outposts.dockerserviceconnection
       - authentik_outposts.kubernetesserviceconnection
       - authentik_outposts.outpost
+      - authentik_policies_conditional.conditionalpolicy
       - authentik_policies_dummy.dummypolicy
       - authentik_policies_event_matcher.eventmatcherpolicy
       - authentik_policies_expiry.passwordexpirypolicy
@@ -47708,6 +48479,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CertificateKeyPair'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedConditionalPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConditionalPolicy'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -50982,6 +51768,26 @@ components:
           writeOnly: true
           description: Optional Private Key. If this is set, you can use this keypair
             for encryption.
+    PatchedConditionalPolicyRequest:
+      type: object
+      description: Conditional Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy
+            will be logged. By default, only execution errors are logged.
+        actions:
+          $ref: '#/components/schemas/PolicyActions'
+        missing_behavior:
+          allOf:
+          - $ref: '#/components/schemas/MissingBehaviorEnum'
+          description: How to handle values which are not available in the request.
+        failure_message:
+          type: string
+          description: Message shown to the user when the policy does not pass.
     PatchedConnectionTokenRequest:
       type: object
       description: ConnectionToken Serializer
@@ -54973,6 +55779,153 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    PolicyAction:
+      discriminator:
+        mapping:
+          condition: '#/components/schemas/PolicyActionCondition'
+          if: '#/components/schemas/PolicyActionIf'
+          set: '#/components/schemas/PolicyActionSet'
+          stop: '#/components/schemas/PolicyActionStop'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/PolicyActionCondition'
+      - $ref: '#/components/schemas/PolicyActionIf'
+      - $ref: '#/components/schemas/PolicyActionSet'
+      - $ref: '#/components/schemas/PolicyActionStop'
+    PolicyActionCondition:
+      additionalProperties: false
+      description: Check a condition, and stop with a failing result if it doesn't
+        pass
+      properties:
+        enabled:
+          default: true
+          description: Disabled actions are skipped.
+          type: boolean
+        type:
+          $ref: '#/components/schemas/PolicyActionConditionTypeEnum'
+        condition:
+          $ref: '#/components/schemas/ConditionNode'
+      required:
+      - type
+      - condition
+      type: object
+    PolicyActionConditionTypeEnum:
+      type: string
+      enum:
+      - condition
+    PolicyActionIf:
+      additionalProperties: false
+      description: Run actions depending on a condition
+      properties:
+        enabled:
+          default: true
+          description: Disabled actions are skipped.
+          type: boolean
+        type:
+          $ref: '#/components/schemas/PolicyActionIfTypeEnum'
+        condition:
+          $ref: '#/components/schemas/ConditionNode'
+        then_actions:
+          description: Actions run when the condition passes.
+          items:
+            $ref: '#/components/schemas/PolicyAction'
+          type: array
+        else_actions:
+          description: Actions run when the condition doesn't pass.
+          items:
+            $ref: '#/components/schemas/PolicyAction'
+          type: array
+      required:
+      - type
+      - condition
+      type: object
+    PolicyActionIfTypeEnum:
+      type: string
+      enum:
+      - if
+    PolicyActionSet:
+      additionalProperties: false
+      description: Set a value, for example a key in the flow context
+      properties:
+        enabled:
+          default: true
+          description: Disabled actions are skipped.
+          type: boolean
+        type:
+          $ref: '#/components/schemas/PolicyActionSetTypeEnum'
+        target:
+          $ref: '#/components/schemas/PolicyActionTarget'
+        value:
+          $ref: '#/components/schemas/ConditionOperand'
+      required:
+      - type
+      - target
+      - value
+      type: object
+    PolicyActionSetTypeEnum:
+      type: string
+      enum:
+      - set
+    PolicyActionStop:
+      additionalProperties: false
+      description: Stop, and return a result
+      properties:
+        enabled:
+          default: true
+          description: Disabled actions are skipped.
+          type: boolean
+        type:
+          $ref: '#/components/schemas/PolicyActionStopTypeEnum'
+        result:
+          $ref: '#/components/schemas/PolicyActionStopResult'
+        message:
+          default: null
+          description: Message shown to the user.
+          type: string
+          nullable: true
+      required:
+      - type
+      - result
+      type: object
+    PolicyActionStopResult:
+      enum:
+      - pass
+      - fail
+      type: string
+    PolicyActionStopTypeEnum:
+      type: string
+      enum:
+      - stop
+    PolicyActionTarget:
+      additionalProperties: false
+      description: Reference to a value that can be set by an action
+      properties:
+        key:
+          type: string
+        param:
+          default: null
+          description: Key, for targets which take a parameter.
+          type: string
+          nullable: true
+      required:
+      - key
+      type: object
+    PolicyActions:
+      additionalProperties: false
+      description: Actions of a conditional policy
+      properties:
+        version:
+          maximum: 2
+          minimum: 2
+          type: integer
+        actions:
+          items:
+            $ref: '#/components/schemas/PolicyAction'
+          type: array
+      required:
+      - version
+      - actions
+      type: object
     PolicyBehaviorEnum:
       enum:
       - mirror

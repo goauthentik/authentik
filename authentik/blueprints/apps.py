@@ -64,6 +64,7 @@ class ManagedAppConfig(AppConfig):
         import_relative("checks")
         import_relative("tasks")
         import_relative("signals")
+        import_relative("policy_variables")
 
     def import_module(self, path: str):
         """Load module"""

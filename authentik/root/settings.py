@@ -92,6 +92,7 @@ TENANT_APPS = [
     "authentik.admin.files",
     "authentik.flows",
     "authentik.outposts",
+    "authentik.policies.conditional",
     "authentik.policies.dummy",
     "authentik.policies.event_matcher",
     "authentik.policies.expiry",
@@ -180,6 +181,9 @@ SPECTACULAR_SETTINGS = {
         "url": "https://github.com/goauthentik/authentik/blob/main/LICENSE",
     },
     "ENUM_NAME_OVERRIDES": {
+        "ConditionOperandShapeEnum": "authentik.policies.conditional.operators.OperandShape",
+        "ConditionParamKindEnum": "authentik.policies.conditional.registry.ParamKind",
+        "ConditionTypeKindEnum": "authentik.policies.conditional.types.TypeKind",
         "AppEnum": "authentik.lib.api.Apps",
         "AuthenticationEnum": "authentik.flows.models.FlowAuthenticationRequirement",
         "ClientTypeEnum": "authentik.providers.oauth2.models.ClientType",
