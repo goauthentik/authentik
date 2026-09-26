@@ -8,6 +8,8 @@ use eyre::{Result, eyre};
 use tracing::{error, info, trace};
 
 #[cfg(feature = "core")]
+mod boot;
+#[cfg(feature = "core")]
 pub(crate) mod brands;
 mod healthcheck;
 mod metrics;
@@ -37,6 +39,18 @@ enum Command {
     #[cfg(feature = "proxy")]
     Proxy(outpost::proxy::Cli),
     Healthcheck(healthcheck::Cli),
+    #[cfg(feature = "core")]
+    Manage(boot::Manage),
+    #[cfg(feature = "core")]
+    TestAll(boot::TestAll),
+    #[cfg(feature = "core")]
+    DumpConfig(boot::DumpConfig),
+    #[cfg(feature = "core")]
+    Bash(boot::Bash),
+    #[cfg(feature = "core")]
+    Sh(boot::Sh),
+    #[cfg(feature = "core")]
+    Debug(boot::Debug),
 }
 
 #[derive(Debug, FromArgs, PartialEq)]
@@ -50,21 +64,44 @@ pub(crate) struct AllInOne {}
 
 fn main() -> Result<()> {
     let tracing_crude = ak_tracing::install_crude();
-    info!(version = authentik_full_version(), "authentik is starting");
 
     let cli: Cli = argh::from_env();
 
     match &cli.command {
         #[cfg(feature = "core")]
-        Command::AllInOne(_) => Mode::set(Mode::AllInOne)?,
+        Command::AllInOne(_) => {
+            boot::boot()?;
+            Mode::set(Mode::AllInOne)?;
+        }
         #[cfg(feature = "core")]
-        Command::Server(_) => Mode::set(Mode::Server)?,
+        Command::Server(_) => {
+            boot::boot()?;
+            Mode::set(Mode::Server)?;
+        }
         #[cfg(feature = "core")]
-        Command::Worker(_) => Mode::set(Mode::Worker)?,
+        Command::Worker(_) => {
+            boot::boot()?;
+            Mode::set(Mode::Worker)?;
+        }
         #[cfg(feature = "proxy")]
         Command::Proxy(_) => Mode::set(Mode::Proxy)?,
         Command::Healthcheck(args) => return healthcheck::run(args),
+        // These don't run authentik itself, so they skip the setup below and its logging to stdout
+        #[cfg(feature = "core")]
+        Command::Manage(args) => return boot::manage(args),
+        #[cfg(feature = "core")]
+        Command::TestAll(_) => return boot::test_all(),
+        #[cfg(feature = "core")]
+        Command::DumpConfig(args) => return boot::dump_config(args),
+        #[cfg(feature = "core")]
+        Command::Bash(args) => return boot::bash(args),
+        #[cfg(feature = "core")]
+        Command::Sh(args) => return boot::sh(args),
+        #[cfg(feature = "core")]
+        Command::Debug(_) => boot::idle(),
     }
+
+    info!(version = authentik_full_version(), "authentik is starting");
 
     trace!("installing error formatting");
     color_eyre::install()?;
@@ -130,7 +167,14 @@ fn main() -> Result<()> {
                     )
                     .await?;
                 }
-                // We're checking for this before starting anything else
+                // We're checking for these before starting anything else
+                #[cfg(feature = "core")]
+                Command::Manage(_)
+                | Command::TestAll(_)
+                | Command::DumpConfig(_)
+                | Command::Bash(_)
+                | Command::Sh(_)
+                | Command::Debug(_) => unreachable!(),
                 Command::Healthcheck(_) => unreachable!(),
             }
 

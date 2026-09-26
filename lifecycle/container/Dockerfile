@@ -182,23 +182,9 @@ RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
     --mount=type=cache,id=uv-python-deps-$TARGETARCH$TARGETVARIANT,target=/root/.cache/uv \
     uv sync --locked --no-install-project --no-dev
 
-# Stage: Run
-FROM python-base AS final-image
-
-ARG VERSION
-ARG GIT_BUILD_HASH
-ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
-
-LABEL org.opencontainers.image.authors="Authentik Security Inc." \
-    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
-    org.opencontainers.image.description="goauthentik.io Main server image, see https://goauthentik.io for more info." \
-    org.opencontainers.image.documentation="https://docs.goauthentik.io" \
-    org.opencontainers.image.licenses="https://github.com/goauthentik/authentik/blob/main/LICENSE" \
-    org.opencontainers.image.revision=${GIT_BUILD_HASH} \
-    org.opencontainers.image.title="authentik server image" \
-    org.opencontainers.image.url="https://goauthentik.io" \
-    org.opencontainers.image.vendor="Authentik Security Inc." \
-    org.opencontainers.image.version=${VERSION}
+# Stage: assemble the runtime filesystem
+# Shared by the debug image and the final image
+FROM python-base AS runtime-assemble
 
 WORKDIR /
 
@@ -226,18 +212,75 @@ COPY ./pyproject.toml /
 COPY ./uv.lock /
 COPY ./schemas /schemas
 COPY ./locale /locale
-COPY ./tests /tests
 COPY ./manage.py /
 COPY ./blueprints /blueprints
 COPY ./lifecycle/ /lifecycle
 COPY ./authentik/sources/kerberos/krb5.conf /etc/krb5.conf
 COPY --from=rust-builder /bin/authentik /bin/authentik
 COPY ./packages/ /ak-root/packages
-RUN  ln -s /ak-root/packages /packages
 COPY --from=python-deps /ak-root/.venv /ak-root/.venv
 COPY --from=node-builder /work/web/dist/ /web/dist/
 COPY --from=node-builder /work/web/authentik/ /web/authentik/
 COPY --from=geoip /usr/share/GeoIP /geoip
+
+# Setup 'ak'
+RUN ln -s /ak-root/packages /packages && \
+    ln -sf ak.py /lifecycle/ak
+
+# Stage: Debug
+# For `ak test-all`, AUTHENTIK_DEBUGGER and `docker exec ... bash`
+# Build it with --target debug as it is not the default
+FROM runtime-assemble AS debug
+
+ARG VERSION
+ARG GIT_BUILD_HASH
+ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
+
+LABEL org.opencontainers.image.title="authentik server image (debug)" \
+    org.opencontainers.image.version=${VERSION}
+
+COPY ./tests /tests
+ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec"
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    bash-completion curl git less procps vim-tiny \
+    krb5-user krb5-kdc krb5-admin-server libkrb5-dev gcc && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    UV_PROJECT_ENVIRONMENT=/ak-root/.venv uv sync --locked --no-install-project && \
+    touch /unittest.xml && \
+    chown authentik:authentik /unittest.xml
+
+USER 1000
+
+ENV TMPDIR=/dev/shm/ \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    GOFIPS=1 \
+    RUST_BACKTRACE=full
+
+HEALTHCHECK --interval=30s --timeout=30s --start-period=120s --retries=3 CMD [ "ak", "healthcheck" ]
+
+ENTRYPOINT [ "dumb-init", "--", "ak" ]
+
+# Stage: Run
+# The default target, so it has to stay last
+FROM runtime-assemble AS final
+
+ARG VERSION
+ARG GIT_BUILD_HASH
+ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
+
+LABEL org.opencontainers.image.authors="Authentik Security Inc." \
+    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
+    org.opencontainers.image.description="goauthentik.io Main server image, see https://goauthentik.io for more info." \
+    org.opencontainers.image.documentation="https://docs.goauthentik.io" \
+    org.opencontainers.image.licenses="https://github.com/goauthentik/authentik/blob/main/LICENSE" \
+    org.opencontainers.image.revision=${GIT_BUILD_HASH} \
+    org.opencontainers.image.title="authentik server image" \
+    org.opencontainers.image.url="https://goauthentik.io" \
+    org.opencontainers.image.vendor="Authentik Security Inc." \
+    org.opencontainers.image.version=${VERSION}
 
 USER 1000
 

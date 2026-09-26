@@ -2,7 +2,7 @@
 set -e -x -o pipefail
 hash="$(git rev-parse HEAD || openssl rand -base64 36 | sha256sum)"
 
-AUTHENTIK_IMAGE="${AUTHENTIK_IMAGE:-authentik.invalid/goauthentik/server}"
+AUTHENTIK_IMAGE="${AUTHENTIK_IMAGE:-authentik.invalid/goauthentik/server-debug}"
 AUTHENTIK_TAG="${AUTHENTIK_TAG:-$(echo "$hash" | cut -c1-15)}"
 
 if [ -f lifecycle/container/.env ]; then
@@ -22,7 +22,7 @@ if [[ -v BUILD ]]; then
     docker buildx install
     touch lifecycle/container/.env
 
-    docker build -t "${AUTHENTIK_IMAGE}:${AUTHENTIK_TAG}" -f lifecycle/container/Dockerfile .
+    docker build --target debug -t "${AUTHENTIK_IMAGE}:${AUTHENTIK_TAG}" -f lifecycle/container/Dockerfile .
 fi
 
 docker compose -f lifecycle/container/compose.yml up --no-start
