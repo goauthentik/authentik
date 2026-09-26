@@ -1,12 +1,14 @@
 from os import getenv
 
+from django.core.exceptions import ImproperlyConfigured
 from django.dispatch import receiver
+from rest_framework.exceptions import ValidationError
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.models import BlueprintInstance
 from authentik.blueprints.v1.importer import Importer
 from authentik.core.apps import Setup
-from authentik.lib.validators import validate_password_hash
+from authentik.lib.validators import PasswordHashImportValidator
 from authentik.root.signals import post_startup
 from authentik.tenants.models import Tenant
 
@@ -34,7 +36,14 @@ def post_startup_setup_bootstrap(sender, **_):
             continue
         with tenant:
             if password_hash := getenv("AUTHENTIK_BOOTSTRAP_PASSWORD_HASH"):
-                validate_password_hash(password_hash)
+                try:
+                    PasswordHashImportValidator()(password_hash)
+                except ValidationError as exc:
+                    raise ImproperlyConfigured(
+                        "AUTHENTIK_BOOTSTRAP_PASSWORD_HASH does not match authentik's current "
+                        "password hashing settings. Generate a new hash with authentik's current "
+                        "settings. See https://docs.goauthentik.io/core/password-hashes/."
+                    ) from exc
             importer = Importer.from_string(content)
             valid, logs = importer.validate()
             if not valid:
