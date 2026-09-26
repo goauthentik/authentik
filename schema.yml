@@ -23392,6 +23392,267 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /secrets/secrets/:
+    get:
+      operationId: secrets_secrets_list
+      description: Manage secrets.
+      parameters:
+      - in: query
+        name: managed
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: type
+        schema:
+          $ref: '#/components/schemas/SecretTypeEnum'
+      - in: query
+        name: type__in
+        schema:
+          type: array
+          items:
+            type: string
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      tags:
+      - secrets
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSecretList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: secrets_secrets_create
+      description: Manage secrets.
+      tags:
+      - secrets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SecretRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Secret'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /secrets/secrets/{secret_uuid}/:
+    get:
+      operationId: secrets_secrets_retrieve
+      description: Manage secrets.
+      parameters:
+      - in: path
+        name: secret_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Secret.
+        required: true
+      tags:
+      - secrets
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Secret'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: secrets_secrets_update
+      description: Manage secrets.
+      parameters:
+      - in: path
+        name: secret_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Secret.
+        required: true
+      tags:
+      - secrets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SecretRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Secret'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: secrets_secrets_partial_update
+      description: Manage secrets.
+      parameters:
+      - in: path
+        name: secret_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Secret.
+        required: true
+      tags:
+      - secrets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSecretRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Secret'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: secrets_secrets_destroy
+      description: Manage secrets.
+      parameters:
+      - in: path
+        name: secret_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Secret.
+        required: true
+      tags:
+      - secrets
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /secrets/secrets/{secret_uuid}/rotate/:
+    post:
+      operationId: secrets_secrets_rotate_create
+      description: Replace a text secret with a generated value.
+      parameters:
+      - in: path
+        name: secret_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Secret.
+        required: true
+      tags:
+      - secrets
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RotatedSecret'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /secrets/secrets/{secret_uuid}/used_by/:
+    get:
+      operationId: secrets_secrets_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: secret_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Secret.
+        required: true
+      tags:
+      - secrets
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /secrets/secrets/{secret_uuid}/view_value/:
+    get:
+      operationId: secrets_secrets_view_value_retrieve
+      description: Return and audit a secret value.
+      parameters:
+      - in: path
+        name: secret_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Secret.
+        required: true
+      tags:
+      - secrets
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecretValue'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /sources/all/:
     get:
       operationId: sources_all_list
@@ -36219,6 +36480,7 @@ components:
       - authentik.api
       - authentik.core
       - authentik.crypto
+      - authentik.crypto.secrets
       - authentik.endpoints
       - authentik.endpoints.connectors.agent
       - authentik.enterprise
@@ -45665,6 +45927,7 @@ components:
       - authentik_core.objectattribute
       - authentik_core.actor
       - authentik_crypto.certificatekeypair
+      - authentik_crypto_secrets.secret
       - authentik_endpoints.deviceuserbinding
       - authentik_endpoints.deviceaccessgroup
       - authentik_endpoints.endpointstage
@@ -49451,6 +49714,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ScopeMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedSecretList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Secret'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -53988,6 +54266,18 @@ components:
           type: string
           description: Description shown to the user when consenting. If left empty,
             the user won't be informed.
+    PatchedSecretRequest:
+      type: object
+      description: Create and configure a secret without exposing its value.
+      properties:
+        name:
+          type: string
+          minLength: 1
+        type:
+          $ref: '#/components/schemas/SecretTypeEnum'
+        value:
+          type: string
+          writeOnly: true
     PatchedSettingsRequest:
       type: object
       description: Settings Serializer
@@ -57145,6 +57435,16 @@ components:
           minLength: 1
       required:
       - name
+    RotatedSecret:
+      type: object
+      description: A rotated value, hidden when the caller cannot view it.
+      properties:
+        value:
+          type: string
+          readOnly: true
+          nullable: true
+      required:
+      - value
     SAMLBindingsEnum:
       enum:
       - redirect
@@ -58986,6 +59286,71 @@ components:
       - expression
       - name
       - scope_name
+    Secret:
+      type: object
+      description: Create and configure a secret without exposing its value.
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Secret uuid
+        name:
+          type: string
+        type:
+          $ref: '#/components/schemas/SecretTypeEnum'
+        managed:
+          type: string
+          readOnly: true
+          nullable: true
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created
+      - last_updated
+      - managed
+      - name
+      - pk
+    SecretRequest:
+      type: object
+      description: Create and configure a secret without exposing its value.
+      properties:
+        name:
+          type: string
+          minLength: 1
+        type:
+          $ref: '#/components/schemas/SecretTypeEnum'
+        value:
+          type: string
+          writeOnly: true
+      required:
+      - name
+    SecretTypeEnum:
+      enum:
+      - text
+      - multiline
+      - file
+      type: string
+    SecretValue:
+      type: object
+      description: A secret value.
+      properties:
+        value:
+          type: string
+          readOnly: true
+      required:
+      - value
     SelectableStage:
       type: object
       description: Serializer for stages which can be selected by users

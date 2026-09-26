@@ -36,7 +36,12 @@ test.describe("ak-mdx renders compiled markdown", () => {
 
         await test.step("Create provider via wizard", async () => {
             await expect(dialog).toBeHidden();
-            await page.getByRole("button", { name: "New Provider" }).click();
+
+            await page
+                .getByLabel("Providers actions")
+                .getByRole("button", { name: "New Provider" })
+                .click();
+
             await expect(dialog).toBeVisible();
 
             await series(
@@ -46,6 +51,15 @@ test.describe("ak-mdx renders compiled markdown", () => {
                     selectSearchValue,
                     "Authorization Flow",
                     /default-provider-authorization-explicit-consent/,
+                ],
+                [
+                    expect(
+                        dialog.getByRole("textbox", {
+                            name: "Invalidation Flow",
+                            includeHidden: true,
+                        }),
+                    ).toHaveValue,
+                    /default-provider-invalidation-flow/,
                 ],
                 [click, "Create", "button", dialog],
             );
