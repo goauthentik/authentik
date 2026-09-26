@@ -57,7 +57,10 @@ export const LibraryAppRow: LitFC<LibraryAppRowProps> = ({
     const metaParts: string[] = [];
     if (application.metaDescription) metaParts.push(application.metaDescription);
     if (application.metaPublisher) metaParts.push(application.metaPublisher);
+<<<<<<< HEAD
     if (application.slug) metaParts.push(application.slug);
+=======
+>>>>>>> cd72bc3af (web/user: remove slug display in any display mode on the user application library page (#26441))
 
     const linkProps = {
         "aria-label": msg(str`Open "${application.name}"`, {
