@@ -417,6 +417,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             super().save(*args, **kwargs)
             self.password_device.save()
         self._password_device_dirty = False
+        return None
 
     @staticmethod
     def default_path() -> str:
