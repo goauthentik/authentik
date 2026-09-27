@@ -45,7 +45,7 @@ export class UserPasswordLockForm extends WithLocale(DestructiveModelForm<User>)
     protected override renderForm(): SlottedTemplateResult {
         const displayName = this.instance
             ? formatDisambiguatedUserDisplayName(this.instance, this.activeLanguageTag)
-            : msg("Unknown user");
+            : msg("Unknown user", { id: "user.display.unknown.label" });
 
         return html`<p>
             ${
@@ -79,12 +79,12 @@ export function ToggleUserPasswordLockButton(
 ): SlottedTemplateResult {
     const locked = !!user.passwordLocked;
 
+    // TODO: Include agent users after https://github.com/goauthentik/authentik/pull/26475.
     const serviceAccount =
         user.type === UserTypeEnum.ServiceAccount ||
         user.type === UserTypeEnum.InternalServiceAccount;
 
-    // Unlocking never requires a license; locking does, and service accounts
-    // have no password to lock.
+    // Unlock remains available without a license.
     if (!locked && (!hasEnterpriseLicense || serviceAccount)) {
         return nothing;
     }
