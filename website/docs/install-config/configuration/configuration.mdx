@@ -661,6 +661,14 @@ Path to the GeoIP ASN database. Defaults to `/geoip/GeoLite2-ASN.mmdb`. If the f
 
 Disable the inbuilt update-checker. Defaults to `false`.
 
+### `AUTHENTIK_AVATARS`:ak-version[2026.11]
+
+Comma-separated list of avatar modes, with the same values as the **Avatars** [system setting](../../sys-mgmt/settings.mdx#avatars), for example `initials` or `none`.
+
+When set, this option takes precedence over the system setting, so a deployment managed from configuration can rule out a mode, such as Gravatar lookups, without a change in the Admin interface. It also seeds the system setting when the database is first created. Before 2026.11 it was only read at that first start and ignored afterwards.
+
+Unset by default; the system setting applies.
+
 ### `AUTHENTIK_ERROR_REPORTING`
 
 - `AUTHENTIK_ERROR_REPORTING__ENABLED`

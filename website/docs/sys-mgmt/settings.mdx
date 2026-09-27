@@ -24,6 +24,8 @@ Configure how authentik should show avatars for users. The following values can 
 
 Default: `gravatar,initials`
 
+If [`AUTHENTIK_AVATARS`](../install-config/configuration/configuration.mdx#authentik_avatars) is set in the configuration, that value takes precedence over this setting.
+
 - `none`: Disables per-user avatars and just shows a 1x1 pixel transparent picture
 - `gravatar`: Uses Gravatar with the user's email address
 - `initials`: Generated avatars based on the user's name

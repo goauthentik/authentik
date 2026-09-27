@@ -13,6 +13,7 @@ from lxml import etree  # nosec
 from lxml.etree import Element, SubElement, _Element  # nosec
 from requests.exceptions import ConnectionError, HTTPError, RequestException, Timeout
 
+from authentik.lib.config import CONFIG
 from authentik.lib.utils.dict import get_path_from_dict
 from authentik.lib.utils.http import get_http_session
 from authentik.tenants.utils import get_current_tenant
@@ -218,7 +219,9 @@ def get_avatar(user: User, request: HttpRequest | None = None) -> str:
         tenant = request.tenant
     else:
         tenant = get_current_tenant()
-    modes: str = tenant.avatars
+    # A value set in the configuration (`AUTHENTIK_AVATARS`) takes precedence over the
+    # system setting, so a deployment can rule out a mode declaratively.
+    modes: str = CONFIG.get("avatars") or tenant.avatars
     for mode in modes.split(","):
         avatar = None
         if mode in mode_map:

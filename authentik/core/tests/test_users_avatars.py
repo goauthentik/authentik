@@ -9,6 +9,7 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.lib.config import CONFIG
 from authentik.tenants.utils import get_current_tenant
 
 
@@ -30,6 +31,16 @@ class TestUsersAvatars(APITestCase):
         self.set_avatar_mode("none")
         self.client.force_login(self.admin)
         response = self.client.get(reverse("authentik_api:user-me"))
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content.decode())
+        self.assertEqual(body["user"]["avatar"], "/static/dist/assets/images/user_default.png")
+
+    def test_avatars_config_override(self):
+        """Test that a configured avatars value takes precedence over the system setting"""
+        self.set_avatar_mode("initials")
+        self.client.force_login(self.admin)
+        with CONFIG.patch("avatars", "none"):
+            response = self.client.get(reverse("authentik_api:user-me"))
         self.assertEqual(response.status_code, 200)
         body = loads(response.content.decode())
         self.assertEqual(body["user"]["avatar"], "/static/dist/assets/images/user_default.png")
