@@ -61,7 +61,7 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
     ],
     [null, msg("Applications"), { key: "applications" }, [
         ["/core/applications", msg("Applications"), [`^/core/applications/(?<slug>${SLUG_PATTERN})$`]],
-        ["/core/providers", msg("Providers"), [`^/core/providers/(?<id>${ID_PATTERN})$`]],
+        ["/core/providers", msg("Providers"), ["/core/providers/new",`^/core/providers/(?<id>${ID_PATTERN})$`]],
         ["/outpost/outposts", msg("Outposts"), [`^/outpost/outposts/(?<id>${UUID_PATTERN})$`]],
         ["/requests/rules", msg("Request Rules"), {enterprise:true}],
         ["/requests/access-requests", msg("Access Requests"), {enterprise:true}],]

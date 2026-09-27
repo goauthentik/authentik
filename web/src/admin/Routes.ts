@@ -64,6 +64,15 @@ export const ROUTES: RouteLike[] = [
         },
         "providers",
     ),
+    new Route(
+        "/core/providers/new",
+        async () => {
+            await import("#admin/providers/ak-provider-wizard");
+
+            return html`<ak-provider-wizard-page></ak-provider-wizard-page>`;
+        },
+        "provider-new",
+    ),
     new Route<{ id: string }>(
         "/core/providers/:id{/*}?",
         async (args) => {

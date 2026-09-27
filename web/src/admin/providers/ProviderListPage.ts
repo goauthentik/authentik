@@ -1,4 +1,3 @@
-import "#admin/providers/ak-provider-wizard";
 import "#admin/providers/google_workspace/GoogleWorkspaceProviderForm";
 import "#admin/providers/ldap/LDAPProviderForm";
 import "#admin/providers/microsoft_entra/MicrosoftEntraProviderForm";
@@ -20,8 +19,6 @@ import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
-
-import { AKProviderWizard } from "#admin/providers/ak-provider-wizard";
 
 import { Provider, ProvidersApi } from "@goauthentik/api";
 
@@ -121,14 +118,13 @@ export class ProviderListPage extends TablePage<Provider> {
 
     protected override renderObjectCreate(): SlottedTemplateResult {
         return html`
-            <button
+            <a
                 class="pf-c-button pf-m-primary"
-                type="button"
+                href=${toAdminInterface("core/providers/new")}
                 aria-description="${msg("Open the wizard to create a new provider.")}"
-                ${AKProviderWizard.asModalInvoker()}
             >
                 ${msg("New Provider")}
-            </button>
+            </a>
         `;
     }
 }
