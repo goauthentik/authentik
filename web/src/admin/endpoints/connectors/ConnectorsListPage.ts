@@ -12,7 +12,7 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { WizardLinkButton } from "#components/ak-wizard/ak-full-page-wizard";
+import { CreateLinkButton } from "#components/ak-full-page";
 
 import { AKEndpointConnectorWizard } from "#admin/endpoints/connectors/ConnectorWizard";
 
@@ -60,7 +60,7 @@ export class ConnectorsListPage extends TablePage<Connector> {
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
-        return WizardLinkButton(
+        return CreateLinkButton(
             toAdminInterface("endpoints/connectors/new"),
             AKEndpointConnectorWizard,
         );

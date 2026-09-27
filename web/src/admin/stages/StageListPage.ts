@@ -12,7 +12,7 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { WizardLinkButton } from "#components/ak-wizard/ak-full-page-wizard";
+import { CreateLinkButton } from "#components/ak-full-page";
 
 import { AKStageWizard } from "#admin/stages/ak-stage-wizard";
 import { DuoDeviceImportForm } from "#admin/stages/authenticator_duo/DuoDeviceImportForm";
@@ -111,7 +111,7 @@ export class StageListPage extends TablePage<Stage> {
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
-        return WizardLinkButton(toAdminInterface("flow/stages/new"), AKStageWizard);
+        return CreateLinkButton(toAdminInterface("flow/stages/new"), AKStageWizard);
     }
 }
 

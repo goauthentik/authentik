@@ -1,15 +1,11 @@
 import { WizardCloseEvent } from "./events.js";
 
-import { AKElement } from "#elements/Base";
 import { listen } from "#elements/decorators/listen";
-import { formatCreateLabel, type NamedEntityElementConstructor } from "#elements/dialogs/shared";
-import { navigate } from "#elements/router/core/navigation";
-import { SlottedTemplateResult } from "#elements/types";
 
-import { setPageDetails } from "#components/ak-page-navbar";
+import { AKFullPage } from "#components/ak-full-page";
 
 import { css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 
 /**
  * @class AKFullPageWizard
@@ -20,7 +16,7 @@ import { customElement, property } from "lit/decorators.js";
  * its cancel/close/finish buttons navigate to {@linkcode returnURL} instead of dismissing a dialog.
  */
 @customElement("ak-full-page-wizard")
-export class AKFullPageWizard extends AKElement {
+export class AKFullPageWizard extends AKFullPage {
     public static styles = [
         css`
             :host {
@@ -42,31 +38,8 @@ export class AKFullPageWizard extends AKElement {
         `,
     ];
 
-    @property({ type: String })
-    public header?: string;
-
-    @property({ type: String })
-    public description?: string;
-
-    @property({ type: String })
-    public icon?: string;
-
-    /**
-     * Where to send the user when the wizard is cancelled or finished.
-     */
-    @property({ type: String, attribute: "return-url" })
-    public returnURL = "/";
-
     @listen(WizardCloseEvent)
-    protected closeListener = () => navigate(this.returnURL);
-
-    public override willUpdate() {
-        setPageDetails({
-            header: this.header,
-            description: this.description,
-            icon: this.icon,
-        });
-    }
+    protected closeListener = this.returnToOrigin;
 
     protected override render() {
         return html`<slot></slot>`;
@@ -77,18 +50,4 @@ declare global {
     interface HTMLElementTagNameMap {
         "ak-full-page-wizard": AKFullPageWizard;
     }
-}
-
-/**
- * A helper function to render a link to the full-page wizard that creates a new **model**
- * instance; the full-page counterpart of {@linkcode ModalInvokerButton}.
- *
- * @param href The route of the wizard's page, e.g. `toAdminInterface("core/providers/new")`.
- * @param factory The wizard element constructor, used for the label.
- */
-export function WizardLinkButton(
-    href: string,
-    factory: NamedEntityElementConstructor,
-): SlottedTemplateResult {
-    return html`<a class="pf-c-button pf-m-primary" href=${href}>${formatCreateLabel(factory)}</a>`;
 }

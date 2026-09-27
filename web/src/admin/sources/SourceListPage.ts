@@ -16,7 +16,7 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { WizardLinkButton } from "#components/ak-wizard/ak-full-page-wizard";
+import { CreateLinkButton } from "#components/ak-full-page";
 
 import { AKSourceWizard } from "#admin/sources/ak-source-wizard";
 
@@ -114,7 +114,7 @@ export class SourceListPage extends TablePage<Source> {
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
-        return WizardLinkButton(toAdminInterface("core/sources/new"), AKSourceWizard);
+        return CreateLinkButton(toAdminInterface("core/sources/new"), AKSourceWizard);
     }
 }
 
