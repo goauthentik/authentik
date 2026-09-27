@@ -8,7 +8,7 @@ from django.contrib.auth.hashers import (
     check_password,
     make_password,
 )
-from django.db import IntegrityError, connection
+from django.db import connection
 from django.test.utils import CaptureQueriesContext
 from django.urls.base import reverse
 from django.utils.timezone import now
