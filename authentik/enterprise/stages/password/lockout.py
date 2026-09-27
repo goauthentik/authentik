@@ -46,7 +46,11 @@ class PasswordLockout:
 
         `user` is the result of authenticating `pending_user`'s credentials; a locked
         password refuses authentication even when those credentials were correct."""
-        if not LicenseKey.cached_summary().status.is_valid or pending_user.pk is None:
+        if (
+            not LicenseKey.cached_summary().status.is_valid
+            or pending_user.pk is None
+            or pending_user.type in SERVICE_ACCOUNT_TYPES
+        ):
             return PasswordLockoutResult(user)
 
         threshold = self.password_stage.failed_attempts_before_lockout
@@ -61,7 +65,7 @@ class PasswordLockout:
                     device.failed_attempts = 0
                     device.save()
                 return PasswordLockoutResult(user)
-            if threshold == 0 or pending_user.type in SERVICE_ACCOUNT_TYPES:
+            if threshold == 0:
                 return PasswordLockoutResult(None)
             if self._uses_external_password(pending_user):
                 # A failed LDAP or Kerberos result might be an upstream outage.

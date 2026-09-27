@@ -491,6 +491,18 @@ class TestPasswordLockout(FlowTestCase):
                     ).exists()
                 )
 
+    def test_service_account_conversion_bypasses_existing_lock(self):
+        """Converting a locked user to a service account stops enforcing the lock."""
+        PasswordDevice.objects.filter(user=self.user).update(locked_at=now())
+        policy = PasswordLockout(self.stage, RequestFactory().post("/"))
+        for user_type in (UserTypes.SERVICE_ACCOUNT, UserTypes.INTERNAL_SERVICE_ACCOUNT):
+            with self.subTest(user_type=user_type):
+                self.user.type = user_type
+                self.user.save()
+                self.assertEqual(
+                    policy.apply(self.user, self.user, {}), PasswordLockoutResult(self.user)
+                )
+
 
 class TestPasswordLockoutConcurrency(TransactionTestCase):
     """Password lockout concurrency tests"""
