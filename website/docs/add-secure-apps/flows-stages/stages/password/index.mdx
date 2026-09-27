@@ -27,21 +27,21 @@ The stage supports authentik's built-in password database, app passwords, LDAP-b
 
 ## Password lockout :ak-enterprise {#password-lockout}
 
-Set **Failed attempts before lockout** to a value above `0` to lock password login after that many consecutive failed attempts. A locked password is refused even when the correct password is submitted.
+Set **Failed attempts before lockout** above `0` to lock password login after that many consecutive failed attempts. The count belongs to the user and persists across flows and sessions. Successful password validation or a password change clears the count.
 
-The count is per user and survives across flows and sessions, including password validation embedded in an Identification stage. A successful password validation resets it. Failed LDAP and Kerberos authentication is not counted because authentik cannot distinguish a wrong password from an unavailable external source.
+Lockout applies in Password stages, including those embedded in an Identification stage. A locked password is rejected even when correct. Existing sessions and authentication methods that bypass password validation, such as [passwordless flows](#passwordless-patterns), are unaffected.
 
-By default, the flow reports the same error for a locked password and a wrong password. Set a **Last-attempt warning message** or a **Lockout message** to give the user more information.
+Service accounts and internal service accounts are exempt. Failed attempts for users with LDAP or Kerberos passwords are not counted when the corresponding backend is enabled, because an external source outage can look like an incorrect password.
 
-Only password-based authentication is affected. A password locked user can still sign in through a flow that does not run a Password stage, such as a [passwordless flow](#passwordless-patterns).
+The default response is a generic authentication error. Optional **Last-attempt warning message** and **Lockout message** settings provide more detail. A lockout message is shown only after the flow reaches its configured attempt limit.
 
 ### Lock or unlock a password
 
-An administrator can use **Lock password login** and **Unlock password login** on a user's details page. Existing sessions and other authentication methods are not affected. Deactivated users can be locked as well; service accounts cannot, because they do not authenticate with passwords.
+In the Admin interface, go to **Directory > Users**, select a user, and click **Lock password login** or **Unlock password login**. Both actions require permission to view the user and reset their password, granted globally or for that user. The same permissions apply when targeting your own account.
 
-Users can also lock their own password. This can be used to enforce passwordless sign-in for an account: once locked, only flows without a Password stage, such as passkey or MFA-based flows, can authenticate the user.
+Deactivated users can also have their passwords locked. Changing or resetting a password clears its failure count but preserves its lock. Unlock password login separately to allow it again.
 
-Changing or resetting the password clears the failure count but does not remove the lock. An administrator must unlock password login separately.
+An Enterprise license is required to lock passwords and enforce lockout. Unlocking remains available without a license. Lock and unlock actions create `password_locked` and `password_unlocked` audit events.
 
 ## Flow integration
 
