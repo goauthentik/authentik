@@ -3681,11 +3681,6 @@ paths:
       description: Group Viewset
       parameters:
       - in: query
-        name: attributes
-        schema:
-          type: string
-        description: Attributes
-      - in: query
         name: include_children
         schema:
           type: boolean
@@ -4574,11 +4569,6 @@ paths:
       description: User Viewset
       parameters:
       - in: query
-        name: attributes
-        schema:
-          type: string
-        description: Attributes
-      - in: query
         name: date_joined
         schema:
           type: string
@@ -5091,11 +5081,6 @@ paths:
         You can poll that URL until `completed=true`, at which point the `file_url` property will
         contain a URL to download
       parameters:
-      - in: query
-        name: attributes
-        schema:
-          type: string
-        description: Attributes
       - in: query
         name: date_joined
         schema:
