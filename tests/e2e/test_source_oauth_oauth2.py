@@ -140,7 +140,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         # hands control back.
         post_login_expected_url = self.if_user_url("/settings/sources")
 
-        WebDriverWait(self.driver, 30).until(
+        self.wait.until(
             ec.url_to_be(post_login_expected_url),
             "Expected to be redirected to user settings after linking OAuth source",
         )
