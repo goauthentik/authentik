@@ -559,7 +559,10 @@ class UsersFilter(FilterSet):
     path = CharFilter(field_name="path")
     path_startswith = CharFilter(field_name="path", method="filter_path_startswith")
 
-    type = MultipleChoiceFilter(choices=UserTypes.choices, field_name="type")
+    # `type` is a column on the user table, so filtering on it can't duplicate rows. The
+    # MultipleChoiceFilter default (distinct=True) would make the count and every page
+    # sort all matching users.
+    type = MultipleChoiceFilter(choices=UserTypes.choices, field_name="type", distinct=False)
 
     groups_by_name = ModelMultipleChoiceFilter(
         field_name="groups__name",
