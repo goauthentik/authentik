@@ -161,13 +161,12 @@ class UserWriteStageView(StageView):
 
     @staticmethod
     def user_state(user: User) -> dict[str, Any]:
-        """Snapshot of the user's concrete field values, used to detect whether
-        `update_user` actually changed anything. Only concrete fields are captured;
-        m2m relations (`groups`, `roles`) are handled separately and auto-managed
-        fields (`last_updated`) only change on save, so they never produce a false
-        positive when comparing before/after an update."""
+        """Snapshot user fields and the staged password to detect changes."""
         return deepcopy(
-            {field.attname: getattr(user, field.attname) for field in user._meta.concrete_fields}
+            {
+                **{field.attname: getattr(user, field.attname) for field in user._meta.concrete_fields},
+                "password": user.password,
+            }
         )
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
