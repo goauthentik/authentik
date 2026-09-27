@@ -185,4 +185,5 @@ if not CONFIG.get_bool("disable_startup_analytics", False):
             pass
 
 start_debug_server()
-run_migrations()
+if "AUTHENTIK_DANGEROUSLY_SKIP_MIGRATIONS" not in os.environ:
+    run_migrations()

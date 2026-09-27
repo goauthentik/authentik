@@ -151,7 +151,7 @@ if __name__ == "__main__":
     start_debug_server(port_offset=worker_id - INITIAL_WORKER_ID + 1)
     start_pyroscope("worker", worker_id=str(worker_id))
 
-    if worker_id == INITIAL_WORKER_ID:
+    if worker_id == INITIAL_WORKER_ID and "AUTHENTIK_DANGEROUSLY_SKIP_MIGRATIONS" not in os.environ:
         from lifecycle.migrate import run_migrations
 
         run_migrations()

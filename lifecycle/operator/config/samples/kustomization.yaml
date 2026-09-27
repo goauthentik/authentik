@@ -1,0 +1,6 @@
+## Append samples of your project ##
+resources:
+- instance_v1alpha1_authentik.yaml
+# instance_v1alpha1_authentik_autoupdate.yaml is reference only: it points at a
+# Secret and an ingress class that have to exist first.
+# +kubebuilder:scaffold:manifestskustomizesamples

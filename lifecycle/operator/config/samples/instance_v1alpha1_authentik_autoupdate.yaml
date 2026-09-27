@@ -1,0 +1,72 @@
+---
+# An authentik instance that tracks a git branch.
+#
+# The operator polls the registry for the newest build of the branch, and when
+# it finds one it runs migrations to completion in a Job before letting the
+# server and worker Deployments move to the new image. That ordering is the
+# reason the operator builds the objects itself: applying them all at once, as
+# installing the chart does, starts new pods that migrate the database while old
+# pods are still serving the old schema.
+#
+# Suited to a staging environment following main. For production, pin
+# global.image.tag to a release and leave autoUpdate out.
+apiVersion: instance.goauthentik.io/v1alpha1
+kind: Authentik
+metadata:
+  name: authentik-staging
+  labels:
+    app.kubernetes.io/name: authentik
+spec:
+  autoUpdate:
+    enabled: true
+    branch: main
+    # Immutable resolves gh-<branch>-<timestamp>-<sha>, so each build is a
+    # distinct image and therefore a real rollout. Branch would use the moving
+    # gh-<branch> tag, which never changes and so never triggers one.
+    tagStrategy: Immutable
+    interval: 5m
+    # Only needed for a private registry.
+    # pullSecret:
+    #   name: ghcr-credentials
+
+  migrations:
+    enabled: true
+    # Hold the rollout for up to an hour while migrations run. Raise this if a
+    # release has a long backfill.
+    activeDeadlineSeconds: 3600
+    backoffLimit: 3
+
+  authentik:
+    existingSecret:
+      # Holds AUTHENTIK_SECRET_KEY, AUTHENTIK_POSTGRESQL__PASSWORD and any
+      # other configuration keys. See
+      # https://docs.goauthentik.io/install-config/configuration/
+      secretName: authentik-staging-config
+
+  server:
+    replicas: 2
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      hosts:
+        - authentik.staging.example.com
+      tls:
+        - hosts:
+            - authentik.staging.example.com
+          secretName: authentik-staging-tls
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+
+  worker:
+    replicas: 2
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+
+  global:
+    # Spread replicas across nodes.
+    affinity:
+      podAntiAffinity: soft
