@@ -643,7 +643,7 @@ class UserViewSet(
         ]
 
     def get_queryset(self):
-        base_qs = User.objects.all().exclude_anonymous()
+        base_qs = User.objects.all().exclude_anonymous().select_related("password_device")
         # Always prefetch groups since group PKs are always serialized.
         # Use full prefetch when include_groups=true (for groups_obj), ID-only otherwise.
         if self.serializer_class(context={"request": self.request})._should_include_groups:
