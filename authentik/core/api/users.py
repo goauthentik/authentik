@@ -5,7 +5,6 @@ from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import AnonymousUser, Permission
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models import Exists, OuterRef, Prefetch, Q
 from django.db.transaction import atomic
@@ -167,10 +166,8 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
 
     def get_password_locked(self, user: User) -> bool:
         """Whether the user's password currently refuses authentication."""
-        try:
-            return user.password_device.locked
-        except ObjectDoesNotExist:
-            return False
+        device = getattr(user, "password_device", None)
+        return device is not None and device.locked
 
     @property
     def _should_include_groups(self) -> bool:

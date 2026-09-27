@@ -4,6 +4,7 @@ from unittest.mock import patch
 
 from django.urls import reverse
 from django.utils.timezone import now
+from rest_framework.status import HTTP_204_NO_CONTENT
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_user
@@ -35,7 +36,7 @@ class TestPasswordLockPermissions(APITestCase):
                 )
                 self.assertEqual(response.status_code, status, response.content)
                 device = PasswordDevice.objects.get(user=target)
-                if status == 204:
+                if status == HTTP_204_NO_CONTENT:
                     self.assertEqual(device.locked, action == "lock")
                     self.assertEqual(events.count(), count + 1)
                 else:
