@@ -45,8 +45,8 @@ export class UserNextActionsList extends Table<NextActionRow> {
         css`
             ak-search-select {
                 display: inline-block;
-                min-width: 24rem;
-                max-width: 32rem;
+                width: 24rem;
+                max-width: 100%;
                 flex-grow: 1;
             }
         `,
@@ -151,7 +151,11 @@ export class UserNextActionsList extends Table<NextActionRow> {
                 }}
             >
             </ak-search-select>
-            <ak-spinner-button .disabled=${!this.selectedFlow} .callAction=${this.addSelected}>
+            <ak-spinner-button
+                class="pf-m-primary"
+                .disabled=${!this.selectedFlow}
+                .callAction=${this.addSelected}
+            >
                 ${msg("Add", { id: "user-next-actions.add.label" })}
             </ak-spinner-button>
             ${super.renderToolbar()}
@@ -170,7 +174,11 @@ export class UserNextActionsList extends Table<NextActionRow> {
                 .delete=${() =>
                     this.#patch((actions) => actions.filter((entry) => entry !== item.slug))}
             >
-                <button slot="trigger" class="pf-c-button pf-m-plain">
+                <button
+                    slot="trigger"
+                    class="pf-c-button pf-m-plain"
+                    aria-label=${msg("Remove", { id: "user-next-actions.remove.label" })}
+                >
                     <pf-tooltip
                         position="top"
                         content=${msg("Remove", { id: "user-next-actions.remove.label" })}
