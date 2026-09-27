@@ -1,7 +1,6 @@
 import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 import "#elements/forms/DeleteBulkForm";
-
 import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
@@ -15,6 +14,9 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-consent-list")
 export class UserConsentList extends Table<UserConsent> {
+    public static override verboseName = msg("Consent");
+    public static override verboseNamePlural = msg("Consents");
+
     @property({ type: Number })
     userId?: number;
 
@@ -41,6 +43,7 @@ export class UserConsentList extends Table<UserConsent> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Consent(s)")}
             .objects=${this.selectedElements}
@@ -75,13 +78,15 @@ export class UserConsentList extends Table<UserConsent> {
         return [
             html`${item.application.name}`,
             Timestamp(item.expires && item.expiring ? item.expires : null),
-            html`${item.permissions
-                ? html`<ak-chip-group>
-                      ${item.permissions.split(" ").map((perm) => {
-                          return html`<ak-chip .removable=${false}>${perm}</ak-chip>`;
-                      })}
-                  </ak-chip-group>`
-                : html`-`}`,
+            html`${
+                item.permissions
+                    ? html`<ak-chip-group>
+                          ${item.permissions.split(" ").map((perm) => {
+                              return html`<ak-chip .removable=${false}>${perm}</ak-chip>`;
+                          })}
+                      </ak-chip-group>`
+                    : html`-`
+            }`,
         ];
     }
 }

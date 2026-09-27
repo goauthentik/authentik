@@ -2,7 +2,6 @@ import "#components/ak-secret-text-input";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
-
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -15,28 +14,26 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-endpoints-connector-fleet-form")
 export class FleetConnectorForm extends ModelForm<FleetConnector, string> {
-    loadInstance(pk: string): Promise<FleetConnector> {
-        return aki(EndpointsApi).endpointsFleetConnectorsRetrieve({
-            connectorUuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (connectorUuid: string) =>
+            aki(EndpointsApi).endpointsFleetConnectorsRetrieve({
+                connectorUuid,
+            }),
+        create: (data: FleetConnector) =>
+            aki(EndpointsApi).endpointsFleetConnectorsCreate({
+                fleetConnectorRequest: data as unknown as FleetConnectorRequest,
+            }),
+        update: (connectorUuid: string, patchedFleetConnectorRequest: FleetConnector) =>
+            aki(EndpointsApi).endpointsFleetConnectorsPartialUpdate({
+                connectorUuid,
+                patchedFleetConnectorRequest,
+            }),
+    };
 
     public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated Fleet connector.")
             : msg("Successfully created Fleet connector.");
-    }
-
-    async send(data: FleetConnector): Promise<FleetConnector> {
-        if (this.instance) {
-            return aki(EndpointsApi).endpointsFleetConnectorsPartialUpdate({
-                connectorUuid: this.instance.connectorUuid!,
-                patchedFleetConnectorRequest: data,
-            });
-        }
-        return aki(EndpointsApi).endpointsFleetConnectorsCreate({
-            fleetConnectorRequest: data as unknown as FleetConnectorRequest,
-        });
     }
 
     renderForm() {
@@ -68,6 +65,7 @@ export class FleetConnectorForm extends ModelForm<FleetConnector, string> {
                         label=${msg("Fleet API Token")}
                         placeholder=${msg("Provide your Fleet API token...")}
                         name="token"
+                        plaintext
                         ?revealed=${!this.instance}
                     ></ak-secret-text-input>
                     <ak-switch-input

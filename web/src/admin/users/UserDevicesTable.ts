@@ -1,9 +1,8 @@
 import "#elements/forms/DeleteBulkForm";
-
 import { aki } from "#common/api/client";
 import { createPaginatedResponse } from "#common/api/responses";
 import { deviceTypeName } from "#common/labels";
-import { SentryIgnoredError } from "#common/sentry/index";
+import { SentryIgnoredError } from "#common/sentry/error";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -16,6 +15,9 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-device-table")
 export class UserDeviceTable extends Table<Device> {
+    public static override verboseName = msg("Device");
+    public static override verboseNamePlural = msg("Devices");
+
     @property({ type: Number })
     userId?: number;
 
@@ -43,6 +45,7 @@ export class UserDeviceTable extends Table<Device> {
 
     async deleteWrapper(device: Device) {
         const api = aki(AuthenticatorsApi);
+
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
                 return api.authenticatorsAdminDuoDestroy({ id: parseInt(device.pk, 10) });
@@ -65,6 +68,7 @@ export class UserDeviceTable extends Table<Device> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Device(s)")}
             .objects=${this.selectedElements}

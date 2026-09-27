@@ -18,7 +18,7 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
-from authentik.lib.models import InternallyManagedMixin, SerializerModel
+from authentik.lib.models import InternallyManagedMixin, SerializerModel, SimpleThroughModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction, OutgoingSyncProvider
 
@@ -98,6 +98,7 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
         default=None,
         blank=True,
         help_text=_("Property mappings used for group creation/updating."),
+        through="MicrosoftEntraProviderPropertyMappingsGroup",
     )
 
     @property
@@ -182,6 +183,30 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
     class Meta:
         verbose_name = _("Microsoft Entra Provider")
         verbose_name_plural = _("Microsoft Entra Providers")
+
+
+class MicrosoftEntraProviderPropertyMappingsGroup(SimpleThroughModel):
+    microsoft_entra_provider = models.ForeignKey(
+        MicrosoftEntraProvider,
+        on_delete=models.CASCADE,
+        db_column="microsoftentraprovider_id",
+    )
+    property_mapping = models.ForeignKey(
+        PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
+    )
+
+    class Meta:
+        db_table = "authentik_providers_microsoft_entra_microsoftentraprovider_9f0b"
+        unique_together = (("microsoft_entra_provider", "property_mapping"),)
+        verbose_name = _("Microsoft Entra Provider Property Mappings Group")
+        verbose_name_plural = _("Microsoft Entra Provider Property Mappings Groups")
+
+    def __str__(self):
+        return (
+            "MicrosoftEntraProviderPropertyMappingsGroup for MicrosoftEntraProvider "
+            f"{self.microsoft_entra_provider_id} "
+            f"and PropertyMapping {self.property_mapping_id}."
+        )
 
 
 class MicrosoftEntraProviderMapping(PropertyMapping):

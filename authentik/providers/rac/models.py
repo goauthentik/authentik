@@ -1,6 +1,7 @@
 """RAC Models"""
 
 from typing import Any
+from urllib.parse import urlsplit
 from uuid import uuid4
 
 from deepmerge import always_merger
@@ -13,9 +14,14 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
-from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User, default_token_key
+from authentik.core.models import PropertyMapping, Provider, User, default_token_key
 from authentik.events.models import Event, EventAction
-from authentik.lib.models import InternallyManagedMixin, SerializerModel
+from authentik.lib.models import (
+    ExpiringModel,
+    InternallyManagedMixin,
+    SerializerModel,
+    SimpleThroughModel,
+)
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.outposts.models import OutpostModel
 from authentik.policies.models import PolicyBindingModel
@@ -96,7 +102,10 @@ class Endpoint(SerializerModel, PolicyBindingModel):
     maximum_connections = models.IntegerField(default=1)
 
     property_mappings = models.ManyToManyField(
-        "authentik_core.PropertyMapping", default=None, blank=True
+        "authentik_core.PropertyMapping",
+        default=None,
+        blank=True,
+        through="EndpointPropertyMapping",
     )
 
     @property
@@ -111,6 +120,25 @@ class Endpoint(SerializerModel, PolicyBindingModel):
     class Meta:
         verbose_name = _("RAC Endpoint")
         verbose_name_plural = _("RAC Endpoints")
+
+
+class EndpointPropertyMapping(SimpleThroughModel):
+    property_mapping = models.ForeignKey(
+        PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
+    )
+    endpoint = models.ForeignKey(Endpoint, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_providers_rac_endpoint_property_mappings"
+        unique_together = (("property_mapping", "endpoint"),)
+        verbose_name = _("Endpoint Property Mapping")
+        verbose_name_plural = _("Endpoint Property Mappings")
+
+    def __str__(self):
+        return (
+            f"EndpointPropertyMapping for Endpoint {self.endpoint_id} "
+            f"and PropertyMapping {self.property_mapping_id}."
+        )
 
 
 class RACPropertyMapping(PropertyMapping):
@@ -155,15 +183,22 @@ class ConnectionToken(InternallyManagedMixin, ExpiringModel):
     settings = models.JSONField(default=dict)
     session = models.ForeignKey("authentik_core.AuthenticatedSession", on_delete=models.CASCADE)
 
+    @staticmethod
+    def parse_host(host: str) -> tuple[str, str | None]:
+        """Split a host into (hostname, port), handling IPv6 literals"""
+        # A bare IPv6 literal (unbracketed) isn't parseable by urlsplit and has no port
+        if not host.startswith("[") and host.count(":") > 1:
+            return host, None
+        split = urlsplit(f"//{host}")
+        return split.hostname, str(split.port) if split.port is not None else None
+
     def get_settings(self) -> dict:
         """Get settings"""
         default_settings = {}
-        if ":" in self.endpoint.host:
-            host, _, port = self.endpoint.host.partition(":")
-            default_settings["hostname"] = host
-            default_settings["port"] = str(port)
-        else:
-            default_settings["hostname"] = self.endpoint.host
+        hostname, port = self.parse_host(self.endpoint.host)
+        default_settings["hostname"] = hostname
+        if port is not None:
+            default_settings["port"] = port
         if self.endpoint.protocol == Protocols.RDP:
             default_settings["resize-method"] = "display-update"
         default_settings["client-name"] = f"authentik - {self.session.user}"

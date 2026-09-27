@@ -3,7 +3,6 @@ import "#elements/chips/ChipGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
-
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
@@ -23,28 +22,26 @@ export class RoleForm extends ModelForm<Role, string> {
 
     public override size = PFSize.Medium;
 
-    loadInstance(pk: string): Promise<Role> {
-        return aki(RbacApi).rbacRolesRetrieve({
-            uuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (uuid: string) =>
+            aki(RbacApi).rbacRolesRetrieve({
+                uuid,
+            }),
+        create: (roleRequest: Role) =>
+            aki(RbacApi).rbacRolesCreate({
+                roleRequest,
+            }),
+        update: (uuid: string, patchedRoleRequest: Role) =>
+            aki(RbacApi).rbacRolesPartialUpdate({
+                uuid,
+                patchedRoleRequest,
+            }),
+    };
 
     getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated role.")
             : msg("Successfully created role.");
-    }
-
-    async send(data: Role): Promise<Role> {
-        if (this.instance?.pk) {
-            return aki(RbacApi).rbacRolesPartialUpdate({
-                uuid: this.instance.pk,
-                patchedRoleRequest: data,
-            });
-        }
-        return aki(RbacApi).rbacRolesCreate({
-            roleRequest: data,
-        });
     }
 
     protected override renderForm(): TemplateResult {

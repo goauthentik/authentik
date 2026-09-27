@@ -1,6 +1,8 @@
 /**
- * @fileoverview Utilities for DOM element interaction, focus management, and event handling.
+ * @file Utilities for DOM element interaction, focus management, and event handling.
  */
+
+import { isInteractiveElement, isInteractiveTextElement } from "#elements/utils/interactivity";
 
 import { createRef, ref, Ref } from "lit/directives/ref.js";
 
@@ -22,6 +24,7 @@ export function assertFocusable(target: Element | null | undefined): asserts tar
     if (!target) {
         throw new FocusAssertionError("Skipping focus, no target", { target: null });
     }
+
     if (!(target instanceof HTMLElement)) {
         throw new FocusAssertionError("Skipping focus, target is not an HTMLElement", { target });
     }
@@ -42,6 +45,7 @@ export function assertFocusable(target: Element | null | undefined): asserts tar
         throw new FocusAssertionError("Skipping focus, target has no focus method", { target });
     }
 }
+
 /**
  * Recursively check if the target element or any of its children are active (i.e. "focused").
  *
@@ -57,6 +61,7 @@ export function isActiveElement(
 
     // Does the container element have a shadow root?
     if (!("shadowRoot" in containerElement)) return false;
+
     if (containerElement.shadowRoot === null) return false;
 
     // Is the target element the active element?
@@ -69,13 +74,15 @@ export function isActiveElement(
 /**
  * Type predicate to check if an element is focusable.
  *
- * @param target The element to check.
- *
  * @category DOM
+ * @param target The element to check.
  */
-export function isFocusable(target: Element | null | undefined): target is HTMLElement {
+export function isFocusable<T extends Element | null | undefined>(
+    target: T,
+): target is NonNullable<T> & HTMLElement {
     try {
         assertFocusable(target);
+
         return true;
     } catch (error) {
         if (error instanceof FocusAssertionError) {
@@ -83,6 +90,7 @@ export function isFocusable(target: Element | null | undefined): target is HTMLE
         } else {
             console.error("Unexpected error during focus assertion", error);
         }
+
         return false;
     }
 }
@@ -117,4 +125,29 @@ export class FocusTarget<T extends HTMLElement = HTMLElement> {
     public toEventListener(options?: FocusOptions) {
         return () => this.focus(options);
     }
+}
+
+/**
+ * Given a collection of potentially focusable inputs, find the first which is
+ * blank and shaped like an interactive text field.
+ */
+export function findEmptyFocusCandidate<T extends HTMLInputElement | null | undefined>(
+    ...inputs: T[]
+): T | null {
+    const { activeElement } = document;
+    const candidates = inputs.filter(isFocusable);
+
+    if (activeElement !== document.body && isInteractiveElement(activeElement)) {
+        const activeElementIndex = candidates.findIndex((element) => element === activeElement);
+
+        if (activeElementIndex !== -1 && isInteractiveTextElement(activeElement)) {
+            return null;
+        }
+    }
+
+    const blankElements = candidates.filter((element) => !element.value && element.required);
+
+    const [focusTarget] = blankElements;
+
+    return focusTarget || null;
 }

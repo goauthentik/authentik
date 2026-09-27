@@ -1,0 +1,93 @@
+---
+title: Integrate with Convex
+sidebar_label: Convex
+support_level: community
+---
+
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+
+## What is Convex?
+
+> Convex provides backend building blocks for applications, including TypeScript server functions, realtime data updates, authentication, and a database.
+>
+> -- https://www.convex.dev/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+- `example.company` is the email domain that you verify in Convex.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::info Convex requirements
+Single Sign-On is only available on Convex Business and Enterprise. Convex also requires domain verification before SSO can be configured. Domain verification is outside the scope of this integration guide.
+:::
+
+## authentik configuration
+
+To support the integration of Convex with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider in authentik
+
+<SAMLProvider20265Warning />
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it is required later.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Temporarily set the **ACS URL** and **Audience** to `https://temp.temp`.
+        - Under **Advanced protocol settings**:
+            - Select an available **Signing Certificate**.
+            - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+### Download the signing certificate
+
+1. Navigate to **Applications** > **Providers** and click the name of the SAML provider that you created.
+2. Under **Related objects** > **Download signing certificate**, click **Download**. This certificate file is required in the Convex SSO setup flow.
+
+## Convex configuration
+
+1. Log in to the [Convex dashboard](https://dashboard.convex.dev/) as a team administrator.
+2. On the project list page, click **Team Settings**.
+3. Select the **Single Sign-On** tab.
+4. Click **Enable SSO**.
+5. Click **Manage Domains** and complete the domain verification flow for `example.company`.
+6. Return to the Convex **Single Sign-On** settings page and click **Manage SSO Configuration**.
+7. Follow the Convex SSO configuration wizard until Convex shows the service provider values. Copy these values because they are required in the next section:
+    - **ACS URL**
+    - **SP Entity ID** or **Audience**
+8. When Convex asks for identity provider details, set the following values:
+    - **Identity Provider SSO URL**: `https://authentik.company/application/saml/<application_slug>/`
+    - **Identity Provider Entity ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
+    - **Public certificate**: upload or paste the signing certificate that you downloaded from authentik.
+9. Keep the Convex setup flow open.
+
+## Configure the remaining information in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and open the provider that you created earlier.
+3. Under **Protocol settings**, set the following values:
+    - **ACS URL**: the **ACS URL** value from Convex.
+    - **Audience**: the **SP Entity ID** or **Audience** value from Convex.
+4. Click **Update** to save the provider.
+
+## Enable SSO in Convex
+
+1. Return to the Convex SSO configuration wizard and finish the SSO setup.
+2. To require SSO for all members of the Convex team, return to the **Single Sign-On** settings page and enable **Require SSO**.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Convex, log out of Convex and sign in with an email address from the verified SSO domain. You should be redirected to authentik and, after authenticating, returned to Convex.
+
+## Resources
+
+- [Convex Docs - Single Sign-On (SSO)](https://docs.convex.dev/team-management/sso)

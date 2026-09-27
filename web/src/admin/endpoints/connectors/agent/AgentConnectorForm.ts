@@ -8,7 +8,6 @@ import "#admin/common/ak-flow-search/ak-flow-search";
 import "#admin/common/ak-crypto-certificate-search";
 import "#elements/utils/TimeDeltaHelp";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
-
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -34,28 +33,26 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-endpoints-connector-agent-form")
 export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector, string>) {
-    loadInstance(pk: string): Promise<AgentConnector> {
-        return aki(EndpointsApi).endpointsAgentsConnectorsRetrieve({
-            connectorUuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (connectorUuid: string) =>
+            aki(EndpointsApi).endpointsAgentsConnectorsRetrieve({
+                connectorUuid,
+            }),
+        create: (data: AgentConnector) =>
+            aki(EndpointsApi).endpointsAgentsConnectorsCreate({
+                agentConnectorRequest: data as unknown as AgentConnectorRequest,
+            }),
+        update: (connectorUuid: string, patchedAgentConnectorRequest: AgentConnector) =>
+            aki(EndpointsApi).endpointsAgentsConnectorsPartialUpdate({
+                connectorUuid,
+                patchedAgentConnectorRequest,
+            }),
+    };
 
     getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated agent connector.")
             : msg("Successfully created agent connector.");
-    }
-
-    async send(data: AgentConnector): Promise<AgentConnector> {
-        if (this.instance) {
-            return aki(EndpointsApi).endpointsAgentsConnectorsPartialUpdate({
-                connectorUuid: this.instance.connectorUuid!,
-                patchedAgentConnectorRequest: data,
-            });
-        }
-        return aki(EndpointsApi).endpointsAgentsConnectorsCreate({
-            agentConnectorRequest: data as unknown as AgentConnectorRequest,
-        });
     }
 
     renderForm() {

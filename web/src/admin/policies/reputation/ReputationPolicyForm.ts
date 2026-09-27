@@ -1,7 +1,6 @@
 import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-
 import { aki } from "#common/api/client";
 
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
@@ -15,23 +14,21 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-reputation-form")
 export class ReputationPolicyForm extends BasePolicyForm<ReputationPolicy> {
-    loadInstance(pk: string): Promise<ReputationPolicy> {
-        return aki(PoliciesApi).policiesReputationRetrieve({
-            policyUuid: pk,
-        });
-    }
-
-    async send(data: ReputationPolicy): Promise<ReputationPolicy> {
-        if (this.instance) {
-            return aki(PoliciesApi).policiesReputationUpdate({
-                policyUuid: this.instance.pk || "",
-                reputationPolicyRequest: data,
-            });
-        }
-        return aki(PoliciesApi).policiesReputationCreate({
-            reputationPolicyRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (policyUuid: string) =>
+            aki(PoliciesApi).policiesReputationRetrieve({
+                policyUuid,
+            }),
+        create: (reputationPolicyRequest: ReputationPolicy) =>
+            aki(PoliciesApi).policiesReputationCreate({
+                reputationPolicyRequest,
+            }),
+        update: (policyUuid: string, reputationPolicyRequest: ReputationPolicy) =>
+            aki(PoliciesApi).policiesReputationUpdate({
+                policyUuid,
+                reputationPolicyRequest,
+            }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>

@@ -1,8 +1,9 @@
 import "#components/ak-switch-input";
-import "#components/ak-toggle-group";
+import "#elements/ToggleGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 import { aki } from "#common/api/client";
 import {
@@ -13,6 +14,7 @@ import {
 import { groupBy } from "#common/utils";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
 import {
     CoreApi,
@@ -26,13 +28,45 @@ import {
     User,
 } from "@goauthentik/api";
 
+import { match, P } from "ts-pattern";
+
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-
 export type PolicyBindingNotice = { type: PolicyBindingCheckTarget; notice: string };
+
+export const pickPolicyGroupUser = (
+    binding: Partial<PolicyBinding> | null | undefined,
+    current: PolicyBindingCheckTarget,
+): PolicyBindingCheckTarget =>
+    match(binding)
+        .with({ policyObj: P.nonNullable }, () => PolicyBindingCheckTarget.Policy)
+        .with({ groupObj: P.nonNullable }, () => PolicyBindingCheckTarget.Group)
+        .with({ userObj: P.nonNullable }, () => PolicyBindingCheckTarget.User)
+        .otherwise(() => current);
+
+export function cleanBindingForSend(
+    data: PolicyBinding,
+    type: PolicyBindingCheckTarget,
+): PolicyBinding {
+    switch (type) {
+        case PolicyBindingCheckTarget.Policy:
+            data.user = null;
+            data.group = null;
+            break;
+        case PolicyBindingCheckTarget.Group:
+            data.policy = null;
+            data.user = null;
+            break;
+        case PolicyBindingCheckTarget.User:
+            data.policy = null;
+            data.group = null;
+            break;
+    }
+
+    return data;
+}
 
 @customElement("ak-policy-binding-form")
 export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends ModelForm<
@@ -47,15 +81,9 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         const binding = await aki(PoliciesApi).policiesBindingsRetrieve({
             policyBindingUuid: pk,
         });
-        if (binding?.policyObj) {
-            this.policyGroupUser = PolicyBindingCheckTarget.Policy;
-        }
-        if (binding?.groupObj) {
-            this.policyGroupUser = PolicyBindingCheckTarget.Group;
-        }
-        if (binding?.userObj) {
-            this.policyGroupUser = PolicyBindingCheckTarget.User;
-        }
+
+        this.policyGroupUser = pickPolicyGroupUser(binding, this.policyGroupUser);
+
         return binding as T;
     }
 
@@ -89,6 +117,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         if (this.instance?.pk) {
             return msg("Successfully updated binding.");
         }
+
         return msg("Successfully created binding.");
     }
 
@@ -103,20 +132,8 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         if (this.targetPk) {
             data.target = this.targetPk;
         }
-        switch (this.policyGroupUser) {
-            case PolicyBindingCheckTarget.Policy:
-                data.user = null;
-                data.group = null;
-                break;
-            case PolicyBindingCheckTarget.Group:
-                data.policy = null;
-                data.user = null;
-                break;
-            case PolicyBindingCheckTarget.User:
-                data.policy = null;
-                data.group = null;
-                break;
-        }
+
+        data = cleanBindingForSend(data, this.policyGroupUser);
 
         if (this.instance?.pk) {
             return aki(PoliciesApi).policiesBindingsUpdate({
@@ -124,6 +141,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                 policyBindingRequest: data,
             });
         }
+
         return aki(PoliciesApi).policiesBindingsCreate({
             policyBindingRequest: data,
         });
@@ -133,21 +151,25 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         if (this.instance?.pk) {
             return this.instance.order;
         }
+
         const bindings = await aki(PoliciesApi).policiesBindingsList({
             target: this.targetPk || "",
         });
+
         const orders = bindings.results.map((binding) => binding.order);
+
         if (orders.length < 1) {
             return 0;
         }
+
         return Math.max(...orders) + 1;
     }
 
     renderModeSelector(): TemplateResult {
         return html` <ak-toggle-group
             value=${this.policyGroupUser}
-            @ak-toggle=${(ev: CustomEvent<{ value: PolicyBindingCheckTarget }>) => {
-                this.policyGroupUser = ev.detail.value;
+            @ak-toggle=${(ev: ToggleGroupEvent<PolicyBindingCheckTarget>) => {
+                this.policyGroupUser = ev.value;
             }}
         >
             ${Object.values(PolicyBindingCheckTarget).map((ct) => {
@@ -156,6 +178,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                         ${PolicyBindingCheckTargetToLabel(ct)}
                     </option>`;
                 }
+
                 return nothing;
             })}
         </ak-toggle-group>`;
@@ -175,10 +198,21 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                         const args: PoliciesAllListRequest = {
                             ordering: "name",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const policies = await aki(PoliciesApi).policiesAllList(args);
+                        const selectedPolicy = this.instance?.policyObj;
+
+                        if (
+                            selectedPolicy &&
+                            !policies.results.some((policy) => policy.pk === selectedPolicy.pk)
+                        ) {
+                            return [selectedPolicy, ...policies.results];
+                        }
+
                         return policies.results;
                     }}
                     .renderElement=${(policy: Policy) => policy.name}
@@ -204,10 +238,21 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                             ordering: "name",
                             includeUsers: false,
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const groups = await aki(CoreApi).coreGroupsList(args);
+                        const selectedGroup = this.instance?.groupObj;
+
+                        if (
+                            selectedGroup &&
+                            !groups.results.some((group) => group.pk === selectedGroup.pk)
+                        ) {
+                            return [selectedGroup as Group, ...groups.results];
+                        }
+
                         return groups.results;
                     }}
                     .renderElement=${(group: Group): string => {
@@ -234,10 +279,21 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                         const args: CoreUsersListRequest = {
                             ordering: "username",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const users = await aki(CoreApi).coreUsersList(args);
+                        const selectedUser = this.instance?.userObj;
+
+                        if (
+                            selectedUser &&
+                            !users.results.some((user) => user.pk === selectedUser.pk)
+                        ) {
+                            return [selectedUser as User, ...users.results];
+                        }
+
                         return users.results;
                     }}
                     .renderElement=${(user: User) => user.username}
@@ -256,12 +312,14 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
     }
 
     protected override renderForm(): TemplateResult {
-        return html`${this.allowedTypes.length > 1
-                ? html`<div class="pf-c-card pf-m-selectable pf-m-selected">
-                      <div class="pf-c-card__body">${this.renderModeSelector()}</div>
-                      <div class="pf-c-card__footer">${this.renderTarget()}</div>
-                  </div>`
-                : this.renderTarget()}
+        return html`${
+                this.allowedTypes.length > 1
+                    ? html`<div class="pf-c-card pf-m-selectable pf-m-selected">
+                          <div class="pf-c-card__body">${this.renderModeSelector()}</div>
+                          <div class="pf-c-card__footer">${this.renderTarget()}</div>
+                      </div>`
+                    : this.renderTarget()
+            }
             <ak-switch-input
                 name="enabled"
                 label=${msg("Enabled")}

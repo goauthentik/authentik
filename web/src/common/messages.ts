@@ -1,4 +1,4 @@
-import type { TemplateResult } from "lit";
+import { SlottedTemplateResult } from "#elements/types";
 
 export enum MessageLevel {
     error = "error",
@@ -11,14 +11,13 @@ export enum MessageLevel {
  * An error message returned from an API endpoint.
  *
  * @remarks
- * This interface must align with the server-side event dispatcher.
- *
+ *   This interface must align with the server-side event dispatcher.
  * @see {@link ../authentik/core/templates/base/skeleton.html}
  */
 export interface APIMessage {
     level: MessageLevel;
     message: string;
-    description?: string | TemplateResult;
+    description?: SlottedTemplateResult;
     icon?: string;
     /**
      * An optional key to determine uniqueness of the message.

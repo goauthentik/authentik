@@ -53,6 +53,7 @@ pub(crate) struct Cli {}
 const INITIAL_WORKER_ID: usize = 1000;
 static INITIAL_WORKER_READY: AtomicBool = AtomicBool::new(false);
 
+#[derive(Debug)]
 pub(crate) struct Worker {
     worker_id: usize,
     worker: Child,
@@ -142,7 +143,7 @@ impl Worker {
             .method("GET")
             .uri("http://localhost:8000/-/health/live/")
             .header(HOST, "localhost")
-            .body(Body::from(""))?;
+            .body(Body::empty())?;
         Ok(self
             .client
             .request(req)
@@ -159,7 +160,7 @@ impl Worker {
             .method("GET")
             .uri("http://localhost:8000/-/health/ready/")
             .header(HOST, "localhost")
-            .body(Body::from(""))?;
+            .body(Body::empty())?;
         Ok(self
             .client
             .request(req)
@@ -176,7 +177,7 @@ impl Worker {
             .method("GET")
             .uri("http://localhost:8000/-/metrics/")
             .header(HOST, "localhost")
-            .body(Body::from(""))?;
+            .body(Body::empty())?;
         self.client
             .request(req)
             .await
@@ -185,6 +186,7 @@ impl Worker {
     }
 }
 
+#[expect(clippy::missing_trait_methods, reason = "We don't use pin drop")]
 impl Drop for Worker {
     fn drop(&mut self) {
         if let Err(err) = std::fs::remove_file(&self.socket_path) {
@@ -193,6 +195,7 @@ impl Drop for Worker {
     }
 }
 
+#[derive(Debug)]
 pub(crate) struct Workers(Mutex<Vec<Worker>>);
 
 impl Workers {
@@ -237,7 +240,7 @@ impl Workers {
     }
 
     #[instrument(skip_all)]
-    async fn are_alive(&self) -> bool {
+    pub(crate) async fn are_alive(&self) -> bool {
         for worker in self.0.lock().await.iter_mut() {
             if !worker.is_alive() {
                 return false;
@@ -254,7 +257,7 @@ impl Workers {
     }
 
     #[instrument(skip_all)]
-    async fn health_live(&self) -> Result<bool> {
+    pub(crate) async fn health_live(&self) -> Result<bool> {
         for worker in self.0.lock().await.iter() {
             if !worker.health_live().await? {
                 return Ok(false);
@@ -264,7 +267,7 @@ impl Workers {
     }
 
     #[instrument(skip_all)]
-    async fn health_ready(&self) -> Result<bool> {
+    pub(crate) async fn health_ready(&self) -> Result<bool> {
         for worker in self.0.lock().await.iter() {
             if !worker.health_ready().await? {
                 return Ok(false);
@@ -290,8 +293,11 @@ async fn watch_workers(arbiter: Arbiter, workers: Arc<Workers>) -> Result<()> {
 
     loop {
         tokio::select! {
-            Ok(Event::Signal(signal)) = events_rx.recv() => {
-                if signal == SignalKind::user_defined2() && !INITIAL_WORKER_READY.load(Ordering::Relaxed) {
+            event = events_rx.recv() => {
+                if let Ok(Event::Signal(signal)) = event
+                    && signal == SignalKind::user_defined2()
+                    && !INITIAL_WORKER_READY.load(Ordering::Relaxed)
+                {
                     info!("worker notified us ready, marked ready for operation");
                     INITIAL_WORKER_READY.store(true, Ordering::Relaxed);
                     workers.start_other_workers().await?;

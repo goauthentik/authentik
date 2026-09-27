@@ -3,7 +3,6 @@ import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/CodeMirror";
-
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -16,28 +15,29 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-endpoints-connector-gdtc-form")
 export class GoogleChromeConnectorForm extends ModelForm<GoogleChromeConnector, string> {
-    loadInstance(pk: string): Promise<GoogleChromeConnector> {
-        return aki(EndpointsApi).endpointsGoogleChromeConnectorsRetrieve({
-            connectorUuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (connectorUuid: string) =>
+            aki(EndpointsApi).endpointsGoogleChromeConnectorsRetrieve({
+                connectorUuid,
+            }),
+        create: (googleChromeConnectorRequest: GoogleChromeConnector) =>
+            aki(EndpointsApi).endpointsGoogleChromeConnectorsCreate({
+                googleChromeConnectorRequest,
+            }),
+        update: (
+            connectorUuid: string,
+            patchedGoogleChromeConnectorRequest: GoogleChromeConnector,
+        ) =>
+            aki(EndpointsApi).endpointsGoogleChromeConnectorsPartialUpdate({
+                connectorUuid,
+                patchedGoogleChromeConnectorRequest,
+            }),
+    };
 
     public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated Google Chrome connector.")
             : msg("Successfully created Google Chrome connector.");
-    }
-
-    async send(data: GoogleChromeConnector): Promise<GoogleChromeConnector> {
-        if (this.instance) {
-            return aki(EndpointsApi).endpointsGoogleChromeConnectorsPartialUpdate({
-                connectorUuid: this.instance.connectorUuid!,
-                patchedGoogleChromeConnectorRequest: data,
-            });
-        }
-        return aki(EndpointsApi).endpointsGoogleChromeConnectorsCreate({
-            googleChromeConnectorRequest: data,
-        });
     }
 
     renderForm() {

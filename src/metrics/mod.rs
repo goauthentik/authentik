@@ -1,8 +1,10 @@
 use std::{env::temp_dir, os::unix, path::PathBuf, sync::Arc};
 
-use ak_axum::{router::wrap_router, server};
+use ak_axum::{
+    router::{make_request_body_limit_layer, wrap_router},
+    server,
+};
 use ak_common::{
-    Mode,
     arbiter::{Arbiter, Tasks},
     config,
 };
@@ -17,16 +19,20 @@ use tokio::{
 use tracing::info;
 
 #[cfg(feature = "core")]
+use crate::server::Server;
+#[cfg(feature = "core")]
 use crate::worker::Workers;
 
 mod handlers;
 
-fn socket_path() -> PathBuf {
+pub(crate) fn socket_path() -> PathBuf {
     temp_dir().join("authentik-metrics.sock")
 }
 
 pub(crate) struct Metrics {
     prometheus: PrometheusHandle,
+    #[cfg(feature = "core")]
+    pub(crate) server: ArcSwapOption<Server>,
     #[cfg(feature = "core")]
     pub(crate) workers: ArcSwapOption<Workers>,
 }
@@ -39,6 +45,8 @@ impl Metrics {
             .install_recorder()?;
         Ok(Self {
             prometheus,
+            #[cfg(feature = "core")]
+            server: ArcSwapOption::empty(),
             #[cfg(feature = "core")]
             workers: ArcSwapOption::empty(),
         })
@@ -66,6 +74,7 @@ fn build_router(state: Arc<Metrics>) -> Router {
             .with_state(state),
         true,
     )
+    .layer(make_request_body_limit_layer())
 }
 
 pub(crate) fn start(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
@@ -78,20 +87,16 @@ pub(crate) fn start(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
         .name(&format!("{}::run_upkeep", module_path!()))
         .spawn(run_upkeep(arbiter, Arc::clone(&metrics)))?;
 
-    // Only run HTTP server in worker mode, in server or allinone mode, they're handled by the
-    // server.
-    if Mode::get() == Mode::Worker {
-        for addr in config::get().listen.metrics.iter().copied() {
-            server::start_plain(tasks, "metrics", router.clone(), addr)?;
-        }
-
-        server::start_unix(
-            tasks,
-            "metrics",
-            router,
-            unix::net::SocketAddr::from_pathname(socket_path())?,
-        )?;
+    for addr in config::get().listen.metrics.iter().copied() {
+        server::start_plain(tasks, "metrics", router.clone(), addr)?;
     }
+
+    server::start_unix(
+        tasks,
+        "metrics",
+        router,
+        unix::net::SocketAddr::from_pathname(socket_path())?,
+    )?;
 
     Ok(metrics)
 }

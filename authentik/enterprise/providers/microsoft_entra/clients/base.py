@@ -65,6 +65,7 @@ class MicrosoftEntraSyncClient[TModel: Model, TConnection: Model, TSchema: dict]
     """Base client for syncing to microsoft entra"""
 
     domains: list
+    can_discover = True
 
     def __init__(self, provider: MicrosoftEntraProvider) -> None:
         super().__init__(provider)

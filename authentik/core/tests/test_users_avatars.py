@@ -109,6 +109,25 @@ class TestUsersAvatars(APITestCase):
             body["user"]["avatar"], f"https://example.com/avatar/{self.admin.username}"
         )
 
+    def test_avatars_custom_url_encoded(self):
+        """Test custom avatar URL with percent-encoded characters"""
+        cache.clear()
+        avatar_url = (
+            "https://example.com/avatar%2Ffoo.png?"
+            "next=https%3A%2F%2Fcdn.example.com%2Favatar.png"
+        )
+        self.set_avatar_mode(avatar_url)
+        self.client.force_login(self.admin)
+        with Mocker() as mocker:
+            mocker.head(
+                avatar_url,
+                headers={"Content-Type": "image/png"},
+            )
+            response = self.client.get(reverse("authentik_api:user-me"))
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content.decode())
+        self.assertEqual(body["user"]["avatar"], avatar_url)
+
     def test_avatars_custom_content_type_invalid(self):
         """Test custom avatar URL with invalid Content-Type falls back"""
         cache.clear()

@@ -4,6 +4,7 @@ sidebar_label: NetBird
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
@@ -40,6 +41,8 @@ NetBird can use authentik in two ways:
   <TabItem value="management">
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support adding authentik as an external identity provider in NetBird, you need to create an application/provider pair and application entitlements in authentik.
 
@@ -80,7 +83,7 @@ Name each entitlement exactly as the NetBird group value that NetBird should syn
     - **Issuer**: `https://authentik.company/application/o/<application_slug>/`
 4. Copy the redirect URL shown by NetBird. Do not complete the provider setup yet.
 5. Return to authentik, navigate to **Applications** > **Providers**, and edit the NetBird provider.
-6. Under **Redirect URIs/Origins**, add the redirect URL from NetBird as a `Strict` redirect.
+6. Under **Redirect URIs/Origins**, add the redirect URL from NetBird as a `Strict` `Authorization` redirect.
 7. Click **Update**.
 8. Return to NetBird and complete the identity provider setup.
 
@@ -109,8 +112,8 @@ To support replacing NetBird's embedded IdP with authentik, you need to create a
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID** value because it will be required later.
         - Set **Client type** to `Public`.
-        - Add a `Strict` redirect URI to `http://localhost:53000`.
-        - Add a `Regex` redirect URI to `https://netbird.company/.*`.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `http://localhost:53000`.
+        - Add a **Redirect URI** of type `Regex` `Authorization` as `https://netbird.company/.*`.
         - Select any available signing key.
         - Under **Advanced protocol settings**, set **Access Code Validity** to `minutes=10`.
         - Under **Advanced protocol settings**, set **Subject Mode** to `Based on the User's ID`.

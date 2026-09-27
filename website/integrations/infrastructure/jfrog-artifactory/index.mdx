@@ -1,0 +1,82 @@
+---
+title: Integrate with JFrog Artifactory
+sidebar_label: JFrog Artifactory
+support_level: community
+---
+
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+
+## What is JFrog Artifactory?
+
+> JFrog Artifactory is a universal artifact repository manager that stores and manages packages, container images, and other build artifacts. It supports package formats such as Maven, npm, PyPI, Docker, and Helm, and is available self-hosted or as a cloud service on the JFrog Platform.
+>
+> -- https://jfrog.com/artifactory/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `jfrog.company` is the FQDN of the JFrog Platform installation. For JFrog Cloud, this is `<server-name>.jfrog.io`.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::info JFrog subscription
+SAML SSO requires a Pro X, Enterprise X, or Enterprise+ license on self-hosted installations, or an Enterprise X or Enterprise+ subscription on JFrog Cloud.
+:::
+
+## authentik configuration
+
+To support the integration of JFrog Artifactory with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider
+
+<SAMLProvider20265Warning />
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it is required later.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - **ACS URL**: `https://jfrog.company/ui/api/v1/auth/saml/loginResponse/authentik`. The last URL segment is the **Display Name** of the SAML configuration created in the JFrog Platform later in this guide.
+        - **Audience**: `https://jfrog.company`
+        - Under **Advanced protocol settings**:
+            - Select any available **Signing Certificate**.
+            - Enable **Sign responses**.
+            - Set **NameID Property Mapping** to `authentik default SAML Mapping: Username`. The JFrog Platform uses this value as the username.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+### Download the signing certificate
+
+1. Navigate to **Applications** > **Providers** and click the JFrog Artifactory provider.
+2. Under **Related objects** > **Download signing certificate**, click **Download**. Open the downloaded certificate in a text editor and copy its contents.
+
+## JFrog Artifactory configuration
+
+1. Log in to the JFrog Platform as an administrator.
+2. On self-hosted installations, in the **Administration** module, navigate to **General Management** > **Settings** and set **Custom URL Base** to `https://jfrog.company`.
+3. In the **Administration** module, navigate to **Authentication** > **SAML SSO**.
+4. Click **Add Settings** and configure the following values:
+    - **Display Name**: `authentik`. This value must match the last segment of the **ACS URL** configured in authentik.
+    - **Enable SAML Integration**: enable this setting.
+    - **SAML Login URL**: `https://authentik.company/application/saml/<application_slug>/`
+    - **SAML Logout URL**: `https://authentik.company/application/saml/<application_slug>/`
+    - **Identity Provider Entity ID (Issuer)**: `https://authentik.company/application/saml/<application_slug>/metadata/`. This value must match the **Issuer** of the authentik provider.
+    - **SAML Certificate**: paste the contents of the signing certificate that you downloaded from authentik.
+    - **Auto Create Artifactory Users**: enable this setting so that users are created on their first SSO login.
+    - **Email Attribute**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
+    - **Auto Associate Groups** _(optional)_: enable this setting and set **Group Attribute** to `http://schemas.xmlsoap.org/claims/Group` to synchronize group membership from authentik. The JFrog Platform only associates users with groups that already exist under the same name; it does not create new groups.
+5. Click **Save**.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with JFrog Artifactory, log out of the JFrog Platform, click **SSO login** on the login page, and log in via authentik.
+
+## Resources
+
+- [JFrog documentation - SAML SSO](https://docs.jfrog.com/administration/docs/saml-sso)
+- [JFrog documentation - General Settings](https://docs.jfrog.com/administration/docs/general-settings)

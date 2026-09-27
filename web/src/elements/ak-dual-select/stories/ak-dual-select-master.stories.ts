@@ -1,16 +1,16 @@
 import "#elements/messages/MessageContainer";
+import { AkDualSelect } from "../ak-dual-select.js";
 import "../ak-dual-select.js";
 
-import { AkDualSelect } from "../ak-dual-select.js";
-import { DualSelectEventType, type DualSelectPair } from "../types.js";
+import { type DualSelectPair } from "../types.js";
 
-import { Pagination } from "@goauthentik/api";
+import { PageChangeEvent } from "#elements/Paginator";
 
 import { Meta, StoryObj } from "@storybook/web-components";
 import { kebabCase } from "change-case";
 
 import { html, LitElement, TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 const goodForYouRaw = `
 Apple, Arrowroot, Artichoke, Arugula, Asparagus, Avocado, Bamboo, Banana, Basil, Beet Root,
@@ -53,9 +53,13 @@ const metadata: Meta<AkDualSelect> = {
             type: "string",
             description: "An array of [key] of what has already been selected",
         },
-        pages: {
-            type: "string",
-            description: "An authentik pagination object.",
+        itemCount: {
+            type: "number",
+            description: "The number of items in the total collection",
+        },
+        page: {
+            type: "number",
+            description: "The current page you're on",
         },
     },
 };
@@ -70,57 +74,40 @@ export class AkSbFruity extends LitElement {
     @property({ attribute: "page-length", type: Number })
     pageLength = 20;
 
-    @state()
-    page: Pagination;
+    @property({ attribute: "item-count", type: Number })
+    itemCount = goodForYou.length;
+
+    @property({ attribute: "page", type: Number })
+    page = 1;
 
     constructor() {
         super();
-        this.page = {
-            count: this.options.length,
-            current: 1,
-            startIndex: 1,
-            endIndex: this.options.length > this.pageLength ? this.pageLength : this.options.length,
-            next: this.options.length > this.pageLength ? 2 : 0,
-            previous: 0,
-            totalPages: Math.ceil(this.options.length / this.pageLength),
-        };
         this.onNavigation = this.onNavigation.bind(this);
-        this.addEventListener(DualSelectEventType.NavigateTo, this.onNavigation);
+        this.addEventListener(PageChangeEvent.eventName, this.onNavigation);
     }
 
-    onNavigation(evt: Event) {
-        const current: number = (evt as CustomEvent).detail;
-        const index = current - 1;
-        if (index * this.pageLength > this.options.length) {
+    onNavigation({ page }: PageChangeEvent) {
+        if ((page - 1) * this.pageLength > this.options.length) {
             console.warn(
-                `Attempted to index from ${index} for options length ${this.options.length}`,
+                `Attempted to index from ${page} for options length ${this.options.length}`,
             );
+
             return;
         }
-        const endCount = this.pageLength * (index + 1);
-        const endIndex = Math.min(endCount, this.options.length);
 
-        this.page = {
-            ...this.page,
-            current,
-            startIndex: this.pageLength * index + 1,
-            endIndex,
-            next: (index + 1) * this.pageLength > this.options.length ? 0 : current + 1,
-            previous: index,
-        };
+        this.page = page;
     }
 
     get pageoptions() {
-        return this.options.slice(
-            this.pageLength * (this.page.current - 1),
-            this.pageLength * this.page.current,
-        );
+        return this.options.slice(this.pageLength * (this.page - 1), this.pageLength * this.page);
     }
 
     render() {
         return html`<ak-dual-select
             .options=${this.pageoptions}
-            .pages=${this.page}
+            items-per-page=${this.pageLength}
+            item-count=${this.itemCount}
+            page=${this.page}
         ></ak-dual-select>`;
     }
 }

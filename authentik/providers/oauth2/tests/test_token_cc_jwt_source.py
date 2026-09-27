@@ -240,6 +240,53 @@ class TestTokenClientCredentialsJWTSource(OAuthTestCase):
         )
         self.assertEqual(jwt["preferred_username"], "test-foo")
 
+    def test_successful_attributes_verifying_source(self):
+        """A second federation source advertising the same kid must not be credited with
+        the verification. The resolved source selects the user path and property mappings,
+        so crediting the wrong one creates the user under the wrong source."""
+        real_jwk = JWKSView().get_jwk_for_key(self.other_cert, "sig")
+        # Same kid, different key material: this source is found by the kid lookup but
+        # can never verify the assertion.
+        decoy_jwk = JWKSView().get_jwk_for_key(create_test_cert(), "sig")
+        decoy_jwk["kid"] = real_jwk["kid"]
+        decoy_source = OAuthSource.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+            provider_type="openidconnect",
+            consumer_key=generate_id(),
+            consumer_secret=generate_id(),
+            authorization_url="http://foo",
+            access_token_url=f"http://{generate_id()}",
+            profile_url="http://foo",
+            oidc_well_known_url="",
+            oidc_jwks_url="",
+            oidc_jwks={"keys": [decoy_jwk]},
+        )
+        self.provider.jwt_federation_sources.add(decoy_source)
+
+        token = self.helper_provider.encode(
+            {
+                "sub": "foo",
+                "exp": datetime.now() + timedelta(hours=2),
+            }
+        )
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            {
+                "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
+                "scope": f"{SCOPE_OPENID} {SCOPE_OPENID_EMAIL} {SCOPE_OPENID_PROFILE}",
+                "client_id": self.provider.client_id,
+                "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+                "client_assertion": token,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        user = User.objects.filter(username=f"{self.provider.name}-foo").first()
+        self.assertIsNotNone(user)
+        self.assertEqual(user.path, self.source.get_user_path())
+        self.assertNotEqual(user.path, decoy_source.get_user_path())
+
     def test_successful_mapping(self):
         """test successful"""
         test_username = ("mapped-foo" + ("a" * 150))[:USERNAME_MAX_LENGTH]

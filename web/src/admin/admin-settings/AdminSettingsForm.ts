@@ -9,8 +9,8 @@ import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 import "./AdminSettingsFooterLinks.js";
 import "#elements/Alert";
-
 import { akFooterLinkInput, IFooterLinkInput } from "./AdminSettingsFooterLinks.js";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 
 import { aki } from "#common/api/client";
 
@@ -23,8 +23,6 @@ import { msg } from "@lit/localize";
 import { css, CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import PFList from "@patternfly/patternfly/components/List/list.css";
 
 const DEFAULT_REPUTATION_LOWER_LIMIT = -5;
 const DEFAULT_REPUTATION_UPPER_LIMIT = 5;
@@ -75,6 +73,17 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
         const { settings } = this;
 
         return html`
+            <ak-text-input
+                name="baseUrl"
+                label=${msg("Base URL", { id: "settings.base-url.label" })}
+                value="${ifDefined(settings.baseUrl)}"
+                input-hint="code"
+                help=${msg(
+                    "Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company. Do not include any path component (for example, /authentik).",
+                    { id: "settings.base-url.description" },
+                )}
+            >
+            </ak-text-input>
             <ak-text-input
                 name="avatars"
                 label=${msg("Avatars")}
@@ -282,23 +291,11 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             >
                 <div class="pf-c-form">
                     <ak-switch-input
-                        name="flags.flowsRefreshOthers"
-                        ?checked=${settings?.flags.flowsRefreshOthers ?? false}
-                        label=${msg("Refresh other flow tabs upon authentication")}
-                        help=${msg(
-                            "When enabled, other flow tabs in a session will refresh upon a successful authentication.",
-                        )}
-                        .bighelp=${html`<ak-alert class="pf-c-radio__description" inline plain>
-                            ${msg("This flag is deprecated.")}
-                        </ak-alert>`}
-                    >
-                    </ak-switch-input>
-                    <ak-switch-input
                         name="flags.coreDefaultAppAccess"
                         ?checked=${settings?.flags.coreDefaultAppAccess ?? true}
-                        label=${msg("Require policies for application access")}
+                        label=${msg("Allow application access with no policies")}
                         help=${msg(
-                            "Configure if applications without any policy/group/user bindings should be accessible to any user.",
+                            "Applications with no policies bound can be accessed by any user..",
                         )}
                     >
                     </ak-switch-input>

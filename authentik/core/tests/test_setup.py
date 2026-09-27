@@ -1,8 +1,10 @@
 from http import HTTPStatus
 from os import environ
+from unittest.mock import patch
 
 from django.contrib.auth.hashers import make_password
 from django.urls import reverse
+from rest_framework.exceptions import ValidationError
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.apps import Setup
@@ -12,6 +14,7 @@ from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.root.signals import post_startup, pre_startup
 from authentik.tenants.flags import patch_flag
+from authentik.tenants.utils import get_current_tenant
 
 
 class TestSetup(FlowTestCase):
@@ -99,6 +102,7 @@ class TestSetup(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": "initial-setup"}),
             {
                 "email": f"{generate_id()}@t.goauthentik.io",
+                "base_url": "https://authentik.company/",
                 "password": pw,
                 "password_repeat": pw,
                 "component": "ak-stage-prompt",
@@ -125,6 +129,42 @@ class TestSetup(FlowTestCase):
         user = User.objects.get(username="akadmin")
         self.assertTrue(user.check_password(pw))
 
+        self.assertEqual(get_current_tenant().base_url, "https://authentik.company")
+
+    @apply_blueprint("default/flow-oobe.yaml")
+    @apply_blueprint("system/bootstrap.yaml")
+    def test_setup_flow_invalid_base_url(self):
+        """An invalid base URL entered during setup is rejected and never persisted"""
+        Setup.set(False)
+
+        res = self.client.get(reverse("authentik_core:setup"))
+        self.assertEqual(res.status_code, HTTPStatus.FOUND)
+
+        res = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": "initial-setup"}),
+        )
+        self.assertEqual(res.status_code, HTTPStatus.OK)
+        self.assertStageResponse(res, component="ak-stage-prompt")
+
+        pw = generate_id()
+        res = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": "initial-setup"}),
+            {
+                "email": f"{generate_id()}@t.goauthentik.io",
+                "base_url": "not-a-url",
+                "password": pw,
+                "password_repeat": pw,
+                "component": "ak-stage-prompt",
+            },
+        )
+        # The prompt stage is re-shown with a validation error instead of advancing.
+        raw = self.assertStageResponse(res, component="ak-stage-prompt")
+        self.assertIn("Enter a valid URL", str(raw["response_errors"]))
+
+        # Setup did not complete and no base_url was written to the tenant.
+        self.assertFalse(Setup.get())
+        self.assertEqual(get_current_tenant().base_url, "")
+
     @patch_flag(Setup, False)
     @apply_blueprint("default/flow-oobe.yaml")
     @apply_blueprint("system/bootstrap.yaml")
@@ -144,6 +184,7 @@ class TestSetup(FlowTestCase):
         User.objects.filter(username="akadmin").delete()
         Setup.set(False)
 
+        environ.pop("AUTHENTIK_BOOTSTRAP_PASSWORD_HASH", None)
         environ["AUTHENTIK_BOOTSTRAP_PASSWORD"] = generate_id()
         environ["AUTHENTIK_BOOTSTRAP_TOKEN"] = generate_id()
         pre_startup.send(sender=self)
@@ -162,6 +203,7 @@ class TestSetup(FlowTestCase):
         User.objects.filter(username="akadmin").delete()
         Setup.set(False)
 
+        environ.pop("AUTHENTIK_BOOTSTRAP_PASSWORD", None)
         password = generate_id()
         password_hash = make_password(password)
         environ["AUTHENTIK_BOOTSTRAP_PASSWORD_HASH"] = password_hash
@@ -172,3 +214,32 @@ class TestSetup(FlowTestCase):
         user = User.objects.get(username="akadmin")
         self.assertEqual(user.password, password_hash)
         self.assertTrue(user.check_password(password))
+
+    def test_setup_bootstrap_env_malformed_password_hash(self):
+        """Test setup rejects a malformed password hash from the environment."""
+        User.objects.filter(username="akadmin").delete()
+        Setup.set(False)
+
+        environ.pop("AUTHENTIK_BOOTSTRAP_PASSWORD", None)
+        environ["AUTHENTIK_BOOTSTRAP_PASSWORD_HASH"] = "pbkdf2_sha256$1000000/K4wGpWYKfJPSCcNM="
+        pre_startup.send(sender=self)
+        with self.assertRaises(ValidationError):
+            post_startup.send(sender=self)
+
+        self.assertFalse(Setup.get())
+        self.assertFalse(User.objects.filter(username="akadmin").exists())
+
+    def test_setup_bootstrap_env_apply_failure(self):
+        """Test setup remains incomplete when the bootstrap blueprint fails to apply."""
+        Setup.set(False)
+        environ["AUTHENTIK_BOOTSTRAP_TOKEN"] = generate_id()
+        pre_startup.send(sender=self)
+
+        with (
+            patch("authentik.core.setup.signals.Importer.apply", return_value=False),
+            patch("authentik.core.setup.signals.LOGGER.warning") as warning,
+        ):
+            post_startup.send(sender=self)
+
+        self.assertFalse(Setup.get())
+        warning.assert_any_call("Failed to apply bootstrap blueprint", tenant="public")

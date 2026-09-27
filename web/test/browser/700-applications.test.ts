@@ -31,7 +31,7 @@ test.describe("Applications", () => {
 
         await test.step("Authenticate", async () => {
             await session.login({
-                to: "/if/admin/#/core/providers",
+                to: "/if/admin/core/providers",
             });
         });
 
@@ -71,7 +71,7 @@ test.describe("Applications", () => {
         //#region Create application
 
         await test.step("Navigate to applications", async () => {
-            await navigator.navigate("/if/admin/#/core/applications");
+            await navigator.navigate("/if/admin/core/applications");
         });
 
         const appDialog = page.getByRole("dialog", { name: "New Application" });
@@ -117,7 +117,7 @@ test.describe("Applications", () => {
 
         await test.step("Authenticate", async () => {
             await session.login({
-                to: "/if/admin/#/core/applications",
+                to: "/if/admin/core/applications",
             });
         });
 
@@ -172,9 +172,7 @@ test.describe("Applications", () => {
 
             await expect(
                 wizardDialog.getByRole("heading", { name: "Your application has been saved" }),
-            ).toBeVisible({
-                timeout: 10_000,
-            });
+            ).toBeVisible();
 
             await click("Finish", "button", wizardDialog);
         });

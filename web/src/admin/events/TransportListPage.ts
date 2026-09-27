@@ -1,18 +1,22 @@
+/**
+ * @file Display the table of available Notification Transports, with pending tasks for each
+ */
+
 import "#admin/events/TransportForm";
 import "#admin/rbac/ObjectPermissionModal";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { taskCard } from "#components/tasks/taskCard";
 
 import { TransportForm } from "#admin/events/TransportForm";
 
@@ -21,6 +25,8 @@ import { EventsApi, ModelEnum, NotificationTransport } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
+
+const NOTIFICATION_MODEL = ModelEnum.AuthentikEventsNotificationtransport;
 
 @customElement("ak-event-transport-list")
 export class TransportListPage extends TablePage<NotificationTransport> {
@@ -52,6 +58,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Notification transport(s)")}
             .objects=${this.selectedElements}
@@ -101,23 +108,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
     }
 
     protected override renderExpanded(item: NotificationTransport): SlottedTemplateResult {
-        const [appLabel, modelName] = ModelEnum.AuthentikEventsNotificationtransport.split(".");
-        return html`<dl class="pf-c-description-list pf-m-horizontal">
-            <div class="pf-c-description-list__group">
-                <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${msg("Tasks")}</span>
-                </dt>
-                <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">
-                        <ak-task-list
-                            .relObjAppLabel=${appLabel}
-                            .relObjModel=${modelName}
-                            .relObjId="${item.pk}"
-                        ></ak-task-list>
-                    </div>
-                </dd>
-            </div>
-        </dl>`;
+        return taskCard(NOTIFICATION_MODEL, item.pk);
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {

@@ -9,7 +9,7 @@ from django.utils.http import urlencode
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
-from authentik.core.tests.utils import create_test_admin_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.events.models import (
     Event,
     EventAction,
@@ -48,15 +48,61 @@ class TestEventsAPI(APITestCase):
         body = loads(response.content)
         self.assertEqual(body["pagination"]["count"], 1)
 
+    def test_filter_username_includes_user_model_events(self):
+        """User event filtering includes changes made to the user model."""
+        target_user = create_test_user()
+
+        for is_active in (False, True):
+            with self.subTest(is_active=is_active):
+                Event.objects.all().delete()
+                response = self.client.patch(
+                    reverse("authentik_api:user-detail", kwargs={"pk": target_user.pk}),
+                    data={"is_active": is_active},
+                )
+                self.assertEqual(response.status_code, 200)
+
+                for model in (
+                    {
+                        "app": "other_app",
+                        "model_name": target_user._meta.model_name,
+                        "pk": target_user.pk,
+                        "name": "unrelated",
+                    },
+                    {
+                        "app": target_user._meta.app_label,
+                        "model_name": "other_model",
+                        "pk": target_user.pk,
+                        "name": "unrelated",
+                    },
+                ):
+                    Event.new(EventAction.MODEL_UPDATED, model=model).save()
+
+                response = self.client.get(
+                    reverse("authentik_api:event-list"),
+                    data={
+                        "username": target_user.username,
+                        "action": EventAction.MODEL_UPDATED,
+                    },
+                )
+                self.assertEqual(response.status_code, 200)
+                body = loads(response.content)
+                self.assertEqual(body["pagination"]["count"], 1)
+                self.assertEqual(body["results"][0]["context"]["model"]["pk"], target_user.pk)
+
     def test_top_n(self):
         """Test top_per_user"""
         event = Event.new(EventAction.AUTHORIZE_APPLICATION)
+        event.context["authorized_application"] = {"name": "foo"}
         event.save()  # We save to ensure nothing is un-saveable
         response = self.client.get(
             reverse("authentik_api:event-top-per-user"),
-            data={"filter_action": EventAction.AUTHORIZE_APPLICATION},
+            data={"action": EventAction.AUTHORIZE_APPLICATION},
         )
         self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            response.content,
+            [{"application": {"name": "foo"}, "counted_events": 1, "unique_users": 0}],
+        )
 
     def test_actions(self):
         """Test actions"""
@@ -75,6 +121,28 @@ class TestEventsAPI(APITestCase):
         )
         notification.refresh_from_db()
         self.assertTrue(notification.seen)
+
+    def test_notification_list_events(self):
+        """List event details and eventless notifications only for the recipient."""
+        recipient = create_test_user()
+        event = Event.new(EventAction.LOGIN)
+        event.save()
+        body = generate_id()
+        notifications = [
+            Notification.objects.create(
+                user=user, event=linked_event, body=body, severity=NotificationSeverity.NOTICE
+            )
+            for user, linked_event in ((recipient, event), (recipient, None), (self.user, event))
+        ]
+        self.client.force_login(recipient)
+        response = self.client.get(reverse("authentik_api:notification-list"), {"body": body})
+        self.assertEqual(response.status_code, 200)
+        results = {row["pk"]: row for row in response.json()["results"]}
+        self.assertCountEqual(results, [str(n.pk) for n in notifications[:2]])
+        linked_event = results[str(notifications[0].pk)]["event"]
+        self.assertEqual(linked_event["pk"], str(event.pk))
+        self.assertEqual(linked_event["action"], EventAction.LOGIN)
+        self.assertIsNone(results[str(notifications[1].pk)]["event"])
 
     def test_transport(self):
         """Test transport API"""

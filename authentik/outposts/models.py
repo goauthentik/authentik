@@ -31,8 +31,8 @@ from authentik.core.models import (
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
-from authentik.lib.models import InheritanceForeignKey, SerializerModel
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.models import InheritanceForeignKey, SerializerModel, SimpleThroughModel
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.lib.utils.time import fqdn_rand
 from authentik.outposts.controllers.k8s.utils import get_namespace
 from authentik.tasks.schedules.common import ScheduleSpec
@@ -43,9 +43,10 @@ OUTPOST_HELLO_INTERVAL = 10
 LOGGER = get_logger()
 
 USER_PATH_OUTPOSTS = USER_PATH_SYSTEM_PREFIX + "/outposts"
+USER_PREFIX_OUTPOSTS = "ak-outpost-"
 
 
-class ServiceConnectionInvalid(SentryIgnoredException):
+class ServiceConnectionInvalid(TracingIgnoredException):
     """Exception raised when a Service Connection has invalid parameters"""
 
 
@@ -53,7 +54,7 @@ class ServiceConnectionInvalid(SentryIgnoredException):
 class OutpostConfig:
     """Configuration an outpost uses to configure it self"""
 
-    # update website/docs/add-secure-apps/outposts/_config.md
+    # update website/docs/add-secure-apps/outposts/_config.mdx
 
     authentik_host: str = ""
     authentik_host_insecure: bool = False
@@ -281,7 +282,7 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
 
     _config = models.JSONField(default=default_outpost_config)
 
-    providers = models.ManyToManyField(Provider)
+    providers = models.ManyToManyField(Provider, through="OutpostProvider")
 
     @property
     def serializer(self) -> Serializer:
@@ -312,7 +313,7 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
     @property
     def user_identifier(self):
         """Username for service user"""
-        return f"ak-outpost-{self.uuid.hex}"
+        return f"{USER_PREFIX_OUTPOSTS}{self.uuid.hex}"
 
     @property
     def schedule_specs(self) -> list[ScheduleSpec]:
@@ -455,6 +456,20 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
     class Meta:
         verbose_name = _("Outpost")
         verbose_name_plural = _("Outposts")
+
+
+class OutpostProvider(SimpleThroughModel):
+    outpost = models.ForeignKey(Outpost, on_delete=models.CASCADE)
+    provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_outposts_outpost_providers"
+        unique_together = (("outpost", "provider"),)
+        verbose_name = _("Outpost Provider")
+        verbose_name_plural = _("Outpost Providers")
+
+    def __str__(self):
+        return f"OutpostProvider for Outpost {self.outpost_id} and Provider {self.provider_id}."
 
 
 @dataclass

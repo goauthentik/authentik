@@ -3,6 +3,7 @@ import "#elements/CodeMirror";
 import "#elements/events/LogViewer";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
@@ -27,8 +28,6 @@ import YAML from "yaml";
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-policy-test-form")
 export class PolicyTestForm extends Form<PolicyTestRequest> {
@@ -108,15 +107,17 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                 <div class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <ul>
-                            ${(this.result?.messages || []).length > 0
-                                ? this.result?.messages?.map((m) => {
-                                      return html`<li>
-                                          <span class="pf-c-form__label-text">${m}</span>
-                                      </li>`;
-                                  })
-                                : html`<li>
-                                      <span class="pf-c-form__label-text">-</span>
-                                  </li>`}
+                            ${
+                                (this.result?.messages || []).length > 0
+                                    ? this.result?.messages?.map((m) => {
+                                          return html`<li>
+                                              <span class="pf-c-form__label-text">${m}</span>
+                                          </li>`;
+                                      })
+                                    : html`<li>
+                                          <span class="pf-c-form__label-text">-</span>
+                                      </li>`
+                            }
                         </ul>
                     </div>
                 </div>
@@ -135,10 +136,13 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                         const args: CoreUsersListRequest = {
                             ordering: "username",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const users = await aki(CoreApi).coreUsersList(args);
+
                         return users.results;
                     }}
                     .renderElement=${(user: User): string => {

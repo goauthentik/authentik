@@ -10,7 +10,6 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./RACProviderFormHelpers.js";
 
 import { aki } from "#common/api/client";
@@ -30,29 +29,20 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-provider-rac-form")
 export class RACProviderFormPage extends ModelForm<RACProvider, number> {
-    async loadInstance(pk: number): Promise<RACProvider> {
-        return aki(ProvidersApi).providersRacRetrieve({
-            id: pk,
-        });
-    }
+    protected endpoints = {
+        load: (id: number) => aki(ProvidersApi).providersRacRetrieve({ id }),
+        create: (rACProviderRequest: RACProvider) =>
+            aki(ProvidersApi).providersRacCreate({ rACProviderRequest }),
+        update: (id: number, rACProviderRequest: RACProvider) =>
+            aki(ProvidersApi).providersRacUpdate({ id, rACProviderRequest }),
+    };
 
     getSuccessMessage(): string {
         if (this.instance) {
             return msg("Successfully updated provider.");
         }
-        return msg("Successfully created provider.");
-    }
 
-    async send(data: RACProvider): Promise<RACProvider> {
-        if (this.instance) {
-            return aki(ProvidersApi).providersRacUpdate({
-                id: this.instance.pk,
-                rACProviderRequest: data,
-            });
-        }
-        return aki(ProvidersApi).providersRacCreate({
-            rACProviderRequest: data,
-        });
+        return msg("Successfully created provider.");
     }
 
     protected override renderForm(): TemplateResult {

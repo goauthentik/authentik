@@ -10,8 +10,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
 
-from authentik.core.models import ExpiringModel
-from authentik.lib.models import InternallyManagedMixin, SerializerModel
+from authentik.lib.models import ExpiringModel, InternallyManagedMixin, SerializerModel
 
 if TYPE_CHECKING:
     from authentik.enterprise.license import LicenseKey

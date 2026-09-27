@@ -1,5 +1,4 @@
 import "#elements/buttons/SpinnerButton/index";
-
 import { EVENT_REFRESH } from "#common/constants";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
@@ -35,6 +34,7 @@ export class ConfirmationForm extends ModalButton {
             .then(() => {
                 this.onSuccess();
                 this.open = false;
+
                 this.dispatchEvent(
                     new CustomEvent(EVENT_REFRESH, {
                         bubbles: true,
@@ -87,15 +87,17 @@ export class ConfirmationForm extends ModalButton {
                 >
                     ${msg("Cancel")}
                 </ak-spinner-button>
-                ${this.nonSubmittable
-                    ? nothing
-                    : html`<ak-spinner-button
-                          .callAction=${() => {
-                              return this.confirm();
-                          }}
-                          class=${this.actionLevel}
-                          >${this.action}</ak-spinner-button
-                      >`}
+                ${
+                    this.nonSubmittable
+                        ? nothing
+                        : html`<ak-spinner-button
+                              .callAction=${() => {
+                                  return this.confirm();
+                              }}
+                              class=${this.actionLevel}
+                              >${this.action}</ak-spinner-button
+                          >`
+                }
             </fieldset>`;
     }
 }

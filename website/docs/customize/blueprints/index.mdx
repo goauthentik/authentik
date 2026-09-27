@@ -1,5 +1,6 @@
 ---
 title: Blueprints
+sidebar_position: 3
 ---
 
 Blueprints provide a way to template, automate, and distribute authentik configuration. Blueprints can be used to automatically configure instances, manage infrastructure-as-code without any external tools, and to distribute application configurations. Blueprints are YAML files, whose format is described further in [File structure](./v1/structure).
@@ -8,14 +9,14 @@ Blueprints are used to manage authentik's default flows and other system objects
 
 Custom blueprints can be used to replace or modify default blueprints in certain circumstances. For example, you could create a new flow that is based on the `default-authentication-flow` but adds an additional stage or policy.
 
-## Applying blueprints
+## Apply blueprints
 
 To _apply_ a blueprint means that the content in the blueprint file is instantiated and then implemented by authentik. Blueprints can be applied in one of two ways:
 
 - as a _blueprint instance_ (a new instance of any authentik configuration, which you can then further customize)
 - as an _imported flow_ (to add a new flow, or to revert to the default, out-of-box flow)
 
-To learn how to apply, create, modify, and manage blueprints, refer to [Working with blueprints](./working_with_blueprints.md).
+To learn how to apply, create, modify, and manage blueprints, refer to [Working with blueprints](./working_with_blueprints.mdx).
 
 ### Blueprint instance
 
@@ -32,7 +33,7 @@ You can apply an example flow by clicking **Import** on either the **Flows** pag
 This YAML file is validated and applied directly after being uploaded or selected from an available local path, but is not monitored further, nor is it automatically applied on startup like blueprint instances.
 
 :::info
-Be aware that if you [modify and save](../../add-secure-apps/flows-stages/flow/#flow-configuration-options) an existing default flow, what you get is a merged version of the two: the _original flow_ (which is based on the blueprint) _plus any changes you made to the flow_. If you want to revert any modifications that you made to the default flow and get a fresh start with the original default flow, you have to _first_ delete the modified flow, and _then_ [apply the flow's blueprint](./working_with_blueprints.md#import-and-apply-a-blueprint) again.
+Be aware that if you [modify and save](../../add-secure-apps/flows-stages/flow/#flow-configuration-options) an existing default flow, what you get is a merged version of the two: the _original flow_ (which is based on the blueprint) _plus any changes you made to the flow_. If you want to revert any modifications that you made to the default flow and get a fresh start with the original default flow, you have to _first_ delete the modified flow, and _then_ [apply the flow's blueprint](./working_with_blueprints.mdx#import-and-apply-a-blueprint) again.
 :::
 
 :::warning Flow imports
@@ -43,13 +44,20 @@ You should only import files from trusted sources and review blueprints before i
 
 ## Blueprint execution
 
-When a blueprint is applied, all entries are processed within a single **atomic database transaction**. This means:
+A Blueprint is a list of entries to create, update, or delete object instances in the authentik database.
+
+Internally, authentik is an object-oriented system of relationships which are sometimes ordered. To give a few examples:
+
+- Flows have ordered Bindings to Stages
+- Stages have ordered Bindings to Policies
+- Users have Permissions
+
+When a blueprint is applied, to ensure database consistency and prevent incomplete configurations, all entries are processed within a single **atomic database transaction**. This means:
 
 - If any entry fails validation or encounters an error, the **entire blueprint is rolled back**
 - No partial changes are committed - it's all-or-nothing
-- This ensures database consistency and prevents incomplete configurations
 
-Additionally, all blueprints have access to built-in context variables:
+All blueprints have access to these built-in context variables:
 
 - `goauthentik.io/enterprise/licensed`: Boolean indicating if an enterprise license is active
 - `goauthentik.io/rbac/models`: Dictionary of available RBAC models
@@ -62,6 +70,8 @@ When you create or edit a blueprint instance, these context variables can be acc
 conditions:
     - !Context goauthentik.io/enterprise/licensed
 ```
+
+The order inside a Blueprint matters. To create relationships between objects, whether defined in the Blueprint or part of the existing authentik instance, authentik provides the `!KeyOf` and `!Find` operators. These operators can only resolve an entry that already exists in the database or was already applied as an earlier entry in the current Blueprint execution transaction. For example, to create a Flow, the Flow and its Stages must come first, and then the Bindings to establish the connections between the Flow and its Stages.
 
 ## Blueprint storage
 
@@ -79,7 +89,7 @@ Any additional `.yaml` file in `/blueprints` will be discovered and automaticall
 
 To disable existing blueprints, an empty file can be mounted over the existing blueprint.
 
-File-based blueprints are automatically removed once they become unavailable, however none of the objects created by those blueprints are affected by this.
+File-based blueprints are automatically removed when they become unavailable. However, none of the objects created by those blueprints are affected.
 
 :::info
 Please note that, by default, blueprint discovery and evaluation is not guaranteed to follow any specific order.

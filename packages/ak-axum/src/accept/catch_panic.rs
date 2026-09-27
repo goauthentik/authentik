@@ -408,7 +408,7 @@ mod tests {
         type Stream = I;
 
         fn accept(&self, _stream: I, _service: S) -> Self::Future {
-            Box::pin(async move { panic_any(42u32) })
+            Box::pin(async move { panic_any(42_u32) })
         }
     }
 
@@ -424,6 +424,7 @@ mod tests {
         }
     }
 
+    #[expect(clippy::missing_trait_methods, reason = "We don't do vectored writing")]
     impl tokio::io::AsyncWrite for PanicStream {
         fn poll_write(
             self: std::pin::Pin<&mut Self>,
@@ -531,7 +532,7 @@ mod tests {
 
         let result = acceptor.accept(duplex_stream(), OkService).await;
 
-        assert!(result.is_ok());
+        result.expect("should not have panicked");
         assert!(!fast_shutdown_triggered(&arbiter).await);
     }
 
@@ -543,8 +544,11 @@ mod tests {
 
         let result = acceptor.accept(duplex_stream(), OkService).await;
 
-        assert!(result.is_err());
-        assert_eq!(result.err().unwrap().to_string(), "inner error");
+        let err = result
+            .err()
+            .expect("should have returned error")
+            .to_string();
+        assert_eq!(err, "inner error");
         assert!(!fast_shutdown_triggered(&arbiter).await);
     }
 
@@ -595,13 +599,13 @@ mod tests {
         let tasks = Tasks::new().expect("failed to create tasks");
         let arbiter = tasks.arbiter();
         let (mut a, mut b) = duplex(1024);
-        b.write_all(b"hello").await.unwrap();
+        b.write_all(b"hello").await.expect("write");
 
         let mut stream = CatchPanicStream::new(&mut a, arbiter.clone());
-        let mut buf = [0u8; 5];
+        let mut buf = [0_u8; 5];
         let result = stream.read(&mut buf).await;
 
-        assert!(result.is_ok());
+        result.expect("should not have panicked");
         assert_eq!(&buf, b"hello");
         assert!(!fast_shutdown_triggered(&arbiter).await);
     }
@@ -612,11 +616,11 @@ mod tests {
         let arbiter = tasks.arbiter();
         let mut stream = CatchPanicStream::new(PanicStream, arbiter.clone());
 
-        let result = AssertUnwindSafe(stream.read(&mut [0u8; 10]))
+        let result = AssertUnwindSafe(stream.read(&mut [0_u8; 10]))
             .catch_unwind()
             .await;
 
-        assert!(result.is_err());
+        result.expect_err("should have panicked");
         assert!(fast_shutdown_triggered(&arbiter).await);
     }
 
@@ -629,7 +633,7 @@ mod tests {
         let mut stream = CatchPanicStream::new(&mut a, arbiter.clone());
         let result = stream.write_all(b"hello").await;
 
-        assert!(result.is_ok());
+        result.expect("should not have panicked");
         assert!(!fast_shutdown_triggered(&arbiter).await);
     }
 
@@ -643,7 +647,7 @@ mod tests {
             .catch_unwind()
             .await;
 
-        assert!(result.is_err());
+        result.expect_err("should have panicked");
         assert!(fast_shutdown_triggered(&arbiter).await);
     }
 
@@ -655,7 +659,7 @@ mod tests {
 
         let result = AssertUnwindSafe(stream.flush()).catch_unwind().await;
 
-        assert!(result.is_err());
+        result.expect_err("should have panicked");
         assert!(fast_shutdown_triggered(&arbiter).await);
     }
 
@@ -667,7 +671,7 @@ mod tests {
 
         let result = AssertUnwindSafe(stream.shutdown()).catch_unwind().await;
 
-        assert!(result.is_err());
+        result.expect_err("should have panicked");
         assert!(fast_shutdown_triggered(&arbiter).await);
     }
 
@@ -679,7 +683,7 @@ mod tests {
 
         let result = poll_fn(|cx| service.poll_ready(cx)).await;
 
-        assert!(result.is_ok());
+        result.expect("should not have panicked");
         assert!(!fast_shutdown_triggered(&arbiter).await);
     }
 
@@ -693,7 +697,7 @@ mod tests {
             .catch_unwind()
             .await;
 
-        assert!(result.is_err());
+        result.expect_err("should have panicked");
         assert!(fast_shutdown_triggered(&arbiter).await);
     }
 
@@ -705,7 +709,7 @@ mod tests {
 
         let result = service.call(()).await;
 
-        assert!(result.is_ok());
+        result.expect("should not have panicked");
         assert!(!fast_shutdown_triggered(&arbiter).await);
     }
 
@@ -719,7 +723,7 @@ mod tests {
             .catch_unwind()
             .await;
 
-        assert!(result.is_err());
+        result.expect_err("should have panicked");
         assert!(fast_shutdown_triggered(&arbiter).await);
     }
 
@@ -731,7 +735,7 @@ mod tests {
 
         let result = AssertUnwindSafe(service.call(())).catch_unwind().await;
 
-        assert!(result.is_err());
+        result.expect_err("should have panicked");
         assert!(fast_shutdown_triggered(&arbiter).await);
     }
 }

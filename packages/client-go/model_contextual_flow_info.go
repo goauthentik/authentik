@@ -3,7 +3,7 @@ authentik
 
 Making authentication simple.
 
-API version: 2026.8.0-rc1
+API version: 2026.11.0-rc1
 Contact: hello@goauthentik.io
 */
 
@@ -26,6 +26,7 @@ type ContextualFlowInfo struct {
 	BackgroundThemedUrls NullableThemedUrls           `json:"background_themed_urls,omitempty"`
 	CancelUrl            string                       `json:"cancel_url"`
 	Layout               ContextualFlowInfoLayoutEnum `json:"layout"`
+	Messages             []FlowMessage                `json:"messages,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -205,6 +206,38 @@ func (o *ContextualFlowInfo) SetLayout(v ContextualFlowInfoLayoutEnum) {
 	o.Layout = v
 }
 
+// GetMessages returns the Messages field value if set, zero value otherwise.
+func (o *ContextualFlowInfo) GetMessages() []FlowMessage {
+	if o == nil || IsNil(o.Messages) {
+		var ret []FlowMessage
+		return ret
+	}
+	return o.Messages
+}
+
+// GetMessagesOk returns a tuple with the Messages field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ContextualFlowInfo) GetMessagesOk() ([]FlowMessage, bool) {
+	if o == nil || IsNil(o.Messages) {
+		return nil, false
+	}
+	return o.Messages, true
+}
+
+// HasMessages returns a boolean if a field has been set.
+func (o *ContextualFlowInfo) HasMessages() bool {
+	if o != nil && !IsNil(o.Messages) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessages gets a reference to the given []FlowMessage and assigns it to the Messages field.
+func (o *ContextualFlowInfo) SetMessages(v []FlowMessage) {
+	o.Messages = v
+}
+
 func (o ContextualFlowInfo) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -226,6 +259,9 @@ func (o ContextualFlowInfo) ToMap() (map[string]interface{}, error) {
 	}
 	toSerialize["cancel_url"] = o.CancelUrl
 	toSerialize["layout"] = o.Layout
+	if !IsNil(o.Messages) {
+		toSerialize["messages"] = o.Messages
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -275,6 +311,7 @@ func (o *ContextualFlowInfo) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "background_themed_urls")
 		delete(additionalProperties, "cancel_url")
 		delete(additionalProperties, "layout")
+		delete(additionalProperties, "messages")
 		o.AdditionalProperties = additionalProperties
 	}
 

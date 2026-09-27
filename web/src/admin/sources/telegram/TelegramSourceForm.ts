@@ -5,7 +5,6 @@ import "#components/ak-secret-text-input";
 import "#elements/forms/Radio";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#components/ak-switch-input";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./TelegramSourceFormHelpers.js";
 
 import { aki } from "#common/api/client";
@@ -29,27 +28,15 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-telegram-form")
 export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
-    async loadInstance(pk: string): Promise<TelegramSource> {
-        const source = await aki(SourcesApi).sourcesTelegramRetrieve({
-            slug: pk,
-        });
-        return source;
-    }
-
-    async send(data: TelegramSource): Promise<TelegramSource> {
-        let source: TelegramSource;
-        if (this.instance?.pk) {
-            source = await aki(SourcesApi).sourcesTelegramPartialUpdate({
-                slug: this.instance.slug,
-                patchedTelegramSourceRequest: data,
-            });
-        } else {
-            source = await aki(SourcesApi).sourcesTelegramCreate({
-                telegramSourceRequest: data as unknown as TelegramSourceRequest,
-            });
-        }
-        return source;
-    }
+    protected endpoints = {
+        load: (slug: string) => aki(SourcesApi).sourcesTelegramRetrieve({ slug }),
+        create: (telegramSource: TelegramSource) =>
+            aki(SourcesApi).sourcesTelegramCreate({
+                telegramSourceRequest: telegramSource as unknown as TelegramSourceRequest,
+            }),
+        update: (slug: string, patchedTelegramSourceRequest: TelegramSource) =>
+            aki(SourcesApi).sourcesTelegramPartialUpdate({ slug, patchedTelegramSourceRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html`<ak-text-input
@@ -88,36 +75,41 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
                 <select class="pf-c-form-control">
                     <option
                         value=${UserMatchingModeEnum.Identifier}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.Identifier}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.Identifier
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.EmailLink}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.EmailLink}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.EmailLink
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailLink)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.EmailDeny}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.EmailDeny}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.EmailDeny
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailDeny)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.UsernameLink}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.UsernameLink}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.UsernameLink
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameLink)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.UsernameDeny}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.UsernameDeny}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.UsernameDeny
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameDeny)}
                     </option>
@@ -134,6 +126,7 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
             <ak-secret-text-input
                 label=${msg("Bot token")}
                 name="botToken"
+                plaintext
                 input-hint="code"
                 ?required=${!this.instance}
                 ?revealed=${!this.instance}

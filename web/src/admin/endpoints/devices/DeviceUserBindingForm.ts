@@ -1,9 +1,11 @@
 import "#components/ak-switch-input";
-
 import { aki } from "#common/api/client";
-import { PolicyBindingCheckTarget } from "#common/policies/utils";
 
-import { PolicyBindingForm } from "#admin/policies/PolicyBindingForm";
+import {
+    cleanBindingForSend,
+    pickPolicyGroupUser,
+    PolicyBindingForm,
+} from "#admin/policies/PolicyBindingForm";
 
 import { DeviceUserBinding, EndpointsApi, PolicyBinding } from "@goauthentik/api";
 
@@ -17,16 +19,10 @@ export class DeviceUserBindingForm extends PolicyBindingForm<DeviceUserBinding> 
         const binding = await aki(EndpointsApi).endpointsDeviceBindingsRetrieve({
             policyBindingUuid: pk,
         });
-        if (binding?.policyObj) {
-            this.policyGroupUser = PolicyBindingCheckTarget.Policy;
-        }
-        if (binding?.groupObj) {
-            this.policyGroupUser = PolicyBindingCheckTarget.Group;
-        }
-        if (binding?.userObj) {
-            this.policyGroupUser = PolicyBindingCheckTarget.User;
-        }
+
+        this.policyGroupUser = pickPolicyGroupUser(binding, this.policyGroupUser);
         this.defaultOrder = await this.getOrder();
+
         return binding;
     }
 
@@ -34,20 +30,8 @@ export class DeviceUserBindingForm extends PolicyBindingForm<DeviceUserBinding> 
         if (this.targetPk) {
             data.target = this.targetPk;
         }
-        switch (this.policyGroupUser) {
-            case PolicyBindingCheckTarget.Policy:
-                data.user = null;
-                data.group = null;
-                break;
-            case PolicyBindingCheckTarget.Group:
-                data.policy = null;
-                data.user = null;
-                break;
-            case PolicyBindingCheckTarget.User:
-                data.policy = null;
-                data.group = null;
-                break;
-        }
+
+        data = cleanBindingForSend(data, this.policyGroupUser);
 
         if (this.instance?.pk) {
             return aki(EndpointsApi).endpointsDeviceBindingsUpdate({
@@ -55,6 +39,7 @@ export class DeviceUserBindingForm extends PolicyBindingForm<DeviceUserBinding> 
                 deviceUserBindingRequest: data,
             });
         }
+
         return aki(EndpointsApi).endpointsDeviceBindingsCreate({
             deviceUserBindingRequest: data,
         });

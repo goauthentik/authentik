@@ -1,7 +1,7 @@
+import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 
 import { RenderFlowOption } from "#admin/flows/utils";
@@ -23,23 +23,16 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-totp-form")
 export class AuthenticatorTOTPStageForm extends BaseStageForm<AuthenticatorTOTPStage> {
-    loadInstance(pk: string): Promise<AuthenticatorTOTPStage> {
-        return aki(StagesApi).stagesAuthenticatorTotpRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: AuthenticatorTOTPStage): Promise<AuthenticatorTOTPStage> {
-        if (this.instance) {
-            return aki(StagesApi).stagesAuthenticatorTotpUpdate({
-                stageUuid: this.instance.pk || "",
-                authenticatorTOTPStageRequest: data,
-            });
-        }
-        return aki(StagesApi).stagesAuthenticatorTotpCreate({
-            authenticatorTOTPStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesAuthenticatorTotpRetrieve({ stageUuid }),
+        create: (authenticatorTOTPStageRequest: AuthenticatorTOTPStage) =>
+            aki(StagesApi).stagesAuthenticatorTotpCreate({ authenticatorTOTPStageRequest }),
+        update: (stageUuid: string, authenticatorTOTPStageRequest: AuthenticatorTOTPStage) =>
+            aki(StagesApi).stagesAuthenticatorTotpUpdate({
+                stageUuid,
+                authenticatorTOTPStageRequest,
+            }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>
@@ -47,14 +40,18 @@ export class AuthenticatorTOTPStageForm extends BaseStageForm<AuthenticatorTOTPS
                     "Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator).",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${this.instance?.name ?? ""}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-element-horizontal
                 label=${msg("Authenticator type name")}
                 ?required=${false}
@@ -101,10 +98,13 @@ export class AuthenticatorTOTPStageForm extends BaseStageForm<AuthenticatorTOTPS
                                     ordering: "slug",
                                     designation: FlowDesignationEnum.StageConfiguration,
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const flows = await aki(FlowsApi).flowsInstancesList(args);
+
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {

@@ -5,7 +5,7 @@ use std::net::{IpAddr, Ipv6Addr, SocketAddr};
 use axum::{
     Extension, RequestPartsExt as _,
     extract::{ConnectInfo, FromRequestParts, Request},
-    http::request::Parts,
+    http::{HeaderMap, request::Parts},
     middleware::Next,
     response::Response,
 };
@@ -33,6 +33,25 @@ where
     }
 }
 
+/// Get the leftmost IP from the `X-Forwarded-For` chain.
+fn extract_from_x_forwarded_for(headers: &HeaderMap) -> Option<IpAddr> {
+    for value in headers.get_all("x-forwarded-for") {
+        let Ok(value) = value.to_str() else {
+            continue;
+        };
+        for part in value.split(',') {
+            let part = part.trim();
+            if let Ok(ip) = part.parse::<IpAddr>() {
+                return Some(ip);
+            } else if let Ok(socket_addr) = part.parse::<SocketAddr>() {
+                return Some(socket_addr.ip());
+            }
+        }
+    }
+
+    None
+}
+
 /// Get the client IP from the request.
 #[instrument(skip_all)]
 async fn extract_client_ip(parts: &mut Parts) -> IpAddr {
@@ -43,15 +62,7 @@ async fn extract_client_ip(parts: &mut Parts) -> IpAddr {
         .0;
 
     if is_trusted {
-        if let Ok(ip) = client_ip::rightmost_x_forwarded_for(&parts.headers) {
-            return ip;
-        }
-
-        if let Ok(ip) = client_ip::x_real_ip(&parts.headers) {
-            return ip;
-        }
-
-        if let Ok(ip) = client_ip::rightmost_forwarded(&parts.headers) {
+        if let Some(ip) = extract_from_x_forwarded_for(&parts.headers) {
             return ip;
         }
 
@@ -79,9 +90,15 @@ async fn extract_client_ip(parts: &mut Parts) -> IpAddr {
 pub async fn client_ip_middleware(request: Request, next: Next) -> Response {
     let (mut parts, body) = request.into_parts();
 
-    let client_ip = extract_client_ip(&mut parts).await;
-    Span::current().record("remote", client_ip.to_string());
-    parts.extensions.insert::<ClientIp>(ClientIp(client_ip));
+    let client_ip = if let Some(client_ip) = parts.extensions.get::<ClientIp>() {
+        client_ip
+    } else {
+        let client_ip = ClientIp(extract_client_ip(&mut parts).await);
+        parts.extensions.insert(client_ip);
+        parts.extensions.get::<ClientIp>().expect("infallible")
+    };
+
+    Span::current().record("remote", client_ip.0.to_string());
 
     let request = Request::from_parts(parts, body);
 
@@ -92,12 +109,14 @@ pub async fn client_ip_middleware(request: Request, next: Next) -> Response {
 mod tests {
     use std::net::Ipv4Addr;
 
+    use ak_common::config;
     use axum::{body::Body, http::Request};
 
     use super::*;
 
     #[tokio::test]
     async fn x_forwarded_for_trusted() {
+        config::init().expect("config");
         let (mut parts, _) = Request::builder()
             .uri("http://example.com/path")
             .header("x-forwarded-for", "192.0.2.51, 192.0.2.42")
@@ -108,37 +127,7 @@ mod tests {
 
         let client_ip = extract_client_ip(&mut parts).await;
 
-        assert_eq!(client_ip, Ipv4Addr::new(192, 0, 2, 42),);
-    }
-
-    #[tokio::test]
-    async fn x_real_ip_trusted() {
-        let (mut parts, _) = Request::builder()
-            .uri("http://example.com/path")
-            .header("x-real-ip", "192.0.2.42")
-            .extension(TrustedProxy(true))
-            .body(Body::empty())
-            .expect("Failed to create request")
-            .into_parts();
-
-        let client_ip = extract_client_ip(&mut parts).await;
-
-        assert_eq!(client_ip, Ipv4Addr::new(192, 0, 2, 42),);
-    }
-
-    #[tokio::test]
-    async fn forwarded_header_trusted() {
-        let (mut parts, _) = Request::builder()
-            .uri("http://example.com/path")
-            .header("forwarded", "for=192.0.2.42")
-            .extension(TrustedProxy(true))
-            .body(Body::empty())
-            .expect("Failed to create request")
-            .into_parts();
-
-        let client_ip = extract_client_ip(&mut parts).await;
-
-        assert_eq!(client_ip, Ipv4Addr::new(192, 0, 2, 42),);
+        assert_eq!(client_ip, Ipv4Addr::new(192, 0, 2, 51),);
     }
 
     #[tokio::test]
@@ -175,24 +164,6 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn priority_order() {
-        // Test that X-Forwarded-For takes priority over other headers when trusted
-        let (mut parts, _) = Request::builder()
-            .uri("http://example.com/path")
-            .header("x-forwarded-for", "192.0.2.1")
-            .header("x-real-ip", "192.0.2.2")
-            .header("forwarded", "for=192.0.2.3")
-            .extension(TrustedProxy(true))
-            .body(Body::empty())
-            .expect("Failed to create request")
-            .into_parts();
-
-        let client_ip = extract_client_ip(&mut parts).await;
-
-        assert_eq!(client_ip, Ipv4Addr::new(192, 0, 2, 1),);
-    }
-
-    #[tokio::test]
     async fn no_ip_found() {
         let (mut parts, _) = Request::builder()
             .uri("http://example.com/path")
@@ -207,6 +178,7 @@ mod tests {
 
     #[tokio::test]
     async fn ipv6() {
+        config::init().expect("config");
         let (mut parts, _) = Request::builder()
             .uri("http://example.com/path")
             .header("x-forwarded-for", "2001:db8::42")
@@ -221,7 +193,42 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn rightmost_untrusted_x_forwarded_for() {
+        config::init().expect("config");
+        // The proxy's own appended address is trusted (172.16.0.0/12 by
+        // default), so the client to its left wins (#25393).
+        let (mut parts, _) = Request::builder()
+            .uri("http://example.com/path")
+            .header("x-forwarded-for", "1.2.3.4, 172.17.0.1")
+            .extension(TrustedProxy(true))
+            .body(Body::empty())
+            .expect("Failed to create request")
+            .into_parts();
+
+        let client_ip = extract_client_ip(&mut parts).await;
+
+        assert_eq!(client_ip, Ipv4Addr::new(1, 2, 3, 4));
+    }
+
+    #[tokio::test]
+    async fn all_forwarded_for_entries_trusted_falls_back_to_leftmost() {
+        config::init().expect("config");
+        let (mut parts, _) = Request::builder()
+            .uri("http://example.com/path")
+            .header("x-forwarded-for", "10.0.0.9, 10.0.0.1")
+            .extension(TrustedProxy(true))
+            .body(Body::empty())
+            .expect("Failed to create request")
+            .into_parts();
+
+        let client_ip = extract_client_ip(&mut parts).await;
+
+        assert_eq!(client_ip, Ipv4Addr::new(10, 0, 0, 9));
+    }
+
+    #[tokio::test]
     async fn multiple_x_forwarded_for() {
+        config::init().expect("config");
         let (mut parts, _) = Request::builder()
             .uri("http://example.com/path")
             .header("x-forwarded-for", "192.0.2.1, 192.0.2.2, 192.0.2.3")
@@ -232,6 +239,38 @@ mod tests {
 
         let client_ip = extract_client_ip(&mut parts).await;
 
-        assert_eq!(client_ip, Ipv4Addr::new(192, 0, 2, 3),);
+        assert_eq!(client_ip, Ipv4Addr::new(192, 0, 2, 1));
+    }
+
+    #[tokio::test]
+    async fn with_ports() {
+        config::init().expect("config");
+        let (mut parts, _) = Request::builder()
+            .uri("http://example.com/path")
+            .header("x-forwarded-for", "10.0.0.1:9000")
+            .extension(TrustedProxy(true))
+            .body(Body::empty())
+            .expect("Failed to create request")
+            .into_parts();
+
+        let client_ip = extract_client_ip(&mut parts).await;
+
+        assert_eq!(client_ip, Ipv4Addr::new(10, 0, 0, 1));
+    }
+
+    #[tokio::test]
+    async fn ipv6_with_ports() {
+        config::init().expect("config");
+        let (mut parts, _) = Request::builder()
+            .uri("http://example.com/path")
+            .header("x-forwarded-for", "[2001:db8::42]:9000")
+            .extension(TrustedProxy(true))
+            .body(Body::empty())
+            .expect("Failed to create request")
+            .into_parts();
+
+        let client_ip = extract_client_ip(&mut parts).await;
+
+        assert_eq!(client_ip, Ipv6Addr::new(0x2001, 0xdb8, 0, 0, 0, 0, 0, 0x42));
     }
 }

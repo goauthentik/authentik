@@ -5,7 +5,7 @@ GID = $(shell id -g)
 
 build:
 	rm -rf src
-	docker compose run --rm --user "${UID}:${GID}" gen \
+	docker compose run --rm -T --user "${UID}:${GID}" gen \
 		generate \
 		-i /schema.yml \
 		-g typescript-fetch \
@@ -15,4 +15,5 @@ build:
 		--git-repo-id authentik \
 		--git-user-id goauthentik
 	rm -rf "${PWD}/.openapi-generator"
-	npx prettier --write -u "${PWD}"
+	pnpm run post-process
+	pnpm run fix
