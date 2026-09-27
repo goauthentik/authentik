@@ -608,6 +608,20 @@ class TestUserLoginNextActions(FlowTestCase):
         self.assertTrue(self.client.session[SESSION_KEY_PENDING_NEXT_ACTIONS])
 
     @enterprise_test()
+    def test_malformed_actions_fail_closed(self):
+        """False-like invalid values are not an empty action list."""
+        for value in (None, False, 0, "", {}):
+            with self.subTest(value=value):
+                self.client.logout()
+                self.set_next_actions(value)
+                self.start_login()
+                response = self.client.get(
+                    reverse("authentik_core:if-user"), HTTP_ACCEPT="text/html"
+                )
+                self.assertEqual(response.status_code, 403)
+                self.assertTrue(self.client.session[SESSION_KEY_PENDING_NEXT_ACTIONS])
+
+    @enterprise_test()
     def test_non_applicable_action_keeps_session_blocked(self):
         """A denied action cannot turn a restricted session into an unrestricted one."""
         action = self.create_action_flow()

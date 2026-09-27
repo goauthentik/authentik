@@ -163,8 +163,8 @@ class PendingNextActionsMiddleware:
         if pending_logout_allowed(request):
             return None
         user = request.user
-        value = user.attributes.get(USER_ATTRIBUTE_NEXT_ACTIONS)
-        if not value:
+        value = user.attributes.get(USER_ATTRIBUTE_NEXT_ACTIONS, [])
+        if value == []:
             request.session.pop(SESSION_KEY_PENDING_NEXT_ACTIONS, None)
             return None
         from authentik.flows.exceptions import FlowNonApplicableException
