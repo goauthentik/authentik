@@ -13,7 +13,6 @@ from rest_framework.fields import BooleanField, CharField
 
 from authentik.core import user_switching
 from authentik.core.models import (
-    USER_ATTRIBUTE_NEXT_ACTIONS,
     AuthenticatedSession,
     Session,
     User,
@@ -28,6 +27,7 @@ from authentik.flows.planner import (
 )
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_GET, SESSION_KEY_PLAN
+from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.password import BACKEND_INBUILT
@@ -40,10 +40,6 @@ from authentik.stages.user_login.middleware import (
     SESSION_KEY_BINDING_NET,
 )
 from authentik.stages.user_login.models import UserLoginStage
-from authentik.stages.user_login.next_actions import (
-    SESSION_KEY_PENDING_NEXT_ACTIONS,
-    next_actions_enabled,
-)
 from authentik.tenants.utils import get_unique_identifier
 
 COOKIE_NAME_KNOWN_DEVICE = "authentik_device"
@@ -65,7 +61,10 @@ class UserLoginChallengeResponse(ChallengeResponse):
     remember_me = BooleanField(required=True)
 
 
-class UserLoginStageView(ChallengeStageView):
+class UserLoginStageView(
+    ConditionalInheritance("authentik.enterprise.next_actions.stages.NextActionsLoginMixin"),
+    ChallengeStageView,
+):
     """Finalize Authentication flow by logging the user in"""
 
     response_class = UserLoginChallengeResponse
@@ -237,17 +236,6 @@ class UserLoginStageView(ChallengeStageView):
                 self.request,
                 user,
                 backend=backend,
-            )
-        if (
-            PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION not in self.executor.plan.context
-            and USER_ATTRIBUTE_NEXT_ACTIONS in user.attributes
-            and user.attributes[USER_ATTRIBUTE_NEXT_ACTIONS] != []
-            and next_actions_enabled()
-        ):
-            self.request.session[SESSION_KEY_PENDING_NEXT_ACTIONS] = True
-            messages.info(
-                self.request,
-                _("Login successful. Complete the required actions before continuing."),
             )
         self.logger.debug(
             "Logged in",

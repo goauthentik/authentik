@@ -1,88 +1,24 @@
-"""Next action flows required after login"""
+"""Restrict sessions while required actions remain."""
 
-from typing import Any
-
-from django.db import transaction
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import HttpRequest, JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.deprecation import MiddlewareMixin
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
-from authentik.core.models import USER_ATTRIBUTE_NEXT_ACTIONS, User
-from authentik.events.middleware import audit_ignore
-from authentik.events.models import Event, EventAction
+from authentik.enterprise.next_actions import USER_ATTRIBUTE_NEXT_ACTIONS
+from authentik.enterprise.next_actions.flows import (
+    SESSION_KEY_PENDING_NEXT_ACTIONS,
+    NextActionDoneStageView,
+    resolve_next_actions,
+)
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow, FlowDesignation, in_memory_stage
-from authentik.flows.planner import (
-    PLAN_CONTEXT_REDIRECT,
-    FlowPlan,
-    FlowPlanner,
-)
-from authentik.flows.stage import StageView
+from authentik.flows.planner import PLAN_CONTEXT_REDIRECT, FlowPlan, FlowPlanner
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 
 LOGGER = get_logger()
-SESSION_KEY_PENDING_NEXT_ACTIONS = "authentik/stages/user_login/pending_next_actions"
-
-# Flows that create or end a session cannot run as a next action
-NEXT_ACTION_DISALLOWED_DESIGNATIONS = [
-    FlowDesignation.AUTHENTICATION,
-    FlowDesignation.INVALIDATION,
-]
-
-
-def next_actions_enabled() -> bool:
-    """Enforce actions even when the installed license has expired."""
-    from authentik.enterprise.license import LicenseKey
-    from authentik.enterprise.models import LicenseUsageStatus
-
-    return LicenseKey.cached_summary().status != LicenseUsageStatus.UNLICENSED
-
-
-def next_action_slugs(value: Any) -> list[str]:
-    """Normalize the next-actions attribute value to a list of slugs, without validation"""
-    slugs = value if isinstance(value, list) else [value]
-    return [slug for slug in slugs if isinstance(slug, str)]
-
-
-def resolve_next_actions(value: Any) -> list[Flow]:
-    """Resolve ordered flow slugs, rejecting missing or unusable flows."""
-    slugs = value if isinstance(value, list) else [value]
-    if any(not isinstance(slug, str) for slug in slugs):
-        raise ValueError("Next actions must be flow slugs")
-    flows = Flow.objects.exclude(designation__in=NEXT_ACTION_DISALLOWED_DESIGNATIONS).in_bulk(
-        slugs, field_name="slug"
-    )
-    try:
-        return [flows[slug] for slug in slugs]
-    except KeyError as exc:
-        raise ValueError("Next action flow is missing or has a disallowed designation") from exc
-
-
-class NextActionDoneStageView(StageView):
-    """Remove a completed next action flow from the user's attributes"""
-
-    def dispatch(self, request: HttpRequest) -> HttpResponse:
-        slug = self.executor.current_stage.flow_slug
-        with transaction.atomic(), audit_ignore():
-            user = User.objects.select_for_update().get(pk=request.user.pk)
-            value = user.attributes.get(USER_ATTRIBUTE_NEXT_ACTIONS, [])
-            actions = value if isinstance(value, list) else [value]
-            if slug not in actions:
-                return self.executor.stage_ok()
-            actions.remove(slug)
-            if actions:
-                user.attributes[USER_ATTRIBUTE_NEXT_ACTIONS] = actions
-            else:
-                user.attributes.pop(USER_ATTRIBUTE_NEXT_ACTIONS, None)
-                request.session.pop(SESSION_KEY_PENDING_NEXT_ACTIONS, None)
-            user.save(update_fields=["attributes"])
-            Event.new(EventAction.NEXT_ACTION_COMPLETED, flow_slug=slug).from_http(
-                request, user=user
-            )
-        return self.executor.stage_ok()
 
 
 def plan_next_action(request: HttpRequest, flow: Flow) -> FlowPlan:
