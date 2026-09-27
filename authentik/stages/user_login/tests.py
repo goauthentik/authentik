@@ -51,6 +51,7 @@ from authentik.stages.user_login.models import GeoIPBinding, NetworkBinding, Use
 from authentik.stages.user_login.next_actions import (
     SESSION_KEY_PENDING_NEXT_ACTIONS,
     NextActionDoneStageView,
+    resolve_next_actions,
 )
 
 
@@ -478,6 +479,15 @@ class TestUserLoginNextActions(FlowTestCase):
             target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
         )
         return flow
+
+    def test_resolve_actions_preserves_order_in_one_query(self):
+        first = self.create_action_flow()
+        second = self.create_action_flow()
+        with self.assertNumQueries(1):
+            self.assertEqual(
+                resolve_next_actions([second.slug, first.slug, second.slug]),
+                [second, first, second],
+            )
 
     def set_next_actions(self, value):
         self.user.attributes[USER_ATTRIBUTE_NEXT_ACTIONS] = value
