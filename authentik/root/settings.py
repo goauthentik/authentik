@@ -304,7 +304,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "authentik.core.middleware.ImpersonateMiddleware",
     "authentik.core.middleware.LocaleOverrideMiddleware",
-    "authentik.stages.user_login.next_actions.PendingNextActionsMiddleware",
     "authentik.rbac.middleware.InitialPermissionsMiddleware",
 ]
 MIDDLEWARE_LAST = [

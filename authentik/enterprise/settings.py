@@ -22,4 +22,7 @@ INSTALLED_APPS = [
     "authentik.enterprise.stages.source",
 ]
 
-MIDDLEWARE = ["authentik.enterprise.middleware.EnterpriseMiddleware"]
+MIDDLEWARE = [
+    "authentik.enterprise.middleware.EnterpriseMiddleware",
+    "authentik.enterprise.next_actions.middleware.PendingNextActionsMiddleware",
+]
