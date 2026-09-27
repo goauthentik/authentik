@@ -4,6 +4,7 @@ from django.utils.translation import gettext as _
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -21,7 +22,7 @@ class UserPasswordLockoutMixin:
         request=None,
         responses={204: OpenApiResponse(description="Successfully locked password")},
     )
-    @action(detail=True, methods=["POST"])
+    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
     @enterprise_action
     def lock_password(self, request: Request, pk: int) -> Response:
         """Prevent a user's password from authenticating."""
