@@ -23,28 +23,14 @@ const disallowedDesignations: FlowDesignationEnum[] = [
     FlowDesignationEnum.Invalidation,
 ];
 
-interface NextActionRow {
-    name: string;
-    slug: string;
-    flow: Flow | null;
-}
+type NextActionRow = Pick<Flow, "name" | "slug">;
 
 function toSlugs(value: unknown): string[] {
-    if (typeof value === "string") {
-        return [value];
-    }
+    const values = Array.isArray(value) ? value : [value];
 
-    if (Array.isArray(value)) {
-        return value.filter((entry): entry is string => typeof entry === "string");
-    }
-
-    return [];
+    return values.filter((entry): entry is string => typeof entry === "string");
 }
 
-/**
- * Table on the user overview page listing the flows a user must complete on
- * their next login.
- */
 @customElement("ak-user-next-actions-list")
 export class UserNextActionsList extends Table<NextActionRow> {
     public static override verboseName = msg("Next action", {
@@ -77,17 +63,15 @@ export class UserNextActionsList extends Table<NextActionRow> {
     protected override async apiEndpoint(): Promise<PaginatedResponse<NextActionRow>> {
         const slugs = toSlugs(this.user?.attributes?.[USER_ATTRIBUTE_NEXT_ACTIONS]);
 
-        const flows = slugs.length
-            ? (await aki(FlowsApi).flowsInstancesList({ ordering: "slug" })).results
-            : [];
+        const rows = await Promise.all(
+            slugs.map(async (slug) => {
+                const { results } = await aki(FlowsApi).flowsInstancesList({ slug });
 
-        return createPaginatedResponse(
-            slugs.map((slug) => ({
-                name: slug,
-                slug,
-                flow: flows.find((flow) => flow.slug === slug) ?? null,
-            })),
+                return results[0] ?? { name: slug, slug };
+            }),
         );
+
+        return createPaginatedResponse(rows);
     }
 
     protected override columns: TableColumn[] = [
@@ -143,13 +127,10 @@ export class UserNextActionsList extends Table<NextActionRow> {
         aki(FlowsApi)
             .flowsInstancesList({
                 ordering: "slug",
-                ...(query ? { search: query } : {}),
+                search: query,
             })
             .then((flows) =>
-                flows.results.filter(
-                    (flow) =>
-                        !flow.designation || !disallowedDesignations.includes(flow.designation),
-                ),
+                flows.results.filter((flow) => !disallowedDesignations.includes(flow.designation)),
             );
 
     protected override renderToolbar(): SlottedTemplateResult {
@@ -179,7 +160,7 @@ export class UserNextActionsList extends Table<NextActionRow> {
 
     protected override row(item: NextActionRow): SlottedTemplateResult[] {
         return [
-            html`${item.flow?.name ?? item.slug}`,
+            html`${item.name}`,
             html`${item.slug}`,
             html`<ak-forms-delete-bulk
                 object-label=${msg("Next action", {
