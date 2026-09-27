@@ -760,9 +760,27 @@ class TestPendingNextActionsMiddleware(FlowTestCase):
         )
         self.assertEqual(response.status_code, 403)
 
+    def test_pending_user_cannot_remove_their_actions(self):
+        """A restricted session cannot use its edit permission to release itself."""
+        self.user.assign_perms_to_managed_role("authentik_core.view_user")
+        self.user.assign_perms_to_managed_role("authentik_core.change_user", self.user)
+        response = self.client.patch(
+            reverse("authentik_api:user-detail", kwargs={"pk": self.user.pk}),
+            {"attributes": {}},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.attributes[USER_ATTRIBUTE_NEXT_ACTIONS], [self.action.slug])
+
     def test_allowed_paths_pass(self):
         """The flow executor and user info APIs needed to complete actions stay reachable"""
         response = self.client.get(reverse("authentik_api:user-me"), HTTP_ACCEPT="application/json")
+        self.assertEqual(response.status_code, 200)
+
+    def test_allowed_route_under_script_prefix(self):
+        """The allowlist follows Django routes under a deployment prefix."""
+        response = self.client.get(reverse("authentik_api:user-me"), SCRIPT_NAME="/authentik")
         self.assertEqual(response.status_code, 200)
 
     def test_unrelated_flow_api_is_denied(self):
