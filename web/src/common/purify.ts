@@ -8,9 +8,8 @@ import { unsafeHTML } from "lit/directives/unsafe-html.js";
 /**
  * Trusted types policy that escapes HTML content in place.
  *
- * @see {@linkcode SanitizedTrustPolicy} to strip HTML content.
- *
  * @returns {TrustedHTML} All HTML content, escaped.
+ * @see {@linkcode SanitizedTrustPolicy} to strip HTML content.
  */
 export const EscapeTrustPolicy = trustedTypes.createPolicy("authentik-escape", {
     createHTML: (untrustedHTML: string) => {
@@ -22,7 +21,6 @@ export const EscapeTrustPolicy = trustedTypes.createPolicy("authentik-escape", {
 
 /**
  * Trusted types policy that removes all HTML content.
- *
  *
  * @returns {TrustedHTML} All remaining text content.
  */
@@ -149,7 +147,8 @@ export const DOM_PURIFY_STRICT = {
  * This configuration allows text nodes and <br> tags.
  */
 export const DOM_PURIFY_RELAXED = {
-    ALLOWED_TAGS: ["#text", "br"],
+    ALLOWED_TAGS: ["#text", "br", "div", "strong"],
+    ALLOWED_ATTR: ["class"],
 } as const satisfies DOMPurifyConfig;
 
 /**
@@ -166,5 +165,6 @@ export function renderStaticHTMLUnsafe(untrustedHTML: unknown): string {
         // Remove all comments as they can interfere with the styles.
         .replaceAll("<!---->", "")
         .replaceAll(/<!--\?lit\$\d+\$-->/g, "");
+
     return result;
 }

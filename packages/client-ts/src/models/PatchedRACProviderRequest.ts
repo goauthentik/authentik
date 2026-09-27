@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,32 +12,26 @@
 
 /**
  * RACProvider Serializer
+ *
  * @export
  * @interface PatchedRACProviderRequest
  */
 export interface PatchedRACProviderRequest {
-    /**
-     *
-     */
     name?: string;
     /**
-     * Flow used for authentication when the associated application is accessed by an un-authenticated user.
+     * Flow used for authentication when the associated application is accessed by an
+     * un-authenticated user.
      */
     authenticationFlow?: string | null;
     /**
      * Flow used when authorizing this provider.
      */
     authorizationFlow?: string;
-    /**
-     *
-     */
     propertyMappings?: Array<string>;
-    /**
-     *
-     */
     settings?: { [key: string]: any };
     /**
-     * Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)
+     * Determines how long a session lasts. Default of 0 means that the sessions lasts until the
+     * browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)
      */
     connectionExpiry?: string;
     /**

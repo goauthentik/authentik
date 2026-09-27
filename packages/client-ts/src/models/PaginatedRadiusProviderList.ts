@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { RadiusProvider } from "./RadiusProvider";
 import { RadiusProviderFromJSON, RadiusProviderToJSON } from "./RadiusProvider";
 
 /**
- *
  * @export
  * @interface PaginatedRadiusProviderList
  */
 export interface PaginatedRadiusProviderList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<RadiusProvider>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

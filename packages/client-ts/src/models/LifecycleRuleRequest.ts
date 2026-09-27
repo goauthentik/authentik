@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,48 +16,23 @@ import { ContentTypeEnumFromJSON, ContentTypeEnumToJSON } from "./ContentTypeEnu
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface LifecycleRuleRequest
  */
 export interface LifecycleRuleRequest {
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     contentType: ContentTypeEnum;
-    /**
-     *
-     */
     objectId?: string | null;
-    /**
-     *
-     */
     interval?: string;
-    /**
-     *
-     */
     gracePeriod?: string;
-    /**
-     *
-     */
     reviewerGroups?: Array<string>;
-    /**
-     *
-     */
     minReviewers?: number;
-    /**
-     *
-     */
     minReviewersIsPerGroup?: boolean;
-    /**
-     *
-     */
     reviewers: Array<string>;
     /**
-     * Select which transports should be used to notify the reviewers. If none are selected, the notification will only be shown in the authentik UI.
+     * Select which transports should be used to notify the reviewers. If none are selected, the
+     * notification will only be shown in the authentik UI.
      */
     notificationTransports?: Array<string>;
 }

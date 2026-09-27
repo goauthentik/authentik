@@ -5,13 +5,13 @@ from dataclasses import dataclass
 import xmlsec
 from cryptography.hazmat.backends import default_backend
 from cryptography.x509 import InvalidVersion, load_pem_x509_certificate
-from defusedxml.lxml import fromstring
 from lxml import etree  # nosec
 from structlog.stdlib import get_logger
 
 from authentik.common.saml.constants import NS_MAP, NS_SAML_METADATA
 from authentik.crypto.models import CertificateKeyPair, format_cert
 from authentik.flows.models import Flow
+from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
 from authentik.sources.saml.models import SAMLNameIDPolicy
 
@@ -171,7 +171,7 @@ class ServiceProviderMetadataParser:
 
     def parse(self, raw_xml: str) -> ServiceProviderMetadata:
         """Parse raw XML to ServiceProviderMetadata"""
-        root = fromstring(raw_xml.encode())
+        root = lxml_from_string(raw_xml.encode())
 
         entity_id = root.attrib["entityID"]
         sp_sso_descriptors = root.findall(f"{{{NS_SAML_METADATA}}}SPSSODescriptor")

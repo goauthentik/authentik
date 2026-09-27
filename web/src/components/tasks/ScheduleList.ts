@@ -7,6 +7,7 @@ import "#components/tasks/TaskList";
 import "#components/tasks/TaskStatus";
 import "#elements/table/ak-table-filter-select";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -20,8 +21,6 @@ import { ModelEnum, Schedule, TasksApi } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-schedule-list")
 export class ScheduleList extends Table<Schedule> {
@@ -56,6 +55,7 @@ export class ScheduleList extends Table<Schedule> {
                 : this.showOnlyStandalone
                   ? true
                   : undefined;
+
         return aki(TasksApi).tasksSchedulesList({
             ...(await this.defaultEndpointConfig()),
             relObjContentTypeAppLabel: this.relObjAppLabel,
@@ -81,6 +81,7 @@ export class ScheduleList extends Table<Schedule> {
         if (this.relObjId !== undefined) {
             return nothing;
         }
+
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
                 <ak-table-filter-select
@@ -143,6 +144,7 @@ export class ScheduleList extends Table<Schedule> {
 
     renderExpanded(item: Schedule): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikTasksSchedulesSchedule.split(".");
+
         return html`<div class="pf-c-content">
             <ak-task-list
                 .relObjAppLabel=${appLabel}

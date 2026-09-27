@@ -7,7 +7,9 @@
  *
  * @param a The first element to compare.
  * @param b The second element to compare.
- * @returns A negative number if `a` should come before `b`, a positive number if `a` should come after `b`, or 0 if they are equal.
+ *
+ * @returns A negative number if `a` should come before `b`, a positive number if `a` should come
+ *   after `b`, or 0 if they are equal.
  */
 export type Comparator<T> = (a: T, b: T) => number;
 
@@ -36,7 +38,9 @@ export function checkIterableShallowEquality(
     prevDeps?: unknown[] | null,
 ): boolean {
     if (!newDeps || !prevDeps) return false;
+
     if (prevDeps.length !== newDeps.length) return false;
+
     return prevDeps.every((prev, i) => prev === newDeps[i]);
 }
 
@@ -53,6 +57,7 @@ export function checkObjectShallowEquality(
     if (!newDeps || !prevDeps) {
         return newDeps === prevDeps;
     }
+
     const newKeys = Object.keys(newDeps);
     const prevKeys = Object.keys(prevDeps);
 

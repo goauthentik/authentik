@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,38 +15,16 @@ import type { DeviceAccessGroup } from "./DeviceAccessGroup";
 import { DeviceAccessGroupFromJSON } from "./DeviceAccessGroup";
 
 /**
- *
  * @export
  * @interface EnrollmentToken
  */
 export interface EnrollmentToken {
-    /**
-     *
-     */
     readonly tokenUuid: string;
-    /**
-     *
-     */
     deviceGroup?: string | null;
-    /**
-     *
-     */
     readonly deviceGroupObj: DeviceAccessGroup | null;
-    /**
-     *
-     */
     connector: string;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     expiring?: boolean;
-    /**
-     *
-     */
     expires?: Date | null;
 }
 

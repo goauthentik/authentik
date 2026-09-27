@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,17 +15,12 @@ import { UserSwitchActionEnumFromJSON, UserSwitchActionEnumToJSON } from "./User
 
 /**
  * Request to add or switch users in the current browser.
+ *
  * @export
  * @interface UserSwitchRequest
  */
 export interface UserSwitchRequest {
-    /**
-     *
-     */
     action?: UserSwitchActionEnum;
-    /**
-     *
-     */
     userPk?: number;
 }
 

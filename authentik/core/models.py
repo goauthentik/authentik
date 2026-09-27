@@ -18,6 +18,7 @@ from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
 from django.db import models
 from django.db.models import Q, QuerySet, options
+from django.db.models.functions import Upper
 from django.http import HttpRequest
 from django.utils.functional import cached_property
 from django.utils.timezone import now
@@ -403,6 +404,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             models.Index(fields=["date_joined"]),
             models.Index(fields=["last_updated"]),
             models.Index(fields=["username", "is_active", "type"]),
+            models.Index(Upper("email"), name="%(app_label)s_%(class)s_email_idx"),
         ]
 
     def __str__(self):
@@ -1251,11 +1253,19 @@ class PropertyMapping(SerializerModel, ManagedModel):
         """Get serializer for this model"""
         raise NotImplementedError
 
-    def evaluate(self, user: User | None, request: HttpRequest | None, **kwargs) -> Any:
+    def evaluate(
+        self,
+        user: User | None,
+        request: HttpRequest | None,
+        globals: dict[str, Any] | None = None,
+        **kwargs,
+    ) -> Any:
         """Evaluate `self.expression` using `**kwargs` as Context."""
         from authentik.core.expression.evaluator import PropertyMappingEvaluator
 
         evaluator = PropertyMappingEvaluator(self, user, request, **kwargs)
+        if globals:
+            evaluator._globals.update(globals)
         try:
             return evaluator.evaluate(self.expression)
         except ControlFlowException as exc:
@@ -1547,7 +1557,7 @@ class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
 
         field_kwargs = {}
 
-        match (self.type):
+        match self.type:
             case self.AttributeType.TEXT:
                 field_cls = CharField
                 field_kwargs["allow_blank"] = True

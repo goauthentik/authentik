@@ -1,4 +1,5 @@
 import { DualSelectEventType } from "../types.js";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 import { AKElement } from "#elements/Base";
 import { CustomEmitterElement } from "#elements/utils/eventEmitter";
@@ -6,8 +7,6 @@ import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 /**
  * @element ak-dual-select-controls
@@ -49,7 +48,7 @@ export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventTy
     ];
 
     /**
-     * Set to true if any *visible* elements can be added to the selected list.
+     * Set to true if any _visible_ elements can be added to the selected list.
      */
     @property({ attribute: "add-active", type: Boolean })
     addActive = false;
@@ -78,7 +77,7 @@ export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventTy
     removeAllActive = false;
 
     /**
-     * if deleteAll is enabled, set to true to show that there are elements in the
+     * If deleteAll is enabled, set to true to show that there are elements in the
      * selected list that can be deleted.
      */
     @property({ attribute: "delete-all-active", type: Boolean })
@@ -128,36 +127,40 @@ export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventTy
                     this.addActive,
                     "fa-angle-right",
                 )}
-                ${this.selectAll
-                    ? html`
-                          ${this.renderButton(
-                              msg("Add All Available"),
-                              DualSelectEventType.AddAll,
-                              this.addAllActive,
-                              "fa-angle-double-right",
-                          )}
-                          ${this.renderButton(
-                              msg("Remove All Available"),
-                              DualSelectEventType.RemoveAll,
-                              this.removeAllActive,
-                              "fa-angle-double-left",
-                          )}
-                      `
-                    : nothing}
+                ${
+                    this.selectAll
+                        ? html`
+                              ${this.renderButton(
+                                  msg("Add All Available"),
+                                  DualSelectEventType.AddAll,
+                                  this.addAllActive,
+                                  "fa-angle-double-right",
+                              )}
+                              ${this.renderButton(
+                                  msg("Remove All Available"),
+                                  DualSelectEventType.RemoveAll,
+                                  this.removeAllActive,
+                                  "fa-angle-double-left",
+                              )}
+                          `
+                        : nothing
+                }
                 ${this.renderButton(
                     msg("Remove"),
                     DualSelectEventType.RemoveSelected,
                     this.removeActive,
                     "fa-angle-left",
                 )}
-                ${this.deleteAll
-                    ? html`${this.renderButton(
-                          msg("Remove All"),
-                          DualSelectEventType.DeleteAll,
-                          this.enableDeleteAll,
-                          "fa-times",
-                      )}`
-                    : nothing}
+                ${
+                    this.deleteAll
+                        ? html`${this.renderButton(
+                              msg("Remove All"),
+                              DualSelectEventType.DeleteAll,
+                              this.enableDeleteAll,
+                              "fa-times",
+                          )}`
+                        : nothing
+                }
             </div>
         `;
     }

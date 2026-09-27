@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,33 +15,16 @@ import { PartialGroupFromJSON } from "./PartialGroup";
 
 /**
  * SCIMSourceGroup Serializer
+ *
  * @export
  * @interface SCIMSourceGroup
  */
 export interface SCIMSourceGroup {
-    /**
-     *
-     */
     id?: string;
-    /**
-     *
-     */
     externalId: string;
-    /**
-     *
-     */
     group: string;
-    /**
-     *
-     */
     readonly groupObj: PartialGroup;
-    /**
-     *
-     */
     source: string;
-    /**
-     *
-     */
     attributes?: { [key: string]: any };
 }
 

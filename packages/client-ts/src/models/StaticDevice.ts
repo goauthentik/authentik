@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,6 +17,7 @@ import { StaticDeviceTokenFromJSON } from "./StaticDeviceToken";
 
 /**
  * Serializer for static authenticator devices
+ *
  * @export
  * @interface StaticDevice
  */
@@ -27,17 +26,8 @@ export interface StaticDevice {
      * The human-readable name of this device.
      */
     name: string;
-    /**
-     *
-     */
     readonly tokenSet: Array<StaticDeviceToken>;
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     readonly user: PartialUser;
 }
 

@@ -293,6 +293,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
 
 MIDDLEWARE_FIRST = [
+    "authentik.root.middleware.LivenessMiddleware",
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
 ]
 MIDDLEWARE = [

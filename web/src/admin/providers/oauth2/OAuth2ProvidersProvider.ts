@@ -34,6 +34,7 @@ export function oauth2ProvidersSelector(
 
     const fetchOauth2Providers: DualSelectPairSource = async () => {
         const oauthSources = aki(ProvidersApi);
+
         const mappings = await Promise.allSettled(
             instanceProviders.map((instanceId) =>
                 oauthSources.providersOauth2Retrieve({ id: instanceId }),

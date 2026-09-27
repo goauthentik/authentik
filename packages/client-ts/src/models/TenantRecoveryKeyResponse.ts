@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,20 +11,14 @@
  */
 
 import { parseDateTime, serializeDateTime } from "../runtime";
-
 /**
  * Tenant recovery key creation response serializer
+ *
  * @export
  * @interface TenantRecoveryKeyResponse
  */
 export interface TenantRecoveryKeyResponse {
-    /**
-     *
-     */
     expiry: Date;
-    /**
-     *
-     */
     url: string;
 }
 

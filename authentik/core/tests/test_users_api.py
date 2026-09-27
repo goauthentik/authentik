@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 from json import loads
 
 from django.contrib.auth.hashers import make_password
+from django.db import connection
+from django.test.utils import CaptureQueriesContext
 from django.urls.base import reverse
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
@@ -69,15 +71,69 @@ class TestUsersAPI(APITestCase):
     def test_filter_type(self):
         """Test API filtering by type"""
         self.client.force_login(self.admin)
-        user = create_test_admin_user(type=UserTypes.EXTERNAL)
+        path = generate_id()
+        internal = create_test_user(path=path)
+        external = create_test_user(path=path, type=UserTypes.EXTERNAL)
+        service_account = create_test_user(path=path, type=UserTypes.SERVICE_ACCOUNT)
+        for types, expected in (
+            ([UserTypes.EXTERNAL], [external]),
+            ([UserTypes.EXTERNAL, UserTypes.SERVICE_ACCOUNT], [external, service_account]),
+            ([UserTypes.INTERNAL, UserTypes.EXTERNAL], [internal, external]),
+        ):
+            with self.subTest(types=types):
+                response = self.client.get(
+                    reverse("authentik_api:user-list"),
+                    data={"path": path, "type": types},
+                )
+                self.assertEqual(response.status_code, 200)
+                body = loads(response.content)
+                self.assertCountEqual(
+                    [user["pk"] for user in body["results"]], [user.pk for user in expected]
+                )
+                self.assertEqual(body["pagination"]["count"], len(expected))
+
+    def test_filter_type_no_distinct(self):
+        """Test that filtering by type doesn't make the list and count queries DISTINCT"""
+        self.client.force_login(self.admin)
+        with CaptureQueriesContext(connection) as queries:
+            response = self.client.get(
+                reverse("authentik_api:user-list"),
+                data={"type": UserTypes.INTERNAL},
+            )
+        self.assertEqual(response.status_code, 200)
+        user_queries = [
+            query["sql"]
+            for query in queries.captured_queries
+            if 'FROM "authentik_core_user"' in query["sql"]
+        ]
+        for sql in user_queries:
+            self.assertNotIn("DISTINCT", sql)
+        # The paginator counts the user table directly, not a DISTINCT subquery
+        self.assertTrue(
+            any(
+                sql.startswith('SELECT COUNT(*) AS "__count" FROM "authentik_core_user"')
+                for sql in user_queries
+            )
+        )
+
+    def test_filter_type_with_groups(self):
+        """Test filtering by type together with a to-many filter returns each user once"""
+        self.client.force_login(self.admin)
+        group_a = Group.objects.create(name=generate_id())
+        group_b = Group.objects.create(name=generate_id())
+        user = create_test_user(type=UserTypes.EXTERNAL)
+        user.groups.add(group_a, group_b)
         response = self.client.get(
             reverse("authentik_api:user-list"),
             data={
                 "type": UserTypes.EXTERNAL,
-                "username": user.username,
+                "groups_by_pk": [str(group_a.pk), str(group_b.pk)],
             },
         )
         self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        self.assertEqual([result["pk"] for result in body["results"]], [user.pk])
+        self.assertEqual(body["pagination"]["count"], 1)
 
     def test_filter_is_superuser(self):
         """Test API filtering by superuser status"""
@@ -1020,7 +1076,7 @@ class TestUsersAPI(APITestCase):
 
 
 class TestUsersAPIGroupRoleValidation(APITestCase):
-    """Test that PATCH /api/v3/core/users/{pk}/ enforces group and role permission checks."""
+    """Test that the users API enforces group and role permission checks."""
 
     def setUp(self) -> None:
         self.actor = create_test_user()
@@ -1093,3 +1149,72 @@ class TestUsersAPIGroupRoleValidation(APITestCase):
         self.target.roles.add(role)
         res = self._patch({"roles": [str(role.pk)]})
         self.assertEqual(res.status_code, 200)
+
+    def test_patch_inherited_superuser_group_no_perm(self):
+        """Assigning a group which takes superuser status from its parent without
+        enable_group_superuser must be rejected."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.target)
+        superuser = Group.objects.create(name=generate_id(), is_superuser=True)
+        group = Group.objects.create(name=generate_id())
+        group.parents.add(superuser)
+        res = self._patch({"groups": [str(group.pk)]})
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(list(self.target.groups.all()), [])
+
+    def test_patch_inherited_superuser_group_with_perm(self):
+        """Assigning a group which takes superuser status from its parent with
+        enable_group_superuser must succeed."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.target)
+        self.actor.assign_perms_to_managed_role("authentik_core.enable_group_superuser")
+        superuser = Group.objects.create(name=generate_id(), is_superuser=True)
+        group = Group.objects.create(name=generate_id())
+        group.parents.add(superuser)
+        res = self._patch({"groups": [str(group.pk)]})
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(list(self.target.groups.all()), [group])
+        self.assertTrue(User.objects.get(pk=self.target.pk).is_superuser)
+
+    def test_patch_inherited_non_superuser_group_no_perm(self):
+        """Assigning a group whose parent is not a superuser group without special
+        permission must succeed."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.target)
+        parent = Group.objects.create(name=generate_id())
+        group = Group.objects.create(name=generate_id())
+        group.parents.add(parent)
+        res = self._patch({"groups": [str(group.pk)]})
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(list(self.target.groups.all()), [group])
+        self.assertFalse(User.objects.get(pk=self.target.pk).is_superuser)
+
+    def test_patch_existing_inherited_superuser_group_no_perm(self):
+        """Keeping an existing membership in a group which takes superuser status from its
+        parent without the permission must succeed."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.target)
+        superuser = Group.objects.create(name=generate_id(), is_superuser=True)
+        group = Group.objects.create(name=generate_id())
+        group.parents.add(superuser)
+        self.target.groups.add(group)
+        res = self._patch({"groups": [str(group.pk)]})
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(list(self.target.groups.all()), [group])
+
+    def test_create_inherited_superuser_group_no_perm(self):
+        """Creating a user in a group which takes superuser status from its parent without
+        enable_group_superuser must be rejected."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.add_user")
+        superuser = Group.objects.create(name=generate_id(), is_superuser=True)
+        group = Group.objects.create(name=generate_id())
+        group.parents.add(superuser)
+        self.client.force_login(self.actor)
+        res = self.client.post(
+            reverse("authentik_api:user-list"),
+            data={"username": generate_id(), "name": generate_id(), "groups": [str(group.pk)]},
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(list(group.users.all()), [])

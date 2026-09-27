@@ -1,7 +1,6 @@
 /**
+ * @import {LLMSDocInfo} from "./common.mjs"
  * @file Pure node-side logic for the llms.txt plugin: discovery, parsing, URLs.
- *
- * @import { LLMSDocInfo } from "./common.mjs"
  */
 
 import { readFileSync } from "node:fs";
@@ -16,6 +15,7 @@ import FastGlob from "fast-glob";
  * Convert OS path separators to POSIX.
  *
  * @param {string} p
+ *
  * @returns {string}
  */
 export function normalizePath(p) {
@@ -27,6 +27,7 @@ export function normalizePath(p) {
  *
  * @param {string} absDir Absolute directory to scan.
  * @param {string[]} [ignoreFiles] Extra glob patterns to exclude.
+ *
  * @returns {string[]} Absolute file paths.
  */
 export function collectDocFiles(absDir, ignoreFiles = []) {
@@ -53,6 +54,7 @@ export function collectDocFiles(absDir, ignoreFiles = []) {
  * @param {Record<string, any>} frontMatter
  * @param {string} body
  * @param {string} relPathNoExt
+ *
  * @returns {string}
  */
 function extractTitle(frontMatter, body, relPathNoExt) {
@@ -75,6 +77,7 @@ function extractTitle(frontMatter, body, relPathNoExt) {
  * with linked, bolded prose; both should read as plain text in the index.
  *
  * @param {string} text
+ *
  * @returns {string}
  */
 function cleanDescriptionText(text) {
@@ -98,6 +101,7 @@ function cleanDescriptionText(text) {
  * don't split. Returns the input unchanged when no sentence terminator is found.
  *
  * @param {string} text
+ *
  * @returns {string}
  */
 function firstSentence(text) {
@@ -110,6 +114,7 @@ function firstSentence(text) {
  * prerequisite or feature enumerations, not a usable one-line description.
  *
  * @param {string} block
+ *
  * @returns {boolean}
  */
 function isListBlock(block) {
@@ -128,6 +133,7 @@ function isListBlock(block) {
  *
  * @param {Record<string, any>} frontMatter
  * @param {string} body
+ *
  * @returns {string}
  */
 function extractDescription(frontMatter, body) {
@@ -157,6 +163,7 @@ function extractDescription(frontMatter, body) {
  * degrades to letters rather than dropping them.
  *
  * @param {string} slug
+ *
  * @returns {string}
  */
 function humanizeSlug(slug) {
@@ -176,6 +183,7 @@ function humanizeSlug(slug) {
  *
  * @param {string} filePath Absolute file path.
  * @param {string} baseDir Absolute scan root.
+ *
  * @returns {LLMSDocInfo | null}
  */
 export function parseDocFile(filePath, baseDir) {
@@ -204,6 +212,7 @@ export function parseDocFile(filePath, baseDir) {
 /**
  * @param {string[]} routesPaths
  * @param {string} tail
+ *
  * @returns {string | undefined}
  */
 function findMatchingRoute(routesPaths, tail) {
@@ -221,6 +230,7 @@ function findMatchingRoute(routesPaths, tail) {
 
 /**
  * @param {string} urlPath
+ *
  * @returns {string}
  */
 function collapseMatchingTrailingSegment(urlPath) {
@@ -237,6 +247,7 @@ function collapseMatchingTrailingSegment(urlPath) {
 
 /**
  * @param {string} pathStr
+ *
  * @returns {string}
  */
 function removeNumberedPrefixes(pathStr) {
@@ -253,8 +264,12 @@ function removeNumberedPrefixes(pathStr) {
  * into its own `## Glossary` section.
  *
  * @param {{ path: string }} doc
- * @param {{ groupBy?: "topic"|"category", categories?: readonly (readonly [string,string])[],
- *   regroup?: readonly (readonly [string,string])[] }} opts
+ * @param {{
+ *     groupBy?: "topic" | "category";
+ *     categories?: readonly (readonly [string, string])[];
+ *     regroup?: readonly (readonly [string, string])[];
+ * }} opts
+ *
  * @returns {string}
  */
 export function assignGroup(doc, opts) {
@@ -271,7 +286,11 @@ export function assignGroup(doc, opts) {
  * `categories` label if present, otherwise a title-cased form of the slug.
  *
  * @param {string} group The group slug.
- * @param {{ groupBy?: "topic"|"category", categories?: readonly (readonly [string,string])[] }} opts
+ * @param {{
+ *     groupBy?: "topic" | "category";
+ *     categories?: readonly (readonly [string, string])[];
+ * }} opts
+ *
  * @returns {string}
  */
 export function groupLabel(group, opts) {
@@ -282,6 +301,7 @@ export function groupLabel(group, opts) {
 
 /**
  * @param {string} routeBasePath
+ *
  * @returns {string}
  */
 function normalizeRouteBasePath(routeBasePath) {
@@ -303,6 +323,7 @@ function normalizeRouteBasePath(routeBasePath) {
 
 /**
  * @param {string} routePath
+ *
  * @returns {string}
  */
 function normalizeRoutePath(routePath) {
@@ -319,6 +340,7 @@ function normalizeRoutePath(routePath) {
  *
  * @param {LLMSDocInfo} doc
  * @param {string} routeBasePath
+ *
  * @returns {string}
  */
 export function resolveDocumentUrlFromSource(doc, routeBasePath) {
@@ -346,6 +368,7 @@ export function resolveDocumentUrlFromSource(doc, routeBasePath) {
  * @param {LLMSDocInfo} doc
  * @param {string} routeBasePath
  * @param {string[]} routesPaths Resolved routes from Docusaurus postBuild props.
+ *
  * @returns {string | undefined}
  */
 export function resolveDocumentUrl(doc, routeBasePath, routesPaths) {

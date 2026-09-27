@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -24,33 +22,16 @@ import { ThemedUrlsFromJSON, ThemedUrlsToJSON } from "./ThemedUrls";
 
 /**
  * Contextual flow information for a challenge
+ *
  * @export
  * @interface ContextualFlowInfo
  */
 export interface ContextualFlowInfo {
-    /**
-     *
-     */
     title?: string;
-    /**
-     *
-     */
     background?: string;
-    /**
-     *
-     */
     backgroundThemedUrls?: ThemedUrls | null;
-    /**
-     *
-     */
     cancelUrl: string;
-    /**
-     *
-     */
     layout: ContextualFlowInfoLayoutEnum;
-    /**
-     *
-     */
     messages?: Array<FlowMessage>;
 }
 

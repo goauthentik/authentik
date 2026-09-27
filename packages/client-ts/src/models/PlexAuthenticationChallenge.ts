@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,29 +16,15 @@ import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * Challenge shown to the user in identification stage
+ *
  * @export
  * @interface PlexAuthenticationChallenge
  */
 export interface PlexAuthenticationChallenge {
-    /**
-     *
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     */
     component?: string;
-    /**
-     *
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     */
     clientId: string;
-    /**
-     *
-     */
     slug: string;
 }
 

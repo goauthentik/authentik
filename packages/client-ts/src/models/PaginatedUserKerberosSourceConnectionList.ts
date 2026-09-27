@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,22 +19,12 @@ import {
 } from "./UserKerberosSourceConnection";
 
 /**
- *
  * @export
  * @interface PaginatedUserKerberosSourceConnectionList
  */
 export interface PaginatedUserKerberosSourceConnectionList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<UserKerberosSourceConnection>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

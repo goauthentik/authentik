@@ -5643,6 +5643,32 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /debug/log/:
+    post:
+      operationId: debug_log_create
+      description: |-
+        Debug-only endpoint to allow frontend to log messages, usable
+        when browser develooper-tools aren't available.
+
+        Never available in production.
+      tags:
+      - debug
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServerLogRequest'
+        required: true
+      security:
+      - authentik: []
+      - {}
+      responses:
+        '201':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/agents/connectors/:
     get:
       operationId: endpoints_agents_connectors_list
@@ -10345,6 +10371,30 @@ paths:
       operationId: managed_blueprints_import_create
       description: Import blueprint from .yaml file and apply it once, without creating
         an instance
+      tags:
+      - managed
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BlueprintUploadRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintImportResult'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /managed/blueprints/validate/:
+    post:
+      operationId: managed_blueprints_validate_create
+      description: Validate blueprint from .yaml file and return any errors
       tags:
       - managed
       requestBody:
@@ -25173,6 +25223,14 @@ paths:
         schema:
           type: string
       - in: query
+        name: service_bind_method
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/ServiceBindMethodEnum'
+          description: |+
+            Authentication method used for LDAP synchronization and writeback.
+
+      - in: query
         name: slug
         schema:
           type: string
@@ -36054,8 +36112,11 @@ components:
           type: string
         nonce_endpoint:
           type: string
+        authorization_endpoint:
+          type: string
       required:
       - audience
+      - authorization_endpoint
       - client_id
       - issuer
       - jwks_endpoint
@@ -36894,8 +36955,6 @@ components:
           minimum: -2147483648
         username:
           type: string
-        password:
-          type: string
         use_tls:
           type: boolean
         use_ssl:
@@ -36953,6 +37012,7 @@ components:
           type: string
         password:
           type: string
+          writeOnly: true
         use_tls:
           type: boolean
         use_ssl:
@@ -37136,10 +37196,6 @@ components:
           type: string
         account_sid:
           type: string
-        auth:
-          type: string
-        auth_password:
-          type: string
         auth_type:
           $ref: '#/components/schemas/AuthTypeEnum'
         verify_only:
@@ -37154,7 +37210,6 @@ components:
           description: Optionally modify the payload being sent to custom providers.
       required:
       - account_sid
-      - auth
       - component
       - flow_set
       - from_number
@@ -37189,9 +37244,11 @@ components:
           minLength: 1
         auth:
           type: string
+          writeOnly: true
           minLength: 1
         auth_password:
           type: string
+          writeOnly: true
         auth_type:
           $ref: '#/components/schemas/AuthTypeEnum'
         verify_only:
@@ -37870,7 +37927,11 @@ components:
         success:
           type: boolean
           readOnly: true
+        imported:
+          type: boolean
+          readOnly: true
       required:
+      - imported
       - logs
       - success
     BlueprintInstance:
@@ -40543,10 +40604,16 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+        primary_binding_obj:
+          allOf:
+          - $ref: '#/components/schemas/DeviceUserBinding'
+          readOnly: true
+          nullable: true
       required:
       - facts
       - name
       - pbm_uuid
+      - primary_binding_obj
     EndpointDeviceDetails:
       type: object
       properties:
@@ -40579,6 +40646,11 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+        primary_binding_obj:
+          allOf:
+          - $ref: '#/components/schemas/DeviceUserBinding'
+          readOnly: true
+          nullable: true
         connections_obj:
           type: array
           items:
@@ -40602,6 +40674,7 @@ components:
       - name
       - pbm_uuid
       - policies
+      - primary_binding_obj
     EndpointDeviceRequest:
       type: object
       properties:
@@ -43740,10 +43813,6 @@ components:
         sync_principal:
           type: string
           description: Principal to authenticate to kadmin for sync.
-        sync_ccache:
-          type: string
-          description: Credentials cache to authenticate to kadmin for sync. Must
-            be in the form TYPE:residual
         connectivity:
           type: object
           additionalProperties:
@@ -43755,9 +43824,6 @@ components:
           type: string
           description: Force the use of a specific server name for SPNEGO. Must be
             in the form HTTP@hostname
-        spnego_ccache:
-          type: string
-          description: Credential cache to use for SPNEGO in form type:residual
         password_login_update_internal_password:
           type: boolean
           description: If enabled, the authentik-stored password will be updated upon
@@ -43933,6 +43999,7 @@ components:
             or in the form TYPE:residual
         sync_ccache:
           type: string
+          writeOnly: true
           description: Credentials cache to authenticate to kadmin for sync. Must
             be in the form TYPE:residual
         spnego_server_name:
@@ -43946,6 +44013,7 @@ components:
             FILE:path
         spnego_ccache:
           type: string
+          writeOnly: true
           description: Credential cache to use for SPNEGO in form type:residual
         password_login_update_internal_password:
           type: boolean
@@ -44423,6 +44491,10 @@ components:
             Certificate.
         bind_cn:
           type: string
+        service_bind_method:
+          allOf:
+          - $ref: '#/components/schemas/ServiceBindMethodEnum'
+          description: Authentication method used for LDAP synchronization and writeback.
         start_tls:
           type: boolean
           title: Enable Start TLS
@@ -44648,6 +44720,10 @@ components:
         bind_password:
           type: string
           writeOnly: true
+        service_bind_method:
+          allOf:
+          - $ref: '#/components/schemas/ServiceBindMethodEnum'
+          description: Authentication method used for LDAP synchronization and writeback.
         start_tls:
           type: boolean
           title: Enable Start TLS
@@ -45322,8 +45398,6 @@ components:
           readOnly: true
         client_id:
           type: string
-        client_secret:
-          type: string
         tenant_id:
           type: string
         exclude_users_service_account:
@@ -45356,7 +45430,6 @@ components:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
       - client_id
-      - client_secret
       - component
       - meta_model_name
       - name
@@ -45500,6 +45573,7 @@ components:
           minLength: 1
         client_secret:
           type: string
+          writeOnly: true
           minLength: 1
         tenant_id:
           type: string
@@ -50539,6 +50613,7 @@ components:
           type: string
         password:
           type: string
+          writeOnly: true
         use_tls:
           type: boolean
         use_ssl:
@@ -50605,9 +50680,11 @@ components:
           minLength: 1
         auth:
           type: string
+          writeOnly: true
           minLength: 1
         auth_password:
           type: string
+          writeOnly: true
         auth_type:
           $ref: '#/components/schemas/AuthTypeEnum'
         verify_only:
@@ -51887,6 +51964,7 @@ components:
             or in the form TYPE:residual
         sync_ccache:
           type: string
+          writeOnly: true
           description: Credentials cache to authenticate to kadmin for sync. Must
             be in the form TYPE:residual
         spnego_server_name:
@@ -51900,6 +51978,7 @@ components:
             FILE:path
         spnego_ccache:
           type: string
+          writeOnly: true
           description: Credential cache to use for SPNEGO in form type:residual
         password_login_update_internal_password:
           type: boolean
@@ -52081,6 +52160,10 @@ components:
         bind_password:
           type: string
           writeOnly: true
+        service_bind_method:
+          allOf:
+          - $ref: '#/components/schemas/ServiceBindMethodEnum'
+          description: Authentication method used for LDAP synchronization and writeback.
         start_tls:
           type: boolean
           title: Enable Start TLS
@@ -52244,6 +52327,7 @@ components:
           minLength: 1
         client_secret:
           type: string
+          writeOnly: true
           minLength: 1
         tenant_id:
           type: string
@@ -53695,9 +53779,17 @@ components:
           type: boolean
         token:
           type: string
+          writeOnly: true
           description: Authentication token
         auth_mode:
           $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
+        auth_basic_user:
+          type: string
+          description: Username used for Basic authentication
+        auth_basic_password:
+          type: string
+          writeOnly: true
+          description: Password used for Basic authentication
         auth_oauth:
           type: string
           format: uuid
@@ -57923,6 +58015,7 @@ components:
     SCIMAuthenticationModeEnum:
       enum:
       - token
+      - basic
       - oauth
       - oauth_interactive
       type: string
@@ -58045,11 +58138,11 @@ components:
           description: Base URL to SCIM requests, usually ends in /v2
         verify_certificates:
           type: boolean
-        token:
-          type: string
-          description: Authentication token
         auth_mode:
           $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
+        auth_basic_user:
+          type: string
+          description: Username used for Basic authentication
         auth_oauth:
           type: string
           format: uuid
@@ -58196,9 +58289,17 @@ components:
           type: boolean
         token:
           type: string
+          writeOnly: true
           description: Authentication token
         auth_mode:
           $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
+        auth_basic_user:
+          type: string
+          description: Username used for Basic authentication
+        auth_basic_password:
+          type: string
+          writeOnly: true
+          description: Password used for Basic authentication
         auth_oauth:
           type: string
           format: uuid
@@ -58903,6 +59004,20 @@ components:
       - name
       - pk
       - verbose_name
+    ServerLogRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        message:
+          type: string
+          minLength: 1
+      required:
+      - message
+    ServiceBindMethodEnum:
+      enum:
+      - simple
+      - sasl_external
+      type: string
     ServiceConnection:
       type: object
       description: ServiceConnection Serializer

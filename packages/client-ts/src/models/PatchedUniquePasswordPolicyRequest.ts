@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,16 +12,15 @@
 
 /**
  * Password Uniqueness Policy Serializer
+ *
  * @export
  * @interface PatchedUniquePasswordPolicyRequest
  */
 export interface PatchedUniquePasswordPolicyRequest {
-    /**
-     *
-     */
     name?: string;
     /**
-     * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+     * When this option is enabled, all executions of this policy will be logged. By default, only
+     * execution errors are logged.
      */
     executionLogging?: boolean;
     /**

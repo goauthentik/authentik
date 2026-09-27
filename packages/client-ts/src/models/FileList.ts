@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,25 +15,14 @@ import { ThemedUrlsFromJSON, ThemedUrlsToJSON } from "./ThemedUrls";
 
 /**
  * Base serializer class which doesn't implement create/update methods
+ *
  * @export
  * @interface FileList
  */
 export interface FileList {
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     mimeType: string;
-    /**
-     *
-     */
     url: string;
-    /**
-     *
-     */
     themedUrls?: ThemedUrls | null;
 }
 

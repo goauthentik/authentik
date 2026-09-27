@@ -16,9 +16,9 @@ export interface VersionPickerLoaderProps {
 /**
  * A data-fetching component that loads available versions of the documentation.
  *
+ * @client
  * @see {@linkcode VersionPicker} for the component.
  * @see {@linkcode AKReleasesPluginData} for the plugin data.
- * @client
  */
 export const VersionPickerLoader: React.FC<VersionPickerLoaderProps> = ({ pluginData }) => {
     const { preReleaseOrigin } = pluginData.env;

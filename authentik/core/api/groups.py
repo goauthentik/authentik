@@ -17,6 +17,7 @@ from drf_spectacular.utils import (
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.fields import CharField, IntegerField, SerializerMethodField
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.relations import ManyRelatedField, PrimaryKeyRelatedField
@@ -37,6 +38,7 @@ from authentik.core.models import Group, User
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
+from authentik.rbac.models import Role
 
 
 class RawPKList(list):
@@ -209,6 +211,8 @@ class GroupSerializer(AttributesMixinSerializer, ModelSerializer):
     def get_users_obj(self, instance: Group) -> list[PartialUserSerializer] | None:
         if not self._should_include_users:
             return None
+        if (precomputed := getattr(instance, "_users_obj", None)) is not None:
+            return precomputed
         return PartialUserSerializer(instance.users, many=True).data
 
     @extend_schema_field(RelatedGroupSerializer(many=True))
@@ -260,23 +264,60 @@ class GroupSerializer(AttributesMixinSerializer, ModelSerializer):
         return superuser
 
     def validate_users(self, users: list) -> list:
-        """Require add_user_to_group permission when adding new members via group PATCH."""
+        """Require add_user_to_group permission when adding new members via group PATCH, and
+        enable_group_superuser when the group grants superuser status."""
         request: Request = self.context.get("request", None)
         if not request:
             return users
         if not self.instance:
             return users
         # BulkManyRelatedField returns raw PKs, not model instances
-        current_user_pks = set(self.instance.users.values_list("pk", flat=True))
-        new_users = [u for u in users if u not in current_user_pks]
-        if not new_users:
+        new_users = User.objects.filter(pk__in=users).exclude(pk__in=self.instance.users.all())
+        if not new_users.exists():
             return users
         has_perm = request.user.has_perm(
             "authentik_core.add_user_to_group"
         ) or request.user.has_perm("authentik_core.add_user_to_group", self.instance)
         if not has_perm:
             raise ValidationError(_("User does not have permission to add members to this group."))
+        ancestry = Group.objects.filter(pk=self.instance.pk).with_ancestors()
+        if ancestry.filter(is_superuser=True).exists() and not request.user.has_perm(
+            "authentik_core.enable_group_superuser", self.instance
+        ):
+            raise ValidationError(
+                _("User does not have permission to add members to a superuser group.")
+            )
         return users
+
+    def validate_parents(self, parents: list) -> list:
+        """Require enable_group_superuser permission when adding a parent group which grants
+        superuser status."""
+        request: Request = self.context.get("request", None)
+        if not request:
+            return parents
+        new_parents = Group.objects.filter(pk__in=[group.pk for group in parents])
+        if self.instance:
+            new_parents = new_parents.exclude(pk__in=self.instance.parents.all())
+        ancestry = new_parents.with_ancestors()
+        if ancestry.filter(is_superuser=True).exists() and not request.user.has_perm(
+            "authentik_core.enable_group_superuser", self.instance
+        ):
+            raise ValidationError(
+                _("User does not have permission to add a superuser parent group.")
+            )
+        return parents
+
+    def validate_roles(self, roles: list) -> list:
+        """Require change_role permission when assigning new roles to a group."""
+        request: Request = self.context.get("request", None)
+        if not request:
+            return roles
+        new_roles = Role.objects.filter(pk__in=[role.pk for role in roles])
+        if self.instance:
+            new_roles = new_roles.exclude(pk__in=self.instance.roles.all())
+        if new_roles.exists() and not request.user.has_perm("authentik_rbac.change_role"):
+            raise ValidationError(_("User does not have permission to assign roles."))
+        return roles
 
     class Meta:
         model = Group
@@ -377,13 +418,19 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
             JSONSearchField(Group, "attributes"),
         ]
 
+    @property
+    def _should_include_users(self) -> bool:
+        return self.serializer_class(context={"request": self.request})._should_include_users
+
     def get_queryset(self):
         # Always prefetch parents and children since their PKs are always serialized
         base_qs = Group.objects.all().prefetch_related("roles", "parents", "children")
 
-        if self.serializer_class(context={"request": self.request})._should_include_users:
-            # Only fetch fields needed by PartialUserSerializer to reduce DB load and instantiation
-            # time
+        # `list` builds both `users` and `users_obj`. Prefetching `users` would include duplicates
+        if getattr(self, "action", None) == "list":
+            return base_qs
+
+        if self._should_include_users:
             base_qs = base_qs.prefetch_related(
                 Prefetch(
                     "users",
@@ -392,22 +439,53 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
             )
         return base_qs
 
-    def _attach_user_pk_lists(self, groups: list[Group]) -> None:
-        """Batch-load user PKs without materializing User objects."""
+    def _load_memberships(self, groups: list[Group]) -> dict:
+        """Load {group_pk: [user_pk]} in a single query, without instantiating User objects."""
         group_pks = {group.pk for group in groups}
+        memberships = {group_pk: [] for group_pk in group_pks}
         if not group_pks:
+            return memberships
+
+        for group_pk, user_pk in User.groups.through.objects.filter(
+            group_id__in=group_pks
+        ).values_list("group_id", "user_id"):
+            memberships[group_pk].append(user_pk)
+
+        # We sort by PK so repeated requests are stable.
+        for user_pks in memberships.values():
+            user_pks.sort()
+        return memberships
+
+    def _attach_user_pk_lists(self, groups: list[Group], memberships: dict | None = None) -> None:
+        """Batch-load user PKs without materializing User objects."""
+        if memberships is None:
+            memberships = self._load_memberships(groups)
+        for group in groups:
+            group._users_pk_list = memberships[group.pk]
+
+    def _attach_users_obj(self, groups: list[Group], memberships: dict) -> None:
+        """Load and serialize user objects exactly once"""
+        if not any(memberships.values()):
+            for group in groups:
+                group._users_obj = []
             return
 
-        users_by_group = {group_pk: [] for group_pk in group_pks}
+        # This is specifically done with a subquery to get around the Postgres parameter limit
+        members = User.objects.filter(
+            pk__in=User.groups.through.objects.filter(group_id__in=memberships.keys()).values(
+                "user_id"
+            )
+        ).only(*PARTIAL_USER_SERIALIZER_MODEL_FIELDS)
 
-        through = User.groups.through
-        for group_pk, user_pk in through.objects.filter(group_id__in=group_pks).values_list(
-            "group_id", "user_id"
-        ):
-            users_by_group[group_pk].append(user_pk)
+        serializer = PartialUserSerializer(context=self.get_serializer_context())
+        representations = {member.pk: serializer.to_representation(member) for member in members}
 
         for group in groups:
-            group._users_pk_list = users_by_group[group.pk]
+            group._users_obj = [
+                representations[user_pk]
+                for user_pk in memberships[group.pk]
+                if user_pk in representations
+            ]
 
     @extend_schema(
         parameters=[
@@ -418,20 +496,18 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         ]
     )
     def list(self, request, *args, **kwargs):
-        if self.serializer_class(context={"request": self.request})._should_include_users:
-            return super().list(request, *args, **kwargs)
-
         queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
-        if page is not None:
-            groups = list(page)
-            self._attach_user_pk_lists(groups)
-            serializer = self.get_serializer(groups, many=True)
-            return self.get_paginated_response(serializer.data)
+        groups = list(page) if page is not None else list(queryset)
 
-        groups = list(queryset)
-        self._attach_user_pk_lists(groups)
+        memberships = self._load_memberships(groups)
+        self._attach_user_pk_lists(groups, memberships)
+        if self._should_include_users:
+            self._attach_users_obj(groups, memberships)
+
         serializer = self.get_serializer(groups, many=True)
+        if page is not None:
+            return self.get_paginated_response(serializer.data)
         return Response(serializer.data)
 
     @extend_schema(
@@ -473,6 +549,14 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         )
         if not user:
             raise Http404
+        if not group.users.filter(pk=user.pk).exists():
+            ancestry = Group.objects.filter(pk=group.pk).with_ancestors()
+            if ancestry.filter(is_superuser=True).exists() and not request.user.has_perm(
+                "authentik_core.enable_group_superuser", group
+            ):
+                raise PermissionDenied(
+                    _("User does not have permission to add members to a superuser group.")
+                )
         group.users.add(user)
         return Response(status=204)
 

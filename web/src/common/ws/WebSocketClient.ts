@@ -81,6 +81,7 @@ export class WebsocketClient extends WebSocket implements Disposable {
             return new WebsocketClient(wsURL);
         } catch (error) {
             console.warn(`authentik/ws: failed to connect to ws ${error}`);
+
             return null;
         }
     }

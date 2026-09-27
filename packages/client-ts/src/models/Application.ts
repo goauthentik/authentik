@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,17 +19,12 @@ import { ThemedUrlsFromJSON } from "./ThemedUrls";
 
 /**
  * Application Serializer
+ *
  * @export
  * @interface Application
  */
 export interface Application {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     readonly pbmUuid: string;
     /**
      * Application's display Name.
@@ -41,21 +34,9 @@ export interface Application {
      * Internal application name, used in URLs.
      */
     slug: string;
-    /**
-     *
-     */
     provider?: number | null;
-    /**
-     *
-     */
     readonly providerObj: Provider | null;
-    /**
-     *
-     */
     backchannelProviders?: Array<number>;
-    /**
-     *
-     */
     readonly backchannelProvidersObj: Array<Provider>;
     /**
      * Allow formatting of launch URL
@@ -65,37 +46,16 @@ export interface Application {
      * Open launch URL in a new browser tab or window.
      */
     openInNewTab?: boolean;
-    /**
-     *
-     */
     metaLaunchUrl?: string;
-    /**
-     *
-     */
     metaIcon?: string;
     /**
      * Get the URL to the App Icon image
      */
     readonly metaIconUrl: string | null;
-    /**
-     *
-     */
     readonly metaIconThemedUrls: ThemedUrls | null;
-    /**
-     *
-     */
     metaDescription?: string;
-    /**
-     *
-     */
     metaPublisher?: string;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
-    /**
-     *
-     */
     group?: string;
     /**
      * Hide this application from the user's My applications page.

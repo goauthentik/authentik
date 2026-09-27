@@ -4,7 +4,6 @@ import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 
 import { AKLabel } from "#components/ak-label";
@@ -40,6 +39,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
         if (!this.instance) {
             return true;
         }
+
         return (
             this.instance.backends.filter((isField) => {
                 return field === isField;
@@ -117,10 +117,13 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                                     ordering: "slug",
                                     designation: FlowDesignationEnum.StageConfiguration,
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const flows = await aki(FlowsApi).flowsInstancesList(args);
+
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {
@@ -134,6 +137,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                             }}
                             .selected=${(flow: Flow): boolean => {
                                 let selected = this.instance?.configureFlow === flow.pk;
+
                                 if (
                                     !this.instance?.pk &&
                                     !this.instance?.configureFlow &&
@@ -141,6 +145,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                                 ) {
                                     selected = true;
                                 }
+
                                 return selected;
                             }}
                             blankable

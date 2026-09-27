@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,37 +12,20 @@
 
 /**
  * PolicyBinding Serializer
+ *
  * @export
  * @interface PatchedDeviceUserBindingRequest
  */
 export interface PatchedDeviceUserBindingRequest {
-    /**
-     *
-     */
     policy?: string | null;
-    /**
-     *
-     */
     group?: string | null;
-    /**
-     *
-     */
     user?: number | null;
-    /**
-     *
-     */
     target?: string;
     /**
      * Negates the outcome of the policy. Messages are unaffected.
      */
     negate?: boolean;
-    /**
-     *
-     */
     enabled?: boolean;
-    /**
-     *
-     */
     order?: number;
     /**
      * Timeout after which Policy execution is terminated.
@@ -54,9 +35,6 @@ export interface PatchedDeviceUserBindingRequest {
      * Result if the Policy execution fails.
      */
     failureResult?: boolean;
-    /**
-     *
-     */
     isPrimary?: boolean;
 }
 

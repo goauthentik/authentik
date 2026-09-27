@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -26,24 +24,20 @@ import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHint
 
 /**
  * AuthenticatorValidateStage Serializer
+ *
  * @export
  * @interface PatchedAuthenticatorValidateStageRequest
  */
 export interface PatchedAuthenticatorValidateStageRequest {
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     notConfiguredAction?: NotConfiguredActionEnum;
     /**
      * Device classes which can be used to authenticate
      */
     deviceClasses?: Array<DeviceClassesEnum>;
     /**
-     * Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.
+     * Stages used to configure Authenticator when user doesn't have any compatible devices. After
+     * this configuration Stage passes, the user is not prompted again.
      */
     configurationStages?: Array<string>;
     /**
@@ -54,29 +48,11 @@ export interface PatchedAuthenticatorValidateStageRequest {
      * Enforce user verification for WebAuthn devices.
      */
     webauthnUserVerification?: UserVerificationEnum;
-    /**
-     *
-     */
     webauthnHints?: Array<WebAuthnHintEnum>;
-    /**
-     *
-     */
     webauthnAllowedDeviceTypes?: Array<string>;
-    /**
-     *
-     */
     emailOtpThrottlingFactor?: number;
-    /**
-     *
-     */
     smsOtpThrottlingFactor?: number;
-    /**
-     *
-     */
     totpOtpThrottlingFactor?: number;
-    /**
-     *
-     */
     staticOtpThrottlingFactor?: number;
 }
 

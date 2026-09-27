@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,38 +18,16 @@ import {
 } from "./DeviceAccessGroupRequest";
 
 /**
- *
  * @export
  * @interface PatchedEndpointDeviceRequest
  */
 export interface PatchedEndpointDeviceRequest {
-    /**
-     *
-     */
     deviceUuid?: string;
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     accessGroup?: string | null;
-    /**
-     *
-     */
     accessGroupObj?: DeviceAccessGroupRequest;
-    /**
-     *
-     */
     expiring?: boolean;
-    /**
-     *
-     */
     expires?: Date | null;
-    /**
-     *
-     */
     attributes?: { [key: string]: any };
 }
 

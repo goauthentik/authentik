@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,22 +11,12 @@
  */
 
 /**
- *
  * @export
  * @interface Connector
  */
 export interface Connector {
-    /**
-     *
-     */
     connectorUuid?: string;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     enabled?: boolean;
     /**
      * Get object component so that we know how to edit the object

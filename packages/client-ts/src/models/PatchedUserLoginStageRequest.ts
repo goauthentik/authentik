@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,16 +17,15 @@ import { NetworkBindingEnumFromJSON, NetworkBindingEnumToJSON } from "./NetworkB
 
 /**
  * UserLoginStage Serializer
+ *
  * @export
  * @interface PatchedUserLoginStageRequest
  */
 export interface PatchedUserLoginStageRequest {
-    /**
-     *
-     */
     name?: string;
     /**
-     * Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)
+     * Determines how long a session lasts. Default of 0 means that the sessions lasts until the
+     * browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)
      */
     sessionDuration?: string;
     /**
@@ -36,7 +33,9 @@ export interface PatchedUserLoginStageRequest {
      */
     terminateOtherSessions?: boolean;
     /**
-     * Offset the session will be extended by when the user picks the remember me option. Default of 0 means that the remember me option will not be shown. (Format: hours=-1;minutes=-2;seconds=-3)
+     * Offset the session will be extended by when the user picks the remember me option. Default of
+     * 0 means that the remember me option will not be shown. (Format:
+     * hours=-1;minutes=-2;seconds=-3)
      */
     rememberMeOffset?: string;
     /**
@@ -48,7 +47,8 @@ export interface PatchedUserLoginStageRequest {
      */
     geoipBinding?: GeoipBindingEnum;
     /**
-     * When set to a non-zero value, authentik will save a cookie with a longer expiry,to remember the device the user is logging in from. (Format: hours=-1;minutes=-2;seconds=-3)
+     * When set to a non-zero value, authentik will save a cookie with a longer expiry,to remember
+     * the device the user is logging in from. (Format: hours=-1;minutes=-2;seconds=-3)
      */
     rememberDevice?: string;
 }

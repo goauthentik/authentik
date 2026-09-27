@@ -5,7 +5,6 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#components/ak-switch-input";
-
 import { aki } from "#common/api/client";
 
 import { SlottedTemplateResult } from "#elements/types";
@@ -34,7 +33,9 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
         const stage = await aki(StagesApi).stagesAuthenticatorEmailRetrieve({
             stageUuid: pk,
         });
+
         this.showConnectionSettings = !stage.useGlobalSettings;
+
         return stage;
     }
 
@@ -54,6 +55,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                 authenticatorEmailStageRequest: data,
             });
         }
+
         return aki(StagesApi).stagesAuthenticatorEmailCreate({
             authenticatorEmailStageRequest: data,
         });
@@ -63,6 +65,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
         if (!this.showConnectionSettings) {
             return nothing;
         }
+
         return html`<ak-form-group open label="${msg("Connection settings")}">
             <div class="pf-c-form">
                 <ak-form-element-horizontal label=${msg("SMTP Host")} required name="host">
@@ -217,10 +220,13 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                                     ordering: "slug",
                                     designation: FlowDesignationEnum.StageConfiguration,
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const flows = await aki(FlowsApi).flowsInstancesList(args);
+
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {
@@ -249,18 +255,22 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                             class="pf-c-form-control"
                             ?disabled=${!this.templates || this.templates.length === 0}
                         >
-                            ${this.templates && this.templates.length > 0
-                                ? this.templates.map((template: TypeCreate) => {
-                                      return html`<option
-                                          value="${template.name}"
-                                          ?selected=${this.instance?.template === template.name ||
-                                          (!this.instance?.template &&
-                                              template.name === "email/email_otp.html")}
-                                      >
-                                          ${template.description}
-                                      </option>`;
-                                  })
-                                : html`<option value="">${msg("Loading templates...")}</option>`}
+                            ${
+                                this.templates && this.templates.length > 0
+                                    ? this.templates.map((template: TypeCreate) => {
+                                          return html`<option
+                                              value="${template.name}"
+                                              ?selected=${
+                                                  this.instance?.template === template.name ||
+                                                  (!this.instance?.template &&
+                                                      template.name === "email/email_otp.html")
+                                              }
+                                          >
+                                              ${template.description}
+                                          </option>`;
+                                      })
+                                    : html`<option value="">${msg("Loading templates...")}</option>`
+                            }
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${msg("Template used for the verification email.")}

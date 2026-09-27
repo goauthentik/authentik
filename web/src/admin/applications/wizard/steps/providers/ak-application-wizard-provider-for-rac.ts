@@ -3,7 +3,6 @@ import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-text-input";
 import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
-
 import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
 import {
     propertyMappingsProvider,
@@ -80,6 +79,7 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("RAC Provider Step received uninitialized wizard context.");
         }
+
         return this.renderForm(this.wizard.provider);
     }
 }

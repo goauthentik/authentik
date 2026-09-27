@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { SSFStream } from "./SSFStream";
 import { SSFStreamFromJSON, SSFStreamToJSON } from "./SSFStream";
 
 /**
- *
  * @export
  * @interface PaginatedSSFStreamList
  */
 export interface PaginatedSSFStreamList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<SSFStream>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

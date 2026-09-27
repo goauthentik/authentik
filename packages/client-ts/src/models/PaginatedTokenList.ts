@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { Token } from "./Token";
 import { TokenFromJSON, TokenToJSON } from "./Token";
 
 /**
- *
  * @export
  * @interface PaginatedTokenList
  */
 export interface PaginatedTokenList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<Token>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

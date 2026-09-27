@@ -14,7 +14,6 @@ import { customElement, property } from "lit/decorators.js";
  * Form page for OAuth2 Dynamic Client Registration configuration
  *
  * @element ak-provider-oauth2-dcr-form
- *
  */
 @customElement("ak-provider-oauth2-dcr-form")
 export class OAuth2DCRForm extends ModelForm<OAuth2DynamicClientRegistration, string> {
@@ -50,7 +49,9 @@ export class OAuth2DCRForm extends ModelForm<OAuth2DynamicClientRegistration, st
                 oAuth2DynamicClientRegistrationRequest: data,
             });
         }
+
         data.provider = this.providerID || 0;
+
         return aki(ProvidersApi).providersOauth2DcrCreate({
             oAuth2DynamicClientRegistrationRequest: data,
         });

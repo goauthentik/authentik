@@ -9,7 +9,6 @@ import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./PlexSourceFormHelpers.js";
 
 import { aki } from "#common/api/client";
@@ -41,8 +40,10 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
         const source = await aki(SourcesApi).sourcesPlexRetrieve({
             slug: pk,
         });
+
         this.plexToken = source.plexToken;
         this.loadServers();
+
         return source;
     }
 
@@ -60,6 +61,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
 
     async send(data: PlexSource): Promise<PlexSource> {
         data.plexToken = this.plexToken || "";
+
         if (this.instance?.pk) {
             return aki(SourcesApi).sourcesPlexUpdate({
                 slug: this.instance.slug,
@@ -75,6 +77,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
     async doAuth(): Promise<void> {
         const authInfo = await PlexAPIClient.getPin(this.instance?.clientId || "");
         const authWindow = await popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
+
         PlexAPIClient.pinPoll(this.instance?.clientId || "", authInfo.pin.id).then((token) => {
             authWindow?.close();
             this.plexToken = token;
@@ -86,6 +89,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
         if (!this.plexToken) {
             return;
         }
+
         this.plexResources = await new PlexAPIClient(this.plexToken).getServers();
     }
 
@@ -101,6 +105,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
                 ${msg("Load servers")}
             </button>`;
         }
+
         return html` <button
                 class="pf-c-button pf-m-secondary"
                 type="button"
@@ -129,6 +134,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
                                 return server === r.clientIdentifier;
                             },
                         );
+
                         return html`<option value=${r.clientIdentifier} ?selected=${selected}>
                             ${r.name}
                         </option>`;
@@ -179,36 +185,41 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
                 <select class="pf-c-form-control">
                     <option
                         value=${UserMatchingModeEnum.Identifier}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.Identifier}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.Identifier
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.EmailLink}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.EmailLink}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.EmailLink
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailLink)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.EmailDeny}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.EmailDeny}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.EmailDeny
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailDeny)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.UsernameLink}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.UsernameLink}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.UsernameLink
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameLink)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.UsernameDeny}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.UsernameDeny}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.UsernameDeny
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameDeny)}
                     </option>
@@ -222,22 +233,25 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
                 <select class="pf-c-form-control">
                     <option
                         value=${GroupMatchingModeEnum.Identifier}
-                        ?selected=${this.instance?.groupMatchingMode ===
-                        GroupMatchingModeEnum.Identifier}
+                        ?selected=${
+                            this.instance?.groupMatchingMode === GroupMatchingModeEnum.Identifier
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
                     </option>
                     <option
                         value=${GroupMatchingModeEnum.NameLink}
-                        ?selected=${this.instance?.groupMatchingMode ===
-                        GroupMatchingModeEnum.NameLink}
+                        ?selected=${
+                            this.instance?.groupMatchingMode === GroupMatchingModeEnum.NameLink
+                        }
                     >
                         ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameLink)}
                     </option>
                     <option
                         value=${GroupMatchingModeEnum.NameDeny}
-                        ?selected=${this.instance?.groupMatchingMode ===
-                        GroupMatchingModeEnum.NameDeny}
+                        ?selected=${
+                            this.instance?.groupMatchingMode === GroupMatchingModeEnum.NameDeny
+                        }
                     >
                         ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameDeny)}
                     </option>
