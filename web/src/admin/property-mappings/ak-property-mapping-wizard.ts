@@ -19,12 +19,17 @@ import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
 import { aki } from "#common/api/client";
 
+import { formatCreateLabel } from "#elements/dialogs/shared";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { CreateWizard } from "#elements/wizard/CreateWizard";
+
+import { AKFullPageWizard } from "#components/ak-wizard/ak-full-page-wizard";
 
 import { PropertymappingsApi, TypeCreate } from "@goauthentik/api";
 
 import { msg } from "@lit/localize/init/install";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
+import { html } from "lit";
 
 @customElement("ak-property-mapping-wizard")
 export class AKPropertyMappingWizard extends CreateWizard {
@@ -38,8 +43,23 @@ export class AKPropertyMappingWizard extends CreateWizard {
     public static override verboseNamePlural = msg("Property Mappings");
 }
 
+/**
+ * The property mapping wizard as a full page, for the `/core/property-mappings/new` route.
+ */
+@customElement("ak-property-mapping-wizard-page")
+export class AKPropertyMappingWizardPage extends AKFullPageWizard {
+    public override header = formatCreateLabel(AKPropertyMappingWizard);
+    public override icon = "pf-icon pf-icon-blueprint";
+    public override returnURL = toAdminInterface("core/property-mappings");
+
+    protected override render() {
+        return html`<ak-property-mapping-wizard></ak-property-mapping-wizard>`;
+    }
+}
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-property-mapping-wizard": AKPropertyMappingWizard;
+        "ak-property-mapping-wizard-page": AKPropertyMappingWizardPage;
     }
 }

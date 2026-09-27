@@ -1,10 +1,13 @@
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { modalInvoker } from "#elements/dialogs/directives";
 import type { ModalTemplate } from "#elements/dialogs/invokers";
-import type { DialogInit, NamedEntityElementConstructor } from "#elements/dialogs/shared";
+import {
+    type DialogInit,
+    formatCreateLabel,
+    type NamedEntityElementConstructor,
+} from "#elements/dialogs/shared";
 import type { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 
-import { msg, str } from "@lit/localize";
 import { html } from "lit-html";
 
 export interface NewModelButtonProps {
@@ -31,13 +34,7 @@ export function ModalInvokerButton<T extends ModalTemplate | NamedEntityElementC
 ): SlottedTemplateResult {
     const { kind = "primary" } = buttonProps ?? {};
 
-    const { verboseName, createLabel = msg("New") } = factory as NamedEntityElementConstructor;
-
-    const label = verboseName
-        ? msg(str`${createLabel} ${verboseName}`, {
-              id: "invoker.label.modifier-noun",
-          })
-        : createLabel;
+    const label = formatCreateLabel(factory as NamedEntityElementConstructor);
 
     return html`<button
         class="pf-c-button pf-m-${kind}"

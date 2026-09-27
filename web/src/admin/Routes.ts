@@ -131,6 +131,15 @@ export const ROUTES: RouteLike[] = [
         },
         "connectors",
     ),
+    new Route(
+        "/endpoints/connectors/new",
+        async () => {
+            await import("#admin/endpoints/connectors/ConnectorWizard");
+
+            return html`<ak-endpoint-connector-wizard-page></ak-endpoint-connector-wizard-page>`;
+        },
+        "connector-new",
+    ),
     new Route<{ uuid: string }>(
         "/endpoints/connectors/:uuid{/*}?",
         async (args) => {
@@ -161,6 +170,15 @@ export const ROUTES: RouteLike[] = [
         },
         "sources",
     ),
+    new Route(
+        "/core/sources/new",
+        async () => {
+            await import("#admin/sources/ak-source-wizard");
+
+            return html`<ak-source-wizard-page></ak-source-wizard-page>`;
+        },
+        "source-new",
+    ),
     new Route<{ slug: string }>(
         "/core/sources/:slug{/*}?",
         async (args) => {
@@ -178,6 +196,15 @@ export const ROUTES: RouteLike[] = [
             return html`<ak-property-mapping-list></ak-property-mapping-list>`;
         },
         "property-mappings",
+    ),
+    new Route(
+        "/core/property-mappings/new",
+        async () => {
+            await import("#admin/property-mappings/ak-property-mapping-wizard");
+
+            return html`<ak-property-mapping-wizard-page></ak-property-mapping-wizard-page>`;
+        },
+        "property-mapping-new",
     ),
     new Route(
         "/core/tokens",
@@ -206,6 +233,15 @@ export const ROUTES: RouteLike[] = [
             return html`<ak-policy-list></ak-policy-list>`;
         },
         "policies",
+    ),
+    new Route(
+        "/policy/policies/new",
+        async () => {
+            await import("#admin/policies/ak-policy-wizard");
+
+            return html`<ak-policy-wizard-page></ak-policy-wizard-page>`;
+        },
+        "policy-new",
     ),
     new Route(
         "/policy/reputation",
@@ -281,6 +317,15 @@ export const ROUTES: RouteLike[] = [
         },
         "users",
     ),
+    new Route(
+        "/identity/users/new",
+        async () => {
+            await import("#admin/users/ak-user-wizard");
+
+            return html`<ak-user-wizard-page></ak-user-wizard-page>`;
+        },
+        "user-new",
+    ),
     new Route<{ id: string }>(
         // The `{/*}?` tail carries the tab path (`/identity/users/22/credentials`)
         // to this route while `ak-user-view` stays mounted across tab changes.
@@ -346,6 +391,15 @@ export const ROUTES: RouteLike[] = [
             return html`<ak-stage-list></ak-stage-list>`;
         },
         "stages",
+    ),
+    new Route(
+        "/flow/stages/new",
+        async () => {
+            await import("#admin/stages/ak-stage-wizard");
+
+            return html`<ak-stage-wizard-page></ak-stage-wizard-page>`;
+        },
+        "stage-new",
     ),
     new Route(
         "/flow/flows",
@@ -468,6 +522,15 @@ export const ROUTES: RouteLike[] = [
             return html`<ak-outpost-service-connection-list></ak-outpost-service-connection-list>`;
         },
         "integrations",
+    ),
+    new Route(
+        "/outpost/integrations/new",
+        async () => {
+            await import("#admin/outposts/ak-service-connection-wizard");
+
+            return html`<ak-service-connection-wizard-page></ak-service-connection-wizard-page>`;
+        },
+        "integration-new",
     ),
 
     new Route(

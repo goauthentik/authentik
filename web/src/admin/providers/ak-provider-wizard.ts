@@ -16,6 +16,7 @@ import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
 import { aki } from "#common/api/client";
 
+import { formatCreateLabel } from "#elements/dialogs/shared";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { CreateWizard } from "#elements/wizard/CreateWizard";
 import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
@@ -47,7 +48,7 @@ export class AKProviderWizard extends CreateWizard {
  */
 @customElement("ak-provider-wizard-page")
 export class AKProviderWizardPage extends AKFullPageWizard {
-    public override header = msg("New Provider");
+    public override header = formatCreateLabel(AKProviderWizard);
     public override icon = "pf-icon pf-icon-integration";
     public override returnURL = toAdminInterface("core/providers");
 

@@ -7,11 +7,15 @@ import "#elements/forms/FormGroup";
 import "#admin/flows/StageBindingForm";
 import { aki } from "#common/api/client";
 
+import { formatCreateLabel } from "#elements/dialogs/shared";
 import { RadioOption } from "#elements/forms/Radio";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 import { CreateWizard } from "#elements/wizard/CreateWizard";
 import { FormWizardPage } from "#elements/wizard/FormWizardPage";
 import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
+
+import { AKFullPageWizard } from "#components/ak-wizard/ak-full-page-wizard";
 
 import { FlowStageBinding, Stage, StagesApi, TypeCreate } from "@goauthentik/api";
 
@@ -115,8 +119,23 @@ export class AKStageWizard extends CreateWizard {
     }
 }
 
+/**
+ * The stage wizard as a full page, for the `/flow/stages/new` route.
+ */
+@customElement("ak-stage-wizard-page")
+export class AKStageWizardPage extends AKFullPageWizard {
+    public override header = formatCreateLabel(AKStageWizard);
+    public override icon = "pf-icon pf-icon-plugged";
+    public override returnURL = toAdminInterface("flow/stages");
+
+    protected override render() {
+        return html`<ak-stage-wizard></ak-stage-wizard>`;
+    }
+}
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-stage-wizard": AKStageWizard;
+        "ak-stage-wizard-page": AKStageWizardPage;
     }
 }
