@@ -2,6 +2,7 @@
 
 from typing import Any
 
+from django.db import transaction
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -73,23 +74,23 @@ class NextActionDoneStageView(StageView):
     """Remove a completed next action flow from the user's attributes"""
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
-        user: User = request.user
         slug = self.executor.current_stage.flow_slug
-        value = user.attributes.get(USER_ATTRIBUTE_NEXT_ACTIONS)
-        if isinstance(value, list):
-            if slug in value:
-                value.remove(slug)
-            if not value:
+        with transaction.atomic(), audit_ignore():
+            user = User.objects.select_for_update().get(pk=request.user.pk)
+            value = user.attributes.get(USER_ATTRIBUTE_NEXT_ACTIONS, [])
+            actions = value if isinstance(value, list) else [value]
+            if slug not in actions:
+                return self.executor.stage_ok()
+            actions.remove(slug)
+            if actions:
+                user.attributes[USER_ATTRIBUTE_NEXT_ACTIONS] = actions
+            else:
                 user.attributes.pop(USER_ATTRIBUTE_NEXT_ACTIONS, None)
-        elif value == slug:
-            user.attributes.pop(USER_ATTRIBUTE_NEXT_ACTIONS, None)
-        if USER_ATTRIBUTE_NEXT_ACTIONS not in user.attributes:
-            request.session.pop(SESSION_KEY_PENDING_NEXT_ACTIONS, None)
-        with audit_ignore():
+                request.session.pop(SESSION_KEY_PENDING_NEXT_ACTIONS, None)
             user.save(update_fields=["attributes"])
-        Event.new(EventAction.NEXT_ACTION_COMPLETED, flow_slug=slug).from_http(
-            self.request, user=user
-        )
+            Event.new(EventAction.NEXT_ACTION_COMPLETED, flow_slug=slug).from_http(
+                request, user=user
+            )
         return self.executor.stage_ok()
 
 

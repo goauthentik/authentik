@@ -48,7 +48,10 @@ from authentik.stages.user_login.middleware import (
     logout_extra,
 )
 from authentik.stages.user_login.models import GeoIPBinding, NetworkBinding, UserLoginStage
-from authentik.stages.user_login.next_actions import SESSION_KEY_PENDING_NEXT_ACTIONS
+from authentik.stages.user_login.next_actions import (
+    SESSION_KEY_PENDING_NEXT_ACTIONS,
+    NextActionDoneStageView,
+)
 
 
 class TestUserLoginStage(FlowTestCase):
@@ -587,6 +590,27 @@ class TestUserLoginNextActions(FlowTestCase):
         self.begin_actions(destination, action)
         self.assertStageRedirects(self.client.get(executor_url), destination)
         self.user.refresh_from_db()
+        self.assertNotIn(USER_ATTRIBUTE_NEXT_ACTIONS, self.user.attributes)
+
+    @enterprise_test()
+    def test_completion_preserves_concurrent_attributes(self):
+        """An update after authentication must survive action completion."""
+        action = self.create_action_flow()
+        self.set_next_actions([action.slug])
+        self.start_login()
+        executor_url = self.begin_actions(reverse("authentik_core:if-user"), action)
+        dispatch = NextActionDoneStageView.dispatch
+
+        def update_then_complete(view, request):
+            user = User.objects.get(pk=self.user.pk)
+            user.attributes["concurrent"] = "preserved"
+            user.save(update_fields=["attributes"])
+            return dispatch(view, request)
+
+        with patch.object(NextActionDoneStageView, "dispatch", update_then_complete):
+            self.complete_action(executor_url, action)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.attributes.get("concurrent"), "preserved")
         self.assertNotIn(USER_ATTRIBUTE_NEXT_ACTIONS, self.user.attributes)
 
     @enterprise_test()
