@@ -108,6 +108,37 @@ class TestUsers(TestCase):
         user.save()
         self.assertTrue(User.objects.get(pk=user.pk).check_password("staged"))
 
+    def test_existing_password_staged_until_save(self):
+        """Changing a loaded user leaves the stored password alone until save()."""
+        user = User.objects.create_user(username=generate_id(), password="initial")  # nosec
+        user.set_password("changed")
+        self.assertTrue(User.objects.get(pk=user.pk).check_password("initial"))
+        user.save()
+        self.assertTrue(User.objects.get(pk=user.pk).check_password("changed"))
+
+    def test_password_save_failure_rolls_back_user(self):
+        """User and password changes commit together."""
+        user = User.objects.create_user(username=generate_id(), password="initial")  # nosec
+        user.name = "Changed name"
+        user.set_password("changed")
+        with (
+            patch.object(PasswordDevice, "save", side_effect=IntegrityError),
+            self.assertRaises(IntegrityError),
+        ):
+            user.save()
+        stored = User.objects.get(pk=user.pk)
+        self.assertNotEqual(stored.name, user.name)
+        self.assertTrue(stored.check_password("initial"))
+
+    def test_user_save_does_not_write_cached_password(self):
+        """Saving a name must not overwrite a concurrent password change."""
+        user = User.objects.create_user(username=generate_id(), password="initial")  # nosec
+        password = make_password(generate_id())
+        PasswordDevice.objects.filter(user=user).update(password=password)
+        user.name = "Changed name"
+        user.save()
+        self.assertEqual(PasswordDevice.objects.get(user=user).password, password)
+
     def test_password_unusable_without_device(self):
         """Test a user without a password device cannot authenticate with a password"""
         user = User.objects.create(username=generate_id())
