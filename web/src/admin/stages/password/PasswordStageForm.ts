@@ -1,4 +1,3 @@
-import "#components/ak-text-input";
 import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#components/ak-number-input";
 import "#components/ak-switch-input";
@@ -52,8 +51,6 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
     }
 
     protected renderLockoutSettings(): TemplateResult {
-        // Without an Enterprise license the lockout policy never runs; the settings
-        // stay visible but read-only.
         const readOnly = !this.hasEnterpriseLicense;
 
         return html`<ak-number-input
@@ -68,7 +65,7 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
                 help=${
                     readOnly
                         ? msg("Password lockout requires an Enterprise license.", {
-                              id: "password-stage.lockout-threshold.enterprise",
+                              id: "password-stage.lockout-threshold.enterprise.description",
                           })
                         : msg(
                               "Lock password login after this many consecutive failed attempts, until an administrator unlocks it. Failed attempts against LDAP and Kerberos backends are not counted. Set to 0 to never lock.",
@@ -96,7 +93,7 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
                 value="${this.instance?.lockoutMessage ?? ""}"
                 ?readonly=${readOnly}
                 help=${msg(
-                    "Message shown when the user's password has been locked. Leave blank to show no message.",
+                    "Message shown when the user's password has been locked. Leave blank to show a generic authentication error.",
                     { id: "password-stage.lockout-message.description" },
                 )}
             ></ak-text-input>`;
