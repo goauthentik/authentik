@@ -30,6 +30,7 @@ from authentik.flows.models import (
     FlowAuthenticationRequirement,
     FlowDesignation,
     FlowStageBinding,
+    in_memory_stage,
 )
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_REDIRECT, FlowPlan
 from authentik.flows.tests import FlowTestCase
@@ -41,6 +42,7 @@ from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.dummy.models import DummyStage
+from authentik.stages.redirect.models import RedirectMode, RedirectStage
 from authentik.stages.user_login.middleware import (
     SESSION_KEY_BINDING_NET,
     BoundSessionMiddleware,
@@ -624,6 +626,70 @@ class TestUserLoginNextActions(FlowTestCase):
         self.assertNotIn(USER_ATTRIBUTE_NEXT_ACTIONS, self.user.attributes)
 
     @enterprise_test()
+    def test_action_redirect_keeps_completion(self):
+        """Flow handoffs retain completion and the original destination."""
+        for keep_context, redirects in ((True, 1), (False, 1), (True, 2), (False, 2)):
+            with self.subTest(keep_context=keep_context, redirects=redirects):
+                self.client.logout()
+                target = self.create_action_flow()
+                chain = [target]
+                for _ in range(redirects):
+                    action = create_test_flow(FlowDesignation.STAGE_CONFIGURATION)
+                    FlowStageBinding.objects.create(
+                        target=action,
+                        stage=RedirectStage.objects.create(
+                            name=generate_id(),
+                            mode=RedirectMode.FLOW,
+                            target_flow=chain[-1],
+                            keep_context=keep_context,
+                        ),
+                        order=0,
+                    )
+                    chain.append(action)
+                self.set_next_actions([action.slug])
+                self.start_login()
+                destination = reverse("authentik_core:if-user")
+                executor_url = self.begin_actions(destination, action)
+                for redirected in reversed(chain[:-1]):
+                    target_url = reverse(
+                        "authentik_core:if-flow", kwargs={"flow_slug": redirected.slug}
+                    )
+                    self.assertStageRedirects(self.client.get(executor_url), target_url)
+                    self.assertEqual(self.client.get(target_url).status_code, 200)
+                    executor_url = reverse(
+                        "authentik_api:flow-executor", kwargs={"flow_slug": redirected.slug}
+                    )
+                self.assertStageRedirects(self.complete_action(executor_url, target), destination)
+                self.user.refresh_from_db()
+                self.assertNotIn(USER_ATTRIBUTE_NEXT_ACTIONS, self.user.attributes)
+                self.assertNotIn(SESSION_KEY_PENDING_NEXT_ACTIONS, self.client.session)
+
+    @enterprise_test()
+    def test_action_cannot_redirect_to_login_or_logout(self):
+        for designation in (FlowDesignation.AUTHENTICATION, FlowDesignation.INVALIDATION):
+            with self.subTest(designation=designation):
+                self.client.logout()
+                action = create_test_flow(FlowDesignation.STAGE_CONFIGURATION)
+                FlowStageBinding.objects.create(
+                    target=action,
+                    stage=RedirectStage.objects.create(
+                        name=generate_id(),
+                        mode=RedirectMode.FLOW,
+                        target_flow=create_test_flow(designation),
+                    ),
+                    order=0,
+                )
+                self.set_next_actions([action.slug])
+                self.start_login()
+                executor_url = self.begin_actions(reverse("authentik_core:if-user"), action)
+                self.assertStageResponse(
+                    self.client.get(executor_url), component="ak-stage-access-denied"
+                )
+                self.assertTrue(self.client.session[SESSION_KEY_PENDING_NEXT_ACTIONS])
+                self.user.refresh_from_db()
+                self.assertEqual(self.user.attributes[USER_ATTRIBUTE_NEXT_ACTIONS], [action.slug])
+
+    @enterprise_test()
     def test_action_as_string(self):
         """A single flow slug works without being wrapped in a list"""
         action = self.create_action_flow()
@@ -812,6 +878,16 @@ class TestPendingNextActionsMiddleware(FlowTestCase):
             response.url,
             reverse("authentik_core:if-flow", kwargs={"flow_slug": self.action.slug}),
         )
+
+    def test_stale_completion_cannot_authorize_another_flow(self):
+        other = create_test_flow(FlowDesignation.STAGE_CONFIGURATION)
+        plan = FlowPlan(flow_pk=other.pk.hex)
+        plan.append_stage(in_memory_stage(NextActionDoneStageView, flow_slug="removed-action"))
+        self.set_flow_plan(plan)
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": other.slug})
+        )
+        self.assertEqual(response.status_code, 403)
 
     def test_logout_stays_available(self):
         """A restricted session can still start the logout flow."""
