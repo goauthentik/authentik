@@ -2,10 +2,11 @@
 
 from unittest.mock import patch
 
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import PBKDF2PasswordHasher, make_password
 from django.db import IntegrityError, transaction
 from django.http import HttpRequest
 from django.test.testcases import TestCase
+from django.utils.timezone import now
 
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.users import UserSerializer
@@ -121,6 +122,24 @@ class TestUsers(TestCase):
         user.set_password("changed")
         user.save()
         self.assertNotEqual(previous_hash, user.get_session_auth_hash())
+
+    def test_hash_upgrade_preserves_password_metadata(self):
+        """Rehashing a cached device must not overwrite newer password metadata."""
+        password = generate_id()
+        old_hash = PBKDF2PasswordHasher().encode(password, "salt", iterations=1)
+        user = User.objects.create(username=generate_id(), password=old_hash)
+        changed_at = now()
+        PasswordDevice.objects.filter(user=user).update(password_change_date=changed_at)
+
+        with patch.object(password_changed, "send") as signal:
+            self.assertTrue(user.check_password(password))
+        signal.assert_not_called()
+        user.name = "Changed name"
+        user.save()
+
+        device = PasswordDevice.objects.get(user=user)
+        self.assertNotEqual(device.password, old_hash)
+        self.assertEqual(device.password_change_date, changed_at)
 
     def test_set_password_from_hash_signal_skips_source_sync_receivers(self):
         """Test hash password updates do not expose a raw password to sync receivers."""
