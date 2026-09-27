@@ -48,21 +48,17 @@ def next_action_slugs(value: Any) -> list[str]:
 
 
 def resolve_next_actions(value: Any) -> list[Flow]:
-    """Resolve the value of the next-actions user attribute (a flow slug or
-    a list of flow slugs) to flows. Raises ValueError for entries that don't
-    resolve to a usable flow."""
+    """Resolve ordered flow slugs, rejecting missing or unusable flows."""
     slugs = value if isinstance(value, list) else [value]
-    flows = []
-    for slug in slugs:
-        if not isinstance(slug, str):
-            raise ValueError(f"Invalid next action entry: {slug!r}")
-        flow = Flow.objects.filter(slug=slug).first()
-        if not flow:
-            raise ValueError(f"Next action flow does not exist: {slug}")
-        if flow.designation in NEXT_ACTION_DISALLOWED_DESIGNATIONS:
-            raise ValueError(f"Flow cannot be used as a next action: {slug}")
-        flows.append(flow)
-    return flows
+    if any(not isinstance(slug, str) for slug in slugs):
+        raise ValueError("Next actions must be flow slugs")
+    flows = Flow.objects.exclude(designation__in=NEXT_ACTION_DISALLOWED_DESIGNATIONS).in_bulk(
+        slugs, field_name="slug"
+    )
+    try:
+        return [flows[slug] for slug in slugs]
+    except KeyError as exc:
+        raise ValueError("Next action flow is missing or has a disallowed designation") from exc
 
 
 class NextActionDoneStageView(StageView):
