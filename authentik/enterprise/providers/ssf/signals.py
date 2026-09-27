@@ -131,9 +131,7 @@ device_type_map = {
 
 @receiver(post_save)
 def ssf_device_post_save(sender: type[Model], instance: Device, created: bool, **_):
-    # A password device holds the user's password, not a second factor, so it must not
-    # emit CAEP credential-change events for authenticators. Password changes are already
-    # reported by ssf_password_changed_cred_change.
+    # Password changes are emitted by ssf_password_changed_cred_change.
     if not isinstance(instance, Device) or isinstance(instance, PasswordDevice):
         return
     if not instance.confirmed:
@@ -161,7 +159,6 @@ def ssf_device_post_save(sender: type[Model], instance: Device, created: bool, *
 
 @receiver(post_delete)
 def ssf_device_post_delete(sender: type[Model], instance: Device, **_):
-    # See ssf_device_post_save: password devices are not authenticators.
     if not isinstance(instance, Device) or isinstance(instance, PasswordDevice):
         return
     if not instance.confirmed:
