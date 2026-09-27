@@ -12,13 +12,20 @@ from rest_framework.response import Response
 from rest_framework.test import APIClient
 
 from authentik.core import user_switching
-from authentik.core.models import AuthenticatedSession, Session, User, UserSwitchingSession
+from authentik.core.models import (
+    USER_ATTRIBUTE_NEXT_ACTIONS,
+    AuthenticatedSession,
+    Session,
+    User,
+    UserSwitchingSession,
+)
 from authentik.core.tests.utils import (
     create_test_brand,
     create_test_flow,
     create_test_session,
     create_test_user,
 )
+from authentik.enterprise.tests import enterprise_test
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
@@ -35,6 +42,7 @@ from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.policies.models import PolicyBinding
 from authentik.policies.types import PolicyRequest
 from authentik.stages.user_login.models import UserLoginStage
+from authentik.stages.user_login.next_actions import SESSION_KEY_PENDING_NEXT_ACTIONS
 
 
 def _post_user_switch(
@@ -138,7 +146,11 @@ class TestUserSwitch(FlowTestCase):
         self.assertEqual(context[PLAN_CONTEXT_USER_SWITCH_FROM_USER], self.user)
         self.assertEqual(context[PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION], target.session_id)
 
+    @enterprise_test()
     def test_add_user_preserves_existing_login(self):
+        action = create_test_flow(FlowDesignation.STAGE_CONFIGURATION)
+        self.other_user.attributes[USER_ATTRIBUTE_NEXT_ACTIONS] = [action.slug]
+        self.other_user.save()
         first_session_key = _login_through_flow(
             self.client, self.flow, self.login_binding, self.user
         )
@@ -157,6 +169,9 @@ class TestUserSwitch(FlowTestCase):
 
         self.assertNotEqual(self.client.session.session_key, first_session_key)
         self.assertTrue(Session.objects.filter(session_key=first_session_key).exists())
+        self.assertTrue(self.client.session.get(SESSION_KEY_PENDING_NEXT_ACTIONS))
+        response = self.client.get(reverse("authentik_api:application-list"))
+        self.assertEqual(response.status_code, 403)
 
     def test_target_is_revalidated_before_login(self):
         first_session_key = _login_through_flow(

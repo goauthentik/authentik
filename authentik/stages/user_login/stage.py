@@ -239,7 +239,7 @@ class UserLoginStageView(ChallengeStageView):
                 backend=backend,
             )
         if (
-            not is_user_switch_login
+            PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION not in self.executor.plan.context
             and USER_ATTRIBUTE_NEXT_ACTIONS in user.attributes
             and user.attributes[USER_ATTRIBUTE_NEXT_ACTIONS] != []
             and next_actions_enabled()
