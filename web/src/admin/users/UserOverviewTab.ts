@@ -69,14 +69,16 @@ export class UserOverviewTab extends AKElement {
                     .objectAttributes=${this.user.attributes}
                 ></ak-object-attributes-card>
             </div>
-            ${this.hasInstalledEnterpriseLicense
-                ? html`<div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                      <div class="pf-c-card__title">
-                          ${msg("Next actions on login", { id: "user-next-actions.card.title" })}
-                      </div>
-                      <ak-user-next-actions-list .user=${this.user}></ak-user-next-actions-list>
-                  </div>`
-                : nothing}
+            ${
+                this.hasInstalledEnterpriseLicense
+                    ? html`<div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                          <div class="pf-c-card__title">
+                              ${msg("Next actions on login", { id: "user-next-actions.card.title" })}
+                          </div>
+                          <ak-user-next-actions-list .user=${this.user}></ak-user-next-actions-list>
+                      </div>`
+                    : nothing
+            }
             <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                 <div class="pf-c-card__title">${msg("Changelog")}</div>
                 <ak-object-changelog
