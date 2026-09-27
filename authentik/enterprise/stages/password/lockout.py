@@ -43,20 +43,6 @@ class PasswordLockout:
         """Return whether Enterprise password lockout can currently run."""
         return LicenseKey.cached_summary().status.is_valid
 
-    @staticmethod
-    def lock(user: User, request: HttpRequest):
-        """Lock a password on behalf of an administrator."""
-        with transaction.atomic():
-            device = PasswordDevice.objects.select_for_update().filter(user=user).first()
-            if device is None or device.locked:
-                return
-            device.failed_attempts = 0
-            device.locked_at = now()
-            device.save()
-        Event.new(
-            EventAction.PASSWORD_LOCKED, affected_user=user, reason="administrator"
-        ).from_http(request)
-
     def apply(
         self, pending_user: User, user: User | None, context: dict[str, Any]
     ) -> PasswordLockoutResult:

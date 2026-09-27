@@ -137,9 +137,3 @@ class PasswordDevice(Device):
     def locked(self) -> bool:
         """Whether this password currently refuses authentication."""
         return self.locked_at is not None
-
-    def unlock(self):
-        """Allow authentication again and forget earlier failures."""
-        self.failed_attempts = 0
-        self.locked_at = None
-        self.save()
