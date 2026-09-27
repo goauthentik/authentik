@@ -164,7 +164,10 @@ class UserWriteStageView(StageView):
         """Snapshot user fields and the staged password to detect changes."""
         return deepcopy(
             {
-                **{field.attname: getattr(user, field.attname) for field in user._meta.concrete_fields},
+                **{
+                    field.attname: getattr(user, field.attname)
+                    for field in user._meta.concrete_fields
+                },
                 "password": user.password,
             }
         )
