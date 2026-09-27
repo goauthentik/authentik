@@ -4,7 +4,6 @@ from collections import defaultdict
 
 from django.apps import apps
 from django.core.exceptions import ValidationError as DjangoValidationError
-from django.db.models import Model
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema, extend_schema_field
 from rest_framework.decorators import action
@@ -39,60 +38,6 @@ from authentik.policies.conditional.types import TypeKind, ValueType
 from authentik.policies.models import Policy
 
 
-def _referenced_policies(actions: dict) -> set[str]:
-    try:
-        compiled = compile_actions(actions)
-    except ConditionValidationError:
-        return set()
-    return {
-        node.policy for node in iter_conditions(compiled) if isinstance(node, CompiledPolicyRef)
-    }
-
-
-def _label(obj: Model) -> str:
-    for attr in ("name", "username"):
-        value = getattr(obj, attr, None)
-        if value:
-            return str(value)
-    return str(obj)
-
-
-def object_labels(actions: tuple[CompiledAction, ...]) -> dict[str, str]:
-    """Names of all objects referenced by actions, keyed by `<model>:<pk>`, so that they can
-    be shown instead of their primary keys"""
-    references: dict[str, set[str]] = defaultdict(set)
-    for node in iter_conditions(actions):
-        if isinstance(node, CompiledPolicyRef):
-            references["authentik_policies.policy"].add(node.policy)
-        if not isinstance(node, CompiledCondition) or not isinstance(node.operand, Literal):
-            continue
-        expected = node.operator.operand_type(node.variable.type)
-        if not expected:
-            continue
-        model = expected.model or (expected.item.model if expected.item else None)
-        if not model:
-            continue
-        values = node.operand.value
-        references[model].update(
-            str(value) for value in (values if isinstance(values, list) else [values])
-        )
-    labels = {}
-    for model, pks in references.items():
-        try:
-            model_class = apps.get_model(model)
-        except LookupError:
-            continue
-        queryset = model_class.objects.filter(pk__in=pks)
-        if hasattr(queryset, "select_subclasses"):
-            queryset = queryset.select_subclasses()
-        try:
-            for obj in queryset:
-                labels[f"{model}:{obj.pk}"] = _label(obj)
-        except DjangoValidationError, ValueError:
-            continue
-    return labels
-
-
 class ConditionalPolicySerializer(PolicySerializer):
     """Conditional Policy Serializer"""
 
@@ -102,7 +47,7 @@ class ConditionalPolicySerializer(PolicySerializer):
     def get_labels(self, instance: ConditionalPolicy) -> dict[str, str]:
         """Names of objects referenced by the actions, keyed by `<model>:<pk>`"""
         try:
-            return object_labels(instance.compiled())
+            return self.object_labels(instance.compiled())
         except ConditionValidationError:
             return {}
 
@@ -137,6 +82,50 @@ class ConditionalPolicySerializer(PolicySerializer):
             raise condition_errors(errors)
         return actions
 
+    def object_labels(self, actions: tuple[CompiledAction, ...]) -> dict[str, str]:
+        """Names of all objects referenced by actions, keyed by `<model>:<pk>`, so that they can
+        be shown instead of their primary keys"""
+        references: dict[str, set[str]] = defaultdict(set)
+        for node in iter_conditions(actions):
+            if isinstance(node, CompiledPolicyRef):
+                references["authentik_policies.policy"].add(node.policy)
+            if not isinstance(node, CompiledCondition) or not isinstance(node.operand, Literal):
+                continue
+            expected = node.operator.operand_type(node.variable.type)
+            if not expected:
+                continue
+            model = expected.model or (expected.item.model if expected.item else None)
+            if not model:
+                continue
+            values = node.operand.value
+            references[model].update(
+                str(value) for value in (values if isinstance(values, list) else [values])
+            )
+        labels = {}
+        for model, pks in references.items():
+            try:
+                model_class = apps.get_model(model)
+            except LookupError:
+                continue
+            queryset = model_class.objects.filter(pk__in=pks)
+            if hasattr(queryset, "select_subclasses"):
+                queryset = queryset.select_subclasses()
+            try:
+                for obj in queryset:
+                    labels[f"{model}:{obj.pk}"] = str(obj)
+            except DjangoValidationError, ValueError:
+                continue
+        return labels
+
+    def _referenced_policies(actions: dict) -> set[str]:
+        try:
+            compiled = compile_actions(actions)
+        except ConditionValidationError:
+            return set()
+        return {
+            node.policy for node in iter_conditions(compiled) if isinstance(node, CompiledPolicyRef)
+        }
+
     def _creates_loop(self, referenced: str) -> bool:
         """Check if the referenced policy (indirectly) references this policy"""
         if not self.instance:
@@ -153,7 +142,7 @@ class ConditionalPolicySerializer(PolicySerializer):
             seen.add(current)
             policy = ConditionalPolicy.objects.filter(pk=current).first()
             if policy:
-                pending |= _referenced_policies(policy.actions)
+                pending |= self._referenced_policies(policy.actions)
         return False
 
     class Meta:

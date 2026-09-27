@@ -10,6 +10,7 @@ from pydantic import ValidationError as PydanticValidationError
 from structlog.stdlib import get_logger
 
 from authentik.events.utils import cleanse_item
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.policies.conditional.operators import (
     MAX_REGEX_LENGTH,
     OPERATORS,
@@ -64,7 +65,7 @@ TRACE_VALUE_LENGTH = 100
 _policy_depth: ContextVar[int] = ContextVar("conditional_policy_depth", default=0)
 
 
-class ConditionValidationError(Exception):
+class ConditionValidationError(TracingIgnoredException):
     """Condition tree is invalid, contains a list of (path, message)"""
 
     def __init__(self, errors: list[tuple[str, str]]):
@@ -238,6 +239,7 @@ class ConditionCompiler:
                     passing=action.result == PolicyActionStopResult.PASS,
                     message=action.message or None,
                 )
+        return None
 
     def _set(self, action: PolicyActionSet, path: str) -> CompiledActionSet | None:
         setter = self.registry.get_setter(action.target.key)
