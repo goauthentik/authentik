@@ -3,6 +3,7 @@
 from urllib.parse import urlsplit
 
 from django.http.response import HttpResponse
+from django.utils.translation import gettext as _
 from rest_framework.fields import CharField
 
 from authentik.flows.challenge import (
@@ -16,6 +17,7 @@ from authentik.flows.models import (
 )
 from authentik.flows.planner import (
     PLAN_CONTEXT_IS_REDIRECTED,
+    PLAN_CONTEXT_REDIRECT,
     PLAN_CONTEXT_REDIRECT_STAGE_TARGET,
     FlowPlanner,
 )
@@ -23,6 +25,10 @@ from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_GET, SESSION_KEY_PLAN, InvalidStageError
 from authentik.lib.utils.urls import reverse_with_qs
 from authentik.stages.redirect.models import RedirectMode, RedirectStage
+from authentik.stages.user_login.next_actions import (
+    NEXT_ACTION_DISALLOWED_DESIGNATIONS,
+    NextActionDoneStageView,
+)
 
 URL_SCHEME_FLOW = "ak-flow"
 
@@ -61,6 +67,16 @@ class RedirectStageView(ChallengeStageView):
         self.logger.info(
             "f(exec): Switching to new flow", new_flow=flow.slug, keep_context=keep_context
         )
+        completion = next(
+            (
+                binding
+                for binding in self.executor.plan.bindings
+                if binding.stage.view is NextActionDoneStageView
+            ),
+            None,
+        )
+        if completion and flow.designation in NEXT_ACTION_DISALLOWED_DESIGNATIONS:
+            raise InvalidStageError(_("Required actions cannot redirect to login or logout flows."))
         planner = FlowPlanner(flow)
         planner.use_cache = False
         default_context = self.executor.plan.context if keep_context else {}
@@ -69,6 +85,12 @@ class RedirectStageView(ChallengeStageView):
             plan = planner.plan(self.request, default_context)
         except FlowNonApplicableException as exc:
             raise InvalidStageError() from exc
+        if completion:
+            plan.append(completion)
+            if PLAN_CONTEXT_REDIRECT in self.executor.plan.context:
+                plan.context[PLAN_CONTEXT_REDIRECT] = self.executor.plan.context[
+                    PLAN_CONTEXT_REDIRECT
+                ]
         self.request.session[SESSION_KEY_PLAN] = plan
         kwargs = self.executor.kwargs
         kwargs.update({"flow_slug": flow.slug})

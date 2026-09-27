@@ -127,6 +127,13 @@ class PendingNextActionsMiddleware(MiddlewareMixin):
             return None
         try:
             flow = resolve_next_actions(value)[0]
+            plan = request.session.get(SESSION_KEY_PLAN)
+            if plan and any(
+                binding.stage.view is NextActionDoneStageView
+                and binding.stage.flow_slug == flow.slug
+                for binding in plan.bindings
+            ):
+                flow = Flow.objects.get(pk=plan.flow_pk)
             if read and route in ("authentik_api:user-me", "authentik_api:config"):
                 return None
             # Duo enrollment polls this endpoint while its stage is active.
@@ -141,7 +148,7 @@ class PendingNextActionsMiddleware(MiddlewareMixin):
                     {"detail": _("Complete the required actions before continuing.")}, status=403
                 )
             plan = plan_next_action(request, flow)
-        except (ValueError, FlowNonApplicableException) as exc:
+        except (ValueError, FlowNonApplicableException, Flow.DoesNotExist) as exc:
             LOGGER.warning("Invalid required action", user=user.username, error=str(exc))
             return JsonResponse(
                 {"detail": _("The required actions are invalid. Contact your administrator.")},
