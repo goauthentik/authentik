@@ -10,7 +10,10 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 
+import { AKElement } from "#elements/Base";
+import { formatCreateLabel } from "#elements/dialogs/shared";
 import { ModelForm } from "#elements/forms/ModelForm";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
 import { BlueprintFile, BlueprintInstance, ManagedApi } from "@goauthentik/api";
@@ -20,6 +23,9 @@ import YAML from "yaml";
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
+
+import "#components/ak-full-page-form";
+
 import { ifDefined } from "lit/directives/if-defined.js";
 
 export enum BlueprintSource {
@@ -215,8 +221,25 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
     }
 }
 
+/**
+ * The blueprint form as a full page, for the `/blueprints/instances/new` route.
+ */
+@customElement("ak-blueprint-form-page")
+export class BlueprintFormPage extends AKElement {
+    protected override render() {
+        return html`<ak-full-page-form
+            header=${formatCreateLabel(BlueprintForm)}
+            icon="pf-icon pf-icon-blueprint"
+            return-url=${toAdminInterface("blueprints/instances")}
+        >
+            <ak-blueprint-form></ak-blueprint-form>
+        </ak-full-page-form>`;
+    }
+}
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-blueprint-form": BlueprintForm;
+        "ak-blueprint-form-page": BlueprintFormPage;
     }
 }

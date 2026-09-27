@@ -6,13 +6,19 @@ import "#components/ak-text-input";
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
+import { AKElement } from "#elements/Base";
+import { formatCreateLabel } from "#elements/dialogs/shared";
 import { ModelForm } from "#elements/forms/ModelForm";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 
 import { RbacApi, Role } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
+
+import "#components/ak-full-page-form";
+
 import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-role-form")
@@ -59,8 +65,25 @@ export class RoleForm extends ModelForm<Role, string> {
     }
 }
 
+/**
+ * The role form as a full page, for the `/identity/roles/new` route.
+ */
+@customElement("ak-role-form-page")
+export class RoleFormPage extends AKElement {
+    protected override render() {
+        return html`<ak-full-page-form
+            header=${formatCreateLabel(RoleForm)}
+            icon="fa fa-lock"
+            return-url=${toAdminInterface("identity/roles")}
+        >
+            <ak-role-form></ak-role-form>
+        </ak-full-page-form>`;
+    }
+}
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-role-form": RoleForm;
+        "ak-role-form-page": RoleFormPage;
     }
 }

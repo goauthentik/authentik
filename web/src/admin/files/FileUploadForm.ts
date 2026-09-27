@@ -4,8 +4,11 @@ import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 import { docLink } from "#common/global";
 
+import { AKElement } from "#elements/Base";
+import { formatCreateLabel } from "#elements/dialogs/shared";
 import { Form } from "#elements/forms/Form";
 import { PreventFormSubmit } from "#elements/forms/helpers";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 import {
     assertValidFileName,
@@ -20,6 +23,9 @@ import { AdminApi, AdminFileCreateRequest, UsageEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
+
+import "#components/ak-full-page-form";
+
 import { customElement, property } from "lit/decorators.js";
 
 interface FileUploadFormData {
@@ -108,8 +114,25 @@ export class FileUploadForm extends Form<FileUploadFormData> {
     }
 }
 
+/**
+ * The file upload form as a full page, for the `/files/new` route.
+ */
+@customElement("ak-file-upload-form-page")
+export class FileUploadFormPage extends AKElement {
+    protected override render() {
+        return html`<ak-full-page-form
+            header=${formatCreateLabel(FileUploadForm)}
+            icon="pf-icon pf-icon-folder-open"
+            return-url=${toAdminInterface("files")}
+        >
+            <ak-file-upload-form></ak-file-upload-form>
+        </ak-full-page-form>`;
+    }
+}
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-file-upload-form": FileUploadForm;
+        "ak-file-upload-form-page": FileUploadFormPage;
     }
 }

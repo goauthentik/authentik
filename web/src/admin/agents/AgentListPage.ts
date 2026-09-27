@@ -3,11 +3,12 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import { aki } from "#common/api/client";
 
-import { ModalInvokerButton } from "#elements/dialogs";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { CreateLinkButton } from "#components/ak-full-page";
 
 import { AgentForm } from "#admin/agents/AgentForm";
 
@@ -89,7 +90,7 @@ export class AgentListPage extends TablePage<Agent> {
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
-        return ModalInvokerButton(AgentForm);
+        return CreateLinkButton(toAdminInterface("identity/agents/new"), AgentForm);
     }
 }
 

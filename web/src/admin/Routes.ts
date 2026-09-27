@@ -160,6 +160,15 @@ export const ROUTES: RouteLike[] = [
         },
         "device-access-groups",
     ),
+    new Route(
+        "/endpoints/groups/new",
+        async () => {
+            await import("#admin/endpoints/DeviceAccessGroupForm");
+
+            return html`<ak-endpoints-device-access-groups-form-page></ak-endpoints-device-access-groups-form-page>`;
+        },
+        "device-access-group-new",
+    ),
 
     new Route(
         "/core/sources",
@@ -216,6 +225,15 @@ export const ROUTES: RouteLike[] = [
         "tokens",
     ),
     new Route(
+        "/core/tokens/new",
+        async () => {
+            await import("#admin/tokens/TokenForm");
+
+            return html`<ak-token-form-page></ak-token-form-page>`;
+        },
+        "token-new",
+    ),
+    new Route(
         "/core/brands",
         async () => {
             await import("#admin/brands/BrandListPage");
@@ -223,6 +241,15 @@ export const ROUTES: RouteLike[] = [
             return html`<ak-brand-list></ak-brand-list>`;
         },
         "brands",
+    ),
+    new Route(
+        "/core/brands/new",
+        async () => {
+            await import("#admin/brands/BrandForm");
+
+            return html`<ak-brand-form-page></ak-brand-form-page>`;
+        },
+        "brand-new",
     ),
 
     new Route(
@@ -263,6 +290,15 @@ export const ROUTES: RouteLike[] = [
         "request-rules",
     ),
     new Route(
+        "/requests/rules/new",
+        async () => {
+            await import("#admin/requests/RequestRuleForm");
+
+            return html`<ak-request-rule-form-page></ak-request-rule-form-page>`;
+        },
+        "request-rule-new",
+    ),
+    new Route(
         "/requests/access-requests",
         async () => {
             await import("#admin/requests/AccessRequestListPage");
@@ -282,6 +318,15 @@ export const ROUTES: RouteLike[] = [
         "object-attributes",
     ),
     new Route(
+        "/identity/object-attributes/new",
+        async () => {
+            await import("#admin/object-attributes/ObjectAttributeForm");
+
+            return html`<ak-object-attribute-form-page></ak-object-attribute-form-page>`;
+        },
+        "object-attribute-new",
+    ),
+    new Route(
         "/identity/groups",
         async () => {
             await import("#admin/groups/GroupListPage");
@@ -289,6 +334,15 @@ export const ROUTES: RouteLike[] = [
             return html`<ak-group-list></ak-group-list>`;
         },
         "groups",
+    ),
+    new Route(
+        "/identity/groups/new",
+        async () => {
+            await import("#admin/groups/ak-group-form");
+
+            return html`<ak-group-form-page></ak-group-form-page>`;
+        },
+        "group-new",
     ),
     new Route<{ uuid: string }>(
         "/identity/groups/:uuid{/*}?",
@@ -307,6 +361,15 @@ export const ROUTES: RouteLike[] = [
             return html`<ak-agent-list></ak-agent-list>`;
         },
         "agents",
+    ),
+    new Route(
+        "/identity/agents/new",
+        async () => {
+            await import("#admin/agents/AgentForm");
+
+            return html`<ak-agent-form-page></ak-agent-form-page>`;
+        },
+        "agent-new",
     ),
     new Route(
         "/identity/users",
@@ -347,6 +410,15 @@ export const ROUTES: RouteLike[] = [
         "roles",
     ),
     new Route(
+        "/identity/roles/new",
+        async () => {
+            await import("#admin/roles/ak-role-form");
+
+            return html`<ak-role-form-page></ak-role-form-page>`;
+        },
+        "role-new",
+    ),
+    new Route(
         "/identity/initial-permissions",
         async () => {
             await import("#admin/rbac/ak-initial-permissions-list");
@@ -354,6 +426,15 @@ export const ROUTES: RouteLike[] = [
             return html`<ak-initial-permissions-list></ak-initial-permissions-list>`;
         },
         "initial-permissions",
+    ),
+    new Route(
+        "/identity/initial-permissions/new",
+        async () => {
+            await import("#admin/rbac/ak-initial-permissions-form");
+
+            return html`<ak-initial-permissions-form-page></ak-initial-permissions-form-page>`;
+        },
+        "initial-permissions-new",
     ),
     new Route<{ id: string }>(
         "/identity/roles/:id{/*}?",
@@ -384,6 +465,15 @@ export const ROUTES: RouteLike[] = [
         "stage-prompts",
     ),
     new Route(
+        "/flow/stages/prompts/new",
+        async () => {
+            await import("#admin/stages/prompt/PromptForm");
+
+            return html`<ak-prompt-form-page></ak-prompt-form-page>`;
+        },
+        "prompt-new",
+    ),
+    new Route(
         "/flow/stages",
         async () => {
             await import("#admin/stages/StageListPage");
@@ -409,6 +499,15 @@ export const ROUTES: RouteLike[] = [
             return html`<ak-flow-list></ak-flow-list>`;
         },
         "flows",
+    ),
+    new Route(
+        "/flow/flows/new",
+        async () => {
+            await import("#admin/flows/FlowForm");
+
+            return html`<ak-flow-form-page></ak-flow-form-page>`;
+        },
+        "flow-new",
     ),
     new Route<{ slug: string }>(
         "/flow/flows/:slug{/*}?",
@@ -451,6 +550,15 @@ export const ROUTES: RouteLike[] = [
         "event-transports",
     ),
     new Route(
+        "/events/transports/new",
+        async () => {
+            await import("#admin/events/TransportForm");
+
+            return html`<ak-event-transport-form-page></ak-event-transport-form-page>`;
+        },
+        "notification-transport-new",
+    ),
+    new Route(
         "/events/rules",
         async () => {
             await import("#admin/events/RuleListPage");
@@ -458,6 +566,15 @@ export const ROUTES: RouteLike[] = [
             return html`<ak-event-rule-list></ak-event-rule-list>`;
         },
         "event-rules",
+    ),
+    new Route(
+        "/events/rules/new",
+        async () => {
+            await import("#admin/events/RuleForm");
+
+            return html`<ak-event-rule-form-page></ak-event-rule-form-page>`;
+        },
+        "notification-rule-new",
     ),
     new Route(
         "/events/exports",
@@ -476,6 +593,15 @@ export const ROUTES: RouteLike[] = [
             return html`<ak-lifecycle-rule-list></ak-lifecycle-rule-list>`;
         },
         "lifecycle-rules",
+    ),
+    new Route(
+        "/events/lifecycle-rules/new",
+        async () => {
+            await import("#admin/lifecycle/LifecycleRuleForm");
+
+            return html`<ak-lifecycle-rule-form-page></ak-lifecycle-rule-form-page>`;
+        },
+        "lifecycle-rule-new",
     ),
     new Route(
         "/events/lifecycle-reviews",
@@ -504,6 +630,15 @@ export const ROUTES: RouteLike[] = [
             return html`<ak-outpost-list></ak-outpost-list>`;
         },
         "outposts",
+    ),
+    new Route(
+        "/outpost/outposts/new",
+        async () => {
+            await import("#admin/outposts/OutpostForm");
+
+            return html`<ak-outpost-form-page></ak-outpost-form-page>`;
+        },
+        "outpost-new",
     ),
     new Route<{ id: string }>(
         "/outpost/outposts/:id{/*}?",
@@ -543,6 +678,15 @@ export const ROUTES: RouteLike[] = [
         "certificates",
     ),
     new Route(
+        "/crypto/certificates/new",
+        async () => {
+            await import("#admin/crypto/CertificateKeyPairForm");
+
+            return html`<ak-crypto-certificate-form-page></ak-crypto-certificate-form-page>`;
+        },
+        "certificate-new",
+    ),
+    new Route(
         "/admin/settings",
         async () => {
             await import("#admin/admin-settings/AdminSettingsPage");
@@ -561,6 +705,15 @@ export const ROUTES: RouteLike[] = [
         "files",
     ),
     new Route(
+        "/files/new",
+        async () => {
+            await import("#admin/files/FileUploadForm");
+
+            return html`<ak-file-upload-form-page></ak-file-upload-form-page>`;
+        },
+        "file-new",
+    ),
+    new Route(
         "/blueprints/instances",
         async () => {
             await import("#admin/blueprints/BlueprintListPage");
@@ -568,6 +721,15 @@ export const ROUTES: RouteLike[] = [
             return html`<ak-blueprint-list></ak-blueprint-list>`;
         },
         "blueprints",
+    ),
+    new Route(
+        "/blueprints/instances/new",
+        async () => {
+            await import("#admin/blueprints/BlueprintForm");
+
+            return html`<ak-blueprint-form-page></ak-blueprint-form-page>`;
+        },
+        "blueprint-new",
     ),
     new Route(
         "/debug",
@@ -586,5 +748,14 @@ export const ROUTES: RouteLike[] = [
             return html`<ak-enterprise-license-list></ak-enterprise-license-list>`;
         },
         "licenses",
+    ),
+    new Route(
+        "/enterprise/licenses/new",
+        async () => {
+            await import("#admin/enterprise/EnterpriseLicenseForm");
+
+            return html`<ak-enterprise-license-form-page></ak-enterprise-license-form-page>`;
+        },
+        "license-new",
     ),
 ];

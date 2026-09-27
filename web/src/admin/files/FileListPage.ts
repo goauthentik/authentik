@@ -7,11 +7,13 @@ import { aki } from "#common/api/client";
 import { createPaginatedResponse } from "#common/api/responses";
 import { docLink } from "#common/global";
 
-import { ModalInvokerButton } from "#elements/dialogs";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { CreateLinkButton } from "#components/ak-full-page";
 
 import { FileUploadForm } from "#admin/files/FileUploadForm";
 
@@ -136,7 +138,7 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileListItem>
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
-        return ModalInvokerButton(FileUploadForm);
+        return CreateLinkButton(toAdminInterface("files/new"), FileUploadForm);
     }
 }
 

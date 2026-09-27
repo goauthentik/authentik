@@ -6,11 +6,13 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
 
-import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
+import { IconEditButton } from "#elements/dialogs";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { CreateLinkButton } from "#components/ak-full-page";
 
 import { GroupForm } from "#admin/groups/ak-group-form";
 
@@ -92,7 +94,7 @@ export class GroupListPage extends TablePage<Group> {
     }
 
     protected renderObjectCreate(): SlottedTemplateResult {
-        return ModalInvokerButton(GroupForm);
+        return CreateLinkButton(toAdminInterface("identity/groups/new"), GroupForm);
     }
 }
 

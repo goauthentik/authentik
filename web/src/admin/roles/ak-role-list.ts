@@ -6,7 +6,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#elements/table/ak-table-filter-select";
 import { aki } from "#common/api/client";
 
-import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
+import { IconEditButton } from "#elements/dialogs";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { getSearchParam, updateSearchParams } from "#elements/router/core/search-params";
 import { FilterOption } from "#elements/table/ak-table-filter-select";
@@ -14,6 +14,7 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { CreateLinkButton } from "#components/ak-full-page";
 import { setPageDetails } from "#components/ak-page-navbar";
 
 import { RoleForm } from "#admin/roles/ak-role-form";
@@ -96,7 +97,7 @@ export class RoleListPage extends TablePage<Role> {
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
-        return ModalInvokerButton(RoleForm);
+        return CreateLinkButton(toAdminInterface("identity/roles/new"), RoleForm);
     }
 
     renderToolbarAfter(): TemplateResult {

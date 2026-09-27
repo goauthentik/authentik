@@ -3,7 +3,10 @@ import "#elements/forms/HorizontalFormElement";
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
+import { AKElement } from "#elements/Base";
+import { formatCreateLabel } from "#elements/dialogs/shared";
 import { WithBrandConfig } from "#elements/mixins/branding";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 
 import { ObjectAttributeModelForm } from "#admin/object-attributes/renderAttributes";
 
@@ -17,6 +20,9 @@ import {
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
+
+import "#components/ak-full-page-form";
+
 import { ifDefined } from "lit/directives/if-defined.js";
 
 /**
@@ -70,8 +76,25 @@ export class DeviceAccessGroupForm extends WithBrandConfig(
     }
 }
 
+/**
+ * The endpoints device access groups form as a full page, for the `/endpoints/groups/new` route.
+ */
+@customElement("ak-endpoints-device-access-groups-form-page")
+export class DeviceAccessGroupFormPage extends AKElement {
+    protected override render() {
+        return html`<ak-full-page-form
+            header=${formatCreateLabel(DeviceAccessGroupForm)}
+            icon="pf-icon pf-icon-server-group"
+            return-url=${toAdminInterface("endpoints/groups")}
+        >
+            <ak-endpoints-device-access-groups-form></ak-endpoints-device-access-groups-form>
+        </ak-full-page-form>`;
+    }
+}
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-endpoints-device-access-groups-form": DeviceAccessGroupForm;
+        "ak-endpoints-device-access-groups-form-page": DeviceAccessGroupFormPage;
     }
 }

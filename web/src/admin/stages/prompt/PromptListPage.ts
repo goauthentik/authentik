@@ -8,11 +8,14 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
-import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
+import { IconEditButton } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { CreateLinkButton } from "#components/ak-full-page";
 
 import { PromptForm } from "#admin/stages/prompt/PromptForm";
 
@@ -96,9 +99,7 @@ export class PromptListPage extends TablePage<Prompt> {
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
-        return ModalInvokerButton(PromptForm, null, null, {
-            size: PFSize.XLarge,
-        });
+        return CreateLinkButton(toAdminInterface("flow/stages/prompts/new"), PromptForm);
     }
 }
 

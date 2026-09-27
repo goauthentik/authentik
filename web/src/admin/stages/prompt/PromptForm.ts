@@ -8,7 +8,10 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import { aki } from "#common/api/client";
 import { parseAPIResponseError } from "#common/errors/network";
 
+import { AKElement } from "#elements/Base";
+import { formatCreateLabel } from "#elements/dialogs/shared";
 import { ModelForm } from "#elements/forms/ModelForm";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
@@ -21,6 +24,9 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+
+import "#components/ak-full-page-form";
+
 import { map } from "lit/directives/map.js";
 
 class PreviewStageHost implements StageHost {
@@ -357,8 +363,25 @@ export class PromptForm extends ModelForm<Prompt, string> {
     }
 }
 
+/**
+ * The prompt form as a full page, for the `/flow/stages/prompts/new` route.
+ */
+@customElement("ak-prompt-form-page")
+export class PromptFormPage extends AKElement {
+    protected override render() {
+        return html`<ak-full-page-form
+            header=${formatCreateLabel(PromptForm)}
+            icon="pf-icon pf-icon-plugged"
+            return-url=${toAdminInterface("flow/stages/prompts")}
+        >
+            <ak-prompt-form></ak-prompt-form>
+        </ak-full-page-form>`;
+    }
+}
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-prompt-form": PromptForm;
+        "ak-prompt-form-page": PromptFormPage;
     }
 }

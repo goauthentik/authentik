@@ -11,12 +11,13 @@ import { formatIntentLabel } from "#common/labels";
 
 import { IconTokenCopyButton } from "#elements/buttons/IconTokenCopyButton";
 import { IconTokenEditButton } from "#elements/buttons/IconTokenEditButton";
-import { ModalInvokerButton } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { CreateLinkButton } from "#components/ak-full-page";
 
 import { TokenForm } from "#admin/tokens/TokenForm";
 
@@ -84,7 +85,7 @@ export class TokenListPage extends TablePage<Token> {
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
-        return ModalInvokerButton(TokenForm);
+        return CreateLinkButton(toAdminInterface("core/tokens/new"), TokenForm);
     }
 
     protected override row(item: Token): SlottedTemplateResult[] {

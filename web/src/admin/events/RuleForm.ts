@@ -9,8 +9,11 @@ import { eventTransportsProvider, eventTransportsSelector } from "./RuleFormHelp
 import { aki } from "#common/api/client";
 import { severityToLabel } from "#common/labels";
 
+import { AKElement } from "#elements/Base";
+import { formatCreateLabel } from "#elements/dialogs/shared";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { RadioOption } from "#elements/forms/Radio";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 
 import {
     CoreApi,
@@ -25,6 +28,9 @@ import {
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
+
+import "#components/ak-full-page-form";
+
 import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-event-rule-form")
@@ -153,8 +159,25 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
     }
 }
 
+/**
+ * The event rule form as a full page, for the `/events/rules/new` route.
+ */
+@customElement("ak-event-rule-form-page")
+export class RuleFormPage extends AKElement {
+    protected override render() {
+        return html`<ak-full-page-form
+            header=${formatCreateLabel(RuleForm)}
+            icon="pf-icon pf-icon-attention-bell"
+            return-url=${toAdminInterface("events/rules")}
+        >
+            <ak-event-rule-form></ak-event-rule-form>
+        </ak-full-page-form>`;
+    }
+}
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-event-rule-form": RuleForm;
+        "ak-event-rule-form-page": RuleFormPage;
     }
 }

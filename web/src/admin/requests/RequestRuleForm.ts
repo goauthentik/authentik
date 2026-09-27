@@ -7,8 +7,11 @@ import "#components/ak-number-input";
 import "#components/ak-switch-input";
 import { aki } from "#common/api/client";
 
+import { AKElement } from "#elements/Base";
+import { formatCreateLabel } from "#elements/dialogs/shared";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { RadioOption } from "#elements/forms/Radio";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { eventTransportsProvider, eventTransportsSelector } from "#admin/events/RuleFormHelpers";
@@ -24,6 +27,9 @@ import { ifDefined } from "lit-html/directives/if-defined.js";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
+
+import "#components/ak-full-page-form";
+
 import { customElement } from "lit/decorators.js";
 
 function createNotificationModeOptions(): RadioOption<NotificationModeEnum>[] {
@@ -141,8 +147,25 @@ export class RequestRuleForm extends ModelForm<RequestRule, string> {
     }
 }
 
+/**
+ * The request rule form as a full page, for the `/requests/rules/new` route.
+ */
+@customElement("ak-request-rule-form-page")
+export class RequestRuleFormPage extends AKElement {
+    protected override render() {
+        return html`<ak-full-page-form
+            header=${formatCreateLabel(RequestRuleForm)}
+            icon="pf-icon pf-icon-locked"
+            return-url=${toAdminInterface("requests/rules")}
+        >
+            <ak-request-rule-form></ak-request-rule-form>
+        </ak-full-page-form>`;
+    }
+}
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-request-rule-form": RequestRuleForm;
+        "ak-request-rule-form-page": RequestRuleFormPage;
     }
 }

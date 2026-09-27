@@ -12,11 +12,13 @@ import { AndNext } from "#common/api/config";
 import { docLink } from "#common/global";
 import { groupBy } from "#common/utils";
 
-import { IconEditButton, modalInvoker, ModalInvokerButton } from "#elements/dialogs";
+import { IconEditButton, modalInvoker } from "#elements/dialogs";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { CreateLinkButton } from "#components/ak-full-page";
 
 import { FlowForm } from "#admin/flows/FlowForm";
 import { DesignationToLabel } from "#admin/flows/utils";
@@ -124,7 +126,7 @@ export class FlowListPage extends TablePage<Flow> {
 
     protected renderObjectCreate(): SlottedTemplateResult {
         return [
-            ModalInvokerButton(FlowForm),
+            CreateLinkButton(toAdminInterface("flow/flows/new"), FlowForm),
             html`<button
                 class="pf-c-button pf-m-primary"
                 type="button"

@@ -16,11 +16,14 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 
-import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
+import { IconEditButton } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { CreateLinkButton } from "#components/ak-full-page";
 
 import { EnterpriseLicenseForm } from "#admin/enterprise/EnterpriseLicenseForm";
 
@@ -276,7 +279,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
-        return ModalInvokerButton(EnterpriseLicenseForm);
+        return CreateLinkButton(toAdminInterface("enterprise/licenses/new"), EnterpriseLicenseForm);
     }
 }
 

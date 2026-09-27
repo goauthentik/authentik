@@ -7,8 +7,11 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import { aki } from "#common/api/client";
 
+import { AKElement } from "#elements/Base";
+import { formatCreateLabel } from "#elements/dialogs/shared";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 
 import { AKLabel } from "#components/ak-label";
 
@@ -28,6 +31,9 @@ import {
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
+
+import "#components/ak-full-page-form";
+
 import { ifDefined } from "lit/directives/if-defined.js";
 
 /**
@@ -361,8 +367,25 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
     }
 }
 
+/**
+ * The flow form as a full page, for the `/flow/flows/new` route.
+ */
+@customElement("ak-flow-form-page")
+export class FlowFormPage extends AKElement {
+    protected override render() {
+        return html`<ak-full-page-form
+            header=${formatCreateLabel(FlowForm)}
+            icon="pf-icon pf-icon-process-automation"
+            return-url=${toAdminInterface("flow/flows")}
+        >
+            <ak-flow-form></ak-flow-form>
+        </ak-full-page-form>`;
+    }
+}
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-flow-form": FlowForm;
+        "ak-flow-form-page": FlowFormPage;
     }
 }

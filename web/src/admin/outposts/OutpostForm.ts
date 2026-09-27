@@ -9,7 +9,10 @@ import { docLink } from "#common/global";
 import { groupBy } from "#common/utils";
 
 import { DataProvider, DualSelectPair } from "#elements/ak-dual-select/types";
+import { AKElement } from "#elements/Base";
+import { formatCreateLabel } from "#elements/dialogs/shared";
 import { ModelForm } from "#elements/forms/ModelForm";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse } from "#elements/table/Table";
 
 import { AKLabel } from "#components/ak-label";
@@ -30,6 +33,9 @@ import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+
+import "#components/ak-full-page-form";
+
 import { map } from "lit/directives/map.js";
 
 interface ProviderBase {
@@ -307,8 +313,25 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     }
 }
 
+/**
+ * The outpost form as a full page, for the `/outpost/outposts/new` route.
+ */
+@customElement("ak-outpost-form-page")
+export class OutpostFormPage extends AKElement {
+    protected override render() {
+        return html`<ak-full-page-form
+            header=${formatCreateLabel(OutpostForm)}
+            icon="pf-icon pf-icon-zone"
+            return-url=${toAdminInterface("outpost/outposts")}
+        >
+            <ak-outpost-form></ak-outpost-form>
+        </ak-full-page-form>`;
+    }
+}
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-outpost-form": OutpostForm;
+        "ak-outpost-form-page": OutpostFormPage;
     }
 }

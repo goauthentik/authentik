@@ -14,6 +14,8 @@ import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
+import { CreateLinkButton } from "#components/ak-full-page";
+
 import { OutpostForm } from "#admin/outposts/OutpostForm";
 import { embeddedOutpostManaged, outpostTypeToLabel } from "#admin/outposts/utils";
 
@@ -142,10 +144,8 @@ export class OutpostListPage extends TablePage<Outpost> {
         </ak-forms-delete-bulk>`;
     }
 
-    protected override renderObjectCreate(): TemplateResult {
-        return html`<button ${OutpostForm.asModalInvoker()} class="pf-c-button pf-m-primary">
-            ${msg("New Outpost")}
-        </button>`;
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return CreateLinkButton(toAdminInterface("outpost/outposts/new"), OutpostForm);
     }
 }
 

@@ -5,10 +5,13 @@ import "#elements/forms/ModalForm";
 import "#admin/policies/BoundPoliciesList";
 import { aki } from "#common/api/client";
 
-import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
+import { IconEditButton } from "#elements/dialogs";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { CreateLinkButton } from "#components/ak-full-page";
 
 import { RequestRuleForm } from "#admin/requests/RequestRuleForm";
 
@@ -97,7 +100,7 @@ export class RequestRuleListPage extends TablePage<RequestRule> {
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
-        return ModalInvokerButton(RequestRuleForm);
+        return CreateLinkButton(toAdminInterface("requests/rules/new"), RequestRuleForm);
     }
 }
 

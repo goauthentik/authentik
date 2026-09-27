@@ -7,7 +7,10 @@ import "#elements/forms/SearchSelect/index";
 import "#admin/common/ak-crypto-certificate-search";
 import { aki } from "#common/api/client";
 
+import { AKElement } from "#elements/Base";
+import { formatCreateLabel } from "#elements/dialogs/shared";
 import { ModelForm } from "#elements/forms/ModelForm";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 
 import {
     EventsApi,
@@ -23,6 +26,9 @@ import {
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
+
+import "#components/ak-full-page-form";
+
 import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-event-transport-form")
@@ -264,8 +270,25 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
     }
 }
 
+/**
+ * The event transport form as a full page, for the `/events/transports/new` route.
+ */
+@customElement("ak-event-transport-form-page")
+export class TransportFormPage extends AKElement {
+    protected override render() {
+        return html`<ak-full-page-form
+            header=${formatCreateLabel(TransportForm)}
+            icon="pf-icon pf-icon-export"
+            return-url=${toAdminInterface("events/transports")}
+        >
+            <ak-event-transport-form></ak-event-transport-form>
+        </ak-full-page-form>`;
+    }
+}
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-event-transport-form": TransportForm;
+        "ak-event-transport-form-page": TransportFormPage;
     }
 }

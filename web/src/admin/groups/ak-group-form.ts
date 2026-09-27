@@ -10,6 +10,9 @@ import "#elements/forms/SearchSelect/index";
 import { aki } from "#common/api/client";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
+import { AKElement } from "#elements/Base";
+import { formatCreateLabel } from "#elements/dialogs/shared";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 
 import { ObjectAttributeModelForm } from "#admin/object-attributes/renderAttributes";
 
@@ -18,6 +21,9 @@ import { CoreApi, Group, ModelEnum, RbacApi, RelatedGroup, Role } from "@goauthe
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
+
+import "#components/ak-full-page-form";
+
 import { ifDefined } from "lit/directives/if-defined.js";
 
 export function coreGroupPair(item: Group | RelatedGroup): DualSelectPair {
@@ -151,8 +157,25 @@ export class GroupForm extends ObjectAttributeModelForm<Group, string> {
     }
 }
 
+/**
+ * The group form as a full page, for the `/identity/groups/new` route.
+ */
+@customElement("ak-group-form-page")
+export class GroupFormPage extends AKElement {
+    protected override render() {
+        return html`<ak-full-page-form
+            header=${formatCreateLabel(GroupForm)}
+            icon="pf-icon pf-icon-users"
+            return-url=${toAdminInterface("identity/groups")}
+        >
+            <ak-group-form></ak-group-form>
+        </ak-full-page-form>`;
+    }
+}
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-group-form": GroupForm;
+        "ak-group-form-page": GroupFormPage;
     }
 }

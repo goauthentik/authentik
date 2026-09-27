@@ -18,12 +18,14 @@ import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 import { docLink } from "#common/global";
 
-import { IconEditButton, modalInvoker, ModalInvokerButton } from "#elements/dialogs";
+import { IconEditButton, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { CreateLinkButton } from "#components/ak-full-page";
 import { taskCard } from "#components/tasks/taskCard";
 
 import { BlueprintForm } from "#admin/blueprints/BlueprintForm";
@@ -184,7 +186,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
     protected override renderObjectCreate(): SlottedTemplateResult {
         return guard([], () => {
             return [
-                ModalInvokerButton(BlueprintForm),
+                CreateLinkButton(toAdminInterface("blueprints/instances/new"), BlueprintForm),
                 html`<button
                     class="pf-c-button pf-m-primary"
                     type="button"

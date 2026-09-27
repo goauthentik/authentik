@@ -11,9 +11,12 @@ import "#components/ak-switch-input";
 import { aki } from "#common/api/client";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
+import { AKElement } from "#elements/Base";
+import { formatCreateLabel } from "#elements/dialogs/shared";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { RadioChangeEventDetail, RadioOption } from "#elements/forms/Radio";
 import type SearchSelect from "#elements/forms/SearchSelect/SearchSelect";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { eventTransportsProvider, eventTransportsSelector } from "#admin/events/RuleFormHelpers";
@@ -39,6 +42,9 @@ import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { keyed } from "lit/directives/keyed.js";
+
+import "#components/ak-full-page-form";
+
 import { createRef, ref } from "lit/directives/ref.js";
 
 type TargetObject = Application | Group | Role;
@@ -338,8 +344,25 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
     }
 }
 
+/**
+ * The lifecycle rule form as a full page, for the `/events/lifecycle-rules/new` route.
+ */
+@customElement("ak-lifecycle-rule-form-page")
+export class LifecycleRuleFormPage extends AKElement {
+    protected override render() {
+        return html`<ak-full-page-form
+            header=${formatCreateLabel(LifecycleRuleForm)}
+            icon="pf-icon pf-icon-history"
+            return-url=${toAdminInterface("events/lifecycle-rules")}
+        >
+            <ak-lifecycle-rule-form></ak-lifecycle-rule-form>
+        </ak-full-page-form>`;
+    }
+}
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-lifecycle-rule-form": LifecycleRuleForm;
+        "ak-lifecycle-rule-form-page": LifecycleRuleFormPage;
     }
 }

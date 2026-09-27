@@ -13,7 +13,10 @@ import "#components/ak-file-search-input";
 import { aki } from "#common/api/client";
 import { DefaultBrand } from "#common/ui/config";
 
+import { AKElement } from "#elements/Base";
+import { formatCreateLabel } from "#elements/dialogs/shared";
 import { ModelForm } from "#elements/forms/ModelForm";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { DefaultFlowBackground } from "#elements/utils/images";
 
 import { AKLabel } from "#components/ak-label";
@@ -37,6 +40,9 @@ import YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
+
+import "#components/ak-full-page-form";
+
 import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-brand-form")
@@ -447,8 +453,25 @@ export class BrandForm extends ModelForm<Brand, string> {
     }
 }
 
+/**
+ * The brand form as a full page, for the `/core/brands/new` route.
+ */
+@customElement("ak-brand-form-page")
+export class BrandFormPage extends AKElement {
+    protected override render() {
+        return html`<ak-full-page-form
+            header=${formatCreateLabel(BrandForm)}
+            icon="pf-icon pf-icon-tenant"
+            return-url=${toAdminInterface("core/brands")}
+        >
+            <ak-brand-form></ak-brand-form>
+        </ak-full-page-form>`;
+    }
+}
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-brand-form": BrandForm;
+        "ak-brand-form-page": BrandFormPage;
     }
 }

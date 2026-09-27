@@ -5,10 +5,13 @@ import "#admin/policies/BoundPoliciesList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
 
-import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
+import { IconEditButton } from "#elements/dialogs";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { CreateLinkButton } from "#components/ak-full-page";
 
 import { DeviceAccessGroupForm } from "#admin/endpoints/DeviceAccessGroupForm";
 
@@ -57,7 +60,7 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
-        return ModalInvokerButton(DeviceAccessGroupForm);
+        return CreateLinkButton(toAdminInterface("endpoints/groups/new"), DeviceAccessGroupForm);
     }
 
     renderToolbarSelected() {

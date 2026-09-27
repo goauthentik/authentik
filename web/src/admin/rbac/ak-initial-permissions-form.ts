@@ -8,7 +8,10 @@ import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
+import { AKElement } from "#elements/Base";
+import { formatCreateLabel } from "#elements/dialogs/shared";
 import { ModelForm } from "#elements/forms/ModelForm";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 
 import {
     InitialPermissions,
@@ -21,6 +24,9 @@ import {
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
+
+import "#components/ak-full-page-form";
+
 import { ifDefined } from "lit/directives/if-defined.js";
 
 export function rbacPermissionPair(item: Permission): DualSelectPair {
@@ -138,8 +144,25 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
     }
 }
 
+/**
+ * The initial permissions form as a full page, for the `/identity/initial-permissions/new` route.
+ */
+@customElement("ak-initial-permissions-form-page")
+export class InitialPermissionsFormPage extends AKElement {
+    protected override render() {
+        return html`<ak-full-page-form
+            header=${formatCreateLabel(InitialPermissionsForm)}
+            icon="fa fa-lock"
+            return-url=${toAdminInterface("identity/initial-permissions")}
+        >
+            <ak-initial-permissions-form></ak-initial-permissions-form>
+        </ak-full-page-form>`;
+    }
+}
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-initial-permissions-form": InitialPermissionsForm;
+        "ak-initial-permissions-form-page": InitialPermissionsFormPage;
     }
 }

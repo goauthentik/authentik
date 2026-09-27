@@ -12,9 +12,12 @@ import { aki } from "#common/api/client";
 
 import { ModalInvokerButton } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { CreateLinkButton } from "#components/ak-full-page";
 
 import { CryptoCertificateGenerateForm } from "#admin/crypto/CertificateGenerateForm";
 import { CryptoCertificateForm } from "#admin/crypto/CertificateKeyPairForm";
@@ -203,7 +206,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
 
     protected override renderObjectCreate(): SlottedTemplateResult {
         return [
-            ModalInvokerButton(CryptoCertificateForm),
+            CreateLinkButton(toAdminInterface("crypto/certificates/new"), CryptoCertificateForm),
             ModalInvokerButton(CryptoCertificateGenerateForm, null, {
                 kind: "secondary",
             }),

@@ -7,9 +7,12 @@ import "#components/ak-hidden-text-input";
 import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
 
+import { AKElement } from "#elements/Base";
+import { formatCreateLabel } from "#elements/dialogs/shared";
 import { Form } from "#elements/forms/Form";
 import { ModalForm } from "#elements/forms/ModalForm";
 import { RadioOption } from "#elements/forms/Radio";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { AKLabel } from "#components/ak-label";
@@ -27,6 +30,9 @@ import {
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+
+import "#components/ak-full-page-form";
+
 import { ifDefined } from "lit/directives/if-defined.js";
 
 function createPolicyBehaviorOptions(): RadioOption<PolicyBehaviorEnum>[] {
@@ -200,8 +206,25 @@ export class AgentForm extends Form<AgentCreateRequest> {
     }
 }
 
+/**
+ * The agent form as a full page, for the `/identity/agents/new` route.
+ */
+@customElement("ak-agent-form-page")
+export class AgentFormPage extends AKElement {
+    protected override render() {
+        return html`<ak-full-page-form
+            header=${formatCreateLabel(AgentForm)}
+            icon="pf-icon pf-icon-user"
+            return-url=${toAdminInterface("identity/agents")}
+        >
+            <ak-agent-form></ak-agent-form>
+        </ak-full-page-form>`;
+    }
+}
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-agent-form": AgentForm;
+        "ak-agent-form-page": AgentFormPage;
     }
 }

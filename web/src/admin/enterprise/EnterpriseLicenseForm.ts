@@ -5,7 +5,10 @@ import "#elements/forms/HorizontalFormElement";
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH_ENTERPRISE } from "#common/constants";
 
+import { AKElement } from "#elements/Base";
+import { formatCreateLabel } from "#elements/dialogs/shared";
 import { ModelForm } from "#elements/forms/ModelForm";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -13,6 +16,9 @@ import { EnterpriseApi, License } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
+
+import "#components/ak-full-page-form";
+
 import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-enterprise-license-form")
@@ -90,8 +96,25 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
     }
 }
 
+/**
+ * The enterprise license form as a full page, for the `/enterprise/licenses/new` route.
+ */
+@customElement("ak-enterprise-license-form-page")
+export class EnterpriseLicenseFormPage extends AKElement {
+    protected override render() {
+        return html`<ak-full-page-form
+            header=${formatCreateLabel(EnterpriseLicenseForm)}
+            icon="pf-icon pf-icon-key"
+            return-url=${toAdminInterface("enterprise/licenses")}
+        >
+            <ak-enterprise-license-form></ak-enterprise-license-form>
+        </ak-full-page-form>`;
+    }
+}
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-enterprise-license-form": EnterpriseLicenseForm;
+        "ak-enterprise-license-form-page": EnterpriseLicenseFormPage;
     }
 }

@@ -6,7 +6,10 @@ import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import { aki } from "#common/api/client";
 
+import { AKElement } from "#elements/Base";
+import { formatCreateLabel } from "#elements/dialogs/shared";
 import { ModelForm } from "#elements/forms/ModelForm";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 
 import {
@@ -20,6 +23,9 @@ import {
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
+
+import "#components/ak-full-page-form";
+
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-object-attribute-form")
@@ -164,8 +170,25 @@ export class ObjectAttributeForm extends ModelForm<ObjectAttribute, string> {
     //#endregion
 }
 
+/**
+ * The object attribute form as a full page, for the `/identity/object-attributes/new` route.
+ */
+@customElement("ak-object-attribute-form-page")
+export class ObjectAttributeFormPage extends AKElement {
+    protected override render() {
+        return html`<ak-full-page-form
+            header=${formatCreateLabel(ObjectAttributeForm)}
+            icon="pf-icon pf-icon-flavor"
+            return-url=${toAdminInterface("identity/object-attributes")}
+        >
+            <ak-object-attribute-form></ak-object-attribute-form>
+        </ak-full-page-form>`;
+    }
+}
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-object-attribute-form": ObjectAttributeForm;
+        "ak-object-attribute-form-page": ObjectAttributeFormPage;
     }
 }

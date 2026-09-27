@@ -7,7 +7,10 @@ import "#components/ak-switch-input";
 import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
 
+import { AKElement } from "#elements/Base";
+import { formatCreateLabel } from "#elements/dialogs/shared";
 import { ModelForm } from "#elements/forms/ModelForm";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 
 import { AKLabel } from "#components/ak-label";
 
@@ -15,6 +18,9 @@ import { CoreApi, CoreUsersListRequest, IntentEnum, Token, User } from "@goauthe
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
+
+import "#components/ak-full-page-form";
+
 import { customElement, property, state } from "lit/decorators.js";
 
 const EXPIRATION_DURATION = 30 * 60 * 1000;
@@ -216,8 +222,25 @@ export class TokenForm extends ModelForm<Token, string> {
     //#endregion
 }
 
+/**
+ * The token form as a full page, for the `/core/tokens/new` route.
+ */
+@customElement("ak-token-form-page")
+export class TokenFormPage extends AKElement {
+    protected override render() {
+        return html`<ak-full-page-form
+            header=${formatCreateLabel(TokenForm)}
+            icon="pf-icon pf-icon-security"
+            return-url=${toAdminInterface("core/tokens")}
+        >
+            <ak-token-form></ak-token-form>
+        </ak-full-page-form>`;
+    }
+}
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-token-form": TokenForm;
+        "ak-token-form-page": TokenFormPage;
     }
 }

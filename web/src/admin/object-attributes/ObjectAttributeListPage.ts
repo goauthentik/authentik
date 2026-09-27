@@ -8,9 +8,12 @@ import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import { aki } from "#common/api/client";
 
 import { IconEditButton } from "#elements/dialogs";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { CreateLinkButton } from "#components/ak-full-page";
 
 import { ObjectAttributeForm } from "#admin/object-attributes/ObjectAttributeForm";
 
@@ -101,12 +104,10 @@ export class ObjectAttributeListPage extends TablePage<ObjectAttribute> {
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
-        return html`<ak-forms-modal>
-            <span slot="submit">${msg("Create")}</span>
-            <span slot="header">${msg("New Attribute")}</span>
-            <ak-object-attribute-form slot="form"> </ak-object-attribute-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-        </ak-forms-modal>`;
+        return CreateLinkButton(
+            toAdminInterface("identity/object-attributes/new"),
+            ObjectAttributeForm,
+        );
     }
 
     protected override row(item: ObjectAttribute): SlottedTemplateResult[] {
