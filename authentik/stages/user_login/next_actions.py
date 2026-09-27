@@ -6,12 +6,14 @@ from django.db import transaction
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.utils.deprecation import MiddlewareMixin
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
 from authentik.core.models import USER_ATTRIBUTE_NEXT_ACTIONS, User
 from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
+from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow, FlowDesignation, in_memory_stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_REDIRECT,
@@ -30,16 +32,9 @@ NEXT_ACTION_DISALLOWED_DESIGNATIONS = [
     FlowDesignation.INVALIDATION,
 ]
 
-PENDING_ALLOWED_READ_PATHS = (
-    "/api/v3/core/users/me/",
-    "/api/v3/root/config/",
-)
-PENDING_ALLOWED_READ_PREFIXES = ("/static/", "/media/")
-
 
 def next_actions_enabled() -> bool:
-    """Whether next actions are enforced on this install. Any installed license counts,
-    even an expired one, so a lapsed license cannot switch off mandatory actions."""
+    """Enforce actions even when the installed license has expired."""
     from authentik.enterprise.license import LicenseKey
     from authentik.enterprise.models import LicenseUsageStatus
 
@@ -107,96 +102,51 @@ def plan_next_action(request: HttpRequest, flow: Flow) -> FlowPlan:
     return plan
 
 
-def pending_logout_allowed(request: HttpRequest) -> bool:
-    """Allow a restricted session to log out, even when its action list is invalid."""
-    path = request.path
-    read_request = request.method in ("GET", "HEAD")
-    if read_request and path in ("/flows/-/cancel/", "/flows/-/default/invalidation/"):
-        return True
-    if path.startswith(("/if/flow/", "/api/v3/flows/executor/")):
-        slug = path.removeprefix("/if/flow/").removeprefix("/api/v3/flows/executor/").strip("/")
-        method_allowed = read_request or (
-            path.startswith("/api/v3/flows/executor/") and request.method == "POST"
-        )
-        return (
-            method_allowed
-            and Flow.objects.filter(slug=slug, designation=FlowDesignation.INVALIDATION).exists()
-        )
-    return False
+class PendingNextActionsMiddleware(MiddlewareMixin):
+    """Restrict a new session until its required actions are complete."""
 
-
-def pending_path_allowed(request: HttpRequest, action_slug: str) -> bool:
-    """Allow only the active action flow and its runtime dependencies."""
-    path = request.path
-    read_request = request.method in ("GET", "HEAD")
-    if read_request and (
-        path in PENDING_ALLOWED_READ_PATHS or path.startswith(PENDING_ALLOWED_READ_PREFIXES)
-    ):
-        return True
-    if path == f"/if/flow/{action_slug}/" and read_request:
-        return True
-    if path == f"/api/v3/flows/executor/{action_slug}/" and request.method in ("GET", "POST"):
-        return True
-    # Duo enrollment polls this flow-authenticated endpoint while its stage is active.
-    if (
-        request.method == "POST"
-        and path.startswith("/api/v3/stages/authenticator/duo/")
-        and path.endswith("/enrollment_status/")
-    ):
-        return True
-    return False
-
-
-class PendingNextActionsMiddleware:
-    """Restrict a newly logged-in session until its next actions are complete."""
-
-    def __init__(self, get_response):
-        self.get_response = get_response
-
-    def __call__(self, request: HttpRequest) -> HttpResponse:
-        response = self.block_pending_user(request)
-        return response or self.get_response(request)
-
-    def block_pending_user(self, request: HttpRequest) -> HttpResponse | None:
-        """Return a response for a user who must complete next actions first,
-        None when the request may proceed."""
+    def process_view(self, request: HttpRequest, view_func, view_args, view_kwargs):
         if not request.session.get(SESSION_KEY_PENDING_NEXT_ACTIONS):
             return None
         if not request.user.is_authenticated:
             request.session.pop(SESSION_KEY_PENDING_NEXT_ACTIONS, None)
             return None
-        if pending_logout_allowed(request):
+        route = request.resolver_match.view_name
+        read = request.method in ("GET", "HEAD")
+        flow_request = (read and route == "authentik_core:if-flow") or (
+            request.method in ("GET", "POST") and route == "authentik_api:flow-executor"
+        )
+        slug = view_kwargs.get("flow_slug")
+        if (
+            read and route in ("authentik_flows:cancel", "authentik_flows:default-invalidation")
+        ) or (
+            flow_request
+            and Flow.objects.filter(slug=slug, designation=FlowDesignation.INVALIDATION).exists()
+        ):
             return None
         user = request.user
         value = user.attributes.get(USER_ATTRIBUTE_NEXT_ACTIONS, [])
         if value == []:
             request.session.pop(SESSION_KEY_PENDING_NEXT_ACTIONS, None)
             return None
-        from authentik.flows.exceptions import FlowNonApplicableException
-
         try:
-            flows = resolve_next_actions(value)
-        except ValueError as exc:
-            LOGGER.warning("Failed to resolve next actions", user=user.username, error=str(exc))
-            return JsonResponse(
-                {"detail": _("The required actions are invalid. Contact your administrator.")},
-                status=403,
-            )
-        allowed = pending_path_allowed(request, flows[0].slug)
-        if allowed and not request.path.startswith(("/if/flow/", "/api/v3/flows/executor/")):
-            return None
-        if not allowed and "text/html" not in request.headers.get("Accept", ""):
-            return JsonResponse(
-                {"detail": _("Complete the required actions before continuing.")},
-                status=403,
-            )
-        try:
-            plan = plan_next_action(request, flows[0])
-        except FlowNonApplicableException:
-            LOGGER.warning(
-                "Next action flow not applicable to user",
-                user=user.username,
-            )
+            flow = resolve_next_actions(value)[0]
+            if read and route in ("authentik_api:user-me", "authentik_api:config"):
+                return None
+            # Duo enrollment polls this endpoint while its stage is active.
+            if (
+                request.method == "POST"
+                and route == "authentik_api:authenticatorduostage-enrollment-status"
+            ):
+                return None
+            allowed = flow_request and slug == flow.slug
+            if not allowed and "text/html" not in request.headers.get("Accept", ""):
+                return JsonResponse(
+                    {"detail": _("Complete the required actions before continuing.")}, status=403
+                )
+            plan = plan_next_action(request, flow)
+        except (ValueError, FlowNonApplicableException) as exc:
+            LOGGER.warning("Invalid required action", user=user.username, error=str(exc))
             return JsonResponse(
                 {"detail": _("The required actions are invalid. Contact your administrator.")},
                 status=403,
@@ -208,4 +158,4 @@ class PendingNextActionsMiddleware:
         request.session[SESSION_KEY_PLAN] = plan
         if allowed:
             return None
-        return redirect("authentik_core:if-flow", flow_slug=flows[0].slug)
+        return redirect("authentik_core:if-flow", flow_slug=flow.slug)
