@@ -1,5 +1,6 @@
 """User API Views"""
 
+from contextlib import nullcontext
 from datetime import timedelta
 from typing import Any
 
@@ -237,12 +238,11 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             permissions = validated_data.pop("permissions", [])
 
         previous_actions = next_action_slugs(instance.attributes.get(USER_ATTRIBUTE_NEXT_ACTIONS))
-        # When only the next-actions attribute changes, the dedicated events below
-        # replace the generic model update event
-        if self._is_next_actions_only_change(instance, validated_data):
-            with audit_ignore():
-                instance = super().update(instance, validated_data)
-        else:
+        actions_only = validated_data.keys() == {"attributes"} and (
+            instance.attributes | {USER_ATTRIBUTE_NEXT_ACTIONS: None}
+            == validated_data["attributes"] | {USER_ATTRIBUTE_NEXT_ACTIONS: None}
+        )
+        with audit_ignore() if actions_only else nullcontext():
             instance = super().update(instance, validated_data)
         self._log_next_action_changes(previous_actions, instance)
         if is_blueprint:
@@ -254,20 +254,6 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             instance.assign_perms_to_managed_role(perms_list)
         self._ensure_password_not_empty(instance)
         return instance
-
-    def _is_next_actions_only_change(self, instance: User, validated_data: dict) -> bool:
-        """Check whether the update only changes the next-actions attribute."""
-        if set(validated_data.keys()) != {"attributes"}:
-            return False
-        previous = {
-            k: v for k, v in instance.attributes.items() if k != USER_ATTRIBUTE_NEXT_ACTIONS
-        }
-        updated = {
-            k: v
-            for k, v in validated_data["attributes"].items()
-            if k != USER_ATTRIBUTE_NEXT_ACTIONS
-        }
-        return previous == updated
 
     def _log_next_action_changes(self, previous_actions: list[str], instance: User):
         """Create events for next actions added to or removed from the user."""
