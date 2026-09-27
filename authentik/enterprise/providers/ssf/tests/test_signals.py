@@ -57,8 +57,7 @@ class TestSignals(APITestCase):
     def _assert_password_credential_change(self, user, change_type: str):
         stream = Stream.objects.filter(provider=self.provider).first()
         self.assertIsNotNone(stream)
-        event = StreamEvent.objects.filter(stream=stream).first()
-        self.assertIsNotNone(event)
+        event = StreamEvent.objects.get(stream=stream, type=EventTypes.CAEP_CREDENTIAL_CHANGE)
         self.assertEqual(event.status, SSFEventStatus.PENDING_FAILED)
         event_payload = event.payload["events"][
             "https://schemas.openid.net/secevent/caep/event-type/credential-change"
@@ -95,6 +94,7 @@ class TestSignals(APITestCase):
         """Test user password change"""
         user = create_test_user()
         self.client.force_login(user)
+        StreamEvent.objects.all().delete()
         user.set_password(generate_id())
         user.save()
 
@@ -104,6 +104,7 @@ class TestSignals(APITestCase):
         """Test user password change from a pre-hashed password."""
         user = create_test_user()
         self.client.force_login(user)
+        StreamEvent.objects.all().delete()
         user.set_password_from_hash(make_password(generate_id()))
         user.save()
 
@@ -113,6 +114,7 @@ class TestSignals(APITestCase):
         """Test explicit password revoke."""
         user = create_test_user()
         self.client.force_login(user)
+        StreamEvent.objects.all().delete()
         user.set_password(None)
         user.save()
 
@@ -182,6 +184,7 @@ class TestSignals(APITestCase):
         )
         user = create_test_user()
         self.client.force_login(user)
+        StreamEvent.objects.all().delete()
         user.set_password(generate_id())
         user.save()
 

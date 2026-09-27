@@ -94,10 +94,7 @@ class PasswordStage(ConfigurableStage, Stage):
 
 
 class PasswordDevice(Device):
-    """A user's password, stored as an authenticator device.
-
-    A password is a knowledge factor rather than a second factor, so this device is kept
-    out of MFA discovery, validation and the device APIs."""
+    """A user's password, excluded from MFA discovery and validation."""
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="password_device")
     password = models.CharField(max_length=128)
