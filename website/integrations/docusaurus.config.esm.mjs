@@ -56,6 +56,42 @@ export default createDocusaurusConfig(
                             ["/docs", "https://docs.goauthentik.io"],
                         ]),
                     ],
+<<<<<<< HEAD
+=======
+                }),
+
+                ...redirectPlugins,
+            ],
+            scripts: [
+                {
+                    "src": "https://analytics.a7k.io/script.js",
+                    "defer": true,
+                    "data-website-id": "7908d08a-a6a4-44e1-b3b7-e5396cc41e16",
+                },
+            ],
+
+            //#endregion
+
+            //#region Theme
+
+            themes: ["@goauthentik/docusaurus-theme", "@docusaurus/theme-mermaid"],
+            favicon: "https://goauthentik.io/img/icon.png",
+            themeConfig: /** @type {UserThemeConfig & UserThemeConfigExtra} */ ({
+                algolia: createAlgoliaConfig({
+                    externalUrlRegex: /^(?:https?:\/\/)(?!integrations\.goauthentik.io)/.source,
+                }),
+                image: "https://goauthentik.io/img/social.png",
+                navbarReplacements: {
+                    INTEGRATIONS_URL: "/",
+                },
+                navbar: {
+                    logo: {
+                        alt: "authentik logo",
+                        src: "https://goauthentik.io/img/icon_left_brand.svg",
+                        href: "https://goauthentik.io/",
+                        target: "_self",
+                    },
+>>>>>>> 7d4430652 (website: add umami (#26460))
                 },
             }),
         ],
