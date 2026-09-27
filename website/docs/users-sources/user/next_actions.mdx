@@ -14,7 +14,9 @@ At the next [User Login stage](../../add-secure-apps/flows-stages/stages/user_lo
 
 Each completed flow is removed from the attribute. After the last action, authentik resumes the original page or application authorization. While restricted, the user can run the required flows or log out.
 
-Any flow can be used as an action, except flows with the **Authentication** or **Invalidation** [designation](../../add-secure-apps/flows-stages/flow/index.mdx). authentik's [default flows](../../add-secure-apps/flows-stages/flow/default-flows.mdx) already cover changing the password (`default-password-change`) and setting up the various authenticator types (for example `default-authenticator-totp-setup`).
+Required actions cannot use flows with the **Authentication** or **Invalidation** [designation](../../add-secure-apps/flows-stages/flow/index.mdx). authentik's [default flows](../../add-secure-apps/flows-stages/flow/default-flows.mdx) already cover changing the password (`default-password-change`) and setting up the various authenticator types (for example `default-authenticator-totp-setup`).
+
+Actions must finish within authentik. A [Redirect stage](../../add-secure-apps/flows-stages/stages/redirect/index.mdx) can hand off to another eligible flow. A redirect to a static URL leaves the action pending because the user leaves before completion.
 
 You can also [create a flow](../../add-secure-apps/flows-stages/flow/index.mdx#create-a-flow) to collect profile details or accept updated terms.
 
