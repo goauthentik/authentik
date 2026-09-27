@@ -235,6 +235,23 @@ class TestUsersAPI(APITestCase):
             ).exists()
         )
 
+    def test_next_actions_require_change_user_permission(self):
+        """A delegated editor can change actions only for their assigned user."""
+        actor = create_test_user()
+        actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.client.force_login(actor)
+        flow = create_test_flow(FlowDesignation.STAGE_CONFIGURATION)
+        data = {"attributes": {USER_ATTRIBUTE_NEXT_ACTIONS: [flow.slug]}}
+        target = reverse("authentik_api:user-detail", kwargs={"pk": self.user.pk})
+        self.assertEqual(self.client.patch(target, data, format="json").status_code, 403)
+        actor.assign_perms_to_managed_role("authentik_core.change_user", self.user)
+        self.assertEqual(self.client.patch(target, data, format="json").status_code, 200)
+        own = reverse("authentik_api:user-detail", kwargs={"pk": actor.pk})
+        self.assertEqual(self.client.patch(own, data, format="json").status_code, 403)
+        self.assertEqual(
+            self.client.patch(target, {"attributes": {}}, format="json").status_code, 200
+        )
+
     def test_set_next_actions_invalid(self):
         """Test that unknown flows and disallowed designations are rejected"""
         self.client.force_login(self.admin)
