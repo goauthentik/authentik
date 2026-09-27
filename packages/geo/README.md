@@ -27,7 +27,7 @@ tooling reads the app's contract, never the reverse.
 
 ```bash
 pnpm run test         # Vitest, node only
-pnpm run lint:types   # tsc over src, scripts and test
+pnpm run build:types  # tsc over src, scripts and test
 ```
 
 Covers the land-fill, border, country-assignment, detail-zone and label

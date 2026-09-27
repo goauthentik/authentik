@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -22,53 +20,24 @@ import { PolicyFromJSON } from "./Policy";
 
 /**
  * PolicyBinding Serializer
+ *
  * @export
  * @interface PolicyBinding
  */
 export interface PolicyBinding {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     policy?: string | null;
-    /**
-     *
-     */
     group?: string | null;
-    /**
-     *
-     */
     user?: number | null;
-    /**
-     *
-     */
     readonly policyObj: Policy | null;
-    /**
-     *
-     */
     readonly groupObj: PartialGroup | null;
-    /**
-     *
-     */
     readonly userObj: PartialUser | null;
-    /**
-     *
-     */
     target: string;
     /**
      * Negates the outcome of the policy. Messages are unaffected.
      */
     negate?: boolean;
-    /**
-     *
-     */
     enabled?: boolean;
-    /**
-     *
-     */
     order: number;
     /**
      * Timeout after which Policy execution is terminated.
@@ -78,13 +47,7 @@ export interface PolicyBinding {
      * Result if the Policy execution fails.
      */
     failureResult?: boolean;
-    /**
-     *
-     */
     readonly expires: Date | null;
-    /**
-     *
-     */
     readonly expiring: boolean;
 }
 

@@ -2,7 +2,9 @@
 
 from os import chmod, environ, unlink, write
 from tempfile import mkstemp
+from uuid import UUID
 
+from django.db.models.signals import post_save
 from django.test import TransactionTestCase
 from yaml import load
 
@@ -323,9 +325,23 @@ class TestBlueprintsV1(TransactionTestCase):
             exporter = FlowExporter(flow)
             export_yaml = exporter.export_to_string()
 
-        importer = Importer.from_string(export_yaml)
-        self.assertTrue(importer.validate()[0])
-        self.assertTrue(importer.apply())
+        binding_pks = []
+
+        def capture_binding_pk(sender, instance, **kwargs):
+            binding_pks.append(instance.policy_binding_uuid)
+
+        # Inspect the signal instance: reloading from the database would hide a string UUID.
+        post_save.connect(capture_binding_pk, sender=PolicyBinding)
+        try:
+            importer = Importer.from_string(export_yaml)
+            self.assertTrue(importer.validate()[0])
+            self.assertTrue(importer.apply())
+        finally:
+            post_save.disconnect(capture_binding_pk, sender=PolicyBinding)
+
+        self.assertTrue(binding_pks)
+        for binding_pk in binding_pks:
+            self.assertIsInstance(binding_pk, UUID)
         self.assertTrue(UserLoginStage.objects.filter(name=stage_name).exists())
         self.assertTrue(Flow.objects.filter(slug=flow_slug).exists())
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,28 +11,16 @@
  */
 
 import { parseDateTime, serializeDateTime } from "../runtime";
-
 /**
  * User source connection
+ *
  * @export
  * @interface PatchedUserOAuthSourceConnectionRequest
  */
 export interface PatchedUserOAuthSourceConnectionRequest {
-    /**
-     *
-     */
     source?: string;
-    /**
-     *
-     */
     identifier?: string;
-    /**
-     *
-     */
     accessToken?: string | null;
-    /**
-     *
-     */
     expires?: Date;
 }
 

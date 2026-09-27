@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,17 +19,12 @@ import { ProviderEnumFromJSON, ProviderEnumToJSON } from "./ProviderEnum";
 
 /**
  * AuthenticatorSMSStage Serializer
+ *
  * @export
  * @interface AuthenticatorSMSStage
  */
 export interface AuthenticatorSMSStage {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
@@ -49,44 +42,21 @@ export interface AuthenticatorSMSStage {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly flowSet: Array<FlowSet>;
     /**
-     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able
+     * to configure this stage.
      */
     configureFlow?: string | null;
-    /**
-     *
-     */
     friendlyName?: string;
-    /**
-     *
-     */
     provider: ProviderEnum;
-    /**
-     *
-     */
     fromNumber: string;
-    /**
-     *
-     */
     accountSid: string;
-    /**
-     *
-     */
-    auth: string;
-    /**
-     *
-     */
-    authPassword?: string;
-    /**
-     *
-     */
     authType?: AuthTypeEnum;
     /**
-     * When enabled, the Phone number is only used during enrollment to verify the users authenticity. Only a hash of the phone number is saved to ensure it is not reused in the future.
+     * When enabled, the Phone number is only used during enrollment to verify the users
+     * authenticity. Only a hash of the phone number is saved to ensure it is not reused in the
+     * future.
      */
     verifyOnly?: boolean;
     /**
@@ -145,7 +115,6 @@ export function instanceOfAuthenticatorSMSStage(value: object): value is Authent
             (value as Record<string, any>)["account_sid"] === undefined)
     )
         return false;
-    if (!("auth" in value) || value["auth"] === undefined) return false;
     return true;
 }
 
@@ -178,8 +147,6 @@ export function AuthenticatorSMSStageFromJSONTyped(
         provider: ProviderEnumFromJSON(json["provider"]),
         fromNumber: json["from_number"],
         accountSid: json["account_sid"],
-        auth: json["auth"],
-        authPassword: json["auth_password"] == null ? undefined : json["auth_password"],
         authType: json["auth_type"] == null ? undefined : AuthTypeEnumFromJSON(json["auth_type"]),
         verifyOnly: json["verify_only"] == null ? undefined : json["verify_only"],
         mapping:
@@ -213,8 +180,6 @@ export function AuthenticatorSMSStageToJSONTyped(
         provider: ProviderEnumToJSON(value["provider"]),
         from_number: value["fromNumber"],
         account_sid: value["accountSid"],
-        auth: value["auth"],
-        auth_password: value["authPassword"],
         auth_type: AuthTypeEnumToJSON(value["authType"]),
         verify_only: value["verifyOnly"],
         mapping: value["mapping"],

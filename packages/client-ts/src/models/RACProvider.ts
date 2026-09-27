@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,29 +12,22 @@
 
 /**
  * RACProvider Serializer
+ *
  * @export
  * @interface RACProvider
  */
 export interface RACProvider {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     name: string;
     /**
-     * Flow used for authentication when the associated application is accessed by an un-authenticated user.
+     * Flow used for authentication when the associated application is accessed by an
+     * un-authenticated user.
      */
     authenticationFlow?: string | null;
     /**
      * Flow used when authorizing this provider.
      */
     authorizationFlow: string;
-    /**
-     *
-     */
     propertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
@@ -70,16 +61,11 @@ export interface RACProvider {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     settings?: { [key: string]: any };
-    /**
-     *
-     */
     readonly outpostSet: Array<string>;
     /**
-     * Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)
+     * Determines how long a session lasts. Default of 0 means that the sessions lasts until the
+     * browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)
      */
     connectionExpiry?: string;
     /**

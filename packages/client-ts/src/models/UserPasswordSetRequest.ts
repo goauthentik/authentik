@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,13 +12,11 @@
 
 /**
  * Payload to set a users' password directly
+ *
  * @export
  * @interface UserPasswordSetRequest
  */
 export interface UserPasswordSetRequest {
-    /**
-     *
-     */
     password: string;
 }
 

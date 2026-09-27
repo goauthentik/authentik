@@ -2,7 +2,6 @@ import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/utils/TimeDeltaHelp";
-
 import { aki } from "#common/api/client";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
@@ -23,6 +22,7 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
             })
             .then((stage) => {
                 this.showExpiresIn = stage.mode === ConsentModeEnum.Expiring;
+
                 return stage;
             });
     }
@@ -37,6 +37,7 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
                 consentStageRequest: data,
             });
         }
+
         return aki(StagesApi).stagesConsentCreate({
             consentStageRequest: data,
         });
@@ -67,6 +68,7 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
                             class="pf-c-form-control"
                             @change=${(ev: Event) => {
                                 const target = ev.target as HTMLSelectElement;
+
                                 if (target.selectedOptions[0].value === ConsentModeEnum.Expiring) {
                                     this.showExpiresIn = true;
                                 } else {

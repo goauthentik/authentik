@@ -6,6 +6,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#user/user-settings/tokens/UserTokenForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
 import { formatIntentLabel } from "#common/labels";
@@ -20,8 +21,6 @@ import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-user-token-list")
 export class UserTokenList extends Table<Token> {
@@ -115,14 +114,16 @@ export class UserTokenList extends Table<Token> {
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
-                        ${item.expiring
-                            ? html`<pf-tooltip
-                                  position="top"
-                                  .content=${item.expires?.toLocaleString()}
-                              >
-                                  ${formatElapsedTime(item.expires!)}
-                              </pf-tooltip>`
-                            : msg("-")}
+                        ${
+                            item.expiring
+                                ? html`<pf-tooltip
+                                      position="top"
+                                      .content=${item.expires?.toLocaleString()}
+                                  >
+                                      ${formatElapsedTime(item.expires!)}
+                                  </pf-tooltip>`
+                                : msg("-")
+                        }
                     </div>
                 </dd>
             </div>
@@ -141,6 +142,7 @@ export class UserTokenList extends Table<Token> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Token(s)")}
             .objects=${this.selectedElements}

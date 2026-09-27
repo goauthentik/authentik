@@ -1,12 +1,12 @@
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFSelect from "@patternfly/patternfly/components/Select/select.css";
+
 import { AKElement } from "#elements/Base";
 import { randomId } from "#elements/utils/randomId";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 
 /**
  * @class SearchSelectLoadingIndicator

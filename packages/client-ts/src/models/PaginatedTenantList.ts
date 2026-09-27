@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { Tenant } from "./Tenant";
 import { TenantFromJSON, TenantToJSON } from "./Tenant";
 
 /**
- *
  * @export
  * @interface PaginatedTenantList
  */
 export interface PaginatedTenantList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<Tenant>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

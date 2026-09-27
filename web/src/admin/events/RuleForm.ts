@@ -4,7 +4,6 @@ import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
-
 import { eventTransportsProvider, eventTransportsSelector } from "./RuleFormHelpers.js";
 
 import { aki } from "#common/api/client";
@@ -130,21 +129,23 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Severity")} required name="severity">
                 <ak-radio
-                    .options=${[
-                        {
-                            label: severityToLabel(SeverityEnum.Alert),
-                            value: SeverityEnum.Alert,
-                            default: true,
-                        },
-                        {
-                            label: severityToLabel(SeverityEnum.Warning),
-                            value: SeverityEnum.Warning,
-                        },
-                        {
-                            label: severityToLabel(SeverityEnum.Notice),
-                            value: SeverityEnum.Notice,
-                        },
-                    ] satisfies RadioOption<SeverityEnum>[]}
+                    .options=${
+                        [
+                            {
+                                label: severityToLabel(SeverityEnum.Alert),
+                                value: SeverityEnum.Alert,
+                                default: true,
+                            },
+                            {
+                                label: severityToLabel(SeverityEnum.Warning),
+                                value: SeverityEnum.Warning,
+                            },
+                            {
+                                label: severityToLabel(SeverityEnum.Notice),
+                                value: SeverityEnum.Notice,
+                            },
+                        ] satisfies RadioOption<SeverityEnum>[]
+                    }
                     .value=${this.instance?.severity}
                 >
                 </ak-radio>

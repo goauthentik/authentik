@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,53 +18,21 @@ import { SAMLBindingsEnumFromJSON, SAMLBindingsEnumToJSON } from "./SAMLBindings
 
 /**
  * Challenge for native browser logout
+ *
  * @export
  * @interface NativeLogoutChallenge
  */
 export interface NativeLogoutChallenge {
-    /**
-     *
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     */
     component?: string;
-    /**
-     *
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     */
     providerName?: string;
-    /**
-     *
-     */
     isComplete?: boolean;
-    /**
-     *
-     */
     postUrl?: string;
-    /**
-     *
-     */
     redirectUrl?: string;
-    /**
-     *
-     */
     samlBinding?: SAMLBindingsEnum;
-    /**
-     *
-     */
     samlRequest?: string;
-    /**
-     *
-     */
     samlResponse?: string;
-    /**
-     *
-     */
     samlRelayState?: string;
 }
 

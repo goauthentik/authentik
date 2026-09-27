@@ -25,7 +25,7 @@ class TestProviderProxy(SeleniumTestCase):
     def setUp(self):
         super().setUp()
         self.run_container(
-            image="traefik/whoami:latest",
+            image=self.pinned_image("whoami", "e2e/compose.yml"),
             ports={
                 "80": "80",
             },

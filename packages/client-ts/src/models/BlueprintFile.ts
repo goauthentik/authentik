@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,26 +15,13 @@ import type { Metadata } from "./Metadata";
 import { MetadataFromJSON } from "./Metadata";
 
 /**
- *
  * @export
  * @interface BlueprintFile
  */
 export interface BlueprintFile {
-    /**
-     *
-     */
     path: string;
-    /**
-     *
-     */
     lastM: Date;
-    /**
-     *
-     */
     hash: string;
-    /**
-     *
-     */
     readonly meta: Metadata;
 }
 

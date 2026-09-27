@@ -19,6 +19,7 @@ const FIXTURE = resolve(__dirname, "__fixtures__", "site");
 /**
  * @param {string} path
  * @param {string} [slug]
+ *
  * @returns {import("./common.mjs").LLMSDocInfo}
  */
 function testDoc(path, slug) {

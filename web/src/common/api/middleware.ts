@@ -30,12 +30,14 @@ export class LoggingMiddleware implements Middleware {
             brand.matchedDomain && brand.matchedDomain !== "authentik-default"
                 ? `api/${brand.matchedDomain}`
                 : "api";
+
         this.#logger = ConsoleLogger.prefix(prefix);
     }
 
     post({ response, init, url }: ResponseContext): Promise<Response> {
         const parsedURL = URL.canParse(url) ? new URL(url) : null;
         const path = parsedURL ? parsedURL.pathname + parsedURL.search : url;
+
         if (response.ok) {
             this.#logger.debug(`${init.method} ${path}`);
         } else {
@@ -102,6 +104,7 @@ export class LocaleMiddleware implements Middleware, Disposable {
         return Promise.resolve(context);
     }
 }
+
 export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
     #requests: string[] = [];
     #counts = new Map<string, number>();

@@ -1,6 +1,5 @@
 import "#elements/AppIcon";
 import "#user/LibraryApplication/RACLaunchEndpointModal";
-
 import { PFSize } from "#common/enums";
 
 import { modalInvoker } from "#elements/dialogs";
@@ -55,6 +54,7 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
     const cardID = `app-${application.pk}`;
     const titleID = `${cardID}-title`;
     const descriptionID = `${cardID}-description`;
+
     const cardHeader = CardHeader({
         application,
         id: titleID,
@@ -83,6 +83,7 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
         ${spread(extendedProps)}
         >${cardHeader}</a
     >`;
+
     if (rac) {
         main = html`<div
             ${primaryRef}
@@ -94,12 +95,14 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
             ${cardHeader}
         </div>`;
     }
+
     // onAppClick intentionally takes precedence over the RAC launcher: in the
     // requestable-browse context a card click means "request access", not "launch".
     if (onAppClick) {
         const activate = () => {
             onAppClick(application);
         };
+
         main = html`<div
             ${primaryRef}
             role="button"

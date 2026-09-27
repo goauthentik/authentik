@@ -1,6 +1,5 @@
 import "#elements/LoadingOverlay";
 import "#elements/buttons/SpinnerButton/index";
-
 import { EVENT_REFRESH } from "#common/constants";
 
 import { ModalButton } from "#elements/buttons/ModalButton";
@@ -233,9 +232,9 @@ export class ModalForm extends ModalButton {
     }
 
     protected override renderModalInner(): TemplateResult {
-        return html`${this.loading
-                ? html`<ak-loading-overlay topmost></ak-loading-overlay>`
-                : nothing}
+        return html`${
+                this.loading ? html`<ak-loading-overlay topmost></ak-loading-overlay>` : nothing
+            }
             ${this.renderHeading()}
             <slot name="above-form"></slot>
             <div class="pf-c-modal-box__body" @scroll=${this.scrollListener}>${this.formSlot}</div>

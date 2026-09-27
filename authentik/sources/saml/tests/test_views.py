@@ -1,6 +1,7 @@
 """SAML Source tests"""
 
 from base64 import b64encode
+from unittest.mock import MagicMock, patch
 
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
@@ -13,7 +14,10 @@ from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 from authentik.sources.saml.models import SAMLSource
 
+GOOGLE_ACS_URL = "https://127.0.0.1:9443/source/saml/google/acs/"
 
+
+@patch.object(SAMLSource, "build_full_url", MagicMock(return_value=GOOGLE_ACS_URL))
 class TestViews(TestCase):
     """Test SAML Views"""
 
@@ -53,6 +57,25 @@ class TestViews(TestCase):
         )
         plan: FlowPlan = self.client.session.get(SESSION_KEY_PLAN)
         self.assertIsNotNone(plan)
+
+    @freeze_time("2022-10-14T15:00:00")
+    def test_expired_assertion(self):
+        """An expired assertion should return a 400, not an unhandled error"""
+        response = self.client.post(
+            reverse(
+                "authentik_sources_saml:acs",
+                kwargs={
+                    "source_slug": self.source.slug,
+                },
+            ),
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_success.xml").encode()
+                ).decode()
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(b"The SAML assertion is not valid yet or has expired.", response.content)
 
     @freeze_time("2022-10-14T14:15:00")
     def test_enroll_redirect(self):

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { RequestRule } from "./RequestRule";
 import { RequestRuleFromJSON, RequestRuleToJSON } from "./RequestRule";
 
 /**
- *
  * @export
  * @interface PaginatedRequestRuleList
  */
 export interface PaginatedRequestRuleList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<RequestRule>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

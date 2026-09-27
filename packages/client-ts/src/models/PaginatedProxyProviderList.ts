@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { ProxyProvider } from "./ProxyProvider";
 import { ProxyProviderFromJSON, ProxyProviderToJSON } from "./ProxyProvider";
 
 /**
- *
  * @export
  * @interface PaginatedProxyProviderList
  */
 export interface PaginatedProxyProviderList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<ProxyProvider>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

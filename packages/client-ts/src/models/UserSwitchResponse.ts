@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,13 +12,11 @@
 
 /**
  * Redirect returned after planning a user switch.
+ *
  * @export
  * @interface UserSwitchResponse
  */
 export interface UserSwitchResponse {
-    /**
-     *
-     */
     readonly redirect: string;
 }
 

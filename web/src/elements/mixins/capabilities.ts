@@ -5,7 +5,6 @@ import { CapabilitiesEnum } from "@goauthentik/api";
 
 /**
  * A consumer that provides the capability methods to the element.
- *
  */
 export interface CapabilitiesMixin {
     /**
@@ -27,8 +26,7 @@ export interface CapabilitiesMixin {
  * After importing, simply mixin this function:
  *
  * ```ts
- * export class AkMyNiftyNewFeature extends WithCapabilitiesConfig(AKElement) {
- * }
+ * export class AkMyNiftyNewFeature extends WithCapabilitiesConfig(AKElement) {}
  * ```
  *
  * And then if you need to check on a capability:
@@ -37,11 +35,9 @@ export interface CapabilitiesMixin {
  * if (this.can(CapabilitiesEnum.IsEnterprise)) { ... }
  * ```
  *
- *
  * Passing `true` as the second mixin argument
  *
  * @category Mixin
- *
  */
 export const WithCapabilitiesConfig = createMixin<CapabilitiesMixin>(({ SuperClass }) => {
     abstract class CapabilitiesProvider
