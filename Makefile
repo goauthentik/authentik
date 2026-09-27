@@ -164,13 +164,19 @@ bump:  ## Bump authentik version. Usage: make bump version=20xx.xx.xx
 ifndef version
 	$(error Usage: make bump version=20xx.xx.xx )
 endif
-	$(eval current_version := $(shell cat ${PWD}/internal/constants/VERSION))
+	$(eval current_version := $(shell cat ${PWD}/internal/constants/VERSION | tr -d '\n'))
 	$(SED_INPLACE) 's/^version = ".*"/version = "$(version)"/' ${PWD}/pyproject.toml
 	$(SED_INPLACE) 's/^VERSION = ".*"/VERSION = "$(version)"/' ${PWD}/authentik/__init__.py
 	$(SED_INPLACE) "s/version = \"${current_version}\"/version = \"$(version)\"/" ${PWD}/Cargo.toml ${PWD}/Cargo.lock
 	$(MAKE) gen-build gen-compose aws-cfn
 	$(SED_INPLACE) "s/\"${current_version}\"/\"$(version)\"/" ${PWD}/package.json ${PWD}/web/package.json
 	echo -n $(version) > ${PWD}/internal/constants/VERSION
+# Helm
+	$(SED_INPLACE) "s/^version: ${current_version}/version: $(version)/" ${PWD}/lifecycle/charts/authentik/Chart.yaml
+	$(SED_INPLACE) "s/^appVersion: ${current_version}/appVersion: $(version)/" ${PWD}/lifecycle/charts/authentik/Chart.yaml
+	$(SED_INPLACE) "s/upgrade to authentik ${current_version}/upgrade to authentik $(version)/" ${PWD}/lifecycle/charts/authentik/Chart.yaml
+	$(SED_INPLACE) "s/${current_version}/$(version)/" ${PWD}/lifecycle/charts/authentik/Chart.yaml
+	$(MAKE) helm-docs
 
 #########################
 ## API Schema
@@ -317,7 +323,7 @@ docs-api-clean:  ## Clean generated API documentation
 	pnpm --dir website/api run clean
 
 #########################
-## Docker
+## Lifecycle
 #########################
 
 docker:  ## Build a docker image of the current source tree
@@ -325,6 +331,26 @@ docker:  ## Build a docker image of the current source tree
 
 test-docker:
 	BUILD=true ${PWD}/scripts/test_docker.sh
+
+helm-docs:
+	docker run \
+		--rm \
+		-v "${PWD}:/helm-docs" \
+		-u $(UID) \
+		docker.io/jnorwood/helm-docs:v1.12.0 \
+			-c /helm-docs/lifecycle/charts
+
+helm-lint:
+	docker run \
+		--rm \
+		-v "${PWD}:/workdir" \
+		--entrypoint /bin/sh \
+		quay.io/helmpack/chart-testing:v3.10.1 \
+			-c cd /workdir/lifecycle/chart \
+			ct lint \
+			--config /workdir/lifecycle/chart/ct-lint.yaml \
+			--lint-conf /workdir/lifecycle/chart/lintconf.yaml \
+			--debug
 
 #########################
 ## CI
