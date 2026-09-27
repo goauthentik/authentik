@@ -974,9 +974,9 @@ class UserViewSet(
     def unlock_password(self, request: Request, pk: int) -> Response:
         """Allow a locked password to authenticate again"""
         user: User = self.get_object()
-        device = PasswordDevice.objects.filter(user=user, locked_at__isnull=False).first()
-        if device:
-            device.unlock()
+        if PasswordDevice.objects.filter(user=user, locked_at__isnull=False).update(
+            failed_attempts=0, locked_at=None
+        ):
             Event.new(EventAction.PASSWORD_UNLOCKED, affected_user=user).from_http(request)
         return Response(status=204)
 
