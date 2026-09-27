@@ -66,11 +66,6 @@ class Migration(migrations.Migration):
                 SELECT now(), now(), 'Password', TRUE, password, password_change_date, id
                 FROM authentik_core_user;
             """,
-            reverse_sql="""
-                UPDATE authentik_core_user u
-                SET password = d.password, password_change_date = d.password_change_date
-                FROM authentik_stages_password_passworddevice d
-                WHERE d.user_id = u.id;
-            """,
+            reverse_sql=migrations.RunSQL.noop,
         ),
     ]
