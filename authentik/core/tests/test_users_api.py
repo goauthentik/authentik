@@ -306,6 +306,15 @@ class TestUsersAPI(APITestCase):
                 format="json",
             )
             self.assertEqual(response.status_code, 400)
+            self.assertEqual(
+                response.json(),
+                {
+                    "attributes": [
+                        "Next actions must reference existing flows other than "
+                        "authentication or invalidation flows."
+                    ]
+                },
+            )
 
     def test_set_password(self):
         """Test Direct password set"""

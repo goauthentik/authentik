@@ -344,7 +344,12 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             try:
                 resolve_next_actions(attributes[USER_ATTRIBUTE_NEXT_ACTIONS])
             except ValueError as exc:
-                raise ValidationError(str(exc)) from exc
+                raise ValidationError(
+                    _(
+                        "Next actions must reference existing flows other than "
+                        "authentication or invalidation flows."
+                    )
+                ) from exc
         return attributes
 
     def validate_groups(self, groups: list) -> list:
