@@ -17,6 +17,7 @@ from authentik.stages.password.models import PasswordDevice, PasswordStage
 
 PLAN_CONTEXT_LOCKED_ATTEMPTS = "goauthentik.io/stages/password/locked_attempts"
 
+# TODO: Include agent users after https://github.com/goauthentik/authentik/pull/26475.
 SERVICE_ACCOUNT_TYPES = (UserTypes.SERVICE_ACCOUNT, UserTypes.INTERNAL_SERVICE_ACCOUNT)
 
 

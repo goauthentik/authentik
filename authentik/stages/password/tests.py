@@ -461,7 +461,7 @@ class TestPasswordLockout(FlowTestCase):
         self.assertTrue(response.json()["password_locked"])
 
     def test_api_allows_self_lock(self):
-        """Test users can lock their own password, e.g. to only sign in with passkeys"""
+        """Administrators can lock their own password"""
         self.client.force_login(self.user)
         response = self.client.post(
             reverse("authentik_api:user-lock-password", kwargs={"pk": self.user.pk})
@@ -469,16 +469,27 @@ class TestPasswordLockout(FlowTestCase):
         self.assertEqual(response.status_code, 204)
         self.assertTrue(self.device.locked)
 
-    def test_api_rejects_service_account_lock(self):
-        """Test service account passwords cannot be locked"""
-        service_account = User.objects.create(
-            username=generate_id(), type=UserTypes.SERVICE_ACCOUNT
-        )
+    def test_service_accounts_are_exempt(self):
+        """Both service account types bypass automatic and explicit locking."""
         self.client.force_login(self.user)
-        response = self.client.post(
-            reverse("authentik_api:user-lock-password", kwargs={"pk": service_account.pk})
-        )
-        self.assertEqual(response.status_code, 400)
+        for user_type in (UserTypes.SERVICE_ACCOUNT, UserTypes.INTERNAL_SERVICE_ACCOUNT):
+            with self.subTest(user_type=user_type):
+                user = create_test_admin_user(type=user_type)
+                policy = PasswordLockout(self.stage, RequestFactory().post("/"))
+                for _ in range(self.stage.failed_attempts_before_lockout + 1):
+                    self.assertEqual(policy.apply(user, None, {}), PasswordLockoutResult())
+                response = self.client.post(
+                    reverse("authentik_api:user-lock-password", kwargs={"pk": user.pk})
+                )
+                self.assertEqual(response.status_code, 400)
+                device = PasswordDevice.objects.get(user=user)
+                self.assertFalse(device.locked)
+                self.assertEqual(device.failed_attempts, 0)
+                self.assertFalse(
+                    Event.objects.filter(
+                        action=EventAction.PASSWORD_LOCKED, context__affected_user__pk=user.pk
+                    ).exists()
+                )
 
 
 class TestPasswordLockoutConcurrency(TransactionTestCase):
