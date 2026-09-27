@@ -1,12 +1,10 @@
+import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 import { createPaginatedResponse } from "#common/api/responses";
 import { AKRefreshEvent } from "#common/events";
 
-import type { SearchSelectBase } from "#elements/forms/SearchSelect/SearchSelect";
-import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -78,6 +76,7 @@ export class UserNextActionsList extends Table<NextActionRow> {
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<NextActionRow>> {
         const slugs = toSlugs(this.user?.attributes?.[USER_ATTRIBUTE_NEXT_ACTIONS]);
+
         const flows = slugs.length
             ? (await aki(FlowsApi).flowsInstancesList({ ordering: "slug" })).results
             : [];
@@ -125,28 +124,19 @@ export class UserNextActionsList extends Table<NextActionRow> {
             id: user.pk,
             patchedUserRequest: { attributes },
         });
+
         this.dispatchEvent(new AKRefreshEvent());
     }
 
-    protected addSelected = () => {
+    protected addSelected = async () => {
         const slug = this.selectedFlow?.slug;
 
         if (!slug) {
             return;
         }
 
-        this.#patch((actions) => (actions.includes(slug) ? actions : [...actions, slug]))
-            .then(() => {
-                const search =
-                    this.renderRoot.querySelector<SearchSelectBase<Flow>>("ak-search-select");
-
-                if (search) {
-                    search.selectedObject = null;
-                }
-
-                this.selectedFlow = null;
-            })
-            .catch(showAPIErrorMessage);
+        await this.#patch((actions) => (actions.includes(slug) ? actions : [...actions, slug]));
+        this.selectedFlow = null;
     };
 
     protected fetchFlows = (query?: string): Promise<Flow[]> =>
@@ -166,6 +156,7 @@ export class UserNextActionsList extends Table<NextActionRow> {
         return html`
             <ak-search-select
                 .fetchObjects=${this.fetchFlows}
+                .selectedObject=${this.selectedFlow}
                 .renderElement=${RenderFlowOption}
                 .renderDescription=${(flow: Flow) => html`${flow.slug}`}
                 .value=${(flow: Flow | null) => String(flow?.pk ?? "")}
@@ -179,13 +170,9 @@ export class UserNextActionsList extends Table<NextActionRow> {
                 }}
             >
             </ak-search-select>
-            <button
-                class="pf-c-button pf-m-primary"
-                ?disabled=${!this.selectedFlow}
-                @click=${this.addSelected}
-            >
+            <ak-spinner-button .disabled=${!this.selectedFlow} .callAction=${this.addSelected}>
                 ${msg("Add", { id: "user-next-actions.add.label" })}
-            </button>
+            </ak-spinner-button>
             ${super.renderToolbar()}
         `;
     }

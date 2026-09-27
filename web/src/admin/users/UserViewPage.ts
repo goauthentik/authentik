@@ -115,8 +115,10 @@ export class UserViewPage extends WithLazyTabs(
                         .currentUserPk=${this.currentUser?.pk}
                         .canImpersonate=${this.can(CapabilitiesEnum.CanImpersonate)}
                         .hasEnterpriseLicense=${this.hasEnterpriseLicense}
-                        .hasInstalledEnterpriseLicense=${this.licenseSummary !== null &&
-                        this.licenseSummary.status !== LicenseSummaryStatusEnum.Unlicensed}
+                        .hasInstalledEnterpriseLicense=${
+                            this.licenseSummary !== null &&
+                            this.licenseSummary.status !== LicenseSummaryStatusEnum.Unlicensed
+                        }
                         .brandHasRecoveryFlow=${!!this.brand.flowRecovery}
                     ></ak-user-overview-tab>
                 </div>
