@@ -10,7 +10,7 @@ from django.test import RequestFactory, TestCase, TransactionTestCase
 from django.urls import reverse
 from django.utils.timezone import now
 
-from authentik.core.models import User, UserTypes
+from authentik.core.models import UserTypes
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.enterprise.license import LicenseSummary
 from authentik.enterprise.models import LicenseUsageStatus
@@ -514,7 +514,8 @@ class TestPasswordLockoutConcurrency(TransactionTestCase):
                     connection.close()
 
         connection.close()
-        with patch.object(PasswordLockout, "is_available", return_value=True):
+        with patch("authentik.enterprise.license.LicenseKey.cached_summary") as summary:
+            summary.return_value.status.is_valid = True
             threads = [FailureThread() for _ in range(3)]
             for thread in threads:
                 thread.start()

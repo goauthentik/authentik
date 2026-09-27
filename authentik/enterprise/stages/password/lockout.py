@@ -39,11 +39,6 @@ class PasswordLockout:
         self.password_stage = password_stage
         self.request = request
 
-    @staticmethod
-    def is_available() -> bool:
-        """Return whether Enterprise password lockout can currently run."""
-        return LicenseKey.cached_summary().status.is_valid
-
     def apply(
         self, pending_user: User, user: User | None, context: dict[str, Any]
     ) -> PasswordLockoutResult:
@@ -51,11 +46,10 @@ class PasswordLockout:
 
         `user` is the result of authenticating `pending_user`'s credentials; a locked
         password refuses authentication even when those credentials were correct."""
-        if not self.is_available() or pending_user.pk is None:
+        if not LicenseKey.cached_summary().status.is_valid or pending_user.pk is None:
             return PasswordLockoutResult(user)
 
         threshold = self.password_stage.failed_attempts_before_lockout
-        newly_locked = False
         with transaction.atomic():
             device = PasswordDevice.objects.select_for_update().filter(user=pending_user).first()
             if device is None:
@@ -77,10 +71,9 @@ class PasswordLockout:
             if device.failed_attempts >= threshold:
                 device.failed_attempts = 0
                 device.locked_at = now()
-                newly_locked = True
             device.save()
 
-        if newly_locked:
+        if device.locked:
             Event.new(
                 EventAction.PASSWORD_LOCKED,
                 affected_user=pending_user,
@@ -92,7 +85,7 @@ class PasswordLockout:
 
     def _uses_external_password(self, user: User) -> bool:
         """Return whether the user's password is verified by an external system."""
-        backends = set(self.password_stage.backends)
+        backends = self.password_stage.backends
         if BACKEND_LDAP in backends and LDAP_DISTINGUISHED_NAME in user.attributes:
             return True
         return (
