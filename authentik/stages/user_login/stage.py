@@ -240,7 +240,8 @@ class UserLoginStageView(ChallengeStageView):
             )
         if (
             not is_user_switch_login
-            and user.attributes.get(USER_ATTRIBUTE_NEXT_ACTIONS)
+            and USER_ATTRIBUTE_NEXT_ACTIONS in user.attributes
+            and user.attributes[USER_ATTRIBUTE_NEXT_ACTIONS] != []
             and next_actions_enabled()
         ):
             self.request.session[SESSION_KEY_PENDING_NEXT_ACTIONS] = True
