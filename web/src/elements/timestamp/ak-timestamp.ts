@@ -19,10 +19,10 @@ export class AKTimestamp extends AKElement {
      * A lazy-loaded media query list for detecting reduced motion preferences.
      *
      * @remarks
-     * This is initialized only when needed to avoid:
+     *   This is initialized only when needed to avoid:
      *
-     * - Multiple media query list instances across all timestamp elements.
-     * - Initialization before the element is visible.
+     *   - Multiple media query list instances across all timestamp elements.
+     *   - Initialization before the element is visible.
      */
     protected static reducedMotionMediaQuery: MediaQueryList | null = null;
 
@@ -65,7 +65,7 @@ export class AKTimestamp extends AKElement {
         cancelAnimationFrame(this.#animationFrameID);
     }
 
-    public updated(changed: PropertyValues<this>): void {
+    protected override updated(changed: PropertyValues<this>): void {
         super.updated(changed);
 
         if (changed.has("visible") || changed.has("timestamp") || changed.has("refresh")) {
@@ -144,13 +144,17 @@ export class AKTimestamp extends AKElement {
                 <slot></slot>
             </div>
             ${this.elapsed ? html`<div part="elapsed" id="elapsed">${elapsed}</div>` : nothing}
-            ${this.datetime
-                ? html`<small part="datetime" id="datetime"
-                      >${this.dateOnly
-                          ? this.timestamp.toLocaleDateString()
-                          : this.timestamp.toLocaleString()}</small
-                  >`
-                : nothing}
+            ${
+                this.datetime
+                    ? html`<small part="datetime" id="datetime"
+                          >${
+                              this.dateOnly
+                                  ? this.timestamp.toLocaleDateString()
+                                  : this.timestamp.toLocaleString()
+                          }</small
+                      >`
+                    : nothing
+            }
         </time>`;
     }
 }

@@ -122,6 +122,28 @@ class TestEventsAPI(APITestCase):
         notification.refresh_from_db()
         self.assertTrue(notification.seen)
 
+    def test_notification_list_events(self):
+        """List event details and eventless notifications only for the recipient."""
+        recipient = create_test_user()
+        event = Event.new(EventAction.LOGIN)
+        event.save()
+        body = generate_id()
+        notifications = [
+            Notification.objects.create(
+                user=user, event=linked_event, body=body, severity=NotificationSeverity.NOTICE
+            )
+            for user, linked_event in ((recipient, event), (recipient, None), (self.user, event))
+        ]
+        self.client.force_login(recipient)
+        response = self.client.get(reverse("authentik_api:notification-list"), {"body": body})
+        self.assertEqual(response.status_code, 200)
+        results = {row["pk"]: row for row in response.json()["results"]}
+        self.assertCountEqual(results, [str(n.pk) for n in notifications[:2]])
+        linked_event = results[str(notifications[0].pk)]["event"]
+        self.assertEqual(linked_event["pk"], str(event.pk))
+        self.assertEqual(linked_event["action"], EventAction.LOGIN)
+        self.assertIsNone(results[str(notifications[1].pk)]["event"])
+
     def test_transport(self):
         """Test transport API"""
         response = self.client.post(

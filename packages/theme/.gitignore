@@ -1,0 +1,7 @@
+README.md
+node_modules
+.wireit/
+_media
+!.github/README.md
+public/
+styleframe/

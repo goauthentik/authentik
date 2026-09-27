@@ -5,12 +5,11 @@ from multiprocessing.connection import Connection
 from time import perf_counter
 
 from django.core.cache import cache
-from sentry_sdk import start_span
-from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
+from authentik.lib.tracing import Span, active_tracer
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.models import PolicyBinding
@@ -122,7 +121,7 @@ class PolicyProcess(PROCESS_CLASS):
 
     def profiling_wrapper(self):
         """Run with profiling enabled"""
-        with start_span(
+        with active_tracer().start_span(
             op="authentik.policy.process.execute",
         ) as span:
             span: Span

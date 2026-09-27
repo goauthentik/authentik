@@ -1,7 +1,6 @@
 import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
@@ -51,10 +50,13 @@ export class UserResetEmailForm extends Form<UserRecoveryEmailRequest> {
                         const args: StagesAllListRequest = {
                             ordering: "name",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const stages = await aki(StagesApi).stagesEmailList(args);
+
                         return stages.results;
                     }}
                     .groupBy=${(items: Stage[]) => {

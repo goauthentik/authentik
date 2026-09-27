@@ -5,7 +5,6 @@ import "#elements/chips/ChipGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 
 import { renderModal } from "#elements/dialogs";
@@ -48,12 +47,14 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
         if (!this.roleUUID) {
             return;
         }
+
         await aki(RbacApi).rbacPermissionsAssignedByRolesAssign({
             uuid: this.roleUUID,
             permissionAssignRequest: {
                 permissions: data.permissions,
             },
         });
+
         this.permissionsToAdd = [];
     }
 

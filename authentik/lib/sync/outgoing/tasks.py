@@ -116,6 +116,9 @@ class SyncTasks:
                 return
 
     def _discover(self, provider: OutgoingSyncProvider, object_type: type[User | Group]):
+        if not provider.discovery_enabled:
+            self.logger.info("Discover disbled for provider, skipping")
+            return
         client = provider.client_for_model(object_type)
         if not client.can_discover:
             return

@@ -212,6 +212,16 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
         null=True,
         default=None,
     )
+    # Set when `created_by` is an Agent: the human the agent acts for, and the only user whose
+    # approval can fulfill it. An agent may only request access its owner already holds, so
+    # there is nothing left for RequestRule reviewers to decide.
+    agent_owner = models.ForeignKey(
+        User,
+        on_delete=models.SET_DEFAULT,
+        related_name="agent_grant_requests",
+        null=True,
+        default=None,
+    )
 
     # Targets access was requested to
     targets = models.ManyToManyField(PolicyBindingModel, through="GrantRequestTarget")
@@ -274,12 +284,19 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
     def is_satisfied(self) -> bool:
         """Whether enough reviewers have approved to fulfill every rule attached to this
         request's targets. A target with no rule attached needs no more than one approval."""
-        approving_users = GrantRequestApproval.objects.filter(
-            request=self, status=RequestStatus.APPROVED
-        ).values_list("reviewer", flat=True)
+        approving_users = set(
+            GrantRequestApproval.objects.filter(
+                request=self, status=RequestStatus.APPROVED
+            ).values_list("reviewer", flat=True)
+        )
+        # An agent acts for a human and can only ever have requested access that human already
+        # holds, so the owner's approval is the entire decision -- no reviewer can stand in for
+        # them, and none is needed.
+        if self.agent_owner_id:
+            return self.agent_owner_id in approving_users
         rules = RequestRule.objects.filter(targets__in=self.targets.all()).distinct()
         if not rules.exists():
-            return approving_users.exists()
+            return bool(approving_users)
         return all(self._rule_satisfied(rule, approving_users) for rule in rules)
 
     @transaction.atomic

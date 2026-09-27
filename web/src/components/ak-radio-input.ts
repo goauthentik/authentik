@@ -1,5 +1,4 @@
 import "#elements/forms/Radio";
-
 import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
 
 import { RadioChangeEventDetail, RadioOption } from "#elements/forms/Radio";
@@ -33,11 +32,13 @@ export class AkRadioInput<T extends Jsonifiable> extends HorizontalLightComponen
     protected override renderControl(): SlottedTemplateResult {
         const helpText = this.help?.trim();
 
-        return html`${helpText
-                ? html`<p part="radio-help" class="pf-c-form__helper-radio" id=${this.helpID}>
-                      ${helpText}
-                  </p>`
-                : null}<ak-radio
+        return html`${
+                helpText
+                    ? html`<p part="radio-help" class="pf-c-form__helper-radio" id=${this.helpID}>
+                          ${helpText}
+                      </p>`
+                    : null
+            }<ak-radio
                 .options=${this.options}
                 .value=${this.value}
                 @input=${this.handleInput}

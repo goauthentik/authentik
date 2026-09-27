@@ -1,7 +1,6 @@
 import "#components/ak-text-input";
 import "#elements/CodeMirror/ak-codemirror";
 import "#components/ak-radio-input";
-
 import { aki } from "#common/api/client";
 
 import { Form } from "#elements/forms/Form";
@@ -15,11 +14,11 @@ import {
     RequestStatus,
 } from "@goauthentik/api";
 
+import { ifDefined } from "lit-html/directives/if-defined.js";
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { html } from "lit-html";
-import { ifDefined } from "lit-html/directives/if-defined.js";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-access-request-fulfill-form")

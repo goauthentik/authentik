@@ -74,10 +74,10 @@ class UsersView(SCIMObjectView):
             if not connection:
                 raise SCIMNotFoundError("User not found.")
             return Response(self.user_to_scim(connection))
-        connections = (
-            SCIMSourceUser.objects.filter(source=self.source).select_related("user").order_by("pk")
+        connections = self.filter_query(
+            request,
+            SCIMSourceUser.objects.filter(source=self.source).select_related("user").order_by("pk"),
         )
-        connections = connections.filter(self.filter_parse(request))
         page = self.paginate_query(connections)
         return Response(
             {

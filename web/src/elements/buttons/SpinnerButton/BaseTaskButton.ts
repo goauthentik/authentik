@@ -1,4 +1,6 @@
 import "#elements/Spinner";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 
 import { ERROR_CLASS, PROGRESS_CLASS, SUCCESS_CLASS } from "#common/constants";
 import { PFSize } from "#common/enums";
@@ -11,9 +13,6 @@ import { Task, TaskStatus } from "@lit/task";
 import { css, html } from "lit";
 import { property } from "lit/decorators.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
-
 // `pointer-events: none` makes the button inaccessible during the processing phase.
 
 const buttonStyles = [
@@ -25,6 +24,9 @@ const buttonStyles = [
         }
         #spinner-button.working {
             pointer-events: none;
+        }
+        #spinner-button.pf-m-in-progress.pf-m-plain slot::slotted(*) {
+            visibility: hidden;
         }
 
         .pf-c-button {
@@ -46,7 +48,9 @@ const StatusMap = {
     [TaskStatus.ERROR]: ERROR_CLASS,
 } as const satisfies Record<TaskStatus, string>;
 
-const SPINNER_TIMEOUT = 1000 * 1.5; // milliseconds
+const SPINNER_TIMEOUT = 1000 * 1.5;
+
+// milliseconds
 
 /**
  * BaseTaskButton
@@ -56,7 +60,6 @@ const SPINNER_TIMEOUT = 1000 * 1.5; // milliseconds
  * but overriding onSuccess() or onFailure() means that you must either call `onComplete` if you
  * want to preserve the TaskButton's "reset after completion" semantics, or inside `onSuccess` and
  * `onFailure` call their `super.` equivalents.
- *
  */
 
 export abstract class BaseTaskButton<R = unknown> extends CustomEmitterElement(AKElement) {
@@ -78,6 +81,7 @@ export abstract class BaseTaskButton<R = unknown> extends CustomEmitterElement(A
                 if (typeof this.callAction !== "function") {
                     throw new TypeError("No action defined for SpinnerButton");
                 }
+
                 return this.callAction();
             },
             args: () => [],
@@ -102,6 +106,7 @@ export abstract class BaseTaskButton<R = unknown> extends CustomEmitterElement(A
         this.dispatchCustomEvent(`${this.eventPrefix}-success`, {
             result,
         });
+
         this.onComplete();
     }
 
@@ -109,6 +114,7 @@ export abstract class BaseTaskButton<R = unknown> extends CustomEmitterElement(A
         this.dispatchCustomEvent(`${this.eventPrefix}-failure`, {
             error,
         });
+
         this.onComplete();
     }
 

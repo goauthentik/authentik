@@ -102,9 +102,6 @@ class AuthenticatorWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
         choices=AuthenticatorAttachment.choices, default=None, null=True
     )
 
-    prevent_duplicate_devices = models.BooleanField(
-        default=False, help_text=_("When enabled, a given device can only be registered once.")
-    )
     hints = ArrayField(
         models.TextField(choices=WebAuthnHint.choices),
         default=list,

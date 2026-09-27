@@ -1,0 +1,170 @@
+---
+title: Integrate with PingOne
+sidebar_label: PingOne
+support_level: community
+---
+
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+## What is PingOne?
+
+> PingOne is a cloud-based identity platform from Ping Identity that provides single sign-on, multi-factor authentication, and user management for workforce and customer identities. It can delegate authentication to external identity providers.
+>
+> -- https://www.pingidentity.com
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+PingOne can delegate authentication to authentik using either SAML or OpenID Connect (OIDC). Choose one protocol and follow the matching tab throughout this guide.
+
+<Tabs
+  defaultValue="saml"
+  values={[
+    { label: "SAML", value: "saml" },
+    { label: "OIDC", value: "oidc" },
+  ]}>
+<TabItem value="saml">
+
+## authentik configuration
+
+To support the integration of PingOne with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider
+
+<SAMLProvider20265Warning />
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because you will use it when configuring PingOne.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - **ACS URL**: `https://auth.pingone.com/<environment_id>/saml20/sp/acs`
+        - **Audience**: `pingone`
+        - Under **Advanced protocol settings**, select an available **Signing Certificate**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+## PingOne configuration
+
+To integrate authentik with PingOne, create an external identity provider in the PingOne admin console.
+
+1. Log in to the PingOne admin console.
+2. Navigate to **Integrations** > **External IdPs** and click **+ Add Provider**.
+3. Select **SAML** and click **Next**.
+4. Set **Name** to `authentik` and click **Next**.
+5. On the **Configure PingOne Connection** step, configure the following settings:
+    - Set **PingOne (SP) Entity ID** to `pingone`. This value must match the **Audience** configured in authentik.
+    - Select a **Signing Certificate** and click **Download Signing Certificate**.
+6. Click **Next**.
+7. On the **Configure IdP Connection** step, select **Import from URL**, enter the metadata URL of the authentik application (`https://authentik.company/application/saml/<application_slug>/metadata/`), and click **Import**. This fills the following values:
+    - **SSO Endpoint**: `https://authentik.company/application/saml/<application_slug>/`
+    - **IdP Entity ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
+    - **SSO Binding**: `HTTP REDIRECT`
+    - **SLO Endpoint**: `https://authentik.company/application/saml/<application_slug>/`
+    - **Verification Certificate**: the authentik signing certificate you selected earlier.
+8. Click **Next**.
+9. On the **Map Attributes** step, keep the default mapping of the **Username** attribute to the SAML subject.
+10. Click **Save**.
+11. To enable the IdP, click the toggle at the top of the details panel.
+
+### Download the PingOne encryption certificate
+
+PingOne decrypts encrypted assertions with the encryption certificates in your environment, starting with the default, so no further connection settings are required.
+
+1. In the PingOne admin console, navigate to **Settings** > **Certificates & Key Pairs**.
+2. Locate the default key pair with the **Encryption** usage type, click the **Details** icon, and then click **Download** and select **X509 PEM (.crt)**.
+
+### Update the authentik provider
+
+Import the PingOne signing certificate so that authentik can verify requests from PingOne, and the PingOne encryption certificate so that authentik can encrypt its assertions.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **System** > **Certificates** and click **Import Existing Certificate-Key Pair**.
+3. Set **Certificate Name** to `pingverify` and paste the contents of the PingOne signing certificate into the **Certificate** field.
+4. Click **Import Certificate-Key Pair**.
+5. Repeat the import with the name `pingencrypt` and the contents of the PingOne encryption certificate.
+6. Navigate to **Applications** > **Providers** and click the **Edit** icon of the PingOne provider.
+7. Under **Advanced protocol settings**, set **Verification Certificate** to `pingverify` and **Encryption Certificate** to `pingencrypt`.
+8. Click **Update**.
+
+### Add the identity provider to an authentication policy
+
+PingOne only presents external identity providers on the sign-on screen if the authentication policy includes them.
+
+1. In the PingOne admin console, navigate to **Authentication** > **Authentication** and click the **Edit** icon next to the policy used by your application (for example, the default `Single_Factor` policy).
+2. In the **Login** step, under **Presented Identity Providers**, click **Add Provider** and select `authentik`.
+3. Click **Save**.
+
+</TabItem>
+<TabItem value="oidc">
+
+## authentik configuration {#authentik-configuration-oidc}
+
+To support the integration of PingOne with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider {#create-an-application-and-provider-oidc}
+
+<RedirectURI20265Note />
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because you will use it when configuring PingOne.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because you will use them when configuring PingOne.
+        - Add a **Redirect URI** of type `Strict` `Authorization` with a value of `https://auth.pingone.com/<environment_id>/rp/callback/openid_connect`.
+        - Select an RSA **Signing Key**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+## PingOne configuration {#pingone-configuration-oidc}
+
+To integrate authentik with PingOne, create an external identity provider in the PingOne admin console.
+
+1. Log in to the PingOne admin console.
+2. Navigate to **Integrations** > **External IdPs** and click **+ Add Provider**.
+3. Select **OpenID Connect** and click **Next**.
+4. Set **Name** to `authentik` and click **Next**.
+5. On the **Configure Connection** step, configure the following settings:
+    - **Client ID**: enter the **Client ID** from authentik.
+    - **Client Secret**: enter the **Client Secret** from authentik.
+    - **Discovery Document URI**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`, then click **Use Discovery Document** to populate the remaining endpoint settings.
+    - **Requested Scopes**: `openid profile email`
+6. Click **Next**.
+7. On the **Map Attributes** step, set the mapping for the **Username** attribute to `providerAttributes.preferred_username`. The default mapping uses the `sub` claim, which authentik generates as an opaque identifier.
+8. Click **Save**.
+9. To enable the IdP, click the toggle at the top of the details panel.
+
+### Add the identity provider to an authentication policy {#add-the-identity-provider-to-an-authentication-policy-oidc}
+
+PingOne only presents external identity providers on the sign-on screen if the authentication policy includes them.
+
+1. In the PingOne admin console, navigate to **Authentication** > **Authentication** and click the **Edit** icon next to the policy used by your application (for example, the default `Single_Factor` policy).
+2. In the **Login** step, under **Presented Identity Providers**, click **Add Provider** and select `authentik`.
+3. Click **Save**.
+
+</TabItem>
+</Tabs>
+
+## Configuration verification
+
+To confirm that authentik is properly configured with PingOne, open the PingOne Application Portal in an incognito or private browser window. The portal uses the environment's default authentication policy. Select **authentik** on the PingOne sign-on screen; you should be redirected to authentik to authenticate, and then back to the Application Portal as the signed-in user.
+
+## Resources
+
+- [PingOne documentation - Adding an identity provider - SAML](https://docs.pingidentity.com/pingone/integrations/p1_add_identity_provider_saml.html)
+- [PingOne documentation - Adding an identity provider - OIDC](https://docs.pingidentity.com/pingone/integrations/p1_add_idp_oidc.html)
+- [PingOne documentation - External IdPs](https://docs.pingidentity.com/pingone/integrations/p1_external_idps.html)
+- [PingOne documentation - Adding a login authentication step](https://docs.pingidentity.com/pingone/authentication/p1_add_login_auth_step.html)

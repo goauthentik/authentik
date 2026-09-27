@@ -564,6 +564,18 @@ class BaseGrantModel(models.Model):
     session = models.ForeignKey(
         AuthenticatedSession, null=True, on_delete=models.CASCADE, default=None
     )
+    # RFC 8693 §4.1 delegation: set when this grant was obtained via a token-exchange
+    # request presenting an `actor_token` (e.g. an Actor's own API token) alongside the
+    # `subject_token` -- `user` above stays the subject (unchanged), `actor` records who
+    # is actually exercising the token, and is mirrored into the issued token's `act` claim.
+    actor = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        related_name="actor_for_%(class)ss",
+        null=True,
+        blank=True,
+        default=None,
+    )
 
     class Meta:
         abstract = True
@@ -707,6 +719,44 @@ class RefreshToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseG
         return TokenModelSerializer
 
 
+class OAuth2SessionLogin(InternallyManagedMixin, models.Model):
+    """Record of providers the user has logged in to this session. required for
+    front/backchannel logout because tokens can expire before the RP's session ends.
+
+    https://openid.net/specs/openid-connect-frontchannel-1_0.html#OPLogout
+    https://openid.net/specs/openid-connect-backchannel-1_0.html#Tracking"""
+
+    session = models.ForeignKey(AuthenticatedSession, on_delete=models.CASCADE)
+    provider = models.ForeignKey(OAuth2Provider, on_delete=models.CASCADE)
+    # Stored as issued to the RP, as the issuer can't be resolved without a request and the
+    # provider's `sub_mode` might change during the lifetime of the session.
+    iss = models.TextField()
+    sub = models.TextField()
+
+    class Meta:
+        verbose_name = _("OAuth2 Session Login")
+        verbose_name_plural = _("OAuth2 Session Logins")
+        constraints = [
+            models.UniqueConstraint(
+                fields=("session", "provider"), name="oauth2_session_login_unique"
+            ),
+        ]
+
+    def __str__(self):
+        return f"Session Login for {self.provider_id} for session {self.session_id}"
+
+    @classmethod
+    def record(cls, token: BaseGrantModel, id_token: IDToken) -> None:
+        """Remember that the provider of `token` has been issued `id_token` for its session"""
+        if not token.session_id:
+            return
+        cls.objects.update_or_create(
+            session_id=token.session_id,
+            provider=token.provider,
+            defaults={"iss": id_token.iss, "sub": id_token.sub},
+        )
+
+
 class DeviceToken(InternallyManagedMixin, ExpiringModel):
     """Temporary device token for OAuth device flow"""
 
@@ -813,7 +863,7 @@ class OAuth2DynamicClientRegistration(SerializerModel, PolicyBindingModel):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.enterprise.providers.oauth2.api import (
+        from authentik.providers.oauth2.api.dcr import (
             OAuth2DynamicClientRegistrationSerializer,
         )
 

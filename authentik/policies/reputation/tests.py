@@ -6,7 +6,11 @@ from authentik.core.models import User
 from authentik.lib.generators import generate_id
 from authentik.policies.reputation.api import ReputationPolicySerializer
 from authentik.policies.reputation.models import Reputation, ReputationPolicy
-from authentik.policies.reputation.signals import update_score
+from authentik.policies.reputation.signals import (
+    handle_successful_login,
+    update_score,
+    update_score_on_login,
+)
 from authentik.policies.types import PolicyRequest
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import authenticate
@@ -61,6 +65,63 @@ class TestReputationPolicy(TestCase):
         self.assertEqual(
             Reputation.objects.get(identifier=self.username).score, DEFAULT_REPUTATION_UPPER_LIMIT
         )
+
+    def test_login_reputation_negative_resets(self):
+        """test that a successful login resets a negative score to 0"""
+        Reputation.objects.create(identifier=self.username, ip=self.ip, score=-3)
+        update_score_on_login(self.request, identifier=self.username)
+        self.assertEqual(Reputation.objects.get(identifier=self.username).score, 0)
+
+    def test_login_reputation_zero_increments(self):
+        """test that a successful login raises a zero score by 1"""
+        Reputation.objects.create(identifier=self.username, ip=self.ip, score=0)
+        update_score_on_login(self.request, identifier=self.username)
+        self.assertEqual(Reputation.objects.get(identifier=self.username).score, 1)
+
+    def test_login_reputation_positive_increments(self):
+        """test that a successful login raises a positive score by 1"""
+        Reputation.objects.create(identifier=self.username, ip=self.ip, score=3)
+        update_score_on_login(self.request, identifier=self.username)
+        self.assertEqual(Reputation.objects.get(identifier=self.username).score, 4)
+
+    def test_login_reputation_creates_entry(self):
+        """test that a successful login with no existing entry creates one at 1"""
+        update_score_on_login(self.request, identifier=self.username)
+        self.assertEqual(Reputation.objects.get(identifier=self.username).score, 1)
+
+    def test_login_reputation_upper_limit(self):
+        """test that the increment is still bound by the upper limit"""
+        Reputation.objects.create(
+            identifier=self.username, ip=self.ip, score=DEFAULT_REPUTATION_UPPER_LIMIT
+        )
+        update_score_on_login(self.request, identifier=self.username)
+        self.assertEqual(
+            Reputation.objects.get(identifier=self.username).score, DEFAULT_REPUTATION_UPPER_LIMIT
+        )
+
+    def test_login_reputation_other_identifier(self):
+        """test that only the matching identifier is touched for a shared IP"""
+        other_username = generate_id()
+        Reputation.objects.create(identifier=self.username, ip=self.ip, score=-3)
+        Reputation.objects.create(identifier=other_username, ip=self.ip, score=-3)
+        update_score_on_login(self.request, identifier=self.username)
+        self.assertEqual(Reputation.objects.get(identifier=self.username).score, 0)
+        self.assertEqual(Reputation.objects.get(identifier=other_username).score, -3)
+
+    def test_login_reputation_other_ip(self):
+        """test that only the matching IP is touched for the same identifier"""
+        Reputation.objects.create(identifier=self.username, ip=self.ip, score=-3)
+        Reputation.objects.create(identifier=self.username, ip="10.0.0.1", score=-3)
+        update_score_on_login(self.request, identifier=self.username)
+        self.assertEqual(Reputation.objects.get(identifier=self.username, ip=self.ip).score, 0)
+        self.assertEqual(Reputation.objects.get(identifier=self.username, ip="10.0.0.1").score, -3)
+
+    def test_login_reputation_signal_handler(self):
+        """test that a failed login followed by a successful one ends at 0"""
+        authenticate(self.request, self.backends, username=self.username, password=self.username)
+        self.assertEqual(Reputation.objects.get(identifier=self.username).score, -1)
+        handle_successful_login(None, self.request, self.user)
+        self.assertEqual(Reputation.objects.get(identifier=self.username).score, 0)
 
     def test_policy(self):
         """Test Policy"""

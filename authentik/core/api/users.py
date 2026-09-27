@@ -1,14 +1,15 @@
 """User API Views"""
 
 from datetime import timedelta
-from json import loads
 from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import AnonymousUser, Permission
+from django.db import models
 from django.db.models import Exists, OuterRef, Prefetch, Q
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
 from django.utils.text import slugify
@@ -64,6 +65,7 @@ from authentik.api.search.fields import (
 from authentik.api.validation import validate
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.brands.models import Brand
+from authentik.core import user_switching
 from authentik.core.api.object_attributes import AttributesMixinSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
@@ -81,13 +83,14 @@ from authentik.core.models import (
     USER_PATH_SERVICE_ACCOUNT,
     USERNAME_MAX_LENGTH,
     Group,
-    Session,
     Token,
     TokenIntents,
     User,
     UserTypes,
     default_token_duration,
 )
+from authentik.core.signals import impersonation_changed
+from authentik.core.views.user_switch import start_user_switch_flow
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
@@ -286,20 +289,21 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         return user_type
 
     def validate_groups(self, groups: list) -> list:
-        """Require enable_group_superuser permission when adding a user to a superuser group."""
+        """Require enable_group_superuser permission when adding a user to a group which grants
+        superuser status."""
         request: Request = self.context.get("request", None)
         if not request:
             return groups
-        current_groups = set(self.instance.groups.all()) if self.instance else set()
-        for group in groups:
-            if not group.is_superuser:
-                continue
-            if group in current_groups:
-                continue
-            if not request.user.has_perm("authentik_core.enable_group_superuser"):
-                raise ValidationError(
-                    _("User does not have permission to add members to a superuser group.")
-                )
+        new_groups = Group.objects.filter(pk__in=[group.pk for group in groups])
+        if self.instance:
+            new_groups = new_groups.exclude(pk__in=self.instance.groups.all())
+        ancestry = new_groups.with_ancestors()
+        if ancestry.filter(is_superuser=True).exists() and not request.user.has_perm(
+            "authentik_core.enable_group_superuser"
+        ):
+            raise ValidationError(
+                _("User does not have permission to add members to a superuser group.")
+            )
         return groups
 
     def validate_roles(self, roles: list) -> list:
@@ -361,6 +365,7 @@ class UserSelfSerializer(ModelSerializer):
     """User Serializer for information a user can retrieve about themselves"""
 
     is_superuser = BooleanField(read_only=True)
+    is_current = SerializerMethodField()
     avatar = SerializerMethodField()
     groups = SerializerMethodField()
     roles = SerializerMethodField()
@@ -371,6 +376,10 @@ class UserSelfSerializer(ModelSerializer):
     def get_avatar(self, user: User) -> str:
         """User's avatar, either a http/https URL or a data URI"""
         return get_avatar(user, self.context.get("request"))
+
+    def get_is_current(self, _: User) -> bool:
+        """Return whether this user owns the current browser session."""
+        return self.context.get("is_current", False)
 
     @extend_schema_field(
         ListSerializer(
@@ -430,6 +439,7 @@ class UserSelfSerializer(ModelSerializer):
             "name",
             "is_active",
             "is_superuser",
+            "is_current",
             "groups",
             "roles",
             "email",
@@ -445,6 +455,31 @@ class UserSelfSerializer(ModelSerializer):
         }
 
 
+class UserSwitchAction(models.TextChoices):
+    """Actions supported by the user switch endpoint."""
+
+    ADD = "add"
+    SWITCH = "switch"
+
+
+class UserSwitchSerializer(PassiveSerializer):
+    """Request to add or switch users in the current browser."""
+
+    action = ChoiceField(choices=UserSwitchAction.choices, default=UserSwitchAction.SWITCH)
+    user_pk = IntegerField(required=False)
+
+    def validate(self, attrs: dict) -> dict:
+        if attrs["action"] == UserSwitchAction.SWITCH and "user_pk" not in attrs:
+            raise ValidationError({"user_pk": _("This field is required.")})
+        return attrs
+
+
+class UserSwitchResponseSerializer(PassiveSerializer):
+    """Redirect returned after planning a user switch."""
+
+    redirect = CharField(read_only=True)
+
+
 class SessionUserSerializer(PassiveSerializer):
     """Response for the /user/me endpoint, returns the currently active user (as `user` property)
     and, if this user is being impersonated, the original user in the `original` property.
@@ -452,6 +487,7 @@ class SessionUserSerializer(PassiveSerializer):
 
     user = UserSelfSerializer()
     original = UserSelfSerializer(required=False)
+    users = UserSelfSerializer(many=True)
 
 
 class UserPasswordSetSerializer(PassiveSerializer):
@@ -496,13 +532,6 @@ class UserRecoveryEmailSerializer(UserRecoveryLinkSerializer):
 class UsersFilter(FilterSet):
     """Filter for users"""
 
-    attributes = CharFilter(
-        field_name="attributes",
-        lookup_expr="",
-        label="Attributes",
-        method="filter_attributes",
-    )
-
     date_joined__lt = IsoDateTimeFilter(field_name="date_joined", lookup_expr="lt")
     date_joined = IsoDateTimeFilter(field_name="date_joined")
     date_joined__gt = IsoDateTimeFilter(field_name="date_joined", lookup_expr="gt")
@@ -520,9 +549,12 @@ class UsersFilter(FilterSet):
     uuid = UUIDFilter(field_name="uuid")
 
     path = CharFilter(field_name="path")
-    path_startswith = CharFilter(field_name="path", lookup_expr="startswith")
+    path_startswith = CharFilter(field_name="path", method="filter_path_startswith")
 
-    type = MultipleChoiceFilter(choices=UserTypes.choices, field_name="type")
+    # `type` is a column on the user table, so filtering on it can't duplicate rows. The
+    # MultipleChoiceFilter default (distinct=True) would make the count and every page
+    # sort all matching users.
+    type = MultipleChoiceFilter(choices=UserTypes.choices, field_name="type", distinct=False)
 
     groups_by_name = ModelMultipleChoiceFilter(
         field_name="groups__name",
@@ -549,22 +581,14 @@ class UsersFilter(FilterSet):
             return queryset.filter(groups__is_superuser=True).distinct()
         return queryset.exclude(groups__is_superuser=True).distinct()
 
-    def filter_attributes(self, queryset, name, value):
-        """Filter attributes by query args"""
-        try:
-            value = loads(value)
-        except ValueError:
-            raise ValidationError(_("filter: failed to parse JSON")) from None
-        if not isinstance(value, dict):
-            raise ValidationError(_("filter: value must be key:value mapping"))
-        qs = {}
-        for key, _value in value.items():
-            qs[f"attributes__{key}"] = _value
-        try:
-            __ = len(queryset.filter(**qs))
-            return queryset.filter(**qs)
-        except ValueError:
+    def filter_path_startswith(self, queryset, name, value):
+        """Filter users by the given path and any of its sub-paths. A plain `startswith`
+        lookup would also match sibling paths sharing the same prefix, so that `foo/bar`
+        would incorrectly match users in `foo/bar2`."""
+        value = value.rstrip("/")
+        if not value:
             return queryset
+        return queryset.filter(Q(path=value) | Q(path__startswith=f"{value}/"))
 
     class Meta:
         model = User
@@ -577,7 +601,6 @@ class UsersFilter(FilterSet):
             "name",
             "is_active",
             "is_superuser",
-            "attributes",
             "groups_by_name",
             "groups_by_pk",
             "roles_by_name",
@@ -654,6 +677,31 @@ class UserViewSet(
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+
+    @extend_schema(
+        parameters=[OpenApiParameter("next", str, required=False)],
+        request=UserSwitchSerializer,
+        responses={200: UserSwitchResponseSerializer},
+    )
+    @action(
+        detail=False,
+        methods=["POST"],
+        permission_classes=[IsAuthenticated],
+        pagination_class=None,
+        filter_backends=[],
+    )
+    @validate(UserSwitchSerializer)
+    def switch(self, request: Request, body: UserSwitchSerializer) -> HttpResponse | Response:
+        """Start browser user switching."""
+        user_pk = (
+            None
+            if body.validated_data["action"] == UserSwitchAction.ADD
+            else body.validated_data["user_pk"]
+        )
+        response = start_user_switch_flow(request._request, user_pk)
+        if isinstance(response, HttpResponseRedirect):
+            return Response({"redirect": response.url})
+        return response
 
     def _create_recovery_link(
         self, token_duration: str | None, for_email=False
@@ -800,14 +848,34 @@ class UserViewSet(
     )
     def user_me(self, request: Request) -> Response:
         """Get information about current user"""
-        context = {"request": request}
+        context = {"request": request, "is_current": True}
+        users = []
+        user_switching_token = getattr(request._request, "user_switching_token", None)
+        if request.user.is_authenticated and user_switching_token:
+            sessions = (
+                user_switching.live_sessions(user_switching_token)
+                .exclude(user_id=request.user.pk)
+                .select_related("session", "user")
+                .order_by("user_id", "-session__last_used")
+                .distinct("user_id")
+            )
+            users = [
+                UserSelfSerializer(
+                    instance=authenticated_session.user,
+                    context={"request": request},
+                ).data
+                for authenticated_session in sessions
+            ]
         serializer = SessionUserSerializer(
-            data={"user": UserSelfSerializer(instance=request.user, context=context).data}
+            data={
+                "user": UserSelfSerializer(instance=request.user, context=context).data,
+                "users": users,
+            }
         )
         if SESSION_KEY_IMPERSONATE_USER in request._request.session:
             serializer.initial_data["original"] = UserSelfSerializer(
                 instance=request._request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER],
-                context=context,
+                context={"request": request},
             ).data
         self.request.session.modified = True
         return Response(serializer.initial_data)
@@ -980,6 +1048,10 @@ class UserViewSet(
 
         Event.new(EventAction.IMPERSONATION_STARTED, reason=reason).from_http(request, user_to_be)
 
+        # Persist the new identity before outposts can start reauthorization.
+        request.session.save()
+        impersonation_changed.send(sender=self.__class__, session_key=request.session.session_key)
+
         return Response(status=204)
 
     @extend_schema(
@@ -1004,6 +1076,9 @@ class UserViewSet(
         del request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER]
 
         Event.new(EventAction.IMPERSONATION_ENDED).from_http(request, original_user)
+
+        request.session.save()
+        impersonation_changed.send(sender=self.__class__, session_key=request.session.session_key)
 
         return Response(status=204)
 
@@ -1036,11 +1111,3 @@ class UserViewSet(
                 )
             }
         )
-
-    def partial_update(self, request: Request, *args, **kwargs) -> Response:
-        response = super().partial_update(request, *args, **kwargs)
-        instance: User = self.get_object()
-        if not instance.is_active:
-            Session.objects.filter(authenticatedsession__user=instance).delete()
-            LOGGER.debug("Deleted user's sessions", user=instance.username)
-        return response

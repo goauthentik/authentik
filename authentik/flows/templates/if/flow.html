@@ -20,15 +20,9 @@
 </script>
 {% endif %}
 {% include "base/header_js.html" %}
-<script data-id="flow-config">
-    "use strict";
-
-    window.authentik.flow = {
-        "layout": "{{ flow.layout }}",
-        "background": "{{ flow.background }}",
-        "title": "{{ flow.title }}",
-    };
-</script>
+<meta name="ak-flow-layout" content="{{ flow.layout }}">
+<meta name="ak-flow-background" content="{{ flow.background }}">
+<meta name="ak-flow-title" content="{{ flow.title }}">
 {% endblock %}
 
 {% block interface_stylesheet %}

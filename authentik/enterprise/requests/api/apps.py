@@ -1,4 +1,5 @@
 from http import HTTPMethod
+from uuid import UUID
 
 from django.db.models import Q, QuerySet
 from django_filters.rest_framework import DjangoFilterBackend
@@ -15,20 +16,26 @@ from authentik.core.api.applications import ApplicationSerializer
 from authentik.core.api.utils import MetaNameSerializer, PassiveSerializer
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, ApplicationEntitlement, User
-from authentik.enterprise.requests.models import RequestRuleBinding
+from authentik.enterprise.requests.models import RequestRuleBinding, RequestRuleChildBinding
 from authentik.policies.engine import ListPolicyEngine
-from authentik.policies.models import PolicyBindingModel, RequestableChildModel, RequestableModel
+from authentik.policies.models import (
+    PolicyBinding,
+    PolicyBindingModel,
+    RequestableChildModel,
+    RequestableModel,
+)
 
 REQUESTABLE_FILTER_BACKENDS = [QLSearch, DjangoFilterBackend, NullsAwareOrderingFilter]
 
 
 def granting_rule_bindings(
-    pbms: QuerySet[PolicyBindingModel] | list[PolicyBindingModel],
+    pbms: QuerySet[PolicyBindingModel] | list[PolicyBindingModel] | list[UUID],
     user: User,
     request: Request,
 ) -> QuerySet[RequestRuleBinding]:
     """The RequestRuleBinding(s) that make any of `pbms` requestable by `user`, i.e.
-    `user` passes the rule's own PolicyBindings."""
+    `user` passes the rule's own PolicyBindings. `pbms` may be model instances or their
+    `pbm_uuid`s."""
     rule_bindings = RequestRuleBinding.objects.filter(
         Q(target__in=pbms) | Q(related__in=pbms)
     ).distinct()
@@ -47,15 +54,29 @@ def user_can_request(pbm: RequestableModel, user: User, request: Request) -> boo
 
 def _requestable(
     base: QuerySet[RequestableModel | RequestableChildModel], request: Request
-) -> list[RequestableModel]:
+) -> QuerySet[RequestableModel]:
     """every unique object of the viewset's own model which the current user is eligible to
     request, direct or child related."""
-    all_objects = (
+    # RequestRuleBinding.target/related point at the PolicyBindingModel base table's own pk,
+    # which can diverge from a subclass's `.pk` -- same caveat as ListPolicyEngine.build().
+    target_field = PolicyBinding._meta.get_field("target").target_field.attname
+    candidates = list(
         base.filter(Q(request_rules__isnull=False) | Q(request_rule_child_bindings__isnull=False))
+        .values_list(target_field, flat=True)
         .distinct()
-        .prefetch_related("request_rules", "request_rule_child_bindings")
     )
-    return [obj for obj in all_objects if user_can_request(obj, request.user, request)]
+    if not candidates:
+        return base.none()
+    # A rule binding's verdict depends only on (binding, user), never on which object
+    # prompted the question, so every candidate is resolved in a single policy pass.
+    granting = list(granting_rule_bindings(candidates, request.user, request))
+    granted = {binding.target_id for binding in granting}
+    granted |= set(
+        RequestRuleChildBinding.objects.filter(
+            binding__in=granting, target__in=candidates
+        ).values_list("target_id", flat=True)
+    )
+    return base.filter(**{f"{target_field}__in": granted})
 
 
 class RequestableTargetSerializer(MetaNameSerializer, PassiveSerializer):

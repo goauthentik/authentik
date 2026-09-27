@@ -1,3 +1,5 @@
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+
 import { AKElement } from "#elements/Base";
 import { WithVersion } from "#elements/mixins/version";
 
@@ -5,14 +7,13 @@ import { msg, str } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-
 @customElement("ak-version-banner")
 export class VersionBanner extends WithVersion(AKElement) {
     static styles = [PFBanner];
 
     render() {
         if (!this.version?.versionCurrent) return nothing;
+
         if (this.version.versionCurrent === import.meta.env.AK_VERSION) return nothing;
 
         return html`

@@ -10,7 +10,7 @@ from django.utils.safestring import mark_safe
 
 from authentik import authentik_full_version
 from authentik.brands.models import _BRAND_RELATED_FK_FIELDS, SESSION_KEY_BRAND_SAFE_MODE, Brand
-from authentik.lib.sentry import get_http_meta
+from authentik.lib.tracing import active_tracer
 from authentik.tenants.models import Tenant
 
 _q_default = Q(default=True)
@@ -79,6 +79,6 @@ def context_processor(request: HttpRequest) -> dict[str, Any]:
         "brand_css": brand_css,
         "safe_mode": safe_mode,
         "footer_links": tenant.footer_links,
-        "html_meta": {**get_http_meta()},
+        "html_meta": {**active_tracer().get_http_meta()},
         "version": authentik_full_version(),
     }

@@ -2,9 +2,9 @@ import "#elements/AppIcon";
 import "#user/LibraryApplication/RACLaunchEndpointModal";
 import "#elements/buttons/Dropdown";
 import "#elements/Divider";
-
 import { truncateWords } from "#common/strings";
 
+import { AnchorPositionSupported } from "#elements/dialogs/positioning";
 import { LitFC } from "#elements/types";
 
 import { Application } from "@goauthentik/api";
@@ -14,8 +14,6 @@ import type { HTMLAttributes } from "react";
 
 import { msg, str } from "@lit/localize";
 import { html } from "lit";
-
-export const AnchorPositionSupported = CSS.supports("position-anchor", "--test");
 
 export interface CardMenuProps extends HTMLAttributes<HTMLDivElement> {
     cardID: string;
@@ -63,44 +61,52 @@ export const CardMenu: LitFC<CardMenuProps> = ({
             id=${menuID}
             ?popover=${AnchorPositionSupported}
         >
-            ${metaPublisher || truncatedDescription
-                ? html`<li role="presentation">
-                          <div
+            ${
+                metaPublisher || truncatedDescription
+                    ? html`<li role="presentation">
+                              <div
+                                  part="card-header-action"
+                                  role="contentinfo"
+                                  class="pf-c-dropdown__menu-item"
+                              >
+                                  ${
+                                      metaPublisher
+                                          ? html`<div part="card-header-action-publisher">
+                                                <small>${metaPublisher}</small>
+                                            </div>`
+                                          : null
+                                  }
+                                  ${
+                                      truncatedDescription
+                                          ? html`<p
+                                                class="pf-c-content"
+                                                part="card-header-action-description"
+                                                id=${descriptionID}
+                                            >
+                                                ${truncatedDescription}
+                                            </p>`
+                                          : null
+                                  }
+                              </div>
+                          </li>
+                          <ak-divider></ak-divider>`
+                    : null
+            }
+            ${
+                editURL
+                    ? html`<li role="presentation">
+                          <a
                               part="card-header-action"
-                              role="contentinfo"
+                              role="menuitem"
+                              href=${editURL.toString()}
                               class="pf-c-dropdown__menu-item"
                           >
-                              ${metaPublisher
-                                  ? html`<div part="card-header-action-publisher">
-                                        <small>${metaPublisher}</small>
-                                    </div>`
-                                  : null}
-                              ${truncatedDescription
-                                  ? html`<p
-                                        class="pf-c-content"
-                                        part="card-header-action-description"
-                                        id=${descriptionID}
-                                    >
-                                        ${truncatedDescription}
-                                    </p>`
-                                  : null}
-                          </div>
-                      </li>
-                      <ak-divider></ak-divider>`
-                : null}
-            ${editURL
-                ? html`<li role="presentation">
-                      <a
-                          part="card-header-action"
-                          role="menuitem"
-                          href=${editURL.toString()}
-                          class="pf-c-dropdown__menu-item"
-                      >
-                          <i class="fas fa-edit" role="img"></i>
-                          &nbsp;${msg(str`Edit application...`)}</a
-                      >
-                  </li>`
-                : null}
+                              <i class="fas fa-edit" role="img"></i>
+                              &nbsp;${msg(str`Edit application...`)}</a
+                          >
+                      </li>`
+                    : null
+            }
         </menu>
     </div>`;
 };

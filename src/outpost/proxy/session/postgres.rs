@@ -138,6 +138,7 @@ mod tests {
     /// Truncates the session table when dropped, cleaning up after the test.
     struct TruncateGuard;
 
+    #[expect(clippy::missing_trait_methods, reason = "We don't use pin_drop")]
     impl Drop for TruncateGuard {
         fn drop(&mut self) {
             tokio::task::block_in_place(|| {

@@ -40,6 +40,13 @@ class OutgoingSyncProvider(ScheduledModel, Model):
         validators=[timedelta_string_validator],
     )
 
+    discovery_enabled = models.BooleanField(
+        default=True,
+        help_text=_(
+            "When enabled, authentik will attempt to discover existing resources "
+            "in the remote system."
+        ),
+    )
     dry_run = models.BooleanField(
         default=False,
         help_text=_(

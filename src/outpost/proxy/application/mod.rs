@@ -15,6 +15,7 @@ use url::Url;
 
 use crate::outpost::proxy::{
     ProxyOutpost, allowlist,
+    backchannel::TokenHost,
     claims::Claims,
     cookie::SessionCookie,
     endpoint::OidcEndpoint,
@@ -36,8 +37,8 @@ pub(crate) struct Application {
     pub(super) session_cookie: SessionCookie,
     /// Authenticated API client configuration (backchannel calls + events API).
     pub(super) api_config: Configuration,
-    /// `Host` header for backchannel token requests (browser host), if rewriting applies.
-    pub(super) token_host: Option<String>,
+    /// Host and scheme to claim on backchannel token requests, if rewriting applies.
+    pub(super) token_host: Option<TokenHost>,
     /// Short-lived cache of claims keyed by the `Authorization` header.
     pub(super) auth_cache: Cache<String, Claims>,
     /// Outpost name, sent upstream as `X-authentik-meta-outpost`.
@@ -95,7 +96,7 @@ impl Application {
         let token_host = host_browser
             .as_ref()
             .or(authentik_host.as_ref())
-            .map(|url| url.authority().to_owned());
+            .and_then(TokenHost::new);
 
         // Embedded outposts persist sessions in PostgreSQL; others use the filesystem.
         #[cfg(feature = "core")]
@@ -148,7 +149,7 @@ impl Application {
                     any(handlers::forward::handle_envoy),
                 )
                 .route(
-                    "/outpost.goauthentik.io/auth/envoy/{*rest}",
+                    "/outpost.goauthentik.io/auth/envoy{*rest}",
                     any(handlers::forward::handle_envoy),
                 )
                 .route(

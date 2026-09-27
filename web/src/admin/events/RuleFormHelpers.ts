@@ -37,6 +37,7 @@ export function eventTransportsSelector(
 
     return (async () => {
         const transportsApi = aki(EventsApi);
+
         const transports = await Promise.allSettled(
             instanceTransports.map((instanceId) =>
                 transportsApi.eventsTransportsRetrieve({ uuid: instanceId }),

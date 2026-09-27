@@ -1,6 +1,16 @@
 :host {
-    --ak-mermaid-message-text: var(--pf-c-content--Color);
     --ak-table-stripe-background: var(--pf-global--BackgroundColor--light-200);
+}
+
+/*
+ * `<ak-alert>` deliberately does not set its own `:host { display }` —
+ * every consumer is expected to set it (see e.g. captcha/styles.css).
+ * Without this, the shadow-tree flex layout collapses into an inline
+ * box and the admonition is unreadable.
+ */
+ak-alert {
+    display: block;
+    margin-block-start: var(--pf-global--spacer--md);
 }
 
 ak-alert + p {

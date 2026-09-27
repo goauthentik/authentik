@@ -42,6 +42,7 @@ class TestBrands(APITestCase):
                 "branding_favicon_themed_urls": None,
                 "branding_title": "authentik",
                 "branding_custom_css": "",
+                "branding_map_tiles": "",
                 "matched_domain": brand.domain,
                 "ui_footer_links": [],
                 "ui_theme": "automatic",
@@ -49,6 +50,24 @@ class TestBrands(APITestCase):
                 "flags": self.default_flags,
             },
         )
+
+    def test_current_brand_authenticated_flags(self):
+        """Authenticated-visibility flags are only exposed to authenticated requests"""
+
+        class _AuthedFlag(Flag[bool], key="brands_test_authed_flag"):
+            default = True
+            visibility = "authenticated"
+
+        create_test_brand()
+
+        # Anonymous requests only see public flags
+        anon = loads(self.client.get(reverse("authentik_api:brand-current")).content.decode())
+        self.assertNotIn("brands_test_authed_flag", anon["flags"])
+
+        # Authenticated requests additionally see authenticated flags
+        self.client.force_login(create_test_admin_user())
+        authed = loads(self.client.get(reverse("authentik_api:brand-current")).content.decode())
+        self.assertTrue(authed["flags"]["brands_test_authed_flag"])
 
     def test_brand_subdomain(self):
         """Test Current brand API"""
@@ -64,6 +83,7 @@ class TestBrands(APITestCase):
                 "branding_favicon_themed_urls": None,
                 "branding_title": "custom",
                 "branding_custom_css": "",
+                "branding_map_tiles": "",
                 "matched_domain": "bar.baz",
                 "ui_footer_links": [],
                 "ui_theme": "automatic",
@@ -83,6 +103,7 @@ class TestBrands(APITestCase):
                 "branding_favicon_themed_urls": None,
                 "branding_title": "authentik",
                 "branding_custom_css": "",
+                "branding_map_tiles": "",
                 "matched_domain": "fallback",
                 "ui_footer_links": [],
                 "ui_theme": "automatic",
@@ -108,6 +129,7 @@ class TestBrands(APITestCase):
                 "branding_favicon_themed_urls": None,
                 "branding_title": "authentik",
                 "branding_custom_css": "",
+                "branding_map_tiles": "",
                 "matched_domain": "authentik-default",
                 "ui_footer_links": [],
                 "ui_theme": "automatic",
@@ -134,6 +156,7 @@ class TestBrands(APITestCase):
                 "branding_favicon_themed_urls": None,
                 "branding_title": "authentik",
                 "branding_custom_css": "",
+                "branding_map_tiles": "",
                 "matched_domain": "authentik-default",
                 "ui_footer_links": [],
                 "ui_theme": "automatic",
@@ -152,6 +175,7 @@ class TestBrands(APITestCase):
                 "branding_favicon_themed_urls": None,
                 "branding_title": "custom",
                 "branding_custom_css": "",
+                "branding_map_tiles": "",
                 "matched_domain": "bar.baz",
                 "ui_footer_links": [],
                 "ui_theme": "automatic",
@@ -175,6 +199,7 @@ class TestBrands(APITestCase):
                 "branding_favicon_themed_urls": None,
                 "branding_title": "custom-strong",
                 "branding_custom_css": "",
+                "branding_map_tiles": "",
                 "matched_domain": "foo.bar.baz",
                 "ui_footer_links": [],
                 "ui_theme": "automatic",
@@ -198,6 +223,7 @@ class TestBrands(APITestCase):
                 "branding_favicon_themed_urls": None,
                 "branding_title": "custom-weak",
                 "branding_custom_css": "",
+                "branding_map_tiles": "",
                 "matched_domain": "bar.baz",
                 "ui_footer_links": [],
                 "ui_theme": "automatic",
@@ -281,6 +307,7 @@ class TestBrands(APITestCase):
                 "branding_favicon_themed_urls": None,
                 "branding_title": "authentik",
                 "branding_custom_css": "",
+                "branding_map_tiles": "",
                 "matched_domain": brand.domain,
                 "ui_footer_links": [],
                 "ui_theme": "automatic",

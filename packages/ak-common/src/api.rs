@@ -96,7 +96,7 @@ where
     G: Fn(R) -> Vec<T>,
 {
     let mut page = 1_i32;
-    let mut results = Vec::with_capacity(0);
+    let mut results = Vec::new();
 
     loop {
         let response = fetch(page).await?;

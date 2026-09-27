@@ -2,7 +2,6 @@ import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-
 import { aki } from "#common/api/client";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
@@ -28,7 +27,9 @@ export class InvitationStageForm extends BaseStageForm<InvitationStage> {
 
     protected override renderForm(): TemplateResult {
         return html`<ak-text-input
-                label=${msg("Stage Name")}
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
                 required
                 name="name"
                 value="${this.instance?.name || ""}"

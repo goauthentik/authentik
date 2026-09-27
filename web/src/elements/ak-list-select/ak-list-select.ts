@@ -1,4 +1,6 @@
 import { groupOptions, isVisibleInScrollRegion } from "./utils.js";
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 
 import { AKElement } from "#elements/Base";
 import type { GroupedOptions, SelectGroup, SelectOption, SelectOptions } from "#elements/types";
@@ -8,12 +10,12 @@ import { match } from "ts-pattern";
 
 import { css, html, nothing, PropertyValueMap } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
-
-import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
-import PFSelect from "@patternfly/patternfly/components/Select/select.css";
+import { classMap } from "lit/directives/class-map.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 export interface IListSelect {
     options: SelectOptions;
+    disabledOptions: string[];
     value?: string | null;
     emptyOption?: string;
     actionLabel?: string;
@@ -28,6 +30,8 @@ export interface IListSelect {
  * Provides a menu of elements to be used for selection.
  *
  * - @prop options (SelectOption[]): The options to display.
+ * - @prop disabledOptions (string[]): the keys of options that are shown but cannot be
+ *   selected.
  * - @attr value (string): the current value of the Component
  * - @attr emptyOption (string): if defined, the component can be `undefined` and will
  *   display this string at the top.
@@ -39,7 +43,8 @@ export interface IListSelect {
  *   to target if you want to change the max height.
  * - @part ak-list-select-option: The `<li>` items of the list
  * - @part ak-list-select-button: The `<button>` element of an item.
- * - @part ak-list-select-desc: The description element of the list
+ * - @part ak-list-select-desc: The description of an item. It sits below the item's button,
+ *   outside of it, and the button references it via `aria-describedby`.
  * - @part ak-list-select-group: A section of a grouped list.
  * - @part ak-list-select-title: The title of a group
  */
@@ -52,6 +57,7 @@ export class ListSelect extends AKElement implements IListSelect {
             :host {
                 overflow: visible;
                 z-index: 9999;
+                box-shadow: var(--pf-global--BoxShadow--md-bottom);
             }
 
             :host([hidden]) {
@@ -62,6 +68,14 @@ export class ListSelect extends AKElement implements IListSelect {
                 max-height: 50vh;
                 overflow-y: auto;
                 width: 100%;
+            }
+
+            /* The description lives beside the button rather than inside it, so it needs the
+               button's horizontal padding to line up with the label above it. */
+            .ak-select-item > .pf-c-dropdown__menu-item-description {
+                padding: 0 var(--pf-c-dropdown__menu-item--PaddingRight)
+                    var(--pf-c-dropdown__menu-item--PaddingBottom)
+                    var(--pf-c-dropdown__menu-item--PaddingLeft);
             }
 
             .ak-select-item[data-action] {
@@ -81,7 +95,7 @@ export class ListSelect extends AKElement implements IListSelect {
     /**
      * See the search options type, described in the `./types` file, for the relevant types.
      *
-     * @prop
+     * @property
      */
     @property({ type: Array, attribute: false })
     public set options(options: SelectOptions) {
@@ -95,9 +109,28 @@ export class ListSelect extends AKElement implements IListSelect {
     #options!: GroupedOptions;
 
     /**
+     * The keys of the options that are rendered but cannot be chosen. Such options stay
+     * focusable — they are marked `aria-disabled` rather than `disabled` — so that the reason
+     * they are unavailable, carried in their description, remains reachable by keyboard.
+     *
+     * @property
+     */
+    @property({ type: Array, attribute: false })
+    public set disabledOptions(values: string[]) {
+        this.#disabledOptions = new Set(values);
+        this.requestUpdate();
+    }
+
+    public get disabledOptions(): string[] {
+        return [...this.#disabledOptions];
+    }
+
+    #disabledOptions = new Set<string>();
+
+    /**
      * The current value of the menu.
      *
-     * @prop
+     * @property
      */
     @property({ type: String, reflect: true })
     public value?: string | null = null;
@@ -106,7 +139,7 @@ export class ListSelect extends AKElement implements IListSelect {
      * The string representation that means an empty option. If not present, no empty option is
      * possible.
      *
-     * @prop
+     * @property
      */
     @property()
     public emptyOption?: string;
@@ -116,7 +149,7 @@ export class ListSelect extends AKElement implements IListSelect {
      * "Create new...". Activating it fires an `ak-select-action` event instead of
      * changing the selection. If not present, no action item is rendered.
      *
-     * @prop
+     * @property
      */
     @property()
     public actionLabel?: string;
@@ -173,6 +206,7 @@ export class ListSelect extends AKElement implements IListSelect {
 
     public get currentElement(): HTMLElement | undefined {
         const curIndex = this.indexOfFocusedItem;
+
         return curIndex < 0 || curIndex > this.displayedElements.length - 1
             ? undefined
             : this.displayedElements[curIndex];
@@ -182,29 +216,40 @@ export class ListSelect extends AKElement implements IListSelect {
         const index = this.displayedElements.findIndex((element) => {
             return element.getAttribute("value") === this.value;
         });
+
         const elementCount = this.displayedElements.length;
 
         const checkIndex = () => (index === -1 ? 0 : index);
+
         return elementCount === 0 ? -1 : checkIndex();
     }
 
     /**
      * Highlight the currently focused item.
      *
-     * @todo
-     * This doesn't quite work as intended, but this component will likely
-     * be refined after the PatternFly upgrade.
+     * @todo This doesn't quite work as intended, but this component will likely
+     *   be refined after the PatternFly upgrade.
      */
     private highlightFocusedItem() {
         this.displayedElements.forEach((item) => {
             item.classList.remove("ak-highlight-item");
             item.removeAttribute("aria-selected");
         });
+
         const currentElement = this.currentElement;
+
         if (!currentElement) {
             return;
         }
+
         currentElement.classList.add("ak-highlight-item");
+
+        // A disabled row can be focused so its description is reachable, but it cannot be
+        // chosen, so it must not be announced as selected.
+        if (currentElement.getAttribute("aria-disabled") === "true") {
+            return;
+        }
+
         // This is currently a radio emulation; "selected" is true here.
         // If this were a checkbox emulation (i.e. multi), "checked" would be appropriate.
         currentElement.setAttribute("aria-selected", "true");
@@ -225,6 +270,8 @@ export class ListSelect extends AKElement implements IListSelect {
     };
 
     #clickListener = (value: string | null) => {
+        if (value !== null && this.#disabledOptions.has(value)) return;
+
         // let the click through, but include the change event.
         this.value = value;
 
@@ -258,6 +305,10 @@ export class ListSelect extends AKElement implements IListSelect {
                 return this.#actionListener();
             }
 
+            // Disabled options can be arrowed onto so their description can be read, but
+            // committing to one is a no-op.
+            if (element?.getAttribute("aria-disabled") === "true") return;
+
             this.value = element?.getAttribute("value");
 
             this.dispatchEvent(new Event("change", { bubbles: true, composed: true }));
@@ -268,6 +319,7 @@ export class ListSelect extends AKElement implements IListSelect {
                 this.displayedElements.filter((element) =>
                     isVisibleInScrollRegion(element, this.ul),
                 ).length - 1;
+
             return visibleElementCount * direction + current;
         };
 
@@ -319,36 +371,58 @@ export class ListSelect extends AKElement implements IListSelect {
     }
 
     private renderMenuItems(options: SelectOption[]) {
-        return options.map(
-            ([value, label, desc]: SelectOption) => html`
+        return options.map(([value, label, desc]: SelectOption) => {
+            const disabled = this.#disabledOptions.has(value);
+            // IDs only need to be unique within this component's shadow root, so the option key
+            // suffices. Whitespace is stripped because `aria-describedby` is a space-separated
+            // list of IDs.
+            const descId = desc ? `desc-${value.replace(/\s+/g, "_")}` : undefined;
+
+            // `aria-disabled` goes on both the `<li>`, which the keyboard handler inspects, and
+            // the `<button>`, which is what actually takes focus and so is what assistive
+            // technology announces.
+
+            return html`
                 <li
                     role="option"
                     value=${value}
                     class="ak-select-item"
+                    aria-disabled=${ifDefined(disabled || undefined)}
                     part="ak-list-select-option"
                 >
                     <button
-                        class="pf-c-dropdown__menu-item pf-m-description"
+                        class=${classMap({
+                            "pf-c-dropdown__menu-item": true,
+                            // `pf-m-aria-disabled` grays the item out without the
+                            // `pointer-events: none` that `pf-m-disabled` carries, so the row can
+                            // still be hovered and focused.
+                            "pf-m-aria-disabled": disabled,
+                        })}
                         value="${value}"
                         tabindex="0"
+                        aria-disabled=${ifDefined(disabled || undefined)}
+                        aria-describedby=${ifDefined(descId)}
                         @click=${() => this.#clickListener(value)}
                         part="ak-list-select-button"
                     >
                         <div class="pf-c-dropdown__menu-item-main" part="ak-list-select-label">
                             ${label}
                         </div>
-                        ${desc
+                    </button>
+                    ${
+                        desc
                             ? html`<div
+                                  id=${ifDefined(descId)}
                                   class="pf-c-dropdown__menu-item-description"
                                   part="ak-list-select-desc"
                               >
                                   ${desc}
                               </div>`
-                            : nothing}
-                    </button>
+                            : nothing
+                    }
                 </li>
-            `,
-        );
+            `;
+        });
     }
 
     private renderMenuGroups(optionGroups: SelectGroup[]) {
@@ -379,9 +453,11 @@ export class ListSelect extends AKElement implements IListSelect {
                 part="ak-list-select"
             >
                 ${this.emptyOption ? this.renderEmptyMenuItem() : nothing}
-                ${this.#options.grouped
-                    ? this.renderMenuGroups(this.#options.options)
-                    : this.renderMenuItems(this.#options.options)}
+                ${
+                    this.#options.grouped
+                        ? this.renderMenuGroups(this.#options.options)
+                        : this.renderMenuItems(this.#options.options)
+                }
                 ${this.actionLabel ? this.renderActionMenuItem() : nothing}
             </menu>
         </div> `;

@@ -1,9 +1,12 @@
 """authentik e2e testing utilities"""
 
+from functools import lru_cache
+from pathlib import Path
 from time import sleep
 from typing import Any
 from unittest.case import TestCase
 
+import yaml
 from docker import DockerClient, from_env
 from docker.errors import DockerException
 from docker.models.containers import Container
@@ -11,6 +14,19 @@ from docker.models.networks import Network
 
 from authentik.lib.generators import generate_id
 from authentik.root.test_runner import get_docker_tag
+
+
+@lru_cache
+def _load_compose_services(compose_path: str) -> dict[str, str]:
+    """Parse a compose.yml and return {service_name: image} for services with a
+    static `image:`. Cached per-process since compose files don't change mid-run."""
+    with open(compose_path, encoding="utf-8") as compose_file:
+        manifest = yaml.safe_load(compose_file)
+    return {
+        name: service["image"]
+        for name, service in manifest.get("services", {}).items()
+        if "image" in service
+    }
 
 
 class DockerTestCase(TestCase):
@@ -56,6 +72,15 @@ class DockerTestCase(TestCase):
     def get_container_image(self, base: str) -> str:
         """Try to pull docker image based on git branch, fallback to main if not found."""
         return f"{base}:{get_docker_tag()}"
+
+    def pinned_image(self, service: str, compose_file: str) -> str:
+        """Look up a Dependabot-managed image reference for `service` from a
+        compose.yml, e.g. self.pinned_image("grafana", "e2e/compose.yml")."""
+        compose_path = Path(__file__).parent / compose_file
+        services = _load_compose_services(str(compose_path))
+        if service not in services:
+            raise KeyError(f"No service '{service}' in {compose_path}. Known: {sorted(services)}")
+        return services[service]
 
     def run_container(self, **specs: Any) -> Container:
         if "network_mode" not in specs:

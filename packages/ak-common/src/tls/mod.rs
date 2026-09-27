@@ -7,6 +7,7 @@ use tracing::trace;
 
 use crate::config;
 
+pub mod client;
 pub mod self_signed;
 pub mod store;
 

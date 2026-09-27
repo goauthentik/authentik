@@ -1,7 +1,9 @@
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
-
 import { renderForm, SetMode, SetShowHttpBasic } from "./ProxyProviderFormForm.js";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 import { aki } from "#common/api/client";
 
@@ -12,10 +14,6 @@ import { ProvidersApi, ProxyMode, ProxyProvider } from "@goauthentik/api";
 import { CSSResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
-
 @customElement("ak-provider-proxy-form")
 export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
     static styles: CSSResult[] = [...super.styles, PFContent, PFList, PFSpacing];
@@ -24,8 +22,10 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
         const provider = await aki(ProvidersApi).providersProxyRetrieve({
             id: pk,
         });
+
         this.showHttpBasic = provider.basicAuthEnabled ?? true;
         this.mode = provider.mode ?? ProxyMode.Proxy;
+
         return provider;
     }
 
@@ -44,15 +44,18 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
 
     async send(data: ProxyProvider): Promise<ProxyProvider> {
         data.mode = this.mode;
+
         if (this.mode !== ProxyMode.ForwardDomain) {
             data.cookieDomain = "";
         }
+
         if (this.instance) {
             return aki(ProvidersApi).providersProxyUpdate({
                 id: this.instance.pk,
                 proxyProviderRequest: data,
             });
         }
+
         return aki(ProvidersApi).providersProxyCreate({
             proxyProviderRequest: data,
         });

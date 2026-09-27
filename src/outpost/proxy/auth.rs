@@ -105,7 +105,7 @@ impl Application {
         backchannel::introspect_token(
             &self.api_config.client,
             &self.endpoint.token_introspection,
-            self.token_host.as_deref(),
+            self.token_host.as_ref(),
             client_id,
             client_secret,
             token,
@@ -184,7 +184,7 @@ impl Application {
         let id_token = backchannel::client_credentials_token(
             &self.api_config.client,
             &self.endpoint.token_url,
-            self.token_host.as_deref(),
+            self.token_host.as_ref(),
             client_id,
             username,
             password,

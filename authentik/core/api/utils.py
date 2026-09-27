@@ -52,6 +52,20 @@ class ModelSerializer(BaseModelSerializer):
     serializer_field_mapping = BaseModelSerializer.serializer_field_mapping.copy()
     serializer_field_mapping[models.JSONField] = JSONDictField
 
+    def to_representation(self, instance: Model):
+        data = super().to_representation(instance)
+        # `secret_fields` are visible for users which are allowed to change the object
+        secret_fields = getattr(self.Meta, "secret_fields", [])
+        request = self.context.get("request")
+        if not secret_fields or not request:
+            return data
+        permission = f"{instance._meta.app_label}.change_{instance._meta.model_name}"
+        if request.user.has_perm(permission, instance):
+            return data
+        for field_name in secret_fields:
+            data.pop(field_name, None)
+        return data
+
     def update(self, instance: Model, validated_data):
         raise_errors_on_nested_writes("update", self, validated_data)
         info = model_meta.get_field_info(instance)

@@ -16,6 +16,7 @@ from structlog.stdlib import get_logger
 from authentik.common.oauth.constants import SCOPE_AUTHENTIK_API
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.core.models import Token, TokenIntents, User, UserTypes
+from authentik.lib.tracing import active_tracer
 from authentik.outposts.models import Outpost
 
 if TYPE_CHECKING:
@@ -87,6 +88,7 @@ class IPCUser(VirtualUser):
 class TokenAuthentication(BaseAuthentication):
     """Token-based authentication using HTTP Bearer authentication"""
 
+    @active_tracer().instrument()
     def authenticate(self, request: Request) -> tuple[User, Any] | None:
         """Token-based authentication using HTTP Bearer authentication"""
         auth = get_authorization_header(request)

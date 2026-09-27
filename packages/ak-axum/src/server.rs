@@ -3,7 +3,7 @@
 use std::{net, os::unix, path::PathBuf};
 
 use ak_common::arbiter::{Arbiter, Tasks};
-use axum::Router;
+use axum::{Extension, Router};
 use axum_server::{
     Handle,
     accept::DefaultAcceptor,
@@ -12,8 +12,11 @@ use axum_server::{
 use eyre::Result;
 use tracing::{info, trace};
 
-use crate::accept::{
-    catch_panic::CatchPanicAcceptor, proxy_protocol::ProxyProtocolAcceptor, tls::TlsAcceptor,
+use crate::{
+    accept::{
+        catch_panic::CatchPanicAcceptor, proxy_protocol::ProxyProtocolAcceptor, tls::TlsAcceptor,
+    },
+    extract::trusted_proxy::TrustedProxy,
 };
 
 async fn run_plain(
@@ -89,6 +92,8 @@ pub(crate) async fn run_unix(
     } else {
         None
     };
+    let router = router.layer(Extension(TrustedProxy(true)));
+
     axum_server::Server::bind(addr.clone())
         .acceptor(CatchPanicAcceptor::new(
             DefaultAcceptor::new(),

@@ -9,9 +9,12 @@ use std::{
     },
 };
 
-use ak_axum::extract::{
-    host::{Host, host_middleware},
-    trusted_proxy::trusted_proxy_middleware,
+use ak_axum::{
+    extract::{
+        host::{Host, host_middleware},
+        trusted_proxy::trusted_proxy_middleware,
+    },
+    router::make_request_body_limit_layer,
 };
 use ak_common::{Arbiter, Event, Tasks, config, tls::self_signed};
 use arc_swap::ArcSwapOption;
@@ -133,7 +136,7 @@ impl Server {
     }
 
     async fn fast_shutdown(&self) -> Result<()> {
-        info!("gracefully shutting down server");
+        info!("immediately shutting down server");
         self.shutdown(Signal::SIGINT).await
     }
 
@@ -238,6 +241,7 @@ async fn watch_server(arbiter: Arbiter, server: Arc<Server>) -> Result<()> {
             },
             _ = check_interval.tick() => {
                 if !server.is_alive().await {
+                    arbiter.do_fast_shutdown().await;
                     return Err(eyre!("the server has exited unexpectedly"));
                 }
             },
@@ -306,7 +310,8 @@ fn build_router(server: &Arc<Server>) -> Result<Router> {
         .fallback(any(route_core_and_outpost))
         .with_state((core_router, proxy_router, Arc::clone(&server.proxy_outpost)))
         .layer(from_fn(host_middleware))
-        .layer(from_fn(trusted_proxy_middleware)))
+        .layer(from_fn(trusted_proxy_middleware))
+        .layer(make_request_body_limit_layer()))
 }
 
 pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
@@ -363,9 +368,14 @@ pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
         }
 
         info!("starting embedded outpost");
-        server.proxy_outpost.store(Some(
-            outpost::start::<ProxyOutpost>(outpost::proxy::Cli::default(), tasks, None).await?,
-        ));
+        let proxy_outpost = tokio::select! {
+            res = outpost::start::<ProxyOutpost>(outpost::proxy::Cli::default(), tasks, None) => res?,
+            () = arbiter.shutdown() => {
+                warn!("we were told to shutdown before starting the embedded outpost");
+                return Ok(server);
+            },
+        };
+        server.proxy_outpost.store(Some(proxy_outpost));
     }
 
     Ok(server)
