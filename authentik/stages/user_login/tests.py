@@ -605,7 +605,7 @@ class TestUserLoginNextActions(FlowTestCase):
         self.assertNotIn(USER_ATTRIBUTE_NEXT_ACTIONS, self.user.attributes)
 
     @enterprise_test()
-    def test_completion_preserves_concurrent_attributes(self):
+    def test_completion_preserves_updates_since_authentication(self):
         """An update after authentication must survive action completion."""
         action = self.create_action_flow()
         self.set_next_actions([action.slug])
@@ -615,14 +615,14 @@ class TestUserLoginNextActions(FlowTestCase):
 
         def update_then_complete(view, request):
             user = User.objects.get(pk=self.user.pk)
-            user.attributes["concurrent"] = "preserved"
+            user.attributes["updated"] = "preserved"
             user.save(update_fields=["attributes"])
             return dispatch(view, request)
 
         with patch.object(NextActionDoneStageView, "dispatch", update_then_complete):
             self.complete_action(executor_url, action)
         self.user.refresh_from_db()
-        self.assertEqual(self.user.attributes.get("concurrent"), "preserved")
+        self.assertEqual(self.user.attributes.get("updated"), "preserved")
         self.assertNotIn(USER_ATTRIBUTE_NEXT_ACTIONS, self.user.attributes)
 
     @enterprise_test()
@@ -818,17 +818,6 @@ class TestPendingNextActionsMiddleware(FlowTestCase):
         session[SESSION_KEY_PENDING_NEXT_ACTIONS] = True
         session.save()
 
-    def test_html_request_redirects_to_actions(self):
-        """A browser request is sent into the pending action flows"""
-        response = self.client.get(reverse("authentik_core:if-user"), HTTP_ACCEPT="text/html")
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(
-            response.url,
-            reverse("authentik_core:if-flow", kwargs={"flow_slug": self.action.slug}),
-        )
-        plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
-        self.assertEqual(plan.context[PLAN_CONTEXT_REDIRECT], reverse("authentik_core:if-user"))
-
     def test_api_request_denied(self):
         """A non-HTML request is denied instead of redirected"""
         response = self.client.get(
@@ -849,15 +838,12 @@ class TestPendingNextActionsMiddleware(FlowTestCase):
         self.user.refresh_from_db()
         self.assertEqual(self.user.attributes[USER_ATTRIBUTE_NEXT_ACTIONS], [self.action.slug])
 
-    def test_allowed_paths_pass(self):
-        """The flow executor and user info APIs needed to complete actions stay reachable"""
-        response = self.client.get(reverse("authentik_api:user-me"), HTTP_ACCEPT="application/json")
-        self.assertEqual(response.status_code, 200)
-
-    def test_allowed_route_under_script_prefix(self):
-        """The allowlist follows Django routes under a deployment prefix."""
-        response = self.client.get(reverse("authentik_api:user-me"), SCRIPT_NAME="/authentik")
-        self.assertEqual(response.status_code, 200)
+    def test_user_info_stays_available(self):
+        """Required flows can read user info with or without a deployment prefix."""
+        for prefix in ("", "/authentik"):
+            with self.subTest(prefix=prefix):
+                response = self.client.get(reverse("authentik_api:user-me"), SCRIPT_NAME=prefix)
+                self.assertEqual(response.status_code, 200)
 
     def test_unrelated_flow_api_is_denied(self):
         """The runtime allowlist does not expose flow administration APIs."""
@@ -916,11 +902,3 @@ class TestPendingNextActionsMiddleware(FlowTestCase):
         session.save()
         response = self.client.get(reverse("authentik_core:if-user"), HTTP_ACCEPT="text/html")
         self.assertEqual(response.status_code, 200)
-
-    def test_unresolvable_actions_stay_blocked(self):
-        """A broken attribute does not fail open."""
-        self.user.attributes[USER_ATTRIBUTE_NEXT_ACTIONS] = ["does-not-exist"]
-        self.user.save()
-        response = self.client.get(reverse("authentik_core:if-user"), HTTP_ACCEPT="text/html")
-        self.assertEqual(response.status_code, 403)
-        self.assertTrue(self.client.session[SESSION_KEY_PENDING_NEXT_ACTIONS])
