@@ -79,7 +79,6 @@ export function ToggleUserPasswordLockButton(
 ): SlottedTemplateResult {
     const locked = !!user.passwordLocked;
 
-    // TODO: Include agent users after https://github.com/goauthentik/authentik/pull/26475.
     const serviceAccount =
         user.type === UserTypeEnum.ServiceAccount ||
         user.type === UserTypeEnum.InternalServiceAccount;
