@@ -563,6 +563,33 @@ class TestUserLoginNextActions(FlowTestCase):
         )
 
     @enterprise_test()
+    def test_direct_action_entry_completes(self):
+        """Entering the executor directly still records required-action completion."""
+        action = self.create_action_flow()
+        self.set_next_actions([action.slug])
+        self.start_login()
+        executor_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": action.slug})
+        self.complete_action(executor_url, action)
+        self.user.refresh_from_db()
+        self.assertNotIn(USER_ATTRIBUTE_NEXT_ACTIONS, self.user.attributes)
+        self.assertNotIn(SESSION_KEY_PENDING_NEXT_ACTIONS, self.client.session)
+
+    @enterprise_test()
+    def test_browser_navigation_preserves_action_progress(self):
+        """Revisiting a blocked page must not restart an action in progress."""
+        action = self.create_action_flow()
+        self.set_next_actions([action.slug])
+        self.start_login()
+        destination = reverse("authentik_core:if-user")
+        executor_url = self.begin_actions(destination, action)
+        self.client.get(executor_url)
+        self.client.post(executor_url, {})
+        self.begin_actions(destination, action)
+        self.assertStageRedirects(self.client.get(executor_url), destination)
+        self.user.refresh_from_db()
+        self.assertNotIn(USER_ATTRIBUTE_NEXT_ACTIONS, self.user.attributes)
+
+    @enterprise_test()
     def test_action_as_string(self):
         """A single flow slug works without being wrapped in a list"""
         action = self.create_action_flow()
