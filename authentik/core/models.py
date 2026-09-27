@@ -15,7 +15,6 @@ from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.base_session import AbstractBaseSession
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import validate_slug
 from django.db import models, transaction
 from django.db.models import Q, QuerySet, options
@@ -372,7 +371,6 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     # (This knowingly violates the Liskov substitution principle. It is better to fail loudly.)
     user_permissions = None
 
-    # Set by the `password` setter when the password device has unsaved changes.
     _password_device_dirty = False
 
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
@@ -414,15 +412,12 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         return self.username
 
     def save(self, *args, **kwargs):
-        if self._password_device_dirty:
-            # The user and their password device hold what used to be a single row, so
-            # they have to be written together.
-            with transaction.atomic():
-                super().save(*args, **kwargs)
-                self.password_device.save()
-            self._password_device_dirty = False
-        else:
+        if not self._password_device_dirty:
+            return super().save(*args, **kwargs)
+        with transaction.atomic():
             super().save(*args, **kwargs)
+            self.password_device.save()
+        self._password_device_dirty = False
 
     @staticmethod
     def default_path() -> str:
@@ -580,37 +575,26 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
 
     @property
     def password(self) -> str:
-        """Password hash of this user, stored on their password device.
-
-        Declaring this property also removes the `password` field that would otherwise be
-        inherited from Django's AbstractBaseUser, so the hash has a single home.
-        """
-        try:
-            return self.password_device.password
-        except ObjectDoesNotExist:
-            return UNUSABLE_PASSWORD_PREFIX
+        """Password hash, or an unusable password when no device exists."""
+        device = getattr(self, "password_device", None)
+        return device.password if device else UNUSABLE_PASSWORD_PREFIX
 
     @password.setter
     def password(self, password_hash: str):
-        """Set a password hash on the password device. As with any other field, `save()`
-        persists it."""
+        """Stage a password hash until save()."""
         from authentik.stages.password.models import PasswordDevice
 
-        try:
-            device = self.password_device
-        except ObjectDoesNotExist:
+        device = getattr(self, "password_device", None)
+        if device is None:
             device = PasswordDevice(user=self, name="Password")
-            self.password_device = device
         device.password = password_hash
         self._password_device_dirty = True
 
     @property
     def password_change_date(self) -> datetime:
-        """Date the user's password was last changed, stored on their password device."""
-        try:
-            return self.password_device.password_change_date
-        except ObjectDoesNotExist:
-            return self.date_joined
+        """Last password change, or the join date for users without a password."""
+        device = getattr(self, "password_device", None)
+        return device.password_change_date if device else self.date_joined
 
     def set_password(self, raw_password, signal=True, sender=None, request=None):
         if self.pk and signal:
@@ -619,9 +603,8 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             if not sender:
                 sender = self
             password_changed.send(sender=sender, user=self, password=raw_password, request=request)
-        result = super().set_password(raw_password)
+        super().set_password(raw_password)
         self.password_device.password_change_date = now()
-        return result
 
     def set_password_from_hash(self, password_hash: str, signal=True, sender=None, request=None):
         """Set password directly from a pre-hashed value.
