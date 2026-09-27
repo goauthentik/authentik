@@ -4,6 +4,7 @@ from typing import Any
 
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
@@ -94,11 +95,14 @@ class NextActionDoneStageView(StageView):
 
 def plan_next_action(request: HttpRequest, flow: Flow) -> FlowPlan:
     """Plan one next action and clear it after successful completion."""
-    planner = FlowPlanner(flow)
-    planner.use_cache = False
-    planner.allow_empty_flows = True
-    plan = planner.plan(request)
-    plan.append_stage(in_memory_stage(NextActionDoneStageView, flow_slug=flow.slug))
+    plan = request.session.get(SESSION_KEY_PLAN)
+    if not plan or plan.flow_pk != flow.pk.hex:
+        planner = FlowPlanner(flow)
+        planner.use_cache = False
+        planner.allow_empty_flows = True
+        plan = planner.plan(request)
+    if not any(binding.stage.view is NextActionDoneStageView for binding in plan.bindings):
+        plan.append_stage(in_memory_stage(NextActionDoneStageView, flow_slug=flow.slug))
     return plan
 
 
@@ -177,9 +181,10 @@ class PendingNextActionsMiddleware:
                 {"detail": _("The required actions are invalid. Contact your administrator.")},
                 status=403,
             )
-        if pending_path_allowed(request, flows[0].slug):
+        allowed = pending_path_allowed(request, flows[0].slug)
+        if allowed and not request.path.startswith(("/if/flow/", "/api/v3/flows/executor/")):
             return None
-        if "text/html" not in request.headers.get("Accept", ""):
+        if not allowed and "text/html" not in request.headers.get("Accept", ""):
             return JsonResponse(
                 {"detail": _("Complete the required actions before continuing.")},
                 status=403,
@@ -195,7 +200,11 @@ class PendingNextActionsMiddleware:
                 {"detail": _("The required actions are invalid. Contact your administrator.")},
                 status=403,
             )
-        # Send the user back to where they were once the actions are completed
-        plan.context[PLAN_CONTEXT_REDIRECT] = request.get_full_path()
+        plan.context.setdefault(
+            PLAN_CONTEXT_REDIRECT,
+            reverse("authentik_core:root-redirect") if allowed else request.get_full_path(),
+        )
         request.session[SESSION_KEY_PLAN] = plan
+        if allowed:
+            return None
         return redirect("authentik_core:if-flow", flow_slug=flows[0].slug)
