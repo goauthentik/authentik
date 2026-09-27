@@ -625,19 +625,12 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         self.password_device.password_change_date = now()
 
     def check_password(self, raw_password: str) -> bool:
-        """
-        Return a boolean of whether the raw_password was correct. Handles
-        hashing formats behind the scenes.
-
-        Slightly changed version which doesn't send a signal for such internal hash upgrades
-        """
+        """Check the password, upgrading hashes without emitting password-change signals."""
 
         def setter(raw_password):
-            # Password hash upgrades shouldn't be considered password changes, so only the
-            # device is written and password_change_date is left alone.
-            self.password = make_password(raw_password)
-            self.password_device.save()
-            self._password_device_dirty = False
+            device = self.password_device
+            device.password = make_password(raw_password)
+            device.save(update_fields=["password"])
 
         return check_password(raw_password, self.password, setter)
 
