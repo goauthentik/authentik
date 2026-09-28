@@ -94,7 +94,7 @@ class PasswordHashImportValidator(PasswordHashValidator):
         if salt_needs_update:
             messages.append(
                 _(
-                    "Password hash salt does not meet the current requirement of "
+                    "Password hash salt seems not to meet the current requirement of "
                     "%(bits)d bits of entropy."
                 )
                 % {"bits": hasher.salt_entropy}
