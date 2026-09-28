@@ -1,4 +1,4 @@
-import "#admin/admin-overview/TopApplicationsTable";
+import "#admin/admin-overview/cards/TopApplicationsTable";
 import "#admin/admin-overview/cards/AdminStatusCard";
 import "#admin/admin-overview/cards/FipsStatusCard";
 import "#admin/admin-overview/cards/RecentEventsCard";
@@ -47,7 +47,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
                    .pf-c-page__main, not an ancestor), so it's hardcoded to match
                    its --ak-c-page-navbar--Height default. Falls short only below
                    the ~768px breakpoint, where the navbar grows to fit wrapped
-                   content; the graph-row min-height floor keeps it from breaking. */
+                   content; the bottom-row min-height floor keeps it from breaking. */
                 min-height: calc(
                     100dvh - 7.5rem - var(--pf-c-page__main-section--PaddingTop) -
                         var(--pf-c-page__main-section--PaddingBottom)
@@ -56,7 +56,10 @@ export class AdminOverviewPage extends AdminOverviewBase {
             .pf-l-grid__item {
                 height: 100%;
             }
-            .graph-row {
+            .login-chart-row {
+                min-height: 30em;
+            }
+            .bottom-row {
                 flex: 1;
                 min-height: 25em;
                 align-content: stretch;
@@ -88,57 +91,27 @@ export class AdminOverviewPage extends AdminOverviewBase {
     render(): TemplateResult {
         return html` <main class="pf-c-page__main-section" aria-label=${msg("Overview")}>
             <div class="page-rows">
-                <!-- row 1 -->
-                <div class="pf-l-grid pf-m-gutter">
-                    <div
-                        class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl pf-l-grid pf-m-gutter"
-                    >
-                        <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
-                            <ak-quick-actions-card .actions=${this.quickActions}>
-                            </ak-quick-actions-card>
-                        </div>
-                        <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
-                            <ak-aggregate-card
-                                icon="pf-icon pf-icon-zone"
-                                label=${msg("Outpost status")}
-                                headerLink=${toAdminInterface("outpost/outposts")}
-                            >
-                                <ak-admin-status-card-outpost></ak-admin-status-card-outpost>
-                            </ak-aggregate-card>
-                        </div>
-                        <div
-                            class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-4-col-on-2xl"
-                        >
-                            <ak-aggregate-card
-                                icon="fa fa-sync-alt"
-                                label=${msg("Sync status")}
-                                tooltip=${msg("Integrations synced in the last 12 hours.")}
-                            >
-                                <ak-admin-status-card-sync></ak-admin-status-card-sync>
-                            </ak-aggregate-card>
-                        </div>
-                        <div class="pf-l-grid__item pf-m-12-col">
-                            <ak-divider></ak-divider>
-                        </div>
-                        ${this.renderCards()}
-                    </div>
-                    <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl">
-                        <ak-recent-events></ak-recent-events>
+                <!-- row 1: status cards -->
+                <div class="pf-l-grid pf-m-gutter">${this.renderCards()}</div>
+                <ak-divider></ak-divider>
+                <!-- row 2: login chart, full width -->
+                <div class="pf-l-grid pf-m-gutter login-chart-row">
+                    <div class="pf-l-grid__item pf-m-12-col">
+                        <ak-charts-admin-login-authorization></ak-charts-admin-login-authorization>
                     </div>
                 </div>
                 <ak-divider></ak-divider>
-                <!-- row 3 -->
-                <div class="pf-l-grid pf-m-gutter graph-row">
-                    <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-8-col-on-2xl">
-                        <ak-charts-admin-login-authorization></ak-charts-admin-login-authorization>
+                <!-- row 3: recent events (50%) / apps with most usage (33%) / quick actions (17%) -->
+                <div class="pf-l-grid pf-m-gutter bottom-row">
+                    <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl">
+                        <ak-recent-events></ak-recent-events>
                     </div>
-                    <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
-                        <ak-aggregate-card
-                            icon="pf-icon pf-icon-server"
-                            label=${msg("Apps with most usage")}
-                        >
-                            <ak-top-applications-table></ak-top-applications-table>
-                        </ak-aggregate-card>
+                    <div class="pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl">
+                        <ak-top-applications-table></ak-top-applications-table>
+                    </div>
+                    <div class="pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl">
+                        <ak-quick-actions-card .actions=${this.quickActions}>
+                        </ak-quick-actions-card>
                     </div>
                 </div>
             </div>
@@ -152,10 +125,8 @@ export class AdminOverviewPage extends AdminOverviewBase {
             "card-container": true,
             "pf-l-grid__item": true,
             "pf-m-6-col": true,
-            "pf-m-4-col-on-md": !isEnterprise,
-            "pf-m-4-col-on-xl": !isEnterprise,
-            "pf-m-3-col-on-md": isEnterprise,
-            "pf-m-3-col-on-xl": isEnterprise,
+            "pf-m-4-col-on-md": true,
+            "pf-m-2-col-on-xl": true,
         };
 
         return html`<div class=${classMap(classes)}>
@@ -173,7 +144,13 @@ export class AdminOverviewPage extends AdminOverviewBase {
                           <ak-admin-fips-status-system> </ak-admin-fips-status-system>
                       </div>`
                     : nothing
-            } `;
+            }
+            <div class=${classMap(classes)}>
+                <ak-admin-status-card-outpost></ak-admin-status-card-outpost>
+            </div>
+            <div class=${classMap(classes)}>
+                <ak-admin-status-card-sync></ak-admin-status-card-sync>
+            </div>`;
     }
 
     updated(changed: PropertyValues<this>) {

@@ -57,9 +57,7 @@ export class OutpostStatusCard extends AdminStatusCard<SummarizedSyncStatus[]> {
     }
 
     getStatus(value: SummarizedSyncStatus[]): Promise<AdminStatus> {
-        const unhealthy = value.filter(
-            (v) => v.failed > 0 || v.unsynced > 0,
-        ).length;
+        const unhealthy = value.filter((v) => v.failed > 0 || v.unsynced > 0).length;
 
         if (value.length < 1) {
             return Promise.resolve<AdminStatus>({
@@ -72,9 +70,7 @@ export class OutpostStatusCard extends AdminStatusCard<SummarizedSyncStatus[]> {
         if (unhealthy > 0) {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
-                message: html`${msg(
-                    str`${unhealthy} of ${value.length} outposts need attention.`,
-                )}`,
+                message: html`${msg(str`${unhealthy} of ${value.length} outposts need attention.`)}`,
                 tone: "warning",
             });
         }
