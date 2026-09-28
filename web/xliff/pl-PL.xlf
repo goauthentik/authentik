@@ -7496,7 +7496,7 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
   <source>Close API drawer</source>
 </trans-unit>
 <trans-unit id="sfa991acd65f738bf">
-  <source>View details for <x id="0" equiv-text="${label}"/></source>
+  <source>View details for <x id="0" equiv-text="${displayName}"/></source>
 </trans-unit>
 <trans-unit id="s5bb4026da28b7914">
   <source>Mark as read</source>
@@ -11767,6 +11767,9 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="users.delete.self-warning.description">
   <source>Warning: You are about to delete user <x id="0" equiv-text="${user.username}"/>, but you are currently logged in as this user. Proceed at your own risk.</source>
+</trans-unit>
+<trans-unit id="s851e009e07a9814d">
+  <source>Managed tokens cannot be edited.</source>
 </trans-unit>
 </body>
 </file>
