@@ -117,7 +117,7 @@ class ConditionalPolicySerializer(PolicySerializer):
                 continue
         return labels
 
-    def _referenced_policies(actions: dict) -> set[str]:
+    def _referenced_policies(self, actions: dict) -> set[str]:
         try:
             compiled = compile_actions(actions)
         except ConditionValidationError:
