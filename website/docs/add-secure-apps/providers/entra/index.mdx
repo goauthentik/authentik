@@ -48,9 +48,7 @@ The provider's **User deletion action** and **Group deletion action** control wh
 
 All three actions remove authentik's connection record for the deleted user or group. **Suspend** retains the remote user account; it does not retain the deleted authentik user. **Do Nothing** does not revoke access to the remote account.
 
-Suspension applies only to users. The **Group deletion action** field offers **Delete** and **Do Nothing**. If `group_delete_action` is set to `suspend` through the API or a blueprint, authentik removes the connection record without modifying the remote group.
-
-The Entra ID provider's Admin interface currently offers **Delete** and **Do Nothing** for users. To use suspension on deletion, set `user_delete_action` to `suspend` through the API or a blueprint.
+In the Admin interface, **User deletion action** offers **Delete**, **Suspend**, and **Do Nothing**. Suspension applies only to users, so **Group deletion action** offers **Delete** and **Do Nothing**.
 
 ### Deactivate a user without deleting the account
 
@@ -61,7 +59,7 @@ This requires the user to remain included in synchronization. Custom property ma
 ### Offboard users and groups
 
 - To retain a user's accounts while disabling sign-in, mark the authentik user inactive and verify that synchronization has disabled the Entra ID account before removing the user from synchronization filters.
-- To delete an authentik user while retaining the remote account, configure **User deletion action** as `suspend` before deleting the user. Use **Do Nothing** only if you intend to manage the remote account's access separately.
+- To delete an authentik user while retaining the remote account, select **Suspend** for **User deletion action** before deleting the user. Use **Do Nothing** only if you intend to manage the remote account's access separately.
 - To delete the remote user or group as well, use **Delete**. Complete any required data retention or ownership transfers in Entra ID before deleting the authentik object.
 - After offboarding, check the provider's sync tasks for errors and verify the account or group state in Entra ID.
 
