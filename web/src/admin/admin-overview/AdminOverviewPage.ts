@@ -113,12 +113,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
                 <div
                     class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-8-col-on-2xl big-graph-container"
                 >
-                    <ak-aggregate-card
-                        icon="pf-icon pf-icon-server"
-                        label=${msg("Logins and authorizations over the last week (per 8 hours)")}
-                    >
-                        <ak-charts-admin-login-authorization></ak-charts-admin-login-authorization>
-                    </ak-aggregate-card>
+                    <ak-charts-admin-login-authorization></ak-charts-admin-login-authorization>
                 </div>
                 <div
                     class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl big-graph-container"
