@@ -11,18 +11,9 @@ A KEDA [ScaledObject](https://keda.sh/docs/2.21/reference/scaledobject-spec/) de
 ## Prerequisites
 
 - An existing authentik [Helm chart installation](../../../install-config/install/kubernetes.mdx) and its `values.yaml` file.
+- [KEDA installed](https://keda.sh/docs/2.21/deploy/) at a version compatible with your Kubernetes cluster. Installing the Helm chart without `--version` selects the latest chart version from the repository. The KEDA links in this guide refer to version 2.21; use the documentation for your installed version if it differs.
 - For server CPU scaling, a working resource-metrics API, usually provided by [Metrics Server](https://kubernetes-sigs.github.io/metrics-server/). Every container in the server pods needs a CPU request for [pod CPU utilization](https://keda.sh/docs/2.21/scalers/cpu/#prerequisites) to be defined.
 - For worker queue scaling, a Prometheus query endpoint that KEDA can reach and that contains authentik's [worker metrics](../monitoring.mdx#metrics). This example assumes that you have Prometheus managed by the [Prometheus Operator](https://prometheus-operator.dev/docs/getting-started/installation/). The Operator uses the chart's `ServiceMonitor` to configure Prometheus to scrape worker metrics. KEDA queries Prometheus, not authentik's metrics endpoint.
-
-## Install KEDA
-
-If KEDA is not installed, [check its compatibility with your Kubernetes version](https://keda.sh/docs/2.21/deploy/) and install it. These commands install the latest chart version from the repository. The KEDA links in this guide refer to version 2.21; use the documentation for your installed version if it differs.
-
-```shell
-helm repo add kedacore https://kedacore.github.io/charts
-helm repo update
-helm install keda kedacore/keda --namespace keda --create-namespace
-```
 
 ## Configure the Helm chart
 
