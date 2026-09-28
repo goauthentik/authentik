@@ -118,7 +118,7 @@ async fn forward_header_auth(
         return Ok(StatusCode::OK.into_response());
     }
 
-    super::auth_start(&app, request.headers(), fwd.into())
+    super::auth_start(&app, request.headers(), fwd.into()).await
 }
 
 #[instrument(skip_all, fields(user = tracing::field::Empty))]
@@ -150,7 +150,7 @@ pub(crate) async fn handle_envoy(
         return Ok(StatusCode::OK.into_response());
     }
 
-    super::auth_start(&app, request.headers(), fwd)
+    super::auth_start(&app, request.headers(), fwd).await
 }
 
 #[instrument(skip_all, fields(user = tracing::field::Empty))]
