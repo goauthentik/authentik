@@ -78,35 +78,26 @@ class CertificateBuilder:
 
     def generate_private_key(self) -> PrivateKeyTypes:
         """Generate private key"""
-        if self.alg == PrivateKeyAlg.ECDSA:
-            return ec.generate_private_key(curve=ec.SECP256R1())
-        if self.alg == PrivateKeyAlg.RSA:
-            return rsa.generate_private_key(
-                public_exponent=65537, key_size=4096, backend=default_backend()
-            )
-        if self.alg == PrivateKeyAlg.ED25519:
-            return Ed25519PrivateKey.generate()
-        if self.alg == PrivateKeyAlg.ED448:
-            return Ed448PrivateKey.generate()
-        if self.alg in (PrivateKeyAlg.MLDSA44, PrivateKeyAlg.MLDSA65, PrivateKeyAlg.MLDSA87):
-            return self.generate_mldsa_private_key()
-        raise ValueError(f"Invalid alg: {self.alg}")
-
-    def generate_mldsa_private_key(self) -> PrivateKeyTypes:
-        """Generate an ML-DSA (FIPS 204) private key.
-
-        The validated OpenSSL FIPS provider authentik ships (3.1.2) predates ML-DSA, so with
-        FIPS mode enabled OpenSSL cannot find an implementation and cryptography surfaces that as
-        an opaque InternalError. Translate it into something an admin can act on."""
-        key_classes = {
-            PrivateKeyAlg.MLDSA44: MLDSA44PrivateKey,
-            PrivateKeyAlg.MLDSA65: MLDSA65PrivateKey,
-            PrivateKeyAlg.MLDSA87: MLDSA87PrivateKey,
-        }
         try:
-            return key_classes[self.alg].generate()
+            if self.alg == PrivateKeyAlg.ECDSA:
+                return ec.generate_private_key(curve=ec.SECP256R1())
+            if self.alg == PrivateKeyAlg.RSA:
+                return rsa.generate_private_key(
+                    public_exponent=65537, key_size=4096, backend=default_backend()
+                )
+            if self.alg == PrivateKeyAlg.ED25519:
+                return Ed25519PrivateKey.generate()
+            if self.alg == PrivateKeyAlg.ED448:
+                return Ed448PrivateKey.generate()
+            if self.alg == PrivateKeyAlg.MLDSA44:
+                return MLDSA44PrivateKey.generate()
+            if self.alg == PrivateKeyAlg.MLDSA65:
+                return MLDSA65PrivateKey.generate()
+            if self.alg == PrivateKeyAlg.MLDSA87:
+                return MLDSA87PrivateKey.generate()
         except InternalError as exc:
             raise KeyAlgorithmUnavailableError(self.alg) from exc
+        raise ValueError(f"Invalid alg: {self.alg}")
 
     def build(
         self,
