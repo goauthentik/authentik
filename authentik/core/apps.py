@@ -4,7 +4,9 @@ import os
 from typing import TYPE_CHECKING
 
 from django.db import DEFAULT_DB_ALIAS
+from django.db.utils import DatabaseError
 from django.utils.translation import gettext_lazy as _
+from structlog.stdlib import get_logger
 
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.config import CONFIG
@@ -14,6 +16,9 @@ from authentik.tenants.flags import Flag
 
 if TYPE_CHECKING:
     from authentik.tenants.models import Tenant
+
+
+LOGGER = get_logger()
 
 
 class Setup(Flag[bool], key="setup"):
@@ -27,8 +32,12 @@ class Setup(Flag[bool], key="setup"):
         if value:
             from django.db import connections
 
-            with connections[DEFAULT_DB_ALIAS].cursor() as cursor:
-                cursor.execute("ANALYZE")
+            try:
+                LOGGER.info("Running ANALYZE on the database")
+                with connections[DEFAULT_DB_ALIAS].cursor() as cursor:
+                    cursor.execute("ANALYZE")
+            except DatabaseError as exc:
+                LOGGER.warning("Unable to run ANALYZE on the database", exc=exc)
 
 
 class AppAccessWithoutBindings(Flag[bool], key="core_default_app_access"):
