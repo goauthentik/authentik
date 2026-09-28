@@ -5,38 +5,44 @@ metadata:
   name: System - Email Templates
 entries:
   - identifiers:
+      managed: goauthentik.io/email/base
+    model: authentik_stages_email.emailtemplate
+    attrs:
+      path: email/base.html
+      body: !File ["authentik/stages/email/templates/email/base.html", ""]
+  - identifiers:
       managed: goauthentik.io/email/password-reset
     model: authentik_stages_email.emailtemplate
     attrs:
-      name: Password Reset
+      path: email/password_reset.html
       body: !File ["authentik/stages/email/templates/email/password_reset.html", ""]
   - identifiers:
       managed: goauthentik.io/email/account-confirmation
     model: authentik_stages_email.emailtemplate
     attrs:
-      name: Account Confirmation
+      path: email/account_confirmation.html
       body: !File ["authentik/stages/email/templates/email/account_confirmation.html", ""]
   - identifiers:
       managed: goauthentik.io/email/email-otp
     model: authentik_stages_email.emailtemplate
     attrs:
-      name: Email OTP
+      path: email/email_otp.html
       body: !File ["authentik/stages/authenticator_email/templates/email/email_otp.html", ""]
   - identifiers:
       managed: goauthentik.io/email/event-notification
     model: authentik_stages_email.emailtemplate
     attrs:
-      name: Event Notification
+      path: email/event_notification.html
       body: !File ["authentik/stages/email/templates/email/event_notification.html", ""]
   - identifiers:
       managed: goauthentik.io/email/invitation
     model: authentik_stages_email.emailtemplate
     attrs:
-      name: Invitation
+      path: email/invitation.html
       body: !File ["authentik/stages/email/templates/email/invitation.html", ""]
   - identifiers:
       managed: goauthentik.io/email/setup
     model: authentik_stages_email.emailtemplate
     attrs:
-      name: Test Email
+      path: email/setup.html
       body: !File ["authentik/stages/email/templates/email/setup.html", ""]

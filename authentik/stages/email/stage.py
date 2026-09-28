@@ -143,7 +143,7 @@ class EmailStageView(ChallengeStageView):
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
                 message=_("Exception occurred while rendering E-mail template"),
-                template=current_stage.template.name,
+                template=current_stage.template.path,
             ).with_exception(exc).from_http(self.request)
             raise StageInvalidException from exc
 

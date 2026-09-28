@@ -178,7 +178,7 @@ class EmailDevice(SerializerModel, ThrottlingMixin, SideChannelDevice):
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
                 message=_("Exception occurred while rendering E-mail template"),
-                template=stage.template.name,
+                template=stage.template.path,
             ).with_exception(exc).save()
             raise StageInvalidException from exc
 

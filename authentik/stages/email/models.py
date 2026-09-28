@@ -8,8 +8,10 @@ from django.conf import settings
 from django.core.mail.backends.base import BaseEmailBackend
 from django.core.mail.backends.smtp import EmailBackend
 from django.db import models
+from django.db.models import Q
 from django.template import engines
 from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
@@ -69,13 +71,30 @@ def get_template_choices():
     return static_choices
 
 
+BUILTIN_TEMPLATE_LABELS = {
+    "goauthentik.io/email/base": gettext_lazy("Base Layout"),
+    "goauthentik.io/email/password-reset": gettext_lazy("Password Reset"),
+    "goauthentik.io/email/account-confirmation": gettext_lazy("Account Confirmation"),
+    "goauthentik.io/email/email-otp": gettext_lazy("Email OTP"),
+    "goauthentik.io/email/event-notification": gettext_lazy("Event Notification"),
+    "goauthentik.io/email/invitation": gettext_lazy("Invitation"),
+    "goauthentik.io/email/setup": gettext_lazy("Test Email"),
+}
+
+
 class EmailTemplate(SerializerModel, ManagedModel):
     """A single email template"""
 
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    name = models.TextField(unique=True)
+    path = models.TextField(
+        help_text=_("Path used to reference this template, similar to file paths on disk.")
+    )
     description = models.TextField(blank=True, default="")
     body = models.TextField(blank=True, default="")
+
+    @property
+    def label(self) -> str:
+        return str(BUILTIN_TEMPLATE_LABELS.get(self.managed, self.path))
 
     def render(self, context: dict) -> str:
         return engines["django"].from_string(self.body).render(context)
@@ -87,12 +106,24 @@ class EmailTemplate(SerializerModel, ManagedModel):
         return EmailTemplateSerializer
 
     def __str__(self) -> str:
-        return f"Email Template {self.name}"
+        return f"Email Template {self.path}"
 
     class Meta:
         verbose_name = _("Email Template")
         verbose_name_plural = _("Email Templates")
-        ordering = ("name",)
+        ordering = ("path",)
+        constraints = [
+            models.UniqueConstraint(
+                fields=["path"],
+                condition=Q(managed__isnull=True),
+                name="unique_custom_email_template_path",
+            ),
+            models.UniqueConstraint(
+                fields=["path"],
+                condition=Q(managed__isnull=False),
+                name="unique_managed_email_template_path",
+            ),
+        ]
 
 
 class EmailStage(Stage):

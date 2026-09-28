@@ -2,6 +2,7 @@
 
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
+from rest_framework.fields import CharField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, ValidationError
@@ -93,6 +94,18 @@ class EmailStageViewSet(UsedByMixin, ModelViewSet):
 class EmailTemplateSerializer(ModelSerializer):
     """EmailTemplate Serializer"""
 
+    path = CharField()
+
+    def validate(self, attrs: dict) -> dict:
+        path = attrs.get("path", getattr(self.instance, "path", None))
+        managed = attrs.get("managed", getattr(self.instance, "managed", None))
+        conflicts = EmailTemplate.objects.filter(path=path, managed__isnull=managed is None)
+        if self.instance:
+            conflicts = conflicts.exclude(pk=self.instance.pk)
+        if conflicts.exists():
+            raise ValidationError({"path": "A template with this path already exists."})
+        return super().validate(attrs)
+
     class Meta:
         model = EmailTemplate
-        fields = ["uuid", "name", "description", "body", "managed"]
+        fields = ["uuid", "path", "description", "body", "managed"]

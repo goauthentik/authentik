@@ -112,7 +112,7 @@ class AuthenticatorEmailStageView(ChallengeStageView):
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
                 message=_("Exception occurred while rendering E-mail template"),
-                template=stage.template.name,
+                template=stage.template.path,
             ).with_exception(exc).from_http(self.request)
             raise StageInvalidException from exc
 

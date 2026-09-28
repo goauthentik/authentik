@@ -9,51 +9,49 @@ import django.db.models.deletion
 
 from authentik.lib.config import CONFIG
 
-# regression: these display names are no longer translated since they come from DB
 BUILTIN_TEMPLATES = [
-    # (managed, name, app label, filename under <app>/templates/email/)
+    # (managed, app label, filename under <app>/templates/email/)
+    (
+        "goauthentik.io/email/base",
+        "authentik_stages_email",
+        "base.html",
+    ),
     (
         "goauthentik.io/email/password-reset",
-        "Password Reset",
         "authentik_stages_email",
         "password_reset.html",
     ),
     (
         "goauthentik.io/email/account-confirmation",
-        "Account Confirmation",
         "authentik_stages_email",
         "account_confirmation.html",
     ),
     (
         "goauthentik.io/email/email-otp",
-        "Email OTP",
         "authentik_stages_authenticator_email",
         "email_otp.html",
     ),
     (
         "goauthentik.io/email/event-notification",
-        "Event Notification",
         "authentik_stages_email",
         "event_notification.html",
     ),
-    ("goauthentik.io/email/invitation", "Invitation", "authentik_stages_email", "invitation.html"),
-    ("goauthentik.io/email/setup", "Test Email", "authentik_stages_email", "setup.html"),
+    ("goauthentik.io/email/invitation", "authentik_stages_email", "invitation.html"),
+    ("goauthentik.io/email/setup", "authentik_stages_email", "setup.html"),
 ]
-
-BUILTIN_PATHS = {f"email/{filename}": managed for managed, _, _, filename in BUILTIN_TEMPLATES}
 
 
 def seed_builtin_templates(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     EmailTemplate = apps.get_model("authentik_stages_email", "EmailTemplate")
     db_alias = schema_editor.connection.alias
-    for managed_id, name, app_label, filename in BUILTIN_TEMPLATES:
+    for managed_id, app_label, filename in BUILTIN_TEMPLATES:
         template_path = (
             Path(global_apps.get_app_config(app_label).path) / "templates" / "email" / filename
         )
         body = template_path.read_text(encoding="utf-8")
         EmailTemplate.objects.using(db_alias).update_or_create(
             managed=managed_id,
-            defaults={"name": name, "body": body},
+            defaults={"path": f"email/{filename}", "body": body},
         )
 
 
@@ -65,48 +63,48 @@ def remove_builtin_templates(apps: Apps, schema_editor: BaseDatabaseSchemaEditor
     ).delete()
 
 
-def backfill_emailstage_template(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    """
-    Backfills EmailTemplate with filesystem-based tempaltes, and
-    updates EmailStages.template to reference the EmailTemplate.
-    """
-    EmailStage = apps.get_model("authentik_stages_email", "EmailStage")
+def import_custom_templates(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     EmailTemplate = apps.get_model("authentik_stages_email", "EmailTemplate")
     db_alias = schema_editor.connection.alias
     template_dir = Path(CONFIG.get("email.template_dir"))
-    for stage in EmailStage.objects.using(db_alias).all():
-        value = stage.template_legacy
-        if not value:
-            continue
-        managed_id = BUILTIN_PATHS.get(value)
-        if managed_id:
-            stage.template = EmailTemplate.objects.using(db_alias).get(managed=managed_id)
-            stage.save(using=db_alias, update_fields=["template"])
-            continue
-
+    if not template_dir.is_dir():
+        return
+    for file in sorted(template_dir.rglob("*.html")):
         try:
-            body = (template_dir / value).read_text(encoding="utf-8")
+            body = file.read_text(encoding="utf-8")
         except OSError:
             continue
-        template, _ = EmailTemplate.objects.using(db_alias).get_or_create(
-            name=value,
+        EmailTemplate.objects.using(db_alias).get_or_create(
+            path=file.relative_to(template_dir).as_posix(),
+            managed=None,
             defaults={"body": body},
         )
-        stage.template = template
+
+
+def resolve_template(EmailTemplate, db_alias: str, path: str):
+    templates = EmailTemplate.objects.using(db_alias).filter(path=path)
+    return (
+        templates.filter(managed__isnull=True).first()
+        or templates.filter(managed__isnull=False).first()
+    )
+
+
+def backfill_emailstage_template(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
+    EmailStage = apps.get_model("authentik_stages_email", "EmailStage")
+    EmailTemplate = apps.get_model("authentik_stages_email", "EmailTemplate")
+    db_alias = schema_editor.connection.alias
+    for stage in EmailStage.objects.using(db_alias).all():
+        if not stage.template_legacy:
+            continue
+        stage.template = resolve_template(EmailTemplate, db_alias, stage.template_legacy)
         stage.save(using=db_alias, update_fields=["template"])
 
 
 def backfill_emailstage_template_reverse(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     EmailStage = apps.get_model("authentik_stages_email", "EmailStage")
     db_alias = schema_editor.connection.alias
-    managed_to_path = {v: k for k, v in BUILTIN_PATHS.items()}
     for stage in EmailStage.objects.using(db_alias).select_related("template").all():
-        if not stage.template_id:
-            stage.template_legacy = ""
-        elif managed_id := stage.template.managed:
-            stage.template_legacy = managed_to_path.get(managed_id, "")
-        else:
-            stage.template_legacy = stage.template.name
+        stage.template_legacy = stage.template.path if stage.template_id else ""
         stage.save(using=db_alias, update_fields=["template_legacy"])
 
 
@@ -136,17 +134,35 @@ class Migration(migrations.Migration):
                         default=uuid.uuid4, editable=False, primary_key=True, serialize=False
                     ),
                 ),
-                ("name", models.TextField(unique=True)),
+                (
+                    "path",
+                    models.TextField(
+                        help_text="Path used to reference this template, similar to file paths on disk.",
+                    ),
+                ),
                 ("description", models.TextField(blank=True, default="")),
                 ("body", models.TextField(blank=True, default="")),
             ],
             options={
                 "verbose_name": "Email Template",
                 "verbose_name_plural": "Email Templates",
-                "ordering": ("name",),
+                "ordering": ("path",),
+                "constraints": [
+                    models.UniqueConstraint(
+                        condition=models.Q(("managed__isnull", True)),
+                        fields=("path",),
+                        name="unique_custom_email_template_path",
+                    ),
+                    models.UniqueConstraint(
+                        condition=models.Q(("managed__isnull", False)),
+                        fields=("path",),
+                        name="unique_managed_email_template_path",
+                    ),
+                ],
             },
         ),
         migrations.RunPython(seed_builtin_templates, remove_builtin_templates),
+        migrations.RunPython(import_custom_templates, migrations.RunPython.noop),
         # migrate existing templates
         migrations.RenameField(
             model_name="emailstage",
