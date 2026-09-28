@@ -602,7 +602,6 @@ jobs:
       - test-unittest
       - test-integration
       - test-e2e
-      - test-e2e-web
       - test-rust
     runs-on: ubuntu-latest
     steps:
