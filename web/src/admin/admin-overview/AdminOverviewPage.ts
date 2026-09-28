@@ -39,11 +39,27 @@ export class AdminOverviewPage extends AdminOverviewBase {
         PFPage,
         PFContent,
         css`
+            .page-rows {
+                display: flex;
+                flex-direction: column;
+                gap: var(--pf-global--gutter);
+                /* ak-page-navbar's height isn't inheritable here (it's a sibling of
+                   .pf-c-page__main, not an ancestor), so it's hardcoded to match
+                   its --ak-c-page-navbar--Height default. Falls short only below
+                   the ~768px breakpoint, where the navbar grows to fit wrapped
+                   content; the graph-row min-height floor keeps it from breaking. */
+                min-height: calc(
+                    100dvh - 7.5rem - var(--pf-c-page__main-section--PaddingTop) -
+                        var(--pf-c-page__main-section--PaddingBottom)
+                );
+            }
             .pf-l-grid__item {
                 height: 100%;
             }
-            .pf-l-grid__item.big-graph-container {
-                height: 35em;
+            .graph-row {
+                flex: 1;
+                min-height: 25em;
+                align-content: stretch;
             }
             .card-container {
                 max-height: 10em;
@@ -71,59 +87,59 @@ export class AdminOverviewPage extends AdminOverviewBase {
 
     render(): TemplateResult {
         return html` <main class="pf-c-page__main-section" aria-label=${msg("Overview")}>
-            <div class="pf-l-grid pf-m-gutter">
+            <div class="page-rows">
                 <!-- row 1 -->
-                <div
-                    class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl pf-l-grid pf-m-gutter"
-                >
-                    <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
-                        <ak-quick-actions-card .actions=${this.quickActions}>
-                        </ak-quick-actions-card>
-                    </div>
-                    <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
-                        <ak-aggregate-card
-                            icon="pf-icon pf-icon-zone"
-                            label=${msg("Outpost status")}
-                            headerLink=${toAdminInterface("outpost/outposts")}
-                        >
-                            <ak-admin-status-chart-outpost></ak-admin-status-chart-outpost>
-                        </ak-aggregate-card>
-                    </div>
-                    <div class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-4-col-on-2xl">
-                        <ak-aggregate-card
-                            icon="fa fa-sync-alt"
-                            label=${msg("Sync status")}
-                            tooltip=${msg("Integrations synced in the last 12 hours.")}
-                        >
-                            <ak-admin-status-chart-sync></ak-admin-status-chart-sync>
-                        </ak-aggregate-card>
-                    </div>
-                    <div class="pf-l-grid__item pf-m-12-col">
-                        <ak-divider></ak-divider>
-                    </div>
-                    ${this.renderCards()}
-                </div>
-                <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl">
-                    <ak-recent-events></ak-recent-events>
-                </div>
-                <div class="pf-l-grid__item pf-m-12-col">
-                    <ak-divider></ak-divider>
-                </div>
-                <!-- row 3 -->
-                <div
-                    class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-8-col-on-2xl big-graph-container"
-                >
-                    <ak-charts-admin-login-authorization></ak-charts-admin-login-authorization>
-                </div>
-                <div
-                    class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl big-graph-container"
-                >
-                    <ak-aggregate-card
-                        icon="pf-icon pf-icon-server"
-                        label=${msg("Apps with most usage")}
+                <div class="pf-l-grid pf-m-gutter">
+                    <div
+                        class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl pf-l-grid pf-m-gutter"
                     >
-                        <ak-top-applications-table></ak-top-applications-table>
-                    </ak-aggregate-card>
+                        <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
+                            <ak-quick-actions-card .actions=${this.quickActions}>
+                            </ak-quick-actions-card>
+                        </div>
+                        <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
+                            <ak-aggregate-card
+                                icon="pf-icon pf-icon-zone"
+                                label=${msg("Outpost status")}
+                                headerLink=${toAdminInterface("outpost/outposts")}
+                            >
+                                <ak-admin-status-chart-outpost></ak-admin-status-chart-outpost>
+                            </ak-aggregate-card>
+                        </div>
+                        <div
+                            class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-4-col-on-2xl"
+                        >
+                            <ak-aggregate-card
+                                icon="fa fa-sync-alt"
+                                label=${msg("Sync status")}
+                                tooltip=${msg("Integrations synced in the last 12 hours.")}
+                            >
+                                <ak-admin-status-chart-sync></ak-admin-status-chart-sync>
+                            </ak-aggregate-card>
+                        </div>
+                        <div class="pf-l-grid__item pf-m-12-col">
+                            <ak-divider></ak-divider>
+                        </div>
+                        ${this.renderCards()}
+                    </div>
+                    <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl">
+                        <ak-recent-events></ak-recent-events>
+                    </div>
+                </div>
+                <ak-divider></ak-divider>
+                <!-- row 3 -->
+                <div class="pf-l-grid pf-m-gutter graph-row">
+                    <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-8-col-on-2xl">
+                        <ak-charts-admin-login-authorization></ak-charts-admin-login-authorization>
+                    </div>
+                    <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
+                        <ak-aggregate-card
+                            icon="pf-icon pf-icon-server"
+                            label=${msg("Apps with most usage")}
+                        >
+                            <ak-top-applications-table></ak-top-applications-table>
+                        </ak-aggregate-card>
+                    </div>
                 </div>
             </div>
         </main>`;

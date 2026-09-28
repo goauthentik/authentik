@@ -1,8 +1,8 @@
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 
-import { EventChart } from "#elements/charts/EventChart";
 import CardStyles from "#elements/cards/AggregateCard.css";
+import { EventChart } from "#elements/charts/EventChart";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { EventVolume } from "@goauthentik/api";
