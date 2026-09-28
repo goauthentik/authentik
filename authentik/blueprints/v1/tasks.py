@@ -85,6 +85,10 @@ def iter_file_tags(value: Any, ancestors: frozenset[int] = frozenset()) -> Gener
         yield from iter_file_tags(child, ancestors)
 
 
+# One byte where a readable reference contributes a 64-byte digest
+MISSING_FILE_MARKER = b"\0"
+
+
 def blueprint_hash(content: str) -> str:
     """Hash a blueprint's content and the contents of the files it references with
     `!File` tags"""
@@ -101,7 +105,9 @@ def blueprint_hash(content: str) -> str:
         try:
             referenced = Path(path).read_bytes()
         except OSError, ValueError:
-            # Unreadable references contribute only their blueprint source text
+            # An unreadable reference still takes its place in the sequence, so a file
+            # that goes missing while another appears cannot leave the hash unchanged
+            hasher.update(MISSING_FILE_MARKER)
             continue
         hasher.update(sha512(referenced).digest())
     return hasher.hexdigest()

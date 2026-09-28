@@ -256,6 +256,26 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                 self.assertNotEqual(before, self.write_blueprint(file, reference))
 
     @CONFIG.patch("blueprints_dir", TMP)
+    def test_file_tag_missing_and_readable_swapped(self):
+        """Test hash changes when one referenced `!File` disappears as another appears
+        with the same contents"""
+        first = Path(TMP) / generate_id()
+        second = Path(TMP) / generate_id()
+        with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
+            reference = f"[!File {first}, !File {second}]"
+            second.write_text("shared")
+            try:
+                before = self.write_blueprint(file, reference)
+            finally:
+                second.unlink()
+            first.write_text("shared")
+            try:
+                after = self.write_blueprint(file, reference)
+            finally:
+                first.unlink()
+            self.assertNotEqual(before, after)
+
+    @CONFIG.patch("blueprints_dir", TMP)
     def test_file_tag_hashed_once_per_route(self):
         """Test a referenced `!File` is folded into the hash once for each route to it"""
         with NamedTemporaryFile(mode="w+", dir=TMP) as secret:
