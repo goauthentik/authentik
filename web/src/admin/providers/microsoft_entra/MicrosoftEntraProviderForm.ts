@@ -106,6 +106,14 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                                 description: html`${msg("User is deleted")}`,
                             },
                             {
+                                label: msg("Suspend", { id: "common.actions.suspend.label" }),
+                                value: OutgoingSyncDeleteAction.Suspend,
+                                description: html`${msg(
+                                    "User is suspended, and connection to user in authentik is removed.",
+                                    { id: "providers.user-deletion.suspend.description" },
+                                )}`,
+                            },
+                            {
                                 label: msg("Do Nothing"),
                                 value: OutgoingSyncDeleteAction.DoNothing,
                                 description: html`${msg(
