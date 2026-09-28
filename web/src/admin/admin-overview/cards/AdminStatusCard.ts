@@ -3,7 +3,7 @@ import { EVENT_REFRESH } from "#common/constants";
 import { PFSize } from "#common/enums";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
-import { AggregateCard } from "#elements/cards/AggregateCard";
+import { AggregateCard, StatusTone } from "#elements/cards/AggregateCard";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { msg } from "@lit/localize";
@@ -13,6 +13,7 @@ import { state } from "lit/decorators.js";
 export interface AdminStatus {
     icon: string;
     message?: SlottedTemplateResult;
+    tone: StatusTone;
 }
 
 /**
@@ -21,6 +22,9 @@ export interface AdminStatus {
  * @template T - Type of the primary data value used in the card
  */
 export abstract class AdminStatusCard<T> extends AggregateCard {
+    // Neutral (gray) banner while loading, until the first status resolves
+    public override tone: StatusTone = "neutral";
+
     // Current data value state
     @state()
     value?: T;
@@ -63,6 +67,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
             })
             .catch(async (error: unknown) => {
                 this.status = undefined;
+                this.tone = "";
                 this.error = await parseAPIResponseError(error);
             });
     }
@@ -80,10 +85,12 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
             this.getStatus(this.value)
                 .then((status) => {
                     this.status = status;
+                    this.tone = status.tone;
                     this.error = undefined;
                 })
                 .catch(async (error: unknown) => {
                     this.status = undefined;
+                    this.tone = "";
                     this.error = await parseAPIResponseError(error);
                 });
 
