@@ -54,7 +54,7 @@ hyper-rustls = { version = "= 0.27.10", default-features = false, features = [
   "tls12",
 ] }
 hyper-unix-socket = "= 0.6.1"
-hyper-util = { version = "= 0.1.20", features = [
+hyper-util = { version = "= 0.1.21", features = [
   "client-legacy",
   "http1",
   "http2",
