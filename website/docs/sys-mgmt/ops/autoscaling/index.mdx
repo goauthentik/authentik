@@ -1,0 +1,13 @@
+---
+title: Autoscaling on Kubernetes
+slug: /sys-mgmt/ops/autoscaling
+sidebar_label: Overview
+sidebar_position: 1
+---
+
+On Kubernetes, you can scale authentik servers and workers independently. Choose a signal that reflects each component's workload:
+
+- **Server:** [Scale on CPU with the Helm chart's HPA](./hpa.mdx). This does not require KEDA or Prometheus.
+- **Worker:** [Scale on queued tasks with KEDA](./keda.mdx). The queue can grow while workers wait on external services and use little CPU. This metric also counts already-enqueued tasks scheduled for later.
+
+For worker task concurrency, see [Worker scaling](../worker.mdx#scaling). Keep at least one worker running to handle scheduled tasks and file changes.
