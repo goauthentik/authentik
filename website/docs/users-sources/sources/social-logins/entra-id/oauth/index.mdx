@@ -78,7 +78,7 @@ To support the integration of Entra ID with authentik, you need to create an Ent
 3. Click **Save**.
 
 :::info Group Membership
-When group membership information is synced from Entra ID, authentik creates the groups that the user is a member of based on all pages of Microsoft Graph's `/me/memberOf` response. The sync runs on each user login, which can cause login delays for organizations with many groups.
+When syncing group memberships from Entra ID, authentik creates all groups the user belongs to by based on the Microsoft Graph `/me/memberOf` response. The sync runs on each user login, which can cause login delays for organizations with many groups.
 
 For organizations with larger numbers of users and groups, we recommend using the [Entra ID SCIM integration](../scim/) to provision users and groups. These users are then automatically linked to matching users logging in via this Entra ID OAuth source.
 :::
