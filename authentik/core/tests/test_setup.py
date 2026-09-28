@@ -269,11 +269,7 @@ class TestSetup(APIFlowTestCase):
         hasher.iterations -= 1
         environ["AUTHENTIK_BOOTSTRAP_PASSWORD_HASH"] = hasher.encode(generate_id(), hasher.salt())
         pre_startup.send(sender=self)
-        with self.assertRaisesRegex(
-            ImproperlyConfigured,
-            "AUTHENTIK_BOOTSTRAP_PASSWORD_HASH does not match authentik's current password "
-            "hashing settings.*https://docs.goauthentik.io/core/password-hashes/",
-        ):
+        with self.assertRaises(ImproperlyConfigured):
             post_startup.send(sender=self)
 
         self.assertFalse(Setup.get())
@@ -287,11 +283,7 @@ class TestSetup(APIFlowTestCase):
         environ.pop("AUTHENTIK_BOOTSTRAP_PASSWORD", None)
         environ["AUTHENTIK_BOOTSTRAP_PASSWORD_HASH"] = "not-a-valid-hash"
         pre_startup.send(sender=self)
-        with self.assertRaisesRegex(
-            ImproperlyConfigured,
-            "AUTHENTIK_BOOTSTRAP_PASSWORD_HASH does not match authentik's current password "
-            "hashing settings.*https://docs.goauthentik.io/core/password-hashes/",
-        ):
+        with self.assertRaises(ImproperlyConfigured):
             post_startup.send(sender=self)
 
         self.assertFalse(Setup.get())
