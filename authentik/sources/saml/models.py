@@ -101,6 +101,16 @@ class SAMLSource(Source):
         help_text=_("Audience value this IdP sends for authentik."),
     )
 
+    metadata_url = models.TextField(
+        blank=True,
+        default="",
+        validators=[DomainlessURLValidator(schemes=("http", "https"))],
+        verbose_name=_("Metadata URL"),
+        help_text=_(
+            "URL of the Identity Provider's metadata. When set, the source's settings "
+            "are periodically updated from this metadata."
+        ),
+    )
     sso_url = models.TextField(
         validators=[DomainlessURLValidator(schemes=("http", "https"))],
         verbose_name=_("SSO URL"),

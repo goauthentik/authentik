@@ -41,6 +41,12 @@ This depends on the software that you use for your IdP. On the **Metadata** tab 
 - Return URL/ACS URL: `https://authentik.company/source/saml/<source-slug>/acs/`
 - Certificate: If you have chosen to sign your outgoing requests, use the public side of the certificate that you specified in the settings.
 
+## Configure the source from IdP metadata:ak-version[2026.11]
+
+Instead of entering the IdP's details by hand, set the **Metadata URL** field to the URL of the IdP's SAML metadata. When the source is saved, authentik downloads the metadata and fills in the SSO URL, SLO URL, binding type, and the verification certificate from it. The NameID policy is only changed when the IdP does not list the configured one as supported. The **SSO URL** field can be left empty in that case.
+
+authentik downloads the metadata again once a day through the system task `update_saml_source_metadata` and applies any changes, so the source keeps working when the IdP rotates its signing certificate or moves its endpoints. A verification certificate that was imported from the metadata is updated in place. Settings you chose yourself, such as the name, flows, signing and encryption keypairs, and matching modes, are never changed. You can view the task's status or trigger it manually under **Dashboards** > **System Tasks**. If the metadata cannot be downloaded or parsed, the source is left unchanged and a **Configuration error** event is created.
+
 ## Example IdP metadata
 
 ```xml
