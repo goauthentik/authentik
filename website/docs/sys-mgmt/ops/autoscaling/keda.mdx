@@ -6,17 +6,17 @@ sidebar_position: 3
 
 [KEDA](https://keda.sh/docs/2.21/) can scale authentik servers on CPU usage and workers on queued tasks.
 
-A [ScaledObject](https://keda.sh/docs/2.21/reference/scaledobject-spec/) specifies the Deployment and scaling metric; KEDA creates a Horizontal Pod Autoscaler (HPA) for it. Disable the chart's HPA for any Deployment managed by KEDA so that two HPAs do not compete. For CPU-only server scaling, use the [chart HPA](./hpa.mdx) instead.
+A KEDA [ScaledObject](https://keda.sh/docs/2.21/reference/scaledobject-spec/) defines which Deployment to scale and which metrics to use. KEDA creates a Horizontal Pod Autoscaler (HPA) for that Deployment. Disable the chart's HPA for any Deployment managed by KEDA so that two HPAs do not compete. If you only need CPU-based server scaling, the [chart HPA](./hpa.mdx) requires fewer components.
 
 ## Prerequisites
 
 - An existing authentik [Helm chart installation](../../../install-config/install/kubernetes.mdx) and its `values.yaml` file.
 - For server CPU scaling, a working resource-metrics API, usually provided by [Metrics Server](https://kubernetes-sigs.github.io/metrics-server/). Every container in the server pods needs a CPU request for [pod CPU utilization](https://keda.sh/docs/2.21/scalers/cpu/#prerequisites) to be defined.
-- For worker queue scaling, a Prometheus query endpoint that KEDA can reach and that contains authentik's [worker metrics](../monitoring.mdx#metrics). This example uses an existing [Prometheus Operator](https://prometheus-operator.dev/docs/getting-started/installation/) to scrape the chart's `ServiceMonitor`. The authentik metrics endpoint alone is not enough.
+- For worker queue scaling, a Prometheus query endpoint that KEDA can reach and that contains authentik's [worker metrics](../monitoring.mdx#metrics). This example assumes that you have Prometheus managed by the [Prometheus Operator](https://prometheus-operator.dev/docs/getting-started/installation/). The Operator uses the chart's `ServiceMonitor` to configure Prometheus to scrape worker metrics. KEDA queries Prometheus, not authentik's metrics endpoint.
 
 ## Install KEDA
 
-If needed, [install KEDA](https://keda.sh/docs/2.21/deploy/). This command installs the chart version currently available from the repository. Check compatibility with your Kubernetes cluster using the documentation for your installed KEDA version.
+If KEDA is not installed, [check its compatibility with your Kubernetes version](https://keda.sh/docs/2.21/deploy/) and install it. These commands install the latest chart version from the repository. The KEDA links in this guide refer to version 2.21; use the documentation for your installed version if it differs.
 
 ```shell
 helm repo add kedacore https://kedacore.github.io/charts
@@ -26,7 +26,7 @@ helm install keda kedacore/keda --namespace keda --create-namespace
 
 ## Configure the Helm chart
 
-Merge these `server` and `worker` settings into your existing `values.yaml`; keep the rest of your configuration.
+Add the following settings to the `server` and `worker` sections of your existing `values.yaml`. If KEDA will manage only one Deployment, update only that section. Preserve your other settings.
 
 ```yaml title="values.yaml (excerpt)"
 server:
@@ -48,9 +48,12 @@ worker:
 
 With the chart defaults and release name `authentik`, `worker.metrics.enabled: true` creates a `ClusterIP` Service named `authentik-worker-metrics` on port 9300. The ServiceMonitor specifies `/metrics` as the scrape path. Keep the unauthenticated metrics Service internal.
 
-Prometheus must select the ServiceMonitor's namespace (by default, the authentik namespace) through `serviceMonitorNamespaceSelector`. A null selector searches only the Prometheus resource's namespace. `serviceMonitorSelector` must match the ServiceMonitor's labels; set `worker.metrics.serviceMonitor.labels` if needed.
+The Prometheus resource must select both the ServiceMonitor's namespace and its labels:
 
-When switching from the chart HPA, disable it before applying the ScaledObjects. Without the chart HPA, Helm writes `spec.replicas` from `server.replicas` and `worker.replicas`. The handoff and later Helm upgrades can briefly reset KEDA-managed replica counts. Set these values near expected counts and check capacity after upgrades. If KEDA manages only one Deployment, leave the other's HPA settings unchanged.
+- `serviceMonitorNamespaceSelector` must include the namespace containing the ServiceMonitor, which defaults to authentik's namespace. An omitted or null selector searches only the Prometheus resource's own namespace.
+- `serviceMonitorSelector` must match the ServiceMonitor's labels. Set `worker.metrics.serviceMonitor.labels` in your Helm values to add any labels that Prometheus requires.
+
+When switching from the chart HPA, disable it before applying the ScaledObjects. Without the chart HPA, Helm writes `spec.replicas` from `server.replicas` and `worker.replicas`. Switching autoscalers and later Helm upgrades can temporarily reset the replica counts until the HPA reconciles them. Choose replica values that provide enough capacity during that interval, and check the counts after upgrades.
 
 ## Configure the ScaledObjects
 
@@ -58,7 +61,7 @@ Save each ScaledObject in its own file, in the same namespace as its target Depl
 
 ### Server CPU usage
 
-This trigger targets 75% of requested server pod CPU (375m for a 500m request if the pod has only the authentik container). CPU alone cannot scale up from zero replicas.
+This trigger targets an average CPU utilization of 75% across server pods, measured against their CPU requests. For single-container pods requesting 500m CPU each, the target is an average of 375m per pod. The example keeps at least two server replicas running.
 
 ```yaml title="server-scaledobject.yaml"
 apiVersion: keda.sh/v1alpha1
@@ -83,11 +86,11 @@ spec:
               value: "75"
 ```
 
-### Worker queued-task count
+### Worker queue length
 
-`authentik_tasks_queued` counts tasks in the `QUEUED` state by queue and actor. It includes already-enqueued tasks scheduled for later (`eta`), but excludes tasks in progress, those waiting for dependencies, and recurring runs not yet enqueued. If delayed tasks are common, consider a signal that measures work due now instead.
+`authentik_tasks_queued` counts tasks in the `QUEUED` state by queue and actor. It includes delayed tasks that are not yet due to run (`eta`). It excludes tasks in progress, tasks waiting for dependencies, and future recurring runs that have not been enqueued. A large number of delayed tasks can therefore cause workers to scale up even when there is little work ready to run.
 
-Each worker exports the shared queued-task count. The query takes the maximum per queue and actor before summing, so scraping multiple workers does not count the same tasks more than once.
+Each worker exports the queue length from the shared database. The query below takes the maximum per queue and actor before summing, so it does not count the same tasks once for every worker. Because workers are scraped at different times, the result can temporarily reflect an older, higher count.
 
 This example queries a Prometheus Service named `prometheus` in the `monitoring` namespace. Set `serverAddress` to your Prometheus endpoint.
 
@@ -109,6 +112,7 @@ spec:
                     stabilizationWindowSeconds: 300
     triggers:
         - type: prometheus
+          metricType: AverageValue
           metadata:
               serverAddress: http://prometheus.monitoring.svc:9090
               query: 'sum(max by (queue_name, actor_name) (authentik_tasks_queued{namespace="default",service="authentik-worker-metrics"}))'
@@ -116,11 +120,11 @@ spec:
               ignoreNullValues: "false"
 ```
 
-Adjust the `namespace` and `service` selectors if your Prometheus series use different labels. Workers normally publish zeros for registered actors when the queue is empty.
+Adjust the `namespace` and `service` selectors if your Prometheus series use different labels. Workers publish zero for registered actors when their queues are empty.
 
-If the query returns no series, `ignoreNullValues: "false"` makes KEDA report an error. Missing one worker's scrape might still leave matching series, so monitor Prometheus target health. If Prometheus requires authentication, configure a KEDA [TriggerAuthentication](https://keda.sh/docs/2.21/concepts/authentication/).
+If the query returns no series, `ignoreNullValues: "false"` makes KEDA report an error. This does not detect every scrape failure: another worker can still provide matching series. Monitor Prometheus target health as well. If Prometheus requires authentication, configure a KEDA [TriggerAuthentication](https://keda.sh/docs/2.21/concepts/authentication/).
 
-With KEDA's default `AverageValue` metric type, `threshold: "20"` targets about 20 queued tasks per replica. A count of 100 calls for about five replicas, subject to HPA behavior and `maxReplicaCount`. Tune the threshold to one worker replica's throughput.
+With `metricType: AverageValue`, `threshold: "20"` sets a target of 20 queued tasks per worker replica. A total queue length of 100 produces a desired count of five replicas, subject to HPA tolerance, stabilization, and replica limits. Adjust the threshold based on how quickly one replica processes tasks and how long tasks can wait.
 
 ## Deploy and verify
 
@@ -151,8 +155,8 @@ For worker scaling, watch `kubectl get deployment authentik-worker -n default --
 
 ## Capacity and tuning
 
-- Keep at least one worker for scheduled tasks and file monitoring. To provide worker redundancy, use at least two replicas on different nodes. Two server replicas help with [availability](../../../install-config/high-availability.mdx).
-- Worker concurrency also depends on [`AUTHENTIK_WORKER__PROCESSES`](../../../install-config/configuration/configuration.mdx#authentik_worker__processes) and [`AUTHENTIK_WORKER__THREADS`](../../../install-config/configuration/configuration.mdx#authentik_worker__threads). More replicas can use more PostgreSQL connections, but cannot resolve database or external-service bottlenecks.
-- Tune `scaleDown.stabilizationWindowSeconds` to reduce replica churn. KEDA's `cooldownPeriod` applies only when scaling to zero, so it has no effect with the minimum replica counts shown here.
+- Keep at least one worker for scheduled tasks and file monitoring. For [high availability](../../../install-config/high-availability.mdx), run at least two replicas of each component and schedule them on different nodes.
+- Worker concurrency also depends on [`AUTHENTIK_WORKER__PROCESSES`](../../../install-config/configuration/configuration.mdx#authentik_worker__processes) and [`AUTHENTIK_WORKER__THREADS`](../../../install-config/configuration/configuration.mdx#authentik_worker__threads). Additional replicas increase PostgreSQL connection demand. They do not resolve bottlenecks in the database or external services.
+- Tune `scaleDown.stabilizationWindowSeconds` to avoid frequent changes in replica count. KEDA's `cooldownPeriod` applies only when scaling to zero, so it has no effect with the minimum replica counts shown here.
 - The queue metric excludes tasks in progress. Scaling down can interrupt active work, and the stabilization window does not guarantee that tasks finish. Review [task time limits](../worker.mdx#time-limits) and `worker.terminationGracePeriodSeconds` (30 seconds by default) for your workload.
-- Each worker metrics scrape refreshes the shared queued-task count from PostgreSQL. More worker replicas mean more scrape-time database queries. Monitor database load when scaling on this metric.
+- Each worker metrics scrape refreshes the shared queued-task count from PostgreSQL. More worker replicas mean more database queries during scraping. Monitor database load when scaling on this metric.

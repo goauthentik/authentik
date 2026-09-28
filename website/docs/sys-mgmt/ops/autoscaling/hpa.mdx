@@ -4,7 +4,7 @@ sidebar_label: Helm chart HPA
 sidebar_position: 2
 ---
 
-The authentik [Helm chart](../../../install-config/install/kubernetes.mdx) can create a Horizontal Pod Autoscaler (HPA) for either the server or worker Deployment. This guide scales servers on CPU. For queue-based worker scaling, see [KEDA](./keda.mdx).
+The authentik [Helm chart](../../../install-config/install/kubernetes.mdx) can create a Horizontal Pod Autoscaler (HPA) for either the server or worker Deployment. This guide configures server scaling based on average CPU utilization. For queue-based worker scaling, see [KEDA](./keda.mdx).
 
 ## Prerequisites
 
@@ -13,7 +13,7 @@ The authentik [Helm chart](../../../install-config/install/kubernetes.mdx) can c
 
 ## Configure the Helm chart
 
-Merge these `server` settings into your existing `values.yaml`; keep the rest of your configuration.
+Add the following settings to the `server` section of your existing `values.yaml`. Preserve your other settings.
 
 ```yaml title="values.yaml (excerpt)"
 server:
@@ -24,15 +24,15 @@ server:
         targetCPUUtilizationPercentage: 75
         behavior:
             scaleDown:
-                stabilizationWindowSeconds: 350
+                stabilizationWindowSeconds: 300
     resources:
         requests:
             cpu: 500m
 ```
 
-For a pod with only an authentik container requesting 500m CPU, the 75% target is 375m. Tune the CPU request, replica limits, and target for your workload.
+The HPA targets an average CPU utilization of 75% across server pods, measured against their CPU requests. With the single-container pods shown here, each requesting 500m CPU, that is an average of 375m per pod. Adjust the CPU request, replica limits, and target for your workload.
 
-With chart autoscaling enabled, the server Deployment omits `spec.replicas`. When switching from a fixed replica count, [this can briefly reduce the Deployment to one replica](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#migrating-deployments-and-statefulsets-to-horizontal-autoscaling) before the HPA reconciles it. Plan the upgrade around your availability needs.
+With chart autoscaling enabled, the server Deployment omits `spec.replicas`. When switching from a fixed replica count, [this can briefly reduce the Deployment to one replica](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#migrating-deployments-and-statefulsets-to-horizontal-autoscaling) before the HPA reconciles it. Account for this temporary capacity reduction when planning the upgrade.
 
 ## Deploy and verify
 
@@ -51,7 +51,7 @@ kubectl get deployment authentik-server -n default --watch
 
 ## Capacity and tuning
 
-- Two server replicas help with [availability](../../../install-config/high-availability.mdx).
-- More replicas can use more PostgreSQL connections, but cannot resolve database or external-service bottlenecks. Server capacity also depends on [`AUTHENTIK_WEB__WORKERS`](../../../install-config/configuration/configuration.mdx#authentik_web__workers) and [`AUTHENTIK_WEB__THREADS`](../../../install-config/configuration/configuration.mdx#authentik_web__threads).
-- Tune `behavior.scaleDown.stabilizationWindowSeconds` to reduce replica churn. The chart also supports a worker HPA with `worker.autoscaling.enabled: true`, but CPU usage might not reflect its pending tasks.
+- Run server replicas on different nodes to maintain [availability](../../../install-config/high-availability.mdx) if a node fails.
+- Additional replicas increase PostgreSQL connection demand. They do not resolve bottlenecks in the database or external services. Server capacity also depends on [`AUTHENTIK_WEB__WORKERS`](../../../install-config/configuration/configuration.mdx#authentik_web__workers) and [`AUTHENTIK_WEB__THREADS`](../../../install-config/configuration/configuration.mdx#authentik_web__threads).
+- Tune `behavior.scaleDown.stabilizationWindowSeconds` to avoid frequent changes in replica count. The chart also supports a worker HPA with `worker.autoscaling.enabled: true`, but CPU usage alone can miss a task backlog when workers wait on external services.
 - To scale on other signals, set `server.autoscaling.metrics` or `worker.autoscaling.metrics` and provide the corresponding Kubernetes metrics API. A nonempty `metrics` list replaces the chart-generated CPU and memory metrics, so include a CPU resource metric if you also want CPU-based scaling.

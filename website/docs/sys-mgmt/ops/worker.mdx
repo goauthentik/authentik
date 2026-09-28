@@ -43,12 +43,10 @@ For example, let's say an LDAP source is configured with 1000 users and 200 grou
 
 This means that in this scenario, the maximum number of concurrent tasks will be 20, plus 1 as there is a "meta" task watching over the synchronization and managing the steps so they are executed in order. Thus, for the synchronization to run as fast as possible, there needs to be 21 available workers when it starts. However, other tasks might also be running at the same time, or might get created while the synchronization is running. Thus, we recommend having more workers than necessary to keep a buffer for those tasks.
 
-#### Autoscale workers on Kubernetes
-
-For Kubernetes scaling options, see [Autoscaling on Kubernetes](/sys-mgmt/ops/autoscaling/).
+On Kubernetes, you can [autoscale worker replicas with KEDA](./autoscaling/keda.mdx#worker-queue-length) based on the number of queued tasks.
 
 ### Monitor worker and tasks status
 
-The workers expose metrics about their operation on [`AUTHENTIK_LISTEN__METRICS`](../../install-config/configuration/configuration.mdx#authentik_listen__metrics). Those metrics allow monitoring of queued and in-progress tasks, processed and errored attempts, and rejected tasks. They also provide insights into task durations.
+The workers expose metrics about their operation on [`AUTHENTIK_LISTEN__METRICS`](../../install-config/configuration/configuration.mdx#authentik_listen__metrics). These metrics include queue length, tasks in progress, processing attempts, errors, retries, rejected tasks, and task durations. Processing and error counters count attempts, including retries, rather than unique tasks.
 
 The worker also has an available healthcheck endpoint. See [Monitoring](./monitoring.mdx#worker-monitoring) for details.
