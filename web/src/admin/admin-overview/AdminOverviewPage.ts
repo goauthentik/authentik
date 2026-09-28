@@ -6,8 +6,8 @@ import "#admin/admin-overview/cards/SystemStatusCard";
 import "#admin/admin-overview/cards/VersionStatusCard";
 import "#admin/admin-overview/cards/WorkerStatusCard";
 import "#admin/admin-overview/charts/AdminLoginAuthorizeChart";
-import "#admin/admin-overview/charts/OutpostStatusChart";
-import "#admin/admin-overview/charts/SyncStatusChart";
+import "#admin/admin-overview/cards/OutpostStatusCard";
+import "#admin/admin-overview/cards/SyncStatusCard";
 import "#elements/cards/AggregateCard";
 import "#elements/cards/QuickActionsCard";
 import "#elements/Divider";
@@ -103,7 +103,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
                                 label=${msg("Outpost status")}
                                 headerLink=${toAdminInterface("outpost/outposts")}
                             >
-                                <ak-admin-status-chart-outpost></ak-admin-status-chart-outpost>
+                                <ak-admin-status-card-outpost></ak-admin-status-card-outpost>
                             </ak-aggregate-card>
                         </div>
                         <div
@@ -114,7 +114,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
                                 label=${msg("Sync status")}
                                 tooltip=${msg("Integrations synced in the last 12 hours.")}
                             >
-                                <ak-admin-status-chart-sync></ak-admin-status-chart-sync>
+                                <ak-admin-status-card-sync></ak-admin-status-card-sync>
                             </ak-aggregate-card>
                         </div>
                         <div class="pf-l-grid__item pf-m-12-col">

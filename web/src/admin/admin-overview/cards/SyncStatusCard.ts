@@ -1,21 +1,13 @@
-import "#elements/forms/ConfirmationForm";
 import { aki } from "#common/api/client";
 
-import { AKChart } from "#elements/charts/Chart";
-import { actionToColor } from "#elements/charts/EventChart";
 import { PaginatedResponse } from "#elements/table/Table";
 
-import {
-    EventActions,
-    ProvidersApi,
-    SourcesApi,
-    SyncStatus,
-    TaskAggregatedStatusEnum,
-} from "@goauthentik/api";
+import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
 
-import { ChartData, ChartOptions } from "chart.js";
+import { ProvidersApi, SourcesApi, SyncStatus, TaskAggregatedStatusEnum } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
+import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 export interface SummarizedSyncStatus {
@@ -39,24 +31,11 @@ const emptyResponse = {
     results: [],
 };
 
-@customElement("ak-admin-status-chart-sync")
-export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
-    public override ariaLabel = msg("Synchronization status chart");
-
-    getChartType(): string {
-        return "doughnut";
-    }
-
-    getOptions(): ChartOptions {
-        return {
-            plugins: {
-                legend: {
-                    display: false,
-                },
-            },
-            maintainAspectRatio: false,
-        };
-    }
+@customElement("ak-admin-status-card-sync")
+export class SyncStatusCard extends AdminStatusCard<SummarizedSyncStatus[]> {
+    public override icon = "fa fa-sync-alt";
+    public override label = msg("Sync status");
+    public override tooltip = msg("Integrations synced in the last 12 hours.");
 
     async fetchStatus<T>(
         listObjects: () => Promise<PaginatedResponse<T>>,
@@ -114,8 +93,8 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
         };
     }
 
-    async apiRequest(): Promise<SummarizedSyncStatus[]> {
-        const statuses = [
+    async getPrimaryValue(): Promise<SummarizedSyncStatus[]> {
+        return [
             await this.fetchStatus(
                 () => {
                     return aki(ProvidersApi).providersScimList();
@@ -172,33 +151,48 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
                 msg("Kerberos Source"),
             ),
         ];
-
-        this.centerText = statuses.reduce((total, el) => (total += el.total), 0).toString();
-
-        return statuses;
     }
 
-    getChartData(data: SummarizedSyncStatus[]): ChartData {
-        return {
-            labels: [msg("Healthy"), msg("Failed"), msg("Unsynced / N/A")],
-            datasets: data.map((d) => {
-                return {
-                    backgroundColor: [
-                        actionToColor(EventActions.Login),
-                        actionToColor(EventActions.SuspiciousRequest),
-                        actionToColor(EventActions.AuthorizeApplication),
-                    ],
-                    spanGaps: true,
-                    data: [d.healthy, d.failed, d.unsynced],
-                    label: d.label,
-                };
-            }),
-        };
+    getStatus(value: SummarizedSyncStatus[]): Promise<AdminStatus> {
+        const total = value.reduce((sum, v) => sum + v.total, 0);
+
+        // Categories with nothing configured report a placeholder "unsynced" entry;
+        // don't count those toward the health signal.
+        const unhealthy = value.reduce(
+            (sum, v) => sum + v.failed + (v.total > 0 ? v.unsynced : 0),
+            0,
+        );
+
+        if (total < 1) {
+            return Promise.resolve<AdminStatus>({
+                icon: "fa fa-info-circle",
+                message: html`${msg("Nothing configured to sync.")}`,
+                tone: "neutral",
+            });
+        }
+
+        if (unhealthy > 0) {
+            return Promise.resolve<AdminStatus>({
+                icon: "fa fa-exclamation-triangle pf-m-warning",
+                message: html`${msg(str`${unhealthy} of ${total} syncs need attention.`)}`,
+                tone: "warning",
+            });
+        }
+
+        return Promise.resolve<AdminStatus>({
+            icon: "fa fa-check-circle pf-m-success",
+            message: html`${msg("Synced.")}`,
+            tone: "success",
+        });
+    }
+
+    renderValue() {
+        return html`${this.value?.reduce((sum, v) => sum + v.total, 0) ?? 0}`;
     }
 }
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-admin-status-chart-sync": SyncStatusChart;
+        "ak-admin-status-card-sync": SyncStatusCard;
     }
 }
