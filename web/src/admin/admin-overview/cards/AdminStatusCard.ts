@@ -3,8 +3,10 @@ import { EVENT_REFRESH } from "#common/constants";
 import { PFSize } from "#common/enums";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
-import { AggregateCard, StatusTone } from "#elements/cards/AggregateCard";
+import { AggregateCard } from "#elements/cards/AggregateCard";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { P4Disposition } from "#styles/patternfly/constants";
 
 import { msg } from "@lit/localize";
 import { html, nothing, PropertyValues } from "lit";
@@ -13,7 +15,7 @@ import { state } from "lit/decorators.js";
 export interface AdminStatus {
     icon: string;
     message?: SlottedTemplateResult;
-    tone: StatusTone;
+    tone: P4Disposition;
 }
 
 /**
@@ -23,7 +25,7 @@ export interface AdminStatus {
  */
 export abstract class AdminStatusCard<T> extends AggregateCard {
     // Neutral (gray) banner while loading, until the first status resolves
-    public override tone: StatusTone = "neutral";
+    public override tone: P4Disposition = P4Disposition.Neutral;
 
     // Current data value state
     @state()
@@ -67,7 +69,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
             })
             .catch(async (error: unknown) => {
                 this.status = undefined;
-                this.tone = "";
+                this.tone = P4Disposition.Neutral;
                 this.error = await parseAPIResponseError(error);
             });
     }
@@ -90,7 +92,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
                 })
                 .catch(async (error: unknown) => {
                     this.status = undefined;
-                    this.tone = "";
+                    this.tone = P4Disposition.Neutral;
                     this.error = await parseAPIResponseError(error);
                 });
 

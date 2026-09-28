@@ -5,6 +5,8 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
 
+import { P4Disposition } from "#styles/patternfly/constants";
+
 import { AdminApi, OutpostsApi, SystemInfo } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -68,7 +70,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg("Embedded outpost is not configured correctly.")}
                     <a href=${toAdminInterface("outpost/outposts")}>${msg("Check outposts.")}</a>`,
-                tone: "warning",
+                tone: P4Disposition.Warning,
             });
         }
 
@@ -78,7 +80,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg("HTTPS is not detected correctly")}`,
-                tone: "warning",
+                tone: P4Disposition.Warning,
             });
         }
 
@@ -90,7 +92,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg("Server and client are further than 5 seconds apart.")}`,
-                tone: "warning",
+                tone: P4Disposition.Warning,
             });
         }
 
@@ -99,7 +101,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
         return Promise.resolve<AdminStatus>({
             icon: "fa fa-check-circle pf-m-success",
             message: html`${msg("Everything is ok.")}`,
-            tone: "success",
+            tone: P4Disposition.Success,
         });
     }
 

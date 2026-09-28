@@ -6,17 +6,17 @@ import { AKElement } from "#elements/Base";
 import Styles from "#elements/cards/AggregateCard.css";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { P4Disposition } from "#styles/patternfly/constants";
+
 import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-export type StatusTone = "success" | "warning" | "danger" | "neutral" | "";
 
 export interface IAggregateCard {
     icon?: string | null;
     label?: string | null;
     headerLink?: string | null;
     subtext?: string | null;
-    tone?: StatusTone;
+    tone: P4Disposition | null;
 }
 
 /**
@@ -76,7 +76,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
      * @attr
      */
     @property({ type: String, reflect: true })
-    public tone: StatusTone = "";
+    public tone: P4Disposition | null = null;
 
     public static styles: CSSResult[] = [
         PFCard,

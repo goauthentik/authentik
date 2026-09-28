@@ -6,6 +6,8 @@ import { toAdminInterface } from "#elements/router/core/interfaces";
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
 import { SummarizedSyncStatus } from "#admin/admin-overview/cards/SyncStatusCard";
 
+import { P4Disposition } from "#styles/patternfly/constants";
+
 import { OutpostsApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -63,7 +65,7 @@ export class OutpostStatusCard extends AdminStatusCard<SummarizedSyncStatus[]> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-info-circle",
                 message: html`${msg("No outposts configured.")}`,
-                tone: "neutral",
+                tone: P4Disposition.Neutral,
             });
         }
 
@@ -71,14 +73,14 @@ export class OutpostStatusCard extends AdminStatusCard<SummarizedSyncStatus[]> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg(str`${unhealthy} of ${value.length} outposts need attention.`)}`,
-                tone: "warning",
+                tone: P4Disposition.Warning,
             });
         }
 
         return Promise.resolve<AdminStatus>({
             icon: "fa fa-check-circle pf-m-success",
             message: html`${msg("All outposts healthy.")}`,
-            tone: "success",
+            tone: P4Disposition.Success,
         });
     }
 

@@ -4,6 +4,8 @@ import { PaginatedResponse } from "#elements/table/Table";
 
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
 
+import { P4Disposition } from "#styles/patternfly/constants";
+
 import { ProvidersApi, SourcesApi, SyncStatus, TaskAggregatedStatusEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -167,7 +169,7 @@ export class SyncStatusCard extends AdminStatusCard<SummarizedSyncStatus[]> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-info-circle",
                 message: html`${msg("Nothing configured to sync.")}`,
-                tone: "neutral",
+                tone: P4Disposition.Neutral,
             });
         }
 
@@ -175,14 +177,14 @@ export class SyncStatusCard extends AdminStatusCard<SummarizedSyncStatus[]> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg(str`${unhealthy} of ${total} syncs need attention.`)}`,
-                tone: "warning",
+                tone: P4Disposition.Warning,
             });
         }
 
         return Promise.resolve<AdminStatus>({
             icon: "fa fa-check-circle pf-m-success",
             message: html`${msg("Synced.")}`,
-            tone: "success",
+            tone: P4Disposition.Success,
         });
     }
 

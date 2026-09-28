@@ -5,6 +5,8 @@ import { toAdminInterface } from "#elements/router/core/interfaces";
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
 import Styles from "#admin/admin-overview/cards/VersionStatusCard.css";
 
+import { P4Disposition } from "#styles/patternfly/constants";
+
 import { AdminApi, Version } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -27,7 +29,7 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-check-circle pf-m-success",
                 message: html`${msg(str`Based on ${value.versionCurrent}`)}`,
-                tone: "success",
+                tone: P4Disposition.Success,
             });
         }
 
@@ -35,7 +37,7 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg(str`${value.versionLatest} is available!`)}`,
-                tone: "warning",
+                tone: P4Disposition.Warning,
             });
         }
 
@@ -44,7 +46,7 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg("An outpost is on an incorrect version!")}
                     <a href=${toAdminInterface("outpost/outposts")}>${msg("Check outposts.")}</a>`,
-                tone: "warning",
+                tone: P4Disposition.Warning,
             });
         }
 
@@ -52,14 +54,14 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-check-circle pf-m-success",
                 message: html`${msg("Up-to-date!")}`,
-                tone: "success",
+                tone: P4Disposition.Success,
             });
         }
 
         return Promise.resolve<AdminStatus>({
             icon: "fa fa-question-circle",
             message: html`${msg("Latest version unknown")}`,
-            tone: "",
+            tone: P4Disposition.Neutral,
         });
     }
 
