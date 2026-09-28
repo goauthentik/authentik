@@ -11,15 +11,27 @@ entries:
     slug: default-source-authentication
   model: authentik_flows.flow
   id: flow
+# Replaced by a conditional policy
+- identifiers:
+    name: default-source-authentication-if-sso
+  model: authentik_policies_expression.expressionpolicy
+  state: absent
 - attrs:
-    expression:  |
-      # This policy ensures that this flow can only be used when the user
-      # is in a SSO Flow (meaning they come from an external IdP)
-      return ak_is_sso_flow
+    # This policy ensures that this flow can only be used when the user
+    # is in a SSO Flow (meaning they come from an external IdP)
+    actions:
+      version: 2
+      actions:
+        - type: condition
+          condition:
+            type: compare
+            variable:
+              key: plan.is_sso
+            operator: is_true
   identifiers:
     name: default-source-authentication-if-sso
   id: default-source-authentication-if-sso
-  model: authentik_policies_expression.expressionpolicy
+  model: authentik_policies_conditional.conditionalpolicy
 - identifiers:
     name: default-source-authentication-login
   id: default-source-authentication-login

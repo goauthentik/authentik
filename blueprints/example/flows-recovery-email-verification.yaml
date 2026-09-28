@@ -37,13 +37,33 @@ entries:
       placeholder: Password (repeat)
       order: 1
       placeholder_expression: false
+  # Replaced by a conditional policy
+  - identifiers:
+      name: default-recovery-skip-if-restored
+    model: authentik_policies_expression.expressionpolicy
+    state: absent
   - identifiers:
       name: default-recovery-skip-if-restored
     id: default-recovery-skip-if-restored
-    model: authentik_policies_expression.expressionpolicy
+    model: authentik_policies_conditional.conditionalpolicy
     attrs:
-      expression: |
-        return bool(request.context.get('is_restored', True))
+      # Passes unless the flow was started, but not restored from an email link
+      actions:
+        version: 2
+        actions:
+          - type: condition
+            condition:
+              type: group
+              op: any
+              children:
+                - type: compare
+                  variable:
+                    key: plan.is_restored
+                  operator: is_not_set
+                - type: compare
+                  variable:
+                    key: plan.is_restored
+                  operator: is_true
   - identifiers:
       name: default-recovery-email
     id: default-recovery-email

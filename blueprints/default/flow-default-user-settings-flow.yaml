@@ -83,41 +83,101 @@ entries:
       name: default-user-settings-field-locale
     id: prompt-field-locale
     model: authentik_stages_prompt.prompt
+  # Replaced by a conditional policy
+  - identifiers:
+      name: default-user-settings-authorization
+    model: authentik_policies_expression.expressionpolicy
+    state: absent
   - attrs:
-      expression: |
-        from authentik.core.models import (
-            USER_ATTRIBUTE_CHANGE_EMAIL,
-            USER_ATTRIBUTE_CHANGE_NAME,
-            USER_ATTRIBUTE_CHANGE_USERNAME
-        )
-        prompt_data = request.context.get("prompt_data")
-
-        if not request.user.group_attributes(request.http_request).get(
-            USER_ATTRIBUTE_CHANGE_EMAIL, request.http_request.tenant.default_user_change_email
-        ):
-            if prompt_data.get("email") != request.user.email:
-                ak_message("Not allowed to change email address.")
-                return False
-
-        if not request.user.group_attributes(request.http_request).get(
-            USER_ATTRIBUTE_CHANGE_NAME, request.http_request.tenant.default_user_change_name
-        ):
-            if prompt_data.get("name") != request.user.name:
-                ak_message("Not allowed to change name.")
-                return False
-
-        if not request.user.group_attributes(request.http_request).get(
-            USER_ATTRIBUTE_CHANGE_USERNAME, request.http_request.tenant.default_user_change_username
-        ):
-            if prompt_data.get("username") != request.user.username:
-                ak_message("Not allowed to change username.")
-                return False
-
-        return True
+      missing_behavior: "false"
+      actions:
+        version: 2
+        actions:
+          # Deny changing the email if the user isn't allowed to
+          - type: if
+            condition:
+              type: group
+              op: all
+              children:
+                - type: compare
+                  variable:
+                    key: user.can_change_email
+                  operator: is_false
+                - type: group
+                  op: none
+                  children:
+                    - type: compare
+                      variable:
+                        key: prompt_data
+                        param: email
+                        cast: string
+                      operator: eq
+                      value:
+                        type: variable
+                        variable:
+                          key: user.email
+            then_actions:
+              - type: stop
+                result: fail
+                message: Not allowed to change email address.
+          # Deny changing the name if the user isn't allowed to
+          - type: if
+            condition:
+              type: group
+              op: all
+              children:
+                - type: compare
+                  variable:
+                    key: user.can_change_name
+                  operator: is_false
+                - type: group
+                  op: none
+                  children:
+                    - type: compare
+                      variable:
+                        key: prompt_data
+                        param: name
+                        cast: string
+                      operator: eq
+                      value:
+                        type: variable
+                        variable:
+                          key: user.name
+            then_actions:
+              - type: stop
+                result: fail
+                message: Not allowed to change name.
+          # Deny changing the username if the user isn't allowed to
+          - type: if
+            condition:
+              type: group
+              op: all
+              children:
+                - type: compare
+                  variable:
+                    key: user.can_change_username
+                  operator: is_false
+                - type: group
+                  op: none
+                  children:
+                    - type: compare
+                      variable:
+                        key: prompt_data
+                        param: username
+                        cast: string
+                      operator: eq
+                      value:
+                        type: variable
+                        variable:
+                          key: user.username
+            then_actions:
+              - type: stop
+                result: fail
+                message: Not allowed to change username.
     identifiers:
       name: default-user-settings-authorization
     id: default-user-settings-authorization
-    model: authentik_policies_expression.expressionpolicy
+    model: authentik_policies_conditional.conditionalpolicy
   - identifiers:
       name: default-user-settings-write
     attrs:
