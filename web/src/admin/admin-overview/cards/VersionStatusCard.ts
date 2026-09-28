@@ -3,7 +3,6 @@ import { aki } from "#common/api/client";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
-import Styles from "#admin/admin-overview/cards/VersionStatusCard.css";
 
 import { P4Disposition } from "#styles/patternfly/constants";
 
@@ -15,8 +14,6 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-admin-status-version")
 export class VersionStatusCard extends AdminStatusCard<Version> {
-    public static styles = [...super.styles, Styles];
-
     public override icon = "pf-icon pf-icon-bundle";
     public override label = msg("Version");
 

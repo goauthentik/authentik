@@ -18,7 +18,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
     now?: Date;
 
     public override icon = "pf-icon pf-icon-server";
-    public override label = msg("System Status");
+    public override label = msg("Status");
 
     @state()
     statusSummary?: string;
