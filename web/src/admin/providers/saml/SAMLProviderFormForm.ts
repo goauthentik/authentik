@@ -171,6 +171,18 @@ export function renderForm({
         <ak-form-group open label="${msg("Protocol settings")}">
             <div class="pf-c-form">
                 <ak-text-input
+                    name="metadataUrl"
+                    label=${msg("Metadata URL")}
+                    placeholder=${msg("https://...")}
+                    input-hint="code"
+                    inputmode="url"
+                    value="${ifDefined(provider.metadataUrl)}"
+                    .errorMessages=${errors.metadataUrl}
+                    help=${msg(
+                        "Optional URL of the Service Provider's metadata. When set, the ACS URL, audience, bindings, NameID policy and certificates are periodically updated from it.",
+                    )}
+                ></ak-text-input>
+                <ak-text-input
                     name="acsUrl"
                     label=${msg("ACS URL")}
                     placeholder=${msg("https://...")}

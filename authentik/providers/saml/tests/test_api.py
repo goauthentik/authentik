@@ -4,6 +4,7 @@ from json import loads
 from tempfile import TemporaryFile
 
 from django.urls import reverse
+from requests_mock import Mocker
 from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import apply_blueprint
@@ -251,6 +252,92 @@ class TestSAMLProviderAPI(APITestCase):
             format="multipart",
         )
         self.assertEqual(400, response.status_code)
+
+    @Mocker()
+    def test_import_url_success(self, mock: Mocker):
+        """Test metadata import from URL (success case)"""
+        name = generate_id()
+        url = "http://sp.example.com/saml/metadata"
+        mock.get(url, text=load_fixture("fixtures/simple.xml"))
+        response = self.client.post(
+            reverse("authentik_api:samlprovider-import-metadata"),
+            {
+                "url": url,
+                "name": name,
+                "authorization_flow": create_test_flow(FlowDesignation.AUTHORIZATION).pk,
+                "invalidation_flow": create_test_flow(FlowDesignation.INVALIDATION).pk,
+            },
+            format="multipart",
+        )
+        self.assertEqual(201, response.status_code)
+        body = response.json()
+        self.assertEqual(body["name"], name)
+        self.assertEqual(body["metadata_url"], url)
+        provider = SAMLProvider.objects.get(pk=body["pk"])
+        self.assertEqual(provider.metadata_url, url)
+        self.assertEqual(provider.acs_url, "http://localhost:8080/saml/acs")
+
+    @Mocker()
+    def test_import_url_failed(self, mock: Mocker):
+        """Test metadata import from URL (download fails)"""
+        url = "http://sp.example.com/saml/metadata"
+        mock.get(url, status_code=500)
+        response = self.client.post(
+            reverse("authentik_api:samlprovider-import-metadata"),
+            {
+                "url": url,
+                "name": generate_id(),
+                "authorization_flow": create_test_flow(FlowDesignation.AUTHORIZATION).pk,
+                "invalidation_flow": create_test_flow(FlowDesignation.INVALIDATION).pk,
+            },
+            format="multipart",
+        )
+        self.assertEqual(400, response.status_code)
+        self.assertIn("url", response.json())
+        self.assertFalse(SAMLProvider.objects.filter(metadata_url=url).exists())
+
+    def test_import_file_and_url(self):
+        """Test metadata import rejects a file and a URL at the same time"""
+        with TemporaryFile() as metadata:
+            metadata.write(load_fixture("fixtures/simple.xml").encode())
+            metadata.seek(0)
+            response = self.client.post(
+                reverse("authentik_api:samlprovider-import-metadata"),
+                {
+                    "file": metadata,
+                    "url": "http://sp.example.com/saml/metadata",
+                    "name": generate_id(),
+                    "authorization_flow": create_test_flow(FlowDesignation.AUTHORIZATION).pk,
+                    "invalidation_flow": create_test_flow(FlowDesignation.INVALIDATION).pk,
+                },
+                format="multipart",
+            )
+        self.assertEqual(400, response.status_code)
+
+    @Mocker()
+    def test_update_metadata_url_validated(self, mock: Mocker):
+        """Test that setting a metadata URL on an existing provider validates the metadata"""
+        provider = SAMLProvider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            acs_url="http://localhost:8080/apps/user_saml/saml/acs",
+        )
+        url = "http://sp.example.com/saml/metadata"
+        mock.get(url, text="<foo></foo>")
+        response = self.client.patch(
+            reverse("authentik_api:samlprovider-detail", kwargs={"pk": provider.pk}),
+            {"metadata_url": url},
+        )
+        self.assertEqual(400, response.status_code)
+        self.assertIn("metadata_url", response.json())
+        mock.get(url, text=load_fixture("fixtures/simple.xml"))
+        response = self.client.patch(
+            reverse("authentik_api:samlprovider-detail", kwargs={"pk": provider.pk}),
+            {"metadata_url": url},
+        )
+        self.assertEqual(200, response.status_code)
+        provider.refresh_from_db()
+        self.assertEqual(provider.metadata_url, url)
 
     @apply_blueprint("system/providers-saml.yaml")
     def test_preview(self):

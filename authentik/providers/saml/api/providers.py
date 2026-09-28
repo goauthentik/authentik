@@ -29,6 +29,7 @@ from authentik.common.saml.constants import (
     SAML_BINDING_REDIRECT,
     SAML_BINDINGS_SUPPORTED,
 )
+from authentik.common.saml.metadata import MetadataFetchError, fetch_metadata
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
@@ -39,7 +40,11 @@ from authentik.providers.saml.models import SAMLLogoutMethods, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
 from authentik.providers.saml.processors.metadata import MetadataProcessor
-from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
+from authentik.providers.saml.processors.metadata_parser import (
+    ServiceProviderMetadata,
+    ServiceProviderMetadataParser,
+)
+from authentik.providers.saml.tasks import update_saml_provider_metadata
 from authentik.rbac.decorators import permission_required
 
 LOGGER = get_logger()
@@ -71,6 +76,28 @@ class SAMLProviderSerializer(ProviderSerializer):
     url_sso_init = SerializerMethodField()
     url_slo_post = SerializerMethodField()
     url_slo_redirect = SerializerMethodField()
+
+    def validate_metadata_url(self, metadata_url: str) -> str:
+        """Ensure a newly set metadata URL points at parseable Service Provider metadata"""
+        if not metadata_url:
+            return metadata_url
+        if self.instance and self.instance.metadata_url == metadata_url:
+            return metadata_url
+        parse_metadata(fetch_metadata_or_raise(metadata_url))
+        return metadata_url
+
+    def create(self, validated_data: dict) -> SAMLProvider:
+        instance: SAMLProvider = super().create(validated_data)
+        if instance.metadata_url:
+            update_saml_provider_metadata.send(instance.pk)
+        return instance
+
+    def update(self, instance: SAMLProvider, validated_data: dict) -> SAMLProvider:
+        previous_url = instance.metadata_url
+        instance = super().update(instance, validated_data)
+        if instance.metadata_url and instance.metadata_url != previous_url:
+            update_saml_provider_metadata.send(instance.pk)
+        return instance
 
     def get_url_download_metadata(self, instance: SAMLProvider) -> str:
         """Get metadata download URL"""
@@ -266,6 +293,7 @@ class SAMLProviderSerializer(ProviderSerializer):
             "default_relay_state",
             "default_name_id_policy",
             "url_download_metadata",
+            "metadata_url",
             "url_issuer",
             "url_unified",
             "url_unified_init",
@@ -289,7 +317,7 @@ class SAMLMetadataSerializer(PassiveSerializer):
 
 
 class SAMLProviderImportSerializer(PassiveSerializer):
-    """Import saml provider from XML Metadata"""
+    """Import saml provider from XML Metadata, either uploaded as a file or fetched from a URL"""
 
     name = CharField(required=True)
     authorization_flow = PrimaryKeyRelatedField(
@@ -298,7 +326,38 @@ class SAMLProviderImportSerializer(PassiveSerializer):
     invalidation_flow = PrimaryKeyRelatedField(
         queryset=Flow.objects.filter(designation=FlowDesignation.INVALIDATION),
     )
-    file = FileField()
+    file = FileField(required=False)
+    url = CharField(required=False, allow_blank=True)
+
+    def validate(self, attrs: dict) -> dict:
+        if bool(attrs.get("file")) == bool(attrs.get("url")):
+            raise ValidationError(_("Either a metadata file or a metadata URL is required."))
+        return attrs
+
+
+def fetch_metadata_or_raise(url: str) -> str:
+    """Download metadata from `url`, converting download errors to a validation error"""
+    try:
+        return fetch_metadata(url)
+    except MetadataFetchError as exc:
+        raise ValidationError({"url": str(exc)}) from None
+
+
+def parse_metadata(raw_metadata: str | bytes) -> ServiceProviderMetadata:
+    """Parse metadata, converting syntax and content errors to validation errors"""
+    try:
+        fromstring(raw_metadata)
+    except ParseError:
+        raise ValidationError(_("Invalid XML Syntax")) from None
+    if isinstance(raw_metadata, bytes):
+        raw_metadata = raw_metadata.decode()
+    try:
+        return ServiceProviderMetadataParser().parse(raw_metadata)
+    except (ValueError, KeyError) as exc:
+        LOGGER.warning(str(exc))
+        raise ValidationError(
+            _("Failed to import Metadata: {messages}".format_map({"messages": str(exc)})),
+        ) from None
 
 
 class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
@@ -386,27 +445,20 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
     @validate(SAMLProviderImportSerializer)
     def import_metadata(self, request: Request, body: SAMLProviderImportSerializer) -> Response:
         """Create provider from SAML Metadata"""
-        file = body.validated_data["file"]
-        # Validate syntax first
-        try:
-            fromstring(file.read())
-        except ParseError:
-            raise ValidationError(_("Invalid XML Syntax")) from None
-        file.seek(0)
-        try:
-            metadata = ServiceProviderMetadataParser().parse(file.read().decode())
-            provider = metadata.to_provider(
-                body.validated_data["name"],
-                body.validated_data["authorization_flow"],
-                body.validated_data["invalidation_flow"],
-            )
-            # Return the created provider for use in workflows like the application wizard
-            return Response(SAMLProviderSerializer(provider).data, status=201)
-        except ValueError as exc:  # pragma: no cover
-            LOGGER.warning(str(exc))
-            raise ValidationError(
-                _("Failed to import Metadata: {messages}".format_map({"messages": str(exc)})),
-            ) from None
+        url = body.validated_data.get("url")
+        if url:
+            raw_metadata = fetch_metadata_or_raise(url)
+        else:
+            raw_metadata = body.validated_data["file"].read()
+        metadata = parse_metadata(raw_metadata)
+        provider = metadata.to_provider(
+            body.validated_data["name"],
+            body.validated_data["authorization_flow"],
+            body.validated_data["invalidation_flow"],
+            metadata_url=url or "",
+        )
+        # Return the created provider for use in workflows like the application wizard
+        return Response(SAMLProviderSerializer(provider).data, status=201)
 
     @permission_required(
         "authentik_providers_saml.view_samlprovider",
