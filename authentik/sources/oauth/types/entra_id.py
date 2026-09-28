@@ -30,21 +30,27 @@ class EntraIDClient(UserprofileHeaderAuthClient):
         profile_data = super().get_profile_info(token)
         if "https://graph.microsoft.com/GroupMember.Read.All" not in self.source.additional_scopes:
             return profile_data
-        group_response = self.session.request(
-            "get",
-            "https://graph.microsoft.com/v1.0/me/memberOf",
-            headers={"Authorization": f"{token['token_type']} {token['access_token']}"},
-        )
-        try:
-            group_response.raise_for_status()
-        except RequestException as exc:
-            LOGGER.warning(
-                "Unable to fetch user profile",
-                exc=exc,
-                response=exc.response.text if exc.response is not None else str(exc),
+        groups = []
+        group_url = "https://graph.microsoft.com/v1.0/me/memberOf"
+        while group_url:
+            group_response = self.session.request(
+                "get",
+                group_url,
+                headers={"Authorization": f"{token['token_type']} {token['access_token']}"},
             )
-            return None
-        profile_data["raw_groups"] = group_response.json()
+            try:
+                group_response.raise_for_status()
+            except RequestException as exc:
+                LOGGER.warning(
+                    "Unable to fetch user profile",
+                    exc=exc,
+                    response=exc.response.text if exc.response is not None else str(exc),
+                )
+                return None
+            group_data = group_response.json()
+            groups.extend(group_data.get("value", []))
+            group_url = group_data.get("@odata.nextLink")
+        profile_data["raw_groups"] = {"value": groups}
         return profile_data
 
 
