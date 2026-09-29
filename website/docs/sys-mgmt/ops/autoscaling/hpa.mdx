@@ -38,15 +38,15 @@ With chart autoscaling enabled, the server Deployment omits `spec.replicas`. Whe
 
 If switching from KEDA, remove the server ScaledObject before enabling the chart's HPA. Make the change during a quiet period and check the replica count afterward.
 
-These commands assume a Helm release named `authentik` and a server Deployment and HPA named `authentik-server`, all in the `default` namespace. Adjust the names and namespace to match your installation.
+These commands assume a Helm release named `authentik` and a server Deployment and HPA named `authentik-server`, all in the current namespace. Adjust the names and namespace to match your installation.
 
 Upgrade the release with your updated `values.yaml`, then inspect the HPA:
 
 ```shell
-helm upgrade authentik authentik/authentik --namespace default -f values.yaml
-kubectl get hpa authentik-server -n default
-kubectl describe hpa authentik-server -n default
-kubectl get deployment authentik-server -n default --watch
+helm upgrade authentik authentik/authentik -f values.yaml
+kubectl get hpa authentik-server
+kubectl describe hpa authentik-server
+kubectl get deployment authentik-server --watch
 ```
 
 ## Capacity and tuning

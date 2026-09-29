@@ -4,15 +4,15 @@ sidebar_label: KEDA
 sidebar_position: 3
 ---
 
-[KEDA](https://keda.sh/docs/2.21/) can scale authentik servers on CPU usage and workers on queued tasks.
+[KEDA](https://keda.sh/docs/) can scale authentik servers on CPU usage and workers on queued tasks.
 
-A KEDA [ScaledObject](https://keda.sh/docs/2.21/reference/scaledobject-spec/) defines which Deployment to scale and which metrics to use. KEDA creates a Horizontal Pod Autoscaler (HPA) for that Deployment. Disable the chart's HPA for any Deployment managed by KEDA so that two HPAs do not compete. If you only need CPU-based server scaling, the [chart HPA](./hpa.mdx) requires fewer components.
+A KEDA [ScaledObject](https://keda.sh/docs/latest/reference/scaledobject-spec/) defines which Deployment to scale and which metrics to use. KEDA creates a Horizontal Pod Autoscaler (HPA) for that Deployment. Disable the chart's HPA for any Deployment managed by KEDA so that two HPAs do not compete. If you only need CPU-based server scaling, the [chart HPA](./hpa.mdx) requires fewer components.
 
 ## Prerequisites
 
 - An existing authentik [Helm chart installation](../../../install-config/install/kubernetes.mdx) and its `values.yaml` file.
-- [KEDA installed](https://keda.sh/docs/2.21/deploy/) at a version compatible with your Kubernetes cluster. Installing the Helm chart without `--version` selects the latest chart version from the repository. The KEDA links in this guide refer to version 2.21; use the documentation for your installed version if it differs.
-- For server CPU scaling, a working resource-metrics API, usually provided by [Metrics Server](https://kubernetes-sigs.github.io/metrics-server/). Every container in the server pods needs a CPU request for [pod CPU utilization](https://keda.sh/docs/2.21/scalers/cpu/#prerequisites) to be defined.
+- [KEDA installed](https://keda.sh/docs/latest/deploy/) at a version compatible with your Kubernetes cluster. Installing the Helm chart without `--version` selects the latest chart version from the repository. The KEDA links in this guide refer to the latest version; use the documentation for your installed version if it differs.
+- For server CPU scaling, a working resource-metrics API, usually provided by [Metrics Server](https://kubernetes-sigs.github.io/metrics-server/). Every container in the server pods needs a CPU request for [pod CPU utilization](https://keda.sh/docs/latest/scalers/cpu/#prerequisites) to be defined.
 - For worker queue scaling, a Prometheus query endpoint that KEDA can reach and that contains authentik's [worker metrics](../monitoring.mdx#metrics). This example assumes that you have Prometheus managed by the [Prometheus Operator](https://prometheus-operator.dev/docs/getting-started/installation/). The Operator uses the chart's `ServiceMonitor` to configure Prometheus to scrape worker metrics. KEDA queries Prometheus, not authentik's metrics endpoint.
 
 ## Configure the Helm chart
@@ -48,7 +48,7 @@ When switching from the chart HPA, disable it before applying the ScaledObjects.
 
 ## Configure the ScaledObjects
 
-Save each ScaledObject in its own file, in the same namespace as its target Deployment. These examples use `authentik-server` and `authentik-worker` in `default`. Adjust the names and namespaces (including the worker query's `namespace` selector) to match your installation. Tune replica limits and thresholds for your workload.
+Create ScaledObject in the same namespace as its target Deployment. These examples use `authentik-server` and `authentik-worker` in the current namespace. Adjust the names and namespaces (including the worker query's `namespace` selector) to match your installation. Tune replica limits and thresholds for your workload.
 
 ### Server CPU usage
 
@@ -59,7 +59,6 @@ apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
     name: authentik-server
-    namespace: default
 spec:
     scaleTargetRef:
         name: authentik-server
@@ -90,7 +89,6 @@ apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
     name: authentik-worker
-    namespace: default
 spec:
     scaleTargetRef:
         name: authentik-worker
@@ -106,29 +104,29 @@ spec:
           metricType: AverageValue
           metadata:
               serverAddress: http://prometheus.monitoring.svc:9090
-              query: 'sum(max by (queue_name, actor_name) (authentik_tasks_queued{namespace="default",service="authentik-worker-metrics"}))'
+              query: 'sum(max by (queue_name, actor_name) (authentik_tasks_queued{service="authentik-worker-metrics"}))'
               threshold: "20"
               ignoreNullValues: "false"
 ```
 
-Adjust the `namespace` and `service` selectors if your Prometheus series use different labels. Workers publish zero for registered actors when their queues are empty.
+Adjust the `service` selector (and potentially add a `namespace` selector if running multiple authentik instances) if your Prometheus series use different labels. Workers publish zero for registered actors when their queues are empty.
 
-If the query returns no series, `ignoreNullValues: "false"` makes KEDA report an error. This does not detect every scrape failure: another worker can still provide matching series. Monitor Prometheus target health as well. If Prometheus requires authentication, configure a KEDA [TriggerAuthentication](https://keda.sh/docs/2.21/concepts/authentication/).
+If the query returns no series, `ignoreNullValues: "false"` makes KEDA report an error. This does not detect every scrape failure: another worker can still provide matching series. Monitor Prometheus target health as well. If Prometheus requires authentication, configure a KEDA [TriggerAuthentication](https://keda.sh/docs/latest/concepts/authentication/).
 
 With `metricType: AverageValue`, `threshold: "20"` sets a target of 20 queued tasks per worker replica. A total queue length of 100 produces a desired count of five replicas, subject to HPA tolerance, stabilization, and replica limits. Adjust the threshold based on how quickly one replica processes tasks and how long tasks can wait.
 
 ## Deploy and verify
 
-Upgrade your Helm release with the updated `values.yaml`. This command assumes a release named `authentik` in the `default` namespace; adjust both to match your installation:
+Upgrade your Helm release with the updated `values.yaml`. This command assumes a release named `authentik` in the current namespace; adjust both to match your installation:
 
 ```shell
-helm upgrade authentik authentik/authentik --namespace default -f values.yaml
+helm upgrade authentik authentik/authentik -f values.yaml
 ```
 
 If scaling workers, check that the `ServiceMonitor` exists:
 
 ```shell
-kubectl get servicemonitor authentik-worker -n default
+kubectl get servicemonitor authentik-worker
 ```
 
 Before applying the worker ScaledObject, check in Prometheus that the worker targets are UP and the query above returns one value. A ServiceMonitor alone does not confirm that Prometheus scraped the metrics.
@@ -137,12 +135,12 @@ Apply the ScaledObjects and inspect the HPAs that KEDA creates. If scaling only 
 
 ```shell
 kubectl apply -f server-scaledobject.yaml -f worker-scaledobject.yaml
-kubectl get scaledobject,hpa,deployment -n default
-kubectl describe hpa keda-hpa-authentik-server -n default
-kubectl describe hpa keda-hpa-authentik-worker -n default
+kubectl get scaledobject,hpa,deployment
+kubectl describe hpa keda-hpa-authentik-server
+kubectl describe hpa keda-hpa-authentik-worker
 ```
 
-For worker scaling, watch `kubectl get deployment authentik-worker -n default --watch` as tasks enter and leave the queue. For CPU scaling, watch `kubectl get deployment authentik-server -n default --watch` under server load.
+For worker scaling, watch `kubectl get deployment authentik-worker --watch` as tasks enter and leave the queue. For CPU scaling, watch `kubectl get deployment authentik-server --watch` under server load.
 
 ## Capacity and tuning
 
