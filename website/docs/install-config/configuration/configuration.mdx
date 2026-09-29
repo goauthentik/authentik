@@ -477,6 +477,10 @@ Defaults to `file`.
 
 ### File storage backend settings
 
+Local file management requires a volume mounted at the configured storage path, or its usage subdirectory, such as `/data/media` for media files. The volume must be writable by authentik. Creating a directory or setting the path alone does not enable uploads.
+
+For Kubernetes deployments, see [Configure file storage](../install/kubernetes.mdx#configure-file-storage) for a Helm values example.
+
 #### `AUTHENTIK_STORAGE__FILE__PATH`
 
 Where to store files on disk.
