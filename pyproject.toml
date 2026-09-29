@@ -80,7 +80,7 @@ dependencies = [
   "urllib3<3",
   "uvicorn[standard]==0.53.0",
   "watchdog==6.0.0",
-  "webauthn==3.0.0",
+  "webauthn==3.0.1",
   "wsproto==1.3.2",
   "xmlsec==1.3.17",
   "zxcvbn==4.5.0",
