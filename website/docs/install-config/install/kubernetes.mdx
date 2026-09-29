@@ -85,26 +85,7 @@ If your cluster or controller does not support the Gateway API, use the `server.
 
 See all configurable values on [ArtifactHub](https://artifacthub.io/packages/helm/goauthentik/authentik).
 
-## Configure file storage
-
-To upload files through **Customization** > **Files**, configure persistent file storage or [S3-compatible storage](../../sys-mgmt/ops/storage-s3/index.mdx). The Helm chart does not create or mount storage for uploaded files by default. PostgreSQL persistence stores database data separately.
-
-For local file storage, create a persistent volume claim in the authentik namespace, then add the following to `values.yaml`. Replace `<existing_pvc_name>` with the claim's name:
-
-```yaml
-global:
-    volumes:
-        - name: authentik-data
-          persistentVolumeClaim:
-              claimName: <existing_pvc_name>
-    volumeMounts:
-        - name: authentik-data
-          mountPath: /data
-```
-
-These settings mount the same volume in the server and worker pods. Ensure that the volume is writable by authentik's UID `1000`. Use storage that supports `ReadWriteMany` if the pods run on different nodes.
-
-Selecting the `file` backend or setting its path does not create a volume mount. For the default storage path, authentik requires a mount at `/data`, or `/data/media` for media files only, before it enables local file uploads. See the [storage configuration reference](../configuration/configuration.mdx#storage-settings) for custom paths and S3 settings.
+The chart does not mount storage for uploaded files by default. To enable uploads, mount a writable persistent volume at `/data` using `global.volumes` and `global.volumeMounts`, or configure [S3-compatible storage](../../sys-mgmt/ops/storage-s3/index.mdx).
 
 ## PostgreSQL production setup
 
