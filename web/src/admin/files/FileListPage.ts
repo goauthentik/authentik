@@ -3,7 +3,6 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#elements/EmptyState";
-
 import { aki } from "#common/api/client";
 import { createPaginatedResponse } from "#common/api/responses";
 import { docLink } from "#common/global";
@@ -42,6 +41,7 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileListItem>
 
     async apiEndpoint(): Promise<PaginatedResponse<FileListItem>> {
         const api = aki(AdminApi);
+
         const items = await api.adminFileList({
             usage: UsageEnum.Media,
             manageableOnly: true,
@@ -116,6 +116,7 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileListItem>
         if (this.can(CapabilitiesEnum.CanSaveMedia)) {
             return super.renderEmpty(inner);
         }
+
         return super.renderEmpty(
             html`<ak-empty-state icon=${this.pageIcon}
                 ><span>${msg("Configured file backend does not support file management.")}</span>

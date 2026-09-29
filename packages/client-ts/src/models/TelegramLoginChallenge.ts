@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,39 +16,18 @@ import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * Base login challenge for Identification stage
+ *
  * @export
  * @interface TelegramLoginChallenge
  */
 export interface TelegramLoginChallenge {
-    /**
-     *
-     * @type {ContextualFlowInfo}
-     * @memberof TelegramLoginChallenge
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     * @type {string}
-     * @memberof TelegramLoginChallenge
-     */
     component?: string;
-    /**
-     *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof TelegramLoginChallenge
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
      * Telegram bot username
-     * @type {string}
-     * @memberof TelegramLoginChallenge
      */
     botUsername: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof TelegramLoginChallenge
-     */
     requestMessageAccess: boolean;
 }
 

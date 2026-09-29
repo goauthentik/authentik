@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,40 +10,23 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 /**
  * Invitation Serializer
+ *
  * @export
  * @interface InvitationRequest
  */
 export interface InvitationRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof InvitationRequest
-     */
     name: string;
-    /**
-     *
-     * @type {Date}
-     * @memberof InvitationRequest
-     */
     expires?: Date | null;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof InvitationRequest
-     */
     fixedData?: { [key: string]: any };
     /**
      * When enabled, the invitation will be deleted after usage.
-     * @type {boolean}
-     * @memberof InvitationRequest
      */
     singleUse?: boolean;
     /**
      * When set, only the configured flow can use this invitation.
-     * @type {string}
-     * @memberof InvitationRequest
      */
     flow?: string | null;
 }
@@ -76,7 +57,7 @@ export function InvitationRequestFromJSONTyped(
                 ? undefined
                 : json["expires"] === null
                   ? null
-                  : new Date(json["expires"]),
+                  : parseDateTime(json["expires"]),
         fixedData: json["fixed_data"] == null ? undefined : json["fixed_data"],
         singleUse: json["single_use"] == null ? undefined : json["single_use"],
         flow: json["flow"] === undefined ? undefined : json["flow"] === null ? null : json["flow"],
@@ -97,7 +78,7 @@ export function InvitationRequestToJSONTyped(
 
     return {
         name: value["name"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         fixed_data: value["fixedData"],
         single_use: value["singleUse"],
         flow: value["flow"],

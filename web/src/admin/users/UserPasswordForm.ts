@@ -1,6 +1,5 @@
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/HorizontalFormElement";
-
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
@@ -86,26 +85,30 @@ export class UserPasswordForm extends Form<UserPasswordSetRequest> {
     //#region Render
 
     protected override renderForm(): TemplateResult {
-        return html`${this.username
-                ? html`<input
-                      hidden
-                      readonly
-                      autocomplete="username"
-                      type="text"
-                      name="username"
-                      value=${this.username}
-                  />`
-                : nothing}
-            ${this.email
-                ? html`<input
-                      hidden
-                      autocomplete="email"
-                      readonly
-                      type="email"
-                      name="email"
-                      value=${this.email}
-                  />`
-                : nothing}
+        return html`${
+                this.username
+                    ? html`<input
+                          hidden
+                          readonly
+                          autocomplete="username"
+                          type="text"
+                          name="username"
+                          value=${this.username}
+                      />`
+                    : nothing
+            }
+            ${
+                this.email
+                    ? html`<input
+                          hidden
+                          autocomplete="email"
+                          readonly
+                          type="email"
+                          name="email"
+                          value=${this.email}
+                      />`
+                    : nothing
+            }
 
             <ak-form-element-horizontal required name="password">
                 ${AKLabel(

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,28 +19,12 @@ import {
 } from "./RadiusProviderPropertyMapping";
 
 /**
- *
  * @export
  * @interface PaginatedRadiusProviderPropertyMappingList
  */
 export interface PaginatedRadiusProviderPropertyMappingList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedRadiusProviderPropertyMappingList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<RadiusProviderPropertyMapping>}
-     * @memberof PaginatedRadiusProviderPropertyMappingList
-     */
     results: Array<RadiusProviderPropertyMapping>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedRadiusProviderPropertyMappingList
-     */
     autocomplete: { [key: string]: any };
 }
 

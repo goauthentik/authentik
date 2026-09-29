@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,27 +15,13 @@ import { ModelEnumFromJSON, ModelEnumToJSON } from "./ModelEnum";
 
 /**
  * Request to assign a new permission
+ *
  * @export
  * @interface PermissionAssignRequest
  */
 export interface PermissionAssignRequest {
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof PermissionAssignRequest
-     */
     permissions: Array<string>;
-    /**
-     *
-     * @type {ModelEnum}
-     * @memberof PermissionAssignRequest
-     */
     model?: ModelEnum;
-    /**
-     *
-     * @type {string}
-     * @memberof PermissionAssignRequest
-     */
     objectPk?: string;
 }
 

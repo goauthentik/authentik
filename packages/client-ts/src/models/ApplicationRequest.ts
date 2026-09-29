@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,80 +15,33 @@ import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngine
 
 /**
  * Application Serializer
+ *
  * @export
  * @interface ApplicationRequest
  */
 export interface ApplicationRequest {
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof ApplicationRequest
      */
     name: string;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof ApplicationRequest
      */
     slug: string;
-    /**
-     *
-     * @type {number}
-     * @memberof ApplicationRequest
-     */
     provider?: number | null;
-    /**
-     *
-     * @type {Array<number>}
-     * @memberof ApplicationRequest
-     */
     backchannelProviders?: Array<number>;
     /**
      * Open launch URL in a new browser tab or window.
-     * @type {boolean}
-     * @memberof ApplicationRequest
      */
     openInNewTab?: boolean;
-    /**
-     *
-     * @type {string}
-     * @memberof ApplicationRequest
-     */
     metaLaunchUrl?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof ApplicationRequest
-     */
     metaIcon?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof ApplicationRequest
-     */
     metaDescription?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof ApplicationRequest
-     */
     metaPublisher?: string;
-    /**
-     *
-     * @type {PolicyEngineMode}
-     * @memberof ApplicationRequest
-     */
     policyEngineMode?: PolicyEngineMode;
-    /**
-     *
-     * @type {string}
-     * @memberof ApplicationRequest
-     */
     group?: string;
     /**
      * Hide this application from the user's My applications page.
-     * @type {boolean}
-     * @memberof ApplicationRequest
      */
     metaHide?: boolean;
 }

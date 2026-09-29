@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,57 +12,18 @@
 
 /**
  * Get versions
+ *
  * @export
  * @interface SystemInfoRuntime
  */
 export interface SystemInfoRuntime {
-    /**
-     *
-     * @type {string}
-     * @memberof SystemInfoRuntime
-     */
     pythonVersion: string;
-    /**
-     *
-     * @type {string}
-     * @memberof SystemInfoRuntime
-     */
     environment: string;
-    /**
-     *
-     * @type {string}
-     * @memberof SystemInfoRuntime
-     */
     architecture: string;
-    /**
-     *
-     * @type {string}
-     * @memberof SystemInfoRuntime
-     */
     platform: string;
-    /**
-     *
-     * @type {string}
-     * @memberof SystemInfoRuntime
-     */
     uname: string;
-    /**
-     *
-     * @type {string}
-     * @memberof SystemInfoRuntime
-     */
     opensslVersion: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof SystemInfoRuntime
-     */
     opensslFipsEnabled: boolean | null;
-    /**
-     *
-     * @type {string}
-     * @memberof SystemInfoRuntime
-     */
     authentikVersion: string;
 }
 

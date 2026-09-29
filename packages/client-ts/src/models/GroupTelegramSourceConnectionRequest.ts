@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,12 @@
 
 /**
  * Group Source Connection
+ *
  * @export
  * @interface GroupTelegramSourceConnectionRequest
  */
 export interface GroupTelegramSourceConnectionRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof GroupTelegramSourceConnectionRequest
-     */
     source: string;
-    /**
-     *
-     * @type {string}
-     * @memberof GroupTelegramSourceConnectionRequest
-     */
     identifier: string;
 }
 

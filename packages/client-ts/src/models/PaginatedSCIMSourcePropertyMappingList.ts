@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,28 +19,12 @@ import {
 } from "./SCIMSourcePropertyMapping";
 
 /**
- *
  * @export
  * @interface PaginatedSCIMSourcePropertyMappingList
  */
 export interface PaginatedSCIMSourcePropertyMappingList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedSCIMSourcePropertyMappingList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<SCIMSourcePropertyMapping>}
-     * @memberof PaginatedSCIMSourcePropertyMappingList
-     */
     results: Array<SCIMSourcePropertyMapping>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedSCIMSourcePropertyMappingList
-     */
     autocomplete: { [key: string]: any };
 }
 

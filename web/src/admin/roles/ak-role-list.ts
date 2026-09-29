@@ -4,11 +4,11 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#elements/table/ak-table-filter-select";
-
 import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { toAdminInterface } from "#elements/router/core/interfaces";
+import { getSearchParam, updateSearchParams } from "#elements/router/core/search-params";
 import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -40,7 +40,7 @@ export class RoleListPage extends TablePage<Role> {
     public override order = "name";
 
     @state()
-    protected hideManaged = getURLParam<boolean>("hideManaged", true);
+    protected hideManaged = getSearchParam<boolean>("hideManaged", true);
 
     protected async apiEndpoint(): Promise<PaginatedResponse<Role>> {
         return aki(RbacApi).rbacRolesList({
@@ -57,6 +57,7 @@ export class RoleListPage extends TablePage<Role> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Role(s)")}
             .objects=${this.selectedElements}
@@ -86,7 +87,7 @@ export class RoleListPage extends TablePage<Role> {
     row(item: Role): SlottedTemplateResult[] {
         return [
             html`<a
-                href="#/identity/roles/${item.pk}"
+                href=${toAdminInterface(`identity/roles/${item.pk}`)}
                 aria-label=${msg(str`View details of role "${item.name}"`)}
                 >${item.name}</a
             >`,
@@ -118,7 +119,8 @@ export class RoleListPage extends TablePage<Role> {
                         this.hideManaged = ev.detail.value;
                         this.page = 1;
                         this.fetch();
-                        updateURLParams({
+
+                        updateSearchParams({
                             hideManaged: this.hideManaged,
                         });
                     }}
@@ -130,6 +132,7 @@ export class RoleListPage extends TablePage<Role> {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             icon: this.pageIcon,
             header: this.pageTitle,

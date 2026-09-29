@@ -34,15 +34,11 @@ def build_apu(public_key: ec.EllipticCurvePublicKey):
     return result
 
 
-LOGIN_RESPONSE_TYPE = "platformsso-login-response+jwt"
-KEY_RESPONSE_TYPE = "platformsso-key-response+jwt"
-
-
 def encrypt_token_with_a256_gcm(
     body: dict,
     device_encryption_key: str,
     apv: bytes,
-    response_type: str = LOGIN_RESPONSE_TYPE,
+    typ: str = "platformsso-login-response+jwt",
 ) -> str:
     ephemeral_key = ec.generate_private_key(curve=ec.SECP256R1())
     device_public_key = serialization.load_pem_public_key(
@@ -66,7 +62,7 @@ def encrypt_token_with_a256_gcm(
             "kty": "EC",
             "crv": "P-256",
         },
-        "typ": response_type,
+        "typ": typ,
         "alg": "ECDH-ES",
         "apu": base64url_encode(apu),
         "apv": base64url_encode(apv),
@@ -86,7 +82,7 @@ def encrypt_token_with_a256_gcm(
 
     derived_key = ckdf.derive(shared_secret_z)
 
-    nonce = token_bytes(96)
+    nonce = token_bytes(12)
 
     header_json = dumps(jwe_header, separators=(",", ":")).encode()
     aad = urlsafe_b64encode(header_json).rstrip(b"=")
@@ -121,13 +117,11 @@ class JWEResponse(HttpResponse):
         data: dict,
         device: AgentDeviceConnection,
         apv: str,
-        response_type: str = LOGIN_RESPONSE_TYPE,
+        typ: str = "platformsso-login-response+jwt",
     ):
         super().__init__(
             content=encrypt_token_with_a256_gcm(
-                data, device.apple_encryption_key, base64url_decode(apv), response_type
+                data, device.apple_encryption_key, base64url_decode(apv), typ=typ
             ),
-            # The client selects the handler by Accept header, so the response type has to
-            # match it: a key response returned as a login response is discarded.
-            content_type=f"application/{response_type}",
+            content_type=f"application/{typ}",
         )

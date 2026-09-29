@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,28 +19,12 @@ import type { Pagination } from "./Pagination";
 import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- *
  * @export
  * @interface PaginatedGoogleWorkspaceProviderList
  */
 export interface PaginatedGoogleWorkspaceProviderList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedGoogleWorkspaceProviderList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<GoogleWorkspaceProvider>}
-     * @memberof PaginatedGoogleWorkspaceProviderList
-     */
     results: Array<GoogleWorkspaceProvider>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedGoogleWorkspaceProviderList
-     */
     autocomplete: { [key: string]: any };
 }
 

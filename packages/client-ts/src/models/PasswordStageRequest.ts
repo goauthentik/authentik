@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,38 +15,28 @@ import { BackendsEnumFromJSON, BackendsEnumToJSON } from "./BackendsEnum";
 
 /**
  * PasswordStage Serializer
+ *
  * @export
  * @interface PasswordStageRequest
  */
 export interface PasswordStageRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PasswordStageRequest
-     */
     name: string;
     /**
      * Selection of backends to test the password against.
-     * @type {Array<BackendsEnum>}
-     * @memberof PasswordStageRequest
      */
     backends: Array<BackendsEnum>;
     /**
-     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof PasswordStageRequest
+     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able
+     * to configure this stage.
      */
     configureFlow?: string | null;
     /**
-     * How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.
-     * @type {number}
-     * @memberof PasswordStageRequest
+     * How many attempts a user has before the flow is canceled. To lock the user out, use a
+     * reputation policy and a user_write stage.
      */
     failedAttemptsBeforeCancel?: number;
     /**
      * When enabled, provides a 'show password' button with the password input field.
-     * @type {boolean}
-     * @memberof PasswordStageRequest
      */
     allowShowPassword?: boolean;
 }

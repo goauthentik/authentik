@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,28 +16,12 @@ import type { Source } from "./Source";
 import { SourceFromJSON, SourceToJSON } from "./Source";
 
 /**
- *
  * @export
  * @interface PaginatedSourceList
  */
 export interface PaginatedSourceList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedSourceList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<Source>}
-     * @memberof PaginatedSourceList
-     */
     results: Array<Source>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedSourceList
-     */
     autocomplete: { [key: string]: any };
 }
 

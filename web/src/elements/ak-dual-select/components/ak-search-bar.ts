@@ -37,6 +37,7 @@ export class AkSearchbar extends CustomEmitterElement(AKElement) {
 
         if (!this.name) {
             console.warn("ak-search-bar: no name provided, event will not be dispatched");
+
             return;
         }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,15 +12,11 @@
 
 /**
  * Base class for all challenge responses
+ *
  * @export
  * @interface FrameChallengeResponseRequest
  */
 export interface FrameChallengeResponseRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof FrameChallengeResponseRequest
-     */
     component?: string;
 }
 

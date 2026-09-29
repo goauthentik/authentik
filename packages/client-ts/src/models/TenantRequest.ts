@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,27 +12,13 @@
 
 /**
  * Tenant Serializer
+ *
  * @export
  * @interface TenantRequest
  */
 export interface TenantRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof TenantRequest
-     */
     schemaName: string;
-    /**
-     *
-     * @type {string}
-     * @memberof TenantRequest
-     */
     name: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof TenantRequest
-     */
     ready?: boolean;
 }
 

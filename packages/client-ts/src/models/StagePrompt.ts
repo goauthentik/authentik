@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,63 +17,19 @@ import { PromptTypeEnumFromJSON, PromptTypeEnumToJSON } from "./PromptTypeEnum";
 
 /**
  * Serializer for a single Prompt field
+ *
  * @export
  * @interface StagePrompt
  */
 export interface StagePrompt {
-    /**
-     *
-     * @type {string}
-     * @memberof StagePrompt
-     */
     fieldKey: string;
-    /**
-     *
-     * @type {string}
-     * @memberof StagePrompt
-     */
     label: string;
-    /**
-     *
-     * @type {PromptTypeEnum}
-     * @memberof StagePrompt
-     */
     type: PromptTypeEnum;
-    /**
-     *
-     * @type {boolean}
-     * @memberof StagePrompt
-     */
     required: boolean;
-    /**
-     *
-     * @type {string}
-     * @memberof StagePrompt
-     */
     placeholder: string;
-    /**
-     *
-     * @type {string}
-     * @memberof StagePrompt
-     */
     initialValue: string;
-    /**
-     *
-     * @type {number}
-     * @memberof StagePrompt
-     */
     order: number;
-    /**
-     *
-     * @type {string}
-     * @memberof StagePrompt
-     */
     subText: string;
-    /**
-     *
-     * @type {Array<PromptChoice>}
-     * @memberof StagePrompt
-     */
     choices: Array<PromptChoice> | null;
 }
 

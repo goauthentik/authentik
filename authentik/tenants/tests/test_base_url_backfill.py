@@ -68,6 +68,21 @@ class TestBaseURLBackfill(APITestCase):
         self.tenant.refresh_from_db()
         self.assertEqual(self.tenant.base_url, "https://outpost.example.com")
 
+    @patch_flag(Setup, True)
+    @reconcile_app("authentik_outposts")
+    def test_backfill_discards_invalid_outpost_host(self):
+        """An outpost host the settings API would reject is discarded rather than written,
+        since the backfill's `.update()` skips field validation"""
+        outpost = Outpost.objects.get(managed=MANAGED_OUTPOST)
+        outpost.config = OutpostConfig(authentik_host="outpost.example.com")
+        outpost.save()
+        with capture_logs() as logs:
+            apps.get_app_config("authentik_tenants").backfill_base_url()
+        self.tenant.refresh_from_db()
+        self.assertEqual(self.tenant.base_url, "")
+        self.assertTrue(any("Discarding invalid base_url" in log.event for log in logs))
+        self.assertTrue(any("Base URL is not configured" in log.event for log in logs))
+
     def test_backfill_no_outpost(self):
         """With no embedded outpost (e.g. disable_embedded_outpost) and no config value,
         base_url is left empty and the backfill does not error"""

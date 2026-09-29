@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -15,15 +13,11 @@
 /**
  * Email challenge resposen. No fields. This challenge is
  * always declared invalid to give the user a chance to retry
+ *
  * @export
  * @interface EmailChallengeResponseRequest
  */
 export interface EmailChallengeResponseRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof EmailChallengeResponseRequest
-     */
     component?: string;
 }
 

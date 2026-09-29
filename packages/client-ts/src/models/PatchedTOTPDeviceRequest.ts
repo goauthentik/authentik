@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,14 +12,13 @@
 
 /**
  * Serializer for totp authenticator devices
+ *
  * @export
  * @interface PatchedTOTPDeviceRequest
  */
 export interface PatchedTOTPDeviceRequest {
     /**
      * The human-readable name of this device.
-     * @type {string}
-     * @memberof PatchedTOTPDeviceRequest
      */
     name?: string;
 }

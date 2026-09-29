@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -22,51 +20,17 @@ import { SelectableStageFromJSON, SelectableStageToJSON } from "./SelectableStag
 
 /**
  * Authenticator challenge
+ *
  * @export
  * @interface AuthenticatorValidationChallenge
  */
 export interface AuthenticatorValidationChallenge {
-    /**
-     *
-     * @type {ContextualFlowInfo}
-     * @memberof AuthenticatorValidationChallenge
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorValidationChallenge
-     */
     component?: string;
-    /**
-     *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof AuthenticatorValidationChallenge
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorValidationChallenge
-     */
     pendingUser: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorValidationChallenge
-     */
     pendingUserAvatar: string;
-    /**
-     *
-     * @type {Array<DeviceChallenge>}
-     * @memberof AuthenticatorValidationChallenge
-     */
     deviceChallenges: Array<DeviceChallenge>;
-    /**
-     *
-     * @type {Array<SelectableStage>}
-     * @memberof AuthenticatorValidationChallenge
-     */
     configurationStages: Array<SelectableStage>;
 }
 

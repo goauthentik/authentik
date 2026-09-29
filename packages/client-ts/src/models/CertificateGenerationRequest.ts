@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,33 +15,14 @@ import { AlgEnumFromJSON, AlgEnumToJSON } from "./AlgEnum";
 
 /**
  * Certificate generation parameters
+ *
  * @export
  * @interface CertificateGenerationRequest
  */
 export interface CertificateGenerationRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof CertificateGenerationRequest
-     */
     commonName: string;
-    /**
-     *
-     * @type {string}
-     * @memberof CertificateGenerationRequest
-     */
     subjectAltName?: string;
-    /**
-     *
-     * @type {number}
-     * @memberof CertificateGenerationRequest
-     */
     validityDays: number;
-    /**
-     *
-     * @type {AlgEnum}
-     * @memberof CertificateGenerationRequest
-     */
     alg?: AlgEnum;
 }
 

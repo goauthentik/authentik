@@ -4,7 +4,6 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
 import "#components/ak-switch-input";
-
 import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
 
@@ -18,7 +17,9 @@ import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-const EXPIRATION_DURATION = 30 * 60 * 1000; // 30 minutes
+const EXPIRATION_DURATION = 30 * 60 * 1000;
+
+// 30 minutes
 
 @customElement("ak-token-form")
 export class TokenForm extends ModelForm<Token, string> {
@@ -67,6 +68,7 @@ export class TokenForm extends ModelForm<Token, string> {
                 tokenRequest: data,
             });
         }
+
         return aki(CoreApi).coreTokensCreate({
             tokenRequest: data,
         });
@@ -79,11 +81,13 @@ export class TokenForm extends ModelForm<Token, string> {
 
         if (!expiringElement.checked) {
             this.expiresAt = null;
+
             return;
         }
 
         if (this.instance?.expiring && this.instance.expires) {
             this.expiresAt = new Date(this.instance.expires);
+
             return;
         }
 

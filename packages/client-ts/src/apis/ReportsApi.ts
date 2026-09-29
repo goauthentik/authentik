@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,23 +18,38 @@ import {
 import * as runtime from "../runtime";
 
 export interface ReportsExportsDestroyRequest {
+    /**
+     * A UUID string identifying this Data Export.
+     */
     id: string;
 }
 
 export interface ReportsExportsListRequest {
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface ReportsExportsRetrieveRequest {
+    /**
+     * A UUID string identifying this Data Export.
+     */
     id: string;
 }
 
-/**
- *
- */
 export class ReportsApi extends runtime.BaseAPI {
     /**
      * Creates request options for reportsExportsDestroy without sending the request
@@ -75,8 +88,6 @@ export class ReportsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async reportsExportsDestroyRaw(
         requestParameters: ReportsExportsDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -87,8 +98,6 @@ export class ReportsApi extends runtime.BaseAPI {
         return new runtime.VoidApiResponse(response);
     }
 
-    /**
-     */
     async reportsExportsDestroy(
         requestParameters: ReportsExportsDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -131,7 +140,7 @@ export class ReportsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/reports/exports/`;
+        const urlPath = `/reports/exports/`;
 
         return {
             path: urlPath,
@@ -141,8 +150,6 @@ export class ReportsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async reportsExportsListRaw(
         requestParameters: ReportsExportsListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -155,8 +162,6 @@ export class ReportsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async reportsExportsList(
         requestParameters: ReportsExportsListRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -202,8 +207,6 @@ export class ReportsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async reportsExportsRetrieveRaw(
         requestParameters: ReportsExportsRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -214,8 +217,6 @@ export class ReportsApi extends runtime.BaseAPI {
         return new runtime.JSONApiResponse(response, (jsonValue) => DataExportFromJSON(jsonValue));
     }
 
-    /**
-     */
     async reportsExportsRetrieve(
         requestParameters: ReportsExportsRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,

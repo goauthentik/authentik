@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,15 +12,11 @@
 
 /**
  * Pseudo class for plex response
+ *
  * @export
  * @interface PlexAuthenticationChallengeResponseRequest
  */
 export interface PlexAuthenticationChallengeResponseRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PlexAuthenticationChallengeResponseRequest
-     */
     component?: string;
 }
 

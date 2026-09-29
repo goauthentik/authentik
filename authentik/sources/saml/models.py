@@ -95,6 +95,12 @@ class SAMLSource(Source):
         help_text=_("Also known as Entity ID. Defaults to the Metadata URL."),
     )
 
+    audience_override = models.TextField(
+        blank=True,
+        default="",
+        help_text=_("Audience value this IdP sends for authentik."),
+    )
+
     sso_url = models.TextField(
         validators=[DomainlessURLValidator(schemes=("http", "https"))],
         verbose_name=_("SSO URL"),

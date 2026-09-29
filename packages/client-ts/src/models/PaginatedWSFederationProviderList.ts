@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,28 +16,12 @@ import type { WSFederationProvider } from "./WSFederationProvider";
 import { WSFederationProviderFromJSON, WSFederationProviderToJSON } from "./WSFederationProvider";
 
 /**
- *
  * @export
  * @interface PaginatedWSFederationProviderList
  */
 export interface PaginatedWSFederationProviderList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedWSFederationProviderList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<WSFederationProvider>}
-     * @memberof PaginatedWSFederationProviderList
-     */
     results: Array<WSFederationProvider>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedWSFederationProviderList
-     */
     autocomplete: { [key: string]: any };
 }
 

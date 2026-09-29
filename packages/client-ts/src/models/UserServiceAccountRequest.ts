@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,19 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 /**
  * Payload to create a service account
+ *
  * @export
  * @interface UserServiceAccountRequest
  */
 export interface UserServiceAccountRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof UserServiceAccountRequest
-     */
     name: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof UserServiceAccountRequest
-     */
     createGroup?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof UserServiceAccountRequest
-     */
     expiring?: boolean;
     /**
      * If not provided, valid for 360 days
-     * @type {Date}
-     * @memberof UserServiceAccountRequest
      */
     expires?: Date;
 }
@@ -69,7 +52,7 @@ export function UserServiceAccountRequestFromJSONTyped(
         name: json["name"],
         createGroup: json["create_group"] == null ? undefined : json["create_group"],
         expiring: json["expiring"] == null ? undefined : json["expiring"],
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        expires: json["expires"] == null ? undefined : parseDateTime(json["expires"]),
     };
 }
 
@@ -89,6 +72,6 @@ export function UserServiceAccountRequestToJSONTyped(
         name: value["name"],
         create_group: value["createGroup"],
         expiring: value["expiring"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
     };
 }

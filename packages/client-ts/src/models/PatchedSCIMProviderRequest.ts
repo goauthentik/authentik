@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -25,110 +23,70 @@ import {
 
 /**
  * SCIMProvider Serializer
+ *
  * @export
  * @interface PatchedSCIMProviderRequest
  */
 export interface PatchedSCIMProviderRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedSCIMProviderRequest
-     */
     name?: string;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof PatchedSCIMProviderRequest
-     */
     propertyMappings?: Array<string>;
     /**
      * Property mappings used for group creation/updating.
-     * @type {Array<string>}
-     * @memberof PatchedSCIMProviderRequest
      */
     propertyMappingsGroup?: Array<string>;
     /**
      * Base URL to SCIM requests, usually ends in /v2
-     * @type {string}
-     * @memberof PatchedSCIMProviderRequest
      */
     url?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedSCIMProviderRequest
-     */
     verifyCertificates?: boolean;
     /**
      * Authentication token
-     * @type {string}
-     * @memberof PatchedSCIMProviderRequest
      */
     token?: string;
-    /**
-     *
-     * @type {SCIMAuthenticationModeEnum}
-     * @memberof PatchedSCIMProviderRequest
-     */
     authMode?: SCIMAuthenticationModeEnum;
     /**
+     * Username used for Basic authentication
+     */
+    authBasicUser?: string;
+    /**
+     * Password used for Basic authentication
+     */
+    authBasicPassword?: string;
+    /**
      * OAuth Source used for authentication
-     * @type {string}
-     * @memberof PatchedSCIMProviderRequest
      */
     authOauth?: string | null;
     /**
      * Additional OAuth parameters, such as grant_type
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedSCIMProviderRequest
      */
     authOauthParams?: { [key: string]: any };
     /**
      * Alter authentik behavior for vendor-specific SCIM implementations.
-     * @type {CompatibilityModeEnum}
-     * @memberof PatchedSCIMProviderRequest
      */
     compatibilityMode?: CompatibilityModeEnum;
     /**
      * Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable.
-     * @type {string}
-     * @memberof PatchedSCIMProviderRequest
      */
     serviceProviderConfigCacheTimeout?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedSCIMProviderRequest
-     */
     excludeUsersServiceAccount?: boolean;
     /**
      * Controls the number of objects synced in a single task
-     * @type {number}
-     * @memberof PatchedSCIMProviderRequest
      */
     syncPageSize?: number;
     /**
      * Timeout for synchronization of a single page
-     * @type {string}
-     * @memberof PatchedSCIMProviderRequest
      */
     syncPageTimeout?: string;
     /**
      * When enabled, authentik will attempt to discover existing resources in the remote system.
-     * @type {boolean}
-     * @memberof PatchedSCIMProviderRequest
      */
     discoveryEnabled?: boolean;
     /**
      * Group filters used to define sync-scope for groups.
-     * @type {Array<string>}
-     * @memberof PatchedSCIMProviderRequest
      */
     groupFilters?: Array<string>;
     /**
      * When enabled, provider will not modify or create objects in the remote system.
-     * @type {boolean}
-     * @memberof PatchedSCIMProviderRequest
      */
     dryRun?: boolean;
 }
@@ -166,6 +124,9 @@ export function PatchedSCIMProviderRequestFromJSONTyped(
             json["auth_mode"] == null
                 ? undefined
                 : SCIMAuthenticationModeEnumFromJSON(json["auth_mode"]),
+        authBasicUser: json["auth_basic_user"] == null ? undefined : json["auth_basic_user"],
+        authBasicPassword:
+            json["auth_basic_password"] == null ? undefined : json["auth_basic_password"],
         authOauth:
             json["auth_oauth"] === undefined
                 ? undefined
@@ -213,6 +174,8 @@ export function PatchedSCIMProviderRequestToJSONTyped(
         verify_certificates: value["verifyCertificates"],
         token: value["token"],
         auth_mode: SCIMAuthenticationModeEnumToJSON(value["authMode"]),
+        auth_basic_user: value["authBasicUser"],
+        auth_basic_password: value["authBasicPassword"],
         auth_oauth: value["authOauth"],
         auth_oauth_params: value["authOauthParams"],
         compatibility_mode: CompatibilityModeEnumToJSON(value["compatibilityMode"]),

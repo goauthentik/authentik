@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,45 +18,25 @@ import { ApplicationFromJSON } from "./Application";
  * requested (an Application, an Application Entitlement, ...), always paired with the
  * parent it belongs to, so the UI/audit trail has that context even when the
  * request itself was scoped narrower than the whole app.
+ *
  * @export
  * @interface RequestableTarget
  */
 export interface RequestableTarget {
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof RequestableTarget
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof RequestableTarget
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof RequestableTarget
      */
     readonly metaModelName: string;
-    /**
-     *
-     * @type {string}
-     * @memberof RequestableTarget
-     */
     readonly pbmUuid: string;
-    /**
-     *
-     * @type {string}
-     * @memberof RequestableTarget
-     */
     readonly label: string;
-    /**
-     *
-     * @type {Application}
-     * @memberof RequestableTarget
-     */
     readonly parent: Application | null;
 }
 

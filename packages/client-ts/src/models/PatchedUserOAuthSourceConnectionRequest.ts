@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,35 +10,17 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 /**
  * User source connection
+ *
  * @export
  * @interface PatchedUserOAuthSourceConnectionRequest
  */
 export interface PatchedUserOAuthSourceConnectionRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedUserOAuthSourceConnectionRequest
-     */
     source?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedUserOAuthSourceConnectionRequest
-     */
     identifier?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedUserOAuthSourceConnectionRequest
-     */
     accessToken?: string | null;
-    /**
-     *
-     * @type {Date}
-     * @memberof PatchedUserOAuthSourceConnectionRequest
-     */
     expires?: Date;
 }
 
@@ -75,7 +55,7 @@ export function PatchedUserOAuthSourceConnectionRequestFromJSONTyped(
                 : json["access_token"] === null
                   ? null
                   : json["access_token"],
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        expires: json["expires"] == null ? undefined : parseDateTime(json["expires"]),
     };
 }
 
@@ -97,6 +77,6 @@ export function PatchedUserOAuthSourceConnectionRequestToJSONTyped(
         source: value["source"],
         identifier: value["identifier"],
         access_token: value["accessToken"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
     };
 }

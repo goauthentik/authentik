@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,33 +19,20 @@ import { DeviceFactsOSFamilyFromJSON, DeviceFactsOSFamilyToJSON } from "./Device
  * {"family": "windows","name":"Server 2022 Datacenter","version":"10.0.20348.4405","arch":"amd64"}
  * {"family": "windows","name":"Server 2022 Datacenter","version":"10.0.20348.4405","arch":"amd64"}
  * {"family": "mac_os", "name": "", "version": "26.2", "arch": "arm64"}
+ *
  * @export
  * @interface OperatingSystemRequest
  */
 export interface OperatingSystemRequest {
-    /**
-     *
-     * @type {DeviceFactsOSFamily}
-     * @memberof OperatingSystemRequest
-     */
     family: DeviceFactsOSFamily;
     /**
      * Operating System name, such as 'Server 2022' or 'Ubuntu'
-     * @type {string}
-     * @memberof OperatingSystemRequest
      */
     name?: string;
     /**
      * Operating System version, must always be the version number but may contain build name
-     * @type {string}
-     * @memberof OperatingSystemRequest
      */
     version?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof OperatingSystemRequest
-     */
     arch?: string;
 }
 

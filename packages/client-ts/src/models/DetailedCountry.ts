@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -16,22 +14,11 @@ import type { CountryCodeEnum } from "./CountryCodeEnum";
 import { CountryCodeEnumFromJSON, CountryCodeEnumToJSON } from "./CountryCodeEnum";
 
 /**
- *
  * @export
  * @interface DetailedCountry
  */
 export interface DetailedCountry {
-    /**
-     *
-     * @type {CountryCodeEnum}
-     * @memberof DetailedCountry
-     */
     code: CountryCodeEnum;
-    /**
-     *
-     * @type {string}
-     * @memberof DetailedCountry
-     */
     name: string;
 }
 

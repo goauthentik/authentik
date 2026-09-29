@@ -23,6 +23,7 @@ export class AdminLoginAuthorizeChart extends EventChart {
 
     getChartData(data: EventVolume[]): ChartData {
         const optsMap = new Map<EventActions, Partial<ChartDataset>>();
+
         optsMap.set(EventActions.AuthorizeApplication, {
             label: msg("Authorizations"),
             spanGaps: true,
@@ -30,6 +31,7 @@ export class AdminLoginAuthorizeChart extends EventChart {
             cubicInterpolationMode: "monotone",
             tension: 0.4,
         });
+
         optsMap.set(EventActions.Login, {
             label: msg("Successful Logins"),
             spanGaps: true,
@@ -37,6 +39,7 @@ export class AdminLoginAuthorizeChart extends EventChart {
             cubicInterpolationMode: "monotone",
             tension: 0.4,
         });
+
         optsMap.set(EventActions.LoginFailed, {
             label: msg("Failed Logins"),
             spanGaps: true,
@@ -44,8 +47,9 @@ export class AdminLoginAuthorizeChart extends EventChart {
             cubicInterpolationMode: "monotone",
             tension: 0.4,
         });
+
         return this.eventVolume(data, {
-            optsMap: optsMap,
+            optsMap,
             padToDays: 7,
         });
     }

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,12 @@
 
 /**
  * WebAuthnDeviceType Serializer
+ *
  * @export
  * @interface WebAuthnDeviceType
  */
 export interface WebAuthnDeviceType {
-    /**
-     *
-     * @type {string}
-     * @memberof WebAuthnDeviceType
-     */
     aaguid: string;
-    /**
-     *
-     * @type {string}
-     * @memberof WebAuthnDeviceType
-     */
     description: string;
 }
 

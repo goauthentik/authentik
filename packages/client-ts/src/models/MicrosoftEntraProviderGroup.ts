@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,45 +15,16 @@ import { PartialGroupFromJSON } from "./PartialGroup";
 
 /**
  * MicrosoftEntraProviderGroup Serializer
+ *
  * @export
  * @interface MicrosoftEntraProviderGroup
  */
 export interface MicrosoftEntraProviderGroup {
-    /**
-     *
-     * @type {string}
-     * @memberof MicrosoftEntraProviderGroup
-     */
     readonly id: string;
-    /**
-     *
-     * @type {string}
-     * @memberof MicrosoftEntraProviderGroup
-     */
     microsoftId: string;
-    /**
-     *
-     * @type {string}
-     * @memberof MicrosoftEntraProviderGroup
-     */
     group: string;
-    /**
-     *
-     * @type {PartialGroup}
-     * @memberof MicrosoftEntraProviderGroup
-     */
     readonly groupObj: PartialGroup;
-    /**
-     *
-     * @type {number}
-     * @memberof MicrosoftEntraProviderGroup
-     */
     provider: number;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof MicrosoftEntraProviderGroup
-     */
     readonly attributes: { [key: string]: any };
 }
 

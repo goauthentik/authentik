@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,39 +12,19 @@
 
 /**
  * Dummy Policy Serializer
+ *
  * @export
  * @interface DummyPolicyRequest
  */
 export interface DummyPolicyRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof DummyPolicyRequest
-     */
     name: string;
     /**
-     * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof DummyPolicyRequest
+     * When this option is enabled, all executions of this policy will be logged. By default, only
+     * execution errors are logged.
      */
     executionLogging?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof DummyPolicyRequest
-     */
     result?: boolean;
-    /**
-     *
-     * @type {number}
-     * @memberof DummyPolicyRequest
-     */
     waitMin?: number;
-    /**
-     *
-     * @type {number}
-     * @memberof DummyPolicyRequest
-     */
     waitMax?: number;
 }
 

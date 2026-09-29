@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,15 +12,11 @@
 
 /**
  * Result from assigning permissions to a user/role
+ *
  * @export
  * @interface PermissionAssignResult
  */
 export interface PermissionAssignResult {
-    /**
-     *
-     * @type {string}
-     * @memberof PermissionAssignResult
-     */
     id: string;
 }
 

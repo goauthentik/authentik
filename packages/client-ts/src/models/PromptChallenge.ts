@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,33 +18,14 @@ import { StagePromptFromJSON, StagePromptToJSON } from "./StagePrompt";
 
 /**
  * Initial challenge being sent, define fields
+ *
  * @export
  * @interface PromptChallenge
  */
 export interface PromptChallenge {
-    /**
-     *
-     * @type {ContextualFlowInfo}
-     * @memberof PromptChallenge
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     * @type {string}
-     * @memberof PromptChallenge
-     */
     component?: string;
-    /**
-     *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof PromptChallenge
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {Array<StagePrompt>}
-     * @memberof PromptChallenge
-     */
     fields: Array<StagePrompt>;
 }
 

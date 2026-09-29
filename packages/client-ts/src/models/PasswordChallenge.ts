@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,51 +16,17 @@ import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * Password challenge UI fields
+ *
  * @export
  * @interface PasswordChallenge
  */
 export interface PasswordChallenge {
-    /**
-     *
-     * @type {ContextualFlowInfo}
-     * @memberof PasswordChallenge
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     * @type {string}
-     * @memberof PasswordChallenge
-     */
     component?: string;
-    /**
-     *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof PasswordChallenge
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {string}
-     * @memberof PasswordChallenge
-     */
     pendingUser: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PasswordChallenge
-     */
     pendingUserAvatar: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PasswordChallenge
-     */
     recoveryUrl?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PasswordChallenge
-     */
     allowShowPassword?: boolean;
 }
 

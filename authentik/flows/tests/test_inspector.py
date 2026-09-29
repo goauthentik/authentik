@@ -55,6 +55,7 @@ class TestFlowInspector(APITestCase):
                     "cancel_url": reverse("authentik_flows:cancel"),
                     "title": flow.title,
                     "layout": "stacked",
+                    "messages": [],
                 },
                 "flow_designation": "authentication",
                 "passkey_challenge": None,

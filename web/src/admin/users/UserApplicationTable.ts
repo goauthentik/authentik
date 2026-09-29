@@ -1,8 +1,8 @@
 import "#elements/AppIcon";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
@@ -40,14 +40,18 @@ export class UserApplicationTable extends Table<Application> {
 
     row(item: Application): SlottedTemplateResult[] {
         return [
-            html`<ak-app-icon name=${item.name} icon=${ifPresent(item.metaIconUrl)}></ak-app-icon>`,
-            html`<a href="#/core/applications/${item.slug}">
+            html`<ak-app-icon
+                name=${item.name}
+                icon=${ifPresent(item.metaIconUrl)}
+                .iconThemedUrls=${item.metaIconThemedUrls}
+            ></ak-app-icon>`,
+            html`<a href=${toAdminInterface(`core/applications/${item.slug}`)}>
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : nothing}
             </a>`,
             html`${item.group || msg("-")}`,
             item.provider
-                ? html`<a href="#/core/providers/${item.providerObj?.pk}">
+                ? html`<a href=${toAdminInterface(`core/providers/${item.providerObj?.pk}`)}>
                       ${item.providerObj?.name}
                   </a>`
                 : html`-`,
@@ -64,13 +68,19 @@ export class UserApplicationTable extends Table<Application> {
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
-                ${item.launchUrl
-                    ? html`<a href=${item.launchUrl} target="_blank" class="pf-c-button pf-m-plain">
-                          <pf-tooltip position="top" content=${msg("Open")}>
-                              <i class="fas fa-share-square" aria-hidden="true"></i>
-                          </pf-tooltip>
-                      </a>`
-                    : nothing}
+                ${
+                    item.launchUrl
+                        ? html`<a
+                              href=${item.launchUrl}
+                              target="_blank"
+                              class="pf-c-button pf-m-plain"
+                          >
+                              <pf-tooltip position="top" content=${msg("Open")}>
+                                  <i class="fas fa-share-square" aria-hidden="true"></i>
+                              </pf-tooltip>
+                          </a>`
+                        : nothing
+                }
             </div>`,
         ];
     }

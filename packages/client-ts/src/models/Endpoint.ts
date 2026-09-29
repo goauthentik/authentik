@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,76 +19,25 @@ import { RACProviderFromJSON } from "./RACProvider";
 
 /**
  * Endpoint Serializer
+ *
  * @export
  * @interface Endpoint
  */
 export interface Endpoint {
-    /**
-     *
-     * @type {string}
-     * @memberof Endpoint
-     */
     readonly pk: string;
-    /**
-     *
-     * @type {string}
-     * @memberof Endpoint
-     */
     name: string;
-    /**
-     *
-     * @type {number}
-     * @memberof Endpoint
-     */
     provider: number;
-    /**
-     *
-     * @type {RACProvider}
-     * @memberof Endpoint
-     */
     readonly providerObj: RACProvider;
-    /**
-     *
-     * @type {ProtocolEnum}
-     * @memberof Endpoint
-     */
     protocol: ProtocolEnum;
-    /**
-     *
-     * @type {string}
-     * @memberof Endpoint
-     */
     host: string;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof Endpoint
-     */
     settings?: { [key: string]: any };
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof Endpoint
-     */
     propertyMappings?: Array<string>;
-    /**
-     *
-     * @type {EndpointAuthModeEnum}
-     * @memberof Endpoint
-     */
     authMode: EndpointAuthModeEnum;
     /**
      * Build actual launch URL (the provider itself does not have one, just
      * individual endpoints)
-     * @type {string}
-     * @memberof Endpoint
      */
     readonly launchUrl: string | null;
-    /**
-     *
-     * @type {number}
-     * @memberof Endpoint
-     */
     maximumConnections?: number;
 }
 

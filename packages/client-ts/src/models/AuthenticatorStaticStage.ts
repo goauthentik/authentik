@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,75 +15,37 @@ import { FlowSetFromJSON } from "./FlowSet";
 
 /**
  * AuthenticatorStaticStage Serializer
+ *
  * @export
  * @interface AuthenticatorStaticStage
  */
 export interface AuthenticatorStaticStage {
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorStaticStage
-     */
     readonly pk: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorStaticStage
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof AuthenticatorStaticStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof AuthenticatorStaticStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof AuthenticatorStaticStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof AuthenticatorStaticStage
      */
     readonly metaModelName: string;
-    /**
-     *
-     * @type {Array<FlowSet>}
-     * @memberof AuthenticatorStaticStage
-     */
     readonly flowSet: Array<FlowSet>;
     /**
-     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof AuthenticatorStaticStage
+     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able
+     * to configure this stage.
      */
     configureFlow?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorStaticStage
-     */
     friendlyName?: string;
-    /**
-     *
-     * @type {number}
-     * @memberof AuthenticatorStaticStage
-     */
     tokenCount?: number;
-    /**
-     *
-     * @type {number}
-     * @memberof AuthenticatorStaticStage
-     */
     tokenLength?: number;
 }
 

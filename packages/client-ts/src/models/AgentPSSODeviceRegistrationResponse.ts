@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,52 +12,19 @@
 
 /**
  * authentik settings for Platform SSO tokens
+ *
  * @export
  * @interface AgentPSSODeviceRegistrationResponse
  */
 export interface AgentPSSODeviceRegistrationResponse {
-    /**
-     *
-     * @type {string}
-     * @memberof AgentPSSODeviceRegistrationResponse
-     */
     clientId: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AgentPSSODeviceRegistrationResponse
-     */
     issuer: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AgentPSSODeviceRegistrationResponse
-     */
     tokenEndpoint: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AgentPSSODeviceRegistrationResponse
-     */
     jwksEndpoint: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AgentPSSODeviceRegistrationResponse
-     */
     audience: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AgentPSSODeviceRegistrationResponse
-     */
     nonceEndpoint: string;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof AgentPSSODeviceRegistrationResponse
-     */
     biometricPolicies?: Array<string>;
+    authorizationEndpoint: string;
 }
 
 /**
@@ -98,6 +63,13 @@ export function instanceOfAgentPSSODeviceRegistrationResponse(
             (value as Record<string, any>)["nonce_endpoint"] === undefined)
     )
         return false;
+    if (
+        (!("authorizationEndpoint" in (value as Record<string, any>)) &&
+            !("authorization_endpoint" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["authorizationEndpoint"] === undefined &&
+            (value as Record<string, any>)["authorization_endpoint"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -123,6 +95,7 @@ export function AgentPSSODeviceRegistrationResponseFromJSONTyped(
         nonceEndpoint: json["nonce_endpoint"],
         biometricPolicies:
             json["biometric_policies"] == null ? undefined : json["biometric_policies"],
+        authorizationEndpoint: json["authorization_endpoint"],
     };
 }
 
@@ -148,5 +121,6 @@ export function AgentPSSODeviceRegistrationResponseToJSONTyped(
         audience: value["audience"],
         nonce_endpoint: value["nonceEndpoint"],
         biometric_policies: value["biometricPolicies"],
+        authorization_endpoint: value["authorizationEndpoint"],
     };
 }

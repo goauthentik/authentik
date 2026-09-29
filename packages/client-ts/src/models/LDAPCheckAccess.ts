@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,21 +15,12 @@ import { PolicyTestResultFromJSON, PolicyTestResultToJSON } from "./PolicyTestRe
 
 /**
  * Base serializer class which doesn't implement create/update methods
+ *
  * @export
  * @interface LDAPCheckAccess
  */
 export interface LDAPCheckAccess {
-    /**
-     *
-     * @type {boolean}
-     * @memberof LDAPCheckAccess
-     */
     hasSearchPermission?: boolean;
-    /**
-     *
-     * @type {PolicyTestResult}
-     * @memberof LDAPCheckAccess
-     */
     access: PolicyTestResult;
 }
 

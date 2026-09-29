@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -29,172 +27,36 @@ import {
 } from "./ApplePssoFilevaultPolicyEnum";
 
 /**
- *
  * @export
  * @interface AgentConnectorRequest
  */
 export interface AgentConnectorRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof AgentConnectorRequest
-     */
     connectorUuid?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AgentConnectorRequest
-     */
     name: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof AgentConnectorRequest
-     */
     enabled?: boolean;
-    /**
-     *
-     * @type {string}
-     * @memberof AgentConnectorRequest
-     */
     snapshotExpiry?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AgentConnectorRequest
-     */
     authSessionDuration?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof AgentConnectorRequest
-     */
     authTerminateSessionOnExpiry?: boolean;
-    /**
-     *
-     * @type {string}
-     * @memberof AgentConnectorRequest
-     */
     refreshInterval?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AgentConnectorRequest
-     */
     authorizationFlow?: string | null;
-    /**
-     *
-     * @type {number}
-     * @memberof AgentConnectorRequest
-     */
     nssUidOffset?: number;
-    /**
-     *
-     * @type {number}
-     * @memberof AgentConnectorRequest
-     */
     nssGidOffset?: number;
-    /**
-     *
-     * @type {string}
-     * @memberof AgentConnectorRequest
-     */
     challengeKey?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof AgentConnectorRequest
-     */
     challengeIdleTimeout?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof AgentConnectorRequest
-     */
     challengeTriggerCheckIn?: boolean;
-    /**
-     *
-     * @type {Array<number>}
-     * @memberof AgentConnectorRequest
-     */
     jwtFederationProviders?: Array<number>;
-    /**
-     *
-     * @type {ApplePssoAuthenticationMethodEnum}
-     * @memberof AgentConnectorRequest
-     */
     applePssoAuthenticationMethod?: ApplePssoAuthenticationMethodEnum;
-    /**
-     *
-     * @type {number}
-     * @memberof AgentConnectorRequest
-     */
     applePssoAuthenticationGracePeriod?: number;
-    /**
-     *
-     * @type {number}
-     * @memberof AgentConnectorRequest
-     */
     applePssoOfflineGracePeriod?: number;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof AgentConnectorRequest
-     */
     applePssoNonPlatformSsoAccounts?: Array<string>;
-    /**
-     *
-     * @type {boolean}
-     * @memberof AgentConnectorRequest
-     */
     applePssoEnableCreateUserAtLogin?: boolean;
-    /**
-     *
-     * @type {ApplePssoFilevaultPolicyEnum}
-     * @memberof AgentConnectorRequest
-     */
     applePssoLoginPolicy?: ApplePssoFilevaultPolicyEnum;
-    /**
-     *
-     * @type {ApplePssoFilevaultPolicyEnum}
-     * @memberof AgentConnectorRequest
-     */
     applePssoUnlockPolicy?: ApplePssoFilevaultPolicyEnum;
-    /**
-     *
-     * @type {boolean}
-     * @memberof AgentConnectorRequest
-     */
     applePssoUnlockAllowTouchIdOrWatch?: boolean;
-    /**
-     *
-     * @type {ApplePssoFilevaultPolicyEnum}
-     * @memberof AgentConnectorRequest
-     */
     applePssoFilevaultPolicy?: ApplePssoFilevaultPolicyEnum;
-    /**
-     *
-     * @type {number}
-     * @memberof AgentConnectorRequest
-     */
     applePssoLoginFrequency?: number;
-    /**
-     *
-     * @type {ApplePssoBiometricRequirementEnum}
-     * @memberof AgentConnectorRequest
-     */
     applePssoBiometricRequirement?: ApplePssoBiometricRequirementEnum;
-    /**
-     *
-     * @type {boolean}
-     * @memberof AgentConnectorRequest
-     */
     applePssoBiometricPasswordFallback?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof AgentConnectorRequest
-     */
     applePssoBiometricReuseDuringUnlock?: boolean;
 }
 

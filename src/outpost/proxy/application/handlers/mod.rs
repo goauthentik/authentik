@@ -129,6 +129,13 @@ pub(super) fn auth_start(
         .into_response())
 }
 
+/// The originally-requested URL — path and query — resolved against the
+/// configured external host.
+fn requested_url(external_host: &str, uri: &Uri) -> String {
+    let path_and_query = uri.path_and_query().map_or("/", |target| target.as_str());
+    oauth::url_join(external_host, path_and_query)
+}
+
 /// Redirect an unauthenticated request to the auth-start endpoint, carrying the
 /// originally-requested URL in the `rd` parameter.
 #[instrument(skip_all)]
@@ -149,7 +156,7 @@ pub(super) fn redirect_to_start(
         ));
     }
 
-    let mut redirect = oauth::url_join(&app.provider.external_host, uri.path());
+    let mut redirect = requested_url(&app.provider.external_host, uri);
     if app.provider.mode == Some(ProxyMode::ForwardDomain) {
         let valid = app
             .provider
@@ -350,4 +357,29 @@ pub(super) async fn handle_sign_out(
         ),
     )
         .into_response())
+}
+
+#[cfg(test)]
+mod tests {
+    use axum::http::Uri;
+
+    use super::requested_url;
+
+    #[test]
+    fn requested_url_keeps_query() {
+        let uri: Uri = "/some/path?foo=bar&baz=qux".parse().expect("valid uri");
+        assert_eq!(
+            requested_url("https://app.example.com", &uri),
+            "https://app.example.com/some/path?foo=bar&baz=qux"
+        );
+    }
+
+    #[test]
+    fn requested_url_path_only() {
+        let uri: Uri = "/some/path".parse().expect("valid uri");
+        assert_eq!(
+            requested_url("https://app.example.com", &uri),
+            "https://app.example.com/some/path"
+        );
+    }
 }

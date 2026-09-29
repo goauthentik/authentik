@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,33 +12,14 @@
 
 /**
  * Serializer for stages which can be selected by users
+ *
  * @export
  * @interface SelectableStage
  */
 export interface SelectableStage {
-    /**
-     *
-     * @type {string}
-     * @memberof SelectableStage
-     */
     pk: string;
-    /**
-     *
-     * @type {string}
-     * @memberof SelectableStage
-     */
     name: string;
-    /**
-     *
-     * @type {string}
-     * @memberof SelectableStage
-     */
     verboseName: string;
-    /**
-     *
-     * @type {string}
-     * @memberof SelectableStage
-     */
     metaModelName: string;
 }
 

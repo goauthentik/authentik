@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -25,68 +23,41 @@ import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngine
 
 /**
  * Flow Serializer
+ *
  * @export
  * @interface FlowRequest
  */
 export interface FlowRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof FlowRequest
-     */
     name: string;
     /**
      * Visible in the URL.
-     * @type {string}
-     * @memberof FlowRequest
      */
     slug: string;
     /**
      * Shown as the Title in Flow pages.
-     * @type {string}
-     * @memberof FlowRequest
      */
     title: string;
     /**
-     * Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
-     * @type {FlowDesignationEnum}
-     * @memberof FlowRequest
+     * Decides what this Flow is used for. For example, the Authentication flow is redirect to when
+     * an un-authenticated user visits authentik.
      */
     designation: FlowDesignationEnum;
     /**
      * Background shown during execution
-     * @type {string}
-     * @memberof FlowRequest
      */
     background?: string;
-    /**
-     *
-     * @type {PolicyEngineMode}
-     * @memberof FlowRequest
-     */
     policyEngineMode?: PolicyEngineMode;
     /**
      * Enable compatibility mode, increases compatibility with password managers on mobile devices.
-     * @type {boolean}
-     * @memberof FlowRequest
      */
     compatibilityMode?: boolean;
-    /**
-     *
-     * @type {FlowLayoutEnum}
-     * @memberof FlowRequest
-     */
     layout?: FlowLayoutEnum;
     /**
      * Configure what should happen when a flow denies access to a user.
-     * @type {DeniedActionEnum}
-     * @memberof FlowRequest
      */
     deniedAction?: DeniedActionEnum;
     /**
      * Required level of authentication and authorization to access a flow.
-     * @type {AuthenticationEnum}
-     * @memberof FlowRequest
      */
     authentication?: AuthenticationEnum;
 }

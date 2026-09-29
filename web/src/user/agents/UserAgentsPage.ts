@@ -1,5 +1,8 @@
 import "#elements/a11y/ak-skip-to-content";
 import "#user/agents/UserAgentList";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
@@ -10,10 +13,6 @@ import Styles from "#user/user-settings/styles.css";
 import { msg } from "@lit/localize";
 import { CSSResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-user-agents-page")
 export class UserAgentsPage extends AKElement {

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,28 +19,12 @@ import type { Pagination } from "./Pagination";
 import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- *
  * @export
  * @interface PaginatedDockerServiceConnectionList
  */
 export interface PaginatedDockerServiceConnectionList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedDockerServiceConnectionList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<DockerServiceConnection>}
-     * @memberof PaginatedDockerServiceConnectionList
-     */
     results: Array<DockerServiceConnection>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedDockerServiceConnectionList
-     */
     autocomplete: { [key: string]: any };
 }
 

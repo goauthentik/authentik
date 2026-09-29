@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,28 +19,12 @@ import type { Pagination } from "./Pagination";
 import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- *
  * @export
  * @interface PaginatedNotificationTransportList
  */
 export interface PaginatedNotificationTransportList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedNotificationTransportList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<NotificationTransport>}
-     * @memberof PaginatedNotificationTransportList
-     */
     results: Array<NotificationTransport>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedNotificationTransportList
-     */
     autocomplete: { [key: string]: any };
 }
 

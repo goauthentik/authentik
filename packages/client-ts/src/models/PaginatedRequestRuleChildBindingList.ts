@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,28 +19,12 @@ import {
 } from "./RequestRuleChildBinding";
 
 /**
- *
  * @export
  * @interface PaginatedRequestRuleChildBindingList
  */
 export interface PaginatedRequestRuleChildBindingList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedRequestRuleChildBindingList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<RequestRuleChildBinding>}
-     * @memberof PaginatedRequestRuleChildBindingList
-     */
     results: Array<RequestRuleChildBinding>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedRequestRuleChildBindingList
-     */
     autocomplete: { [key: string]: any };
 }
 

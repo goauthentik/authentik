@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,99 +12,36 @@
 
 /**
  * AuthenticatorEmailStage Serializer
+ *
  * @export
  * @interface PatchedAuthenticatorEmailStageRequest
  */
 export interface PatchedAuthenticatorEmailStageRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAuthenticatorEmailStageRequest
-     */
     name?: string;
     /**
-     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof PatchedAuthenticatorEmailStageRequest
+     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able
+     * to configure this stage.
      */
     configureFlow?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAuthenticatorEmailStageRequest
-     */
     friendlyName?: string;
     /**
-     * When enabled, global Email connection settings will be used and connection settings below will be ignored.
-     * @type {boolean}
-     * @memberof PatchedAuthenticatorEmailStageRequest
+     * When enabled, global Email connection settings will be used and connection settings below
+     * will be ignored.
      */
     useGlobalSettings?: boolean;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAuthenticatorEmailStageRequest
-     */
     host?: string;
-    /**
-     *
-     * @type {number}
-     * @memberof PatchedAuthenticatorEmailStageRequest
-     */
     port?: number;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAuthenticatorEmailStageRequest
-     */
     username?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAuthenticatorEmailStageRequest
-     */
     password?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedAuthenticatorEmailStageRequest
-     */
     useTls?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedAuthenticatorEmailStageRequest
-     */
     useSsl?: boolean;
-    /**
-     *
-     * @type {number}
-     * @memberof PatchedAuthenticatorEmailStageRequest
-     */
     timeout?: number;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAuthenticatorEmailStageRequest
-     */
     fromAddress?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAuthenticatorEmailStageRequest
-     */
     subject?: string;
     /**
      * Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).
-     * @type {string}
-     * @memberof PatchedAuthenticatorEmailStageRequest
      */
     tokenExpiry?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAuthenticatorEmailStageRequest
-     */
     template?: string;
 }
 

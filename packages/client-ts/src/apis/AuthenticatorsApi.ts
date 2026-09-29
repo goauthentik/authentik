@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -104,27 +102,51 @@ export interface AuthenticatorsAdminDuoCreateRequest {
 }
 
 export interface AuthenticatorsAdminDuoDestroyRequest {
+    /**
+     * A unique integer value identifying this Duo Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsAdminDuoListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface AuthenticatorsAdminDuoPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this Duo Device.
+     */
     id: number;
     patchedDuoDeviceRequest?: PatchedDuoDeviceRequest;
 }
 
 export interface AuthenticatorsAdminDuoRetrieveRequest {
+    /**
+     * A unique integer value identifying this Duo Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsAdminDuoUpdateRequest {
+    /**
+     * A unique integer value identifying this Duo Device.
+     */
     id: number;
     duoDeviceRequest: DuoDeviceRequest;
 }
@@ -134,27 +156,51 @@ export interface AuthenticatorsAdminEmailCreateRequest {
 }
 
 export interface AuthenticatorsAdminEmailDestroyRequest {
+    /**
+     * A unique integer value identifying this Email Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsAdminEmailListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface AuthenticatorsAdminEmailPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this Email Device.
+     */
     id: number;
     patchedEmailDeviceRequest?: PatchedEmailDeviceRequest;
 }
 
 export interface AuthenticatorsAdminEmailRetrieveRequest {
+    /**
+     * A unique integer value identifying this Email Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsAdminEmailUpdateRequest {
+    /**
+     * A unique integer value identifying this Email Device.
+     */
     id: number;
     emailDeviceRequest: EmailDeviceRequest;
 }
@@ -164,27 +210,51 @@ export interface AuthenticatorsAdminEndpointCreateRequest {
 }
 
 export interface AuthenticatorsAdminEndpointDestroyRequest {
+    /**
+     * A UUID string identifying this Endpoint Device.
+     */
     uuid: string;
 }
 
 export interface AuthenticatorsAdminEndpointListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface AuthenticatorsAdminEndpointPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Endpoint Device.
+     */
     uuid: string;
     patchedGoogleEndpointDeviceRequest?: PatchedGoogleEndpointDeviceRequest;
 }
 
 export interface AuthenticatorsAdminEndpointRetrieveRequest {
+    /**
+     * A UUID string identifying this Endpoint Device.
+     */
     uuid: string;
 }
 
 export interface AuthenticatorsAdminEndpointUpdateRequest {
+    /**
+     * A UUID string identifying this Endpoint Device.
+     */
     uuid: string;
     googleEndpointDeviceRequest: GoogleEndpointDeviceRequest;
 }
@@ -194,27 +264,51 @@ export interface AuthenticatorsAdminSmsCreateRequest {
 }
 
 export interface AuthenticatorsAdminSmsDestroyRequest {
+    /**
+     * A unique integer value identifying this SMS Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsAdminSmsListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface AuthenticatorsAdminSmsPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this SMS Device.
+     */
     id: number;
     patchedSMSDeviceRequest?: PatchedSMSDeviceRequest;
 }
 
 export interface AuthenticatorsAdminSmsRetrieveRequest {
+    /**
+     * A unique integer value identifying this SMS Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsAdminSmsUpdateRequest {
+    /**
+     * A unique integer value identifying this SMS Device.
+     */
     id: number;
     sMSDeviceRequest: SMSDeviceRequest;
 }
@@ -224,27 +318,51 @@ export interface AuthenticatorsAdminStaticCreateRequest {
 }
 
 export interface AuthenticatorsAdminStaticDestroyRequest {
+    /**
+     * A unique integer value identifying this Static Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsAdminStaticListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface AuthenticatorsAdminStaticPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this Static Device.
+     */
     id: number;
     patchedStaticDeviceRequest?: PatchedStaticDeviceRequest;
 }
 
 export interface AuthenticatorsAdminStaticRetrieveRequest {
+    /**
+     * A unique integer value identifying this Static Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsAdminStaticUpdateRequest {
+    /**
+     * A unique integer value identifying this Static Device.
+     */
     id: number;
     staticDeviceRequest: StaticDeviceRequest;
 }
@@ -254,27 +372,51 @@ export interface AuthenticatorsAdminTotpCreateRequest {
 }
 
 export interface AuthenticatorsAdminTotpDestroyRequest {
+    /**
+     * A unique integer value identifying this TOTP Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsAdminTotpListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface AuthenticatorsAdminTotpPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this TOTP Device.
+     */
     id: number;
     patchedTOTPDeviceRequest?: PatchedTOTPDeviceRequest;
 }
 
 export interface AuthenticatorsAdminTotpRetrieveRequest {
+    /**
+     * A unique integer value identifying this TOTP Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsAdminTotpUpdateRequest {
+    /**
+     * A unique integer value identifying this TOTP Device.
+     */
     id: number;
     tOTPDeviceRequest: TOTPDeviceRequest;
 }
@@ -284,230 +426,431 @@ export interface AuthenticatorsAdminWebauthnCreateRequest {
 }
 
 export interface AuthenticatorsAdminWebauthnDestroyRequest {
+    /**
+     * A unique integer value identifying this WebAuthn Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsAdminWebauthnListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface AuthenticatorsAdminWebauthnPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this WebAuthn Device.
+     */
     id: number;
     patchedWebAuthnDeviceRequest?: PatchedWebAuthnDeviceRequest;
 }
 
 export interface AuthenticatorsAdminWebauthnRetrieveRequest {
+    /**
+     * A unique integer value identifying this WebAuthn Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsAdminWebauthnUpdateRequest {
+    /**
+     * A unique integer value identifying this WebAuthn Device.
+     */
     id: number;
     webAuthnDeviceRequest: WebAuthnDeviceRequest;
 }
 
 export interface AuthenticatorsDuoDestroyRequest {
+    /**
+     * A unique integer value identifying this Duo Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsDuoListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface AuthenticatorsDuoPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this Duo Device.
+     */
     id: number;
     patchedDuoDeviceRequest?: PatchedDuoDeviceRequest;
 }
 
 export interface AuthenticatorsDuoRetrieveRequest {
+    /**
+     * A unique integer value identifying this Duo Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsDuoUpdateRequest {
+    /**
+     * A unique integer value identifying this Duo Device.
+     */
     id: number;
     duoDeviceRequest: DuoDeviceRequest;
 }
 
 export interface AuthenticatorsDuoUsedByListRequest {
+    /**
+     * A unique integer value identifying this Duo Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsEmailDestroyRequest {
+    /**
+     * A unique integer value identifying this Email Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsEmailListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface AuthenticatorsEmailPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this Email Device.
+     */
     id: number;
     patchedEmailDeviceRequest?: PatchedEmailDeviceRequest;
 }
 
 export interface AuthenticatorsEmailRetrieveRequest {
+    /**
+     * A unique integer value identifying this Email Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsEmailUpdateRequest {
+    /**
+     * A unique integer value identifying this Email Device.
+     */
     id: number;
     emailDeviceRequest: EmailDeviceRequest;
 }
 
 export interface AuthenticatorsEmailUsedByListRequest {
+    /**
+     * A unique integer value identifying this Email Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsEndpointListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface AuthenticatorsEndpointRetrieveRequest {
+    /**
+     * A UUID string identifying this Endpoint Device.
+     */
     uuid: string;
 }
 
 export interface AuthenticatorsEndpointUsedByListRequest {
+    /**
+     * A UUID string identifying this Endpoint Device.
+     */
     uuid: string;
 }
 
 export interface AuthenticatorsSmsDestroyRequest {
+    /**
+     * A unique integer value identifying this SMS Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsSmsListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface AuthenticatorsSmsPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this SMS Device.
+     */
     id: number;
     patchedSMSDeviceRequest?: PatchedSMSDeviceRequest;
 }
 
 export interface AuthenticatorsSmsRetrieveRequest {
+    /**
+     * A unique integer value identifying this SMS Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsSmsUpdateRequest {
+    /**
+     * A unique integer value identifying this SMS Device.
+     */
     id: number;
     sMSDeviceRequest: SMSDeviceRequest;
 }
 
 export interface AuthenticatorsSmsUsedByListRequest {
+    /**
+     * A unique integer value identifying this SMS Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsStaticDestroyRequest {
+    /**
+     * A unique integer value identifying this Static Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsStaticListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface AuthenticatorsStaticPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this Static Device.
+     */
     id: number;
     patchedStaticDeviceRequest?: PatchedStaticDeviceRequest;
 }
 
 export interface AuthenticatorsStaticRetrieveRequest {
+    /**
+     * A unique integer value identifying this Static Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsStaticUpdateRequest {
+    /**
+     * A unique integer value identifying this Static Device.
+     */
     id: number;
     staticDeviceRequest: StaticDeviceRequest;
 }
 
 export interface AuthenticatorsStaticUsedByListRequest {
+    /**
+     * A unique integer value identifying this Static Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsTotpDestroyRequest {
+    /**
+     * A unique integer value identifying this TOTP Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsTotpListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface AuthenticatorsTotpPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this TOTP Device.
+     */
     id: number;
     patchedTOTPDeviceRequest?: PatchedTOTPDeviceRequest;
 }
 
 export interface AuthenticatorsTotpRetrieveRequest {
+    /**
+     * A unique integer value identifying this TOTP Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsTotpUpdateRequest {
+    /**
+     * A unique integer value identifying this TOTP Device.
+     */
     id: number;
     tOTPDeviceRequest: TOTPDeviceRequest;
 }
 
 export interface AuthenticatorsTotpUsedByListRequest {
+    /**
+     * A unique integer value identifying this TOTP Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsWebauthnDestroyRequest {
+    /**
+     * A unique integer value identifying this WebAuthn Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsWebauthnListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface AuthenticatorsWebauthnPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this WebAuthn Device.
+     */
     id: number;
     patchedWebAuthnDeviceRequest?: PatchedWebAuthnDeviceRequest;
 }
 
 export interface AuthenticatorsWebauthnRetrieveRequest {
+    /**
+     * A unique integer value identifying this WebAuthn Device.
+     */
     id: number;
 }
 
 export interface AuthenticatorsWebauthnUpdateRequest {
+    /**
+     * A unique integer value identifying this WebAuthn Device.
+     */
     id: number;
     webAuthnDeviceRequest: WebAuthnDeviceRequest;
 }
 
 export interface AuthenticatorsWebauthnUsedByListRequest {
+    /**
+     * A unique integer value identifying this WebAuthn Device.
+     */
     id: number;
 }
 
-/**
- *
- */
 export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Creates request options for authenticatorsAdminAllList without sending the request
@@ -532,7 +875,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/all/`;
+        const urlPath = `/authenticators/admin/all/`;
 
         return {
             path: urlPath,
@@ -594,7 +937,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/duo/`;
+        const urlPath = `/authenticators/admin/duo/`;
 
         return {
             path: urlPath,
@@ -733,7 +1076,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/duo/`;
+        const urlPath = `/authenticators/admin/duo/`;
 
         return {
             path: urlPath,
@@ -1005,7 +1348,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/email/`;
+        const urlPath = `/authenticators/admin/email/`;
 
         return {
             path: urlPath,
@@ -1144,7 +1487,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/email/`;
+        const urlPath = `/authenticators/admin/email/`;
 
         return {
             path: urlPath,
@@ -1420,7 +1763,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/endpoint/`;
+        const urlPath = `/authenticators/admin/endpoint/`;
 
         return {
             path: urlPath,
@@ -1563,7 +1906,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/endpoint/`;
+        const urlPath = `/authenticators/admin/endpoint/`;
 
         return {
             path: urlPath,
@@ -1604,7 +1947,8 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for authenticatorsAdminEndpointPartialUpdate without sending the request
+     * Creates request options for authenticatorsAdminEndpointPartialUpdate without sending the
+     * request
      */
     async authenticatorsAdminEndpointPartialUpdateRequestOpts(
         requestParameters: AuthenticatorsAdminEndpointPartialUpdateRequest,
@@ -1849,7 +2193,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/sms/`;
+        const urlPath = `/authenticators/admin/sms/`;
 
         return {
             path: urlPath,
@@ -1988,7 +2332,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/sms/`;
+        const urlPath = `/authenticators/admin/sms/`;
 
         return {
             path: urlPath,
@@ -2260,7 +2604,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/static/`;
+        const urlPath = `/authenticators/admin/static/`;
 
         return {
             path: urlPath,
@@ -2401,7 +2745,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/static/`;
+        const urlPath = `/authenticators/admin/static/`;
 
         return {
             path: urlPath,
@@ -2442,7 +2786,8 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for authenticatorsAdminStaticPartialUpdate without sending the request
+     * Creates request options for authenticatorsAdminStaticPartialUpdate without sending the
+     * request
      */
     async authenticatorsAdminStaticPartialUpdateRequestOpts(
         requestParameters: AuthenticatorsAdminStaticPartialUpdateRequest,
@@ -2683,7 +3028,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/totp/`;
+        const urlPath = `/authenticators/admin/totp/`;
 
         return {
             path: urlPath,
@@ -2822,7 +3167,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/totp/`;
+        const urlPath = `/authenticators/admin/totp/`;
 
         return {
             path: urlPath,
@@ -3097,7 +3442,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/webauthn/`;
+        const urlPath = `/authenticators/admin/webauthn/`;
 
         return {
             path: urlPath,
@@ -3238,7 +3583,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/webauthn/`;
+        const urlPath = `/authenticators/admin/webauthn/`;
 
         return {
             path: urlPath,
@@ -3279,7 +3624,8 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for authenticatorsAdminWebauthnPartialUpdate without sending the request
+     * Creates request options for authenticatorsAdminWebauthnPartialUpdate without sending the
+     * request
      */
     async authenticatorsAdminWebauthnPartialUpdateRequestOpts(
         requestParameters: AuthenticatorsAdminWebauthnPartialUpdateRequest,
@@ -3511,7 +3857,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/all/`;
+        const urlPath = `/authenticators/all/`;
 
         return {
             path: urlPath,
@@ -3642,7 +3988,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/duo/`;
+        const urlPath = `/authenticators/duo/`;
 
         return {
             path: urlPath,
@@ -4041,7 +4387,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/email/`;
+        const urlPath = `/authenticators/email/`;
 
         return {
             path: urlPath,
@@ -4384,7 +4730,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/endpoint/`;
+        const urlPath = `/authenticators/endpoint/`;
 
         return {
             path: urlPath,
@@ -4651,7 +4997,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/sms/`;
+        const urlPath = `/authenticators/sms/`;
 
         return {
             path: urlPath,
@@ -5050,7 +5396,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/static/`;
+        const urlPath = `/authenticators/static/`;
 
         return {
             path: urlPath,
@@ -5460,7 +5806,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/totp/`;
+        const urlPath = `/authenticators/totp/`;
 
         return {
             path: urlPath,
@@ -5861,7 +6207,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/webauthn/`;
+        const urlPath = `/authenticators/webauthn/`;
 
         return {
             path: urlPath,

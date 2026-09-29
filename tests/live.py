@@ -98,7 +98,7 @@ class SSLLiveMixin(DockerTestCase):
         fd, self._traefik_config = mkstemp()
         write(fd, safe_dump(config).encode())
         traefik = self.run_container(
-            image="docker.io/library/traefik:3.1",
+            image=self.pinned_image("traefik", "compose.yml"),
             command=[
                 "--providers.file.filename=/etc/traefik/dynamic.yml",
                 "--providers.file.watch=true",

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,27 +17,13 @@ import { RedirectURITypeEnumFromJSON, RedirectURITypeEnumToJSON } from "./Redire
 
 /**
  * A single allowed redirect URI entry
+ *
  * @export
  * @interface RedirectURIRequest
  */
 export interface RedirectURIRequest {
-    /**
-     *
-     * @type {MatchingModeEnum}
-     * @memberof RedirectURIRequest
-     */
     matchingMode: MatchingModeEnum;
-    /**
-     *
-     * @type {string}
-     * @memberof RedirectURIRequest
-     */
     url: string;
-    /**
-     *
-     * @type {RedirectURITypeEnum}
-     * @memberof RedirectURIRequest
-     */
     redirectUriType?: RedirectURITypeEnum;
 }
 

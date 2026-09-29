@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,68 +16,23 @@ import { ContentTypeEnumFromJSON, ContentTypeEnumToJSON } from "./ContentTypeEnu
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface LifecycleRuleRequest
  */
 export interface LifecycleRuleRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof LifecycleRuleRequest
-     */
     name: string;
-    /**
-     *
-     * @type {ContentTypeEnum}
-     * @memberof LifecycleRuleRequest
-     */
     contentType: ContentTypeEnum;
-    /**
-     *
-     * @type {string}
-     * @memberof LifecycleRuleRequest
-     */
     objectId?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof LifecycleRuleRequest
-     */
     interval?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof LifecycleRuleRequest
-     */
     gracePeriod?: string;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof LifecycleRuleRequest
-     */
     reviewerGroups?: Array<string>;
-    /**
-     *
-     * @type {number}
-     * @memberof LifecycleRuleRequest
-     */
     minReviewers?: number;
-    /**
-     *
-     * @type {boolean}
-     * @memberof LifecycleRuleRequest
-     */
     minReviewersIsPerGroup?: boolean;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof LifecycleRuleRequest
-     */
     reviewers: Array<string>;
     /**
-     * Select which transports should be used to notify the reviewers. If none are selected, the notification will only be shown in the authentik UI.
-     * @type {Array<string>}
-     * @memberof LifecycleRuleRequest
+     * Select which transports should be used to notify the reviewers. If none are selected, the
+     * notification will only be shown in the authentik UI.
      */
     notificationTransports?: Array<string>;
 }

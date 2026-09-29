@@ -1,5 +1,4 @@
 import "#elements/forms/FormGroup";
-
 import { renderForm } from "./WSFederationProviderFormForm.js";
 
 import { aki } from "#common/api/client";
@@ -24,7 +23,9 @@ export class WSFederationProviderForm extends BaseProviderForm<WSFederationProvi
         const provider = await aki(ProvidersApi).providersWsfedRetrieve({
             id: pk,
         });
+
         this.hasSigningKp = !!provider.signingKp;
+
         return provider;
     }
 
@@ -35,6 +36,7 @@ export class WSFederationProviderForm extends BaseProviderForm<WSFederationProvi
                 wSFederationProviderRequest: data,
             });
         }
+
         return aki(ProvidersApi).providersWsfedCreate({
             wSFederationProviderRequest: data,
         });
@@ -43,6 +45,7 @@ export class WSFederationProviderForm extends BaseProviderForm<WSFederationProvi
     renderForm(): TemplateResult {
         const setHasSigningKp = (ev: InputEvent) => {
             const target = ev.target as AkCryptoCertificateSearch;
+
             if (!target) return;
             this.hasSigningKp = !!target.selectedKeypair;
             this.signingKeyType = target.selectedKeypair?.keyType ?? KeyTypeEnum.Rsa;

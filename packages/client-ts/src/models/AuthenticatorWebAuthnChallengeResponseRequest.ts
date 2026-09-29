@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,12 @@
 
 /**
  * WebAuthn Challenge response
+ *
  * @export
  * @interface AuthenticatorWebAuthnChallengeResponseRequest
  */
 export interface AuthenticatorWebAuthnChallengeResponseRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorWebAuthnChallengeResponseRequest
-     */
     component?: string;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof AuthenticatorWebAuthnChallengeResponseRequest
-     */
     response: { [key: string]: any };
 }
 

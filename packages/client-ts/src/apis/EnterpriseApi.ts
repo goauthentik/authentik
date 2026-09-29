@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -33,23 +31,44 @@ export interface EnterpriseLicenseCreateRequest {
 }
 
 export interface EnterpriseLicenseDestroyRequest {
+    /**
+     * A UUID string identifying this License.
+     */
     licenseUuid: string;
 }
 
 export interface EnterpriseLicenseListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface EnterpriseLicensePartialUpdateRequest {
+    /**
+     * A UUID string identifying this License.
+     */
     licenseUuid: string;
     patchedLicenseRequest?: PatchedLicenseRequest;
 }
 
 export interface EnterpriseLicenseRetrieveRequest {
+    /**
+     * A UUID string identifying this License.
+     */
     licenseUuid: string;
 }
 
@@ -58,17 +77,20 @@ export interface EnterpriseLicenseSummaryRetrieveRequest {
 }
 
 export interface EnterpriseLicenseUpdateRequest {
+    /**
+     * A UUID string identifying this License.
+     */
     licenseUuid: string;
     licenseRequest: LicenseRequest;
 }
 
 export interface EnterpriseLicenseUsedByListRequest {
+    /**
+     * A UUID string identifying this License.
+     */
     licenseUuid: string;
 }
 
-/**
- *
- */
 export class EnterpriseApi extends runtime.BaseAPI {
     /**
      * Creates request options for enterpriseLicenseCreate without sending the request
@@ -98,7 +120,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/enterprise/license/`;
+        const urlPath = `/enterprise/license/`;
 
         return {
             path: urlPath,
@@ -213,7 +235,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/enterprise/license/forecast/`;
+        const urlPath = `/enterprise/license/forecast/`;
 
         return {
             path: urlPath,
@@ -264,7 +286,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/enterprise/license/install_id/`;
+        const urlPath = `/enterprise/license/install_id/`;
 
         return {
             path: urlPath,
@@ -335,7 +357,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/enterprise/license/`;
+        const urlPath = `/enterprise/license/`;
 
         return {
             path: urlPath,
@@ -529,7 +551,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/enterprise/license/summary/`;
+        const urlPath = `/enterprise/license/summary/`;
 
         return {
             path: urlPath,

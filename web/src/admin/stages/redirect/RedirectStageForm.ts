@@ -1,7 +1,7 @@
 import "#components/ak-switch-input";
+import "#components/ak-text-input";
 import "#elements/forms/SearchSelect/ak-search-select";
 import "#elements/forms/HorizontalFormElement";
-
 import { aki } from "#common/api/client";
 
 import { RenderFlowOption } from "#admin/flows/utils";
@@ -32,6 +32,7 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
             })
             .then((stage) => {
                 this.mode = stage.mode ?? RedirectStageModeEnum.Static;
+
                 return stage;
             });
     }
@@ -43,6 +44,7 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
                 redirectStageRequest: data,
             });
         }
+
         return aki(StagesApi).stagesRedirectCreate({
             redirectStageRequest: data,
         });
@@ -54,14 +56,18 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
                     "Redirect the user to a static URL or another flow, optionally with all gathered context.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${this.instance?.name ?? ""}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Mode")} required name="mode">
@@ -114,10 +120,13 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
+
                                 const flows = await aki(FlowsApi).flowsInstancesList(args);
+
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => RenderFlowOption(flow)}

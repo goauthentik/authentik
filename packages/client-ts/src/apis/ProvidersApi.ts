@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -230,7 +228,6 @@ import { type SAMLMetadata, SAMLMetadataFromJSON } from "../models/SAMLMetadata"
 import { type SAMLNameIDPolicyEnum } from "../models/SAMLNameIDPolicyEnum";
 import { type SAMLProvider, SAMLProviderFromJSON } from "../models/SAMLProvider";
 import { type SAMLProviderRequest, SAMLProviderRequestToJSON } from "../models/SAMLProviderRequest";
-import { type SamlVersionEnum } from "../models/SamlVersionEnum";
 import { type SCIMProvider, SCIMProviderFromJSON } from "../models/SCIMProvider";
 import { type SCIMProviderGroup, SCIMProviderGroupFromJSON } from "../models/SCIMProviderGroup";
 import {
@@ -260,26 +257,52 @@ import {
     type WSFederationProviderRequest,
     WSFederationProviderRequestToJSON,
 } from "../models/WSFederationProviderRequest";
+import { type WSFedSAMLVersionEnum } from "../models/WSFedSAMLVersionEnum";
 import * as runtime from "../runtime";
 
 export interface ProvidersAllDestroyRequest {
+    /**
+     * A unique integer value identifying this provider.
+     */
     id: number;
 }
 
 export interface ProvidersAllListRequest {
     applicationIsnull?: boolean;
+    /**
+     * When not set all providers are returned. When set to true, only backchannel providers are
+     * returned. When set to false, backchannel providers are excluded
+     */
     backchannel?: boolean;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface ProvidersAllRetrieveRequest {
+    /**
+     * A unique integer value identifying this provider.
+     */
     id: number;
 }
 
 export interface ProvidersAllUsedByListRequest {
+    /**
+     * A unique integer value identifying this provider.
+     */
     id: number;
 }
 
@@ -288,6 +311,9 @@ export interface ProvidersGoogleWorkspaceCreateRequest {
 }
 
 export interface ProvidersGoogleWorkspaceDestroyRequest {
+    /**
+     * A unique integer value identifying this Google Workspace Provider.
+     */
     id: number;
 }
 
@@ -296,24 +322,45 @@ export interface ProvidersGoogleWorkspaceGroupsCreateRequest {
 }
 
 export interface ProvidersGoogleWorkspaceGroupsDestroyRequest {
+    /**
+     * A UUID string identifying this Google Workspace Provider Group.
+     */
     id: string;
 }
 
 export interface ProvidersGoogleWorkspaceGroupsListRequest {
     groupGroupUuid?: string;
     groupName?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     providerId?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface ProvidersGoogleWorkspaceGroupsRetrieveRequest {
+    /**
+     * A UUID string identifying this Google Workspace Provider Group.
+     */
     id: string;
 }
 
 export interface ProvidersGoogleWorkspaceGroupsUsedByListRequest {
+    /**
+     * A UUID string identifying this Google Workspace Provider Group.
+     */
     id: string;
 }
 
@@ -322,36 +369,66 @@ export interface ProvidersGoogleWorkspaceListRequest {
     excludeUsersServiceAccount?: boolean;
     filterGroup?: string;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface ProvidersGoogleWorkspacePartialUpdateRequest {
+    /**
+     * A unique integer value identifying this Google Workspace Provider.
+     */
     id: number;
     patchedGoogleWorkspaceProviderRequest?: PatchedGoogleWorkspaceProviderRequest;
 }
 
 export interface ProvidersGoogleWorkspaceRetrieveRequest {
+    /**
+     * A unique integer value identifying this Google Workspace Provider.
+     */
     id: number;
 }
 
 export interface ProvidersGoogleWorkspaceSyncObjectCreateRequest {
+    /**
+     * A unique integer value identifying this Google Workspace Provider.
+     */
     id: number;
     syncObjectRequest: SyncObjectRequest;
 }
 
 export interface ProvidersGoogleWorkspaceSyncStatusRetrieveRequest {
+    /**
+     * A unique integer value identifying this Google Workspace Provider.
+     */
     id: number;
 }
 
 export interface ProvidersGoogleWorkspaceUpdateRequest {
+    /**
+     * A unique integer value identifying this Google Workspace Provider.
+     */
     id: number;
     googleWorkspaceProviderRequest: GoogleWorkspaceProviderRequest;
 }
 
 export interface ProvidersGoogleWorkspaceUsedByListRequest {
+    /**
+     * A unique integer value identifying this Google Workspace Provider.
+     */
     id: number;
 }
 
@@ -360,24 +437,45 @@ export interface ProvidersGoogleWorkspaceUsersCreateRequest {
 }
 
 export interface ProvidersGoogleWorkspaceUsersDestroyRequest {
+    /**
+     * A UUID string identifying this Google Workspace Provider User.
+     */
     id: string;
 }
 
 export interface ProvidersGoogleWorkspaceUsersListRequest {
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     providerId?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     userId?: number;
     userUsername?: string;
 }
 
 export interface ProvidersGoogleWorkspaceUsersRetrieveRequest {
+    /**
+     * A UUID string identifying this Google Workspace Provider User.
+     */
     id: string;
 }
 
 export interface ProvidersGoogleWorkspaceUsersUsedByListRequest {
+    /**
+     * A UUID string identifying this Google Workspace Provider User.
+     */
     id: string;
 }
 
@@ -386,6 +484,9 @@ export interface ProvidersLdapCreateRequest {
 }
 
 export interface ProvidersLdapDestroyRequest {
+    /**
+     * A unique integer value identifying this LDAP Provider.
+     */
     id: number;
 }
 
@@ -397,29 +498,53 @@ export interface ProvidersLdapListRequest {
     certificateNameIexact?: string;
     gidStartNumberIexact?: number;
     nameIexact?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     tlsServerNameIexact?: string;
     uidStartNumberIexact?: number;
 }
 
 export interface ProvidersLdapPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this LDAP Provider.
+     */
     id: number;
     patchedLDAPProviderRequest?: PatchedLDAPProviderRequest;
 }
 
 export interface ProvidersLdapRetrieveRequest {
+    /**
+     * A unique integer value identifying this LDAP Provider.
+     */
     id: number;
 }
 
 export interface ProvidersLdapUpdateRequest {
+    /**
+     * A unique integer value identifying this LDAP Provider.
+     */
     id: number;
     lDAPProviderRequest: LDAPProviderRequest;
 }
 
 export interface ProvidersLdapUsedByListRequest {
+    /**
+     * A unique integer value identifying this LDAP Provider.
+     */
     id: number;
 }
 
@@ -428,6 +553,9 @@ export interface ProvidersMicrosoftEntraCreateRequest {
 }
 
 export interface ProvidersMicrosoftEntraDestroyRequest {
+    /**
+     * A unique integer value identifying this Microsoft Entra Provider.
+     */
     id: number;
 }
 
@@ -436,24 +564,45 @@ export interface ProvidersMicrosoftEntraGroupsCreateRequest {
 }
 
 export interface ProvidersMicrosoftEntraGroupsDestroyRequest {
+    /**
+     * A UUID string identifying this Microsoft Entra Provider Group.
+     */
     id: string;
 }
 
 export interface ProvidersMicrosoftEntraGroupsListRequest {
     groupGroupUuid?: string;
     groupName?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     providerId?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface ProvidersMicrosoftEntraGroupsRetrieveRequest {
+    /**
+     * A UUID string identifying this Microsoft Entra Provider Group.
+     */
     id: string;
 }
 
 export interface ProvidersMicrosoftEntraGroupsUsedByListRequest {
+    /**
+     * A UUID string identifying this Microsoft Entra Provider Group.
+     */
     id: string;
 }
 
@@ -461,36 +610,66 @@ export interface ProvidersMicrosoftEntraListRequest {
     excludeUsersServiceAccount?: boolean;
     filterGroup?: string;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface ProvidersMicrosoftEntraPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this Microsoft Entra Provider.
+     */
     id: number;
     patchedMicrosoftEntraProviderRequest?: PatchedMicrosoftEntraProviderRequest;
 }
 
 export interface ProvidersMicrosoftEntraRetrieveRequest {
+    /**
+     * A unique integer value identifying this Microsoft Entra Provider.
+     */
     id: number;
 }
 
 export interface ProvidersMicrosoftEntraSyncObjectCreateRequest {
+    /**
+     * A unique integer value identifying this Microsoft Entra Provider.
+     */
     id: number;
     syncObjectRequest: SyncObjectRequest;
 }
 
 export interface ProvidersMicrosoftEntraSyncStatusRetrieveRequest {
+    /**
+     * A unique integer value identifying this Microsoft Entra Provider.
+     */
     id: number;
 }
 
 export interface ProvidersMicrosoftEntraUpdateRequest {
+    /**
+     * A unique integer value identifying this Microsoft Entra Provider.
+     */
     id: number;
     microsoftEntraProviderRequest: MicrosoftEntraProviderRequest;
 }
 
 export interface ProvidersMicrosoftEntraUsedByListRequest {
+    /**
+     * A unique integer value identifying this Microsoft Entra Provider.
+     */
     id: number;
 }
 
@@ -499,24 +678,45 @@ export interface ProvidersMicrosoftEntraUsersCreateRequest {
 }
 
 export interface ProvidersMicrosoftEntraUsersDestroyRequest {
+    /**
+     * A UUID string identifying this Microsoft Entra Provider User.
+     */
     id: string;
 }
 
 export interface ProvidersMicrosoftEntraUsersListRequest {
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     providerId?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     userId?: number;
     userUsername?: string;
 }
 
 export interface ProvidersMicrosoftEntraUsersRetrieveRequest {
+    /**
+     * A UUID string identifying this Microsoft Entra Provider User.
+     */
     id: string;
 }
 
 export interface ProvidersMicrosoftEntraUsersUsedByListRequest {
+    /**
+     * A UUID string identifying this Microsoft Entra Provider User.
+     */
     id: string;
 }
 
@@ -529,32 +729,59 @@ export interface ProvidersOauth2DcrCreateRequest {
 }
 
 export interface ProvidersOauth2DcrDestroyRequest {
+    /**
+     * A UUID string identifying this OAuth2 Dynamic Client Registration.
+     */
     pbmUuid: string;
 }
 
 export interface ProvidersOauth2DcrListRequest {
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     provider?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface ProvidersOauth2DcrPartialUpdateRequest {
+    /**
+     * A UUID string identifying this OAuth2 Dynamic Client Registration.
+     */
     pbmUuid: string;
     patchedOAuth2DynamicClientRegistrationRequest?: PatchedOAuth2DynamicClientRegistrationRequest;
 }
 
 export interface ProvidersOauth2DcrRetrieveRequest {
+    /**
+     * A UUID string identifying this OAuth2 Dynamic Client Registration.
+     */
     pbmUuid: string;
 }
 
 export interface ProvidersOauth2DcrUpdateRequest {
+    /**
+     * A UUID string identifying this OAuth2 Dynamic Client Registration.
+     */
     pbmUuid: string;
     oAuth2DynamicClientRegistrationRequest: OAuth2DynamicClientRegistrationRequest;
 }
 
 export interface ProvidersOauth2DestroyRequest {
+    /**
+     * A unique integer value identifying this OAuth2/OpenID Provider.
+     */
     id: number;
 }
 
@@ -568,40 +795,70 @@ export interface ProvidersOauth2ListRequest {
     includeClaimsInIdToken?: boolean;
     issuerMode?: IssuerModeEnum;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     propertyMappings?: Array<string>;
     refreshTokenValidity?: string;
+    /**
+     * A search term.
+     */
     search?: string;
     signingKey?: string;
     subMode?: SubModeEnum;
 }
 
 export interface ProvidersOauth2PartialUpdateRequest {
+    /**
+     * A unique integer value identifying this OAuth2/OpenID Provider.
+     */
     id: number;
     patchedOAuth2ProviderRequest?: PatchedOAuth2ProviderRequest;
 }
 
 export interface ProvidersOauth2PreviewUserRetrieveRequest {
+    /**
+     * A unique integer value identifying this OAuth2/OpenID Provider.
+     */
     id: number;
     forUser?: number;
 }
 
 export interface ProvidersOauth2RetrieveRequest {
+    /**
+     * A unique integer value identifying this OAuth2/OpenID Provider.
+     */
     id: number;
 }
 
 export interface ProvidersOauth2SetupUrlsRetrieveRequest {
+    /**
+     * A unique integer value identifying this OAuth2/OpenID Provider.
+     */
     id: number;
 }
 
 export interface ProvidersOauth2UpdateRequest {
+    /**
+     * A unique integer value identifying this OAuth2/OpenID Provider.
+     */
     id: number;
     oAuth2ProviderRequest: OAuth2ProviderRequest;
 }
 
 export interface ProvidersOauth2UsedByListRequest {
+    /**
+     * A unique integer value identifying this OAuth2/OpenID Provider.
+     */
     id: number;
 }
 
@@ -610,6 +867,9 @@ export interface ProvidersProxyCreateRequest {
 }
 
 export interface ProvidersProxyDestroyRequest {
+    /**
+     * A unique integer value identifying this Proxy Provider.
+     */
     id: number;
 }
 
@@ -627,29 +887,53 @@ export interface ProvidersProxyListRequest {
     internalHostSslValidationIexact?: boolean;
     modeIexact?: string;
     nameIexact?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     propertyMappingsIexact?: Array<string>;
+    /**
+     * A search term.
+     */
     search?: string;
     skipPathRegexIexact?: string;
 }
 
 export interface ProvidersProxyPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this Proxy Provider.
+     */
     id: number;
     patchedProxyProviderRequest?: PatchedProxyProviderRequest;
 }
 
 export interface ProvidersProxyRetrieveRequest {
+    /**
+     * A unique integer value identifying this Proxy Provider.
+     */
     id: number;
 }
 
 export interface ProvidersProxyUpdateRequest {
+    /**
+     * A unique integer value identifying this Proxy Provider.
+     */
     id: number;
     proxyProviderRequest: ProxyProviderRequest;
 }
 
 export interface ProvidersProxyUsedByListRequest {
+    /**
+     * A unique integer value identifying this Proxy Provider.
+     */
     id: number;
 }
 
@@ -658,33 +942,60 @@ export interface ProvidersRacCreateRequest {
 }
 
 export interface ProvidersRacDestroyRequest {
+    /**
+     * A unique integer value identifying this RAC Provider.
+     */
     id: number;
 }
 
 export interface ProvidersRacListRequest {
     applicationIsnull?: boolean;
     nameIexact?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface ProvidersRacPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this RAC Provider.
+     */
     id: number;
     patchedRACProviderRequest?: PatchedRACProviderRequest;
 }
 
 export interface ProvidersRacRetrieveRequest {
+    /**
+     * A unique integer value identifying this RAC Provider.
+     */
     id: number;
 }
 
 export interface ProvidersRacUpdateRequest {
+    /**
+     * A unique integer value identifying this RAC Provider.
+     */
     id: number;
     rACProviderRequest: RACProviderRequest;
 }
 
 export interface ProvidersRacUsedByListRequest {
+    /**
+     * A unique integer value identifying this RAC Provider.
+     */
     id: number;
 }
 
@@ -693,6 +1004,9 @@ export interface ProvidersRadiusCreateRequest {
 }
 
 export interface ProvidersRadiusDestroyRequest {
+    /**
+     * A unique integer value identifying this Radius Provider.
+     */
     id: number;
 }
 
@@ -701,27 +1015,51 @@ export interface ProvidersRadiusListRequest {
     authorizationFlowSlugIexact?: string;
     clientNetworksIexact?: string;
     nameIexact?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface ProvidersRadiusPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this Radius Provider.
+     */
     id: number;
     patchedRadiusProviderRequest?: PatchedRadiusProviderRequest;
 }
 
 export interface ProvidersRadiusRetrieveRequest {
+    /**
+     * A unique integer value identifying this Radius Provider.
+     */
     id: number;
 }
 
 export interface ProvidersRadiusUpdateRequest {
+    /**
+     * A unique integer value identifying this Radius Provider.
+     */
     id: number;
     radiusProviderRequest: RadiusProviderRequest;
 }
 
 export interface ProvidersRadiusUsedByListRequest {
+    /**
+     * A unique integer value identifying this Radius Provider.
+     */
     id: number;
 }
 
@@ -730,6 +1068,9 @@ export interface ProvidersSamlCreateRequest {
 }
 
 export interface ProvidersSamlDestroyRequest {
+    /**
+     * A unique integer value identifying this SAML Provider.
+     */
     id: number;
 }
 
@@ -759,10 +1100,22 @@ export interface ProvidersSamlListRequest {
     logoutMethod?: SAMLLogoutMethods;
     name?: string;
     nameIdMapping?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     propertyMappings?: Array<string>;
+    /**
+     * A search term.
+     */
     search?: string;
     sessionValidNotOnOrAfter?: string;
     signAssertion?: boolean;
@@ -778,31 +1131,49 @@ export interface ProvidersSamlListRequest {
 }
 
 export interface ProvidersSamlMetadataRetrieveRequest {
+    /**
+     * A unique integer value identifying this SAML Provider.
+     */
     id: number;
     download?: boolean;
     forceBinding?: ForceBindingEnum;
 }
 
 export interface ProvidersSamlPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this SAML Provider.
+     */
     id: number;
     patchedSAMLProviderRequest?: PatchedSAMLProviderRequest;
 }
 
 export interface ProvidersSamlPreviewUserRetrieveRequest {
+    /**
+     * A unique integer value identifying this SAML Provider.
+     */
     id: number;
     forUser?: number;
 }
 
 export interface ProvidersSamlRetrieveRequest {
+    /**
+     * A unique integer value identifying this SAML Provider.
+     */
     id: number;
 }
 
 export interface ProvidersSamlUpdateRequest {
+    /**
+     * A unique integer value identifying this SAML Provider.
+     */
     id: number;
     sAMLProviderRequest: SAMLProviderRequest;
 }
 
 export interface ProvidersSamlUsedByListRequest {
+    /**
+     * A unique integer value identifying this SAML Provider.
+     */
     id: number;
 }
 
@@ -811,6 +1182,9 @@ export interface ProvidersScimCreateRequest {
 }
 
 export interface ProvidersScimDestroyRequest {
+    /**
+     * A unique integer value identifying this SCIM Provider.
+     */
     id: number;
 }
 
@@ -819,24 +1193,45 @@ export interface ProvidersScimGroupsCreateRequest {
 }
 
 export interface ProvidersScimGroupsDestroyRequest {
+    /**
+     * A UUID string identifying this scim provider group.
+     */
     id: string;
 }
 
 export interface ProvidersScimGroupsListRequest {
     groupGroupUuid?: string;
     groupName?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     providerId?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface ProvidersScimGroupsRetrieveRequest {
+    /**
+     * A UUID string identifying this scim provider group.
+     */
     id: string;
 }
 
 export interface ProvidersScimGroupsUsedByListRequest {
+    /**
+     * A UUID string identifying this scim provider group.
+     */
     id: string;
 }
 
@@ -844,37 +1239,67 @@ export interface ProvidersScimListRequest {
     excludeUsersServiceAccount?: boolean;
     groupFilters?: Array<string>;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     url?: string;
 }
 
 export interface ProvidersScimPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this SCIM Provider.
+     */
     id: number;
     patchedSCIMProviderRequest?: PatchedSCIMProviderRequest;
 }
 
 export interface ProvidersScimRetrieveRequest {
+    /**
+     * A unique integer value identifying this SCIM Provider.
+     */
     id: number;
 }
 
 export interface ProvidersScimSyncObjectCreateRequest {
+    /**
+     * A unique integer value identifying this SCIM Provider.
+     */
     id: number;
     syncObjectRequest: SyncObjectRequest;
 }
 
 export interface ProvidersScimSyncStatusRetrieveRequest {
+    /**
+     * A unique integer value identifying this SCIM Provider.
+     */
     id: number;
 }
 
 export interface ProvidersScimUpdateRequest {
+    /**
+     * A unique integer value identifying this SCIM Provider.
+     */
     id: number;
     sCIMProviderRequest: SCIMProviderRequest;
 }
 
 export interface ProvidersScimUsedByListRequest {
+    /**
+     * A unique integer value identifying this SCIM Provider.
+     */
     id: number;
 }
 
@@ -883,24 +1308,45 @@ export interface ProvidersScimUsersCreateRequest {
 }
 
 export interface ProvidersScimUsersDestroyRequest {
+    /**
+     * A UUID string identifying this scim provider user.
+     */
     id: string;
 }
 
 export interface ProvidersScimUsersListRequest {
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     providerId?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     userId?: number;
     userUsername?: string;
 }
 
 export interface ProvidersScimUsersRetrieveRequest {
+    /**
+     * A UUID string identifying this scim provider user.
+     */
     id: string;
 }
 
 export interface ProvidersScimUsersUsedByListRequest {
+    /**
+     * A UUID string identifying this scim provider user.
+     */
     id: string;
 }
 
@@ -909,33 +1355,60 @@ export interface ProvidersSsfCreateRequest {
 }
 
 export interface ProvidersSsfDestroyRequest {
+    /**
+     * A unique integer value identifying this Shared Signals Framework Provider.
+     */
     id: number;
 }
 
 export interface ProvidersSsfListRequest {
     applicationIsnull?: boolean;
     nameIexact?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface ProvidersSsfPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this Shared Signals Framework Provider.
+     */
     id: number;
     patchedSSFProviderRequest?: PatchedSSFProviderRequest;
 }
 
 export interface ProvidersSsfRetrieveRequest {
+    /**
+     * A unique integer value identifying this Shared Signals Framework Provider.
+     */
     id: number;
 }
 
 export interface ProvidersSsfUpdateRequest {
+    /**
+     * A unique integer value identifying this Shared Signals Framework Provider.
+     */
     id: number;
     sSFProviderRequest: SSFProviderRequest;
 }
 
 export interface ProvidersSsfUsedByListRequest {
+    /**
+     * A unique integer value identifying this Shared Signals Framework Provider.
+     */
     id: number;
 }
 
@@ -944,6 +1417,9 @@ export interface ProvidersWsfedCreateRequest {
 }
 
 export interface ProvidersWsfedDestroyRequest {
+    /**
+     * A unique integer value identifying this WS-Federation Provider.
+     */
     id: number;
 }
 
@@ -966,11 +1442,23 @@ export interface ProvidersWsfedListRequest {
     logoutMethod?: SAMLLogoutMethods;
     name?: string;
     nameIdMapping?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     propertyMappings?: Array<string>;
-    samlVersion?: SamlVersionEnum;
+    samlVersion?: WSFedSAMLVersionEnum;
+    /**
+     * A search term.
+     */
     search?: string;
     sessionValidNotOnOrAfter?: string;
     signAssertion?: boolean;
@@ -986,37 +1474,52 @@ export interface ProvidersWsfedListRequest {
 }
 
 export interface ProvidersWsfedMetadataRetrieveRequest {
+    /**
+     * A unique integer value identifying this WS-Federation Provider.
+     */
     id: number;
     download?: boolean;
     forceBinding?: ForceBindingEnum;
 }
 
 export interface ProvidersWsfedPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this WS-Federation Provider.
+     */
     id: number;
     patchedWSFederationProviderRequest?: PatchedWSFederationProviderRequest;
 }
 
 export interface ProvidersWsfedPreviewUserRetrieveRequest {
+    /**
+     * A unique integer value identifying this WS-Federation Provider.
+     */
     id: number;
     forUser?: number;
 }
 
 export interface ProvidersWsfedRetrieveRequest {
+    /**
+     * A unique integer value identifying this WS-Federation Provider.
+     */
     id: number;
 }
 
 export interface ProvidersWsfedUpdateRequest {
+    /**
+     * A unique integer value identifying this WS-Federation Provider.
+     */
     id: number;
     wSFederationProviderRequest: WSFederationProviderRequest;
 }
 
 export interface ProvidersWsfedUsedByListRequest {
+    /**
+     * A unique integer value identifying this WS-Federation Provider.
+     */
     id: number;
 }
 
-/**
- *
- */
 export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersAllDestroy without sending the request
@@ -1121,7 +1624,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/all/`;
+        const urlPath = `/providers/all/`;
 
         return {
             path: urlPath,
@@ -1235,7 +1738,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/all/types/`;
+        const urlPath = `/providers/all/types/`;
 
         return {
             path: urlPath,
@@ -1358,7 +1861,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/google_workspace/`;
+        const urlPath = `/providers/google_workspace/`;
 
         return {
             path: urlPath,
@@ -1490,7 +1993,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/google_workspace_groups/`;
+        const urlPath = `/providers/google_workspace_groups/`;
 
         return {
             path: urlPath,
@@ -1641,7 +2144,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/google_workspace_groups/`;
+        const urlPath = `/providers/google_workspace_groups/`;
 
         return {
             path: urlPath,
@@ -1682,7 +2185,8 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersGoogleWorkspaceGroupsRetrieve without sending the request
+     * Creates request options for providersGoogleWorkspaceGroupsRetrieve without sending the
+     * request
      */
     async providersGoogleWorkspaceGroupsRetrieveRequestOpts(
         requestParameters: ProvidersGoogleWorkspaceGroupsRetrieveRequest,
@@ -1749,7 +2253,8 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersGoogleWorkspaceGroupsUsedByList without sending the request
+     * Creates request options for providersGoogleWorkspaceGroupsUsedByList without sending the
+     * request
      */
     async providersGoogleWorkspaceGroupsUsedByListRequestOpts(
         requestParameters: ProvidersGoogleWorkspaceGroupsUsedByListRequest,
@@ -1865,7 +2370,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/google_workspace/`;
+        const urlPath = `/providers/google_workspace/`;
 
         return {
             path: urlPath,
@@ -2045,7 +2550,8 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersGoogleWorkspaceSyncObjectCreate without sending the request
+     * Creates request options for providersGoogleWorkspaceSyncObjectCreate without sending the
+     * request
      */
     async providersGoogleWorkspaceSyncObjectCreateRequestOpts(
         requestParameters: ProvidersGoogleWorkspaceSyncObjectCreateRequest,
@@ -2122,7 +2628,8 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersGoogleWorkspaceSyncStatusRetrieve without sending the request
+     * Creates request options for providersGoogleWorkspaceSyncStatusRetrieve without sending the
+     * request
      */
     async providersGoogleWorkspaceSyncStatusRetrieveRequestOpts(
         requestParameters: ProvidersGoogleWorkspaceSyncStatusRetrieveRequest,
@@ -2159,7 +2666,7 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider\'s sync status
+     * Get provider's sync status
      */
     async providersGoogleWorkspaceSyncStatusRetrieveRaw(
         requestParameters: ProvidersGoogleWorkspaceSyncStatusRetrieveRequest,
@@ -2173,7 +2680,7 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider\'s sync status
+     * Get provider's sync status
      */
     async providersGoogleWorkspaceSyncStatusRetrieve(
         requestParameters: ProvidersGoogleWorkspaceSyncStatusRetrieveRequest,
@@ -2358,7 +2865,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/google_workspace_users/`;
+        const urlPath = `/providers/google_workspace_users/`;
 
         return {
             path: urlPath,
@@ -2509,7 +3016,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/google_workspace_users/`;
+        const urlPath = `/providers/google_workspace_users/`;
 
         return {
             path: urlPath,
@@ -2617,7 +3124,8 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersGoogleWorkspaceUsersUsedByList without sending the request
+     * Creates request options for providersGoogleWorkspaceUsersUsedByList without sending the
+     * request
      */
     async providersGoogleWorkspaceUsersUsedByListRequestOpts(
         requestParameters: ProvidersGoogleWorkspaceUsersUsedByListRequest,
@@ -2709,7 +3217,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/ldap/`;
+        const urlPath = `/providers/ldap/`;
 
         return {
             path: urlPath,
@@ -2880,7 +3388,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/ldap/`;
+        const urlPath = `/providers/ldap/`;
 
         return {
             path: urlPath,
@@ -3207,7 +3715,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/microsoft_entra/`;
+        const urlPath = `/providers/microsoft_entra/`;
 
         return {
             path: urlPath,
@@ -3339,7 +3847,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/microsoft_entra_groups/`;
+        const urlPath = `/providers/microsoft_entra_groups/`;
 
         return {
             path: urlPath,
@@ -3490,7 +3998,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/microsoft_entra_groups/`;
+        const urlPath = `/providers/microsoft_entra_groups/`;
 
         return {
             path: urlPath,
@@ -3598,7 +4106,8 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersMicrosoftEntraGroupsUsedByList without sending the request
+     * Creates request options for providersMicrosoftEntraGroupsUsedByList without sending the
+     * request
      */
     async providersMicrosoftEntraGroupsUsedByListRequestOpts(
         requestParameters: ProvidersMicrosoftEntraGroupsUsedByListRequest,
@@ -3710,7 +4219,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/microsoft_entra/`;
+        const urlPath = `/providers/microsoft_entra/`;
 
         return {
             path: urlPath,
@@ -3889,7 +4398,8 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersMicrosoftEntraSyncObjectCreate without sending the request
+     * Creates request options for providersMicrosoftEntraSyncObjectCreate without sending the
+     * request
      */
     async providersMicrosoftEntraSyncObjectCreateRequestOpts(
         requestParameters: ProvidersMicrosoftEntraSyncObjectCreateRequest,
@@ -3966,7 +4476,8 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersMicrosoftEntraSyncStatusRetrieve without sending the request
+     * Creates request options for providersMicrosoftEntraSyncStatusRetrieve without sending the
+     * request
      */
     async providersMicrosoftEntraSyncStatusRetrieveRequestOpts(
         requestParameters: ProvidersMicrosoftEntraSyncStatusRetrieveRequest,
@@ -4003,7 +4514,7 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider\'s sync status
+     * Get provider's sync status
      */
     async providersMicrosoftEntraSyncStatusRetrieveRaw(
         requestParameters: ProvidersMicrosoftEntraSyncStatusRetrieveRequest,
@@ -4017,7 +4528,7 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider\'s sync status
+     * Get provider's sync status
      */
     async providersMicrosoftEntraSyncStatusRetrieve(
         requestParameters: ProvidersMicrosoftEntraSyncStatusRetrieveRequest,
@@ -4202,7 +4713,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/microsoft_entra_users/`;
+        const urlPath = `/providers/microsoft_entra_users/`;
 
         return {
             path: urlPath,
@@ -4353,7 +4864,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/microsoft_entra_users/`;
+        const urlPath = `/providers/microsoft_entra_users/`;
 
         return {
             path: urlPath,
@@ -4461,7 +4972,8 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersMicrosoftEntraUsersUsedByList without sending the request
+     * Creates request options for providersMicrosoftEntraUsersUsedByList without sending the
+     * request
      */
     async providersMicrosoftEntraUsersUsedByListRequestOpts(
         requestParameters: ProvidersMicrosoftEntraUsersUsedByListRequest,
@@ -4553,7 +5065,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/oauth2/`;
+        const urlPath = `/providers/oauth2/`;
 
         return {
             path: urlPath,
@@ -4618,7 +5130,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/oauth2-dcr/`;
+        const urlPath = `/providers/oauth2-dcr/`;
 
         return {
             path: urlPath,
@@ -4759,7 +5271,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/oauth2-dcr/`;
+        const urlPath = `/providers/oauth2-dcr/`;
 
         return {
             path: urlPath,
@@ -5162,7 +5674,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/oauth2/`;
+        const urlPath = `/providers/oauth2/`;
 
         return {
             path: urlPath,
@@ -5633,7 +6145,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/proxy/`;
+        const urlPath = `/providers/proxy/`;
 
         return {
             path: urlPath,
@@ -5833,7 +6345,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/proxy/`;
+        const urlPath = `/providers/proxy/`;
 
         return {
             path: urlPath,
@@ -6165,7 +6677,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/rac/`;
+        const urlPath = `/providers/rac/`;
 
         return {
             path: urlPath,
@@ -6303,7 +6815,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/rac/`;
+        const urlPath = `/providers/rac/`;
 
         return {
             path: urlPath,
@@ -6624,7 +7136,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/radius/`;
+        const urlPath = `/providers/radius/`;
 
         return {
             path: urlPath,
@@ -6773,7 +7285,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/radius/`;
+        const urlPath = `/providers/radius/`;
 
         return {
             path: urlPath,
@@ -7106,7 +7618,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/saml/`;
+        const urlPath = `/providers/saml/`;
 
         return {
             path: urlPath,
@@ -7279,7 +7791,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             formParams.append("file", requestParameters["file"] as any);
         }
 
-        let urlPath = `/providers/saml/import_metadata/`;
+        const urlPath = `/providers/saml/import_metadata/`;
 
         return {
             path: urlPath,
@@ -7480,7 +7992,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/saml/`;
+        const urlPath = `/providers/saml/`;
 
         return {
             path: urlPath,
@@ -7953,7 +8465,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/scim/`;
+        const urlPath = `/providers/scim/`;
 
         return {
             path: urlPath,
@@ -8078,7 +8590,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/scim_groups/`;
+        const urlPath = `/providers/scim_groups/`;
 
         return {
             path: urlPath,
@@ -8222,7 +8734,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/scim_groups/`;
+        const urlPath = `/providers/scim_groups/`;
 
         return {
             path: urlPath,
@@ -8441,7 +8953,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/scim/`;
+        const urlPath = `/providers/scim/`;
 
         return {
             path: urlPath,
@@ -8721,7 +9233,7 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider\'s sync status
+     * Get provider's sync status
      */
     async providersScimSyncStatusRetrieveRaw(
         requestParameters: ProvidersScimSyncStatusRetrieveRequest,
@@ -8735,7 +9247,7 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider\'s sync status
+     * Get provider's sync status
      */
     async providersScimSyncStatusRetrieve(
         requestParameters: ProvidersScimSyncStatusRetrieveRequest,
@@ -8910,7 +9422,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/scim_users/`;
+        const urlPath = `/providers/scim_users/`;
 
         return {
             path: urlPath,
@@ -9054,7 +9566,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/scim_users/`;
+        const urlPath = `/providers/scim_users/`;
 
         return {
             path: urlPath,
@@ -9246,7 +9758,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/ssf/`;
+        const urlPath = `/providers/ssf/`;
 
         return {
             path: urlPath,
@@ -9384,7 +9896,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/ssf/`;
+        const urlPath = `/providers/ssf/`;
 
         return {
             path: urlPath,
@@ -9705,7 +10217,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/wsfed/`;
+        const urlPath = `/providers/wsfed/`;
 
         return {
             path: urlPath,
@@ -9968,7 +10480,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/wsfed/`;
+        const urlPath = `/providers/wsfed/`;
 
         return {
             path: urlPath,

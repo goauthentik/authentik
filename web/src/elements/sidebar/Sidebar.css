@@ -1,6 +1,8 @@
 :host {
     z-index: 100;
     --pf-c-page__sidebar--Transition: 0 !important;
+    --pf-global--BackgroundColor--light-400: #d2d2d2;
+    --pf-global--BackgroundColor--dark-300: #b8bbbe;
 }
 
 .pf-c-nav {

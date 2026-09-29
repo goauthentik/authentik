@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,27 +15,16 @@ import { PartialUserFromJSON } from "./PartialUser";
 
 /**
  * Serializer for Duo authenticator devices
+ *
  * @export
  * @interface DuoDevice
  */
 export interface DuoDevice {
-    /**
-     *
-     * @type {number}
-     * @memberof DuoDevice
-     */
     readonly pk: number;
     /**
      * The human-readable name of this device.
-     * @type {string}
-     * @memberof DuoDevice
      */
     name: string;
-    /**
-     *
-     * @type {PartialUser}
-     * @memberof DuoDevice
-     */
     readonly user: PartialUser;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,28 +19,12 @@ import type { Pagination } from "./Pagination";
 import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- *
  * @export
  * @interface PaginatedGroupOAuthSourceConnectionList
  */
 export interface PaginatedGroupOAuthSourceConnectionList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedGroupOAuthSourceConnectionList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<GroupOAuthSourceConnection>}
-     * @memberof PaginatedGroupOAuthSourceConnectionList
-     */
     results: Array<GroupOAuthSourceConnection>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedGroupOAuthSourceConnectionList
-     */
     autocomplete: { [key: string]: any };
 }
 

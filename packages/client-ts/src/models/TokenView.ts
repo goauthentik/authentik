@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,15 +12,11 @@
 
 /**
  * Show token's current key
+ *
  * @export
  * @interface TokenView
  */
 export interface TokenView {
-    /**
-     *
-     * @type {string}
-     * @memberof TokenView
-     */
     readonly key: string;
 }
 

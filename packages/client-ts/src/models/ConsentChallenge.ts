@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,63 +18,19 @@ import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * Challenge info for consent screens
+ *
  * @export
  * @interface ConsentChallenge
  */
 export interface ConsentChallenge {
-    /**
-     *
-     * @type {ContextualFlowInfo}
-     * @memberof ConsentChallenge
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     * @type {string}
-     * @memberof ConsentChallenge
-     */
     component?: string;
-    /**
-     *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof ConsentChallenge
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {string}
-     * @memberof ConsentChallenge
-     */
     pendingUser: string;
-    /**
-     *
-     * @type {string}
-     * @memberof ConsentChallenge
-     */
     pendingUserAvatar: string;
-    /**
-     *
-     * @type {string}
-     * @memberof ConsentChallenge
-     */
     headerText?: string;
-    /**
-     *
-     * @type {Array<ConsentPermission>}
-     * @memberof ConsentChallenge
-     */
     permissions: Array<ConsentPermission>;
-    /**
-     *
-     * @type {Array<ConsentPermission>}
-     * @memberof ConsentChallenge
-     */
     additionalPermissions: Array<ConsentPermission>;
-    /**
-     *
-     * @type {string}
-     * @memberof ConsentChallenge
-     */
     token: string;
 }
 

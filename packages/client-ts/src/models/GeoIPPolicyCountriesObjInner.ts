@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,22 +11,11 @@
  */
 
 /**
- *
  * @export
  * @interface GeoIPPolicyCountriesObjInner
  */
 export interface GeoIPPolicyCountriesObjInner {
-    /**
-     *
-     * @type {string}
-     * @memberof GeoIPPolicyCountriesObjInner
-     */
     code: string;
-    /**
-     *
-     * @type {string}
-     * @memberof GeoIPPolicyCountriesObjInner
-     */
     name: string;
 }
 

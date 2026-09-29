@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,6 +10,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { OffboardingActionEnum } from "./OffboardingActionEnum";
 import {
     OffboardingActionEnumFromJSON,
@@ -25,75 +24,30 @@ import { PartialUserFromJSON } from "./PartialUser";
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface UserOffboarding
  */
 export interface UserOffboarding {
-    /**
-     *
-     * @type {string}
-     * @memberof UserOffboarding
-     */
     readonly id: string;
-    /**
-     *
-     * @type {number}
-     * @memberof UserOffboarding
-     */
     user: number;
-    /**
-     *
-     * @type {PartialUser}
-     * @memberof UserOffboarding
-     */
     readonly userObj: PartialUser;
     /**
      * Absolute time at which the offboarding action is executed.
-     * @type {Date}
-     * @memberof UserOffboarding
      */
     scheduledAt: Date;
-    /**
-     *
-     * @type {OffboardingActionEnum}
-     * @memberof UserOffboarding
-     */
     action?: OffboardingActionEnum;
     /**
      * Revoke all of the user's sessions when offboarding.
-     * @type {boolean}
-     * @memberof UserOffboarding
      */
     revokeSessions?: boolean;
     /**
      * Revoke all of the user's tokens when offboarding.
-     * @type {boolean}
-     * @memberof UserOffboarding
      */
     revokeTokens?: boolean;
-    /**
-     *
-     * @type {OffboardingStatusEnum}
-     * @memberof UserOffboarding
-     */
     readonly status: OffboardingStatusEnum;
-    /**
-     *
-     * @type {PartialUser}
-     * @memberof UserOffboarding
-     */
     readonly createdByObj: PartialUser;
-    /**
-     *
-     * @type {Date}
-     * @memberof UserOffboarding
-     */
     readonly createdAt: Date;
-    /**
-     *
-     * @type {Date}
-     * @memberof UserOffboarding
-     */
     readonly executedAt: Date | null;
 }
 
@@ -157,14 +111,18 @@ export function UserOffboardingFromJSONTyped(
         id: json["id"],
         user: json["user"],
         userObj: PartialUserFromJSON(json["user_obj"]),
-        scheduledAt: new Date(json["scheduled_at"]),
+        scheduledAt:
+            json["scheduled_at"] == null
+                ? json["scheduled_at"]
+                : parseDateTime(json["scheduled_at"]),
         action: json["action"] == null ? undefined : OffboardingActionEnumFromJSON(json["action"]),
         revokeSessions: json["revoke_sessions"] == null ? undefined : json["revoke_sessions"],
         revokeTokens: json["revoke_tokens"] == null ? undefined : json["revoke_tokens"],
         status: OffboardingStatusEnumFromJSON(json["status"]),
         createdByObj: PartialUserFromJSON(json["created_by_obj"]),
-        createdAt: new Date(json["created_at"]),
-        executedAt: json["executed_at"] == null ? null : new Date(json["executed_at"]),
+        createdAt:
+            json["created_at"] == null ? json["created_at"] : parseDateTime(json["created_at"]),
+        executedAt: json["executed_at"] == null ? null : parseDateTime(json["executed_at"]),
     };
 }
 
@@ -185,7 +143,10 @@ export function UserOffboardingToJSONTyped(
 
     return {
         user: value["user"],
-        scheduled_at: value["scheduledAt"].toISOString(),
+        scheduled_at:
+            value["scheduledAt"] == null
+                ? value["scheduledAt"]
+                : serializeDateTime(value["scheduledAt"]),
         action: OffboardingActionEnumToJSON(value["action"]),
         revoke_sessions: value["revokeSessions"],
         revoke_tokens: value["revokeTokens"],

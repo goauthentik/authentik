@@ -5,7 +5,6 @@ import "#admin/endpoints/connectors/gdtc/GoogleChromeConnectorForm";
 import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
-
 import { aki } from "#common/api/client";
 
 import { SlottedTemplateResult } from "#elements/types";

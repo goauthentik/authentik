@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,14 +12,13 @@
 
 /**
  * Serializer for static authenticator devices
+ *
  * @export
  * @interface StaticDeviceRequest
  */
 export interface StaticDeviceRequest {
     /**
      * The human-readable name of this device.
-     * @type {string}
-     * @memberof StaticDeviceRequest
      */
     name: string;
 }

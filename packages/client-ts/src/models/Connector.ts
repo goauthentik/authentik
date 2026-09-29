@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,51 +11,27 @@
  */
 
 /**
- *
  * @export
  * @interface Connector
  */
 export interface Connector {
-    /**
-     *
-     * @type {string}
-     * @memberof Connector
-     */
     connectorUuid?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof Connector
-     */
     name: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof Connector
-     */
     enabled?: boolean;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof Connector
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof Connector
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof Connector
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof Connector
      */
     readonly metaModelName: string;
 }

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,12 @@
 
 /**
  * User source connection
+ *
  * @export
  * @interface UserLDAPSourceConnectionRequest
  */
 export interface UserLDAPSourceConnectionRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof UserLDAPSourceConnectionRequest
-     */
     source: string;
-    /**
-     *
-     * @type {string}
-     * @memberof UserLDAPSourceConnectionRequest
-     */
     identifier: string;
 }
 

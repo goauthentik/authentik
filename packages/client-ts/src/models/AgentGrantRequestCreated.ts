@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,21 +17,12 @@ import { GrantRequestFromJSON } from "./GrantRequest";
  * Response to an agent's access request: the request it created, plus the URL to hand to
  * the human it acts for. An agent has no browser, so it cannot run the approval itself --
  * `fulfill_url` is what its owner opens to approve or deny.
+ *
  * @export
  * @interface AgentGrantRequestCreated
  */
 export interface AgentGrantRequestCreated {
-    /**
-     *
-     * @type {GrantRequest}
-     * @memberof AgentGrantRequestCreated
-     */
     readonly grantRequest: GrantRequest;
-    /**
-     *
-     * @type {string}
-     * @memberof AgentGrantRequestCreated
-     */
     readonly fulfillUrl: string;
 }
 

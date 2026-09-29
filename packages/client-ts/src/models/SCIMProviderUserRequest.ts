@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,27 +12,13 @@
 
 /**
  * SCIMProviderUser Serializer
+ *
  * @export
  * @interface SCIMProviderUserRequest
  */
 export interface SCIMProviderUserRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof SCIMProviderUserRequest
-     */
     scimId: string;
-    /**
-     *
-     * @type {number}
-     * @memberof SCIMProviderUserRequest
-     */
     user: number;
-    /**
-     *
-     * @type {number}
-     * @memberof SCIMProviderUserRequest
-     */
     provider: number;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,45 +19,16 @@ import { RACProviderFromJSON } from "./RACProvider";
 
 /**
  * ConnectionToken Serializer
+ *
  * @export
  * @interface ConnectionToken
  */
 export interface ConnectionToken {
-    /**
-     *
-     * @type {string}
-     * @memberof ConnectionToken
-     */
     pk?: string;
-    /**
-     *
-     * @type {number}
-     * @memberof ConnectionToken
-     */
     provider: number;
-    /**
-     *
-     * @type {RACProvider}
-     * @memberof ConnectionToken
-     */
     readonly providerObj: RACProvider;
-    /**
-     *
-     * @type {string}
-     * @memberof ConnectionToken
-     */
     endpoint: string;
-    /**
-     *
-     * @type {Endpoint}
-     * @memberof ConnectionToken
-     */
     readonly endpointObj: Endpoint;
-    /**
-     *
-     * @type {PartialUser}
-     * @memberof ConnectionToken
-     */
     readonly user: PartialUser;
 }
 

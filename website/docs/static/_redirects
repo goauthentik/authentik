@@ -85,11 +85,14 @@
 /flow/stages/*                                              /add-secure-apps/flows-stages/stages/:splat 301!
 /outposts/*                                                 /add-secure-apps/outposts/:splat 301!
 /add-secure-apps/flows-stages/flow/examples/default_flows   /add-secure-apps/flows-stages/flow/default-flows 301!
+/add-secure-apps/flows-stages/flow/examples/flows           /add-secure-apps/flows-stages/flow/flows 301!
+/add-secure-apps/flows-stages/flow/examples/snippets        /add-secure-apps/flows-stages/flow/snippets 301!
 #endregion
 
 #region Sources
 /sources/*                                                  /users-sources/sources/:splat 301!
 /user-group-role/*                                          /users-sources/:splat 301!
+/sys-mgmt/service-accounts                                  /users-sources/user/account-types/service-accounts 301!
 #endregion
 
 #region Property Mappings

@@ -10,7 +10,6 @@ import "#admin/common/ak-crypto-certificate-search";
 import "#elements/utils/TimeDeltaHelp";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/ak-array-input";
-
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -292,10 +291,12 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                             "How users prove who they are at the macOS login window. Changing this only affects devices enrolled after the change.",
                         )}
                     ></ak-radio-input>
-                    ${this.selectedAuthenticationMethod ===
-                    ApplePssoAuthenticationMethodEnum.Password
-                        ? this.renderPasswordModeOptions(pssoPolicyOptions)
-                        : this.renderSecureEnclaveModeOptions(pssoBiometricOptions)}
+                    ${
+                        this.selectedAuthenticationMethod ===
+                        ApplePssoAuthenticationMethodEnum.Password
+                            ? this.renderPasswordModeOptions(pssoPolicyOptions)
+                            : this.renderSecureEnclaveModeOptions(pssoBiometricOptions)
+                    }
                 </div>
             </ak-form-group>`;
     }
@@ -344,8 +345,9 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                 name="applePssoFilevaultPolicy"
                 label=${msg("FileVault policy")}
                 .options=${pssoPolicyOptions}
-                .value=${this.instance?.applePssoFilevaultPolicy ??
-                ApplePssoFilevaultPolicyEnum.None}
+                .value=${
+                    this.instance?.applePssoFilevaultPolicy ?? ApplePssoFilevaultPolicyEnum.None
+                }
                 help=${msg(
                     "Whether Platform SSO authenticates the user against authentik at FileVault unlock after a restart.",
                 )}
@@ -395,8 +397,10 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                 name="applePssoBiometricRequirement"
                 label=${msg("Biometric requirement")}
                 .options=${pssoBiometricOptions}
-                .value=${this.instance?.applePssoBiometricRequirement ??
-                ApplePssoBiometricRequirementEnum.None}
+                .value=${
+                    this.instance?.applePssoBiometricRequirement ??
+                    ApplePssoBiometricRequirementEnum.None
+                }
                 help=${msg(
                     "Which biometric, if any, is required to use the Secure Enclave key. Requires native agent support.",
                 )}

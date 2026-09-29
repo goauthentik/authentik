@@ -12,8 +12,9 @@ from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.utils.deprecation import MiddlewareMixin
 from django.utils.functional import SimpleLazyObject
 from django.utils.translation import override
-from sentry_sdk.api import set_tag
 from structlog.contextvars import STRUCTLOG_KEY_PREFIX
+
+from authentik.lib.tracing import active_tracer
 
 SESSION_KEY_IMPERSONATE_USER = "authentik/impersonate/user"
 SESSION_KEY_IMPERSONATE_ORIGINAL_USER = "authentik/impersonate/original_user"
@@ -108,7 +109,7 @@ class RequestIDMiddleware:
             request.request_id = request_id
             CTX_REQUEST_ID.set(request_id)
             CTX_HOST.set(request.get_host())
-            set_tag("authentik.request_id", request_id)
+            active_tracer().set_tag("authentik.request_id", request_id)
         if hasattr(request, "user") and getattr(request.user, "is_authenticated", False):
             CTX_AUTH_VIA.set("session")
         else:

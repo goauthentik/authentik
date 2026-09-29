@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,21 +15,12 @@ import { RequestStatusFromJSON, RequestStatusToJSON } from "./RequestStatus";
 
 /**
  * Base serializer class which doesn't implement create/update methods
+ *
  * @export
  * @interface PatchedGrantRequestFulfillRequest
  */
 export interface PatchedGrantRequestFulfillRequest {
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedGrantRequestFulfillRequest
-     */
     data?: { [key: string]: any };
-    /**
-     *
-     * @type {RequestStatus}
-     * @memberof PatchedGrantRequestFulfillRequest
-     */
     status?: RequestStatus;
 }
 

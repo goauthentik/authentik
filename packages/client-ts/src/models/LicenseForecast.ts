@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,33 +12,14 @@
 
 /**
  * Serializer for license forecast
+ *
  * @export
  * @interface LicenseForecast
  */
 export interface LicenseForecast {
-    /**
-     *
-     * @type {number}
-     * @memberof LicenseForecast
-     */
     internalUsers: number;
-    /**
-     *
-     * @type {number}
-     * @memberof LicenseForecast
-     */
     externalUsers: number;
-    /**
-     *
-     * @type {number}
-     * @memberof LicenseForecast
-     */
     forecastedInternalUsers: number;
-    /**
-     *
-     * @type {number}
-     * @memberof LicenseForecast
-     */
     forecastedExternalUsers: number;
 }
 

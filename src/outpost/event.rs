@@ -1,6 +1,6 @@
 use std::{fmt::Display, sync::Arc};
 
-use ak_common::{Arbiter, Tasks, VERSION, api, arbiter, authentik_build_hash, config};
+use ak_common::{Arbiter, Tasks, VERSION, api, arbiter, authentik_build_hash, config, tls};
 use axum::http::{HeaderValue, header::AUTHORIZATION};
 use eyre::{Result, eyre};
 use futures::{Sink, SinkExt as _, Stream, StreamExt as _};
@@ -13,7 +13,10 @@ use tokio::{
     signal::unix::SignalKind,
     time::{Duration, interval, sleep},
 };
-use tokio_tungstenite::tungstenite::{Error as WsError, Message, client::IntoClientRequest as _};
+use tokio_tungstenite::{
+    Connector,
+    tungstenite::{Error as WsError, Message, client::IntoClientRequest as _},
+};
 use tracing::{debug, info, instrument, trace, warn};
 use url::Url;
 
@@ -149,11 +152,14 @@ async fn watch_events_inner<O: Outpost>(
         warn!(?err, "failed to refresh");
     }
 
-    let host = if controller.is_embedded() {
-        Url::parse(&format!("http://localhost{}", config::get().web.path))?
+    let (host, insecure) = if controller.is_embedded() {
+        (
+            Url::parse(&format!("http://localhost{}", config::get().web.path))?,
+            false,
+        )
     } else {
         let server_config = api::ServerConfig::new()?;
-        server_config.host
+        (server_config.host, server_config.insecure)
     };
 
     let ws_url = build_ws_url(
@@ -163,7 +169,7 @@ async fn watch_events_inner<O: Outpost>(
         attempt,
     )?;
 
-    debug!(url = %ws_url, "connecting to websocket");
+    debug!(url = %ws_url, insecure, "connecting to websocket");
     let mut request = ws_url.into_client_request()?;
     let token = controller
         .api_config
@@ -195,7 +201,11 @@ async fn watch_events_inner<O: Outpost>(
         let (write, read) = ws_stream.split();
         (Box::new(write), Box::new(read))
     } else {
-        let (ws_stream, _response) = tokio_tungstenite::connect_async(request).await?;
+        let connector =
+            insecure.then(|| Connector::Rustls(Arc::new(tls::client::insecure_config())));
+        let (ws_stream, _response) =
+            tokio_tungstenite::connect_async_tls_with_config(request, None, false, connector)
+                .await?;
         let (write, read) = ws_stream.split();
         (Box::new(write), Box::new(read))
     };

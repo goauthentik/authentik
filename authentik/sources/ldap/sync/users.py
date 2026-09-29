@@ -89,7 +89,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                         ldap=attributes,
                     ).items()
                 }
-                self._logger.debug("Writing user with attributes", **defaults)
+                self._logger.debug("Writing user with attributes", attributes=defaults)
                 if "username" not in defaults:
                     raise IntegrityError("Username was not set by propertymappings")
                 action, connection = self.matcher.get_user_action(uniq, defaults)
@@ -120,6 +120,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 if action in (Action.AUTH, Action.LINK):
                     ak_user = connection.user
                     ak_user.update_attributes(defaults)
+                    connection.save()
                 elif action == Action.DENY:
                     continue
             except PropertyMappingExpressionException as exc:

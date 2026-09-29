@@ -14,7 +14,7 @@ import { Application } from "@goauthentik/api";
 
 import { spread } from "@open-wc/lit-helpers";
 import { kebabCase } from "change-case";
-import { HTMLAttributes } from "react";
+import type { HTMLAttributes } from "react";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -68,6 +68,7 @@ export const AKLibraryApplicationList: LitFC<AKLibraryApplicationListProps> = ({
             ([groupLabel]) => groupLabel,
             ([groupLabel, apps], groupIndex) => {
                 const groupID = kebabCase(groupLabel);
+
                 const inner = repeat(
                     apps,
                     (application) => application.pk,
@@ -109,11 +110,13 @@ export const AKLibraryApplicationList: LitFC<AKLibraryApplicationListProps> = ({
                     >
                         <h2 id=${`app-group-${groupID}`}>${groupLabel || msg("Ungrouped")}</h2>
                     </legend>
-                    ${isList
-                        ? html`<ul part="app-group-rows" class="app-group-rows" role="list">
-                              ${inner}
-                          </ul>`
-                        : inner}
+                    ${
+                        isList
+                            ? html`<ul part="app-group-rows" class="app-group-rows" role="list">
+                                  ${inner}
+                              </ul>`
+                            : inner
+                    }
                     <hr part="app-group-separator" aria-hidden="true" />
                 </fieldset>`;
             },

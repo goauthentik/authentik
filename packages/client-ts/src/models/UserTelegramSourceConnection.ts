@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,56 +10,23 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { Source } from "./Source";
 import { SourceFromJSON } from "./Source";
 
 /**
  * User source connection
+ *
  * @export
  * @interface UserTelegramSourceConnection
  */
 export interface UserTelegramSourceConnection {
-    /**
-     *
-     * @type {number}
-     * @memberof UserTelegramSourceConnection
-     */
     readonly pk: number;
-    /**
-     *
-     * @type {number}
-     * @memberof UserTelegramSourceConnection
-     */
     readonly user: number;
-    /**
-     *
-     * @type {string}
-     * @memberof UserTelegramSourceConnection
-     */
     source: string;
-    /**
-     *
-     * @type {Source}
-     * @memberof UserTelegramSourceConnection
-     */
     readonly sourceObj: Source;
-    /**
-     *
-     * @type {string}
-     * @memberof UserTelegramSourceConnection
-     */
     identifier: string;
-    /**
-     *
-     * @type {Date}
-     * @memberof UserTelegramSourceConnection
-     */
     readonly created: Date;
-    /**
-     *
-     * @type {Date}
-     * @memberof UserTelegramSourceConnection
-     */
     readonly lastUpdated: Date;
 }
 
@@ -110,8 +75,11 @@ export function UserTelegramSourceConnectionFromJSONTyped(
         source: json["source"],
         sourceObj: SourceFromJSON(json["source_obj"]),
         identifier: json["identifier"],
-        created: new Date(json["created"]),
-        lastUpdated: new Date(json["last_updated"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
     };
 }
 

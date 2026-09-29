@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,75 +15,33 @@ import { PromptTypeEnumFromJSON, PromptTypeEnumToJSON } from "./PromptTypeEnum";
 
 /**
  * Prompt Serializer
+ *
  * @export
  * @interface PatchedPromptRequest
  */
 export interface PatchedPromptRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedPromptRequest
-     */
     name?: string;
     /**
      * Name of the form field, also used to store the value
-     * @type {string}
-     * @memberof PatchedPromptRequest
      */
     fieldKey?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedPromptRequest
-     */
     label?: string;
-    /**
-     *
-     * @type {PromptTypeEnum}
-     * @memberof PatchedPromptRequest
-     */
     type?: PromptTypeEnum;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedPromptRequest
-     */
     required?: boolean;
     /**
-     * Optionally provide a short hint that describes the expected input value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple choices.
-     * @type {string}
-     * @memberof PatchedPromptRequest
+     * Optionally provide a short hint that describes the expected input value. When creating a
+     * fixed choice field, enable interpreting as expression and return a list to return multiple
+     * choices.
      */
     placeholder?: string;
     /**
-     * Optionally pre-fill the input with an initial value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple default choices.
-     * @type {string}
-     * @memberof PatchedPromptRequest
+     * Optionally pre-fill the input with an initial value. When creating a fixed choice field,
+     * enable interpreting as expression and return a list to return multiple default choices.
      */
     initialValue?: string;
-    /**
-     *
-     * @type {number}
-     * @memberof PatchedPromptRequest
-     */
     order?: number;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedPromptRequest
-     */
     subText?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedPromptRequest
-     */
     placeholderExpression?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedPromptRequest
-     */
     initialValueExpression?: boolean;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,6 +10,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { PartialUser } from "./PartialUser";
 import { PartialUserFromJSON } from "./PartialUser";
 import type { WebAuthnDeviceType } from "./WebAuthnDeviceType";
@@ -19,45 +18,16 @@ import { WebAuthnDeviceTypeFromJSON } from "./WebAuthnDeviceType";
 
 /**
  * Serializer for WebAuthn authenticator devices
+ *
  * @export
  * @interface WebAuthnDevice
  */
 export interface WebAuthnDevice {
-    /**
-     *
-     * @type {number}
-     * @memberof WebAuthnDevice
-     */
     readonly pk: number;
-    /**
-     *
-     * @type {string}
-     * @memberof WebAuthnDevice
-     */
     name: string;
-    /**
-     *
-     * @type {Date}
-     * @memberof WebAuthnDevice
-     */
     readonly createdOn: Date;
-    /**
-     *
-     * @type {WebAuthnDeviceType}
-     * @memberof WebAuthnDevice
-     */
     readonly deviceType: WebAuthnDeviceType | null;
-    /**
-     *
-     * @type {string}
-     * @memberof WebAuthnDevice
-     */
     readonly aaguid: string;
-    /**
-     *
-     * @type {PartialUser}
-     * @memberof WebAuthnDevice
-     */
     readonly user: PartialUser;
 }
 
@@ -100,7 +70,8 @@ export function WebAuthnDeviceFromJSONTyped(
     return {
         pk: json["pk"],
         name: json["name"],
-        createdOn: new Date(json["created_on"]),
+        createdOn:
+            json["created_on"] == null ? json["created_on"] : parseDateTime(json["created_on"]),
         deviceType: WebAuthnDeviceTypeFromJSON(json["device_type"]),
         aaguid: json["aaguid"],
         user: PartialUserFromJSON(json["user"]),

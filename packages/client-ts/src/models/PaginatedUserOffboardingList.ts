@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,28 +16,12 @@ import type { UserOffboarding } from "./UserOffboarding";
 import { UserOffboardingFromJSON, UserOffboardingToJSON } from "./UserOffboarding";
 
 /**
- *
  * @export
  * @interface PaginatedUserOffboardingList
  */
 export interface PaginatedUserOffboardingList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedUserOffboardingList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<UserOffboarding>}
-     * @memberof PaginatedUserOffboardingList
-     */
     results: Array<UserOffboarding>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedUserOffboardingList
-     */
     autocomplete: { [key: string]: any };
 }
 

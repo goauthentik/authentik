@@ -9,12 +9,20 @@ import "#admin/outposts/OutpostForm";
 import "#admin/outposts/OutpostHealthList";
 import "#admin/outposts/OutpostProviderList";
 import "#elements/buttons/TokenCopyButton/ak-token-copy-button";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 
 import { AKElement } from "#elements/Base";
-import { IconTokenCopyButton } from "#elements/buttons/IconTokenCopyButton";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
@@ -27,21 +35,12 @@ import { embeddedOutpostManaged, outpostTypeToLabel } from "#admin/outposts/util
 
 import { ModelEnum, Outpost, OutpostHealth, OutpostsApi, OutpostTypeEnum } from "@goauthentik/api";
 
+import { guard } from "lit-html/directives/guard.js";
+
 import { msg, str } from "@lit/localize";
 import { CSSResult, PropertyValues } from "lit";
 import { html } from "lit-html";
-import { guard } from "lit-html/directives/guard.js";
 import { customElement, property } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 const OUTPOST_TYPE = ModelEnum.AuthentikOutpostsOutpost;
 
@@ -138,21 +137,28 @@ export class OutpostViewPage extends AKElement {
                     aria-valuemax=${totalCount}
                     aria-valuenow=${totalCount}
                 >
-                    ${healthyPct
-                        ? html`
-                              <div class="pf-c-progress__indicator" style="width: ${healthyPct}%;">
-                                  <span class="pf-c-progress__measure">${healthyPct}%</span>
-                              </div>
-                          `
-                        : null}
-                    ${unhealthyPct
-                        ? html`<div
-                              class="pf-c-progress__indicator pf-m-success"
-                              style="width: ${unhealthyPct}%; margin-left: ${healthyPct}%; background-color: var(--pf-c-progress--m-warning__bar--BackgroundColor);"
-                          >
-                              <span class="pf-c-progress__measure">${unhealthyPct}%</span>
-                          </div>`
-                        : null}
+                    ${
+                        healthyPct
+                            ? html`
+                                  <div
+                                      class="pf-c-progress__indicator"
+                                      style="width: ${healthyPct}%;"
+                                  >
+                                      <span class="pf-c-progress__measure">${healthyPct}%</span>
+                                  </div>
+                              `
+                            : null
+                    }
+                    ${
+                        unhealthyPct
+                            ? html`<div
+                                  class="pf-c-progress__indicator pf-m-success"
+                                  style="width: ${unhealthyPct}%; margin-left: ${healthyPct}%; background-color: var(--pf-c-progress--m-warning__bar--BackgroundColor);"
+                              >
+                                  <span class="pf-c-progress__measure">${unhealthyPct}%</span>
+                              </div>`
+                            : null
+                    }
                 </div>
             </div>`;
         });
@@ -160,13 +166,15 @@ export class OutpostViewPage extends AKElement {
 
     protected renderTabOverview(): SlottedTemplateResult {
         return html`
-            ${(this.outpost?.config.authentik_host ?? "") === ""
-                ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${msg(
-                          "Warning: authentik Domain is not configured, authentication will not work.",
-                      )}
-                  </div>`
-                : null}
+            ${
+                (this.outpost?.config.authentik_host ?? "") === ""
+                    ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                          ${msg(
+                              "Warning: authentik Domain is not configured, authentication will not work.",
+                          )}
+                      </div>`
+                    : null
+            }
             <div class="pf-l-grid pf-m-gutter pf-c-page__main-section pf-m-no-padding-mobile">
                 <div
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
@@ -205,13 +213,15 @@ export class OutpostViewPage extends AKElement {
                         .items=${this.outpost?.providersObj}
                     ></ak-outposts-provider-list>
                 </div>
-                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                ${this.renderOutpostDeploymentInfo()}
+                <div
+                    class="pf-c-card pf-l-grid__item ${this.outpost?.managed === embeddedOutpostManaged ? "pf-m-12-col" : "pf-m-9-col"}"
+                >
                     <div class="pf-c-card__title">
                         ${msg("Detailed health (data is cached so may be out of date)")}
                     </div>
                     <ak-outpost-health-list .items=${this.health}></ak-outpost-health-list>
                 </div>
-                ${this.renderOutpostDeploymentInfo()}
             </div>
         `;
     }
@@ -221,7 +231,7 @@ export class OutpostViewPage extends AKElement {
             return null;
         }
 
-        return html`<div class="pf-c-card pf-l-grid__item pf-m-12-col">
+        return html`<div class="pf-c-card pf-l-grid__item pf-m-3-col">
             <div class="pf-c-card__title">${msg("Outpost Deployment Info")}</div>
             <div class="pf-c-card__body">
                 <p>
@@ -248,7 +258,14 @@ export class OutpostViewPage extends AKElement {
                         <label class="pf-c-form__label">
                             <span class="pf-c-form__label-text">AUTHENTIK_TOKEN</span>
                         </label>
-                        <div>${IconTokenCopyButton(this.outpost?.tokenIdentifier)}</div>
+                        <div>
+                            <ak-token-copy-button
+                                class="pf-m-secondary"
+                                .identifier="${this.outpost?.tokenIdentifier}"
+                            >
+                                ${msg("Copy token")}
+                            </ak-token-copy-button>
+                        </div>
                     </div>
                     <h3>
                         ${msg(
@@ -261,28 +278,30 @@ export class OutpostViewPage extends AKElement {
                         </label>
                         <input class="pf-c-form-control" readonly type="text" value="true" />
                     </div>
-                    ${this.outpost?.type === OutpostTypeEnum.Proxy
-                        ? html`
-                              <h3>
-                                  ${msg(
-                                      "If your authentik_host setting does not match the URL you want to login with, add this setting.",
-                                  )}
-                              </h3>
-                              <div class="pf-c-form__group">
-                                  <label class="pf-c-form__label">
-                                      <span class="pf-c-form__label-text"
-                                          >AUTHENTIK_HOST_BROWSER</span
-                                      >
-                                  </label>
-                                  <input
-                                      class="pf-c-form-control"
-                                      readonly
-                                      type="text"
-                                      value="${document.location.origin}"
-                                  />
-                              </div>
-                          `
-                        : null}
+                    ${
+                        this.outpost?.type === OutpostTypeEnum.Proxy
+                            ? html`
+                                  <h3>
+                                      ${msg(
+                                          "If your authentik_host setting does not match the URL you want to login with, add this setting.",
+                                      )}
+                                  </h3>
+                                  <div class="pf-c-form__group">
+                                      <label class="pf-c-form__label">
+                                          <span class="pf-c-form__label-text"
+                                              >AUTHENTIK_HOST_BROWSER</span
+                                          >
+                                      </label>
+                                      <input
+                                          class="pf-c-form-control"
+                                          readonly
+                                          type="text"
+                                          value="${document.location.origin}"
+                                      />
+                                  </div>
+                              `
+                            : null
+                    }
                 </form>
             </div>
         </div>`;
@@ -307,7 +326,7 @@ export class OutpostViewPage extends AKElement {
         }
 
         return html`<main>
-            <ak-tabs>
+            <ak-tabs routed>
                 <div
                     role="tabpanel"
                     tabindex="0"
@@ -355,6 +374,7 @@ export class OutpostViewPage extends AKElement {
         </main>`;
     }
 }
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-outpost-view": OutpostViewPage;

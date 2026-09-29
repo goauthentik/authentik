@@ -17,7 +17,7 @@ from authentik.endpoints.models import (
     DeviceUserBinding,
 )
 from authentik.flows.stage import StageView
-from authentik.lib.generators import generate_key
+from authentik.lib.generators import generate_id, generate_key
 from authentik.lib.models import (
     ExpiringModel,
     InternallyManagedMixin,
@@ -343,39 +343,36 @@ class AppleNonce(InternallyManagedMixin, ExpiringModel):
         verbose_name_plural = _("Apple Nonces")
 
 
-class AppleUserKey(models.Model):
-    """A key provisioned for a Platform SSO key purpose.
+class AppleAuthorizationCode(InternallyManagedMixin, ExpiringModel):
+    """Short-lived code issued by the authorize endpoint, exchanged for tokens."""
 
-    Platform SSO 2.0 asks the IdP to mint an EC P-256 key after user registration and hand
-    back its public half in a certificate, so that macOS keychain operations can find it.
-    The Mac then performs Diffie-Hellman against it to unlock the user's key bag, which is
-    what binds the account -- without it registration never leaves NeedsBinding.
-
-    The key is per device connection and login name rather than per authentik user: the
-    request identifies the user only by the name macOS logs in with, which is the same name
-    the local account uses."""
-
-    uuid = models.UUIDField(primary_key=True, default=uuid4)
+    code = models.TextField(default=generate_id)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    connector = models.ForeignKey("AgentConnector", on_delete=models.CASCADE)
+    # The device the code was issued to, it is the only one allowed to redeem it
     device_connection = models.ForeignKey(AgentDeviceConnection, on_delete=models.CASCADE)
-    username = models.TextField()
-    # Only "user_unlock" exists today; stored so a second purpose does not silently reuse
-    # the same key.
-    key_purpose = models.TextField(default="user_unlock")
-    certificate = models.TextField()
+    state = models.TextField(default="")
+    scope = models.TextField()
+
+    class Meta(ExpiringModel.Meta):
+        verbose_name = _("Apple Authorization Code")
+        verbose_name_plural = _("Apple Authorization Codes")
+        indexes = ExpiringModel.Meta.indexes + [
+            models.Index(fields=["code"]),
+        ]
+
+
+class AppleUnlockKey(InternallyManagedMixin, ExpiringModel):
+    """Server-provisioned EC256 key for Platform SSO v2.0 user_unlock."""
+
+    identifier = models.UUIDField(primary_key=True, default=uuid4)
+    device_user = models.ForeignKey(AgentDeviceUserBinding, on_delete=models.CASCADE)
     private_key = models.TextField()
-    # Opaque server-side state Apple lets the IdP round-trip with the key. Kept because the
-    # client echoes it back on every key exchange, so it is a place to version key material
-    # without re-provisioning.
-    key_context = models.TextField(blank=True, default="")
-    created = models.DateTimeField(auto_now_add=True)
+    certificate_der = models.TextField(default="")
 
-    class Meta:
-        verbose_name = _("Apple User Key")
-        verbose_name_plural = _("Apple User Keys")
-        unique_together = (("device_connection", "username", "key_purpose"),)
-
-    def __str__(self) -> str:
-        return f"Apple User Key {self.key_purpose} for {self.username}"
+    class Meta(ExpiringModel.Meta):
+        verbose_name = _("Apple Unlock Key")
+        verbose_name_plural = _("Apple Unlock Keys")
 
 
 class AppleIndependentSecureEnclave(Authenticator):

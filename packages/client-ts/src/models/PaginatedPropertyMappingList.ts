@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,28 +16,12 @@ import type { PropertyMapping } from "./PropertyMapping";
 import { PropertyMappingFromJSON, PropertyMappingToJSON } from "./PropertyMapping";
 
 /**
- *
  * @export
  * @interface PaginatedPropertyMappingList
  */
 export interface PaginatedPropertyMappingList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedPropertyMappingList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<PropertyMapping>}
-     * @memberof PaginatedPropertyMappingList
-     */
     results: Array<PropertyMapping>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedPropertyMappingList
-     */
     autocomplete: { [key: string]: any };
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,41 +10,16 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 /**
- *
  * @export
  * @interface EnrollmentTokenRequest
  */
 export interface EnrollmentTokenRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof EnrollmentTokenRequest
-     */
     deviceGroup?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof EnrollmentTokenRequest
-     */
     connector: string;
-    /**
-     *
-     * @type {string}
-     * @memberof EnrollmentTokenRequest
-     */
     name: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof EnrollmentTokenRequest
-     */
     expiring?: boolean;
-    /**
-     *
-     * @type {Date}
-     * @memberof EnrollmentTokenRequest
-     */
     expires?: Date | null;
 }
 
@@ -85,7 +58,7 @@ export function EnrollmentTokenRequestFromJSONTyped(
                 ? undefined
                 : json["expires"] === null
                   ? null
-                  : new Date(json["expires"]),
+                  : parseDateTime(json["expires"]),
     };
 }
 
@@ -106,6 +79,6 @@ export function EnrollmentTokenRequestToJSONTyped(
         connector: value["connector"],
         name: value["name"],
         expiring: value["expiring"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
     };
 }

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,45 +16,16 @@ import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * Autosubmit challenge used to send and navigate a POST request
+ *
  * @export
  * @interface AutosubmitChallenge
  */
 export interface AutosubmitChallenge {
-    /**
-     *
-     * @type {ContextualFlowInfo}
-     * @memberof AutosubmitChallenge
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     * @type {string}
-     * @memberof AutosubmitChallenge
-     */
     component?: string;
-    /**
-     *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof AutosubmitChallenge
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {string}
-     * @memberof AutosubmitChallenge
-     */
     url: string;
-    /**
-     *
-     * @type {{ [key: string]: string; }}
-     * @memberof AutosubmitChallenge
-     */
     attrs: { [key: string]: string };
-    /**
-     *
-     * @type {string}
-     * @memberof AutosubmitChallenge
-     */
     title?: string;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,28 +16,12 @@ import type { ProxyOutpostConfig } from "./ProxyOutpostConfig";
 import { ProxyOutpostConfigFromJSON, ProxyOutpostConfigToJSON } from "./ProxyOutpostConfig";
 
 /**
- *
  * @export
  * @interface PaginatedProxyOutpostConfigList
  */
 export interface PaginatedProxyOutpostConfigList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedProxyOutpostConfigList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<ProxyOutpostConfig>}
-     * @memberof PaginatedProxyOutpostConfigList
-     */
     results: Array<ProxyOutpostConfig>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedProxyOutpostConfigList
-     */
     autocomplete: { [key: string]: any };
 }
 

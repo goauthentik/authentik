@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,46 +10,21 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { DeviceFacts } from "./DeviceFacts";
 import { DeviceFactsFromJSON, DeviceFactsToJSON } from "./DeviceFacts";
 import type { VendorEnum } from "./VendorEnum";
 import { VendorEnumFromJSON } from "./VendorEnum";
 
 /**
- *
  * @export
  * @interface DeviceFactSnapshot
  */
 export interface DeviceFactSnapshot {
-    /**
-     *
-     * @type {DeviceFacts}
-     * @memberof DeviceFactSnapshot
-     */
     data: DeviceFacts;
-    /**
-     *
-     * @type {string}
-     * @memberof DeviceFactSnapshot
-     */
     connection: string;
-    /**
-     *
-     * @type {Date}
-     * @memberof DeviceFactSnapshot
-     */
     readonly created: Date;
-    /**
-     *
-     * @type {Date}
-     * @memberof DeviceFactSnapshot
-     */
     readonly expires: Date | null;
-    /**
-     *
-     * @type {VendorEnum}
-     * @memberof DeviceFactSnapshot
-     */
     readonly vendor: VendorEnum;
 }
 
@@ -81,8 +54,8 @@ export function DeviceFactSnapshotFromJSONTyped(
     return {
         data: DeviceFactsFromJSON(json["data"]),
         connection: json["connection"],
-        created: new Date(json["created"]),
-        expires: json["expires"] == null ? null : new Date(json["expires"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
+        expires: json["expires"] == null ? null : parseDateTime(json["expires"]),
         vendor: VendorEnumFromJSON(json["vendor"]),
     };
 }

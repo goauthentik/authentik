@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,28 +16,12 @@ import type { Pagination } from "./Pagination";
 import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- *
  * @export
  * @interface PaginatedCaptchaStageList
  */
 export interface PaginatedCaptchaStageList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedCaptchaStageList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<CaptchaStage>}
-     * @memberof PaginatedCaptchaStageList
-     */
     results: Array<CaptchaStage>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedCaptchaStageList
-     */
     autocomplete: { [key: string]: any };
 }
 

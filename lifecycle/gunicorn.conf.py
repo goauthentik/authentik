@@ -8,12 +8,14 @@ from pathlib import Path
 from tempfile import gettempdir
 from typing import TYPE_CHECKING
 
+from prometheus_client import values
 from prometheus_client.values import MultiProcessValue
 
 from authentik import authentik_full_version
 from authentik.lib.config import CONFIG
 from authentik.lib.debug import start_debug_server
 from authentik.lib.logging import get_logger_config
+from authentik.lib.tracing import TRACER_DEFER_POSTFORK_ENV_VAR
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.reflection import get_env
 from authentik.root.install_id import get_install_id_raw
@@ -26,6 +28,22 @@ if TYPE_CHECKING:
     from gunicorn.arbiter import Arbiter
 
     from authentik.root.asgi import AuthentikAsgi
+
+# preload_app below means the app (and AuthentikCoreConfig.ready()) loads once in this
+# master process before workers are forked; tell it to defer each tracer's post-fork setup
+# to the post_fork hook below instead (see authentik.lib.tracing.setup_post_fork)
+os.environ[TRACER_DEFER_POSTFORK_ENV_VAR] = "true"
+
+# Install this *before* preload_app loads Django below, so metrics that get constructed
+# pre-fork (e.g. django-prometheus's Counters) share
+# the same MultiProcessValue class as everything else instead of being permanently bound to
+# the master's PID.
+_worker_id: dict[str, int | None] = {"value": None}
+
+
+values.ValueClass = MultiProcessValue(
+    lambda: _worker_id["value"] if _worker_id["value"] is not None else 0
+)
 
 setup()
 
@@ -72,13 +90,19 @@ def when_ready(server: "Arbiter"):  # noqa: UP037
 
 def post_fork(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
     """Tell prometheus to use worker number instead of process ID for multiprocess"""
-    from prometheus_client import values
-
-    values.ValueClass = MultiProcessValue(lambda: worker._worker_id)
+    _worker_id["value"] = worker._worker_id
 
     from authentik.lib.debug import start_pyroscope
 
     start_pyroscope("server", worker_id=str(worker._worker_id))
+
+    # OTel's real TracerProvider is created here rather than before the fork above, since
+    # BatchSpanProcessor's background export thread and locks do not survive fork() and
+    # can deadlock a forked worker that inherits them (see OpenTelemetryTracer.setup_post_fork)
+    if CONFIG.get_bool("error_reporting.enabled", False):
+        from authentik.lib.tracing import setup_post_fork
+
+        setup_post_fork()
 
 
 def worker_exit(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037

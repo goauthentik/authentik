@@ -1,0 +1,100 @@
+---
+title: Integrate with wg-easy
+sidebar_label: wg-easy
+support_level: community
+---
+
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+
+## What is wg-easy?
+
+> wg-easy is a self-hosted web UI for the WireGuard VPN. It manages the WireGuard server and its clients from the browser, including client creation, QR codes for mobile setup, and connection statistics.
+>
+> -- https://wg-easy.github.io/wg-easy/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `wg-easy.company` is the FQDN of the wg-easy installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::info wg-easy version
+External authentication via OIDC is supported in wg-easy version 15.4 and later.
+:::
+
+## authentik configuration
+
+To support the integration of wg-easy with authentik, you need to create an application/provider pair in authentik.
+
+### Create a custom scope mapping
+
+wg-easy only accepts logins where the email scope returns `email_verified: True`. Because the default authentik email scope mapping returns `email_verified: False`, create a custom scope mapping for wg-easy. See [Email scope verification](/docs/add-secure-apps/providers/oauth2/#email-scope-verification).
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+    - **Select type**: select **Scope Mapping**.
+    - **Configure the Scope Mapping**: provide a descriptive name (e.g. `wg-easy Email Scope`), and an optional description.
+        - **Scope name**: `email`
+        - **Expression**:
+
+        ```python showLineNumbers
+        return {
+            "email": request.user.email,
+            "email_verified": True
+        }
+        ```
+
+3. Click **Finish** to save the property mapping.
+
+### Create an application and provider
+
+<RedirectURI20265Note />
+
+1. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it is required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they are required later.
+        - Add two **Redirect URI** entries of type `Strict` `Authorization`: `https://wg-easy.company/api/auth/oidc/callback` and `https://wg-easy.company/api/auth/oidc/link`. The second URI is used when linking an existing wg-easy account to authentik.
+        - Select any available signing key.
+        - Under **Advanced protocol settings**, remove the `authentik default OAuth Mapping: OpenID 'email'` scope from **Selected Scopes** and add the custom scope mapping that you created in the previous section.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+2. Click **Submit** to save the new application and provider.
+
+## wg-easy configuration
+
+wg-easy uses environment variables to configure external authentication. Add the following variables to the environment file for the wg-easy container, then restart the container:
+
+```env title=".env"
+OAUTH_PROVIDERS=oidc
+OAUTH_OIDC_NAME=authentik
+OAUTH_OIDC_SERVER=https://authentik.company/application/o/<application_slug>/
+OAUTH_OIDC_CLIENT_ID=<Client ID from authentik>
+OAUTH_OIDC_CLIENT_SECRET=<Client Secret from authentik>
+OAUTH_AUTO_REGISTER=true
+```
+
+:::warning Auto-registered users
+wg-easy creates auto-registered users with administrator permissions because its permissions system is not yet implemented. Every authentik user who is allowed to access the application can manage the WireGuard server. Set `OAUTH_AUTO_REGISTER=false` to only allow existing wg-easy users to log in after linking their authentik account.
+:::
+
+To make authentik the only login method for wg-easy, you can add the following variables:
+
+```env title=".env"
+DISABLE_PASSWORD_AUTH=true
+OAUTH_AUTO_LAUNCH=oidc
+```
+
+## Configuration verification
+
+To confirm that authentik is properly configured with wg-easy, log out of wg-easy and click **Sign in with authentik** on the login page. You should be redirected to authentik, then returned to wg-easy after a successful login.
+
+## Resources
+
+- [wg-easy documentation - External Authentication](https://wg-easy.github.io/wg-easy/latest/advanced/config/external-authentication/)

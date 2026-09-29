@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -29,172 +27,36 @@ import {
 } from "./ApplePssoFilevaultPolicyEnum";
 
 /**
- *
  * @export
  * @interface PatchedAgentConnectorRequest
  */
 export interface PatchedAgentConnectorRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAgentConnectorRequest
-     */
     connectorUuid?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAgentConnectorRequest
-     */
     name?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedAgentConnectorRequest
-     */
     enabled?: boolean;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAgentConnectorRequest
-     */
     snapshotExpiry?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAgentConnectorRequest
-     */
     authSessionDuration?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedAgentConnectorRequest
-     */
     authTerminateSessionOnExpiry?: boolean;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAgentConnectorRequest
-     */
     refreshInterval?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAgentConnectorRequest
-     */
     authorizationFlow?: string | null;
-    /**
-     *
-     * @type {number}
-     * @memberof PatchedAgentConnectorRequest
-     */
     nssUidOffset?: number;
-    /**
-     *
-     * @type {number}
-     * @memberof PatchedAgentConnectorRequest
-     */
     nssGidOffset?: number;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAgentConnectorRequest
-     */
     challengeKey?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAgentConnectorRequest
-     */
     challengeIdleTimeout?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedAgentConnectorRequest
-     */
     challengeTriggerCheckIn?: boolean;
-    /**
-     *
-     * @type {Array<number>}
-     * @memberof PatchedAgentConnectorRequest
-     */
     jwtFederationProviders?: Array<number>;
-    /**
-     *
-     * @type {ApplePssoAuthenticationMethodEnum}
-     * @memberof PatchedAgentConnectorRequest
-     */
     applePssoAuthenticationMethod?: ApplePssoAuthenticationMethodEnum;
-    /**
-     *
-     * @type {number}
-     * @memberof PatchedAgentConnectorRequest
-     */
     applePssoAuthenticationGracePeriod?: number;
-    /**
-     *
-     * @type {number}
-     * @memberof PatchedAgentConnectorRequest
-     */
     applePssoOfflineGracePeriod?: number;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof PatchedAgentConnectorRequest
-     */
     applePssoNonPlatformSsoAccounts?: Array<string>;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedAgentConnectorRequest
-     */
     applePssoEnableCreateUserAtLogin?: boolean;
-    /**
-     *
-     * @type {ApplePssoFilevaultPolicyEnum}
-     * @memberof PatchedAgentConnectorRequest
-     */
     applePssoLoginPolicy?: ApplePssoFilevaultPolicyEnum;
-    /**
-     *
-     * @type {ApplePssoFilevaultPolicyEnum}
-     * @memberof PatchedAgentConnectorRequest
-     */
     applePssoUnlockPolicy?: ApplePssoFilevaultPolicyEnum;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedAgentConnectorRequest
-     */
     applePssoUnlockAllowTouchIdOrWatch?: boolean;
-    /**
-     *
-     * @type {ApplePssoFilevaultPolicyEnum}
-     * @memberof PatchedAgentConnectorRequest
-     */
     applePssoFilevaultPolicy?: ApplePssoFilevaultPolicyEnum;
-    /**
-     *
-     * @type {number}
-     * @memberof PatchedAgentConnectorRequest
-     */
     applePssoLoginFrequency?: number;
-    /**
-     *
-     * @type {ApplePssoBiometricRequirementEnum}
-     * @memberof PatchedAgentConnectorRequest
-     */
     applePssoBiometricRequirement?: ApplePssoBiometricRequirementEnum;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedAgentConnectorRequest
-     */
     applePssoBiometricPasswordFallback?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedAgentConnectorRequest
-     */
     applePssoBiometricReuseDuringUnlock?: boolean;
 }
 

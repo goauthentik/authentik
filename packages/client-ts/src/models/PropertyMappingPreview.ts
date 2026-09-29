@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,15 +12,11 @@
 
 /**
  * Preview how the current user is mapped via the property mappings selected in a provider
+ *
  * @export
  * @interface PropertyMappingPreview
  */
 export interface PropertyMappingPreview {
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PropertyMappingPreview
-     */
     readonly preview: { [key: string]: any };
 }
 

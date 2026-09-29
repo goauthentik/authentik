@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,28 +16,12 @@ import type { Pagination } from "./Pagination";
 import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- *
  * @export
  * @interface PaginatedLDAPSourceList
  */
 export interface PaginatedLDAPSourceList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedLDAPSourceList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<LDAPSource>}
-     * @memberof PaginatedLDAPSourceList
-     */
     results: Array<LDAPSource>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedLDAPSourceList
-     */
     autocomplete: { [key: string]: any };
 }
 

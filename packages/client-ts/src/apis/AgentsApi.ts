@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -25,34 +23,55 @@ export interface AgentsAgentsCreateRequest {
 }
 
 export interface AgentsAgentsDestroyRequest {
+    /**
+     * A unique integer value identifying this Agent.
+     */
     id: number;
 }
 
 export interface AgentsAgentsListRequest {
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     parent?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface AgentsAgentsPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this Agent.
+     */
     id: number;
     patchedAgentRequest?: PatchedAgentRequest;
 }
 
 export interface AgentsAgentsRetrieveRequest {
+    /**
+     * A unique integer value identifying this Agent.
+     */
     id: number;
 }
 
 export interface AgentsAgentsUpdateRequest {
+    /**
+     * A unique integer value identifying this Agent.
+     */
     id: number;
     agentRequest: AgentRequest;
 }
 
-/**
- *
- */
 export class AgentsApi extends runtime.BaseAPI {
     /**
      * Creates request options for agentsAgentsCreate without sending the request
@@ -75,7 +94,7 @@ export class AgentsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/agents/agents/`;
+        const urlPath = `/agents/agents/`;
 
         return {
             path: urlPath,
@@ -87,7 +106,9 @@ export class AgentsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
+     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then
+     * grants it access the same way as any other User -- ordinary PolicyBindings pointed at
+     * whatever it needs.
      */
     async agentsAgentsCreateRaw(
         requestParameters: AgentsAgentsCreateRequest,
@@ -102,7 +123,9 @@ export class AgentsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
+     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then
+     * grants it access the same way as any other User -- ordinary PolicyBindings pointed at
+     * whatever it needs.
      */
     async agentsAgentsCreate(
         requestParameters: AgentsAgentsCreateRequest = {},
@@ -150,7 +173,9 @@ export class AgentsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
+     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then
+     * grants it access the same way as any other User -- ordinary PolicyBindings pointed at
+     * whatever it needs.
      */
     async agentsAgentsDestroyRaw(
         requestParameters: AgentsAgentsDestroyRequest,
@@ -163,7 +188,9 @@ export class AgentsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
+     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then
+     * grants it access the same way as any other User -- ordinary PolicyBindings pointed at
+     * whatever it needs.
      */
     async agentsAgentsDestroy(
         requestParameters: AgentsAgentsDestroyRequest,
@@ -211,7 +238,7 @@ export class AgentsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/agents/agents/`;
+        const urlPath = `/agents/agents/`;
 
         return {
             path: urlPath,
@@ -222,7 +249,9 @@ export class AgentsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
+     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then
+     * grants it access the same way as any other User -- ordinary PolicyBindings pointed at
+     * whatever it needs.
      */
     async agentsAgentsListRaw(
         requestParameters: AgentsAgentsListRequest,
@@ -237,7 +266,9 @@ export class AgentsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
+     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then
+     * grants it access the same way as any other User -- ordinary PolicyBindings pointed at
+     * whatever it needs.
      */
     async agentsAgentsList(
         requestParameters: AgentsAgentsListRequest = {},
@@ -288,7 +319,9 @@ export class AgentsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
+     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then
+     * grants it access the same way as any other User -- ordinary PolicyBindings pointed at
+     * whatever it needs.
      */
     async agentsAgentsPartialUpdateRaw(
         requestParameters: AgentsAgentsPartialUpdateRequest,
@@ -301,7 +334,9 @@ export class AgentsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
+     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then
+     * grants it access the same way as any other User -- ordinary PolicyBindings pointed at
+     * whatever it needs.
      */
     async agentsAgentsPartialUpdate(
         requestParameters: AgentsAgentsPartialUpdateRequest,
@@ -349,7 +384,9 @@ export class AgentsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
+     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then
+     * grants it access the same way as any other User -- ordinary PolicyBindings pointed at
+     * whatever it needs.
      */
     async agentsAgentsRetrieveRaw(
         requestParameters: AgentsAgentsRetrieveRequest,
@@ -362,7 +399,9 @@ export class AgentsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
+     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then
+     * grants it access the same way as any other User -- ordinary PolicyBindings pointed at
+     * whatever it needs.
      */
     async agentsAgentsRetrieve(
         requestParameters: AgentsAgentsRetrieveRequest,
@@ -420,7 +459,9 @@ export class AgentsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
+     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then
+     * grants it access the same way as any other User -- ordinary PolicyBindings pointed at
+     * whatever it needs.
      */
     async agentsAgentsUpdateRaw(
         requestParameters: AgentsAgentsUpdateRequest,
@@ -433,7 +474,9 @@ export class AgentsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
+     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then
+     * grants it access the same way as any other User -- ordinary PolicyBindings pointed at
+     * whatever it needs.
      */
     async agentsAgentsUpdate(
         requestParameters: AgentsAgentsUpdateRequest,

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,15 +12,11 @@
 
 /**
  * Response that device has been authenticated and tab can be closed
+ *
  * @export
  * @interface OAuthDeviceCodeFinishChallengeResponseRequest
  */
 export interface OAuthDeviceCodeFinishChallengeResponseRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof OAuthDeviceCodeFinishChallengeResponseRequest
-     */
     component?: string;
 }
 

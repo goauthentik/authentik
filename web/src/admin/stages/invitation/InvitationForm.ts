@@ -5,7 +5,6 @@ import "#components/ak-slug-input";
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 import { dateTimeLocal } from "#common/temporal";
@@ -63,6 +62,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
 
         if (!flowSearch.value) {
             flowSearch.errorMessages = [msg("Select an enrollment flow.")];
+
             return false;
         }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -40,6 +38,9 @@ export interface AdminFileDestroyRequest {
 
 export interface AdminFileListRequest {
     manageableOnly?: boolean;
+    /**
+     * A search term.
+     */
     search?: string;
     usage?: UsageEnum;
 }
@@ -62,18 +63,24 @@ export interface AdminSettingsUpdateRequest {
 
 export interface AdminVersionHistoryListRequest {
     build?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A search term.
+     */
     search?: string;
     version?: string;
 }
 
 export interface AdminVersionHistoryRetrieveRequest {
+    /**
+     * A unique integer value identifying this Version history.
+     */
     id: number;
 }
 
-/**
- *
- */
 export class AdminApi extends runtime.BaseAPI {
     /**
      * Creates request options for adminAppsList without sending the request
@@ -92,7 +99,7 @@ export class AdminApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/admin/apps/`;
+        const urlPath = `/admin/apps/`;
 
         return {
             path: urlPath,
@@ -175,7 +182,7 @@ export class AdminApi extends runtime.BaseAPI {
             formParams.append("usage", requestParameters["usage"] as any);
         }
 
-        let urlPath = `/admin/file/`;
+        const urlPath = `/admin/file/`;
 
         return {
             path: urlPath,
@@ -236,7 +243,7 @@ export class AdminApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/admin/file/`;
+        const urlPath = `/admin/file/`;
 
         return {
             path: urlPath,
@@ -300,7 +307,7 @@ export class AdminApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/admin/file/`;
+        const urlPath = `/admin/file/`;
 
         return {
             path: urlPath,
@@ -359,7 +366,7 @@ export class AdminApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/admin/file/used_by/`;
+        const urlPath = `/admin/file/used_by/`;
 
         return {
             path: urlPath,
@@ -369,8 +376,6 @@ export class AdminApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async adminFileUsedByListRaw(
         requestParameters: AdminFileUsedByListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -381,8 +386,6 @@ export class AdminApi extends runtime.BaseAPI {
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
     }
 
-    /**
-     */
     async adminFileUsedByList(
         requestParameters: AdminFileUsedByListRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -414,7 +417,7 @@ export class AdminApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/admin/models/`;
+        const urlPath = `/admin/models/`;
 
         return {
             path: urlPath,
@@ -469,7 +472,7 @@ export class AdminApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/admin/settings/`;
+        const urlPath = `/admin/settings/`;
 
         return {
             path: urlPath,
@@ -521,7 +524,7 @@ export class AdminApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/admin/settings/`;
+        const urlPath = `/admin/settings/`;
 
         return {
             path: urlPath,
@@ -581,7 +584,7 @@ export class AdminApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/admin/settings/`;
+        const urlPath = `/admin/settings/`;
 
         return {
             path: urlPath,
@@ -633,7 +636,7 @@ export class AdminApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/admin/system/`;
+        const urlPath = `/admin/system/`;
 
         return {
             path: urlPath,
@@ -682,7 +685,7 @@ export class AdminApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/admin/system/`;
+        const urlPath = `/admin/system/`;
 
         return {
             path: urlPath,
@@ -749,7 +752,7 @@ export class AdminApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/admin/version/history/`;
+        const urlPath = `/admin/version/history/`;
 
         return {
             path: urlPath,
@@ -868,7 +871,7 @@ export class AdminApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/admin/version/`;
+        const urlPath = `/admin/version/`;
 
         return {
             path: urlPath,

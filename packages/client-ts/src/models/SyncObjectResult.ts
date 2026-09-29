@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,15 +15,11 @@ import { LogEventFromJSON } from "./LogEvent";
 
 /**
  * Result of a single object sync
+ *
  * @export
  * @interface SyncObjectResult
  */
 export interface SyncObjectResult {
-    /**
-     *
-     * @type {Array<LogEvent>}
-     * @memberof SyncObjectResult
-     */
     readonly messages: Array<LogEvent>;
 }
 

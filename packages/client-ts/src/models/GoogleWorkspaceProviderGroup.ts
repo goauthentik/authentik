@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,45 +15,16 @@ import { PartialGroupFromJSON } from "./PartialGroup";
 
 /**
  * GoogleWorkspaceProviderGroup Serializer
+ *
  * @export
  * @interface GoogleWorkspaceProviderGroup
  */
 export interface GoogleWorkspaceProviderGroup {
-    /**
-     *
-     * @type {string}
-     * @memberof GoogleWorkspaceProviderGroup
-     */
     readonly id: string;
-    /**
-     *
-     * @type {string}
-     * @memberof GoogleWorkspaceProviderGroup
-     */
     googleId: string;
-    /**
-     *
-     * @type {string}
-     * @memberof GoogleWorkspaceProviderGroup
-     */
     group: string;
-    /**
-     *
-     * @type {PartialGroup}
-     * @memberof GoogleWorkspaceProviderGroup
-     */
     readonly groupObj: PartialGroup;
-    /**
-     *
-     * @type {number}
-     * @memberof GoogleWorkspaceProviderGroup
-     */
     provider: number;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof GoogleWorkspaceProviderGroup
-     */
     readonly attributes: { [key: string]: any };
 }
 

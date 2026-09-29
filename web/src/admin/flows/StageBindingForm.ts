@@ -3,13 +3,14 @@ import "#components/ak-switch-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { RadioOption } from "#elements/forms/Radio";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { AKLabel } from "#components/ak-label";
 
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
@@ -63,6 +64,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         const binding = await aki(FlowsApi).flowsBindingsRetrieve({
             fsbUuid: pk,
         });
+
         return binding;
     }
 
@@ -82,6 +84,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         if (this.instance?.pk) {
             return msg("Successfully updated binding.");
         }
+
         return msg("Successfully created binding.");
     }
 
@@ -92,9 +95,11 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 patchedFlowStageBindingRequest: data,
             });
         }
+
         if (this.targetPk) {
             data.target = this.targetPk;
         }
+
         return aki(FlowsApi).flowsBindingsCreate({
             flowStageBindingRequest: data,
         });
@@ -104,13 +109,17 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         if (this.instance?.pk) {
             return this.instance.order;
         }
+
         const bindings = await aki(FlowsApi).flowsBindingsList({
             target: this.targetPk || "",
         });
+
         const orders = bindings.results.map((binding) => binding.order);
+
         if (orders.length < 1) {
             return 0;
         }
+
         return Math.max(...orders) + 1;
     }
 
@@ -118,6 +127,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         if (this.instance?.target || this.targetPk) {
             return nothing;
         }
+
         return html`<ak-form-element-horizontal label=${msg("Target")} required name="target">
             <ak-flow-search
                 flowType=${FlowDesignationEnum.Authorization}
@@ -129,17 +139,37 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
 
     protected override renderForm(): SlottedTemplateResult {
         return html`${this.renderTarget()}
-            <ak-form-element-horizontal label=${msg("Stage")} required name="stage">
+            <ak-form-element-horizontal required name="stage">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        required: true,
+                    },
+                    msg("Stage"),
+                )}
                 <ak-search-select
+                    label=${msg("Stage")}
                     placeholder=${msg("Select a stage...")}
                     .fetchObjects=${async (query?: string): Promise<Stage[]> => {
                         const args: StagesAllListRequest = {
                             ordering: "name",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const stages = await aki(StagesApi).stagesAllList(args);
+                        const selectedStage = this.instance?.stageObj;
+
+                        if (
+                            selectedStage &&
+                            !stages.results.some((stage) => stage.pk === selectedStage.pk)
+                        ) {
+                            return [selectedStage, ...stages.results];
+                        }
+
                         return stages.results;
                     }}
                     .groupBy=${(items: Stage[]) => {
@@ -155,8 +185,18 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Order")} required name="order">
+            <ak-form-element-horizontal required name="order">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "stage-binding-order",
+                        required: true,
+                    },
+                    msg("Order"),
+                )}
                 <input
+                    id="stage-binding-order"
                     type="number"
                     value="${this.instance?.order ?? this.defaultOrder}"
                     class="pf-c-form-control"

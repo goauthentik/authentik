@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,28 +16,12 @@ import type { RedirectStage } from "./RedirectStage";
 import { RedirectStageFromJSON, RedirectStageToJSON } from "./RedirectStage";
 
 /**
- *
  * @export
  * @interface PaginatedRedirectStageList
  */
 export interface PaginatedRedirectStageList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedRedirectStageList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<RedirectStage>}
-     * @memberof PaginatedRedirectStageList
-     */
     results: Array<RedirectStage>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedRedirectStageList
-     */
     autocomplete: { [key: string]: any };
 }
 
