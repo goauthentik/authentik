@@ -8,8 +8,18 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name="task",
-            name="tenant",
+        migrations.SeparateDatabaseAndState(
+            state_operations=[
+                migrations.RemoveField(
+                    model_name="task",
+                    name="tenant",
+                ),
+            ],
+            database_operations=[
+                migrations.RunSQL(
+                    sql='ALTER TABLE "authentik_tasks_task" ALTER COLUMN "tenant_id" DROP NOT NULL',
+                    reverse_sql=migrations.RunSQL.noop,
+                ),
+            ],
         ),
     ]

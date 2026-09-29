@@ -12,10 +12,15 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.DeleteModel(
-            name="Domain",
-        ),
-        migrations.DeleteModel(
-            name="Tenant",
+        migrations.SeparateDatabaseAndState(
+            state_operations=[
+                migrations.DeleteModel(
+                    name="Domain",
+                ),
+                migrations.DeleteModel(
+                    name="Tenant",
+                ),
+            ],
+            database_operations=[],
         ),
     ]
