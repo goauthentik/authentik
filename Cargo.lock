@@ -331,7 +331,12 @@ dependencies = [
  "percent-encoding",
  "pyo3",
  "pyo3-build-config",
+<<<<<<< HEAD
  "rand 0.10.2",
+=======
+ "rand 0.10.3",
+ "rcgen",
+>>>>>>> a618bb5e7 (outposts/proxy: use HTTP/1.1 for OAuth backchannel requests (#26422))
  "regex",
  "reqwest",
  "reqwest-middleware",
