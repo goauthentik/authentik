@@ -53565,7 +53565,6 @@ components:
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
           format: uri
-          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -58682,7 +58681,6 @@ components:
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
           format: uri
-          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -58770,7 +58768,6 @@ components:
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
           format: uri
-          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
