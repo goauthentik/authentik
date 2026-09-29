@@ -19,7 +19,13 @@ export function suiteDirectory(commit: string, suite: VisualSuite): string {
     return resolve(commitDirectory(commit), suite);
 }
 
-export const VisualReportDirectory = resolve(VisualStoreRoot, "report");
+export function reportDirectory(suite: string): string {
+    return resolve(VisualStoreRoot, "report", suite);
+}
+
+export function outputDirectory(suite: string): string {
+    return resolve(PackageRoot, "test-results", "visual", suite);
+}
 
 export const ViewportSize = {
     Desktop: { width: 1280, height: 800 },
@@ -32,6 +38,7 @@ export const MaxDiffPixelRatio = {
 } as const;
 
 export const VisualEnvironment = {
+    suite: process.env.AK_VISUAL_SUITE || "local",
     baselineDirectory: process.env.AK_VISUAL_BASELINE_DIR || commitDirectory("local"),
     storybookDirectory:
         process.env.AK_VISUAL_STORYBOOK_DIR || resolve(PackageRoot, "storybook-static"),

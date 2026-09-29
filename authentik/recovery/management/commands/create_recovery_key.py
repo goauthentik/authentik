@@ -3,16 +3,16 @@
 from datetime import timedelta
 from getpass import getuser
 
+from django.core.management.base import BaseCommand
 from django.utils.timesince import timesince
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 
 from authentik.core.models import User
 from authentik.recovery.lib import create_recovery_token
-from authentik.tenants.management import TenantCommand
 
 
-class Command(TenantCommand):
+class Command(BaseCommand):
     """Create Token used to recover access"""
 
     help = _("Create a Key which can be used to restore access to authentik.")
@@ -35,7 +35,7 @@ class Command(TenantCommand):
         )
         parser.add_argument("user", action="store", help="Which user the Token gives access to.")
 
-    def handle_per_tenant(self, *args, **options):
+    def handle(self, *args, **options):
         """Create Token used to recover access"""
         duration = int(options.get("duration", 60))
         expiry = now() + timedelta(minutes=duration)
