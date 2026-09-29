@@ -108,6 +108,7 @@ from authentik.stages.email.flow import pickle_flow_token_for_email
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
+from authentik.stages.password.models import PasswordDevice
 
 LOGGER = get_logger()
 
@@ -160,6 +161,12 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         validators=[UniqueValidator(queryset=User.objects.all().order_by("username"))],
     )
     password_change_date = DateTimeField(read_only=True)
+    password_locked = SerializerMethodField()
+
+    def get_password_locked(self, user: User) -> bool:
+        """Whether the user's password currently refuses authentication."""
+        device = getattr(user, "password_device", None)
+        return device is not None and device.locked
 
     @property
     def _should_include_groups(self) -> bool:
@@ -353,6 +360,7 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             "type",
             "uuid",
             "password_change_date",
+            "password_locked",
             "last_updated",
         ]
         extra_kwargs = {
@@ -610,6 +618,7 @@ class UsersFilter(FilterSet):
 
 
 class UserViewSet(
+    ConditionalInheritance("authentik.enterprise.stages.password.api.UserPasswordLockoutMixin"),
     ConditionalInheritance(
         "authentik.enterprise.stages.account_lockdown.api.UserAccountLockdownMixin"
     ),
@@ -944,6 +953,21 @@ class UserViewSet(
             LOGGER.debug("Failed to set password hash", exc=exc)
             return Response(status=400)
         self._update_session_hash_after_password_change(request, user)
+        return Response(status=204)
+
+    @permission_required("authentik_core.reset_user_password")
+    @extend_schema(
+        request=None,
+        responses={204: OpenApiResponse(description="Successfully unlocked password")},
+    )
+    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
+    def unlock_password(self, request: Request, pk: int) -> Response:
+        """Allow a locked password to authenticate again"""
+        user: User = self.get_object()
+        if PasswordDevice.objects.filter(user=user, locked_at__isnull=False).update(
+            failed_attempts=0, locked_at=None
+        ):
+            Event.new(EventAction.PASSWORD_UNLOCKED, affected_user=user).from_http(request)
         return Response(status=204)
 
     @permission_required("authentik_core.reset_user_password")
