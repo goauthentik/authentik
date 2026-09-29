@@ -45,7 +45,8 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
     async send(data: ProxyProvider): Promise<ProxyProvider> {
         data.mode = this.mode;
 
-        if (this.mode !== ProxyMode.ForwardDomain) {
+        // Clear the cookieDomain if the user switched away from ForwardDomain
+        if (this.mode !== ProxyMode.ForwardDomain && this.instance?.mode === ProxyMode.ForwardDomain) {
             data.cookieDomain = "";
         }
 
