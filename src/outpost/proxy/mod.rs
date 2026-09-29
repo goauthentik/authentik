@@ -77,12 +77,8 @@ impl Outpost for ProxyOutpost {
 
         Ok(Self {
             controller,
-<<<<<<< HEAD
-            apps: ArcSwap::from_pointee(HashMap::with_capacity(0)),
-=======
             backchannel_client: BackchannelClient::new(builder)?,
             apps: ArcSwap::from_pointee(HashMap::new()),
->>>>>>> a618bb5e7 (outposts/proxy: use HTTP/1.1 for OAuth backchannel requests (#26422))
             certificate_store: CertificateStore::new(),
             default_cert: Arc::new(tls::self_signed::generate_certifiedkey()?),
         })
