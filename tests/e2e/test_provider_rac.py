@@ -8,6 +8,7 @@ from selenium.webdriver.common.keys import Keys
 
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
 from authentik.core.models import Application
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.endpoints.connectors.agent.models import AgentConnector, EnrollmentToken
 from authentik.endpoints.models import Device
 from authentik.flows.models import Flow
@@ -163,6 +164,9 @@ class TestProviderRAC(ChannelsSeleniumTestCase):
     def test_rac_ssh_certificate(self):
         """Test SSH RAC to a device managed by the authentik agent, which is logged
         into as the authentik user with a certificate instead of credentials"""
+        # libnss-authentik on the device resolves this user by a POSIX-valid username,
+        # unlike the mixed-case one self.user gets by default
+        self.user = create_test_admin_user(name=f"e2e-{generate_id(8).lower()}")
         device, machine = self.enroll_agent()
 
         rac: RACProvider = RACProvider.objects.create(
