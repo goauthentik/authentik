@@ -44,6 +44,7 @@ class ApplePSSOAuthenticationMethod(models.TextChoices):
 
     USER_SECURE_ENCLAVE_KEY = "user_secure_enclave_key", _("User Secure Enclave key")
     PASSWORD = "password", _("Password")
+    WEB = "web", _("Web")
 
 
 class ApplePSSOBiometricRequirement(models.TextChoices):

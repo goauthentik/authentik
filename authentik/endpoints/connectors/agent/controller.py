@@ -97,6 +97,7 @@ class AgentConnectorController(BaseController[AgentConnector]):
         return {
             ApplePSSOAuthenticationMethod.PASSWORD: "Password",
             ApplePSSOAuthenticationMethod.USER_SECURE_ENCLAVE_KEY: "UserSecureEnclaveKey",
+            ApplePSSOAuthenticationMethod.WEB: "OpenID",
         }[self.connector.apple_psso_config.authentication_method]
 
     def _psso_login_policies(self) -> dict:
