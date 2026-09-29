@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.core.cache import cache
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
-from django.template.exceptions import TemplateSyntaxError
+from django.template.exceptions import TemplateDoesNotExist, TemplateSyntaxError
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.timezone import now
@@ -139,7 +139,7 @@ class EmailStageView(ChallengeStageView):
                 },
             )
             send_mails(current_stage, message)
-        except TemplateSyntaxError as exc:
+        except (TemplateSyntaxError, TemplateDoesNotExist) as exc:
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
                 message=_("Exception occurred while rendering E-mail template"),

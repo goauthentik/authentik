@@ -3,7 +3,7 @@
 from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
-from django.template.exceptions import TemplateSyntaxError
+from django.template.exceptions import TemplateDoesNotExist, TemplateSyntaxError
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, CharField
@@ -108,7 +108,7 @@ class AuthenticatorEmailStageView(ChallengeStageView):
             )
 
             send_mails(stage, message)
-        except TemplateSyntaxError as exc:
+        except (TemplateSyntaxError, TemplateDoesNotExist) as exc:
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
                 message=_("Exception occurred while rendering E-mail template"),

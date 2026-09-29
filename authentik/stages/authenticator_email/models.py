@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.mail.backends.base import BaseEmailBackend
 from django.core.mail.backends.smtp import EmailBackend
 from django.db import models
-from django.template import TemplateSyntaxError
+from django.template import TemplateDoesNotExist, TemplateSyntaxError
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
@@ -174,7 +174,7 @@ class EmailDevice(SerializerModel, ThrottlingMixin, SideChannelDevice):
                 },
             )
             return message
-        except TemplateSyntaxError as exc:
+        except (TemplateSyntaxError, TemplateDoesNotExist) as exc:
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
                 message=_("Exception occurred while rendering E-mail template"),

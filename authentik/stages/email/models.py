@@ -9,7 +9,6 @@ from django.core.mail.backends.base import BaseEmailBackend
 from django.core.mail.backends.smtp import EmailBackend
 from django.db import models
 from django.db.models import Q
-from django.template import engines
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy
 from django.views import View
@@ -21,6 +20,7 @@ from authentik.flows.models import Stage
 from authentik.lib.config import CONFIG
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
+from authentik.stages.email.loaders import render_email_template
 
 EMAIL_RECOVERY_MAX_ATTEMPTS = 5
 
@@ -97,7 +97,7 @@ class EmailTemplate(SerializerModel, ManagedModel):
         return str(BUILTIN_TEMPLATE_LABELS.get(self.managed, self.path))
 
     def render(self, context: dict) -> str:
-        return engines["django"].from_string(self.body).render(context)
+        return render_email_template(self.body, context)
 
     @property
     def serializer(self) -> type[BaseSerializer]:
