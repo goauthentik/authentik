@@ -102,7 +102,6 @@ from authentik.lib.avatars import get_avatar
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.lib.validators import (
-    PasswordHashImportValidator,
     PasswordHashRequiresOverride,
     PasswordHashValidator,
 )
@@ -515,9 +514,8 @@ class UserPasswordHashSetSerializer(PassiveSerializer):
 
     def validate(self, attrs: dict) -> dict:
         """Validate the password hash with the requested override."""
-        validator = PasswordHashValidator() if attrs["override"] else PasswordHashImportValidator()
         try:
-            validator(attrs["password"])
+            PasswordHashValidator(strict=not attrs["override"])(attrs["password"])
         except PasswordHashRequiresOverride as exc:
             raise ValidationError(
                 {

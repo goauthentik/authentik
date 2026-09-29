@@ -382,6 +382,7 @@ PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
     "django.contrib.auth.hashers.ScryptPasswordHasher",
 ]
+# Keep in sync with `authentik.lib.validators.PasswordHashValidator.current_parameters`
 PASSWORD_HASHERS_IMPORT_ALLOWED = [
     "django.contrib.auth.hashers.PBKDF2PasswordHasher",
     "django.contrib.auth.hashers.Argon2PasswordHasher",

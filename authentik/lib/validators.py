@@ -4,7 +4,11 @@ from typing import Any
 
 from django.conf import settings
 from django.contrib.auth.hashers import (
+    Argon2PasswordHasher,
     BasePasswordHasher,
+    BCryptSHA256PasswordHasher,
+    PBKDF2PasswordHasher,
+    ScryptPasswordHasher,
     identify_hasher,
     must_update_salt,
 )
@@ -14,135 +18,90 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import Serializer
 from rest_framework.utils.representation import smart_repr
 
-_PASSWORD_HASHER_PARAMETERS = (
-    ("iterations", "iterations", _("Iterations")),
-    ("work_factor", "rounds", _("Work factor")),
-    ("time_cost", "time_cost", _("Time cost")),
-    ("memory_cost", "memory_cost", _("Memory cost")),
-    ("work_factor", "work_factor", _("Work factor")),
-    ("block_size", "block_size", _("Block size")),
-    ("parallelism", "parallelism", _("Parallelism")),
-)
-
 
 class PasswordHashRequiresOverride(ValidationError):
     """A valid password hash that does not match the current import defaults."""
 
 
 class PasswordHashValidator:
-    """Validate the encoding of a Django password hash."""
+    """Validate a Django password hash."""
 
-    message = _(
-        "Invalid password hash. The value must be a complete encoded password hash in one of "
-        "authentik's configured formats."
-    )
+    def __init__(self, strict: bool = True):
+        self.strict = strict
 
     def __call__(self, password_hash: str) -> None:
-        self._decode(password_hash)
-
-    def _decode(self, password_hash: str) -> tuple[BasePasswordHasher, dict[str, Any]]:
-        """Return the hasher and decoded password hash."""
-        try:
-            hasher = identify_hasher(password_hash)
-            return hasher, hasher.decode(password_hash)
-        except (AssertionError, TypeError, ValueError) as exc:
-            raise ValidationError(self.message) from exc
-
-
-class PasswordHashImportValidator(PasswordHashValidator):
-    """Validate a password hash against authentik's import settings."""
-
-    def __call__(self, password_hash: str) -> None:
-        hasher, decoded = self._decode(password_hash)
-        messages = self._algorithm_messages(hasher)
-        messages.extend(self._update_messages(password_hash, hasher, decoded))
-        if messages:
-            raise PasswordHashRequiresOverride(messages)
-
-    def _algorithm_messages(self, hasher: BasePasswordHasher) -> list[str]:
-        """Describe an algorithm that is not accepted for import."""
+        # 1. Validate hash function
         allowed_algorithms = [
             import_string(path)().algorithm for path in settings.PASSWORD_HASHERS_IMPORT_ALLOWED
         ]
-        if hasher.algorithm in allowed_algorithms:
-            return []
-        return [
-            _(
-                "Password hash algorithm %(algorithm)s is not accepted. Accepted algorithms: "
-                "%(accepted_algorithms)s."
+        try:
+            hasher = identify_hasher(password_hash)
+        except ValueError as exc:
+            raise ValidationError(
+                "Cannot identify hash function. "
+                f"Password hash must use one of: {", ".join(allowed_algorithms)}."
+            ) from exc
+        if self.strict and hasher.algorithm not in allowed_algorithms:
+            raise PasswordHashRequiresOverride(
+                f"Hash function {hasher.algorithm} not allowed. "
+                f"Password hash must use one of: {", ".join(allowed_algorithms)}."
             )
-            % {
-                "algorithm": hasher.algorithm,
-                "accepted_algorithms": ", ".join(allowed_algorithms),
-            }
-        ]
 
-    def _update_messages(
-        self,
-        password_hash: str,
-        hasher: BasePasswordHasher,
-        decoded: dict[str, Any],
-    ) -> list[str]:
-        """Describe why Django requires an update to the password hash."""
+        # 2. Validate hash
+        try:
+            decoded = hasher.decode(password_hash)
+        # `AssertionError` is here because Django is stupid. "default$1$2$3" triggers it.
+        except (AssertionError, ValueError) as exc:
+            raise ValidationError("Password hash could not be decoded.") from exc
+
+        if not self.strict:
+            return
+        # Django decides whether the hash needs an update, we only explain why
+        if not hasher.must_update(password_hash):
+            return
         messages: list[str] = []
-        parameters = self._parameters(hasher, decoded)
-        requires_update = hasher.must_update(password_hash)
-        if requires_update and any(provided != expected for _, provided, expected in parameters):
-            messages.append(self._settings_message(hasher, parameters))
 
-        salt_needs_update = must_update_salt(decoded["salt"], hasher.salt_entropy)
-        if salt_needs_update:
+        # 3. Validate salt
+        if must_update_salt(decoded["salt"], hasher.salt_entropy):
             messages.append(
-                _(
-                    "Password hash salt seems not to meet the current requirement of "
-                    "%(bits)d bits of entropy."
-                )
-                % {"bits": hasher.salt_entropy}
+                "Password salt seems not to meet the current requirement of "
+                f"{hasher.salt_entropy} bits of entropy."
             )
 
-        # must_update() remains authoritative when the displayed fields do not expose its reason.
-        if requires_update and not messages:
-            messages.append(self._settings_message(hasher, parameters))
-        return messages
-
-    def _parameters(
-        self,
-        hasher: BasePasswordHasher,
-        decoded: dict[str, Any],
-    ) -> list[tuple[str, Any, Any]]:
-        """Return password hash parameters for the error message."""
-        parameters = [
-            (label, decoded[decoded_name], getattr(hasher, configured_name))
-            for decoded_name, configured_name, label in _PASSWORD_HASHER_PARAMETERS
-            if decoded_name in decoded and hasattr(hasher, configured_name)
-        ]
-        if "params" in decoded:
-            expected = hasher.params()
-            parameters.extend(
-                (
-                    (_("Variety"), decoded["variety"], f"argon2{expected.type.name.lower()}"),
-                    (_("Version"), decoded["version"], expected.version),
-                    (_("Hash length"), decoded["params"].hash_len, expected.hash_len),
-                )
+        # 4. Validate parameters
+        current = self.current_parameters(hasher)
+        provided = {name: decoded[name] for name in current}
+        # If it's not the salt, it's the parameters, even unlisted ones (e.g. argon2's hash length)
+        if provided != current or not messages:
+            messages.append(
+                "Password hash parameters do not match authentik's current settings. "
+                f"Provided: {provided}. Expected: {current}."
             )
-        return parameters
 
-    def _settings_message(
-        self,
-        hasher: BasePasswordHasher,
-        parameters: list[tuple[str, Any, Any]],
-    ) -> str:
-        """Describe the password hash parameters accepted for import."""
-        provided = "\n".join(f"{label}: {value}" for label, value, _ in parameters)
-        expected = "\n".join(f"{label}: {value}" for label, _, value in parameters)
-        return _(
-            "Password hash parameters do not match authentik's current settings for algorithm "
-            "%(algorithm)s.\n\nProvided:\n%(provided)s\n\nExpected:\n%(expected)s"
-        ) % {
-            "algorithm": hasher.algorithm,
-            "provided": provided,
-            "expected": expected,
-        }
+        raise PasswordHashRequiresOverride(messages)
+
+    @classmethod
+    def current_parameters(cls, hasher: BasePasswordHasher) -> dict[str, Any]:
+        if isinstance(hasher, PBKDF2PasswordHasher):
+            return {"iterations": hasher.iterations}
+        if isinstance(hasher, Argon2PasswordHasher):
+            params = hasher.params()
+            return {
+                "variety": f"argon2{params.type.name.lower()}",
+                "version": params.version,
+                "memory_cost": params.memory_cost,
+                "time_cost": params.time_cost,
+                "parallelism": params.parallelism,
+            }
+        if isinstance(hasher, BCryptSHA256PasswordHasher):
+            return {"work_factor": hasher.rounds}
+        if isinstance(hasher, ScryptPasswordHasher):
+            return {
+                "block_size": hasher.block_size,
+                "parallelism": hasher.parallelism,
+                "work_factor": hasher.work_factor,
+            }
+        raise ValueError(f"Unsupported password hasher: {hasher.algorithm}")
 
 
 class RequiredTogetherValidator:

@@ -9,7 +9,7 @@ from authentik.admin.utils import get_system_settings
 from authentik.blueprints.models import BlueprintInstance
 from authentik.blueprints.v1.importer import Importer
 from authentik.core.apps import Setup
-from authentik.lib.validators import PasswordHashImportValidator
+from authentik.lib.validators import PasswordHashValidator
 from authentik.root.signals import post_startup
 
 BOOTSTRAP_BLUEPRINT = "system/bootstrap.yaml"
@@ -40,7 +40,7 @@ def post_startup_setup_bootstrap(sender, **_):
         return
     if password_hash := getenv("AUTHENTIK_BOOTSTRAP_PASSWORD_HASH"):
         try:
-            PasswordHashImportValidator()(password_hash)
+            PasswordHashValidator()(password_hash)
         except ValidationError as exc:
             raise ImproperlyConfigured(
                 "AUTHENTIK_BOOTSTRAP_PASSWORD_HASH does not match authentik's current "

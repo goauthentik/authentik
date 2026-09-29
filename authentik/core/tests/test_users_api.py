@@ -3,6 +3,7 @@
 from datetime import datetime, timedelta
 from json import loads
 
+from django.conf import settings
 from django.contrib.auth.hashers import (
     PBKDF2PasswordHasher,
     check_password,
@@ -11,6 +12,7 @@ from django.contrib.auth.hashers import (
 from django.db import connection
 from django.test.utils import CaptureQueriesContext
 from django.urls.base import reverse
+from django.utils.module_loading import import_string
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
@@ -38,9 +40,11 @@ from authentik.rbac.models import Role
 from authentik.stages.email.models import EmailStage
 
 INVALID_PASSWORD_HASH = "not-a-valid-hash"
+ALLOWED_ALGORITHMS = ", ".join(
+    import_string(path)().algorithm for path in settings.PASSWORD_HASHERS_IMPORT_ALLOWED
+)
 INVALID_PASSWORD_HASH_ERROR = (
-    "Invalid password hash. The value must be a complete encoded password hash in one of "
-    "authentik's configured formats."
+    f"Cannot identify hash function. Password hash must use one of: {ALLOWED_ALGORITHMS}."
 )
 
 
