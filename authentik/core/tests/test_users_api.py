@@ -30,7 +30,7 @@ from authentik.core.tests.utils import (
 from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation
 from authentik.lib.generators import generate_id, generate_key
 from authentik.rbac.models import Role
-from authentik.stages.email.models import EmailStage
+from authentik.stages.email.models import EmailStage, EmailTemplate
 
 INVALID_PASSWORD_HASH = "not-a-valid-hash"
 INVALID_PASSWORD_HASH_ERROR = "Invalid password hash format. Must be a valid Django password hash."
@@ -363,7 +363,12 @@ class TestUsersAPI(APITestCase):
         self.client.force_login(self.admin)
         self.user.email = ""
         self.user.save()
-        stage = EmailStage.objects.create(name="email")
+        stage = EmailStage.objects.create(
+            name="email",
+            template=EmailTemplate.objects.get(
+                managed="goauthentik.io/email/password-reset",
+            ),
+        )
         response = self.client.post(
             reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk}),
             data={"email_stage": stage.pk},
@@ -405,7 +410,12 @@ class TestUsersAPI(APITestCase):
         brand.flow_recovery = flow
         brand.save()
 
-        stage = EmailStage.objects.create(name="email")
+        stage = EmailStage.objects.create(
+            name="email",
+            template=EmailTemplate.objects.get(
+                managed="goauthentik.io/email/password-reset",
+            ),
+        )
 
         self.client.force_login(self.admin)
         response = self.client.post(

@@ -21,7 +21,7 @@ from authentik.events.models import (
     TransportMode,
 )
 from authentik.lib.generators import generate_id
-from authentik.stages.email.models import get_template_choices
+from authentik.stages.email.models import EmailTemplate, get_template_choices
 
 
 class TestEventTransports(TestCase):
@@ -190,6 +190,9 @@ class TestEventTransports(TestCase):
         transport: NotificationTransport = NotificationTransport.objects.create(
             name=generate_id(),
             mode=TransportMode.EMAIL,
+            email_template=EmailTemplate.objects.get(
+                managed="goauthentik.io/email/event-notification",
+            ),
         )
         with patch(
             "authentik.stages.email.models.EmailStage.backend_class",
@@ -205,7 +208,9 @@ class TestEventTransports(TestCase):
         transport: NotificationTransport = NotificationTransport.objects.create(
             name=generate_id(),
             mode=TransportMode.EMAIL,
-            email_template="email/event_notification.html",
+            email_template=EmailTemplate.objects.create(
+                path=f"{generate_id}.html", body="custom: {{ body }}"
+            ),
         )
         with patch(
             "authentik.stages.email.models.EmailStage.backend_class",
@@ -221,6 +226,9 @@ class TestEventTransports(TestCase):
             name=generate_id(),
             mode=TransportMode.EMAIL,
             email_subject_prefix="[CUSTOM] ",
+            email_template=EmailTemplate.objects.get(
+                managed="goauthentik.io/email/event-notification",
+            ),
         )
         with patch(
             "authentik.stages.email.models.EmailStage.backend_class",

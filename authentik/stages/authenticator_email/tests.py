@@ -8,12 +8,13 @@ from django.core.mail.backends.locmem import EmailBackend
 from django.core.mail.backends.smtp import EmailBackend as SMTPEmailBackend
 from django.db.models.deletion import ProtectedError
 from django.db.utils import IntegrityError
-from django.template.exceptions import TemplateDoesNotExist
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.timezone import now
 
 from authentik.core.tests.utils import create_test_flow, create_test_user
+from authentik.events.models import Event, EventAction
+from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.config import CONFIG
@@ -25,6 +26,7 @@ from authentik.stages.authenticator_email.api import (
 )
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage, EmailDevice
 from authentik.stages.authenticator_email.stage import PLAN_CONTEXT_EMAIL_DEVICE
+from authentik.stages.email.models import EmailTemplate
 from authentik.stages.email.utils import TemplateEmailMessage
 
 
@@ -42,6 +44,7 @@ class TestAuthenticatorEmailStage(FlowTestCase):
             from_address="test@authentik.local",
             configure_flow=self.flow,
             token_expiry="minutes=30",
+            template=EmailTemplate.objects.get(managed="goauthentik.io/email/email-otp"),
         )  # nosec
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=0)
         self.device = EmailDevice.objects.create(
@@ -241,9 +244,18 @@ class TestAuthenticatorEmailStage(FlowTestCase):
 
     def test_template_errors(self):
         """Test handling of template errors"""
-        self.stage.template = "{% invalid template %}"
-        with self.assertRaises(TemplateDoesNotExist):
+        self.stage.template = EmailTemplate.objects.create(
+            path="broken.html",
+            body="{% invalid template %}",
+        )
+        self.stage.save()
+        with self.assertRaises(StageInvalidException):
             self.stage.send(self.device)
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.CONFIGURATION_ERROR, context__template="broken.html"
+            ).exists()
+        )
 
     @patch(
         "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",

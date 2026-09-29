@@ -16,7 +16,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
-from authentik.stages.email.models import EmailStage
+from authentik.stages.email.models import EmailStage, EmailTemplate
 
 
 class TestEmailStageSending(FlowTestCase):
@@ -29,6 +29,7 @@ class TestEmailStageSending(FlowTestCase):
         self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         self.stage = EmailStage.objects.create(
             name="email",
+            template=EmailTemplate.objects.get(managed="goauthentik.io/email/password-reset"),
         )
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 

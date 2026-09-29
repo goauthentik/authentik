@@ -21,7 +21,7 @@ from authentik.flows.views.executor import QS_KEY_TOKEN, SESSION_KEY_PLAN, FlowE
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 from authentik.stages.consent.stage import PLAN_CONTEXT_CONSENT_TOKEN
-from authentik.stages.email.models import EmailStage
+from authentik.stages.email.models import EmailStage, EmailTemplate
 from authentik.stages.email.stage import PLAN_CONTEXT_EMAIL_OVERRIDE, EmailStageView
 
 
@@ -36,6 +36,7 @@ class TestEmailStage(FlowTestCase):
         self.stage = EmailStage.objects.create(
             name="email",
             activate_user_on_success=True,
+            template=EmailTemplate.objects.get(managed="goauthentik.io/email/password-reset"),
         )
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
