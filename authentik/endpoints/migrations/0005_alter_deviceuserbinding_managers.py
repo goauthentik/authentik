@@ -13,7 +13,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelManagers(
             name="deviceuserbinding",
-            managers=[
-            ],
+            managers=[],
         ),
     ]

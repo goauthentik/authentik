@@ -20,7 +20,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelManagers(
             name="agentdeviceuserbinding",
-            managers=[
-            ],
+            managers=[],
         ),
     ]

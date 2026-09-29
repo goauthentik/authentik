@@ -16,8 +16,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelManagers(
             name="policybinding",
-            managers=[
-            ],
+            managers=[],
         ),
         migrations.AddField(
             model_name="policybinding",
