@@ -16,47 +16,60 @@ A RAC provider uses several components:
 architecture-beta
     service application(mdi:application-outline)[Application]
     service provider(mdi:application-cog-outline)[Provider]
-    service endpoint(mdi:network-pos)[Endpoint Settings]
+    service device(mdi:network-pos)[Device]
     service server(mdi:server)[authentik Server]
     service outpost(mdi:server-plus)[RAC Outpost]
 
     service machine(mdi:desktop-classic)[Remote Machine]
 
     application:R --> L:provider
-    provider:B -- T:endpoint
+    provider:B -- T:device
     provider:R --> L:server
     server:R <--> L:outpost
     outpost:B <--> T:machine
 ```
 
-When a user starts the RAC application, it communicates with the authentik server, which then connects to the RAC outpost and sends instructions (based on the endpoint data you defined) on how to connect to the remote machine.
+When a user starts the RAC application, it communicates with the authentik server, which then connects to the RAC outpost and sends instructions (based on the device that is being connected to) on how to connect to the remote machine.
 
 After connecting to the remote machine, the outpost sends a message back to the authentik server (via WebSockets), and the web browser opens the WebSocket connection to the remote machine.
 
-## Endpoints
+## Devices
 
-Unlike other providers, where an application-provider pair is created for each resource you wish to access, RAC works differently. RAC uses a single application connected to one RAC provider. The RAC provider then has an _Endpoint_ object for each remote machine (computer/server) you want to connect to.
+Unlike other providers, where an application-provider pair is created for each resource you wish to access, RAC works differently. RAC uses a single application connected to one RAC provider, and that provider connects to the [devices](../../../endpoint-devices/index.mdx) in your authentik instance.
 
-The _Endpoint_ object specifies:
+A device is the same object that connectors such as the authentik agent enroll and report facts for, so a machine only has to exist in authentik once.
 
-- Hostname, IP address, and port of the remote machine
-- Protocol to use: SSH, RDP, or VNC
-- RDP connection settings
-- [RAC Property mappings](#rac-property-mappings) to apply
-- [Connection settings](#connection-settings) to apply
+A device that is enrolled through a connector is reached on the address it reports: its hostname, or its first non-local interface address. Which protocols it accepts is taken from its facts too: the authentik agent reports the RDP certificate fingerprint and the SSH host keys of its device, and a device is offered for the protocols it has those for. A device that reports neither is offered for both RDP and SSH, and the user picks when launching it.
 
-Additionally, it is possible to bind policies to _Endpoint_ objects to restrict user access. To connect to a remote machine, users must have access to both the application that the RAC provider is using and the corresponding endpoint.
+A device that is not enrolled, such as a server, has no facts to take any of this from, so it is added with a **connection override** instead. The override sets the host and the single protocol for that one device, and takes precedence over what a device reports. The provider's connection limit applies either way.
+
+To connect to a device, users must have access to the application that the RAC provider is using, and pass the policies bound to the device. Because policies are bound to the device itself, a device's reported facts can gate remote access; see [Restricting access with device compliance](#restricting-access-with-device-compliance). A provider can additionally be limited to a single device access group.
+
+:::info
+Connection credentials belong in a [RAC property mapping](#rac-property-mappings) or the [credentials prompt](./rac_credentials_prompt.mdx), not in a connection override.
+:::
+
+### Restricting access with device compliance
+
+Devices that are enrolled through a connector report facts about themselves, such as their operating system version or whether their disks are encrypted. Binding an [expression policy](../../../customize/policies/types/expression/index.mdx) to a device, or to a device access group, lets you require those facts before a connection is authorized:
+
+```python
+facts = request.obj.cached_facts.data
+return facts.get("os", {}).get("family") == "windows"
+```
+
+The device that is being connected to is also available to the policies and stages of the provider's authorization flow as `request.context["rac_device"]`.
 
 ## Connection management
 
-Launching a RAC application/endpoint from the [User interface](../../../customize/interfaces/user) runs the provider's authorization flow and creates a connection authorization tied to the user's current authentik session. This authorization allows the browser to connect to that endpoint. You can view and delete stored connection authorizations from the **Connections** tab of the RAC provider.
+Launching a RAC application/device from the [User interface](../../../customize/interfaces/user) runs the provider's authorization flow and creates a connection authorization tied to the user's current authentik session. This authorization allows the browser to connect to that device. You can view and delete stored connection authorizations from the **Connections** tab of the RAC provider.
 
 ### Delete authorization on disconnect
 
 The RAC provider's **Delete authorization on disconnect** setting is disabled by default.
 
-- When disabled, the connection authorization remains available after a disconnect. The browser can reuse it to reconnect to the same endpoint without repeating the authorization flow, provided that the authorization and the authentik session are still valid. This allows reconnection after a temporary network failure. Launching the application/endpoint again starts a new authorization flow rather than reusing the previous authorization.
-- When enabled, the authorization cannot be reused. After a disconnect, the user must launch the application/endpoint again and complete the provider's authorization flow. This also applies when a temporary network failure interrupts the connection, so enabling the setting can cause repeated authorization prompts on unstable networks. The prompts depend on the stages configured in the authorization flow; reauthorization does not necessarily require logging in to authentik again.
+- When disabled, the connection authorization remains available after a disconnect. The browser can reuse it to reconnect to the same device without repeating the authorization flow, provided that the authorization and the authentik session are still valid. This allows reconnection after a temporary network failure. Launching the application/device again starts a new authorization flow rather than reusing the previous authorization.
+- When enabled, the authorization cannot be reused. After a disconnect, the user must launch the application/device again and complete the provider's authorization flow. This also applies when a temporary network failure interrupts the connection, so enabling the setting can cause repeated authorization prompts on unstable networks. The prompts depend on the stages configured in the authorization flow; reauthorization does not necessarily require logging in to authentik again.
 
 Although the UI describes deletion as happening on disconnect, authentik deletes the stored authorization during connection setup, after requesting a connection from the outpost. The current connection continues, but subsequent reconnect attempts cannot use that authorization. A connection attempt that fails after this deletion also requires a new authorization.
 
@@ -94,10 +107,11 @@ RAC connection settings can be set via several methods and are all merged togeth
 
 1. Default settings
 2. RAC Provider settings
-3. RAC Endpoint settings
-4. RAC Provider property mapping settings
-5. RAC Endpoint property mapping settings
-6. The `connection_settings` object in the flow plan
+3. The device's address and port
+4. RAC Provider property mapping settings, which receive the device they are evaluated for
+5. The `connection_settings` object in the flow plan
+
+The protocol is not part of this merge: it is fixed when the connection is authorized, either by the device's connection override or by the protocol the user launched.
 
 For examples of how to configure connection settings, see the [RAC SSH public key authentication](./rac-public-key.mdx) and [RAC Credentials Prompt](./rac_credentials_prompt.mdx) documentation.
 
