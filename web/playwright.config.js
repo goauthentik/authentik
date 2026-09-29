@@ -41,7 +41,6 @@ export default defineConfig({
               // ---
               ["github"],
               ["html", { open: "never", outputFolder: "playwright-report" }],
-              ["json", { outputFile: "playwright-report/results.json" }],
               // Codecov test analytics ingests JUnit XML, not Playwright's JSON.
               ["junit", { outputFile: "playwright-report/results.xml" }],
           ]

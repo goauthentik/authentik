@@ -8,7 +8,7 @@ updates:
       # Required to update composite actions
       # https://github.com/dependabot/dependabot-core/issues/6704
       - /.github/actions/setup
-      - /.github/actions/comment-pr-instructions
+      - /.github/actions/comment-pr
       - /.github/actions/test-results
     schedule:
       interval: daily

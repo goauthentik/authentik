@@ -48,6 +48,28 @@ export function renderAuthToken(provider?: Partial<SCIMProvider>, errors: Valida
     ></ak-secret-text-input>`;
 }
 
+export function renderAuthBasic(provider?: Partial<SCIMProvider>, errors: ValidationError = {}) {
+    return html`<ak-text-input
+            name="authBasicUser"
+            label=${msg("Username")}
+            value="${provider?.authBasicUser ?? ""}"
+            .errorMessages=${errors?.authBasicUser}
+            spellcheck="false"
+            ?required=${!provider}
+            help=${msg("Username to authenticate with.")}
+            input-hint="code"
+        ></ak-text-input>
+        <ak-secret-text-input
+            name="authBasicPassword"
+            label=${msg("Password")}
+            .errorMessages=${errors?.authBasicPassword}
+            ?required=${!provider}
+            ?revealed=${!provider}
+            help=${msg("Password to authenticate with.")}
+            input-hint="code"
+        ></ak-secret-text-input>`;
+}
+
 export function renderAuthOAuth(provider?: Partial<SCIMProvider>, _errors: ValidationError = {}) {
     return html`<ak-form-element-horizontal label=${msg("OAuth Source")} name="authOauth">
             <ak-search-select
@@ -94,6 +116,8 @@ export function renderAuth(provider?: Partial<SCIMProvider>, errors: ValidationE
         default:
         case SCIMAuthenticationModeEnum.Token:
             return renderAuthToken(provider, errors);
+        case SCIMAuthenticationModeEnum.Basic:
+            return renderAuthBasic(provider, errors);
         case SCIMAuthenticationModeEnum.Oauth:
         case SCIMAuthenticationModeEnum.OauthInteractive:
             return renderAuthOAuth(provider, errors);
@@ -164,6 +188,13 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
                                 )}`,
                             },
                             {
+                                label: msg("Basic"),
+                                value: SCIMAuthenticationModeEnum.Basic,
+                                description: html`${msg(
+                                    "Authenticate SCIM requests using HTTP Basic authentication.",
+                                )}`,
+                            },
+                            {
                                 label: msg("OAuth (Silent)"),
                                 value: SCIMAuthenticationModeEnum.Oauth,
                                 description: html`${msg("Authenticate SCIM requests using OAuth.")}
@@ -210,6 +241,11 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
                             label: msg("Salesforce"),
                             value: CompatibilityModeEnum.Sfdc,
                             description: html`${msg("Altered behavior for usage with Salesforce.")}`,
+                        },
+                        {
+                            label: msg("GitLab"),
+                            value: CompatibilityModeEnum.Gitlab,
+                            description: html`${msg("Altered behavior for usage with GitLab.")}`,
                         },
                         {
                             label: msg("Webex"),

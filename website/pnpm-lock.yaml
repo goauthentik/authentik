@@ -271,14 +271,14 @@ importers:
         version: 6.0.3
     optionalDependencies:
       '@rspack/binding-darwin-arm64':
-        specifier: 2.2.3
-        version: 2.2.3
+        specifier: 2.2.7
+        version: 2.2.7
       '@rspack/binding-linux-arm64-gnu':
-        specifier: 2.2.3
-        version: 2.2.3
+        specifier: 2.2.7
+        version: 2.2.7
       '@rspack/binding-linux-x64-gnu':
-        specifier: 2.2.3
-        version: 2.2.3
+        specifier: 2.2.7
+        version: 2.2.7
       '@swc/core-darwin-arm64':
         specifier: 1.16.2
         version: 1.16.2
@@ -343,8 +343,8 @@ importers:
         specifier: workspace:*
         version: link:../docusaurus-theme
       '@goauthentik/tsconfig':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: link:../../packages/tsconfig
+        version: link:../../packages/tsconfig
       '@mdx-js/react':
         specifier: ^3.1.1
         version: 3.1.1(@types/react@19.2.18)(react@19.2.7)
@@ -389,14 +389,14 @@ importers:
         version: 6.0.3
     optionalDependencies:
       '@rspack/binding-darwin-arm64':
-        specifier: 2.2.3
-        version: 2.2.3
+        specifier: 2.2.7
+        version: 2.2.7
       '@rspack/binding-linux-arm64-gnu':
-        specifier: 2.2.3
-        version: 2.2.3
+        specifier: 2.2.7
+        version: 2.2.7
       '@rspack/binding-linux-x64-gnu':
-        specifier: 2.2.3
-        version: 2.2.3
+        specifier: 2.2.7
+        version: 2.2.7
       '@swc/core-darwin-arm64':
         specifier: 1.16.2
         version: 1.16.2
@@ -1854,10 +1854,6 @@ packages:
   '@goauthentik/brand-assets@2.0.0':
     resolution: {integrity: sha512-yRJrV+KuGrz7MNcRzAkZa4e7LuciuFZBVSyPFRd/EndxgiqcFuFHyn+6tEurKNmianBNURhe2qm5ytoLFgEWFQ==}
 
-  '@goauthentik/tsconfig@2.0.0':
-    resolution: {integrity: sha512-HiU/U9cO4Aaik3VjUHu/3PjD0m2nhIJXlENW1kbfVRFBaqAw//9UuHIel2E3vgwyua93fht36cBb8itZVsG1Vg==}
-    engines: {node: '>=24', npm: '>=11.14.1'}
-
   '@hapi/hoek@9.3.0':
     resolution: {integrity: sha512-/c6rf4UJlmHlC9b5BaNvzAcFv7HZ2QHaV0D4/HNlBdvFnvQq8RI4kYdhyPCl7Xj+oWvTWQ8ujhqS53LIgAe6KQ==}
 
@@ -2495,8 +2491,8 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
-  '@rspack/binding-darwin-arm64@2.2.3':
-    resolution: {integrity: sha512-MGLx4lMTY6XEtJi55S+fk83+683GeUDuoqzjixbq6ehHdr/l6nGiHhgvMtV5DYt9sCytUDzyrCkcJ0AWqJxnTA==}
+  '@rspack/binding-darwin-arm64@2.2.7':
+    resolution: {integrity: sha512-m0ijteZwZfUZeFcbyxwTe6N+I7aceV5/iW39b7fIIoMN/mSv9zL0ieeRzwuFe7mTYGwCuwNieDZHXfMFdp2Q2w==}
     cpu: [arm64]
     os: [darwin]
 
@@ -2511,8 +2507,8 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@rspack/binding-linux-arm64-gnu@2.2.3':
-    resolution: {integrity: sha512-sU+jPGD2xz3BxFvsdBQVGce538YHqrSKMB4ZSfKhj6RSKjeGzpJ1BVl8+IndiQsfTgaUxi7N+r5cs/ezGy1TVQ==}
+  '@rspack/binding-linux-arm64-gnu@2.2.7':
+    resolution: {integrity: sha512-uGEX6kY/Pi3wPZgaEk6vTevZOHjKw8qmd5pqWVwRmpLhwvPB7LGqVqx5BMnNYBjsndVUWJQQRlGL8DoVG5IXXQ==}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
@@ -2529,8 +2525,8 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@rspack/binding-linux-x64-gnu@2.2.3':
-    resolution: {integrity: sha512-IzQGcw09WYn/IzwB1SQpg7FQ211MBr+fJB2/WoRrPS6CNdtlkDHZaI8z2oq+2Oc5Su21jgX75VlWFajirUx5Dw==}
+  '@rspack/binding-linux-x64-gnu@2.2.7':
+    resolution: {integrity: sha512-PkryZX3GZeBQfzvKEhwGGd9m43PwqcsqWd14kmsVADeBCqHLxJahMGiGmajd28vSa42xbw7HTb8yY4jXzv5QtA==}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
@@ -10231,8 +10227,6 @@ snapshots:
 
   '@goauthentik/brand-assets@2.0.0': {}
 
-  '@goauthentik/tsconfig@2.0.0': {}
-
   '@hapi/hoek@9.3.0': {}
 
   '@hapi/topo@5.1.0':
@@ -10843,7 +10837,7 @@ snapshots:
   '@rspack/binding-darwin-arm64@1.7.12':
     optional: true
 
-  '@rspack/binding-darwin-arm64@2.2.3':
+  '@rspack/binding-darwin-arm64@2.2.7':
     optional: true
 
   '@rspack/binding-darwin-x64@1.7.12':
@@ -10852,7 +10846,7 @@ snapshots:
   '@rspack/binding-linux-arm64-gnu@1.7.12':
     optional: true
 
-  '@rspack/binding-linux-arm64-gnu@2.2.3':
+  '@rspack/binding-linux-arm64-gnu@2.2.7':
     optional: true
 
   '@rspack/binding-linux-arm64-musl@1.7.12':
@@ -10861,7 +10855,7 @@ snapshots:
   '@rspack/binding-linux-x64-gnu@1.7.12':
     optional: true
 
-  '@rspack/binding-linux-x64-gnu@2.2.3':
+  '@rspack/binding-linux-x64-gnu@2.2.7':
     optional: true
 
   '@rspack/binding-linux-x64-musl@1.7.12':
