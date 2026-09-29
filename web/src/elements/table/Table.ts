@@ -337,7 +337,8 @@ export abstract class Table<T extends object, D = T>
 
     /**
      * Method to convert an object into a string or number as a unique key the table can use to
-     * communicate objects back to client code. Override when <T>.pk exists but may not be unique.
+     * communicate objects back to client code. Provide or override when <T>.pk exists but may not
+     * be unique.
      */
     @property({ type: Object })
     public makeItemKey = (i: T) => (hasPrimaryKey(i) ? i.pk : JSON.stringify(i));
