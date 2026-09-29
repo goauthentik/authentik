@@ -17,7 +17,6 @@ class Migration(migrations.Migration):
         migrations.AlterModelManagers(
             name="policybinding",
             managers=[
-                ("in_use", django.db.models.manager.Manager()),
             ],
         ),
         migrations.AddField(
