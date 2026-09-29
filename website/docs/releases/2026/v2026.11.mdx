@@ -6,11 +6,25 @@ draft: true
 
 ## Highlights
 
+- **Password lockout**: :ak-enterprise Lock password login after a configured number of consecutive failed attempts.
+
 <!-- ## Breaking changes -->
 
 ## New features and improvements
 
 - **Display names in `ak_send_email` recipients**: The `address`, `cc`, and `bcc` parameters of `ak_send_email` now accept `(name, email)` tuples and `"Name <email>"` strings, so emails sent from expressions can include a display name in the `To` and `CC` headers, matching the Email stage. See [`ak_send_email`](../../customize/policies/types/expression/reference.mdx).
+
+### Password lockout :ak-enterprise
+
+The [Password stage](../../add-secure-apps/flows-stages/stages/password/index.mdx#password-lockout) can lock password login after a configured number of consecutive failed attempts. Lockout is disabled by default and also works when password validation is embedded in an Identification stage.
+
+Administrators with permission to reset a user's password can lock or unlock it from the user's details page. Changing the password preserves the lock. Existing sessions and passwordless authentication are unaffected. Optional warning and lockout messages help users understand failed attempts, and lock transitions appear in the audit log.
+
+### Passwords stored as authenticator devices
+
+Password hashes are now stored on password devices belonging to users. Existing passwords migrate automatically during upgrade; no configuration changes are required.
+
+Password devices are excluded from MFA discovery, validation, and device APIs.
 
 ## Upgrading
 
