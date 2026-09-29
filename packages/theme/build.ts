@@ -33,7 +33,7 @@ const CATEGORIES: Category[] = [
             "global--line-height--",
         ],
     },
-    { name: "spacing", prefixes: ["global--space--"] },
+    { name: "spacing", prefixes: ["global--spacer--"] },
     { name: "shape", prefixes: ["global--radius--", "global--border-width--"] },
     { name: "shadow", prefixes: ["global--box-shadow--"] },
     { name: "motion", prefixes: ["global--duration--", "global--easing--"] },

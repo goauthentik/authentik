@@ -87,10 +87,13 @@ def address_settings(device: Device) -> dict[str, str]:
     address = override.host if override else device.address
     if not address:
         return {}
-    # An IPv6 address with a port is bracketed: [2001:db8::1]:3389
-    if address.startswith("[") and "]:" in address:
-        host, _, port = address.partition("]:")
-        return {"hostname": host[1:], "port": port}
+    # An IPv6 address is bracketed when it carries a port: [2001:db8::1]:3389
+    if address.startswith("["):
+        host, _, port = address.removeprefix("[").partition("]:")
+        settings = {"hostname": host.removesuffix("]")}
+        if port:
+            settings["port"] = port
+        return settings
     host, _, port = address.rpartition(":")
     # Any other colon belongs to an IPv6 address, not to a port
     if host and ":" not in host and port.isdigit():

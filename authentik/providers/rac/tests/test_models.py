@@ -65,10 +65,12 @@ class TestConnectionResolution(TransactionTestCase):
 
     def test_address_ipv6(self):
         """The colons of an IPv6 address are not a port"""
-        self.assertEqual(
-            address_settings(create_test_device(host="2001:db8::1")),
-            {"hostname": "2001:db8::1"},
-        )
+        for host in ("2001:db8::1", "[2001:db8::1]"):
+            with self.subTest(host=host):
+                self.assertEqual(
+                    address_settings(create_test_device(host=host)),
+                    {"hostname": "2001:db8::1"},
+                )
 
     def test_address_missing(self):
         """A device without facts and without an override has no address"""
@@ -164,6 +166,14 @@ class TestConnectionSettings(TransactionTestCase):
         }
         settings.update(kwargs)
         return settings
+
+    def test_settings_ipv6_host(self):
+        """Test settings with IPv6 host"""
+        self.token.device = create_test_device(host="[2001:db8::10c]:5901", protocol=Protocols.VNC)
+        self.token.save()
+        settings = self.token.get_settings()
+        self.assertEqual(settings["hostname"], "2001:db8::10c")
+        self.assertEqual(settings["port"], "5901")
 
     def test_settings_merge(self):
         """Test settings merge"""

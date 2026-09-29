@@ -10,9 +10,9 @@ import { parseArgs } from "node:util";
 import {
     commitDirectory,
     PlatformKey,
+    reportDirectory,
     suiteDirectory,
     type VisualSuite,
-    VisualReportDirectory,
     VisualSuites,
 } from "../test/visual/environment.ts";
 
@@ -187,7 +187,10 @@ function runPlaywright({
     mode,
     storybookDirectory,
 }: PlaywrightRun): Promise<number> {
-    const env: Record<string, string> = { AK_VISUAL_BASELINE_DIR: commitDirectory(commit) };
+    const env: Record<string, string> = {
+        AK_VISUAL_BASELINE_DIR: commitDirectory(commit),
+        AK_VISUAL_SUITE: suite,
+    };
 
     if (storybookDirectory) env.AK_VISUAL_STORYBOOK_DIR = storybookDirectory;
 
@@ -363,7 +366,7 @@ async function compare(suite: VisualSuite, revisions: Revisions, specHash: strin
     const code = await runPlaywright({ suite, commit: base, mode: "compare", storybookDirectory });
 
     logger.info(
-        `Report: pnpm exec playwright show-report ${relative(PackageRoot, VisualReportDirectory)}`,
+        `Report: pnpm exec playwright show-report ${relative(PackageRoot, reportDirectory(suite))}`,
     );
 
     return code;

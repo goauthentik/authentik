@@ -1,13 +1,14 @@
 import {
     MaxDiffPixelRatio,
+    outputDirectory,
+    reportDirectory,
     ViewportSize,
     VisualEnvironment,
-    VisualReportDirectory,
 } from "./test/visual/environment.ts";
 
 import { defineConfig, devices } from "@playwright/test";
 
-const { baselineDirectory, storybookDirectory, storybookPort, pageURL } = VisualEnvironment;
+const { suite, baselineDirectory, storybookDirectory, storybookPort, pageURL } = VisualEnvironment;
 
 const storybookURL = `http://127.0.0.1:${storybookPort}`;
 
@@ -21,10 +22,10 @@ export default defineConfig({
     testDir: "./test/visual",
     testMatch: /\.visual\.ts$/,
     snapshotPathTemplate: `${baselineDirectory}/{projectName}/{arg}{ext}`,
-    outputDir: "./test-results/visual",
+    outputDir: outputDirectory(suite),
     fullyParallel: true,
     workers: "50%",
-    reporter: [["list"], ["html", { open: "never", outputFolder: VisualReportDirectory }]],
+    reporter: [["list"], ["html", { open: "never", outputFolder: reportDirectory(suite) }]],
     use: {
         ...devices["Desktop Chrome"],
         viewport: ViewportSize.Desktop,
