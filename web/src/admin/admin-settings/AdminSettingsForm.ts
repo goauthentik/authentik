@@ -24,6 +24,7 @@ import { css, CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+const DEFAULT_APP_CACHE_TIMEOUT = "hours=1";
 const DEFAULT_REPUTATION_LOWER_LIMIT = -5;
 const DEFAULT_REPUTATION_UPPER_LIMIT = 5;
 const DEFAULT_PAGE_SIZE = 20;
@@ -283,6 +284,19 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 value="${settings.paginationMaxPageSize ?? DEFAULT_PAGE_MAX}"
                 help=${msg("Maximum page size for API requests.")}
             ></ak-number-input>
+            <ak-text-input
+                name="applicationCacheTimeout"
+                label=${msg("User Dashboard cache timeout (seconds)")}
+                input-hint="code"
+                required
+                value=${settings.applicationCacheTimeout ?? DEFAULT_APP_CACHE_TIMEOUT}
+                .bighelp=${html`<p class="pf-c-form__helper-text">
+                        ${msg("Duration during which the User Dashboard caches a list of application for each user.")}
+                    </p>
+                    <p class="pf-c-form__helper-text">
+                        ${msg("On timeout, policies are run to determine which applications are shown to the user.  Policies are always run when a user launches an application; this setting only controls with applications are shown. The default duration is one day.  A shorter duration will show policy changes earlier, but the policies will run more often.")}
+                    </p><ak-utils-time-delta-help></ak-utils-time-delta-help>`}
+            ></ak-text-input>
             <ak-form-group
                 label=${msg("Flags")}
                 description=${msg(

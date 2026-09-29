@@ -85,6 +85,10 @@ export interface PatchedSettingsRequest {
      * Maximum page size
      */
     paginationMaxPageSize?: number;
+    /**
+     * User application list cache duration
+     */
+    applicationCacheTimeout?: string;
     flags?: PatchedSettingsRequestFlags;
 }
 
@@ -146,6 +150,10 @@ export function PatchedSettingsRequestFromJSONTyped(
                 : json["pagination_default_page_size"],
         paginationMaxPageSize:
             json["pagination_max_page_size"] == null ? undefined : json["pagination_max_page_size"],
+        applicationCacheTimeout:
+            json["application_cache_timeout"] == null
+                ? undefined
+                : json["application_cache_timeout"],
         flags:
             json["flags"] == null ? undefined : PatchedSettingsRequestFlagsFromJSON(json["flags"]),
     };
@@ -180,6 +188,7 @@ export function PatchedSettingsRequestToJSONTyped(
         default_token_length: value["defaultTokenLength"],
         pagination_default_page_size: value["paginationDefaultPageSize"],
         pagination_max_page_size: value["paginationMaxPageSize"],
+        application_cache_timeout: value["applicationCacheTimeout"],
         flags: PatchedSettingsRequestFlagsToJSON(value["flags"]),
     };
 }

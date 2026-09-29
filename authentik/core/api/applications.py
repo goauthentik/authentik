@@ -29,10 +29,13 @@ from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, User
 from authentik.events.logs import LogEventSerializer, capture_logs
 from authentik.lib.utils.reflection import ConditionalInheritance
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import ListPolicyEngine, PolicyEngine
 from authentik.policies.types import CACHE_PREFIX, PolicyResult
 from authentik.rbac.filters import ObjectFilter
+from authentik.admin.utils import get_system_settings
+from authentik.admin.models import SystemSettings
 
 LOGGER = get_logger()
 
@@ -47,6 +50,17 @@ def user_app_cache_key(
     if page_number:
         key += f"/{page_number}"
     return key
+
+
+def app_cache_timeout():
+    """Default duration an app_cache entry is saved.
+    This is used as a fallback when no timeout is set"""
+    try:
+        return timedelta_from_string(
+            get_system_settings().application_cache_timeout
+        ).total_seconds()
+    except SystemSettings.DoesNotExist:
+        return 86400
 
 
 class ApplicationSerializer(ModelSerializer):
@@ -335,14 +349,21 @@ class ApplicationViewSet(
                 # relationships, causing N+1 queries during serialization
                 allowed_applications = self._expand_applications(allowed_applications)
             else:
-                LOGGER.debug("Caching allowed application list", page=paginator.page.number)
+                timeout = app_cache_timeout()
+                LOGGER.debug(
+                    "Caching allowed application list", 
+                    page=paginator.page.number,
+                    timeout=timeout,
+                )
                 allowed_applications = self._get_allowed_applications(paginated_apps)
                 cache.set(
                     user_app_cache_key(
-                        self.request.user.pk, paginator.page.number, only_with_launch_url
+                        self.request.user.pk,
+                        paginator.page.number,
+                        only_with_launch_url,
                     ),
                     allowed_applications,
-                    timeout=86400,
+                    timeout=timeout,
                 )
 
         if only_with_launch_url:

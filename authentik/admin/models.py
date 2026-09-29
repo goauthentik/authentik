@@ -105,6 +105,11 @@ class SystemSettings(InternallyManagedMixin, SerializerModel):
         help_text=_("Maximum page size"),
         default=100,
     )
+    application_cache_timeout = models.TextField(
+        default="hours=24",
+        validators=[timedelta_string_validator],
+        help_text=_("User application list cache duration"),
+    )
 
     flags = models.JSONField(default=dict)
 

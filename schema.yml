@@ -53620,6 +53620,10 @@ components:
           maximum: 2147483647
           minimum: 0
           description: Maximum page size
+        application_cache_timeout:
+          type: string
+          minLength: 1
+          description: User application list cache duration
         flags:
           type: object
           properties:
@@ -58734,6 +58738,9 @@ components:
           maximum: 2147483647
           minimum: 0
           description: Maximum page size
+        application_cache_timeout:
+          type: string
+          description: User application list cache duration
         flags:
           type: object
           properties:
@@ -58823,6 +58830,10 @@ components:
           maximum: 2147483647
           minimum: 0
           description: Maximum page size
+        application_cache_timeout:
+          type: string
+          minLength: 1
+          description: User application list cache duration
         flags:
           type: object
           properties:

@@ -98,6 +98,7 @@ class SettingsSerializer(ModelSerializer):
             "default_token_length",
             "pagination_default_page_size",
             "pagination_max_page_size",
+            "application_cache_timeout",
             "flags",
         ]
 
