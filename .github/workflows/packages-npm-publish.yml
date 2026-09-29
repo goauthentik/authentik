@@ -8,6 +8,8 @@ on:
       - packages/tsconfig/**
       - packages/oxlint-config/**
       - packages/oxfmt-config/**
+      - packages/fonts/**
+      - packages/theme/**
       - packages/docusaurus-config/**
       - packages/logger-js/**
       - packages/esbuild-plugin-live-reload/**
@@ -29,7 +31,9 @@ jobs:
           - packages/tsconfig
           - packages/oxlint-config
           - packages/oxfmt-config
+          - packages/fonts
           - packages/logger-js
+          - packages/theme
           - packages/docusaurus-config
           - packages/esbuild-plugin-live-reload
     steps:

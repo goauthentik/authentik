@@ -5,6 +5,7 @@ from unittest.mock import patch
 from django.test import TestCase
 from requests_mock import Mocker
 
+from authentik.admin.models import SystemSettings
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
@@ -20,7 +21,6 @@ from authentik.providers.scim.models import (
 )
 from authentik.providers.scim.tasks import scim_sync, scim_sync_m2m
 from authentik.tasks.models import TaskLog
-from authentik.tenants.models import Tenant
 
 
 @patch("authentik.providers.scim.clients.base.SCIMClient.can_discover", False)
@@ -35,7 +35,7 @@ class SCIMMembershipTests(TestCase):
         # which will cause errors with multiple users
         User.objects.all().exclude_anonymous().delete()
         Group.objects.all().delete()
-        Tenant.objects.update(avatars="none")
+        SystemSettings.objects.update(avatars="none")
 
     @apply_blueprint("system/providers-scim.yaml")
     def configure(self, **kwargs) -> None:

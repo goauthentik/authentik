@@ -52,7 +52,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
             .objects=${this.selectedElements}
             .metadata=${(item: ConnectionToken) => {
                 return [
-                    { key: msg("Endpoint"), value: item.endpointObj.name },
+                    { key: msg("Device"), value: item.deviceName },
                     { key: msg("User"), value: item.user.username },
                 ];
             }}
@@ -75,7 +75,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
 
     protected override rowLabel(item: ConnectionToken): string | null {
         if (this.provider) {
-            return item.endpointObj.name ?? null;
+            return item.deviceName ?? null;
         }
 
         return item.providerObj.name ?? null;
@@ -85,23 +85,23 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
     protected get columns(): TableColumn[] {
         if (this.provider) {
             return [
-                [msg("Endpoint"), "endpoint__name"],
+                [msg("Device"), "device__name"],
                 [msg("User"), "session__user"],
             ];
         }
 
         return [
             [msg("Provider"), "provider__name"],
-            [msg("Endpoint"), "endpoint__name"],
+            [msg("Device"), "device__name"],
         ];
     }
 
     row(item: ConnectionToken): SlottedTemplateResult[] {
         if (this.provider) {
-            return [html`${item.endpointObj.name}`, html`${item.user.username}`];
+            return [html`${item.deviceName}`, html`${item.user.username}`];
         }
 
-        return [html`${item.providerObj.name}`, html`${item.endpointObj.name}`];
+        return [html`${item.providerObj.name}`, html`${item.deviceName}`];
     }
 }
 
