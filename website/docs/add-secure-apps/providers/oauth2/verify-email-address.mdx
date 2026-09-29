@@ -1,0 +1,116 @@
+---
+title: Verify email addresses
+description: Configure the email_verified OIDC claim using an existing verification process or an authentik email verification flow.
+sidebar_position: 9
+---
+
+Some OpenID Connect (OIDC) applications require the `email_verified` claim to be `True`. Since authentik 2025.10, the default `email` scope mapping returns `False` because an email address alone does not prove that the user controls it. Choose the option that matches how you verify users' addresses.
+
+## Option 1: Use an existing verification process
+
+If another process verifies every user's current email address, you can create a custom email scope mapping under **Customization** > **Property Mappings** that always returns `email_verified` as `True`:
+
+```python
+return {
+    "email": request.user.email,
+    "email_verified": True,
+}
+```
+
+:::warning
+This mapping asserts that every user's current email address is verified. Do not use it if an address can be unverified or changed without verification.
+:::
+
+If you store verification status as a Boolean user attribute, such as `email_verified`, you can return its value dynamically instead:
+
+```python
+return {
+    "email": request.user.email,
+    "email_verified": request.user.attributes.get("email_verified", False),
+}
+```
+
+Clear the attribute whenever the user's email address changes, including changes made by external sources.
+
+### Configure the email scope mapping
+
+1. Log in to authentik as an administrator and open the Admin interface.
+2. Navigate to **Customization** > **Property Mappings**, and click **New Property Mapping**.
+3. Select **Scope Mapping**, click **Next**, and enter a **Name**. Set **Scope name** to `email`.
+4. Enter the expression that matches your verification process in **Expression**.
+5. Click **Finish**.
+6. Open the application's OAuth2/OIDC provider. In **Scopes**, replace the default `email` scope mapping with the custom mapping and save the provider. Do not assign both email mappings to the same provider.
+
+## Option 2: Verify addresses with authentik
+
+The [email stage](../../flows-stages/stages/email/index.mdx) sends a confirmation link to the user's email address. After the user follows the link, this procedure records the address and maps it to the `email_verified` claim.
+
+### Prerequisites
+
+- [Configure email delivery](../../../install-config/email.mdx).
+- Ensure that an email address is saved on the user's account before the email stage runs.
+
+### Create and bind the email stage
+
+1. Log in to authentik as an administrator and open the Admin interface.
+2. Navigate to **Flows and Stages** > **Stages**, and click **New Stage**.
+3. Select **Email Stage**, click **Next**, and enter a **Stage Name**, such as `email-verification`.
+4. Enable **Use global connection settings** if you configured global email delivery, or enter the stage-specific SMTP settings. Set **Template** to **Account Confirmation**.
+5. Disable **Activate pending user on success** unless verification should activate an inactive account. Click **Create Stage**.
+6. Navigate to **Flows and Stages** > **Flows**, open the flow that users will run to verify their address, and select **Stage Bindings**.
+7. Bind the email stage after the user has been identified and before a [user login stage](../../flows-stages/stages/user_login/index.mdx). If the flow creates users, place it after the [user write stage](../../flows-stages/stages/user_write/index.mdx) so that the account exists before the email stage runs.
+
+For example, you can add the stage to:
+
+- A [two-stage enrollment flow](../../flows-stages/flow/flows.mdx#two-stage-enrollment) to confirm addresses during sign-up, after the user write stage.
+- A [two-factor login flow](../../flows-stages/flow/flows.mdx#two-factor-login) to confirm addresses for existing users, after password and MFA validation. Users receive a link each time they run this flow.
+
+The [enrollment with email verification example](../../flows-stages/flow/flows.mdx#enrollment-with-email-verification) already includes an email stage but does not record a verification attribute. It creates users as inactive and enables **Activate pending user on success** so that they can log in after verification. Review this setting before using the example for existing accounts.
+
+Keep the email stage mandatory and send to the user's saved email address. Do not override the destination with a different address. The stage continues only after the user follows the confirmation link and can send a new link when the flow runs again.
+
+### Record the verified address with a policy
+
+Bind an expression policy to the user login stage binding so that it runs after the email stage. The policy records the address only when the user returns through a flow token for that account.
+
+1. Navigate to **Customization** > **Policies**, click **New Policy**, and select **Expression Policy**.
+2. Enter a **Name** and add this code to **Expression**:
+
+    ```python
+    user = request.context.get("pending_user")
+    token = request.context.get("is_restored")
+    if user and user.pk and user.email and token and token.user_id == user.pk:
+        user.attributes["email_verified_address"] = user.email
+        user.save(update_fields=["attributes"])
+
+    return True
+    ```
+
+3. Click **Create Policy**. In **Flows and Stages** > **Flows**, open the same flow and expand its user login stage binding under **Stage Bindings**.
+4. Bind the new policy to that stage binding. Keep **Evaluate when stage is run** enabled and **Evaluate when flow is planned** disabled so that the policy runs after the user follows the link.
+
+The policy returns `True` so that the user login stage can proceed without a flow token. It updates the stored verified address only when the token matches the user. Use this policy only in a flow where the email stage is mandatory and no other stage restores a flow token, because other token-based stages can also set `is_restored`.
+
+### Configure the email scope mapping
+
+Create a custom email scope mapping instead of editing the managed default mapping.
+
+1. Navigate to **Customization** > **Property Mappings**, and click **New Property Mapping**.
+2. Select **Scope Mapping**, click **Next**, and give the mapping a name. Set **Scope name** to `email`.
+3. Enter this expression in **Expression**:
+
+    ```python
+    email = request.user.email
+    verified_address = request.user.attributes.get("email_verified_address")
+    return {
+        "email": email,
+        "email_verified": bool(email and verified_address == email),
+    }
+    ```
+
+4. Click **Finish**.
+5. Open the application's OAuth2/OIDC provider. Under **Scopes**, replace the default `email` scope mapping with the custom mapping and save the provider. Do not assign both email mappings to the same provider.
+
+The mapping returns `False` if `user.email` differs from the confirmed address. If returning to a previously verified address should require new confirmation, clear `email_verified_address` whenever the address changes, including changes made by another flow, an administrator, or a source sync.
+
+Returning `False` does not itself deny access in authentik. If an application must reject unverified addresses, enforce that requirement in the application or with an [application policy](../../../customize/policies/working_with_policies.mdx#bind-a-policy-to-an-application).
