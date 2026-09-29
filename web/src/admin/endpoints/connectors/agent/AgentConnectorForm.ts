@@ -25,9 +25,9 @@ import {
 import {
     AgentConnector,
     AgentConnectorRequest,
-    ApplePssoAuthenticationMethodEnum,
-    ApplePssoBiometricRequirementEnum,
-    ApplePssoFilevaultPolicyEnum,
+    ApplePSSOAuthenticationMethodEnum,
+    ApplePSSOBiometricRequirementEnum,
+    ApplePSSOAuthenticationPolicyEnum,
     EndpointsApi,
     FlowDesignationEnum,
 } from "@goauthentik/api";
@@ -42,11 +42,11 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
     // Apple treats the Platform SSO authentication method as a single mode, and each mode
     // ignores the other's settings, so the form only offers the group that applies.
     @state()
-    protected selectedAuthenticationMethod: ApplePssoAuthenticationMethodEnum =
-        ApplePssoAuthenticationMethodEnum.UserSecureEnclaveKey;
+    protected selectedAuthenticationMethod: ApplePSSOAuthenticationMethodEnum =
+        ApplePSSOAuthenticationMethodEnum.UserSecureEnclaveKey;
 
     #authenticationMethodChangeListener = (
-        event: CustomEvent<RadioChangeEventDetail<ApplePssoAuthenticationMethodEnum>>,
+        event: CustomEvent<RadioChangeEventDetail<ApplePSSOAuthenticationMethodEnum>>,
     ): void => {
         this.selectedAuthenticationMethod = event.detail.value;
     };
@@ -58,8 +58,8 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
             });
 
             this.selectedAuthenticationMethod =
-                connector.applePssoAuthenticationMethod ??
-                ApplePssoAuthenticationMethodEnum.UserSecureEnclaveKey;
+                connector.applePsso?.authenticationMethod ??
+                ApplePSSOAuthenticationMethodEnum.UserSecureEnclaveKey;
 
             return connector;
         },
@@ -84,29 +84,29 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
         const pssoBiometricOptions = [
             {
                 label: msg("None (no biometric required)"),
-                value: ApplePssoBiometricRequirementEnum.None,
+                value: ApplePSSOBiometricRequirementEnum.None,
             },
             {
                 label: msg("Touch ID or Apple Watch, invalidated if enrolment changes"),
-                value: ApplePssoBiometricRequirementEnum.CurrentSet,
+                value: ApplePSSOBiometricRequirementEnum.CurrentSet,
             },
             {
                 label: msg("Touch ID or Apple Watch, any enrolment"),
-                value: ApplePssoBiometricRequirementEnum.Any,
+                value: ApplePSSOBiometricRequirementEnum.Any,
             },
         ];
 
         const pssoAuthenticationMethodOptions = [
             {
                 label: msg("User Secure Enclave key"),
-                value: ApplePssoAuthenticationMethodEnum.UserSecureEnclaveKey,
+                value: ApplePSSOAuthenticationMethodEnum.UserSecureEnclaveKey,
                 description: html`${msg(
                     "The Mac authenticates with a hardware-backed key and the local account password is left alone. Users may fall back to their authentik password when a required biometric is unavailable.",
                 )}`,
             },
             {
                 label: msg("Password"),
-                value: ApplePssoAuthenticationMethodEnum.Password,
+                value: ApplePSSOAuthenticationMethodEnum.Password,
                 description: html`${msg(
                     "Users sign in to the Mac with their authentik password, and the local account password is kept in sync with it.",
                 )}`,
@@ -116,15 +116,15 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
         const pssoPolicyOptions = [
             {
                 label: msg("None (silent background token only)"),
-                value: ApplePssoFilevaultPolicyEnum.None,
+                value: ApplePSSOAuthenticationPolicyEnum.None,
             },
             {
                 label: msg("Attempt authentication (enforced only when online)"),
-                value: ApplePssoFilevaultPolicyEnum.Attempt,
+                value: ApplePSSOAuthenticationPolicyEnum.Attempt,
             },
             {
                 label: msg("Require authentication"),
-                value: ApplePssoFilevaultPolicyEnum.Require,
+                value: ApplePSSOAuthenticationPolicyEnum.Require,
             },
         ];
 
@@ -277,17 +277,17 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                         )}
                     </p>
                     <ak-number-input
-                        name="applePssoLoginFrequency"
+                        name="applePsso.loginFrequency"
                         label=${msg("Login frequency")}
                         required
-                        value="${this.instance?.applePssoLoginFrequency ?? 64800}"
+                        value="${this.instance?.applePsso?.loginFrequency ?? 64800}"
                         help=${msg(
                             "Maximum interval, in seconds, before a full re-authentication is required. Apple default is 64800 (18 hours); minimum is 3600 (1 hour).",
                         )}
                     ></ak-number-input>
                     <ak-radio-input
                         @change=${this.#authenticationMethodChangeListener}
-                        name="applePssoAuthenticationMethod"
+                        name="applePsso.authenticationMethod"
                         label=${msg("Authentication method")}
                         required
                         .options=${pssoAuthenticationMethodOptions}
@@ -298,7 +298,7 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                     ></ak-radio-input>
                     ${
                         this.selectedAuthenticationMethod ===
-                        ApplePssoAuthenticationMethodEnum.Password
+                        ApplePSSOAuthenticationMethodEnum.Password
                             ? this.renderPasswordModeOptions(pssoPolicyOptions)
                             : this.renderSecureEnclaveModeOptions(pssoBiometricOptions)
                     }
@@ -308,11 +308,11 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
 
     protected renderPasswordModeOptions(pssoPolicyOptions: RadioOption<string>[]) {
         return html`<ak-switch-input
-                name="applePssoUnlockAllowTouchIdOrWatch"
+                name="applePsso.unlockAllowTouchIdOrWatch"
                 label=${msg("Allow Touch ID or Apple Watch to unlock", {
                     id: "endpoints.agent.psso.unlock-touch-id.label",
                 })}
-                ?checked=${this.instance?.applePssoUnlockAllowTouchIdOrWatch ?? true}
+                ?checked=${this.instance?.applePsso?.unlockAllowTouchIdOrWatch ?? true}
                 help=${msg(
                     "Let Touch ID or Apple Watch unlock the screen in place of a Platform SSO authentication. Only applies when the screen unlock policy is set to Require; turning it off makes every unlock ask for the password.",
                     { id: "endpoints.agent.psso.unlock-touch-id.description" },
@@ -320,65 +320,66 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
             >
             </ak-switch-input>
             <ak-switch-input
-                name="applePssoEnableCreateUserAtLogin"
+                name="applePsso.enableCreateUserAtLogin"
                 label=${msg("Create users at the login window")}
-                ?checked=${this.instance?.applePssoEnableCreateUserAtLogin ?? false}
+                ?checked=${this.instance?.applePsso?.enableCreateUserAtLogin ?? false}
                 help=${msg(
                     "Let a user with no local account sign in at the login window and have an account created for them.",
                 )}
             >
             </ak-switch-input>
             <ak-radio-input
-                name="applePssoLoginPolicy"
+                name="applePsso.loginPolicy"
                 label=${msg("Login window policy")}
                 .options=${pssoPolicyOptions}
-                .value=${this.instance?.applePssoLoginPolicy ?? ApplePssoFilevaultPolicyEnum.None}
+                .value=${this.instance?.applePsso?.loginPolicy ?? ApplePSSOAuthenticationPolicyEnum.None}
                 help=${msg(
                     "Whether Platform SSO authenticates the user against authentik at the macOS login window.",
                 )}
             ></ak-radio-input>
             <ak-radio-input
-                name="applePssoUnlockPolicy"
+                name="applePsso.unlockPolicy"
                 label=${msg("Screen unlock policy")}
                 .options=${pssoPolicyOptions}
-                .value=${this.instance?.applePssoUnlockPolicy ?? ApplePssoFilevaultPolicyEnum.None}
+                .value=${this.instance?.applePsso?.unlockPolicy ?? ApplePSSOAuthenticationPolicyEnum.None}
                 help=${msg(
                     "Whether Platform SSO authenticates the user against authentik when unlocking the screen.",
                 )}
             ></ak-radio-input>
             <ak-radio-input
-                name="applePssoFilevaultPolicy"
+                name="applePsso.filevaultPolicy"
                 label=${msg("FileVault policy")}
                 .options=${pssoPolicyOptions}
                 .value=${
-                    this.instance?.applePssoFilevaultPolicy ?? ApplePssoFilevaultPolicyEnum.None
+                    this.instance?.applePsso?.filevaultPolicy ??
+                    ApplePSSOAuthenticationPolicyEnum.None
                 }
                 help=${msg(
                     "Whether Platform SSO authenticates the user against authentik at FileVault unlock after a restart.",
                 )}
             ></ak-radio-input>
             <ak-number-input
-                name="applePssoAuthenticationGracePeriod"
+                name="applePsso.authenticationGracePeriod"
                 label=${msg("Authentication grace period")}
-                value="${this.instance?.applePssoAuthenticationGracePeriod ?? 0}"
+                value="${this.instance?.applePsso?.authenticationGracePeriod ?? 0}"
                 help=${msg(
                     "Seconds after a policy is applied during which accounts that have not yet registered with Platform SSO can still sign in. 0 disables the grace period.",
                 )}
             ></ak-number-input>
             <ak-number-input
-                name="applePssoOfflineGracePeriod"
+                name="applePsso.offlineGracePeriod"
                 label=${msg("Offline grace period")}
-                value="${this.instance?.applePssoOfflineGracePeriod ?? 0}"
+                value="${this.instance?.applePsso?.offlineGracePeriod ?? 0}"
                 help=${msg(
                     "Seconds after the last successful Platform SSO login that the local account password keeps working while the Mac is offline. 0 disables the grace period.",
                 )}
             ></ak-number-input>
             <ak-form-element-horizontal
                 label=${msg("Exempt local accounts")}
-                name="applePssoNonPlatformSsoAccounts"
+                name="applePsso.nonPlatformSsoAccounts"
             >
                 <ak-array-input
-                    .items=${this.instance?.applePssoNonPlatformSsoAccounts ?? []}
+                    .items=${this.instance?.applePsso?.nonPlatformSsoAccounts ?? []}
                     .newItem=${() => ""}
                     .row=${(item?: string) =>
                         html`<ak-text-input
@@ -399,30 +400,30 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
 
     protected renderSecureEnclaveModeOptions(pssoBiometricOptions: RadioOption<string>[]) {
         return html`<ak-radio-input
-                name="applePssoBiometricRequirement"
+                name="applePsso.biometricRequirement"
                 label=${msg("Biometric requirement")}
                 .options=${pssoBiometricOptions}
                 .value=${
-                    this.instance?.applePssoBiometricRequirement ??
-                    ApplePssoBiometricRequirementEnum.None
+                    this.instance?.applePsso?.biometricRequirement ??
+                    ApplePSSOBiometricRequirementEnum.None
                 }
                 help=${msg(
                     "Which biometric, if any, is required to use the Secure Enclave key. Requires native agent support.",
                 )}
             ></ak-radio-input>
             <ak-switch-input
-                name="applePssoBiometricPasswordFallback"
+                name="applePsso.biometricPasswordFallback"
                 label=${msg("Allow password fallback")}
-                ?checked=${this.instance?.applePssoBiometricPasswordFallback ?? true}
+                ?checked=${this.instance?.applePsso?.biometricPasswordFallback ?? true}
                 help=${msg(
                     "Offer 'log in with authentik password instead' when Touch ID is cancelled, fails, or was never enrolled. Turning this off will lock out users on Macs with no Touch ID hardware.",
                 )}
             >
             </ak-switch-input>
             <ak-switch-input
-                name="applePssoBiometricReuseDuringUnlock"
+                name="applePsso.biometricReuseDuringUnlock"
                 label=${msg("Reuse Touch ID from unlock")}
-                ?checked=${this.instance?.applePssoBiometricReuseDuringUnlock ?? false}
+                ?checked=${this.instance?.applePsso?.biometricReuseDuringUnlock ?? false}
                 help=${msg(
                     "Reuse the Touch ID presented when unlocking the Mac instead of prompting again.",
                 )}

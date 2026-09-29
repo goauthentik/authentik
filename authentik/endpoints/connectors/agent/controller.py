@@ -97,7 +97,7 @@ class AgentConnectorController(BaseController[AgentConnector]):
         return {
             ApplePSSOAuthenticationMethod.PASSWORD: "Password",
             ApplePSSOAuthenticationMethod.USER_SECURE_ENCLAVE_KEY: "UserSecureEnclaveKey",
-        }[self.connector.apple_psso_authentication_method]
+        }[self.connector.apple_psso_config.authentication_method]
 
     def _psso_login_policies(self) -> dict:
         """Build the LoginPolicy/UnlockPolicy/FileVaultPolicy keys of the Platform SSO
@@ -116,45 +116,41 @@ class AgentConnectorController(BaseController[AgentConnector]):
         an UnlockPolicy-only modifier that Apple documents as acting when
         RequireAuthentication is enabled, so it is appended only in that combination —
         under "attempt" Touch ID and watch unlock already work."""
-        if (
-            self.connector.apple_psso_authentication_method
-            != ApplePSSOAuthenticationMethod.PASSWORD
-        ):
+        config = self.connector.apple_psso_config
+        if config.authentication_method != ApplePSSOAuthenticationMethod.PASSWORD:
             return {}
         mapping = {
             ApplePSSOAuthenticationPolicy.ATTEMPT: "AttemptAuthentication",
             ApplePSSOAuthenticationPolicy.REQUIRE: "RequireAuthentication",
         }
         modifiers = []
-        if self.connector.apple_psso_authentication_grace_period:
+        if config.authentication_grace_period:
             modifiers.append("AllowAuthenticationGracePeriod")
-        if self.connector.apple_psso_offline_grace_period:
+        if config.offline_grace_period:
             modifiers.append("AllowOfflineGracePeriod")
         policies = {}
-        for field, payload_key in (
-            ("apple_psso_login_policy", "LoginPolicy"),
-            ("apple_psso_unlock_policy", "UnlockPolicy"),
-            ("apple_psso_filevault_policy", "FileVaultPolicy"),
+        for policy, payload_key in (
+            (config.login_policy, "LoginPolicy"),
+            (config.unlock_policy, "UnlockPolicy"),
+            (config.filevault_policy, "FileVaultPolicy"),
         ):
-            value = mapping.get(getattr(self.connector, field))
+            value = mapping.get(policy)
             if value:
                 policies[payload_key] = [value, *modifiers]
                 if (
                     payload_key == "UnlockPolicy"
                     and value == "RequireAuthentication"
-                    and self.connector.apple_psso_unlock_allow_touch_id_or_watch
+                    and config.unlock_allow_touch_id_or_watch
                 ):
                     policies[payload_key].append("AllowTouchIDOrWatchForUnlock")
         if policies:
-            if self.connector.apple_psso_authentication_grace_period:
-                policies["AuthenticationGracePeriod"] = (
-                    self.connector.apple_psso_authentication_grace_period
-                )
-            if self.connector.apple_psso_offline_grace_period:
-                policies["OfflineGracePeriod"] = self.connector.apple_psso_offline_grace_period
-        if self.connector.apple_psso_non_platform_sso_accounts:
-            policies["NonPlatformSSOAccounts"] = self.connector.apple_psso_non_platform_sso_accounts
-        if self.connector.apple_psso_enable_create_user_at_login:
+            if config.authentication_grace_period:
+                policies["AuthenticationGracePeriod"] = config.authentication_grace_period
+            if config.offline_grace_period:
+                policies["OfflineGracePeriod"] = config.offline_grace_period
+        if config.non_platform_sso_accounts:
+            policies["NonPlatformSSOAccounts"] = config.non_platform_sso_accounts
+        if config.enable_create_user_at_login:
             policies["EnableCreateUserAtLogin"] = True
         return policies
 
@@ -221,7 +217,7 @@ class AgentConnectorController(BaseController[AgentConnector]):
                             "AuthenticationMethod": self._psso_authentication_method(),
                             "EnableAuthorization": True,
                             "UseSharedDeviceKeys": True,
-                            "LoginFrequency": self.connector.apple_psso_login_frequency,
+                            "LoginFrequency": self.connector.apple_psso_config.login_frequency,
                             **self._psso_login_policies(),
                         },
                     },

@@ -8127,92 +8127,94 @@
                     },
                     "title": "Jwt federation providers"
                 },
-                "apple_psso_authentication_method": {
-                    "type": "string",
-                    "enum": [
-                        "user_secure_enclave_key",
-                        "password"
-                    ],
-                    "title": "Apple psso authentication method"
-                },
-                "apple_psso_authentication_grace_period": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 2147483647,
-                    "title": "Apple psso authentication grace period"
-                },
-                "apple_psso_offline_grace_period": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 2147483647,
-                    "title": "Apple psso offline grace period"
-                },
-                "apple_psso_non_platform_sso_accounts": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "minLength": 1,
-                        "title": "Apple psso non platform sso accounts"
+                "apple_psso": {
+                    "type": "object",
+                    "properties": {
+                        "authentication_method": {
+                            "type": "string",
+                            "enum": [
+                                "user_secure_enclave_key",
+                                "password"
+                            ],
+                            "title": "Authentication method"
+                        },
+                        "login_policy": {
+                            "type": "string",
+                            "enum": [
+                                "none",
+                                "attempt",
+                                "require"
+                            ],
+                            "title": "Login policy"
+                        },
+                        "unlock_policy": {
+                            "type": "string",
+                            "enum": [
+                                "none",
+                                "attempt",
+                                "require"
+                            ],
+                            "title": "Unlock policy"
+                        },
+                        "filevault_policy": {
+                            "type": "string",
+                            "enum": [
+                                "none",
+                                "attempt",
+                                "require"
+                            ],
+                            "title": "Filevault policy"
+                        },
+                        "unlock_allow_touch_id_or_watch": {
+                            "type": "boolean",
+                            "title": "Unlock allow touch id or watch"
+                        },
+                        "login_frequency": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "title": "Login frequency"
+                        },
+                        "authentication_grace_period": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "title": "Authentication grace period"
+                        },
+                        "offline_grace_period": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "title": "Offline grace period"
+                        },
+                        "non_platform_sso_accounts": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "title": "Non platform sso accounts"
+                        },
+                        "enable_create_user_at_login": {
+                            "type": "boolean",
+                            "title": "Enable create user at login"
+                        },
+                        "biometric_requirement": {
+                            "type": "string",
+                            "enum": [
+                                "none",
+                                "current_set",
+                                "any"
+                            ],
+                            "title": "Biometric requirement"
+                        },
+                        "biometric_password_fallback": {
+                            "type": "boolean",
+                            "title": "Biometric password fallback"
+                        },
+                        "biometric_reuse_during_unlock": {
+                            "type": "boolean",
+                            "title": "Biometric reuse during unlock"
+                        }
                     },
-                    "title": "Apple psso non platform sso accounts"
-                },
-                "apple_psso_enable_create_user_at_login": {
-                    "type": "boolean",
-                    "title": "Apple psso enable create user at login"
-                },
-                "apple_psso_login_policy": {
-                    "type": "string",
-                    "enum": [
-                        "none",
-                        "attempt",
-                        "require"
-                    ],
-                    "title": "Apple psso login policy"
-                },
-                "apple_psso_unlock_policy": {
-                    "type": "string",
-                    "enum": [
-                        "none",
-                        "attempt",
-                        "require"
-                    ],
-                    "title": "Apple psso unlock policy"
-                },
-                "apple_psso_unlock_allow_touch_id_or_watch": {
-                    "type": "boolean",
-                    "title": "Apple psso unlock allow touch id or watch"
-                },
-                "apple_psso_filevault_policy": {
-                    "type": "string",
-                    "enum": [
-                        "none",
-                        "attempt",
-                        "require"
-                    ],
-                    "title": "Apple psso filevault policy"
-                },
-                "apple_psso_login_frequency": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 2147483647,
-                    "title": "Apple psso login frequency"
-                },
-                "apple_psso_biometric_requirement": {
-                    "type": "string",
-                    "enum": [
-                        "none",
-                        "current_set",
-                        "any"
-                    ],
-                    "title": "Apple psso biometric requirement"
-                },
-                "apple_psso_biometric_password_fallback": {
-                    "type": "boolean",
-                    "title": "Apple psso biometric password fallback"
-                },
-                "apple_psso_biometric_reuse_during_unlock": {
-                    "type": "boolean",
-                    "title": "Apple psso biometric reuse during unlock"
+                    "title": "Apple psso"
                 }
             },
             "required": []

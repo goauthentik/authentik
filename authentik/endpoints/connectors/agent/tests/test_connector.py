@@ -2,8 +2,10 @@ from plistlib import PlistFormat, loads
 
 from defusedxml.lxml import fromstring
 from django.test import RequestFactory
+from django.urls import reverse
 from rest_framework.test import APITestCase
 
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.endpoints.connectors.agent.models import (
     AgentConnector,
     ApplePSSOAuthenticationMethod,
@@ -56,40 +58,42 @@ class TestAgentConnector(APITestCase):
         PasswordFallback on its own would demand nothing while looking like it demands
         something, so the agent must be told to leave the OptionSet untouched."""
         self.assertEqual(self.connector.apple_psso_biometric_policies, [])
-        self.connector.apple_psso_biometric_reuse_during_unlock = True
+        self.connector.apple_psso["biometric_reuse_during_unlock"] = True
         self.assertEqual(self.connector.apple_psso_biometric_policies, [])
 
     def test_biometric_policies_password_fallback_is_default(self):
         """Selecting a requirement must carry the password fallback with it. Without it a
         user whose Touch ID is cancelled, failing, or never enrolled — every Mac with no
         Touch ID hardware — cannot use the key at all."""
-        self.connector.apple_psso_biometric_requirement = ApplePSSOBiometricRequirement.CURRENT_SET
+        self.connector.apple_psso["biometric_requirement"] = (
+            ApplePSSOBiometricRequirement.CURRENT_SET
+        )
         self.assertEqual(
             self.connector.apple_psso_biometric_policies,
             ["touch_id_or_watch_current_set", "password_fallback"],
         )
 
     def test_biometric_policies_all_options(self):
-        self.connector.apple_psso_biometric_requirement = ApplePSSOBiometricRequirement.ANY
-        self.connector.apple_psso_biometric_reuse_during_unlock = True
+        self.connector.apple_psso["biometric_requirement"] = ApplePSSOBiometricRequirement.ANY
+        self.connector.apple_psso["biometric_reuse_during_unlock"] = True
         self.assertEqual(
             self.connector.apple_psso_biometric_policies,
             ["touch_id_or_watch_any", "password_fallback", "reuse_during_unlock"],
         )
 
     def test_biometric_policies_fallback_can_be_disabled(self):
-        self.connector.apple_psso_biometric_requirement = ApplePSSOBiometricRequirement.ANY
-        self.connector.apple_psso_biometric_password_fallback = False
+        self.connector.apple_psso["biometric_requirement"] = ApplePSSOBiometricRequirement.ANY
+        self.connector.apple_psso["biometric_password_fallback"] = False
         self.assertEqual(self.connector.apple_psso_biometric_policies, ["touch_id_or_watch_any"])
 
     def test_generate_mdm_macos_psso_policies(self):
         """Configured Apple Platform SSO policies must appear in the generated profile as
         arrays of policy strings (matching ee/psso/example.mobileconfig); policies left at
         their default must be omitted so Platform SSO keeps its passive behaviour."""
-        self.connector.apple_psso_authentication_method = ApplePSSOAuthenticationMethod.PASSWORD
-        self.connector.apple_psso_login_policy = ApplePSSOAuthenticationPolicy.REQUIRE
-        self.connector.apple_psso_unlock_policy = ApplePSSOAuthenticationPolicy.ATTEMPT
-        self.connector.apple_psso_login_frequency = 7200
+        self.connector.apple_psso["authentication_method"] = ApplePSSOAuthenticationMethod.PASSWORD
+        self.connector.apple_psso["login_policy"] = ApplePSSOAuthenticationPolicy.REQUIRE
+        self.connector.apple_psso["unlock_policy"] = ApplePSSOAuthenticationPolicy.ATTEMPT
+        self.connector.apple_psso["login_frequency"] = 7200
         self.connector.save()
         request = self.factory.get("/")
         res = self.connector.controller(self.connector).generate_mdm_config(
@@ -127,7 +131,7 @@ class TestAgentConnector(APITestCase):
         self.assertEqual(psso["AuthenticationMethod"], "UserSecureEnclaveKey")
 
     def test_generate_mdm_macos_authentication_method_password(self):
-        self.connector.apple_psso_authentication_method = ApplePSSOAuthenticationMethod.PASSWORD
+        self.connector.apple_psso["authentication_method"] = ApplePSSOAuthenticationMethod.PASSWORD
         self.connector.save()
         request = self.factory.get("/")
         res = self.connector.controller(self.connector).generate_mdm_config(
@@ -140,9 +144,9 @@ class TestAgentConnector(APITestCase):
         """Apple documents the login/unlock/FileVault policies as applying only to the
         password method, so configuring them in Secure Enclave key mode must not write keys
         macOS will ignore."""
-        self.connector.apple_psso_login_policy = ApplePSSOAuthenticationPolicy.REQUIRE
-        self.connector.apple_psso_unlock_policy = ApplePSSOAuthenticationPolicy.REQUIRE
-        self.connector.apple_psso_filevault_policy = ApplePSSOAuthenticationPolicy.REQUIRE
+        self.connector.apple_psso["login_policy"] = ApplePSSOAuthenticationPolicy.REQUIRE
+        self.connector.apple_psso["unlock_policy"] = ApplePSSOAuthenticationPolicy.REQUIRE
+        self.connector.apple_psso["filevault_policy"] = ApplePSSOAuthenticationPolicy.REQUIRE
         self.connector.save()
         request = self.factory.get("/")
         res = self.connector.controller(self.connector).generate_mdm_config(
@@ -156,18 +160,18 @@ class TestAgentConnector(APITestCase):
     def test_biometric_policies_omitted_in_password_mode(self):
         """There is no user Secure Enclave key in password mode, so a biometric policy
         guarding it would be meaningless."""
-        self.connector.apple_psso_authentication_method = ApplePSSOAuthenticationMethod.PASSWORD
-        self.connector.apple_psso_biometric_requirement = ApplePSSOBiometricRequirement.ANY
+        self.connector.apple_psso["authentication_method"] = ApplePSSOAuthenticationMethod.PASSWORD
+        self.connector.apple_psso["biometric_requirement"] = ApplePSSOBiometricRequirement.ANY
         self.assertEqual(self.connector.apple_psso_biometric_policies, [])
 
     def test_generate_mdm_macos_grace_periods(self):
         """The grace periods are modifiers inside each policy array, not standalone keys, so
         the flag has to travel with every policy being enforced alongside the duration."""
-        self.connector.apple_psso_authentication_method = ApplePSSOAuthenticationMethod.PASSWORD
-        self.connector.apple_psso_login_policy = ApplePSSOAuthenticationPolicy.REQUIRE
-        self.connector.apple_psso_unlock_policy = ApplePSSOAuthenticationPolicy.ATTEMPT
-        self.connector.apple_psso_authentication_grace_period = 3600
-        self.connector.apple_psso_offline_grace_period = 7200
+        self.connector.apple_psso["authentication_method"] = ApplePSSOAuthenticationMethod.PASSWORD
+        self.connector.apple_psso["login_policy"] = ApplePSSOAuthenticationPolicy.REQUIRE
+        self.connector.apple_psso["unlock_policy"] = ApplePSSOAuthenticationPolicy.ATTEMPT
+        self.connector.apple_psso["authentication_grace_period"] = 3600
+        self.connector.apple_psso["offline_grace_period"] = 7200
         self.connector.save()
         request = self.factory.get("/")
         res = self.connector.controller(self.connector).generate_mdm_config(
@@ -191,9 +195,9 @@ class TestAgentConnector(APITestCase):
         """AllowTouchIDOrWatchForUnlock only means something on an UnlockPolicy of
         RequireAuthentication, so it lands there and nowhere else — and disabling the
         connector option keeps it out even then."""
-        self.connector.apple_psso_authentication_method = ApplePSSOAuthenticationMethod.PASSWORD
-        self.connector.apple_psso_login_policy = ApplePSSOAuthenticationPolicy.REQUIRE
-        self.connector.apple_psso_unlock_policy = ApplePSSOAuthenticationPolicy.REQUIRE
+        self.connector.apple_psso["authentication_method"] = ApplePSSOAuthenticationMethod.PASSWORD
+        self.connector.apple_psso["login_policy"] = ApplePSSOAuthenticationPolicy.REQUIRE
+        self.connector.apple_psso["unlock_policy"] = ApplePSSOAuthenticationPolicy.REQUIRE
         self.connector.save()
         request = self.factory.get("/")
         res = self.connector.controller(self.connector).generate_mdm_config(
@@ -205,7 +209,7 @@ class TestAgentConnector(APITestCase):
         )
         self.assertEqual(psso["LoginPolicy"], ["RequireAuthentication"])
 
-        self.connector.apple_psso_unlock_allow_touch_id_or_watch = False
+        self.connector.apple_psso["unlock_allow_touch_id_or_watch"] = False
         self.connector.save()
         res = self.connector.controller(self.connector).generate_mdm_config(
             OSFamily.macOS, request, self.token
@@ -213,8 +217,8 @@ class TestAgentConnector(APITestCase):
         psso = _platform_sso(res.validated_data["config"])
         self.assertEqual(psso["UnlockPolicy"], ["RequireAuthentication"])
 
-        self.connector.apple_psso_unlock_allow_touch_id_or_watch = True
-        self.connector.apple_psso_unlock_policy = ApplePSSOAuthenticationPolicy.ATTEMPT
+        self.connector.apple_psso["unlock_allow_touch_id_or_watch"] = True
+        self.connector.apple_psso["unlock_policy"] = ApplePSSOAuthenticationPolicy.ATTEMPT
         self.connector.save()
         res = self.connector.controller(self.connector).generate_mdm_config(
             OSFamily.macOS, request, self.token
@@ -225,8 +229,8 @@ class TestAgentConnector(APITestCase):
     def test_generate_mdm_macos_grace_period_without_policy(self):
         """A duration with no policy to attach to would be inert, so neither the flag nor
         the duration is written."""
-        self.connector.apple_psso_authentication_method = ApplePSSOAuthenticationMethod.PASSWORD
-        self.connector.apple_psso_authentication_grace_period = 3600
+        self.connector.apple_psso["authentication_method"] = ApplePSSOAuthenticationMethod.PASSWORD
+        self.connector.apple_psso["authentication_grace_period"] = 3600
         self.connector.save()
         request = self.factory.get("/")
         res = self.connector.controller(self.connector).generate_mdm_config(
@@ -236,9 +240,9 @@ class TestAgentConnector(APITestCase):
         self.assertNotIn("AuthenticationGracePeriod", psso)
 
     def test_generate_mdm_macos_exempt_accounts_and_user_creation(self):
-        self.connector.apple_psso_authentication_method = ApplePSSOAuthenticationMethod.PASSWORD
-        self.connector.apple_psso_non_platform_sso_accounts = ["breakglass", "localadmin"]
-        self.connector.apple_psso_enable_create_user_at_login = True
+        self.connector.apple_psso["authentication_method"] = ApplePSSOAuthenticationMethod.PASSWORD
+        self.connector.apple_psso["non_platform_sso_accounts"] = ["breakglass", "localadmin"]
+        self.connector.apple_psso["enable_create_user_at_login"] = True
         self.connector.save()
         request = self.factory.get("/")
         res = self.connector.controller(self.connector).generate_mdm_config(
@@ -251,11 +255,11 @@ class TestAgentConnector(APITestCase):
     def test_generate_mdm_macos_password_only_keys_omitted_in_secure_enclave_mode(self):
         """Every one of these is documented as password-method behaviour, so none of them
         may leak into a Secure Enclave key profile."""
-        self.connector.apple_psso_non_platform_sso_accounts = ["breakglass"]
-        self.connector.apple_psso_enable_create_user_at_login = True
-        self.connector.apple_psso_authentication_grace_period = 3600
-        self.connector.apple_psso_offline_grace_period = 7200
-        self.connector.apple_psso_login_policy = ApplePSSOAuthenticationPolicy.REQUIRE
+        self.connector.apple_psso["non_platform_sso_accounts"] = ["breakglass"]
+        self.connector.apple_psso["enable_create_user_at_login"] = True
+        self.connector.apple_psso["authentication_grace_period"] = 3600
+        self.connector.apple_psso["offline_grace_period"] = 7200
+        self.connector.apple_psso["login_policy"] = ApplePSSOAuthenticationPolicy.REQUIRE
         self.connector.save()
         request = self.factory.get("/")
         res = self.connector.controller(self.connector).generate_mdm_config(
@@ -281,3 +285,71 @@ class TestAgentConnector(APITestCase):
         fromstring(f"<root>{config}</root>")
         self.assertIn(self.token.key, config)
         self.assertIn("http://testserver/", config)
+
+    def test_api_apple_psso_defaults(self):
+        """A connector with nothing stored is returned with every setting at its default"""
+        self.client.force_login(create_test_admin_user())
+        res = self.client.get(
+            reverse("authentik_api:agentconnector-detail", kwargs={"pk": self.connector.pk})
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(
+            res.data["apple_psso"]["authentication_method"],
+            ApplePSSOAuthenticationMethod.USER_SECURE_ENCLAVE_KEY,
+        )
+        self.assertEqual(res.data["apple_psso"]["login_frequency"], 64800)
+        self.assertEqual(res.data["apple_psso"]["non_platform_sso_accounts"], [])
+
+    def test_api_apple_psso_create(self):
+        self.client.force_login(create_test_admin_user())
+        res = self.client.post(
+            reverse("authentik_api:agentconnector-list"),
+            data={
+                "name": generate_id(),
+                "apple_psso": {
+                    "authentication_method": ApplePSSOAuthenticationMethod.PASSWORD,
+                    "login_policy": ApplePSSOAuthenticationPolicy.REQUIRE,
+                },
+            },
+            format="json",
+        )
+        self.assertEqual(res.status_code, 201)
+        connector = AgentConnector.objects.get(pk=res.data["connector_uuid"])
+        self.assertEqual(
+            connector.apple_psso_config.authentication_method,
+            ApplePSSOAuthenticationMethod.PASSWORD,
+        )
+        self.assertEqual(
+            connector.apple_psso_config.login_policy, ApplePSSOAuthenticationPolicy.REQUIRE
+        )
+
+    def test_api_apple_psso_partial_update(self):
+        """The form only submits the settings of the selected authentication method, so a
+        partial update must leave the settings it doesn't mention as they were"""
+        self.connector.apple_psso["biometric_requirement"] = ApplePSSOBiometricRequirement.ANY
+        self.connector.save()
+        self.client.force_login(create_test_admin_user())
+        res = self.client.patch(
+            reverse("authentik_api:agentconnector-detail", kwargs={"pk": self.connector.pk}),
+            data={"apple_psso": {"login_policy": ApplePSSOAuthenticationPolicy.ATTEMPT}},
+            format="json",
+        )
+        self.assertEqual(res.status_code, 200)
+        self.connector.refresh_from_db()
+        self.assertEqual(
+            self.connector.apple_psso,
+            {
+                "biometric_requirement": ApplePSSOBiometricRequirement.ANY,
+                "login_policy": ApplePSSOAuthenticationPolicy.ATTEMPT,
+            },
+        )
+
+    def test_api_apple_psso_invalid(self):
+        self.client.force_login(create_test_admin_user())
+        res = self.client.patch(
+            reverse("authentik_api:agentconnector-detail", kwargs={"pk": self.connector.pk}),
+            data={"apple_psso": {"login_policy": "sometimes"}},
+            format="json",
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertIn("login_policy", res.data["apple_psso"])

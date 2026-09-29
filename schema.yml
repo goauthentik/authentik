@@ -35952,40 +35952,8 @@ components:
           type: array
           items:
             type: integer
-        apple_psso_authentication_method:
-          $ref: '#/components/schemas/ApplePssoAuthenticationMethodEnum'
-        apple_psso_authentication_grace_period:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        apple_psso_offline_grace_period:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        apple_psso_non_platform_sso_accounts:
-          type: array
-          items:
-            type: string
-        apple_psso_enable_create_user_at_login:
-          type: boolean
-        apple_psso_login_policy:
-          $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
-        apple_psso_unlock_policy:
-          $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
-        apple_psso_unlock_allow_touch_id_or_watch:
-          type: boolean
-        apple_psso_filevault_policy:
-          $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
-        apple_psso_login_frequency:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        apple_psso_biometric_requirement:
-          $ref: '#/components/schemas/ApplePssoBiometricRequirementEnum'
-        apple_psso_biometric_password_fallback:
-          type: boolean
-        apple_psso_biometric_reuse_during_unlock:
-          type: boolean
+        apple_psso:
+          $ref: '#/components/schemas/ApplePSSO'
       required:
       - component
       - meta_model_name
@@ -36039,41 +36007,8 @@ components:
           type: array
           items:
             type: integer
-        apple_psso_authentication_method:
-          $ref: '#/components/schemas/ApplePssoAuthenticationMethodEnum'
-        apple_psso_authentication_grace_period:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        apple_psso_offline_grace_period:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        apple_psso_non_platform_sso_accounts:
-          type: array
-          items:
-            type: string
-            minLength: 1
-        apple_psso_enable_create_user_at_login:
-          type: boolean
-        apple_psso_login_policy:
-          $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
-        apple_psso_unlock_policy:
-          $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
-        apple_psso_unlock_allow_touch_id_or_watch:
-          type: boolean
-        apple_psso_filevault_policy:
-          $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
-        apple_psso_login_frequency:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        apple_psso_biometric_requirement:
-          $ref: '#/components/schemas/ApplePssoBiometricRequirementEnum'
-        apple_psso_biometric_password_fallback:
-          type: boolean
-        apple_psso_biometric_reuse_during_unlock:
-          type: boolean
+        apple_psso:
+          $ref: '#/components/schemas/ApplePSSORequest'
       required:
       - name
     AgentCreateRequest:
@@ -36443,23 +36378,128 @@ components:
       - redirect_uri
       - scope
       - state
-    ApplePssoAuthenticationMethodEnum:
+    ApplePSSO:
+      type: object
+      description: Apple Platform SSO settings, see ApplePSSOConfig
+      properties:
+        authentication_method:
+          allOf:
+          - $ref: '#/components/schemas/ApplePSSOAuthenticationMethodEnum'
+          default: user_secure_enclave_key
+        login_policy:
+          allOf:
+          - $ref: '#/components/schemas/ApplePSSOAuthenticationPolicyEnum'
+          default: none
+        unlock_policy:
+          allOf:
+          - $ref: '#/components/schemas/ApplePSSOAuthenticationPolicyEnum'
+          default: none
+        filevault_policy:
+          allOf:
+          - $ref: '#/components/schemas/ApplePSSOAuthenticationPolicyEnum'
+          default: none
+        unlock_allow_touch_id_or_watch:
+          type: boolean
+          default: true
+        login_frequency:
+          type: integer
+          minimum: 0
+          default: 64800
+        authentication_grace_period:
+          type: integer
+          minimum: 0
+          default: 0
+        offline_grace_period:
+          type: integer
+          minimum: 0
+          default: 0
+        non_platform_sso_accounts:
+          type: array
+          items:
+            type: string
+        enable_create_user_at_login:
+          type: boolean
+          default: false
+        biometric_requirement:
+          allOf:
+          - $ref: '#/components/schemas/ApplePSSOBiometricRequirementEnum'
+          default: none
+        biometric_password_fallback:
+          type: boolean
+          default: true
+        biometric_reuse_during_unlock:
+          type: boolean
+          default: false
+    ApplePSSOAuthenticationMethodEnum:
       enum:
       - user_secure_enclave_key
       - password
       type: string
-    ApplePssoBiometricRequirementEnum:
-      enum:
-      - none
-      - current_set
-      - any
-      type: string
-    ApplePssoFilevaultPolicyEnum:
+    ApplePSSOAuthenticationPolicyEnum:
       enum:
       - none
       - attempt
       - require
       type: string
+    ApplePSSOBiometricRequirementEnum:
+      enum:
+      - none
+      - current_set
+      - any
+      type: string
+    ApplePSSORequest:
+      type: object
+      description: Apple Platform SSO settings, see ApplePSSOConfig
+      properties:
+        authentication_method:
+          allOf:
+          - $ref: '#/components/schemas/ApplePSSOAuthenticationMethodEnum'
+          default: user_secure_enclave_key
+        login_policy:
+          allOf:
+          - $ref: '#/components/schemas/ApplePSSOAuthenticationPolicyEnum'
+          default: none
+        unlock_policy:
+          allOf:
+          - $ref: '#/components/schemas/ApplePSSOAuthenticationPolicyEnum'
+          default: none
+        filevault_policy:
+          allOf:
+          - $ref: '#/components/schemas/ApplePSSOAuthenticationPolicyEnum'
+          default: none
+        unlock_allow_touch_id_or_watch:
+          type: boolean
+          default: true
+        login_frequency:
+          type: integer
+          minimum: 0
+          default: 64800
+        authentication_grace_period:
+          type: integer
+          minimum: 0
+          default: 0
+        offline_grace_period:
+          type: integer
+          minimum: 0
+          default: 0
+        non_platform_sso_accounts:
+          type: array
+          items:
+            type: string
+            minLength: 1
+        enable_create_user_at_login:
+          type: boolean
+          default: false
+        biometric_requirement:
+          allOf:
+          - $ref: '#/components/schemas/ApplePSSOBiometricRequirementEnum'
+          default: none
+        biometric_password_fallback:
+          type: boolean
+          default: true
+        biometric_reuse_during_unlock:
+          type: boolean
+          default: false
     Application:
       type: object
       description: Application Serializer
@@ -50528,41 +50568,8 @@ components:
           type: array
           items:
             type: integer
-        apple_psso_authentication_method:
-          $ref: '#/components/schemas/ApplePssoAuthenticationMethodEnum'
-        apple_psso_authentication_grace_period:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        apple_psso_offline_grace_period:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        apple_psso_non_platform_sso_accounts:
-          type: array
-          items:
-            type: string
-            minLength: 1
-        apple_psso_enable_create_user_at_login:
-          type: boolean
-        apple_psso_login_policy:
-          $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
-        apple_psso_unlock_policy:
-          $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
-        apple_psso_unlock_allow_touch_id_or_watch:
-          type: boolean
-        apple_psso_filevault_policy:
-          $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
-        apple_psso_login_frequency:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        apple_psso_biometric_requirement:
-          $ref: '#/components/schemas/ApplePssoBiometricRequirementEnum'
-        apple_psso_biometric_password_fallback:
-          type: boolean
-        apple_psso_biometric_reuse_during_unlock:
-          type: boolean
+        apple_psso:
+          $ref: '#/components/schemas/ApplePSSORequest'
     PatchedAgentRequest:
       type: object
       description: |-
