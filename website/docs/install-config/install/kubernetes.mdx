@@ -116,6 +116,8 @@ helm upgrade --install authentik authentik/authentik -f values.yaml
 
 During the installation process, the database migrations will be applied automatically on startup.
 
+To adjust the number of server or worker replicas automatically, see [Autoscaling on Kubernetes](../../sys-mgmt/ops/autoscaling/index.mdx).
+
 ## Access authentik
 
 To start the initial setup, navigate to `http://<your server's IP or hostname>:9000`.
