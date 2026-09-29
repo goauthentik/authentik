@@ -54,7 +54,7 @@ hyper-rustls = { version = "= 0.27.10", default-features = false, features = [
   "tls12",
 ] }
 hyper-unix-socket = "= 0.6.1"
-hyper-util = { version = "= 0.1.20", features = [
+hyper-util = { version = "= 0.1.21", features = [
   "client-legacy",
   "http1",
   "http2",
@@ -125,7 +125,7 @@ sqlx = { version = "= 0.9.0", default-features = false, features = [
   "json",
 ] }
 tempfile = "= 3.27.0"
-thiserror = "= 2.0.20"
+thiserror = "= 2.0.21"
 time = { version = "= 0.3.55", features = ["macros"] }
 tokio = { version = "= 1.53.1", features = ["full", "tracing"] }
 tokio-retry2 = "= 0.9.1"
