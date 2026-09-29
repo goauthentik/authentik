@@ -84,13 +84,15 @@ class SessionStore(SessionBase):
     def decode(self, session_data):
         try:
             return pickle.loads(session_data)  # nosec
-        except pickle.PickleError, AttributeError, TypeError:
+        except pickle.PickleError, AttributeError, TypeError, LookupError:
             # PickleError, ValueError - unpickling exceptions
             # AttributeError - can happen when Django model fields (e.g., FileField) are unpickled
             #                  and their descriptors fail to initialize (e.g., missing storage)
             # TypeError - can happen with incompatible pickled objects
+            # LookupError - Model that's referenced in the session no longer exists
             # If any of these happen, just return an empty dictionary (an empty session)
-            LOGGER.warning("Failed to decode session data", exc_info=True)
+            LOGGER.warning("Failed to decode session data, deleting session", exc_info=True)
+            self.delete()
             pass
         return {}
 
