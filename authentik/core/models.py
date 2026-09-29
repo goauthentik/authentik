@@ -18,6 +18,7 @@ from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
 from django.db import models
 from django.db.models import Q, QuerySet, options
+from django.db.models.functions import Upper
 from django.http import HttpRequest
 from django.utils.functional import cached_property
 from django.utils.timezone import now
@@ -404,6 +405,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             models.Index(fields=["date_joined"]),
             models.Index(fields=["last_updated"]),
             models.Index(fields=["username", "is_active", "type"]),
+            models.Index(Upper("email"), name="%(app_label)s_%(class)s_email_idx"),
         ]
 
     def __str__(self):
@@ -486,8 +488,12 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         """Get all entitlements this user has for `app`."""
         if not app:
             return []
+        return self.all_app_entitlements().filter(app=app)
+
+    def all_app_entitlements(self) -> QuerySet[ApplicationEntitlement]:
+        """Get all entitlements this user is assigned, regardless of access to the application."""
         all_groups = self.all_groups()
-        qs = app.applicationentitlement_set.filter(
+        return ApplicationEntitlement.objects.filter(
             Q(
                 Q(bindings__user=self) | Q(bindings__group__in=all_groups),
                 bindings__negate=False,
@@ -499,7 +505,6 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             ),
             bindings__enabled=True,
         ).order_by("name")
-        return qs
 
     def app_entitlements_attributes(self, app: Application | None) -> dict:
         """Get a dictionary containing all merged attributes from app entitlements for `app`."""
