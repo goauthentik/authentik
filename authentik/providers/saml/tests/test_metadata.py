@@ -1,6 +1,9 @@
 """Test Service-Provider Metadata Parser"""
 
+from base64 import b64decode
+
 import xmlsec
+from cryptography.x509 import load_der_x509_certificate
 from defusedxml.lxml import fromstring
 from django.test import RequestFactory, TestCase
 from lxml import etree  # nosec
@@ -140,6 +143,36 @@ class TestServiceProviderMetadataParser(TestCase):
         ctx.key = key
         ctx.verify(signature_node)
 
+    def test_signing_kp_chain(self):
+        """Test that only the leaf certificate of a certificate chain is included"""
+        leaf = create_test_cert()
+        intermediate = create_test_cert()
+        leaf.certificate_data += intermediate.certificate_data
+        leaf.save()
+        provider = SAMLProvider.objects.create(
+            name=generate_id(),
+            authorization_flow=self.flow,
+            signing_kp=leaf,
+        )
+        Application.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+            provider=provider,
+        )
+        request = self.factory.get("/")
+        metadata = lxml_from_string(MetadataProcessor(provider, request).build_entity_descriptor())
+
+        certs = metadata.xpath(
+            "/md:EntityDescriptor/md:IDPSSODescriptor/md:KeyDescriptor[@use='signing']"
+            "/ds:KeyInfo/ds:X509Data/ds:X509Certificate",
+            namespaces=NS_MAP,
+        )
+        self.assertEqual(len(certs), 1)
+        self.assertEqual(
+            load_der_x509_certificate(b64decode(certs[0].text, validate=True)),
+            leaf.certificate,
+        )
+
     def test_signature_ecdsa(self):
         """Test signature validation (ECDSA)"""
         provider = SAMLProvider.objects.create(
@@ -168,3 +201,13 @@ class TestServiceProviderMetadataParser(TestCase):
         )
         ctx.key = key
         ctx.verify(signature_node)
+
+    def test_doctype(self):
+        """Test that metadata with a document type declaration is refused"""
+        metadata = load_fixture("fixtures/simple.xml").replace(
+            '<?xml version="1.0"?>',
+            '<?xml version="1.0"?><!DOCTYPE md:EntityDescriptor>',
+        )
+
+        with self.assertRaisesMessage(ValueError, "XML document contains a DOCTYPE declaration"):
+            ServiceProviderMetadataParser().parse(metadata)

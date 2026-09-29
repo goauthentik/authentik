@@ -52,7 +52,7 @@ jobs:
           elif [ "${{ inputs.release_reason }}" = "prerelease" ]; then
             changelog_url="https://next.goauthentik.io/docs/releases/${{ steps.check.outputs.version-family }}"
           else
-            changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.version-family }}#fixed-in-$(echo -n "${{ steps.check.outputs.version }}" | sed 's/\.//g')"}
+            changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.version-family }}#fixed-in-$(echo -n "${{ steps.check.outputs.version }}" | sed 's/\.//g')"
           fi
           echo "changelog-url=${changelog_url}" >> "$GITHUB_OUTPUT"
     outputs:

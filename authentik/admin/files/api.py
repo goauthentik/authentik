@@ -68,7 +68,7 @@ class FileView(APIView):
         # Backend is source of truth - list all files from storage
         manager = get_file_manager(usage)
         files = manager.list_files(manageable_only=params.get("manageable_only", False))
-        search_query = params.get("search", "")
+        search_query = params.get("search", "").lower()
         if search_query:
             files = filter(lambda file: search_query in file.lower(), files)
         files = [

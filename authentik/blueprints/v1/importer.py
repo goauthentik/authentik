@@ -53,7 +53,7 @@ from authentik.policies.models import Policy, PolicyBindingModel
 from authentik.rbac.models import Role
 
 # Context set when the serializer is created in a blueprint context
-# Update website/docs/customize/blueprints/v1/models.md when used
+# Update website/docs/customize/blueprints/v1/models.mdx when used
 SERIALIZER_CONTEXT_BLUEPRINT = "blueprint_entry"
 
 
@@ -323,7 +323,7 @@ class Importer:
             model_instance = model()
             # pk needs to be set on the model instance otherwise a new one will be generated
             if "pk" in updated_identifiers:
-                model_instance.pk = updated_identifiers["pk"]
+                model_instance.pk = model._meta.pk.to_python(updated_identifiers["pk"])
             serializer.instance = model_instance
         return serializer
 

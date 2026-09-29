@@ -146,6 +146,13 @@ const config = createDocusaurusConfig({
 
         ...redirectPlugins,
     ],
+    scripts: [
+        {
+            "src": "https://analytics.a7k.io/script.js",
+            "defer": true,
+            "data-website-id": "958f428e-9074-4a5b-a4a0-91a5984c6e8f",
+        },
+    ],
 
     //#endregion
 

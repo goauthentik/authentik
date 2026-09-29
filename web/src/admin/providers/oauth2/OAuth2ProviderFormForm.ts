@@ -1,8 +1,8 @@
 import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
-import "#components/ak-hidden-text-input";
 import "#components/ak-radio-input";
+import "#components/ak-secret-text-input";
 import "#components/ak-text-input";
 import "#components/ak-textarea-input";
 import "#elements/ak-array-input";
@@ -233,15 +233,20 @@ export function renderForm({
                     .errorMessages=${errors.clientId}
                 >
                 </ak-text-input>
-                <ak-hidden-text-input
+                <ak-secret-text-input
                     name="clientSecret"
-                    autocomplete="off"
                     label=${msg("Client Secret")}
-                    value="${provider.clientSecret ?? randomString(128, ascii_letters + digits)}"
+                    value=${ifDefined(
+                        provider.pk
+                            ? provider.clientSecret
+                            : randomString(128, ascii_letters + digits),
+                    )}
                     input-hint="code"
+                    plaintext
+                    ?revealed=${!provider.pk}
                     ?hidden=${!showClientSecret}
                 >
-                </ak-hidden-text-input>
+                </ak-secret-text-input>
                 <ak-form-element-horizontal label=${msg("Grant Types")} required name="grantTypes">
                     <ak-checkbox-group
                         name="users"
@@ -326,7 +331,11 @@ export function renderForm({
                         certificate=${ifPresent(provider.signingKey)}
                         singleton
                     ></ak-crypto-certificate-search>
-                    <p class="pf-c-form__helper-text">${msg("Key used to sign the tokens.")}</p>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Key used to sign tokens. If no signing key is selected, tokens are signed with HS256 using this provider's client secret.",
+                        )}
+                    </p>
                 </ak-form-element-horizontal>
             </div>
         </ak-form-group>

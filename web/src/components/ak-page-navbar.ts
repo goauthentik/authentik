@@ -2,15 +2,19 @@ import "#components/ak-nav-buttons";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { globalAK } from "#common/global";
+import { resolveThemedUrl } from "#common/theme";
 
 import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithSession } from "#elements/mixins/session";
 import { isAdminRoute } from "#elements/router/utils";
 import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
 import Styles from "#components/ak-page-navbar.css";
+
+import type { ThemedUrls } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
@@ -41,6 +45,7 @@ export interface PageHeaderInit {
     header?: string | null;
     description?: SlottedTemplateResult;
     icon?: string | null;
+    iconThemedUrls?: ThemedUrls | null;
     iconImage?: boolean;
 }
 
@@ -78,6 +83,9 @@ export class AKPageNavbar
     public icon?: string | null = null;
 
     @property({ attribute: false })
+    public iconThemedUrls?: ThemedUrls | null = null;
+
+    @property({ attribute: false })
     public iconImage = false;
 
     @property({ attribute: false })
@@ -111,10 +119,11 @@ export class AKPageNavbar
     //#region Event Handlers
 
     #onPageDetails = (ev: PageDetailsUpdate) => {
-        const { header, description, icon, iconImage } = ev.header;
+        const { header, description, icon, iconThemedUrls, iconImage } = ev.header;
         this.header = header;
         this.description = description;
         this.icon = icon;
+        this.iconThemedUrls = iconThemedUrls;
         this.iconImage = iconImage || false;
         this.hasIcon = !!icon;
     };
@@ -144,13 +153,15 @@ export class AKPageNavbar
     //#region Render
 
     protected renderIcon() {
-        return guard([this.icon, this.iconImage], () => {
+        return guard([this.icon, this.iconThemedUrls, this.iconImage, this.activeTheme], () => {
             if (this.icon) {
                 if (this.iconImage && !this.icon.startsWith("fa://")) {
                     return html`<img
                         aria-hidden="true"
                         class="accent-icon pf-icon"
-                        src="${this.icon}"
+                        src=${ifPresent(
+                            resolveThemedUrl(this.activeTheme, this.iconThemedUrls, this.icon),
+                        )}
                         alt="page icon"
                     />`;
                 }

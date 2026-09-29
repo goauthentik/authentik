@@ -171,7 +171,15 @@ class GroupMember(BaseGroupMember):
 
 
 class Bulk(BaseBulk):
-    maxOperations: int = Field()
+    # RFC 7644 Section 5 only defines the bulk limits alongside bulk support, so a
+    # service provider that answers `"bulk": {"supported": false}` and nothing else is
+    # conforming. Requiring the field made that response fail validation, which sent
+    # `get_service_provider_config()` to its fallback and reported `patch` and `filter`
+    # as unsupported regardless of what the provider actually advertised.
+    #
+    # 0 is the value the fallback itself uses, and `_patch_chunked` already reads any
+    # value below 1 as "no limit declared".
+    maxOperations: int = Field(default=0)
 
 
 class ServiceProviderConfiguration(BaseServiceProviderConfiguration):

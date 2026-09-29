@@ -33,6 +33,8 @@ login_failed = Signal()
 stage: Stage, context: dict[str, any]"""
 admin_authenticated_session_deleted = Signal()
 """Arguments: instance: AuthenticatedSession, request: HttpRequest"""
+impersonation_changed = Signal()
+"""Sent after the impersonation session is saved. Arguments: session_key: str"""
 
 LOGGER = get_logger()
 

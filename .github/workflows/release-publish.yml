@@ -13,6 +13,7 @@ jobs:
       version: "${{ steps.metadata.outputs.version }}"
       version-family: "${{ steps.metadata.outputs.version-family }}"
       release-reason: "${{ steps.metadata.outputs.release-reason }}"
+      changelog-url: "${{ steps.metadata.outputs.changelog-url }}"
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:

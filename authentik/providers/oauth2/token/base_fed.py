@@ -121,9 +121,10 @@ class FederatedTokenRequest(TokenRequest):
         if federated_token:
             _key, _alg = federated_token.provider.jwt_key
             try:
+                verification_key = _key if isinstance(_key, str) else _key.public_key()
                 token = decode(
                     assertion,
-                    _key.public_key(),
+                    verification_key,
                     algorithms=[_alg],
                     options={
                         "verify_aud": False,

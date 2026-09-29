@@ -15,7 +15,7 @@ They are commonly used to:
 - enforce organization-specific access rules
 - make decisions based on request metadata, GeoIP, ASN, or flow context
 
-For general policy concepts such as bindings, ordering, `Any` vs `All`, and where policies are attached, see [Policy bindings and evaluation](../../bindings.md).
+For general policy concepts such as bindings, ordering, `Any` vs `All`, and where policies are attached, see [Policy bindings and evaluation](../../bindings.mdx).
 
 :::warning Privileged Feature
 Expression policies execute server-side Python inside authentik. Treat the ability to create or edit them as a highly privileged permission.
@@ -24,9 +24,9 @@ Expression policies execute server-side Python inside authentik. Treat the abili
 ## Start here
 
 - [Expression reference](./reference.mdx) covers return values, helper functions, variables, and flow context.
-- [Managing flow context keys](./managing_flow_context_keys.md) shows how to change flow behavior.
-- [Switch which source is used based on email address](./source_switch.md) shows a common routing pattern.
-- [Ensure unique email addresses](./unique_email.md) and [Allow only specific email domains](./whitelist_email.md) cover prompt-data validation.
+- [Managing flow context keys](./managing_flow_context_keys.mdx) shows how to change flow behavior.
+- [Switch which source is used based on email address](./source_switch.mdx) shows a common routing pattern.
+- [Ensure unique email addresses](./unique_email.mdx) and [Allow only specific email domains](./whitelist_email.mdx) cover prompt-data validation.
 
 ## A simple example
 
@@ -58,7 +58,7 @@ instead of relying on `request.user`.
 
 ### Prompt data lives in `context['prompt_data']`
 
-If you are validating values entered in a [Prompt stage](../../../../add-secure-apps/flows-stages/stages/prompt/index.md), read them from `context["prompt_data"]`:
+If you are validating values entered in a [Prompt stage](../../../../add-secure-apps/flows-stages/stages/prompt/index.mdx), read them from `context["prompt_data"]`:
 
 ```python
 email = context["prompt_data"]["email"]
@@ -68,16 +68,16 @@ email = context["prompt_data"]["email"]
 
 When an expression runs inside a flow, you can inspect and update flow state through `context["flow_plan"]` and `context["flow_plan"].context`. This is powerful, but it also means your expression can change how the rest of the flow behaves.
 
-For examples, see [Managing flow context keys](./managing_flow_context_keys.md) and [Switch which source is used based on email address](./source_switch.md).
+For examples, see [Managing flow context keys](./managing_flow_context_keys.mdx) and [Switch which source is used based on email address](./source_switch.mdx).
 
 ## Sample expression policies
 
 The following examples document common uses:
 
-- [Switch which source is used based on email address](./source_switch.md)
-- [Managing flow context keys](./managing_flow_context_keys.md)
-- [Ensure unique email addresses](./unique_email.md)
-- [Allow only specific email domains](./whitelist_email.md)
+- [Switch which source is used based on email address](./source_switch.mdx)
+- [Managing flow context keys](./managing_flow_context_keys.mdx)
+- [Ensure unique email addresses](./unique_email.mdx)
+- [Allow only specific email domains](./whitelist_email.mdx)
 
 ### `auth_method` and `auth_method_args`
 
@@ -140,4 +140,4 @@ For `ldap`, `context["auth_method_args"]` contains information about the source 
 }
 ```
 
-For simple country or ASN checks, a [GeoIP policy](../geoip.md) is usually easier to manage than a custom expression. For flow manipulation, see the example pages above.
+For simple country or ASN checks, a [GeoIP policy](../geoip.mdx) is usually easier to manage than a custom expression. For flow manipulation, see the example pages above.

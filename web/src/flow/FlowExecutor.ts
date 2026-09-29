@@ -13,7 +13,7 @@ import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
-import { applyBackgroundImageProperty } from "#common/theme";
+import { applyBackgroundImageProperty, resolveThemedUrl } from "#common/theme";
 import { AKSessionAuthenticatedEvent } from "#common/ws/events";
 
 import { listen } from "#elements/decorators/listen";
@@ -178,8 +178,11 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     #synchronizeFlowInfo() {
         if (!this.flowInfo || this.#layoutUsesSidebarFrames) return;
 
-        const background =
-            this.flowInfo.backgroundThemedUrls?.[this.activeTheme] || this.flowInfo.background;
+        const background = resolveThemedUrl(
+            this.activeTheme,
+            this.flowInfo.backgroundThemedUrls,
+            this.flowInfo.background,
+        );
 
         // Storybook has a different document structure, so we need to adjust the target accordingly.
         const target =
