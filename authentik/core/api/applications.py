@@ -351,7 +351,7 @@ class ApplicationViewSet(
             else:
                 timeout = app_cache_timeout()
                 LOGGER.debug(
-                    "Caching allowed application list", 
+                    "Caching allowed application list",
                     page=paginator.page.number,
                     timeout=timeout,
                 )
