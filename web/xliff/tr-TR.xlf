@@ -11846,6 +11846,12 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="s851e009e07a9814d">
   <source>Managed tokens cannot be edited.</source>
 </trans-unit>
+<trans-unit id="common.actions.suspend.label">
+  <source>Suspend</source>
+</trans-unit>
+<trans-unit id="providers.user-deletion.suspend.description">
+  <source>User is suspended, and connection to user in authentik is removed.</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
