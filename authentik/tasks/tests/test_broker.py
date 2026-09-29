@@ -7,12 +7,10 @@ from django.test.utils import CaptureQueriesContext
 from django.utils.timezone import now
 from django_dramatiq_postgres.broker import CONSUMABLE_TASK_STATES, PostgresBroker
 from django_dramatiq_postgres.models import TaskState
-from django_tenants.utils import get_public_schema_name
 from dramatiq.broker import MessageProxy
 from dramatiq.message import Message
 
 from authentik.tasks.models import Task
-from authentik.tenants.models import Tenant
 
 
 class TestPostgresConsumer(SimpleTestCase):
@@ -290,7 +288,6 @@ class TestPostgresConsumerAdvisoryLocks(TransactionTestCase):
             queue_name="default",
             actor_name="test.actor",
             message=message.encode(),
-            tenant=Tenant.objects.get(schema_name=get_public_schema_name()),
             **kwargs,
         )
 

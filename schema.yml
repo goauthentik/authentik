@@ -2721,6 +2721,12 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: for_user
+        schema:
+          type: string
+        description: Entitlements assigned to this user, directly or through a group,
+          regardless of the user's access to the application.
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -2922,6 +2928,12 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: for_user
+        schema:
+          type: string
+        description: Entitlements assigned to this user, directly or through a group,
+          regardless of the user's access to the application.
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -7824,25 +7836,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /enterprise/license/forecast/:
-    get:
-      operationId: enterprise_license_forecast_retrieve
-      description: Forecast how many users will be required in a year
-      tags:
-      - enterprise
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LicenseForecast'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /enterprise/license/install_id/:
     get:
       operationId: enterprise_license_install_id_retrieve
@@ -7882,6 +7875,52 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LicenseSummary'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /enterprise/license/user_counts/:
+    get:
+      operationId: enterprise_license_user_counts_retrieve
+      description: |-
+        Get active user totals and counts for relative or absolute date ranges.
+
+        At least one positive relative count step or a complete absolute range is required.
+        Relative and absolute ranges may be combined. Range starts are inclusive and ends are
+        exclusive. Counts include currently active, non-anonymous accounts.
+      parameters:
+      - in: query
+        name: count_steps
+        schema:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          maxItems: 20
+        description: Positive relative periods, such as 'days=30' or 'weeks=3;days=2'.
+      - in: query
+        name: end
+        schema:
+          type: string
+          format: date-time
+        description: Exclusive end of an absolute range; must be provided with start.
+      - in: query
+        name: start
+        schema:
+          type: string
+          format: date-time
+        description: Inclusive start of an absolute range; must be provided with end.
+      tags:
+      - enterprise
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LicenseUserCounts'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -35103,360 +35142,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /tenants/domains/:
-    get:
-      operationId: tenants_domains_list
-      description: Domain ViewSet
-      parameters:
-      - $ref: '#/components/parameters/QueryPaginationOrdering'
-      - $ref: '#/components/parameters/QueryPaginationPage'
-      - $ref: '#/components/parameters/QueryPaginationPageSize'
-      - $ref: '#/components/parameters/QuerySearch'
-      tags:
-      - tenants
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedDomainList'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    post:
-      operationId: tenants_domains_create
-      description: Domain ViewSet
-      tags:
-      - tenants
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DomainRequest'
-        required: true
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Domain'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /tenants/domains/{id}/:
-    get:
-      operationId: tenants_domains_retrieve
-      description: Domain ViewSet
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Domain.
-        required: true
-      tags:
-      - tenants
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Domain'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    put:
-      operationId: tenants_domains_update
-      description: Domain ViewSet
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Domain.
-        required: true
-      tags:
-      - tenants
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DomainRequest'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Domain'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    patch:
-      operationId: tenants_domains_partial_update
-      description: Domain ViewSet
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Domain.
-        required: true
-      tags:
-      - tenants
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedDomainRequest'
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Domain'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    delete:
-      operationId: tenants_domains_destroy
-      description: Domain ViewSet
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Domain.
-        required: true
-      tags:
-      - tenants
-      responses:
-        '204':
-          description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /tenants/tenants/:
-    get:
-      operationId: tenants_tenants_list
-      description: Tenant Viewset
-      parameters:
-      - $ref: '#/components/parameters/QueryPaginationOrdering'
-      - $ref: '#/components/parameters/QueryPaginationPage'
-      - $ref: '#/components/parameters/QueryPaginationPageSize'
-      - $ref: '#/components/parameters/QuerySearch'
-      tags:
-      - tenants
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedTenantList'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    post:
-      operationId: tenants_tenants_create
-      description: Tenant Viewset
-      tags:
-      - tenants
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TenantRequest'
-        required: true
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Tenant'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /tenants/tenants/{tenant_uuid}/:
-    get:
-      operationId: tenants_tenants_retrieve
-      description: Tenant Viewset
-      parameters:
-      - in: path
-        name: tenant_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Tenant.
-        required: true
-      tags:
-      - tenants
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Tenant'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    put:
-      operationId: tenants_tenants_update
-      description: Tenant Viewset
-      parameters:
-      - in: path
-        name: tenant_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Tenant.
-        required: true
-      tags:
-      - tenants
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TenantRequest'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Tenant'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    patch:
-      operationId: tenants_tenants_partial_update
-      description: Tenant Viewset
-      parameters:
-      - in: path
-        name: tenant_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Tenant.
-        required: true
-      tags:
-      - tenants
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedTenantRequest'
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Tenant'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    delete:
-      operationId: tenants_tenants_destroy
-      description: Tenant Viewset
-      parameters:
-      - in: path
-        name: tenant_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Tenant.
-        required: true
-      tags:
-      - tenants
-      responses:
-        '204':
-          description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /tenants/tenants/{tenant_uuid}/create_admin_group/:
-    post:
-      operationId: tenants_tenants_create_admin_group_create
-      description: Create admin group and add user to it.
-      parameters:
-      - in: path
-        name: tenant_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Tenant.
-        required: true
-      tags:
-      - tenants
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TenantAdminGroupRequestRequest'
-        required: true
-      responses:
-        '204':
-          description: Group created successfully.
-        '400':
-          description: Bad request
-        '404':
-          description: User not found
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /tenants/tenants/{tenant_uuid}/create_recovery_key/:
-    post:
-      operationId: tenants_tenants_create_recovery_key_create
-      description: Create recovery key for user.
-      parameters:
-      - in: path
-        name: tenant_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Tenant.
-        required: true
-      tags:
-      - tenants
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TenantRecoveryKeyRequestRequest'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TenantRecoveryKeyResponse'
-          description: ''
-        '400':
-          description: Bad request
-        '404':
-          description: User not found
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
 components:
   parameters:
     QueryName:
@@ -36058,7 +35743,6 @@ components:
     AppEnum:
       enum:
       - authentik.commands
-      - authentik.tenants
       - authentik.tasks
       - authentik.admin
       - authentik.api
@@ -36118,6 +35802,7 @@ components:
       - authentik.stages.user_logout
       - authentik.stages.user_write
       - authentik.tasks.schedules
+      - authentik.tenants
       - authentik.brands
       - authentik.blueprints
       - authentik.enterprise.agents
@@ -39876,41 +39561,6 @@ components:
       required:
       - name
       - url
-    Domain:
-      type: object
-      description: Domain Serializer
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        domain:
-          type: string
-          maxLength: 253
-        is_primary:
-          type: boolean
-        tenant:
-          type: string
-          format: uuid
-      required:
-      - domain
-      - id
-      - tenant
-    DomainRequest:
-      type: object
-      description: Domain Serializer
-      properties:
-        domain:
-          type: string
-          minLength: 1
-          maxLength: 253
-        is_primary:
-          type: boolean
-        tenant:
-          type: string
-          format: uuid
-      required:
-      - domain
-      - tenant
     DummyChallenge:
       type: object
       description: Dummy challenge
@@ -44718,23 +44368,6 @@ components:
       - trial
       - non_production
       type: string
-    LicenseForecast:
-      type: object
-      description: Serializer for license forecast
-      properties:
-        internal_users:
-          type: integer
-        external_users:
-          type: integer
-        forecasted_internal_users:
-          type: integer
-        forecasted_external_users:
-          type: integer
-      required:
-      - external_users
-      - forecasted_external_users
-      - forecasted_internal_users
-      - internal_users
     LicenseRequest:
       type: object
       description: License Serializer
@@ -44787,6 +44420,45 @@ components:
       - limit_exceeded_user
       - read_only
       type: string
+    LicenseUserCountRange:
+      type: object
+      description: Counts of active users added within a date range.
+      properties:
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        interval:
+          type: string
+          nullable: true
+        internal_users_added:
+          type: integer
+        external_users_added:
+          type: integer
+      required:
+      - end
+      - external_users_added
+      - internal_users_added
+      - interval
+      - start
+    LicenseUserCounts:
+      type: object
+      description: Current active user totals and counts for requested date ranges.
+      properties:
+        active_internal_users:
+          type: integer
+        active_external_users:
+          type: integer
+        ranges:
+          type: array
+          items:
+            $ref: '#/components/schemas/LicenseUserCountRange'
+      required:
+      - active_external_users
+      - active_internal_users
+      - ranges
     LifecycleIteration:
       type: object
       description: |-
@@ -45425,7 +45097,6 @@ components:
       - user
     ModelEnum:
       enum:
-      - authentik_tenants.domain
       - authentik_core.group
       - authentik_core.user
       - authentik_core.application
@@ -47605,21 +47276,6 @@ components:
       - autocomplete
       - pagination
       - results
-    PaginatedDomainList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Domain'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
     PaginatedDummyPolicyList:
       type: object
       properties:
@@ -49360,21 +49016,6 @@ components:
       - autocomplete
       - pagination
       - results
-    PaginatedTenantList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Tenant'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
     PaginatedTokenList:
       type: object
       properties:
@@ -50864,19 +50505,6 @@ components:
           nullable: true
           description: Certificate/Key used for authentication. Can be left empty
             for no authentication.
-    PatchedDomainRequest:
-      type: object
-      description: Domain Serializer
-      properties:
-        domain:
-          type: string
-          minLength: 1
-          maxLength: 253
-        is_primary:
-          type: boolean
-        tenant:
-          type: string
-          format: uuid
     PatchedDummyPolicyRequest:
       type: object
       description: Dummy Policy Serializer
@@ -53760,7 +53388,6 @@ components:
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
           format: uri
-          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -53959,19 +53586,6 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-    PatchedTenantRequest:
-      type: object
-      description: Tenant Serializer
-      properties:
-        schema_name:
-          type: string
-          minLength: 1
-          maxLength: 63
-        name:
-          type: string
-          minLength: 1
-        ready:
-          type: boolean
     PatchedTokenRequest:
       type: object
       description: Token Serializer
@@ -58989,7 +58603,6 @@ components:
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
           format: uri
-          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -59077,7 +58690,6 @@ components:
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
           format: uri
-          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -60171,74 +59783,6 @@ components:
       - name
       - pre_authentication_flow
       - slug
-    Tenant:
-      type: object
-      description: Tenant Serializer
-      properties:
-        tenant_uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        schema_name:
-          type: string
-          maxLength: 63
-        name:
-          type: string
-        ready:
-          type: boolean
-      required:
-      - name
-      - schema_name
-      - tenant_uuid
-    TenantAdminGroupRequestRequest:
-      type: object
-      description: Tenant admin group creation request serializer
-      properties:
-        user:
-          type: string
-          minLength: 1
-      required:
-      - user
-    TenantRecoveryKeyRequestRequest:
-      type: object
-      description: Tenant recovery key creation request serializer
-      properties:
-        user:
-          type: string
-          minLength: 1
-        duration_days:
-          type: integer
-      required:
-      - duration_days
-      - user
-    TenantRecoveryKeyResponse:
-      type: object
-      description: Tenant recovery key creation response serializer
-      properties:
-        expiry:
-          type: string
-          format: date-time
-        url:
-          type: string
-      required:
-      - expiry
-      - url
-    TenantRequest:
-      type: object
-      description: Tenant Serializer
-      properties:
-        schema_name:
-          type: string
-          minLength: 1
-          maxLength: 63
-        name:
-          type: string
-          minLength: 1
-        ready:
-          type: boolean
-      required:
-      - name
-      - schema_name
     ThemedUrls:
       type: object
       description: Themed URLs - maps theme names to URLs for light and dark themes
