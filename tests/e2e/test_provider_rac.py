@@ -133,18 +133,10 @@ class TestProviderRAC(ChannelsSeleniumTestCase):
         EnrollmentToken.objects.create(name=generate_id(), key=ENROLLMENT_KEY, connector=connector)
         name = f"device-{generate_id(10)}"
         machine = self.run_container(
-            # Brings sshd and the agent, which validates authentik's certificates
             image=self.pinned_image("platform-ssh", "e2e/compose.yml"),
             name=name,
             hostname=name,
         )
-        # The machine resolves users locally, it has no connection to a directory.
-        # Usernames of authentik users are not restricted the way local ones are.
-        code, output = machine.exec_run(
-            f"sh -c 'useradd -m -s /bin/bash {self.user.username} "
-            f"|| useradd -m -s /bin/bash --badname {self.user.username}'"
-        )
-        self.assertEqual(code, 0, output)
         self.join_domain(machine)
         # The agent reports the host keys of its device once it has enrolled, which is
         # what authentik connects to it with
@@ -190,8 +182,6 @@ class TestProviderRAC(ChannelsSeleniumTestCase):
 
         self.start_rac(outpost)
 
-        # The device is connected to with what it reported about itself, there are no
-        # credentials and no settings anywhere
         self.driver.get(
             self.url(
                 "authentik_providers_rac:start",
