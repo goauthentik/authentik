@@ -57,6 +57,10 @@ def migrate_endpoints_to_devices(apps: Apps, schema_editor: BaseDatabaseSchemaEd
 
     # Deleting the endpoints also removes their policy binding model rows
     Endpoint.objects.using(db_alias).all().delete()
+    # The deletes above queue deferred FK-constraint triggers on `endpoint`; the RemoveField
+    # operations later in this migration ALTER that same table, which Postgres refuses to do
+    # while those triggers are still pending in the same transaction
+    schema_editor.execute("SET CONSTRAINTS ALL IMMEDIATE")
 
 
 def remove_endpoint_permissions(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
