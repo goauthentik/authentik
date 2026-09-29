@@ -124,9 +124,7 @@ class TestAppleToken(TestCase):
         self.assertEqual(event.context["device"]["name"], self.device.name)
 
     def _password_request(self, nonce: str, **claims) -> str:
-        """Build the login request macOS sends for a Platform SSO password login: the
-        credential travels as claims of the signed request, and the grant_type that
-        identifies it is a claim rather than the jwt-bearer sent in the form."""
+        """Login request of a password login"""
         return encode(
             {
                 "iss": str(self.connector.pk),
@@ -190,8 +188,7 @@ class TestAppleToken(TestCase):
 
         res = self._post_password_request(self._password_request(nonce, password=generate_id()))
 
-        # 401 with this body, not a 400: it is what macOS reads as "wrong password" and
-        # re-prompts for, rather than failing the login outright.
+        # macOS re-prompts for the password on a 401
         self.assertEqual(res.status_code, 401)
         self.assertJSONEqual(res.content, {"error": "invalid_grant"})
         self.assertFalse(
@@ -204,8 +201,7 @@ class TestAppleToken(TestCase):
     @apply_blueprint("default/flow-endpoints-agent-psso-password.yaml")
     @reconcile_app("authentik_crypto")
     def test_token_password_unknown_user(self):
-        """An unknown username is rejected the same way a bad password is, so that the
-        unauthenticated token endpoint cannot be used to enumerate usernames"""
+        """Unknown users get the same response as a wrong password"""
         nonce = generate_id()
         AppleNonce.objects.create(device_token=self.device_token, nonce=nonce)
 

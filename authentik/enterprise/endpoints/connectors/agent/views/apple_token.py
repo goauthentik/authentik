@@ -62,13 +62,7 @@ KEY_REQUEST_TYPE = "platformsso-key-request+jwt"
 
 
 class InvalidCredentials(Exception):
-    """The credential in a Platform SSO login request was wrong.
-
-    Kept distinct from ValidationError because macOS has to tell the two apart. Apple's
-    ASAuthorizationProviderExtensionLoginConfiguration treats an HTTP 401 as a bad
-    credential and anything else as a general failure unless the extension supplies an
-    invalidCredentialPredicate to parse the body; only the former re-prompts the user for
-    their password instead of failing the login outright."""
+    """Wrong credentials, returned as a 401 so that macOS re-prompts for the password"""
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -82,9 +76,7 @@ class TokenView(View):
         try:
             return super().dispatch(request, *args, **kwargs)
         except InvalidCredentials:
-            # 401 with a JSON body, which is what macOS reads as "wrong password" without
-            # the extension needing an invalidCredentialPredicate. The body deliberately
-            # says no more than that: this endpoint is unauthenticated.
+            # macOS treats a 401 as a wrong password
             return JsonResponse({"error": "invalid_grant"}, status=401)
         except ValidationError as exc:
             LOGGER.warning("Invalid Platform SSO token request", exc=exc)
@@ -103,10 +95,7 @@ class TokenView(View):
         if self.jwt_request is None:
             return HttpResponse(status=400)
         version = request.POST.get("platform_sso_version")
-        # The form's grant_type describes the transport: macOS posts every Platform SSO
-        # login as jwt-bearer, including password logins. The grant_type that actually
-        # describes the request is a claim of the signed login request, so prefer it and
-        # fall back to the form for requests that don't carry one.
+        # macOS posts every login as jwt-bearer, the actual grant type is a claim of the request
         grant_type = self.jwt_request.get("grant_type") or request.POST.get("grant_type")
         handler_func = (
             f"handle_v{version}_{grant_type}".replace("-", "_")
@@ -116,8 +105,7 @@ class TokenView(View):
         )
         handler = getattr(self, handler_func, None)
         if not handler:
-            # Log the claim names (never the values) so an unsupported grant can be
-            # identified from the logs without reproducing under a debugger.
+            # Only log claim names, never values
             LOGGER.warning(
                 "No handler for Platform SSO grant",
                 handler=handler_func,
@@ -130,19 +118,13 @@ class TokenView(View):
             "sending to handler",
             handler=handler_func,
             request_claims=sorted(self.jwt_request.keys()),
-            # The form's grant_type is not always the one that describes the request: the
-            # login request JWT carries its own. Log both (never a credential value) so the
-            # two can be told apart.
             request_grant_type=self.jwt_request.get("grant_type"),
             request_amr=self.jwt_request.get("amr"),
         )
         return handler()
 
     def log_unhandled_request_type(self, assertion: str, header: dict[str, Any]) -> None:
-        """Describe a Platform SSO request this endpoint does not implement.
-
-        macOS posts more than login and key requests here, and an unimplemented type would
-        otherwise leave nothing behind but a 400. Records the claim names only."""
+        """Log the claim names of a request type that isn't implemented"""
         typ = header.get("typ")
         if typ in (LOGIN_REQUEST_TYPE, KEY_REQUEST_TYPE):
             return
@@ -185,10 +167,7 @@ class TokenView(View):
             LOGGER.warning("Failed to issue token for device, no apple_signing_key")
             raise ValidationError("Invalid request")
         self.log_unhandled_request_type(assertion, header)
-        # Key requests carry no aud claim. Apple's own table marks it required, but neither
-        # the client nor the sample messages `app-sso platform -m` prints include one, so
-        # requiring it here would reject every key request. The signature, issuer, nonce and
-        # expiry checks below still apply.
+        # Key requests don't carry an audience
         audience_options = (
             {"options": {"verify_aud": False}}
             if header.get("typ") == KEY_REQUEST_TYPE
@@ -314,12 +293,7 @@ class TokenView(View):
         )
 
     def issue_refresh_token(self, user: User) -> DeviceAuthenticationToken:
-        """Mint the refresh token a login response hands back.
-
-        The token has to be signed and stored, not just recorded as a row: macOS keeps it
-        and presents it on every key request and refresh, and Platform SSO 2.0 treats it as
-        the authorisation for both. Creating the row without a token yields an empty
-        refresh_token, which the client dutifully echoes back and nothing can verify."""
+        """Create the refresh token of a login, which macOS sends back on key requests"""
         auth_token = DeviceAuthenticationToken.objects.create(
             device=self.device_connection.device,
             connector=self.connector,
@@ -342,8 +316,7 @@ class TokenView(View):
         return auth_token
 
     def login_response(self, user: User) -> JWEResponse:
-        """Build the shared login response for the jwt-bearer, password and authorization_code
-        grants, optionally including the ECDH key material for lock-screen unlock."""
+        """Login response shared by all grants, with the unlock key when requested"""
         auth_token = self.issue_refresh_token(user)
         body = {
             "refresh_token": auth_token.token,
@@ -379,13 +352,8 @@ class TokenView(View):
         )
 
     def handle_v1_0_password(self) -> HttpResponse:
-        """Apple Platform SSO password login.
-
-        macOS collects the credential at the login window and sends it as claims of the
-        signed login request, so nothing interactive is left to do. The dedicated flow is
-        planned to apply its policies, then its password stage's configured backends do
-        the authentication -- reusing the stage's backend list rather than hardcoding one
-        keeps LDAP- and Kerberos-sourced users working here as they do in a browser."""
+        """Authenticate with the credentials of the login request, using the backends of the
+        password stage in the dedicated flow"""
         username = self.jwt_request.get("username")
         password = self.jwt_request.get("password")
         if not username or not password:
@@ -404,8 +372,7 @@ class TokenView(View):
             raise ValidationError("Invalid request")
         user = User.objects.filter(username=username).first()
         if not user:
-            # Deliberately the same response as a bad password: the token endpoint is
-            # unauthenticated, so distinguishing the two would enumerate usernames.
+            # Same response as a wrong password, to prevent username enumeration
             LOGGER.info("Platform SSO password login for unknown user")
             raise InvalidCredentials
         planner = FlowPlanner(flow)
@@ -436,9 +403,7 @@ class TokenView(View):
     def handle_v1_0_urn_ietf_params_oauth_grant_type_jwt_bearer(self) -> HttpResponse:
         embedded = self.jwt_request.get("assertion")
         if not embedded:
-            # A jwt-bearer login request carries the inner assertion signed by the user's
-            # Secure Enclave key. macOS omits it when that key is not usable for the
-            # request, and without it there is nothing to authenticate against.
+            # macOS omits the assertion when the Secure Enclave key can't be used
             LOGGER.warning(
                 "Login request carries no embedded assertion",
                 request_claims=sorted(self.jwt_request.keys()),

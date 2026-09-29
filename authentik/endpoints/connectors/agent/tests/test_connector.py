@@ -45,8 +45,7 @@ class TestAgentConnector(APITestCase):
         data = loads(res.validated_data["config"], fmt=PlistFormat.FMT_XML)
         self.assertEqual(data["PayloadContent"][0]["RegistrationToken"], self.token.key)
         self.assertEqual(data["PayloadContent"][0]["URL"], "http://testserver/")
-        # With the default configuration Platform SSO stays passive: no enforcement
-        # policies are emitted, only the always-present login frequency.
+        # No policies by default, only the login frequency
         psso = _platform_sso(res.validated_data["config"])
         self.assertNotIn("LoginPolicy", psso)
         self.assertNotIn("UnlockPolicy", psso)
@@ -54,17 +53,13 @@ class TestAgentConnector(APITestCase):
         self.assertEqual(psso["LoginFrequency"], 64800)
 
     def test_biometric_policies_default_off(self):
-        """No requirement means no policy at all. The modifiers are deliberately ignored:
-        PasswordFallback on its own would demand nothing while looking like it demands
-        something, so the agent must be told to leave the OptionSet untouched."""
+        """No requirement means no policies, even with modifiers set"""
         self.assertEqual(self.connector.apple_psso_biometric_policies, [])
         self.connector.apple_psso["biometric_reuse_during_unlock"] = True
         self.assertEqual(self.connector.apple_psso_biometric_policies, [])
 
     def test_biometric_policies_password_fallback_is_default(self):
-        """Selecting a requirement must carry the password fallback with it. Without it a
-        user whose Touch ID is cancelled, failing, or never enrolled — every Mac with no
-        Touch ID hardware — cannot use the key at all."""
+        """Password fallback is on by default"""
         self.connector.apple_psso["biometric_requirement"] = (
             ApplePSSOBiometricRequirement.CURRENT_SET
         )
@@ -87,9 +82,7 @@ class TestAgentConnector(APITestCase):
         self.assertEqual(self.connector.apple_psso_biometric_policies, ["touch_id_or_watch_any"])
 
     def test_generate_mdm_macos_psso_policies(self):
-        """Configured Apple Platform SSO policies must appear in the generated profile as
-        arrays of policy strings (matching ee/psso/example.mobileconfig); policies left at
-        their default must be omitted so Platform SSO keeps its passive behaviour."""
+        """Configured policies are written as arrays, default ones are omitted"""
         self.connector.apple_psso["authentication_method"] = ApplePSSOAuthenticationMethod.PASSWORD
         self.connector.apple_psso["login_policy"] = ApplePSSOAuthenticationPolicy.REQUIRE
         self.connector.apple_psso["unlock_policy"] = ApplePSSOAuthenticationPolicy.ATTEMPT
@@ -107,10 +100,7 @@ class TestAgentConnector(APITestCase):
         self.assertNotIn("FileVaultPolicy", psso)
 
     def test_generate_mdm_macos_deterministic(self):
-        """Two downloads of an unchanged configuration must be byte-identical. Random
-        PayloadUUIDs would make every download read as a changed profile to the MDM,
-        and redelivering the extensiblesso payload with a new UUID deregisters
-        Platform SSO on every enrolled Mac."""
+        """Generating the same configuration twice gives identical output"""
         request = self.factory.get("/")
         first = self.connector.controller(self.connector).generate_mdm_config(
             OSFamily.macOS, request, self.token
@@ -121,8 +111,7 @@ class TestAgentConnector(APITestCase):
         self.assertEqual(first.validated_data["config"], second.validated_data["config"])
 
     def test_generate_mdm_macos_authentication_method_default(self):
-        """The Secure Enclave key mode stays the default, so existing enrollments keep the
-        behaviour they had before the method was configurable."""
+        """Secure Enclave key is the default method"""
         request = self.factory.get("/")
         res = self.connector.controller(self.connector).generate_mdm_config(
             OSFamily.macOS, request, self.token
@@ -141,9 +130,7 @@ class TestAgentConnector(APITestCase):
         self.assertEqual(psso["AuthenticationMethod"], "Password")
 
     def test_generate_mdm_macos_policies_omitted_in_secure_enclave_mode(self):
-        """Apple documents the login/unlock/FileVault policies as applying only to the
-        password method, so configuring them in Secure Enclave key mode must not write keys
-        macOS will ignore."""
+        """Policies are only written for the password method"""
         self.connector.apple_psso["login_policy"] = ApplePSSOAuthenticationPolicy.REQUIRE
         self.connector.apple_psso["unlock_policy"] = ApplePSSOAuthenticationPolicy.REQUIRE
         self.connector.apple_psso["filevault_policy"] = ApplePSSOAuthenticationPolicy.REQUIRE
@@ -158,15 +145,13 @@ class TestAgentConnector(APITestCase):
         self.assertNotIn("FileVaultPolicy", psso)
 
     def test_biometric_policies_omitted_in_password_mode(self):
-        """There is no user Secure Enclave key in password mode, so a biometric policy
-        guarding it would be meaningless."""
+        """No biometric policies for the password method"""
         self.connector.apple_psso["authentication_method"] = ApplePSSOAuthenticationMethod.PASSWORD
         self.connector.apple_psso["biometric_requirement"] = ApplePSSOBiometricRequirement.ANY
         self.assertEqual(self.connector.apple_psso_biometric_policies, [])
 
     def test_generate_mdm_macos_grace_periods(self):
-        """The grace periods are modifiers inside each policy array, not standalone keys, so
-        the flag has to travel with every policy being enforced alongside the duration."""
+        """Grace periods are added to each enforced policy"""
         self.connector.apple_psso["authentication_method"] = ApplePSSOAuthenticationMethod.PASSWORD
         self.connector.apple_psso["login_policy"] = ApplePSSOAuthenticationPolicy.REQUIRE
         self.connector.apple_psso["unlock_policy"] = ApplePSSOAuthenticationPolicy.ATTEMPT
@@ -192,9 +177,7 @@ class TestAgentConnector(APITestCase):
         self.assertNotIn("FileVaultPolicy", psso)
 
     def test_generate_mdm_macos_touch_id_unlock_modifier(self):
-        """AllowTouchIDOrWatchForUnlock only means something on an UnlockPolicy of
-        RequireAuthentication, so it lands there and nowhere else — and disabling the
-        connector option keeps it out even then."""
+        """The Touch ID modifier is only added to an unlock policy of require"""
         self.connector.apple_psso["authentication_method"] = ApplePSSOAuthenticationMethod.PASSWORD
         self.connector.apple_psso["login_policy"] = ApplePSSOAuthenticationPolicy.REQUIRE
         self.connector.apple_psso["unlock_policy"] = ApplePSSOAuthenticationPolicy.REQUIRE
@@ -227,8 +210,7 @@ class TestAgentConnector(APITestCase):
         self.assertEqual(psso["UnlockPolicy"], ["AttemptAuthentication"])
 
     def test_generate_mdm_macos_grace_period_without_policy(self):
-        """A duration with no policy to attach to would be inert, so neither the flag nor
-        the duration is written."""
+        """Grace periods are omitted when no policy is enforced"""
         self.connector.apple_psso["authentication_method"] = ApplePSSOAuthenticationMethod.PASSWORD
         self.connector.apple_psso["authentication_grace_period"] = 3600
         self.connector.save()
@@ -253,8 +235,7 @@ class TestAgentConnector(APITestCase):
         self.assertTrue(psso["EnableCreateUserAtLogin"])
 
     def test_generate_mdm_macos_password_only_keys_omitted_in_secure_enclave_mode(self):
-        """Every one of these is documented as password-method behaviour, so none of them
-        may leak into a Secure Enclave key profile."""
+        """Password-only keys are omitted for the Secure Enclave key method"""
         self.connector.apple_psso["non_platform_sso_accounts"] = ["breakglass"]
         self.connector.apple_psso["enable_create_user_at_login"] = True
         self.connector.apple_psso["authentication_grace_period"] = 3600
@@ -324,8 +305,7 @@ class TestAgentConnector(APITestCase):
         )
 
     def test_api_apple_psso_partial_update(self):
-        """The form only submits the settings of the selected authentication method, so a
-        partial update must leave the settings it doesn't mention as they were"""
+        """A partial update keeps the settings that weren't sent"""
         self.connector.apple_psso["biometric_requirement"] = ApplePSSOBiometricRequirement.ANY
         self.connector.save()
         self.client.force_login(create_test_admin_user())

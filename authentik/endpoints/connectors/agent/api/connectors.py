@@ -96,8 +96,7 @@ class ApplePSSOSerializer(PassiveSerializer):
 
 
 class AgentConnectorSerializer(ConnectorSerializer):
-    # Sourced from the property rather than the field so that keys which aren't stored are
-    # returned with their defaults
+    # Read from the property so unset keys are returned with their defaults
     apple_psso = ApplePSSOSerializer(source="apple_psso_config", required=False)
 
     def create(self, validated_data: dict[str, Any]) -> AgentConnector:
@@ -107,8 +106,7 @@ class AgentConnectorSerializer(ConnectorSerializer):
     def update(self, instance: AgentConnector, validated_data: dict[str, Any]) -> AgentConnector:
         apple_psso = validated_data.pop("apple_psso_config", None)
         if apple_psso is not None:
-            # On a partial update only the keys that were sent are validated, so they are
-            # applied on top of what is stored instead of replacing it
+            # Keep the keys that weren't sent
             validated_data["apple_psso"] = {**instance.apple_psso, **apple_psso}
         return super().update(instance, validated_data)
 

@@ -60,8 +60,7 @@ class TestAppleRegister(APITestCase):
                     f"http://testserver/endpoints/agent/psso/{self.connector.pk}/preauthenticate/"
                 ),
                 "token_endpoint": "http://testserver/endpoints/agent/psso/token/",
-                # Empty by default: the connector requires no biometric, and a modifier
-                # without a requirement is not a policy.
+                # No biometric required by default
                 "biometric_policies": [],
             },
         )
@@ -117,11 +116,7 @@ class TestAppleRegister(APITestCase):
     @enterprise_test()
     @reconcile_app("authentik_crypto")
     def test_register_user_without_enclave_key(self):
-        """The password authentication method has no user Secure Enclave key, so the
-        agent registers without one. Registration must still bind the user, and must
-        clear a key left behind by an earlier Secure Enclave registration -- that key
-        can no longer be used to log in once the device has moved to the password
-        method."""
+        """The password method registers without a Secure Enclave key"""
         device_auth = DeviceAuthenticationToken.objects.create(
             device=self.device,
             device_token=self.device_token,

@@ -39,8 +39,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-endpoints-connector-agent-form")
 export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector, string>) {
-    // Apple treats the Platform SSO authentication method as a single mode, and each mode
-    // ignores the other's settings, so the form only offers the group that applies.
+    // Only the settings of the selected authentication method are shown
     @state()
     protected selectedAuthenticationMethod: ApplePSSOAuthenticationMethodEnum =
         ApplePSSOAuthenticationMethodEnum.UserSecureEnclaveKey;

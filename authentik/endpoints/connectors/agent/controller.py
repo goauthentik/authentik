@@ -100,22 +100,8 @@ class AgentConnectorController(BaseController[AgentConnector]):
         }[self.connector.apple_psso_config.authentication_method]
 
     def _psso_login_policies(self) -> dict:
-        """Build the LoginPolicy/UnlockPolicy/FileVaultPolicy keys of the Platform SSO
-        payload from the connector configuration. Each is an array of policy strings (see
-        the reference ee/psso/example.mobileconfig); the key is omitted entirely when the
-        policy is left at "none" so Platform SSO keeps its passive, background-token-only
-        behaviour.
-
-        Apple documents all three as applying only when AuthenticationMethod is Password,
-        so they are omitted in Secure Enclave key mode rather than written and ignored.
-
-        Each array holds the enforcement mode followed by any modifiers. The grace periods
-        are modifiers rather than standalone keys, so they are appended to every policy that
-        is actually being enforced; a policy left at "none" stays absent entirely, and a
-        grace period attached to nothing would do nothing. AllowTouchIDOrWatchForUnlock is
-        an UnlockPolicy-only modifier that Apple documents as acting when
-        RequireAuthentication is enabled, so it is appended only in that combination —
-        under "attempt" Touch ID and watch unlock already work."""
+        """Login, unlock and FileVault policies of the Platform SSO payload, which Apple only
+        applies to the password method"""
         config = self.connector.apple_psso_config
         if config.authentication_method != ApplePSSOAuthenticationMethod.PASSWORD:
             return {}
@@ -155,15 +141,7 @@ class AgentConnectorController(BaseController[AgentConnector]):
         return policies
 
     def _payload_uuid(self, token: EnrollmentToken, payload_type: str) -> str:
-        """Deterministic PayloadUUID for an inner payload.
-
-        Random UUIDs would make every download of an unchanged configuration a new
-        profile in the MDM's eyes, and redelivering an extensiblesso payload with a
-        changed PayloadUUID makes macOS remove and re-add it, which deregisters
-        Platform SSO. Apple updates a payload in place when PayloadIdentifier and
-        PayloadUUID both match the installed profile, so both are derived from the
-        same inputs: the identifier embeds the enrollment token, the UUID hashes the
-        token and payload type into the connector's namespace."""
+        """Stable PayloadUUID, as macOS deregisters Platform SSO when it changes"""
         return str(uuid5(self.connector.pk, f"{token.pk}:{payload_type}"))
 
     def _generate_mdm_config_macos(
