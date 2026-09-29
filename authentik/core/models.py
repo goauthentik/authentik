@@ -574,7 +574,14 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         self.password_change_date = now()
         return super().set_password(raw_password)
 
-    def set_password_from_hash(self, password_hash: str, signal=True, sender=None, request=None):
+    def set_password_from_hash(
+        self,
+        password_hash: str,
+        signal=True,
+        sender=None,
+        request=None,
+        hasher_defaults_overridden: bool = False,
+    ):
         """Set password directly from a pre-hashed value.
 
         Unlike set_password(), this does not hash the input again. The provided value
@@ -588,7 +595,12 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
 
             if not sender:
                 sender = self
-            password_hash_changed.send(sender=sender, user=self, request=request)
+            password_hash_changed.send(
+                sender=sender,
+                user=self,
+                request=request,
+                hasher_defaults_overridden=hasher_defaults_overridden,
+            )
         self.password = password_hash
         self.password_change_date = now()
 
@@ -1560,7 +1572,7 @@ class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
 
         field_kwargs = {}
 
-        match self.type:
+        match (self.type):
             case self.AttributeType.TEXT:
                 field_cls = CharField
                 field_kwargs["allow_blank"] = True
