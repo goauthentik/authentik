@@ -38,9 +38,7 @@ class ServiceProviderConfigView(SCIMView):
                 "bulk": {"supported": False, "maxOperations": 0, "maxPayloadSize": 0},
                 "filter": {
                     "supported": True,
-                    "maxResults": get_system_settings(
-                        ["pagination_default_page_size"]
-                    ).pagination_default_page_size,
+                    "maxResults": get_system_settings().pagination_default_page_size,
                 },
                 "changePassword": {"supported": False},
                 "sort": {"supported": False},

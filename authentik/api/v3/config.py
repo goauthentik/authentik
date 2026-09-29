@@ -79,7 +79,7 @@ class ConfigView(APIView):
         for processor in get_context_processors():
             if cap := processor.capability():
                 caps.append(cap)
-        if get_system_settings(["impersonation"]).impersonation:
+        if get_system_settings().impersonation:
             caps.append(Capabilities.CAN_IMPERSONATE)
         if settings.DEBUG:  # pragma: no cover
             caps.append(Capabilities.CAN_DEBUG)

@@ -110,9 +110,7 @@ class SCIMView(APIView):
             raise SCIMInvalidFilterError("Unsupported filter.") from exc
 
     def paginate_query(self, query: QuerySet) -> Page:
-        per_page = int(
-            get_system_settings(["pagination_default_page_size"]).pagination_default_page_size
-        )
+        per_page = int(get_system_settings().pagination_default_page_size)
         start_index = 1
         try:
             start_index = int(self.request.query_params.get("startIndex", 1))

@@ -66,7 +66,7 @@ def default_event_duration():
     """Default duration an Event is saved.
     This is used as a fallback when no brand is available"""
     try:
-        settings = get_system_settings(only=["event_retention"])
+        settings = get_system_settings()
         return now() + timedelta_from_string(settings.event_retention)
     except SystemSettings.DoesNotExist:
         return now() + timedelta(days=365)

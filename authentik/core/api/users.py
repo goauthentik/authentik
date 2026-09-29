@@ -1020,7 +1020,7 @@ class UserViewSet(
     @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
     def impersonate(self, request: Request, pk: int) -> Response:
         """Impersonate a user"""
-        if not get_system_settings(["impersonation"]).impersonation:
+        if not get_system_settings().impersonation:
             LOGGER.debug("User attempted to impersonate", user=request.user)
             return Response(status=401)
         user_to_be = self.get_object()
@@ -1037,10 +1037,7 @@ class UserViewSet(
         if user_to_be.pk == self.request.user.pk:
             LOGGER.debug("User attempted to impersonate themselves", user=request.user)
             return Response(status=401)
-        if (
-            not reason
-            and get_system_settings(["impersonation_require_reason"]).impersonation_require_reason
-        ):
+        if not reason and get_system_settings().impersonation_require_reason:
             LOGGER.debug(
                 "User attempted to impersonate without providing a reason",
                 user=request.user,

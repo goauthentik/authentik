@@ -10,7 +10,11 @@ from django.views import View
 from structlog.stdlib import get_logger
 
 from authentik.admin.models import SystemSettings
-from authentik.admin.utils import get_system_settings, normalize_base_url
+from authentik.admin.utils import (
+    clear_system_settings_cache,
+    get_system_settings,
+    normalize_base_url,
+)
 from authentik.blueprints.models import BlueprintInstance
 from authentik.core.apps import Setup
 from authentik.flows.models import Flow, FlowAuthenticationRequirement, in_memory_stage
@@ -76,6 +80,7 @@ class PostSetupStageView(StageView):
             )
             if base_url:
                 SystemSettings.objects.filter(pk=get_system_settings().pk).update(base_url=base_url)
+                clear_system_settings_cache()
             # Remember we're setup
             Setup.set(True)
             # Disable OOBE Blueprints

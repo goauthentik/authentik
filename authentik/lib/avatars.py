@@ -213,7 +213,7 @@ def get_avatar(user: User, request: HttpRequest | None = None) -> str:
         "initials": avatar_mode_generated,
         "gravatar": avatar_mode_gravatar,
     }
-    modes: str = get_system_settings(["avatars"]).avatars
+    modes: str = get_system_settings().avatars
     for mode in modes.split(","):
         avatar = None
         if mode in mode_map:

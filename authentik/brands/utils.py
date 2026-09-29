@@ -67,7 +67,7 @@ def context_processor(request: HttpRequest) -> dict[str, Any]:
     """Context Processor that injects brand object into every template"""
     brand = getattr(request, "brand", DEFAULT_BRAND)
     try:
-        footer_links = get_system_settings(["footer_links"]).footer_links
+        footer_links = get_system_settings().footer_links
     except SystemSettings.DoesNotExist:
         footer_links = []
     # Suppress custom CSS for safe-mode sessions so misconfigured branding can't lock a

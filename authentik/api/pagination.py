@@ -23,7 +23,7 @@ class Pagination(pagination.PageNumberPagination):
     page_size_query_param = "page_size"
 
     def get_page_size(self, request: Request) -> int:
-        settings = get_system_settings(["pagination_default_page_size", "pagination_max_page_size"])
+        settings = get_system_settings()
         if self.page_size_query_param in request.query_params:
             page_size = super().get_page_size(request)
             if page_size is not None:

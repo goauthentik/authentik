@@ -23,7 +23,7 @@ LOGGER = get_logger()
 def update_score(request: HttpRequest, identifier: str, amount: int):
     """Update score for IP and User"""
     remote_ip = ClientIPMiddleware.get_client_ip(request)
-    settings = get_system_settings(["reputation_lower_limit", "reputation_upper_limit"])
+    settings = get_system_settings()
     amount = max(settings.reputation_lower_limit, min(settings.reputation_upper_limit, amount))
 
     with postgres_manager(Reputation) as manager:
@@ -53,7 +53,7 @@ def update_score_on_login(request: HttpRequest, identifier: str):
     to 0, any other score is raised by 1. Both branches happen in the same statement
     so that concurrent logins cannot race each other."""
     remote_ip = ClientIPMiddleware.get_client_ip(request)
-    settings = get_system_settings(["reputation_lower_limit", "reputation_upper_limit"])
+    settings = get_system_settings()
     initial = max(settings.reputation_lower_limit, min(settings.reputation_upper_limit, 1))
 
     with postgres_manager(Reputation) as manager:
