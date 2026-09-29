@@ -24,6 +24,9 @@ from authentik.providers.rac.models import ConnectionToken, RACProvider, availab
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 PLAN_CONNECTION_SETTINGS = "connection_settings"
+# The connection this flow authorized, so that re-requesting the challenge doesn't
+# authorize a second one
+PLAN_CONTEXT_CONNECTION_TOKEN = "connection_token"  # nosec
 # The device that is being connected to. Distinct from `PLAN_CONTEXT_DEVICE`, which
 # holds the device a user is authenticating from.
 PLAN_CONTEXT_RAC_DEVICE = "rac_device"
@@ -133,6 +136,17 @@ class RACFinalStage(RedirectStage):
         return super().dispatch(request, *args, **kwargs)
 
     def get_challenge(self, *args, **kwargs) -> RedirectChallenge:
+        token = self.executor.plan.context.get(PLAN_CONTEXT_CONNECTION_TOKEN)
+        if not token:
+            token = self.authorize_connection()
+            self.executor.plan.context[PLAN_CONTEXT_CONNECTION_TOKEN] = token
+        self.executor.current_stage.destination = self.request.build_absolute_uri(
+            reverse("authentik_providers_rac:if-rac", kwargs={"token": str(token.token)})
+        )
+        return super().get_challenge(*args, **kwargs)
+
+    def authorize_connection(self) -> ConnectionToken:
+        """Authorize a single connection to the device"""
         settings = self.executor.plan.context.get(PLAN_CONNECTION_SETTINGS)
         if not settings:
             settings = self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {}).get(
@@ -154,7 +168,4 @@ class RACFinalStage(RedirectStage):
             device=self.device.name,
             protocol=self.protocol,
         ).from_http(self.request)
-        self.executor.current_stage.destination = self.request.build_absolute_uri(
-            reverse("authentik_providers_rac:if-rac", kwargs={"token": str(token.token)})
-        )
-        return super().get_challenge(*args, **kwargs)
+        return token

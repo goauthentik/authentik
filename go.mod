@@ -25,6 +25,7 @@ require (
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.12.1
 	github.com/wwt/guac v1.3.2
+	golang.org/x/crypto v0.55.0
 	golang.org/x/sync v0.23.0
 	gopkg.in/yaml.v2 v2.4.0
 	layeh.com/radius v0.0.0-20231213012653-1006025d24f8
@@ -70,7 +71,6 @@ require (
 	go.opentelemetry.io/otel/metric v1.46.0 // indirect
 	go.opentelemetry.io/otel/trace v1.46.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
-	golang.org/x/crypto v0.55.0 // indirect
 	golang.org/x/net v0.58.0 // indirect
 	golang.org/x/sys v0.47.0 // indirect
 	golang.org/x/text v0.41.0 // indirect

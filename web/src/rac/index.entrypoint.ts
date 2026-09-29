@@ -61,7 +61,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
     container?: HTMLElement;
 
     @state()
-    clientState?: GuacClientState;
+    clientState: GuacClientState = GuacClientState.WAITING;
 
     @state()
     clientStatus?: Guacamole.Status;
@@ -216,7 +216,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
     }
 
     reconnect(): void {
-        this.clientState = undefined;
+        this.clientState = GuacClientState.WAITING;
         this.connectionAttempt += 1;
 
         if (!this.hasConnected) {

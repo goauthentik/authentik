@@ -49,6 +49,14 @@ To connect to a device, users must have access to the application that the RAC p
 Connection credentials belong in a [RAC property mapping](#rac-property-mappings) or the [credentials prompt](./rac_credentials_prompt.mdx), not in a connection override.
 :::
 
+### Signing in with the authentik agent
+
+A device that is enrolled through the authentik agent is signed into as the authentik user who launched the connection, without any credentials being configured for it.
+
+authentik issues a short-lived token for the device and the user, the RAC outpost turns it into an SSH certificate carrying that token, and the agent on the device validates the token with authentik before accepting the login. The certificate is bound to the device's SSH host key, so it cannot be used to log in anywhere else.
+
+This applies to SSH connections to devices which report SSH host keys. [RAC property mappings](#rac-property-mappings) are evaluated afterwards, so a device can still be connected to with static credentials by setting a `username` and `password` there.
+
 ### Restricting access with device compliance
 
 Devices that are enrolled through a connector report facts about themselves, such as their operating system version or whether their disks are encrypted. Binding an [expression policy](../../../customize/policies/types/expression/index.mdx) to a device, or to a device access group, lets you require those facts before a connection is authorized:
@@ -108,8 +116,9 @@ RAC connection settings can be set via several methods and are all merged togeth
 1. Default settings
 2. RAC Provider settings
 3. The device's address and port
-4. RAC Provider property mapping settings, which receive the device they are evaluated for
-5. The `connection_settings` object in the flow plan
+4. The certificate for devices managed by the authentik agent
+5. RAC Provider property mapping settings, which receive the device they are evaluated for
+6. The `connection_settings` object in the flow plan
 
 The protocol is not part of this merge: it is fixed when the connection is authorized, either by the device's connection override or by the protocol the user launched.
 
