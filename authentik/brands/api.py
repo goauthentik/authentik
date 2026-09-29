@@ -95,7 +95,7 @@ class Themes(models.TextChoices):
 
 
 def get_default_ui_footer_links():
-    """Get default UI footer links based on current tenant settings"""
+    """Get default UI footer links based on current system settings"""
     return get_system_settings().footer_links
 
 

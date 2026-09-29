@@ -74,7 +74,7 @@ class PostSetupStageView(StageView):
 
     def get(self, request: HttpRequest, *args, **kwargs):
         with transaction.atomic():
-            # Persist the base_url captured during the setup flow onto the tenant
+            # Persist the base_url captured during the setup flow into the system settings
             base_url = normalize_base_url(
                 (self.executor.plan.context.get(PLAN_CONTEXT_PROMPT) or {}).get("base_url")
             )

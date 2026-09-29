@@ -102,9 +102,9 @@ class TestImpersonation(APITestCase):
 
     def test_impersonate_disabled(self):
         """test impersonation that is disabled"""
-        tenant = get_system_settings()
-        tenant.impersonation = False
-        tenant.save()
+        settings = get_system_settings()
+        settings.impersonation = False
+        settings.save()
         self.client.force_login(self.user)
 
         response = self.client.post(

@@ -20,10 +20,10 @@ class TestUsersAvatars(APITestCase):
         self.user = User.objects.create(username="test-user")
 
     def set_avatar_mode(self, mode: str):
-        """Set the avatar mode on the current tenant."""
-        tenant = get_system_settings()
-        tenant.avatars = mode
-        tenant.save()
+        """Set the avatar mode on the current system settings."""
+        settings = get_system_settings()
+        settings.avatars = mode
+        settings.save()
 
     def test_avatars_none(self):
         """Test avatars none"""
