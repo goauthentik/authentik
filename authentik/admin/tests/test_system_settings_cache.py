@@ -1,7 +1,7 @@
 from django.http import HttpRequest, HttpResponse
 from django.test import RequestFactory, TestCase
 
-from authentik.admin.middleware import SystemSettingsMiddleware
+from authentik.admin.middleware import SystemSettingsCacheRequestMiddleware
 from authentik.admin.models import SystemSettings
 from authentik.admin.utils import get_system_settings
 
@@ -15,7 +15,7 @@ class TestSystemSettingsCache(TestCase):
             seen.extend([get_system_settings(), get_system_settings()])
             return HttpResponse()
 
-        middleware = SystemSettingsMiddleware(view)
+        middleware = SystemSettingsCacheRequestMiddleware(view)
         middleware(RequestFactory().get("/"))
         middleware(RequestFactory().get("/"))
         self.assertIs(seen[0], seen[1])
