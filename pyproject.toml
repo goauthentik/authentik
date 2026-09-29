@@ -50,8 +50,13 @@ dependencies = [
   "paramiko==5.0.0",
   "psycopg[c,pool]==3.3.4",
   "pydantic-scim==0.0.8",
+<<<<<<< HEAD
   "pydantic==2.13.4",
   "pyjwt==2.13.0",
+=======
+  "pydantic==2.13.5",
+  "pyjwt==2.15.1",
+>>>>>>> f66cf1ad9 (core: bump pyjwt from 2.15.0 to 2.15.1 (#26524))
   "pyrad==2.5.4",
   "pyroscope-io==1.2.1",
   "python-kadmin-rs==0.7.2",
