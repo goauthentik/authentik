@@ -46,7 +46,10 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
         data.mode = this.mode;
 
         // Clear the cookieDomain if the user switched away from ForwardDomain
-        if (this.mode !== ProxyMode.ForwardDomain && this.instance?.mode === ProxyMode.ForwardDomain) {
+        if (
+            this.mode !== ProxyMode.ForwardDomain &&
+            this.instance?.mode === ProxyMode.ForwardDomain
+        ) {
             data.cookieDomain = "";
         }
 
