@@ -1,0 +1,27 @@
+# Translation profanity gate — false-positive allowlist.
+#
+# Schema (one entry per line):
+#
+#     <locale>:<msgid_hash>  # human-readable reason
+#
+# - <locale> matches the discovered locale identifier (e.g. de_DE, ja-JP,
+#   zh-Hans, pt_BR).
+# - <msgid_hash> is the first 16 hex chars of SHA-256 over the *English
+#   source msgid*. Keying on the source ensures that if the English
+#   wording changes the entry re-triggers review.
+# - The inline `# reason` comment is mandatory; the scanner fails loud
+#   on any bare hash so the allowlist stays PR-reviewable.
+#
+# We deliberately do *not* hash the translated target text — that would
+# pin the entry to a specific translation and re-fail on any legitimate
+# rewording. The allowlist statement is "this English phrase in this
+# locale is acceptable", not "this exact translated string is acceptable".
+#
+# When the gate flags a legitimate translation (e.g. an anatomical or
+# UX term that overlaps with the upstream dictionary), copy the printed
+# `allowlist_key=` value here and add a one-line justification.
+#
+# Example (illustrative only — no entries seeded today):
+#
+#     ja_JP:0123456789abcdef  # "insertion" (UX term, reviewed 2026-05-01)
+#     de_DE:fedcba9876543210  # compound word, false positive, see #12345
