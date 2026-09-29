@@ -487,8 +487,12 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         """Get all entitlements this user has for `app`."""
         if not app:
             return []
+        return self.all_app_entitlements().filter(app=app)
+
+    def all_app_entitlements(self) -> QuerySet[ApplicationEntitlement]:
+        """Get all entitlements this user is assigned, regardless of access to the application."""
         all_groups = self.all_groups()
-        qs = app.applicationentitlement_set.filter(
+        return ApplicationEntitlement.objects.filter(
             Q(
                 Q(bindings__user=self) | Q(bindings__group__in=all_groups),
                 bindings__negate=False,
@@ -500,7 +504,6 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             ),
             bindings__enabled=True,
         ).order_by("name")
-        return qs
 
     def app_entitlements_attributes(self, app: Application | None) -> dict:
         """Get a dictionary containing all merged attributes from app entitlements for `app`."""
