@@ -36434,6 +36434,7 @@ components:
       enum:
       - user_secure_enclave_key
       - password
+      - openid
       type: string
     ApplePSSOAuthenticationPolicyEnum:
       enum:

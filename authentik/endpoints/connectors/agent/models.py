@@ -1,7 +1,8 @@
-from dataclasses import dataclass, field, fields
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
+from dacite import from_dict
 from django.db import models
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
@@ -44,7 +45,7 @@ class ApplePSSOAuthenticationMethod(models.TextChoices):
 
     USER_SECURE_ENCLAVE_KEY = "user_secure_enclave_key", _("User Secure Enclave key")
     PASSWORD = "password", _("Password")
-    WEB = "web", _("Web")
+    OPENID = "openid", _("Web (OpenID, requires macOS 27+)")
 
 
 class ApplePSSOBiometricRequirement(models.TextChoices):
@@ -124,8 +125,7 @@ class AgentConnector(Connector):
 
     @property
     def apple_psso_config(self) -> ApplePSSOConfig:
-        known = {f.name for f in fields(ApplePSSOConfig)}
-        return ApplePSSOConfig(**{k: v for k, v in self.apple_psso.items() if k in known})
+        return from_dict(ApplePSSOConfig, self.apple_psso)
 
     @property
     def apple_psso_biometric_policies(self) -> list[str]:

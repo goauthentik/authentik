@@ -110,6 +110,13 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                     "Users sign in to the Mac with their authentik password, and the local account password is kept in sync with it.",
                 )}`,
             },
+            {
+                label: msg("Web (OpenID, macOS 27+)"),
+                value: ApplePSSOAuthenticationMethodEnum.Openid,
+                description: html`${msg(
+                    "Users sign in through the authentik web interface, allowing for any custom flow to be used. Requires macOS 27 or later.",
+                )}`,
+            },
         ];
 
         const pssoPolicyOptions = [

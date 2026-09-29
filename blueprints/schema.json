@@ -8134,7 +8134,8 @@
                             "type": "string",
                             "enum": [
                                 "user_secure_enclave_key",
-                                "password"
+                                "password",
+                                "openid"
                             ],
                             "title": "Authentication method"
                         },

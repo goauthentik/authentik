@@ -97,13 +97,19 @@ class AgentConnectorController(BaseController[AgentConnector]):
         return {
             ApplePSSOAuthenticationMethod.PASSWORD: "Password",
             ApplePSSOAuthenticationMethod.USER_SECURE_ENCLAVE_KEY: "UserSecureEnclaveKey",
-            ApplePSSOAuthenticationMethod.WEB: "OpenID",
+            ApplePSSOAuthenticationMethod.OPENID: "OpenID",
         }[self.connector.apple_psso_config.authentication_method]
 
-    def _psso_login_policies(self) -> dict:
+    def _psso_method_speficif(self, request: HttpRequest) -> dict:
         """Login, unlock and FileVault policies of the Platform SSO payload, which Apple only
         applies to the password method"""
         config = self.connector.apple_psso_config
+        if config.authentication_method == ApplePSSOAuthenticationMethod.OPENID:
+            return {
+                "WebLoginURLAllowList": [
+                    request.build_absolute_uri(reverse("authentik_core:root-redirect"))
+                ]
+            }
         if config.authentication_method != ApplePSSOAuthenticationMethod.PASSWORD:
             return {}
         mapping = {
@@ -197,7 +203,7 @@ class AgentConnectorController(BaseController[AgentConnector]):
                             "EnableAuthorization": True,
                             "UseSharedDeviceKeys": True,
                             "LoginFrequency": self.connector.apple_psso_config.login_frequency,
-                            **self._psso_login_policies(),
+                            **self._psso_method_speficif(),
                         },
                     },
                 ],
