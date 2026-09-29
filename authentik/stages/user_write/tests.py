@@ -129,6 +129,28 @@ class TestUserWriteStage(FlowTestCase):
         self.assertEqual(user_qs.first().attributes["foo"], "bar")
         self.assertEqual(user_qs.first().attributes["some_custom_attribute"], "test")
 
+    def test_password_only_update(self):
+        """Password-only updates persist and keep the user's session authenticated."""
+        self.client.force_login(self.user)
+        password = generate_key()
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        plan.context[PLAN_CONTEXT_PROMPT] = {"password": password}
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        user = User.objects.get(pk=self.user.pk)
+        self.assertTrue(user.check_password(password))
+        response = self.client.get(reverse("authentik_api:user-me"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["user"]["pk"], user.pk)
+
     def test_user_update_complex(self):
         """Test update of existing user"""
         new_password = generate_key()

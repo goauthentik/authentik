@@ -3,6 +3,7 @@
 from unittest.mock import MagicMock, patch
 
 from django.core.exceptions import PermissionDenied
+from django.test import TestCase
 from django.urls import reverse
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
@@ -13,8 +14,10 @@ from authentik.flows.tests import FlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
+from authentik.stages.authenticator import device_classes, devices_for_user
+from authentik.stages.authenticator.models import Device
 from authentik.stages.password import BACKEND_INBUILT
-from authentik.stages.password.models import PasswordStage
+from authentik.stages.password.models import PasswordDevice, PasswordStage
 
 MOCK_BACKEND_AUTHENTICATE = MagicMock(side_effect=PermissionDenied("test"))
 
@@ -197,3 +200,16 @@ class TestPasswordStage(FlowTestCase):
             component="ak-stage-access-denied",
             error_message="Unknown error",
         )
+
+
+class TestPasswordDevice(TestCase):
+    """Password device tests"""
+
+    def test_not_offered_as_mfa(self):
+        """Test password devices are not usable as a second factor"""
+        user = create_test_admin_user()
+        device = PasswordDevice.objects.get(user=user)
+
+        self.assertNotIn(PasswordDevice, list(device_classes()))
+        self.assertEqual(list(devices_for_user(user)), [])
+        self.assertIsNone(Device.from_persistent_id(device.persistent_id))
