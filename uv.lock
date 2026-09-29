@@ -301,7 +301,6 @@ dependencies = [
     { name = "django-postgres-extra" },
     { name = "django-prometheus" },
     { name = "django-storages", extra = ["s3"] },
-    { name = "django-tenants" },
     { name = "djangoql" },
     { name = "djangorestframework" },
     { name = "docker" },
@@ -421,7 +420,6 @@ requires-dist = [
     { name = "django-postgres-extra", specifier = "==2.0.9" },
     { name = "django-prometheus", specifier = "==2.5.0" },
     { name = "django-storages", extras = ["s3"], specifier = "==1.14.6" },
-    { name = "django-tenants", specifier = "==3.13.0" },
     { name = "djangoql", specifier = "==0.19.1" },
     { name = "djangorestframework", specifier = "==3.18.1" },
     { name = "docker", specifier = "==7.2.0" },
@@ -1418,18 +1416,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/e6/40/75dd6650c5fc345b9edaebe42085811096e31a502fdbe17a52ffb9640d03/django_stubs_ext-6.1.0.tar.gz", hash = "sha256:d5635a481f5bdf2e04d533a8b602d3b9a28f073deffc85b83048dd20032e4d20", size = 6848, upload-time = "2026-08-12T10:54:44.47Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ed/41/10b8d576651af4f1dc6bdfb0d8a203e8b3a55d60ae36ba305d0edcdb594f/django_stubs_ext-6.1.0-py3-none-any.whl", hash = "sha256:57273506823274700a707c8f404dfb52a12c4554daf1468dfb2bff857bb22074", size = 10404, upload-time = "2026-08-12T10:54:42.979Z" },
-]
-
-[[package]]
-name = "django-tenants"
-version = "3.13.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "django" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/01/bc/3b1d6350064cd75c94840833bd85422d56695161cfa98d657c54b4ca75b6/django_tenants-3.13.0.tar.gz", hash = "sha256:c4c0fa6057e832f61eb66256eb7738153a44f9f654d59bec930eacb2b804fee9", size = 165487, upload-time = "2026-08-04T13:08:35.473Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/8d/80/fd514b0c3def0e3d064f62e25f17c422ea289f3c7a351d2013bbb9c0fa22/django_tenants-3.13.0-py3-none-any.whl", hash = "sha256:ffbed2df21d77ae2d4e7ce6b76ffeb9abf9fdf7919eb0eee5f04cdb1b5db2f30", size = 123733, upload-time = "2026-08-04T13:08:33.837Z" },
 ]
 
 [[package]]

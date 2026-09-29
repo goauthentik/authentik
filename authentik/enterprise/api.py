@@ -23,7 +23,7 @@ from authentik.core.models import User, UserTypes
 from authentik.enterprise.license import LicenseKey, LicenseSummarySerializer
 from authentik.enterprise.models import License
 from authentik.rbac.decorators import permission_required
-from authentik.tenants.utils import get_unique_identifier
+from authentik.root.install_id import get_install_id
 
 
 class EnterpriseRequiredMixin:
@@ -106,7 +106,7 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
         """Get install_id"""
         return Response(
             data={
-                "install_id": get_unique_identifier(),
+                "install_id": get_install_id(),
             }
         )
 

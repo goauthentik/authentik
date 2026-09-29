@@ -6,7 +6,23 @@ draft: true
 
 ## Highlights
 
-<!-- ## Breaking changes -->
+## Breaking changes
+
+### Multi-tenancy has been removed
+
+[Multi-tenancy](https://version-2026-8.goauthentik.io/sys-mgmt/tenancy/) (an alpha feature) has been removed. Instances that never set `AUTHENTIK_TENANTS__ENABLED=true` are unaffected apart from the changes listed below.
+
+Tenant-specific data is not deleted as part of this version of authentik, it continues to be available in their own PostgreSQL schemas that this version can no longer reach. If your deployment has additional tenants, the upgrade will stop before applying any migrations. You can extract each tenant into its own authentik instance before upgrading; once you have done so, delete the data to enable the migration. (Alternatively, set `AUTHENTIK_TENANTS__ACKNOWLEDGE_REMOVAL=true` and extract the data at a later time.)
+#TODO FOR RELEASE: write a tenant extraction guide.
+
+Enterprise users with non-default tenants will need to contact support for re-issue of license keys.
+
+The following are removed or changed:
+
+- The `tenant` label on the metrics `authentik_outposts_connected`, `authentik_outposts_last_update`, `authentik_policies_cached`, and `authentik_flows_cached`
+- The `schema_name` and `domain_url` fields on log entries
+- The `AUTHENTIK_TENANTS__ENABLED` and `AUTHENTIK_TENANTS__API_KEY` configuration settings
+- `request.http_request.tenant` (in any Expression policies), replaced by `authentik.admin.utils.get_system_settings()`
 
 ## New features and improvements
 

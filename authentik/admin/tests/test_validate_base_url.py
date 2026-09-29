@@ -3,14 +3,14 @@
 from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase
 
-from authentik.tenants.models import Tenant
+from authentik.admin.models import SystemSettings
 
 
 class TestValidateBaseURL(SimpleTestCase):
     """base_url accepts an http or https URL whose host needs no domain part"""
 
     def test_validate(self):
-        field = Tenant._meta.get_field("base_url")
+        field = SystemSettings._meta.get_field("base_url")
         cases = {
             "https://authentik.company": True,
             "http://authentik.company": True,
