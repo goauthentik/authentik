@@ -45,9 +45,9 @@ authentik evaluates enabled rules every hour. When a user reaches the inactivity
 
 If a **Warning period** is configured, authentik creates the offboarding that long before it is due and generates a **User Expiration Warning** event. The warning is delivered through the selected notification transports, or as an in-app notification if none are selected. Without a warning period, the offboarding is created when due and runs within five minutes.
 
-If the user logs in before the scheduled time, the pending offboarding is canceled and the inactivity clock resets. Before execution, authentik checks that the rule still applies and the inactivity threshold has been reached. This prevents offboarding if the rule was disabled, the user's group membership changed, or the user logged in. Increasing the inactivity duration also postpones execution, even if the task is already queued.
+If the user logs in before the scheduled time, the pending offboarding is removed and the inactivity clock resets. Before execution, authentik checks that the rule still applies and the inactivity threshold has been reached. This prevents offboarding if the rule was disabled, the user's group membership changed, or the user logged in. Increasing the inactivity duration also postpones execution, even if the task is already queued.
 
-In the Event Logs, the **User Offboarded** event identifies the rule that triggered the offboarding.
+Under **Events** > **Logs**, the **User Offboarded** event identifies the rule that triggered the offboarding.
 
 ## Exclusions and overlapping rules
 
@@ -64,4 +64,4 @@ If several rules apply to the same user, the rule that expires them earliest win
 
 Editing a rule also updates its pending offboardings to use the current inactivity duration, action, and session and token revocation settings. Moving the expiration earlier or changing the action sends a new warning. Execution uses the current settings even if the next rule evaluation has not run yet. If execution itself discovers that changed settings make the expiration immediately due, authentik proceeds without sending another warning at the same time.
 
-Deleting a rule removes its pending offboardings and keeps completed ones in the audit history.
+Deleting a rule removes its pending offboardings and keeps completed ones in the audit history. When the action is **Delete**, the offboarding is removed together with the user, so the **User Offboarded** event is the only lasting record.
