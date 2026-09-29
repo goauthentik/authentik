@@ -56,9 +56,11 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
             const connector = await aki(EndpointsApi).endpointsAgentsConnectorsRetrieve({
                 connectorUuid,
             });
+
             this.selectedAuthenticationMethod =
                 connector.applePssoAuthenticationMethod ??
                 ApplePssoAuthenticationMethodEnum.UserSecureEnclaveKey;
+
             return connector;
         },
         create: (data: AgentConnector) =>
@@ -93,6 +95,7 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                 value: ApplePssoBiometricRequirementEnum.Any,
             },
         ];
+
         const pssoAuthenticationMethodOptions = [
             {
                 label: msg("User Secure Enclave key"),
@@ -109,6 +112,7 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                 )}`,
             },
         ];
+
         const pssoPolicyOptions = [
             {
                 label: msg("None (silent background token only)"),
@@ -123,6 +127,7 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                 value: ApplePssoFilevaultPolicyEnum.Require,
             },
         ];
+
         return html`<ak-text-input
                 name="name"
                 placeholder=${msg("Type a connector name...")}
