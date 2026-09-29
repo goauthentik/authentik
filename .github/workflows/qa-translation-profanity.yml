@@ -1,0 +1,75 @@
+---
+# Active gate against the curated profanity dictionary configured at
+# `PROFANITY_DICT_BASE_URL` (a repo Variable; falls back to the LDNOOBW
+# placeholder if unset — see scripts/translation_profanity_check.py for
+# the resolution order). Findings honour the per-locale allowlist at
+# scripts/.translation_profanity_allowlist and the SHA256 pins at
+# scripts/.translation_profanity_dict_pins.
+#
+# Re-enabled `pull_request` + `push` triggers when the curated S3
+# dictionary work landed (see TODO(s3-dict) marker in the scanner for
+# the swap point). `workflow_dispatch` is retained for manual triage.
+name: QA - Translation profanity
+
+on:
+  workflow_dispatch: {}
+  pull_request:
+    paths:
+      - "locale/**"
+      - "web/xliff/**"
+      - "scripts/translation_profanity_check.py"
+      - "scripts/.translation_profanity_allowlist"
+      - "scripts/.translation_profanity_dict_pins"
+      - ".github/workflows/qa-translation-profanity.yml"
+  push:
+    branches:
+      - main
+      - version-*
+    paths:
+      - "locale/**"
+      - "web/xliff/**"
+      - "scripts/translation_profanity_check.py"
+      - "scripts/.translation_profanity_allowlist"
+      - "scripts/.translation_profanity_dict_pins"
+      - ".github/workflows/qa-translation-profanity.yml"
+  schedule:
+    # Daily safety net for translations that land via the automated Transifex
+    # PR (created by ci-translation-extract-compile.yml). Random HH:MM to
+    # avoid the 00:00 load spike.
+    - cron: "37 4 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  profanity-scan:
+    name: scan translations
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v5
+        with:
+          python-version: "3.14"
+      - name: Cache fetched dictionaries
+        # The scanner enforces a 24h TTL internally, so this cache layer just
+        # avoids the cold-start round-trip across runs. Hashing the pin file
+        # in the key forces a cache bust when the operator rotates SHA256
+        # pins. (We don't bucket on date — within a day the in-process TTL
+        # handles freshness; across days the scanner re-fetches lazily and
+        # the cross-run cache stays correct-but-stale.)
+        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4
+        with:
+          path: ~/.cache/authentik-translation-profanity
+          key: profanity-dict-${{ runner.os }}-${{ hashFiles('scripts/.translation_profanity_dict_pins') }}
+          restore-keys: |
+            profanity-dict-${{ runner.os }}-
+      - name: Self-test the scanner
+        run: python scripts/translation_profanity_check.py --self-test
+      - name: Scan translations
+        env:
+          # Operator-swappable: leave unset to use the constant default in
+          # scripts/translation_profanity_check.py (LDNOOBW placeholder until
+          # TODO(s3-dict) is resolved); set to the curated S3 URL for an
+          # explicit override without a code change.
+          PROFANITY_DICT_BASE_URL: ${{ vars.PROFANITY_DICT_BASE_URL }}
+        run: python scripts/translation_profanity_check.py --root .
