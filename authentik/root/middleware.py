@@ -24,6 +24,7 @@ from authentik.core import user_switching
 from authentik.core.models import Token, TokenIntents, User, UserTypes
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.crypto import get_cookie_signing_key
+from authentik.lib.utils.errors import exception_to_dict
 
 LOGGER = get_logger("authentik.asgi")
 ACR_AUTHENTIK_SESSION = "goauthentik.io/core/default"
@@ -317,7 +318,7 @@ class ChannelsLoggingMiddleware:
         except Exception as exc:
             if settings.DEBUG or settings.TEST:
                 raise exc
-            LOGGER.warning("Exception in ASGI application", exc=exc)
+            LOGGER.warning("Exception in ASGI application", exc=exception_to_dict(exc))
             return await send({"type": "websocket.close"})
 
     def log(self, scope: dict, **kwargs):
