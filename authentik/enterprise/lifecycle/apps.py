@@ -11,6 +11,7 @@ class LifecycleConfig(EnterpriseConfig):
 
     @property
     def schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.enterprise.lifecycle.expiration.tasks import apply_expiration_rules
         from authentik.enterprise.lifecycle.offboarding.tasks import execute_due_offboardings
         from authentik.enterprise.lifecycle.review.tasks import apply_lifecycle_rules
 
