@@ -136,7 +136,8 @@ def expiring_model_pre_save(sender: type[Model], instance: Model, **_):
 
 @receiver(flag_set, sender=Setup)
 def analyze_after_setup(sender, value, **_):
-    if value:
+    if not value:
+        return
         try:
             LOGGER.info("Running ANALYZE on the database")
             with connections[DEFAULT_DB_ALIAS].cursor() as cursor:
