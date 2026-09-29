@@ -45,6 +45,8 @@ import Tabs from "@theme/Tabs";
     </TabItem>
 </Tabs>
 
+The supplied Compose file mounts `./data:/data` in both server and worker containers for file storage. If you customize these mounts, follow the [File storage requirements](../../customize/files.mdx#storage-requirements).
+
 ## Generate PostgreSQL password and secret key
 
 If this is a fresh authentik installation, generate a PostgreSQL password and an authentik secret key. Use a secure password generator of your choice such as `pwgen`, or use `openssl` as shown below.

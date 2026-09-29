@@ -8,6 +8,12 @@ authentik provides a centralized file management system for storing and organizi
 
 If file uploads are missing or unavailable after an upgrade, see [Errors when uploading icons](../troubleshooting/image_upload.mdx).
 
+## Storage requirements
+
+Local uploads require a writable volume mounted at the configured storage path, `/data` by default, or its usage subdirectory, such as `/data/media`. Creating a directory or setting the path alone does not enable uploads.
+
+The server and worker must share this storage, with write access for authentik's UID `1000`. See [Storage settings](../install-config/configuration/configuration.mdx#storage-settings) for custom paths or use [S3 storage](../sys-mgmt/ops/storage-s3/index.mdx) instead.
+
 ## Upload and manage files
 
 To upload and use image files, follow these steps:

@@ -85,7 +85,7 @@ If your cluster or controller does not support the Gateway API, use the `server.
 
 See all configurable values on [ArtifactHub](https://artifacthub.io/packages/helm/goauthentik/authentik).
 
-The chart does not mount storage for uploaded files by default. To enable uploads, mount a writable persistent volume at `/data` using `global.volumes` and `global.volumeMounts`, or configure [S3-compatible storage](../../sys-mgmt/ops/storage-s3/index.mdx).
+The chart does not mount storage for uploaded files by default. Configure `global.volumes` and `global.volumeMounts`, or use S3, as described in [File storage requirements](../../customize/files.mdx#storage-requirements).
 
 ## PostgreSQL production setup
 
