@@ -288,7 +288,7 @@ MIDDLEWARE_FIRST = [
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
 ]
 MIDDLEWARE = [
-    "authentik.admin.middleware.SystemSettingsMiddleware",
+    "authentik.admin.middleware.SystemSettingsCacheRequestMiddleware",
     "authentik.root.middleware.LoggingMiddleware",
     "authentik.root.middleware.ClientIPMiddleware",
     "authentik.stages.user_login.middleware.BoundSessionMiddleware",
@@ -469,6 +469,7 @@ DRAMATIQ = {
         ("authentik.tasks.middleware.TaskLogMiddleware", {}),
         ("authentik.tasks.middleware.LoggingMiddleware", {}),
         ("authentik.tasks.middleware.DescriptionMiddleware", {}),
+        ("authentik.admin.middleware.SystemSettingsCacheRequestMiddleware", {}),
         (
             "authentik.tasks.middleware.MetricsMiddleware",
             {
