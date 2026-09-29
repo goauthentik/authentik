@@ -12,11 +12,13 @@ from authentik.tasks.schedules.common import ScheduleSpec
 
 
 class Setup(Flag[bool], key="setup"):
+
     default = False
     visibility = "system"
 
 
 class AppAccessWithoutBindings(Flag[bool], key="core_default_app_access"):
+
     default = True
     visibility = "none"
     description = _("Applications with no policies bound can be accessed by any user.")
