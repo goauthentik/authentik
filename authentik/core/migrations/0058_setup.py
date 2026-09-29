@@ -3,12 +3,11 @@ from django.apps.registry import Apps
 from django.db import connections, migrations
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
-from authentik.lib.config import CONFIG
-
 
 def check_is_already_setup(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    from authentik.flows.models import FlowAuthenticationRequirement
     from django.conf import settings
+
+    from authentik.flows.models import FlowAuthenticationRequirement
 
     Flow = apps.get_model("authentik_flows", "Flow")
     User = apps.get_model("authentik_core", "User")
@@ -51,7 +50,7 @@ def update_setup_flag(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         db_alias = schema_editor.connection.alias
         tenant = (
             Tenant.objects.using(db_alias)
-            .filter(schema_name=CONFIG.get("postgresql.default_schema"))
+            .filter(schema_name=schema_editor.connection.schema_name)
             .first()
         )
         if tenant is None:

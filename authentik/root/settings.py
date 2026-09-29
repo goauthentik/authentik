@@ -259,6 +259,8 @@ REST_FRAMEWORK = {
 CACHES = {
     "default": {
         "BACKEND": "django_postgres_cache.backend.DatabaseCache",
+        "KEY_FUNCTION": "authentik.root.cache.make_key",
+        "REVERSE_KEY_FUNCTION": "authentik.root.cache.reverse_key",
     },
     # In-process cache for DRF throttle counters. Per-worker rather than
     # cluster-wide, so the per-IP ceiling is ``throttle.default`` × (pods × workers)
@@ -430,6 +432,7 @@ DRAMATIQ = {
         ).total_seconds(),
         "watch_folder": BASE_DIR / "authentik",
     },
+    "scheduler_class": "authentik.tasks.schedules.scheduler.Scheduler",
     "schedule_model": "authentik.tasks.schedules.models.Schedule",
     "scheduler_interval": timedelta_from_string(
         CONFIG.get("worker.scheduler_interval")

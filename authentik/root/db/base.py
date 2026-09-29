@@ -48,6 +48,10 @@ class DatabaseWrapper(BaseDatabaseWrapper):
 
     validation_class = DatabaseValidation
 
+    @property
+    def schema_name(self) -> str:
+        return CONFIG.get("postgresql.default_schema")
+
     def get_connection_params(self):
         """Refresh host/port/user/password from CONFIG on each connection open.
 
