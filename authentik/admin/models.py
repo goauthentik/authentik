@@ -27,8 +27,7 @@ class SystemSettings(InternallyManagedMixin, SerializerModel):
         help_text=_("Configure how authentik should show avatars for users."),
         default="gravatar,initials",
     )
-    base_url = models.CharField(
-        max_length=200,
+    base_url = models.TextField(
         default="",
         blank=True,
         validators=[

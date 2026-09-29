@@ -96,11 +96,10 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "base_url",
-                    models.CharField(
+                    models.TextField(
                         blank=True,
                         default="",
                         help_text="Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company",
-                        max_length=200,
                         validators=[
                             authentik.lib.models.DomainlessURLValidator(
                                 message="Enter a valid URL, for example https://authentik.company",
