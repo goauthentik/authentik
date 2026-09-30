@@ -84,10 +84,6 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         if not any(x["device_class"] in classes for x in device_challenges):
             raise ValidationError("No compatible device class allowed")
 
-    # The three validation functions below have the audit_ignore decorator
-    # to prevent them being logged during authentication, and to send them via SSF
-
-    @audit_ignore
     def validate_code(self, code: str) -> str:
         """Validate code-based response, raise error if code isn't allowed"""
         self._challenge_allowed(
@@ -96,7 +92,6 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         self.device = validate_challenge_code(code, self.stage, self.stage.get_pending_user())
         return code
 
-    @audit_ignore
     def validate_webauthn(self, webauthn: dict) -> dict:
         """Validate webauthn response, raise error if webauthn wasn't allowed
         or response is invalid"""
@@ -106,7 +101,6 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         )
         return webauthn
 
-    @audit_ignore
     def validate_duo(self, duo: int) -> int:
         """Initiate Duo authentication"""
         self._challenge_allowed([DeviceClasses.DUO])
