@@ -119,15 +119,16 @@ class EndSessionView(PolicyAccessView):
             )
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        """Return early when a flow plan is already executing in this session.
-
-        Front-channel logout iframes navigate to this endpoint while the invalidation flow
-        is still running, and `UserLogoutStage` has already made the request anonymous.
-        Falling through to `PolicyAccessView` would plan an authentication flow and store it
-        in `SESSION_KEY_PLAN`, replacing the invalidation plan and discarding every stage
-        queued after the iframe logout stage.
-        """
-        if SESSION_KEY_PLAN in request.session:
+        """Preserve the running logout plan when a front-channel iframe calls back."""
+        plan = request.session.get(SESSION_KEY_PLAN)
+        # A top-level navigation starts a new logout, even if an iframe stage was abandoned.
+        # Without Fetch Metadata, only the current iframe stage identifies a callback.
+        if (
+            request.headers.get("Sec-Fetch-Dest") in (None, "iframe", "frame")
+            and plan
+            and plan.bindings
+            and plan.bindings[0].stage.view == IframeLogoutStageView
+        ):
             return HttpResponse(status=200)
         return super().dispatch(request, *args, **kwargs)
 
