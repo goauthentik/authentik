@@ -7,7 +7,7 @@ use std::{
         process::CommandExt as _,
     },
     path::{Path, PathBuf},
-    process::Command,
+    process::{Command, Stdio},
     time::Duration,
 };
 
@@ -96,6 +96,63 @@ fn prometheus_dir() -> Result<PathBuf> {
 fn exec(mut cmd: Command) -> Result<()> {
     let err = cmd.exec();
     Err(err).wrap_err_with(|| format!("failed to run {}", cmd.get_program().display()))
+}
+
+/// Run `cmd` and wait for it, failing when it fails.
+fn run(cmd: &mut Command) -> Result<()> {
+    let status = cmd
+        .status()
+        .wrap_err_with(|| format!("failed to run {}", cmd.get_program().display()))?;
+    if !status.success() {
+        return Err(eyre!(
+            "{} exited with {status}",
+            cmd.get_program().display()
+        ));
+    }
+    Ok(())
+}
+
+/// Whether `AUTHENTIK_DEBUGGER` is on. Python's config reads it, the same as every other setting.
+fn debugger_enabled() -> bool {
+    Command::new("python")
+        .args(["-m", "authentik.lib.config", "debugger"])
+        .stderr(Stdio::null())
+        .output()
+        .is_ok_and(|output| output.stdout.trim_ascii() == b"True")
+}
+
+/// Install what `test-all` and `AUTHENTIK_DEBUGGER` need, because the image doesn't ship it: the
+/// development dependency group, which has debugpy and the test tools, and the Kerberos server
+/// tools for the tests. Needs root and the network.
+fn prepare_debug() -> Result<()> {
+    // Only in the container, a development checkout has all of it already
+    if !Path::new("/ak-root").is_dir() {
+        return Ok(());
+    }
+    let venv = std::env::var_os("VENV_PATH").ok_or_else(|| eyre!("VENV_PATH is not set"))?;
+    info!("installing the development dependencies");
+    run(Command::new("apt-get").arg("update"))?;
+    run(Command::new("apt-get")
+        .args(["install", "-y", "--no-install-recommends"])
+        .args([
+            "krb5-kdc",
+            "krb5-user",
+            "krb5-admin-server",
+            "libkrb5-dev",
+            "gcc",
+        ])
+        .env("DEBIAN_FRONTEND", "noninteractive"))?;
+    run(Command::new("uv")
+        .args(["sync", "--active", "--locked"])
+        .env("VIRTUAL_ENV", venv))?;
+    // The test suite writes its report there after dropping to `authentik`, and can't create it
+    let user = User::from_name(AK_USER)?.ok_or_else(|| eyre!("user {AK_USER} does not exist"))?;
+    fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open("/unittest.xml")?;
+    nix::unistd::chown("/unittest.xml", Some(user.uid), Some(user.gid))?;
+    Ok(())
 }
 
 /// `chown -R`, skipping entries that already have the right owner.
@@ -210,6 +267,9 @@ pub(crate) fn boot() -> Result<()> {
         env.push((PROMETHEUS_MULTIPROC_DIR, prometheus_dir.clone()));
     }
     if getuid().is_root() {
+        if debugger_enabled() {
+            prepare_debug()?;
+        }
         env.push(("HOME", become_authentik(&prometheus_dir)?));
     }
     // Changing our own environment needs unsafe code, so exec ourselves with the new one
@@ -237,6 +297,7 @@ pub(crate) fn test_all() -> Result<()> {
     cmd.args(["-m", "manage", "test", "authentik"])
         .env(PROMETHEUS_MULTIPROC_DIR, &prometheus_dir);
     if getuid().is_root() {
+        prepare_debug()?;
         // The bash entrypoint opened up /root first, because the suite writes there
         add_mode(Path::new("/root"), 0o777)?;
         cmd.env("HOME", become_authentik(&prometheus_dir)?);
