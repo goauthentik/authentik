@@ -63,7 +63,6 @@ export class AccessRequestsPage extends AKElement {
     protected override render(): SlottedTemplateResult {
         return html`<div class="pf-c-page">
             <div class="pf-c-page__main">
-<<<<<<< HEAD
                 ${(this.toReview?.pagination.count || 0) > 0
                     ? html`<div class="pf-c-banner pf-m-info">
                           ${msg("Requests to review: ")}
@@ -71,21 +70,10 @@ export class AccessRequestsPage extends AKElement {
                               href=${paramURL("/requests", {
                                   page: "page-for-review",
                               })}
-                              >${msg("Review")}</a
+                              >${msg("You have access requests to review")}</a
                           >
                       </div>`
                     : nothing}
-=======
-                ${
-                    (this.toReview?.pagination.count || 0) > 0
-                        ? html`<div class="pf-c-banner pf-m-info">
-                              <a href=${toUserInterface("requests/for-review")}
-                                  >${msg("You have access requests to review")}</a
-                              >
-                          </div>`
-                        : nothing
-                }
->>>>>>> 659bed3a7 (web/user: fix requests banner wording (#26586))
                 <ak-tabs
                     role="main"
                     aria-label=${msg("Access requests")}
