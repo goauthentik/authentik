@@ -28,6 +28,7 @@ from authentik.core.api.utils import ModelSerializer, ThemedUrlsSerializer
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, User
 from authentik.events.logs import LogEventSerializer, capture_logs
+from authentik.lib.config import CONFIG
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import ListPolicyEngine, PolicyEngine
@@ -35,6 +36,8 @@ from authentik.policies.types import CACHE_PREFIX, PolicyResult
 from authentik.rbac.filters import ObjectFilter
 
 LOGGER = get_logger()
+
+APP_CACHE_TIMEOUT = CONFIG.get_int("cache.timeout_application_policies", 86400)
 
 
 def user_app_cache_key(
@@ -342,7 +345,7 @@ class ApplicationViewSet(
                         self.request.user.pk, paginator.page.number, only_with_launch_url
                     ),
                     allowed_applications,
-                    timeout=86400,
+                    timeout=APP_CACHE_TIMEOUT,
                 )
 
         if only_with_launch_url:
