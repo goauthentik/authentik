@@ -284,10 +284,10 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Additional Parent Group")}
-                        name="additionalParentGroup"
+                        name="syncParentGroup"
                     >
                         ${AKSearchSelect({
-                            name: "additionalParentGroup",
+                            name: "syncParentGroup",
                             source: groupSource,
                             value: this.instance?.syncParentGroup,
                             blankable: true,
