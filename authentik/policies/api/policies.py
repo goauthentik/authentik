@@ -21,10 +21,7 @@ from authentik.core.api.utils import (
     ModelSerializer,
 )
 from authentik.events.logs import LogEventSerializer, capture_logs
-from authentik.policies.api.exec import (
-    PolicyTestResultSerializer,
-    PolicyTestSerializer,
-)
+from authentik.policies.api.exec import PolicyTestResultSerializer, PolicyTestSerializer
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.policies.process import PolicyProcess
 from authentik.policies.types import CACHE_PREFIX, PolicyRequest
