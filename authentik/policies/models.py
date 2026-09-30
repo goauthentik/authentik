@@ -9,6 +9,7 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.lib.models import (
     CreatedUpdatedModel,
+    ExpiringManager,
     ExpiringModel,
     InheritanceAutoManager,
     InheritanceForeignKey,
@@ -160,6 +161,7 @@ class PolicyBinding(ExpiringModel, SerializerModel):
             return f"Binding - #{self.order} to {suffix}"
         return ""
 
+    objects = ExpiringManager()
     in_use = BoundPolicyQuerySet.as_manager()
 
     class Meta:
