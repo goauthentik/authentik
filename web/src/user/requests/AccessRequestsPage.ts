@@ -70,7 +70,7 @@ export class AccessRequestsPage extends AKElement {
                               href=${paramURL("/requests", {
                                   page: "page-for-review",
                               })}
-                              >${msg("Review")}</a
+                              >${msg("You have access requests to review")}</a
                           >
                       </div>`
                     : nothing}
