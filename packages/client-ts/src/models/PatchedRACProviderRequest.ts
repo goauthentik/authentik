@@ -10,6 +10,12 @@
  * Do not edit the class manually.
  */
 
+import type { RACProviderAuthModeEnum } from "./RACProviderAuthModeEnum";
+import {
+    RACProviderAuthModeEnumFromJSON,
+    RACProviderAuthModeEnumToJSON,
+} from "./RACProviderAuthModeEnum";
+
 /**
  * RACProvider Serializer
  *
@@ -29,6 +35,16 @@ export interface PatchedRACProviderRequest {
     authorizationFlow?: string;
     propertyMappings?: Array<string>;
     settings?: { [key: string]: any };
+    /**
+     * Only devices in this access group can be accessed through this provider. When left empty,
+     * every device the user has access to can be accessed.
+     */
+    accessGroup?: string | null;
+    /**
+     * Maximum concurrent connections to a single device. Can be set to -1 to disable the limit.
+     */
+    maximumConnections?: number;
+    authMode?: RACProviderAuthModeEnum;
     /**
      * Determines how long a session lasts. Default of 0 means that the sessions lasts until the
      * browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)
@@ -72,6 +88,18 @@ export function PatchedRACProviderRequestFromJSONTyped(
             json["authorization_flow"] == null ? undefined : json["authorization_flow"],
         propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
         settings: json["settings"] == null ? undefined : json["settings"],
+        accessGroup:
+            json["access_group"] === undefined
+                ? undefined
+                : json["access_group"] === null
+                  ? null
+                  : json["access_group"],
+        maximumConnections:
+            json["maximum_connections"] == null ? undefined : json["maximum_connections"],
+        authMode:
+            json["auth_mode"] == null
+                ? undefined
+                : RACProviderAuthModeEnumFromJSON(json["auth_mode"]),
         connectionExpiry: json["connection_expiry"] == null ? undefined : json["connection_expiry"],
         deleteTokenOnDisconnect:
             json["delete_token_on_disconnect"] == null
@@ -98,6 +126,9 @@ export function PatchedRACProviderRequestToJSONTyped(
         authorization_flow: value["authorizationFlow"],
         property_mappings: value["propertyMappings"],
         settings: value["settings"],
+        access_group: value["accessGroup"],
+        maximum_connections: value["maximumConnections"],
+        auth_mode: RACProviderAuthModeEnumToJSON(value["authMode"]),
         connection_expiry: value["connectionExpiry"],
         delete_token_on_disconnect: value["deleteTokenOnDisconnect"],
     };
