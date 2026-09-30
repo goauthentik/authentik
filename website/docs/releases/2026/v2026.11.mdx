@@ -62,10 +62,6 @@ The following are removed or changed:
 
 A RAC provider signs into devices which are enrolled through the authentik agent as the user who launched the connection, with no credentials configured for the device. authentik issues a token for the device, the RAC outpost turns it into an SSH certificate, and the agent validates the token before accepting the login. See [the RAC provider documentation](../../add-secure-apps/providers/rac/index.mdx#signing-in-with-the-authentik-agent).
 
-### New `server-debug` image
-
-There is a new container image, `ghcr.io/goauthentik/server-debug`. It's based on the server image, plus the development dependency group, the Kerberos server tools, and a few interactive tools. Use it for `ak test-all`, for `AUTHENTIK_DEBUGGER`, and for an interactive shell in a container.
-
 ## Upgrading
 
 This release does not introduce any new requirements. You can follow the upgrade instructions below; for more detailed information about upgrading authentik, refer to our [Upgrade documentation](../../install-config/upgrade.mdx).
