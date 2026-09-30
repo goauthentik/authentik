@@ -168,10 +168,7 @@ async function ensureLockdownFlow(
             // carry it into the binding, and the picker's options were fetched before it
             // existed — so pass the name as a string, which types into the search select
             // and refetches, rather than a pattern that only filters what is loaded.
-            // Addressed by placeholder: the visible "Stage" label is loose text with no
-            // association to the control, so a "Stage" name match lands on the previous
-            // step's "Stage Name" box, which the wizard keeps mounted.
-            await form.selectSearchValue(/Select a stage/i, stageName, dialog);
+            await form.selectSearchValue("Stage", stageName, dialog);
 
             // Order and policy mode keep their defaults. "Create" rather than "Next":
             // this is the wizard's last step.
@@ -231,8 +228,8 @@ test.describe("Account lockdown", () => {
 
             await form.setFormGroup("Default flows", true, dialog);
 
-            const $flowSearch = dialog.getByRole("textbox", { name: "Account lockdown flow" });
-            const configuredFlow = await $flowSearch.inputValue();
+            const { combobox } = await form.findSearchSelect("Account lockdown flow", dialog);
+            const configuredFlow = await combobox.inputValue();
 
             if (LOCKDOWN_FLOW.test(configuredFlow)) {
                 // Already configured by an earlier run. Leaving the row alone keeps this
