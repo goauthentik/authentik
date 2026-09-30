@@ -141,7 +141,10 @@ test.describe("User switching", () => {
         await test.step("Create the secondary account", async () => {
             const dialog = page.getByRole("dialog", { name: "New User Wizard" });
 
-            await page.getByRole("button", { name: "New User" }).click();
+            await page
+                .locator('[part="toolbar-secondary"]')
+                .getByRole("button", { name: "New User" })
+                .click();
 
             await expect(dialog, "Create dialog opens").toBeVisible();
 

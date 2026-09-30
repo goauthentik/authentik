@@ -271,7 +271,11 @@ test.describe("Account lockdown", () => {
         await test.step("Create the target account", async () => {
             const dialog = page.getByRole("dialog", { name: "New User Wizard" });
 
-            await page.getByRole("button", { name: "New User" }).click();
+            await page
+                .locator('[part="toolbar-secondary"]')
+                .getByRole("button", { name: "New User" })
+                .click();
+
             await expect(dialog, "Create dialog opens").toBeVisible();
 
             // `force` matches `300-users.test.ts`: buttons with slotted content are not
