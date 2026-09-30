@@ -128,9 +128,9 @@ export class UserExpirationRuleForm extends ModelForm<UserExpirationRule, string
             <ak-switch-input
                 name="enabled"
                 label=${msg("Enabled", { id: "user-expiration.field.enabled.label" })}
-                ?checked=${this.instance?.enabled ?? true}
+                ?checked=${this.instance?.enabled ?? false}
                 help=${msg(
-                    "A disabled rule expires nobody and cancels the expirations it has already scheduled.",
+                    "New rules start disabled so you can preview them and bind policies before enabling them. A disabled rule expires nobody and cancels the expirations it has already scheduled.",
                     {
                         id: "user-expiration.field.enabled.description",
                     },
