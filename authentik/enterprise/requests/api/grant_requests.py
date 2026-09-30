@@ -132,6 +132,7 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
     serializer_class = GrantRequestSerializer
     filterset_fields = ["created_by", "agent_owner", "status"]
     rbac_allow_create_without_perm = True
+    ordering = ["-created_by"]
 
     class GrantRequestCreateSerializer(PassiveSerializer):
 
