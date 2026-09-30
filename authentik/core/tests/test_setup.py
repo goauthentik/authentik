@@ -3,6 +3,7 @@ from os import environ
 from unittest.mock import patch
 
 from django.contrib.auth.hashers import make_password
+from django.core.exceptions import ImproperlyConfigured
 from django.urls import reverse
 from rest_framework.exceptions import ValidationError
 
@@ -165,6 +166,38 @@ class TestSetup(FlowTestCase):
         self.assertFalse(Setup.get())
         self.assertEqual(get_system_settings().base_url, "")
 
+    @apply_blueprint("default/flow-oobe.yaml")
+    @apply_blueprint("system/bootstrap.yaml")
+    def test_setup_flow_empty_base_url(self):
+        """A base URL that is empty once normalized is rejected, setup requires one"""
+        Setup.set(False)
+
+        res = self.client.get(reverse("authentik_core:setup"))
+        self.assertEqual(res.status_code, HTTPStatus.FOUND)
+
+        res = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": "initial-setup"}),
+        )
+        self.assertEqual(res.status_code, HTTPStatus.OK)
+        self.assertStageResponse(res, component="ak-stage-prompt")
+
+        pw = generate_id()
+        res = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": "initial-setup"}),
+            {
+                "email": f"{generate_id()}@t.goauthentik.io",
+                "base_url": "/",
+                "password": pw,
+                "password_repeat": pw,
+                "component": "ak-stage-prompt",
+            },
+        )
+        raw = self.assertStageResponse(res, component="ak-stage-prompt")
+        self.assertIn("Enter a valid URL", str(raw["response_errors"]))
+
+        self.assertFalse(Setup.get())
+        self.assertEqual(get_system_settings().base_url, "")
+
     @patch_flag(Setup, False)
     @apply_blueprint("default/flow-oobe.yaml")
     @apply_blueprint("system/bootstrap.yaml")
@@ -183,6 +216,9 @@ class TestSetup(FlowTestCase):
         """Test setup with env vars"""
         User.objects.filter(username="akadmin").delete()
         Setup.set(False)
+        settings = get_system_settings()
+        settings.base_url = "https://authentik.company"
+        settings.save()
 
         environ.pop("AUTHENTIK_BOOTSTRAP_PASSWORD_HASH", None)
         environ["AUTHENTIK_BOOTSTRAP_PASSWORD"] = generate_id()
@@ -202,6 +238,9 @@ class TestSetup(FlowTestCase):
         """Test setup with password hash env var"""
         User.objects.filter(username="akadmin").delete()
         Setup.set(False)
+        settings = get_system_settings()
+        settings.base_url = "https://authentik.company"
+        settings.save()
 
         environ.pop("AUTHENTIK_BOOTSTRAP_PASSWORD", None)
         password = generate_id()
@@ -243,3 +282,31 @@ class TestSetup(FlowTestCase):
 
         self.assertFalse(Setup.get())
         warning.assert_any_call("Failed to apply bootstrap blueprint")
+
+    def test_setup_bootstrap_env_requires_base_url(self):
+        """Test automated install without a base URL is set up, but does not start"""
+        User.objects.filter(username="akadmin").delete()
+        Setup.set(False)
+        settings = get_system_settings()
+        settings.base_url = ""
+        settings.save()
+
+        environ["AUTHENTIK_BOOTSTRAP_TOKEN"] = generate_id()
+        pre_startup.send(sender=self)
+        with self.assertRaises(ImproperlyConfigured):
+            post_startup.send(sender=self)
+
+        self.assertTrue(Setup.get())
+        token = Token.objects.filter(identifier="authentik-bootstrap-token").first()
+        self.assertEqual(token.key, environ["AUTHENTIK_BOOTSTRAP_TOKEN"])
+
+    @patch_flag(Setup, True)
+    def test_setup_requires_base_url(self):
+        """Test existing instance without a base URL does not start"""
+        settings = get_system_settings()
+        settings.base_url = ""
+        settings.save()
+
+        pre_startup.send(sender=self)
+        with self.assertRaises(ImproperlyConfigured):
+            post_startup.send(sender=self)
