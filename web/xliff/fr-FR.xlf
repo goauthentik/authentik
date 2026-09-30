@@ -2696,10 +2696,6 @@
   <source>Delete authorization on disconnect</source>
   <target>Supprimer l’autorisation à la déconnexion</target>
 </trans-unit>
-<trans-unit id="s3945449bd524d8a5">
-  <source>When enabled, connection authorizations will be deleted when a client disconnects. This will force clients with flaky internet connections to re-authorize the endpoint.</source>
-  <target>Si activé, les autorisations de connexion seront supprimées lorsqu'un client se déconnecte. Cela forcera les clients avec des connexions internet instables à ré-autoriser le point de terminaison.</target>
-</trans-unit>
 <trans-unit id="s3271da6c18c25b18">
   <source>Connection settings.</source>
   <target>Paramètres de connexion.</target>
@@ -3044,14 +3040,6 @@
   <source>Endpoint</source>
   <target>Point de terminaison</target>
 </trans-unit>
-<trans-unit id="s2f4ca2148183d692">
-  <source>Successfully updated endpoint.</source>
-  <target>Point de terminaison mis à jour avec succès.</target>
-</trans-unit>
-<trans-unit id="s5adee855dbe191d9">
-  <source>Successfully created endpoint.</source>
-  <target>Point de terminaison créé avec succès.</target>
-</trans-unit>
 <trans-unit id="s61e136c0658e27d5">
   <source>Protocol</source>
   <target>Protocole</target>
@@ -3072,17 +3060,9 @@
   <source>Host</source>
   <target>Hôte</target>
 </trans-unit>
-<trans-unit id="s48a0d160d9e0a7be">
-  <source>Hostname/IP to connect to. Optionally specify the port.</source>
-  <target>Nom d'hôte/IP auquel se connecter. Spécifiez le port en option.</target>
-</trans-unit>
 <trans-unit id="sc39f6abf0daedb0f">
   <source>Maximum concurrent connections</source>
   <target>Connections concurrentes maximum</target>
-</trans-unit>
-<trans-unit id="s62418cbcd2a25498">
-  <source>Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.</source>
-  <target>Nombre maximum de connections concurrentes à ce point de terminaison. Peut être défini à -1 pour désactiver la limite.</target>
 </trans-unit>
 <trans-unit id="scb6620fcd5bff04c">
   <source>Advanced settings</source>
@@ -3566,14 +3546,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>The currently selected policy engine mode is <x id="0" equiv-text="${policyEngineMode.label}"/>:</source>
   <target>Le mode du moteur de politique actuellement sélectionné est <x id="0" equiv-text="${policyEngineMode.label}"/> :</target>
 </trans-unit>
-<trans-unit id="s8276649077e8715c">
-  <source>Endpoint(s)</source>
-  <target>Point(s) de terminaison</target>
-</trans-unit>
-<trans-unit id="s008496c7716b9812">
-  <source>These bindings control which users will have access to this endpoint. Users must also have access to the application.</source>
-  <target>Ces liaisons controllent quels utilisateurs auront accès à ce point de terminaison. Les utilisateurs doivent également avoir accès à l'application.</target>
-</trans-unit>
 <trans-unit id="s5c18f85cda6e89be">
   <source>Connections</source>
   <target>Connexions</target>
@@ -3581,10 +3553,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s168565f5ac74a89f">
   <source>Update RAC Provider</source>
   <target>Mettre à jour le fournisseur RAC</target>
-</trans-unit>
-<trans-unit id="s8465a2caa2d9ea5d">
-  <source>Endpoints</source>
-  <target>Points de terminaison</target>
 </trans-unit>
 <trans-unit id="s09b671b120443043">
   <source>Update Radius Provider</source>
@@ -7838,26 +7806,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>License(s)</source>
   <target>Licence(s)</target>
 </trans-unit>
-<trans-unit id="sf58825457d61c429">
-  <source>Forecast internal users</source>
-  <target>Prévision des utilisateurs internes</target>
-</trans-unit>
-<trans-unit id="sde9a3f41977ec1f8">
-  <source>Estimated user count one year from now based on <x id="0" equiv-text="${internalUsers}"/> current internal users and <x id="1" equiv-text="${forecastedInternalUsers}"/> forecasted internal users.</source>
-  <target>Nombre d'utilisateurs estimés d'ici un an basé sur <x id="0" equiv-text="${internalUsers}"/> utilisateurs internes actuels et <x id="1" equiv-text="${forecastedInternalUsers}"/> utilisateurs internes prévus.</target>
-</trans-unit>
-<trans-unit id="s531571491deb239a">
-  <source>Approximately</source>
-  <target>Environ</target>
-</trans-unit>
-<trans-unit id="s4557b6b9da258643">
-  <source>Forecast external users</source>
-  <target>Prévision des utilisateurs externes</target>
-</trans-unit>
-<trans-unit id="sf52479d6daa0a4a8">
-  <source>Estimated user count one year from now based on <x id="0" equiv-text="${externalUsers}"/> current external users and <x id="1" equiv-text="${forecastedExternalUsers}"/> forecasted external users.</source>
-  <target>Nombre d'utilisateurs estimés d'ici un an basé sur <x id="0" equiv-text="${externalUsers}"/> utilisateurs externes actuels et <x id="1" equiv-text="${forecastedExternalUsers}"/> utilisateurs externes prévus.</target>
-</trans-unit>
 <trans-unit id="sd22bd01bdf28c548">
   <source>Cumulative license expiry</source>
   <target>Expiration des licences cumulative</target>
@@ -10393,26 +10341,8 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s584808e53254531c">
   <source>Search for provider by name, type or assigned application...</source>
 </trans-unit>
-<trans-unit id="sd8d09a02b5e34dda">
-  <source>RAC Endpoint</source>
-</trans-unit>
-<trans-unit id="s4dc35b9b113cf62b">
-  <source>RAC Endpoints</source>
-</trans-unit>
-<trans-unit id="s0be5af2db3c680cf">
-  <source>Endpoint Name</source>
-</trans-unit>
-<trans-unit id="sdaad41bf21e8e5f3">
-  <source>Type a name for this endpoint...</source>
-</trans-unit>
 <trans-unit id="sa6793a484bd8399b">
   <source>e.g. myserver.example.com, 10.0.0.1:22</source>
-</trans-unit>
-<trans-unit id="s43f123e73d3882cb">
-  <source>Create an endpoint to get started.</source>
-</trans-unit>
-<trans-unit id="s0af49e3fd32c92a3">
-  <source>Search for an endpoint by name or host...</source>
 </trans-unit>
 <trans-unit id="s7fb4ba3dfb89c749">
   <source>Initial Permission Name</source>
@@ -10602,15 +10532,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s195ea6447a6b5486">
   <source>Cancel wizard</source>
-</trans-unit>
-<trans-unit id="s7ac4bf2be4d16ce4">
-  <source>Search for an endpoint by name...</source>
-</trans-unit>
-<trans-unit id="sacc17a59268b8cf3">
-  <source>No endpoints found for this application.</source>
-</trans-unit>
-<trans-unit id="sa769d10eac7fbdb7">
-  <source>Launch Endpoint</source>
 </trans-unit>
 <trans-unit id="wizard.ariaLabel.default">
   <source>Wizard</source>
@@ -12369,6 +12290,66 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="providers.user-deletion.suspend.description">
   <source>User is suspended, and connection to user in authentik is removed.</source>
+</trans-unit>
+<trans-unit id="sbd3c86956da322e8">
+  <source>Successfully created device.</source>
+</trans-unit>
+<trans-unit id="s5165aba292574c6a">
+  <source>Hostname/IP to connect to. Optionally specify the port. Devices which are enrolled through a connector report this themselves.</source>
+</trans-unit>
+<trans-unit id="s777c12b4aa251689">
+  <source>Local IP</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.users.added-within.30-days.label">
+  <source>30 days</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.users.added-within.90-days.label">
+  <source>90 days</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.users.added-within.365-days.label">
+  <source>365 days</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.users.added-within-last.title">
+  <source>Added within last</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.internal-users.label">
+  <source>Internal users</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.internal-users.total-active.label">
+  <source>Total active internal users</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.external-users.label">
+  <source>External users</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.external-users.total-active.label">
+  <source>Total active external users</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.install-id.copy-button.label">
+  <source>Copy Install ID</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.install-id.label">
+  <source>Install ID</source>
+</trans-unit>
+<trans-unit id="s4a2af3d62c9f3674">
+  <source>When enabled, connection authorizations will be deleted when a client disconnects. This will force clients with flaky internet connections to re-authorize the device.</source>
+</trans-unit>
+<trans-unit id="s814244c6095b7cfa">
+  <source>Only devices in this access group can be accessed through this provider. Leave empty to allow every device the user has access to.</source>
+</trans-unit>
+<trans-unit id="sde377b3ff4aba070">
+  <source>Maximum concurrent allowed connections to a single device. Can be set to -1 to disable the limit.</source>
+</trans-unit>
+<trans-unit id="s605002ecb0818b4d">
+  <source>Search for a device by name...</source>
+</trans-unit>
+<trans-unit id="s2751f7d6fb0bc202">
+  <source>No devices found for this application.</source>
+</trans-unit>
+<trans-unit id="s9b1721f3a1a69134">
+  <source>Launch Device</source>
+</trans-unit>
+<trans-unit id="sc217c7aa0b313c03">
+  <source>Connect with</source>
 </trans-unit>
 </body>
 </file>

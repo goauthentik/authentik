@@ -336,6 +336,14 @@ export abstract class Table<T extends object, D = T>
     public page = 1;
 
     /**
+     * Method to convert an object into a string or number as a unique key the table can use to
+     * communicate objects back to client code. Provide or override when <T>.pk exists but may not
+     * be unique.
+     */
+    @property({ type: Object })
+    public makeItemKey = (i: T) => (hasPrimaryKey(i) ? i.pk : JSON.stringify(i));
+
+    /**
      * Set if your `selectedElements` use of the selection box is to enable bulk-delete,
      * so that stale data is cleared out when the API returns a new list minus the deleted entries.
      *
@@ -606,8 +614,7 @@ export abstract class Table<T extends object, D = T>
                 const nextExpanded = new Set<string | number>();
 
                 for (const result of data.results) {
-                    const itemKey = hasPrimaryKey(result) ? result.pk : JSON.stringify(result);
-
+                    const itemKey = this.makeItemKey(result);
                     this.#itemKeys.set(result, itemKey);
 
                     if (this.expandedElements.has(itemKey)) {
