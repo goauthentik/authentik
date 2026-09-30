@@ -100,6 +100,8 @@ To log out, navigate to `/outpost.goauthentik.io/sign_out` on the host that serv
 
 Logging out of a provider invalidates all sessions for that user within the respective outpost.
 
+Proxy sessions are also ended when the user's authentik session ends. For more information, see [Single Logout for proxy providers and outposts](../single-logout/index.mdx#single-logout-for-proxy-providers-and-outposts).
+
 ## Allow unauthenticated requests
 
 To allow unauthenticated requests to specific paths or URLs, use the **Unauthenticated Paths** or **Unauthenticated URLs** field on the proxy provider.
