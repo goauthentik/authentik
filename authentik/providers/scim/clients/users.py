@@ -58,15 +58,13 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
     def create(self, user: User):
         """Create user from scratch and create a connection object"""
         scim_user = self.to_schema(user, None)
+        payload = scim_user.model_dump(mode="json", exclude_unset=True)
         with transaction.atomic():
             try:
                 response = self._request(
                     "POST",
                     "/Users",
-                    json=scim_user.model_dump(
-                        mode="json",
-                        exclude_unset=True,
-                    ),
+                    json=payload,
                 )
             except ObjectExistsSyncException as exc:
                 if not self._config.filter.supported:
@@ -91,8 +89,20 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
                 if not scim_id or scim_id == "":
                     raise StopSync("SCIM Response with missing or invalid `id`")
                 return SCIMProviderUser.objects.create(
-                    provider=self.provider, user=user, scim_id=scim_id, attributes=response
+                    provider=self.provider,
+                    user=user,
+                    scim_id=scim_id,
+                    attributes=self.written_attributes(payload, response),
                 )
+
+    @staticmethod
+    def written_attributes(payload: dict[str, Any], response: dict[str, Any]) -> dict[str, Any]:
+        """Retain sent attributes omitted from a successful response, including nested fields.
+
+        Returned values take precedence, while response-only metadata is preserved.
+        Neither the request nor the response is mutated.
+        """
+        return MERGE_LIST_UNIQUE.merge(deepcopy(payload), deepcopy(response))
 
     def diff(self, local_created: dict[str, Any], connection: SCIMProviderUser):
         """Check if a user is different than what we last wrote to the remote system.
@@ -118,7 +128,7 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
             f"/Users/{connection.scim_id}",
             json=payload,
         )
-        connection.attributes = response
+        connection.attributes = self.written_attributes(payload, response)
         connection.save()
 
     def discover(self):
