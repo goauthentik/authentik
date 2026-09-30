@@ -36,6 +36,8 @@ export default defineConfig({
         timeout: 15_000,
     },
     maxFailures: CI ? 5 : 2,
+    // These load CAPTCHA widgets from their vendors' servers, which CI can't rely on reaching.
+    grepInvert: CI ? /@vendor-network/ : undefined,
     reporter: CI
         ? [
               // ---
