@@ -5,7 +5,6 @@ import { AKElement } from "#elements/Base";
 import { ISearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
-import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
 import {
     CertificateKeyPair,
@@ -33,7 +32,7 @@ const renderValue = (item: CertificateKeyPair | null) => item?.pk;
  */
 
 @customElement("ak-crypto-certificate-search")
-export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) {
+export class AkCryptoCertificateSearch extends AKElement {
     @property({ type: String, reflect: true })
     certificate?: string | null;
 
