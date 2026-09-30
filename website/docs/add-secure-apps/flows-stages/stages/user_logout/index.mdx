@@ -18,7 +18,7 @@ This stage has no stage-specific configuration options.
 The default flows use this stage differently:
 
 - `default-invalidation-flow`: used when the user logs out directly from authentik. This flow includes the User Logout stage.
-- `default-provider-invalidation-flow`: used by default when a logout starts from an application. This flow does not include the User Logout stage.
+- `default-provider-invalidation-flow`: the default flow used when a logout starts from an application. This flow does not include the User Logout stage.
 
 If RP-initiated logout should also end the main authentik session, select `default-invalidation-flow` as the invalidation flow of the provider. For more information, see [Choose the logout behavior for a provider](../../../providers/single-logout/index.mdx#choose-the-logout-behavior-for-a-provider).
 
