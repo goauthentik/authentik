@@ -2,7 +2,6 @@ import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
 import { ISearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
-import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
 import {
     DeviceAccessGroup,
@@ -37,7 +36,7 @@ const renderValue = (group: DeviceAccessGroup | null) => group?.pbmUuid;
  */
 
 @customElement("ak-endpoints-device-group-search")
-export class EndpointsDeviceAccessGroupSearch extends CustomListenerElement(AKElement) {
+export class EndpointsDeviceAccessGroupSearch extends AKElement {
     /**
      * The current group known to the caller.
      *
