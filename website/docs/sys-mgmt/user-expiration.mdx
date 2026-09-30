@@ -33,11 +33,10 @@ For users who have never logged in, inactivity is measured from their account cr
 6. Select **Deactivate** or **Delete** for the **Action**, and configure **Revoke sessions** and **Revoke tokens**.
 7. Optionally enter a **Warning period**, for example `days=7`, and select the **Notification transports** used to warn the user. The warning period must be shorter than the inactivity duration.
 8. Leave **Exclude superusers** enabled unless you want the rule to apply to members of superuser groups as well.
-9. Click **Create**.
-
-You can also bind policies to a rule. Expand the rule's row in the list to manage its policy bindings. A user is only expired if they pass the rule's policies, which lets you exempt users based on attributes or other criteria.
-
-Before enabling a rule, use the **Preview** action to see how many users the next run would schedule for offboarding.
+9. Click **Create**. New rules are created disabled, so no users are scheduled for offboarding yet.
+10. Optionally bind policies to the rule. Expand the rule's row in the list to manage its policy bindings. A user is only expired if they pass the rule's policies, which lets you exempt users based on attributes or other criteria.
+11. Use the **Preview** action to see how many users the first run would schedule for offboarding.
+12. Edit the rule, enable **Enabled**, and click **Update**. The rule runs right away and then every hour.
 
 ## How rules run
 
