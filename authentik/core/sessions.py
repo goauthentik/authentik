@@ -92,7 +92,6 @@ class SessionStore(SessionBase):
             # LookupError - Model that's referenced in the session no longer exists
             # If any of these happen, just return an empty dictionary (an empty session)
             LOGGER.warning("Failed to decode session data, deleting session", exc_info=True)
-            self.delete()
             pass
         return {}
 
