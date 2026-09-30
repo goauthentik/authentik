@@ -148,3 +148,5 @@ npx vitest run test/browser/foo.test.ts # Single browser test file
 ```
 
 The Playwright config (`playwright.config.js`) is also present for the `npm run test:e2e` path and configures Chromium with traces on first retry and a dark color scheme. The browser tests through Vitest use `@vitest/browser-playwright` and target the same `test/browser/` directory.
+
+Tests tagged `@vendor-network` (the CAPTCHA suite) load widgets from the vendors' servers, so the config skips them when `CI` is set. Run them locally with `npx playwright test --grep @vendor-network`.
