@@ -121,9 +121,7 @@ fn debugger_enabled() -> bool {
         .is_ok_and(|output| output.stdout.trim_ascii() == b"True")
 }
 
-/// Install what `test-all` and `AUTHENTIK_DEBUGGER` need, because the image doesn't ship it: the
-/// development dependency group, which has debugpy and the test tools, and the Kerberos server
-/// tools for the tests. Needs root and the network.
+/// Install what `test-all` and `AUTHENTIK_DEBUGGER` need
 fn prepare_debug() -> Result<()> {
     // Only in the container, a development checkout has all of it already
     if !Path::new("/ak-root").is_dir() {
