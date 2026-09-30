@@ -70,6 +70,7 @@ class ExpirationTestCase(APITestCase):
     def _rule(self, **kwargs) -> UserExpirationRule:
         kwargs.setdefault("name", generate_id())
         kwargs.setdefault("inactivity_duration", "days=90")
+        kwargs.setdefault("enabled", True)
         return UserExpirationRule.objects.create(**kwargs)
 
 
@@ -438,10 +439,10 @@ class TestConcurrency(TransactionTestCase):
     def test_concurrent_sweeps_converge_on_tighter_rule(self):
         with patch(APPLY_RULE):
             loose = UserExpirationRule.objects.create(
-                name=generate_id(), inactivity_duration="days=95"
+                name=generate_id(), inactivity_duration="days=95", enabled=True
             )
             tight = UserExpirationRule.objects.create(
-                name=generate_id(), inactivity_duration="days=90"
+                name=generate_id(), inactivity_duration="days=90", enabled=True
             )
         user = _dormant_user(100)
         barrier = Barrier(2, timeout=10)
@@ -713,6 +714,23 @@ class TestAPI(ExpirationTestCase):
         self.assertEqual(response.status_code, 201, response.content)
         rule = UserExpirationRule.objects.get(pk=response.data["pk"])
         self.assertEqual(rule.user_types, [UserTypes.INTERNAL, UserTypes.EXTERNAL])
+
+    def test_create_defaults_to_disabled(self):
+        """A new rule schedules nobody until it is enabled, so it can be previewed and have
+        policies bound first."""
+        dormant = _dormant_user()
+        response = self.client.post(
+            reverse("authentik_api:userexpirationrule-list"), {"name": generate_id()}
+        )
+        self.assertEqual(response.status_code, 201, response.content)
+        self.assertFalse(response.data["enabled"])
+        rule = UserExpirationRule.objects.get(pk=response.data["pk"])
+        self.assertEqual(rule.apply(), 0)
+        self.assertIsNone(_pending(dormant))
+        preview = self.client.get(
+            reverse("authentik_api:userexpirationrule-preview", kwargs={"pk": rule.pk})
+        )
+        self.assertEqual(preview.data["count"], 1)
 
     def test_warn_before_must_be_shorter(self):
         response = self.client.post(

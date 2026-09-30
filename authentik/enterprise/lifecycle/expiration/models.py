@@ -41,7 +41,9 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
 
     id = models.UUIDField(primary_key=True, default=uuid4)
     name = models.TextField(unique=True)
-    enabled = models.BooleanField(default=True)
+    # New rules start disabled so they can be previewed and have policies bound
+    # before the first sweep schedules anyone.
+    enabled = models.BooleanField(default=False)
     group = models.ForeignKey(
         "authentik_core.Group",
         on_delete=models.CASCADE,

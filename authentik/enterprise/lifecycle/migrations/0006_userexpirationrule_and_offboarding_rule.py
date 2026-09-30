@@ -52,7 +52,7 @@ class Migration(migrations.Migration):
                 ),
                 ("id", models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False)),
                 ("name", models.TextField(unique=True)),
-                ("enabled", models.BooleanField(default=True)),
+                ("enabled", models.BooleanField(default=False)),
                 (
                     "user_types",
                     django.contrib.postgres.fields.ArrayField(
