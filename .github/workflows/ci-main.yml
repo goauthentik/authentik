@@ -528,7 +528,7 @@ jobs:
           fi
       - name: Start authentik
         id: authentik
-        uses: goauthentik/action-setup-authentik@e9b3782a8da81f3a33bbe21de97c7d3cf6c8820f # v3.2
+        uses: goauthentik/action-setup-authentik@5b35e5951a1ec761847711a5d8170dbd67675526 # v3.3
         with:
           version: localhost/server:e2e
           blueprints_path: web/test/blueprints
