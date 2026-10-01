@@ -81,7 +81,7 @@ test: ## Run the server tests and produce a coverage report (locally). Usage: ma
 lint-fix-rust:  ## Format Rust sources (rustfmt)
 	$(CARGO) +nightly fmt --all -- --config-path "${PWD}/.cargo/rustfmt.toml"
 
-lint-fix: lint-fix-rust  ## Format and automatically Python (black, ruff) and Rust (rustfmt) sources
+lint-fix: lint-fix-rust  ## Format and automatically fix Python (black, ruff) and Rust (rustfmt) sources
 	$(UV) run black $(PY_SOURCES)
 	$(UV) run ruff check --fix $(PY_SOURCES)
 
