@@ -29,8 +29,7 @@ def versioned_script(path: str) -> str:
 @lru_cache
 def read_locale_manifest() -> dict[str, str]:
     """Read the manifest emitted by the web build, mapping each locale tag to its
-    content-hashed catalog chunk. A missing or malformed manifest is read as no catalogs
-    being known, so the interface still renders, just without the preload."""
+    content-hashed catalog chunk."""
     result = finders.find(LOCALE_MANIFEST_PATH)
     if not result:
         return {}
@@ -45,9 +44,8 @@ def read_locale_manifest() -> dict[str, str]:
 
 
 def resolve_catalog_tag(manifest: dict[str, str], language_code: str | None) -> str | None:
-    """Map an active language code to a catalog tag in the manifest, mirroring the web
-    client's best match: an exact (case-insensitive) tag wins, otherwise the first catalog
-    sharing the base language."""
+    """Map an active language code to a catalog tag in the manifest, an exact
+    (case-insensitive) tag wins, otherwise the first catalog sharing the base language."""
     if not language_code:
         return None
     normalized = language_code.lower()
