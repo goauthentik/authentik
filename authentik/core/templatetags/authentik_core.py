@@ -6,6 +6,8 @@ from json import JSONDecodeError, loads
 from django import template
 from django.contrib.staticfiles import finders
 from django.templatetags.static import static as static_loader
+from django.utils.html import escape
+from django.utils.safestring import mark_safe
 from django.utils.translation import get_language
 
 from authentik import authentik_full_version
@@ -66,11 +68,11 @@ def resolve_catalog_tag(manifest: dict[str, str], language_code: str | None) -> 
 @register.simple_tag()
 def locale_modulepreload() -> str:
     """Preload the active locale's catalog chunk, so the browser fetches it before the
-    entry bundle boots instead of after, removing the flash of untranslated content.
-    Emits nothing for the source locale, or when the build manifest is unavailable."""
+    entry bundle boots"""
     manifest = read_locale_manifest()
     tag = resolve_catalog_tag(manifest, get_language())
     if not tag:
         return ""
-    href = static_loader(f"dist/{manifest[tag]}")
-    return href
+    href = escape(static_loader(f"dist/{manifest[tag]}"))
+    # href comes from our own build manifest, not from user input.
+    return mark_safe(f'<link rel="modulepreload" href="{href}">')  # nosec
