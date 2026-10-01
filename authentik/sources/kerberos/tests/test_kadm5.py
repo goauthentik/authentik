@@ -9,9 +9,8 @@ from authentik.sources.kerberos.models import KAdminType, KerberosSource, Krb5Co
 
 class TestKAdm5Libraries(TestCase):
     """python-kadmin-rs loads the kadm5 client library only when it connects, so a missing library
-    shows up nowhere else. The sync tests load the MIT one against the test KDC. A failed MIT
-    connection unloads the library but leaves its error table registered, and the next Kerberos
-    error message crashes the process, so only the Heimdal one is tried here"""
+    shows up nowhere else. The sync tests already load the MIT one against the test KDC, so only the
+    Heimdal one is tried here"""
 
     def test_heimdal_library_loads(self):
         """Without a KDC connecting fails, but not because the library is missing"""

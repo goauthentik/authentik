@@ -17,7 +17,6 @@
 /geoip
 /manage.py
 /pyproject.toml
-/uv.lock
 /packages
 
 # OpenSSL: the from-source FIPS provider and its configuration.
@@ -31,21 +30,16 @@
 
 # resolver and account data written in the assemble stage
 /etc/nsswitch.conf
-/etc/host.conf
 /etc/gai.conf
-/etc/hosts
 /etc/hostname
-/etc/resolv.conf
 /etc/localtime
 /etc/passwd
 /etc/group
 /etc/shadow
 /etc/gshadow
-/etc/os-release
 /etc/ld.so.conf
 /etc/ld.so.conf.d
 /etc/krb5.conf
-/etc/gss
 
 # writable mount points
 /certs
