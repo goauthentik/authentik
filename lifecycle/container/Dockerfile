@@ -228,6 +228,7 @@ FROM scratch AS test-kit
 COPY --from=test-kit-build /kit/ /
 
 # Stage: Run
+# The default target, so it has to stay last
 FROM python-base AS final
 
 ARG VERSION
