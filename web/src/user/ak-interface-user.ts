@@ -24,6 +24,7 @@ import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
 import { formatInterfacePrefix, toUserInterface } from "#elements/router/core/interfaces";
+import { PageDetailsUpdate } from "#elements/router/meta";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
@@ -73,6 +74,11 @@ class UserInterface extends WithLicenseSummary(
 
     @property({ attribute: false, useDefault: true })
     public drawer: DrawerState = readDrawerParams();
+
+    @listen(PageDetailsUpdate, { target: window })
+    protected pageDetailsListener = (event: PageDetailsUpdate) => {
+        this.setTitle(event.header.header);
+    };
 
     @listen(AKDrawerChangeEvent, { target: window })
     protected drawerListener = (event: AKDrawerChangeEvent) => {
