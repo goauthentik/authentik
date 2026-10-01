@@ -8,7 +8,7 @@
 #   OUT         target directory, defaults to /out
 #
 # Only the files owned by a kept package, plus the extra paths, end up in $OUT.
-# /var/lib/dpkg/status.d  is written so scanners still see the exact packages
+# /var/lib/dpkg/status.d is written so scanners still see the exact packages
 set -euo pipefail
 
 # --- Inputs and helpers ---
@@ -91,7 +91,7 @@ grep -vE "$DROP_RE" "$LIST" | sort -u >"$LIST.f"
 # dpkg lists paths that the image build later deleted, tar aborts on those
 while IFS= read -r p; do
     [ -e "$p" ] || [ -L "$p" ] || continue
-    printf '%s\n' "$p"
+    printf '%s\n' "${p#/}"
 done <"$LIST.f" >"$LIST"
 rm -f "$LIST.f"
 log "$(wc -l <"$LIST") paths selected"
@@ -99,7 +99,8 @@ log "$(wc -l <"$LIST") paths selected"
 # --- Copy the selected files ---
 # tar preserves symlinks, hardlinks, modes and ownership
 # --no-recursion is required, recursing undoes the drop filter
-tar -cf - --no-recursion --files-from="$LIST" 2>/dev/null | tar -xf - -C "$OUT"
+# The names are relative to /, so tar has no leading / to strip and warn about
+tar -C / -cf - --no-recursion --files-from="$LIST" | tar -xf - -C "$OUT"
 
 # --- Package database for scanners ---
 mkdir -p "$OUT/var/lib/dpkg/status.d"
@@ -116,8 +117,8 @@ done
 log "wrote $(ls "$OUT/var/lib/dpkg/status.d" | grep -cv '\.md5sums$') status.d entries"
 
 # --- Directories no package owns ---
-mkdir -p "$OUT/tmp" "$OUT/run" "$OUT/var/tmp" "$OUT/proc" "$OUT/sys" "$OUT/dev"
-chmod 1777 "$OUT/tmp" "$OUT/var/tmp"
+mkdir -p "$OUT/run" "$OUT/var/tmp"
+chmod 1777 "$OUT/var/tmp"
 
 # --- Linker cache ---
 ldconfig -r "$OUT"
@@ -128,6 +129,8 @@ ldconfig -r "$OUT"
 ROOTDIR="${OUT}-root"
 rm -rf "$ROOTDIR"
 mkdir -p "$ROOTDIR"
+# /tmp too, because a COPY of its own would create it with the default mode instead of 1777
+mkdir -m 1777 "$ROOTDIR/tmp"
 for entry in "$OUT"/*; do
     name=$(basename "$entry")
     if [ -L "$entry" ] || [ -f "$entry" ]; then

@@ -41,12 +41,12 @@ libldap2                    # libpq links it (LDAP connection-service lookup)
 libsasl2-2                  # libldap links it
 
 # --- Kerberos (python gssapi, and libpq GSSAPI auth) -----------------------
-libgssapi-krb5-2
-libkrb5-3
-libk5crypto3
-libkrb5support0
-libcom-err2
-libkeyutils1
+libgssapi-krb5-2            # python gssapi, and libpq links it
+libkrb5-3                   # required by libgssapi-krb5
+libk5crypto3                # required by libgssapi-krb5 and libkrb5
+libkrb5support0             # required by the other MIT Kerberos libraries
+libcom-err2                 # required by libgssapi-krb5 and libkrb5
+libkeyutils1                # required by libkrb5
 
 # --- Kerberos kadmin (python-kadmin-rs) ------------------------------------
 # python-kadmin-rs dlopens the kadm5 client for the source's kadmin type when it

@@ -320,12 +320,11 @@ LABEL org.opencontainers.image.authors="Authentik Security Inc." \
     org.opencontainers.image.version=${VERSION}
 
 # The copies are split so a rebuild does not invalidate unchanged layers
-# /out-root holds the merged-usr symlinks (bin, lib, lib64, sbin) and the top level files, trailing slash required!
+# /out-root holds the merged-usr symlinks (bin, lib, lib64, sbin), /tmp and the top level files, trailing slash required!
 COPY --from=distroless-rootfs /out-root/ /
 COPY --from=distroless-rootfs /out/usr /usr
 COPY --from=distroless-rootfs /out/etc /etc
 COPY --from=distroless-rootfs /out/var /var
-COPY --from=distroless-rootfs /out/tmp /tmp
 COPY --from=distroless-rootfs /out/run /run
 COPY --from=distroless-rootfs /out/geoip /geoip
 COPY --from=distroless-rootfs /out/ak-root /ak-root
