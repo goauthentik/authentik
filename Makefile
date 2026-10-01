@@ -98,7 +98,7 @@ lint: ci-lint-bandit ci-lint-mypy ci-lint-cargo-deny ci-lint-cargo-machete  ## L
 	golangci-lint run -v
 
 core-install:
-ifdef ($(BREW_EXISTS))
+ifneq ($(BREW_EXISTS),)
 # Clear cache to ensure fresh compilation
 	$(UV) cache clean
 # Force compilation from source for lxml and xmlsec with correct environment
