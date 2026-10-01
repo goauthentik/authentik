@@ -13,6 +13,7 @@ from authentik.stages.authenticator.oath import TOTP
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage, EmailDevice
 from authentik.stages.authenticator_totp.models import TOTPDevice
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
+from authentik.stages.email.models import EmailTemplate
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
 
@@ -27,6 +28,7 @@ class AuthenticatorValidateStageEmailTests(FlowTestCase):
             name="email-authenticator",
             use_global_settings=True,
             from_address="test@authentik.local",
+            template=EmailTemplate.objects.get(managed="goauthentik.io/email/email-otp"),
         )
         # Create identification stage
         self.ident_stage = IdentificationStage.objects.create(
@@ -114,6 +116,7 @@ class AuthenticatorValidateStageEmailTests(FlowTestCase):
             name=generate_id(),
             use_global_settings=True,
             from_address="test@authentik.local",
+            template=EmailTemplate.objects.get(managed="goauthentik.io/email/email-otp"),
         )
         stage = AuthenticatorValidateStage.objects.create(
             name=generate_id(),

@@ -21,6 +21,7 @@ from authentik.stages.authenticator_validate.models import (
     AuthenticatorValidateStage,
     DeviceClasses,
 )
+from authentik.stages.email.models import EmailTemplate
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
 
@@ -75,6 +76,7 @@ class ValidateChallengeCodeThrottlingTests(FlowTestCase):
             use_global_settings=True,
             from_address="test@authentik.local",
             token_expiry="minutes=30",
+            template=EmailTemplate.objects.get(managed="goauthentik.io/email/email-otp"),
         )  # nosec
         self.sms_stage = AuthenticatorSMSStage.objects.create(
             name="sms-stage-validate-throttle",
@@ -176,6 +178,7 @@ class ValidateStageThrottlingFlowTests(FlowTestCase):
             use_global_settings=True,
             from_address="test@authentik.local",
             token_expiry="minutes=30",
+            template=EmailTemplate.objects.get(managed="goauthentik.io/email/email-otp"),
         )  # nosec
         self.ident_stage = IdentificationStage.objects.create(
             name=generate_id(),
