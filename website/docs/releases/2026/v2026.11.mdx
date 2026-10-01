@@ -58,6 +58,8 @@ The following are removed or changed:
 
 - **Display names in `ak_send_email` recipients**: The `address`, `cc`, and `bcc` parameters of `ak_send_email` now accept `(name, email)` tuples and `"Name <email>"` strings, so emails sent from expressions can include a display name in the `To` and `CC` headers, matching the Email stage. See [`ak_send_email`](../../customize/policies/types/expression/reference.mdx).
 
+- **Distroless server image**: The server image is now also published as a distroless variant, with the same name and a `-distroless` suffix on each tag, for example `ghcr.io/goauthentik/server:2026.11.0-distroless` or `ghcr.io/goauthentik/server:2026.11-distroless`. It contains only what authentik needs at runtime, without a shell or a package manager. To use it, add the suffix to `AUTHENTIK_TAG` in your `.env` file, or to `global.image.tag` in your Helm values. The regular image stays the default, and debugging with `AUTHENTIK_DEBUGGER` needs it.
+
 ### Single sign-on into devices managed by the authentik agent
 
 A RAC provider signs into devices which are enrolled through the authentik agent as the user who launched the connection, with no credentials configured for the device. authentik issues a token for the device, the RAC outpost turns it into an SSH certificate, and the agent validates the token before accepting the login. See [the RAC provider documentation](../../add-secure-apps/providers/rac/index.mdx#signing-in-with-the-authentik-agent).
