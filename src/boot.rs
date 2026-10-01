@@ -121,7 +121,7 @@ fn debugger_enabled() -> bool {
         .is_ok_and(|output| output.stdout.trim_ascii() == b"True")
 }
 
-/// Install what `test-all` and `AUTHENTIK_DEBUGGER` need
+/// Install what `test-all` and `AUTHENTIK_DEBUGGER` need.
 fn prepare_debug() -> Result<()> {
     // Only in the container, a development checkout has all of it already
     if !Path::new("/ak-root").is_dir() {
@@ -247,12 +247,7 @@ fn become_authentik(prometheus_dir: &Path) -> Result<PathBuf> {
 }
 
 fn wait_for_db() -> Result<()> {
-    let status = Command::new("python")
-        .args(["-m", "lifecycle.wait_for_db"])
-        .status()?;
-    if !status.success() {
-        return Err(eyre!("wait_for_db exited with {status}"));
-    }
+    run(Command::new("python").args(["-m", "lifecycle.wait_for_db"]))?;
     info!("bootstrap completed");
     Ok(())
 }
@@ -296,8 +291,6 @@ pub(crate) fn test_all() -> Result<()> {
         .env(PROMETHEUS_MULTIPROC_DIR, &prometheus_dir);
     if getuid().is_root() {
         prepare_debug()?;
-        // The bash entrypoint opened up /root first, because the suite writes there
-        add_mode(Path::new("/root"), 0o777)?;
         cmd.env("HOME", become_authentik(&prometheus_dir)?);
     }
     exec(cmd)
