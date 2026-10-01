@@ -1,4 +1,4 @@
-.PHONY: gen dev-reset all clean test web docs
+.PHONY: gen dev-reset all test web docs core-install i18n-extract install bump gen-changelog integrations
 
 SHELL := /usr/bin/env bash
 .SHELLFLAGS += ${SHELLFLAGS} -e -o pipefail
@@ -54,7 +54,7 @@ else
 	NPM_VERSION = $(shell python -m scripts.generate_semver)
 endif
 
-all: lint-fix lint gen web test  ## Lint, build, and test everything
+all: lint-fix lint gen web test  ## Lint-fix, lint, generate the schema, generate the client libraries, lint the front end, run the python tests
 
 HELP_WIDTH := $(shell grep -h '^[a-z][^ ]*:.*\#\#' $(MAKEFILE_LIST) 2>/dev/null | \
 	cut -d':' -f1 | awk '{printf "%d\n", length}' | sort -rn | head -1)
@@ -72,16 +72,16 @@ go-test:  ## Run the golang tests
 rust-test:  ## Run the Rust tests
 	$(CARGO) nextest run --workspace
 
-test: ## Run the server tests and produce a coverage report (locally)
+test: ## Run the server tests and produce a coverage report (locally). Usage: make test [path]
 	$(UV) run coverage run manage.py test --keepdb $(or $(filter-out $@ all,$(MAKECMDGOALS)),authentik)
 	$(UV) run coverage combine
 	$(UV) run coverage html
 	$(UV) run coverage report
 
-lint-fix-rust:
+lint-fix-rust:  ## Format Rust sources (rustfmt)
 	$(CARGO) +nightly fmt --all -- --config-path "${PWD}/.cargo/rustfmt.toml"
 
-lint-fix: lint-fix-rust  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
+lint-fix: lint-fix-rust  ## Format and automatically fix Python (black, ruff) and Rust (rustfmt) sources
 	$(UV) run black $(PY_SOURCES)
 	$(UV) run ruff check --fix $(PY_SOURCES)
 
@@ -94,7 +94,7 @@ lint-catalogs:  ## Reports pnpm catalog pins, and pnpm's own version pin, that d
 lint-check-types:  ## Type-check the repository's Node.js scripts.
 	pnpm run build:types
 
-lint: ci-lint-bandit ci-lint-mypy ci-lint-cargo-deny ci-lint-cargo-machete  ## Lint the python and golang sources
+lint: ci-lint-bandit ci-lint-mypy ci-lint-cargo-deny ci-lint-cargo-machete  ## Check Python (bandit, mypy), Go (golangci) and Rust dependencies (cargo deny, machete)
 	golangci-lint run -v
 
 core-install:
@@ -107,12 +107,12 @@ else
 	$(UV) sync --frozen
 endif
 
-migrate: ## Run the Authentik Django server's migrations
+migrate: ## Apply and check system and Django migrations
 	$(UV) run python -m lifecycle.migrate
 
 i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that require translation into files to send to a translation service
 
-aws-cfn: node-install
+aws-cfn: node-install  ## Generate the AWS Cloudformation template
 	pnpm --dir lifecycle/aws install
 	$(UV) run pnpm --dir lifecycle/aws run aws-cfn
 
@@ -132,7 +132,7 @@ core-i18n-extract:
 		--ignore website \
 		-l en
 
-install: node-install web-install core-install  ## Install all requires dependencies for `node`, `web` and `core`
+install: node-install web-install core-install  ## Install all required dependencies for `node`, `web` and `core`
 
 dev-drop-db:
 	$(eval pg_user := $(shell $(UV) run python -m authentik.lib.config postgresql.user 2>/dev/null))
@@ -148,7 +148,10 @@ dev-create-db:
 	$(eval pg_name := $(shell $(UV) run python -m authentik.lib.config postgresql.name 2>/dev/null))
 	createdb -U ${pg_user} -h ${pg_host} ${pg_name}
 
-dev-reset: dev-drop-db dev-create-db migrate  ## Drop and restore the Authentik PostgreSQL instance to a "fresh install" state.
+dev-reset: dev-drop-db dev-create-db migrate  ## Drop and restore the authentik PostgreSQL instance to a "fresh install" state.
+
+make-migrations:  ## Create Django migrations for model changes (pgtrigger-aware)
+	$(UV) run ak makemigrations
 
 update-test-mmdb:  ## Update test GeoIP and ASN Databases
 	curl \
@@ -176,7 +179,7 @@ endif
 ## API Schema
 #########################
 
-gen-build:  ## Extract the schema from the database
+gen-build:  ## Generate schema.yml and blueprints/schema.json from Django model definitions
 	AUTHENTIK_DEBUG=true \
 		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
 		$(UV) run ak build_schema
@@ -241,7 +244,7 @@ gen-dev-config:  ## Generate a local development config file
 node-preinstall:  ## Verify the active Node.js and pnpm versions match what's in package.json.
 	node ./scripts/node/lint-runtime.ts
 
-node-install: node-preinstall  ## Install the necessary libraries to build Node.js packages
+node-install: node-preinstall  ## Install the necessary libraries to build Node.js packages and build the shared lint configs
 	pnpm install --frozen-lockfile
 	pnpm run build:lint-config
 
@@ -249,30 +252,44 @@ node-install: node-preinstall  ## Install the necessary libraries to build Node.
 ## Web
 #########################
 
-web-install:  ## Install the necessary libraries to build the Authentik UI
+web-install:  ## Install the necessary libraries to build the authentik front end
 	pnpm --dir web install --frozen-lockfile
 
-web-build: node-install  ## Build the Authentik UI
+web-build: node-install  ## Build the authentik front end
 	pnpm --dir web run build
 
-web: web-lint-fix web-lint web-check-compile  ## Automatically fix formatting issues in the Authentik UI source code, lint the code, and compile it
+web: web-lint-fix web-lint web-check-compile  ## Format and lint the front-end, run lit-analyzer and type-check
 
-web-test:  ## Run tests for the Authentik UI
+web-check: ## Run front-end lint and format checks (does no modifications)
+	pnpm --dir web lint:check
+	pnpm --dir web format:check
+
+web-test-unit:  ## Run web front-end tests once
+	pnpm --dir web run test:unit
+
+web-test:  ## Run tests for the authentik front end in watch mode
 	pnpm --dir web run test
 
-web-watch:  ## Build and watch the Authentik UI for changes, updating automatically
+web-test-e2e:  ## Run front end Playwright end-to-end tests
+	pnpm --dir web run test:e2e
+
+web-test-visual:  ## Run visual regression tests for the front-end
+	pnpm --dir web run test:visual
+
+web-watch:  ## Build and watch the authentik front end for changes, updating automatically
 	pnpm --dir web run watch
+
 web-storybook-watch:  ## Build and run the storybook documentation server
 	pnpm --dir web run storybook
 
-web-lint-fix:
+web-lint-fix:  ## Format the front end source (oxfmt)
 	pnpm --dir web run format
 
-web-lint:
+web-lint:  ## Lint the front end (oxfmt) and run lit-analyzer
 	pnpm --dir web run lint
 	pnpm --dir web run lit-analyse
 
-web-check-compile:
+web-check-compile:  ## Type-check the front end
 	pnpm --dir web run tsc
 
 web-i18n-extract:
@@ -282,30 +299,39 @@ web-i18n-extract:
 ## Docs
 #########################
 
-docs: docs-lint-fix docs-build  ## Automatically fix formatting issues in the Authentik docs source code, lint the code, and compile it
+docs: docs-lint-fix docs-build  ## Spellcheck, format, and build the docs website
 
-docs-install: node-install  ## Install the necessary libraries to build the Authentik documentation
+docs-install: node-install  ## Install the necessary libraries to build the authentik documentation
 	pnpm --dir website install --frozen-lockfile
 
-docs-lint-fix: lint-spellcheck
+docs-lint-fix: lint-spellcheck  ## Spellcheck and format the documentation site
+	pnpm --dir website run lint
 	pnpm --dir website run format
 
-docs-build:
+docs-build:  ## Build the docs website
 	node ./scripts/node/lint-runtime.ts website
 	pnpm --dir website run build
 
 docs-watch:  ## Build and watch the topics documentation
 	pnpm --dir website run start
 
-integrations: docs-lint-fix integrations-build  ## Fix formatting issues in the integrations source code, lint the code, and compile it
+docs-test:  ## Run the documentation website tests
+	pnpm --dir website run test
 
-integrations-build:
+docs-check:  ## Run documentation lint, typecheck, and format (does no modifications)
+	pnpm --dir website run lint:check
+	pnpm --dir website run build:types
+	pnpm --dir website run format:check
+
+integrations: docs-lint-fix integrations-build  ## Spellcheck, format, and build the integrations website
+
+integrations-build:  ## Build the integrations website
 	pnpm --dir website run build:integrations
 
 integrations-watch:  ## Build and watch the Integrations documentation
 	pnpm --dir website/integrations run start
 
-docs-api-build:
+docs-api-build:  ## Build the API reference site
 	pnpm --dir website run build:api
 
 docs-api-watch:  ## Build and watch the API documentation
@@ -322,7 +348,7 @@ docs-api-clean:  ## Clean generated API documentation
 docker:  ## Build a docker image of the current source tree
 	DOCKER_BUILDKIT=1 docker build . -f lifecycle/container/Dockerfile --progress plain --tag ${DOCKER_IMAGE}
 
-test-docker:
+test-docker:  ## Build docker image and run full test suite in the container compose stack
 	BUILD=true ${PWD}/scripts/test_docker.sh
 
 #########################
