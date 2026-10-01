@@ -178,7 +178,6 @@ endif
 
 gen-build:  ## Extract the schema from the database
 	AUTHENTIK_DEBUG=true \
-		AUTHENTIK_TENANTS__ENABLED=true \
 		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
 		$(UV) run ak build_schema
 
