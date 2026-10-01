@@ -94,6 +94,7 @@ export interface StageHost {
     flowSlug?: string;
     loading: boolean;
     reset?: () => void;
+    refresh?: () => Promise<unknown>;
     submit(payload: unknown, options?: SubmitOptions): Promise<boolean>;
 
     readonly brand?: CurrentBrand;
