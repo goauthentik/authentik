@@ -43,7 +43,6 @@ fi
 
 docker compose run --rm \
     -v "${kit}:/test-kit:ro" \
-    -v "${PWD}/tests:/tests:ro" \
     -e PYTEST_ADDOPTS=--junitxml=/dev/shm/unittest.xml \
     -e PYTHONPATH=/test-kit/sc \
     -e CI -e CI_RUN_ID -e CI_TOTAL_RUNS -e CI_TEST_SEED -e GITHUB_ACTIONS \
