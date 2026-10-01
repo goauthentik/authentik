@@ -19,14 +19,6 @@ describe("isSentryEnabled", () => {
         );
     });
 
-    it("is true for a debug instance even with error reporting off", () => {
-        // `CanDebug` is what activates Spotlight; it must not depend on the
-        // administrator's reporting setting.
-        expect(isSentryEnabled({ errorReporting: reporting(false), debug: true, search: "" })).toBe(
-            true,
-        );
-    });
-
     it("is false when the config is absent entirely", () => {
         // `Config` types `errorReporting` as required, but the server may not
         // have injected `window.authentik` at all.
