@@ -185,54 +185,8 @@ RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
     --mount=type=cache,id=uv-python-deps-$TARGETARCH$TARGETVARIANT,target=/root/.cache/uv \
     uv sync --locked --no-install-project --no-dev
 
-# Stage: assemble the runtime filesystem
-# prune.sh copies the used files into /out, and the final stage starts FROM scratch
-FROM python-base AS runtime-assemble
-
-WORKDIR /
-
-# Not cached on purpose: apt-get upgrade on every build is what keeps the OS packages current
-RUN --mount=type=bind,target=/tmp/runtime-packages.txt,src=./lifecycle/container/runtime-packages.txt \
-    apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends \
-    $(sed -e 's/#.*//' -e '/^[[:space:]]*$/d' /tmp/runtime-packages.txt) && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    adduser --system --no-create-home --uid 1000 --group --home /authentik authentik && \
-    mkdir -p /certs /data /media /blueprints /authentik/.ssh /ak-root && \
-    ln -s /media /data/media && \
-    chown authentik:authentik /certs /data /data/media /media /authentik/.ssh /ak-root
-
-COPY ./authentik/ /authentik
-COPY ./pyproject.toml /
-COPY ./uv.lock /
-COPY ./schemas /schemas
-COPY ./locale /locale
-COPY ./manage.py /
-COPY ./blueprints /blueprints
-COPY ./lifecycle/ /lifecycle
-COPY ./authentik/sources/kerberos/krb5.conf /etc/krb5.conf
-COPY --from=rust-builder /bin/authentik /bin/authentik
-COPY ./packages/ /ak-root/packages
-COPY --from=python-deps /ak-root/.venv /ak-root/.venv
-COPY --from=node-builder /work/web/dist/ /web/dist/
-COPY --from=node-builder /work/web/authentik/ /web/authentik/
-COPY --from=geoip /usr/share/GeoIP /geoip
-
-# Setup 'ak'
-RUN ln -s /ak-root/packages /packages && \
-    ln -s ak.py /lifecycle/ak
-
-# Prune everything that is not needed
-RUN --mount=type=bind,target=/tmp/prune.sh,src=./lifecycle/container/prune.sh \
-    --mount=type=bind,target=/tmp/runtime-packages.txt,src=./lifecycle/container/runtime-packages.txt \
-    --mount=type=bind,target=/tmp/runtime-paths.txt,src=./lifecycle/container/runtime-paths.txt \
-    --mount=type=bind,target=/tmp/runtime-drop.txt,src=./lifecycle/container/runtime-drop.txt \
-    bash /tmp/prune.sh /tmp/runtime-packages.txt /tmp/runtime-paths.txt /tmp/runtime-drop.txt
-
 # Stage: Test kit
-# Test-only files that scripts/test_docker.sh mounts into the unchanged final image
+# Test-only files that scripts/test_docker.sh mounts into the unchanged final or distroless image
 # Build it with --target test-kit and an output, like scripts/test_docker.sh does
 
 # MIT KDC tools for the Kerberos tests.
@@ -276,10 +230,9 @@ FROM scratch AS test-kit
 
 COPY --from=test-kit-build /kit/ /
 
-# Stage: Run
-# Contains only what's needed at runtime and nothing more
-# The default target, so it has to stay last
-FROM scratch AS final
+# Stage: assemble the runtime filesystem
+# Shared by the distroless image and the final image
+FROM python-base AS runtime-assemble
 
 ARG VERSION
 ARG GIT_BUILD_HASH
@@ -296,25 +249,95 @@ LABEL org.opencontainers.image.authors="Authentik Security Inc." \
     org.opencontainers.image.vendor="Authentik Security Inc." \
     org.opencontainers.image.version=${VERSION}
 
+WORKDIR /
+
+# We cannot cache this layer otherwise we'll end up with a bigger image
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    # Required for runtime
+    apt-get install -y --no-install-recommends \
+    libpq5 libmaxminddb0 ca-certificates \
+    libkadm5clnt-mit12 libkadm5clnt7t64-heimdal \
+    libltdl7 libxslt1.1 && \
+    apt-get purge -y curl libcurl4t64 && \
+    pip3 install --no-cache-dir --upgrade pip && \
+    apt-get clean && \
+    rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/ && \
+    adduser --system --no-create-home --uid 1000 --group --home /authentik authentik && \
+    mkdir -p /certs /data /media /blueprints && \
+    ln -s /media /data/media && \
+    mkdir -p /authentik/.ssh && \
+    mkdir -p /ak-root && \
+    chown authentik:authentik /certs /data /data/media /media /authentik/.ssh /ak-root
+
+COPY ./authentik/ /authentik
+COPY ./pyproject.toml /
+COPY ./uv.lock /
+COPY ./schemas /schemas
+COPY ./locale /locale
+COPY ./tests /tests
+COPY ./manage.py /
+COPY ./blueprints /blueprints
+COPY ./lifecycle/ /lifecycle
+COPY ./authentik/sources/kerberos/krb5.conf /etc/krb5.conf
+COPY --from=rust-builder /bin/authentik /bin/authentik
+COPY ./packages/ /ak-root/packages
+RUN ln -s /ak-root/packages /packages && \
+    ln -s ak.py /lifecycle/ak
+COPY --from=python-deps /ak-root/.venv /ak-root/.venv
+COPY --from=node-builder /work/web/dist/ /web/dist/
+COPY --from=node-builder /work/web/authentik/ /web/authentik/
+COPY --from=geoip /usr/share/GeoIP /geoip
+
+# Stage: distroless root filesystem
+# prune.sh copies the files the distroless image needs into /out
+FROM runtime-assemble AS distroless-rootfs
+
+RUN --mount=type=bind,target=/tmp/prune.sh,src=./lifecycle/container/prune.sh \
+    --mount=type=bind,target=/tmp/runtime-packages.txt,src=./lifecycle/container/runtime-packages.txt \
+    --mount=type=bind,target=/tmp/runtime-paths.txt,src=./lifecycle/container/runtime-paths.txt \
+    --mount=type=bind,target=/tmp/runtime-drop.txt,src=./lifecycle/container/runtime-drop.txt \
+    bash /tmp/prune.sh /tmp/runtime-packages.txt /tmp/runtime-paths.txt /tmp/runtime-drop.txt
+
+# Stage: Run, distroless
+# Contains only what's needed at runtime and nothing more
+# Build it with --target distroless as it is not the default
+FROM scratch AS distroless
+
+ARG VERSION
+ARG GIT_BUILD_HASH
+ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
+
+LABEL org.opencontainers.image.authors="Authentik Security Inc." \
+    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
+    org.opencontainers.image.description="goauthentik.io Main server image, see https://goauthentik.io for more info." \
+    org.opencontainers.image.documentation="https://docs.goauthentik.io" \
+    org.opencontainers.image.licenses="https://github.com/goauthentik/authentik/blob/main/LICENSE" \
+    org.opencontainers.image.revision=${GIT_BUILD_HASH} \
+    org.opencontainers.image.title="authentik server image (distroless)" \
+    org.opencontainers.image.url="https://goauthentik.io" \
+    org.opencontainers.image.vendor="Authentik Security Inc." \
+    org.opencontainers.image.version=${VERSION}
+
 # The copies are split so a rebuild does not invalidate unchanged layers
 # /out-root holds the merged-usr symlinks (bin, lib, lib64, sbin) and the top level files, trailing slash required!
-COPY --from=runtime-assemble /out-root/ /
-COPY --from=runtime-assemble /out/usr /usr
-COPY --from=runtime-assemble /out/etc /etc
-COPY --from=runtime-assemble /out/var /var
-COPY --from=runtime-assemble /out/tmp /tmp
-COPY --from=runtime-assemble /out/run /run
-COPY --from=runtime-assemble /out/geoip /geoip
-COPY --from=runtime-assemble /out/ak-root /ak-root
-COPY --from=runtime-assemble /out/web /web
-COPY --from=runtime-assemble /out/locale /locale
-COPY --from=runtime-assemble /out/schemas /schemas
-COPY --from=runtime-assemble /out/blueprints /blueprints
-COPY --from=runtime-assemble /out/lifecycle /lifecycle
-COPY --from=runtime-assemble /out/authentik /authentik
-COPY --chown=1000:1000 --from=runtime-assemble /out/certs /certs
-COPY --chown=1000:1000 --from=runtime-assemble /out/data /data
-COPY --chown=1000:1000 --from=runtime-assemble /out/media /media
+COPY --from=distroless-rootfs /out-root/ /
+COPY --from=distroless-rootfs /out/usr /usr
+COPY --from=distroless-rootfs /out/etc /etc
+COPY --from=distroless-rootfs /out/var /var
+COPY --from=distroless-rootfs /out/tmp /tmp
+COPY --from=distroless-rootfs /out/run /run
+COPY --from=distroless-rootfs /out/geoip /geoip
+COPY --from=distroless-rootfs /out/ak-root /ak-root
+COPY --from=distroless-rootfs /out/web /web
+COPY --from=distroless-rootfs /out/locale /locale
+COPY --from=distroless-rootfs /out/schemas /schemas
+COPY --from=distroless-rootfs /out/blueprints /blueprints
+COPY --from=distroless-rootfs /out/lifecycle /lifecycle
+COPY --from=distroless-rootfs /out/authentik /authentik
+COPY --chown=1000:1000 --from=distroless-rootfs /out/certs /certs
+COPY --chown=1000:1000 --from=distroless-rootfs /out/data /data
+COPY --chown=1000:1000 --from=distroless-rootfs /out/media /media
 
 WORKDIR /
 USER 1000
@@ -322,6 +345,22 @@ USER 1000
 ENV PATH="/lifecycle:/ak-root/.venv/bin:/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin" \
     VENV_PATH="/ak-root/.venv" \
     TMPDIR=/dev/shm/ \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    GOFIPS=1 \
+    RUST_BACKTRACE=full
+
+HEALTHCHECK --interval=30s --timeout=30s --start-period=120s --retries=3 CMD [ "ak", "healthcheck" ]
+
+ENTRYPOINT [ "dumb-init", "--", "ak" ]
+
+# Stage: Run
+# The default target, so it has to stay last
+FROM runtime-assemble AS final
+
+USER 1000
+
+ENV TMPDIR=/dev/shm/ \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     GOFIPS=1 \

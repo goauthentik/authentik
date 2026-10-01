@@ -1,4 +1,4 @@
-# Debian packages whose files are kept in the final (distroless) server image.
+# Debian packages whose files are kept in the distroless server image.
 # Everything installed in the assemble stage but not listed here is dropped.
 #
 # Each entry is justified below. Nothing is here "just in case": the list was
@@ -47,3 +47,20 @@ libk5crypto3
 libkrb5support0
 libcom-err2
 libkeyutils1
+
+# --- Kerberos kadmin (python-kadmin-rs) ------------------------------------
+# python-kadmin-rs dlopens the kadm5 client for the source's kadmin type when it
+# connects, so no DT_NEEDED closure sees these. prune.sh keeps only the listed
+# packages and not their dependencies, so the whole closure is listed.
+libkadm5clnt-mit12          # the MIT kadm5 client
+libgssrpc4t64               # required by the MIT kadm5 client
+libkadm5clnt7t64-heimdal    # the Heimdal kadm5 client
+libkrb5-26t64-heimdal       # required by the Heimdal kadm5 client
+libroken19t64-heimdal       # required by the Heimdal kadm5 client and libraries
+libasn1-8t64-heimdal        # required by Heimdal libkrb5, libhcrypto and libhx509
+libhcrypto5t64-heimdal      # required by Heimdal libkrb5 and libhx509
+libheimbase1t64-heimdal     # required by Heimdal libkrb5
+libhx509-5t64-heimdal       # required by Heimdal libkrb5
+libwind0t64-heimdal         # required by Heimdal libkrb5 and libhx509
+libsqlite3-0                # required by Heimdal libkrb5
+libcrypt1                   # required by Heimdal libkrb5 and libroken
