@@ -140,7 +140,7 @@ Outposts are notified when the authentik session ends for any of the following r
 Only proxy sessions that were created from the ended authentik session are deleted. Proxy sessions that the same user created from another browser or device remain active.
 
 :::info
-Outposts are notified asynchronously, and only outposts that are connected to authentik receive the notification. If an outpost is not connected when the authentik session ends, its proxy sessions remain valid until they expire. The lifetime of a proxy session is defined by the **Token validity** setting of the proxy provider.
+Outposts are notified asynchronously, and only outposts that are connected to authentik receive the notification. If an outpost is not connected to the authentik server when the authentik session ends, its proxy sessions remain valid until they expire. The lifetime of a proxy session is defined by the **Token validity** setting of the proxy provider.
 :::
 
 ### Logout from a proxied application
