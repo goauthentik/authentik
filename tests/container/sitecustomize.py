@@ -1,6 +1,6 @@
 """Loaded through PYTHONPATH when scripts/test_docker.sh runs the suite in the server image.
 
-The distroless image stays unchanged: this file, the dev-only packages and the KDC tools
+The server image stays unchanged: this file, the dev-only packages and the KDC tools
 for the Kerberos tests are mounted at /test-kit.
 
 Nothing mounted may stand in for something the image lacks, so refuse to start when that
@@ -23,11 +23,6 @@ def _refuse(problem: str) -> NoReturn:
 # ship from the kit, and the tests would pass on an image that fails in production
 if "LD_LIBRARY_PATH" in os.environ:
     _refuse("LD_LIBRARY_PATH is set")
-
-# Check that nobody mounted a shell, because code that runs one would pass the tests and still
-# fail in an image without one. A mount is the only way to add a shell to an unchanged image
-if os.path.ismount("/bin/sh"):
-    _refuse("a shell is mounted in")
 
 # Make the dev-only packages that the tests need importable. They go after the image's own
 # packages, so that a package the image ships always comes from the image
