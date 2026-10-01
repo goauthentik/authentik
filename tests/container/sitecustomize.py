@@ -28,9 +28,11 @@ if "LD_LIBRARY_PATH" in os.environ:
 # packages, so that a package the image ships always comes from the image
 site.addsitedir("/test-kit/devdeps")
 
-# Put the kit's KDC tools on PATH, because the Kerberos tests start a KDC through k5test, which
-# looks for the tools there, and the image doesn't ship them
-os.environ["PATH"] = f"/test-kit/krb5/bin:{os.environ['PATH']}"
+# Point k5test at the kit's KDC tools, because the Kerberos tests start a KDC through it and the
+# image doesn't ship them. They stay off PATH, so code under test can't run them either
+import k5test.realm  # noqa: E402
+
+k5test.realm._discover_path = lambda name, default, paths: f"/test-kit/krb5/bin/{name}"
 
 # Point k5test at the kit's KDC database module, because its own search runs krb5-config through
 # a shell and only looks in the image, which has neither the module nor krb5-config
