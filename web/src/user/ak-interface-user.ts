@@ -25,6 +25,7 @@ import { WithLicenseSummary } from "#elements/mixins/license";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
 import { formatInterfacePrefix, toUserInterface } from "#elements/router/core/interfaces";
 import { PageDetailsUpdate } from "#elements/router/meta";
+import { ActiveTabChangeEvent } from "#elements/tabs/tab-events";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
@@ -75,9 +76,22 @@ class UserInterface extends WithLicenseSummary(
     @property({ attribute: false, useDefault: true })
     public drawer: DrawerState = readDrawerParams();
 
+    #pageHeader: string | null = null;
+    #activeTabLabel: string | null = null;
+
     @listen(PageDetailsUpdate, { target: window })
     protected pageDetailsListener = (event: PageDetailsUpdate) => {
-        this.setTitle(event.header.header);
+        // A page announces its header before its tabs render, so a new page
+        // starts without the previous page's tab.
+        this.#pageHeader = event.header.header ?? null;
+        this.#activeTabLabel = null;
+        this.setTitle(this.#activeTabLabel, this.#pageHeader);
+    };
+
+    @listen(ActiveTabChangeEvent, { target: window })
+    protected activeTabListener = (event: ActiveTabChangeEvent) => {
+        this.#activeTabLabel = event.label;
+        this.setTitle(this.#activeTabLabel, this.#pageHeader);
     };
 
     @listen(AKDrawerChangeEvent, { target: window })
