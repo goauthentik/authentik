@@ -1,8 +1,20 @@
 """EntraID OAuth2 Views"""
 
+from asyncio import run
+from json import loads
 from typing import Any
 
-from requests import RequestException
+from httpx import HTTPError
+from kiota_abstractions.api_error import APIError
+from kiota_abstractions.authentication.anonymous_authentication_provider import (
+    AnonymousAuthenticationProvider,
+)
+from kiota_abstractions.base_request_configuration import RequestConfiguration
+from kiota_http.kiota_client_factory import KiotaClientFactory
+from kiota_serialization_json.json_serialization_writer import JsonSerializationWriter
+from msgraph.graph_request_adapter import GraphRequestAdapter, options
+from msgraph.graph_service_client import GraphServiceClient
+from msgraph_core import GraphClientFactory
 from structlog.stdlib import get_logger
 
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
@@ -30,28 +42,36 @@ class EntraIDClient(UserprofileHeaderAuthClient):
         profile_data = super().get_profile_info(token)
         if "https://graph.microsoft.com/GroupMember.Read.All" not in self.source.additional_scopes:
             return profile_data
-        groups = []
-        group_url = "https://graph.microsoft.com/v1.0/me/memberOf"
-        while group_url:
-            group_response = self.session.request(
-                "get",
-                group_url,
-                headers={"Authorization": f"{token['token_type']} {token['access_token']}"},
-            )
-            try:
-                group_response.raise_for_status()
-            except RequestException as exc:
-                LOGGER.warning(
-                    "Unable to fetch user profile",
-                    exc=exc,
-                    response=exc.response.text if exc.response is not None else str(exc),
-                )
-                return None
-            group_data = group_response.json()
-            groups.extend(group_data.get("value", []))
-            group_url = group_data.get("@odata.nextLink")
-        profile_data["raw_groups"] = {"value": groups}
+        try:
+            profile_data["raw_groups"] = run(self.get_groups(token))
+        except (APIError, HTTPError) as exc:
+            LOGGER.warning("Unable to fetch user groups", exc=exc)
+            return None
         return profile_data
+
+    async def get_groups(self, token):
+        """Fetch all memberships and retain Graph field names for property mappings."""
+        config = RequestConfiguration()
+        config.headers.add("Authorization", f"{token['token_type']} {token['access_token']}")
+        async with GraphClientFactory.create_with_default_middleware(
+            options=options, client=KiotaClientFactory.get_default_client()
+        ) as http_client:
+            client = GraphServiceClient(
+                request_adapter=GraphRequestAdapter(AnonymousAuthenticationProvider(), http_client)
+            )
+            groups = []
+            request = client.me.member_of
+            while request:
+                page = await request.get(config)
+                groups.extend(page.value or [])
+                request = (
+                    client.me.member_of.with_url(page.odata_next_link)
+                    if page.odata_next_link
+                    else None
+                )
+        writer = JsonSerializationWriter()
+        writer.write_collection_of_object_values("value", groups)
+        return loads(writer.get_serialized_content())
 
 
 class EntraIDOAuthCallback(OpenIDConnectOAuth2Callback):

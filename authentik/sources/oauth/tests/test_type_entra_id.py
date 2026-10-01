@@ -1,6 +1,9 @@
 """Entra ID Type tests"""
 
+from unittest.mock import patch
+
 from django.test import RequestFactory, TestCase
+from httpx import Response
 from requests_mock import Mocker
 
 from authentik.sources.oauth.models import OAuthSource
@@ -71,18 +74,29 @@ class TestEntraIDClient(TestCase):
     def test_group_pages(self):
         """Collect all pages, follow exact next links, and filter non-group objects."""
         for count in (1, 2, 3):
-            with self.subTest(pages=count), Mocker() as mocker:
+            with (
+                self.subTest(pages=count),
+                Mocker() as mocker,
+                patch("httpx.AsyncHTTPTransport.handle_async_request") as graph_request,
+            ):
                 mocker.get(EntraIDType.profile_url, json=EID_USER)
-                for index, url in enumerate(self.urls[:count]):
+                pages = []
+                for index in range(count):
                     page = {
                         "value": [
-                            {"@odata.type": "#microsoft.graph.group", "id": str(index)},
+                            {
+                                "@odata.type": "#microsoft.graph.group",
+                                "id": str(index),
+                                "displayName": f"Group {index}",
+                                "extension_custom": "retained",
+                            },
                             {"@odata.type": "#microsoft.graph.directoryRole", "id": "role"},
                         ]
                     }
                     if index + 1 < count:
                         page["@odata.nextLink"] = self.urls[index + 1]
-                    mocker.get(url, json=page, complete_qs=True)
+                    pages.append(Response(200, json=page))
+                graph_request.side_effect = pages
 
                 info = self.oauth_client.get_profile_info(self.token)
                 self.assertEqual(len(info["raw_groups"]["value"]), count * 2)
@@ -91,31 +105,43 @@ class TestEntraIDClient(TestCase):
                     [str(index) for index in range(count)],
                 )
                 self.assertEqual(
-                    [request.url for request in mocker.request_history],
-                    [EntraIDType.profile_url, *self.urls[:count]],
+                    EntraIDType().get_base_group_properties(self.source, "0", info=info),
+                    {"name": "Group 0"},
                 )
-                for request in mocker.request_history:
+                self.assertEqual(info["raw_groups"]["0"]["extension_custom"], "retained")
+                requests = [call.args[0] for call in graph_request.call_args_list]
+                self.assertEqual([str(request.url) for request in requests], self.urls[:count])
+                for request in requests:
                     self.assertEqual(request.headers["Authorization"], "Bearer test-token")
 
     def test_later_page_error(self):
         """A failed continuation must not return a partial profile for synchronization."""
-        with Mocker() as mocker:
+        with (
+            Mocker() as mocker,
+            patch("httpx.AsyncHTTPTransport.handle_async_request") as graph_request,
+        ):
             mocker.get(EntraIDType.profile_url, json=EID_USER)
-            mocker.get(
-                self.urls[0],
-                json={
-                    "value": [{"@odata.type": "#microsoft.graph.group", "id": "group"}],
-                    "@odata.nextLink": self.urls[1],
-                },
-                complete_qs=True,
-            )
-            mocker.get(self.urls[1], status_code=500)
+            graph_request.side_effect = [
+                Response(
+                    200,
+                    json={
+                        "value": [{"@odata.type": "#microsoft.graph.group", "id": "group"}],
+                        "@odata.nextLink": self.urls[1],
+                    },
+                ),
+                Response(403, json={"error": {"code": "Authorization_RequestDenied"}}),
+            ]
             self.assertIsNone(self.oauth_client.get_profile_info(self.token))
+            self.assertEqual(graph_request.call_count, 2)
 
     def test_without_group_scope(self):
         """Only fetch the user profile when the group scope is absent."""
         self.source.additional_scopes = "https://graph.microsoft.com/User.Read"
-        with Mocker() as mocker:
+        with (
+            Mocker() as mocker,
+            patch("httpx.AsyncHTTPTransport.handle_async_request") as graph_request,
+        ):
             mocker.get(EntraIDType.profile_url, json=EID_USER)
             self.assertEqual(self.oauth_client.get_profile_info(self.token), EID_USER)
             self.assertEqual(mocker.call_count, 1)
+            graph_request.assert_not_called()
