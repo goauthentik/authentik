@@ -76,6 +76,7 @@ class PolicyBindingSerializer(ModelSerializer):
             "target",
             "negate",
             "enabled",
+            "dry_run",
             "order",
             "timeout",
             "failure_result",

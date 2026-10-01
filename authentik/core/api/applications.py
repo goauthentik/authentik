@@ -33,17 +33,23 @@ from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import ListPolicyEngine, PolicyEngine
 from authentik.policies.types import CACHE_PREFIX, PolicyResult
 from authentik.rbac.filters import ObjectFilter
+from authentik.root.middleware import ClientIPMiddleware
 
 LOGGER = get_logger()
 
 
 def user_app_cache_key(
-    user_pk: str, page_number: int | None = None, only_with_launch_url: bool = False
+    user_pk: str,
+    client_ip: str | None = None,
+    page_number: int | None = None,
+    only_with_launch_url: bool = False,
 ) -> str:
     """Cache key where application list for user is saved"""
     key = f"{CACHE_PREFIX}app_access/{user_pk}"
     if only_with_launch_url:
         key += "/launch"
+    if client_ip:
+        key += f"/{client_ip}"
     if page_number:
         key += f"/{page_number}"
     return key
@@ -325,9 +331,10 @@ class ApplicationViewSet(
         if not should_cache:
             allowed_applications = self._get_allowed_applications(paginated_apps)
         if should_cache:
+            client_ip = ClientIPMiddleware.get_client_ip(self.request)
             allowed_applications = cache.get(
                 user_app_cache_key(
-                    self.request.user.pk, paginator.page.number, only_with_launch_url
+                    self.request.user.pk, client_ip, paginator.page.number, only_with_launch_url
                 )
             )
             if allowed_applications:
@@ -339,7 +346,7 @@ class ApplicationViewSet(
                 allowed_applications = self._get_allowed_applications(paginated_apps)
                 cache.set(
                     user_app_cache_key(
-                        self.request.user.pk, paginator.page.number, only_with_launch_url
+                        self.request.user.pk, client_ip, paginator.page.number, only_with_launch_url
                     ),
                     allowed_applications,
                     timeout=86400,
