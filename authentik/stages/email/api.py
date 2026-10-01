@@ -108,4 +108,4 @@ class EmailTemplateSerializer(ModelSerializer):
 
     class Meta:
         model = EmailTemplate
-        fields = ["uuid", "path", "description", "body", "managed"]
+        fields = ["uuid", "path", "description", "body", "body_plaintext", "managed"]

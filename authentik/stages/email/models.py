@@ -91,6 +91,13 @@ class EmailTemplate(SerializerModel, ManagedModel):
     )
     description = models.TextField(blank=True, default="")
     body = models.TextField(blank=True, default="")
+    body_plaintext = models.TextField(
+        blank=True,
+        default="",
+        help_text=_(
+            "Plain text version of the email. If left empty, emails are sent as HTML only."
+        ),
+    )
 
     @property
     def label(self) -> str:
@@ -98,6 +105,9 @@ class EmailTemplate(SerializerModel, ManagedModel):
 
     def render(self, context: dict) -> str:
         return render_email_template(self.body, context)
+
+    def render_plaintext(self, context: dict) -> str:
+        return render_email_template(self.body_plaintext, context)
 
     @property
     def serializer(self) -> type[BaseSerializer]:

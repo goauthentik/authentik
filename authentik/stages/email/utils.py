@@ -64,6 +64,8 @@ class TemplateEmailMessage(EmailMultiAlternatives):
         with translation.override(language):
             if template:
                 html_content = template.render(template_context)
+                if template.body_plaintext:
+                    self.body = template.render_plaintext(template_context)
             else:
                 html_content = render_to_string(template_name, template_context)
                 try:

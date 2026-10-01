@@ -49,9 +49,15 @@ def seed_builtin_templates(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
             Path(global_apps.get_app_config(app_label).path) / "templates" / "email" / filename
         )
         body = template_path.read_text(encoding="utf-8")
+        txt_path = template_path.with_suffix(".txt")
+        body_plaintext = txt_path.read_text(encoding="utf-8") if txt_path.is_file() else ""
         EmailTemplate.objects.using(db_alias).update_or_create(
             managed=managed_id,
-            defaults={"path": f"email/{filename}", "body": body},
+            defaults={
+                "path": f"email/{filename}",
+                "body": body,
+                "body_plaintext": body_plaintext,
+            },
         )
 
 
@@ -74,10 +80,14 @@ def import_custom_templates(apps: Apps, schema_editor: BaseDatabaseSchemaEditor)
             body = file.read_text(encoding="utf-8")
         except OSError:
             continue
+        try:
+            body_plaintext = file.with_suffix(".txt").read_text(encoding="utf-8")
+        except OSError:
+            body_plaintext = ""
         EmailTemplate.objects.using(db_alias).get_or_create(
             path=file.relative_to(template_dir).as_posix(),
             managed=None,
-            defaults={"body": body},
+            defaults={"body": body, "body_plaintext": body_plaintext},
         )
 
 
@@ -142,6 +152,14 @@ class Migration(migrations.Migration):
                 ),
                 ("description", models.TextField(blank=True, default="")),
                 ("body", models.TextField(blank=True, default="")),
+                (
+                    "body_plaintext",
+                    models.TextField(
+                        blank=True,
+                        default="",
+                        help_text="Plain text version of the email. If left empty, emails are sent as HTML only.",
+                    ),
+                ),
             ],
             options={
                 "verbose_name": "Email Template",
