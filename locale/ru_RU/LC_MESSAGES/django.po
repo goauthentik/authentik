@@ -980,7 +980,7 @@ msgstr "Группа доступа к устройствам"
 
 #: authentik/endpoints/models.py
 msgid "Device access groups"
-msgstr "Группы доступа к устройствам"
+msgstr "Группы доступа устройств"
 
 #: authentik/endpoints/models.py
 msgid "Endpoint Stage"
@@ -1560,7 +1560,7 @@ msgstr ""
 
 #: authentik/enterprise/reports/models.py
 msgid "Data Exports"
-msgstr ""
+msgstr "Экспорт данных"
 
 #: authentik/enterprise/reports/models.py
 #, python-brace-format
@@ -2148,7 +2148,7 @@ msgstr "Токены потока"
 
 #: authentik/flows/planner.py
 msgid "This link is invalid or has expired. Please request a new one."
-msgstr ""
+msgstr "Эта ссылка недействительна или срок ее действия истек. Запросите новую ссылку."
 
 #: authentik/flows/views/executor.py
 msgid "Invalid next URL"
@@ -2564,7 +2564,7 @@ msgstr "Ошибка"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Request has been denied."
-msgstr "В произведении запроса было отказано."
+msgstr "Запрос отклонён."
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Messages:"
@@ -3663,7 +3663,7 @@ msgstr ""
 
 #: authentik/rbac/models.py
 msgid "Initial Permissions"
-msgstr ""
+msgstr "Разрешения при создании"
 
 #: authentik/rbac/models.py
 msgid "Initial Permissions Permission"
@@ -4574,11 +4574,11 @@ msgstr "Код не соответствует"
 
 #: authentik/stages/authenticator_email/stage.py
 msgid "Invalid email"
-msgstr ""
+msgstr "Некорректный адрес электронной почты."
 
 #: authentik/stages/authenticator_email/stage.py
 msgid "The user already has an email address registered for MFA."
-msgstr ""
+msgstr "У пользователя уже настроена многофакторная аутентификация по электронной почте."
 
 #: authentik/stages/authenticator_email/templates/email/email_otp.html
 #: authentik/stages/email/templates/email/password_reset.html
@@ -4664,7 +4664,7 @@ msgstr "СМС устройства"
 
 #: authentik/stages/authenticator_sms/stage.py
 msgid "Invalid phone number"
-msgstr "Невереый номер телефона"
+msgstr "Некорректный номер телефона"
 
 #: authentik/stages/authenticator_static/models.py
 msgid "Static Authenticator Setup Stage"
@@ -4937,11 +4937,11 @@ msgstr "Фиктивные этапы"
 
 #: authentik/stages/email/flow.py
 msgid "Continue to confirm this email address."
-msgstr ""
+msgstr "Перейдите к подтверждению адреса электронной почты."
 
 #: authentik/stages/email/flow.py
 msgid "Link was already used, please request a new link."
-msgstr ""
+msgstr "Эта ссылка уже была использована. Запросите новую ссылку."
 
 #: authentik/stages/email/models.py
 msgid "Password Reset"
@@ -4999,7 +4999,7 @@ msgstr "Письмо отправлено."
 msgid ""
 "Too many account verification attempts. Please try again after {minutes} "
 "minutes."
-msgstr ""
+msgstr "Слишком много попыток подтверждения учетной записи. Повторите попытку через {minutes} мин."
 
 #: authentik/stages/email/stage.py
 msgid "Email Successfully sent."
@@ -5271,11 +5271,11 @@ msgstr ""
 
 #: authentik/stages/identification/stage.py
 msgid "No identification data provided."
-msgstr ""
+msgstr "Данные для входа не указаны."
 
 #: authentik/stages/identification/stage.py
 msgid "Failed to authenticate."
-msgstr ""
+msgstr "Не удалось выполнить аутентификацию."
 
 #: authentik/stages/identification/stage.py
 msgid "Log in"

@@ -454,12 +454,15 @@
 </trans-unit>
 <trans-unit id="s482bc55a78891ef7">
   <source>A code has been sent to your address: <x id="0" equiv-text="${email}"/></source>
+  <target>Код отправлен на ваш адрес: <x id="0" equiv-text="${email}"/></target>
 </trans-unit>
 <trans-unit id="s5afa3fc77ce8d94d">
   <source>A code has been sent to your email address.</source>
+  <target>Код отправлен на ваш адрес электронной почты.</target>
 </trans-unit>
 <trans-unit id="s37f47fa981493c3b">
   <source>A one-time use code has been sent to you via SMS text message.</source>
+  <target>Одноразовый код отправлен вам по SMS.</target>
 </trans-unit>
 <trans-unit id="sc92a7248dba5f388">
   <source>Open your authenticator app to retrieve a one-time use code.</source>
@@ -559,6 +562,7 @@
 </trans-unit>
 <trans-unit id="s76ef34813bff563f">
   <source>Last refreshed</source>
+  <target>Последнее обновление</target>
 </trans-unit>
 <trans-unit id="s59c9e8f57e3a0075">
   <source><x id="0" equiv-text="${this.label}"/> table</source>
@@ -580,6 +584,7 @@
 </trans-unit>
 <trans-unit id="s7225aacf0eee94d2">
   <source>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></source>
+  <target>Аутентификация выполнена от имени <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></target>
 </trans-unit>
 <trans-unit id="s2152f3482784705f">
   <source>Recent events</source>
@@ -611,6 +616,7 @@
 </trans-unit>
 <trans-unit id="sd2fa988f1774cfde">
   <source>System Status</source>
+  <target>Состояние системы</target>
 </trans-unit>
 <trans-unit id="s113c05ef9996ca4b">
   <source>Embedded outpost is not configured correctly.</source>
@@ -643,8 +649,7 @@
 </trans-unit>
 <trans-unit id="s68a50b1ee6efee7b">
   <source><x id="0" equiv-text="${value.versionLatest}"/> is available!</source>
-  <target>
-        <x id="0" equiv-text="${value.versionLatest}"/>уже доступна!</target>
+  <target><x id="0" equiv-text="${value.versionLatest}"/> уже доступна!</target>
 </trans-unit>
 <trans-unit id="s08272eeeddfd244e">
   <source>An outpost is on an incorrect version!</source>
@@ -810,9 +815,11 @@
 </trans-unit>
 <trans-unit id="s85a488cacb57688b">
   <source>Welcome, <x id="0" equiv-text="${displayName}"/></source>
+  <target>Добро пожаловать, <x id="0" equiv-text="${displayName}"/></target>
 </trans-unit>
 <trans-unit id="scdb1bac161852c73">
   <source>Welcome</source>
+  <target>Добро пожаловать</target>
 </trans-unit>
 <trans-unit id="s41e035c4bb8d15f2">
   <source>General system status</source>
@@ -923,6 +930,7 @@
 </trans-unit>
 <trans-unit id="s7f073c746d0f6324">
   <source>Form actions</source>
+  <target>Действия формы</target>
 </trans-unit>
 <trans-unit id="sfd81bd296e2f7585">
   <source>Submit action</source>
@@ -3646,6 +3654,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="scfe39d24bc958960">
   <source>Devices</source>
+  <target>Устройства</target>
 </trans-unit>
 <trans-unit id="s091d3507b5b2f9d7">
   <source>OS</source>
@@ -3763,6 +3772,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s80b0feb2a6b98ef9">
   <source>Connectors</source>
+  <target>Коннекторы</target>
 </trans-unit>
 <trans-unit id="s06b8c7e7fb99c1d8">
   <source>Connector(s)</source>
@@ -3806,6 +3816,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s3a38fceae14534dd">
   <source>Device access groups</source>
+  <target>Группы доступа устройств</target>
 </trans-unit>
 <trans-unit id="sbe0fb540e9dee187">
   <source>Create groups of devices to manage access.</source>
@@ -5280,6 +5291,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s891cd64acabf23bf">
   <source>Initial Permissions</source>
+  <target>Разрешения при создании</target>
 </trans-unit>
 <trans-unit id="s06fc21a40f5d7de1">
   <source>Set initial permissions for newly created objects.</source>
@@ -7542,6 +7554,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s0393ac07cf8a3097">
   <source>Endpoint Devices</source>
+  <target>Конечные устройства</target>
 </trans-unit>
 <trans-unit id="s4f1ad6b48a5df506">
   <source>Logs</source>
@@ -7709,6 +7722,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s15d6fabebb4ef2d8">
   <source>User information</source>
+  <target>Информация о пользователе</target>
 </trans-unit>
 <trans-unit id="s9bd9ba84819493d4">
   <source>Something went wrong! Please try again later.</source>
@@ -7770,7 +7784,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa11e92683c5860c7">
   <source>Request has been denied.</source>
-  <target>Запрос был отклонен.</target>
+  <target>Запрос отклонён.</target>
 </trans-unit>
 <trans-unit id="s2f7f35f6a5b733f5">
   <source>Show password</source>
@@ -7815,6 +7829,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s05a941e4b4bfca9f">
   <source>Additional actions</source>
+  <target>Дополнительные действия</target>
 </trans-unit>
 <trans-unit id="s6ecfc18dbfeedd76">
   <source>Select one of the options below to continue.</source>
@@ -7930,6 +7945,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s98bb2ae796f1ceef">
   <source>Select another authentication method</source>
+  <target>Выберите другой способ аутентификации</target>
 </trans-unit>
 <trans-unit id="s844fea0bfb10a72a">
   <source>Authentication code</source>
@@ -7941,6 +7957,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s14e8ac4d377a1a99">
   <source>Type an authentication code...</source>
+  <target>Введите код аутентификации...</target>
 </trans-unit>
 <trans-unit id="s39002897db60bb28">
   <source>Sending Duo push notification...</source>
@@ -8001,9 +8018,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s610fced3957d0471">
   <source>Select an authentication method</source>
+  <target>Выберите способ аутентификации</target>
 </trans-unit>
 <trans-unit id="s958cedec1cb3fc52">
   <source>Select a configuration stage</source>
+  <target>Выберите способ настройки аутентификатора</target>
 </trans-unit>
 <trans-unit id="sac17f177f884e238">
   <source>Stay signed in?</source>
@@ -8062,6 +8081,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa17ce23517e56461">
   <source>Authentication form</source>
+  <target>Форма аутентификации</target>
 </trans-unit>
 <trans-unit id="sb0821a9e92cac5eb">
   <source>Failed to register. Please try again.</source>
@@ -8140,19 +8160,23 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s45915ee0293ce5d4">
   <source>Ungrouped</source>
+  <target>Без группы</target>
 </trans-unit>
 <trans-unit id="s65b433c52c2ad8eb">
   <source>Search for an application by name...</source>
+  <target>Поиск приложения по названию...</target>
 </trans-unit>
 <trans-unit id="s4facec1106c91cf9">
   <source>Search returned no results.</source>
-  <target>Поиск не дал никаких результатов.</target>
+  <target>Поиск не дал результатов.</target>
 </trans-unit>
 <trans-unit id="s91cfe4fac0957ee7">
   <source>Application list</source>
+  <target>Список приложений</target>
 </trans-unit>
 <trans-unit id="sf609e15e71559cd2">
   <source>Failed to fetch applications.</source>
+  <target>Не удалось загрузить приложения.</target>
 </trans-unit>
 <trans-unit id="s06c92148da82be0d">
   <source>Change your password</source>
@@ -8296,6 +8320,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s803ce7e1a2294d50">
   <source>Files</source>
+  <target>Файлы</target>
 </trans-unit>
 <trans-unit id="s42d82601762f5321">
   <source>Manage uploaded files.</source>
@@ -8305,6 +8330,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s69f800801812a5f0">
   <source>files</source>
+  <target>файлы</target>
 </trans-unit>
 <trans-unit id="s96668830629e0dfc">
   <source>Upload</source>
@@ -8488,6 +8514,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd0fcaa6952729a9a">
   <source>Data Exports</source>
+  <target>Экспорт данных</target>
 </trans-unit>
 <trans-unit id="s1d1d961d6f3550e5">
   <source>Manage past data exports.</source>
@@ -8736,10 +8763,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="stage.authenticator.email.sent-to-address">
   <source>A verification token has been sent to your configured email address: <x id="0" equiv-text="${email}"/></source>
   <note from="lit-localize">Displayed when a verification token has been sent to the user's configured email address.</note>
+  <target>Код подтверждения отправлен на указанный адрес электронной почты: <x id="0" equiv-text="${email}"/></target>
 </trans-unit>
 <trans-unit id="stage.authenticator.email.sent">
   <source>A verification token has been sent to your email address.</source>
   <note from="lit-localize">Displayed when a verification token has been sent to the user's email address.</note>
+  <target>Код подтверждения отправлен на ваш адрес электронной почты.</target>
 </trans-unit>
 <trans-unit id="user.library.application-count-singular-with-query">
   <source><x id="0" equiv-text="${count}"/> application found for "<x id="1" equiv-text="${query}"/>"</source>
@@ -9046,6 +9075,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s304ca1e922bd3278">
   <source>Lifecycle Rules</source>
+  <target>Правила жизненного цикла</target>
 </trans-unit>
 <trans-unit id="scd223a9aac742fcf">
   <source>Lifecycle</source>
@@ -9166,6 +9196,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s7f3437809d931336">
   <source>Reviews</source>
+  <target>Проверки</target>
 </trans-unit>
 <trans-unit id="sc33f0df01dc32300">
   <source>Review Notes</source>
@@ -9279,6 +9310,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sf910cca0f06bbc31">
   <source>Enter the email address or username associated with your account.</source>
+  <target>Введите адрес электронной почты или имя пользователя.</target>
 </trans-unit>
 <trans-unit id="s6e858c4c4c3b6b76">
   <source>You're about to be redirected to the following URL.</source>
@@ -9552,6 +9584,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s934c5d00f93dda66">
   <source>Resend Email</source>
+  <target>Отправить письмо повторно</target>
 </trans-unit>
 <trans-unit id="command-palette-trigger-label">
   <source>Open Command Palette</source>
@@ -9792,6 +9825,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s165414a623ee26dd">
   <source>Device Access Groups</source>
+  <target>Группы доступа устройств</target>
 </trans-unit>
 <trans-unit id="s01c5aed3727459af">
   <source>Search device groups by name...</source>
@@ -10704,6 +10738,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s92c038a5e1dade49">
   <source>Application Dashboard</source>
+  <target>Панель приложений</target>
 </trans-unit>
 <trans-unit id="s633e3919f46a8cd3">
   <source>View details of role "<x id="0" equiv-text="${item.name}"/>"</source>
