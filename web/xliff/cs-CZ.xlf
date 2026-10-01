@@ -11558,9 +11558,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="s2d6a5f1d98d0738e">
   <source>Discover</source>
 </trans-unit>
-<trans-unit id="s6b3ade1f5b1361a6">
-  <source>Requests to review: </source>
-</trans-unit>
 <trans-unit id="sfccc1509c1ccb5af">
   <source>Access requests</source>
 </trans-unit>
@@ -12171,6 +12168,9 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="sc217c7aa0b313c03">
   <source>Connect with</source>
+</trans-unit>
+<trans-unit id="s6c707fc92868c4c9">
+  <source>You have access requests to review</source>
 </trans-unit>
 </body>
 </file>
