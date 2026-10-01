@@ -112,7 +112,7 @@ fn run(cmd: &mut Command) -> Result<()> {
     Ok(())
 }
 
-/// Whether `AUTHENTIK_DEBUGGER` is on. Python's config reads it, the same as every other setting.
+/// Whether `AUTHENTIK_DEBUGGER` is on.
 fn debugger_enabled() -> bool {
     Command::new("python")
         .args(["-m", "authentik.lib.config", "debugger"])
