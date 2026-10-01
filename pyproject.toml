@@ -9,7 +9,7 @@ dependencies = [
   "argon2-cffi==25.1.0",
   "cachetools==7.2.0",
   "channels==4.3.2",
-  "cryptography==50.0.1",
+  "cryptography==50.0.2",
   "dacite==1.9.2",
   "deepmerge==3.0.1",
   "defusedxml==0.7.1",
