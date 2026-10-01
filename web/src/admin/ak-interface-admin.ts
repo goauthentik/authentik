@@ -8,6 +8,7 @@ import "#elements/commands/ak-command-palette";
 import "#elements/commands/ak-command-palette-user-modal";
 import "#components/notifications/APIDrawer";
 import "#components/notifications/NotificationDrawer";
+import "#components/ak-page-navbar";
 import {
     createAdminSidebarEnterpriseEntries,
     createAdminSidebarEntries,

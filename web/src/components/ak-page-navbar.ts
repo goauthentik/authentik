@@ -13,7 +13,7 @@ import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithSession } from "#elements/mixins/session";
 import { toCurrentInterface } from "#elements/router/core/interfaces";
-import { isAdminRoute } from "#elements/router/utils";
+import { PageDetailsUpdate, type PageHeaderInit } from "#elements/router/meta";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
@@ -23,31 +23,9 @@ import Styles from "#components/ak-page-navbar.css";
 import type { ThemedUrls } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
-
-export class PageDetailsUpdate extends Event {
-    static readonly eventName = "ak-page-details-update";
-    header: PageHeaderInit;
-
-    constructor(header: PageHeaderInit) {
-        super(PageDetailsUpdate.eventName, { bubbles: true, composed: true });
-        this.header = header;
-    }
-}
-
-export function setPageDetails(header: PageHeaderInit) {
-    window.dispatchEvent(new PageDetailsUpdate(header));
-}
-
-export interface PageHeaderInit {
-    header?: string | null;
-    description?: SlottedTemplateResult;
-    icon?: string | null;
-    iconThemedUrls?: ThemedUrls | null;
-    iconImage?: boolean;
-}
 
 /**
  * A global navbar component at the top of the page.
@@ -100,21 +78,6 @@ export class AKPageNavbar
 
     //#region Private Methods
 
-    #setTitle(header?: string | null) {
-        let title = this.brandingTitle;
-
-        if (isAdminRoute()) {
-            title = `${msg("Admin")} - ${title}`;
-        }
-
-        // Prepend the header to the title
-        if (header) {
-            title = `${header} - ${title}`;
-        }
-
-        document.title = title;
-    }
-
     //#endregion
 
     //#region Event Handlers
@@ -143,10 +106,10 @@ export class AKPageNavbar
         super.disconnectedCallback();
     }
 
-    willUpdate() {
-        // Always update title, even if there's no header value set,
-        // as in that case we still need to return to the generic title
-        this.#setTitle(this.header);
+    protected override willUpdate(changed: PropertyValues<this>) {
+        super.willUpdate(changed);
+
+        this.setTitle(this.header);
     }
 
     //#endregion
