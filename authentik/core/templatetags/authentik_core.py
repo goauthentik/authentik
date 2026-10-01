@@ -6,7 +6,6 @@ from json import JSONDecodeError, loads
 from django import template
 from django.contrib.staticfiles import finders
 from django.templatetags.static import static as static_loader
-from django.utils.safestring import mark_safe
 from django.utils.translation import get_language
 
 from authentik import authentik_full_version
@@ -74,5 +73,4 @@ def locale_modulepreload() -> str:
     if not tag:
         return ""
     href = static_loader(f"dist/{manifest[tag]}")
-    # href comes from our own build manifest, not from user input.
-    return mark_safe(f'<link rel="modulepreload" href="{href}">')  # nosec
+    return href
