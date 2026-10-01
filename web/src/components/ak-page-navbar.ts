@@ -68,6 +68,15 @@ export class AKPageNavbar
     @property({ attribute: false })
     public header?: string | null = null;
 
+    /**
+     * The section the current page belongs to
+     * e.g. "Providers" for a provider's detail page.
+     *
+     * Included in the document title when it differs from the header.
+     */
+    @property({ attribute: false })
+    public section?: string | null = null;
+
     @property({ attribute: false })
     public description?: SlottedTemplateResult = null;
 
@@ -109,7 +118,7 @@ export class AKPageNavbar
     protected override willUpdate(changed: PropertyValues<this>) {
         super.willUpdate(changed);
 
-        this.setTitle(this.header);
+        this.setTitle(this.header, this.section === this.header ? null : this.section);
     }
 
     //#endregion

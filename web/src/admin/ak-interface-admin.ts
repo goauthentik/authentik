@@ -12,6 +12,7 @@ import "#components/ak-page-navbar";
 import {
     createAdminSidebarEnterpriseEntries,
     createAdminSidebarEntries,
+    findSidebarSectionByPath,
     renderSidebarItems,
     SidebarEntry,
 } from "./navigation/sidebar.js";
@@ -39,6 +40,7 @@ import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithNotifications } from "#elements/mixins/notifications";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
 import {
+    currentInterfacePath,
     formatInterfacePrefix,
     toAdminInterface,
     toUserInterface,
@@ -125,6 +127,8 @@ export class AdminInterface extends WithLicenseSummary(
     // `popstate` (back/forward) rather than the legacy `ak-route-change` event.
     #routeChangeListener = () => {
         this.sidebarOpen = this.#sidebarMatcher.matches;
+        // Re-render so the navbar's section follows the route.
+        this.requestUpdate();
     };
 
     @state()
@@ -285,7 +289,9 @@ export class AdminInterface extends WithLicenseSummary(
         };
 
         return html`<div class="pf-c-page">
-                <ak-page-navbar>
+                <ak-page-navbar
+                    .section=${findSidebarSectionByPath(this.navigationEntries, currentInterfacePath())}
+                >
                     <button
                         slot="toggle"
                         aria-controls="global-nav"
