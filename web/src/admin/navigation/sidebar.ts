@@ -52,6 +52,47 @@ export function renderSidebarItem([
     </ak-sidebar-item>`;
 }
 
+/**
+ * Finds the label for the sidebar section a detail page belongs to.
+ *
+ * A section matches when an entry defines `activeWhen` patterns (string[])
+ * and at least one of those patterns matches the provided path
+ * (for example, `/core/providers/74` -> "Providers").
+ *
+ * Matching follows the same `activeWhen` logic used by `ak-sidebar-item`
+ * highlighting. The entry's own `path` is intentionally not considered a
+ * section match, because list pages already identify themselves.
+ *
+ * Search order is depth-first; the first matching descendant wins.
+ *
+ * @param entries Sidebar entries to search.
+ * @param path Interface-relative path, e.g. `/core/providers/74`.
+ *
+ * @returns Matching section label, or `null` when no section matches.
+ */
+export function findSidebarSectionByPath(
+    entries: readonly SidebarEntry[],
+    path: string,
+): string | null {
+    for (const [entryPath, label, attributes, children] of entries) {
+        if (
+            entryPath &&
+            Array.isArray(attributes) &&
+            attributes.some((pattern) => new RegExp(pattern).test(path))
+        ) {
+            return label;
+        }
+
+        const childLabel = children ? findSidebarSectionByPath(children, path) : null;
+
+        if (childLabel) {
+            return childLabel;
+        }
+    }
+
+    return null;
+}
+
 // prettier-ignore
 export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
     [null, msg("Dashboards"), { key: "dashboards", "?expanded": true }, [
