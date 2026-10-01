@@ -724,6 +724,7 @@ jobs:
               ```shell
               AUTHENTIK_IMAGE=ghcr.io/goauthentik/dev-server
               AUTHENTIK_TAG=${{ needs.build-compute-tags.outputs.tag-full }}
+              # For the distroless image: AUTHENTIK_TAG=${{ needs.build-compute-tags.outputs.tag-full }}-distroless
               AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
               ```
 
@@ -742,6 +743,7 @@ jobs:
                   image:
                       repository: ghcr.io/goauthentik/dev-server
                       tag: ${{ needs.build-compute-tags.outputs.tag-full }}
+                      # For the distroless image: tag: ${{ needs.build-compute-tags.outputs.tag-full }}-distroless
               ```
 
               Afterwards, run the upgrade commands from the latest release notes.

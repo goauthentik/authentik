@@ -1,7 +1,7 @@
 # Paths removed again after the keep list is applied.
+# Each line drops every path that starts with it, e.g. /usr/local/bin/pip also drops pip3.
 # A distroless image must not ship a package installer or interactive tooling.
 /usr/local/lib/python3.14/site-packages/pip
-/usr/local/lib/python3.14/site-packages/pip-
 /usr/local/lib/python3.14/ensurepip
 /usr/local/lib/python3.14/idlelib
 /usr/local/lib/python3.14/tkinter
@@ -13,7 +13,6 @@
 /usr/local/bin/python-config
 /usr/local/bin/python3-config
 /usr/local/bin/python3.14-config
-/usr/local/bin/xmlsec1-config
 /usr/local/bin/xmlsec1
 /usr/local/lib/xmlsec1Conf.sh
 
