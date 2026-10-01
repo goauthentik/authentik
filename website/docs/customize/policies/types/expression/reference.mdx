@@ -145,6 +145,7 @@ Common keys include:
 - `context["flow_plan"].context`: the mutable flow-plan context
 - `context["flow_plan"].context["redirect"]`: the post-flow redirect URL, when set
 - `context["prompt_data"]`: data collected from prompt stages or external sources
+- `context["policy_results"]`: results from policy bindings evaluated earlier in the flow, keyed by policy binding UUID
 - `context["application"]`: the application being authorized
 - `context["source"]`: the source being used for authentication or enrollment
 - `context["pending_user"]`: the user currently being identified or enrolled
