@@ -29,7 +29,7 @@ msgstr ""
 #: authentik/admin/files/api.py
 #, python-brace-format
 msgid "File size ({file.size}B) exceeds maximum allowed "
-msgstr "Размер файла ({file.size}B) превышает допустимый"
+msgstr "Размер файла ({file.size}B) превышает допустимый "
 
 #: authentik/admin/files/validation.py
 msgid "File name cannot be empty"
@@ -48,7 +48,7 @@ msgstr ""
 
 #: authentik/admin/files/validation.py
 msgid "File name cannot contain duplicate /"
-msgstr " Имя файла не может содержать двойной слеш /"
+msgstr "Имя файла не может содержать двойной слеш /"
 
 #: authentik/admin/files/validation.py
 msgid "Absolute paths are not allowed"
@@ -349,7 +349,7 @@ msgstr "У пользователя не указан адрес электро�
 
 #: authentik/core/api/users.py
 msgid "Email stage not found."
-msgstr "Этап отправки Email не найден."
+msgstr "Этап отправки электронной почты не найден."
 
 #: authentik/core/api/users.py
 msgid "This field is required."
@@ -389,7 +389,7 @@ msgstr "Включить статус суперпользователя"
 
 #: authentik/core/models.py
 msgid "Disable superuser status"
-msgstr "Выключить статус суперпользователя "
+msgstr "Выключить статус суперпользователя"
 
 #: authentik/core/models.py
 msgid "Group Parentage Node"
@@ -587,7 +587,7 @@ msgstr "Токены"
 
 #: authentik/core/models.py authentik/endpoints/connectors/agent/models.py
 msgid "View token's key"
-msgstr "Просмотр ключа токена "
+msgstr "Просмотр ключа токена"
 
 #: authentik/core/models.py
 msgid "Set a token's key"
@@ -715,7 +715,7 @@ msgstr "Успешная аутентификация с {source}!"
 #: authentik/core/sources/flow_manager.py
 #, python-brace-format
 msgid "Successfully linked {source}!"
-msgstr "Успешно связано с {source}!"
+msgstr "Источник {source} успешно привязан!"
 
 #: authentik/core/sources/flow_manager.py
 msgid "Source is not configured for enrollment."
@@ -1798,7 +1798,7 @@ msgstr "Этапы Mutual TLS"
 
 #: authentik/enterprise/stages/mtls/models.py
 msgid "Permissions to pass Certificates for outposts."
-msgstr "Разрешения на передачу сертификатов для Outpost'ов."
+msgstr "Разрешения на передачу сертификатов для внешних компонентов."
 
 #: authentik/enterprise/stages/mtls/models.py
 msgid "Mutual TLS Stage Certificate Authority"
@@ -1859,7 +1859,7 @@ msgstr "Slack Вебхук (Slack/Discord)"
 #: authentik/events/models.py
 #: authentik/stages/authenticator_validate/models.py
 msgid "Email"
-msgstr "Email"
+msgstr "Электронная почта"
 
 #: authentik/events/models.py
 msgid ""
@@ -2321,11 +2321,11 @@ msgstr "Внешние компоненты"
 
 #: authentik/outposts/models.py
 msgid "Outpost Provider"
-msgstr "Провайдер Outpost"
+msgstr "Провайдер внешнего компонента"
 
 #: authentik/outposts/models.py
 msgid "Outpost Providers"
-msgstr "Провайдеры Outpost"
+msgstr "Провайдеры внешних компонентов"
 
 #: authentik/outposts/tasks.py
 msgid "Update cached state of service connection."
@@ -2333,17 +2333,17 @@ msgstr "Обновить кэшированное состояние подкл�
 
 #: authentik/outposts/tasks.py
 msgid "Create/update/monitor/delete the deployment of an Outpost."
-msgstr "Создать/обновить/отслеживать/удалить развёртывание Outpost."
+msgstr "Создать/обновить/отслеживать/удалить развёртывание внешнего компонента."
 
 #: authentik/outposts/tasks.py
 msgid "Ensure that all Outposts have valid Service Accounts and Tokens."
 msgstr ""
-"Убедиться, что все Outpost'ы имеют действительные сервисные учётные записи и"
-" токены."
+"Убедиться, что все внешние компоненты имеют действительные сервисные учётные "
+"записи и токены."
 
 #: authentik/outposts/tasks.py
 msgid "Send update to outpost"
-msgstr "Отправить обновление в Outpost"
+msgstr "Отправить обновление внешнему компоненту"
 
 #: authentik/outposts/tasks.py
 msgid "Checks the local environment and create Service connections."
@@ -2351,7 +2351,7 @@ msgstr "Проверить локальное окружение и создат
 
 #: authentik/outposts/tasks.py
 msgid "Terminate session on all outposts."
-msgstr "Завершить сессию на всех Outpost'ах."
+msgstr "Завершить сеанс на всех внешних компонентах."
 
 #: authentik/policies/denied.py
 msgid "Access denied"
@@ -3791,7 +3791,7 @@ msgstr ""
 
 #: authentik/recovery/views.py
 msgid "Used recovery-link to authenticate."
-msgstr "Для аутентификации использована ссылка для восстановления "
+msgstr "Для аутентификации использована ссылка для восстановления"
 
 #: authentik/sources/kerberos/models.py
 msgid "Kerberos realm"
@@ -3862,7 +3862,7 @@ msgid ""
 "the Kerberos password backend"
 msgstr ""
 "Если этот параметр включен, сохраненный в authentik пароль будет обновлен "
-"при входе в систему с помощью серверной части Kerberos "
+"при входе в систему с помощью серверной части Kerberos"
 
 #: authentik/sources/kerberos/models.py
 msgid "Kerberos Source"
@@ -4646,11 +4646,11 @@ msgstr ""
 
 #: authentik/stages/authenticator_email/models.py
 msgid "Email Authenticator Setup Stage"
-msgstr "Этап настройки Email-аутентификатора"
+msgstr "Этап настройки аутентификатора электронной почты"
 
 #: authentik/stages/authenticator_email/models.py
 msgid "Email Authenticator Setup Stages"
-msgstr "Этапы настройки Email-аутентификатора"
+msgstr "Этапы настройки аутентификатора электронной почты"
 
 #: authentik/stages/authenticator_email/models.py
 #: authentik/stages/authenticator_email/stage.py
@@ -4660,11 +4660,11 @@ msgstr "Возникло исключение при рендеринге шаб
 
 #: authentik/stages/authenticator_email/models.py
 msgid "Email Device"
-msgstr "Email-устройство"
+msgstr "Устройство электронной почты"
 
 #: authentik/stages/authenticator_email/models.py
 msgid "Email Devices"
-msgstr "Email-устройства"
+msgstr "Устройства электронной почты"
 
 #: authentik/stages/authenticator_email/stage.py
 #: authentik/stages/authenticator_sms/stage.py
@@ -4699,7 +4699,7 @@ msgid ""
 "          "
 msgstr ""
 "\n"
-"          Код Email MFA.\n"
+"          Код MFA из электронной почты.\n"
 "          "
 
 #: authentik/stages/authenticator_email/templates/email/email_otp.html
@@ -4725,7 +4725,7 @@ msgid ""
 "Email MFA code\n"
 msgstr ""
 "\n"
-"Код Email MFA\n"
+"Код MFA из электронной почты\n"
 
 #: authentik/stages/authenticator_email/templates/email/email_otp.txt
 #, python-format
@@ -4865,8 +4865,8 @@ msgid ""
 " devices. After this configuration Stage passes, the user is not prompted "
 "again."
 msgstr ""
-"Этапы использованные для конфигурации Аутентификатора когда у пользователя "
-"нет совместимых устройств. После этого конфигурационного этапа пользователю "
+"Этапы, используемые для настройки аутентификатора, когда у пользователя нет "
+"совместимых устройств. После успешного прохождения этого этапа настройка "
 "больше не запрашивается."
 
 #: authentik/stages/authenticator_validate/models.py
@@ -5066,7 +5066,7 @@ msgstr "Подтверждение аккаунта"
 
 #: authentik/stages/email/models.py
 msgid "Email OTP"
-msgstr "Email OTP"
+msgstr "Одноразовый пароль из электронной почты"
 
 #: authentik/stages/email/models.py
 msgid "Event Notification"
@@ -5543,7 +5543,7 @@ msgstr ""
 
 #: authentik/stages/prompt/models.py
 msgid "Email: Text field with Email type."
-msgstr "Email: Текстовое поле с типом Email."
+msgstr "Электронная почта: текстовое поле с типом электронной почты."
 
 #: authentik/stages/prompt/models.py
 msgid ""
@@ -5922,11 +5922,11 @@ msgstr "Максимальный размер страницы"
 
 #: authentik/tenants/models.py
 msgid "Tenant"
-msgstr "Арендатор"
+msgstr "Тенант"
 
 #: authentik/tenants/models.py
 msgid "Tenants"
-msgstr "Арендаторы"
+msgstr "Тенанты"
 
 #: authentik/tenants/models.py
 msgid "Domain"

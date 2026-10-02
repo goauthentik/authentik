@@ -1364,7 +1364,7 @@
 </trans-unit>
 <trans-unit id="s082ea0f3c0a854ff">
   <source>Configure Policy Bindings</source>
-  <target>Настройка политики привязок </target>
+  <target>Настройка привязок политик</target>
 </trans-unit>
 <trans-unit id="s2e422519ed38f7d8">
   <source>Pass</source>
@@ -1432,7 +1432,7 @@
 </trans-unit>
 <trans-unit id="s2289ff3b411251d8">
   <source>Choose a Provider Type</source>
-  <target>Выбрать тип провайдера </target>
+  <target>Выбрать тип провайдера</target>
 </trans-unit>
 <trans-unit id="sb157267c85fdff30">
   <source>Certificate</source>
@@ -1900,11 +1900,11 @@
 </trans-unit>
 <trans-unit id="s066bfb12c9032dc2">
   <source>Available Providers</source>
-  <target>Доступные провайдеры </target>
+  <target>Доступные провайдеры</target>
 </trans-unit>
 <trans-unit id="sa12111ca3f3e398e">
   <source>Selected Providers</source>
-  <target>Выбранные провайдеры </target>
+  <target>Выбранные провайдеры</target>
 </trans-unit>
 <trans-unit id="s4f8a3f7792e6b940">
   <source>JWTs signed by the selected providers can be used to authenticate to this provider.</source>
@@ -1912,7 +1912,7 @@
 </trans-unit>
 <trans-unit id="s89ae85c3a9df8a6f">
   <source>Configure OAuth2 Provider</source>
-  <target>Настройка провайдера OAuth2 </target>
+  <target>Настройка провайдера OAuth2</target>
 </trans-unit>
 <trans-unit id="sdfd22a21660f6002">
   <source>Successfully updated provider.</source>
@@ -2492,7 +2492,7 @@
 </trans-unit>
 <trans-unit id="s19907c16eb319618">
   <source>Configure Provider</source>
-  <target>Настройка провайдера </target>
+  <target>Настройка провайдера</target>
 </trans-unit>
 <trans-unit id="sd2223afb7d6b100d">
   <source>Type</source>
@@ -2772,11 +2772,11 @@
 </trans-unit>
 <trans-unit id="s05073d2537b45d1a">
   <source>Sync</source>
-  <target>Синхронизация </target>
+  <target>Синхронизация</target>
 </trans-unit>
 <trans-unit id="s3819162efec77de1">
   <source>Sync Group</source>
-  <target>Группа синхронизации </target>
+  <target>Группа синхронизации</target>
 </trans-unit>
 <trans-unit id="s7d2d3d298fdccfc8">
   <source>Google Workspace Group(s)</source>
@@ -2784,7 +2784,7 @@
 </trans-unit>
 <trans-unit id="se9da93aa2e6cce21">
   <source>Sync User</source>
-  <target>Синхронизация пользователей </target>
+  <target>Синхронизация пользователей</target>
 </trans-unit>
 <trans-unit id="s8c9cf2c004755526">
   <source>Google Workspace User(s)</source>
@@ -8558,7 +8558,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sc92905d14a9421f3">
   <source>Idle</source>
-  <target>Ожидание </target>
+  <target>Ожидание</target>
 </trans-unit>
 <trans-unit id="s4b052cb287d81da7">
   <source>Connecting</source>
@@ -8570,7 +8570,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s82a4e28ab5b56670">
   <source>Connected</source>
-  <target>Подключено </target>
+  <target>Подключено</target>
 </trans-unit>
 <trans-unit id="sd669c8ff49c068ad">
   <source>Disconnecting</source>
@@ -10045,7 +10045,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s090f2d07b5a6aee3">
   <source>CC</source>
-  <target>Копия</target>
+  <target>Копировать</target>
 </trans-unit>
 <trans-unit id="s7f39ec207409ff19">
   <source>A comma-separated list of addresses to receive copies of the invitation. Recipients will receive the full list of other addresses in this list.</source>
@@ -13299,7 +13299,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="agent.create.header">
   <source>Create Agent</source>
-  <target>Создание агента</target>
+  <target>Создать агента</target>
 </trans-unit>
 <trans-unit id="agent.create.trigger">
   <source>Create Agent</source>
@@ -13639,7 +13639,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="enterprise.licensing.install-id.label">
   <source>Install ID</source>
-  <target>ID установки</target>
+  <target>Идентификатор установки</target>
 </trans-unit>
 <trans-unit id="s4a2af3d62c9f3674">
   <source>When enabled, connection authorizations will be deleted when a client disconnects. This will force clients with flaky internet connections to re-authorize the device.</source>
