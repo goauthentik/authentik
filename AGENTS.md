@@ -92,6 +92,8 @@ make run-watch         # Same, auto-reloading on .py/.rs/.go changes (needs watc
 make migrate           # Apply Django migrations
 ```
 
+Native macOS server startup uses the non-forking, single-process `lifecycle/server.py` runner; Linux uses Gunicorn. The macOS runner does not use Gunicorn worker-count or request-recycling settings. Use `make run-watch` for code reloads.
+
 ### Test
 
 ```bash
