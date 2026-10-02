@@ -1,6 +1,6 @@
 import type { Interface } from "#elements/Interface";
 
-import { shouldReleaseContinuousLogin } from "#flow/tabs/continuous-login";
+import { continuousLoginExit } from "#flow/tabs/continuous-login";
 import { AKMultiTabEvent } from "#flow/tabs/events";
 import {
     multiTabOrchestrateLeave as dispatchTabExit,
@@ -50,10 +50,11 @@ export class FlowMultitabController implements ReactiveController {
         if (next) {
             const url = new URL(next, window.location.origin);
             const continuousLoginHold = challenge.flowInfo?.continuousLoginHold ?? true;
+            const exit = continuousLoginExit(url, window.location.origin, continuousLoginHold);
 
-            if (shouldReleaseContinuousLogin(url, window.location.origin, continuousLoginHold)) {
+            if (exit === "now") {
                 dispatchTabExit();
-            } else {
+            } else if (exit === "suppress") {
                 suppressNextExitForSameOriginNavigation();
             }
 

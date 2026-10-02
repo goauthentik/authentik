@@ -171,8 +171,10 @@ class FlowPlan:
             temp_exec.setup(request, flow.slug)
             stage = final_stage(request=request, executor=temp_exec)
             response = stage.dispatch(request)
-            # Ensure we clean the flow state we have in the session before we redirect away
-            temp_exec.stage_ok()
+            # Stages can complete or cancel the plan themselves. Only finalize plans that are
+            # still active after dispatch.
+            if request.session.get(SESSION_KEY_PLAN) is self:
+                temp_exec.stage_ok()
             return response
 
         get_qs = request.GET.copy()

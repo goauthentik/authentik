@@ -1,33 +1,29 @@
-import { shouldReleaseContinuousLogin } from "#flow/tabs/continuous-login";
+import { continuousLoginExit } from "#flow/tabs/continuous-login";
 
 import { describe, expect, it } from "vitest";
 
 const origin = "https://authentik.example";
 
-describe("shouldReleaseContinuousLogin", () => {
-    it("returns true for a direct same-origin continuation", () => {
+describe("continuousLoginExit", () => {
+    it("reports a direct same-origin continuation on pagehide", () => {
         expect(
-            shouldReleaseContinuousLogin(
-                new URL("/application/saml/app/sso/", origin),
-                origin,
-                false,
-            ),
-        ).toBe(true);
+            continuousLoginExit(new URL("/application/saml/app/sso/", origin), origin, false),
+        ).toBe("on-pagehide");
     });
 
-    it("returns false for a same-origin continuation that may require authorization", () => {
+    it("suppresses the exit for a same-origin continuation that may require authorization", () => {
         expect(
-            shouldReleaseContinuousLogin(
-                new URL("/application/saml/app/sso/", origin),
-                origin,
-                true,
-            ),
-        ).toBe(false);
+            continuousLoginExit(new URL("/application/saml/app/sso/", origin), origin, true),
+        ).toBe("suppress");
     });
 
-    it("returns true for an external continuation", () => {
-        expect(
-            shouldReleaseContinuousLogin(new URL("https://service.example/acs"), origin, true),
-        ).toBe(true);
+    it("reports an external continuation immediately", () => {
+        expect(continuousLoginExit(new URL("https://service.example/acs"), origin, true)).toBe(
+            "now",
+        );
+
+        expect(continuousLoginExit(new URL("https://service.example/acs"), origin, false)).toBe(
+            "now",
+        );
     });
 });

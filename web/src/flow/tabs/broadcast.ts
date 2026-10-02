@@ -163,5 +163,9 @@ export class Broadcast extends BroadcastChannel implements Disposable {
         this.shouldSuppressExit = true;
     }
 
+    public allowNextExit(): void {
+        this.shouldSuppressExit = false;
+    }
+
     //#endregion
 }

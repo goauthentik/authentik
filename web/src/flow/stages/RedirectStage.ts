@@ -3,8 +3,9 @@ import "#flow/components/ak-flow-card";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { BaseStage } from "#flow/stages/base";
-import { shouldReleaseContinuousLogin } from "#flow/tabs/continuous-login";
+import { continuousLoginExit } from "#flow/tabs/continuous-login";
 import {
+    allowNextExitForSameOriginNavigation,
     multiTabOrchestrateLeave,
     multiTabOrchestrateResume,
     suppressNextExitForSameOriginNavigation,
@@ -85,16 +86,20 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         }
 
         // A foreign final redirect means we're leaving authentik for good, so signal our exit.
-        // Same-origin navigation suppress it, otherwise we'd look like we left mid-flow.
+        // Same-origin navigation suppresses it while the flow still needs this tab. Direct
+        // responses report their exit on pagehide, after the server has saved the session.
         const url = new URL(this.challenge!.to, window.location.origin);
 
-        if (
-            finalRedirect &&
-            shouldReleaseContinuousLogin(url, window.location.origin, continuousLoginHold)
-        ) {
+        const exit = finalRedirect
+            ? continuousLoginExit(url, window.location.origin, continuousLoginHold)
+            : "suppress";
+
+        if (exit === "now") {
             multiTabOrchestrateLeave();
-        } else {
+        } else if (exit === "suppress") {
             suppressNextExitForSameOriginNavigation();
+        } else {
+            allowNextExitForSameOriginNavigation();
         }
 
         window.location.assign(this.challenge!.to);
