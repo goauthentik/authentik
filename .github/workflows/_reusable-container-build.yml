@@ -12,6 +12,14 @@ on:
         description: "Name of the image to build"
         type: string
         required: true
+      image-target:
+        description: "Dockerfile stage to build. Empty builds the last stage."
+        type: string
+        default: ""
+      image-tag-suffix:
+        description: "Suffix for the tags and the artifacts of an image variant that is built from another stage"
+        type: string
+        default: ""
       image-dockerfile:
         description: "Path to the Dockerfile to build from"
         type: string
@@ -39,6 +47,8 @@ jobs:
       image-name: "${{ inputs.image-name }}"
       image-arch: amd64
       image-dockerfile: "${{ inputs.image-dockerfile }}"
+      image-target: "${{ inputs.image-target }}"
+      image-tag-suffix: "${{ inputs.image-tag-suffix }}"
       image-build-args: "${{ inputs.image-build-args }}"
       should-cache: "${{ inputs.should-cache }}"
       cache-suffix: "${{ inputs.cache-suffix }}"
@@ -52,6 +62,8 @@ jobs:
       image-name: "${{ inputs.image-name }}"
       image-arch: arm64
       image-dockerfile: "${{ inputs.image-dockerfile }}"
+      image-target: "${{ inputs.image-target }}"
+      image-tag-suffix: "${{ inputs.image-tag-suffix }}"
       image-build-args: "${{ inputs.image-build-args }}"
       should-cache: "${{ inputs.should-cache }}"
       cache-suffix: "${{ inputs.cache-suffix }}"
@@ -73,7 +85,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          image_name="${{ inputs.image-name }}"
+          image_name="${{ inputs.image-name }}${{ inputs.image-tag-suffix }}"
           target="ocidir://${image_name}:build"
 
           regctl image import \
@@ -231,7 +243,7 @@ jobs:
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
         with:
-          name: "container-build-${{ inputs.image-name }}"
+          name: "container-build-${{ inputs.image-name }}${{ inputs.image-tag-suffix }}"
           path: build/
           if-no-files-found: error
           retention-days: 2

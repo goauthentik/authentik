@@ -24,6 +24,11 @@ def _refuse(problem: str) -> NoReturn:
 if "LD_LIBRARY_PATH" in os.environ:
     _refuse("LD_LIBRARY_PATH is set")
 
+# Check that nobody mounted a shell, because code that runs one would pass the tests and still
+# fail in an image without one. A mount is the only way to add a shell to an unchanged image
+if os.path.ismount("/bin/sh"):
+    _refuse("a shell is mounted in")
+
 # Make the dev-only packages that the tests need importable. They go after the image's own
 # packages, so that a package the image ships always comes from the image
 site.addsitedir("/test-kit/devdeps")

@@ -118,6 +118,10 @@ jobs:
         include:
           - name: server
             dockerfile: Dockerfile
+          - name: server
+            dockerfile: Dockerfile
+            target: distroless
+            tag-suffix: -distroless
           - name: proxy
             dockerfile: proxy.Dockerfile
           - name: ldap
@@ -132,6 +136,8 @@ jobs:
       ref: "${{ needs.bump-version.outputs.release-commit }}"
       image-name: "${{ matrix.name }}"
       image-dockerfile: "lifecycle/container/${{ matrix.dockerfile }}"
+      image-target: "${{ matrix.target || '' }}"
+      image-tag-suffix: "${{ matrix.tag-suffix || '' }}"
       image-build-args: |
         VERSION=${{ needs.check-inputs.outputs.version }}
   build-go-binaries:
@@ -222,20 +228,24 @@ jobs:
           retention-days: 2
           include-hidden-files: true
   test:
-    name: Pre-release test
+    name: Pre-release test (server${{ matrix.tag-suffix }})
     runs-on: ubuntu-latest
     needs:
       - check-inputs
       - bump-version
       - build-container
+    strategy:
+      fail-fast: false
+      matrix:
+        tag-suffix: ["", "-distroless"]
     steps:
       - name: Fetch container images
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
         with:
-          name: container-build-server-amd64
+          name: container-build-server${{ matrix.tag-suffix }}-amd64
       - name: Load container images
         run: |
-          skopeo copy "oci-archive:container/server-amd64.oci.tar" "docker-daemon:authentik.invalid/goauthentik/server:${{ needs.check-inputs.outputs.version }}"
+          skopeo copy "oci-archive:container/server${{ matrix.tag-suffix }}-amd64.oci.tar" "docker-daemon:authentik.invalid/goauthentik/server:${{ needs.check-inputs.outputs.version }}${{ matrix.tag-suffix }}"
           rm -rf container/
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
         with:
@@ -244,7 +254,7 @@ jobs:
         env:
           COMPOSE_PROJECT_NAME: authentik-release-test
           AUTHENTIK_IMAGE: authentik.invalid/goauthentik/server
-          AUTHENTIK_TAG: "${{ needs.check-inputs.outputs.version }}"
+          AUTHENTIK_TAG: "${{ needs.check-inputs.outputs.version }}${{ matrix.tag-suffix }}"
         run: ./scripts/test_docker.sh
   create-release:
     name: Create release
@@ -301,6 +311,7 @@ jobs:
           subject-path: |
             metadata.json
             container/server.oci.tar
+            container/server-distroless.oci.tar
             container/proxy.oci.tar
             container/ldap.oci.tar
             container/radius.oci.tar
@@ -320,6 +331,7 @@ jobs:
           files: |
             metadata.json
             container/server.oci.tar
+            container/server-distroless.oci.tar
             container/proxy.oci.tar
             container/ldap.oci.tar
             container/radius.oci.tar

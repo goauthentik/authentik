@@ -28,6 +28,14 @@ on:
         description: "Build args to pass to Docker"
         type: string
         default: ""
+      image-target:
+        description: "Dockerfile stage to build. Empty builds the last stage."
+        type: string
+        default: ""
+      image-tag-suffix:
+        description: "Suffix for the tags and the artifacts of an image variant that is built from another stage"
+        type: string
+        default: ""
       should-cache:
         description: "Whether a build cache should be created"
         type: boolean
@@ -47,7 +55,7 @@ jobs:
       packages: write
       # Needed for checkout
       contents: read
-    name: "Build ${{ inputs.image-name }} on ${{ inputs.image-arch }}"
+    name: "Build ${{ inputs.image-name }}${{ inputs.image-tag-suffix }} on ${{ inputs.image-arch }}"
     runs-on: "${{ inputs.runs-on }}"
     outputs:
       image-digest: "${{ steps.build.outputs.digest }}"
@@ -74,6 +82,7 @@ jobs:
           # inputs
           context: .
           file: "${{ inputs.image-dockerfile }}"
+          target: "${{ inputs.image-target }}"
           build-args: "${{ inputs.image-build-args }}"
           secrets: |
             GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
@@ -81,19 +90,19 @@ jobs:
           # outputs
           push: false
           cache-from: |
-            type=registry,ref=ghcr.io/goauthentik/dev-${{ inputs.image-name }}:buildcache-${{ inputs.image-arch }}-main
-            type=registry,ref=ghcr.io/goauthentik/dev-${{ inputs.image-name }}:buildcache-${{ inputs.image-arch }}${{ inputs.cache-suffix }}
-          cache-to: "${{ inputs.should-cache && format('type=registry,ref=ghcr.io/goauthentik/dev-{0}:buildcache-{1}{2},mode=max', inputs.image-name, inputs.image-arch, inputs.cache-suffix) || '' }}"
+            type=registry,ref=ghcr.io/goauthentik/dev-${{ inputs.image-name }}:buildcache-${{ inputs.image-arch }}${{ inputs.image-tag-suffix }}-main
+            type=registry,ref=ghcr.io/goauthentik/dev-${{ inputs.image-name }}:buildcache-${{ inputs.image-arch }}${{ inputs.image-tag-suffix }}${{ inputs.cache-suffix }}
+          cache-to: "${{ inputs.should-cache && format('type=registry,ref=ghcr.io/goauthentik/dev-{0}:buildcache-{1}{2}{3},mode=max', inputs.image-name, inputs.image-arch, inputs.image-tag-suffix, inputs.cache-suffix) || '' }}"
           attests: |
             type=provenance,mode=max
           outputs: |
-            type=oci,dest=build/container/${{ inputs.image-name }}-${{ inputs.image-arch }}.oci.tar
+            type=oci,dest=build/container/${{ inputs.image-name }}${{ inputs.image-tag-suffix }}-${{ inputs.image-arch }}.oci.tar
           # params
           platforms: "linux/${{ inputs.image-arch }}"
       - id: upload
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
         with:
-          name: "container-build-${{ inputs.image-name }}-${{ inputs.image-arch }}"
+          name: "container-build-${{ inputs.image-name }}${{ inputs.image-tag-suffix }}-${{ inputs.image-arch }}"
           path: build/
           if-no-files-found: error
           retention-days: 2

@@ -53,6 +53,10 @@ jobs:
         include:
           - name: server
             dockerfile: Dockerfile
+          - name: server
+            dockerfile: Dockerfile
+            target: distroless
+            tag-suffix: -distroless
           - name: proxy
             dockerfile: proxy.Dockerfile
           - name: ldap
@@ -67,6 +71,8 @@ jobs:
       ref: "${{ github.ref }}"
       image-name: "${{ matrix.name }}"
       image-dockerfile: "lifecycle/container/${{ matrix.dockerfile }}"
+      image-target: "${{ matrix.target || '' }}"
+      image-tag-suffix: "${{ matrix.tag-suffix || '' }}"
       image-build-args: |
         GIT_BUILD_HASH=${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
       should-cache: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
@@ -375,7 +381,7 @@ jobs:
         with:
           flags: e2e
   test-container:
-    name: test-container - Run ${{ matrix.run_id }}/10
+    name: test-container - server${{ matrix.tag-suffix }} - Run ${{ matrix.run_id }}/10
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs:
@@ -384,20 +390,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        tag-suffix: ["", "-distroless"]
         run_id: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     steps:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
         with:
-          name: container-build-server-amd64
+          name: container-build-server${{ matrix.tag-suffix }}-amd64
       - name: Load container image
         run: |
-          skopeo copy "oci-archive:container/server-amd64.oci.tar" "docker-daemon:authentik.invalid/goauthentik/server:ci"
+          skopeo copy "oci-archive:container/server${{ matrix.tag-suffix }}-amd64.oci.tar" "docker-daemon:authentik.invalid/goauthentik/server:ci${{ matrix.tag-suffix }}"
           rm -rf container/
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Run tests in the server image
         env:
           AUTHENTIK_IMAGE: authentik.invalid/goauthentik/server
-          AUTHENTIK_TAG: ci
+          AUTHENTIK_TAG: ci${{ matrix.tag-suffix }}
           CI_TEST_SEED: ${{ needs.test-make-seed.outputs.seed }}
           CI_RUN_ID: ${{ matrix.run_id }}
           CI_TOTAL_RUNS: "10"
@@ -656,12 +663,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name:
-          - server
-          - proxy
-          - ldap
-          - radius
-          - rac
+        include:
+          - name: server
+          - name: server
+            tag-suffix: -distroless
+          - name: proxy
+          - name: ldap
+          - name: radius
+          - name: rac
     steps:
       - uses: regclient/actions/regctl-installer@bb562fac724b7b37c17f19671df07fe34fabc376
       # logs in to ghcr.io by default
@@ -674,15 +683,15 @@ jobs:
           password: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
         with:
-          name: "container-build-${{ matrix.name }}"
+          name: "container-build-${{ matrix.name }}${{ matrix.tag-suffix }}"
       - id: publish
         name: publish
         run: |
-          regctl image import "ocidir://${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}" "container/${{ matrix.name }}.oci.tar"
+          regctl image import "ocidir://${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}" "container/${{ matrix.name }}${{ matrix.tag-suffix }}.oci.tar"
           echo "digest=$(regctl image digest "ocidir://${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}")" >> "$GITHUB_OUTPUT"
-          regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}" "container/${{ matrix.name }}.oci.tar"
-          regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-branch }}" "container/${{ matrix.name }}.oci.tar"
-          regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-flux }}" "container/${{ matrix.name }}.oci.tar"
+          regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}${{ matrix.tag-suffix }}" "container/${{ matrix.name }}${{ matrix.tag-suffix }}.oci.tar"
+          regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-branch }}${{ matrix.tag-suffix }}" "container/${{ matrix.name }}${{ matrix.tag-suffix }}.oci.tar"
+          regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-flux }}${{ matrix.tag-suffix }}" "container/${{ matrix.name }}${{ matrix.tag-suffix }}.oci.tar"
       - uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6
         with:
           subject-name: "ghcr.io/goauthentik/dev-${{ matrix.name }}"
@@ -715,6 +724,7 @@ jobs:
               ```shell
               AUTHENTIK_IMAGE=ghcr.io/goauthentik/dev-server
               AUTHENTIK_TAG=${{ needs.build-compute-tags.outputs.tag-full }}
+              # Distroless image: AUTHENTIK_TAG=${{ needs.build-compute-tags.outputs.tag-full }}-distroless
               AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
               ```
 
@@ -733,6 +743,7 @@ jobs:
                   image:
                       repository: ghcr.io/goauthentik/dev-server
                       tag: ${{ needs.build-compute-tags.outputs.tag-full }}
+                      # Distroless image: tag: ${{ needs.build-compute-tags.outputs.tag-full }}-distroless
               ```
 
               Afterwards, run the upgrade commands from the latest release notes.
