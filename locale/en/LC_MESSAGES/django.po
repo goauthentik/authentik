@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 00:18+0000\n"
+"POT-Creation-Date: 2026-10-02 00:17+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2495,6 +2495,10 @@ msgstr ""
 
 #: authentik/policies/models.py
 msgid "Policy Binding Models"
+msgstr ""
+
+#: authentik/policies/models.py
+msgid "Execute the policy but ignore its result."
 msgstr ""
 
 #: authentik/policies/models.py
