@@ -11439,36 +11439,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="s6c707fc92868c4c9">
   <source>You have access requests to review</source>
 </trans-unit>
-<trans-unit id="sc056b79cc62ca6d4">
-  <source>Required for local device authentication.</source>
-</trans-unit>
-<trans-unit id="s15f79185ef55ef2c">
-  <source>Local authentication</source>
-</trans-unit>
-<trans-unit id="sd158a5fc0f062f18">
-  <source>Available</source>
-</trans-unit>
-<trans-unit id="sf132578fe25f08b6">
-  <source>Device compliance</source>
-</trans-unit>
-<trans-unit id="policies.bindings.dry-run.view-results.label">
-  <source>View dry-run results</source>
-</trans-unit>
-<trans-unit id="policies.bindings.dry-run.description">
-  <source>Evaluate this binding without including its result or messages in the final decision. Results are recorded in the Event Log. Policy side effects are not prevented.</source>
-</trans-unit>
-<trans-unit id="s752d5cd8886fc545">
-  <source>Selected providers can authenticate to this provider with their JWTs, request its tokens via token exchange, and introspect or revoke them.</source>
-</trans-unit>
-<trans-unit id="policies.bindings.dry-run.label">
-  <source>Dry-run</source>
-</trans-unit>
-<trans-unit id="events.policy-execution.raw-result.label">
-  <source>Raw result</source>
-</trans-unit>
-<trans-unit id="events.policy-execution.cached.label">
-  <source>Cached</source>
-</trans-unit>
 </body>
 </file>
 </xliff>
