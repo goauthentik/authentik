@@ -374,6 +374,34 @@ jobs:
         if: ${{ always() }}
         with:
           flags: e2e
+  test-container:
+    name: test-container - Run ${{ matrix.run_id }}/10
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs:
+      - build
+      - test-make-seed
+    strategy:
+      fail-fast: false
+      matrix:
+        run_id: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+        with:
+          name: container-build-server-amd64
+      - name: Load container image
+        run: |
+          skopeo copy "oci-archive:container/server-amd64.oci.tar" "docker-daemon:authentik.invalid/goauthentik/server:ci"
+          rm -rf container/
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+      - name: Run tests in the server image
+        env:
+          AUTHENTIK_IMAGE: authentik.invalid/goauthentik/server
+          AUTHENTIK_TAG: ci
+          CI_TEST_SEED: ${{ needs.test-make-seed.outputs.seed }}
+          CI_RUN_ID: ${{ matrix.run_id }}
+          CI_TOTAL_RUNS: "10"
+        run: ./scripts/test_docker.sh
   test-openid-conformance:
     name: test-openid-conformance (${{ matrix.job.name }})
     runs-on: ubuntu-latest
@@ -602,6 +630,7 @@ jobs:
       - test-unittest
       - test-integration
       - test-e2e
+      - test-container
       - test-rust
     runs-on: ubuntu-latest
     steps:
