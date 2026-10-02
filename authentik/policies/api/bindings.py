@@ -10,7 +10,6 @@ from rest_framework.serializers import PrimaryKeyRelatedField
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.groups import PartialUserSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import PartialGroupSerializer
 from authentik.core.api.utils import ModelSerializer
 from authentik.policies.api.policies import PolicySerializer
@@ -119,7 +118,7 @@ class PolicyBindingFilter(FilterSet):
         fields = ["policy", "policy__isnull", "target", "target_in", "enabled", "order", "timeout"]
 
 
-class PolicyBindingViewSet(UsedByMixin, ModelViewSet):
+class PolicyBindingViewSet(ModelViewSet):
     """PolicyBinding Viewset"""
 
     queryset = (

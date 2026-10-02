@@ -3,7 +3,6 @@
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.property_mappings import PropertyMappingFilterSet, PropertyMappingSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.sources.plex.models import PlexSourcePropertyMapping
 
 
@@ -21,7 +20,7 @@ class PlexSourcePropertyMappingFilter(PropertyMappingFilterSet):
         model = PlexSourcePropertyMapping
 
 
-class PlexSourcePropertyMappingViewSet(UsedByMixin, ModelViewSet):
+class PlexSourcePropertyMappingViewSet(ModelViewSet):
     """PlexSourcePropertyMapping Viewset"""
 
     queryset = PlexSourcePropertyMapping.objects.all()

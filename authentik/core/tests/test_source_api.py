@@ -2,6 +2,7 @@ from django.apps import apps
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
+from authentik.core.models import Source
 from authentik.core.tests.utils import create_test_admin_user
 
 
@@ -13,7 +14,9 @@ class TestSourceAPI(APITestCase):
     def test_builtin_source_used_by(self):
         """Test Providers's types endpoint"""
         apps.get_app_config("authentik_core").source_inbuilt()
+        source = Source.objects.get(slug="authentik-built-in")
         response = self.client.get(
-            reverse("authentik_api:source-used-by", kwargs={"slug": "authentik-built-in"}),
+            reverse("authentik_api:core-used-by"),
+            data={"model": "authentik_core.source", "pk": str(source.pk)},
         )
         self.assertEqual(response.status_code, 200)

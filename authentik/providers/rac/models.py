@@ -312,3 +312,4 @@ class ConnectionToken(InternallyManagedMixin, ExpiringModel):
         verbose_name = _("RAC Connection token")
         verbose_name_plural = _("RAC Connection tokens")
         indexes = ExpiringModel.Meta.indexes
+        authentik_used_by_owner_field = "session__user"

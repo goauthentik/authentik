@@ -81,7 +81,6 @@ import {
     ServiceConnectionStateFromJSON,
 } from "../models/ServiceConnectionState";
 import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface OutpostsInstancesCreateRequest {
@@ -166,13 +165,6 @@ export interface OutpostsInstancesUpdateRequest {
      */
     uuid: string;
     outpostRequest: OutpostRequest;
-}
-
-export interface OutpostsInstancesUsedByListRequest {
-    /**
-     * A UUID string identifying this Outpost.
-     */
-    uuid: string;
 }
 
 export interface OutpostsLdapAccessCheckRequest {
@@ -292,13 +284,6 @@ export interface OutpostsServiceConnectionsAllStateRetrieveRequest {
     uuid: string;
 }
 
-export interface OutpostsServiceConnectionsAllUsedByListRequest {
-    /**
-     * A UUID string identifying this Outpost Service-Connection.
-     */
-    uuid: string;
-}
-
 export interface OutpostsServiceConnectionsDockerCreateRequest {
     dockerServiceConnectionRequest: DockerServiceConnectionRequest;
 }
@@ -357,13 +342,6 @@ export interface OutpostsServiceConnectionsDockerUpdateRequest {
     dockerServiceConnectionRequest: DockerServiceConnectionRequest;
 }
 
-export interface OutpostsServiceConnectionsDockerUsedByListRequest {
-    /**
-     * A UUID string identifying this Docker Service-Connection.
-     */
-    uuid: string;
-}
-
 export interface OutpostsServiceConnectionsKubernetesCreateRequest {
     kubernetesServiceConnectionRequest: KubernetesServiceConnectionRequest;
 }
@@ -417,13 +395,6 @@ export interface OutpostsServiceConnectionsKubernetesUpdateRequest {
      */
     uuid: string;
     kubernetesServiceConnectionRequest: KubernetesServiceConnectionRequest;
-}
-
-export interface OutpostsServiceConnectionsKubernetesUsedByListRequest {
-    /**
-     * A UUID string identifying this Kubernetes Service-Connection.
-     */
-    uuid: string;
 }
 
 export class OutpostsApi extends runtime.BaseAPI {
@@ -1012,70 +983,6 @@ export class OutpostsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Outpost> {
         const response = await this.outpostsInstancesUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for outpostsInstancesUsedByList without sending the request
-     */
-    async outpostsInstancesUsedByListRequestOpts(
-        requestParameters: OutpostsInstancesUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
-            throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling outpostsInstancesUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/outposts/instances/{uuid}/used_by/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async outpostsInstancesUsedByListRaw(
-        requestParameters: OutpostsInstancesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.outpostsInstancesUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async outpostsInstancesUsedByList(
-        requestParameters: OutpostsInstancesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.outpostsInstancesUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
         return await response.value();
     }
 
@@ -1766,72 +1673,6 @@ export class OutpostsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for outpostsServiceConnectionsAllUsedByList without sending the
-     * request
-     */
-    async outpostsServiceConnectionsAllUsedByListRequestOpts(
-        requestParameters: OutpostsServiceConnectionsAllUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
-            throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsAllUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/outposts/service_connections/all/{uuid}/used_by/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async outpostsServiceConnectionsAllUsedByListRaw(
-        requestParameters: OutpostsServiceConnectionsAllUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.outpostsServiceConnectionsAllUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async outpostsServiceConnectionsAllUsedByList(
-        requestParameters: OutpostsServiceConnectionsAllUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.outpostsServiceConnectionsAllUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for outpostsServiceConnectionsDockerCreate without sending the
      * request
      */
@@ -2282,72 +2123,6 @@ export class OutpostsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for outpostsServiceConnectionsDockerUsedByList without sending the
-     * request
-     */
-    async outpostsServiceConnectionsDockerUsedByListRequestOpts(
-        requestParameters: OutpostsServiceConnectionsDockerUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
-            throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsDockerUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/outposts/service_connections/docker/{uuid}/used_by/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async outpostsServiceConnectionsDockerUsedByListRaw(
-        requestParameters: OutpostsServiceConnectionsDockerUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.outpostsServiceConnectionsDockerUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async outpostsServiceConnectionsDockerUsedByList(
-        requestParameters: OutpostsServiceConnectionsDockerUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.outpostsServiceConnectionsDockerUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for outpostsServiceConnectionsKubernetesCreate without sending the
      * request
      */
@@ -2782,72 +2557,6 @@ export class OutpostsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<KubernetesServiceConnection> {
         const response = await this.outpostsServiceConnectionsKubernetesUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for outpostsServiceConnectionsKubernetesUsedByList without sending
-     * the request
-     */
-    async outpostsServiceConnectionsKubernetesUsedByListRequestOpts(
-        requestParameters: OutpostsServiceConnectionsKubernetesUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
-            throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsKubernetesUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/outposts/service_connections/kubernetes/{uuid}/used_by/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async outpostsServiceConnectionsKubernetesUsedByListRaw(
-        requestParameters: OutpostsServiceConnectionsKubernetesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.outpostsServiceConnectionsKubernetesUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async outpostsServiceConnectionsKubernetesUsedByList(
-        requestParameters: OutpostsServiceConnectionsKubernetesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.outpostsServiceConnectionsKubernetesUsedByListRaw(
             requestParameters,
             initOverrides,
         );

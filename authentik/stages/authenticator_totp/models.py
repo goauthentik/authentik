@@ -240,3 +240,4 @@ class TOTPDevice(SerializerModel, ThrottlingMixin, Device):
     class Meta(Device.Meta):
         verbose_name = _("TOTP Device")
         verbose_name_plural = _("TOTP Devices")
+        authentik_used_by_owner_field = "user"

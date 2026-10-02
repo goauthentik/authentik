@@ -19,7 +19,6 @@ from structlog.stdlib import get_logger
 
 from authentik.api.validation import Serializer, validate
 from authentik.core.api.groups import PartialUserSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import User
 from authentik.flows.api.stages import StageSerializer
@@ -57,7 +56,7 @@ class AuthenticatorDuoStageManualDeviceImport(Serializer):
     username = CharField(required=True)
 
 
-class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
+class AuthenticatorDuoStageViewSet(ModelViewSet):
     """AuthenticatorDuoStage Viewset"""
 
     queryset = AuthenticatorDuoStage.objects.all()
@@ -256,7 +255,6 @@ class DuoDeviceViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
-    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

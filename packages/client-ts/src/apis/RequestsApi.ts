@@ -72,7 +72,6 @@ import {
 } from "../models/RequestRuleChildBindingRequest";
 import { type RequestRuleRequest, RequestRuleRequestToJSON } from "../models/RequestRuleRequest";
 import { type RequestStatus } from "../models/RequestStatus";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface RequestsGrantRequestsAgentCreateRequest {
@@ -211,13 +210,6 @@ export interface RequestsRuleBindingsUpdateRequest {
     requestRuleBindingRequest: RequestRuleBindingRequest;
 }
 
-export interface RequestsRuleBindingsUsedByListRequest {
-    /**
-     * A UUID string identifying this Request Rule Binding.
-     */
-    uuid: string;
-}
-
 export interface RequestsRuleChildBindingsCreateRequest {
     requestRuleChildBindingRequest: RequestRuleChildBindingRequest;
 }
@@ -271,13 +263,6 @@ export interface RequestsRuleChildBindingsUpdateRequest {
      */
     uuid: string;
     requestRuleChildBindingRequest: RequestRuleChildBindingRequest;
-}
-
-export interface RequestsRuleChildBindingsUsedByListRequest {
-    /**
-     * A UUID string identifying this Request Rule Child Binding.
-     */
-    uuid: string;
 }
 
 export interface RequestsRulesCreateRequest {
@@ -334,13 +319,6 @@ export interface RequestsRulesUpdateRequest {
      */
     uuid: string;
     requestRuleRequest: RequestRuleRequest;
-}
-
-export interface RequestsRulesUsedByListRequest {
-    /**
-     * A UUID string identifying this Request Rule.
-     */
-    uuid: string;
 }
 
 export class RequestsApi extends runtime.BaseAPI {
@@ -929,9 +907,6 @@ export class RequestsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleBindingsCreateRaw(
         requestParameters: RequestsRuleBindingsCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -944,9 +919,6 @@ export class RequestsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleBindingsCreate(
         requestParameters: RequestsRuleBindingsCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -992,9 +964,6 @@ export class RequestsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleBindingsDestroyRaw(
         requestParameters: RequestsRuleBindingsDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1005,9 +974,6 @@ export class RequestsApi extends runtime.BaseAPI {
         return new runtime.VoidApiResponse(response);
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleBindingsDestroy(
         requestParameters: RequestsRuleBindingsDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1068,9 +1034,6 @@ export class RequestsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleBindingsListRaw(
         requestParameters: RequestsRuleBindingsListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1083,9 +1046,6 @@ export class RequestsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleBindingsList(
         requestParameters: RequestsRuleBindingsListRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1136,9 +1096,6 @@ export class RequestsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleBindingsPartialUpdateRaw(
         requestParameters: RequestsRuleBindingsPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1152,9 +1109,6 @@ export class RequestsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleBindingsPartialUpdate(
         requestParameters: RequestsRuleBindingsPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1203,9 +1157,6 @@ export class RequestsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleBindingsRetrieveRaw(
         requestParameters: RequestsRuleBindingsRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1219,9 +1170,6 @@ export class RequestsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleBindingsRetrieve(
         requestParameters: RequestsRuleBindingsRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1280,9 +1228,6 @@ export class RequestsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleBindingsUpdateRaw(
         requestParameters: RequestsRuleBindingsUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1295,79 +1240,11 @@ export class RequestsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleBindingsUpdate(
         requestParameters: RequestsRuleBindingsUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<RequestRuleBinding> {
         const response = await this.requestsRuleBindingsUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for requestsRuleBindingsUsedByList without sending the request
-     */
-    async requestsRuleBindingsUsedByListRequestOpts(
-        requestParameters: RequestsRuleBindingsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
-            throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling requestsRuleBindingsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/requests/rule-bindings/{uuid}/used_by/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async requestsRuleBindingsUsedByListRaw(
-        requestParameters: RequestsRuleBindingsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.requestsRuleBindingsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async requestsRuleBindingsUsedByList(
-        requestParameters: RequestsRuleBindingsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.requestsRuleBindingsUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
         return await response.value();
     }
 
@@ -1412,9 +1289,6 @@ export class RequestsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleChildBindingsCreateRaw(
         requestParameters: RequestsRuleChildBindingsCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1428,9 +1302,6 @@ export class RequestsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleChildBindingsCreate(
         requestParameters: RequestsRuleChildBindingsCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1479,9 +1350,6 @@ export class RequestsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleChildBindingsDestroyRaw(
         requestParameters: RequestsRuleChildBindingsDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1493,9 +1361,6 @@ export class RequestsApi extends runtime.BaseAPI {
         return new runtime.VoidApiResponse(response);
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleChildBindingsDestroy(
         requestParameters: RequestsRuleChildBindingsDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1556,9 +1421,6 @@ export class RequestsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleChildBindingsListRaw(
         requestParameters: RequestsRuleChildBindingsListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1572,9 +1434,6 @@ export class RequestsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleChildBindingsList(
         requestParameters: RequestsRuleChildBindingsListRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1629,9 +1488,6 @@ export class RequestsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleChildBindingsPartialUpdateRaw(
         requestParameters: RequestsRuleChildBindingsPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1645,9 +1501,6 @@ export class RequestsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleChildBindingsPartialUpdate(
         requestParameters: RequestsRuleChildBindingsPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1696,9 +1549,6 @@ export class RequestsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleChildBindingsRetrieveRaw(
         requestParameters: RequestsRuleChildBindingsRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1712,9 +1562,6 @@ export class RequestsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleChildBindingsRetrieve(
         requestParameters: RequestsRuleChildBindingsRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1775,9 +1622,6 @@ export class RequestsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleChildBindingsUpdateRaw(
         requestParameters: RequestsRuleChildBindingsUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1791,79 +1635,11 @@ export class RequestsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRuleChildBindingsUpdate(
         requestParameters: RequestsRuleChildBindingsUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<RequestRuleChildBinding> {
         const response = await this.requestsRuleChildBindingsUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for requestsRuleChildBindingsUsedByList without sending the request
-     */
-    async requestsRuleChildBindingsUsedByListRequestOpts(
-        requestParameters: RequestsRuleChildBindingsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
-            throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling requestsRuleChildBindingsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/requests/rule-child-bindings/{uuid}/used_by/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async requestsRuleChildBindingsUsedByListRaw(
-        requestParameters: RequestsRuleChildBindingsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.requestsRuleChildBindingsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async requestsRuleChildBindingsUsedByList(
-        requestParameters: RequestsRuleChildBindingsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.requestsRuleChildBindingsUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -1909,9 +1685,6 @@ export class RequestsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRulesCreateRaw(
         requestParameters: RequestsRulesCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1922,9 +1695,6 @@ export class RequestsApi extends runtime.BaseAPI {
         return new runtime.JSONApiResponse(response, (jsonValue) => RequestRuleFromJSON(jsonValue));
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRulesCreate(
         requestParameters: RequestsRulesCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1970,9 +1740,6 @@ export class RequestsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRulesDestroyRaw(
         requestParameters: RequestsRulesDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1983,9 +1750,6 @@ export class RequestsApi extends runtime.BaseAPI {
         return new runtime.VoidApiResponse(response);
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRulesDestroy(
         requestParameters: RequestsRulesDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2050,9 +1814,6 @@ export class RequestsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRulesListRaw(
         requestParameters: RequestsRulesListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2065,9 +1826,6 @@ export class RequestsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRulesList(
         requestParameters: RequestsRulesListRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2116,9 +1874,6 @@ export class RequestsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRulesPartialUpdateRaw(
         requestParameters: RequestsRulesPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2129,9 +1884,6 @@ export class RequestsApi extends runtime.BaseAPI {
         return new runtime.JSONApiResponse(response, (jsonValue) => RequestRuleFromJSON(jsonValue));
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRulesPartialUpdate(
         requestParameters: RequestsRulesPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2177,9 +1929,6 @@ export class RequestsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRulesRetrieveRaw(
         requestParameters: RequestsRulesRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2190,9 +1939,6 @@ export class RequestsApi extends runtime.BaseAPI {
         return new runtime.JSONApiResponse(response, (jsonValue) => RequestRuleFromJSON(jsonValue));
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRulesRetrieve(
         requestParameters: RequestsRulesRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2248,9 +1994,6 @@ export class RequestsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRulesUpdateRaw(
         requestParameters: RequestsRulesUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2261,75 +2004,11 @@ export class RequestsApi extends runtime.BaseAPI {
         return new runtime.JSONApiResponse(response, (jsonValue) => RequestRuleFromJSON(jsonValue));
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async requestsRulesUpdate(
         requestParameters: RequestsRulesUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<RequestRule> {
         const response = await this.requestsRulesUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for requestsRulesUsedByList without sending the request
-     */
-    async requestsRulesUsedByListRequestOpts(
-        requestParameters: RequestsRulesUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
-            throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling requestsRulesUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/requests/rules/{uuid}/used_by/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async requestsRulesUsedByListRaw(
-        requestParameters: RequestsRulesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.requestsRulesUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async requestsRulesUsedByList(
-        requestParameters: RequestsRulesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.requestsRulesUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 }

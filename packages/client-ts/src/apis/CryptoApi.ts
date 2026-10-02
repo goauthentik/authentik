@@ -29,7 +29,6 @@ import {
     type PatchedCertificateKeyPairRequest,
     PatchedCertificateKeyPairRequestToJSON,
 } from "../models/PatchedCertificateKeyPairRequest";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface CryptoCertificatekeypairsCreateRequest {
@@ -94,13 +93,6 @@ export interface CryptoCertificatekeypairsUpdateRequest {
      */
     kpUuid: string;
     certificateKeyPairRequest: CertificateKeyPairRequest;
-}
-
-export interface CryptoCertificatekeypairsUsedByListRequest {
-    /**
-     * A UUID string identifying this Certificate-Key Pair.
-     */
-    kpUuid: string;
 }
 
 export interface CryptoCertificatekeypairsViewCertificateRetrieveRequest {
@@ -636,74 +628,6 @@ export class CryptoApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<CertificateKeyPair> {
         const response = await this.cryptoCertificatekeypairsUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for cryptoCertificatekeypairsUsedByList without sending the request
-     */
-    async cryptoCertificatekeypairsUsedByListRequestOpts(
-        requestParameters: CryptoCertificatekeypairsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["kpUuid"] == null) {
-            throw new runtime.RequiredError(
-                "kpUuid",
-                'Required parameter "kpUuid" was null or undefined when calling cryptoCertificatekeypairsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/crypto/certificatekeypairs/{kp_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{kp_uuid}",
-            encodeURIComponent(String(requestParameters["kpUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async cryptoCertificatekeypairsUsedByListRaw(
-        requestParameters: CryptoCertificatekeypairsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.cryptoCertificatekeypairsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async cryptoCertificatekeypairsUsedByList(
-        requestParameters: CryptoCertificatekeypairsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.cryptoCertificatekeypairsUsedByListRaw(
             requestParameters,
             initOverrides,
         );

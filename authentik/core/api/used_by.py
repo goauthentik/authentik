@@ -1,18 +1,23 @@
-"""used_by mixin"""
+"""used_by API"""
 
 from enum import Enum
 from inspect import getmembers
 
+from django.apps import apps
 from django.db.models.base import Model
 from django.db.models.deletion import SET_DEFAULT, SET_NULL
 from django.db.models.manager import Manager
+from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
 from guardian.shortcuts import get_objects_for_user
-from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ChoiceField
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
+from authentik.api.validation import validate
 from authentik.core.api.utils import PassiveSerializer
 from authentik.rbac.filters import ObjectFilter
 
@@ -49,19 +54,45 @@ def get_delete_action(manager: Manager) -> str:
     return DeleteAction.CASCADE.value
 
 
-class UsedByMixin:
-    """Mixin to add a used_by endpoint to return a list of all objects using this object"""
+class UsedByParameters(PassiveSerializer):
+    """Parameters to look up which objects use a given object"""
+
+    model = CharField(help_text="Fully qualified model name, in the form `<app_label>.<model>`")
+    pk = CharField()
+
+
+class UsedByView(APIView):
+    """Get a list of all objects that use a given object, identified by its model and pk"""
+
+    permission_classes = [IsAuthenticated]
+    # Set per-request by `get_target` based on the resolved model, and read by `ObjectFilter`
+    owner_field = None
+
+    def get_target(self, request: Request, params: dict[str, str]) -> Model:
+        """Resolve the `model`/`pk` parameters to a model instance the user may view"""
+        app_label, _, model_name = params["model"].partition(".")
+        try:
+            model = apps.get_model(app_label, model_name)
+        except LookupError:
+            raise ValidationError({"model": "Invalid model"}) from None
+        # Models can declare `authentik_used_by_owner_field` in their Meta to allow
+        # their owner to query used_by even without an explicit view permission,
+        # mirroring the `owner_field` that viewsets use for the same purpose.
+        self.owner_field = getattr(model._meta, "authentik_used_by_owner_field", None)
+        queryset = ObjectFilter().filter_queryset(request, model.objects.all(), self)
+        return get_object_or_404(queryset, pk=params["pk"])
 
     @extend_schema(
+        parameters=[UsedByParameters],
         responses={200: UsedBySerializer(many=True)},
     )
-    @action(detail=True, pagination_class=None, filter_backends=[ObjectFilter])
-    def used_by(self, request: Request, *args, **kwargs) -> Response:
+    @validate(UsedByParameters, location="query")
+    def get(self, request: Request, query: UsedByParameters) -> Response:
         """Get a list of all objects that use this object"""
-        model: Model = self.get_object()
+        target = self.get_target(request, query.validated_data)
         used_by = []
         shadows = []
-        for attr_name, manager in getmembers(model, lambda x: isinstance(x, Manager)):
+        for attr_name, manager in getmembers(target, lambda x: isinstance(x, Manager)):
             if attr_name == "objects":  # pragma: no cover
                 continue
             manager: Manager
