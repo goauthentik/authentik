@@ -141,3 +141,7 @@ if request.context["prompt_data"]["password"] == request.context["prompt_data"][
 ak_message("Passwords don't match.")
 return False
 ```
+
+:::info
+If an LDAP source has **User password writeback** enabled, authentik checks **Password** fields against Active Directory complexity requirements before it evaluates validation policies. For more information, see [Active Directory password complexity](../../../../users-sources/sources/protocols/ldap/index.mdx#active-directory-password-complexity).
+:::
