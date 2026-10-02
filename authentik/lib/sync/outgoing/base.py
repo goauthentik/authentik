@@ -1,10 +1,10 @@
 """Basic outgoing sync Client"""
 
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from datetime import timedelta
 from enum import StrEnum
-from typing import TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING
 
 import pglock
 from deepmerge import always_merger
