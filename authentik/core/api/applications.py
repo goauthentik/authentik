@@ -37,8 +37,6 @@ from authentik.rbac.filters import ObjectFilter
 
 LOGGER = get_logger()
 
-APP_CACHE_TIMEOUT = CONFIG.get_int("cache.timeout_application_policies", 86400)
-
 
 def user_app_cache_key(
     user_pk: str, page_number: int | None = None, only_with_launch_url: bool = False
@@ -345,7 +343,7 @@ class ApplicationViewSet(
                         self.request.user.pk, paginator.page.number, only_with_launch_url
                     ),
                     allowed_applications,
-                    timeout=APP_CACHE_TIMEOUT,
+                    timeout=CONFIG.get_int("cache.timeout_application_policies", 86400),
                 )
 
         if only_with_launch_url:
