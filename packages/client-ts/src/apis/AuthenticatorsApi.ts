@@ -85,7 +85,6 @@ import { type StaticDevice, StaticDeviceFromJSON } from "../models/StaticDevice"
 import { type StaticDeviceRequest, StaticDeviceRequestToJSON } from "../models/StaticDeviceRequest";
 import { type TOTPDevice, TOTPDeviceFromJSON } from "../models/TOTPDevice";
 import { type TOTPDeviceRequest, TOTPDeviceRequestToJSON } from "../models/TOTPDeviceRequest";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import { type WebAuthnDevice, WebAuthnDeviceFromJSON } from "../models/WebAuthnDevice";
 import {
     type WebAuthnDeviceRequest,
@@ -525,13 +524,6 @@ export interface AuthenticatorsDuoUpdateRequest {
     duoDeviceRequest: DuoDeviceRequest;
 }
 
-export interface AuthenticatorsDuoUsedByListRequest {
-    /**
-     * A unique integer value identifying this Duo Device.
-     */
-    id: number;
-}
-
 export interface AuthenticatorsEmailDestroyRequest {
     /**
      * A unique integer value identifying this Email Device.
@@ -582,13 +574,6 @@ export interface AuthenticatorsEmailUpdateRequest {
     emailDeviceRequest: EmailDeviceRequest;
 }
 
-export interface AuthenticatorsEmailUsedByListRequest {
-    /**
-     * A unique integer value identifying this Email Device.
-     */
-    id: number;
-}
-
 export interface AuthenticatorsEndpointListRequest {
     name?: string;
     /**
@@ -610,13 +595,6 @@ export interface AuthenticatorsEndpointListRequest {
 }
 
 export interface AuthenticatorsEndpointRetrieveRequest {
-    /**
-     * A UUID string identifying this Endpoint Device.
-     */
-    uuid: string;
-}
-
-export interface AuthenticatorsEndpointUsedByListRequest {
     /**
      * A UUID string identifying this Endpoint Device.
      */
@@ -673,13 +651,6 @@ export interface AuthenticatorsSmsUpdateRequest {
     sMSDeviceRequest: SMSDeviceRequest;
 }
 
-export interface AuthenticatorsSmsUsedByListRequest {
-    /**
-     * A unique integer value identifying this SMS Device.
-     */
-    id: number;
-}
-
 export interface AuthenticatorsStaticDestroyRequest {
     /**
      * A unique integer value identifying this Static Device.
@@ -728,13 +699,6 @@ export interface AuthenticatorsStaticUpdateRequest {
      */
     id: number;
     staticDeviceRequest: StaticDeviceRequest;
-}
-
-export interface AuthenticatorsStaticUsedByListRequest {
-    /**
-     * A unique integer value identifying this Static Device.
-     */
-    id: number;
 }
 
 export interface AuthenticatorsTotpDestroyRequest {
@@ -787,13 +751,6 @@ export interface AuthenticatorsTotpUpdateRequest {
     tOTPDeviceRequest: TOTPDeviceRequest;
 }
 
-export interface AuthenticatorsTotpUsedByListRequest {
-    /**
-     * A unique integer value identifying this TOTP Device.
-     */
-    id: number;
-}
-
 export interface AuthenticatorsWebauthnDestroyRequest {
     /**
      * A unique integer value identifying this WebAuthn Device.
@@ -842,13 +799,6 @@ export interface AuthenticatorsWebauthnUpdateRequest {
      */
     id: number;
     webAuthnDeviceRequest: WebAuthnDeviceRequest;
-}
-
-export interface AuthenticatorsWebauthnUsedByListRequest {
-    /**
-     * A unique integer value identifying this WebAuthn Device.
-     */
-    id: number;
 }
 
 export class AuthenticatorsApi extends runtime.BaseAPI {
@@ -4225,70 +4175,6 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for authenticatorsDuoUsedByList without sending the request
-     */
-    async authenticatorsDuoUsedByListRequestOpts(
-        requestParameters: AuthenticatorsDuoUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsDuoUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/authenticators/duo/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async authenticatorsDuoUsedByListRaw(
-        requestParameters: AuthenticatorsDuoUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.authenticatorsDuoUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async authenticatorsDuoUsedByList(
-        requestParameters: AuthenticatorsDuoUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.authenticatorsDuoUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for authenticatorsEmailDestroy without sending the request
      */
     async authenticatorsEmailDestroyRequestOpts(
@@ -4627,71 +4513,6 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for authenticatorsEmailUsedByList without sending the request
-     */
-    async authenticatorsEmailUsedByListRequestOpts(
-        requestParameters: AuthenticatorsEmailUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsEmailUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/authenticators/email/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async authenticatorsEmailUsedByListRaw(
-        requestParameters: AuthenticatorsEmailUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.authenticatorsEmailUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async authenticatorsEmailUsedByList(
-        requestParameters: AuthenticatorsEmailUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.authenticatorsEmailUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for authenticatorsEndpointList without sending the request
      */
     async authenticatorsEndpointListRequestOpts(
@@ -4827,71 +4648,6 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<GoogleEndpointDevice> {
         const response = await this.authenticatorsEndpointRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for authenticatorsEndpointUsedByList without sending the request
-     */
-    async authenticatorsEndpointUsedByListRequestOpts(
-        requestParameters: AuthenticatorsEndpointUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
-            throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling authenticatorsEndpointUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/authenticators/endpoint/{uuid}/used_by/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async authenticatorsEndpointUsedByListRaw(
-        requestParameters: AuthenticatorsEndpointUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.authenticatorsEndpointUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async authenticatorsEndpointUsedByList(
-        requestParameters: AuthenticatorsEndpointUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.authenticatorsEndpointUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -5230,70 +4986,6 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<SMSDevice> {
         const response = await this.authenticatorsSmsUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for authenticatorsSmsUsedByList without sending the request
-     */
-    async authenticatorsSmsUsedByListRequestOpts(
-        requestParameters: AuthenticatorsSmsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsSmsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/authenticators/sms/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async authenticatorsSmsUsedByListRaw(
-        requestParameters: AuthenticatorsSmsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.authenticatorsSmsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async authenticatorsSmsUsedByList(
-        requestParameters: AuthenticatorsSmsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.authenticatorsSmsUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
         return await response.value();
     }
 
@@ -5643,71 +5335,6 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for authenticatorsStaticUsedByList without sending the request
-     */
-    async authenticatorsStaticUsedByListRequestOpts(
-        requestParameters: AuthenticatorsStaticUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsStaticUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/authenticators/static/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async authenticatorsStaticUsedByListRaw(
-        requestParameters: AuthenticatorsStaticUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.authenticatorsStaticUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async authenticatorsStaticUsedByList(
-        requestParameters: AuthenticatorsStaticUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.authenticatorsStaticUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for authenticatorsTotpDestroy without sending the request
      */
     async authenticatorsTotpDestroyRequestOpts(
@@ -6039,71 +5666,6 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<TOTPDevice> {
         const response = await this.authenticatorsTotpUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for authenticatorsTotpUsedByList without sending the request
-     */
-    async authenticatorsTotpUsedByListRequestOpts(
-        requestParameters: AuthenticatorsTotpUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsTotpUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/authenticators/totp/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async authenticatorsTotpUsedByListRaw(
-        requestParameters: AuthenticatorsTotpUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.authenticatorsTotpUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async authenticatorsTotpUsedByList(
-        requestParameters: AuthenticatorsTotpUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.authenticatorsTotpUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
         return await response.value();
     }
 
@@ -6453,71 +6015,6 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<WebAuthnDevice> {
         const response = await this.authenticatorsWebauthnUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for authenticatorsWebauthnUsedByList without sending the request
-     */
-    async authenticatorsWebauthnUsedByListRequestOpts(
-        requestParameters: AuthenticatorsWebauthnUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling authenticatorsWebauthnUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/authenticators/webauthn/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async authenticatorsWebauthnUsedByListRaw(
-        requestParameters: AuthenticatorsWebauthnUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.authenticatorsWebauthnUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async authenticatorsWebauthnUsedByList(
-        requestParameters: AuthenticatorsWebauthnUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.authenticatorsWebauthnUsedByListRaw(
             requestParameters,
             initOverrides,
         );

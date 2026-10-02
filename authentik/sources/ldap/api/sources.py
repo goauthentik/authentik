@@ -17,7 +17,6 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.sources import (
     SourceSerializer,
 )
-from authentik.core.api.used_by import UsedByMixin
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.sync.api import SyncStatusSerializer
 from authentik.rbac.filters import ObjectFilter
@@ -141,7 +140,7 @@ class LDAPSourceSerializer(SourceSerializer):
         extra_kwargs = {"bind_password": {"write_only": True}}
 
 
-class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
+class LDAPSourceViewSet(ModelViewSet):
     """LDAP Source Viewset"""
 
     queryset = LDAPSource.objects.all()

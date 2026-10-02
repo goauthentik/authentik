@@ -2,7 +2,6 @@
 
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.used_by import UsedByMixin
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.stages.mtls.models import MutualTLSStage
 from authentik.flows.api.stages import StageSerializer
@@ -21,7 +20,7 @@ class MutualTLSStageSerializer(EnterpriseRequiredMixin, StageSerializer):
         ]
 
 
-class MutualTLSStageViewSet(UsedByMixin, ModelViewSet):
+class MutualTLSStageViewSet(ModelViewSet):
     """MutualTLSStage Viewset"""
 
     queryset = MutualTLSStage.objects.all()

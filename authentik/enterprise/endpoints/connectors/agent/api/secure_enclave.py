@@ -1,6 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.endpoints.connectors.agent.models import AppleIndependentSecureEnclave
 
@@ -17,7 +16,7 @@ class AppleIndependentSecureEnclaveSerializer(ModelSerializer):
         ]
 
 
-class AppleIndependentSecureEnclaveViewSet(UsedByMixin, ModelViewSet):
+class AppleIndependentSecureEnclaveViewSet(ModelViewSet):
     queryset = AppleIndependentSecureEnclave.objects.all()
     serializer_class = AppleIndependentSecureEnclaveSerializer
     search_fields = [

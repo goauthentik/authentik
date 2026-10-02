@@ -18,6 +18,7 @@ from authentik.core.api.sources import (
 )
 from authentik.core.api.tokens import TokenViewSet
 from authentik.core.api.transactional_applications import TransactionalApplicationView
+from authentik.core.api.used_by import UsedByView
 from authentik.core.api.users import UserViewSet
 from authentik.core.setup.views import SetupView
 from authentik.core.views.apps import RedirectToAppLaunch
@@ -98,6 +99,11 @@ api_urlpatterns = [
     ("core/users", UserViewSet),
     ("core/tokens", TokenViewSet),
     ("core/object_attributes", ObjectAttributeViewSet),
+    path(
+        "core/used_by/",
+        UsedByView.as_view(),
+        name="core-used-by",
+    ),
     ("sources/all", SourceViewSet),
     ("sources/user_connections/all", UserSourceConnectionViewSet),
     ("sources/group_connections/all", GroupSourceConnectionViewSet),

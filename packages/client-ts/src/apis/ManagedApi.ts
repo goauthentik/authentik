@@ -28,7 +28,6 @@ import {
     type PatchedBlueprintInstanceRequest,
     PatchedBlueprintInstanceRequestToJSON,
 } from "../models/PatchedBlueprintInstanceRequest";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface ManagedBlueprintsApplyCreateRequest {
@@ -97,13 +96,6 @@ export interface ManagedBlueprintsUpdateRequest {
      */
     instanceUuid: string;
     blueprintInstanceRequest: BlueprintInstanceRequest;
-}
-
-export interface ManagedBlueprintsUsedByListRequest {
-    /**
-     * A UUID string identifying this Blueprint Instance.
-     */
-    instanceUuid: string;
 }
 
 export interface ManagedBlueprintsValidateCreateRequest {
@@ -740,73 +732,6 @@ export class ManagedApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<BlueprintInstance> {
         const response = await this.managedBlueprintsUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for managedBlueprintsUsedByList without sending the request
-     */
-    async managedBlueprintsUsedByListRequestOpts(
-        requestParameters: ManagedBlueprintsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["instanceUuid"] == null) {
-            throw new runtime.RequiredError(
-                "instanceUuid",
-                'Required parameter "instanceUuid" was null or undefined when calling managedBlueprintsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/managed/blueprints/{instance_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{instance_uuid}",
-            encodeURIComponent(String(requestParameters["instanceUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async managedBlueprintsUsedByListRaw(
-        requestParameters: ManagedBlueprintsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.managedBlueprintsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async managedBlueprintsUsedByList(
-        requestParameters: ManagedBlueprintsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.managedBlueprintsUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
         return await response.value();
     }
 

@@ -11,7 +11,6 @@ from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.sources import SourceSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.providers.saml.api.providers import SAMLMetadataSerializer
 from authentik.sources.saml.models import SAMLSource
 from authentik.sources.saml.processors.metadata import MetadataProcessor
@@ -64,7 +63,7 @@ class SAMLSourceSerializer(SourceSerializer):
         ]
 
 
-class SAMLSourceViewSet(UsedByMixin, ModelViewSet):
+class SAMLSourceViewSet(ModelViewSet):
     """SAMLSource Viewset"""
 
     queryset = SAMLSource.objects.all()

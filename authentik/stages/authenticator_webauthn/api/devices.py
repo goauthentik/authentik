@@ -4,7 +4,6 @@ from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.core.api.groups import PartialUserSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.stages.authenticator_webauthn.api.device_types import WebAuthnDeviceTypeSerializer
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
@@ -28,7 +27,6 @@ class WebAuthnDeviceViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
-    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

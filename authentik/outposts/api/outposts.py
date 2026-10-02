@@ -16,7 +16,6 @@ from rest_framework.viewsets import ModelViewSet
 from authentik import authentik_build_hash
 from authentik.admin.api.system import fips_enabled
 from authentik.core.api.providers import ProviderSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
 from authentik.core.models import Provider
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
@@ -165,7 +164,7 @@ class OutpostFilter(FilterSet):
         }
 
 
-class OutpostViewSet(UsedByMixin, ModelViewSet):
+class OutpostViewSet(ModelViewSet):
     """Outpost Viewset"""
 
     queryset = Outpost.objects.all()

@@ -19,7 +19,6 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.v1.exporter import FlowExporter
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
     CacheSerializer,
     LinkSerializer,
@@ -108,7 +107,7 @@ class FlowSetSerializer(FlowSerializer):
         ]
 
 
-class FlowViewSet(UsedByMixin, ModelViewSet):
+class FlowViewSet(ModelViewSet):
     """Flow Viewset"""
 
     queryset = Flow.objects.all().prefetch_related("stages", "policies")

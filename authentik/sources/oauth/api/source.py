@@ -14,7 +14,6 @@ from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.sources import SourceSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.utils.http import get_http_session
 from authentik.sources.oauth.models import OAuthSource, PKCEMethod
@@ -189,7 +188,7 @@ class OAuthSourceFilter(FilterSet):
         ]
 
 
-class OAuthSourceViewSet(UsedByMixin, ModelViewSet):
+class OAuthSourceViewSet(ModelViewSet):
     """Source Viewset"""
 
     queryset = OAuthSource.objects.all()

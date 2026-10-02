@@ -9,7 +9,6 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.sources import SourceSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.lib.sync.api import SyncStatusSerializer
 from authentik.rbac.filters import ObjectFilter
 from authentik.sources.kerberos.models import KerberosSource
@@ -55,7 +54,7 @@ class KerberosSourceSerializer(SourceSerializer):
         }
 
 
-class KerberosSourceViewSet(UsedByMixin, ModelViewSet):
+class KerberosSourceViewSet(ModelViewSet):
     """Kerberos Source Viewset"""
 
     queryset = KerberosSource.objects.all()

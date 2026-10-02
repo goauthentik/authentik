@@ -198,6 +198,7 @@ class WebAuthnDevice(SerializerModel, Device):
     class Meta:
         verbose_name = _("WebAuthn Device")
         verbose_name_plural = _("WebAuthn Devices")
+        authentik_used_by_owner_field = "user"
 
 
 class WebAuthnDeviceType(InternallyManagedMixin, SerializerModel):

@@ -78,6 +78,9 @@ options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
     # used_by API that allows models to specify if they shadow an object
     # for example the proxy provider which is built on top of an oauth provider
     "authentik_used_by_shadows",
+    # used_by API that allows models to specify a field that, when it points to the
+    # requesting user, grants them used_by access without an explicit view permission
+    "authentik_used_by_owner_field",
 )
 
 GROUP_RECURSION_LIMIT = 20
@@ -1137,6 +1140,7 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
             models.Index(fields=("identifier",)),
             models.Index(fields=("source", "identifier")),
         )
+        authentik_used_by_owner_field = "user"
 
 
 class GroupSourceConnection(SerializerModel, CreatedUpdatedModel):
@@ -1195,6 +1199,7 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
             models.Index(fields=["identifier"]),
             models.Index(fields=["key"]),
         ]
+        authentik_used_by_owner_field = "user"
         permissions = [
             ("view_token_key", _("View token's key")),
             ("set_token_key", _("Set a token's key")),
@@ -1520,6 +1525,7 @@ class AuthenticatedSession(SerializerModel):
     class Meta:
         verbose_name = _("Authenticated Session")
         verbose_name_plural = _("Authenticated Sessions")
+        authentik_used_by_owner_field = "user"
 
     def __str__(self) -> str:
         return f"Authenticated Session {str(self.pk)[:10]}"

@@ -392,7 +392,6 @@ import { type SourceStageRequest, SourceStageRequestToJSON } from "../models/Sou
 import { type Stage, StageFromJSON } from "../models/Stage";
 import { type StageModeEnum } from "../models/StageModeEnum";
 import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import { type UserAttributeEnum } from "../models/UserAttributeEnum";
 import { type UserCreationModeEnum } from "../models/UserCreationModeEnum";
 import { type UserDeleteStage, UserDeleteStageFromJSON } from "../models/UserDeleteStage";
@@ -481,13 +480,6 @@ export interface StagesAccountLockdownUpdateRequest {
     accountLockdownStageRequest: AccountLockdownStageRequest;
 }
 
-export interface StagesAccountLockdownUsedByListRequest {
-    /**
-     * A UUID string identifying this Account Lockdown Stage.
-     */
-    stageUuid: string;
-}
-
 export interface StagesAllDestroyRequest {
     /**
      * A UUID string identifying this stage.
@@ -516,13 +508,6 @@ export interface StagesAllListRequest {
 }
 
 export interface StagesAllRetrieveRequest {
-    /**
-     * A UUID string identifying this stage.
-     */
-    stageUuid: string;
-}
-
-export interface StagesAllUsedByListRequest {
     /**
      * A UUID string identifying this stage.
      */
@@ -608,13 +593,6 @@ export interface StagesAuthenticatorDuoUpdateRequest {
     authenticatorDuoStageRequest: AuthenticatorDuoStageRequest;
 }
 
-export interface StagesAuthenticatorDuoUsedByListRequest {
-    /**
-     * A UUID string identifying this Duo Authenticator Setup Stage.
-     */
-    stageUuid: string;
-}
-
 export interface StagesAuthenticatorEmailCreateRequest {
     authenticatorEmailStageRequest: AuthenticatorEmailStageRequest;
 }
@@ -684,13 +662,6 @@ export interface StagesAuthenticatorEmailUpdateRequest {
     authenticatorEmailStageRequest: AuthenticatorEmailStageRequest;
 }
 
-export interface StagesAuthenticatorEmailUsedByListRequest {
-    /**
-     * A UUID string identifying this Email Authenticator Setup Stage.
-     */
-    stageUuid: string;
-}
-
 export interface StagesAuthenticatorEndpointGdtcCreateRequest {
     authenticatorEndpointGDTCStageRequest: AuthenticatorEndpointGDTCStageRequest;
 }
@@ -744,13 +715,6 @@ export interface StagesAuthenticatorEndpointGdtcUpdateRequest {
      */
     stageUuid: string;
     authenticatorEndpointGDTCStageRequest: AuthenticatorEndpointGDTCStageRequest;
-}
-
-export interface StagesAuthenticatorEndpointGdtcUsedByListRequest {
-    /**
-     * A UUID string identifying this Endpoint Authenticator Google Device Trust Connector Stage.
-     */
-    stageUuid: string;
 }
 
 export interface StagesAuthenticatorSmsCreateRequest {
@@ -818,13 +782,6 @@ export interface StagesAuthenticatorSmsUpdateRequest {
     authenticatorSMSStageRequest: AuthenticatorSMSStageRequest;
 }
 
-export interface StagesAuthenticatorSmsUsedByListRequest {
-    /**
-     * A UUID string identifying this SMS Authenticator Setup Stage.
-     */
-    stageUuid: string;
-}
-
 export interface StagesAuthenticatorStaticCreateRequest {
     authenticatorStaticStageRequest: AuthenticatorStaticStageRequest;
 }
@@ -882,13 +839,6 @@ export interface StagesAuthenticatorStaticUpdateRequest {
      */
     stageUuid: string;
     authenticatorStaticStageRequest: AuthenticatorStaticStageRequest;
-}
-
-export interface StagesAuthenticatorStaticUsedByListRequest {
-    /**
-     * A UUID string identifying this Static Authenticator Setup Stage.
-     */
-    stageUuid: string;
 }
 
 export interface StagesAuthenticatorTotpCreateRequest {
@@ -949,13 +899,6 @@ export interface StagesAuthenticatorTotpUpdateRequest {
     authenticatorTOTPStageRequest: AuthenticatorTOTPStageRequest;
 }
 
-export interface StagesAuthenticatorTotpUsedByListRequest {
-    /**
-     * A UUID string identifying this TOTP Authenticator Setup Stage.
-     */
-    stageUuid: string;
-}
-
 export interface StagesAuthenticatorValidateCreateRequest {
     authenticatorValidateStageRequest: AuthenticatorValidateStageRequest;
 }
@@ -1010,13 +953,6 @@ export interface StagesAuthenticatorValidateUpdateRequest {
      */
     stageUuid: string;
     authenticatorValidateStageRequest: AuthenticatorValidateStageRequest;
-}
-
-export interface StagesAuthenticatorValidateUsedByListRequest {
-    /**
-     * A UUID string identifying this Authenticator Validation Stage.
-     */
-    stageUuid: string;
 }
 
 export interface StagesAuthenticatorWebauthnCreateRequest {
@@ -1108,13 +1044,6 @@ export interface StagesAuthenticatorWebauthnUpdateRequest {
     authenticatorWebAuthnStageRequest: AuthenticatorWebAuthnStageRequest;
 }
 
-export interface StagesAuthenticatorWebauthnUsedByListRequest {
-    /**
-     * A UUID string identifying this WebAuthn Authenticator Setup Stage.
-     */
-    stageUuid: string;
-}
-
 export interface StagesCaptchaCreateRequest {
     captchaStageRequest: CaptchaStageRequest;
 }
@@ -1168,13 +1097,6 @@ export interface StagesCaptchaUpdateRequest {
      */
     stageUuid: string;
     captchaStageRequest: CaptchaStageRequest;
-}
-
-export interface StagesCaptchaUsedByListRequest {
-    /**
-     * A UUID string identifying this Captcha Stage.
-     */
-    stageUuid: string;
 }
 
 export interface StagesConsentCreateRequest {
@@ -1234,13 +1156,6 @@ export interface StagesConsentUpdateRequest {
     consentStageRequest: ConsentStageRequest;
 }
 
-export interface StagesConsentUsedByListRequest {
-    /**
-     * A UUID string identifying this Consent Stage.
-     */
-    stageUuid: string;
-}
-
 export interface StagesDenyCreateRequest {
     denyStageRequest: DenyStageRequest;
 }
@@ -1297,13 +1212,6 @@ export interface StagesDenyUpdateRequest {
     denyStageRequest: DenyStageRequest;
 }
 
-export interface StagesDenyUsedByListRequest {
-    /**
-     * A UUID string identifying this Deny Stage.
-     */
-    stageUuid: string;
-}
-
 export interface StagesDummyCreateRequest {
     dummyStageRequest: DummyStageRequest;
 }
@@ -1358,13 +1266,6 @@ export interface StagesDummyUpdateRequest {
      */
     stageUuid: string;
     dummyStageRequest: DummyStageRequest;
-}
-
-export interface StagesDummyUsedByListRequest {
-    /**
-     * A UUID string identifying this Dummy Stage.
-     */
-    stageUuid: string;
 }
 
 export interface StagesEmailCreateRequest {
@@ -1433,13 +1334,6 @@ export interface StagesEmailUpdateRequest {
     emailStageRequest: EmailStageRequest;
 }
 
-export interface StagesEmailUsedByListRequest {
-    /**
-     * A UUID string identifying this Email Stage.
-     */
-    stageUuid: string;
-}
-
 export interface StagesEndpointsCreateRequest {
     endpointStageRequest: EndpointStageRequest;
 }
@@ -1492,13 +1386,6 @@ export interface StagesEndpointsUpdateRequest {
      */
     stageUuid: string;
     endpointStageRequest: EndpointStageRequest;
-}
-
-export interface StagesEndpointsUsedByListRequest {
-    /**
-     * A UUID string identifying this Endpoint Stage.
-     */
-    stageUuid: string;
 }
 
 export interface StagesIdentificationCreateRequest {
@@ -1562,13 +1449,6 @@ export interface StagesIdentificationUpdateRequest {
      */
     stageUuid: string;
     identificationStageRequest: IdentificationStageRequest;
-}
-
-export interface StagesIdentificationUsedByListRequest {
-    /**
-     * A UUID string identifying this Identification Stage.
-     */
-    stageUuid: string;
 }
 
 export interface StagesInvitationInvitationsCreateRequest {
@@ -1636,13 +1516,6 @@ export interface StagesInvitationInvitationsUpdateRequest {
     invitationRequest: InvitationRequest;
 }
 
-export interface StagesInvitationInvitationsUsedByListRequest {
-    /**
-     * A UUID string identifying this Invitation.
-     */
-    inviteUuid: string;
-}
-
 export interface StagesInvitationStagesCreateRequest {
     invitationStageRequest: InvitationStageRequest;
 }
@@ -1698,13 +1571,6 @@ export interface StagesInvitationStagesUpdateRequest {
      */
     stageUuid: string;
     invitationStageRequest: InvitationStageRequest;
-}
-
-export interface StagesInvitationStagesUsedByListRequest {
-    /**
-     * A UUID string identifying this Invitation Stage.
-     */
-    stageUuid: string;
 }
 
 export interface StagesMtlsCreateRequest {
@@ -1766,13 +1632,6 @@ export interface StagesMtlsUpdateRequest {
     mutualTLSStageRequest: MutualTLSStageRequest;
 }
 
-export interface StagesMtlsUsedByListRequest {
-    /**
-     * A UUID string identifying this Mutual TLS Stage.
-     */
-    stageUuid: string;
-}
-
 export interface StagesPasswordCreateRequest {
     passwordStageRequest: PasswordStageRequest;
 }
@@ -1828,13 +1687,6 @@ export interface StagesPasswordUpdateRequest {
      */
     stageUuid: string;
     passwordStageRequest: PasswordStageRequest;
-}
-
-export interface StagesPasswordUsedByListRequest {
-    /**
-     * A UUID string identifying this Password Stage.
-     */
-    stageUuid: string;
 }
 
 export interface StagesPromptPromptsCreateRequest {
@@ -1899,13 +1751,6 @@ export interface StagesPromptPromptsUpdateRequest {
     promptRequest: PromptRequest;
 }
 
-export interface StagesPromptPromptsUsedByListRequest {
-    /**
-     * A UUID string identifying this Prompt.
-     */
-    promptUuid: string;
-}
-
 export interface StagesPromptStagesCreateRequest {
     promptStageRequest: PromptStageRequest;
 }
@@ -1963,13 +1808,6 @@ export interface StagesPromptStagesUpdateRequest {
     promptStageRequest: PromptStageRequest;
 }
 
-export interface StagesPromptStagesUsedByListRequest {
-    /**
-     * A UUID string identifying this Prompt Stage.
-     */
-    stageUuid: string;
-}
-
 export interface StagesRedirectCreateRequest {
     redirectStageRequest: RedirectStageRequest;
 }
@@ -2022,13 +1860,6 @@ export interface StagesRedirectUpdateRequest {
      */
     stageUuid: string;
     redirectStageRequest: RedirectStageRequest;
-}
-
-export interface StagesRedirectUsedByListRequest {
-    /**
-     * A UUID string identifying this Redirect Stage.
-     */
-    stageUuid: string;
 }
 
 export interface StagesSourceCreateRequest {
@@ -2088,13 +1919,6 @@ export interface StagesSourceUpdateRequest {
     sourceStageRequest: SourceStageRequest;
 }
 
-export interface StagesSourceUsedByListRequest {
-    /**
-     * A UUID string identifying this Source Stage.
-     */
-    stageUuid: string;
-}
-
 export interface StagesUserDeleteCreateRequest {
     userDeleteStageRequest: UserDeleteStageRequest;
 }
@@ -2148,13 +1972,6 @@ export interface StagesUserDeleteUpdateRequest {
      */
     stageUuid: string;
     userDeleteStageRequest: UserDeleteStageRequest;
-}
-
-export interface StagesUserDeleteUsedByListRequest {
-    /**
-     * A UUID string identifying this User Delete Stage.
-     */
-    stageUuid: string;
 }
 
 export interface StagesUserLoginCreateRequest {
@@ -2218,13 +2035,6 @@ export interface StagesUserLoginUpdateRequest {
     userLoginStageRequest: UserLoginStageRequest;
 }
 
-export interface StagesUserLoginUsedByListRequest {
-    /**
-     * A UUID string identifying this User Login Stage.
-     */
-    stageUuid: string;
-}
-
 export interface StagesUserLogoutCreateRequest {
     userLogoutStageRequest: UserLogoutStageRequest;
 }
@@ -2278,13 +2088,6 @@ export interface StagesUserLogoutUpdateRequest {
      */
     stageUuid: string;
     userLogoutStageRequest: UserLogoutStageRequest;
-}
-
-export interface StagesUserLogoutUsedByListRequest {
-    /**
-     * A UUID string identifying this User Logout Stage.
-     */
-    stageUuid: string;
 }
 
 export interface StagesUserWriteCreateRequest {
@@ -2345,13 +2148,6 @@ export interface StagesUserWriteUpdateRequest {
      */
     stageUuid: string;
     userWriteStageRequest: UserWriteStageRequest;
-}
-
-export interface StagesUserWriteUsedByListRequest {
-    /**
-     * A UUID string identifying this User Write Stage.
-     */
-    stageUuid: string;
 }
 
 export class StagesApi extends runtime.BaseAPI {
@@ -2816,74 +2612,6 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAccountLockdownUsedByList without sending the request
-     */
-    async stagesAccountLockdownUsedByListRequestOpts(
-        requestParameters: StagesAccountLockdownUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesAccountLockdownUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/account_lockdown/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesAccountLockdownUsedByListRaw(
-        requestParameters: StagesAccountLockdownUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.stagesAccountLockdownUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesAccountLockdownUsedByList(
-        requestParameters: StagesAccountLockdownUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesAccountLockdownUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for stagesAllDestroy without sending the request
      */
     async stagesAllDestroyRequestOpts(
@@ -3133,70 +2861,6 @@ export class StagesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Array<TypeCreate>> {
         const response = await this.stagesAllTypesListRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for stagesAllUsedByList without sending the request
-     */
-    async stagesAllUsedByListRequestOpts(
-        requestParameters: StagesAllUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesAllUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/all/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesAllUsedByListRaw(
-        requestParameters: StagesAllUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesAllUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesAllUsedByList(
-        requestParameters: StagesAllUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesAllUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -3916,74 +3580,6 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorDuoUsedByList without sending the request
-     */
-    async stagesAuthenticatorDuoUsedByListRequestOpts(
-        requestParameters: StagesAuthenticatorDuoUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorDuoUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/authenticator/duo/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesAuthenticatorDuoUsedByListRaw(
-        requestParameters: StagesAuthenticatorDuoUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.stagesAuthenticatorDuoUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesAuthenticatorDuoUsedByList(
-        requestParameters: StagesAuthenticatorDuoUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesAuthenticatorDuoUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for stagesAuthenticatorEmailCreate without sending the request
      */
     async stagesAuthenticatorEmailCreateRequestOpts(
@@ -4485,74 +4081,6 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorEmailUsedByList without sending the request
-     */
-    async stagesAuthenticatorEmailUsedByListRequestOpts(
-        requestParameters: StagesAuthenticatorEmailUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorEmailUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/authenticator/email/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesAuthenticatorEmailUsedByListRaw(
-        requestParameters: StagesAuthenticatorEmailUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.stagesAuthenticatorEmailUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesAuthenticatorEmailUsedByList(
-        requestParameters: StagesAuthenticatorEmailUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesAuthenticatorEmailUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for stagesAuthenticatorEndpointGdtcCreate without sending the request
      */
     async stagesAuthenticatorEndpointGdtcCreateRequestOpts(
@@ -4994,75 +4522,6 @@ export class StagesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<AuthenticatorEndpointGDTCStage> {
         const response = await this.stagesAuthenticatorEndpointGdtcUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for stagesAuthenticatorEndpointGdtcUsedByList without sending the
-     * request
-     */
-    async stagesAuthenticatorEndpointGdtcUsedByListRequestOpts(
-        requestParameters: StagesAuthenticatorEndpointGdtcUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorEndpointGdtcUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/authenticator/endpoint_gdtc/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesAuthenticatorEndpointGdtcUsedByListRaw(
-        requestParameters: StagesAuthenticatorEndpointGdtcUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.stagesAuthenticatorEndpointGdtcUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesAuthenticatorEndpointGdtcUsedByList(
-        requestParameters: StagesAuthenticatorEndpointGdtcUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesAuthenticatorEndpointGdtcUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -5551,74 +5010,6 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorSmsUsedByList without sending the request
-     */
-    async stagesAuthenticatorSmsUsedByListRequestOpts(
-        requestParameters: StagesAuthenticatorSmsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorSmsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/authenticator/sms/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesAuthenticatorSmsUsedByListRaw(
-        requestParameters: StagesAuthenticatorSmsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.stagesAuthenticatorSmsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesAuthenticatorSmsUsedByList(
-        requestParameters: StagesAuthenticatorSmsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesAuthenticatorSmsUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for stagesAuthenticatorStaticCreate without sending the request
      */
     async stagesAuthenticatorStaticCreateRequestOpts(
@@ -6074,74 +5465,6 @@ export class StagesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<AuthenticatorStaticStage> {
         const response = await this.stagesAuthenticatorStaticUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for stagesAuthenticatorStaticUsedByList without sending the request
-     */
-    async stagesAuthenticatorStaticUsedByListRequestOpts(
-        requestParameters: StagesAuthenticatorStaticUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorStaticUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/authenticator/static/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesAuthenticatorStaticUsedByListRaw(
-        requestParameters: StagesAuthenticatorStaticUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.stagesAuthenticatorStaticUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesAuthenticatorStaticUsedByList(
-        requestParameters: StagesAuthenticatorStaticUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesAuthenticatorStaticUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -6605,74 +5928,6 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorTotpUsedByList without sending the request
-     */
-    async stagesAuthenticatorTotpUsedByListRequestOpts(
-        requestParameters: StagesAuthenticatorTotpUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorTotpUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/authenticator/totp/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesAuthenticatorTotpUsedByListRaw(
-        requestParameters: StagesAuthenticatorTotpUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.stagesAuthenticatorTotpUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesAuthenticatorTotpUsedByList(
-        requestParameters: StagesAuthenticatorTotpUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesAuthenticatorTotpUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for stagesAuthenticatorValidateCreate without sending the request
      */
     async stagesAuthenticatorValidateCreateRequestOpts(
@@ -7116,74 +6371,6 @@ export class StagesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<AuthenticatorValidateStage> {
         const response = await this.stagesAuthenticatorValidateUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for stagesAuthenticatorValidateUsedByList without sending the request
-     */
-    async stagesAuthenticatorValidateUsedByListRequestOpts(
-        requestParameters: StagesAuthenticatorValidateUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorValidateUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/authenticator/validate/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesAuthenticatorValidateUsedByListRaw(
-        requestParameters: StagesAuthenticatorValidateUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.stagesAuthenticatorValidateUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesAuthenticatorValidateUsedByList(
-        requestParameters: StagesAuthenticatorValidateUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesAuthenticatorValidateUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -7819,74 +7006,6 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorWebauthnUsedByList without sending the request
-     */
-    async stagesAuthenticatorWebauthnUsedByListRequestOpts(
-        requestParameters: StagesAuthenticatorWebauthnUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorWebauthnUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/authenticator/webauthn/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesAuthenticatorWebauthnUsedByListRaw(
-        requestParameters: StagesAuthenticatorWebauthnUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.stagesAuthenticatorWebauthnUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesAuthenticatorWebauthnUsedByList(
-        requestParameters: StagesAuthenticatorWebauthnUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesAuthenticatorWebauthnUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for stagesCaptchaCreate without sending the request
      */
     async stagesCaptchaCreateRequestOpts(
@@ -8301,70 +7420,6 @@ export class StagesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<CaptchaStage> {
         const response = await this.stagesCaptchaUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for stagesCaptchaUsedByList without sending the request
-     */
-    async stagesCaptchaUsedByListRequestOpts(
-        requestParameters: StagesCaptchaUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesCaptchaUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/captcha/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesCaptchaUsedByListRaw(
-        requestParameters: StagesCaptchaUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesCaptchaUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesCaptchaUsedByList(
-        requestParameters: StagesCaptchaUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesCaptchaUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -8795,70 +7850,6 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesConsentUsedByList without sending the request
-     */
-    async stagesConsentUsedByListRequestOpts(
-        requestParameters: StagesConsentUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesConsentUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/consent/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesConsentUsedByListRaw(
-        requestParameters: StagesConsentUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesConsentUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesConsentUsedByList(
-        requestParameters: StagesConsentUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesConsentUsedByListRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Creates request options for stagesDenyCreate without sending the request
      */
     async stagesDenyCreateRequestOpts(
@@ -9273,70 +8264,6 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesDenyUsedByList without sending the request
-     */
-    async stagesDenyUsedByListRequestOpts(
-        requestParameters: StagesDenyUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesDenyUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/deny/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesDenyUsedByListRaw(
-        requestParameters: StagesDenyUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesDenyUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesDenyUsedByList(
-        requestParameters: StagesDenyUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesDenyUsedByListRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Creates request options for stagesDummyCreate without sending the request
      */
     async stagesDummyCreateRequestOpts(
@@ -9747,70 +8674,6 @@ export class StagesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<DummyStage> {
         const response = await this.stagesDummyUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for stagesDummyUsedByList without sending the request
-     */
-    async stagesDummyUsedByListRequestOpts(
-        requestParameters: StagesDummyUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesDummyUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/dummy/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesDummyUsedByListRaw(
-        requestParameters: StagesDummyUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesDummyUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesDummyUsedByList(
-        requestParameters: StagesDummyUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesDummyUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -10321,70 +9184,6 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesEmailUsedByList without sending the request
-     */
-    async stagesEmailUsedByListRequestOpts(
-        requestParameters: StagesEmailUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesEmailUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/email/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesEmailUsedByListRaw(
-        requestParameters: StagesEmailUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesEmailUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesEmailUsedByList(
-        requestParameters: StagesEmailUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesEmailUsedByListRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Creates request options for stagesEndpointsCreate without sending the request
      */
     async stagesEndpointsCreateRequestOpts(
@@ -10801,70 +9600,6 @@ export class StagesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<EndpointStage> {
         const response = await this.stagesEndpointsUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for stagesEndpointsUsedByList without sending the request
-     */
-    async stagesEndpointsUsedByListRequestOpts(
-        requestParameters: StagesEndpointsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesEndpointsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/endpoints/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesEndpointsUsedByListRaw(
-        requestParameters: StagesEndpointsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesEndpointsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesEndpointsUsedByList(
-        requestParameters: StagesEndpointsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesEndpointsUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -11326,74 +10061,6 @@ export class StagesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<IdentificationStage> {
         const response = await this.stagesIdentificationUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for stagesIdentificationUsedByList without sending the request
-     */
-    async stagesIdentificationUsedByListRequestOpts(
-        requestParameters: StagesIdentificationUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesIdentificationUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/identification/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesIdentificationUsedByListRaw(
-        requestParameters: StagesIdentificationUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.stagesIdentificationUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesIdentificationUsedByList(
-        requestParameters: StagesIdentificationUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesIdentificationUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
         return await response.value();
     }
 
@@ -11915,74 +10582,6 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesInvitationInvitationsUsedByList without sending the request
-     */
-    async stagesInvitationInvitationsUsedByListRequestOpts(
-        requestParameters: StagesInvitationInvitationsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["inviteUuid"] == null) {
-            throw new runtime.RequiredError(
-                "inviteUuid",
-                'Required parameter "inviteUuid" was null or undefined when calling stagesInvitationInvitationsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/invitation/invitations/{invite_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{invite_uuid}",
-            encodeURIComponent(String(requestParameters["inviteUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesInvitationInvitationsUsedByListRaw(
-        requestParameters: StagesInvitationInvitationsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.stagesInvitationInvitationsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesInvitationInvitationsUsedByList(
-        requestParameters: StagesInvitationInvitationsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesInvitationInvitationsUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for stagesInvitationStagesCreate without sending the request
      */
     async stagesInvitationStagesCreateRequestOpts(
@@ -12429,74 +11028,6 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesInvitationStagesUsedByList without sending the request
-     */
-    async stagesInvitationStagesUsedByListRequestOpts(
-        requestParameters: StagesInvitationStagesUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesInvitationStagesUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/invitation/stages/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesInvitationStagesUsedByListRaw(
-        requestParameters: StagesInvitationStagesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.stagesInvitationStagesUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesInvitationStagesUsedByList(
-        requestParameters: StagesInvitationStagesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesInvitationStagesUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for stagesMtlsCreate without sending the request
      */
     async stagesMtlsCreateRequestOpts(
@@ -12934,70 +11465,6 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesMtlsUsedByList without sending the request
-     */
-    async stagesMtlsUsedByListRequestOpts(
-        requestParameters: StagesMtlsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesMtlsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/mtls/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesMtlsUsedByListRaw(
-        requestParameters: StagesMtlsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesMtlsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesMtlsUsedByList(
-        requestParameters: StagesMtlsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesMtlsUsedByListRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Creates request options for stagesPasswordCreate without sending the request
      */
     async stagesPasswordCreateRequestOpts(
@@ -13426,70 +11893,6 @@ export class StagesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<PasswordStage> {
         const response = await this.stagesPasswordUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for stagesPasswordUsedByList without sending the request
-     */
-    async stagesPasswordUsedByListRequestOpts(
-        requestParameters: StagesPasswordUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesPasswordUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/password/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesPasswordUsedByListRaw(
-        requestParameters: StagesPasswordUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesPasswordUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesPasswordUsedByList(
-        requestParameters: StagesPasswordUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesPasswordUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -13992,74 +12395,6 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesPromptPromptsUsedByList without sending the request
-     */
-    async stagesPromptPromptsUsedByListRequestOpts(
-        requestParameters: StagesPromptPromptsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["promptUuid"] == null) {
-            throw new runtime.RequiredError(
-                "promptUuid",
-                'Required parameter "promptUuid" was null or undefined when calling stagesPromptPromptsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/prompt/prompts/{prompt_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{prompt_uuid}",
-            encodeURIComponent(String(requestParameters["promptUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesPromptPromptsUsedByListRaw(
-        requestParameters: StagesPromptPromptsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.stagesPromptPromptsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesPromptPromptsUsedByList(
-        requestParameters: StagesPromptPromptsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesPromptPromptsUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for stagesPromptStagesCreate without sending the request
      */
     async stagesPromptStagesCreateRequestOpts(
@@ -14478,74 +12813,6 @@ export class StagesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<PromptStage> {
         const response = await this.stagesPromptStagesUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for stagesPromptStagesUsedByList without sending the request
-     */
-    async stagesPromptStagesUsedByListRequestOpts(
-        requestParameters: StagesPromptStagesUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesPromptStagesUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/prompt/stages/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesPromptStagesUsedByListRaw(
-        requestParameters: StagesPromptStagesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.stagesPromptStagesUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesPromptStagesUsedByList(
-        requestParameters: StagesPromptStagesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesPromptStagesUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
         return await response.value();
     }
 
@@ -14969,70 +13236,6 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesRedirectUsedByList without sending the request
-     */
-    async stagesRedirectUsedByListRequestOpts(
-        requestParameters: StagesRedirectUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesRedirectUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/redirect/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesRedirectUsedByListRaw(
-        requestParameters: StagesRedirectUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesRedirectUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesRedirectUsedByList(
-        requestParameters: StagesRedirectUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesRedirectUsedByListRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Creates request options for stagesSourceCreate without sending the request
      */
     async stagesSourceCreateRequestOpts(
@@ -15447,70 +13650,6 @@ export class StagesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<SourceStage> {
         const response = await this.stagesSourceUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for stagesSourceUsedByList without sending the request
-     */
-    async stagesSourceUsedByListRequestOpts(
-        requestParameters: StagesSourceUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesSourceUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/source/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesSourceUsedByListRaw(
-        requestParameters: StagesSourceUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesSourceUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesSourceUsedByList(
-        requestParameters: StagesSourceUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesSourceUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -15935,70 +14074,6 @@ export class StagesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<UserDeleteStage> {
         const response = await this.stagesUserDeleteUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for stagesUserDeleteUsedByList without sending the request
-     */
-    async stagesUserDeleteUsedByListRequestOpts(
-        requestParameters: StagesUserDeleteUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserDeleteUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/user_delete/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesUserDeleteUsedByListRaw(
-        requestParameters: StagesUserDeleteUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesUserDeleteUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesUserDeleteUsedByList(
-        requestParameters: StagesUserDeleteUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesUserDeleteUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -16452,70 +14527,6 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesUserLoginUsedByList without sending the request
-     */
-    async stagesUserLoginUsedByListRequestOpts(
-        requestParameters: StagesUserLoginUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserLoginUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/user_login/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesUserLoginUsedByListRaw(
-        requestParameters: StagesUserLoginUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesUserLoginUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesUserLoginUsedByList(
-        requestParameters: StagesUserLoginUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesUserLoginUsedByListRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Creates request options for stagesUserLogoutCreate without sending the request
      */
     async stagesUserLogoutCreateRequestOpts(
@@ -16936,70 +14947,6 @@ export class StagesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<UserLogoutStage> {
         const response = await this.stagesUserLogoutUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for stagesUserLogoutUsedByList without sending the request
-     */
-    async stagesUserLogoutUsedByListRequestOpts(
-        requestParameters: StagesUserLogoutUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserLogoutUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/user_logout/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesUserLogoutUsedByListRaw(
-        requestParameters: StagesUserLogoutUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesUserLogoutUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesUserLogoutUsedByList(
-        requestParameters: StagesUserLogoutUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesUserLogoutUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -17445,70 +15392,6 @@ export class StagesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<UserWriteStage> {
         const response = await this.stagesUserWriteUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for stagesUserWriteUsedByList without sending the request
-     */
-    async stagesUserWriteUsedByListRequestOpts(
-        requestParameters: StagesUserWriteUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["stageUuid"] == null) {
-            throw new runtime.RequiredError(
-                "stageUuid",
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserWriteUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/stages/user_write/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{stage_uuid}",
-            encodeURIComponent(String(requestParameters["stageUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesUserWriteUsedByListRaw(
-        requestParameters: StagesUserWriteUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesUserWriteUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async stagesUserWriteUsedByList(
-        requestParameters: StagesUserWriteUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.stagesUserWriteUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 }

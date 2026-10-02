@@ -5,7 +5,6 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from structlog.stdlib import get_logger
 
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
@@ -30,7 +29,7 @@ class AuthenticatorEndpointGDTCStageSerializer(EnterpriseRequiredMixin, StageSer
         secret_fields = ["credentials"]
 
 
-class AuthenticatorEndpointGDTCStageViewSet(UsedByMixin, ModelViewSet):
+class AuthenticatorEndpointGDTCStageViewSet(ModelViewSet):
     """AuthenticatorEndpointGDTCStage Viewset"""
 
     queryset = AuthenticatorEndpointGDTCStage.objects.all()
@@ -55,7 +54,6 @@ class GoogleEndpointDeviceSerializer(ModelSerializer):
 class EndpointDeviceViewSet(
     mixins.RetrieveModelMixin,
     mixins.ListModelMixin,
-    UsedByMixin,
     GenericViewSet,
 ):
     """Viewset for Endpoint authenticator devices"""

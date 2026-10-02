@@ -154,7 +154,6 @@ import {
 } from "../models/PatchedGoogleChromeConnectorRequest";
 import { type TokenView, TokenViewFromJSON } from "../models/TokenView";
 import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import { type UserSelf, UserSelfFromJSON } from "../models/UserSelf";
 import * as runtime from "../runtime";
 
@@ -237,13 +236,6 @@ export interface EndpointsAgentsConnectorsUpdateRequest {
     agentConnectorRequest: AgentConnectorRequest;
 }
 
-export interface EndpointsAgentsConnectorsUsedByListRequest {
-    /**
-     * A UUID string identifying this Agent Connector.
-     */
-    connectorUuid: string;
-}
-
 export interface EndpointsAgentsEnrollmentTokensCreateRequest {
     enrollmentTokenRequest: EnrollmentTokenRequest;
 }
@@ -297,13 +289,6 @@ export interface EndpointsAgentsEnrollmentTokensUpdateRequest {
      */
     tokenUuid: string;
     enrollmentTokenRequest: EnrollmentTokenRequest;
-}
-
-export interface EndpointsAgentsEnrollmentTokensUsedByListRequest {
-    /**
-     * A UUID string identifying this Enrollment Token.
-     */
-    tokenUuid: string;
 }
 
 export interface EndpointsAgentsEnrollmentTokensViewKeyRetrieveRequest {
@@ -368,13 +353,6 @@ export interface EndpointsAgentsPssoIseUpdateRequest {
     appleIndependentSecureEnclaveRequest: AppleIndependentSecureEnclaveRequest;
 }
 
-export interface EndpointsAgentsPssoIseUsedByListRequest {
-    /**
-     * A UUID string identifying this Apple Independent Secure Enclave.
-     */
-    uuid: string;
-}
-
 export interface EndpointsAgentsPssoRegisterDeviceCreateRequest {
     agentPSSODeviceRegistrationRequest: AgentPSSODeviceRegistrationRequest;
 }
@@ -410,13 +388,6 @@ export interface EndpointsConnectorsListRequest {
 }
 
 export interface EndpointsConnectorsRetrieveRequest {
-    /**
-     * A UUID string identifying this connector.
-     */
-    connectorUuid: string;
-}
-
-export interface EndpointsConnectorsUsedByListRequest {
     /**
      * A UUID string identifying this connector.
      */
@@ -476,13 +447,6 @@ export interface EndpointsDeviceAccessGroupsUpdateRequest {
      */
     pbmUuid: string;
     deviceAccessGroupRequest: DeviceAccessGroupRequest;
-}
-
-export interface EndpointsDeviceAccessGroupsUsedByListRequest {
-    /**
-     * A UUID string identifying this Device access group.
-     */
-    pbmUuid: string;
 }
 
 export interface EndpointsDeviceBindingsCreateRequest {
@@ -545,13 +509,6 @@ export interface EndpointsDeviceBindingsUpdateRequest {
     deviceUserBindingRequest: DeviceUserBindingRequest;
 }
 
-export interface EndpointsDeviceBindingsUsedByListRequest {
-    /**
-     * A UUID string identifying this Device User binding.
-     */
-    policyBindingUuid: string;
-}
-
 export interface EndpointsDevicesCreateRequest {
     endpointDeviceRequest: EndpointDeviceRequest;
 }
@@ -605,13 +562,6 @@ export interface EndpointsDevicesUpdateRequest {
      */
     deviceUuid: string;
     endpointDeviceRequest: EndpointDeviceRequest;
-}
-
-export interface EndpointsDevicesUsedByListRequest {
-    /**
-     * A UUID string identifying this Device.
-     */
-    deviceUuid: string;
 }
 
 export interface EndpointsFleetConnectorsCreateRequest {
@@ -668,13 +618,6 @@ export interface EndpointsFleetConnectorsUpdateRequest {
     fleetConnectorRequest: FleetConnectorRequest;
 }
 
-export interface EndpointsFleetConnectorsUsedByListRequest {
-    /**
-     * A UUID string identifying this Fleet Connector.
-     */
-    connectorUuid: string;
-}
-
 export interface EndpointsGoogleChromeConnectorsCreateRequest {
     googleChromeConnectorRequest: GoogleChromeConnectorRequest;
 }
@@ -729,13 +672,6 @@ export interface EndpointsGoogleChromeConnectorsUpdateRequest {
     googleChromeConnectorRequest: GoogleChromeConnectorRequest;
 }
 
-export interface EndpointsGoogleChromeConnectorsUsedByListRequest {
-    /**
-     * A UUID string identifying this Google Device Trust Connector.
-     */
-    connectorUuid: string;
-}
-
 export class EndpointsApi extends runtime.BaseAPI {
     /**
      * Creates request options for endpointsAgentsConnectorsAgentConfigRetrieve without sending the
@@ -756,9 +692,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsConnectorsAgentConfigRetrieveRaw(
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<runtime.ApiResponse<AgentConfig>> {
@@ -768,9 +701,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         return new runtime.JSONApiResponse(response, (jsonValue) => AgentConfigFromJSON(jsonValue));
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsConnectorsAgentConfigRetrieve(
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<AgentConfig> {
@@ -819,9 +749,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsConnectorsAuthFedCreateRaw(
         requestParameters: EndpointsAgentsConnectorsAuthFedCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -835,9 +762,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsConnectorsAuthFedCreate(
         requestParameters: EndpointsAgentsConnectorsAuthFedCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -873,9 +797,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsConnectorsAuthIaCreateRaw(
         requestParameters: EndpointsAgentsConnectorsAuthIaCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -889,9 +810,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsConnectorsAuthIaCreate(
         requestParameters: EndpointsAgentsConnectorsAuthIaCreateRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -927,9 +845,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsConnectorsCheckInCreateRaw(
         requestParameters: EndpointsAgentsConnectorsCheckInCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -941,9 +856,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         return new runtime.VoidApiResponse(response);
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsConnectorsCheckInCreate(
         requestParameters: EndpointsAgentsConnectorsCheckInCreateRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -990,9 +902,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsConnectorsCreateRaw(
         requestParameters: EndpointsAgentsConnectorsCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1006,9 +915,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsConnectorsCreate(
         requestParameters: EndpointsAgentsConnectorsCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1060,9 +966,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsConnectorsDestroyRaw(
         requestParameters: EndpointsAgentsConnectorsDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1074,9 +977,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         return new runtime.VoidApiResponse(response);
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsConnectorsDestroy(
         requestParameters: EndpointsAgentsConnectorsDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1123,9 +1023,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsConnectorsEnrollCreateRaw(
         requestParameters: EndpointsAgentsConnectorsEnrollCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1139,9 +1036,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsConnectorsEnrollCreate(
         requestParameters: EndpointsAgentsConnectorsEnrollCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1206,9 +1100,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsConnectorsListRaw(
         requestParameters: EndpointsAgentsConnectorsListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1222,9 +1113,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsConnectorsList(
         requestParameters: EndpointsAgentsConnectorsListRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1363,9 +1251,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsConnectorsPartialUpdateRaw(
         requestParameters: EndpointsAgentsConnectorsPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1379,9 +1264,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsConnectorsPartialUpdate(
         requestParameters: EndpointsAgentsConnectorsPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1433,9 +1315,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsConnectorsRetrieveRaw(
         requestParameters: EndpointsAgentsConnectorsRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1449,9 +1328,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsConnectorsRetrieve(
         requestParameters: EndpointsAgentsConnectorsRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1513,9 +1389,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsConnectorsUpdateRaw(
         requestParameters: EndpointsAgentsConnectorsUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1529,82 +1402,11 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsConnectorsUpdate(
         requestParameters: EndpointsAgentsConnectorsUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<AgentConnector> {
         const response = await this.endpointsAgentsConnectorsUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for endpointsAgentsConnectorsUsedByList without sending the request
-     */
-    async endpointsAgentsConnectorsUsedByListRequestOpts(
-        requestParameters: EndpointsAgentsConnectorsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["connectorUuid"] == null) {
-            throw new runtime.RequiredError(
-                "connectorUuid",
-                'Required parameter "connectorUuid" was null or undefined when calling endpointsAgentsConnectorsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/endpoints/agents/connectors/{connector_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{connector_uuid}",
-            encodeURIComponent(String(requestParameters["connectorUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async endpointsAgentsConnectorsUsedByListRaw(
-        requestParameters: EndpointsAgentsConnectorsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.endpointsAgentsConnectorsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async endpointsAgentsConnectorsUsedByList(
-        requestParameters: EndpointsAgentsConnectorsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.endpointsAgentsConnectorsUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -1650,9 +1452,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsEnrollmentTokensCreateRaw(
         requestParameters: EndpointsAgentsEnrollmentTokensCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1666,9 +1465,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsEnrollmentTokensCreate(
         requestParameters: EndpointsAgentsEnrollmentTokensCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1721,9 +1517,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsEnrollmentTokensDestroyRaw(
         requestParameters: EndpointsAgentsEnrollmentTokensDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1735,9 +1528,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         return new runtime.VoidApiResponse(response);
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsEnrollmentTokensDestroy(
         requestParameters: EndpointsAgentsEnrollmentTokensDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1798,9 +1588,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsEnrollmentTokensListRaw(
         requestParameters: EndpointsAgentsEnrollmentTokensListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1814,9 +1601,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsEnrollmentTokensList(
         requestParameters: EndpointsAgentsEnrollmentTokensListRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1874,9 +1658,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsEnrollmentTokensPartialUpdateRaw(
         requestParameters: EndpointsAgentsEnrollmentTokensPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1890,9 +1671,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsEnrollmentTokensPartialUpdate(
         requestParameters: EndpointsAgentsEnrollmentTokensPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1945,9 +1723,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsEnrollmentTokensRetrieveRaw(
         requestParameters: EndpointsAgentsEnrollmentTokensRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1961,9 +1736,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsEnrollmentTokensRetrieve(
         requestParameters: EndpointsAgentsEnrollmentTokensRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2025,9 +1797,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsEnrollmentTokensUpdateRaw(
         requestParameters: EndpointsAgentsEnrollmentTokensUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2041,83 +1810,11 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsEnrollmentTokensUpdate(
         requestParameters: EndpointsAgentsEnrollmentTokensUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<EnrollmentToken> {
         const response = await this.endpointsAgentsEnrollmentTokensUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for endpointsAgentsEnrollmentTokensUsedByList without sending the
-     * request
-     */
-    async endpointsAgentsEnrollmentTokensUsedByListRequestOpts(
-        requestParameters: EndpointsAgentsEnrollmentTokensUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["tokenUuid"] == null) {
-            throw new runtime.RequiredError(
-                "tokenUuid",
-                'Required parameter "tokenUuid" was null or undefined when calling endpointsAgentsEnrollmentTokensUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/endpoints/agents/enrollment_tokens/{token_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{token_uuid}",
-            encodeURIComponent(String(requestParameters["tokenUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async endpointsAgentsEnrollmentTokensUsedByListRaw(
-        requestParameters: EndpointsAgentsEnrollmentTokensUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.endpointsAgentsEnrollmentTokensUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async endpointsAgentsEnrollmentTokensUsedByList(
-        requestParameters: EndpointsAgentsEnrollmentTokensUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.endpointsAgentsEnrollmentTokensUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -2234,9 +1931,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsPssoIseCreateRaw(
         requestParameters: EndpointsAgentsPssoIseCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2250,9 +1944,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsPssoIseCreate(
         requestParameters: EndpointsAgentsPssoIseCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2301,9 +1992,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsPssoIseDestroyRaw(
         requestParameters: EndpointsAgentsPssoIseDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2315,9 +2003,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         return new runtime.VoidApiResponse(response);
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsPssoIseDestroy(
         requestParameters: EndpointsAgentsPssoIseDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2378,9 +2063,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsPssoIseListRaw(
         requestParameters: EndpointsAgentsPssoIseListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2393,9 +2075,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsPssoIseList(
         requestParameters: EndpointsAgentsPssoIseListRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2446,9 +2125,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsPssoIsePartialUpdateRaw(
         requestParameters: EndpointsAgentsPssoIsePartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2462,9 +2138,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsPssoIsePartialUpdate(
         requestParameters: EndpointsAgentsPssoIsePartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2513,9 +2186,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsPssoIseRetrieveRaw(
         requestParameters: EndpointsAgentsPssoIseRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2529,9 +2199,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsPssoIseRetrieve(
         requestParameters: EndpointsAgentsPssoIseRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2592,9 +2259,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsPssoIseUpdateRaw(
         requestParameters: EndpointsAgentsPssoIseUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2608,79 +2272,11 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsAgentsPssoIseUpdate(
         requestParameters: EndpointsAgentsPssoIseUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<AppleIndependentSecureEnclave> {
         const response = await this.endpointsAgentsPssoIseUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for endpointsAgentsPssoIseUsedByList without sending the request
-     */
-    async endpointsAgentsPssoIseUsedByListRequestOpts(
-        requestParameters: EndpointsAgentsPssoIseUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
-            throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling endpointsAgentsPssoIseUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/endpoints/agents/psso/ise/{uuid}/used_by/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async endpointsAgentsPssoIseUsedByListRaw(
-        requestParameters: EndpointsAgentsPssoIseUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.endpointsAgentsPssoIseUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async endpointsAgentsPssoIseUsedByList(
-        requestParameters: EndpointsAgentsPssoIseUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.endpointsAgentsPssoIseUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -3047,74 +2643,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Array<TypeCreate>> {
         const response = await this.endpointsConnectorsTypesListRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for endpointsConnectorsUsedByList without sending the request
-     */
-    async endpointsConnectorsUsedByListRequestOpts(
-        requestParameters: EndpointsConnectorsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["connectorUuid"] == null) {
-            throw new runtime.RequiredError(
-                "connectorUuid",
-                'Required parameter "connectorUuid" was null or undefined when calling endpointsConnectorsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/endpoints/connectors/{connector_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{connector_uuid}",
-            encodeURIComponent(String(requestParameters["connectorUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async endpointsConnectorsUsedByListRaw(
-        requestParameters: EndpointsConnectorsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.endpointsConnectorsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async endpointsConnectorsUsedByList(
-        requestParameters: EndpointsConnectorsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.endpointsConnectorsUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
         return await response.value();
     }
 
@@ -3554,74 +3082,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<DeviceAccessGroup> {
         const response = await this.endpointsDeviceAccessGroupsUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for endpointsDeviceAccessGroupsUsedByList without sending the request
-     */
-    async endpointsDeviceAccessGroupsUsedByListRequestOpts(
-        requestParameters: EndpointsDeviceAccessGroupsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pbmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pbmUuid",
-                'Required parameter "pbmUuid" was null or undefined when calling endpointsDeviceAccessGroupsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/endpoints/device_access_groups/{pbm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pbm_uuid}",
-            encodeURIComponent(String(requestParameters["pbmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async endpointsDeviceAccessGroupsUsedByListRaw(
-        requestParameters: EndpointsDeviceAccessGroupsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.endpointsDeviceAccessGroupsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async endpointsDeviceAccessGroupsUsedByList(
-        requestParameters: EndpointsDeviceAccessGroupsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.endpointsDeviceAccessGroupsUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -4089,74 +3549,6 @@ export class EndpointsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for endpointsDeviceBindingsUsedByList without sending the request
-     */
-    async endpointsDeviceBindingsUsedByListRequestOpts(
-        requestParameters: EndpointsDeviceBindingsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["policyBindingUuid"] == null) {
-            throw new runtime.RequiredError(
-                "policyBindingUuid",
-                'Required parameter "policyBindingUuid" was null or undefined when calling endpointsDeviceBindingsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/endpoints/device_bindings/{policy_binding_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{policy_binding_uuid}",
-            encodeURIComponent(String(requestParameters["policyBindingUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async endpointsDeviceBindingsUsedByListRaw(
-        requestParameters: EndpointsDeviceBindingsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.endpointsDeviceBindingsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async endpointsDeviceBindingsUsedByList(
-        requestParameters: EndpointsDeviceBindingsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.endpointsDeviceBindingsUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for endpointsDevicesCreate without sending the request
      */
     async endpointsDevicesCreateRequestOpts(
@@ -4195,9 +3587,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsDevicesCreateRaw(
         requestParameters: EndpointsDevicesCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -4210,9 +3599,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsDevicesCreate(
         requestParameters: EndpointsDevicesCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -4261,9 +3647,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsDevicesDestroyRaw(
         requestParameters: EndpointsDevicesDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -4274,9 +3657,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         return new runtime.VoidApiResponse(response);
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsDevicesDestroy(
         requestParameters: EndpointsDevicesDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -4337,9 +3717,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsDevicesListRaw(
         requestParameters: EndpointsDevicesListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -4352,9 +3729,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsDevicesList(
         requestParameters: EndpointsDevicesListRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -4408,9 +3782,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsDevicesPartialUpdateRaw(
         requestParameters: EndpointsDevicesPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -4424,9 +3795,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsDevicesPartialUpdate(
         requestParameters: EndpointsDevicesPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -4478,9 +3846,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsDevicesRetrieveRaw(
         requestParameters: EndpointsDevicesRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -4493,9 +3858,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsDevicesRetrieve(
         requestParameters: EndpointsDevicesRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -4531,9 +3893,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsDevicesSummaryRetrieveRaw(
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<runtime.ApiResponse<DeviceSummary>> {
@@ -4545,9 +3904,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsDevicesSummaryRetrieve(
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<DeviceSummary> {
@@ -4605,9 +3961,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsDevicesUpdateRaw(
         requestParameters: EndpointsDevicesUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -4620,78 +3973,11 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async endpointsDevicesUpdate(
         requestParameters: EndpointsDevicesUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<EndpointDevice> {
         const response = await this.endpointsDevicesUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for endpointsDevicesUsedByList without sending the request
-     */
-    async endpointsDevicesUsedByListRequestOpts(
-        requestParameters: EndpointsDevicesUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["deviceUuid"] == null) {
-            throw new runtime.RequiredError(
-                "deviceUuid",
-                'Required parameter "deviceUuid" was null or undefined when calling endpointsDevicesUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/endpoints/devices/{device_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{device_uuid}",
-            encodeURIComponent(String(requestParameters["deviceUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async endpointsDevicesUsedByListRaw(
-        requestParameters: EndpointsDevicesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.endpointsDevicesUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async endpointsDevicesUsedByList(
-        requestParameters: EndpointsDevicesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.endpointsDevicesUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -5126,74 +4412,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<FleetConnector> {
         const response = await this.endpointsFleetConnectorsUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for endpointsFleetConnectorsUsedByList without sending the request
-     */
-    async endpointsFleetConnectorsUsedByListRequestOpts(
-        requestParameters: EndpointsFleetConnectorsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["connectorUuid"] == null) {
-            throw new runtime.RequiredError(
-                "connectorUuid",
-                'Required parameter "connectorUuid" was null or undefined when calling endpointsFleetConnectorsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/endpoints/fleet/connectors/{connector_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{connector_uuid}",
-            encodeURIComponent(String(requestParameters["connectorUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async endpointsFleetConnectorsUsedByListRaw(
-        requestParameters: EndpointsFleetConnectorsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.endpointsFleetConnectorsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async endpointsFleetConnectorsUsedByList(
-        requestParameters: EndpointsFleetConnectorsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.endpointsFleetConnectorsUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -5638,75 +4856,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<GoogleChromeConnector> {
         const response = await this.endpointsGoogleChromeConnectorsUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for endpointsGoogleChromeConnectorsUsedByList without sending the
-     * request
-     */
-    async endpointsGoogleChromeConnectorsUsedByListRequestOpts(
-        requestParameters: EndpointsGoogleChromeConnectorsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["connectorUuid"] == null) {
-            throw new runtime.RequiredError(
-                "connectorUuid",
-                'Required parameter "connectorUuid" was null or undefined when calling endpointsGoogleChromeConnectorsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/endpoints/google_chrome/connectors/{connector_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{connector_uuid}",
-            encodeURIComponent(String(requestParameters["connectorUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async endpointsGoogleChromeConnectorsUsedByListRaw(
-        requestParameters: EndpointsGoogleChromeConnectorsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.endpointsGoogleChromeConnectorsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async endpointsGoogleChromeConnectorsUsedByList(
-        requestParameters: EndpointsGoogleChromeConnectorsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.endpointsGoogleChromeConnectorsUsedByListRaw(
             requestParameters,
             initOverrides,
         );

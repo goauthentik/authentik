@@ -7,7 +7,6 @@ from drf_spectacular.utils import extend_schema_field
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.property_mappings import PropertyMappingSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.enterprise.providers.microsoft_entra.models import MicrosoftEntraProviderMapping
 
 
@@ -29,7 +28,7 @@ class MicrosoftEntraProviderMappingFilter(FilterSet):
         fields = "__all__"
 
 
-class MicrosoftEntraProviderMappingViewSet(UsedByMixin, ModelViewSet):
+class MicrosoftEntraProviderMappingViewSet(ModelViewSet):
     """MicrosoftEntraProviderMapping Viewset"""
 
     queryset = MicrosoftEntraProviderMapping.objects.all()
