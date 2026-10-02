@@ -50,7 +50,7 @@ class GrantRequestsSelfServiceTests(FlowTestCase):
         # Follow through to the flow executor, exactly as the frontend does when it
         # opens the returned link, and check the final stage actually completes.
         res = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}), follow=True
         )
         self.assertStageResponse(res, component="xak-flow-redirect")
 

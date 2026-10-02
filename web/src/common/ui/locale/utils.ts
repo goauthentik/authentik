@@ -126,40 +126,6 @@ export function findSupportedLocale(candidates: string[]): TargetLanguageTag | n
 
 //#endregion
 
-//#region Persistence
-
-const sessionLocaleKey = "authentik:locale";
-
-/**
- * Persist the given locale code to sessionStorage.
- */
-export function setSessionLocale(languageTag: TargetLanguageTag | null): void {
-    try {
-        if (!languageTag || languageTag === SourceLanguageTag) {
-            sessionStorage?.removeItem?.(sessionLocaleKey);
-
-            return;
-        }
-
-        sessionStorage?.setItem?.(sessionLocaleKey, languageTag);
-    } catch (error) {
-        console.debug("authentik/locale: Unable to persist locale to sessionStorage", error);
-    }
-}
-
-/**
- * Retrieve the persisted locale code from sessionStorage.
- */
-export function getSessionLocale(): string | null {
-    try {
-        return sessionStorage?.getItem?.(sessionLocaleKey) || null;
-    } catch (error) {
-        console.debug("authentik/locale: Unable to read locale from sessionStorage", error);
-    }
-
-    return null;
-}
-
 //#region Type Guards
 
 /**
@@ -181,14 +147,17 @@ export function isTargetLanguageTag(
  * Auto-detect the best locale to use from several sources.
  *
  * @remarks
+ *   The persisted preference is not read here: it lives in the Django language cookie, which the
+ *   server reads to produce the locale hint. See {@link persistLocale}.
  *   The order of precedence is:
  *
- *   1. A `locale` URL parameter
- *   2. A previously persisted session locale
- *   3. A provided locale hint
- *   4. The browser's navigator language
- *   5. A provided fallback locale code
- *   6. The source locale (English)
+ *   1. A `locale` URL parameter (a dev/test override; the server honors the same parameter when
+ *      rendering the shell, so client and server cannot disagree)
+ *   2. The server-resolved locale hint (`window.authentik.locale`)
+ *   3. The browser's navigator language (only relevant on a first anonymous visit, when the server had
+ *      nothing persisted to resolve from)
+ *   4. A provided fallback locale code
+ *   5. The source locale (English)
  * @param languageTagHint An optional locale code hint.
  * @param fallbackLanguageTag An optional fallback locale code.
  *
@@ -206,11 +175,8 @@ export function autoDetectLanguage(
         localeParam = searchParam.get("locale");
     }
 
-    const sessionLocale = getSessionLocale();
-
     const candidates = [
         localeParam,
-        sessionLocale,
         languageTagHint,
         ...(self.navigator?.languages || []),
         fallbackLanguageTag,

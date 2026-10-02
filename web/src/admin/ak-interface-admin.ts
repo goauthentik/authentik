@@ -6,6 +6,8 @@ import "#elements/sidebar/SidebarItem";
 import "#elements/router/core/RouterView";
 import "#elements/commands/ak-command-palette";
 import "#elements/commands/ak-command-palette-user-modal";
+import "#components/notifications/APIDrawer";
+import "#components/notifications/NotificationDrawer";
 import {
     createAdminSidebarEnterpriseEntries,
     createAdminSidebarEntries,
