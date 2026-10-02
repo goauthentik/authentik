@@ -1,6 +1,6 @@
 import { renderForm } from "./SCIMProviderFormForm.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 
@@ -10,23 +10,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-provider-scim-form")
 export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
-    loadInstance(pk: number): Promise<SCIMProvider> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersScimRetrieve({
-            id: pk,
-        });
-    }
-
-    async send(data: SCIMProvider): Promise<SCIMProvider> {
-        if (this.instance?.pk) {
-            return new ProvidersApi(DEFAULT_CONFIG).providersScimUpdate({
-                id: this.instance.pk,
-                sCIMProviderRequest: data,
-            });
-        }
-        return new ProvidersApi(DEFAULT_CONFIG).providersScimCreate({
-            sCIMProviderRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (id: number) => aki(ProvidersApi).providersScimRetrieve({ id }),
+        create: (sCIMProviderRequest: SCIMProvider) =>
+            aki(ProvidersApi).providersScimCreate({ sCIMProviderRequest }),
+        update: (id: number, sCIMProviderRequest: SCIMProvider) =>
+            aki(ProvidersApi).providersScimUpdate({ id, sCIMProviderRequest }),
+    };
 
     public override createDefaultInstance(): SCIMProvider {
         return {

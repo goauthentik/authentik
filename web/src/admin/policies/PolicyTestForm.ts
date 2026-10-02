@@ -3,8 +3,9 @@ import "#elements/CodeMirror";
 import "#elements/events/LogViewer";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
 import { Form } from "#elements/forms/Form";
@@ -28,8 +29,6 @@ import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-
 @customElement("ak-policy-test-form")
 export class PolicyTestForm extends Form<PolicyTestRequest> {
     public static verboseName = msg("Policy");
@@ -50,7 +49,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
         `,
     ];
 
-    #api = new PoliciesApi(DEFAULT_CONFIG);
+    #api = aki(PoliciesApi);
 
     protected override formatSubmitLabel(submitLabel?: string | null): string {
         return submitLabel || msg("Run Test");
@@ -108,15 +107,17 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                 <div class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <ul>
-                            ${(this.result?.messages || []).length > 0
-                                ? this.result?.messages?.map((m) => {
-                                      return html`<li>
-                                          <span class="pf-c-form__label-text">${m}</span>
-                                      </li>`;
-                                  })
-                                : html`<li>
-                                      <span class="pf-c-form__label-text">-</span>
-                                  </li>`}
+                            ${
+                                (this.result?.messages || []).length > 0
+                                    ? this.result?.messages?.map((m) => {
+                                          return html`<li>
+                                              <span class="pf-c-form__label-text">${m}</span>
+                                          </li>`;
+                                      })
+                                    : html`<li>
+                                          <span class="pf-c-form__label-text">-</span>
+                                      </li>`
+                            }
                         </ul>
                     </div>
                 </div>
@@ -135,10 +136,13 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                         const args: CoreUsersListRequest = {
                             ordering: "username",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
-                        const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(args);
+
+                        const users = await aki(CoreApi).coreUsersList(args);
+
                         return users.results;
                     }}
                     .renderElement=${(user: User): string => {

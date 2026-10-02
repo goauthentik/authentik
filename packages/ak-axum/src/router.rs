@@ -9,7 +9,7 @@ use axum::{
     response::Response,
 };
 use tower::ServiceBuilder;
-use tower_http::timeout::TimeoutLayer;
+use tower_http::{limit::RequestBodyLimitLayer, timeout::TimeoutLayer};
 
 use crate::{
     extract::{
@@ -56,4 +56,11 @@ pub fn wrap_router(router: Router, with_tracing: bool) -> Router {
     } else {
         router.layer(service_builder)
     }
+}
+
+#[inline]
+pub fn make_request_body_limit_layer() -> RequestBodyLimitLayer {
+    const MAX_BODY_SIZE_BYTES: usize = 32 * 1024 * 1024;
+
+    RequestBodyLimitLayer::new(MAX_BODY_SIZE_BYTES)
 }

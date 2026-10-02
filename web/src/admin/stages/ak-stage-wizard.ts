@@ -5,8 +5,7 @@ import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
 import "#elements/forms/FormGroup";
 import "#admin/flows/StageBindingForm";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { RadioOption } from "#elements/forms/Radio";
 import { SlottedTemplateResult } from "#elements/types";
@@ -23,7 +22,7 @@ import { property } from "lit/decorators.js";
 
 @customElement("ak-stage-wizard")
 export class AKStageWizard extends CreateWizard {
-    #api = new StagesApi(DEFAULT_CONFIG);
+    #api = aki(StagesApi);
 
     @property({ type: Boolean })
     public showBindingPage = false;
@@ -40,7 +39,7 @@ export class AKStageWizard extends CreateWizard {
 
     public override layout = TypeCreateWizardPageLayouts.list;
 
-    public override groupLabel = msg("Bind New Stage");
+    public override groupLabel = msg("New Stage");
     public override groupDescription = msg("Select the type of stage you want to create.");
 
     protected apiEndpoint = async (requestInit?: RequestInit): Promise<TypeCreate[]> => {
@@ -63,9 +62,12 @@ export class AKStageWizard extends CreateWizard {
 
         if (!bindingForm) return;
 
-        if (context.host.state[createSlot]) {
+        const stage = context.host.state[createSlot] as Stage | undefined;
+
+        if (stage) {
             bindingForm.instance = {
-                stage: (context.host.state[createSlot] as Stage).pk,
+                stage: stage.pk,
+                stageObj: stage,
             } as FlowStageBinding;
         }
     };
@@ -75,20 +77,17 @@ export class AKStageWizard extends CreateWizard {
             return null;
         }
 
-        return html`<ak-form-group
-            slot="pre-items"
-            label=${msg("Existing Stage")}
-            description=${msg("Bind an existing stage to this flow.")}
-            open
-        >
+        return html`<ak-form-group slot="pre-items" label=${msg("Existing Stage")} open>
             <ak-radio
-                .options=${[
-                    {
-                        label: "Bind existing stage",
-                        description: msg("Bind an existing stage to this flow."),
-                        value: true,
-                    },
-                ] satisfies RadioOption<boolean>[]}
+                .options=${
+                    [
+                        {
+                            label: "Bind existing stage",
+                            description: msg("Bind an existing stage to this flow."),
+                            value: true,
+                        },
+                    ] satisfies RadioOption<boolean>[]
+                }
                 @change=${() => {
                     if (!this.wizard) {
                         return;

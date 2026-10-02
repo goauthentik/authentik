@@ -3,8 +3,7 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { MessageLevel } from "#common/messages";
 
 import { ModalForm } from "#elements/forms/ModalForm";
@@ -36,7 +35,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
     public static override submittingVerb = msg("Importing");
 
     loadInstance(pk: string): Promise<AuthenticatorDuoStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoRetrieve({
+        return aki(StagesApi).stagesAuthenticatorDuoRetrieve({
             stageUuid: pk,
         });
     }
@@ -47,16 +46,17 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
 
     async send(data: AuthenticatorDuoStage): Promise<void> {
         const importData = data as unknown as AuthenticatorDuoStageManualDeviceImportRequest;
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoImportDeviceManualCreate({
+
+        return aki(StagesApi).stagesAuthenticatorDuoImportDeviceManualCreate({
             stageUuid: this.instance?.pk || "",
             authenticatorDuoStageManualDeviceImportRequest: importData,
         });
     }
 
     protected override renderForm(): SlottedTemplateResult {
-        return html` ${this.instance?.adminIntegrationKey !== ""
-            ? this.renderFormAutomatic()
-            : nothing}
+        return html` ${
+            this.instance?.adminIntegrationKey !== "" ? this.renderFormAutomatic() : nothing
+        }
         ${this.renderFormManual()}`;
     }
 
@@ -68,10 +68,13 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
                         const args: CoreUsersListRequest = {
                             ordering: "username",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
-                        const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(args);
+
+                        const users = await aki(CoreApi).coreUsersList(args);
+
                         return users.results;
                     }}
                     .renderElement=${(user: User): string => {
@@ -107,7 +110,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
                 <ak-action-button
                     class="pf-m-primary"
                     .apiRequest=${() => {
-                        return new StagesApi(DEFAULT_CONFIG)
+                        return aki(StagesApi)
                             .stagesAuthenticatorDuoImportDevicesAutomaticCreate({
                                 stageUuid: this.instance?.pk || "",
                             })
@@ -116,6 +119,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
                                     level: MessageLevel.info,
                                     message: msg(str`Successfully imported ${res.count} devices.`),
                                 });
+
                                 const modal = this.parentElement as ModalForm;
                                 modal.open = false;
                             });

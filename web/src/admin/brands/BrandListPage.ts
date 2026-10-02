@@ -5,8 +5,7 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
@@ -36,7 +35,7 @@ export class BrandListPage extends TablePage<Brand> {
     order = "domain";
 
     async apiEndpoint(): Promise<PaginatedResponse<Brand>> {
-        return new CoreApi(DEFAULT_CONFIG).coreBrandsList(await this.defaultEndpointConfig());
+        return aki(CoreApi).coreBrandsList(await this.defaultEndpointConfig());
     }
 
     protected override rowLabel(item: Brand): string | null {
@@ -60,12 +59,12 @@ export class BrandListPage extends TablePage<Brand> {
                 return [{ key: msg("Domain"), value: item.domain }];
             }}
             .usedBy=${(item: Brand) => {
-                return new CoreApi(DEFAULT_CONFIG).coreBrandsUsedByList({
+                return aki(CoreApi).coreBrandsUsedByList({
                     brandUuid: item.brandUuid,
                 });
             }}
             .delete=${(item: Brand) => {
-                return new CoreApi(DEFAULT_CONFIG).coreBrandsDestroy({
+                return aki(CoreApi).coreBrandsDestroy({
                     brandUuid: item.brandUuid,
                 });
             }}

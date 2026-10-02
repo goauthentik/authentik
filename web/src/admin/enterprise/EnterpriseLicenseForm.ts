@@ -2,8 +2,7 @@ import "#components/ak-secret-textarea-input";
 import "#components/ak-text-input";
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH_ENTERPRISE } from "#common/constants";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -23,7 +22,7 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
     public static override createLabel = msg("Install");
     public static override submitVerb = msg("Install");
 
-    #api = new EnterpriseApi(DEFAULT_CONFIG);
+    #api = aki(EnterpriseApi);
 
     @state()
     protected installID: string | null = null;
@@ -62,6 +61,7 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
                   })
         ).then((data) => {
             window.dispatchEvent(new CustomEvent(EVENT_REFRESH_ENTERPRISE));
+
             return data;
         });
     }

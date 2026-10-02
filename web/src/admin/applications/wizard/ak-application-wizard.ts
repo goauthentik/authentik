@@ -5,8 +5,7 @@ import "#admin/applications/wizard/steps/ak-application-wizard-edit-binding-step
 import "#admin/applications/wizard/steps/ak-application-wizard-provider-choice-step";
 import "#admin/applications/wizard/steps/ak-application-wizard-provider-step";
 import "#admin/applications/wizard/steps/ak-application-wizard-submit-step";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { assertEveryPresent } from "#common/utils";
 
 import { listen } from "#elements/decorators/listen";
@@ -56,7 +55,7 @@ export const providerTypePriority: ProviderModelNameEnum[] = [
 
 @customElement("ak-application-wizard")
 export class AKApplicationWizard extends CreateWizard {
-    #api = new ProvidersApi(DEFAULT_CONFIG);
+    #api = aki(ProvidersApi);
 
     public static override verboseName = msg("Application");
     public static override verboseNamePlural = msg("Applications");
@@ -95,7 +94,8 @@ export class AKApplicationWizard extends CreateWizard {
     // This is the actual top of the Wizard; so this is where we accept the update information and
     // incorporate it into the wizard.
     /**
-     * Handles updates to the wizard context, which are emitted by the individual steps when their data changes.
+     * Handles updates to the wizard context, which are emitted by the individual steps when their
+     * data changes.
      */
     @listen(WizardUpdateEvent)
     handleUpdate(ev: WizardUpdateEvent<ApplicationWizardContextUpdate>) {

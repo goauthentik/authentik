@@ -1,3 +1,8 @@
+/**
+ * @file Display details for a SCIM provider: Overview, changelog, provisioned users, provisioned
+ *   groups, and permissions
+ */
+
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/scim/SCIMProviderForm";
 import "#admin/providers/scim/SCIMProviderGroupList";
@@ -10,32 +15,8 @@ import "#elements/Tabs";
 import "#elements/ak-mdx/index";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/ModalButton";
-import "#elements/sync/SyncStatusCard";
-import "#elements/tasks/ScheduleList";
-import "#elements/tasks/TaskList";
+import "#components/sync/SyncStatusCard";
 import "#elements/timestamp/ak-timestamp";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
-import { EVENT_REFRESH } from "#common/constants";
-
-import { AKElement } from "#elements/Base";
-import { SlottedTemplateResult } from "#elements/types";
-
-import renderDescriptionList from "#components/DescriptionList";
-
-import {
-    ModelEnum,
-    ProvidersApi,
-    SCIMAuthenticationModeEnum,
-    SCIMProvider,
-} from "@goauthentik/api";
-
-import MDSCIMProvider from "~docs/add-secure-apps/providers/scim/index.md";
-
-import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -47,6 +28,31 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
+
+import { aki } from "#common/api/client";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
+
+import renderDescriptionList from "#components/DescriptionList";
+import { scheduleCard } from "#components/tasks/scheduleCard";
+import { taskCard } from "#components/tasks/taskCard";
+
+import {
+    ModelEnum,
+    ProvidersApi,
+    SCIMAuthenticationModeEnum,
+    SCIMProvider,
+} from "@goauthentik/api";
+
+import MDSCIMProvider from "~docs/add-secure-apps/providers/scim/index.mdx";
+
+import { msg } from "@lit/localize";
+import { CSSResult, html, nothing, PropertyValues } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+
+const PROVIDER_TYPE = ModelEnum.AuthentikProvidersScimScimprovider;
 
 @customElement("ak-provider-scim-view")
 export class SCIMProviderViewPage extends AKElement {
@@ -72,6 +78,7 @@ export class SCIMProviderViewPage extends AKElement {
 
     constructor() {
         super();
+
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
             this.providerID = this.provider?.pk;
@@ -79,7 +86,7 @@ export class SCIMProviderViewPage extends AKElement {
     }
 
     fetchProvider(id: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersScimRetrieve({ id })
             .then((prov) => (this.provider = prov));
     }
@@ -94,8 +101,9 @@ export class SCIMProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
+
         return html`<main part="main">
-            <ak-tabs part="tabs">
+            <ak-tabs routed part="tabs">
                 <div
                     role="tabpanel"
                     tabindex="0"
@@ -168,6 +176,7 @@ export class SCIMProviderViewPage extends AKElement {
             this.provider?.authMode !== SCIMAuthenticationModeEnum.OauthInteractive
         )
             return nothing;
+
         return html`
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
@@ -202,14 +211,16 @@ export class SCIMProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
-        const [appLabel, modelName] = ModelEnum.AuthentikProvidersScimScimprovider.split(".");
-        return html` ${!this.provider?.assignedBackchannelApplicationName
-                ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${msg(
-                          "Warning: Provider is not assigned to an application as backchannel provider.",
-                      )}
-                  </div>`
-                : nothing}
+
+        return html` ${
+                !this.provider?.assignedBackchannelApplicationName
+                    ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                          ${msg(
+                              "Warning: Provider is not assigned to an application as backchannel provider.",
+                          )}
+                      </div>`
+                    : nothing
+            }
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
@@ -261,80 +272,69 @@ export class SCIMProviderViewPage extends AKElement {
                     </div>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-8-col-on-2xl">
-                    ${this.provider.authMode === SCIMAuthenticationModeEnum.OauthInteractive
-                        ? html`
-                              <div class="pf-c-card">
-                                  <div class="pf-c-card__body">
-                                      ${renderDescriptionList(
-                                          [
+                    ${
+                        this.provider.authMode === SCIMAuthenticationModeEnum.OauthInteractive
+                            ? html`
+                                  <div class="pf-c-card">
+                                      <div class="pf-c-card__body">
+                                          ${renderDescriptionList(
                                               [
-                                                  msg("OAuth Status"),
-                                                  html`<ak-status-label
-                                                          ?good=${this.provider
-                                                              .authOauthTokenLastUpdated !== null}
-                                                          good-label=${msg("Authenticated")}
-                                                          bad-label=${msg("No token saved")}
-                                                      ></ak-status-label>
-                                                      <a
-                                                          class="pf-c-button pf-m-primary"
-                                                          href=${this.provider?.authOauthUrlStart ||
-                                                          ""}
-                                                          target="_blank"
-                                                          >${msg("(Re-)authenticate")}</a
-                                                      >`,
+                                                  [
+                                                      msg("OAuth Status"),
+                                                      html`<ak-status-label
+                                                              ?good=${
+                                                                  this.provider
+                                                                      .authOauthTokenLastUpdated !==
+                                                                  null
+                                                              }
+                                                              good-label=${msg("Authenticated")}
+                                                              bad-label=${msg("No token saved")}
+                                                          ></ak-status-label>
+                                                          <a
+                                                              class="pf-c-button pf-m-primary"
+                                                              href=${
+                                                                  this.provider
+                                                                      ?.authOauthUrlStart || ""
+                                                              }
+                                                              target="_blank"
+                                                              >${msg("(Re-)authenticate")}</a
+                                                          >`,
+                                                  ],
+                                                  [
+                                                      msg("OAuth Callback URL"),
+                                                      html`<input
+                                                          class="pf-c-form-control"
+                                                          readonly
+                                                          type="text"
+                                                          value="${
+                                                              this.provider.authOauthUrlCallback ||
+                                                              ""
+                                                          }"
+                                                      />`,
+                                                  ],
                                               ],
-                                              [
-                                                  msg("OAuth Callback URL"),
-                                                  html`<input
-                                                      class="pf-c-form-control"
-                                                      readonly
-                                                      type="text"
-                                                      value="${this.provider.authOauthUrlCallback ||
-                                                      ""}"
-                                                  />`,
-                                              ],
-                                          ],
-                                          { horizontal: true },
-                                      )}
+                                              { horizontal: true },
+                                          )}
+                                      </div>
                                   </div>
-                              </div>
-                          `
-                        : nothing}
+                              `
+                            : nothing
+                    }
                     <ak-sync-status-card
                         .fetch=${() => {
-                            return new ProvidersApi(DEFAULT_CONFIG).providersScimSyncStatusRetrieve(
-                                {
-                                    id: this.provider?.pk || 0,
-                                },
-                            );
+                            return aki(ProvidersApi).providersScimSyncStatusRetrieve({
+                                id: this.provider?.pk || 0,
+                            });
                         }}
                     >
                         ${this.renderSyncStatusExtra()}
                     </ak-sync-status-card>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
-                    <div class="pf-c-card">
-                        <div class="pf-c-card__header">
-                            <div class="pf-c-card__title">${msg("Schedules")}</div>
-                        </div>
-                        <ak-schedule-list
-                            .relObjAppLabel=${appLabel}
-                            .relObjModel=${modelName}
-                            .relObjId="${this.provider.pk}"
-                        ></ak-schedule-list>
-                    </div>
+                    ${scheduleCard(PROVIDER_TYPE, this.provider.pk)}
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
-                    <div class="pf-c-card">
-                        <div class="pf-c-card__header">
-                            <div class="pf-c-card__title">${msg("Tasks")}</div>
-                        </div>
-                        <ak-task-list
-                            .relObjAppLabel=${appLabel}
-                            .relObjModel=${modelName}
-                            .relObjId="${this.provider.pk}"
-                        ></ak-task-list>
-                    </div>
+                    ${taskCard(PROVIDER_TYPE, this.provider.pk)}
                 </div>
                 <div
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"

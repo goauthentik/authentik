@@ -7,8 +7,7 @@ import "#admin/sources/scim/SCIMSourceViewPage";
 import "#admin/sources/telegram/TelegramSourceViewPage";
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
 
@@ -23,9 +22,9 @@ import { customElement, property } from "lit/decorators.js";
 export class SourceViewPage extends AKElement {
     @property({ type: String })
     set sourceSlug(slug: string) {
-        new SourcesApi(DEFAULT_CONFIG)
+        aki(SourcesApi)
             .sourcesAllRetrieve({
-                slug: slug,
+                slug,
             })
             .then((source) => {
                 this.source = source;
@@ -39,6 +38,7 @@ export class SourceViewPage extends AKElement {
         if (!this.source) {
             return html`<ak-empty-state loading full-height></ak-empty-state>`;
         }
+
         switch (this.source?.component) {
             case "ak-source-kerberos-form":
                 return html`<ak-source-kerberos-view
@@ -75,6 +75,7 @@ export class SourceViewPage extends AKElement {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             icon: "pf-icon pf-icon-middleware",
             header: this.source?.name,

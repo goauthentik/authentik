@@ -7,12 +7,14 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#elements/dialogs/ak-modal";
 import "#admin/applications/ApplicationForm";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEditButton } from "#elements/dialogs";
 import { WithBrandConfig } from "#elements/mixins/branding";
-import { getURLParam } from "#elements/router/RouteMatch";
+import { toAdminInterface } from "#elements/router/core/interfaces";
+import { getSearchParam } from "#elements/router/core/search-params";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -24,13 +26,11 @@ import { AKApplicationWizard } from "#admin/applications/wizard/ak-application-w
 
 import { Application, CoreApi, PoliciesApi } from "@goauthentik/api";
 
-import MDApplication from "~docs/add-secure-apps/applications/index.md";
+import MDApplication from "~docs/add-secure-apps/applications/index.mdx";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 export const applicationListStyle = css``;
 
@@ -62,7 +62,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     public order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Application>> {
-        return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
+        return aki(CoreApi).coreApplicationsList({
             ...(await this.defaultEndpointConfig()),
             superuserFullList: true,
         });
@@ -71,9 +71,9 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     public override firstUpdated(changed: PropertyValues<this>): void {
         super.firstUpdated(changed);
 
-        if (getURLParam("createWizard", false)) {
+        if (getSearchParam<string>("create-wizard", "") === "application") {
             AKApplicationWizard.showModal();
-        } else if (getURLParam("createForm", false)) {
+        } else if (getSearchParam<string>("create-form", "") === "application") {
             ApplicationForm.showModal();
         }
     }
@@ -102,16 +102,17 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
 
     protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Application(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Application) => {
-                return new CoreApi(DEFAULT_CONFIG).coreApplicationsUsedByList({
+                return aki(CoreApi).coreApplicationsUsedByList({
                     slug: item.slug,
                 });
             }}
             .delete=${(item: Application) => {
-                return new CoreApi(DEFAULT_CONFIG).coreApplicationsDestroy({
+                return aki(CoreApi).coreApplicationsDestroy({
                     slug: item.slug,
                 });
             }}
@@ -131,31 +132,33 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                 icon=${ifPresent(item.metaIconUrl)}
                 .iconThemedUrls=${item.metaIconThemedUrls}
             ></ak-app-icon>`,
-            html`<a href="#/core/applications/${item.slug}">
+            html`<a href=${toAdminInterface(`core/applications/${item.slug}`)}>
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : nothing}
             </a>`,
             item.group ? html`${item.group}` : html`<span aria-label="None">${msg("-")}</span>`,
             item.provider
-                ? html`<a href="#/core/providers/${item.providerObj?.pk}">
+                ? html`<a href=${toAdminInterface(`core/providers/${item.providerObj?.pk}`)}>
                       ${item.providerObj?.name}
                   </a>`
                 : html`-`,
             html`${item.providerObj?.verboseName || msg("-")}`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButton(ApplicationForm, item.slug)}
-                ${item.launchUrl
-                    ? html`<a
-                          href=${item.launchUrl}
-                          target="_blank"
-                          class="pf-c-button pf-m-plain"
-                          aria-label=${msg(str`Open "${item.name}"`)}
-                      >
-                          <pf-tooltip position="top" content=${msg("Open")}>
-                              <i class="fas fa-share-square" aria-hidden="true"></i>
-                          </pf-tooltip>
-                      </a>`
-                    : nothing}
+                ${
+                    item.launchUrl
+                        ? html`<a
+                              href=${item.launchUrl}
+                              target="_blank"
+                              class="pf-c-button pf-m-plain"
+                              aria-label=${msg(str`Open "${item.name}"`)}
+                          >
+                              <pf-tooltip position="top" content=${msg("Open")}>
+                                  <i class="fas fa-share-square" aria-hidden="true"></i>
+                              </pf-tooltip>
+                          </a>`
+                        : nothing
+                }
             </div>`,
         ];
     }
@@ -228,7 +231,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                 errorMessage=${msg("Failed to delete application cache")}
                 action=${msg("Clear Cache")}
                 .onConfirm=${() => {
-                    return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheClearCreate();
+                    return aki(PoliciesApi).policiesAllCacheClearCreate();
                 }}
             >
                 <span slot="header">${msg("Clear Application cache")}</span>

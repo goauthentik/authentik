@@ -21,7 +21,7 @@ from authentik.core.models import Group, User
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.utils import model_to_dict
 from authentik.lib.models import InternallyManagedMixin
-from authentik.lib.sentry import should_ignore_exception
+from authentik.lib.tracing.exceptions import should_ignore_exception
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.stages.authenticator_static.models import StaticToken
 
@@ -254,5 +254,5 @@ class AuditMiddleware:
             request,
             user=user,
             model=model_to_dict(instance),
-            **thread_kwargs,
+            **(thread_kwargs or {}),
         ).run()

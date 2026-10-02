@@ -2,8 +2,9 @@ import "#components/ak-status-label";
 import "#elements/events/LogViewer";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 import { APIMessage, MessageLevel } from "#common/messages";
 
@@ -23,8 +24,6 @@ import { msg } from "@lit/localize";
 import { CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-
 @customElement("ak-application-check-access-form")
 export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
     public static override verboseName = msg("Access");
@@ -34,7 +33,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
 
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    #api = new CoreApi(DEFAULT_CONFIG);
+    #api = aki(CoreApi);
 
     public override size = PFSize.XLarge;
 
@@ -64,6 +63,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
             })
             .then((result) => {
                 this.result = result;
+
                 return result;
             });
     }

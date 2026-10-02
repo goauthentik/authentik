@@ -1,5 +1,4 @@
 import "../ak-hidden-text-input.js";
-
 import { type AkHiddenTextInput, type AkHiddenTextInputProps } from "../ak-hidden-text-input.js";
 
 import { ifPresent } from "#elements/utils/attributes";

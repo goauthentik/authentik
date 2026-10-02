@@ -3,8 +3,7 @@ import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
@@ -37,9 +36,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
     public override order = "name";
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<InitialPermissions>> {
-        return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsList(
-            await this.defaultEndpointConfig(),
-        );
+        return aki(RbacApi).rbacInitialPermissionsList(await this.defaultEndpointConfig());
     }
 
     protected override columns: TableColumn[] = [
@@ -50,16 +47,17 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Initial Permissions")}
             .objects=${this.selectedElements}
             .usedBy=${(item: InitialPermissions) => {
-                return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsUsedByList({
+                return aki(RbacApi).rbacInitialPermissionsUsedByList({
                     id: item.pk,
                 });
             }}
             .delete=${(item: InitialPermissions) => {
-                return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsDestroy({
+                return aki(RbacApi).rbacInitialPermissionsDestroy({
                     id: item.pk,
                 });
             }}

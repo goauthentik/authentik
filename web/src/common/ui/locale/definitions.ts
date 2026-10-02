@@ -16,8 +16,8 @@ export { PseudoLanguageTag, SourceLanguageTag };
  * A dummy locale module representing the source locale (English).
  *
  * @remarks
- * This is used to satisfy the return type of {@linkcode LocaleLoaderRecord}
- * for the source locale, which does not need to be loaded.
+ *   This is used to satisfy the return type of {@linkcode LocaleLoaderRecord}
+ *   for the source locale, which does not need to be loaded.
  */
 const sourceTargetModule: LocaleModule = {
     templates: {},
@@ -27,12 +27,14 @@ const sourceTargetModule: LocaleModule = {
  * A record mapping locale codes to their respective module loaders.
  *
  * @remarks
- * The `import` statements **must** reference a locale module path,
- * as this is how ESBuild identifies which files to include in the build.
+ *   The `import` statements **must** reference a locale module path,
+ *   as this is how ESBuild identifies which files to include in the build.
  */
 export const LocaleLoaderRecord: Record<TargetLanguageTag, () => Promise<LocaleModule>> = {
     [SourceLanguageTag]: () => Promise.resolve(sourceTargetModule),
     [PseudoLanguageTag]: () => import("#locales/en-XA"),
+    "ar": () => import("#locales/ar"),
+    "bg-BG": () => import("#locales/bg-BG"),
     "cs-CZ": () => import("#locales/cs-CZ"),
     "de-DE": () => import("#locales/de-DE"),
     "es-ES": () => import("#locales/es-ES"),
@@ -41,6 +43,7 @@ export const LocaleLoaderRecord: Record<TargetLanguageTag, () => Promise<LocaleM
     "it-IT": () => import("#locales/it-IT"),
     "ja-JP": () => import("#locales/ja-JP"),
     "ko-KR": () => import("#locales/ko-KR"),
+    "nb-NO": () => import("#locales/nb-NO"),
     "nl-NL": () => import("#locales/nl-NL"),
     "pl-PL": () => import("#locales/pl-PL"),
     "pt-BR": () => import("#locales/pt-BR"),

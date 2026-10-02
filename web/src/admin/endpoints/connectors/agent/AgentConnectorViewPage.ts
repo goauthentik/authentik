@@ -3,13 +3,23 @@ import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/endpoints/connectors/agent/EnrollmentTokenListPage";
 import "#admin/endpoints/connectors/agent/AgentConnectorSetup";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
+import { modalInvoker } from "#elements/dialogs";
+import { WithLicenseSummary } from "#elements/mixins/license";
 
 import { setPageDetails } from "#components/ak-page-navbar";
+import renderDescriptionList from "#components/DescriptionList";
+
+import { AgentConnectorForm } from "#admin/endpoints/connectors/agent/AgentConnectorForm";
 
 import { AgentConnector, EndpointsApi, ModelEnum } from "@goauthentik/api";
 
@@ -17,14 +27,8 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-
 @customElement("ak-endpoints-connector-agent-view")
-export class AgentConnectorViewPage extends AKElement {
+export class AgentConnectorViewPage extends WithLicenseSummary(AKElement) {
     @property({ type: String })
     public connectorId?: string;
 
@@ -37,7 +41,7 @@ export class AgentConnectorViewPage extends AKElement {
     static styles: CSSResult[] = [PFCard, PFPage, PFGrid, PFButton, PFDescriptionList];
 
     protected fetchDevice(id: string) {
-        new EndpointsApi(DEFAULT_CONFIG)
+        aki(EndpointsApi)
             .endpointsAgentsConnectorsRetrieve({ connectorUuid: id })
             .then((conn) => {
                 this.connector = conn;
@@ -55,6 +59,7 @@ export class AgentConnectorViewPage extends AKElement {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             icon: "pf-icon pf-icon-data-source",
             header: this.connector?.name,
@@ -62,11 +67,66 @@ export class AgentConnectorViewPage extends AKElement {
         });
     }
 
+    get statusLocalAuth(): boolean | undefined {
+        if (!this.connector) return undefined;
+
+        if (!this.hasEnterpriseLicense) return false;
+
+        return this.connector.authorizationFlow !== null;
+    }
+
+    get statusDeviceCompliance(): boolean | undefined {
+        if (!this.connector) return undefined;
+
+        return this.connector.challengeKey !== null;
+    }
+
     renderTabOverview() {
         return html`<div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >
-            <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+            <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-2-col-on-2xl">
+                <div class="pf-c-card__title">${msg("Info")}</div>
+                <div class="pf-c-card__body">
+                    ${renderDescriptionList([
+                        [msg("Name"), this.connector?.name],
+                        [
+                            msg("Enabled"),
+                            html`<ak-status-label
+                                ?good=${this.connector?.enabled}
+                            ></ak-status-label>`,
+                        ],
+                        [
+                            msg("Local authentication"),
+                            html`<ak-status-label
+                                bad-label=${msg("Not available")}
+                                good-label=${msg("Available")}
+                                ?good=${this.statusLocalAuth}
+                            ></ak-status-label>`,
+                        ],
+                        [
+                            msg("Device compliance"),
+                            html`<ak-status-label
+                                bad-label=${msg("Not available")}
+                                good-label=${msg("Available")}
+                                ?good=${this.statusDeviceCompliance}
+                            ></ak-status-label>`,
+                        ],
+                        [
+                            msg("Related actions"),
+                            html`<button
+                                class="pf-c-button pf-m-secondary pf-m-block"
+                                ${modalInvoker(AgentConnectorForm, {
+                                    instancePk: this.connector?.connectorUuid,
+                                })}
+                            >
+                                ${msg("Edit")}
+                            </button>`,
+                        ],
+                    ])}
+                </div>
+            </div>
+            <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-10-col-on-xl pf-m-10-col-on-2xl">
                 <div class="pf-c-card__title">${msg("Setup")}</div>
                 <ak-endpoints-connector-agent-setup
                     class="pf-c-card__body"
@@ -86,7 +146,8 @@ export class AgentConnectorViewPage extends AKElement {
         if (!this.connector) {
             return nothing;
         }
-        return html`<ak-tabs>
+
+        return html`<ak-tabs routed>
             <div
                 role="tabpanel"
                 tabindex="0"

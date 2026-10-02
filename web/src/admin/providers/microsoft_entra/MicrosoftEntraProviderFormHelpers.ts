@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { DualSelectPair } from "#elements/ak-dual-select/types";
 
@@ -7,14 +7,15 @@ import { MicrosoftEntraProviderMapping, PropertymappingsApi } from "@goauthentik
 const mappingToSelect = (m: MicrosoftEntraProviderMapping) => [m.pk, m.name, m.name, m];
 
 export async function propertyMappingsProvider(page = 1, search = "") {
-    const propertyMappings = await new PropertymappingsApi(
-        DEFAULT_CONFIG,
+    const propertyMappings = await aki(
+        PropertymappingsApi,
     ).propertymappingsProviderMicrosoftEntraList({
         ordering: "managed",
         pageSize: 20,
         search: search.trim(),
         page,
     });
+
     return {
         pagination: propertyMappings.pagination,
         options: propertyMappings.results.map(mappingToSelect),
@@ -34,7 +35,8 @@ export function propertyMappingsSelector(
     }
 
     return async () => {
-        const pm = new PropertymappingsApi(DEFAULT_CONFIG);
+        const pm = aki(PropertymappingsApi);
+
         const mappings = await Promise.allSettled(
             instanceMappings.map((instanceId) =>
                 pm.propertymappingsProviderMicrosoftEntraRetrieve({ pmUuid: instanceId }),

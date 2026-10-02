@@ -4,11 +4,13 @@ sidebar_label: Pangolin
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+
 ## What is Pangolin?
 
 > Pangolin is a self-hosted tunneled reverse proxy server with identity and access control, designed to securely expose private resources on distributed networks.
 >
-> -- https://docs.fossorial.io/Pangolin/overview
+> -- https://pangolin.net
 
 ## Preparation
 
@@ -23,6 +25,8 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Pangolin with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
@@ -32,36 +36,35 @@ To support the integration of Pangolin with authentik, you need to create an app
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID**, and **Client Secret** values because they will be required later.
-        - Temporarily set **Redirect URI** to `https://temp.temp`.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Temporarily add a **Redirect URI** of type `Strict` `Authorization` as `https://temp.temp`.
         - Select any available signing key.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ## Pangolin configuration
 
-1. Log in to Pangolin as an administrator.
+1. Log in to Pangolin as a server administrator.
 2. Navigate to **Server Admin** > **Identity Providers**, and click **Add Identity Provider**.
     - Under **General Information**:
         - **Name**: `authentik`
-        - **Auto Provision Users** _(optional)_: enable this option for authentik users to be automatically provisioned in Pangolin on first login.
+        - **Provider Type**: select **OAuth2/OIDC**.
+        - **Auto Provision Users** _(optional)_: enable this option for authentik users to be automatically provisioned in Pangolin on first login. If this option is disabled, create the user in Pangolin before the first login.
     - Under **OAuth2/OIDC Configuration**:
         - **Client ID**: Client ID from authentik.
         - **Client Secret**: Client Secret from authentik.
         - **Authorization URL**: `https://authentik.company/application/o/authorize/`
         - **Token URL**: `https://authentik.company/application/o/token/`
-    - Under **Advanced protocol settings**:
-        - Set **Subject Mode** to be **Based on the User's username**
 
 3. Click **Create Identity Provider**.
-4. Under **General Information**, take note of the **Redirect URI** value because it will be required in the next section.
+4. Open the identity provider, and note the **Redirect URL** value because it will be required in the next section.
 
 ## Reconfigure authentik provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created Pangolin provider.
-3. Set the **Redirect URI** to the value taken from Pangolin (e.g. `https://pangolin.company/auth/idp/<identity-provider-number>/oidc/callback`).
+3. Add a **Redirect URI** of type `Strict` `Authorization` as the value taken from Pangolin, for example `https://pangolin.company/auth/idp/<identity-provider-number>/oidc/callback`.
 4. Click **Update**.
 
 ## Configuration verification
@@ -70,4 +73,5 @@ To confirm that authentik is properly configured with Pangolin, log out and log 
 
 ## Resources
 
-- [Official Pangolin SSO Documentation](https://docs.fossorial.io/Pangolin/Identity%20Providers/configuring-identity-providers)
+- [Pangolin Docs - Add Identity Providers](https://docs.pangolin.net/manage/identity-providers/add-an-idp)
+- [Pangolin Docs - OAuth2/OIDC](https://docs.pangolin.net/manage/identity-providers/openid-connect)

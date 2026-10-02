@@ -1,5 +1,4 @@
 import "../AppIcon.js";
-
 import { AppIcon } from "../AppIcon.js";
 
 import { PFSize } from "#common/enums";
@@ -21,7 +20,7 @@ const metadata: Meta<AppIcon> = {
                 component: /* md */ `
 # Application Icon
 
-AppIcon displays an icon associated with an authentik application on the User Library page. It takes
+AppIcon displays an icon associated with an authentik application on the Application Dashboard page. It takes
 an API "Application" object and a size, with a default size of "medium."
 
 ## Usage

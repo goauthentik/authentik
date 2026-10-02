@@ -1,6 +1,5 @@
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#elements/forms/HorizontalFormElement";
-
 import { AkFlowSearch } from "#admin/common/ak-flow-search/ak-flow-search";
 
 import { Flow, FlowDesignationEnum } from "@goauthentik/api";
@@ -101,11 +100,8 @@ const container = (testItem: TemplateResult) => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const displayChange = (ev: any) => {
-    document.getElementById("message-pad")!.innerText = `Value selected: ${JSON.stringify(
-        ev.target.value,
-        null,
-        2,
-    )}`;
+    document.getElementById("message-pad")!.innerText =
+        `Value selected: ${JSON.stringify(ev.target.value, null, 2)}`;
 };
 
 export const Default = () =>

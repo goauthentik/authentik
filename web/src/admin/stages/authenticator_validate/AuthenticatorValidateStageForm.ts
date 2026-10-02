@@ -1,5 +1,4 @@
 import "#elements/ak-checkbox-group/ak-checkbox-group";
-import "#elements/Alert";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/FormGroup";
@@ -7,14 +6,13 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-text-input";
-
 import {
     authenticatorWebauthnDeviceTypesListProvider,
     stagesProvider,
     stagesSelector,
 } from "./AuthenticatorValidateStageFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 
@@ -41,16 +39,18 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-stage-authenticator-validate-form")
 export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorValidateStage> {
     async loadInstance(pk: string): Promise<AuthenticatorValidateStage> {
-        const stage = await new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateRetrieve({
+        const stage = await aki(StagesApi).stagesAuthenticatorValidateRetrieve({
             stageUuid: pk,
         });
+
         this.showConfigurationStages =
             stage.notConfiguredAction === NotConfiguredActionEnum.Configure;
+
         return stage;
     }
 
     async load(): Promise<void> {
-        this.stages = await new StagesApi(DEFAULT_CONFIG).stagesAllList({
+        this.stages = await aki(StagesApi).stagesAllList({
             ordering: "name",
         });
     }
@@ -62,12 +62,13 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
 
     async send(data: AuthenticatorValidateStage): Promise<AuthenticatorValidateStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateUpdate({
+            return aki(StagesApi).stagesAuthenticatorValidateUpdate({
                 stageUuid: this.instance.pk || "",
                 authenticatorValidateStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateCreate({
+
+        return aki(StagesApi).stagesAuthenticatorValidateCreate({
             authenticatorValidateStageRequest: data,
         });
     }
@@ -86,6 +87,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
             [WebAuthnHintEnum.ClientDevice, msg("Client device (e.g. Touch ID, Windows Hello)")],
             [WebAuthnHintEnum.Hybrid, msg("Hybrid (e.g. QR code, phone)")],
         ];
+
         const selectedHints: DualSelectPair[] = (this.instance?.webauthnHints ?? [])
             .map((hint) => allHints.find(([key]) => key === hint)!)
             .filter(Boolean);
@@ -108,7 +110,9 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
 
             <ak-text-input
                 autofocus
-                label=${msg("Stage Name")}
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
                 placeholder=${msg("Type a stage name...")}
                 required
                 name="name"
@@ -170,6 +174,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                             class="pf-c-form-control"
                             @change=${(ev: Event) => {
                                 const target = ev.target as HTMLSelectElement;
+
                                 if (
                                     target.selectedOptions[0].value ===
                                     NotConfiguredActionEnum.Configure
@@ -182,54 +187,62 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                         >
                             <option
                                 value=${NotConfiguredActionEnum.Configure}
-                                ?selected=${this.instance?.notConfiguredAction ===
-                                NotConfiguredActionEnum.Configure}
+                                ?selected=${
+                                    this.instance?.notConfiguredAction ===
+                                    NotConfiguredActionEnum.Configure
+                                }
                             >
                                 ${msg("Force the user to configure an authenticator")}
                             </option>
                             <option
                                 value=${NotConfiguredActionEnum.Deny}
-                                ?selected=${this.instance?.notConfiguredAction ===
-                                NotConfiguredActionEnum.Deny}
+                                ?selected=${
+                                    this.instance?.notConfiguredAction ===
+                                    NotConfiguredActionEnum.Deny
+                                }
                             >
                                 ${msg("Deny the user access")}
                             </option>
                             <option
                                 value=${NotConfiguredActionEnum.Skip}
-                                ?selected=${this.instance?.notConfiguredAction ===
-                                NotConfiguredActionEnum.Skip}
+                                ?selected=${
+                                    this.instance?.notConfiguredAction ===
+                                    NotConfiguredActionEnum.Skip
+                                }
                             >
                                 ${msg("Continue")}
                             </option>
                         </select>
                     </ak-form-element-horizontal>
-                    ${this.showConfigurationStages
-                        ? html`
-                              <ak-form-element-horizontal
-                                  label=${msg("Configuration stages")}
-                                  name="configurationStages"
-                              >
-                                  <ak-dual-select-dynamic-selected
-                                      .provider=${stagesProvider}
-                                      .selector=${stagesSelector(
-                                          this.instance?.configurationStages,
-                                      )}
-                                      available-label="${msg("Available Stages")}"
-                                      selected-label="${msg("Selected Stages")}"
-                                  ></ak-dual-select-dynamic-selected>
-                                  <p class="pf-c-form__helper-text">
-                                      ${msg(
-                                          "Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.",
-                                      )}
-                                  </p>
-                                  <p class="pf-c-form__helper-text">
-                                      ${msg(
-                                          "When multiple stages are selected, the user can choose which one they want to enroll.",
-                                      )}
-                                  </p>
-                              </ak-form-element-horizontal>
-                          `
-                        : nothing}
+                    ${
+                        this.showConfigurationStages
+                            ? html`
+                                  <ak-form-element-horizontal
+                                      label=${msg("Configuration stages")}
+                                      name="configurationStages"
+                                  >
+                                      <ak-dual-select-dynamic-selected
+                                          .provider=${stagesProvider}
+                                          .selector=${stagesSelector(
+                                              this.instance?.configurationStages,
+                                          )}
+                                          available-label="${msg("Available Stages")}"
+                                          selected-label="${msg("Selected Stages")}"
+                                      ></ak-dual-select-dynamic-selected>
+                                      <p class="pf-c-form__helper-text">
+                                          ${msg(
+                                              "Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.",
+                                          )}
+                                      </p>
+                                      <p class="pf-c-form__helper-text">
+                                          ${msg(
+                                              "When multiple stages are selected, the user can choose which one they want to enroll.",
+                                          )}
+                                      </p>
+                                  </ak-form-element-horizontal>
+                              `
+                            : nothing
+                    }
                 </div>
             </ak-form-group>
             <ak-form-group label="${msg("Throttling settings")}">
@@ -362,14 +375,6 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                                 "Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.",
                             )}
                         </p>
-                        <ak-alert inline>
-                            ${
-                                /* TODO: Remove this after 2024.6..or maybe later? */
-                                msg(
-                                    "This restriction only applies to devices created in authentik 2024.4 or later.",
-                                )
-                            }
-                        </ak-alert>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

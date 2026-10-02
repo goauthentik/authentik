@@ -3,8 +3,9 @@ import "#admin/endpoints/connectors/fleet/FleetConnectorViewPage";
 import "#admin/endpoints/connectors/gdtc/GoogleChromeConnectorViewPage";
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
 
@@ -16,13 +17,11 @@ import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-
 @customElement("ak-endpoints-connector-view")
 export class ConnectorViewPage extends AKElement {
     @property({ type: String })
     set connectorID(value: string) {
-        new EndpointsApi(DEFAULT_CONFIG)
+        aki(EndpointsApi)
             .endpointsConnectorsRetrieve({
                 connectorUuid: value,
             })
@@ -38,6 +37,7 @@ export class ConnectorViewPage extends AKElement {
         if (!this.connector) {
             return html`<ak-empty-state loading full-height></ak-empty-state>`;
         }
+
         switch (this.connector?.component) {
             case "ak-endpoints-connector-agent-form":
                 return html`<ak-endpoints-connector-agent-view
@@ -58,6 +58,7 @@ export class ConnectorViewPage extends AKElement {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             icon: "pf-icon pf-icon-data-source",
             header: this.connector?.name,

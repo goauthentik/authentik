@@ -12,15 +12,20 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/table/ak-table-filter-select";
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { formatDisambiguatedUserDisplayName } from "#common/users";
 
 import { IconEditButton, renderModal } from "#elements/dialogs";
 import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { toAdminInterface } from "#elements/router/core/interfaces";
+import { getSearchParam, updateSearchParams } from "#elements/router/core/search-params";
+import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -46,9 +51,6 @@ import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-
 @customElement("ak-add-related-user-form")
 export class AddRelatedUserForm extends Form<{ users: number[] }> {
     public override headline = msg("Assign Additional Users");
@@ -71,14 +73,14 @@ export class AddRelatedUserForm extends Form<{ users: number[] }> {
         await Promise.all(
             data.users.map((userPk) => {
                 if (this.targetGroup) {
-                    return new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
+                    return aki(CoreApi).coreGroupsAddUserCreate({
                         groupUuid: this.targetGroup.pk,
                         userAccountRequest: {
                             pk: userPk,
                         },
                     });
                 } else if (this.targetRole) {
-                    return new RbacApi(DEFAULT_CONFIG).rbacRolesAddUserCreate({
+                    return aki(RbacApi).rbacRolesAddUserCreate({
                         uuid: this.targetRole.pk,
                         // TODO: Rename this.
                         userAccountSerializerForRoleRequest: {
@@ -86,9 +88,11 @@ export class AddRelatedUserForm extends Form<{ users: number[] }> {
                         },
                     });
                 }
+
                 return Promise.resolve();
             }),
         );
+
         return data;
     }
 
@@ -187,7 +191,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
     public override order = "last_login";
 
     @property({ type: Boolean })
-    public hideServiceAccounts = getURLParam<boolean>("hideServiceAccounts", true);
+    public hideServiceAccounts = getSearchParam<boolean>("hideServiceAccounts", true);
 
     protected canImpersonate = false;
 
@@ -198,7 +202,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
     }
 
     protected async apiEndpoint(): Promise<PaginatedResponse<User>> {
-        const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
+        const users = await aki(CoreApi).coreUsersList({
             ...(await this.defaultEndpointConfig()),
             ...(this.targetGroup && { groupsByPk: [this.targetGroup.pk] }),
             ...(this.targetRole && { rolesByPk: [this.targetRole.pk] }),
@@ -231,9 +235,13 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
             object-label=${msg("User(s)")}
             submit-label=${msg("Remove User(s)")}
             action=${msg("removed")}
-            action-subtext=${targetLabel
-                ? msg(str`Are you sure you want to remove the selected users from ${targetLabel}?`)
-                : msg("Are you sure you want to remove the selected users?")}
+            action-subtext=${
+                targetLabel
+                    ? msg(
+                          str`Are you sure you want to remove the selected users from ${targetLabel}?`,
+                      )
+                    : msg("Are you sure you want to remove the selected users?")
+            }
             .objects=${this.selectedElements}
             .metadata=${(item: User) => {
                 return [
@@ -244,15 +252,16 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
             }}
             .delete=${(item: User) => {
                 if (this.targetGroup) {
-                    return new CoreApi(DEFAULT_CONFIG).coreGroupsRemoveUserCreate({
+                    return aki(CoreApi).coreGroupsRemoveUserCreate({
                         groupUuid: this.targetGroup.pk,
                         userAccountRequest: {
                             pk: item.pk,
                         },
                     });
                 }
+
                 if (this.targetRole) {
-                    return new RbacApi(DEFAULT_CONFIG).rbacRolesRemoveUserCreate({
+                    return aki(RbacApi).rbacRolesRemoveUserCreate({
                         uuid: this.targetRole.pk,
                         userAccountSerializerForRoleRequest: {
                             pk: item.pk,
@@ -271,7 +280,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         const showImpersonate = this.canImpersonate && item.pk !== this.currentUser?.pk;
 
         return [
-            html`<a href="#/identity/users/${item.pk}">
+            html`<a href=${toAdminInterface(`identity/users/${item.pk}`)}>
                 <div>${item.username}</div>
                 <small>${item.name}</small>
             </a>`,
@@ -280,19 +289,21 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
 
             html`<div class="ak-c-table__actions">
                 ${IconEditButton(UserForm, item.pk)}
-                ${showImpersonate
-                    ? html`<button
-                          class="pf-c-button pf-m-tertiary"
-                          ${UserImpersonateForm.asInstanceInvoker(item.pk)}
-                      >
-                          <pf-tooltip
-                              position="top"
-                              content=${msg("Temporarily assume the identity of this user")}
+                ${
+                    showImpersonate
+                        ? html`<button
+                              class="pf-c-button pf-m-tertiary"
+                              ${UserImpersonateForm.asInstanceInvoker(item.pk)}
                           >
-                              <span>${msg("Impersonate")}</span>
-                          </pf-tooltip>
-                      </button>`
-                    : null}
+                              <pf-tooltip
+                                  position="top"
+                                  content=${msg("Temporarily assume the identity of this user")}
+                              >
+                                  <span>${msg("Impersonate")}</span>
+                              </pf-tooltip>
+                          </button>`
+                        : null
+                }
             </div>`,
         ];
     }
@@ -409,22 +420,26 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
 
     protected override renderToolbar(): TemplateResult {
         return html`
-            ${this.targetGroup
-                ? html`<button
-                      class="pf-c-button pf-m-primary"
-                      @click=${this.openAddUserToTargetGroupModal}
-                  >
-                      ${msg("Add Existing User")}
-                  </button>`
-                : null}
-            ${this.targetRole
-                ? html`<button
-                      class="pf-c-button pf-m-primary"
-                      @click=${this.openAddUserToTargetRoleModal}
-                  >
-                      ${msg("Add Existing User")}
-                  </button>`
-                : null}
+            ${
+                this.targetGroup
+                    ? html`<button
+                          class="pf-c-button pf-m-primary"
+                          @click=${this.openAddUserToTargetGroupModal}
+                      >
+                          ${msg("Add Existing User")}
+                      </button>`
+                    : null
+            }
+            ${
+                this.targetRole
+                    ? html`<button
+                          class="pf-c-button pf-m-primary"
+                          @click=${this.openAddUserToTargetRoleModal}
+                      >
+                          ${msg("Add Existing User")}
+                      </button>`
+                    : null
+            }
 
             <ak-dropdown class="pf-c-dropdown">
                 <button
@@ -445,30 +460,34 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                     aria-labelledby="add-user-toggle"
                     tabindex="-1"
                 >
-                    ${this.targetGroup
-                        ? html`<li role="presentation">
-                              <button
-                                  type="button"
-                                  role="menuitem"
-                                  class="pf-c-dropdown__menu-item"
-                                  @click=${this.openNewUserToTargetGroupModal}
-                              >
-                                  ${msg("New Group User...")}
-                              </button>
-                          </li>`
-                        : null}
-                    ${this.targetRole
-                        ? html`<li role="presentation">
-                              <button
-                                  type="button"
-                                  role="menuitem"
-                                  class="pf-c-dropdown__menu-item"
-                                  @click=${this.openNewUserToTargetRoleModal}
-                              >
-                                  ${msg("New Role User...")}
-                              </button>
-                          </li>`
-                        : null}
+                    ${
+                        this.targetGroup
+                            ? html`<li role="presentation">
+                                  <button
+                                      type="button"
+                                      role="menuitem"
+                                      class="pf-c-dropdown__menu-item"
+                                      @click=${this.openNewUserToTargetGroupModal}
+                                  >
+                                      ${msg("New Group User...")}
+                                  </button>
+                              </li>`
+                            : null
+                    }
+                    ${
+                        this.targetRole
+                            ? html`<li role="presentation">
+                                  <button
+                                      type="button"
+                                      role="menuitem"
+                                      class="pf-c-dropdown__menu-item"
+                                      @click=${this.openNewUserToTargetRoleModal}
+                                  >
+                                      ${msg("New Role User...")}
+                                  </button>
+                              </li>`
+                            : null
+                    }
 
                     <li role="presentation">
                         <button
@@ -489,30 +508,23 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
     protected override renderToolbarAfter(): TemplateResult {
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
-                <div class="pf-c-input-group">
-                    <label class="pf-c-switch" id="hide-service-accounts-label">
-                        <input
-                            id="hide-service-accounts"
-                            class="pf-c-switch__input"
-                            type="checkbox"
-                            ?checked=${this.hideServiceAccounts}
-                            @change=${() => {
-                                this.hideServiceAccounts = !this.hideServiceAccounts;
-                                this.page = 1;
-                                this.fetch();
-                                updateURLParams({
-                                    hideServiceAccounts: this.hideServiceAccounts,
-                                });
-                            }}
-                        />
-                        <span class="pf-c-switch__toggle">
-                            <span class="pf-c-switch__toggle-icon">
-                                <i class="fas fa-check" aria-hidden="true"></i>
-                            </span>
-                        </span>
-                        <span class="pf-c-switch__label">${msg("Hide service-accounts")}</span>
-                    </label>
-                </div>
+                <ak-table-filter-select
+                    .options=${[
+                        { label: msg("Hide service-accounts"), value: true },
+                        { label: msg("All"), value: false },
+                    ]}
+                    group=${msg("User type")}
+                    .value=${this.hideServiceAccounts}
+                    @change=${(ev: CustomEvent<FilterOption<boolean>>) => {
+                        this.hideServiceAccounts = ev.detail.value;
+                        this.page = 1;
+                        this.fetch();
+
+                        updateSearchParams({
+                            hideServiceAccounts: this.hideServiceAccounts,
+                        });
+                    }}
+                ></ak-table-filter-select>
             </div>
         </div>`;
     }

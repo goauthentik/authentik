@@ -17,6 +17,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentik import authentik_full_version
+from authentik.admin.utils import get_system_settings
 from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.reflection import get_env
@@ -58,6 +59,7 @@ class SystemInfoSerializer(PassiveSerializer):
     server_time = SerializerMethodField()
     embedded_outpost_disabled = SerializerMethodField()
     embedded_outpost_host = SerializerMethodField()
+    base_url = SerializerMethodField()
 
     def get_http_headers(self, request: Request) -> dict[str, str]:
         """Get HTTP Request headers"""
@@ -113,6 +115,10 @@ class SystemInfoSerializer(PassiveSerializer):
         if not outposts.exists():  # pragma: no cover
             return ""
         return outposts.first().config.authentik_host
+
+    def get_base_url(self, request: Request) -> str:
+        """Configured external base URL. Can be empty"""
+        return get_system_settings().base_url
 
 
 class SystemView(APIView):

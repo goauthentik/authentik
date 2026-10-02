@@ -1,6 +1,11 @@
 import "#components/ak-event-info";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
 
@@ -17,12 +22,6 @@ import { msg, str } from "@lit/localize";
 import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-
 @customElement("ak-event-view")
 export class EventViewPage extends AKElement {
     @property({ type: String })
@@ -34,9 +33,11 @@ export class EventViewPage extends AKElement {
     static styles: CSSResult[] = [PFGrid, PFDescriptionList, PFPage, PFContent, PFCard];
 
     fetchEvent(eventUuid: string) {
-        new EventsApi(DEFAULT_CONFIG).eventsEventsRetrieve({ eventUuid }).then((ev) => {
-            this.event = ev as EventWithContext;
-        });
+        aki(EventsApi)
+            .eventsEventsRetrieve({ eventUuid })
+            .then((ev) => {
+                this.event = ev as EventWithContext;
+            });
     }
 
     willUpdate(changedProperties: PropertyValues<this>) {
@@ -49,6 +50,7 @@ export class EventViewPage extends AKElement {
         if (!this.event) {
             return html``;
         }
+
         return html` <section class="pf-c-page__main-section pf-m-no-padding-mobile">
             <div class="pf-l-grid pf-m-gutter">
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl">
@@ -138,6 +140,7 @@ export class EventViewPage extends AKElement {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             icon: "pf-icon pf-icon-catalog",
             header: this.event ? msg(str`Event ${this.event.pk}`) : msg("Loading..."),

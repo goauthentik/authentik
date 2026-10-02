@@ -11,8 +11,9 @@ import "#admin/providers/ssf/SSFProviderViewPage";
 import "#admin/providers/wsfed/WSFederationProviderViewPage";
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
 
@@ -25,13 +26,11 @@ import { spread } from "@open-wc/lit-helpers";
 import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-
 @customElement("ak-provider-view")
 export class ProviderViewPage extends AKElement {
     @property({ type: Number })
     set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersAllRetrieve({
                 id: value,
             })
@@ -96,6 +95,7 @@ export class ProviderViewPage extends AKElement {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             icon: "pf-icon pf-icon-integration",
             header: this.provider?.name,

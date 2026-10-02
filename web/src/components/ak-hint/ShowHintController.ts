@@ -1,5 +1,4 @@
 import "#components/ak-hint/ak-hint-footer";
-
 import { LOCALSTORAGE_AUTHENTIK_KEY } from "#common/constants";
 
 import { msg } from "@lit/localize";
@@ -41,6 +40,7 @@ export class ShowHintController implements ReactiveController {
                 [this.hintToken]: state,
             }),
         );
+
         this.host.showHint = state;
     }
 
@@ -54,9 +54,11 @@ export class ShowHintController implements ReactiveController {
 
     hostConnected() {
         const localStores = getCurrentStorageValue();
+
         if (!(this.hintToken in localStores)) {
             return;
         }
+
         // Note that we only do this IF the field exists and is defined. `undefined` means "do the
         // default thing of showing the hint."
         this.host.showHint = localStores[this.hintToken] as boolean;

@@ -4,8 +4,7 @@ import "#components/ak-text-input";
 import "#components/ak-number-input";
 import "#components/ak-switch-input";
 import "#admin/endpoints/ak-endpoints-device-group-search";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -20,16 +19,18 @@ import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-const EXPIRATION_DURATION = 30 * 60 * 1000; // 30 minutes
+const EXPIRATION_DURATION = 30 * 60 * 1000;
+
+// 30 minutes
 
 /**
  * Enrollment Token Form
  *
- * @prop {string} instancePk - The primary key of the instance to load.
+ * @property {string} instancePk - The primary key of the instance to load.
  */
 @customElement("ak-endpoints-agent-enrollment-token-form")
 export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentToken, string>) {
-    #api = new EndpointsApi(DEFAULT_CONFIG);
+    #api = aki(EndpointsApi);
 
     public static override verboseName = msg("Enrollment Token");
     public static override verboseNamePlural = msg("Enrollment Tokens");
@@ -49,9 +50,7 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
     }
 
     async loadInstance(pk: string): Promise<EnrollmentToken> {
-        const token = await new EndpointsApi(
-            DEFAULT_CONFIG,
-        ).endpointsAgentsEnrollmentTokensRetrieve({
+        const token = await aki(EndpointsApi).endpointsAgentsEnrollmentTokensRetrieve({
             tokenUuid: pk,
         });
 
@@ -74,12 +73,14 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
         } else {
             data.connector = this.instance.connector;
         }
+
         if (this.instance) {
             return this.#api.endpointsAgentsEnrollmentTokensPartialUpdate({
                 tokenUuid: this.instance.tokenUuid,
                 patchedEnrollmentTokenRequest: data,
             });
         }
+
         return this.#api.endpointsAgentsEnrollmentTokensCreate({
             enrollmentTokenRequest: data as unknown as EnrollmentTokenRequest,
         });
@@ -92,11 +93,13 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
 
         if (!expiringElement.checked) {
             this.expiresAt = null;
+
             return;
         }
 
         if (this.instance?.expiring && this.instance.expires) {
             this.expiresAt = new Date(this.instance.expires);
+
             return;
         }
 

@@ -3,8 +3,9 @@ import "#elements/user/sources/SourceSettingsOAuth";
 import "#elements/user/sources/SourceSettingsPlex";
 import "#elements/user/sources/SourceSettingsSAML";
 import "#elements/user/sources/SourceSettingsTelegram";
+import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
@@ -17,8 +18,6 @@ import { SourcesApi, UserSetting, UserSourceConnection } from "@goauthentik/api"
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";
 
 @customElement("ak-user-settings-source")
 export class UserSourceSettingsPage extends AKElement {
@@ -41,7 +40,7 @@ export class UserSourceSettingsPage extends AKElement {
         this.#abortController?.abort();
         this.#abortController = new AbortController();
 
-        const sourcesAPI = new SourcesApi(DEFAULT_CONFIG);
+        const sourcesAPI = aki(SourcesApi);
 
         const [sourceSettings, connections] = await Promise.all([
             sourcesAPI.sourcesAllUserSettingsList({
@@ -177,6 +176,7 @@ export class UserSourceSettingsPage extends AKElement {
                 <span>${msg("No services available.")}</span></ak-empty-state
             >`;
         }
+
         return html`<ul class="pf-c-data-list" part="list" aria-label="${msg("Source Settings")}">
             ${this.sourceSettings.map(this.renderSourceSetting)}
         </ul>`;

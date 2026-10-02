@@ -1,23 +1,24 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconCopyButton } from "#elements/buttons/IconCopyButton";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { EndpointsApi } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
 import { guard } from "lit-html/directives/guard.js";
+
+import { msg } from "@lit/localize";
 
 export function IconEnrollmentTokenCopyButton(tokenUuid?: string | null): SlottedTemplateResult {
     return guard([], () => {
         const fetchTokenViewKey = (): Promise<Blob> => {
             if (!tokenUuid) {
                 console.warn("No tokenUuid provided for IconEnrollmentTokenCopyButton");
+
                 return Promise.resolve(new Blob([""], { type: "text/plain" }));
             }
 
-            return new EndpointsApi(DEFAULT_CONFIG)
-
+            return aki(EndpointsApi)
                 .endpointsAgentsEnrollmentTokensViewKeyRetrieve({
                     tokenUuid,
                 })

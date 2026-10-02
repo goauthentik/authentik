@@ -2,6 +2,8 @@ import { RadioOption } from "#elements/forms/Radio";
 
 import { PolicyBinding } from "@goauthentik/api";
 
+import { match } from "ts-pattern";
+
 import { msg } from "@lit/localize";
 
 export enum PolicyBindingCheckTarget {
@@ -10,16 +12,12 @@ export enum PolicyBindingCheckTarget {
     User = "user",
 }
 
-export function PolicyBindingCheckTargetToLabel(ct: PolicyBindingCheckTarget): string {
-    switch (ct) {
-        case PolicyBindingCheckTarget.Group:
-            return msg("Group");
-        case PolicyBindingCheckTarget.User:
-            return msg("User");
-        case PolicyBindingCheckTarget.Policy:
-            return msg("Policy");
-    }
-}
+export const PolicyBindingCheckTargetToLabel = (ct: PolicyBindingCheckTarget) =>
+    match(ct)
+        .with(PolicyBindingCheckTarget.Group, () => msg("Group"))
+        .with(PolicyBindingCheckTarget.User, () => msg("User"))
+        .with(PolicyBindingCheckTarget.Policy, () => msg("Policy"))
+        .exhaustive();
 
 export const PolicyObjectKeys = {
     [PolicyBindingCheckTarget.Policy]: "policyObj",

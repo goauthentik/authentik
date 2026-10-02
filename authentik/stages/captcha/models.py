@@ -8,6 +8,13 @@ from rest_framework.serializers import BaseSerializer
 from authentik.flows.models import Stage
 
 
+class CaptchaRequestContentType(models.TextChoices):
+    """Supported request content types for CAPTCHA verification."""
+
+    FORM = "application/x-www-form-urlencoded", _("Form encoded")
+    JSON = "application/json", _("JSON")
+
+
 class CaptchaStage(Stage):
     """Verify the user is human using Google's reCaptcha/other compatible CAPTCHA solutions."""
 
@@ -30,6 +37,10 @@ class CaptchaStage(Stage):
 
     js_url = models.TextField(default="https://www.recaptcha.net/recaptcha/api.js")
     api_url = models.TextField(default="https://www.recaptcha.net/recaptcha/api/siteverify")
+    request_content_type = models.TextField(
+        choices=CaptchaRequestContentType.choices,
+        default=CaptchaRequestContentType.FORM,
+    )
 
     @property
     def serializer(self) -> type[BaseSerializer]:

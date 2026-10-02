@@ -7,17 +7,19 @@ from django.test import TestCase
 from jsonschema import validate
 from requests_mock import Mocker
 
+from authentik.admin.models import SystemSettings
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User, UserTypes
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.base import SAFE_METHODS
 from authentik.lib.sync.outgoing.exceptions import TransientSyncException
+from authentik.providers.scim.clients.users import SCIMUserClient
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderUser
 from authentik.providers.scim.tasks import scim_sync, scim_sync_objects, sync_tasks
 from authentik.tasks.models import Task
-from authentik.tenants.models import Tenant
 
 
+@patch("authentik.providers.scim.clients.base.SCIMClient.can_discover", False)
 class SCIMUserTests(TestCase):
     """SCIM User tests"""
 
@@ -25,7 +27,7 @@ class SCIMUserTests(TestCase):
     def setUp(self) -> None:
         # Delete all users and groups as the mocked HTTP responses only return one ID
         # which will cause errors with multiple users
-        Tenant.objects.update(avatars="none")
+        SystemSettings.objects.update(avatars="none")
         User.objects.all().exclude_anonymous().delete()
         Group.objects.all().delete()
         self.provider: SCIMProvider = SCIMProvider.objects.create(
@@ -91,6 +93,48 @@ class SCIMUserTests(TestCase):
                 "userName": uid,
             },
         )
+
+    def _test_user_create_conflict(self, mock: Mocker, resources_key: str):
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={
+                "authenticationSchemes": [],
+                "patch": {"supported": False},
+                "bulk": {"supported": False},
+                "filter": {"supported": True},
+                "changePassword": {"supported": False},
+                "sort": {"supported": False},
+                "etag": {"supported": False},
+            },
+        )
+        mock.post("https://localhost/Users", status_code=409)
+        scim_id = generate_id()
+        uid = generate_id()
+        remote_user = {
+            "id": scim_id,
+            "userName": uid,
+            "displayName": "Remote display name",
+        }
+        mock.get("https://localhost/Users", json={resources_key: [remote_user]})
+
+        user = User.objects.create(username=uid, name=uid, email=f"{uid}@goauthentik.io")
+
+        connection = SCIMProviderUser.objects.get(provider=self.provider, user=user)
+        self.assertEqual(connection.scim_id, scim_id)
+        self.assertEqual(connection.attributes, remote_user)
+        self.assertEqual(
+            [request.method for request in mock.request_history], ["GET", "POST", "GET"]
+        )
+
+    @Mocker()
+    def test_user_create_conflict_standard_resources_key(self, mock: Mocker):
+        """An existing user is adopted from a standard-cased list response"""
+        self._test_user_create_conflict(mock, "Resources")
+
+    @Mocker()
+    def test_user_create_conflict_lowercase_resources_key(self, mock: Mocker):
+        """An existing user is adopted from a lowercase list response"""
+        self._test_user_create_conflict(mock, "resources")
 
     @Mocker()
     def test_user_create_custom_schema(self, mock: Mocker):
@@ -540,6 +584,35 @@ class SCIMUserTests(TestCase):
         self.assertEqual(mock.request_history[1].method, "POST")
 
     @Mocker()
+    def test_user_diff_nested_attribute(self, mock: Mocker):
+        """Test nested attribute changes are detected without mutating cached data"""
+        mock.get("https://localhost/ServiceProviderConfig", json={})
+        connection = SCIMProviderUser(
+            attributes={
+                "urn:ietf:params:scim:schemas:extension:example:2.0:User": {
+                    "birthDate": "1990-01-31"
+                }
+            }
+        )
+
+        self.assertTrue(
+            SCIMUserClient(self.provider).diff(
+                {
+                    "urn:ietf:params:scim:schemas:extension:example:2.0:User": {
+                        "birthDate": "1991-02-01"
+                    }
+                },
+                connection,
+            )
+        )
+        self.assertEqual(
+            connection.attributes["urn:ietf:params:scim:schemas:extension:example:2.0:User"][
+                "birthDate"
+            ],
+            "1990-01-31",
+        )
+
+    @Mocker()
     def test_discover(self, mock: Mocker):
         user = User.objects.create(username="admin@goauthentik.io")
         mock.get(
@@ -679,10 +752,13 @@ class SCIMUserTests(TestCase):
         TransientSyncException"""
         with Mocker() as mock:
             mock.get("https://localhost/ServiceProviderConfig", json={})
-            with patch.object(
-                SCIMProvider,
-                "client_for_model",
-                side_effect=TransientSyncException("connection failed"),
+            with (
+                patch.object(
+                    SCIMProvider,
+                    "client_for_model",
+                    side_effect=TransientSyncException("connection failed"),
+                ),
+                patch.object(sync_tasks, "_discover"),
             ):
                 scim_sync.send(self.provider.pk).get_result()
 

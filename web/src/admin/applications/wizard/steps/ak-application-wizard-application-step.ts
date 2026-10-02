@@ -6,7 +6,6 @@ import "#components/ak-text-input";
 import "#components/ak-textarea-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-
 import { omitKeys, trimMany } from "#common/objects";
 
 import { isSlug } from "#elements/router/utils";
@@ -33,9 +32,10 @@ import { ifDefined } from "lit/directives/if-defined.js";
  * The first step of the application wizard, responsible for collecting
  * basic application information such as name, slug, group, and UI settings.
  *
- * This step performs validation on the form inputs and updates the wizard state accordingly when the "Next" button is clicked.
+ * This step performs validation on the form inputs and updates the wizard state accordingly when
+ * the "Next" button is clicked.
  *
- * @prop wizard - The current state of the application wizard, shared across all steps.
+ * @property wizard - The current state of the application wizard, shared across all steps.
  */
 @customElement("ak-application-wizard-application-step")
 export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
@@ -131,7 +131,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                     spellcheck="false"
                     required
                     .errorMessages=${errors.name ?? this.errorMessages("name")}
-                    help=${msg("The name displayed in the application library.")}
+                    help=${msg("The name displayed in the Application Dashboard.")}
                 ></ak-text-input>
                 <ak-slug-input
                     name="slug"
@@ -171,8 +171,9 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             placeholder=${msg("https://...")}
                             value=${ifDefined(app.metaLaunchUrl)}
                             ?invalid=${this.errors.has("metaLaunchUrl")}
-                            .errorMessages=${errors.metaLaunchUrl ??
-                            this.errorMessages("metaLaunchUrl")}
+                            .errorMessages=${
+                                errors.metaLaunchUrl ?? this.errorMessages("metaLaunchUrl")
+                            }
                             help=${msg(
                                 "If left empty, authentik will try to extract the launch URL based on the selected provider.",
                             )}
@@ -183,16 +184,16 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             ?checked=${app.openInNewTab ?? false}
                             label=${msg("Open in new tab")}
                             help=${msg(
-                                "If checked, the launch URL will open in a new browser tab or window from the user's application library.",
+                                "If checked, the launch URL will open in a new browser tab or window from the user's Application Dashboard.",
                             )}
                         >
                         </ak-switch-input>
                         <ak-switch-input
                             name="metaHide"
                             ?checked=${app.metaHide ?? false}
-                            label=${msg("Hide from My applications")}
+                            label=${msg("Hide from Application Dashboard")}
                             help=${msg(
-                                "If checked, this application will not be shown on the user's My applications page.",
+                                "If checked, this application will not be shown on the user's Application Dashboard.",
                             )}
                         >
                         </ak-switch-input>
@@ -211,7 +212,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             name="metaPublisher"
                             value="${ifDefined(app.metaPublisher)}"
                             .errorMessages=${errors.metaPublisher}
-                            help=${msg("The publisher is shown in the application library.")}
+                            help=${msg("The publisher is shown in the Application Dashboard.")}
                         ></ak-text-input>
                         <ak-textarea-input
                             label=${msg("Description")}
@@ -219,7 +220,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             value=${ifDefined(app.metaDescription)}
                             .errorMessages=${errors.metaDescription}
                             help=${msg(
-                                "The description is shown in the application library and may provide additional information about the application to end users.",
+                                "The description is shown in the Application Dashboard and may provide additional information about the application to end users.",
                             )}
                         ></ak-textarea-input>
                     </div>
@@ -231,6 +232,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
         if (!(this.wizard.app && this.wizard.errors)) {
             throw new Error("Application Step received uninitialized wizard context.");
         }
+
         return this.renderForm(this.wizard.app, this.wizard.errors?.app);
     }
 }

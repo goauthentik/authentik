@@ -1,9 +1,7 @@
 """test SAML Source"""
 
-from pathlib import Path
 from time import sleep
 
-from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
@@ -77,40 +75,13 @@ class TestSourceSAML(SeleniumTestCase):
     def setUp(self):
         self.slug = generate_id()
         super().setUp()
-        self.run_container(
-            image="kristophjunge/test-saml-idp:1.15",
-            ports={"8080": "8080"},
-            healthcheck=Healthcheck(
-                test=["CMD", "curl", "http://localhost:8080"],
-                interval=5 * 1_000 * 1_000_000,
-                start_period=1 * 1_000 * 1_000_000,
-            ),
-            volumes={
-                str(
-                    (Path(__file__).parent / Path("test-saml-idp/saml20-sp-remote.php")).absolute()
-                ): {
-                    "bind": "/var/www/simplesamlphp/metadata/saml20-sp-remote.php",
-                    "mode": "ro",
-                }
-            },
-            environment={
-                "SIMPLESAMLPHP_SP_ENTITY_ID": "entity-id",
-                "SIMPLESAMLPHP_SP_NAME_ID_FORMAT": (
-                    "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
-                ),
-                "SIMPLESAMLPHP_SP_NAME_ID_ATTRIBUTE": "email",
-                "SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE": (
-                    self.url("authentik_sources_saml:acs", source_slug=self.slug)
-                ),
-            },
-        )
 
     def login_via_saml_source(self):
         """Perform login at the SAML IDP"""
-        self.wait.until(ec.presence_of_element_located((By.ID, "username")))
-        self.driver.find_element(By.ID, "username").send_keys("user1")
-        self.driver.find_element(By.ID, "password").send_keys("user1pass")
-        self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
+        self.wait.until(ec.presence_of_element_located((By.NAME, "user")))
+        self.driver.find_element(By.NAME, "user").send_keys("user1")
+        self.driver.find_element(By.NAME, "password").send_keys("user1pass")
+        self.driver.find_element(By.NAME, "password").send_keys(Keys.ENTER)
 
         self.wait_for_url(self.if_user_url())
 
@@ -142,10 +113,22 @@ class TestSourceSAML(SeleniumTestCase):
             authentication_flow=authentication_flow,
             enrollment_flow=enrollment_flow,
             pre_authentication_flow=pre_authentication_flow,
-            issuer="entity-id",
-            sso_url=f"http://{self.host}:8080/simplesaml/saml2/idp/SSOService.php",
+            sso_url=f"http://{self.host}:9009/sso",
             binding_type=SAMLBindingTypes.REDIRECT,
             signing_kp=keypair,
+            verification_kp=keypair,
+        )
+        self.run_container(
+            image=self.pinned_image("saml-test-idp", "e2e/compose.yml"),
+            ports={"9009": "9009"},
+            environment={
+                "IDP_ROOT_URL": f"http://{self.host}:9009",
+                "IDP_METADATA_URL": self.url(
+                    "authentik_sources_saml:metadata", source_slug=self.slug
+                ),
+                "IDP_SIGNING_CERT": IDP_CERT,
+                "IDP_SIGNING_KEY": IDP_KEY,
+            },
         )
         ident_stage = IdentificationStage.objects.first()
         ident_stage.sources.set([source])
@@ -204,10 +187,22 @@ class TestSourceSAML(SeleniumTestCase):
             authentication_flow=authentication_flow,
             enrollment_flow=enrollment_flow,
             pre_authentication_flow=pre_authentication_flow,
-            issuer="entity-id",
-            sso_url=f"http://{self.host}:8080/simplesaml/saml2/idp/SSOService.php",
+            sso_url=f"http://{self.host}:9009/sso",
             binding_type=SAMLBindingTypes.POST,
             signing_kp=keypair,
+            verification_kp=keypair,
+        )
+        self.run_container(
+            image=self.pinned_image("saml-test-idp", "e2e/compose.yml"),
+            ports={"9009": "9009"},
+            environment={
+                "IDP_ROOT_URL": f"http://{self.host}:9009",
+                "IDP_METADATA_URL": self.url(
+                    "authentik_sources_saml:metadata", source_slug=self.slug
+                ),
+                "IDP_SIGNING_CERT": IDP_CERT,
+                "IDP_SIGNING_KEY": IDP_KEY,
+            },
         )
         ident_stage = IdentificationStage.objects.first()
         ident_stage.sources.set([source])
@@ -279,10 +274,22 @@ class TestSourceSAML(SeleniumTestCase):
             authentication_flow=authentication_flow,
             enrollment_flow=enrollment_flow,
             pre_authentication_flow=pre_authentication_flow,
-            issuer="entity-id",
-            sso_url=f"http://{self.host}:8080/simplesaml/saml2/idp/SSOService.php",
+            sso_url=f"http://{self.host}:9009/sso",
             binding_type=SAMLBindingTypes.POST_AUTO,
             signing_kp=keypair,
+            verification_kp=keypair,
+        )
+        self.run_container(
+            image=self.pinned_image("saml-test-idp", "e2e/compose.yml"),
+            ports={"9009": "9009"},
+            environment={
+                "IDP_ROOT_URL": f"http://{self.host}:9009",
+                "IDP_METADATA_URL": self.url(
+                    "authentik_sources_saml:metadata", source_slug=self.slug
+                ),
+                "IDP_SIGNING_CERT": IDP_CERT,
+                "IDP_SIGNING_KEY": IDP_KEY,
+            },
         )
         ident_stage = IdentificationStage.objects.first()
         ident_stage.sources.set([source])
@@ -341,10 +348,22 @@ class TestSourceSAML(SeleniumTestCase):
             authentication_flow=authentication_flow,
             enrollment_flow=enrollment_flow,
             pre_authentication_flow=pre_authentication_flow,
-            issuer="entity-id",
-            sso_url=f"http://{self.host}:8080/simplesaml/saml2/idp/SSOService.php",
+            sso_url=f"http://{self.host}:9009/sso",
             binding_type=SAMLBindingTypes.POST_AUTO,
             signing_kp=keypair,
+            verification_kp=keypair,
+        )
+        self.run_container(
+            image=self.pinned_image("saml-test-idp", "e2e/compose.yml"),
+            ports={"9009": "9009"},
+            environment={
+                "IDP_ROOT_URL": f"http://{self.host}:9009",
+                "IDP_METADATA_URL": self.url(
+                    "authentik_sources_saml:metadata", source_slug=self.slug
+                ),
+                "IDP_SIGNING_CERT": IDP_CERT,
+                "IDP_SIGNING_KEY": IDP_KEY,
+            },
         )
         ident_stage = IdentificationStage.objects.first()
         ident_stage.sources.set([source])

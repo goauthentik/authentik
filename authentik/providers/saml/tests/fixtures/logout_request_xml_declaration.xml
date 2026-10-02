@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<saml2p:LogoutRequest xmlns:saml2p="urn:oasis:names:tc:SAML:2.0:protocol" ID="_logout" Version="2.0" IssueInstant="2026-05-19T01:01:53.461Z">
+    <saml2:Issuer xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion">https://sp.example.invalid/saml</saml2:Issuer>
+</saml2p:LogoutRequest>

@@ -1,16 +1,27 @@
+/**
+ * @file Display details for a federated LDAP Identity Source: Overview, Synced Users, Synced
+ *   Groups, Changelog, Permissions
+ */
+
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/ldap/LDAPSourceConnectivity";
 import "#admin/sources/ldap/LDAPSourceUserList";
 import "#admin/sources/ldap/LDAPSourceGroupList";
 import "#admin/events/ObjectChangelog";
+import "#components/sync/SyncStatusCard";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
-import "#elements/sync/SyncStatusCard";
-import "#elements/tasks/ScheduleList";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
@@ -18,6 +29,7 @@ import { modalInvoker } from "#elements/dialogs";
 import { SlottedTemplateResult } from "#elements/types";
 
 import renderDescriptionList from "#components/DescriptionList";
+import { scheduleCard } from "#components/tasks/scheduleCard";
 
 import { LDAPSourceForm } from "#admin/sources/ldap/LDAPSourceForm";
 
@@ -27,21 +39,15 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+const SOURCE_MODEL = ModelEnum.AuthentikSourcesLdapLdapsource;
 
 @customElement("ak-source-ldap-view")
 export class LDAPSourceViewPage extends AKElement {
     @property({ type: String })
     set sourceSlug(slug: string) {
-        new SourcesApi(DEFAULT_CONFIG)
+        aki(SourcesApi)
             .sourcesLdapRetrieve({
-                slug: slug,
+                slug,
             })
             .then((source) => {
                 this.source = source;
@@ -63,6 +69,7 @@ export class LDAPSourceViewPage extends AKElement {
 
     constructor() {
         super();
+
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.source?.slug) return;
             this.sourceSlug = this.source?.slug;
@@ -73,9 +80,9 @@ export class LDAPSourceViewPage extends AKElement {
         if (!this.source) {
             return nothing;
         }
-        const [appLabel, modelName] = ModelEnum.AuthentikSourcesLdapLdapsource.split(".");
+
         return html`<main>
-            <ak-tabs>
+            <ak-tabs routed>
                 <div
                     role="tabpanel"
                     tabindex="0"
@@ -124,9 +131,8 @@ export class LDAPSourceViewPage extends AKElement {
                             <ak-sync-status-card
                                 .fetch=${() => {
                                     if (!this.source) return Promise.reject();
-                                    return new SourcesApi(
-                                        DEFAULT_CONFIG,
-                                    ).sourcesLdapSyncStatusRetrieve({
+
+                                    return aki(SourcesApi).sourcesLdapSyncStatusRetrieve({
                                         slug: this.source.slug,
                                     });
                                 }}
@@ -142,15 +148,8 @@ export class LDAPSourceViewPage extends AKElement {
                                 ></ak-source-ldap-connectivity>
                             </div>
                         </div>
-                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__title">
-                                <p>${msg("Schedules")}</p>
-                            </div>
-                            <ak-schedule-list
-                                .relObjAppLabel=${appLabel}
-                                .relObjModel=${modelName}
-                                .relObjId="${this.source?.pk}"
-                            ></ak-schedule-list>
+                        <div class="pf-l-grid__item pf-m-12-col">
+                            ${scheduleCard(SOURCE_MODEL, this.source.pk)}
                         </div>
                     </div>
                 </div>

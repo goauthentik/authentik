@@ -12,13 +12,12 @@ import "#elements/forms/ConfirmationForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
 import { PFColor } from "#elements/Label";
-import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -48,27 +47,31 @@ export class PolicyListPage extends TablePage<Policy> {
     public override order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Policy>> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesAllList(await this.defaultEndpointConfig());
+        return aki(PoliciesApi).policiesAllList(await this.defaultEndpointConfig());
     }
 
     protected columns: TableColumn[] = [
         // ---
         [msg("Name"), "name"],
         [msg("Type")],
+        [msg("Last updated"), "last_updated"],
         [msg("Actions")],
     ];
 
     protected override row(item: Policy): SlottedTemplateResult[] {
         return [
             html`<div>${item.name}</div>
-                ${(item.boundTo || 0) > 0
-                    ? html`<ak-label color=${PFColor.Green} compact>
-                          ${msg(str`Assigned to ${item.boundTo} object(s).`)}
-                      </ak-label>`
-                    : html`<ak-label color=${PFColor.Orange} compact>
-                          ${msg("Warning: Policy is not assigned.")}
-                      </ak-label>`}`,
+                ${
+                    (item.boundTo || 0) > 0
+                        ? html`<ak-label color=${PFColor.Green} compact>
+                              ${msg(str`Assigned to ${item.boundTo} object(s).`)}
+                          </ak-label>`
+                        : html`<ak-label color=${PFColor.Orange} compact>
+                              ${msg("Warning: Policy is not assigned.")}
+                          </ak-label>`
+                }`,
             html`${item.verboseName}`,
+            Timestamp(item.lastUpdated),
             html`<div class="ak-c-table__actions">
                 ${IconEditButtonByTagName(item.component, item.pk)}
                 ${IconPermissionButton(item.name, {
@@ -96,16 +99,17 @@ export class PolicyListPage extends TablePage<Policy> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Policy / Policies")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Policy) => {
-                return new PoliciesApi(DEFAULT_CONFIG).policiesAllUsedByList({
+                return aki(PoliciesApi).policiesAllUsedByList({
                     policyUuid: item.pk,
                 });
             }}
             .delete=${(item: Policy) => {
-                return new PoliciesApi(DEFAULT_CONFIG).policiesAllDestroy({
+                return aki(PoliciesApi).policiesAllDestroy({
                     policyUuid: item.pk,
                 });
             }}
@@ -136,7 +140,7 @@ export class PolicyListPage extends TablePage<Policy> {
                 errorMessage=${msg("Failed to delete policy cache")}
                 action=${msg("Clear Cache")}
                 .onConfirm=${() => {
-                    return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheClearCreate();
+                    return aki(PoliciesApi).policiesAllCacheClearCreate();
                 }}
             >
                 <span slot="header">${msg("Clear Policy cache")}</span>

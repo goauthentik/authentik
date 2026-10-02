@@ -6,15 +6,17 @@ from shutil import rmtree
 from ssl import CERT_REQUIRED
 from tempfile import NamedTemporaryFile, mkdtemp
 from typing import Any
+from urllib.parse import urlparse
 
 import pglock
 from django.db import connection, models
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
-from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
+from ldap3 import ALL, EXTERNAL, NONE, RANDOM, SASL, SIMPLE, Connection, Server, ServerPool, Tls
 from ldap3.core.exceptions import (
     LDAPAdminLimitExceededResult,
     LDAPAttributeError,
+    LDAPConfigurationError,
     LDAPException,
     LDAPInsufficientAccessRightsResult,
     LDAPSchemaError,
@@ -29,7 +31,7 @@ from authentik.core.models import (
     UserSourceConnection,
 )
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.config import CONFIG
+from authentik.lib.config import CONFIG, advisory_lock_db_alias
 from authentik.lib.models import DomainlessURLValidator
 from authentik.lib.sync.incoming.models import IncomingSyncSource
 from authentik.lib.utils.time import fqdn_rand
@@ -64,6 +66,13 @@ class MultiURLValidator(DomainlessURLValidator):
             super().__call__(value)
 
 
+class LDAPSourceBindMethod(models.TextChoices):
+    """Authentication method for LDAP service connections."""
+
+    SIMPLE = "simple", _("Simple or anonymous bind")
+    SASL_EXTERNAL = "sasl_external", _("SASL EXTERNAL")
+
+
 class LDAPSource(IncomingSyncSource):
     """Federate LDAP Directory with authentik, or create new accounts in LDAP."""
 
@@ -92,6 +101,11 @@ class LDAPSource(IncomingSyncSource):
 
     bind_cn = models.TextField(verbose_name=_("Bind CN"), blank=True)
     bind_password = models.TextField(blank=True)
+    service_bind_method = models.TextField(
+        choices=LDAPSourceBindMethod,
+        default=LDAPSourceBindMethod.SIMPLE,
+        help_text=_("Authentication method used for LDAP synchronization and writeback."),
+    )
     start_tls = models.BooleanField(default=False, verbose_name=_("Enable Start TLS"))
     sni = models.BooleanField(default=False, verbose_name=_("Use Server URI for SNI verification"))
 
@@ -142,6 +156,10 @@ class LDAPSource(IncomingSyncSource):
     sync_groups = models.BooleanField(default=True)
     sync_parent_group = models.ForeignKey(
         Group, blank=True, null=True, default=None, on_delete=models.SET_DEFAULT
+    )
+
+    sync_group_hierarchy = models.BooleanField(
+        default=False, help_text=_("Sync group parentage/hierarchy from LDAP directories.")
     )
 
     lookup_groups_from_user = models.BooleanField(
@@ -242,19 +260,19 @@ class LDAPSource(IncomingSyncSource):
             tls_kwargs["local_certificate_file"] = certificate_file
         if ciphers := CONFIG.get("ldap.tls.ciphers", None):
             tls_kwargs["ciphers"] = ciphers.strip()
-        if self.sni:
-            tls_kwargs["sni"] = self.server_uri.split(",", maxsplit=1)[0].strip()
         server_kwargs = {
             "get_info": ALL,
             "connect_timeout": LDAP_TIMEOUT,
-            "tls": Tls(**tls_kwargs),
         }
         server_kwargs.update(kwargs)
-        if "," in self.server_uri:
-            for server in self.server_uri.split(","):
-                servers.append(Server(server, **server_kwargs))
-        else:
-            servers = [Server(self.server_uri, **server_kwargs)]
+        for server_uri in self.server_uri.split(","):
+            server = Server(server_uri.strip(), **server_kwargs)
+            # The TLS SNI server name must be a bare hostname. ldap3 has already
+            # parsed the scheme and port out of the URI into `server.host`;
+            # passing the raw URI (e.g. `ldaps://host`) as the SNI name breaks
+            # the handshake against SNI-strict servers. See #7756.
+            server.tls = Tls(**tls_kwargs, sni=server.host if self.sni else None)
+            servers.append(server)
         return ServerPool(servers, RANDOM, active=5, exhaust=True)
 
     def connection(
@@ -263,13 +281,54 @@ class LDAPSource(IncomingSyncSource):
         server_kwargs: dict | None = None,
         connection_kwargs: dict | None = None,
     ) -> Connection:
-        """Get a fully connected and bound LDAP Connection"""
+        """Get a service connection for synchronization, searches, and writeback."""
+        connection_kwargs = dict(connection_kwargs or {})
+        if self.service_bind_method == LDAPSourceBindMethod.SASL_EXTERNAL:
+            self._validate_sasl_external_configuration()
+            connection_kwargs.pop("user", None)
+            connection_kwargs.pop("password", None)
+            connection_kwargs.update(
+                authentication=SASL,
+                sasl_mechanism=EXTERNAL,
+                sasl_credentials="",
+            )
+        else:
+            connection_kwargs.setdefault("user", self.bind_cn)
+            connection_kwargs.setdefault("password", self.bind_password)
+        return self._connect_and_bind(server, server_kwargs, connection_kwargs)
+
+    def connection_as_user(self, user: str, password: str) -> Connection:
+        """Bind as an LDAP user to verify their submitted password."""
+        return self._connect_and_bind(
+            connection_kwargs={
+                "user": user,
+                "password": password,
+                "authentication": SIMPLE,
+            }
+        )
+
+    def _validate_sasl_external_configuration(self) -> None:
+        """Ensure SASL EXTERNAL has a certificate-backed TLS transport."""
+        if not self.client_certificate or not self.client_certificate.key_data:
+            raise LDAPConfigurationError(
+                "SASL EXTERNAL requires a client certificate with a private key"
+            )
+        schemes = {urlparse(uri.strip()).scheme for uri in self.server_uri.split(",")}
+        expected_schemes = {"ldap"} if self.start_tls else {"ldaps"}
+        if schemes != expected_schemes:
+            raise LDAPConfigurationError(
+                "SASL EXTERNAL requires ldap:// with StartTLS or ldaps:// without StartTLS"
+            )
+
+    def _connect_and_bind(
+        self,
+        server: Server | None = None,
+        server_kwargs: dict | None = None,
+        connection_kwargs: dict | None = None,
+    ) -> Connection:
+        """Create, secure, and bind an LDAP connection."""
         server_kwargs = server_kwargs or {}
         connection_kwargs = connection_kwargs or {}
-        if self.bind_cn is not None:
-            connection_kwargs.setdefault("user", self.bind_cn)
-        if self.bind_password is not None:
-            connection_kwargs.setdefault("password", self.bind_password)
         conn = Connection(
             server or self.server(**server_kwargs),
             raise_exceptions=True,
@@ -300,13 +359,13 @@ class LDAPSource(IncomingSyncSource):
                 raise exc
             LOGGER.warning("Downgrading connection to no schema info", source=self, exc=exc)
             server_kwargs["get_info"] = NONE
-            return self.connection(server, server_kwargs, connection_kwargs)
+            return self._connect_and_bind(server, server_kwargs, connection_kwargs)
         finally:
             if conn.server.tls.certificate_file is not None and exists(
                 conn.server.tls.certificate_file
             ):
                 rmtree(dirname(conn.server.tls.certificate_file))
-        return RuntimeError("Failed to bind")
+        raise LDAPException("Failed to bind")
 
     @property
     def sync_lock(self) -> pglock.advisory:
@@ -315,6 +374,7 @@ class LDAPSource(IncomingSyncSource):
             lock_id=f"goauthentik.io/{connection.schema_name}/sources/ldap/sync/{self.slug}",
             timeout=0,
             side_effect=pglock.Return,
+            using=advisory_lock_db_alias(),
         )
 
     def get_ldap_server_info(self, srv: Server) -> dict[str, str]:

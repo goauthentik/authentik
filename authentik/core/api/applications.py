@@ -28,21 +28,28 @@ from authentik.core.api.utils import ModelSerializer, ThemedUrlsSerializer
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, User
 from authentik.events.logs import LogEventSerializer, capture_logs
+from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.policies.api.exec import PolicyTestResultSerializer
-from authentik.policies.engine import PolicyEngine
+from authentik.policies.engine import ListPolicyEngine, PolicyEngine
 from authentik.policies.types import CACHE_PREFIX, PolicyResult
 from authentik.rbac.filters import ObjectFilter
+from authentik.root.middleware import ClientIPMiddleware
 
 LOGGER = get_logger()
 
 
 def user_app_cache_key(
-    user_pk: str, page_number: int | None = None, only_with_launch_url: bool = False
+    user_pk: str,
+    client_ip: str | None = None,
+    page_number: int | None = None,
+    only_with_launch_url: bool = False,
 ) -> str:
     """Cache key where application list for user is saved"""
     key = f"{CACHE_PREFIX}app_access/{user_pk}"
     if only_with_launch_url:
         key += "/launch"
+    if client_ip:
+        key += f"/{client_ip}"
     if page_number:
         key += f"/{page_number}"
     return key
@@ -104,6 +111,7 @@ class ApplicationSerializer(ModelSerializer):
         model = Application
         fields = [
             "pk",
+            "pbm_uuid",
             "name",
             "slug",
             "provider",
@@ -123,11 +131,16 @@ class ApplicationSerializer(ModelSerializer):
             "meta_hide",
         ]
         extra_kwargs = {
+            "pbm_uuid": {"read_only": True},
             "backchannel_providers": {"required": False},
         }
 
 
-class ApplicationViewSet(UsedByMixin, ModelViewSet):
+class ApplicationViewSet(
+    ConditionalInheritance("authentik.enterprise.requests.api.apps.ApplicationsRequestableMixin"),
+    UsedByMixin,
+    ModelViewSet,
+):
     """Application Viewset"""
 
     queryset = (
@@ -167,18 +180,22 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
     def _get_allowed_applications(
         self, paginated_apps: Iterator[Application], user: User | None = None
     ) -> list[Application]:
-        applications = []
+        apps = list(paginated_apps)
+        if not apps:
+            return []
         request = self.request._request
         if user:
             request = copy(request)
             request.user = user
-        for application in paginated_apps:
-            engine = PolicyEngine(application, request.user, request)
-            engine.empty_result = AppAccessWithoutBindings.get()
-            engine.build()
-            if engine.passing:
-                applications.append(application)
-        return applications
+        engine = ListPolicyEngine(
+            Application.objects.filter(pk__in=[app.pk for app in apps]), request.user, request
+        )
+        engine.empty_result = AppAccessWithoutBindings.get()
+        engine.build()
+        passing_pks = set(engine.result.values_list("pk", flat=True))
+        # Filter (rather than re-fetch from engine.result) to preserve the original
+        # pagination order and the prefetching already applied by get_queryset().
+        return [app for app in apps if app.pk in passing_pks]
 
     def _expand_applications(self, applications: list[Application]) -> QuerySet[Application]:
         """
@@ -314,9 +331,10 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         if not should_cache:
             allowed_applications = self._get_allowed_applications(paginated_apps)
         if should_cache:
+            client_ip = ClientIPMiddleware.get_client_ip(self.request)
             allowed_applications = cache.get(
                 user_app_cache_key(
-                    self.request.user.pk, paginator.page.number, only_with_launch_url
+                    self.request.user.pk, client_ip, paginator.page.number, only_with_launch_url
                 )
             )
             if allowed_applications:
@@ -328,7 +346,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
                 allowed_applications = self._get_allowed_applications(paginated_apps)
                 cache.set(
                     user_app_cache_key(
-                        self.request.user.pk, paginator.page.number, only_with_launch_url
+                        self.request.user.pk, client_ip, paginator.page.number, only_with_launch_url
                     ),
                     allowed_applications,
                     timeout=86400,

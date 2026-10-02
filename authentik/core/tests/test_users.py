@@ -3,8 +3,8 @@
 from unittest.mock import patch
 
 from django.contrib.auth.hashers import make_password
+from django.http import HttpRequest
 from django.test.testcases import TestCase
-from rest_framework.exceptions import ValidationError
 
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.users import UserSerializer
@@ -40,6 +40,46 @@ class TestUsers(TestCase):
         self.assertEqual(Event.objects.count(), 1)
         user.ak_groups.all()
         self.assertEqual(Event.objects.count(), 1)
+
+    def test_locale_user_setting_wins_over_language_code(self):
+        """Test the user's saved locale takes precedence over request.LANGUAGE_CODE"""
+        user = User.objects.create(
+            username=generate_id(),
+            attributes={"settings": {"locale": "de"}},
+        )
+        request = HttpRequest()
+        request.LANGUAGE_CODE = "fr"
+        self.assertEqual(user.locale(request), "de")
+
+    def test_locale_falls_back_to_language_code(self):
+        """Test request.LANGUAGE_CODE is used when the user has no saved locale"""
+        user = User.objects.create(username=generate_id())
+        request = HttpRequest()
+        request.LANGUAGE_CODE = "fr"
+        self.assertEqual(user.locale(request), "fr")
+
+    def test_locale_empty_user_setting_falls_back_to_language_code(self):
+        """Test an empty saved locale does not shadow request.LANGUAGE_CODE"""
+        user = User.objects.create(
+            username=generate_id(),
+            attributes={"settings": {"locale": ""}},
+        )
+        request = HttpRequest()
+        request.LANGUAGE_CODE = "fr"
+        self.assertEqual(user.locale(request), "fr")
+
+    def test_locale_no_request_returns_user_setting(self):
+        """Test the user's saved locale is returned when there is no request"""
+        user = User.objects.create(
+            username=generate_id(),
+            attributes={"settings": {"locale": "de"}},
+        )
+        self.assertEqual(user.locale(), "de")
+
+    def test_locale_no_request_no_setting_returns_empty(self):
+        """Test an empty string is returned when there is no request and no saved locale"""
+        user = User.objects.create(username=generate_id())
+        self.assertEqual(user.locale(), "")
 
     def test_set_password_from_hash_signal_skips_source_sync_receivers(self):
         """Test hash password updates do not expose a raw password to sync receivers."""
@@ -107,22 +147,22 @@ class TestUserSerializerPasswordHash(TestCase):
         self.assertTrue(user.check_password(password))
         self.assertIsNotNone(user.password_change_date)
 
-    def test_password_hash_rejects_invalid_format(self):
-        """Test invalid password hash values are rejected."""
+    def test_unrecognized_password_hash_is_stored_unchanged(self):
+        """Test blueprint password hashes are stored without validation."""
+        password_hash = "custom$password$hash"
         serializer = UserSerializer(
             data={
                 "username": generate_id(),
                 "name": "Test User",
-                "password_hash": "not-a-valid-hash",
+                "password_hash": password_hash,
             },
             context={SERIALIZER_CONTEXT_BLUEPRINT: True},
         )
 
         self.assertTrue(serializer.is_valid(), serializer.errors)
-        with self.assertRaises(ValidationError) as ctx:
-            serializer.save()
+        user = serializer.save()
 
-        self.assertIn("Invalid password hash format", str(ctx.exception))
+        self.assertEqual(user.password, password_hash)
 
     def test_password_hash_ignored_outside_blueprint_context(self):
         """Test password_hash is not accepted by the regular serializer."""

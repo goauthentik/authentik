@@ -1,4 +1,4 @@
-import "#components/ak-hidden-text-input";
+import "#components/ak-secret-text-input";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
@@ -11,7 +11,6 @@ import "#elements/LicenseNotice";
 import "#components/ak-number-input";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-text-input";
-
 import {
     groupsProvider,
     groupsSelector,
@@ -19,7 +18,7 @@ import {
     propertyMappingsSelector,
 } from "./SCIMProviderFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import {
     CompatibilityModeEnum,
@@ -38,15 +37,37 @@ import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 export function renderAuthToken(provider?: Partial<SCIMProvider>, errors: ValidationError = {}) {
-    return html`<ak-hidden-text-input
+    return html`<ak-secret-text-input
         name="token"
         label=${msg("Token")}
-        value="${provider?.token ?? ""}"
         .errorMessages=${errors?.token}
-        required
+        ?required=${!provider}
+        ?revealed=${!provider}
         help=${msg("Token to authenticate with.")}
         input-hint="code"
-    ></ak-hidden-text-input>`;
+    ></ak-secret-text-input>`;
+}
+
+export function renderAuthBasic(provider?: Partial<SCIMProvider>, errors: ValidationError = {}) {
+    return html`<ak-text-input
+            name="authBasicUser"
+            label=${msg("Username")}
+            value="${provider?.authBasicUser ?? ""}"
+            .errorMessages=${errors?.authBasicUser}
+            spellcheck="false"
+            ?required=${!provider}
+            help=${msg("Username to authenticate with.")}
+            input-hint="code"
+        ></ak-text-input>
+        <ak-secret-text-input
+            name="authBasicPassword"
+            label=${msg("Password")}
+            .errorMessages=${errors?.authBasicPassword}
+            ?required=${!provider}
+            ?revealed=${!provider}
+            help=${msg("Password to authenticate with.")}
+            input-hint="code"
+        ></ak-secret-text-input>`;
 }
 
 export function renderAuthOAuth(provider?: Partial<SCIMProvider>, _errors: ValidationError = {}) {
@@ -56,10 +77,13 @@ export function renderAuthOAuth(provider?: Partial<SCIMProvider>, _errors: Valid
                     const args: SourcesOauthListRequest = {
                         ordering: "name",
                     };
+
                     if (query !== undefined) {
                         args.search = query;
                     }
-                    const sources = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthList(args);
+
+                    const sources = await aki(SourcesApi).sourcesOauthList(args);
+
                     return sources.results;
                 }}
                 .renderElement=${(source: OAuthSource): string => {
@@ -92,6 +116,8 @@ export function renderAuth(provider?: Partial<SCIMProvider>, errors: ValidationE
         default:
         case SCIMAuthenticationModeEnum.Token:
             return renderAuthToken(provider, errors);
+        case SCIMAuthenticationModeEnum.Basic:
+            return renderAuthBasic(provider, errors);
         case SCIMAuthenticationModeEnum.Oauth:
         case SCIMAuthenticationModeEnum.OauthInteractive:
             return renderAuthOAuth(provider, errors);
@@ -147,6 +173,7 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
                             if (!provider) {
                                 provider = {};
                             }
+
                             provider.authMode = ev.detail.value;
                             update();
                         }}
@@ -158,6 +185,13 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
                                 default: true,
                                 description: html`${msg(
                                     "Authenticate SCIM requests using a static token.",
+                                )}`,
+                            },
+                            {
+                                label: msg("Basic"),
+                                value: SCIMAuthenticationModeEnum.Basic,
+                                description: html`${msg(
+                                    "Authenticate SCIM requests using HTTP Basic authentication.",
                                 )}`,
                             },
                             {
@@ -207,6 +241,11 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
                             label: msg("Salesforce"),
                             value: CompatibilityModeEnum.Sfdc,
                             description: html`${msg("Altered behavior for usage with Salesforce.")}`,
+                        },
+                        {
+                            label: msg("GitLab"),
+                            value: CompatibilityModeEnum.Gitlab,
+                            description: html`${msg("Altered behavior for usage with GitLab.")}`,
                         },
                         {
                             label: msg("Webex"),
@@ -333,6 +372,12 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
                 >
                 </ak-text-input>
+                <ak-switch-input
+                    name="discoveryEnabled"
+                    label=${msg("Enable automatic discovery of remote resources.")}
+                    ?checked=${provider.discoveryEnabled ?? true}
+                >
+                </ak-switch-input>
             </div>
         </ak-form-group>
     `;

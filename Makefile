@@ -1,16 +1,16 @@
-.PHONY: gen dev-reset all clean test web docs
+.PHONY: gen dev-reset all test web docs core-install i18n-extract install bump gen-changelog integrations
 
 SHELL := /usr/bin/env bash
 .SHELLFLAGS += ${SHELLFLAGS} -e -o pipefail
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
-PY_SOURCES = authentik packages tests scripts lifecycle .github
+PY_SOURCES = authentik packages tests scripts lifecycle
 DOCKER_IMAGE ?= "authentik:test"
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)
-	SED_INPLACE = sed -i ''
+	SED_INPLACE = /usr/bin/sed -i ''
 else
 	SED_INPLACE = sed -i
 endif
@@ -54,7 +54,7 @@ else
 	NPM_VERSION = $(shell python -m scripts.generate_semver)
 endif
 
-all: lint-fix lint gen web test  ## Lint, build, and test everything
+all: lint-fix lint gen web test  ## Lint-fix, lint, generate the schema, generate the client libraries, lint the front end, run the python tests
 
 HELP_WIDTH := $(shell grep -h '^[a-z][^ ]*:.*\#\#' $(MAKEFILE_LIST) 2>/dev/null | \
 	cut -d':' -f1 | awk '{printf "%d\n", length}' | sort -rn | head -1)
@@ -72,26 +72,32 @@ go-test:  ## Run the golang tests
 rust-test:  ## Run the Rust tests
 	$(CARGO) nextest run --workspace
 
-test: ## Run the server tests and produce a coverage report (locally)
-	$(UV) run coverage run manage.py test --keepdb $(or $(filter-out $@,$(MAKECMDGOALS)),authentik)
+test: ## Run the server tests and produce a coverage report (locally). Usage: make test [path]
+	$(UV) run coverage run manage.py test --keepdb $(or $(filter-out $@ all,$(MAKECMDGOALS)),authentik)
 	$(UV) run coverage combine
 	$(UV) run coverage html
 	$(UV) run coverage report
 
-lint-fix-rust:
+lint-fix-rust:  ## Format Rust sources (rustfmt)
 	$(CARGO) +nightly fmt --all -- --config-path "${PWD}/.cargo/rustfmt.toml"
 
-lint-fix: lint-fix-rust  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
+lint-fix: lint-fix-rust  ## Format and automatically fix Python (black, ruff) and Rust (rustfmt) sources
 	$(UV) run black $(PY_SOURCES)
 	$(UV) run ruff check --fix $(PY_SOURCES)
 
 lint-spellcheck:  ## Reports spelling errors.
 	npm run lint:spellcheck
 
-lint: ci-lint-bandit ci-lint-mypy ci-lint-cargo-deny ci-lint-cargo-machete  ## Lint the python and golang sources
+lint-catalogs:  ## Reports pnpm catalog pins, and pnpm's own version pin, that drifted between workspaces.
+	node ./scripts/node/lint-catalogs.ts
+
+lint-check-types:  ## Type-check the repository's Node.js scripts.
+	pnpm run build:types
+
+lint: ci-lint-bandit ci-lint-mypy ci-lint-cargo-deny ci-lint-cargo-machete  ## Check Python (bandit, mypy), Go (golangci) and Rust dependencies (cargo deny, machete)
 	golangci-lint run -v
 
-core-install:
+core-install:  ## Install python dependencies (uv)
 ifdef ($(BREW_EXISTS))
 # Clear cache to ensure fresh compilation
 	$(UV) cache clean
@@ -101,20 +107,20 @@ else
 	$(UV) sync --frozen
 endif
 
-migrate: ## Run the Authentik Django server's migrations
+migrate: ## Apply and check system and Django migrations
 	$(UV) run python -m lifecycle.migrate
 
 i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that require translation into files to send to a translation service
 
-aws-cfn: node-install
-	corepack npm install --prefix lifecycle/aws
-	$(UV) run corepack npm run aws-cfn --prefix lifecycle/aws
+aws-cfn: node-install  ## Generate the AWS Cloudformation template
+	pnpm --dir lifecycle/aws install
+	$(UV) run pnpm --dir lifecycle/aws run aws-cfn
 
 run:  ## Run the main authentik server and worker processes
 	$(UV) run ak allinone
 
 run-watch:  ## Run the authentik server and worker, with auto reloading
-	watchexec --on-busy-update=restart --stop-signal=SIGINT --exts py,rs,go --no-meta --notify -- $(UV) run ak allinone
+	watchexec --on-busy-update=restart --stop-signal=SIGINT --exts py,rs --no-meta --notify -- $(UV) run ak allinone
 
 core-i18n-extract:
 	$(UV) run ak makemessages \
@@ -126,7 +132,7 @@ core-i18n-extract:
 		--ignore website \
 		-l en
 
-install: node-install web-install core-install  ## Install all requires dependencies for `node`, `web` and `core`
+install: node-install web-install core-install  ## Install all required dependencies for `node`, `web` and `core`
 
 dev-drop-db:
 	$(eval pg_user := $(shell $(UV) run python -m authentik.lib.config postgresql.user 2>/dev/null))
@@ -142,7 +148,10 @@ dev-create-db:
 	$(eval pg_name := $(shell $(UV) run python -m authentik.lib.config postgresql.name 2>/dev/null))
 	createdb -U ${pg_user} -h ${pg_host} ${pg_name}
 
-dev-reset: dev-drop-db dev-create-db migrate  ## Drop and restore the Authentik PostgreSQL instance to a "fresh install" state.
+dev-reset: dev-drop-db dev-create-db migrate  ## Drop and restore the authentik PostgreSQL instance to a "fresh install" state.
+
+make-migrations:  ## Create Django migrations for model changes (pgtrigger-aware)
+	$(UV) run ak makemigrations
 
 update-test-mmdb:  ## Update test GeoIP and ASN Databases
 	curl \
@@ -163,16 +172,15 @@ endif
 	$(SED_INPLACE) 's/^VERSION = ".*"/VERSION = "$(version)"/' ${PWD}/authentik/__init__.py
 	$(SED_INPLACE) "s/version = \"${current_version}\"/version = \"$(version)\"/" ${PWD}/Cargo.toml ${PWD}/Cargo.lock
 	$(MAKE) gen-build gen-compose aws-cfn
-	$(SED_INPLACE) "s/\"${current_version}\"/\"$(version)\"/" ${PWD}/package.json ${PWD}/package-lock.json ${PWD}/web/package.json ${PWD}/web/package-lock.json
+	$(SED_INPLACE) "s/\"${current_version}\"/\"$(version)\"/" ${PWD}/package.json ${PWD}/web/package.json
 	echo -n $(version) > ${PWD}/internal/constants/VERSION
 
 #########################
 ## API Schema
 #########################
 
-gen-build:  ## Extract the schema from the database
+gen-build:  ## Generate schema.yml and blueprints/schema.json from Django model definitions
 	AUTHENTIK_DEBUG=true \
-		AUTHENTIK_TENANTS__ENABLED=true \
 		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
 		$(UV) run ak build_schema
 
@@ -181,19 +189,19 @@ gen-compose:
 
 gen-changelog:  ## (Release) generate the changelog based from the commits since the last version
 # These are best-effort guesses based on commit messages
-	$(eval last_version := $(shell git tag --list 'version/*' --sort 'version:refname' | grep -vE 'rc\d+$$' | tail -1))
+	$(eval last_version := $(shell git tag --list 'version/*' --sort 'version:refname' | grep -vE 'rc[0-9]+$$' | tail -1))
 	$(eval current_commit := $(shell git rev-parse HEAD))
 	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${current_commit} > merged_to_current
 	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${last_version} > merged_to_last
-	grep -Eo 'cherry-pick (#\d+)' merged_to_last | cut -d ' ' -f 2 | sed 's/.*/(&)$$/' > cherry_picked_to_last
-	grep -vf cherry_picked_to_last merged_to_current | sort > changelog.md
+	{ grep -Eo 'cherry-pick (#[0-9]+)' merged_to_last || true; } | cut -d ' ' -f 2 | sed 's/.*/(&)$$/' > cherry_picked_to_last
+	grep -vf cherry_picked_to_last merged_to_current | grep -vE '^- (ci:|website)' | sort > changelog.md
 	rm merged_to_current
 	rm merged_to_last
 	rm cherry_picked_to_last
-	npx prettier --write changelog.md
+	pnpm exec oxfmt --write changelog.md
 
 gen-diff:  ## (Release) generate the changelog diff between the current schema and the last version
-	$(eval last_version := $(shell git tag --list 'version/*' --sort 'version:refname' | grep -vE 'rc\d+$$' | tail -1))
+	$(eval last_version := $(shell git tag --list 'version/*' --sort 'version:refname' | grep -vE 'rc[0-9]+$$' | tail -1))
 	git show ${last_version}:schema.yml > schema-old.yml
 	docker compose -f scripts/compose.yml run --rm --user "${UID}:${GID}" diff \
 		--markdown \
@@ -201,9 +209,9 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 		/local/schema-old.yml \
 		/local/schema.yml
 	rm schema-old.yml
-	$(SED_INPLACE) 's/{/&#123;/g' diff.md
-	$(SED_INPLACE) 's/}/&#125;/g' diff.md
-	npx prettier --write diff.md
+	$(SED_INPLACE) 's/{/\&#123;/g' diff.md
+	$(SED_INPLACE) 's/}/\&#125;/g' diff.md
+	pnpm exec oxfmt --write diff.md
 
 gen-client-go:  ## Build and install the authentik API for Golang
 	$(UV) run make -C "${PWD}/packages/client-go" build
@@ -214,7 +222,7 @@ gen-client-rust:  ## Build and install the authentik API for Rust
 
 gen-client-ts:  ## Build and install the authentik API for Typescript into the authentik UI Application
 	make -C "${PWD}/packages/client-ts" build
-	npm --prefix web install
+	pnpm --dir web install
 
 _gen-clients: gen-client-go gen-client-rust gen-client-ts
 gen-clients:  ## Build and install API clients used by authentik
@@ -229,92 +237,109 @@ gen-dev-config:  ## Generate a local development config file
 ## Node.js
 #########################
 
-# Packages whose install/postinstall scripts are required for correct
-# operation (binary downloads, native bindings). The root .npmrc sets
-# `ignore-scripts=true` to block dependency lifecycle scripts by default;
-# this list is rebuilt explicitly with scripts re-enabled. Audit any
-# additions: each entry runs arbitrary code at install time.
-TRUSTED_INSTALL_SCRIPTS := esbuild chromedriver tree-sitter tree-sitter-json
+# Lifecycle scripts are blocked by default in pnpm 10+ via
+# `pnpm-workspace.yaml#onlyBuiltDependencies`. Adding a package to that list
+# grants it arbitrary code execution at install — audit at review time.
 
-node-preinstall: ## Install corepack and lint the runtime to ensure the correct Node.js version is being used before installing dependencies.
-	node ./scripts/node/setup-corepack.mjs
-	node ./scripts/node/lint-runtime.mjs
+node-preinstall:  ## Verify the active Node.js and pnpm versions match what's in package.json.
+	node ./scripts/node/lint-runtime.ts
 
-node-install: node-preinstall ## Install the necessary libraries to build Node.js packages
-	corepack npm ci
+node-install: node-preinstall  ## Install the necessary libraries to build Node.js packages and build the shared lint configs
+	pnpm install --frozen-lockfile
+	pnpm run build:lint-config
 
 #########################
 ## Web
 #########################
 
-web-install: ## Install the necessary libraries to build the Authentik UI
-	corepack npm ci --prefix web
+web-install:  ## Install the necessary libraries to build the authentik front end
+	pnpm --dir web install --frozen-lockfile
 
-web-postinstall:  ## Trigger postinstall scripts for packages with native bindings or binary downloads, which are blocked by default for security reasons.
-	corepack npm rebuild --prefix web --ignore-scripts=false --foreground-scripts $(TRUSTED_INSTALL_SCRIPTS)
+web-build: node-install  ## Build the authentik front end
+	pnpm --dir web run build
 
-web-build: node-install  ## Build the Authentik UI
-	corepack npm run --prefix web build
+web: web-lint-fix web-lint web-check-compile  ## Format and lint the front-end, run lit-analyzer and type-check
 
-web: web-lint-fix web-lint web-check-compile  ## Automatically fix formatting issues in the Authentik UI source code, lint the code, and compile it
+web-check: ## Run front-end lint and format checks (does no modifications)
+	pnpm --dir web lint:check
+	pnpm --dir web format:check
 
-web-test: ## Run tests for the Authentik UI
-	corepack npm run --prefix web test
+web-test-unit:  ## Run web front-end tests once
+	pnpm --dir web run test:unit
 
-web-watch:  ## Build and watch the Authentik UI for changes, updating automatically
-	corepack npm run --prefix web watch
+web-test:  ## Run tests for the authentik front end in watch mode
+	pnpm --dir web run test
+
+web-test-e2e:  ## Run front end Playwright end-to-end tests
+	pnpm --dir web run test:e2e
+
+web-test-visual:  ## Run visual regression tests for the front-end
+	pnpm --dir web run test:visual
+
+web-watch:  ## Build and watch the authentik front end for changes, updating automatically
+	pnpm --dir web run watch
+
 web-storybook-watch:  ## Build and run the storybook documentation server
-	corepack npm run --prefix web storybook
+	pnpm --dir web run storybook
 
-web-lint-fix:
-	corepack npm run --prefix web prettier
+web-lint-fix:  ## Format the front end source (oxfmt)
+	pnpm --dir web run format
 
-web-lint:
-	corepack npm run --prefix web lint
-	corepack npm run --prefix web lit-analyse
+web-lint:  ## Lint the front end (oxfmt) and run lit-analyzer
+	pnpm --dir web run lint
+	pnpm --dir web run lit-analyse
 
-web-check-compile:
-	corepack npm run --prefix web tsc
+web-check-compile:  ## Type-check the front end
+	pnpm --dir web run tsc
 
 web-i18n-extract:
-	corepack npm run --prefix web extract-locales
+	pnpm --dir web run extract-locales
 
 #########################
 ## Docs
 #########################
 
-docs: docs-lint-fix docs-build  ## Automatically fix formatting issues in the Authentik docs source code, lint the code, and compile it
+docs: docs-lint-fix docs-build  ## Spellcheck, format, and build the docs website
 
-docs-install: node-install  ## Install the necessary libraries to build the Authentik documentation
-	corepack npm ci --prefix website
+docs-install: node-install  ## Install the necessary libraries to build the authentik documentation
+	pnpm --dir website install --frozen-lockfile
 
-docs-lint-fix: lint-spellcheck
-	corepack npm run --prefix website prettier
+docs-lint-fix: lint-spellcheck  ## Spellcheck and format the documentation site
+	pnpm --dir website run lint
+	pnpm --dir website run format
 
-docs-build:
-	node ./scripts/node/lint-runtime.mjs website
-	corepack npm run --prefix website build
+docs-build:  ## Build the docs website
+	node ./scripts/node/lint-runtime.ts website
+	pnpm --dir website run build
 
 docs-watch:  ## Build and watch the topics documentation
-	corepack npm run --prefix website start
+	pnpm --dir website run start
 
-integrations: docs-lint-fix integrations-build ## Fix formatting issues in the integrations source code, lint the code, and compile it
+docs-test:  ## Run the documentation website tests
+	pnpm --dir website run test
 
-integrations-build:
-	corepack npm run --prefix website -w integrations build
+docs-check:  ## Run documentation lint, typecheck, and format (does no modifications)
+	pnpm --dir website run lint:check
+	pnpm --dir website run build:types
+	pnpm --dir website run format:check
+
+integrations: docs-lint-fix integrations-build  ## Spellcheck, format, and build the integrations website
+
+integrations-build:  ## Build the integrations website
+	pnpm --dir website run build:integrations
 
 integrations-watch:  ## Build and watch the Integrations documentation
-	corepack npm run --prefix website -w integrations start
+	pnpm --dir website/integrations run start
 
-docs-api-build:
-	corepack npm run --prefix website -w api build
+docs-api-build:  ## Build the API reference site
+	pnpm --dir website run build:api
 
 docs-api-watch:  ## Build and watch the API documentation
-	corepack npm run --prefix website -w api generate
-	corepack npm run --prefix website -w api start
+	pnpm --dir website/api run generate
+	pnpm --dir website/api run start
 
-docs-api-clean: ## Clean generated API documentation
-	corepack npm run --prefix website -w api build:api:clean
+docs-api-clean:  ## Clean generated API documentation
+	pnpm --dir website/api run clean
 
 #########################
 ## Docker
@@ -323,7 +348,7 @@ docs-api-clean: ## Clean generated API documentation
 docker:  ## Build a docker image of the current source tree
 	DOCKER_BUILDKIT=1 docker build . -f lifecycle/container/Dockerfile --progress plain --tag ${DOCKER_IMAGE}
 
-test-docker:
+test-docker:  ## Build docker image and run full test suite in the container compose stack
 	BUILD=true ${PWD}/scripts/test_docker.sh
 
 #########################
@@ -356,7 +381,7 @@ ci-lint-pending-migrations: ci--meta-debug
 	$(UV) run ak makemigrations --check
 
 ci-lint-cargo-deny: ci--meta-debug
-	$(CARGO) deny --locked --workspace check --config "${PWD}/.cargo/deny.toml"
+	$(CARGO) deny --config "${PWD}/.cargo/deny.toml" --locked --workspace check
 
 ci-lint-cargo-machete: ci--meta-debug
 	$(CARGO) machete
@@ -365,7 +390,17 @@ ci-lint-rustfmt: ci--meta-debug
 	$(CARGO) +nightly fmt --all --check -- --config-path "${PWD}/.cargo/rustfmt.toml"
 
 ci-lint-clippy: ci--meta-debug
-	$(CARGO) clippy --workspace -- -D warnings
+	$(CARGO) clippy --workspace --all-targets -- -D warnings
+
+ci-lint-catalogs: ci--meta-debug
+	node ./scripts/node/lint-catalogs.ts
+
+ci-lint-oxlint-fixtures: ci--meta-debug
+	pnpm --filter @goauthentik/oxlint-config run build
+	pnpm --filter @goauthentik/oxlint-config run verify
+
+ci-lint-check-types: ci--meta-debug
+	pnpm run build:types
 
 ci-test: ci--meta-debug
 	$(UV) run coverage run manage.py test --keepdb --parallel auto authentik

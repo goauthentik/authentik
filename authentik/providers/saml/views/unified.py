@@ -2,7 +2,6 @@
 
 from base64 import b64decode
 
-from defusedxml.lxml import fromstring
 from django.http import HttpRequest, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -13,6 +12,7 @@ from structlog.stdlib import get_logger
 from authentik.common.saml.constants import NS_MAP
 from authentik.flows.views.executor import SESSION_KEY_POST
 from authentik.lib.views import bad_request_message
+from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
 from authentik.providers.saml.views.flows import (
     REQUEST_KEY_SAML_REQUEST,
@@ -42,7 +42,10 @@ def detect_saml_message_type(saml_request: str, is_post_binding: bool) -> str | 
         else:
             decoded_xml = decode_base64_and_inflate(saml_request)
 
-        root = fromstring(decoded_xml)
+        if isinstance(decoded_xml, str):
+            decoded_xml = decoded_xml.encode()
+
+        root = lxml_from_string(decoded_xml)
         if len(root.xpath("//samlp:AuthnRequest", namespaces=NS_MAP)):
             return SAML_MESSAGE_TYPE_AUTHN_REQUEST
         if len(root.xpath("//samlp:LogoutRequest", namespaces=NS_MAP)):

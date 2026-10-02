@@ -5,12 +5,15 @@ import "#elements/forms/ConfirmationForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
-import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
+import { AndNext } from "#common/api/config";
 import { docLink } from "#common/global";
 import { groupBy } from "#common/utils";
 
 import { IconEditButton, modalInvoker, ModalInvokerButton } from "#elements/dialogs";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -23,8 +26,6 @@ import { Flow, FlowsApi } from "@goauthentik/api";
 import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-flow-list")
 export class FlowListPage extends TablePage<Flow> {
@@ -45,7 +46,7 @@ export class FlowListPage extends TablePage<Flow> {
     public override order = "slug";
 
     async apiEndpoint(): Promise<PaginatedResponse<Flow>> {
-        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(await this.defaultEndpointConfig());
+        return aki(FlowsApi).flowsInstancesList(await this.defaultEndpointConfig());
     }
 
     groupBy(items: Flow[]): [string, Flow[]][] {
@@ -64,16 +65,17 @@ export class FlowListPage extends TablePage<Flow> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Flow(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Flow) => {
-                return new FlowsApi(DEFAULT_CONFIG).flowsInstancesUsedByList({
+                return aki(FlowsApi).flowsInstancesUsedByList({
                     slug: item.slug,
                 });
             }}
             .delete=${(item: Flow) => {
-                return new FlowsApi(DEFAULT_CONFIG).flowsInstancesDestroy({
+                return aki(FlowsApi).flowsInstancesDestroy({
                     slug: item.slug,
                 });
             }}
@@ -86,7 +88,7 @@ export class FlowListPage extends TablePage<Flow> {
 
     row(item: Flow): SlottedTemplateResult[] {
         return [
-            html`<a href="#/flow/flows/${item.slug}" class="pf-m-block">
+            html`<a href=${toAdminInterface(`flow/flows/${item.slug}`)} class="pf-m-block">
                     <code>${item.slug}</code>
                 </a>
                 <small>${item.title}</small>`,
@@ -99,9 +101,7 @@ export class FlowListPage extends TablePage<Flow> {
                     aria-label=${msg(str`Execute "${item.name}"`)}
                     class="pf-c-button pf-m-plain"
                     @click=${() => {
-                        const finalURL = `${window.location.origin}/if/flow/${item.slug}/${AndNext(
-                            `${window.location.pathname}#${window.location.hash}`,
-                        )}`;
+                        const finalURL = `${window.location.origin}/if/flow/${item.slug}/${AndNext(`${window.location.pathname}#${window.location.hash}`)}`;
                         window.open(finalURL, "_blank");
                     }}
                 >
@@ -160,7 +160,7 @@ export class FlowListPage extends TablePage<Flow> {
                 errorMessage=${msg("Failed to delete flow cache")}
                 action=${msg("Clear Cache")}
                 .onConfirm=${() => {
-                    return new FlowsApi(DEFAULT_CONFIG).flowsInstancesCacheClearCreate();
+                    return aki(FlowsApi).flowsInstancesCacheClearCreate();
                 }}
             >
                 <span slot="header">${msg("Clear Flow cache")}</span>

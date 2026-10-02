@@ -228,3 +228,58 @@ class TestTokenClientCredentialsJWTProvider(OAuthTestCase):
         )
         self.assertEqual(jwt["given_name"], user.name)
         self.assertEqual(jwt["preferred_username"], user.username)
+
+    def _federated_assertion(self, user) -> str:
+        """Issue an access token from the federated provider, usable as a client assertion"""
+        token = self.other_provider.encode(
+            {
+                "sub": "foo",
+                "exp": datetime.now() + timedelta(hours=2),
+            }
+        )
+        AccessToken.objects.create(
+            provider=self.other_provider,
+            token=token,
+            user=user,
+            auth_time=now(),
+        )
+        return token
+
+    def test_successful_with_group_binding(self):
+        """test that policies are evaluated as the federated user, not anonymously"""
+        user = create_test_user()
+        group = Group.objects.create(name=generate_id())
+        group.users.add(user)
+        PolicyBinding.objects.create(group=group, target=self.app, order=0)
+
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            {
+                "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
+                "scope": f"{SCOPE_OPENID} {SCOPE_OPENID_EMAIL} {SCOPE_OPENID_PROFILE}",
+                "client_id": self.provider.client_id,
+                "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+                "client_assertion": self._federated_assertion(user),
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_denied_with_group_binding(self):
+        """test that a federated user outside the bound group is still denied"""
+        user = create_test_user()
+        group = Group.objects.create(name=generate_id())
+        PolicyBinding.objects.create(group=group, target=self.app, order=0)
+
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            {
+                "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
+                "scope": f"{SCOPE_OPENID} {SCOPE_OPENID_EMAIL} {SCOPE_OPENID_PROFILE}",
+                "client_id": self.provider.client_id,
+                "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+                "client_assertion": self._federated_assertion(user),
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        body = loads(response.content.decode())
+        self.assertEqual(body["error"], "invalid_grant")

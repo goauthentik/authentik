@@ -1,6 +1,5 @@
 import "#elements/messages/MessageContainer";
 import "../ak-dual-select.js";
-
 import { AkDualSelect } from "../ak-dual-select.js";
 
 import { Meta, StoryObj } from "@storybook/web-components";
@@ -27,9 +26,13 @@ const metadata: Meta<AkDualSelect> = {
             type: "string",
             description: "An array of [key] of what has already been selected",
         },
-        pages: {
-            type: "string",
-            description: "An authentik pagination object.",
+        itemCount: {
+            type: "number",
+            description: "The number of items in the total collection",
+        },
+        page: {
+            type: "number",
+            description: "The current page you're on",
         },
     },
 };
@@ -56,6 +59,7 @@ const container = (testItem: TemplateResult) =>
 const handleMoveChanged = (result: any) => {
     const target = document.querySelector("#action-button-message-pad");
     target!.innerHTML = "";
+
     result.detail.value.forEach((key: string) => {
         target!.append(new DOMParser().parseFromString(`<li>${key}</li>`, "text/xml").firstChild!);
     });

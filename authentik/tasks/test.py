@@ -1,6 +1,8 @@
+from itertools import count
 from queue import PriorityQueue
 
 from django.utils.module_loading import import_string
+from django_dramatiq_postgres.broker import PostgresBroker
 from django_dramatiq_postgres.conf import Conf
 from dramatiq import set_broker
 from dramatiq.broker import Broker, MessageProxy, get_broker
@@ -8,8 +10,6 @@ from dramatiq.middleware.middleware import Middleware
 from dramatiq.middleware.retries import Retries
 from dramatiq.results.middleware import Results
 from dramatiq.worker import ConsumerThread, Worker, WorkerThread
-
-from authentik.tasks.broker import PostgresBroker
 
 TESTING_QUEUE = "testing"
 
@@ -19,6 +19,7 @@ class TestWorker(Worker):
         super().__init__(broker=broker)
         self.worker_id = 1000
         self.work_queue = PriorityQueue()
+        self._work_queue_counter = count()
         self.consumers = {
             TESTING_QUEUE: ConsumerThread(
                 broker=self.broker,
@@ -45,7 +46,7 @@ class TestWorker(Worker):
         self.broker.emit_after("process_boot")
 
     def process_message(self, message: MessageProxy):
-        self.work_queue.put((0, message))
+        self.work_queue.put((0, next(self._work_queue_counter), message))
         self.consumers[TESTING_QUEUE].consumer.in_processing.add(message.message_id)
         self._worker.process_message(message)
 

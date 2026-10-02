@@ -5,19 +5,17 @@ from typing import Any
 
 from django.http.request import HttpRequest
 from django.urls.base import reverse
-from jwt import decode, encode
+from jwt import encode
 from rest_framework.fields import CharField
-from structlog.stdlib import get_logger
 
 from authentik.flows.challenge import Challenge, ChallengeResponse
-from authentik.sources.oauth.clients.oauth2 import OAuth2Client
 from authentik.sources.oauth.models import AuthorizationCodeAuthMethod, OAuthSource
+from authentik.sources.oauth.types.oidc import OpenIDConnectClient
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 from authentik.stages.identification.stage import LoginChallengeMixin
 
-LOGGER = get_logger()
 APPLE_CLIENT_ID_PARTS = 3
 
 
@@ -37,8 +35,17 @@ class AppleChallengeResponse(ChallengeResponse):
     component = CharField(default="ak-source-oauth-apple")
 
 
-class AppleOAuthClient(OAuth2Client):
+class AppleOAuthClient(OpenIDConnectClient):
     """Apple OAuth2 client"""
+
+    def get_access_token_args(self, callback: str, code: str) -> dict[str, Any]:
+        args = super().get_access_token_args(callback, code)
+        args["client_id"] = self.get_client_id()
+        args["client_secret"] = self.get_client_secret()
+        return args
+
+    def get_access_token_auth(self) -> None:
+        return None
 
     def get_client_id(self) -> str:
         parts: list[str] = self.source.consumer_key.split(";")
@@ -54,7 +61,7 @@ class AppleOAuthClient(OAuth2Client):
                 "Apple Source client_id should be formatted like "
                 "services_id_identifier;apple_team_id;key_id"
             )
-        LOGGER.debug("got values from client_id", team=parts[1], kid=parts[2])
+        self.logger.debug("got values from client_id", team=parts[1], kid=parts[2])
         payload = {
             "iss": parts[1].strip(),
             "iat": now,
@@ -63,12 +70,8 @@ class AppleOAuthClient(OAuth2Client):
             "sub": parts[0].strip(),
         }
         jwt = encode(payload, self.source.consumer_secret, "ES256", {"kid": parts[2].strip()})
-        LOGGER.debug("signing payload as secret key", payload=payload, jwt=jwt)
+        self.logger.debug("signing payload as secret key", payload=payload, jwt=jwt)
         return jwt
-
-    def get_profile_info(self, token: dict[str, str]) -> dict[str, Any] | None:
-        id_token = token.get("id_token")
-        return decode(id_token, options={"verify_signature": False})
 
 
 class AppleOAuthRedirect(OAuthRedirect):
@@ -104,6 +107,8 @@ class AppleType(SourceType):
     authorization_url = "https://appleid.apple.com/auth/authorize"
     access_token_url = "https://appleid.apple.com/auth/token"  # nosec
     profile_url = ""
+    oidc_well_known_url = "https://appleid.apple.com/.well-known/openid-configuration"
+    oidc_jwks_url = "https://appleid.apple.com/auth/keys"
 
     authorization_code_auth_method = AuthorizationCodeAuthMethod.POST_BODY
 

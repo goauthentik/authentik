@@ -1,3 +1,24 @@
+.authentik-doc-title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--ifm-spacing-horizontal);
+    margin-bottom: var(--ifm-heading-margin-bottom);
+}
+
+.authentik-doc-title-row h1 {
+    flex: 1 1 min(24rem, 100%);
+    margin-bottom: 0;
+}
+
+.authentik-doc-title-spacer {
+    flex: 1 1 auto;
+}
+
+.authentik-doc-title-row + .badge-group {
+    margin-top: 0;
+}
+
 .docusaurus-mermaid-container {
     .architecture-service {
         svg {

@@ -6,8 +6,19 @@ import "#user/user-settings/details/UserPassword";
 import "#user/user-settings/details/UserSettingsFlowExecutor";
 import "#user/user-settings/mfa/MFADevicesPage";
 import "#user/user-settings/tokens/UserTokenList";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
+import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
+import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 import { startAccountLockdown } from "#common/users";
 
@@ -28,18 +39,6 @@ import { CSSResult, html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
-import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
-import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
-
 @customElement("ak-user-settings")
 export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement)) {
     static styles: CSSResult[] = [
@@ -57,7 +56,7 @@ export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement))
         Styles,
     ];
 
-    protected stagesAPI = new StagesApi(DEFAULT_CONFIG);
+    protected stagesAPI = aki(StagesApi);
 
     @state()
     protected userSettings: UserSetting[] | null = null;
@@ -129,6 +128,7 @@ export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement))
         return html`<div class="pf-c-page">
             <div class="pf-c-page__main">
                 <ak-tabs
+                    routed
                     vertical
                     role="main"
                     aria-label=${msg("User settings")}
@@ -147,11 +147,13 @@ export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement))
                                 <ak-user-settings-flow-executor></ak-user-settings-flow-executor>
                             </div>
                             <div class="pf-l-stack__item">
-                                ${pwStage.length > 0
-                                    ? html`<ak-user-settings-password
-                                          configureUrl=${ifDefined(pwStage[0].configureUrl)}
-                                      ></ak-user-settings-password>`
-                                    : nothing}
+                                ${
+                                    pwStage.length > 0
+                                        ? html`<ak-user-settings-password
+                                              configureUrl=${ifDefined(pwStage[0].configureUrl)}
+                                          ></ak-user-settings-password>`
+                                        : nothing
+                                }
                             </div>
                         </div>
                     </div>

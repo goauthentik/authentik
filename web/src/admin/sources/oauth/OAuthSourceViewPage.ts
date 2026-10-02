@@ -5,8 +5,14 @@ import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/index";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
@@ -24,21 +30,12 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-
 export function ProviderToLabel(provider?: ProviderTypeEnum): string {
     switch (provider) {
         case undefined:
             return "";
         case ProviderTypeEnum.Apple:
             return "Apple";
-        case ProviderTypeEnum.Azuread:
-            return "Azure Active Directory (Deprecated)";
         case ProviderTypeEnum.Discord:
             return "Discord";
         case ProviderTypeEnum.Facebook:
@@ -78,7 +75,7 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
 export class OAuthSourceViewPage extends AKElement {
     @property({ type: String })
     set sourceSlug(value: string) {
-        new SourcesApi(DEFAULT_CONFIG)
+        aki(SourcesApi)
             .sourcesOauthRetrieve({
                 slug: value,
             })
@@ -94,6 +91,7 @@ export class OAuthSourceViewPage extends AKElement {
 
     constructor() {
         super();
+
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.source?.pk) return;
             this.sourceSlug = this.source?.slug;
@@ -104,8 +102,9 @@ export class OAuthSourceViewPage extends AKElement {
         if (!this.source) {
             return nothing;
         }
+
         return html`<main>
-            <ak-tabs>
+            <ak-tabs routed>
                 <div
                     role="tabpanel"
                     tabindex="0"
@@ -128,13 +127,17 @@ export class OAuthSourceViewPage extends AKElement {
                                     [msg("Access Key"), html`${this.source.consumerKey}`],
                                     [
                                         msg("Authorization URL"),
-                                        html`${this.source.type?.authorizationUrl ||
-                                        this.source.authorizationUrl}`,
+                                        html`${
+                                            this.source.type?.authorizationUrl ||
+                                            this.source.authorizationUrl
+                                        }`,
                                     ],
                                     [
                                         msg("Token URL"),
-                                        html`${this.source.type?.accessTokenUrl ||
-                                        this.source.accessTokenUrl}`,
+                                        html`${
+                                            this.source.type?.accessTokenUrl ||
+                                            this.source.accessTokenUrl
+                                        }`,
                                     ],
                                     [
                                         msg("Related actions"),

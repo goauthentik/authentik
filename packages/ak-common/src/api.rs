@@ -1,6 +1,8 @@
 //! Utilities for working with the authentik API client.
 
-use ak_client::apis::configuration::Configuration;
+use std::path::PathBuf;
+
+use ak_client::{apis::configuration::Configuration, models::Pagination};
 use eyre::{Result, eyre};
 use url::Url;
 
@@ -37,6 +39,13 @@ impl ServerConfig {
             insecure,
         })
     }
+
+    /// HTTP transport settings shared by API and OAuth backchannel clients.
+    pub fn client_builder(&self) -> reqwest::ClientBuilder {
+        reqwest::ClientBuilder::new()
+            .tls_danger_accept_invalid_hostnames(self.insecure)
+            .tls_danger_accept_invalid_certs(self.insecure)
+    }
 }
 
 /// Return a [`Configuration`] object based on external environment variables.
@@ -45,10 +54,7 @@ pub fn make_config() -> Result<Configuration> {
 
     let base_path = server_config.host.join("api/v3")?.into();
 
-    let client = reqwest::ClientBuilder::new()
-        .tls_danger_accept_invalid_hostnames(server_config.insecure)
-        .tls_danger_accept_invalid_certs(server_config.insecure)
-        .build()?;
+    let client = server_config.client_builder().build()?;
     let client = reqwest_middleware::ClientBuilder::new(client).build();
 
     Ok(Configuration {
@@ -58,6 +64,66 @@ pub fn make_config() -> Result<Configuration> {
         user_agent: Some(user_agent_outpost()),
         ..Default::default()
     })
+}
+
+pub fn make_config_embedded(socket_path: PathBuf) -> Result<Configuration> {
+    let base_path = format!("http://localhost{}api/v3", config::get().web.path);
+
+    let client = reqwest::ClientBuilder::new()
+        .unix_socket(socket_path)
+        .build()?;
+    let client = reqwest_middleware::ClientBuilder::new(client).build();
+
+    Ok(Configuration {
+        base_path,
+        client,
+        bearer_access_token: Some(config::get().secret_key.clone()),
+        user_agent: Some(user_agent_outpost()),
+        ..Default::default()
+    })
+}
+
+/// Fetch all pages from a paginated API endpoint, returning all results combined.
+///
+/// - `fetch`: takes a page number and returns a future resolving to a paginated response.
+/// - `get_pagination`: extracts the [`Pagination`] metadata from a response.
+/// - `get_results`: extracts the result items from a response.
+pub async fn fetch_all<T, R, E, F, Fut, P, G>(
+    fetch: F,
+    get_pagination: P,
+    get_results: G,
+) -> std::result::Result<Vec<T>, E>
+where
+    F: Fn(i32) -> Fut,
+    Fut: Future<Output = std::result::Result<R, E>>,
+    P: Fn(&R) -> &Pagination,
+    G: Fn(R) -> Vec<T>,
+{
+    let mut page = 1_i32;
+    let mut results = Vec::new();
+
+    loop {
+        let response = fetch(page).await?;
+        let next = get_pagination(&response).next;
+        if page == 1_i32 {
+            #[expect(
+                clippy::as_conversions,
+                clippy::cast_possible_truncation,
+                clippy::cast_sign_loss,
+                reason = "pagination count is a small non-negative integer"
+            )]
+            let count = get_pagination(&response).count as usize;
+            results.reserve(count);
+        }
+        results.extend(get_results(response));
+        if next > 0.0_f64 {
+            page += 1_i32;
+        } else {
+            break;
+        }
+    }
+
+    Ok(results)
 }
 
 #[cfg(test)]

@@ -1,0 +1,109 @@
+---
+title: Release 2026.11
+slug: "/releases/2026.11"
+draft: true
+---
+
+## Highlights
+
+## Breaking changes
+
+### RAC endpoints are now devices
+
+RAC providers now use [devices](../../endpoint-devices/index.mdx) instead of maintaining separate endpoints. This allows machines enrolled through connectors, such as the authentik agent, to be accessed directly through RAC without configuring them again.
+
+For enrolled devices, authentik uses their reported hostname or IP address and determines available connection protocols from their reported facts. These facts, including the operating system and security information, can also be evaluated by policies bound to the device to control access.
+
+For devices that are not enrolled through a connector, such as servers, you can configure a **connection override** to specify their host and protocol. Connection overrides take precedence over reported device information.
+
+#### Upgrading from RAC endpoints
+
+Existing RAC endpoints are automatically converted into devices during the upgrade, with the following changes:
+
+- **Connection configuration:** Each endpoint's host and protocol are preserved as a connection override, and its policy bindings are transferred to the new device.
+- **Device names:** Device names must be unique across the instance. If an endpoint's name conflicts with an existing device, its provider's name is appended, with an additional suffix if necessary.
+- **Property mappings:** Per-endpoint connection settings and property mappings are not migrated. Move these settings to provider-level property mappings, which now receive the `device` being accessed, or to the [credentials prompt](../../add-secure-apps/providers/rac/rac_credentials_prompt.mdx).
+- **Connection limits:** The per-endpoint connection limit is replaced by a provider-level setting that applies separately to each device.
+- **Launch URLs:** Existing endpoint identifiers are preserved, but launch URLs now include the connection protocol (`/application/rac/<app>/<device>/<protocol>/`) to support devices with multiple protocols. Update any manually configured launch URLs.
+- **Active connections:** Existing connection authorizations are deleted during the upgrade. Users with active RAC connections must launch the application again.
+- **Permissions:** Object-level permissions granted on RAC endpoints are not migrated and must be reassigned to the corresponding devices.
+
+Review your RAC providers after upgrading. By default, a provider is no longer restricted to its former endpoints and can access any device permitted by the device's policies. Use device access groups to restrict which devices are available through each provider.
+
+#### API and blueprint changes
+
+The `/rac/endpoints/` API and `authentik_providers_rac.endpoint` model have been removed.
+
+Use `/rac/devices/` to list devices accessible through a RAC provider and `/endpoints/devices/` to manage devices and their connection overrides through the `rac` field.
+
+Update any blueprints and API clients that create or manage RAC endpoints to use the new device model and API.
+
+### Multi-tenancy has been removed
+
+[Multi-tenancy](https://version-2026-8.goauthentik.io/sys-mgmt/tenancy/) (an alpha feature) has been removed. Instances that never set `AUTHENTIK_TENANTS__ENABLED=true` are unaffected apart from the changes listed below.
+
+Tenant-specific data is not deleted as part of this version of authentik, it continues to be available in their own PostgreSQL schemas that this version can no longer reach. If your deployment has additional tenants, the upgrade will stop before applying any migrations. You can extract each tenant into its own authentik instance before upgrading; once you have done so, delete the data to enable the migration. (Alternatively, set `AUTHENTIK_TENANTS__ACKNOWLEDGE_REMOVAL=true` and extract the data at a later time.)
+#TODO FOR RELEASE: write a tenant extraction guide.
+
+Enterprise users with non-default tenants will need to contact support for re-issue of license keys.
+
+The following are removed or changed:
+
+- The `tenant` label on the metrics `authentik_outposts_connected`, `authentik_outposts_last_update`, `authentik_policies_cached`, and `authentik_flows_cached`
+- The `schema_name` and `domain_url` fields on log entries
+- The `AUTHENTIK_TENANTS__ENABLED` and `AUTHENTIK_TENANTS__API_KEY` configuration settings
+- `request.http_request.tenant` (in any Expression policies), replaced by `authentik.admin.utils.get_system_settings()`
+
+## New features and improvements
+
+- **Display names in `ak_send_email` recipients**: The `address`, `cc`, and `bcc` parameters of `ak_send_email` now accept `(name, email)` tuples and `"Name <email>"` strings, so emails sent from expressions can include a display name in the `To` and `CC` headers, matching the Email stage. See [`ak_send_email`](../../customize/policies/types/expression/reference.mdx).
+
+### Single sign-on into devices managed by the authentik agent
+
+A RAC provider signs into devices which are enrolled through the authentik agent as the user who launched the connection, with no credentials configured for the device. authentik issues a token for the device, the RAC outpost turns it into an SSH certificate, and the agent validates the token before accepting the login. See [the RAC provider documentation](../../add-secure-apps/providers/rac/index.mdx#signing-in-with-the-authentik-agent).
+
+## Upgrading
+
+This release does not introduce any new requirements. You can follow the upgrade instructions below; for more detailed information about upgrading authentik, refer to our [Upgrade documentation](../../install-config/upgrade.mdx).
+
+:::warning Upgrade in order and upgrade all components
+Upgrades MUST be performed sequentially by major version. If you are two or more major releases behind, you must first upgrade to each intermediate major release before upgrading to this one. Refer to our [Upgrade documentation](../../install-config/upgrade.mdx) for more information on upgrade sequence.
+
+The version of the authentik instance and of any outposts must be the same. We recommend that you always upgrade any outposts at the same time you upgrade your authentik instance.
+:::
+
+### Docker Compose
+
+To upgrade, download the new compose file and update the Docker stack with the new version, using these commands:
+
+```shell
+wget -O compose.yml https://goauthentik.io/version/xxxx.x/lifecycle/container/compose.yml
+docker compose up -d
+```
+
+The `-O` flag retains the downloaded file's name, overwriting any existing local file with the same name.
+
+### Kubernetes
+
+Upgrade the Helm Chart to the new version, using the following commands:
+
+```shell
+helm repo update
+helm upgrade authentik authentik/authentik -f values.yaml --version ^xxxx.x
+```
+
+## Deprecations
+
+### Non-`UTF8` database server encoding is deprecated
+
+authentik has required the PostgreSQL database to use the `UTF8` encoding [since 2025.8](../2025/v2025.8.mdx#database-encoding-requirements). Support for other encodings is deprecated and will be removed in an upcoming version, at which point authentik will no longer start against such a database.
+
+Run `SHOW server_encoding;` to check. Converting an existing database means dumping it, re-creating it with `ENCODING 'UTF8'`, and restoring the dump.
+
+## Minor changes/fixes
+
+<!-- _Insert the output of `make gen-changelog` here_ -->
+
+## API Changes
+
+<!-- _Insert output of `make gen-diff` here_ -->

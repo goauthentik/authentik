@@ -1,4 +1,4 @@
-import { SentryIgnoredError } from "#common/sentry/index";
+import { SentryIgnoredError } from "#common/sentry/error";
 
 export interface PlexPinResponse {
     // Only has the fields we care about
@@ -30,6 +30,7 @@ export async function popupCenterScreen(
 ): Promise<Window | null> {
     const top = (screen.height - h) / 4,
         left = (screen.width - w) / 2;
+
     return new Promise((resolve) => {
         setTimeout(() => {
             const popup = window.open(
@@ -37,6 +38,7 @@ export async function popupCenterScreen(
                 title,
                 `scrollbars=yes,width=${w},height=${h},top=${top},left=${left}`,
             );
+
             resolve(popup);
         });
     });
@@ -56,16 +58,17 @@ export class PlexAPIClient {
             ...DEFAULT_HEADERS,
             "X-Plex-Client-Identifier": clientIdentifier,
         };
+
         const pinResponse = await fetch("https://plex.tv/api/v2/pins.json?strong=true", {
             method: "POST",
-            headers: headers,
+            headers,
         });
+
         const pin: PlexPinResponse = await pinResponse.json();
+
         return {
-            authUrl: `https://app.plex.tv/auth#!?clientID=${encodeURIComponent(
-                clientIdentifier,
-            )}&code=${pin.code}`,
-            pin: pin,
+            authUrl: `https://app.plex.tv/auth#!?clientID=${encodeURIComponent(clientIdentifier)}&code=${pin.code}`,
+            pin,
         };
     }
 
@@ -74,14 +77,19 @@ export class PlexAPIClient {
             ...DEFAULT_HEADERS,
             "X-Plex-Client-Identifier": clientIdentifier,
         };
+
         const pinResponse = await fetch(`https://plex.tv/api/v2/pins/${id}`, {
-            headers: headers,
+            headers,
         });
+
         if (pinResponse.status > 200) {
             throw new SentryIgnoredError("Invalid response code");
         }
+
         const pin: PlexPinResponse = await pinResponse.json();
+
         console.debug("authentik/plex: polling Pin");
+
         return pin.authToken;
     }
 
@@ -113,7 +121,9 @@ export class PlexAPIClient {
                 headers: DEFAULT_HEADERS,
             },
         );
+
         const resources: PlexResource[] = await resourcesResponse.json();
+
         return resources.filter((r) => {
             return r.provides.toLowerCase().includes("server") && r.owned;
         });
