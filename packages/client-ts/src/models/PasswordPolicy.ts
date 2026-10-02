@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,23 +11,18 @@
  */
 
 import { parseDateTime } from "../runtime";
-
 /**
  * Password Policy Serializer
+ *
  * @export
  * @interface PasswordPolicy
  */
 export interface PasswordPolicy {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
-     * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+     * When this option is enabled, all executions of this policy will be logged. By default, only
+     * execution errors are logged.
      */
     executionLogging?: boolean;
     /**
@@ -52,57 +45,21 @@ export interface PasswordPolicy {
      * Return objects policy is bound to
      */
     readonly boundTo: number;
-    /**
-     *
-     */
     readonly lastUpdated: Date;
-    /**
-     *
-     */
     readonly created: Date;
     /**
      * Field key to check, field keys defined in Prompt stages are available.
      */
     passwordField?: string;
-    /**
-     *
-     */
     amountDigits?: number;
-    /**
-     *
-     */
     amountUppercase?: number;
-    /**
-     *
-     */
     amountLowercase?: number;
-    /**
-     *
-     */
     amountSymbols?: number;
-    /**
-     *
-     */
     lengthMin?: number;
-    /**
-     *
-     */
     symbolCharset?: string;
-    /**
-     *
-     */
     errorMessage?: string;
-    /**
-     *
-     */
     checkStaticRules?: boolean;
-    /**
-     *
-     */
     checkHaveIBeenPwned?: boolean;
-    /**
-     *
-     */
     checkZxcvbn?: boolean;
     /**
      * How many times the password hash is allowed to be on haveibeenpwned

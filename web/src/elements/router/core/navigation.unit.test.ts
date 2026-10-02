@@ -75,6 +75,7 @@ describe("decideInterception", () => {
         expect(
             decideInterception(ctx({ href: "https://id.example.com/if/user/settings" }), scope),
         ).toBeNull();
+
         expect(
             decideInterception(ctx({ href: "https://id.example.com/media/x.png" }), scope),
         ).toBeNull();
@@ -110,6 +111,7 @@ describe("decideInterception", () => {
         expect(
             decideInterception(ctx({ href: "https://id.example.com/if/admin/x" }), authScope),
         ).toBeNull();
+
         expect(
             decideInterception(ctx({ href: "https://id.example.com/auth/if/admin/x" }), authScope)
                 ?.pathname,

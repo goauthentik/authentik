@@ -1,5 +1,4 @@
 import "#elements/forms/FormGroup";
-
 import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
 
 import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
@@ -24,6 +23,7 @@ export class ApplicationWizardProviderWSFedForm extends ApplicationWizardProvide
     renderForm() {
         const setHasSigningKp = (ev: InputEvent) => {
             const target = ev.target as AkCryptoCertificateSearch;
+
             if (!target) return;
             this.hasSigningKp = !!target.selectedKeypair;
             this.signingKeyType = target.selectedKeypair?.keyType ?? KeyTypeEnum.Rsa;
@@ -45,6 +45,7 @@ export class ApplicationWizardProviderWSFedForm extends ApplicationWizardProvide
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("WS-Federation Provider Step received uninitialized wizard context.");
         }
+
         return this.renderForm();
     }
 }

@@ -1,5 +1,4 @@
 import "#elements/buttons/SpinnerButton/index";
-
 import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";

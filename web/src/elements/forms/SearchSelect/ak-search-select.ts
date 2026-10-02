@@ -16,6 +16,7 @@ export interface ISearchSelect<T> extends ISearchSelectBase<T> {
     fetchObjects: (query?: string) => Promise<T[]>;
     renderElement: (element: T) => string;
     renderDescription?: (element: T) => SlottedTemplateResult;
+    optionDisabled?: (element: T) => boolean;
     value: (element: T | null) => string | number;
     selected?: (element: T, elements: T[]) => boolean;
     groupBy: (items: T[]) => [string, T[]][];
@@ -35,9 +36,9 @@ export interface ISearchSelect<T> extends ISearchSelectBase<T> {
  * - @prop value (Function | string): A function that can retrieve the value (the current
  *   API object's primary key) selected.
  * - @prop selected (Function): A function that retrieves the current "live" value from the
-     list of objects fetched by the function above.
+ * list of objects fetched by the function above.
  * - @prop groupBy (Function): A function that can group the objects fetched from the API by
-     an internal criteria.
+ * an internal criteria.
  * - @attr blankable (boolean): if true, the component is blankable and can return `undefined`
  * - @attr name (string): The name of the component, for forms
  * - @attr query (string): The current search criteria for fetching objects
@@ -49,7 +50,6 @@ export interface ISearchSelect<T> extends ISearchSelectBase<T> {
  *
  * - @fires ak-change - When a value from the collection has been positively chosen, either as a
  *   consequence of the user typing or when selecting from the list.
- *
  */
 @customElement("ak-search-select")
 export class SearchSelect<
@@ -64,6 +64,9 @@ export class SearchSelect<
 
     @property({ attribute: false })
     public renderDescription?: (element: T) => SlottedTemplateResult;
+
+    @property({ attribute: false })
+    public optionDisabled?: (element: T) => boolean;
 
     @property({ attribute: false })
     public value!: (element: T | null) => string | number | undefined;

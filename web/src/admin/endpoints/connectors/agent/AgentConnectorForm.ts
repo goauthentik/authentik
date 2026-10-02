@@ -8,7 +8,6 @@ import "#admin/common/ak-flow-search/ak-flow-search";
 import "#admin/common/ak-crypto-certificate-search";
 import "#elements/utils/TimeDeltaHelp";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
-
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -97,6 +96,9 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg("Flow used for users to authorize.")}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Required for local device authentication.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-text-input

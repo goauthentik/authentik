@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -16,14 +14,10 @@ import type { DuoResponseEnum } from "./DuoResponseEnum";
 import { DuoResponseEnumFromJSON, DuoResponseEnumToJSON } from "./DuoResponseEnum";
 
 /**
- *
  * @export
  * @interface DuoDeviceEnrollmentStatus
  */
 export interface DuoDeviceEnrollmentStatus {
-    /**
-     *
-     */
     duoResponse: DuoResponseEnum;
 }
 

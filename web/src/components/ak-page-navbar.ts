@@ -1,5 +1,10 @@
 import "#components/ak-nav-buttons";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
+import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { globalAK } from "#common/global";
 import { resolveThemedUrl } from "#common/theme";
@@ -7,6 +12,7 @@ import { resolveThemedUrl } from "#common/theme";
 import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithSession } from "#elements/mixins/session";
+import { toCurrentInterface } from "#elements/router/core/interfaces";
 import { isAdminRoute } from "#elements/router/utils";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
@@ -20,12 +26,6 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
-import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 export class PageDetailsUpdate extends Event {
     static readonly eventName = "ak-page-details-update";
@@ -57,7 +57,6 @@ export interface PageHeaderInit {
  *
  * @event ak-page-nav-menu-toggle
  * @event ak-page-details-update
- *
  */
 @customElement("ak-page-navbar")
 export class AKPageNavbar
@@ -107,10 +106,12 @@ export class AKPageNavbar
         if (isAdminRoute()) {
             title = `${msg("Admin")} - ${title}`;
         }
+
         // Prepend the header to the title
         if (header) {
             title = `${header} - ${title}`;
         }
+
         document.title = title;
     }
 
@@ -180,7 +181,7 @@ export class AKPageNavbar
             [this.brandingLogo, this.brandingLogoThemedUrls, this.activeTheme],
             () =>
                 html`<aside role="presentation" class="brand">
-                    <a aria-label="${msg("Home")}" href="#/">
+                    <a aria-label="${msg("Home")}" href=${toCurrentInterface()}>
                         <div class="logo">
                             ${ThemedImage({
                                 src: this.brandingLogo,
@@ -202,22 +203,28 @@ export class AKPageNavbar
 
                 <div class="items primary pf-c-content ${this.description ? "block-sibling" : ""}">
                     <h1 aria-labelledby="page-navbar-heading" class="page-title">
-                        ${this.hasIcon
-                            ? html`<slot aria-hidden="true" name="icon">${this.renderIcon()}</slot>`
-                            : nothing}
+                        ${
+                            this.hasIcon
+                                ? html`<slot aria-hidden="true" name="icon"
+                                      >${this.renderIcon()}</slot
+                                  >`
+                                : nothing
+                        }
                         <span id="page-navbar-heading">${this.header}</span>
                     </h1>
                 </div>
-                ${this.description
-                    ? html`<div
-                          role="heading"
-                          aria-level="2"
-                          aria-label="${this.description}"
-                          class="items page-description pf-c-content"
-                      >
-                          <p>${this.description}</p>
-                      </div>`
-                    : nothing}
+                ${
+                    this.description
+                        ? html`<div
+                              role="heading"
+                              aria-level="2"
+                              aria-label="${this.description}"
+                              class="items page-description pf-c-content"
+                          >
+                              <p>${this.description}</p>
+                          </div>`
+                        : nothing
+                }
 
                 <div class="items secondary">
                     <div class="pf-c-page__header-tools-group">
@@ -225,7 +232,6 @@ export class AKPageNavbar
                             <a
                                 class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
                                 href="${globalAK().api.base}if/user/"
-                                slot="extra"
                             >
                                 ${msg("User interface")}
                             </a>

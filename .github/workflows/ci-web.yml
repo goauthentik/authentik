@@ -16,6 +16,11 @@ concurrency:
   group: "${{ github.workflow }}-${{ github.ref }}"
   cancel-in-progress: "${{ !startsWith(github.ref, 'refs/heads/version-') && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/next' }}"
 
+env:
+  POSTGRES_DB: authentik
+  POSTGRES_USER: authentik
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -39,11 +44,11 @@ jobs:
           pnpm install --frozen-lockfile
           pnpm --dir web install --frozen-lockfile
       - name: Lint
-        run: pnpm --dir web run lint-check
+        run: pnpm --dir web run lint:check
       - name: Check types
         run: pnpm --dir web run tsc
       - name: Check formatting
-        run: pnpm --dir web run prettier-check
+        run: pnpm --dir web run format:check
       - name: Lit analyse
         run: pnpm --dir web run lit-analyse
 

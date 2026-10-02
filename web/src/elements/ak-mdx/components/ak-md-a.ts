@@ -46,6 +46,7 @@ export class AKMarkdownAnchor extends AKElement {
 
         if (!target) {
             console.warn(`Element with ID ${elementID} not found`);
+
             return;
         }
 

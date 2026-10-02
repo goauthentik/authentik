@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -30,17 +28,12 @@ import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHint
 
 /**
  * AuthenticatorValidateStage Serializer
+ *
  * @export
  * @interface AuthenticatorValidateStage
  */
 export interface AuthenticatorValidateStage {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
@@ -58,20 +51,15 @@ export interface AuthenticatorValidateStage {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly flowSet: Array<FlowSet>;
-    /**
-     *
-     */
     notConfiguredAction?: NotConfiguredActionEnum;
     /**
      * Device classes which can be used to authenticate
      */
     deviceClasses?: Array<DeviceClassesEnum>;
     /**
-     * Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.
+     * Stages used to configure Authenticator when user doesn't have any compatible devices. After
+     * this configuration Stage passes, the user is not prompted again.
      */
     configurationStages?: Array<string>;
     /**
@@ -82,33 +70,12 @@ export interface AuthenticatorValidateStage {
      * Enforce user verification for WebAuthn devices.
      */
     webauthnUserVerification?: UserVerificationEnum;
-    /**
-     *
-     */
     webauthnHints?: Array<WebAuthnHintEnum>;
-    /**
-     *
-     */
     webauthnAllowedDeviceTypes?: Array<string>;
-    /**
-     *
-     */
     readonly webauthnAllowedDeviceTypesObj: Array<WebAuthnDeviceType>;
-    /**
-     *
-     */
     emailOtpThrottlingFactor?: number;
-    /**
-     *
-     */
     smsOtpThrottlingFactor?: number;
-    /**
-     *
-     */
     totpOtpThrottlingFactor?: number;
-    /**
-     *
-     */
     staticOtpThrottlingFactor?: number;
 }
 

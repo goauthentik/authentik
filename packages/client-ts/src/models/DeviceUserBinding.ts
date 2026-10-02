@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -24,53 +22,28 @@ import { PolicyFromJSON } from "./Policy";
 
 /**
  * PolicyBinding Serializer
+ *
  * @export
  * @interface DeviceUserBinding
  */
 export interface DeviceUserBinding {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     policy?: string | null;
-    /**
-     *
-     */
     group?: string | null;
-    /**
-     *
-     */
     user?: number | null;
-    /**
-     *
-     */
     readonly policyObj: Policy | null;
-    /**
-     *
-     */
     readonly groupObj: PartialGroup | null;
-    /**
-     *
-     */
     readonly userObj: PartialUser | null;
-    /**
-     *
-     */
     target: string;
     /**
      * Negates the outcome of the policy. Messages are unaffected.
      */
     negate?: boolean;
-    /**
-     *
-     */
     enabled?: boolean;
     /**
-     *
+     * Execute the policy but ignore its result.
      */
+    dryRun?: boolean;
     order: number;
     /**
      * Timeout after which Policy execution is terminated.
@@ -80,25 +53,10 @@ export interface DeviceUserBinding {
      * Result if the Policy execution fails.
      */
     failureResult?: boolean;
-    /**
-     *
-     */
     readonly expires: Date | null;
-    /**
-     *
-     */
     readonly expiring: boolean;
-    /**
-     *
-     */
     isPrimary?: boolean;
-    /**
-     *
-     */
     readonly connector: string | null;
-    /**
-     *
-     */
     readonly connectorObj: Connector;
 }
 
@@ -171,6 +129,7 @@ export function DeviceUserBindingFromJSONTyped(
         target: json["target"],
         negate: json["negate"] == null ? undefined : json["negate"],
         enabled: json["enabled"] == null ? undefined : json["enabled"],
+        dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
         order: json["order"],
         timeout: json["timeout"] == null ? undefined : json["timeout"],
         failureResult: json["failure_result"] == null ? undefined : json["failure_result"],
@@ -211,6 +170,7 @@ export function DeviceUserBindingToJSONTyped(
         target: value["target"],
         negate: value["negate"],
         enabled: value["enabled"],
+        dry_run: value["dryRun"],
         order: value["order"],
         timeout: value["timeout"],
         failure_result: value["failureResult"],

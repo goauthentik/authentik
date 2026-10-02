@@ -3,6 +3,12 @@ import "#elements/forms/HorizontalFormElement";
 import "#components/ak-switch-input";
 import "#elements/buttons/ActionButton/ak-action-button";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
+import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import { aki } from "#common/api/client";
 import { globalAK } from "#common/global";
@@ -22,13 +28,6 @@ import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 
-import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
-import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-
 @customElement("ak-nav-buttons")
 export class NavigationButtons extends WithNotifications(WithSession(AKElement)) {
     @property({ type: Boolean, reflect: true })
@@ -47,7 +46,9 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                 return nothing;
             }
 
-            return html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-xl">
+            return html`<div
+                class="pf-c-page__header-tools-item pf-u-display-none pf-u-display-block-on-md"
+            >
                 <button
                     id="api-drawer-toggle-button"
                     class="pf-c-button pf-m-plain"
@@ -88,7 +89,9 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                 return nothing;
             }
 
-            return html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-xl">
+            return html`<div
+                class="pf-c-page__header-tools-item pf-u-display-none pf-u-display-block-on-md"
+            >
                 <button
                     id="notification-drawer-toggle-button"
                     class="pf-c-button pf-m-plain"
@@ -132,7 +135,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
             <a
                 class="pf-c-button pf-m-plain"
                 type="button"
-                href="${globalAK().api.base}if/user/#/settings"
+                href="${globalAK().api.base}if/user/settings"
                 aria-label=${msg("Settings")}
             >
                 <pf-tooltip position="top" content=${msg("Settings")}>
@@ -162,6 +165,8 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
 
     render(): SlottedTemplateResult {
         return html`<div role="presentation" class="pf-c-page__header-tools">
+            <slot></slot>
+
             <div class="pf-c-page__header-tools-group">
                 ${this.renderAPIDrawerTrigger()}
                 <!-- -->
@@ -172,7 +177,6 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                 <ak-user-switcher class="pf-c-page__header-tools-item"></ak-user-switcher>
             </div>
             ${this.renderImpersonation()}
-            <slot></slot>
         </div>`;
     }
 }

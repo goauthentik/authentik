@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { SAMLProvider } from "./SAMLProvider";
 import { SAMLProviderFromJSON, SAMLProviderToJSON } from "./SAMLProvider";
 
 /**
- *
  * @export
  * @interface PaginatedSAMLProviderList
  */
 export interface PaginatedSAMLProviderList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<SAMLProvider>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

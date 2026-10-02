@@ -4,7 +4,6 @@ import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#components/ak-radio-input";
 import "#components/ak-hidden-text-input";
-
 import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
 
@@ -110,10 +109,13 @@ export class AgentForm extends Form<AgentCreateRequest> {
                         const args: CoreUsersListRequest = {
                             ordering: "username",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const users = await aki(CoreApi).coreUsersList(args);
+
                         return users.results;
                     }}
                     .renderElement=${(user: User) => user.username}

@@ -9,12 +9,13 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#elements/LicenseNotice";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./RadiusProviderFormHelpers.js";
 
 import { ascii_letters, digits, randomString } from "#common/utils";
 
 import { ifPresent } from "#elements/utils/attributes";
+
+import { TLSKeyTypes } from "#admin/common/certificate-key-types";
 
 import {
     CurrentBrand,
@@ -117,6 +118,7 @@ export function renderForm({ provider, errors, brand }: RADIUSProviderFormProps)
                 <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
                     <ak-crypto-certificate-search
                         certificate=${ifPresent(provider?.certificate)}
+                        .allowedKeyTypes=${TLSKeyTypes}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(

@@ -97,6 +97,7 @@ export function buildFlowGraph(graph: FlowDiagram): FlowGraph {
     ];
 
     const nodes = new Map(graph.nodes.map((node, index) => [nodeId(index), node] as const));
+
     return {
         diagram: lines.join("\n"),
         nodes,

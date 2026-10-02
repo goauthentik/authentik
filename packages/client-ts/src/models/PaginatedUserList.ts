@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { User } from "./User";
 import { UserFromJSON, UserToJSON } from "./User";
 
 /**
- *
  * @export
  * @interface PaginatedUserList
  */
 export interface PaginatedUserList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<User>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

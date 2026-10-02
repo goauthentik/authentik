@@ -7,6 +7,7 @@ export function shouldResetSelectedChallenge(
     if (!selectedChallenge) {
         return false;
     }
+
     return !allowedChallenges.some(
         (challenge) =>
             challenge.deviceClass === selectedChallenge.deviceClass &&

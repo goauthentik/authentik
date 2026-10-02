@@ -1,4 +1,5 @@
 import "#elements/EmptyState";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 import { aki } from "#common/api/client";
 import { AKRefreshEvent } from "#common/events";
@@ -15,8 +16,6 @@ import { observes } from "@patternfly/pfe-core/decorators/observes.js";
 
 import { css, render } from "lit";
 import { customElement, property, queryAll } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 const EditIconStyles = css`
     .ak-diagram-toolbar > .pf-c-button {

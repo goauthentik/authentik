@@ -1,10 +1,10 @@
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+
 import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 export interface VisibilityToggleProps {
     open: boolean;
@@ -14,13 +14,10 @@ export interface VisibilityToggleProps {
 }
 
 /**
+ * @class VisibilityToggle A straightforward two-state iconic button we use in a few places as way
+ *   of telling users to hide or show something secret, such as a password or private key. Expects
+ *   the client to manage its state.
  * @component ak-visibility-toggle
- * @class VisibilityToggle
- *
- * A straightforward two-state iconic button we use in a few places as way of telling users to hide
- * or show something secret, such as a password or private key. Expects the client to manage its
- * state.
- *
  * @events
  * - click: when the toggle is clicked.
  */
@@ -29,28 +26,28 @@ export class VisibilityToggle extends AKElement implements VisibilityToggleProps
     static styles = [PFButton];
 
     /**
-     * @property
+     * @property *
      * @attribute
      */
     @property({ type: Boolean, reflect: true })
     open = false;
 
     /**
-     * @property
+     * @property *
      * @attribute
      */
     @property({ type: Boolean, reflect: true })
     disabled = false;
 
     /**
-     * @property
+     * @property *
      * @attribute
      */
     @property({ type: String, attribute: "show-message" })
     showMessage = msg("Show field content");
 
     /**
-     * @property
+     * @property *
      * @attribute
      */
     @property({ type: String, attribute: "hide-message" })

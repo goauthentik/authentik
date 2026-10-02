@@ -3,7 +3,6 @@ import "#elements/forms/HorizontalFormElement";
 import "#components/ak-text-input";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";
-
 import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
 
@@ -27,7 +26,9 @@ import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-const EXPIRATION_DURATION = 1000 * 60 ** 2 * 24 * 360; // 360 days
+const EXPIRATION_DURATION = 1000 * 60 ** 2 * 24 * 360;
+
+// 360 days
 
 @customElement("ak-user-service-account-form")
 export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
@@ -55,6 +56,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         if (this.targetGroup) {
             return msg(str`Successfully created user and added to group ${this.targetGroup.name}`);
         }
+
         return msg("Successfully created user.");
     }
 
@@ -62,10 +64,13 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         const result = await aki(CoreApi).coreUsersServiceAccountCreate({
             userServiceAccountRequest: data,
         });
+
         this.result = result;
+
         if (this.parentElement instanceof ModalForm) {
             this.parentElement.showSubmitButton = false;
         }
+
         if (this.targetGroup) {
             await aki(CoreApi).coreGroupsAddUserCreate({
                 groupUuid: this.targetGroup.pk,
@@ -74,6 +79,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                 },
             });
         }
+
         if (this.targetRole) {
             await aki(RbacApi).rbacRolesAddUserCreate({
                 uuid: this.targetRole.pk,
@@ -82,6 +88,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                 },
             });
         }
+
         return result;
     }
 
@@ -90,6 +97,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         this.result = null;
 
         this.expiresAt = new Date(Date.now() + EXPIRATION_DURATION);
+
         if (this.parentElement instanceof ModalForm) {
             this.parentElement.showSubmitButton = true;
         }
@@ -191,6 +199,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         if (this.result) {
             return this.renderResponseForm();
         }
+
         return super.renderFormWrapper();
     }
 

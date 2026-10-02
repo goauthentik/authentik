@@ -1,5 +1,4 @@
 import "#elements/forms/SearchSelect/ak-search-select-view";
-
 import { groupedSampleData, sampleData } from "./sampleData.js";
 
 import { SearchSelectView } from "#elements/forms/SearchSelect/ak-search-select-view";

@@ -12,7 +12,7 @@ test.describe("Invitation form", () => {
         invitationNames.set(testId, `invite-${seed}`);
 
         await test.step("Authenticate", () =>
-            session.login({ to: "/if/admin/#/flow/stages/invitations" }));
+            session.login({ to: "/if/admin/flow/stages/invitations" }));
     });
 
     test.afterEach("Verify invitation was created", async ({ form }, { testId }) => {
@@ -61,7 +61,7 @@ test.describe("Invitation form", () => {
             await expect(
                 page.getByText("Successfully created invitation."),
                 "Success message confirms the invitation was created",
-            ).toBeVisible({ timeout: 10_000 });
+            ).toBeVisible();
         });
 
         await test.step("Success modal presents the invitation link", async () => {
@@ -129,6 +129,7 @@ test.describe("Invitation form", () => {
             await expect($flowDialog, "Flow form closes after creation").toBeHidden({
                 timeout: 20_000,
             });
+
             await expect($dialog, "Invitation form is still open underneath").toBeVisible();
         });
 
@@ -148,7 +149,7 @@ test.describe("Invitation form", () => {
 
             await click("Create Invitation", "button", $dialog);
 
-            await expect($successDialog, "Success modal opens").toBeVisible({ timeout: 10_000 });
+            await expect($successDialog, "Success modal opens").toBeVisible();
 
             await $successDialog.getByRole("button", { name: "Close", exact: true }).click();
         });

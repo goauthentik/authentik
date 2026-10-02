@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,29 +12,15 @@
 
 /**
  * User agent os
+ *
  * @export
  * @interface AuthenticatedSessionUserAgentOs
  */
 export interface AuthenticatedSessionUserAgentOs {
-    /**
-     *
-     */
     family: string;
-    /**
-     *
-     */
     major: string | null;
-    /**
-     *
-     */
     minor: string | null;
-    /**
-     *
-     */
     patch: string | null;
-    /**
-     *
-     */
     patchMinor: string | null;
 }
 

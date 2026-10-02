@@ -1,6 +1,5 @@
 /**
  * @file Global constants used throughout the application.
- *
  * @todo Much of this content can be moved to a specific file, element, or component.
  */
 

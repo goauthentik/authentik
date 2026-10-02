@@ -154,10 +154,6 @@ compliance:
 
 cert_discovery_dir: /certs
 
-tenants:
-  enabled: false
-  api_key: ""
-
 blueprints_dir: /blueprints
 
 web:

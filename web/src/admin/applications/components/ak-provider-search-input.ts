@@ -1,6 +1,5 @@
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
@@ -60,6 +59,7 @@ export class AkProviderInput extends AKElement {
 
     /**
      * A unique ID to associate with the input and label.
+     *
      * @property
      */
     @property({ type: String, reflect: false })
@@ -75,10 +75,13 @@ export class AkProviderInput extends AKElement {
         const args: ProvidersAllListRequest = {
             ordering: "name",
         };
+
         const api = aki(ProvidersApi);
+
         if (query !== undefined) {
             args.search = query;
         }
+
         const items = await api.providersAllList(args);
         const results = items.results;
 
@@ -86,7 +89,9 @@ export class AkProviderInput extends AKElement {
         if (!(this.value && !results.find((r) => r.pk === this.value))) {
             return results;
         }
+
         const single = await api.providersAllRetrieve({ id: this.value });
+
         return [single, ...results];
     };
 
@@ -103,9 +108,11 @@ export class AkProviderInput extends AKElement {
                 },
                 this.label,
             )}
-            ${readOnlyValue
-                ? html`<input type="hidden" name=${this.name} value=${this.value ?? ""} />`
-                : nothing}
+            ${
+                readOnlyValue
+                    ? html`<input type="hidden" name=${this.name} value=${this.value ?? ""} />`
+                    : nothing
+            }
             <ak-search-select
                 label=${ifPresent(this.label)}
                 .fieldID=${this.fieldID}

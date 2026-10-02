@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,22 +19,12 @@ import type { Pagination } from "./Pagination";
 import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- *
  * @export
  * @interface PaginatedAppleIndependentSecureEnclaveList
  */
 export interface PaginatedAppleIndependentSecureEnclaveList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<AppleIndependentSecureEnclave>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

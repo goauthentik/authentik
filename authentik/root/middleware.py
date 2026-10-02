@@ -24,10 +24,25 @@ from authentik.core.models import Token, TokenIntents, User, UserTypes
 from authentik.lib.config import CONFIG
 from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.crypto import get_cookie_signing_key
+from authentik.lib.utils.errors import exception_to_dict
 
 LOGGER = get_logger("authentik.asgi")
 ACR_AUTHENTIK_SESSION = "goauthentik.io/core/default"
 SIGNING_HASH = get_cookie_signing_key()
+
+
+class LivenessMiddleware:
+    """Short-circuit liveness probe requests to bypass database and tenant middleware."""
+
+    get_response: Callable[[HttpRequest], HttpResponse]
+
+    def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
+        self.get_response = get_response
+
+    def __call__(self, request: HttpRequest) -> HttpResponse:
+        if request.path == "/-/health/live/":
+            return HttpResponse(status=200)
+        return self.get_response(request)
 
 
 class SessionMiddleware(UpstreamSessionMiddleware):
@@ -315,7 +330,7 @@ class ChannelsLoggingMiddleware:
         except Exception as exc:
             if settings.DEBUG or settings.TEST:
                 raise exc
-            LOGGER.warning("Exception in ASGI application", exc=exc)
+            LOGGER.warning("Exception in ASGI application", exc=exception_to_dict(exc))
             return await send({"type": "websocket.close"})
 
     def log(self, scope: dict, **kwargs):
@@ -356,7 +371,7 @@ class LoggingMiddleware:
     def log(self, request: HttpRequest, status_code: int, runtime: int, **kwargs):
         """Log request"""
         # Those are logged by the server above
-        if request.path in ("/-/metrics/", "/-/health/live/", "/-/health/ready/"):
+        if request.path in ("/-/metrics/", "/-/health/ready/"):
             return
         for header in self.headers_to_log:
             header_value = request.headers.get(header)

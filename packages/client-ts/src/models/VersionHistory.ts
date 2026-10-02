@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,28 +11,16 @@
  */
 
 import { parseDateTime, serializeDateTime } from "../runtime";
-
 /**
  * VersionHistory Serializer
+ *
  * @export
  * @interface VersionHistory
  */
 export interface VersionHistory {
-    /**
-     *
-     */
     readonly id: number;
-    /**
-     *
-     */
     timestamp: Date;
-    /**
-     *
-     */
     version: string;
-    /**
-     *
-     */
     build: string;
 }
 

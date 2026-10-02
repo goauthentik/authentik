@@ -1,12 +1,10 @@
 /**
- * @file Console logger for browser environments.
- *
  * @remarks
- * The repetition of log levels and method signatures is intentional to give
- * IDEs and type checkers a mapping of log methods to their documentation.
- *
- * Additionally, no wrapper functions are used to avoid the browser's console
- * reported call site being the wrapper instead of the actual caller.
+ *   The repetition of log levels and method signatures is intentional to give
+ *   IDEs and type checkers a mapping of log methods to their documentation.
+ *   Additionally, no wrapper functions are used to avoid the browser's console
+ *   reported call site being the wrapper instead of the actual caller.
+ * @file Console logger for browser environments.
  */
 
 /* eslint-disable no-console */
@@ -56,8 +54,8 @@ export type LoggerFactory = (prefix?: string | null, ...args: string[][]) => Log
  *
  * @remarks
  *
- * The colors are derived from Carbon Design System's palette to ensure
- * sufficient contrast and accessibility across light and dark themes.
+ *   The colors are derived from Carbon Design System's palette to ensure
+ *   sufficient contrast and accessibility across light and dark themes.
  */
 const LogLevelColors = {
     info: `light-dark(#0043CE, #4589FF)`,

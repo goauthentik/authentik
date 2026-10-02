@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -30,46 +28,18 @@ import type { Software } from "./Software";
 import { SoftwareFromJSON, SoftwareToJSON } from "./Software";
 
 /**
- *
  * @export
  * @interface DeviceFacts
  */
 export interface DeviceFacts {
-    /**
-     *
-     */
     os?: OperatingSystem | null;
-    /**
-     *
-     */
     disks?: Array<Disk> | null;
-    /**
-     *
-     */
     network?: Network | null;
-    /**
-     *
-     */
     hardware?: Hardware | null;
-    /**
-     *
-     */
     software?: Array<Software> | null;
-    /**
-     *
-     */
     processes?: Array<Process> | null;
-    /**
-     *
-     */
     users?: Array<DeviceUser> | null;
-    /**
-     *
-     */
     groups?: Array<DeviceGroup> | null;
-    /**
-     *
-     */
     vendor?: { [key: string]: any };
 }
 

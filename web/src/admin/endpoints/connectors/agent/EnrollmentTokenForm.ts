@@ -4,7 +4,6 @@ import "#components/ak-text-input";
 import "#components/ak-number-input";
 import "#components/ak-switch-input";
 import "#admin/endpoints/ak-endpoints-device-group-search";
-
 import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
 
@@ -20,12 +19,14 @@ import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-const EXPIRATION_DURATION = 30 * 60 * 1000; // 30 minutes
+const EXPIRATION_DURATION = 30 * 60 * 1000;
+
+// 30 minutes
 
 /**
  * Enrollment Token Form
  *
- * @prop {string} instancePk - The primary key of the instance to load.
+ * @property {string} instancePk - The primary key of the instance to load.
  */
 @customElement("ak-endpoints-agent-enrollment-token-form")
 export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentToken, string>) {
@@ -72,12 +73,14 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
         } else {
             data.connector = this.instance.connector;
         }
+
         if (this.instance) {
             return this.#api.endpointsAgentsEnrollmentTokensPartialUpdate({
                 tokenUuid: this.instance.tokenUuid,
                 patchedEnrollmentTokenRequest: data,
             });
         }
+
         return this.#api.endpointsAgentsEnrollmentTokensCreate({
             enrollmentTokenRequest: data as unknown as EnrollmentTokenRequest,
         });
@@ -90,11 +93,13 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
 
         if (!expiringElement.checked) {
             this.expiresAt = null;
+
             return;
         }
 
         if (this.instance?.expiring && this.instance.expires) {
             this.expiresAt = new Date(this.instance.expires);
+
             return;
         }
 

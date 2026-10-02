@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,21 +15,13 @@ import { FlowInspectorPlanFromJSON, FlowInspectorPlanToJSON } from "./FlowInspec
 
 /**
  * Serializer for inspect endpoint
+ *
  * @export
  * @interface FlowInspection
  */
 export interface FlowInspection {
-    /**
-     *
-     */
     plans: Array<FlowInspectorPlan>;
-    /**
-     *
-     */
     currentPlan?: FlowInspectorPlan;
-    /**
-     *
-     */
     isCompleted: boolean;
 }
 

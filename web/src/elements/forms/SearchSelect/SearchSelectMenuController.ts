@@ -36,6 +36,7 @@ export class SearchSelectMenuController implements ReactiveController {
 
         if (!menu) {
             this.#stopTracking();
+
             return;
         }
 
@@ -62,6 +63,7 @@ export class SearchSelectMenuController implements ReactiveController {
         const configuredDelay = getComputedStyle(this.host).getPropertyValue(
             "--ak-search-select--RefocusDelay",
         );
+
         const refocusDelay = parseInt(configuredDelay, 10) || DEFAULT_REFOCUS_DELAY;
         const dismissedByThisClick = event.timeStamp - this.#lastLightDismiss < refocusDelay;
 
@@ -96,9 +98,11 @@ export class SearchSelectMenuController implements ReactiveController {
      */
     public readonly handleMenuWheel = (event: WheelEvent) => {
         const menu = this.getMenu();
+
         if (!menu) return;
 
         const goingDown = event.deltaY > 0;
+
         const menuCanScroll = goingDown
             ? Math.ceil(menu.scrollTop + menu.clientHeight) < menu.scrollHeight
             : menu.scrollTop > 0;
@@ -106,12 +110,14 @@ export class SearchSelectMenuController implements ReactiveController {
         if (menuCanScroll) return;
 
         const scroller = findScrollableAncestor(this.host);
+
         if (!scroller) return;
 
         const deltaY = (() => {
             switch (event.deltaMode) {
                 case WheelEvent.DOM_DELTA_LINE: {
                     const lineHeight = parseFloat(getComputedStyle(scroller).lineHeight);
+
                     return event.deltaY * (Number.isFinite(lineHeight) ? lineHeight : 16);
                 }
                 case WheelEvent.DOM_DELTA_PAGE:
@@ -128,11 +134,13 @@ export class SearchSelectMenuController implements ReactiveController {
     #startTracking() {
         const input = this.getInput();
         const menu = this.getMenu();
+
         if (!input || !menu) return;
 
         // Close the menu when its anchor input is no longer visible — scrolled out
         // of the viewport, clipped away by a scroll container, or hidden.
         this.#anchorObserver?.disconnect();
+
         this.#anchorObserver = new IntersectionObserver(
             (entries) => {
                 if (entries.some((entry) => !entry.isIntersecting)) {
@@ -141,6 +149,7 @@ export class SearchSelectMenuController implements ReactiveController {
             },
             { threshold: 0 },
         );
+
         this.#anchorObserver.observe(input);
 
         // Position the menu imperatively and keep it in sync. We can't rely on a global
@@ -149,6 +158,7 @@ export class SearchSelectMenuController implements ReactiveController {
         // Instead we re-place the menu each animation frame while open, which also covers
         // nested scrollers, layout shifts, resizes, and options arriving late.
         let lastGeometry = "";
+
         const reflow = () => {
             const rect = this.getInput()?.getBoundingClientRect();
 
@@ -181,6 +191,7 @@ export class SearchSelectMenuController implements ReactiveController {
     #positionMenu() {
         const input = this.getInput();
         const menu = this.getMenu();
+
         if (!input || !menu) return;
 
         placeAnchoredPopover(input, menu, { matchAnchorWidth: true });

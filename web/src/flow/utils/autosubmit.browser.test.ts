@@ -23,6 +23,7 @@ it("submits an autosubmit challenge using a native form", () => {
     const submittedForm = submit.mock.instances[0] as unknown as HTMLFormElement;
     expect(submittedForm.action).toBe("https://example.com/sso");
     expect(submittedForm.method).toBe("post");
+
     expect(Object.fromEntries(new FormData(submittedForm))).toEqual({
         RelayState: "state",
         SAMLResponse: "response",
