@@ -448,7 +448,7 @@ requires-dist = [
     { name = "opentelemetry-instrumentation-requests", specifier = "==0.65b0" },
     { name = "opentelemetry-instrumentation-structlog", specifier = "==0.65b0" },
     { name = "opentelemetry-instrumentation-threading", specifier = "==0.65b0" },
-    { name = "opentelemetry-propagator-b3", specifier = "==1.44.0" },
+    { name = "opentelemetry-propagator-b3", specifier = "==1.45.0" },
     { name = "opentelemetry-sdk", specifier = "==1.44.0" },
     { name = "packaging", specifier = "==26.3" },
     { name = "paramiko", specifier = "==5.0.0" },
@@ -472,7 +472,7 @@ requires-dist = [
     { name = "ua-parser", specifier = "==1.0.2" },
     { name = "unidecode", specifier = "==1.4.0" },
     { name = "urllib3", specifier = "<3" },
-    { name = "uvicorn", extras = ["standard"], specifier = "==0.53.0" },
+    { name = "uvicorn", extras = ["standard"], specifier = "==0.54.0" },
     { name = "watchdog", specifier = "==6.0.0" },
     { name = "webauthn", specifier = "==3.0.1" },
     { name = "wsproto", specifier = "==1.3.2" },
@@ -2825,15 +2825,15 @@ wheels = [
 
 [[package]]
 name = "opentelemetry-propagator-b3"
-version = "1.44.0"
+version = "1.45.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "opentelemetry-api" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e5/1c/c4cc2240caced529f8b40e72e59459ea6246e730c008c7bbb439b4fdefe4/opentelemetry_propagator_b3-1.44.0.tar.gz", hash = "sha256:93c94885fd75429121bb3d5c496c9bbd1b36199e194a0a6876867d7bf3999300", size = 9514, upload-time = "2026-07-16T15:25:43.891Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ac/df/0370f28b9a74e8509ae0d036b1346ee57315c2aa1037d438a6b95564c1ce/opentelemetry_propagator_b3-1.45.0.tar.gz", hash = "sha256:3c0fcffff85bf0fdd5c72a0d3255872d098dc9c36d6d31f3bb2b27179a376f96", size = 9480, upload-time = "2026-09-25T12:32:40.004Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/cf/2c/aa831025e6a9f9d7c459c9cbf0ef990137edd35669249b1571447179d2b1/opentelemetry_propagator_b3-1.44.0-py3-none-any.whl", hash = "sha256:18649bc511c550d2744da1d887bdce0d1a6bbe6a052f8721f3adac5d9f51b20e", size = 8352, upload-time = "2026-07-16T15:25:26.612Z" },
+    { url = "https://files.pythonhosted.org/packages/1a/d8/b07682be2cadfba9ec5c485098ceecc1d9e4c3b4a590ca710fddb6df5429/opentelemetry_propagator_b3-1.45.0-py3-none-any.whl", hash = "sha256:6bfb9ce952ebfde0122b832664f0251b19de22bf31be55f7b442999fe7bab505", size = 8333, upload-time = "2026-09-25T12:32:21.451Z" },
 ]
 
 [[package]]
@@ -4144,15 +4144,15 @@ socks = [
 
 [[package]]
 name = "uvicorn"
-version = "0.53.0"
+version = "0.54.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
     { name = "h11" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/5d/ad/04bbb797c84fc1f26cb171f7394716f4865ffb8d8c5e1eef42565c2dfa6b/uvicorn-0.53.0.tar.gz", hash = "sha256:a9356f0cb89b3b8621529c5d5eebd69bfe154f4c3f68b4cf2de47e45fa855c2e", size = 110881, upload-time = "2026-09-14T07:44:23.815Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/da/34/30e9280707135d2cfc589dfff3cb796bd07a3aeb1a3e415ba09dd89d7bb4/uvicorn-0.54.0.tar.gz", hash = "sha256:a2e33cbfaa0306f8e6b0c13e0cb89d7d7a2da3e62b90c66e18c33d9807b28620", size = 112283, upload-time = "2026-09-25T06:52:37.601Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/76/18/0eea75741ee812e9f598b687619ce2454f6c3a1c5cd21ea990ec6bd26f45/uvicorn-0.53.0-py3-none-any.whl", hash = "sha256:e8dca71ec86dce5f04e333f0d56cdedf942446e6643b9cea1af0d6d3a02cb03e", size = 87081, upload-time = "2026-09-14T07:44:22.179Z" },
+    { url = "https://files.pythonhosted.org/packages/38/0c/b54a4fdd7f90a3af8b02ebc9ce6712c2c208b7926a2f7bad95c33ebbe943/uvicorn-0.54.0-py3-none-any.whl", hash = "sha256:505bdb0f318731d45f1f712071fc781a8981f6847a31c902c9f5e652d4f67faf", size = 87427, upload-time = "2026-09-25T06:52:35.829Z" },
 ]
 
 [package.optional-dependencies]
