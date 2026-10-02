@@ -352,6 +352,7 @@ class TokenView(View):
             provider,
             access_token,
             self.request,
+            act=self.params.prior_act,
         )
         access_token.save()
 

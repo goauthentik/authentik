@@ -131,9 +131,14 @@ class IDToken:
         # RFC 8693 §4.1 delegation: `sub` above stays the subject (unchanged); `act`
         # records who is actually exercising the token (e.g. an Actor acting for a
         # human), when the token-exchange request presented an `actor_token`.
+        # A delegation chain the subject token already carried (passed in as `act`) is
+        # nested under the new actor, or kept as-is when there is no new actor.
         actor = getattr(token, "actor", None)
         if actor:
-            id_token.act = {"sub": id_token._resolve_sub(provider, actor)}
+            act = {"sub": id_token._resolve_sub(provider, actor)}
+            if id_token.act:
+                act["act"] = id_token.act
+            id_token.act = act
         return id_token
 
     def _resolve_sub(self, provider: OAuth2Provider, user: User) -> str:
