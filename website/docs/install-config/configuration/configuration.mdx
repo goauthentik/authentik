@@ -333,6 +333,14 @@ Timeout for cached policies until they expire in seconds.
 
 Defaults to `300`.
 
+##### `AUTHENTIK_CACHE__TIMEOUT_APPLICATION_POLICIES`
+
+Duration during which a user's application list will be cached. When it expires the cache will be
+regenerated, filtered according to [policy-driven
+authorization](../../add-secure-apps/applications/manage_apps.mdx#policy-driven-authorization).
+
+Defaults to `86400` (one day).
+
 ## Worker settings
 
 ##### `AUTHENTIK_WORKER__PROCESSES`

@@ -164,6 +164,11 @@ test.describe("Applications", () => {
         });
 
         await test.step("Step 4: Configure Bindings (skip)", async () => {
+            await expect(
+                wizardDialog.getByRole("heading", { name: /Configure Policy/ }),
+                "The bindings step is showing",
+            ).toBeVisible();
+
             await click("Next", "button", wizardDialog);
         });
 

@@ -7,7 +7,7 @@ on:
 
 jobs:
   metadata:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     outputs:
       tag-name: "${{ steps.metadata.outputs.tag-name }}"
       version: "${{ steps.metadata.outputs.version }}"
@@ -30,7 +30,7 @@ jobs:
           echo "release-reason=$(jq -r '.release_reason' < metadata.json)" >> "$GITHUB_OUTPUT"
           echo "changelog-url=$(jq -r '.changelog_url' < metadata.json)" >> "$GITHUB_OUTPUT"
   publish-containers:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       # Needed to upload container images to ghcr.io
@@ -90,7 +90,7 @@ jobs:
   publish-docs-container:
     needs:
       - metadata
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       # Needed to upload container images to ghcr.io
       packages: write
@@ -138,7 +138,7 @@ jobs:
     env:
       AWS_REGION: eu-central-1
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
@@ -156,7 +156,7 @@ jobs:
     needs:
       - publish-containers
       - metadata
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Get static files from docker image
         run: |
@@ -181,7 +181,7 @@ jobs:
       - metadata
       - publish-containers
     if: ${{ needs.metadata.outputs.release-reason != 'prerelease' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - id: app-token
         name: Generate app token
@@ -225,7 +225,7 @@ jobs:
       - metadata
       - publish-containers
     if: ${{ needs.metadata.outputs.release-reason != 'prerelease' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - id: app-token
         name: Generate app token
