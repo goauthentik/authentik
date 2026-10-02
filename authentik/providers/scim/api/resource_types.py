@@ -8,7 +8,7 @@ from authentik.core.api.utils import PassiveSerializer
 class SCIMResourceTypeExtensionSerializer(PassiveSerializer):
     """A schema extension advertised by the SCIM destination."""
 
-    schema = CharField(source="schema_uri", read_only=True)
+    schema = CharField(source="schema_", read_only=True)
     required = BooleanField(read_only=True)
 
 
@@ -19,8 +19,10 @@ class SCIMResourceTypeSerializer(PassiveSerializer):
     name = CharField(read_only=True)
     endpoint = CharField(read_only=True)
     description = CharField(allow_null=True, read_only=True)
-    schema = CharField(source="schema_uri", read_only=True)
-    schema_extensions = SCIMResourceTypeExtensionSerializer(many=True, read_only=True)
+    schema = CharField(source="schema_", read_only=True)
+    schema_extensions = SCIMResourceTypeExtensionSerializer(
+        source="schemaExtensions", many=True, read_only=True
+    )
 
 
 class SCIMResourceTypeDiscoverySerializer(PassiveSerializer):

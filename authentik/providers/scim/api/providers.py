@@ -7,6 +7,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.api.validation import validate
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.lib.sync.outgoing.api import OutgoingSyncProviderStatusMixin
@@ -88,11 +89,12 @@ class SCIMProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelVie
         responses={200: SCIMResourceTypeDiscoverySerializer()},
     )
     @action(methods=["GET"], detail=True, pagination_class=None, filter_backends=[ObjectFilter])
-    def resource_types(self, request: Request, pk: int) -> Response:
+    @validate(SCIMResourceTypeDiscoveryQuerySerializer, location="query")
+    def resource_types(
+        self, request: Request, pk: int, *, query: SCIMResourceTypeDiscoveryQuerySerializer
+    ) -> Response:
         """Inspect the destination's advertised resource types without changing sync behavior."""
         provider = self.get_object()
-        query = SCIMResourceTypeDiscoveryQuerySerializer(data=request.query_params)
-        query.is_valid(raise_exception=True)
         result = SCIMResourceTypesClient(provider).get_resource_types(
             force_refresh=query.validated_data["refresh"]
         )

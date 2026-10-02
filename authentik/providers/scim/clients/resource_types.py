@@ -7,51 +7,18 @@ from typing import Literal
 
 from django.core.cache import cache
 from django.utils.timezone import now
-from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
+from pydantic import ValidationError
 
 from authentik.lib.sync.outgoing.exceptions import BaseSyncException
 from authentik.providers.scim.clients.base import SCIMClient
+from authentik.providers.scim.clients.schema import (
+    SCIM_LIST_RESPONSE_SCHEMA,
+    ResourceType,
+    ResourceTypeListResponse,
+)
 from authentik.providers.scim.models import SCIMProvider
 
 MAX_DISCOVERY_PAGES = 100
-LIST_RESPONSE_SCHEMA = "urn:ietf:params:scim:api:messages:2.0:ListResponse"
-
-
-class DiscoverySchema(BaseModel):
-    """SCIM attribute names are case insensitive."""
-
-    model_config = ConfigDict(alias_generator=str.lower, populate_by_name=True)
-
-    @model_validator(mode="before")
-    @classmethod
-    def normalize_keys(cls, value):
-        if isinstance(value, dict):
-            return {key.lower(): item for key, item in value.items()}
-        return value
-
-
-class ResourceTypeExtension(DiscoverySchema):
-    schema_uri: str = Field(alias="schema", min_length=1)
-    required: bool
-
-
-class ResourceType(DiscoverySchema):
-    id: str | None = None
-    name: str = Field(min_length=1)
-    endpoint: str = Field(min_length=1)
-    description: str | None = None
-    schema_uri: str = Field(alias="schema", min_length=1)
-    schema_extensions: list[ResourceTypeExtension] = Field(
-        default_factory=list, alias="schemaextensions"
-    )
-
-
-class ResourceTypePage(DiscoverySchema):
-    schemas: list[str]
-    total_results: int = Field(alias="totalresults", ge=0)
-    start_index: int | None = Field(default=None, alias="startindex", ge=1)
-    items_per_page: int | None = Field(default=None, alias="itemsperpage", ge=0)
-    resources: list[ResourceType] = Field(default_factory=list)
 
 
 @dataclass
@@ -127,29 +94,29 @@ class SCIMResourceTypesClient(SCIMClient):
         total_results = None
         start_index = 1
         for _ in range(MAX_DISCOVERY_PAGES):
-            page = ResourceTypePage.model_validate(
+            page = ResourceTypeListResponse.model_validate(
                 self._request(
                     "GET", "/ResourceTypes", params={"startIndex": start_index, "count": 100}
                 )
             )
-            if LIST_RESPONSE_SCHEMA not in page.schemas:
+            if SCIM_LIST_RESPONSE_SCHEMA not in page.schemas:
                 raise ValueError("Missing ListResponse schema")
             if total_results is None:
-                total_results = page.total_results
-            if page.total_results != total_results:
+                total_results = page.totalResults
+            if page.totalResults != total_results:
                 raise ValueError("ResourceTypes changed during pagination")
-            if page.start_index is not None and page.start_index != start_index:
+            if page.startIndex is not None and page.startIndex != start_index:
                 raise ValueError("ResourceTypes pagination did not advance")
-            if page.items_per_page is not None and page.items_per_page != len(page.resources):
+            if page.itemsPerPage is not None and page.itemsPerPage != len(page.Resources):
                 raise ValueError("ResourceTypes page size does not match its resources")
-            resources.extend(page.resources)
+            resources.extend(page.Resources)
             if len(resources) > total_results:
                 raise ValueError("ResourceTypes exceeds totalResults")
             if len({resource.name.casefold() for resource in resources}) != len(resources):
                 raise ValueError("Duplicate resource types")
             if len(resources) == total_results:
                 return resources
-            if not page.resources:
+            if not page.Resources:
                 raise ValueError("Incomplete ResourceTypes listing")
-            start_index += len(page.resources)
+            start_index += len(page.Resources)
         raise ValueError("ResourceTypes pagination limit exceeded")

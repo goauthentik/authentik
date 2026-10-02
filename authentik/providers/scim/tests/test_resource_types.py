@@ -15,10 +15,8 @@ from authentik.core.models import Group, User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.clients.base import SCIMClient
-from authentik.providers.scim.clients.resource_types import (
-    LIST_RESPONSE_SCHEMA,
-    SCIMResourceTypesClient,
-)
+from authentik.providers.scim.clients.resource_types import SCIMResourceTypesClient
+from authentik.providers.scim.clients.schema import SCIM_LIST_RESPONSE_SCHEMA
 from authentik.providers.scim.models import SCIMProvider
 from authentik.rbac.models import Role
 
@@ -44,7 +42,7 @@ GROUP_TYPE = {
 
 def listing(resources: list[dict], **kwargs) -> dict:
     return {
-        "schemas": [LIST_RESPONSE_SCHEMA],
+        "schemas": [SCIM_LIST_RESPONSE_SCHEMA],
         "totalResults": len(resources),
         "Resources": resources,
         **kwargs,
@@ -73,7 +71,7 @@ class TestSCIMResourceTypes(APITestCase):
         result = self.discovery.get_resource_types()
         self.assertEqual(result.status, "success")
         self.assertEqual([resource.name for resource in result.resource_types], ["User", "Group"])
-        self.assertEqual(result.resource_types[0].schema_extensions[0].required, True)
+        self.assertEqual(result.resource_types[0].schemaExtensions[0].required, True)
         self.assertIsNone(result.resource_types[1].id)
         self.assertFalse(result.cached)
         self.assertEqual(mock.call_count, 1)
@@ -99,7 +97,12 @@ class TestSCIMResourceTypes(APITestCase):
 
     @Mocker()
     def test_empty_and_case_insensitive_listing(self, mock: Mocker):
-        for resources in ([], [{key.upper(): value for key, value in USER_TYPE.items()}]):
+        uppercase_user = {key.upper(): value for key, value in USER_TYPE.items()}
+        uppercase_user["SCHEMAEXTENSIONS"] = [
+            {key.upper(): value for key, value in extension.items()}
+            for extension in USER_TYPE["schemaExtensions"]
+        ]
+        for resources in ([], [uppercase_user]):
             with self.subTest(resources=resources):
                 mock.get(
                     self.remote_url,
@@ -108,6 +111,12 @@ class TestSCIMResourceTypes(APITestCase):
                 result = self.discovery.get_resource_types(force_refresh=True)
                 self.assertEqual(result.status, "success")
                 self.assertEqual(len(result.resource_types), len(resources))
+                if resources:
+                    extension = result.resource_types[0].schemaExtensions[0]
+                    self.assertEqual(
+                        str(extension.schema_), USER_TYPE["schemaExtensions"][0]["schema"]
+                    )
+                    self.assertTrue(extension.required)
 
     @Mocker()
     def test_invalid_and_incomplete_listings(self, mock: Mocker):
@@ -117,6 +126,10 @@ class TestSCIMResourceTypes(APITestCase):
             {},
             [],
             listing([missing_schema]),
+            listing([USER_TYPE | {"schema": "not a URI"}]),
+            listing(
+                [USER_TYPE | {"schemaExtensions": [{"schema": "not a URI", "required": True}]}]
+            ),
             listing([USER_TYPE], schemas=[]),
             listing([], totalResults=1),
             listing([USER_TYPE], totalResults=0),
@@ -205,13 +218,24 @@ class TestSCIMResourceTypes(APITestCase):
     @Mocker()
     def test_api_and_refresh(self, mock: Mocker):
         self.client.force_login(create_test_admin_user())
-        mock.get(self.remote_url, json=listing([USER_TYPE]))
+        mock.get(self.remote_url, json=listing([USER_TYPE, GROUP_TYPE]))
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["status"], "success")
         resource = response.data["resource_types"][0]
         self.assertEqual(resource["schema"], USER_TYPE["schema"])
         self.assertEqual(resource["schema_extensions"], USER_TYPE["schemaExtensions"])
+        self.assertEqual(
+            response.data["resource_types"][1],
+            {
+                "id": None,
+                "name": "Group",
+                "endpoint": "/Groups",
+                "description": None,
+                "schema": GROUP_TYPE["schema"],
+                "schema_extensions": [],
+            },
+        )
         self.assertTrue(self.client.get(self.url).data["cached"])
         self.assertFalse(self.client.get(self.url, {"refresh": "true"}).data["cached"])
         self.assertEqual(self.client.get(self.url, {"refresh": "invalid"}).status_code, 400)
