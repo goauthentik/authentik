@@ -94,6 +94,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+    vi.restoreAllMocks();
     vi.unstubAllGlobals();
 
     for (const element of mounted.splice(0)) {
@@ -138,7 +139,7 @@ describe("AuthenticatorValidateStage", () => {
         });
 
         await vi.waitFor(() => expect(retryButton(stage)).toBeDefined());
-        retryButton(stage)!.click();
+        retryButton(stage)?.click();
 
         await vi.waitFor(() => expect(credentialsGet).toHaveBeenCalledTimes(2));
         expect(requestedChallenge(1)).toEqual([4, 5, 6]);
@@ -180,6 +181,36 @@ describe("AuthenticatorValidateStage", () => {
 
         await submitted;
 
+        expect(submit).toHaveBeenCalledOnce();
+    });
+
+    it("submits after the selection notification times out", async () => {
+        const timeoutController = new AbortController();
+
+        const timeoutSpy = vi
+            .spyOn(AbortSignal, "timeout")
+            .mockReturnValue(timeoutController.signal);
+
+        fetchMock.mockImplementation((_input: RequestInfo | URL, init?: RequestInit) => {
+            const signal = init?.signal;
+
+            return new Promise<Response>((_resolve, reject) => {
+                signal?.addEventListener("abort", () => reject(signal.reason), { once: true });
+            });
+        });
+
+        const stage = createStage();
+
+        stage.challenge = challengeOf([emailChallengeOf()]);
+        await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledOnce());
+
+        const submitted = stage.submit({ component: "ak-stage-authenticator-validate", code: "1" });
+        expect(submit).not.toHaveBeenCalled();
+
+        timeoutController.abort(new DOMException("Timed out", "TimeoutError"));
+        await submitted;
+
+        expect(timeoutSpy).toHaveBeenCalledWith(10_000);
         expect(submit).toHaveBeenCalledOnce();
     });
 });

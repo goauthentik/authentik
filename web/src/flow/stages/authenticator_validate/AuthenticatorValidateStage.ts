@@ -37,6 +37,8 @@ import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 
+const SELECTION_NOTIFICATION_TIMEOUT_MS = 10_000;
+
 interface DevicePickerProps {
     icon?: string;
     label: string;
@@ -170,11 +172,14 @@ export class AuthenticatorValidateStage
         // We don't use this.submit here, as we don't want to advance the flow.
         // We just want to notify the backend which challenge has been selected.
         const notification = this.#api
-            .flowsExecutorSolve({
-                flowSlug: this.host?.flowSlug || "",
-                query: window.location.search.substring(1),
-                flowChallengeResponseRequest,
-            })
+            .flowsExecutorSolve(
+                {
+                    flowSlug: this.host?.flowSlug || "",
+                    query: window.location.search.substring(1),
+                    flowChallengeResponseRequest,
+                },
+                { signal: AbortSignal.timeout(SELECTION_NOTIFICATION_TIMEOUT_MS) },
+            )
             .catch((error: unknown) => {
                 this.logger.warn("Failed to notify backend of selected challenge", error);
             })

@@ -589,6 +589,55 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
         )
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
+    def test_validate_challenge_single_use(self):
+        """Test that a challenge is removed after an assertion verifies"""
+        device = WebAuthnDevice.objects.create(
+            user=self.user,
+            public_key=(
+                "pQECAyYgASFYIF-N4GvQJdTJMAmTOxFX9_boL00zBiSrP0DY9xvJl_FF"
+                "IlggnyZloVSVofdJNTLMeMdjQHgW2Rzmd5_Xt5AWtNztcdo"
+            ),
+            credential_id="X43ga9Al1MkwCZM7EXD1r8Sxj7aXnNsuR013XM7he4kZ-GS9TaA-u3i36wsswjPm",
+            sign_count=2,
+            rp_id=generate_id(),
+        )
+        stage = AuthenticatorValidateStage.objects.create(
+            name=generate_id(),
+            not_configured_action=NotConfiguredAction.CONFIGURE,
+            device_classes=[DeviceClasses.WEBAUTHN],
+        )
+        plan = FlowPlan("")
+        plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = base64url_to_bytes(
+            "aCC6ak_DP45xMH1qyxzUM5iC2xc4QthQb09v7m4qDBmY8FvWvhxFzSuFlDYQmclrh5fWS5q0TPxgJGF4vimcFQ"
+        )
+        request = self.request_factory.post("/", SERVER_NAME="localhost", SERVER_PORT="9000")
+        request.user = self.user
+        stage_view = StageView(FlowExecutorView(current_stage=stage, plan=plan), request=request)
+        assertion = {
+            "id": "X43ga9Al1MkwCZM7EXD1r8Sxj7aXnNsuR013XM7he4kZ-GS9TaA-u3i36wsswjPm",
+            "rawId": "X43ga9Al1MkwCZM7EXD1r8Sxj7aXnNsuR013XM7he4kZ-GS9TaA-u3i36wsswjPm",
+            "type": "public-key",
+            "assertionClientExtensions": "{}",
+            "response": {
+                "clientDataJSON": (
+                    "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiYUNDN"
+                    "mFrX0RQNDV4TUgxcXl4elVNNWlDMnhjNFF0aFFiMDl2N200cURCbV"
+                    "k4RnZXdmh4RnpTdUZsRFlRbWNscmg1ZldTNXEwVFB4Z0pHRjR2aW1"
+                    "jRlEiLCJvcmlnaW4iOiJodHRwOi8vbG9jYWxob3N0OjkwMDAiLCJj"
+                    "cm9zc09yaWdpbiI6ZmFsc2V9"
+                ),
+                "signature": (
+                    "MEQCIAHQCGfE_PX1z6mBDaXUNqK_NrllhXylNOmETUD3Khv9AiBTl"
+                    "rX3GDRj5OaOfTToOwUwAhtd74tu0T6DZAVHPb_hlQ=="
+                ),
+                "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAABg==",
+                "userHandle": None,
+            },
+        }
+
+        self.assertEqual(validate_challenge_webauthn(assertion, stage_view, self.user), device)
+        self.assertNotIn(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, plan.context)
+
     def test_validate_challenge_invalid(self):
         """Test webauthn"""
         request = self.request_factory.get("/")

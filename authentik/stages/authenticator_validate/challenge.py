@@ -250,6 +250,9 @@ def validate_challenge_webauthn(
         )
         raise ValidationError("Assertion failed") from exc
 
+    # Challenges are single-use. The generators reuse a pending challenge until an assertion
+    # verifies, so consume it here for every caller before accepting another assertion.
+    stage_view.executor.plan.context.pop(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, None)
     with audit_ignore():
         device.set_sign_count(authentication_verification.new_sign_count)
     return device
