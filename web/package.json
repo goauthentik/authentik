@@ -210,7 +210,7 @@
         "core-js": "^3.49.0",
         "country-flag-icons": "^1.6.20",
         "date-fns": "^4.4.0",
-        "deepmerge-ts": "^8.0.0",
+        "deepmerge-ts": "^8.0.2",
         "dompurify": "^3.4.13",
         "esbuild": "catalog:",
         "eslint-plugin-lit": "^2.3.1",
