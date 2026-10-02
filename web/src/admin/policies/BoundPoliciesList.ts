@@ -14,7 +14,7 @@ import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#comm
 import { IconEditButton, IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
 import { toAdminInterface } from "#elements/router/core/interfaces";
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { StrictUnsafe } from "#elements/utils/unsafe";
 
@@ -114,6 +114,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         [this.allowedTypesLabel],
         [msg("Enabled"), "enabled"],
         [msg("Dry-run", { id: "policies.bindings.dry-run.label" })],
+        [msg("Expiring"), "expires"],
         [msg("Timeout"), "timeout"],
         [msg("Actions"), null, msg("Row Actions")],
     ];
@@ -229,6 +230,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             html`${getPolicyUserGroupRow(item)}`,
             html`<ak-status-label type="warning" ?good=${item.enabled}></ak-status-label>`,
             html`<ak-status-label type="neutral" ?good=${item.dryRun}></ak-status-label>`,
+            item.expiring ? Timestamp(item.expires) : "-",
             html`${item.timeout}`,
             html`<div class="ak-c-table__actions">
                 ${this.getDryRunEventsButton(item)} ${this.getObjectEditButton(item)}
