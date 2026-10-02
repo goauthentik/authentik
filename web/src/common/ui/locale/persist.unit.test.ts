@@ -1,6 +1,6 @@
 import { LanguageCookieName, persistLocale, readPersistedLocale } from "#common/ui/locale/persist";
 
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // `persistLocale` reads the web base path from the global; stub it so the test
 // does not depend on a rendered `window.authentik`.
@@ -44,6 +44,11 @@ describe("locale persistence", () => {
 
     beforeEach(() => {
         jar = installCookieJar();
+        vi.stubGlobal("location", { protocol: "http:" });
+    });
+
+    afterEach(() => {
+        vi.unstubAllGlobals();
     });
 
     it("round-trips the persisted locale through the language cookie", () => {
@@ -56,9 +61,18 @@ describe("locale persistence", () => {
         persistLocale("fr-FR");
 
         expect(jar.lastWrite).toContain(`${LanguageCookieName}=fr-FR`);
-        expect(jar.lastWrite).toContain("path=/");
-        expect(jar.lastWrite).toContain("SameSite=Lax");
-        expect(jar.lastWrite).toMatch(/max-age=\d+/);
+        expect(jar.lastWrite).toMatch(/path=\/(;|$)/i);
+        expect(jar.lastWrite).toMatch(/samesite=lax/i);
+        expect(jar.lastWrite).toMatch(/max-age=\d+/i);
+        expect(jar.lastWrite).not.toMatch(/secure/i);
+    });
+
+    it("marks the cookie secure when served over HTTPS", () => {
+        vi.stubGlobal("location", { protocol: "https:" });
+
+        persistLocale("fr-FR");
+
+        expect(jar.lastWrite).toMatch(/;\s*secure(;|$)/i);
     });
 
     it("returns null when no locale has been persisted", () => {
@@ -66,7 +80,8 @@ describe("locale persistence", () => {
     });
 
     it("decodes a percent-encoded cookie value", () => {
-        persistLocale("zh-Hans");
+        // Written raw, as another encoder (e.g. the server) might have set it.
+        document.cookie = `${LanguageCookieName}=zh%2DHans; path=/`;
 
         expect(readPersistedLocale()).toBe("zh-Hans");
     });

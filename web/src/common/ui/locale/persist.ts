@@ -1,6 +1,8 @@
 import { globalAK } from "#common/global";
 import { TargetLanguageTag } from "#common/ui/locale/definitions";
 
+import { parseCookie, stringifySetCookie } from "cookie";
+
 //#region Cookie-persisted preference
 
 /**
@@ -27,26 +29,21 @@ export function persistLocale(languageTag: TargetLanguageTag): void {
     // One year, matching Django's `set_language` default expiration.
     const maxAge = 60 * 60 * 24 * 365;
 
-    document.cookie = `${LanguageCookieName}=${encodeURIComponent(
-        languageTag,
-    )}; path=${path}; max-age=${maxAge}; SameSite=Lax`;
+    document.cookie = stringifySetCookie({
+        name: LanguageCookieName,
+        value: languageTag,
+        path,
+        maxAge,
+        sameSite: "lax",
+        secure: location.protocol === "https:",
+    });
 }
 
 /**
  * Read the locale persisted in the Django language cookie, if present.
  */
 export function readPersistedLocale(): string | null {
-    const prefix = `${LanguageCookieName}=`;
-
-    for (const entry of document.cookie ? document.cookie.split(";") : []) {
-        const cookie = entry.trim();
-
-        if (cookie.startsWith(prefix)) {
-            return decodeURIComponent(cookie.slice(prefix.length)) || null;
-        }
-    }
-
-    return null;
+    return parseCookie(document.cookie)[LanguageCookieName] || null;
 }
 
 //#endregion
