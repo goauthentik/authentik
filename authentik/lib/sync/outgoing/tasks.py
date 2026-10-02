@@ -198,7 +198,7 @@ class SyncTasks:
         for obj in paginator.page(page).object_list:
             obj: Model
             try:
-                client.write(obj)
+                client.write_locked(obj)
             except SkipObjectException:
                 self.logger.debug("skipping object due to SkipObject", obj=obj)
                 continue
@@ -283,7 +283,7 @@ class SyncTasks:
             return
 
         try:
-            client.write(instance)
+            client.write_locked(instance)
         except TransientSyncException as exc:
             raise Retry() from exc
         except SkipObjectException:

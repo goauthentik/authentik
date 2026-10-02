@@ -4,7 +4,7 @@ from collections.abc import Iterator
 from contextlib import contextmanager
 from datetime import timedelta
 from enum import StrEnum
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Generator
 
 import pglock
 from deepmerge import always_merger
@@ -73,7 +73,7 @@ class BaseOutgoingSyncClient[
         raise NotImplementedError()
 
     @contextmanager
-    def object_lock(self, obj: TModel) -> Iterator[None]:
+    def object_lock(self, obj: TModel) -> Generator[None]:
         """Serialize remote operations for one object and provider."""
         lock_id = (
             f"goauthentik.io/{connection.schema_name}/providers/outgoing-sync/"
@@ -90,12 +90,12 @@ class BaseOutgoingSyncClient[
                 raise ObjectLockTimeout(lock_id)
             yield
 
-    def write(self, obj: TModel) -> tuple[TConnection, bool]:
+    def write_locked(self, obj: TModel) -> tuple[TConnection, bool]:
         """Write an object to the destination while holding its object lock."""
         with self.object_lock(obj):
-            return self._write(obj)
+            return self.write(obj)
 
-    def _write(self, obj: TModel) -> tuple[TConnection, bool]:
+    def write(self, obj: TModel) -> tuple[TConnection, bool]:
         """Write an object while the caller holds its object lock."""
         connection = self.connection_type.objects.filter(
             provider=self.provider, **{self.connection_type_query: obj}
