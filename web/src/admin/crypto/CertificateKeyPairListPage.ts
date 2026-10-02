@@ -19,7 +19,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { CryptoCertificateGenerateForm } from "#admin/crypto/CertificateGenerateForm";
 import { CryptoCertificateForm } from "#admin/crypto/CertificateKeyPairForm";
 
-import { CertificateKeyPair, CryptoApi, ModelEnum } from "@goauthentik/api";
+import { CertificateKeyPair, CoreApi, CryptoApi, ModelEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
@@ -71,8 +71,9 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                 ];
             }}
             .usedBy=${(item: CertificateKeyPair) => {
-                return aki(CryptoApi).cryptoCertificatekeypairsUsedByList({
-                    kpUuid: item.pk,
+                return aki(CoreApi).coreUsedByList({
+                    model: ModelEnum.AuthentikCryptoCertificatekeypair,
+                    pk: item.pk,
                 });
             }}
             .delete=${(item: CertificateKeyPair) => {

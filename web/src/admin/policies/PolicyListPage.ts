@@ -24,7 +24,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { PolicyWizard } from "#admin/policies/ak-policy-wizard";
 import { PolicyTestForm } from "#admin/policies/PolicyTestForm";
 
-import { ModelEnum, PoliciesApi, Policy } from "@goauthentik/api";
+import { CoreApi, ModelEnum, PoliciesApi, Policy } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { html } from "lit";
@@ -104,8 +104,9 @@ export class PolicyListPage extends TablePage<Policy> {
             object-label=${msg("Policy / Policies")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Policy) => {
-                return aki(PoliciesApi).policiesAllUsedByList({
-                    policyUuid: item.pk,
+                return aki(CoreApi).coreUsedByList({
+                    model: item.metaModelName,
+                    pk: item.pk,
                 });
             }}
             .delete=${(item: Policy) => {

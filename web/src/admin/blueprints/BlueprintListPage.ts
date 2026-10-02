@@ -31,6 +31,7 @@ import { BlueprintForm } from "#admin/blueprints/BlueprintForm";
 import {
     BlueprintInstance,
     BlueprintInstanceStatusEnum,
+    CoreApi,
     ManagedApi,
     ModelEnum,
 } from "@goauthentik/api";
@@ -103,8 +104,9 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                 return [{ key: msg("Name"), value: item.name }];
             }}
             .usedBy=${(item: BlueprintInstance) => {
-                return aki(ManagedApi).managedBlueprintsUsedByList({
-                    instanceUuid: item.pk,
+                return aki(CoreApi).coreUsedByList({
+                    model: ModelEnum.AuthentikBlueprintsBlueprintinstance,
+                    pk: item.pk,
                 });
             }}
             .delete=${(item: BlueprintInstance) => {

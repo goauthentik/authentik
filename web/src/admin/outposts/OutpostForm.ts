@@ -54,7 +54,7 @@ const dualSelectPairMaker = (item: ProviderBase): DualSelectPair => {
         item.assignedBackchannelApplicationName || item.assignedApplicationName || item.name;
 
     return [
-        `${item.pk}`,
+        item.pk,
         html`<div class="selection-main">${label}</div>
             <div class="selection-desc">${item.name}</div>`,
         label,

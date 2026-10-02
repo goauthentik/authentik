@@ -14,7 +14,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { AKEndpointConnectorWizard } from "#admin/endpoints/connectors/ConnectorWizard";
 
-import { Connector, EndpointsApi } from "@goauthentik/api";
+import { Connector, CoreApi, EndpointsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -71,8 +71,9 @@ export class ConnectorsListPage extends TablePage<Connector> {
                 return [{ key: msg("Name"), value: item.name }];
             }}
             .usedBy=${(item: Connector) => {
-                return aki(EndpointsApi).endpointsConnectorsUsedByList({
-                    connectorUuid: item.connectorUuid!,
+                return aki(CoreApi).coreUsedByList({
+                    model: "authentik_endpoints.connector",
+                    pk: item.connectorUuid!,
                 });
             }}
             .delete=${(item: Connector) => {

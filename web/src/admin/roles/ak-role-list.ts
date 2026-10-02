@@ -18,7 +18,7 @@ import { setPageDetails } from "#components/ak-page-navbar";
 
 import { RoleForm } from "#admin/roles/ak-role-form";
 
-import { RbacApi, Role } from "@goauthentik/api";
+import { CoreApi, ModelEnum, RbacApi, Role } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { html, PropertyValues, TemplateResult } from "lit";
@@ -62,8 +62,9 @@ export class RoleListPage extends TablePage<Role> {
             object-label=${msg("Role(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Role) => {
-                return aki(RbacApi).rbacRolesUsedByList({
-                    uuid: item.pk,
+                return aki(CoreApi).coreUsedByList({
+                    model: ModelEnum.AuthentikRbacRole,
+                    pk: item.pk,
                 });
             }}
             .delete=${(item: Role) => {
