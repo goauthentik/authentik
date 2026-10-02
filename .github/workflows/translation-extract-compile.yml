@@ -38,7 +38,7 @@ jobs:
           uv run make i18n-extract
       - name: run compile
         run: |
-          uv run ak compilemessages
+          uv run python -m manage compilemessages
           make web-check-compile
       - name: Create Pull Request
         if: ${{ github.event_name != 'pull_request' }}

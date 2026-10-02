@@ -183,7 +183,7 @@ RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
     uv sync --locked --no-install-project --no-dev
 
 # Stage: Run
-FROM python-base AS final-image
+FROM python-base AS final
 
 ARG VERSION
 ARG GIT_BUILD_HASH
@@ -233,7 +233,8 @@ COPY ./lifecycle/ /lifecycle
 COPY ./authentik/sources/kerberos/krb5.conf /etc/krb5.conf
 COPY --from=rust-builder /bin/authentik /bin/authentik
 COPY ./packages/ /ak-root/packages
-RUN  ln -s /ak-root/packages /packages
+RUN ln -s /ak-root/packages /packages && \
+    ln -s ak.py /lifecycle/ak
 COPY --from=python-deps /ak-root/.venv /ak-root/.venv
 COPY --from=node-builder /work/web/dist/ /web/dist/
 COPY --from=node-builder /work/web/authentik/ /web/authentik/
