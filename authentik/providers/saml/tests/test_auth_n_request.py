@@ -2,6 +2,7 @@
 
 from base64 import b64encode
 from json import loads
+from unittest.mock import patch
 from urllib.parse import parse_qs, urlparse
 
 from defusedxml.lxml import fromstring
@@ -41,7 +42,7 @@ from authentik.providers.saml.models import (
 )
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
-from authentik.sources.saml.exceptions import MismatchedRequestID
+from authentik.sources.saml.exceptions import MismatchedRequestID, SAMLException
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID, RequestProcessor
 from authentik.sources.saml.processors.response import ResponseProcessor
@@ -150,6 +151,8 @@ class TestAuthNRequest(TestCase):
         self.assertEqual(response.context_data["redirect_uri"], self.provider.acs_url)
         self.assertEqual(response.context_data["attrs"]["RelayState"], "test_state")
         self.assertIn("SAMLResponse", response.context_data["attrs"])
+        self.assertIn("no-store", response["Cache-Control"])
+        self.assertEqual(response["Pragma"], "no-cache")
         self.assertNotIn(SESSION_KEY_PLAN, self.client.session)
         self.assertTrue(SAMLSession.objects.filter(provider=self.provider).exists())
         self.assertTrue(Event.objects.filter(action=EventAction.AUTHORIZE_APPLICATION).exists())
@@ -161,6 +164,27 @@ class TestAuthNRequest(TestCase):
         self.client.force_login(create_test_admin_user())
 
         self.assert_direct_post_response(self.post_authn_request())
+
+    def test_post_response_empty_flow_error_is_error_page(self):
+        """A direct SAML error renders an HTML error without exposing internal details."""
+        self.provider.sp_binding = SAMLBindings.POST
+        self.provider.save()
+        self.client.force_login(create_test_admin_user())
+
+        with patch.object(
+            AssertionProcessor, "build_response", side_effect=SAMLException("internal test error")
+        ):
+            response = self.post_authn_request()
+
+        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed(response, "if/error.html")
+        self.assertContains(
+            response, "Failed to process SAML assertion.", status_code=400
+        )
+        self.assertNotContains(response, "internal test error", status_code=400)
+        self.assertNotIn(SESSION_KEY_PLAN, self.client.session)
+        self.assertFalse(SAMLSession.objects.filter(provider=self.provider).exists())
+        self.assertTrue(Event.objects.filter(action=EventAction.CONFIGURATION_ERROR).exists())
 
     @patch_flag(ContinuousLogin, True)
     def test_post_response_empty_flow_is_direct_with_continuous_login(self):

@@ -5,6 +5,7 @@ from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
+from django.utils.cache import add_never_cache_headers
 from django.utils.http import urlencode
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
@@ -60,11 +61,18 @@ class SAMLFlowFinalView(ChallengeStageView):
         """Fulfill direct authorization requests regardless of their incoming binding."""
         return self.get(request, *args, **kwargs)
 
+    def direct_error(self, message: str) -> HttpResponse:
+        """Render errors that bypass the flow interface as HTML."""
+        self.executor.cancel()
+        return bad_request_message(self.request, message)
+
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         application: Application = self.executor.plan.context[PLAN_CONTEXT_APPLICATION]
         provider: SAMLProvider = get_object_or_404(SAMLProvider, pk=application.provider_id)
         if PLAN_CONTEXT_SAML_AUTH_N_REQUEST not in self.executor.plan.context:
             self.logger.warning("No AuthNRequest in context")
+            if self.executor.direct_execution:
+                return self.direct_error(_("The SAML request payload is missing."))
             return self.executor.stage_invalid()
 
         auth_n_request: AuthNRequest = self.executor.plan.context[PLAN_CONTEXT_SAML_AUTH_N_REQUEST]
@@ -100,6 +108,8 @@ class SAMLFlowFinalView(ChallengeStageView):
                 message=f"Failed to process SAML assertion: {str(exc)}",
                 provider=provider,
             ).from_http(self.request)
+            if self.executor.direct_execution:
+                return self.direct_error(_("Failed to process SAML assertion."))
             return self.executor.stage_invalid()
 
         # Log Application Authorization
@@ -117,11 +127,14 @@ class SAMLFlowFinalView(ChallengeStageView):
                 }
             )
             if self.executor.direct_execution:
-                return TemplateResponse(
+                direct_response = TemplateResponse(
                     request,
                     "if/saml_form_post.html",
                     {"redirect_uri": provider.acs_url, "attrs": form_attrs},
                 )
+                add_never_cache_headers(direct_response)
+                direct_response["Pragma"] = "no-cache"
+                return direct_response
             return super().get(
                 self.request,
                 **{
