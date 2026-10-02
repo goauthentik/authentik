@@ -9,7 +9,7 @@ import { aki } from "#common/api/client";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { ConnectionToken, RacApi, RACProvider } from "@goauthentik/api";
+import { ConnectionToken, CoreApi, RacApi, RACProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
@@ -57,13 +57,14 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
                 ];
             }}
             .usedBy=${(item: ConnectionToken) => {
-                return aki(RacApi).racConnectionTokensUsedByList({
-                    connectionTokenUuid: item.pk || "",
+                return aki(CoreApi).coreUsedByList({
+                    model: "authentik_providers_rac.connectiontoken",
+                    pk: item.pk!,
                 });
             }}
             .delete=${(item: ConnectionToken) => {
                 return aki(RacApi).racConnectionTokensDestroy({
-                    connectionTokenUuid: item.pk || "",
+                    connectionTokenUuid: item.pk!,
                 });
             }}
         >

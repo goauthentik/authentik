@@ -16,7 +16,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { PromptForm } from "#admin/stages/prompt/PromptForm";
 
-import { ModelEnum, Prompt, StagesApi } from "@goauthentik/api";
+import { CoreApi, ModelEnum, Prompt, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -56,8 +56,9 @@ export class PromptListPage extends TablePage<Prompt> {
             object-label=${msg("Prompt(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Prompt) => {
-                return aki(StagesApi).stagesPromptPromptsUsedByList({
-                    promptUuid: item.pk,
+                return aki(CoreApi).coreUsedByList({
+                    model: ModelEnum.AuthentikStagesPromptPrompt,
+                    pk: item.pk,
                 });
             }}
             .delete=${(item: Prompt) => {

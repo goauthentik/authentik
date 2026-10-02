@@ -117,8 +117,9 @@ export class AdminUserTokenList extends Table<Token> {
                 return [{ key: msg("Identifier"), value: item.identifier }];
             }}
             .usedBy=${(item: Token) => {
-                return aki(CoreApi).coreTokensUsedByList({
-                    identifier: item.identifier,
+                return aki(CoreApi).coreUsedByList({
+                    model: ModelEnum.AuthentikCoreToken,
+                    pk: item.pk,
                 });
             }}
             .delete=${(item: Token) => {

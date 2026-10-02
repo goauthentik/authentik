@@ -14,7 +14,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { StageBindingForm } from "#admin/flows/StageBindingForm";
 import { AKStageWizard } from "#admin/stages/ak-stage-wizard";
 
-import { FlowsApi, FlowStageBinding, ModelEnum } from "@goauthentik/api";
+import { CoreApi, FlowsApi, FlowStageBinding, ModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -64,8 +64,9 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                 ];
             }}
             .usedBy=${(item: FlowStageBinding) => {
-                return this.flowsAPI.flowsBindingsUsedByList({
-                    fsbUuid: item.pk,
+                return aki(CoreApi).coreUsedByList({
+                    model: ModelEnum.AuthentikFlowsFlowstagebinding,
+                    pk: item.pk,
                 });
             }}
             .delete=${(item: FlowStageBinding) => {

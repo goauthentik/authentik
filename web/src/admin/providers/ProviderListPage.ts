@@ -23,7 +23,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { AKProviderWizard } from "#admin/providers/ak-provider-wizard";
 
-import { Provider, ProvidersApi } from "@goauthentik/api";
+import { CoreApi, Provider, ProvidersApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -68,8 +68,9 @@ export class ProviderListPage extends TablePage<Provider> {
             object-label=${msg("Provider(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Provider) => {
-                return aki(ProvidersApi).providersAllUsedByList({
-                    id: item.pk,
+                return aki(CoreApi).coreUsedByList({
+                    model: item.metaModelName,
+                    pk: item.pk.toString(),
                 });
             }}
             .delete=${(item: Provider) => {

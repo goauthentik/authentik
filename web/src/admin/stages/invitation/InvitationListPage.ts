@@ -19,7 +19,7 @@ import { setPageDetails } from "#components/ak-page-navbar";
 
 import { InvitationForm } from "#admin/stages/invitation/InvitationForm";
 
-import { FlowDesignationEnum, Invitation, ModelEnum, StagesApi } from "@goauthentik/api";
+import { CoreApi, FlowDesignationEnum, Invitation, ModelEnum, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, PropertyValues } from "lit";
@@ -92,8 +92,9 @@ export class InvitationListPage extends TablePage<Invitation> {
             object-label=${msg("Invitation(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Invitation) => {
-                return aki(StagesApi).stagesInvitationInvitationsUsedByList({
-                    inviteUuid: item.pk,
+                return aki(CoreApi).coreUsedByList({
+                    model: ModelEnum.AuthentikStagesInvitationInvitation,
+                    pk: item.pk,
                 });
             }}
             .delete=${(item: Invitation) => {

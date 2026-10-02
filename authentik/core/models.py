@@ -81,6 +81,10 @@ options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
     # used_by API that allows models to specify a field that, when it points to the
     # requesting user, grants them used_by access without an explicit view permission
     "authentik_used_by_owner_field",
+    # used_by API that allows models whose primary key isn't API-addressable (for
+    # example because it would leak a sensitive value) to be looked up by another
+    # unique field instead
+    "authentik_used_by_lookup_field",
 )
 
 GROUP_RECURSION_LIMIT = 20
@@ -1526,6 +1530,9 @@ class AuthenticatedSession(SerializerModel):
         verbose_name = _("Authenticated Session")
         verbose_name_plural = _("Authenticated Sessions")
         authentik_used_by_owner_field = "user"
+        # `pk` is the session key, which is never exposed through the API; `uuid` is
+        # the public-safe identifier clients use to refer to a session instead
+        authentik_used_by_lookup_field = "uuid"
 
     def __str__(self) -> str:
         return f"Authenticated Session {str(self.pk)[:10]}"

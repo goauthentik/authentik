@@ -10,7 +10,7 @@ import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { ExpiringBaseGrantModel, Oauth2Api, TokenModel } from "@goauthentik/api";
+import { CoreApi, ExpiringBaseGrantModel, Oauth2Api, TokenModel } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
@@ -65,8 +65,9 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
             object-label=${msg("Access Tokens(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: ExpiringBaseGrantModel) => {
-                return aki(Oauth2Api).oauth2AccessTokensUsedByList({
-                    id: item.pk,
+                return aki(CoreApi).coreUsedByList({
+                    model: "authentik_providers_oauth2.accesstoken",
+                    pk: item.pk.toString(),
                 });
             }}
             .delete=${(item: ExpiringBaseGrantModel) => {

@@ -15,7 +15,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { AKStageWizard } from "#admin/stages/ak-stage-wizard";
 import { DuoDeviceImportForm } from "#admin/stages/authenticator_duo/DuoDeviceImportForm";
 
-import { ModelEnum, Stage, StagesApi } from "@goauthentik/api";
+import { CoreApi, ModelEnum, Stage, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -53,8 +53,9 @@ export class StageListPage extends TablePage<Stage> {
             object-label=${msg("Stage(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Stage) => {
-                return aki(StagesApi).stagesAllUsedByList({
-                    stageUuid: item.pk,
+                return aki(CoreApi).coreUsedByList({
+                    model: item.metaModelName,
+                    pk: item.pk,
                 });
             }}
             .delete=${(item: Stage) => {

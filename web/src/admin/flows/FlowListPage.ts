@@ -21,7 +21,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { FlowForm } from "#admin/flows/FlowForm";
 import { DesignationToLabel } from "#admin/flows/utils";
 
-import { Flow, FlowsApi } from "@goauthentik/api";
+import { CoreApi, Flow, FlowsApi, ModelEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -70,8 +70,9 @@ export class FlowListPage extends TablePage<Flow> {
             object-label=${msg("Flow(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Flow) => {
-                return aki(FlowsApi).flowsInstancesUsedByList({
-                    slug: item.slug,
+                return aki(CoreApi).coreUsedByList({
+                    model: ModelEnum.AuthentikFlowsFlow,
+                    pk: item.pk,
                 });
             }}
             .delete=${(item: Flow) => {

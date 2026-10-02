@@ -23,7 +23,7 @@ import { PolicyBindingForm, PolicyBindingNotice } from "#admin/policies/PolicyBi
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { UserForm } from "#admin/users/UserForm";
 
-import { ModelEnum, PoliciesApi, PolicyBinding } from "@goauthentik/api";
+import { CoreApi, ModelEnum, PoliciesApi, PolicyBinding } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
@@ -150,8 +150,9 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                     ];
                 }}
                 .usedBy=${(item: PolicyBinding) => {
-                    return aki(PoliciesApi).policiesBindingsUsedByList({
-                        policyBindingUuid: item.pk,
+                    return aki(CoreApi).coreUsedByList({
+                        model: ModelEnum.AuthentikPoliciesPolicybinding,
+                        pk: item.pk,
                     });
                 }}
                 .delete=${(item: PolicyBinding) => {

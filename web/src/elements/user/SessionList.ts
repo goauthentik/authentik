@@ -75,13 +75,14 @@ export class AuthenticatedSessionList extends WithLocale(Table<AuthenticatedSess
                 ];
             }}
             .usedBy=${(item: AuthenticatedSession) => {
-                return aki(CoreApi).coreAuthenticatedSessionsUsedByList({
-                    uuid: item.uuid || "",
+                return aki(CoreApi).coreUsedByList({
+                    model: "authentik_core.authenticatedsession",
+                    pk: item.uuid!,
                 });
             }}
             .delete=${(item: AuthenticatedSession) => {
                 return aki(CoreApi).coreAuthenticatedSessionsDestroy({
-                    uuid: item.uuid || "",
+                    uuid: item.uuid!,
                 });
             }}
         >
