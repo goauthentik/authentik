@@ -682,6 +682,7 @@ class Notification(SerializerModel):
     class Meta:
         verbose_name = _("Notification")
         verbose_name_plural = _("Notifications")
+        authentik_used_by_owner_field = "user"
 
 
 class NotificationRule(TasksModel, SerializerModel, PolicyBindingModel):

@@ -3,7 +3,6 @@
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.providers.microsoft_entra.models import MicrosoftEntraProvider
 from authentik.enterprise.providers.microsoft_entra.tasks import (
@@ -44,7 +43,7 @@ class MicrosoftEntraProviderSerializer(EnterpriseRequiredMixin, ProviderSerializ
         extra_kwargs = {"client_secret": {"write_only": True}}
 
 
-class MicrosoftEntraProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelViewSet):
+class MicrosoftEntraProviderViewSet(OutgoingSyncProviderStatusMixin, ModelViewSet):
     """MicrosoftEntraProvider Viewset"""
 
     queryset = MicrosoftEntraProvider.objects.all()

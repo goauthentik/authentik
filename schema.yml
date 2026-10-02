@@ -1797,34 +1797,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /authenticators/duo/{id}/used_by/:
-    get:
-      operationId: authenticators_duo_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Duo Device.
-        required: true
-      tags:
-      - authenticators
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /authenticators/email/:
     get:
       operationId: authenticators_email_list
@@ -1958,34 +1930,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /authenticators/email/{id}/used_by/:
-    get:
-      operationId: authenticators_email_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Email Device.
-        required: true
-      tags:
-      - authenticators
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /authenticators/endpoint/:
     get:
       operationId: authenticators_endpoint_list
@@ -2033,35 +1977,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GoogleEndpointDevice'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /authenticators/endpoint/{uuid}/used_by/:
-    get:
-      operationId: authenticators_endpoint_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Endpoint Device.
-        required: true
-      tags:
-      - authenticators
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -2200,34 +2115,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /authenticators/sms/{id}/used_by/:
-    get:
-      operationId: authenticators_sms_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this SMS Device.
-        required: true
-      tags:
-      - authenticators
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /authenticators/static/:
     get:
       operationId: authenticators_static_list
@@ -2357,34 +2244,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /authenticators/static/{id}/used_by/:
-    get:
-      operationId: authenticators_static_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Static Device.
-        required: true
-      tags:
-      - authenticators
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -2522,34 +2381,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /authenticators/totp/{id}/used_by/:
-    get:
-      operationId: authenticators_totp_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this TOTP Device.
-        required: true
-      tags:
-      - authenticators
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /authenticators/webauthn/:
     get:
       operationId: authenticators_webauthn_list
@@ -2679,34 +2510,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /authenticators/webauthn/{id}/used_by/:
-    get:
-      operationId: authenticators_webauthn_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this WebAuthn Device.
-        required: true
-      tags:
-      - authenticators
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -2884,35 +2687,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /core/application_entitlements/{pbm_uuid}/used_by/:
-    get:
-      operationId: core_application_entitlements_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Application Entitlement.
-        required: true
-      tags:
-      - core
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -3166,34 +2940,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /core/applications/{slug}/used_by/:
-    get:
-      operationId: core_applications_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Internal application name, used in URLs.
-        required: true
-      tags:
-      - core
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /core/applications/@accessible/:
     get:
       operationId: core_applications_accessible_list
@@ -3372,34 +3118,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /core/authenticated_sessions/{uuid}/used_by/:
-    get:
-      operationId: core_authenticated_sessions_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - core
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -3676,35 +3394,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /core/brands/{brand_uuid}/used_by/:
-    get:
-      operationId: core_brands_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: brand_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Brand.
-        required: true
-      tags:
-      - core
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -4018,36 +3707,6 @@ paths:
           description: User removed
         '404':
           description: User not found
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /core/groups/{group_uuid}/used_by/:
-    get:
-      operationId: core_groups_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: group_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Group.
-        required: true
-      tags:
-      - core
-      security:
-      - authentik: []
-      - authentik_device_auth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -4430,33 +4089,6 @@ paths:
           description: Token not found or expired
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /core/tokens/{identifier}/used_by/:
-    get:
-      operationId: core_tokens_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: identifier
-        schema:
-          type: string
-        required: true
-      tags:
-      - core
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /core/tokens/{identifier}/view_key/:
     get:
       operationId: core_tokens_view_key_retrieve
@@ -4504,6 +4136,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TransactionApplicationResponse'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /core/used_by/:
+    get:
+      operationId: core_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: query
+        name: model
+        schema:
+          type: string
+          minLength: 1
+        description: Fully qualified model name, in the form `<app_label>.<model>`
+        required: true
+      - in: query
+        name: pk
+        schema:
+          type: string
+          minLength: 1
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -4585,34 +4252,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /core/user_consent/{id}/used_by/:
-    get:
-      operationId: core_user_consent_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this User Consent.
-        required: true
-      tags:
-      - core
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -5064,35 +4703,6 @@ paths:
           description: Successfully changed password
         '400':
           description: Bad request
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /core/users/{id}/used_by/:
-    get:
-      operationId: core_users_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this User.
-        required: true
-      tags:
-      - core
-      security:
-      - authentik: []
-      - authentik_device_auth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /core/users/account_lockdown/:
@@ -5566,35 +5176,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /crypto/certificatekeypairs/{kp_uuid}/used_by/:
-    get:
-      operationId: crypto_certificatekeypairs_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: kp_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Certificate-Key Pair.
-        required: true
-      tags:
-      - crypto
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /crypto/certificatekeypairs/{kp_uuid}/view_certificate/:
     get:
       operationId: crypto_certificatekeypairs_view_certificate_retrieve
@@ -5711,8 +5292,6 @@ paths:
   /endpoints/agents/connectors/:
     get:
       operationId: endpoints_agents_connectors_list
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: query
         name: enabled
@@ -5740,8 +5319,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     post:
       operationId: endpoints_agents_connectors_create
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       tags:
       - endpoints
       requestBody:
@@ -5766,8 +5343,6 @@ paths:
   /endpoints/agents/connectors/{connector_uuid}/:
     get:
       operationId: endpoints_agents_connectors_retrieve
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: connector_uuid
@@ -5793,8 +5368,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     put:
       operationId: endpoints_agents_connectors_update
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: connector_uuid
@@ -5826,8 +5399,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     patch:
       operationId: endpoints_agents_connectors_partial_update
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: connector_uuid
@@ -5858,8 +5429,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     delete:
       operationId: endpoints_agents_connectors_destroy
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: connector_uuid
@@ -5912,40 +5481,9 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /endpoints/agents/connectors/{connector_uuid}/used_by/:
-    get:
-      operationId: endpoints_agents_connectors_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: connector_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Agent Connector.
-        required: true
-      tags:
-      - endpoints
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/agents/connectors/agent_config/:
     get:
       operationId: endpoints_agents_connectors_agent_config_retrieve
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       tags:
       - endpoints
       security:
@@ -5964,8 +5502,6 @@ paths:
   /endpoints/agents/connectors/auth_fed/:
     post:
       operationId: endpoints_agents_connectors_auth_fed_create
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: query
         name: device
@@ -5992,8 +5528,6 @@ paths:
   /endpoints/agents/connectors/auth_ia/:
     post:
       operationId: endpoints_agents_connectors_auth_ia_create
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: query
         name: login_hint
@@ -6017,8 +5551,6 @@ paths:
   /endpoints/agents/connectors/check_in/:
     post:
       operationId: endpoints_agents_connectors_check_in_create
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       tags:
       - endpoints
       requestBody:
@@ -6038,8 +5570,6 @@ paths:
   /endpoints/agents/connectors/enroll/:
     post:
       operationId: endpoints_agents_connectors_enroll_create
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       tags:
       - endpoints
       requestBody:
@@ -6064,8 +5594,6 @@ paths:
   /endpoints/agents/enrollment_tokens/:
     get:
       operationId: endpoints_agents_enrollment_tokens_list
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: query
         name: connector
@@ -6098,8 +5626,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     post:
       operationId: endpoints_agents_enrollment_tokens_create
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       tags:
       - endpoints
       requestBody:
@@ -6124,8 +5650,6 @@ paths:
   /endpoints/agents/enrollment_tokens/{token_uuid}/:
     get:
       operationId: endpoints_agents_enrollment_tokens_retrieve
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: token_uuid
@@ -6151,8 +5675,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     put:
       operationId: endpoints_agents_enrollment_tokens_update
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: token_uuid
@@ -6184,8 +5706,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     patch:
       operationId: endpoints_agents_enrollment_tokens_partial_update
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: token_uuid
@@ -6216,8 +5736,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     delete:
       operationId: endpoints_agents_enrollment_tokens_destroy
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: token_uuid
@@ -6233,35 +5751,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /endpoints/agents/enrollment_tokens/{token_uuid}/used_by/:
-    get:
-      operationId: endpoints_agents_enrollment_tokens_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: token_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Enrollment Token.
-        required: true
-      tags:
-      - endpoints
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -6298,8 +5787,6 @@ paths:
   /endpoints/agents/psso/ise/:
     get:
       operationId: endpoints_agents_psso_ise_list
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: query
         name: apple_enclave_key_id
@@ -6330,8 +5817,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     post:
       operationId: endpoints_agents_psso_ise_create
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       tags:
       - endpoints
       requestBody:
@@ -6356,8 +5841,6 @@ paths:
   /endpoints/agents/psso/ise/{uuid}/:
     get:
       operationId: endpoints_agents_psso_ise_retrieve
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: uuid
@@ -6383,8 +5866,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     put:
       operationId: endpoints_agents_psso_ise_update
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: uuid
@@ -6416,8 +5897,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     patch:
       operationId: endpoints_agents_psso_ise_partial_update
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: uuid
@@ -6448,8 +5927,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     delete:
       operationId: endpoints_agents_psso_ise_destroy
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: uuid
@@ -6465,35 +5942,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /endpoints/agents/psso/ise/{uuid}/used_by/:
-    get:
-      operationId: endpoints_agents_psso_ise_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Apple Independent Secure Enclave.
-        required: true
-      tags:
-      - endpoints
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -6615,35 +6063,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /endpoints/connectors/{connector_uuid}/used_by/:
-    get:
-      operationId: endpoints_connectors_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: connector_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this connector.
-        required: true
-      tags:
-      - endpoints
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -6831,35 +6250,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /endpoints/device_access_groups/{pbm_uuid}/used_by/:
-    get:
-      operationId: endpoints_device_access_groups_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Device access group.
-        required: true
-      tags:
-      - endpoints
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -7059,40 +6449,9 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /endpoints/device_bindings/{policy_binding_uuid}/used_by/:
-    get:
-      operationId: endpoints_device_bindings_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: policy_binding_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Device User binding.
-        required: true
-      tags:
-      - endpoints
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/devices/:
     get:
       operationId: endpoints_devices_list
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: query
         name: identifier
@@ -7120,8 +6479,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     post:
       operationId: endpoints_devices_create
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       tags:
       - endpoints
       requestBody:
@@ -7146,8 +6503,6 @@ paths:
   /endpoints/devices/{device_uuid}/:
     get:
       operationId: endpoints_devices_retrieve
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: device_uuid
@@ -7173,8 +6528,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     put:
       operationId: endpoints_devices_update
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: device_uuid
@@ -7206,8 +6559,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     patch:
       operationId: endpoints_devices_partial_update
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: device_uuid
@@ -7238,8 +6589,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     delete:
       operationId: endpoints_devices_destroy
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: device_uuid
@@ -7259,40 +6608,9 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /endpoints/devices/{device_uuid}/used_by/:
-    get:
-      operationId: endpoints_devices_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: device_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Device.
-        required: true
-      tags:
-      - endpoints
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/devices/summary/:
     get:
       operationId: endpoints_devices_summary_retrieve
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       tags:
       - endpoints
       security:
@@ -7469,35 +6787,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /endpoints/fleet/connectors/{connector_uuid}/used_by/:
-    get:
-      operationId: endpoints_fleet_connectors_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: connector_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Fleet Connector.
-        required: true
-      tags:
-      - endpoints
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/google_chrome/connectors/:
     get:
       operationId: endpoints_google_chrome_connectors_list
@@ -7659,35 +6948,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /endpoints/google_chrome/connectors/{connector_uuid}/used_by/:
-    get:
-      operationId: endpoints_google_chrome_connectors_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: connector_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Google Device Trust Connector.
-        required: true
-      tags:
-      - endpoints
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /enterprise/license/:
     get:
       operationId: enterprise_license_list
@@ -7845,35 +7105,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /enterprise/license/{license_uuid}/used_by/:
-    get:
-      operationId: enterprise_license_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: license_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this License.
-        required: true
-      tags:
-      - enterprise
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -8681,35 +7912,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /events/notifications/{uuid}/used_by/:
-    get:
-      operationId: events_notifications_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Notification.
-        required: true
-      tags:
-      - events
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /events/notifications/mark_all_seen/:
     post:
       operationId: events_notifications_mark_all_seen_create
@@ -8894,35 +8096,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /events/rules/{pbm_uuid}/used_by/:
-    get:
-      operationId: events_rules_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Notification Rule.
-        required: true
-      tags:
-      - events
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -9127,35 +8300,6 @@ paths:
           description: ''
         '500':
           description: Failed to test transport
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /events/transports/{uuid}/used_by/:
-    get:
-      operationId: events_transports_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Notification Transport.
-        required: true
-      tags:
-      - events
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -9369,35 +8513,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /flows/bindings/{fsb_uuid}/used_by/:
-    get:
-      operationId: flows_bindings_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: fsb_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Flow Stage Binding.
-        required: true
-      tags:
-      - flows
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -9752,34 +8867,6 @@ paths:
               schema:
                 type: string
                 format: binary
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /flows/instances/{slug}/used_by/:
-    get:
-      operationId: flows_instances_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Visible in the URL.
-        required: true
-      tags:
-      - flows
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -10407,35 +9494,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /managed/blueprints/{instance_uuid}/used_by/:
-    get:
-      operationId: managed_blueprints_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: instance_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Blueprint Instance.
-        required: true
-      tags:
-      - managed
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /managed/blueprints/available/:
     get:
       operationId: managed_blueprints_available_list
@@ -10585,34 +9643,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /oauth2/access_tokens/{id}/used_by/:
-    get:
-      operationId: oauth2_access_tokens_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this OAuth2 Access Token.
-        required: true
-      tags:
-      - oauth2
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /oauth2/authorization_codes/:
     get:
       operationId: oauth2_authorization_codes_list
@@ -10692,34 +9722,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /oauth2/authorization_codes/{id}/used_by/:
-    get:
-      operationId: oauth2_authorization_codes_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Authorization Code.
-        required: true
-      tags:
-      - oauth2
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /oauth2/refresh_tokens/:
     get:
       operationId: oauth2_refresh_tokens_list
@@ -10795,34 +9797,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /oauth2/refresh_tokens/{id}/used_by/:
-    get:
-      operationId: oauth2_refresh_tokens_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this OAuth2 Refresh Token.
-        required: true
-      tags:
-      - oauth2
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -11113,35 +10087,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /outposts/instances/{uuid}/used_by/:
-    get:
-      operationId: outposts_instances_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Outpost.
-        required: true
-      tags:
-      - outposts
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /outposts/instances/default_settings/:
     get:
       operationId: outposts_instances_default_settings_retrieve
@@ -11397,35 +10342,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /outposts/service_connections/all/{uuid}/used_by/:
-    get:
-      operationId: outposts_service_connections_all_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Outpost Service-Connection.
-        required: true
-      tags:
-      - outposts
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /outposts/service_connections/all/types/:
     get:
       operationId: outposts_service_connections_all_types_list
@@ -11626,35 +10542,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /outposts/service_connections/docker/{uuid}/used_by/:
-    get:
-      operationId: outposts_service_connections_docker_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Docker Service-Connection.
-        required: true
-      tags:
-      - outposts
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /outposts/service_connections/kubernetes/:
     get:
       operationId: outposts_service_connections_kubernetes_list
@@ -11820,35 +10707,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /outposts/service_connections/kubernetes/{uuid}/used_by/:
-    get:
-      operationId: outposts_service_connections_kubernetes_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Kubernetes Service-Connection.
-        required: true
-      tags:
-      - outposts
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /policies/all/:
     get:
       operationId: policies_all_list
@@ -11961,35 +10819,6 @@ paths:
           description: ''
         '400':
           description: Invalid parameters
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /policies/all/{policy_uuid}/used_by/:
-    get:
-      operationId: policies_all_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: policy_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Policy.
-        required: true
-      tags:
-      - policies
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /policies/all/cache_clear/:
@@ -12242,35 +11071,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /policies/bindings/{policy_binding_uuid}/used_by/:
-    get:
-      operationId: policies_bindings_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: policy_binding_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Policy Binding.
-        required: true
-      tags:
-      - policies
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /policies/dummy/:
     get:
       operationId: policies_dummy_list
@@ -12459,35 +11259,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /policies/dummy/{policy_uuid}/used_by/:
-    get:
-      operationId: policies_dummy_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: policy_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Dummy Policy.
-        required: true
-      tags:
-      - policies
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -12697,35 +11468,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /policies/event_matcher/{policy_uuid}/used_by/:
-    get:
-      operationId: policies_event_matcher_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: policy_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Event Matcher Policy.
-        required: true
-      tags:
-      - policies
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /policies/expression/:
     get:
       operationId: policies_expression_list
@@ -12910,35 +11652,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /policies/expression/{policy_uuid}/used_by/:
-    get:
-      operationId: policies_expression_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: policy_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Expression Policy.
-        required: true
-      tags:
-      - policies
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /policies/geoip/:
     get:
       operationId: policies_geoip_list
@@ -13096,35 +11809,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /policies/geoip/{policy_uuid}/used_by/:
-    get:
-      operationId: policies_geoip_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: policy_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this GeoIP Policy.
-        required: true
-      tags:
-      - policies
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -13383,35 +12067,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /policies/password/{policy_uuid}/used_by/:
-    get:
-      operationId: policies_password_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: policy_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Password Policy.
-        required: true
-      tags:
-      - policies
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /policies/password_expiry/:
     get:
       operationId: policies_password_expiry_list
@@ -13596,35 +12251,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /policies/password_expiry/{policy_uuid}/used_by/:
-    get:
-      operationId: policies_password_expiry_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: policy_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Password Expiry Policy.
-        required: true
-      tags:
-      - policies
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -13821,35 +12447,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /policies/reputation/{policy_uuid}/used_by/:
-    get:
-      operationId: policies_reputation_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: policy_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Reputation Policy.
-        required: true
-      tags:
-      - policies
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /policies/reputation/scores/:
     get:
       operationId: policies_reputation_scores_list
@@ -13940,35 +12537,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /policies/reputation/scores/{reputation_uuid}/used_by/:
-    get:
-      operationId: policies_reputation_scores_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: reputation_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Reputation Score.
-        required: true
-      tags:
-      - policies
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -14161,35 +12729,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /policies/unique_password/{policy_uuid}/used_by/:
-    get:
-      operationId: policies_unique_password_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: policy_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Password Uniqueness Policy.
-        required: true
-      tags:
-      - policies
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /propertymappings/all/:
     get:
       operationId: propertymappings_all_list
@@ -14310,35 +12849,6 @@ paths:
           description: ''
         '400':
           description: Invalid parameters
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /propertymappings/all/{pm_uuid}/used_by/:
-    get:
-      operationId: propertymappings_all_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /propertymappings/all/types/:
@@ -14523,35 +13033,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /propertymappings/notification/{pm_uuid}/used_by/:
-    get:
-      operationId: propertymappings_notification_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Webhook Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /propertymappings/provider/google_workspace/:
     get:
       operationId: propertymappings_provider_google_workspace_list
@@ -14726,35 +13207,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /propertymappings/provider/google_workspace/{pm_uuid}/used_by/:
-    get:
-      operationId: propertymappings_provider_google_workspace_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Google Workspace Provider Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -14937,35 +13389,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /propertymappings/provider/microsoft_entra/{pm_uuid}/used_by/:
-    get:
-      operationId: propertymappings_provider_microsoft_entra_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Microsoft Entra Provider Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /propertymappings/provider/rac/:
     get:
       operationId: propertymappings_provider_rac_list
@@ -15131,35 +13554,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /propertymappings/provider/rac/{pm_uuid}/used_by/:
-    get:
-      operationId: propertymappings_provider_rac_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this RAC Provider Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -15333,35 +13727,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /propertymappings/provider/radius/{pm_uuid}/used_by/:
-    get:
-      operationId: propertymappings_provider_radius_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Radius Provider Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -15547,35 +13912,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /propertymappings/provider/saml/{pm_uuid}/used_by/:
-    get:
-      operationId: propertymappings_provider_saml_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this SAML Provider Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /propertymappings/provider/scim/:
     get:
       operationId: propertymappings_provider_scim_list
@@ -15745,35 +14081,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /propertymappings/provider/scim/{pm_uuid}/used_by/:
-    get:
-      operationId: propertymappings_provider_scim_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this SCIM Provider Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -15955,35 +14262,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /propertymappings/provider/scope/{pm_uuid}/used_by/:
-    get:
-      operationId: propertymappings_provider_scope_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Scope Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /propertymappings/source/kerberos/:
     get:
       operationId: propertymappings_source_kerberos_list
@@ -16153,35 +14431,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /propertymappings/source/kerberos/{pm_uuid}/used_by/:
-    get:
-      operationId: propertymappings_source_kerberos_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Kerberos Source Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -16359,35 +14608,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /propertymappings/source/ldap/{pm_uuid}/used_by/:
-    get:
-      operationId: propertymappings_source_ldap_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this LDAP Source Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /propertymappings/source/oauth/:
     get:
       operationId: propertymappings_source_oauth_list
@@ -16557,35 +14777,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /propertymappings/source/oauth/{pm_uuid}/used_by/:
-    get:
-      operationId: propertymappings_source_oauth_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this OAuth Source Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -16763,35 +14954,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /propertymappings/source/plex/{pm_uuid}/used_by/:
-    get:
-      operationId: propertymappings_source_plex_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Plex Source Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /propertymappings/source/saml/:
     get:
       operationId: propertymappings_source_saml_list
@@ -16961,35 +15123,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /propertymappings/source/saml/{pm_uuid}/used_by/:
-    get:
-      operationId: propertymappings_source_saml_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this SAML Source Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -17167,35 +15300,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /propertymappings/source/scim/{pm_uuid}/used_by/:
-    get:
-      operationId: propertymappings_source_scim_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this SCIM Source Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /propertymappings/source/telegram/:
     get:
       operationId: propertymappings_source_telegram_list
@@ -17369,35 +15473,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /propertymappings/source/telegram/{pm_uuid}/used_by/:
-    get:
-      operationId: propertymappings_source_telegram_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Telegram Source Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /providers/all/:
     get:
       operationId: providers_all_list
@@ -17476,34 +15551,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /providers/all/{id}/used_by/:
-    get:
-      operationId: providers_all_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this provider.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -17757,34 +15804,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /providers/google_workspace/{id}/used_by/:
-    get:
-      operationId: providers_google_workspace_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Google Workspace Provider.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /providers/google_workspace_groups/:
     get:
       operationId: providers_google_workspace_groups_list
@@ -17895,35 +15914,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /providers/google_workspace_groups/{id}/used_by/:
-    get:
-      operationId: providers_google_workspace_groups_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Google Workspace Provider Group.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /providers/google_workspace_users/:
     get:
       operationId: providers_google_workspace_users_list
@@ -18029,35 +16019,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /providers/google_workspace_users/{id}/used_by/:
-    get:
-      operationId: providers_google_workspace_users_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Google Workspace Provider User.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -18251,34 +16212,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /providers/ldap/{id}/used_by/:
-    get:
-      operationId: providers_ldap_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this LDAP Provider.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -18507,34 +16440,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /providers/microsoft_entra/{id}/used_by/:
-    get:
-      operationId: providers_microsoft_entra_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Microsoft Entra Provider.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /providers/microsoft_entra_groups/:
     get:
       operationId: providers_microsoft_entra_groups_list
@@ -18645,35 +16550,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /providers/microsoft_entra_groups/{id}/used_by/:
-    get:
-      operationId: providers_microsoft_entra_groups_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Microsoft Entra Provider Group.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /providers/microsoft_entra_users/:
     get:
       operationId: providers_microsoft_entra_users_list
@@ -18779,35 +16655,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /providers/microsoft_entra_users/{id}/used_by/:
-    get:
-      operationId: providers_microsoft_entra_users_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Microsoft Entra Provider User.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -19259,34 +17106,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /providers/oauth2/{id}/used_by/:
-    get:
-      operationId: providers_oauth2_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this OAuth2/OpenID Provider.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /providers/proxy/:
     get:
       operationId: providers_proxy_list
@@ -19509,34 +17328,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /providers/proxy/{id}/used_by/:
-    get:
-      operationId: providers_proxy_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Proxy Provider.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /providers/rac/:
     get:
       operationId: providers_rac_list
@@ -19697,34 +17488,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /providers/rac/{id}/used_by/:
-    get:
-      operationId: providers_rac_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this RAC Provider.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -19897,34 +17660,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /providers/radius/{id}/used_by/:
-    get:
-      operationId: providers_radius_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Radius Provider.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -20317,34 +18052,6 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /providers/saml/{id}/used_by/:
-    get:
-      operationId: providers_saml_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this SAML Provider.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /providers/saml/import_metadata/:
     post:
       operationId: providers_saml_import_metadata_create
@@ -20602,34 +18309,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /providers/scim/{id}/used_by/:
-    get:
-      operationId: providers_scim_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this SCIM Provider.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /providers/scim_groups/:
     get:
       operationId: providers_scim_groups_list
@@ -20740,35 +18419,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /providers/scim_groups/{id}/used_by/:
-    get:
-      operationId: providers_scim_groups_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this scim provider group.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /providers/scim_users/:
     get:
       operationId: providers_scim_users_list
@@ -20874,35 +18524,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /providers/scim_users/{id}/used_by/:
-    get:
-      operationId: providers_scim_users_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this scim provider user.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -21071,35 +18692,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /providers/ssf/{id}/used_by/:
-    get:
-      operationId: providers_ssf_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Shared Signals Framework
-          Provider.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -21500,34 +19092,6 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /providers/wsfed/{id}/used_by/:
-    get:
-      operationId: providers_wsfed_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this WS-Federation Provider.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /rac/connection_tokens/:
     get:
       operationId: rac_connection_tokens_list
@@ -21673,35 +19237,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /rac/connection_tokens/{connection_token_uuid}/used_by/:
-    get:
-      operationId: rac_connection_tokens_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: connection_token_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this RAC Connection token.
-        required: true
-      tags:
-      - rac
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -21888,34 +19423,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /rbac/initial_permissions/{id}/used_by/:
-    get:
-      operationId: rbac_initial_permissions_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Initial Permissions.
-        required: true
-      tags:
-      - rbac
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -22364,35 +19871,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /rbac/roles/{uuid}/used_by/:
-    get:
-      operationId: rbac_roles_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Role.
-        required: true
-      tags:
-      - rbac
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /reports/exports/:
     get:
       operationId: reports_exports_list
@@ -22691,8 +20169,6 @@ paths:
   /requests/rule-bindings/:
     get:
       operationId: requests_rule_bindings_list
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -22725,8 +20201,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     post:
       operationId: requests_rule_bindings_create
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       tags:
       - requests
       requestBody:
@@ -22751,8 +20225,6 @@ paths:
   /requests/rule-bindings/{uuid}/:
     get:
       operationId: requests_rule_bindings_retrieve
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: uuid
@@ -22778,8 +20250,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     put:
       operationId: requests_rule_bindings_update
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: uuid
@@ -22811,8 +20281,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     patch:
       operationId: requests_rule_bindings_partial_update
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: uuid
@@ -22843,8 +20311,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     delete:
       operationId: requests_rule_bindings_destroy
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: uuid
@@ -22864,40 +20330,9 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /requests/rule-bindings/{uuid}/used_by/:
-    get:
-      operationId: requests_rule_bindings_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Request Rule Binding.
-        required: true
-      tags:
-      - requests
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /requests/rule-child-bindings/:
     get:
       operationId: requests_rule_child_bindings_list
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: query
         name: binding
@@ -22930,8 +20365,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     post:
       operationId: requests_rule_child_bindings_create
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       tags:
       - requests
       requestBody:
@@ -22956,8 +20389,6 @@ paths:
   /requests/rule-child-bindings/{uuid}/:
     get:
       operationId: requests_rule_child_bindings_retrieve
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: uuid
@@ -22983,8 +20414,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     put:
       operationId: requests_rule_child_bindings_update
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: uuid
@@ -23016,8 +20445,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     patch:
       operationId: requests_rule_child_bindings_partial_update
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: uuid
@@ -23048,8 +20475,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     delete:
       operationId: requests_rule_child_bindings_destroy
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: uuid
@@ -23069,40 +20494,9 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /requests/rule-child-bindings/{uuid}/used_by/:
-    get:
-      operationId: requests_rule_child_bindings_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Request Rule Child Binding.
-        required: true
-      tags:
-      - requests
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /requests/rules/:
     get:
       operationId: requests_rules_list
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
@@ -23135,8 +20529,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     post:
       operationId: requests_rules_create
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       tags:
       - requests
       requestBody:
@@ -23161,8 +20553,6 @@ paths:
   /requests/rules/{uuid}/:
     get:
       operationId: requests_rules_retrieve
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: uuid
@@ -23188,8 +20578,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     put:
       operationId: requests_rules_update
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: uuid
@@ -23221,8 +20609,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     patch:
       operationId: requests_rules_partial_update
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: uuid
@@ -23253,8 +20639,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     delete:
       operationId: requests_rules_destroy
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: uuid
@@ -23270,35 +20654,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /requests/rules/{uuid}/used_by/:
-    get:
-      operationId: requests_rules_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Request Rule.
-        required: true
-      tags:
-      - requests
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -23450,34 +20805,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /sources/all/{slug}/used_by/:
-    get:
-      operationId: sources_all_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Internal source name, used in URLs.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -23665,34 +20992,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /sources/group_connections/all/{id}/used_by/:
-    get:
-      operationId: sources_group_connections_all_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this group source connection.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /sources/group_connections/kerberos/:
     get:
       operationId: sources_group_connections_kerberos_list
@@ -23862,35 +21161,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /sources/group_connections/kerberos/{id}/used_by/:
-    get:
-      operationId: sources_group_connections_kerberos_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Group Kerberos Source
-          Connection.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /sources/group_connections/ldap/:
     get:
       operationId: sources_group_connections_ldap_list
@@ -24052,34 +21322,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /sources/group_connections/ldap/{id}/used_by/:
-    get:
-      operationId: sources_group_connections_ldap_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Group LDAP Source Connection.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -24249,34 +21491,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /sources/group_connections/oauth/{id}/used_by/:
-    get:
-      operationId: sources_group_connections_oauth_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Group OAuth Source Connection.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /sources/group_connections/plex/:
     get:
       operationId: sources_group_connections_plex_list
@@ -24438,34 +21652,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /sources/group_connections/plex/{id}/used_by/:
-    get:
-      operationId: sources_group_connections_plex_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Group Plex Source Connection.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -24635,34 +21821,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /sources/group_connections/saml/{id}/used_by/:
-    get:
-      operationId: sources_group_connections_saml_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Group SAML Source Connection.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /sources/group_connections/telegram/:
     get:
       operationId: sources_group_connections_telegram_list
@@ -24828,35 +21986,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /sources/group_connections/telegram/{id}/used_by/:
-    get:
-      operationId: sources_group_connections_telegram_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Group Telegram Source
-          Connection.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -25084,34 +22213,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SyncStatus'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /sources/kerberos/{slug}/used_by/:
-    get:
-      operationId: sources_kerberos_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Internal source name, used in URLs.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -25456,34 +22557,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /sources/ldap/{slug}/used_by/:
-    get:
-      operationId: sources_ldap_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Internal source name, used in URLs.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /sources/oauth/:
     get:
       operationId: sources_oauth_list
@@ -25717,34 +22790,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /sources/oauth/{slug}/used_by/:
-    get:
-      operationId: sources_oauth_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Internal source name, used in URLs.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /sources/oauth/source_types/:
     get:
       operationId: sources_oauth_source_types_list
@@ -25974,34 +23019,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /sources/plex/{slug}/used_by/:
-    get:
-      operationId: sources_plex_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Internal source name, used in URLs.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -26354,34 +23371,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /sources/saml/{slug}/used_by/:
-    get:
-      operationId: sources_saml_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Internal source name, used in URLs.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /sources/scim/:
     get:
       operationId: sources_scim_list
@@ -26544,34 +23533,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /sources/scim/{slug}/used_by/:
-    get:
-      operationId: sources_scim_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Internal source name, used in URLs.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -26745,34 +23706,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /sources/scim_groups/{id}/used_by/:
-    get:
-      operationId: sources_scim_groups_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-        description: A unique value identifying this scim source group.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /sources/scim_users/:
     get:
       operationId: sources_scim_users_list
@@ -26941,39 +23874,9 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /sources/scim_users/{id}/used_by/:
-    get:
-      operationId: sources_scim_users_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-        description: A unique value identifying this scim source user.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /sources/telegram/:
     get:
       operationId: sources_telegram_list
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: query
         name: authentication_flow
@@ -27048,8 +23951,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     post:
       operationId: sources_telegram_create
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       tags:
       - sources
       requestBody:
@@ -27074,8 +23975,6 @@ paths:
   /sources/telegram/{slug}/:
     get:
       operationId: sources_telegram_retrieve
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: slug
@@ -27100,8 +23999,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     put:
       operationId: sources_telegram_update
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: slug
@@ -27132,8 +24029,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     patch:
       operationId: sources_telegram_partial_update
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: slug
@@ -27163,8 +24058,6 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     delete:
       operationId: sources_telegram_destroy
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: slug
@@ -27186,8 +24079,6 @@ paths:
   /sources/telegram/{slug}/connect_user/:
     post:
       operationId: sources_telegram_connect_user_create
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
       parameters:
       - in: path
         name: slug
@@ -27216,34 +24107,6 @@ paths:
           description: Access denied
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
-  /sources/telegram/{slug}/used_by/:
-    get:
-      operationId: sources_telegram_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Internal source name, used in URLs.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /sources/user_connections/all/:
     get:
       operationId: sources_user_connections_all_list
@@ -27380,34 +24243,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /sources/user_connections/all/{id}/used_by/:
-    get:
-      operationId: sources_user_connections_all_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user source connection.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -27580,35 +24415,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /sources/user_connections/kerberos/{id}/used_by/:
-    get:
-      operationId: sources_user_connections_kerberos_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this User Kerberos Source
-          Connection.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /sources/user_connections/ldap/:
     get:
       operationId: sources_user_connections_ldap_list
@@ -27769,34 +24575,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /sources/user_connections/ldap/{id}/used_by/:
-    get:
-      operationId: sources_user_connections_ldap_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this User LDAP Source Connection.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -27965,34 +24743,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /sources/user_connections/oauth/{id}/used_by/:
-    get:
-      operationId: sources_user_connections_oauth_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this User OAuth Source Connection.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /sources/user_connections/plex/:
     get:
       operationId: sources_user_connections_plex_list
@@ -28153,34 +24903,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /sources/user_connections/plex/{id}/used_by/:
-    get:
-      operationId: sources_user_connections_plex_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this User Plex Source Connection.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -28349,34 +25071,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /sources/user_connections/saml/{id}/used_by/:
-    get:
-      operationId: sources_user_connections_saml_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this User SAML Source Connection.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /sources/user_connections/telegram/:
     get:
       operationId: sources_user_connections_telegram_list
@@ -28541,35 +25235,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /sources/user_connections/telegram/{id}/used_by/:
-    get:
-      operationId: sources_user_connections_telegram_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this User Telegram Source
-          Connection.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -28846,35 +25511,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /stages/account_lockdown/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_account_lockdown_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Account Lockdown Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /stages/all/:
     get:
       operationId: stages_all_list
@@ -28945,35 +25581,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /stages/all/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_all_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -29277,35 +25884,6 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /stages/authenticator/duo/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_authenticator_duo_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Duo Authenticator Setup Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /stages/authenticator/email/:
     get:
       operationId: stages_authenticator_email_list
@@ -29529,35 +26107,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /stages/authenticator/email/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_authenticator_email_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Email Authenticator Setup Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /stages/authenticator/endpoint_gdtc/:
     get:
       operationId: stages_authenticator_endpoint_gdtc_list
@@ -29724,36 +26273,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /stages/authenticator/endpoint_gdtc/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_authenticator_endpoint_gdtc_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Endpoint Authenticator Google
-          Device Trust Connector Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -29966,35 +26485,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /stages/authenticator/sms/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_authenticator_sms_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this SMS Authenticator Setup Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /stages/authenticator/static/:
     get:
       operationId: stages_authenticator_static_list
@@ -30178,35 +26668,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /stages/authenticator/static/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_authenticator_static_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Static Authenticator Setup Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /stages/authenticator/totp/:
     get:
       operationId: stages_authenticator_totp_list
@@ -30386,35 +26847,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /stages/authenticator/totp/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_authenticator_totp_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this TOTP Authenticator Setup Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /stages/authenticator/validate/:
     get:
       operationId: stages_authenticator_validate_list
@@ -30585,35 +27017,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /stages/authenticator/validate/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_authenticator_validate_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Authenticator Validation Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -30807,35 +27210,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /stages/authenticator/webauthn/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_authenticator_webauthn_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this WebAuthn Authenticator Setup Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -31069,35 +27443,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /stages/captcha/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_captcha_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Captcha Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /stages/consent/:
     get:
       operationId: stages_consent_list
@@ -31272,35 +27617,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /stages/consent/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_consent_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Consent Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /stages/deny/:
     get:
       operationId: stages_deny_list
@@ -31471,35 +27787,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /stages/deny/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_deny_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Deny Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /stages/dummy/:
     get:
       operationId: stages_dummy_list
@@ -31666,35 +27953,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /stages/dummy/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_dummy_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Dummy Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -31908,35 +28166,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /stages/email/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_email_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Email Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /stages/email/templates/:
     get:
       operationId: stages_email_templates_list
@@ -32115,35 +28344,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /stages/endpoints/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_endpoints_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Endpoint Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -32351,35 +28551,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /stages/identification/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_identification_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Identification Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /stages/invitation/invitations/:
     get:
       operationId: stages_invitation_invitations_list
@@ -32583,35 +28754,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /stages/invitation/invitations/{invite_uuid}/used_by/:
-    get:
-      operationId: stages_invitation_invitations_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: invite_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Invitation.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /stages/invitation/stages/:
     get:
       operationId: stages_invitation_stages_list
@@ -32782,35 +28924,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /stages/invitation/stages/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_invitation_stages_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Invitation Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -33002,35 +29115,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /stages/mtls/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_mtls_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Mutual TLS Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /stages/password/:
     get:
       operationId: stages_password_list
@@ -33201,35 +29285,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /stages/password/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_password_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Password Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -33407,35 +29462,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /stages/prompt/prompts/{prompt_uuid}/used_by/:
-    get:
-      operationId: stages_prompt_prompts_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: prompt_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Prompt.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -33649,35 +29675,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /stages/prompt/stages/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_prompt_stages_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Prompt Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /stages/redirect/:
     get:
       operationId: stages_redirect_list
@@ -33835,35 +29832,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /stages/redirect/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_redirect_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Redirect Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -34043,35 +30011,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /stages/source/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_source_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Source Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /stages/user_delete/:
     get:
       operationId: stages_user_delete_list
@@ -34234,35 +30173,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /stages/user_delete/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_user_delete_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this User Delete Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -34465,35 +30375,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /stages/user_login/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_user_login_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this User Login Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /stages/user_logout/:
     get:
       operationId: stages_user_logout_list
@@ -34656,35 +30537,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /stages/user_logout/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_user_logout_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this User Logout Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -34872,35 +30724,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /stages/user_write/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_user_write_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this User Write Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':

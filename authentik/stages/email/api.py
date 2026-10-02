@@ -8,7 +8,6 @@ from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.object_types import TypeCreateSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.email.models import EmailStage, get_template_choices
 
@@ -50,7 +49,7 @@ class EmailStageSerializer(StageSerializer):
         extra_kwargs = {"password": {"write_only": True}}
 
 
-class EmailStageViewSet(UsedByMixin, ModelViewSet):
+class EmailStageViewSet(ModelViewSet):
     """EmailStage Viewset"""
 
     queryset = EmailStage.objects.all()

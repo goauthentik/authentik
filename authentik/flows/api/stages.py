@@ -13,7 +13,6 @@ from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
 from authentik.core.api.object_types import TypesMixin
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, ModelSerializer
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.api.flows import FlowSetSerializer
@@ -57,7 +56,6 @@ class StageViewSet(
     TypesMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
-    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

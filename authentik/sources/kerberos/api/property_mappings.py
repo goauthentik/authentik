@@ -3,7 +3,6 @@
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.property_mappings import PropertyMappingFilterSet, PropertyMappingSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.sources.kerberos.models import KerberosSourcePropertyMapping
 
 
@@ -21,7 +20,7 @@ class KerberosSourcePropertyMappingFilter(PropertyMappingFilterSet):
         model = KerberosSourcePropertyMapping
 
 
-class KerberosSourcePropertyMappingViewSet(UsedByMixin, ModelViewSet):
+class KerberosSourcePropertyMappingViewSet(ModelViewSet):
     """KerberosSource PropertyMapping Viewset"""
 
     queryset = KerberosSourcePropertyMapping.objects.all()

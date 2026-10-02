@@ -19,7 +19,6 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
 from authentik.crypto.validators import (
@@ -121,7 +120,7 @@ class OAuth2ProviderSetupURLs(PassiveSerializer):
     dcr_registration = CharField(read_only=True, allow_null=True)
 
 
-class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
+class OAuth2ProviderViewSet(ModelViewSet):
     """OAuth2Provider Viewset"""
 
     queryset = OAuth2Provider.objects.select_related(

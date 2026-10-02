@@ -1,6 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.used_by import UsedByMixin
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.policies.unique_password.models import UniquePasswordPolicy
 from authentik.policies.api.policies import PolicySerializer
@@ -17,7 +16,7 @@ class UniquePasswordPolicySerializer(EnterpriseRequiredMixin, PolicySerializer):
         ]
 
 
-class UniquePasswordPolicyViewSet(UsedByMixin, ModelViewSet):
+class UniquePasswordPolicyViewSet(ModelViewSet):
     """Password Uniqueness Policy Viewset"""
 
     queryset = UniquePasswordPolicy.objects.all()

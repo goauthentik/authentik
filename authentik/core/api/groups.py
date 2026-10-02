@@ -30,7 +30,6 @@ from authentik.api.search.fields import (
 )
 from authentik.api.validation import validate
 from authentik.core.api.object_attributes import AttributesMixinSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
 from authentik.core.models import Group, User
 from authentik.endpoints.connectors.agent.auth import AgentAuth
@@ -366,7 +365,7 @@ class GroupFilter(FilterSet):
         fields = ["name", "is_superuser", "members_by_pk", "members_by_username"]
 
 
-class GroupViewSet(UsedByMixin, ModelViewSet):
+class GroupViewSet(ModelViewSet):
     """Group Viewset"""
 
     class UserAccountSerializer(PassiveSerializer):

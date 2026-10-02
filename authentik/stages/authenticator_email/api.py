@@ -4,7 +4,6 @@ from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.core.api.groups import PartialUserSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage, EmailDevice
@@ -34,7 +33,7 @@ class AuthenticatorEmailStageSerializer(StageSerializer):
         extra_kwargs = {"password": {"write_only": True}}
 
 
-class AuthenticatorEmailStageViewSet(UsedByMixin, ModelViewSet):
+class AuthenticatorEmailStageViewSet(ModelViewSet):
     """AuthenticatorEmailStage Viewset"""
 
     queryset = AuthenticatorEmailStage.objects.all()
@@ -62,7 +61,6 @@ class EmailDeviceViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
-    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

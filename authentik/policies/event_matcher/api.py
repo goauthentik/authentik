@@ -5,7 +5,6 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.fields import ChoiceField
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.used_by import UsedByMixin
 from authentik.lib.api import app_choices, model_choices
 from authentik.policies.api.policies import PolicySerializer
 from authentik.policies.event_matcher.models import EventMatcherPolicy
@@ -50,7 +49,7 @@ class EventMatcherPolicySerializer(PolicySerializer):
         fields = PolicySerializer.Meta.fields + ["action", "client_ip", "app", "model", "query"]
 
 
-class EventMatcherPolicyViewSet(UsedByMixin, ModelViewSet):
+class EventMatcherPolicyViewSet(ModelViewSet):
     """Event Matcher Policy Viewset"""
 
     queryset = EventMatcherPolicy.objects.all()

@@ -4,7 +4,6 @@ from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.core.api.groups import PartialUserSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.authenticator_static.models import (
@@ -27,7 +26,7 @@ class AuthenticatorStaticStageSerializer(StageSerializer):
         ]
 
 
-class AuthenticatorStaticStageViewSet(UsedByMixin, ModelViewSet):
+class AuthenticatorStaticStageViewSet(ModelViewSet):
     """AuthenticatorStaticStage Viewset"""
 
     queryset = AuthenticatorStaticStage.objects.all()
@@ -60,7 +59,6 @@ class StaticDeviceViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
-    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):
