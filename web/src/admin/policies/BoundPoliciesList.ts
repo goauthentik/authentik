@@ -148,13 +148,16 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             `context.binding.pk = "${bindingUuid}"`,
         ].join(" and ");
 
-        return html`<a href=${toAdminInterface("events/log", { q: query })}>
-            <pf-tooltip
-                position="top"
-                content=${msg("View dry-run results", {
-                    id: "policies.bindings.dry-run.view-results.label",
-                })}
-            >
+        const label = msg("View dry-run results", {
+            id: "policies.bindings.dry-run.view-results.label",
+        });
+
+        return html`<a
+            class="pf-c-button pf-m-plain"
+            aria-label=${label}
+            href=${toAdminInterface("events/log", { q: query })}
+        >
+            <pf-tooltip position="top" content=${label}>
                 <i class="fas fa-vial" aria-hidden="true"></i>
             </pf-tooltip>
         </a>`;
@@ -233,7 +236,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             item.expiring ? Timestamp(item.expires) : "-",
             html`${item.timeout}`,
             html`<div class="ak-c-table__actions">
-                ${this.getDryRunEventsButton(item)} ${this.getObjectEditButton(item)}
+                ${this.getObjectEditButton(item)}
                 ${IconEditButtonByTagName(this.bindingEditForm, item.pk, null, {
                     modalProps: {
                         // @ts-expect-error Attribute passthrough does not handle generics well
@@ -247,6 +250,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                     model: ModelEnum.AuthentikPoliciesPolicybinding,
                     objectPk: item.pk,
                 })}
+                ${this.getDryRunEventsButton(item)}
             </div>`,
         ];
     }
