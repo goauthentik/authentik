@@ -22,7 +22,7 @@ To learn how to apply, create, modify, and manage blueprints, refer to [Working 
 
 A Blueprint _instance_ is an instantiation of a blueprint. Each instance refers to a YAML file that's either mounted into the authentik (worker) container, in an OCI registry, or the local database. (See [Blueprint storage](#blueprint-storage) for more information.)
 
-Multiple instances can be created from a single blueprint file. A blueprint instance populates settings in the blueprint file marked with the [`!Context` tag](../../customize/blueprints/v1/tags/#context) from the instance's context object. To create a new instance using the Admin UI, select **Blueprints &gt; New Blueprint**, give the new instance a unique name, choose the blueprint file, and supply your customizations in the *Context* section. Context objects must parse as JSON or YAML.
+Multiple instances can be created from a single blueprint file. A blueprint instance populates settings in the blueprint file marked with the [`!Context` tag](../../customize/blueprints/v1/tags/#context) from the instance's context object. To create a new instance using the Admin UI, select **Blueprints &gt; New Blueprint**, give the new instance a unique name, choose the blueprint file, and supply your customizations in the _Context_ section. Context objects must parse as JSON or YAML.
 
 authentik watches for file modification/creation events in the blueprint directory. When a new blueprint file is created, authentik will automatically trigger a _discovery_. A successful discovery will automatically create and apply a new blueprint instance. When a blueprint file is modified, authentik will trigger an _apply_ if an instance using this file exists.
 
