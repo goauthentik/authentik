@@ -64,7 +64,7 @@ services:
     image: ghcr.io/linuxserver/openssh-server:10.3_p1-r1-ls236
     profiles: [pin-only]
   platform-ssh:
-    image: ghcr.io/goauthentik/platform-ssh:26.04-ak-0.63.1@sha256:03771ea5407bc3afcab5887e3e790f452ce8255bc8dee005add8c52954d30a64
+    image: ghcr.io/goauthentik/platform-ssh:26.04-ak-0.63.3@sha256:2479e43e9679341077430453bd2de6f15dab9c4388be7dc91170c6a62710ada1
     profiles: [pin-only]
   traefik:
     image: docker.io/library/traefik:v3.7
