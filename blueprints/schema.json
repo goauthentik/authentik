@@ -15872,9 +15872,13 @@
                     "title": "Issuer override",
                     "description": "Also known as Entity ID. Defaults to the Metadata URL."
                 },
+                "metadata_url": {
+                    "type": "string",
+                    "title": "Metadata URL",
+                    "description": "URL of the Identity Provider's metadata. When set, the source's settings are periodically updated from this metadata."
+                },
                 "sso_url": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "SSO URL",
                     "description": "URL that the initial Login request is sent to."
                 },
