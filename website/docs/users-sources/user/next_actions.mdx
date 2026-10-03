@@ -1,0 +1,34 @@
+---
+title: Require actions on next login
+authentik_version: "2026.11"
+authentik_enterprise: true
+---
+
+You can require a user to complete one or more flows after their next successful login, before they can continue to authentik or an application. Typical uses are forcing a password change or requiring the user to set up an authenticator.
+
+## How it works
+
+The `goauthentik.io/user/next-actions` attribute on a user defines their required actions. Its value can be a single flow slug or a list of flow slugs.
+
+At the next [User Login stage](../../add-secure-apps/flows-stages/stages/user_login/index.mdx), authentik restricts the new session until the user completes each flow in order. This also applies when adding another account through user switching. Existing sessions remain usable.
+
+Each completed flow is removed from the attribute. After the last action, authentik resumes the original page or application authorization. While restricted, the user can run the required flows or log out.
+
+Required actions cannot use flows with the **Authentication** or **Invalidation** [designation](../../add-secure-apps/flows-stages/flow/index.mdx). authentik's [default flows](../../add-secure-apps/flows-stages/flow/default-flows.mdx) already cover changing the password (`default-password-change`) and setting up the various authenticator types (for example `default-authenticator-totp-setup`).
+
+Actions must finish within authentik. A [Redirect stage](../../add-secure-apps/flows-stages/stages/redirect/index.mdx) can hand off to another eligible flow. A redirect to a static URL leaves the action pending because the user leaves before completion.
+
+You can also [create a flow](../../add-secure-apps/flows-stages/flow/index.mdx#create-a-flow) to collect profile details or accept updated terms.
+
+A missing flow, invalid attribute value, or policy denial keeps the session restricted. To release it, correct the configuration, remove the attribute, or set it to an empty list. An expired Enterprise license still enforces actions; deployments without an installed license ignore the attribute.
+
+## Require an action for a user
+
+Set the `goauthentik.io/user/next-actions` attribute on the user, through the user API, a [blueprint](../../customize/blueprints/index.mdx), or from within a flow, for example with a [User Write stage](../../add-secure-apps/flows-stages/stages/user_write/index.mdx) in an enrollment flow:
+
+```yaml
+goauthentik.io/user/next-actions:
+    - default-password-change
+```
+
+Changing actions through the API requires permission to change the user. The API rejects missing flows and disallowed designations.
