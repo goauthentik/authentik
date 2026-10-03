@@ -13,6 +13,15 @@ export class FormFixture extends PageFixture {
     //#region Field Methods
 
     /**
+     * Locate a legacy input whose wrapper label is in a different shadow root.
+     * Prefer accessible-name queries for controls with properly associated labels.
+     */
+    public legacyTextInput = (label: string, context: LocatorContext = this.page): Locator =>
+        context
+            .locator(`ak-form-element-horizontal[label=${JSON.stringify(label)}]`)
+            .getByRole("textbox");
+
+    /**
      * Set the value of a text input.
      *
      * @param fieldName The name of the form element.
@@ -132,15 +141,19 @@ export class FormFixture extends PageFixture {
 
         await expect(control, `Field (${fieldName}) should be visible`).toBeVisible();
 
-        const currentChecked = await control
-            .getAttribute("checked")
-            .then((value) => value !== null);
+        const checkbox = control.getByRole("checkbox");
+        const currentChecked = await checkbox.isChecked();
 
         if (currentChecked === value) {
             return;
         }
 
-        await control.click();
+        // The wrapper also contains help text; clicking its center can miss the switch.
+        await control.locator("label.pf-c-switch").click();
+
+        await expect(checkbox, `Field (${fieldName}) has the requested state`).toBeChecked({
+            checked: value,
+        });
     };
 
     /**
@@ -169,11 +182,14 @@ export class FormFixture extends PageFixture {
      * @param pattern The text to match against the search select entry.
      */
     public selectSearchValue = async (
-        fieldLabel: string | RegExp,
+        fieldLabel: string | RegExp | Locator,
         pattern: string | RegExp,
         parent: LocatorContext = this.page,
     ): Promise<void> => {
-        const control = parent.getByRole("textbox", { name: fieldLabel });
+        const control =
+            typeof fieldLabel === "string" || fieldLabel instanceof RegExp
+                ? parent.getByRole("textbox", { name: fieldLabel })
+                : fieldLabel;
 
         await expect(
             control,
