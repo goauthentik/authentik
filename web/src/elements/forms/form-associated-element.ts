@@ -66,6 +66,32 @@ export interface FormAssociated
     readonly?: boolean;
 }
 
+/**
+ * A form field whose value may not be final yet, e.g. one that still has to load its options
+ * before it can resolve a preselected value.
+ */
+export interface SettlingFormField {
+    /**
+     * Resolves once the field's value is final and safe to validate and serialize.
+     */
+    readonly settled: Promise<void>;
+}
+
+export function isSettlingFormField(element: object): element is SettlingFormField {
+    return "settled" in element && element.settled instanceof Promise;
+}
+
+/**
+ * Wait until every settling field associated with the given form has a final value.
+ */
+export function settleFormFields(form: HTMLFormElement): Promise<void> {
+    const pending = Array.from(form.elements, (element) =>
+        isSettlingFormField(element) ? element.settled : null,
+    ).filter((settled) => settled !== null);
+
+    return Promise.all(pending).then(() => undefined);
+}
+
 export type FormValue = File | string | FormData | null;
 
 /**

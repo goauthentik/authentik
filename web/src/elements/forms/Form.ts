@@ -1,5 +1,5 @@
 import "#elements/LoadingOverlay";
-import { isFormField } from "./form-associated-element";
+import { isFormField, settleFormFields } from "./form-associated-element";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -546,8 +546,12 @@ export class Form<T = Record<string, unknown>, D = T>
      * @returns A promise that resolves to the response from `send()`, or `false` if the form is
      *   invalid.
      */
-    public submit = <T = unknown>(submitEvent: SubmitEvent): Promise<T | false> => {
+    public submit = async <T = unknown>(submitEvent: SubmitEvent): Promise<T | false> => {
         submitEvent.preventDefault();
+
+        if (this.form) {
+            await settleFormFields(this.form);
+        }
 
         if (!this.reportValidity()) {
             return Promise.resolve(false);
