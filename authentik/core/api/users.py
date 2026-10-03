@@ -135,7 +135,11 @@ class PartialGroupSerializer(ModelSerializer):
         ]
 
 
-class UserSerializer(AttributesMixinSerializer, ModelSerializer):
+class UserSerializer(
+    ConditionalInheritance("authentik.enterprise.next_actions.api.NextActionsUserSerializerMixin"),
+    AttributesMixinSerializer,
+    ModelSerializer,
+):
     """User Serializer"""
 
     is_superuser = SerializerMethodField()
