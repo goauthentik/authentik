@@ -1,0 +1,4 @@
+{{- range .Values.additionalObjects }}
+---
+{{ tpl (toYaml . ) $ }}
+{{- end }}
