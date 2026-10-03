@@ -1,9 +1,9 @@
 """Model registry for the lifecycle app.
 
 The lifecycle app is an umbrella for sibling features that each live in their
-own package: `review/` (object access reviews) and `offboarding/` (user
-offboarding). Django loads models through this module, so every feature's
-models must be imported here.
+own package: `review/` (object access reviews), `offboarding/` (user
+offboarding) and `expiration/` (automatic user expiration). Django loads models
+through this module, so every feature's models must be imported here.
 """
 
 # Import order sets model registration order, which the API schema's ModelEnum
@@ -23,6 +23,10 @@ from authentik.enterprise.lifecycle.offboarding.models import (
     OffboardingStatus,
     UserOffboarding,
 )
+from authentik.enterprise.lifecycle.expiration.models import (
+    UserExpirationRule,
+    UserExpirationRuleNotificationTransport,
+)
 
 # isort: on
 
@@ -36,5 +40,7 @@ __all__ = [
     "OffboardingStatus",
     "Review",
     "ReviewState",
+    "UserExpirationRule",
+    "UserExpirationRuleNotificationTransport",
     "UserOffboarding",
 ]

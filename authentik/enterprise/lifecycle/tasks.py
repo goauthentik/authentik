@@ -4,6 +4,10 @@ Actors live in each feature package; importing them here registers them, as the
 app framework auto-imports `<app>.tasks`.
 """
 
+from authentik.enterprise.lifecycle.expiration.tasks import (
+    apply_expiration_rule,
+    apply_expiration_rules,
+)
 from authentik.enterprise.lifecycle.offboarding.tasks import (
     execute_due_offboardings,
     execute_offboarding,
@@ -15,6 +19,8 @@ from authentik.enterprise.lifecycle.review.tasks import (
 )
 
 __all__ = [
+    "apply_expiration_rule",
+    "apply_expiration_rules",
     "apply_lifecycle_rule",
     "apply_lifecycle_rules",
     "execute_due_offboardings",

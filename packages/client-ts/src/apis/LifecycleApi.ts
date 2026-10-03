@@ -31,6 +31,10 @@ import {
     PaginatedLifecycleRuleListFromJSON,
 } from "../models/PaginatedLifecycleRuleList";
 import {
+    type PaginatedUserExpirationRuleList,
+    PaginatedUserExpirationRuleListFromJSON,
+} from "../models/PaginatedUserExpirationRuleList";
+import {
     type PaginatedUserOffboardingList,
     PaginatedUserOffboardingListFromJSON,
 } from "../models/PaginatedUserOffboardingList";
@@ -38,8 +42,22 @@ import {
     type PatchedLifecycleRuleRequest,
     PatchedLifecycleRuleRequestToJSON,
 } from "../models/PatchedLifecycleRuleRequest";
+import {
+    type PatchedUserExpirationRuleRequest,
+    PatchedUserExpirationRuleRequestToJSON,
+} from "../models/PatchedUserExpirationRuleRequest";
 import { type Review, ReviewFromJSON } from "../models/Review";
 import { type ReviewRequest, ReviewRequestToJSON } from "../models/ReviewRequest";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
+import { type UserExpirationRule, UserExpirationRuleFromJSON } from "../models/UserExpirationRule";
+import {
+    type UserExpirationRulePreview,
+    UserExpirationRulePreviewFromJSON,
+} from "../models/UserExpirationRulePreview";
+import {
+    type UserExpirationRuleRequest,
+    UserExpirationRuleRequestToJSON,
+} from "../models/UserExpirationRuleRequest";
 import { type UserOffboarding, UserOffboardingFromJSON } from "../models/UserOffboarding";
 import {
     type UserOffboardingRequest,
@@ -143,6 +161,77 @@ export interface LifecycleRulesUpdateRequest {
     lifecycleRuleRequest: LifecycleRuleRequest;
 }
 
+export interface LifecycleUserExpirationRulesCreateRequest {
+    userExpirationRuleRequest: UserExpirationRuleRequest;
+}
+
+export interface LifecycleUserExpirationRulesDestroyRequest {
+    /**
+     * A UUID string identifying this User Expiration Rule.
+     */
+    id: string;
+}
+
+export interface LifecycleUserExpirationRulesListRequest {
+    action?: OffboardingActionEnum;
+    enabled?: boolean;
+    group?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
+    ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    pageSize?: number;
+    pbmUuid?: string;
+    /**
+     * A search term.
+     */
+    search?: string;
+}
+
+export interface LifecycleUserExpirationRulesPartialUpdateRequest {
+    /**
+     * A UUID string identifying this User Expiration Rule.
+     */
+    id: string;
+    patchedUserExpirationRuleRequest?: PatchedUserExpirationRuleRequest;
+}
+
+export interface LifecycleUserExpirationRulesPreviewRetrieveRequest {
+    /**
+     * A UUID string identifying this User Expiration Rule.
+     */
+    id: string;
+}
+
+export interface LifecycleUserExpirationRulesRetrieveRequest {
+    /**
+     * A UUID string identifying this User Expiration Rule.
+     */
+    id: string;
+}
+
+export interface LifecycleUserExpirationRulesUpdateRequest {
+    /**
+     * A UUID string identifying this User Expiration Rule.
+     */
+    id: string;
+    userExpirationRuleRequest: UserExpirationRuleRequest;
+}
+
+export interface LifecycleUserExpirationRulesUsedByListRequest {
+    /**
+     * A UUID string identifying this User Expiration Rule.
+     */
+    id: string;
+}
+
 export interface LifecycleUserOffboardingCreateRequest {
     userOffboardingRequest: UserOffboardingRequest;
 }
@@ -168,6 +257,8 @@ export interface LifecycleUserOffboardingListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
+    rule?: string;
+    ruleIsnull?: boolean;
     /**
      * A search term.
      */
@@ -855,6 +946,578 @@ export class LifecycleApi extends runtime.BaseAPI {
     }
 
     /**
+     * Creates request options for lifecycleUserExpirationRulesCreate without sending the request
+     */
+    async lifecycleUserExpirationRulesCreateRequestOpts(
+        requestParameters: LifecycleUserExpirationRulesCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["userExpirationRuleRequest"] == null) {
+            throw new runtime.RequiredError(
+                "userExpirationRuleRequest",
+                'Required parameter "userExpirationRuleRequest" was null or undefined when calling lifecycleUserExpirationRulesCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/lifecycle/user_expiration_rules/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserExpirationRuleRequestToJSON(requestParameters["userExpirationRuleRequest"]),
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async lifecycleUserExpirationRulesCreateRaw(
+        requestParameters: LifecycleUserExpirationRulesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserExpirationRule>> {
+        const requestOptions =
+            await this.lifecycleUserExpirationRulesCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserExpirationRuleFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async lifecycleUserExpirationRulesCreate(
+        requestParameters: LifecycleUserExpirationRulesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserExpirationRule> {
+        const response = await this.lifecycleUserExpirationRulesCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for lifecycleUserExpirationRulesDestroy without sending the request
+     */
+    async lifecycleUserExpirationRulesDestroyRequestOpts(
+        requestParameters: LifecycleUserExpirationRulesDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling lifecycleUserExpirationRulesDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/lifecycle/user_expiration_rules/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async lifecycleUserExpirationRulesDestroyRaw(
+        requestParameters: LifecycleUserExpirationRulesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.lifecycleUserExpirationRulesDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async lifecycleUserExpirationRulesDestroy(
+        requestParameters: LifecycleUserExpirationRulesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.lifecycleUserExpirationRulesDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for lifecycleUserExpirationRulesList without sending the request
+     */
+    async lifecycleUserExpirationRulesListRequestOpts(
+        requestParameters: LifecycleUserExpirationRulesListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["action"] != null) {
+            queryParameters["action"] = requestParameters["action"];
+        }
+
+        if (requestParameters["enabled"] != null) {
+            queryParameters["enabled"] = requestParameters["enabled"];
+        }
+
+        if (requestParameters["group"] != null) {
+            queryParameters["group"] = requestParameters["group"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["pbmUuid"] != null) {
+            queryParameters["pbm_uuid"] = requestParameters["pbmUuid"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/lifecycle/user_expiration_rules/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async lifecycleUserExpirationRulesListRaw(
+        requestParameters: LifecycleUserExpirationRulesListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedUserExpirationRuleList>> {
+        const requestOptions =
+            await this.lifecycleUserExpirationRulesListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedUserExpirationRuleListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async lifecycleUserExpirationRulesList(
+        requestParameters: LifecycleUserExpirationRulesListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedUserExpirationRuleList> {
+        const response = await this.lifecycleUserExpirationRulesListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for lifecycleUserExpirationRulesPartialUpdate without sending the
+     * request
+     */
+    async lifecycleUserExpirationRulesPartialUpdateRequestOpts(
+        requestParameters: LifecycleUserExpirationRulesPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling lifecycleUserExpirationRulesPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/lifecycle/user_expiration_rules/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedUserExpirationRuleRequestToJSON(
+                requestParameters["patchedUserExpirationRuleRequest"],
+            ),
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async lifecycleUserExpirationRulesPartialUpdateRaw(
+        requestParameters: LifecycleUserExpirationRulesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserExpirationRule>> {
+        const requestOptions =
+            await this.lifecycleUserExpirationRulesPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserExpirationRuleFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async lifecycleUserExpirationRulesPartialUpdate(
+        requestParameters: LifecycleUserExpirationRulesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserExpirationRule> {
+        const response = await this.lifecycleUserExpirationRulesPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for lifecycleUserExpirationRulesPreviewRetrieve without sending the
+     * request
+     */
+    async lifecycleUserExpirationRulesPreviewRetrieveRequestOpts(
+        requestParameters: LifecycleUserExpirationRulesPreviewRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling lifecycleUserExpirationRulesPreviewRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/lifecycle/user_expiration_rules/{id}/preview/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Users the next sweep of this rule would schedule an offboarding for.
+     */
+    async lifecycleUserExpirationRulesPreviewRetrieveRaw(
+        requestParameters: LifecycleUserExpirationRulesPreviewRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserExpirationRulePreview>> {
+        const requestOptions =
+            await this.lifecycleUserExpirationRulesPreviewRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserExpirationRulePreviewFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Users the next sweep of this rule would schedule an offboarding for.
+     */
+    async lifecycleUserExpirationRulesPreviewRetrieve(
+        requestParameters: LifecycleUserExpirationRulesPreviewRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserExpirationRulePreview> {
+        const response = await this.lifecycleUserExpirationRulesPreviewRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for lifecycleUserExpirationRulesRetrieve without sending the request
+     */
+    async lifecycleUserExpirationRulesRetrieveRequestOpts(
+        requestParameters: LifecycleUserExpirationRulesRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling lifecycleUserExpirationRulesRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/lifecycle/user_expiration_rules/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async lifecycleUserExpirationRulesRetrieveRaw(
+        requestParameters: LifecycleUserExpirationRulesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserExpirationRule>> {
+        const requestOptions =
+            await this.lifecycleUserExpirationRulesRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserExpirationRuleFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async lifecycleUserExpirationRulesRetrieve(
+        requestParameters: LifecycleUserExpirationRulesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserExpirationRule> {
+        const response = await this.lifecycleUserExpirationRulesRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for lifecycleUserExpirationRulesUpdate without sending the request
+     */
+    async lifecycleUserExpirationRulesUpdateRequestOpts(
+        requestParameters: LifecycleUserExpirationRulesUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling lifecycleUserExpirationRulesUpdate().',
+            );
+        }
+
+        if (requestParameters["userExpirationRuleRequest"] == null) {
+            throw new runtime.RequiredError(
+                "userExpirationRuleRequest",
+                'Required parameter "userExpirationRuleRequest" was null or undefined when calling lifecycleUserExpirationRulesUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/lifecycle/user_expiration_rules/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserExpirationRuleRequestToJSON(requestParameters["userExpirationRuleRequest"]),
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async lifecycleUserExpirationRulesUpdateRaw(
+        requestParameters: LifecycleUserExpirationRulesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserExpirationRule>> {
+        const requestOptions =
+            await this.lifecycleUserExpirationRulesUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserExpirationRuleFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async lifecycleUserExpirationRulesUpdate(
+        requestParameters: LifecycleUserExpirationRulesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserExpirationRule> {
+        const response = await this.lifecycleUserExpirationRulesUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for lifecycleUserExpirationRulesUsedByList without sending the
+     * request
+     */
+    async lifecycleUserExpirationRulesUsedByListRequestOpts(
+        requestParameters: LifecycleUserExpirationRulesUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling lifecycleUserExpirationRulesUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/lifecycle/user_expiration_rules/{id}/used_by/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async lifecycleUserExpirationRulesUsedByListRaw(
+        requestParameters: LifecycleUserExpirationRulesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.lifecycleUserExpirationRulesUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async lifecycleUserExpirationRulesUsedByList(
+        requestParameters: LifecycleUserExpirationRulesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.lifecycleUserExpirationRulesUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
      * Creates request options for lifecycleUserOffboardingCreate without sending the request
      */
     async lifecycleUserOffboardingCreateRequestOpts(
@@ -1004,6 +1667,14 @@ export class LifecycleApi extends runtime.BaseAPI {
 
         if (requestParameters["pageSize"] != null) {
             queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["rule"] != null) {
+            queryParameters["rule"] = requestParameters["rule"];
+        }
+
+        if (requestParameters["ruleIsnull"] != null) {
+            queryParameters["rule__isnull"] = requestParameters["ruleIsnull"];
         }
 
         if (requestParameters["search"] != null) {

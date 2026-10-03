@@ -26,6 +26,7 @@ def offboard_user(
     revoke_tokens: bool = True,
     request: HttpRequest | None = None,
     initiator: User | None = None,
+    **context,
 ):
     """Offboard `user` by applying `action`, optionally revoking sessions/tokens.
 
@@ -48,6 +49,7 @@ def offboard_user(
         revoke_sessions=revoke_sessions,
         revoke_tokens=revoke_tokens,
         user_pk=user_pk,
+        **context,
     )
     if request is not None:
         event.from_http(request, user=initiator)
