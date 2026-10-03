@@ -3,7 +3,8 @@ import { aki } from "#common/api/client";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
-import Styles from "#admin/admin-overview/cards/VersionStatusCard.css";
+
+import { P4Disposition } from "#styles/patternfly/constants";
 
 import { AdminApi, Version } from "@goauthentik/api";
 
@@ -13,8 +14,6 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-admin-status-version")
 export class VersionStatusCard extends AdminStatusCard<Version> {
-    public static styles = [...super.styles, Styles];
-
     public override icon = "pf-icon pf-icon-bundle";
     public override label = msg("Version");
 
@@ -27,6 +26,7 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-check-circle pf-m-success",
                 message: html`${msg(str`Based on ${value.versionCurrent}`)}`,
+                tone: P4Disposition.Success,
             });
         }
 
@@ -34,6 +34,7 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg(str`${value.versionLatest} is available!`)}`,
+                tone: P4Disposition.Warning,
             });
         }
 
@@ -42,6 +43,7 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg("An outpost is on an incorrect version!")}
                     <a href=${toAdminInterface("outpost/outposts")}>${msg("Check outposts.")}</a>`,
+                tone: P4Disposition.Warning,
             });
         }
 
@@ -49,12 +51,14 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-check-circle pf-m-success",
                 message: html`${msg("Up-to-date!")}`,
+                tone: P4Disposition.Success,
             });
         }
 
         return Promise.resolve<AdminStatus>({
             icon: "fa fa-question-circle",
             message: html`${msg("Latest version unknown")}`,
+            tone: P4Disposition.Neutral,
         });
     }
 

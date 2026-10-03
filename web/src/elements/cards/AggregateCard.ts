@@ -6,7 +6,9 @@ import { AKElement } from "#elements/Base";
 import Styles from "#elements/cards/AggregateCard.css";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { CSSResult, html, nothing } from "lit";
+import { P4Disposition } from "#styles/patternfly/constants";
+
+import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 export interface IAggregateCard {
@@ -14,6 +16,7 @@ export interface IAggregateCard {
     label?: string | null;
     headerLink?: string | null;
     subtext?: string | null;
+    tone: P4Disposition | null;
 }
 
 /**
@@ -67,7 +70,33 @@ export class AggregateCard extends AKElement implements IAggregateCard {
     @property({ type: String })
     public subtext: string | null = null;
 
-    public static styles: CSSResult[] = [PFCard, PFFlex, Styles];
+    /**
+     * If set, a colored banner is shown at the top of the card reflecting this tone.
+     *
+     * @attr
+     */
+    @property({ type: String, reflect: true })
+    public tone: P4Disposition | null = null;
+
+    public static styles: CSSResult[] = [
+        PFCard,
+        PFFlex,
+        Styles,
+        css`
+            :host([tone="success"]) .pf-c-card {
+                border-top: 3px solid var(--pf-global--success-color--100);
+            }
+            :host([tone="warning"]) .pf-c-card {
+                border-top: 3px solid var(--pf-global--warning-color--100);
+            }
+            :host([tone="danger"]) .pf-c-card {
+                border-top: 3px solid var(--pf-global--danger-color--100);
+            }
+            :host([tone="neutral"]) .pf-c-card {
+                border-top: 3px solid var(--pf-global--BorderColor--200);
+            }
+        `,
+    ];
 
     renderInner(): SlottedTemplateResult {
         if (this.role === "status") {
