@@ -1788,6 +1788,7 @@ export interface StagesPasswordListRequest {
     allowShowPassword?: boolean;
     configureFlow?: string;
     failedAttemptsBeforeCancel?: number;
+    failedAttemptsBeforeLockout?: number;
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -13144,6 +13145,11 @@ export class StagesApi extends runtime.BaseAPI {
         if (requestParameters["failedAttemptsBeforeCancel"] != null) {
             queryParameters["failed_attempts_before_cancel"] =
                 requestParameters["failedAttemptsBeforeCancel"];
+        }
+
+        if (requestParameters["failedAttemptsBeforeLockout"] != null) {
+            queryParameters["failed_attempts_before_lockout"] =
+                requestParameters["failedAttemptsBeforeLockout"];
         }
 
         if (requestParameters["name"] != null) {
