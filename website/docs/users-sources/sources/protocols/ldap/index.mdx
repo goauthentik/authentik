@@ -19,7 +19,7 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 - **Enabled**: Toggle this option on to allow authentik to use the defined LDAP source.
 - **Update internal password on login**: When the user logs in to authentik using the LDAP password backend, the password is stored as a hashed value in authentik. Toggle off (default setting) if you do not want to store the hashed passwords in authentik.
 - **Sync users**: Enable or disable user synchronization from LDAP to authentik.
-- **User password writeback**: Enable this option if you want to write password changes that are made in authentik back to LDAP. This requires authentik to receive the raw password; [hashed-password imports](../../../../install-config/automated-install.mdx#authentik_bootstrap_password_hash) are not written back to LDAP.
+- **User password writeback**: Enable this option if you want to write password changes that are made in authentik back to LDAP. This requires authentik to receive the raw password; [hashed-password imports](../../../../install-config/automated-install.mdx#authentik_bootstrap_password_hash) are not written back to LDAP. For Active Directory, enabling this option also turns on a [password complexity check](#active-directory-password-complexity).
 - **Sync groups**: Enable or disable group synchronization from LDAP to authentik.
 - **Delete Not Found Objects**: :ak-version[2025.6] This option synchronizes user and group deletions from LDAP sources to authentik. User deletion requires enabling **Sync users** and group deletion requires enabling **Sync groups**.
 
@@ -166,6 +166,38 @@ Be aware of the following security considerations when turning on this functiona
 - Updating the LDAP password does not invalidate the password stored in authentik; however for LDAP Servers like FreeIPA and Active Directory, authentik will lock its internal password during the next LDAP sync. For other LDAP servers, the old passwords will still be valid indefinitely.
 - Logging in via LDAP credentials overwrites the password stored in authentik if users have different passwords in LDAP and authentik.
 - Custom security measures that are used to secure the password in LDAP may differ from the ones used in authentik. Depending on threat model and security requirements this could lead to unknowingly being non-compliant.
+
+## Active Directory password complexity
+
+When **User password writeback** is enabled and the LDAP server is Active Directory, authentik checks that new passwords meet the Active Directory _Password must meet complexity requirements_ policy. authentik runs this check before it writes the password to Active Directory, so users see an error in the flow instead of a failed password change.
+
+The check runs on **Password** fields in a [Prompt stage](../../../../add-secure-apps/flows-stages/stages/prompt/index.mdx), such as in a password recovery or enrollment flow. It applies only when all of the following are true:
+
+- The LDAP source is enabled and has **User password writeback** turned on. If more than one LDAP source has this option turned on, authentik uses only the first source.
+- The `pwdProperties` attribute of the domain root object has the `DOMAIN_PASSWORD_COMPLEX` flag set. If authentik can't read this attribute, the check is skipped.
+- The user in the flow was synchronized from LDAP and has a `distinguishedName` attribute. If the flow has no pending user, such as during enrollment, the check still runs.
+
+A password must meet the following requirements:
+
+- The password doesn't contain any part of the user's `displayName` that is three or more characters long. authentik splits the display name on commas, periods, dashes, underscores, number signs, and whitespace.
+- The password contains characters from at least three of the following categories:
+    - Uppercase letters
+    - Lowercase letters
+    - Digits
+    - Symbols: ``~!@#$%^&*_-+=`|\(){}[]:;"'<>,.?/``
+    - Non-ASCII alphabetic characters
+
+If the password doesn't meet these requirements, the user sees the following error:
+
+```text
+Password does not match Active Directory Complexity.
+```
+
+The complexity check runs before the Prompt stage's validation policies. If the check fails, authentik doesn't evaluate the validation policies, so the user doesn't see messages from those policies.
+
+:::note
+authentik performs this check itself and doesn't ask Active Directory to evaluate the password. The check doesn't enforce minimum password length, password history, minimum password age, or fine-grained password policies. Active Directory can still reject a password that passes this check. To enforce additional requirements in authentik, bind a [password policy](../../../../customize/policies/types/password.mdx) to the Prompt stage.
+:::
 
 ## Troubleshooting
 
