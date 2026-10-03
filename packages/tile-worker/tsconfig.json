@@ -1,0 +1,14 @@
+{
+    "extends": "@goauthentik/tsconfig/tsconfig.json",
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "out",
+        "lib": ["ESNext"],
+        "types": ["@cloudflare/workers-types"],
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "noEmit": true
+    },
+    "include": ["src/**/*.ts"],
+    "exclude": ["out", "node_modules"]
+}
