@@ -684,7 +684,7 @@ export class Form<T = Record<string, unknown>, D = T>
     //#endregion
 
     //#region Lifecycle
-    public updated(changedProperties: PropertyValues<this>): void {
+    protected override updated(changedProperties: PropertyValues<this>): void {
         super.updated(changedProperties);
 
         if (changedProperties.has("size")) {

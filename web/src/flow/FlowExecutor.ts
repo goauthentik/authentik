@@ -241,7 +241,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             });
     };
 
-    public async firstUpdated(changed: PropertyValues<this>): Promise<void> {
+    protected override async firstUpdated(changed: PropertyValues<this>): Promise<void> {
         super.firstUpdated(changed);
 
         this.refresh().then(() => {
@@ -250,7 +250,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     }
 
     // DOM post-processing has to happen after the render.
-    public updated(changedProperties: PropertyValues<this>) {
+    protected override updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
 
         document.title = match(this.challenge?.flowInfo?.title)

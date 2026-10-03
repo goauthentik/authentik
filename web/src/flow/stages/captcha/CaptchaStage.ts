@@ -259,7 +259,7 @@ export class CaptchaStage
         super.disconnectedCallback();
     }
 
-    public override firstUpdated(changedProperties: PropertyValues<this>) {
+    protected override firstUpdated(changedProperties: PropertyValues<this>) {
         super.firstUpdated(changedProperties);
 
         if (changedProperties.has("challenge") && this.challenge) {
@@ -267,7 +267,7 @@ export class CaptchaStage
         }
     }
 
-    public updated(changedProperties: PropertyValues<this>) {
+    protected override updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
 
         if (!changedProperties.has("refreshedAt") || !this.challenge) {
