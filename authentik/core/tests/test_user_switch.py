@@ -27,7 +27,12 @@ from authentik.core.tests.utils import (
 )
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.flows.models import (
+    Flow,
+    FlowAuthenticationRequirement,
+    FlowDesignation,
+    FlowStageBinding,
+)
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
     PLAN_CONTEXT_USER_SWITCH_ADD_USER,
@@ -163,6 +168,13 @@ class TestUserSwitch(FlowTestCase):
 
         self.assertNotEqual(self.client.session.session_key, first_session_key)
         self.assertTrue(Session.objects.filter(session_key=first_session_key).exists())
+
+    def test_add_user_with_unauthenticated_only_flow(self):
+        _login_through_flow(self.client, self.flow, self.login_binding, self.user)
+        self.flow.authentication = FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED
+        self.flow.save()
+
+        _assert_switch_redirect(_post_user_switch(self.client, {"action": "add"}), self.flow)
 
     def test_add_user_refuses_non_internal_user(self):
         first_session_key = _login_through_flow(

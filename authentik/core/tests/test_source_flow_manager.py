@@ -11,9 +11,14 @@ from authentik.core.models import SourceUserMatchingModes, User
 from authentik.core.sources.flow_manager import Action
 from authentik.core.sources.matcher import MatchFailureReason
 from authentik.core.sources.stage import PostSourceStage
-from authentik.core.tests.utils import RequestFactory, create_test_flow
+from authentik.core.tests.utils import RequestFactory, create_test_flow, create_test_user
 from authentik.events.models import Event, EventAction
-from authentik.flows.planner import FlowPlan
+from authentik.flows.models import FlowAuthenticationRequirement
+from authentik.flows.planner import (
+    PLAN_CONTEXT_PENDING_USER,
+    PLAN_CONTEXT_USER_SWITCH_ADD_USER,
+    FlowPlan,
+)
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.policies.denied import AccessDeniedResponse
@@ -161,6 +166,56 @@ class TestSourceFlowManager(TestCase):
         self.assertEqual(action, Action.LINK)
         self.assertIsNone(connection.pk)
         flow_manager.get_flow()
+
+    def _add_user_request(self, user: User):
+        """Request from a signed-in browser that started a source login from "Add user"."""
+        request = self.request_factory.get("/", user=user)
+        plan = FlowPlan(flow_pk=self.authentication_flow.pk.hex)
+        plan.context[PLAN_CONTEXT_USER_SWITCH_ADD_USER] = True
+        request.session[SESSION_KEY_PLAN] = plan
+        return request
+
+    def test_add_user_auth_logs_in_connected_user(self):
+        """Test "Add user" logs in the source's user instead of linking the current user"""
+        self.authentication_flow.authentication = (
+            FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED
+        )
+        self.authentication_flow.save()
+        current_user = create_test_user()
+        other_user = create_test_user()
+        UserOAuthSourceConnection.objects.create(
+            user=other_user, source=self.source, identifier=self.identifier
+        )
+        request = self._add_user_request(current_user)
+        flow_manager = OAuthSourceFlowManager(
+            self.source, request, self.identifier, {"info": {}}, {}
+        )
+
+        response = flow_manager.get_flow()
+
+        self.assertEqual(response.status_code, 302)
+        flow_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
+        self.assertEqual(flow_plan.flow_pk, self.authentication_flow.pk.hex)
+        self.assertEqual(flow_plan.context[PLAN_CONTEXT_PENDING_USER], other_user)
+        self.assertTrue(flow_plan.context[PLAN_CONTEXT_USER_SWITCH_ADD_USER])
+
+    def test_add_user_does_not_link_current_user(self):
+        """Test "Add user" with a new source identity enrolls instead of linking"""
+        current_user = create_test_user()
+        request = self._add_user_request(current_user)
+        flow_manager = OAuthSourceFlowManager(
+            self.source, request, self.identifier, {"info": {}}, {}
+        )
+
+        action, _ = flow_manager.get_action()
+        response = flow_manager.get_flow()
+
+        self.assertEqual(action, Action.ENROLL)
+        self.assertEqual(response.status_code, 302)
+        flow_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
+        self.assertEqual(flow_plan.flow_pk, self.enrollment_flow.pk.hex)
+        self.assertTrue(flow_plan.context[PLAN_CONTEXT_USER_SWITCH_ADD_USER])
+        self.assertFalse(UserOAuthSourceConnection.objects.filter(user=current_user).exists())
 
     def test_unusable_group_identifier_does_not_abort(self):
         """Test a group identifier that cannot be used as a key being skipped (#25191)"""
