@@ -53,6 +53,7 @@ from authentik.lib.models import (
     SimpleThroughModel,
 )
 from authentik.lib.utils.inheritance import get_deepest_child
+from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel, RequestableChildModel, RequestableModel
 from authentik.rbac.models import Role
@@ -340,7 +341,10 @@ class GroupAncestryNode(PostgresMaterializedViewModel):
         return f"Group Ancestry Node from {self.descendant_id} to {self.ancestor_id}"
 
 
-class UserQuerySet(models.QuerySet):
+class UserQuerySet(
+    ConditionalInheritance("authentik.enterprise.agents.managers.AgentUserQuerySet"),
+    models.QuerySet,
+):
     """User queryset"""
 
     def exclude_anonymous(self):
@@ -348,20 +352,12 @@ class UserQuerySet(models.QuerySet):
         return self.exclude(**{User.USERNAME_FIELD: settings.ANONYMOUS_USER_NAME})
 
 
-class UserManager(DjangoUserManager):
+class UserManager(DjangoUserManager.from_queryset(UserQuerySet)):
     """User manager that doesn't assign is_superuser and is_staff"""
-
-    def get_queryset(self):
-        """Create special user queryset"""
-        return UserQuerySet(self.model, using=self._db)
 
     def create_user(self, username, email=None, password=None, **extra_fields):
         """User manager that doesn't assign is_superuser and is_staff"""
         return self._create_user(username, email, password, **extra_fields)
-
-    def exclude_anonymous(self) -> QuerySet:
-        """Exclude anonymous user"""
-        return self.get_queryset().exclude_anonymous()
 
 
 class User(SerializerModel, AttributesMixin, AbstractUser):
