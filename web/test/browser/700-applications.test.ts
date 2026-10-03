@@ -42,7 +42,10 @@ test.describe("Applications", () => {
         await test.step("Create OAuth2 provider", async () => {
             await expect(providerDialog, "Provider dialog is initially closed").toBeHidden();
 
-            await page.getByRole("button", { name: "New Provider" }).click();
+            await page
+                .getByLabel("Providers actions")
+                .getByRole("button", { name: "New Provider" })
+                .click();
 
             await expect(providerDialog, "Provider dialog opens").toBeVisible();
 
@@ -53,6 +56,15 @@ test.describe("Applications", () => {
                     selectSearchValue,
                     "Authorization Flow",
                     /default-provider-authorization-explicit-consent/,
+                ],
+                [
+                    expect(
+                        providerDialog.getByRole("textbox", {
+                            name: "Invalidation Flow",
+                            includeHidden: true,
+                        }),
+                    ).toHaveValue,
+                    /default-provider-invalidation-flow/,
                 ],
                 [click, "Create"],
             );
