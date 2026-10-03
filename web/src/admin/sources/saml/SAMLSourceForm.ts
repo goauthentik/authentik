@@ -27,6 +27,7 @@ import {
     SAMLNameIDPolicyEnum,
     SAMLSource,
     SignatureAlgorithmEnum,
+    SloBindingEnum,
     SourcesApi,
     UsageEnum,
     UserMatchingModeEnum,
@@ -224,6 +225,32 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
+                        label=${msg("SLO Binding")}
+                        required
+                        name="sloBinding"
+                    >
+                        <ak-radio
+                            .options=${[
+                                {
+                                    label: msg("Redirect binding"),
+                                    value: SloBindingEnum.Redirect,
+                                    default: true,
+                                },
+                                {
+                                    label: msg("Post binding"),
+                                    value: SloBindingEnum.Post,
+                                },
+                            ]}
+                            .value=${this.instance?.sloBinding}
+                        >
+                        </ak-radio>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Binding type used for sending Single Logout requests to the IdP.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
                         label=${msg("Binding Type")}
                         required
                         name="bindingType"
@@ -261,6 +288,22 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="signAuthnRequest"
+                        label=${msg("Sign AuthnRequest")}
+                        ?checked=${this.instance?.signAuthnRequest ?? false}
+                        help=${msg(
+                            "Whether to sign outgoing AuthnRequests. Requires a Signing Keypair to be set.",
+                        )}
+                    ></ak-switch-input>
+                    <ak-switch-input
+                        name="signLogoutRequest"
+                        label=${msg("Sign LogoutRequest")}
+                        ?checked=${this.instance?.signLogoutRequest ?? false}
+                        help=${msg(
+                            "Whether to sign outgoing LogoutRequests. Requires a Signing Keypair to be set.",
+                        )}
+                    ></ak-switch-input>
                     <ak-form-element-horizontal
                         label=${msg("Verification Certificate")}
                         name="verificationKp"
