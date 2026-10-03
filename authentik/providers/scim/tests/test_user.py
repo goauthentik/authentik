@@ -720,7 +720,7 @@ class SCIMUserTests(TestCase):
 
     @Mocker()
     def test_sync_cleanup_stale_user_transient_error(self, mock: Mocker):
-        """Stale user cleanup logs and retries on transient HTTP errors"""
+        """Failed cleanup retains the mapping so a later sync can retry."""
         scim_id = generate_id()
         uid = generate_id()
         mock.get("https://localhost/ServiceProviderConfig", json={})
@@ -731,6 +731,16 @@ class SCIMUserTests(TestCase):
 
         delete_reqs = [r for r in mock.request_history if r.method == "DELETE"]
         self.assertEqual(len(delete_reqs), 1)
+        self.assertTrue(
+            SCIMProviderUser.objects.filter(provider=self.provider, scim_id=scim_id).exists()
+        )
+
+        retry_delete = mock.delete(f"https://localhost/Users/{scim_id}", status_code=204)
+        scim_sync.send(self.provider.pk).get_result()
+        self.assertEqual(retry_delete.call_count, 1)
+        self.assertFalse(
+            SCIMProviderUser.objects.filter(provider=self.provider, scim_id=scim_id).exists()
+        )
 
     @Mocker()
     def test_sync_cleanup_stale_user_dry_run(self, mock: Mocker):
@@ -746,6 +756,9 @@ class SCIMUserTests(TestCase):
 
         delete_reqs = [r for r in mock.request_history if r.method == "DELETE"]
         self.assertEqual(len(delete_reqs), 0)
+        self.assertTrue(
+            SCIMProviderUser.objects.filter(provider=self.provider, scim_id=scim_id).exists()
+        )
 
     def test_sync_cleanup_client_for_model_transient(self):
         """Cleanup silently skips an object type when client_for_model raises
