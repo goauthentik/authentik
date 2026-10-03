@@ -1,8 +1,10 @@
 """Test core signals"""
 
+from django.core.cache import cache
 from django.test import TestCase
 
 from authentik.blueprints.v1.importer import Importer
+from authentik.core.api.applications import user_app_cache_key
 from authentik.core.models import AuthenticatedSession, Session, User
 from authentik.core.signals import deactivation_inhibit_cleanup
 from authentik.core.tests.utils import create_test_session, create_test_user
