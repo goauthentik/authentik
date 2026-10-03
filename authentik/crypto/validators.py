@@ -18,9 +18,18 @@ JWE_ENCRYPTION_KEY_TYPES = [KeyType.RSA]
 # Key types that have an XML-DSIG signature transform in libxmlsec1.
 XML_SIGNING_KEY_TYPES = [KeyType.RSA, KeyType.EC, KeyType.DSA]
 
-# Key types the Go outposts can serve TLS with. Ed448 will never be supported
-# See https://github.com/golang/go/issues/29390#issuecomment-614175576
-TLS_KEY_TYPES = [KeyType.RSA, KeyType.EC, KeyType.ED25519]
+# Key types the Rust server and the Go outposts can serve TLS with. Ed448 will never be supported
+# (see https://github.com/golang/go/issues/29390#issuecomment-614175576). ML-DSA (FIPS 204)
+# certificates are served by both rustls (AWS-LC) and Go 1.27's crypto/tls in TLS 1.3, and have
+# no support in SAML or JOSE yet, so TLS is currently their only use.
+TLS_KEY_TYPES = [
+    KeyType.RSA,
+    KeyType.EC,
+    KeyType.ED25519,
+    KeyType.MLDSA44,
+    KeyType.MLDSA65,
+    KeyType.MLDSA87,
+]
 
 
 class KeyTypeValidator:
