@@ -12,7 +12,13 @@ from rest_framework.response import Response
 from rest_framework.test import APIClient
 
 from authentik.core import user_switching
-from authentik.core.models import AuthenticatedSession, Session, User, UserSwitchingSession
+from authentik.core.models import (
+    AuthenticatedSession,
+    Session,
+    User,
+    UserSwitchingSession,
+    UserTypes,
+)
 from authentik.core.tests.utils import (
     create_test_brand,
     create_test_flow,
@@ -157,6 +163,45 @@ class TestUserSwitch(FlowTestCase):
 
         self.assertNotEqual(self.client.session.session_key, first_session_key)
         self.assertTrue(Session.objects.filter(session_key=first_session_key).exists())
+
+    def test_add_user_refuses_non_internal_user(self):
+        first_session_key = _login_through_flow(
+            self.client, self.flow, self.login_binding, self.user
+        )
+        self.other_user.type = UserTypes.EXTERNAL
+        self.other_user.save()
+        _assert_switch_redirect(_post_user_switch(self.client, {"action": "add"}), self.flow)
+        plan = self.client.session[SESSION_KEY_PLAN]
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.other_user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-access-denied",
+            error_message="Only internal users can be added to user switching.",
+        )
+        self.assertEqual(self.client.session.session_key, first_session_key)
+        self.assertEqual(
+            self.client.get(reverse("authentik_api:user-me")).json()["user"]["pk"],
+            self.user.pk,
+        )
+
+    def test_non_internal_sessions_are_not_switch_targets(self):
+        _login_through_flow(self.client, self.flow, self.login_binding, self.user)
+        self.other_user.type = UserTypes.EXTERNAL
+        self.other_user.save()
+        create_test_session(self.other_user, _get_switching_token(self.client), is_current=False)
+
+        self.assertEqual(self.client.get(reverse("authentik_api:user-me")).json()["users"], [])
+        response = _post_user_switch(self.client, {"user_pk": self.other_user.pk})
+        self.assertEqual(response.status_code, 404)
 
     def test_target_is_revalidated_before_login(self):
         first_session_key = _login_through_flow(
