@@ -112,9 +112,39 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                         # Switch the action to update the attributes
                         action = Action.AUTH
                     else:
-                        ak_user = User.objects.create(**defaults)
-                        created = True
-                        connection.user = ak_user
+                        try:
+                            ak_user = User.objects.create(**defaults)
+                            created = True
+                            connection.user = ak_user
+                        except IntegrityError:
+                            # The user already exists with this username (e.g. the upstream
+                            # LDAP identifier changed, such as a new ipaUniqueID after a
+                            # FreeIPA re-create, but the underlying account still maps to
+                            # the same person). Fall back to an idempotent update keyed on
+                            # username + source instead of failing the entire sync.
+                            ak_user, created = User.objects.update_or_create(
+                                username=defaults["username"],
+                                defaults={
+                                    k: v
+                                    for k, v in defaults.items()
+                                    if k != "username"
+                                },
+                            )
+                            # Rebind the LDAPSourceConnection to the existing user with the
+                            # new LDAP identifier so subsequent syncs find it directly.
+                            existing = UserLDAPSourceConnection.objects.filter(
+                                source=self._source,
+                                user=ak_user,
+                            ).first()
+                            if existing is not None:
+                                existing.identifier = uniq
+                                connection = existing
+                            else:
+                                connection = UserLDAPSourceConnection(
+                                    source=self._source,
+                                    user=ak_user,
+                                    identifier=uniq,
+                                )
                     connection.save()
 
                 if action in (Action.AUTH, Action.LINK):
