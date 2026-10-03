@@ -207,6 +207,7 @@ module = [
   "authentik.api.*",
   "authentik.blueprints.*",
   "authentik.brands.*",
+  "authentik.common.*",
   "authentik.core.*",
   "authentik.crypto.*",
   "authentik.endpoints.*",
