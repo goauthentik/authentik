@@ -40,6 +40,8 @@ After creating the policy, you can bind it to either a:
 
 For background about policy bindings, stage bindings, and why policies on stages are bound to flow-stage bindings, see [Bindings in authentik](../../add-secure-apps/bindings-overview/index.mdx).
 
+When configuring a policy binding, leave **Enabled** on and turn on **Dry-run** to evaluate the policy without including its result or messages in the target's final policy decision. Save the binding and check the **Dry-run** column to confirm its mode. Click **View dry-run results** in the binding's actions to open the filtered Event Log. Turn **Dry-run** off to enforce the binding again. See [Dry-run](./bindings.mdx#dry-run) for detailed evaluation behavior.
+
 ### Bind a policy to a flow
 
 These bindings control which users can access a flow.

@@ -74,6 +74,29 @@ If a target has no applicable bindings, authentik treats the result as passing.
 
 Bindings have a few important options beyond the target and order.
 
+### Dry-run
+
+:ak-version[2026.11]
+
+Enable **Dry-run** on a policy binding to evaluate the policy without using its result or messages in the target's final policy decision. This setting defaults to off. It belongs to the binding, so the same policy can be enforced on one target and evaluated in dry-run mode on another.
+
+Dry-run also supports direct user and group bindings. These bindings record whether the user or group membership check matches, including **Negate Result**, without affecting access. Static checks are evaluated without caching, so each observation reflects current membership.
+
+Dry-run bindings are excluded from both **Any** and **All** decisions. A passing dry-run binding cannot grant access, and a failing dry-run binding cannot deny access. If only dry-run bindings remain, the engine uses its configured result for no applicable bindings, which normally passes. Disabled bindings are still skipped entirely.
+
+To configure dry-run in the Admin interface:
+
+1. [Open the target's bindings](./working_with_policies.mdx#bind-a-policy-to-a-flow-stage-application-or-source) and create or edit a binding.
+2. Leave **Enabled** on and turn on **Dry-run**.
+3. Save the binding. The **Dry-run** column shows its configured mode.
+4. Click **View dry-run results** in the binding's actions to open its filtered Event Log.
+
+You can also enable **Dry-run** when configuring bindings in the application creation wizard.
+
+authentik records every dry-run evaluation as a policy execution event, even when the policy's **Execution logging** option is disabled. The event shows the observed pass or fail result, messages, raw output, and whether the result came from the policy cache. Dry-run results are not added to flow context and cannot be consumed by later expression policies.
+
+Dry-run does not prevent side effects: expression policies can still make network requests, create events, or modify state. **Negate Result**, **Timeout**, and **Failure Result** still apply to policy evaluation; the resulting verdict remains excluded from the final decision.
+
 ### Negate
 
 **Negate** flips the pass or fail result of the binding. This is useful when you want to express "everyone except this group" or turn an allow-style policy into a deny-style rule without copying it.

@@ -58,7 +58,15 @@ export interface EventRequest {
     method: string;
 }
 
-export type EventContextProperty = EventModel | EventGeo | string | number | string[] | undefined;
+export type EventContextProperty =
+    | EventModel
+    | EventGeo
+    | string
+    | number
+    | boolean
+    | null
+    | string[]
+    | undefined;
 
 // TODO: Events should have more specific types.
 export interface EventContext {
