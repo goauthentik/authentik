@@ -2,13 +2,15 @@
 
 from enum import Enum
 from typing import Any
+from urllib.parse import urlencode
 
-from django.http.request import HttpRequest
+from django.http.request import HttpRequest, QueryDict
 from django.templatetags.static import static
 from django.urls.base import reverse
 from structlog.stdlib import get_logger
 
 from authentik.flows.challenge import Challenge, RedirectChallenge
+from authentik.flows.views.executor import QS_QUERY
 from authentik.sources.oauth.models import AuthorizationCodeAuthMethod, OAuthSource, PKCEMethod
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
@@ -49,16 +51,33 @@ class SourceType:
         """Get Icon URL for login"""
         return static(f"authentik/sources/{self.name}.svg")
 
+    def get_forwarded_query_parameters(
+        self, source: OAuthSource, request: HttpRequest
+    ) -> dict[str, str]:
+        """Collect the query parameters configured in `source.forward_query_parameters`
+        from the current request. When running within the flow executor, the query parameters
+        of the request that started the flow (for example an OAuth2 /authorize request) are
+        nested within the `query` parameter."""
+        names = source.forward_query_parameter_names
+        if not names:
+            return {}
+        nested = QueryDict(request.GET.get(QS_QUERY, ""))
+        params = {}
+        for name in names:
+            value = request.GET.get(name, nested.get(name))
+            if value is not None:
+                params[name] = value
+        return params
+
     def login_challenge(self, source: OAuthSource, request: HttpRequest) -> Challenge:
         """Allow types to return custom challenges"""
-        return RedirectChallenge(
-            data={
-                "to": reverse(
-                    "authentik_sources_oauth:oauth-client-login",
-                    kwargs={"source_slug": source.slug},
-                ),
-            }
+        to = reverse(
+            "authentik_sources_oauth:oauth-client-login",
+            kwargs={"source_slug": source.slug},
         )
+        if params := self.get_forwarded_query_parameters(source, request):
+            to = f"{to}?{urlencode(params)}"
+        return RedirectChallenge(data={"to": to})
 
     def get_base_user_properties(
         self, source: OAuthSource, info: dict[str, Any], **kwargs

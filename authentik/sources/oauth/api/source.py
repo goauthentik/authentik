@@ -17,7 +17,11 @@ from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.utils.http import get_http_session
-from authentik.sources.oauth.models import OAuthSource, PKCEMethod
+from authentik.sources.oauth.models import (
+    FORWARD_QUERY_PARAMETERS_RESERVED,
+    OAuthSource,
+    PKCEMethod,
+)
 from authentik.sources.oauth.types.registry import SourceType, registry
 
 
@@ -56,6 +60,15 @@ class OAuthSourceSerializer(SourceSerializer):
     def get_type(self, instance: OAuthSource) -> SourceTypeSerializer:
         """Get source's type configuration"""
         return SourceTypeSerializer(instance.source_type).data
+
+    def validate_forward_query_parameters(self, value: str) -> str:
+        names = {name.strip() for name in value.split(",")}
+        if reserved := sorted(names & FORWARD_QUERY_PARAMETERS_RESERVED):
+            raise ValidationError(
+                "The following parameters are set by authentik and can't be forwarded: "
+                + ", ".join(reserved)
+            )
+        return value
 
     def validate(self, attrs: dict) -> dict:
         session = get_http_session()
@@ -143,6 +156,7 @@ class OAuthSourceSerializer(SourceSerializer):
             "consumer_secret",
             "callback_url",
             "additional_scopes",
+            "forward_query_parameters",
             "type",
             "oidc_well_known_url",
             "oidc_jwks_url",
