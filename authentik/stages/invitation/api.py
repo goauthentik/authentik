@@ -100,7 +100,7 @@ class InvitationSendEmailSerializer(Serializer):
     email_addresses = ListField(required=True)
     cc_addresses = ListField(required=False)
     bcc_addresses = ListField(required=False)
-    template = CharField(required=False, default="invitation")
+    template = CharField(required=False, default="email/invitation.html")
 
 
 class InvitationViewSet(UsedByMixin, ModelViewSet):
