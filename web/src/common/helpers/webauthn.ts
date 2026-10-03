@@ -2,6 +2,8 @@ import * as base64js from "base64-js";
 
 import { msg } from "@lit/localize";
 
+// #region WebAuthn helpers
+
 export function b64enc(buf: Uint8Array): string {
     return base64js.fromByteArray(buf).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
 }
@@ -29,6 +31,25 @@ export function assertWebAuthnSupported(scope = window): void {
 }
 
 /**
+ * Ensures that the given assertion is a {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredential | PublicKeyCredential}
+ *
+ * @throws TypeError if the assertion is not a PublicKeyCredential
+ */
+export function ensurePublicKeyCredential(assertion?: Credential | null): PublicKeyCredential {
+    if (!assertion) {
+        throw new TypeError(msg("No assertion was returned by the authenticator"));
+    }
+
+    if (!(assertion instanceof PublicKeyCredential)) {
+        throw new TypeError(msg("The returned assertion was not a PublicKeyCredential"));
+    }
+
+    return assertion;
+}
+
+// #endregion
+
+/**
  * Predicate to determine if a given error originates from a user cancellation or timeout of a WebAuthn authentication ceremony.
  */
 export function isWebAuthnNotAllowedError(error: unknown): error is DOMException {
@@ -47,6 +68,8 @@ export async function isConditionalMediationAvailable(): Promise<boolean> {
     }
     return false;
 }
+
+// #region Transformations
 
 /**
  * Transforms items in the credentialCreateOptions generated on the server
@@ -165,3 +188,5 @@ export function transformAssertionForServer(newAssertion: PublicKeyCredential): 
         },
     };
 }
+
+// #endregion
