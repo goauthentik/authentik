@@ -89,3 +89,31 @@ entries:
         user.refresh_from_db()
         self.assertFalse(user.is_active)
         self.assertFalse(Session.objects.filter(session_key=session.session.session_key).exists())
+
+
+class TestLoginApplicationCache(TestCase):
+    """Logging in refreshes all application-list cache variants for that user."""
+
+    def test_login_invalidates_application_pages(self):
+        """Clear user cache variants without clearing another user's cache."""
+        user = create_test_user()
+        other_user = create_test_user()
+        keys = [
+            user_app_cache_key(user.pk, client_ip, page, only_with_launch_url)
+            for client_ip in (None, "192.0.2.10")
+            for page in (1, 2)
+            for only_with_launch_url in (False, True)
+        ]
+        other_key = user_app_cache_key(other_user.pk, "192.0.2.10", 1)
+        # A user whose ID shares this prefix must remain untouched.
+        prefix_key = user_app_cache_key(f"{user.pk}0", "192.0.2.10", 1)
+        for key in [*keys, other_key, prefix_key]:
+            cache.set(key, "cached", timeout=300)
+            self.addCleanup(cache.delete, key)
+
+        self.client.force_login(user)
+
+        for key in keys:
+            self.assertIsNone(cache.get(key))
+        self.assertEqual(cache.get(other_key), "cached")
+        self.assertEqual(cache.get(prefix_key), "cached")
