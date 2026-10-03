@@ -42,7 +42,10 @@ test.describe("Applications", () => {
         await test.step("Create OAuth2 provider", async () => {
             await expect(providerDialog, "Provider dialog is initially closed").toBeHidden();
 
-            await page.getByRole("button", { name: "New Provider" }).click();
+            await page
+                .locator('[part="toolbar-secondary"]')
+                .getByRole("button", { name: "New Provider" })
+                .click();
 
             await expect(providerDialog, "Provider dialog opens").toBeVisible();
 
