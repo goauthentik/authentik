@@ -1,0 +1,83 @@
+# Example blueprint for goauthentik/authentik — copy to:
+#   blueprints/example/flows-brute-force-lockout.yaml
+#
+# Workaround for brute-force lockout when using reputation policies:
+# https://github.com/goauthentik/authentik/issues/10196
+# https://github.com/goauthentik/authentik/issues/8685
+#
+# Password MUST be a separate stage (order 20), NOT embedded in identification.
+# Flow: identification (10) → deny if low reputation (11) → password (20) → …
+version: 1
+metadata:
+  labels:
+    blueprints.goauthentik.io/instantiate: "false"
+  name: Example - Brute force lockout (reputation + deny)
+entries:
+  - identifiers:
+      slug: default-authentication-flow
+    id: flow
+    model: authentik_flows.flow
+  - identifiers:
+      name: default-authentication-identification
+    id: default-authentication-identification
+    model: authentik_stages_identification.identificationstage
+    attrs:
+      password_stage: null
+      user_fields:
+        - email
+        - username
+  - identifiers:
+      name: default-authentication-password
+    id: default-authentication-password
+    model: authentik_stages_password.passwordstage
+    attrs:
+      failed_attempts_before_cancel: 5
+  - identifiers:
+      name: default-authentication-flow-brute-force-deny
+    id: default-authentication-flow-brute-force-deny
+    model: authentik_stages_deny.denystage
+    attrs:
+      deny_message: >-
+        Too many failed sign-in attempts. Please try again later.
+  - identifiers:
+      name: default-authentication-flow-brute-force-reputation
+    id: default-authentication-flow-brute-force-reputation
+    model: authentik_policies_reputation.reputationpolicy
+    attrs:
+      check_ip: true
+      check_username: true
+      threshold: -5
+  - identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf default-authentication-identification
+      order: 10
+    model: authentik_flows.flowstagebinding
+    attrs:
+      evaluate_on_plan: false
+      re_evaluate_policies: true
+  - identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf default-authentication-flow-brute-force-deny
+      order: 11
+    id: flow-binding-brute-force-deny
+    model: authentik_flows.flowstagebinding
+    attrs:
+      evaluate_on_plan: false
+      re_evaluate_policies: true
+  - identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf default-authentication-password
+      order: 20
+    model: authentik_flows.flowstagebinding
+    attrs:
+      evaluate_on_plan: false
+      re_evaluate_policies: true
+  - identifiers:
+      policy: !KeyOf default-authentication-flow-brute-force-reputation
+      target: !KeyOf flow-binding-brute-force-deny
+      order: 0
+    model: authentik_policies.policybinding
+    attrs:
+      enabled: true
+      negate: false
+      failure_result: false
