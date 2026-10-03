@@ -72,6 +72,9 @@ class MicrosoftEntraSyncClient[TModel: Model, TConnection: Model, TSchema: dict]
         self.credentials = provider.microsoft_credentials()
         self.__prefetch_domains()
 
+    def get_identifier(self, connection: TConnection) -> str:
+        return connection.microsoft_id
+
     def get_request_adapter(
         self, credentials: ClientSecretCredential, scopes: list[str] | None = None
     ) -> AuthentikRequestAdapter:
