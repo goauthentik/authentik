@@ -5,8 +5,8 @@ use axum::{
     Router,
     extract::{Query, Request, State},
     http::{
-        HeaderValue, StatusCode,
-        header::{CACHE_CONTROL, CONTENT_SECURITY_POLICY},
+        HeaderMap, HeaderValue, StatusCode,
+        header::{CACHE_CONTROL, CONTENT_ENCODING, CONTENT_SECURITY_POLICY, ETAG, VARY},
     },
     middleware::{self, Next},
     response::{IntoResponse as _, Response},
@@ -147,6 +147,87 @@ async fn static_header_middleware(request: Request, next: Next) -> Response {
     response
 }
 
+/// Trim leading and trailing optional whitespace, as defined by RFC 9110 §5.6.3.
+fn trim_ows(value: &[u8]) -> &[u8] {
+    let is_ows = |byte: &u8| matches!(*byte, b' ' | b'\t');
+    let start = value.iter().position(|byte| !is_ows(byte));
+    let end = value.iter().rposition(|byte| !is_ows(byte));
+    match (start, end) {
+        (Some(start), Some(end)) => value.get(start..=end).unwrap_or_default(),
+        _ => &[],
+    }
+}
+
+/// Whether `Vary` already accounts for `Accept-Encoding`.
+fn varies_on_accept_encoding(headers: &HeaderMap) -> bool {
+    headers.get_all(VARY).iter().any(|value| {
+        value
+            .as_bytes()
+            .split(|byte| *byte == b',')
+            .map(trim_ows)
+            .any(|field| field == b"*" || field.eq_ignore_ascii_case(b"accept-encoding"))
+    })
+}
+
+/// Whether a content-coding other than `identity` was applied to the body.
+fn has_content_coding(headers: &HeaderMap) -> bool {
+    headers.get_all(CONTENT_ENCODING).iter().any(|value| {
+        value
+            .as_bytes()
+            .split(|byte| *byte == b',')
+            .map(trim_ows)
+            .any(|coding| !coding.is_empty() && !coding.eq_ignore_ascii_case(b"identity"))
+    })
+}
+
+/// Downgrade a strong entity-tag to a weak one, leaving the opaque-tag intact.
+fn weaken_etag(headers: &mut HeaderMap) {
+    let Some(etag) = headers.get(ETAG) else {
+        return;
+    };
+    if etag.as_bytes().starts_with(b"W/") {
+        return;
+    }
+
+    let mut weak = Vec::with_capacity(etag.len() + 2);
+    weak.extend_from_slice(b"W/");
+    weak.extend_from_slice(etag.as_bytes());
+    if let Ok(weak) = HeaderValue::from_bytes(&weak) {
+        headers.insert(ETAG, weak);
+    }
+}
+
+/// Repair the content-negotiation headers of a response that has already been
+/// through [`compression_layer`].
+///
+/// This has to sit *outside* the compression layer, because it needs to observe
+/// the `Content-Encoding` that was actually negotiated.
+async fn negotiated_representation_middleware(request: Request, next: Next) -> Response {
+    let mut response = next.run(request).await;
+    let headers = response.headers_mut();
+
+    // RFC 9110 §15.4.5 requires a 304 to carry the header fields that the
+    // corresponding 200 would have carried, and names `Vary` explicitly.
+    // `CompressionLayer` appends `Vary` only when it encodes a body, so a
+    // bodiless 304 loses it and a shared cache ends up storing every coding
+    // under a single key.
+    if !varies_on_accept_encoding(headers) {
+        headers.append(VARY, HeaderValue::from_static("accept-encoding"));
+    }
+
+    // A content-coding is part of the representation (RFC 9110 §8.4.1), so one
+    // strong validator must not label both the identity bytes and the encoded
+    // bytes (RFC 9110 §8.8.1). `ServeDir` derives the tag from file metadata
+    // and cannot know that the response was encoded afterwards, so weaken it
+    // here, the way nginx does. Weak comparison (RFC 9110 §13.1.2) is what
+    // `If-None-Match` uses, so revalidation keeps working.
+    if has_content_coding(headers) {
+        weaken_etag(headers);
+    }
+
+    response
+}
+
 fn compression_layer() -> CompressionLayer<SizeAbove> {
     CompressionLayer::new().compress_when(SizeAbove::new(32))
 }
@@ -250,6 +331,9 @@ pub(crate) fn build_router() -> Router {
 
     router = router.layer(compression_layer());
 
+    // Outside the compression layer: it inspects the negotiated `Content-Encoding`.
+    router = router.layer(middleware::from_fn(negotiated_representation_middleware));
+
     router
 }
 
@@ -261,8 +345,12 @@ mod tests {
         extract::Request,
         http::{
             StatusCode,
-            header::{ACCEPT_ENCODING, CONTENT_ENCODING, CONTENT_LENGTH, CONTENT_RANGE, RANGE},
+            header::{
+                ACCEPT_ENCODING, CONTENT_ENCODING, CONTENT_LENGTH, CONTENT_RANGE, ETAG,
+                IF_NONE_MATCH, RANGE, VARY,
+            },
         },
+        middleware,
     };
     use http_body_util::BodyExt as _;
     use tempfile::{TempDir, tempdir};
@@ -270,14 +358,15 @@ mod tests {
     use tower::ServiceExt as _;
     use tower_http::services::fs::ServeDir;
 
-    use super::compression_layer;
+    use super::{compression_layer, negotiated_representation_middleware};
 
     /// Enough bytes to clear the `SizeAbove` threshold, and compressible enough
     /// that gzip is a visible win.
     const BODY: &[u8] = &[b'a'; 4096];
 
     /// Mirrors how [`build_router`] serves `/static/dist/`: a `ServeDir` under
-    /// the shared compression layer.
+    /// the shared compression layer, with the representation fix-ups layered
+    /// outside it.
     fn router(dir: &TempDir) -> Router {
         Router::new()
             .nest_service(
@@ -285,6 +374,25 @@ mod tests {
                 ServeDir::new(dir.path()).append_index_html_on_directories(false),
             )
             .layer(compression_layer())
+            .layer(middleware::from_fn(negotiated_representation_middleware))
+    }
+
+    /// A plain `GET` for the fixture, announcing `accept-encoding`.
+    fn get(accept_encoding: &str) -> axum::http::request::Builder {
+        Request::builder()
+            .uri("/static/dist/basemap.bin")
+            .header(ACCEPT_ENCODING, accept_encoding)
+    }
+
+    /// Read the `ETag` of a response as a `String`.
+    fn etag_of<B>(response: &axum::http::Response<B>) -> String {
+        response
+            .headers()
+            .get(ETAG)
+            .expect("missing ETag")
+            .to_str()
+            .expect("non-ASCII ETag")
+            .to_owned()
     }
 
     async fn fixture() -> TempDir {
@@ -361,6 +469,127 @@ mod tests {
                 .get(CONTENT_ENCODING)
                 .expect("missing Content-Encoding"),
             "gzip"
+        );
+    }
+
+    #[tokio::test]
+    async fn encoded_response_weakens_the_etag() {
+        let dir = fixture().await;
+
+        let identity = router(&dir)
+            .oneshot(
+                get("identity")
+                    .body(Body::empty())
+                    .expect("failed to build request"),
+            )
+            .await
+            .expect("request failed");
+
+        assert_eq!(identity.status(), StatusCode::OK);
+        assert!(
+            identity.headers().get(CONTENT_ENCODING).is_none(),
+            "identity response must not be encoded"
+        );
+        let strong = etag_of(&identity);
+        assert!(
+            !strong.starts_with("W/"),
+            "unencoded representation keeps a strong validator, got {strong}"
+        );
+
+        let compressed = router(&dir)
+            .oneshot(
+                get("gzip")
+                    .body(Body::empty())
+                    .expect("failed to build request"),
+            )
+            .await
+            .expect("request failed");
+
+        assert_eq!(compressed.status(), StatusCode::OK);
+        assert_eq!(
+            compressed
+                .headers()
+                .get(CONTENT_ENCODING)
+                .expect("missing Content-Encoding"),
+            "gzip"
+        );
+        // The encoded bytes are a different representation, so the same strong
+        // validator must not label both.
+        assert_eq!(etag_of(&compressed), format!("W/{strong}"));
+        // `CompressionLayer` already set `Vary` here; it must not be duplicated.
+        assert_eq!(compressed.headers().get_all(VARY).iter().count(), 1);
+    }
+
+    #[tokio::test]
+    async fn not_modified_response_keeps_vary() {
+        let dir = fixture().await;
+
+        let fresh = router(&dir)
+            .oneshot(
+                get("identity")
+                    .body(Body::empty())
+                    .expect("failed to build request"),
+            )
+            .await
+            .expect("request failed");
+
+        assert_eq!(fresh.status(), StatusCode::OK);
+        let etag = etag_of(&fresh);
+
+        let revalidated = router(&dir)
+            .oneshot(
+                get("identity")
+                    .header(IF_NONE_MATCH, etag.as_str())
+                    .body(Body::empty())
+                    .expect("failed to build request"),
+            )
+            .await
+            .expect("request failed");
+
+        assert_eq!(revalidated.status(), StatusCode::NOT_MODIFIED);
+        // Without `Vary` a shared cache stores every coding under one key.
+        assert_eq!(
+            revalidated.headers().get(VARY).expect("missing Vary"),
+            "accept-encoding"
+        );
+    }
+
+    #[tokio::test]
+    async fn weak_etag_from_a_compressed_response_still_revalidates() {
+        let dir = fixture().await;
+
+        let compressed = router(&dir)
+            .oneshot(
+                get("gzip")
+                    .body(Body::empty())
+                    .expect("failed to build request"),
+            )
+            .await
+            .expect("request failed");
+
+        assert_eq!(compressed.status(), StatusCode::OK);
+        let etag = etag_of(&compressed);
+        assert!(
+            etag.starts_with("W/"),
+            "expected a weak validator, got {etag}"
+        );
+
+        let revalidated = router(&dir)
+            .oneshot(
+                get("gzip")
+                    .header(IF_NONE_MATCH, etag.as_str())
+                    .body(Body::empty())
+                    .expect("failed to build request"),
+            )
+            .await
+            .expect("request failed");
+
+        // Weak comparison still matches the tag `ServeDir` derives from the file
+        // metadata, so weakening does not cost a revalidation.
+        assert_eq!(revalidated.status(), StatusCode::NOT_MODIFIED);
+        assert_eq!(
+            revalidated.headers().get(VARY).expect("missing Vary"),
+            "accept-encoding"
         );
     }
 }
