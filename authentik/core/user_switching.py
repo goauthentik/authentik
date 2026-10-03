@@ -14,6 +14,8 @@ from authentik.lib.utils.crypto import get_cookie_signing_key
 from authentik.policies.types import PolicyRequest
 
 TOKEN_LENGTH = 32
+# Set while the browser runs "Add user", so a source login started from that flow adds a user.
+SESSION_KEY_ADD_USER = "authentik/core/user_switching/add_user"
 
 _SIGNING_HASH = get_cookie_signing_key()
 

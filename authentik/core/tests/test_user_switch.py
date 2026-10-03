@@ -176,6 +176,15 @@ class TestUserSwitch(FlowTestCase):
 
         _assert_switch_redirect(_post_user_switch(self.client, {"action": "add"}), self.flow)
 
+    def test_interface_abandons_add_user(self):
+        _login_through_flow(self.client, self.flow, self.login_binding, self.user)
+        _assert_switch_redirect(_post_user_switch(self.client, {"action": "add"}), self.flow)
+        self.assertTrue(self.client.session[user_switching.SESSION_KEY_ADD_USER])
+
+        self.client.get(reverse("authentik_core:if-user"))
+
+        self.assertNotIn(user_switching.SESSION_KEY_ADD_USER, self.client.session)
+
     def test_add_user_refuses_non_internal_user(self):
         first_session_key = _login_through_flow(
             self.client, self.flow, self.login_binding, self.user

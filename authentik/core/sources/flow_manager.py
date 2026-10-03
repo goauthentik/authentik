@@ -11,6 +11,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
+from authentik.core import user_switching
 from authentik.core.models import (
     Group,
     GroupSourceConnection,
@@ -37,7 +38,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import StageView
-from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
+from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET
 from authentik.lib.views import bad_request_message
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.utils import delete_none_values
@@ -127,11 +128,10 @@ class SourceFlowManager:
         self.user_info = user_info
         self._logger = get_logger().bind(source=source, identifier=identifier)
         self.policy_context = policy_context
-        # The source was started from the "Add user" flow, so the login must add another
-        # user to this browser instead of linking to or replacing the current user.
-        plan = request.session.get(SESSION_KEY_PLAN)
+        # The source was started from "Add user", so the login must add another user to this
+        # browser instead of linking to or replacing the current user.
         self.is_user_switch_add_user = bool(
-            plan and plan.context.get(PLAN_CONTEXT_USER_SWITCH_ADD_USER)
+            request.session.pop(user_switching.SESSION_KEY_ADD_USER, False)
         )
 
         self.user_properties = self.mapper.build_object_properties(
@@ -226,6 +226,10 @@ class SourceFlowManager:
                     self._logger.debug("Handling auth user")
                     return self.handle_auth(connection)
                 if action == Action.ENROLL:
+                    if self.is_user_switch_add_user:
+                        return self.error_handler(
+                            Exception(_("New users can't enroll while adding a user."))
+                        )
                     self._logger.debug("Handling enrollment of new user")
                     return self.handle_enroll(connection)
             if action == Action.DENY and self.matcher.failure:

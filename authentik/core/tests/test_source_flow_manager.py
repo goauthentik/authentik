@@ -7,6 +7,7 @@ from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 from guardian.shortcuts import get_anonymous_user
 
+from authentik.core import user_switching
 from authentik.core.models import SourceUserMatchingModes, User
 from authentik.core.sources.flow_manager import Action
 from authentik.core.sources.matcher import MatchFailureReason
@@ -170,9 +171,7 @@ class TestSourceFlowManager(TestCase):
     def _add_user_request(self, user: User):
         """Request from a signed-in browser that started a source login from "Add user"."""
         request = self.request_factory.get("/", user=user)
-        plan = FlowPlan(flow_pk=self.authentication_flow.pk.hex)
-        plan.context[PLAN_CONTEXT_USER_SWITCH_ADD_USER] = True
-        request.session[SESSION_KEY_PLAN] = plan
+        request.session[user_switching.SESSION_KEY_ADD_USER] = True
         return request
 
     def test_add_user_auth_logs_in_connected_user(self):
@@ -198,10 +197,12 @@ class TestSourceFlowManager(TestCase):
         self.assertEqual(flow_plan.flow_pk, self.authentication_flow.pk.hex)
         self.assertEqual(flow_plan.context[PLAN_CONTEXT_PENDING_USER], other_user)
         self.assertTrue(flow_plan.context[PLAN_CONTEXT_USER_SWITCH_ADD_USER])
+        self.assertNotIn(user_switching.SESSION_KEY_ADD_USER, request.session)
 
-    def test_add_user_does_not_link_current_user(self):
-        """Test "Add user" with a new source identity enrolls instead of linking"""
+    def test_add_user_refuses_enrollment(self):
+        """Test "Add user" with a new source identity neither links nor enrolls"""
         current_user = create_test_user()
+        users = User.objects.count()
         request = self._add_user_request(current_user)
         flow_manager = OAuthSourceFlowManager(
             self.source, request, self.identifier, {"info": {}}, {}
@@ -211,10 +212,10 @@ class TestSourceFlowManager(TestCase):
         response = flow_manager.get_flow()
 
         self.assertEqual(action, Action.ENROLL)
-        self.assertEqual(response.status_code, 302)
-        flow_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
-        self.assertEqual(flow_plan.flow_pk, self.enrollment_flow.pk.hex)
-        self.assertTrue(flow_plan.context[PLAN_CONTEXT_USER_SWITCH_ADD_USER])
+        self.assertIsInstance(response, AccessDeniedResponse)
+        self.assertEqual(response.error_message, "New users can't enroll while adding a user.")
+        self.assertNotIn(SESSION_KEY_PLAN, request.session)
+        self.assertEqual(User.objects.count(), users)
         self.assertFalse(UserOAuthSourceConnection.objects.filter(user=current_user).exists())
 
     def test_unusable_group_identifier_does_not_abort(self):
