@@ -160,6 +160,7 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         max_length=USERNAME_MAX_LENGTH,
         validators=[UniqueValidator(queryset=User.objects.all().order_by("username"))],
     )
+    password_change_date = DateTimeField(read_only=True)
 
     @property
     def _should_include_groups(self) -> bool:
@@ -358,7 +359,6 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         extra_kwargs = {
             "name": {"allow_blank": True},
             "date_joined": {"read_only": True},
-            "password_change_date": {"read_only": True},
         }
 
 
@@ -643,7 +643,7 @@ class UserViewSet(
         ]
 
     def get_queryset(self):
-        base_qs = User.objects.all().exclude_anonymous()
+        base_qs = User.objects.all().exclude_anonymous().select_related("password_device")
         # Always prefetch groups since group PKs are always serialized.
         # Use full prefetch when include_groups=true (for groups_obj), ID-only otherwise.
         if self.serializer_class(context={"request": self.request})._should_include_groups:
