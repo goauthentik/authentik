@@ -13,8 +13,10 @@ from authentik.flows.tests import FlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
+from authentik.policies.reputation.models import Reputation
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordStage
+from authentik.tenants.models import DEFAULT_REPUTATION_LOWER_LIMIT
 
 MOCK_BACKEND_AUTHENTICATE = MagicMock(side_effect=PermissionDenied("test"))
 
@@ -165,6 +167,35 @@ class TestPasswordStage(FlowTestCase):
         )
         self.assertEqual(response.status_code, 200)
         # To ensure the plan has been cancelled, check SESSION_KEY_PLAN
+        self.assertNotIn(SESSION_KEY_PLAN, self.client.session)
+        self.assertStageResponse(response, flow=self.flow, error_message="Invalid password")
+
+    def test_invalid_password_lockout_reputation_floor(self):
+        """Test that a user already at the reputation floor is cancelled on the first attempt"""
+        Reputation.objects.create(
+            identifier=self.user.username,
+            ip="127.0.0.1",
+            score=DEFAULT_REPUTATION_LOWER_LIMIT,
+        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        res = self.client.get(
+            reverse(
+                "authentik_api:flow-executor",
+                kwargs={"flow_slug": self.flow.slug},
+            ),
+        )
+        self.assertEqual(res.status_code, 200)
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            # Form data
+            {"password": self.user.username + "test"},
+        )
+        self.assertEqual(response.status_code, 200)
         self.assertNotIn(SESSION_KEY_PLAN, self.client.session)
         self.assertStageResponse(response, flow=self.flow, error_message="Invalid password")
 
