@@ -44,30 +44,21 @@ class ServiceProviderMetadata:
     sls_location: str | None = None
 
     def to_provider(
-        self, name: str, authorization_flow: Flow, invalidation_flow: Flow
+        self,
+        name: str,
+        authorization_flow: Flow,
+        invalidation_flow: Flow,
+        metadata_url: str = "",
     ) -> SAMLProvider:
         """Create a SAMLProvider instance from the details. `name` is required,
         as depending on the metadata CertificateKeypairs might have to be created."""
         provider = SAMLProvider.objects.create(
-            name=name, authorization_flow=authorization_flow, invalidation_flow=invalidation_flow
+            name=name,
+            authorization_flow=authorization_flow,
+            invalidation_flow=invalidation_flow,
+            metadata_url=metadata_url,
         )
-        provider.sp_binding = self.acs_binding
-        provider.acs_url = self.acs_location
-        provider.audience = self.entity_id
-        provider.default_name_id_policy = self.name_id_policy
-        # Single Logout Service
-        if self.sls_location:
-            provider.sls_url = self.sls_location
-        if self.sls_binding:
-            provider.sls_binding = self.sls_binding
-        if self.signing_keypair and self.auth_n_request_signed:
-            self.signing_keypair.name = f"Provider {name} - SAML Signing Certificate"
-            self.signing_keypair.save()
-            provider.verification_kp = self.signing_keypair
-        if self.encryption_keypair:
-            self.encryption_keypair.name = f"Provider {name} - SAML Encryption Certificate"
-            self.encryption_keypair.save()
-            provider.encryption_kp = self.encryption_keypair
+        self.apply_to_provider(provider)
         if self.assertion_signed:
             provider.signing_kp = CertificateKeyPair.objects.exclude(key_data__iexact="").first()
         # Set all auto-generated Property-mappings as defaults
@@ -75,6 +66,48 @@ class ServiceProviderMetadata:
         provider.property_mappings.set(SAMLPropertyMapping.objects.exclude(managed__isnull=True))
         provider.save()
         return provider
+
+    def apply_to_provider(self, provider: SAMLProvider) -> bool:
+        """Apply the metadata to `provider` without saving it. Returns whether anything changed."""
+        changed = False
+        for attr, value in (
+            ("sp_binding", self.acs_binding),
+            ("acs_url", self.acs_location),
+            ("audience", self.entity_id),
+            ("default_name_id_policy", self.name_id_policy),
+            ("sls_url", self.sls_location or ""),
+            ("sls_binding", self.sls_binding or provider.sls_binding),
+        ):
+            if getattr(provider, attr) != value:
+                setattr(provider, attr, value)
+                changed = True
+        if self.signing_keypair and self.auth_n_request_signed:
+            changed |= self._apply_keypair(
+                provider, "verification_kp", self.signing_keypair, "SAML Signing Certificate"
+            )
+        if self.encryption_keypair:
+            changed |= self._apply_keypair(
+                provider, "encryption_kp", self.encryption_keypair, "SAML Encryption Certificate"
+            )
+        return changed
+
+    @staticmethod
+    def _apply_keypair(
+        provider: SAMLProvider, attr: str, keypair: CertificateKeyPair, suffix: str
+    ) -> bool:
+        """Set `keypair` (parsed from metadata, unsaved) as `provider.<attr>`. When the provider
+        already references a keypair, its certificate is updated in place if it differs."""
+        existing: CertificateKeyPair | None = getattr(provider, attr)
+        if existing:
+            if existing.certificate_data.strip() == keypair.certificate_data.strip():
+                return False
+            existing.certificate_data = keypair.certificate_data
+            existing.save()
+            return True
+        keypair.name = f"Provider {provider.name} - {suffix}"
+        keypair.save()
+        setattr(provider, attr, keypair)
+        return True
 
 
 class ServiceProviderMetadataParser:
