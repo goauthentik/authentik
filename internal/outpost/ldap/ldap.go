@@ -54,6 +54,7 @@ func NewServer(ac *ak.APIController) ak.Outpost {
 	s.BindFunc("", ls)
 	s.UnbindFunc("", ls)
 	s.SearchFunc("", ls)
+	s.CompareFunc("", ls)
 	s.CloseFunc("", ls)
 	return ls
 }
