@@ -81,7 +81,10 @@ class SAMLSSOView(PolicyAccessView):
             if reauth_response:
                 return reauth_response
         # Regardless, we start the planner and return to it
-        planner = FlowPlanner(self.provider.authorization_flow)
+        authz_flow = (
+            self.provider.authorization_flow or self.request.brand.flow_provider_authorization
+        )
+        planner = FlowPlanner(authz_flow)
         planner.allow_empty_flows = True
         try:
             plan = planner.plan(
@@ -100,7 +103,7 @@ class SAMLSSOView(PolicyAccessView):
         plan.append_stage(in_memory_stage(SAMLFlowFinalView))
         return plan.to_redirect(
             request,
-            self.provider.authorization_flow,
+            authz_flow,
             next=self.get_resume_url(),
             allowed_silent_types=(
                 [SAMLFlowFinalView]
