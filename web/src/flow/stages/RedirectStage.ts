@@ -8,7 +8,9 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { BaseStage } from "#flow/stages/base";
+import { continuousLoginExit } from "#flow/tabs/continuous-login";
 import {
+    allowNextExitForSameOriginNavigation,
     multiTabOrchestrateLeave,
     multiTabOrchestrateResume,
     suppressNextExitForSameOriginNavigation,
@@ -99,19 +101,27 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         // resume other continuous-login tabs; intermediate hops (source stages, the same-origin
         // SAML resume re-entry) skip orchestration entirely.
         const finalRedirect = this.challenge?.finalRedirect ?? false;
+        const continuousLoginHold = this.challenge?.continuousLoginHold ?? true;
 
         if (finalRedirect) {
             await multiTabOrchestrateResume();
         }
 
         // A foreign final redirect means we're leaving authentik for good, so signal our exit.
-        // Same-origin navigation suppress it, otherwise we'd look like we left mid-flow.
+        // Same-origin navigation suppresses it while the flow still needs this tab. Direct
+        // responses report their exit on pagehide, after the server has saved the session.
         const url = new URL(this.challenge!.to, window.location.origin);
 
-        if (finalRedirect && url.origin !== window.location.origin) {
+        const exit = finalRedirect
+            ? continuousLoginExit(url, window.location.origin, continuousLoginHold)
+            : "suppress";
+
+        if (exit === "now") {
             multiTabOrchestrateLeave();
-        } else {
+        } else if (exit === "suppress") {
             suppressNextExitForSameOriginNavigation();
+        } else {
+            allowNextExitForSameOriginNavigation();
         }
 
         window.location.assign(this.challenge!.to);

@@ -3,7 +3,7 @@
 from unittest.mock import MagicMock, Mock, PropertyMock, patch
 
 from django.core.cache import cache
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.test import TestCase
 from django.urls import reverse
@@ -312,6 +312,29 @@ class TestFlowPlanner(TestCase):
             plan.to_redirect(request, flow, allowed_silent_types=[TStageView]).url,
             "https://authentik.company",
         )
+
+    def test_to_redirect_skip_cancelled_stage(self):
+        """A direct stage that cancels its plan is not subsequently completed."""
+        flow = create_test_flow()
+        flow.authentication = FlowAuthenticationRequirement.NONE
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        planner = FlowPlanner(flow)
+        planner.allow_empty_flows = True
+        plan = planner.plan(request)
+
+        class TStageView(StageView):
+            def dispatch(self, request: HttpRequest, *args, **kwargs):
+                self.executor.cancel()
+                return HttpResponseBadRequest()
+
+        plan.append_stage(in_memory_stage(TStageView))
+
+        response = plan.to_redirect(request, flow, allowed_silent_types=[TStageView])
+
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(plan.has_stages)
 
     def test_to_redirect_skip_stage(self):
         """Test to_redirect and skipping the flow executor
