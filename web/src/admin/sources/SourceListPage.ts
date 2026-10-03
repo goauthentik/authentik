@@ -9,12 +9,14 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
 
-import { IconEditButtonByTagName, ModalInvokerButton } from "#elements/dialogs";
+import { IconEditButtonByTagName } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { WizardLinkButton } from "#components/ak-wizard/ak-full-page-wizard";
 
 import { AKSourceWizard } from "#admin/sources/ak-source-wizard";
 
@@ -112,7 +114,7 @@ export class SourceListPage extends TablePage<Source> {
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
-        return ModalInvokerButton(AKSourceWizard);
+        return WizardLinkButton(toAdminInterface("core/sources/new"), AKSourceWizard);
     }
 }
 

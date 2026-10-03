@@ -17,11 +17,11 @@ import { aki } from "#common/api/client";
 import { IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
 import { PFColor } from "#elements/Label";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { PolicyWizard } from "#admin/policies/ak-policy-wizard";
 import { PolicyTestForm } from "#admin/policies/PolicyTestForm";
 
 import { ModelEnum, PoliciesApi, Policy } from "@goauthentik/api";
@@ -122,14 +122,13 @@ export class PolicyListPage extends TablePage<Policy> {
 
     protected override renderObjectCreate(): SlottedTemplateResult {
         return html`
-            <button
+            <a
                 class="pf-c-button pf-m-primary"
-                type="button"
+                href=${toAdminInterface("policy/policies/new")}
                 aria-description="${msg("Open the wizard to create a new policy.")}"
-                ${PolicyWizard.asModalInvoker()}
             >
                 ${msg("New Policy")}
-            </button>
+            </a>
         `;
     }
 

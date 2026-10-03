@@ -6,11 +6,13 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import { aki } from "#common/api/client";
 
-import { IconEditButtonByTagName, ModalInvokerButton } from "#elements/dialogs";
+import { IconEditButtonByTagName } from "#elements/dialogs";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { WizardLinkButton } from "#components/ak-wizard/ak-full-page-wizard";
 
 import { AKEndpointConnectorWizard } from "#admin/endpoints/connectors/ConnectorWizard";
 
@@ -58,7 +60,10 @@ export class ConnectorsListPage extends TablePage<Connector> {
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
-        return ModalInvokerButton(AKEndpointConnectorWizard);
+        return WizardLinkButton(
+            toAdminInterface("endpoints/connectors/new"),
+            AKEndpointConnectorWizard,
+        );
     }
 
     protected override renderToolbarSelected(): SlottedTemplateResult {

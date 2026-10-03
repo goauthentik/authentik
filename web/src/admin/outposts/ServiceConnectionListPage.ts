@@ -16,14 +16,13 @@ import { aki } from "#common/api/client";
 import { IconEditButtonByTagName } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
 import { PFColor } from "#elements/Label";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { scheduleCard } from "#components/tasks/scheduleCard";
 import { taskCard } from "#components/tasks/taskCard";
-
-import { AKServiceConnectionWizard } from "#admin/outposts/ak-service-connection-wizard";
 
 import {
     ModelEnum,
@@ -143,14 +142,13 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
-        return html`<button
+        return html`<a
             class="pf-c-button pf-m-primary"
-            type="button"
+            href=${toAdminInterface("outpost/integrations/new")}
             aria-description="${msg("Open the wizard to create a new service connection.")}"
-            ${AKServiceConnectionWizard.asModalInvoker()}
         >
             ${msg("New Outpost Integration")}
-        </button>`;
+        </a>`;
     }
 }
 

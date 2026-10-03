@@ -10,11 +10,15 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 
 import { DefaultUIConfig } from "#common/ui/config";
 
+import { formatCreateLabel } from "#elements/dialogs/shared";
+import { toAdminInterface } from "#elements/router/core/interfaces";
+import { getSearchParam } from "#elements/router/core/search-params";
 import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { CreateWizard } from "#elements/wizard/CreateWizard";
 import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
 import { WizardPage } from "#elements/wizard/WizardPage";
 
+import { AKFullPageWizard } from "#components/ak-wizard/ak-full-page-wizard";
 import { ButtonKindLabelRecord } from "#components/ak-wizard/shared";
 
 import { UserForm } from "#admin/users/UserForm";
@@ -176,9 +180,35 @@ export class AKUserWizard extends CreateWizard {
     }
 }
 
+/**
+ * The user wizard as a full page, for the `/identity/users/new` route.
+ *
+ * The list page's active path is carried across in the `path` search parameter, so that a user
+ * created from a filtered list lands in the same path.
+ */
+@customElement("ak-user-wizard-page")
+export class AKUserWizardPage extends AKFullPageWizard {
+    public override header = formatCreateLabel(AKUserWizard);
+    public override icon = "pf-icon pf-icon-user";
+
+    #path = getSearchParam("path", "");
+
+    public override returnURL = toAdminInterface(
+        "identity/users",
+        this.#path ? { path: this.#path } : undefined,
+    );
+
+    protected override render() {
+        return html`<ak-user-wizard
+            default-path=${this.#path || DefaultUIConfig.defaults.userPath}
+        ></ak-user-wizard>`;
+    }
+}
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-user-wizard": AKUserWizard;
+        "ak-user-wizard-page": AKUserWizardPage;
         "ak-user-service-account-result-page": ServiceAccountResultPage;
     }
 }
