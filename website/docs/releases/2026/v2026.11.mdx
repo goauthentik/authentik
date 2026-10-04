@@ -68,7 +68,9 @@ A RAC provider signs into devices which are enrolled through the authentik agent
 
 The [Password stage](../../add-secure-apps/flows-stages/stages/password/index.mdx#password-lockout) can lock password login after a configured number of consecutive failed attempts. Lockout is disabled by default and also works when password validation is embedded in an Identification stage.
 
-Administrators with permission to reset a user's password can lock or unlock it from the user's details page. Changing the password preserves the lock. Existing sessions and passwordless authentication are unaffected. Optional warning and lockout messages help users understand failed attempts, and lock transitions appear in the audit log.
+Administrators with permission to view a user and reset their password can use **Lock password login** or **Unlock password login** on the user's details page. Changing the password preserves the lock. Existing sessions and passwordless authentication are unaffected. App passwords submitted through password stages also obey the lock. Optional warning and lockout messages help users understand failed attempts, and lock transitions appear in the audit log.
+
+An Enterprise license is required to create new locks. Existing locks remain enforced without a valid license, and administrators can still unlock them.
 
 ### Passwords stored as authenticator devices
 
