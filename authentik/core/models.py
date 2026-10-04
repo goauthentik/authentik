@@ -10,13 +10,12 @@ from uuid import uuid4
 
 import pgtrigger
 from deepmerge import always_merger
-from django.contrib.auth.hashers import UNUSABLE_PASSWORD_PREFIX, check_password, make_password
-from django.contrib.auth.models import AbstractUser, Permission
+from django.contrib.auth.models import Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
-from django.db import models, transaction
+from django.db import models
 from django.db.models import Q, QuerySet, options
 from django.db.models.functions import Upper
 from django.http import HttpRequest
@@ -40,6 +39,7 @@ from authentik.admin.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
 from authentik.admin.utils import get_system_settings
 from authentik.blueprints.models import ManagedModel
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
+from authentik.core.password import PasswordUser
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
 from authentik.lib.expression.exceptions import ControlFlowException
@@ -364,14 +364,12 @@ class UserManager(DjangoUserManager):
         return self.get_queryset().exclude_anonymous()
 
 
-class User(SerializerModel, AttributesMixin, AbstractUser):
+class User(SerializerModel, AttributesMixin, PasswordUser):
     """authentik User model, based on django's contrib auth user model."""
 
     # Overwriting PermissionsMixin: permissions are handled by roles.
     # (This knowingly violates the Liskov substitution principle. It is better to fail loudly.)
     user_permissions = None
-
-    _password_device_dirty = False
 
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
     name = models.TextField(help_text=_("User's display name."))
@@ -410,15 +408,6 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
 
     def __str__(self):
         return self.username
-
-    def save(self, *args, **kwargs):
-        if not self._password_device_dirty:
-            return super().save(*args, **kwargs)
-        with transaction.atomic():
-            super().save(*args, **kwargs)
-            self.password_device.save()
-        self._password_device_dirty = False
-        return None
 
     @staticmethod
     def default_path() -> str:
@@ -573,67 +562,6 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             deprecation, message=message_event, cause=cause, replacement=replacement
         )
         return self.groups
-
-    @property
-    def password(self) -> str:
-        """Password hash, or an unusable password when no device exists."""
-        device = getattr(self, "password_device", None)
-        return device.password if device else UNUSABLE_PASSWORD_PREFIX
-
-    @password.setter
-    def password(self, password_hash: str):
-        """Stage a password hash until save()."""
-        from authentik.stages.password.models import PasswordDevice
-
-        device = getattr(self, "password_device", None)
-        if device is None:
-            device = PasswordDevice(user=self, name="Password")
-        device.password = password_hash
-        self._password_device_dirty = True
-
-    @property
-    def password_change_date(self) -> datetime:
-        """Last password change, or the join date for users without a password."""
-        device = getattr(self, "password_device", None)
-        return device.password_change_date if device else self.date_joined
-
-    def set_password(self, raw_password, signal=True, sender=None, request=None):
-        if self.pk and signal:
-            from authentik.core.signals import password_changed
-
-            if not sender:
-                sender = self
-            password_changed.send(sender=sender, user=self, password=raw_password, request=request)
-        super().set_password(raw_password)
-        self.password_device.password_change_date = now()
-
-    def set_password_from_hash(self, password_hash: str, signal=True, sender=None, request=None):
-        """Set password directly from a pre-hashed value.
-
-        Unlike set_password(), this does not hash the input again. The provided value
-        must already be validated by the caller, and it is stored as-is.
-
-        Because no raw password is available, downstream password sync integrations
-        such as LDAP and Kerberos cannot be updated from this code path.
-        """
-        if self.pk and signal:
-            from authentik.core.signals import password_hash_changed
-
-            if not sender:
-                sender = self
-            password_hash_changed.send(sender=sender, user=self, request=request)
-        self.password = password_hash
-        self.password_device.password_change_date = now()
-
-    def check_password(self, raw_password: str) -> bool:
-        """Check the password, upgrading hashes without emitting password-change signals."""
-
-        def setter(raw_password):
-            device = self.password_device
-            device.password = make_password(raw_password)
-            device.save(update_fields=["password"])
-
-        return check_password(raw_password, self.password, setter)
 
     @property
     def uid(self) -> str:

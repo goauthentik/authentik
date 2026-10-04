@@ -2,6 +2,7 @@
 
 from unittest.mock import patch
 
+from asgiref.sync import async_to_sync
 from django.contrib.auth.hashers import PBKDF2PasswordHasher, make_password
 from django.db import IntegrityError, transaction
 from django.http import HttpRequest
@@ -146,6 +147,43 @@ class TestUsers(TestCase):
         self.assertFalse(user.has_usable_password())
         self.assertFalse(user.check_password("anything"))
 
+    def test_password_partial_save(self):
+        """Partial user updates leave a staged password pending until explicitly saved."""
+        user = User.objects.create_user(username=generate_id(), password="initial")  # nosec
+        user.set_password("changed")
+        user.name = "Changed name"
+        user.save(update_fields=["name"])
+        self.assertTrue(User.objects.get(pk=user.pk).check_password("initial"))
+        user.save(update_fields=["password"])
+        self.assertTrue(User.objects.get(pk=user.pk).check_password("changed"))
+
+    def test_check_staged_password_does_not_save(self):
+        """Checking an imported, outdated hash must not persist an unsaved password."""
+        user = User.objects.create(username=generate_id())
+        user.password = PBKDF2PasswordHasher().encode("staged", "salt", iterations=1)
+        self.assertTrue(user.check_password("staged"))
+        self.assertFalse(PasswordDevice.objects.filter(user=user).exists())
+
+    def test_refresh_discards_staged_password(self):
+        """Refreshing a user discards an unsaved password along with other changes."""
+        user = User.objects.create_user(username=generate_id(), password="initial")  # nosec
+        user.set_password("changed")
+        user.refresh_from_db()
+        self.assertTrue(user.check_password("initial"))
+        user.save()
+        self.assertTrue(User.objects.get(pk=user.pk).check_password("initial"))
+
+    def test_first_password_from_two_loaded_users(self):
+        """A missing device cached by another writer must not cause a duplicate insert."""
+        user = User.objects.create(username=generate_id())
+        other = User.objects.get(pk=user.pk)
+        self.assertFalse(other.has_usable_password())
+        user.set_password("first")
+        user.save()
+        other.set_password("second")
+        other.save()
+        self.assertTrue(User.objects.get(pk=user.pk).check_password("second"))
+
     def test_session_auth_hash_follows_password(self):
         """Test changing a password invalidates existing sessions"""
         user = User.objects.create_user(username=generate_id(), password="initial")  # nosec
@@ -168,6 +206,33 @@ class TestUsers(TestCase):
         user.name = "Changed name"
         user.save()
 
+        device = PasswordDevice.objects.get(user=user)
+        self.assertNotEqual(device.password, old_hash)
+        self.assertEqual(device.password_change_date, changed_at)
+
+    def test_hash_upgrade_preserves_concurrent_password_change(self):
+        """An outdated cached hash cannot overwrite a newly reset password."""
+        old_hash = PBKDF2PasswordHasher().encode("initial", "salt", iterations=1)
+        user = User.objects.create(username=generate_id(), password=old_hash)
+        changed_hash = make_password("changed")
+        PasswordDevice.objects.filter(user=user).update(password=changed_hash)
+
+        self.assertTrue(user.check_password("initial"))
+
+        self.assertEqual(PasswordDevice.objects.get(user=user).password, changed_hash)
+
+    def test_async_password_check_upgrades_hash(self):
+        """Django's async password API can load and rehash a password device."""
+        old_hash = PBKDF2PasswordHasher().encode("initial", "salt", iterations=1)
+        user = User.objects.create(username=generate_id(), password=old_hash)
+        user = User.objects.get(pk=user.pk)
+        changed_at = user.password_change_date
+        user = User.objects.get(pk=user.pk)
+
+        with patch.object(password_changed, "send") as signal:
+            self.assertTrue(async_to_sync(user.acheck_password)("initial"))
+
+        signal.assert_not_called()
         device = PasswordDevice.objects.get(user=user)
         self.assertNotEqual(device.password, old_hash)
         self.assertEqual(device.password_change_date, changed_at)

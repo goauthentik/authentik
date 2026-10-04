@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
         ),
         # Restore passwords before making the legacy columns non-nullable.
         migrations.RunSQL(
-            sql=migrations.RunSQL.noop,
+            sql="UPDATE authentik_core_user SET password = NULL, password_change_date = NULL;",
             reverse_sql="""
                 UPDATE authentik_core_user
                 SET password = '!', password_change_date = date_joined;

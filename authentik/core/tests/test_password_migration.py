@@ -34,6 +34,12 @@ class TestPasswordMigration(TransactionTestCase):
         device = devices.get(user_id=user.pk)
         self.assertEqual(device.password, password)
         self.assertEqual(device.password_change_date, changed_at)
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT password, password_change_date FROM authentik_core_user WHERE id = %s",
+                [user.pk],
+            )
+            self.assertEqual(cursor.fetchone(), (None, None))
 
         password = make_password(generate_id())
         changed_at = now()

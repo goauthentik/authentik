@@ -1,5 +1,8 @@
 """password stage models"""
 
+from datetime import datetime
+
+from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.timezone import now
@@ -99,6 +102,33 @@ class PasswordDevice(Device):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="password_device")
     password = models.CharField(max_length=128)
     password_change_date = models.DateTimeField(default=now)
+
+    @classmethod
+    def save_password_hash(
+        cls, user: User, password: str, changed_at: datetime, using: str
+    ) -> PasswordDevice:
+        """Persist only password fields, preserving other device state."""
+        defaults = {"password": password, "password_change_date": changed_at}
+        device, _ = cls.objects.using(using).update_or_create(
+            user=user,
+            defaults=defaults,
+            create_defaults={"name": "Password", **defaults},
+        )
+        return device
+
+    def check_password(self, raw_password: str) -> bool:
+        """Upgrade outdated hashes without replacing a concurrently changed password."""
+
+        def setter(raw_password):
+            password = make_password(raw_password)
+            if (
+                type(self)
+                .objects.filter(pk=self.pk, password=self.password)
+                .update(password=password)
+            ):
+                self.password = password
+
+        return check_password(raw_password, self.password, setter)
 
     def __str__(self):
         return str(self.name) or str(self.user_id)
