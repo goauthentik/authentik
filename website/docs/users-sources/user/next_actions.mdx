@@ -24,7 +24,9 @@ A missing flow, invalid attribute value, or policy denial keeps the session rest
 
 ## Require an action for a user
 
-Set the `goauthentik.io/user/next-actions` attribute on the user, through the user API, a [blueprint](../../customize/blueprints/index.mdx), or from within a flow, for example with a [User Write stage](../../add-secure-apps/flows-stages/stages/user_write/index.mdx) in an enrollment flow:
+In the Admin interface, go to **Directory** > **Users**, open the user, and click **Edit**. Add the attribute below to **Attributes**, preserving the user's other attributes, and save.
+
+You can also set the attribute through the user API, a [blueprint](../../customize/blueprints/index.mdx), or from within a flow, for example with a [User Write stage](../../add-secure-apps/flows-stages/stages/user_write/index.mdx) in an enrollment flow:
 
 ```yaml
 goauthentik.io/user/next-actions:
