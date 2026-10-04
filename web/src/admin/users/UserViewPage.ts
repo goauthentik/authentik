@@ -20,19 +20,12 @@ import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithLazyTabs } from "#elements/mixins/lazy-tabs";
-import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithLocale } from "#elements/mixins/locale";
 import { WithSession } from "#elements/mixins/session";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
-import {
-    CapabilitiesEnum,
-    CoreApi,
-    LicenseSummaryStatusEnum,
-    ModelEnum,
-    User,
-} from "@goauthentik/api";
+import { CapabilitiesEnum, CoreApi, ModelEnum, User } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, PropertyValues } from "lit";
@@ -40,7 +33,7 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-view")
 export class UserViewPage extends WithLazyTabs(
-    WithLicenseSummary(WithLocale(WithBrandConfig(WithCapabilitiesConfig(WithSession(AKElement))))),
+    WithLocale(WithBrandConfig(WithCapabilitiesConfig(WithSession(AKElement)))),
 ) {
     #api = aki(CoreApi);
 
@@ -114,11 +107,6 @@ export class UserViewPage extends WithLazyTabs(
                         .user=${this.user}
                         .currentUserPk=${this.currentUser?.pk}
                         .canImpersonate=${this.can(CapabilitiesEnum.CanImpersonate)}
-                        .hasEnterpriseLicense=${this.hasEnterpriseLicense}
-                        .hasInstalledEnterpriseLicense=${
-                            this.licenseSummary !== null &&
-                            this.licenseSummary.status !== LicenseSummaryStatusEnum.Unlicensed
-                        }
                         .brandHasRecoveryFlow=${!!this.brand.flowRecovery}
                     ></ak-user-overview-tab>
                 </div>

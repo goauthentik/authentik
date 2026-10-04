@@ -61,7 +61,12 @@ export class UserNextActionsList extends Table<NextActionRow> {
     protected selectedFlow: Flow | null = null;
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<NextActionRow>> {
-        const slugs = toSlugs(this.user?.attributes?.[USER_ATTRIBUTE_NEXT_ACTIONS]);
+        if (!this.user) {
+            return createPaginatedResponse();
+        }
+
+        const user = await this.#api.coreUsersRetrieve({ id: this.user.pk });
+        const slugs = toSlugs(user.attributes?.[USER_ATTRIBUTE_NEXT_ACTIONS]);
 
         const rows = await Promise.all(
             slugs.map(async (slug) => {
@@ -136,6 +141,7 @@ export class UserNextActionsList extends Table<NextActionRow> {
     protected override renderToolbar(): SlottedTemplateResult {
         return html`
             <ak-search-select
+                label=${msg("Flow", { id: "user-next-actions.column.flow.label" })}
                 .fetchObjects=${this.fetchFlows}
                 .selectedObject=${this.selectedFlow}
                 .renderElement=${RenderFlowOption}
