@@ -74,7 +74,7 @@ export class UserPasswordLockForm extends WithLocale(DestructiveModelForm<User>)
                           id: "user.action.password-unlock-confirm.description",
                       })
                     : msg(
-                          str`Prevent ${displayName} from authenticating with a password? Existing sessions and other authentication methods are not affected.`,
+                          str`Prevent ${displayName} from authenticating through password stages, including with app passwords? Existing sessions and passwordless authentication are not affected.`,
                           { id: "user.action.password-lock-confirm.description" },
                       )
             }
