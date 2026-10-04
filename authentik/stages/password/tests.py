@@ -1,6 +1,7 @@
 """password tests"""
 
-from threading import Thread
+from concurrent.futures import ThreadPoolExecutor
+from threading import Barrier
 from unittest.mock import MagicMock, patch
 
 from django.contrib.auth.hashers import PBKDF2PasswordHasher
@@ -11,10 +12,10 @@ from django.urls import reverse
 from django.utils.timezone import now
 
 from authentik.core.models import UserTypes
+from authentik.core.signals import login_failed
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.enterprise.license import LicenseSummary
 from authentik.enterprise.models import LicenseUsageStatus
-from authentik.enterprise.stages.password.lockout import PasswordLockout, PasswordLockoutResult
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
@@ -23,9 +24,16 @@ from authentik.flows.tests import FlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
+from authentik.sources.kerberos.models import KerberosSource, UserKerberosSourceConnection
+from authentik.sources.ldap.models import LDAP_DISTINGUISHED_NAME, LDAPSource
 from authentik.stages.authenticator import device_classes, devices_for_user
 from authentik.stages.authenticator.models import Device
-from authentik.stages.password import BACKEND_INBUILT
+from authentik.stages.password import BACKEND_INBUILT, BACKEND_KERBEROS, BACKEND_LDAP
+from authentik.stages.password.lockout import (
+    PasswordLockout,
+    PasswordLockoutBase,
+    PasswordLockoutResult,
+)
 from authentik.stages.password.models import PasswordDevice, PasswordStage
 
 MOCK_BACKEND_AUTHENTICATE = MagicMock(side_effect=PermissionDenied("test"))
@@ -370,6 +378,74 @@ class TestPasswordLockout(FlowTestCase):
             self.submit("wrong")
         self.assertFalse(self.device.locked)
 
+    def test_existing_lock_survives_license_expiry(self):
+        """Losing a license cannot re-enable a password an administrator locked."""
+        PasswordDevice.objects.filter(user=self.user).update(locked_at=now())
+        with self.licensed(False):
+            self.start_flow()
+            response = self.submit(self.user.username)
+        self.assertStageResponse(
+            response,
+            self.flow,
+            response_errors={"password": [{"string": "Invalid password", "code": "invalid"}]},
+        )
+
+    def test_locked_password_skips_backends_and_records_failure(self):
+        """Correct and incorrect locked passwords cause the same failed-login signal."""
+        PasswordDevice.objects.filter(user=self.user).update(locked_at=now())
+        for password in (self.user.username, "wrong"):
+            with self.subTest(password=password):
+                self.start_flow()
+                with (
+                    patch("authentik.core.auth.InbuiltBackend.authenticate") as backend,
+                    patch.object(login_failed, "send", wraps=login_failed.send) as failed,
+                ):
+                    self.submit(password)
+                backend.assert_not_called()
+                failed.assert_called_once()
+
+    def test_lock_during_authentication_records_failure(self):
+        """A lock set while a backend runs still rejects and records the attempt."""
+        PasswordDevice.objects.filter(user=self.user).update(locked_at=now())
+        with patch.object(login_failed, "send") as failed:
+            result = PasswordLockout(self.stage, RequestFactory().post("/")).apply(
+                self.user, self.user, {}
+            )
+        self.assertIsNone(result.user)
+        failed.assert_called_once()
+
+    def test_lock_enforcement_without_enterprise(self):
+        """The OSS implementation enforces existing locks but creates none."""
+        policy = PasswordLockoutBase(self.stage, RequestFactory().post("/"))
+        self.assertEqual(policy.apply(self.user, self.user, {}), PasswordLockoutResult(self.user))
+        for _ in range(self.stage.failed_attempts_before_lockout):
+            self.assertEqual(policy.apply(self.user, None, {}), PasswordLockoutResult())
+        self.assertFalse(self.device.locked)
+        PasswordDevice.objects.filter(user=self.user).update(locked_at=now())
+        self.assertIsNone(policy.apply(self.user, self.user, {}).user)
+
+    def test_external_password_exemption_requires_enabled_source(self):
+        """Disabled sources must not exempt locally verified passwords from lockout."""
+        for backend, model in ((BACKEND_LDAP, LDAPSource), (BACKEND_KERBEROS, KerberosSource)):
+            with self.subTest(backend=backend):
+                source = model.objects.create(name=generate_id(), slug=generate_id())
+                if backend == BACKEND_LDAP:
+                    self.user.attributes[LDAP_DISTINGUISHED_NAME] = "cn=user,dc=example,dc=com"
+                    self.user.save()
+                else:
+                    UserKerberosSourceConnection.objects.create(
+                        source=source, user=self.user, identifier="user@EXAMPLE.COM"
+                    )
+                self.stage.backends = [BACKEND_INBUILT, backend]
+                policy = PasswordLockout(self.stage, RequestFactory().post("/"))
+                PasswordDevice.objects.filter(user=self.user).update(failed_attempts=0)
+                policy.apply(self.user, None, {})
+                self.assertEqual(self.device.failed_attempts, 0)
+                source.enabled = False
+                source.save()
+                policy.apply(self.user, None, {})
+                self.assertEqual(self.device.failed_attempts, 1)
+
     def test_custom_messages(self):
         """Test custom warning and lockout messages are returned"""
         self.stage.last_attempt_warning_message = "One attempt remains."
@@ -515,29 +591,26 @@ class TestPasswordLockoutConcurrency(TransactionTestCase):
             name=generate_id(), backends=[BACKEND_INBUILT], failed_attempts_before_lockout=3
         )
 
-        class FailureThread(Thread):
-            __test__ = False
-            result = PasswordLockoutResult()
+        ready = Barrier(3)
 
-            def run(self):
-                try:
-                    self.result = PasswordLockout(stage, request).apply(user, None, {})
-                finally:
-                    connection.close()
+        def fail_password():
+            try:
+                ready.wait(timeout=10)
+                return PasswordLockout(stage, request).apply(user, None, {})
+            finally:
+                connection.close()
 
         connection.close()
         with patch("authentik.enterprise.license.LicenseKey.cached_summary") as summary:
             summary.return_value.status.is_valid = True
-            threads = [FailureThread() for _ in range(3)]
-            for thread in threads:
-                thread.start()
-            for thread in threads:
-                thread.join()
+            with ThreadPoolExecutor(max_workers=3) as pool:
+                futures = [pool.submit(fail_password) for _ in range(3)]
+                results = [future.result(timeout=10) for future in futures]
 
         device = PasswordDevice.objects.get(user=user)
         self.assertTrue(device.locked)
         self.assertCountEqual(
-            [thread.result for thread in threads],
+            results,
             [
                 PasswordLockoutResult(),
                 PasswordLockoutResult(last_attempt=True),

@@ -1,6 +1,6 @@
 """authentik password stage"""
 
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from django.contrib.auth import _clean_credentials
 from django.contrib.auth.backends import BaseBackend
@@ -27,10 +27,12 @@ from authentik.flows.stage import ChallengeStageView
 from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.reflection import path_to_class
 from authentik.policies.reputation.models import Reputation
-from authentik.stages.password.models import PasswordStage
-
-if TYPE_CHECKING:
-    from authentik.enterprise.stages.password.lockout import PasswordLockoutResult
+from authentik.stages.password.lockout import (
+    SERVICE_ACCOUNT_TYPES,
+    PasswordLockout,
+    PasswordLockoutResult,
+)
+from authentik.stages.password.models import PasswordDevice, PasswordStage
 
 LOGGER = get_logger()
 PLAN_CONTEXT_AUTHENTICATION_BACKEND = "user_backend"
@@ -45,6 +47,15 @@ def authenticate(
     """If the given credentials are valid, return a User object.
 
     Customized version of django's authenticate, which accepts a list of backends"""
+    if (
+        PasswordDevice.objects.filter(
+            user__username=credentials.get("username"), locked_at__isnull=False
+        )
+        .exclude(user__type__in=SERVICE_ACCOUNT_TYPES)
+        .exists()
+    ):
+        # Refuse before a backend can sync passwords or change authentication state.
+        backends = []
     for backend_path in backends:
         try:
             backend: BaseBackend = path_to_class(backend_path)()
@@ -127,8 +138,6 @@ class PasswordChallengeResponse(ChallengeResponse):
             # (most likely LDAP)
             self.stage.logger.debug("Validation error from signal", exc=exc, **auth_kwargs)
             raise StageInvalidException("Validation error") from exc
-        from authentik.enterprise.stages.password.lockout import PasswordLockout
-
         result = PasswordLockout(executor.current_stage, self.stage.request).apply(
             pending_user, user, executor.plan.context
         )

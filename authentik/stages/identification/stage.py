@@ -2,7 +2,7 @@
 
 from dataclasses import asdict
 from functools import cache
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import PermissionDenied
@@ -51,14 +51,12 @@ from authentik.stages.captcha.stage import (
 )
 from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.identification.signals import identification_failed
+from authentik.stages.password.lockout import PasswordLockout, PasswordLockoutResult
 from authentik.stages.password.stage import (
     PLAN_CONTEXT_METHOD,
     PLAN_CONTEXT_METHOD_ARGS,
     authenticate,
 )
-
-if TYPE_CHECKING:
-    from authentik.enterprise.stages.password.lockout import PasswordLockoutResult
 
 
 class LoginChallengeMixin:
@@ -239,8 +237,6 @@ class IdentificationChallengeResponse(ChallengeResponse):
 
     def _validate_password(self, current_stage: IdentificationStage, password: str | None):
         """Authenticate the pre-identified user's password against the embedded stage"""
-        from authentik.enterprise.stages.password.lockout import PasswordLockout
-
         if not password:
             self.stage.logger.warning("Password not set for ident+auth attempt")
         try:

@@ -117,11 +117,22 @@ class TestPasswordLockActions(APITestCase):
                 1,
             )
 
-    def test_missing_password_is_noop(self):
+    def test_lock_before_setting_first_password(self):
+        """Locking a passwordless user also prevents a later password from logging in."""
         PasswordDevice.objects.filter(user=self.target).delete()
-        for action in ("lock", "unlock"):
-            url = reverse(f"authentik_api:user-{action}-password", kwargs={"pk": self.target.pk})
-            self.assertEqual(self.client.post(url).status_code, 204)
+        url = reverse("authentik_api:user-lock-password", kwargs={"pk": self.target.pk})
+        self.assertEqual(self.client.post(url).status_code, 204)
+        self.target.refresh_from_db()
+        self.assertFalse(self.target.has_usable_password())
+        self.target.set_password("new password")
+        self.target.save()
+        self.assertTrue(PasswordDevice.objects.get(user=self.target).locked)
+
+    def test_unlock_missing_password_is_noop(self):
+        PasswordDevice.objects.filter(user=self.target).delete()
+        url = reverse("authentik_api:user-unlock-password", kwargs={"pk": self.target.pk})
+        self.assertEqual(self.client.post(url).status_code, 204)
+        self.assertFalse(PasswordDevice.objects.filter(user=self.target).exists())
         self.assertFalse(
             Event.objects.filter(
                 action__in=[EventAction.PASSWORD_LOCKED, EventAction.PASSWORD_UNLOCKED],
