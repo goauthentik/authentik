@@ -118,3 +118,7 @@ class RedirectStageView(
     BaseRedirectStageView,
 ):
     """Redirect stage with optional enterprise flow handling."""
+
+    def __init__(self, *args, **kwargs):
+        # Make initialization explicit for static analysis of the optional base.
+        super().__init__(*args, **kwargs)
