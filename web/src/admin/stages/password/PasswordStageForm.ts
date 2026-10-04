@@ -68,7 +68,7 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
                               id: "password-stage.lockout-threshold.enterprise.description",
                           })
                         : msg(
-                              "Lock password login after this many consecutive failed attempts, until an administrator unlocks it. Failed attempts against LDAP and Kerberos backends are not counted. Set to 0 to never lock.",
+                              "Lock password login after this many consecutive failed attempts, until an administrator unlocks it. Users with an enabled LDAP or Kerberos password source are exempt when that backend is selected. Set to 0 to never lock.",
                               { id: "password-stage.lockout-threshold.description" },
                           )
                 }

@@ -1,4 +1,6 @@
 import { aki } from "#common/api/client";
+import { PFSize } from "#common/enums";
+import { APIMessage, MessageLevel } from "#common/messages";
 import { formatDisambiguatedUserDisplayName } from "#common/users";
 
 import { modalInvoker } from "#elements/dialogs";
@@ -14,6 +16,8 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-user-password-lock-form")
 export class UserPasswordLockForm extends WithLocale(DestructiveModelForm<User>) {
+    public override size = PFSize.Small;
+
     protected coreAPI = aki(CoreApi);
 
     protected get locked(): boolean {
@@ -36,6 +40,22 @@ export class UserPasswordLockForm extends WithLocale(DestructiveModelForm<User>)
             : msg("Lock password login", { id: "user.action.password-lock.label" });
     }
 
+    protected override formatSubmittingLabel(): string {
+        return this.locked
+            ? msg("Unlocking password login...", { id: "user.action.password-unlock.pending" })
+            : msg("Locking password login...", { id: "user.action.password-lock.pending" });
+    }
+
+    protected override formatSubmittedLabel(): string {
+        return this.locked
+            ? msg("Password login unlocked", { id: "user.action.password-unlock.success" })
+            : msg("Password login locked", { id: "user.action.password-lock.success" });
+    }
+
+    protected override formatAPISuccessMessage(): APIMessage {
+        return { level: MessageLevel.success, message: this.formatSubmittedLabel() };
+    }
+
     protected override formatHeadline(): string {
         return this.locked
             ? msg("Review password unlock", { id: "user.action.password-unlock-review.label" })
@@ -47,7 +67,7 @@ export class UserPasswordLockForm extends WithLocale(DestructiveModelForm<User>)
             ? formatDisambiguatedUserDisplayName(this.instance, this.activeLanguageTag)
             : msg("Unknown user", { id: "user.display.unknown.label" });
 
-        return html`<p>
+        return html`<p class="pf-c-form__helper-text">
             ${
                 this.locked
                     ? msg(str`Allow ${displayName} to authenticate with a password again?`, {
