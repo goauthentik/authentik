@@ -15,14 +15,10 @@ from authentik.stages.password.models import PasswordDevice
 class PasswordLockoutMixin:
     """Count failures while the caller holds the password device's row lock."""
 
-    def record_attempt(self, device: PasswordDevice, user: User | None) -> PasswordLockoutResult:
+    def record_failure(self, device: PasswordDevice) -> PasswordLockoutResult:
         if not LicenseKey.cached_summary().status.is_valid:
-            return PasswordLockoutResult(user)
+            return PasswordLockoutResult()
         devices = PasswordDevice.objects.filter(pk=device.pk)
-        if user is not None:
-            if device.failed_attempts:
-                devices.update(failed_attempts=0)
-            return PasswordLockoutResult(user)
         threshold = self.password_stage.failed_attempts_before_lockout
         if threshold == 0 or self._uses_external_password(device.user):
             return PasswordLockoutResult()

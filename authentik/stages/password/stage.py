@@ -4,6 +4,7 @@ from typing import Any
 
 from django.contrib.auth import _clean_credentials
 from django.contrib.auth.backends import BaseBackend
+from django.contrib.auth.hashers import make_password
 from django.core.exceptions import PermissionDenied
 from django.db.models import Sum
 from django.http import HttpRequest, HttpResponse
@@ -55,6 +56,8 @@ def authenticate(
         .exists()
     ):
         # Refuse before a backend can sync passwords or change authentication state.
+        # Match the inbuilt backend's hashing work without checking the real password.
+        make_password(credentials.get("password"))
         backends = []
     for backend_path in backends:
         try:

@@ -4,14 +4,14 @@ from concurrent.futures import ThreadPoolExecutor
 from threading import Barrier
 from unittest.mock import MagicMock, patch
 
-from django.contrib.auth.hashers import PBKDF2PasswordHasher
+from django.contrib.auth.hashers import PBKDF2PasswordHasher, make_password
 from django.core.exceptions import PermissionDenied
 from django.db import connection
 from django.test import RequestFactory, TestCase, TransactionTestCase
 from django.urls import reverse
 from django.utils.timezone import now
 
-from authentik.core.models import UserTypes
+from authentik.core.models import Token, TokenIntents, UserTypes
 from authentik.core.signals import login_failed
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.enterprise.license import LicenseSummary
@@ -28,7 +28,12 @@ from authentik.sources.kerberos.models import KerberosSource, UserKerberosSource
 from authentik.sources.ldap.models import LDAP_DISTINGUISHED_NAME, LDAPSource
 from authentik.stages.authenticator import device_classes, devices_for_user
 from authentik.stages.authenticator.models import Device
-from authentik.stages.password import BACKEND_INBUILT, BACKEND_KERBEROS, BACKEND_LDAP
+from authentik.stages.password import (
+    BACKEND_APP_PASSWORD,
+    BACKEND_INBUILT,
+    BACKEND_KERBEROS,
+    BACKEND_LDAP,
+)
 from authentik.stages.password.lockout import (
     PasswordLockout,
     PasswordLockoutBase,
@@ -331,6 +336,24 @@ class TestPasswordLockout(FlowTestCase):
             error_message="Invalid password",
         )
 
+    def test_locked_password_refuses_app_password_in_flow(self):
+        """App passwords submitted through a password stage obey the same lock."""
+        token = Token.objects.create(
+            identifier=generate_id(), user=self.user, intent=TokenIntents.INTENT_APP_PASSWORD
+        )
+        self.stage.backends = [BACKEND_APP_PASSWORD]
+        self.stage.save()
+        self.start_flow()
+        self.assertStageRedirects(self.submit(token.key), reverse("authentik_core:root-redirect"))
+
+        PasswordDevice.objects.filter(user=self.user).update(locked_at=now())
+        self.start_flow()
+        self.assertStageResponse(
+            self.submit(token.key),
+            self.flow,
+            response_errors={"password": [{"string": "Invalid password", "code": "invalid"}]},
+        )
+
     def test_success_resets_failures(self):
         """Test authenticating successfully forgets earlier failures"""
         self.start_flow()
@@ -338,6 +361,14 @@ class TestPasswordLockout(FlowTestCase):
         self.assertEqual(self.device.failed_attempts, 1)
 
         self.submit(self.user.username)
+        self.assertEqual(self.device.failed_attempts, 0)
+
+    def test_unlicensed_success_resets_failures(self):
+        """License expiry must not preserve failures across a successful login."""
+        PasswordDevice.objects.filter(user=self.user).update(failed_attempts=1)
+        with self.licensed(False):
+            self.start_flow()
+            self.submit(self.user.username)
         self.assertEqual(self.device.failed_attempts, 0)
 
     def test_new_password_preserves_lock(self):
@@ -399,9 +430,13 @@ class TestPasswordLockout(FlowTestCase):
                 with (
                     patch("authentik.core.auth.InbuiltBackend.authenticate") as backend,
                     patch.object(login_failed, "send", wraps=login_failed.send) as failed,
+                    patch(
+                        "authentik.stages.password.stage.make_password", wraps=make_password
+                    ) as hash_password,
                 ):
                     self.submit(password)
                 backend.assert_not_called()
+                hash_password.assert_called_once_with(password)
                 failed.assert_called_once()
 
     def test_lock_during_authentication_records_failure(self):

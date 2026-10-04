@@ -38,7 +38,12 @@ class UserPasswordLockoutMixin:
             )
         with transaction.atomic():
             PasswordDevice.objects.get_or_create(
-                user=user, defaults={"name": "Password", "password": make_password(None)}
+                user=user,
+                defaults={
+                    "name": "Password",
+                    "password": make_password(None),
+                    "password_change_date": user.date_joined,
+                },
             )
             if PasswordDevice.objects.filter(user=user, locked_at__isnull=True).update(
                 failed_attempts=0, locked_at=now()

@@ -50,11 +50,15 @@ class PasswordLockoutBase:
                         stage=self.password_stage,
                     )
                 return PasswordLockoutResult(lockout_reached=self._count_locked(context))
-            return self.record_attempt(device, user)
+            if user is not None:
+                if device.failed_attempts:
+                    PasswordDevice.objects.filter(pk=device.pk).update(failed_attempts=0)
+                return PasswordLockoutResult(user)
+            return self.record_failure(device)
 
-    def record_attempt(self, device: PasswordDevice, user: User | None) -> PasswordLockoutResult:
+    def record_failure(self, device: PasswordDevice) -> PasswordLockoutResult:
         """Without Enterprise, authentication does not create new locks."""
-        return PasswordLockoutResult(user)
+        return PasswordLockoutResult()
 
     def _count_locked(self, context: dict[str, Any]) -> bool:
         """Show the lockout message only after this flow reaches its attempt limit."""

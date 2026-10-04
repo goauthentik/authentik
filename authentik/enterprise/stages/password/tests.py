@@ -124,6 +124,7 @@ class TestPasswordLockActions(APITestCase):
         self.assertEqual(self.client.post(url).status_code, 204)
         self.target.refresh_from_db()
         self.assertFalse(self.target.has_usable_password())
+        self.assertEqual(self.target.password_change_date, self.target.date_joined)
         self.target.set_password("new password")
         self.target.save()
         self.assertTrue(PasswordDevice.objects.get(user=self.target).locked)

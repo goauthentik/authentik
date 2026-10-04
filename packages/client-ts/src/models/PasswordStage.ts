@@ -66,7 +66,8 @@ export interface PasswordStage {
      */
     lastAttemptWarningMessage?: string;
     /**
-     * Message shown when the user's password has been locked. Leave blank to show no message.
+     * Message shown when the user's password has been locked. Leave blank to show a generic
+     * authentication error.
      */
     lockoutMessage?: string;
     /**

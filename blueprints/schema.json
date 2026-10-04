@@ -17963,7 +17963,7 @@
                 "lockout_message": {
                     "type": "string",
                     "title": "Lockout message",
-                    "description": "Message shown when the user's password has been locked. Leave blank to show no message."
+                    "description": "Message shown when the user's password has been locked. Leave blank to show a generic authentication error."
                 },
                 "allow_show_password": {
                     "type": "boolean",
