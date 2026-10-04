@@ -21,12 +21,6 @@ NEXT_ACTION_DISALLOWED_DESIGNATIONS = [
 ]
 
 
-def next_action_slugs(value: Any) -> list[str]:
-    """Normalize the next-actions attribute value to a list of slugs, without validation"""
-    slugs = value if isinstance(value, list) else [value]
-    return [slug for slug in slugs if isinstance(slug, str)]
-
-
 def resolve_next_actions(value: Any) -> list[Flow]:
     """Resolve ordered flow slugs, rejecting missing or unusable flows."""
     slugs = value if isinstance(value, list) else [value]

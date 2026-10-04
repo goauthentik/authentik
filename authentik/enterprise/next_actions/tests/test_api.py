@@ -72,6 +72,23 @@ class TestNextActionsAPI(APITestCase):
             self.client.patch(target, {"attributes": {}}, format="json").status_code, 200
         )
 
+    def test_duplicate_actions_are_audited_once(self):
+        """Audit changes to required flows without duplicating events for repeated slugs."""
+        self.client.force_login(self.admin)
+        flow = create_test_flow(FlowDesignation.STAGE_CONFIGURATION)
+        target = reverse("authentik_api:user-detail", kwargs={"pk": self.user.pk})
+        for actions in ([flow.slug, flow.slug], [flow.slug], []):
+            response = self.client.patch(
+                target,
+                {"attributes": {USER_ATTRIBUTE_NEXT_ACTIONS: actions}},
+                format="json",
+            )
+            self.assertEqual(response.status_code, 200)
+        for action in (EventAction.NEXT_ACTION_SET, EventAction.NEXT_ACTION_REMOVED):
+            self.assertEqual(
+                Event.objects.filter(action=action, context__flow_slug=flow.slug).count(), 1
+            )
+
     def test_set_next_actions_invalid(self):
         """Test that unknown flows and disallowed designations are rejected"""
         self.client.force_login(self.admin)

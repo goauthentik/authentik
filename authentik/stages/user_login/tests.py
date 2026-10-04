@@ -10,20 +10,12 @@ from django.utils.timezone import now
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core import user_switching
-from authentik.core.models import (
-    AuthenticatedSession,
-    Session,
-    User,
-    UserSwitchingSession,
-)
+from authentik.core.models import AuthenticatedSession, Session, User, UserSwitchingSession
 from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import get_user
 from authentik.flows.markers import StageMarker
-from authentik.flows.models import (
-    FlowDesignation,
-    FlowStageBinding,
-)
+from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK

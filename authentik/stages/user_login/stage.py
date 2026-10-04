@@ -12,11 +12,7 @@ from jwt import PyJWTError, decode, encode
 from rest_framework.fields import BooleanField, CharField
 
 from authentik.core import user_switching
-from authentik.core.models import (
-    AuthenticatedSession,
-    Session,
-    User,
-)
+from authentik.core.models import AuthenticatedSession, Session, User
 from authentik.core.sessions import SessionStore
 from authentik.events.middleware import audit_ignore
 from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
