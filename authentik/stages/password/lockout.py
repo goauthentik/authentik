@@ -77,3 +77,6 @@ class PasswordLockout(
     PasswordLockoutBase,
 ):
     """Enforce password locks, with optional licensed failure counting."""
+
+    def __init__(self, password_stage: PasswordStage, request: HttpRequest):
+        super().__init__(password_stage, request)
