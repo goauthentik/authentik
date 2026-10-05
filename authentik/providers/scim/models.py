@@ -93,7 +93,7 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
     """SCIM 2.0 provider to create users and groups in external applications"""
 
     # Remove the legacy credential columns in 2027.2.
-    _token = models.TextField(blank=True, db_column="token", help_text=_("Authentication token"))
+    token = models.TextField(help_text=_("Authentication token"), blank=True)
 
     auth_basic_password = models.TextField(
         help_text=_("Password used for Basic authentication"), blank=True

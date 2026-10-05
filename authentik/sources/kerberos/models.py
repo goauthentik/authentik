@@ -74,10 +74,8 @@ class KerberosSource(IncomingSyncSource):
         blank=True, help_text=_("Credential cache to use for SPNEGO in form type:residual")
     )
 
-    _sync_password = models.TextField(
-        blank=True,
-        db_column="sync_password",
-        help_text=_("Password to authenticate to kadmin for sync"),
+    sync_password = models.TextField(
+        help_text=_("Password to authenticate to kadmin for sync"), blank=True
     )
 
     realm = models.TextField(help_text=_("Kerberos realm"), unique=True)
