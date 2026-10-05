@@ -9,8 +9,6 @@ import { html, nothing, TemplateResult } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { repeat } from "lit/directives/repeat.js";
 
-export { findSidebarBreadcrumbs, type SidebarBreadcrumb } from "./sidebar-breadcrumbs.js";
-
 // The second attribute type is of string[] to help with the 'activeWhen' control, which was
 // commonplace and singular enough to merit its own handler.
 export type SidebarEntry = [
