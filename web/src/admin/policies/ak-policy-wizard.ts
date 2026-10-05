@@ -14,11 +14,15 @@ import "#admin/policies/PolicyBindingForm";
 import { aki } from "#common/api/client";
 import { PolicyBindingCheckTarget } from "#common/policies/utils";
 
+import { formatCreateLabel } from "#elements/dialogs/shared";
 import { RadioChangeEventDetail, RadioOption } from "#elements/forms/Radio";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 import { CreateWizard } from "#elements/wizard/CreateWizard";
 import { FormWizardPage } from "#elements/wizard/FormWizardPage";
 import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
+
+import { AKFullPageWizard } from "#components/ak-wizard/ak-full-page-wizard";
 
 import {
     PoliciesApi,
@@ -154,8 +158,23 @@ export class PolicyWizard extends CreateWizard {
     }
 }
 
+/**
+ * The policy wizard as a full page, for the `/policy/policies/new` route.
+ */
+@customElement("ak-policy-wizard-page")
+export class PolicyWizardPage extends AKFullPageWizard {
+    public override header = formatCreateLabel(PolicyWizard);
+    public override icon = "pf-icon pf-icon-infrastructure";
+    public override returnURL = toAdminInterface("policy/policies");
+
+    protected override render() {
+        return html`<ak-policy-wizard></ak-policy-wizard>`;
+    }
+}
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-policy-wizard": PolicyWizard;
+        "ak-policy-wizard-page": PolicyWizardPage;
     }
 }

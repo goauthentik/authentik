@@ -5,12 +5,14 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
 
-import { IconEditButtonByTagName, modalInvoker, ModalInvokerButton } from "#elements/dialogs";
+import { IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { WizardLinkButton } from "#components/ak-wizard/ak-full-page-wizard";
 
 import { AKStageWizard } from "#admin/stages/ak-stage-wizard";
 import { DuoDeviceImportForm } from "#admin/stages/authenticator_duo/DuoDeviceImportForm";
@@ -109,7 +111,7 @@ export class StageListPage extends TablePage<Stage> {
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
-        return ModalInvokerButton(AKStageWizard);
+        return WizardLinkButton(toAdminInterface("flow/stages/new"), AKStageWizard);
     }
 }
 

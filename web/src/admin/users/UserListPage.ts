@@ -24,7 +24,7 @@ import { userTypeToLabel } from "#common/labels";
 import { DefaultUIConfig } from "#common/ui/config";
 import { formatUserDisplayName } from "#common/users";
 
-import { IconEditButton, modalInvoker } from "#elements/dialogs";
+import { IconEditButton } from "#elements/dialogs";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithLicenseSummary } from "#elements/mixins/license";
@@ -36,7 +36,6 @@ import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { AKUserWizard } from "#admin/users/ak-user-wizard";
 import { RecoveryButtons } from "#admin/users/recovery";
 import { ToggleUserActivationButton } from "#admin/users/UserActiveForm";
 import { UserForm } from "#admin/users/UserForm";
@@ -391,16 +390,15 @@ export class UserListPage extends WithLicenseSummary(
 
         return guard([defaultActivePath], () => {
             return [
-                html`<button
+                html`<a
                     class="pf-c-button pf-m-primary"
-                    type="button"
-                    ${modalInvoker(AKUserWizard, {
-                        defaultPath: defaultActivePath,
+                    href=${toAdminInterface("identity/users/new", {
+                        path: defaultActivePath,
                     })}
                     aria-description=${msg("Open the new user wizard")}
                 >
                     ${msg("New User")}
-                </button> `,
+                </a> `,
                 html`<ak-reports-export-button
                     .createExport=${this.createExport}
                     .exportParams=${this.buildExportParams}

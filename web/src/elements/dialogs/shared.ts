@@ -2,6 +2,7 @@ import { PFSize } from "#common/enums";
 
 import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 
+import { msg, str } from "@lit/localize";
 import { LitElement } from "lit";
 
 //#region Types
@@ -83,6 +84,23 @@ export interface NamedEntityElement extends Function, NamedEntity {}
 
 export interface NamedEntityElementConstructor extends NamedEntity, CustomElementConstructor {
     createLabel?: string | null;
+}
+
+/**
+ * Format the creation label for an entity element, e.g. "New Provider".
+ *
+ * Shared by the modal invoker button, the full-page wizard link button, and the page header of a
+ * full-page wizard, so that all three read the same.
+ */
+export function formatCreateLabel(factory: NamedEntityElementConstructor): string {
+    const { verboseName } = factory;
+    const createLabel = factory.createLabel ?? msg("New");
+
+    if (!verboseName) return createLabel;
+
+    return msg(str`${createLabel} ${verboseName}`, {
+        id: "invoker.label.modifier-noun",
+    });
 }
 
 //#endregion

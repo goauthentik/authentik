@@ -24,13 +24,13 @@ import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { getSearchParam, updateSearchParams } from "#elements/router/core/search-params";
 import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { AKPropertyMappingWizard } from "#admin/property-mappings/ak-property-mapping-wizard";
 import { PropertyMappingTestForm } from "#admin/property-mappings/PropertyMappingTestForm";
 
 import { ModelEnum, PropertyMapping, PropertymappingsApi } from "@goauthentik/api";
@@ -123,12 +123,12 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
-        return html`<button
+        return html`<a
             class="pf-c-button pf-m-primary"
-            ${modalInvoker(AKPropertyMappingWizard)}
+            href=${toAdminInterface("core/property-mappings/new")}
         >
             ${msg("New Property Mapping")}
-        </button>`;
+        </a>`;
     }
 
     protected override renderToolbarAfter(): SlottedTemplateResult {

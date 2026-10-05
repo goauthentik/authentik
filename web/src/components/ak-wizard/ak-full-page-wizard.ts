@@ -2,7 +2,9 @@ import { WizardCloseEvent } from "./events.js";
 
 import { AKElement } from "#elements/Base";
 import { listen } from "#elements/decorators/listen";
+import { formatCreateLabel, type NamedEntityElementConstructor } from "#elements/dialogs/shared";
 import { navigate } from "#elements/router/core/navigation";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
@@ -75,4 +77,18 @@ declare global {
     interface HTMLElementTagNameMap {
         "ak-full-page-wizard": AKFullPageWizard;
     }
+}
+
+/**
+ * A helper function to render a link to the full-page wizard that creates a new **model**
+ * instance; the full-page counterpart of {@linkcode ModalInvokerButton}.
+ *
+ * @param href The route of the wizard's page, e.g. `toAdminInterface("core/providers/new")`.
+ * @param factory The wizard element constructor, used for the label.
+ */
+export function WizardLinkButton(
+    href: string,
+    factory: NamedEntityElementConstructor,
+): SlottedTemplateResult {
+    return html`<a class="pf-c-button pf-m-primary" href=${href}>${formatCreateLabel(factory)}</a>`;
 }
