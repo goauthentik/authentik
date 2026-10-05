@@ -11,6 +11,7 @@ from authentik.crypto.secrets.migrations._permissions import preserve_role_permi
 
 FIELDS = [("shared_secret", "shared_secret_ref", "text", "shared secret")]
 
+
 def forwards(apps, schema_editor):
     migrate_credentials(
         apps,
@@ -23,6 +24,7 @@ def forwards(apps, schema_editor):
     preserve_role_permissions(
         apps, schema_editor, [("authentik_providers_radius", "radiusprovider")]
     )
+
 
 def backwards(apps, schema_editor):
     restore_credentials(apps, schema_editor, "authentik_providers_radius", "RadiusProvider", FIELDS)

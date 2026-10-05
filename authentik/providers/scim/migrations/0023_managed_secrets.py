@@ -14,9 +14,11 @@ FIELDS = [
     ("auth_basic_password", "auth_basic_password_ref", None, "SCIM password"),
 ]
 
+
 def forwards(apps, schema_editor):
     migrate_credentials(apps, schema_editor, "authentik_providers_scim", "SCIMProvider", FIELDS)
     preserve_role_permissions(apps, schema_editor, [("authentik_providers_scim", "scimprovider")])
+
 
 def backwards(apps, schema_editor):
     restore_credentials(apps, schema_editor, "authentik_providers_scim", "SCIMProvider", FIELDS)
