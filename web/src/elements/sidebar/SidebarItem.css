@@ -14,7 +14,7 @@
 .pf-c-nav__link-icon {
     color: currentcolor;
     flex: 0 0 auto;
-    font-size: var(--pf-global--FontSize--md);
+    font-size: var(--pf-global--FontSize--sm);
     opacity: 0.8;
     text-align: center;
     width: 1.25em;
