@@ -1,6 +1,6 @@
+import type { SidebarEntry } from "./types";
+
 import { ID_PATTERN, SLUG_PATTERN, UUID_PATTERN } from "#elements/router/core/constants";
-import type { SidebarItemProperties } from "#elements/sidebar/SidebarItem";
-import type { LitPropertyRecord } from "#elements/types";
 
 import { spread } from "@open-wc/lit-helpers";
 
@@ -9,14 +9,8 @@ import { html, nothing, TemplateResult } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { repeat } from "lit/directives/repeat.js";
 
-// The second attribute type is of string[] to help with the 'activeWhen' control, which was
-// commonplace and singular enough to merit its own handler.
-export type SidebarEntry = [
-    path: string | null,
-    label: string,
-    attributes?: LitPropertyRecord<SidebarItemProperties> | string[] | null,
-    children?: SidebarEntry[],
-];
+export { findSidebarBreadcrumbs, type SidebarBreadcrumb } from "./sidebar-breadcrumbs.js";
+export type { SidebarEntry };
 
 /**
  * Recursively renders a collection of sidebar entries.

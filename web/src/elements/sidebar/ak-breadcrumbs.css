@@ -1,0 +1,30 @@
+.ak-c-page-header__breadcrumbs {
+    color: var(--pf-global--Color--200);
+    font-size: var(--pf-global--FontSize--sm);
+    margin-block-end: var(--pf-global--spacer--xs);
+
+    & ol {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--pf-global--spacer--xs);
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    & li {
+        align-items: center;
+        display: flex;
+        gap: var(--pf-global--spacer--xs);
+    }
+
+    & li:not(:last-child)::after {
+        color: var(--pf-global--Color--200);
+        content: ">";
+    }
+
+    & a {
+        color: inherit;
+    }
+}

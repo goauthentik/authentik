@@ -8,6 +8,7 @@ import "#elements/commands/ak-command-palette";
 import "#elements/commands/ak-command-palette-user-modal";
 import "#components/notifications/APIDrawer";
 import "#components/notifications/NotificationDrawer";
+import "#elements/Breadcrumbs";
 import {
     createAdminSidebarEnterpriseEntries,
     createAdminSidebarEntries,
@@ -38,6 +39,7 @@ import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithNotifications } from "#elements/mixins/notifications";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
 import {
+    currentInterfacePath,
     formatInterfacePrefix,
     toAdminInterface,
     toUserInterface,
@@ -54,6 +56,7 @@ import {
 } from "#components/notifications/utils";
 
 import Styles from "#admin/ak-interface-admin.css";
+import { findSidebarBreadcrumbs } from "#admin/navigation/sidebar";
 import { DEFAULT_PATH, ROUTES } from "#admin/Routes";
 
 import { CapabilitiesEnum } from "@goauthentik/api";
@@ -97,6 +100,13 @@ export class AdminInterface extends WithLicenseSummary(
         return [...this.entries, ...createAdminSidebarEnterpriseEntries()];
     }
 
+    protected get breadcrumbs() {
+        return findSidebarBreadcrumbs(
+            this.activePath || currentInterfacePath(),
+            this.navigationEntries,
+        );
+    }
+
     //#endregion
 
     //#region Public Methods
@@ -124,10 +134,14 @@ export class AdminInterface extends WithLicenseSummary(
     // `popstate` (back/forward) rather than the legacy `ak-route-change` event.
     #routeChangeListener = () => {
         this.sidebarOpen = this.#sidebarMatcher.matches;
+        this.activePath = currentInterfacePath();
     };
 
     @state()
     protected drawer: DrawerState = readDrawerParams();
+
+    @state()
+    protected activePath = "";
 
     @listen(AKDrawerChangeEvent, { target: window })
     protected drawerListener = (event: AKDrawerChangeEvent) => {
@@ -247,7 +261,6 @@ export class AdminInterface extends WithLicenseSummary(
 
     public firstUpdated(changedProperties: PropertyValues<this>): void {
         super.firstUpdated(changedProperties);
-
         this.#refreshCommandsFrameID = requestAnimationFrame(this.#refreshCommands);
     }
 
@@ -313,6 +326,7 @@ export class AdminInterface extends WithLicenseSummary(
                         <div class="pf-c-drawer__main">
                             <div class="pf-c-drawer__content">
                                 <div class="pf-c-drawer__body">
+                                    <ak-breadcrumbs .items=${this.breadcrumbs}></ak-breadcrumbs>
                                     <ak-router-view
                                         role="presentation"
                                         class="pf-c-page__main"
