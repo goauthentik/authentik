@@ -7,6 +7,8 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.test import TestCase, TransactionTestCase
 
+from authentik.admin.models import DEFAULT_TOKEN_LENGTH
+from authentik.admin.utils import get_system_settings
 from authentik.crypto.secrets.models import Secret, SecretType, create_named_secret
 from authentik.events.models import Event, EventAction
 
@@ -23,10 +25,24 @@ class TestSecret(TestCase):
         secret.refresh_from_db()
         self.assertEqual(secret.value, value)
         self.assertNotEqual(value, previous)
-        self.assertEqual(len(value), 128)
+        self.assertEqual(len(value), DEFAULT_TOKEN_LENGTH)
         event = Event.objects.get(action=EventAction.SECRET_ROTATE)
         self.assertEqual(event.context["secret"]["pk"], secret.pk.hex)
         self.assertNotIn(value, str(event.context))
+
+    def test_generation_uses_configured_token_length(self):
+        settings = get_system_settings()
+        settings.default_token_length = 64
+        settings.save()
+        secret = Secret.objects.create(name="configured")
+        self.assertEqual(len(secret.value), 64)
+        self.assertRegex(secret.value, r"^[a-zA-Z0-9]+$")
+
+        settings.default_token_length = 80
+        settings.save()
+        value = secret.rotate()
+        self.assertEqual(len(value), 80)
+        self.assertRegex(value, r"^[a-zA-Z0-9]+$")
 
     def test_non_text_cannot_rotate(self):
         secret = Secret.objects.create(name="file", type=SecretType.FILE, value="aGk=")

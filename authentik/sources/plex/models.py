@@ -43,9 +43,7 @@ class PlexSource(ScheduledModel, Source):
     """Authenticate against plex.tv"""
 
     # Remove the legacy credential columns in 2027.2.
-    _plex_token = models.TextField(
-        db_column="plex_token", help_text=_("Plex token used to check friends")
-    )
+    plex_token = models.TextField(help_text=_("Plex token used to check friends"))
 
     client_id = models.TextField(
         default=generate_id,
