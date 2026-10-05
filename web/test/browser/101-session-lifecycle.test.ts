@@ -90,14 +90,9 @@ test.describe("Session Lifecycle", () => {
         });
 
         await test.step("Sign out and verify username is remembered", async () => {
-            const signOutLink = page.getByRole("link", { name: "Sign out" });
-
-            await expect(signOutLink, "Sign out link is visible").toBeVisible();
-
-            await signOutLink.click();
+            await session.signOut();
 
             await navigator.waitForPathname("/if/flow/default-authentication-flow/?next=%2F");
-            await session.$identificationStage.waitFor({ state: "visible" });
 
             const passwordEmbedded = await session.$passwordField.isVisible();
 
