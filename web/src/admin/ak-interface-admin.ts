@@ -127,9 +127,17 @@ export class AdminInterface extends WithLicenseSummary(
     // `popstate` (back/forward) rather than the legacy `ak-route-change` event.
     #routeChangeListener = () => {
         this.sidebarOpen = this.#sidebarMatcher.matches;
-        // Re-render so the navbar's section follows the route.
-        this.requestUpdate();
+        this.pathname = window.location.pathname;
     };
+
+    /**
+     * The current `location.pathname`, tracked so the navbar's section follows
+     * the route. Kept raw rather than interface-relative: this element upgrades
+     * before the entrypoint calls `initRouter`, so the prefix is only stripped at
+     * render time.
+     */
+    @state()
+    protected pathname = window.location.pathname;
 
     @state()
     protected drawer: DrawerState = readDrawerParams();
@@ -290,7 +298,10 @@ export class AdminInterface extends WithLicenseSummary(
 
         return html`<div class="pf-c-page">
                 <ak-page-navbar
-                    .section=${findSidebarSectionByPath(this.navigationEntries, currentInterfacePath())}
+                    .section=${findSidebarSectionByPath(
+                        this.navigationEntries,
+                        currentInterfacePath(this.pathname),
+                    )}
                 >
                     <button
                         slot="toggle"
