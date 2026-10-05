@@ -243,6 +243,33 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0
 
+  packages/client-ts:
+    devDependencies:
+      '@goauthentik/oxfmt-config':
+        specifier: link:../oxfmt-config
+        version: link:../oxfmt-config
+      '@goauthentik/oxlint-config':
+        specifier: link:../oxlint-config
+        version: link:../oxlint-config
+      '@goauthentik/tsconfig':
+        specifier: link:../tsconfig
+        version: link:../tsconfig
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.2.0
+      npm-run-all:
+        specifier: ^4.1.5
+        version: 4.1.5
+      oxfmt:
+        specifier: 'catalog:'
+        version: 0.70.0
+      oxlint:
+        specifier: 'catalog:'
+        version: 1.85.0
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+
   packages/docusaurus-config:
     dependencies:
       '@goauthentik/brand-assets':
