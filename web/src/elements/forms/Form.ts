@@ -9,6 +9,7 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
+import type { NamedEntityElement } from "#common/api/entities";
 import { EVENT_REFRESH } from "#common/constants";
 import { PFSize } from "#common/enums";
 import {
@@ -29,7 +30,6 @@ import {
 } from "#elements/dialogs";
 import {
     isTransclusionParentElement,
-    NamedEntityElement,
     TransclusionChildElement,
     TransclusionChildSymbol,
 } from "#elements/dialogs/shared";
