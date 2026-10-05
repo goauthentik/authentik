@@ -4,6 +4,7 @@ from django.contrib.auth.signals import user_logged_out
 from django.dispatch import receiver
 from django.http import HttpRequest
 from django.urls import reverse
+from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
 from authentik.core.models import USER_ATTRIBUTE_DELETE_ON_LOGOUT, AuthenticatedSession, User
@@ -92,7 +93,9 @@ def handle_saml_source_pre_user_logout(
             else:
                 # POST binding
                 form_data = processor.get_post_form_data()
-                executor.plan.context[PLAN_CONTEXT_TITLE] = f"Logging out of {source.name}..."
+                executor.plan.context[PLAN_CONTEXT_TITLE] = _("Logging out of {source}...").format(
+                    source=source.name
+                )
                 executor.plan.context[PLAN_CONTEXT_URL] = source.slo_url
                 executor.plan.context[PLAN_CONTEXT_ATTRS] = form_data
                 stage = in_memory_stage(AutosubmitStageView)

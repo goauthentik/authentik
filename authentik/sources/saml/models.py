@@ -418,6 +418,7 @@ class SAMLSourceSession(CreatedUpdatedModel):
         indexes = [
             models.Index(fields=["source", "user"]),
             models.Index(fields=["session"]),
+            models.Index(fields=["session_index"]),
         ]
 
     def __str__(self):

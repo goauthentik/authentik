@@ -1,7 +1,7 @@
 """SAML Source LogoutRequest Processor"""
 
 import base64
-from urllib.parse import quote, urlencode
+from urllib.parse import urlencode
 
 import xmlsec
 from django.http import HttpRequest
@@ -183,14 +183,10 @@ class LogoutRequestProcessor:
 
     def _build_signable_query_string(self, params: dict) -> str:
         """Build query string for signing (order matters per SAML spec)"""
-        ordered = []
-        if "SAMLRequest" in params:
-            ordered.append(f"SAMLRequest={quote(params['SAMLRequest'], safe='')}")
-        if "RelayState" in params:
-            ordered.append(f"RelayState={quote(params['RelayState'], safe='')}")
-        if "SigAlg" in params:
-            ordered.append(f"SigAlg={quote(params['SigAlg'], safe='')}")
-        return "&".join(ordered)
+        ordered = {
+            key: params[key] for key in ("SAMLRequest", "RelayState", "SigAlg") if key in params
+        }
+        return urlencode(ordered)
 
     def _sign_query_string(self, query_string: str) -> bytes:
         """Sign the query string for redirect binding"""

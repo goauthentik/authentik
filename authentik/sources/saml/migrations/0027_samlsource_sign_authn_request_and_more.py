@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_core", "0066_user_authentik_core_user_email_idx"),
-        ("authentik_sources_saml", "0025_samlsource_audience_override"),
+        ("authentik_sources_saml", "0026_remove_samlsource_audience_override"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -96,6 +96,7 @@ class Migration(migrations.Migration):
                 "indexes": [
                     models.Index(fields=["source", "user"], name="authentik_s_source__abd088_idx"),
                     models.Index(fields=["session"], name="authentik_s_session_054d2d_idx"),
+                    models.Index(fields=["session_index"], name="authentik_s_session_991dbd_idx"),
                 ],
             },
         ),

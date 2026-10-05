@@ -236,6 +236,8 @@ class SLOView(View):
         The invalidation flow contains a UserLogoutStage which fires the
         flow_pre_user_logout signal. Our signal handler in signals.py picks that up,
         finds the SAMLSourceSession, and injects the SLO redirect/POST stage."""
+        if not request.user.is_authenticated:
+            return redirect("authentik_core:root-redirect")
         # Sources do not have an invalidation flow, use the brand's
         flow = request.brand.flow_invalidation
         if not flow:
@@ -278,12 +280,17 @@ class SLOView(View):
             request.GET.get("RelayState") if not is_post else request.POST.get("RelayState")
         )
 
-        # Delete SAMLSourceSession so the source signal handler doesn't try to
-        # redirect back to the IdP (which would be circular)
-        SAMLSourceSession.objects.filter(
-            source=source,
-            user=request.user,
-        ).delete()
+        # Delete the matching SAMLSourceSession so the source signal handler doesn't
+        # try to redirect back to the IdP (which would be circular). Prefer the
+        # SessionIndex the IdP sent, fall back to the current user's sessions.
+        saml_sessions = SAMLSourceSession.objects.filter(source=source)
+        if logout_request.session_index:
+            saml_sessions = saml_sessions.filter(session_index=logout_request.session_index)
+        elif request.user.is_authenticated:
+            saml_sessions = saml_sessions.filter(user=request.user)
+        else:
+            saml_sessions = saml_sessions.none()
+        saml_sessions.delete()
 
         # Build the LogoutResponse to send back to the IdP after logout
         response_builder = LogoutResponseBuilder(
@@ -293,9 +300,10 @@ class SLOView(View):
             in_response_to=logout_request.id,
         )
 
-        # Sources do not have an invalidation flow, use the brand's
+        # Sources do not have an invalidation flow, use the brand's. Without a flow,
+        # or without a local session to end, reply to the IdP directly.
         flow = request.brand.flow_invalidation
-        if not flow:
+        if not flow or not request.user.is_authenticated:
             logout(request)
             return self._send_logout_response(response_builder, relay_state)
 
@@ -335,7 +343,9 @@ class SLOView(View):
         else:
             # POST binding — use autosubmit form
             form_data = response_builder.get_post_form_data(relay_state)
-            plan.context[PLAN_CONTEXT_TITLE] = f"Logging out of {source.name}..."
+            plan.context[PLAN_CONTEXT_TITLE] = _("Logging out of {source}...").format(
+                source=source.name
+            )
             plan.context[PLAN_CONTEXT_URL] = source.slo_url
             plan.context[PLAN_CONTEXT_ATTRS] = form_data
             plan.append_stage(in_memory_stage(AutosubmitStageView))

@@ -53,7 +53,11 @@ from authentik.sources.saml.exceptions import (
 )
 from authentik.sources.saml.models import SAMLSource, UserSAMLSourceConnection
 from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID
-from authentik.sources.saml.stages import PLAN_CONTEXT_SAML_SESSION_DATA, SAMLSourceFlowManager
+from authentik.sources.saml.stages import (
+    PLAN_CONTEXT_SAML_SESSION_DATA,
+    SAMLSessionData,
+    SAMLSourceFlowManager,
+)
 
 LOGGER = get_logger()
 if TYPE_CHECKING:
@@ -395,11 +399,11 @@ class ResponseProcessor:
                 "name_id": name_id_el,
             },
             policy_context={
-                PLAN_CONTEXT_SAML_SESSION_DATA: {
-                    "session_index": session_index or "",
-                    "name_id": name_id,
-                    "name_id_format": name_id_el.attrib.get("Format", ""),
-                },
+                PLAN_CONTEXT_SAML_SESSION_DATA: SAMLSessionData(
+                    name_id=name_id,
+                    name_id_format=name_id_el.attrib.get("Format", ""),
+                    session_index=session_index or "",
+                ),
             },
         )
 
@@ -481,10 +485,10 @@ class ResponseProcessor:
             },
             policy_context={
                 "saml_response": etree.tostring(self._root),
-                PLAN_CONTEXT_SAML_SESSION_DATA: {
-                    "session_index": session_index or "",
-                    "name_id": name_id,
-                    "name_id_format": name_id_el.attrib.get("Format", ""),
-                },
+                PLAN_CONTEXT_SAML_SESSION_DATA: SAMLSessionData(
+                    name_id=name_id,
+                    name_id_format=name_id_el.attrib.get("Format", ""),
+                    session_index=session_index or "",
+                ),
             },
         )

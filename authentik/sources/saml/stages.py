@@ -1,5 +1,7 @@
 """SAML Source stages and flow manager"""
 
+from dataclasses import dataclass
+
 from django.http import HttpRequest, HttpResponse
 from structlog.stdlib import get_logger
 
@@ -20,13 +22,24 @@ LOGGER = get_logger()
 PLAN_CONTEXT_SAML_SESSION_DATA = "goauthentik.io/sources/saml/session_data"
 
 
+@dataclass(slots=True)
+class SAMLSessionData:
+    """Session details from the IdP's assertion, kept to support Single Logout"""
+
+    name_id: str
+    name_id_format: str = ""
+    session_index: str = ""
+
+
 class SAMLPostSourceStage(PostSourceStage):
     """Extends PostSourceStage to also create SAMLSourceSession for SLO support."""
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
         response = super().dispatch(request)
 
-        session_data = self.executor.plan.context.get(PLAN_CONTEXT_SAML_SESSION_DATA)
+        session_data: SAMLSessionData | None = self.executor.plan.context.get(
+            PLAN_CONTEXT_SAML_SESSION_DATA
+        )
         if not session_data:
             return response
 
@@ -46,13 +59,15 @@ class SAMLPostSourceStage(PostSourceStage):
             source=source,
             user=user,
             session=auth_session,
-            **session_data,
+            name_id=session_data.name_id,
+            name_id_format=session_data.name_id_format,
+            session_index=session_data.session_index,
         )
         LOGGER.debug(
             "Created SAMLSourceSession",
             source=source.name,
             user=user,
-            session_index=session_data.get("session_index", ""),
+            session_index=session_data.session_index,
         )
         return response
 
