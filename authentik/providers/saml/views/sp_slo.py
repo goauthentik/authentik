@@ -240,46 +240,48 @@ class SPInitiatedSLOBindingRedirectView(SPInitiatedSLOView):
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Override dispatch to handle logout responses before authentication check"""
-        # Check if this is a LogoutResponse before doing any authentication checks
-        # If we receive a logoutResponse, this means we are using native redirect
+        # If we receive a LogoutResponse, this means we are using native redirect
         # IDP SLO, so we want to redirect to our next provider
         if REQUEST_KEY_SAML_RESPONSE in request.GET:
-            relay_state = request.GET.get(REQUEST_KEY_RELAY_STATE, "")
-
-            # Resolve provider for signature verification
-            try:
-                application = Application.objects.get(slug=kwargs.get("application_slug", ""))
-                provider = SAMLProvider.objects.get(pk=application.provider_id)
-            except Application.DoesNotExist, SAMLProvider.DoesNotExist:
-                return redirect("authentik_core:root-redirect")
-
-            try:
-                parser = LogoutResponseParser()
-                logout_response = parser.parse_detached(
-                    request.GET[REQUEST_KEY_SAML_RESPONSE],
-                    relay_state=relay_state or None,
-                )
-                parser.verify_status(logout_response)
-                if provider.verification_kp:
-                    verify_detached_signature(
-                        "SAMLResponse",
-                        request.GET[REQUEST_KEY_SAML_RESPONSE],
-                        relay_state or None,
-                        request.GET.get(REQUEST_KEY_SAML_SIGNATURE),
-                        request.GET.get(REQUEST_KEY_SAML_SIG_ALG),
-                        provider.verification_kp,
-                    )
-            except CannotHandleAssertion as exc:
-                LOGGER.warning("Failed to verify SAML LogoutResponse", exc=str(exc))
-                return redirect("authentik_core:root-redirect")
-
-            redirect_url = _get_redirect_url(request, relay_state)
-            if redirect_url:
-                return redirect(redirect_url)
-            return redirect("authentik_core:root-redirect")
-
+            return self.handle_logout_response(request, kwargs.get("application_slug", ""))
         # For SAML logout requests, use the parent dispatch with auth checks
         return super().dispatch(request, *args, **kwargs)
+
+    def handle_logout_response(self, request: HttpRequest, application_slug: str) -> HttpResponse:
+        """Validate a LogoutResponse received via redirect binding, verifying its detached
+        signature when the provider has a verification certificate configured"""
+        relay_state = request.GET.get(REQUEST_KEY_RELAY_STATE, "")
+
+        try:
+            application = Application.objects.get(slug=application_slug)
+            provider = SAMLProvider.objects.get(pk=application.provider_id)
+        except Application.DoesNotExist, SAMLProvider.DoesNotExist:
+            return redirect("authentik_core:root-redirect")
+
+        try:
+            parser = LogoutResponseParser()
+            logout_response = parser.parse_detached(
+                request.GET[REQUEST_KEY_SAML_RESPONSE],
+                relay_state=relay_state or None,
+            )
+            parser.verify_status(logout_response)
+            if provider.verification_kp:
+                verify_detached_signature(
+                    "SAMLResponse",
+                    request.GET[REQUEST_KEY_SAML_RESPONSE],
+                    relay_state or None,
+                    request.GET.get(REQUEST_KEY_SAML_SIGNATURE),
+                    request.GET.get(REQUEST_KEY_SAML_SIG_ALG),
+                    provider.verification_kp,
+                )
+        except CannotHandleAssertion as exc:
+            LOGGER.warning("Failed to verify SAML LogoutResponse", exc=str(exc))
+            return redirect("authentik_core:root-redirect")
+
+        redirect_url = _get_redirect_url(request, relay_state)
+        if redirect_url:
+            return redirect(redirect_url)
+        return redirect("authentik_core:root-redirect")
 
     def check_saml_request(self) -> HttpRequest | None:
         # Logout responses are now handled in dispatch()
@@ -319,43 +321,46 @@ class SPInitiatedSLOBindingPOSTView(SPInitiatedSLOView):
     """SAML Handler for SP-initiated SLO with POST binding"""
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        """Override dispatch to handle logout requests and responses"""
-        # Check if this is a LogoutResponse before doing any authentication checks
-        # If we receive a logoutResponse, this means we are using native redirect
+        """Override dispatch to handle logout responses before authentication check"""
+        # If we receive a LogoutResponse, this means we are using native redirect
         # IDP SLO, so we want to redirect to our next provider
         if REQUEST_KEY_SAML_RESPONSE in request.POST:
-            relay_state = request.POST.get(REQUEST_KEY_RELAY_STATE, "")
-
-            try:
-                application = Application.objects.get(slug=kwargs.get("application_slug", ""))
-                provider = SAMLProvider.objects.get(pk=application.provider_id)
-            except Application.DoesNotExist, SAMLProvider.DoesNotExist:
-                return redirect("authentik_core:root-redirect")
-
-            try:
-                parser = LogoutResponseParser()
-                logout_response = parser.parse(
-                    request.POST[REQUEST_KEY_SAML_RESPONSE],
-                    relay_state=relay_state or None,
-                )
-                parser.verify_status(logout_response)
-                if provider.verification_kp:
-                    verify_enveloped_signature(
-                        b64decode(request.POST[REQUEST_KEY_SAML_RESPONSE].encode()),
-                        provider.verification_kp,
-                        "/samlp:LogoutResponse/ds:Signature",
-                    )
-            except CannotHandleAssertion as exc:
-                LOGGER.warning("Failed to verify SAML LogoutResponse", exc=str(exc))
-                return redirect("authentik_core:root-redirect")
-
-            redirect_url = _get_redirect_url(request, relay_state)
-            if redirect_url:
-                return redirect(redirect_url)
-            return redirect("authentik_core:root-redirect")
-
+            return self.handle_logout_response(request, kwargs.get("application_slug", ""))
         # For SAML logout requests, use the parent dispatch with auth checks
         return super().dispatch(request, *args, **kwargs)
+
+    def handle_logout_response(self, request: HttpRequest, application_slug: str) -> HttpResponse:
+        """Validate a LogoutResponse received via POST binding, verifying its enveloped
+        signature when the provider has a verification certificate configured"""
+        relay_state = request.POST.get(REQUEST_KEY_RELAY_STATE, "")
+
+        try:
+            application = Application.objects.get(slug=application_slug)
+            provider = SAMLProvider.objects.get(pk=application.provider_id)
+        except Application.DoesNotExist, SAMLProvider.DoesNotExist:
+            return redirect("authentik_core:root-redirect")
+
+        try:
+            parser = LogoutResponseParser()
+            logout_response = parser.parse(
+                request.POST[REQUEST_KEY_SAML_RESPONSE],
+                relay_state=relay_state or None,
+            )
+            parser.verify_status(logout_response)
+            if provider.verification_kp:
+                verify_enveloped_signature(
+                    b64decode(request.POST[REQUEST_KEY_SAML_RESPONSE].encode()),
+                    provider.verification_kp,
+                    "/samlp:LogoutResponse/ds:Signature",
+                )
+        except CannotHandleAssertion as exc:
+            LOGGER.warning("Failed to verify SAML LogoutResponse", exc=str(exc))
+            return redirect("authentik_core:root-redirect")
+
+        redirect_url = _get_redirect_url(request, relay_state)
+        if redirect_url:
+            return redirect(redirect_url)
+        return redirect("authentik_core:root-redirect")
 
     def check_saml_request(self) -> HttpRequest | None:
         payload = self.request.POST
