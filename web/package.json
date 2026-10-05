@@ -186,7 +186,7 @@
         "@patternfly/patternfly": "^4.224.5",
         "@playwright/test": "catalog:",
         "@protomaps/basemaps": "^5.7.2",
-        "@sentry/browser": "^10.75.0",
+        "@sentry/browser": "^10.75.3",
         "@storybook/addon-docs": "^10.6.0",
         "@storybook/addon-links": "^10.6.0",
         "@storybook/web-components": "^10.6.0",
@@ -206,6 +206,7 @@
         "chart.js": "^4.5.1",
         "chartjs-adapter-date-fns": "^3.0.0",
         "codemirror": "^6.0.2",
+        "cookie": "^2.0.1",
         "core-js": "^3.49.0",
         "country-flag-icons": "^1.6.20",
         "date-fns": "^4.4.0",
@@ -269,9 +270,9 @@
         "@esbuild/linux-x64": "^0.28.1",
         "@goauthentik/oxfmt-config-dev": "link:../packages/oxfmt-config",
         "@goauthentik/oxlint-config-dev": "link:../packages/oxlint-config",
-        "@rollup/rollup-darwin-arm64": "^4.63.3",
-        "@rollup/rollup-linux-arm64-gnu": "^4.63.3",
-        "@rollup/rollup-linux-x64-gnu": "^4.63.3"
+        "@rollup/rollup-darwin-arm64": "^4.63.6",
+        "@rollup/rollup-linux-arm64-gnu": "^4.63.6",
+        "@rollup/rollup-linux-x64-gnu": "^4.63.6"
     },
     "devEngines": {
         "runtime": {
