@@ -74,7 +74,9 @@ class MetadataProcessor:
             sp_sso_descriptor.append(encryption_descriptor)
 
         if self.source.slo_url:
-            slo_location = self.source.build_full_url(self.http_request, view="slo")
+            slo_location = self.http_request.build_absolute_uri(
+                reverse("authentik_sources_saml:slo", kwargs={"source_slug": self.source.slug})
+            )
 
             slo_redirect = SubElement(
                 sp_sso_descriptor, f"{{{NS_SAML_METADATA}}}SingleLogoutService"
