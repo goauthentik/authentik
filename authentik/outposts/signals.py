@@ -11,7 +11,8 @@ from authentik.brands.models import Brand
 from authentik.core.models import AuthenticatedSession, Provider
 from authentik.core.signals import impersonation_changed
 from authentik.crypto.models import CertificateKeyPair
-from authentik.crypto.secrets.models import Secret, secret_value_changed
+from authentik.crypto.secrets.models import Secret
+from authentik.crypto.secrets.signals import secret_value_changed
 from authentik.outposts.models import Outpost, OutpostModel, OutpostServiceConnection
 from authentik.outposts.tasks import (
     CACHE_KEY_OUTPOST_DOWN,
