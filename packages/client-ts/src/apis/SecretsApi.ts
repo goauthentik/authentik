@@ -148,7 +148,11 @@ export class SecretsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Manage secrets.
+     * Create and manage named credentials referenced by authentik configuration objects. List and
+     * detail responses contain metadata only. Reading a value requires the view_value action and
+     * its separate permission. Replacing or manually rotating a value requires rotate_secret
+     * permission and records an audit event. Rotation changes the value stored in authentik; it
+     * does not update external systems.
      */
     async secretsSecretsCreateRaw(
         requestParameters: SecretsSecretsCreateRequest,
@@ -161,7 +165,11 @@ export class SecretsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Manage secrets.
+     * Create and manage named credentials referenced by authentik configuration objects. List and
+     * detail responses contain metadata only. Reading a value requires the view_value action and
+     * its separate permission. Replacing or manually rotating a value requires rotate_secret
+     * permission and records an audit event. Rotation changes the value stored in authentik; it
+     * does not update external systems.
      */
     async secretsSecretsCreate(
         requestParameters: SecretsSecretsCreateRequest,
@@ -212,7 +220,11 @@ export class SecretsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Manage secrets.
+     * Create and manage named credentials referenced by authentik configuration objects. List and
+     * detail responses contain metadata only. Reading a value requires the view_value action and
+     * its separate permission. Replacing or manually rotating a value requires rotate_secret
+     * permission and records an audit event. Rotation changes the value stored in authentik; it
+     * does not update external systems.
      */
     async secretsSecretsDestroyRaw(
         requestParameters: SecretsSecretsDestroyRequest,
@@ -225,7 +237,11 @@ export class SecretsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Manage secrets.
+     * Create and manage named credentials referenced by authentik configuration objects. List and
+     * detail responses contain metadata only. Reading a value requires the view_value action and
+     * its separate permission. Replacing or manually rotating a value requires rotate_secret
+     * permission and records an audit event. Rotation changes the value stored in authentik; it
+     * does not update external systems.
      */
     async secretsSecretsDestroy(
         requestParameters: SecretsSecretsDestroyRequest,
@@ -298,7 +314,11 @@ export class SecretsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Manage secrets.
+     * Create and manage named credentials referenced by authentik configuration objects. List and
+     * detail responses contain metadata only. Reading a value requires the view_value action and
+     * its separate permission. Replacing or manually rotating a value requires rotate_secret
+     * permission and records an audit event. Rotation changes the value stored in authentik; it
+     * does not update external systems.
      */
     async secretsSecretsListRaw(
         requestParameters: SecretsSecretsListRequest,
@@ -313,7 +333,11 @@ export class SecretsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Manage secrets.
+     * Create and manage named credentials referenced by authentik configuration objects. List and
+     * detail responses contain metadata only. Reading a value requires the view_value action and
+     * its separate permission. Replacing or manually rotating a value requires rotate_secret
+     * permission and records an audit event. Rotation changes the value stored in authentik; it
+     * does not update external systems.
      */
     async secretsSecretsList(
         requestParameters: SecretsSecretsListRequest = {},
@@ -367,7 +391,11 @@ export class SecretsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Manage secrets.
+     * Create and manage named credentials referenced by authentik configuration objects. List and
+     * detail responses contain metadata only. Reading a value requires the view_value action and
+     * its separate permission. Replacing or manually rotating a value requires rotate_secret
+     * permission and records an audit event. Rotation changes the value stored in authentik; it
+     * does not update external systems.
      */
     async secretsSecretsPartialUpdateRaw(
         requestParameters: SecretsSecretsPartialUpdateRequest,
@@ -380,7 +408,11 @@ export class SecretsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Manage secrets.
+     * Create and manage named credentials referenced by authentik configuration objects. List and
+     * detail responses contain metadata only. Reading a value requires the view_value action and
+     * its separate permission. Replacing or manually rotating a value requires rotate_secret
+     * permission and records an audit event. Rotation changes the value stored in authentik; it
+     * does not update external systems.
      */
     async secretsSecretsPartialUpdate(
         requestParameters: SecretsSecretsPartialUpdateRequest,
@@ -434,7 +466,11 @@ export class SecretsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Manage secrets.
+     * Create and manage named credentials referenced by authentik configuration objects. List and
+     * detail responses contain metadata only. Reading a value requires the view_value action and
+     * its separate permission. Replacing or manually rotating a value requires rotate_secret
+     * permission and records an audit event. Rotation changes the value stored in authentik; it
+     * does not update external systems.
      */
     async secretsSecretsRetrieveRaw(
         requestParameters: SecretsSecretsRetrieveRequest,
@@ -447,7 +483,11 @@ export class SecretsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Manage secrets.
+     * Create and manage named credentials referenced by authentik configuration objects. List and
+     * detail responses contain metadata only. Reading a value requires the view_value action and
+     * its separate permission. Replacing or manually rotating a value requires rotate_secret
+     * permission and records an audit event. Rotation changes the value stored in authentik; it
+     * does not update external systems.
      */
     async secretsSecretsRetrieve(
         requestParameters: SecretsSecretsRetrieveRequest,
@@ -574,7 +614,11 @@ export class SecretsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Manage secrets.
+     * Create and manage named credentials referenced by authentik configuration objects. List and
+     * detail responses contain metadata only. Reading a value requires the view_value action and
+     * its separate permission. Replacing or manually rotating a value requires rotate_secret
+     * permission and records an audit event. Rotation changes the value stored in authentik; it
+     * does not update external systems.
      */
     async secretsSecretsUpdateRaw(
         requestParameters: SecretsSecretsUpdateRequest,
@@ -587,7 +631,11 @@ export class SecretsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Manage secrets.
+     * Create and manage named credentials referenced by authentik configuration objects. List and
+     * detail responses contain metadata only. Reading a value requires the view_value action and
+     * its separate permission. Replacing or manually rotating a value requires rotate_secret
+     * permission and records an audit event. Rotation changes the value stored in authentik; it
+     * does not update external systems.
      */
     async secretsSecretsUpdate(
         requestParameters: SecretsSecretsUpdateRequest,
