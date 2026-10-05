@@ -20,7 +20,7 @@ import { taskCard } from "#components/tasks/taskCard";
 
 import { TransportForm } from "#admin/events/TransportForm";
 
-import { EventsApi, ModelEnum, NotificationTransport } from "@goauthentik/api";
+import { CoreApi, EventsApi, ModelEnum, NotificationTransport } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -63,8 +63,9 @@ export class TransportListPage extends TablePage<NotificationTransport> {
             object-label=${msg("Notification transport(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: NotificationTransport) => {
-                return aki(EventsApi).eventsTransportsUsedByList({
-                    uuid: item.pk,
+                return aki(CoreApi).coreUsedByList({
+                    model: ModelEnum.AuthentikEventsNotificationtransport,
+                    pk: item.pk,
                 });
             }}
             .delete=${(item: NotificationTransport) => {

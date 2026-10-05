@@ -58,8 +58,9 @@ export class UserConsentList extends Table<UserConsent> {
                 ];
             }}
             .usedBy=${(item: UserConsent) => {
-                return aki(CoreApi).coreUserConsentUsedByList({
-                    id: item.pk,
+                return aki(CoreApi).coreUsedByList({
+                    model: "authentik_core.userconsent",
+                    pk: item.pk.toString(),
                 });
             }}
             .delete=${(item: UserConsent) => {

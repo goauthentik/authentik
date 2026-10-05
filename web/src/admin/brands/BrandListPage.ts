@@ -59,8 +59,9 @@ export class BrandListPage extends TablePage<Brand> {
                 return [{ key: msg("Domain"), value: item.domain }];
             }}
             .usedBy=${(item: Brand) => {
-                return aki(CoreApi).coreBrandsUsedByList({
-                    brandUuid: item.brandUuid,
+                return aki(CoreApi).coreUsedByList({
+                    model: ModelEnum.AuthentikBrandsBrand,
+                    pk: item.brandUuid,
                 });
             }}
             .delete=${(item: Brand) => {

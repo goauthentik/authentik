@@ -624,6 +624,9 @@ export interface CoreUsedByListRequest {
      * Fully qualified model name, in the form `<app_label>.<model>`
      */
     model: string;
+    /**
+     * The object's primary key, or other unique identifier it exposes
+     */
     pk: string;
 }
 

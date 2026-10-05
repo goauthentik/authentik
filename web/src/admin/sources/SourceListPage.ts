@@ -18,7 +18,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { AKSourceWizard } from "#admin/sources/ak-source-wizard";
 
-import { Source, SourcesApi } from "@goauthentik/api";
+import { CoreApi, Source, SourcesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
@@ -61,8 +61,9 @@ export class SourceListPage extends TablePage<Source> {
             object-label=${msg("Source(s)")}
             .objects=${nonBuiltInSources}
             .usedBy=${(item: Source) => {
-                return aki(SourcesApi).sourcesAllUsedByList({
-                    slug: item.slug,
+                return aki(CoreApi).coreUsedByList({
+                    model: item.metaModelName,
+                    pk: item.pk,
                 });
             }}
             .delete=${(item: Source) => {

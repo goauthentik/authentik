@@ -14,7 +14,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { GroupForm } from "#admin/groups/ak-group-form";
 
-import { CoreApi, Group } from "@goauthentik/api";
+import { CoreApi, Group, ModelEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -60,8 +60,9 @@ export class GroupListPage extends TablePage<Group> {
             object-label=${msg("Group(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Group) => {
-                return aki(CoreApi).coreGroupsUsedByList({
-                    groupUuid: item.pk,
+                return aki(CoreApi).coreUsedByList({
+                    model: ModelEnum.AuthentikCoreGroup,
+                    pk: item.pk,
                 });
             }}
             .delete=${(item: Group) => {
