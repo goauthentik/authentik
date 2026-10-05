@@ -12,7 +12,7 @@ import "#components/ak-page-navbar";
 import {
     createAdminSidebarEnterpriseEntries,
     createAdminSidebarEntries,
-    findSidebarSectionByPath,
+    findSidebarSectionByRoute,
     renderSidebarItems,
     SidebarEntry,
 } from "./navigation/sidebar.js";
@@ -45,6 +45,7 @@ import {
     toAdminInterface,
     toUserInterface,
 } from "#elements/router/core/interfaces";
+import { matchRoute } from "#elements/router/core/matcher";
 import { navigate, RouterNavigateEvent } from "#elements/router/core/navigation";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -66,6 +67,18 @@ import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { guard } from "lit/directives/guard.js";
+
+let lastRoutePath: string | null = null;
+let lastRouteName: string | null = null;
+
+function routeNameForPath(path: string): string | null {
+    if (path !== lastRoutePath) {
+        lastRoutePath = path;
+        lastRouteName = matchRoute(path, ROUTES)?.route.name ?? null;
+    }
+
+    return lastRouteName;
+}
 
 @customElement("ak-interface-admin")
 export class AdminInterface extends WithLicenseSummary(
@@ -298,9 +311,9 @@ export class AdminInterface extends WithLicenseSummary(
 
         return html`<div class="pf-c-page">
                 <ak-page-navbar
-                    .section=${findSidebarSectionByPath(
+                    .section=${findSidebarSectionByRoute(
                         this.navigationEntries,
-                        currentInterfacePath(this.pathname),
+                        routeNameForPath(currentInterfacePath(this.pathname)),
                     )}
                 >
                     <button
@@ -323,7 +336,7 @@ export class AdminInterface extends WithLicenseSummary(
                 </ak-page-navbar>
 
                 <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}"
-                    >${renderSidebarItems(this.navigationEntries)}
+                    >${renderSidebarItems(this.navigationEntries, routeNameForPath)}
                 </ak-sidebar>
 
                 <div class="pf-c-page__drawer">

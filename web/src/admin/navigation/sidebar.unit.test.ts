@@ -1,37 +1,24 @@
-import { type SidebarEntry, findSidebarSectionByPath } from "./sidebar.js";
+import { createAdminSidebarEntries, findSidebarSectionByRoute } from "./sidebar.js";
 
 import { describe, expect, it } from "vitest";
 
-const entries: SidebarEntry[] = [
-    [null, "Dashboards", { key: "dashboards" }, [["/administration/overview", "Overview"]]],
-    [
-        null,
-        "Applications",
-        { key: "applications" },
-        [
-            ["/core/applications", "Applications", ["^/core/applications/(?<slug>[-\\w]+)$"]],
-            ["/core/providers", "Providers", ["^/core/providers/(?<id>\\d+)$"]],
-        ],
-    ],
-];
+describe("findSidebarSectionByRoute", () => {
+    const entries = createAdminSidebarEntries();
 
-describe("findSidebarSectionByPath", () => {
-    it("does not name a list page by its own path", () => {
-        expect(findSidebarSectionByPath(entries, "/core/providers")).toBeNull();
-        expect(findSidebarSectionByPath(entries, "/administration/overview")).toBeNull();
+    it.each([
+        ["outpost-view", "Outposts"],
+        ["provider-view", "Providers"],
+        ["application-view", "Applications"],
+        ["user-view", "Users"],
+        ["flow-view", "Flows"],
+        ["system-tasks", "System Tasks"],
+    ])("names the entry that lists %s", (routeName, section) => {
+        expect(findSidebarSectionByRoute(entries, routeName)).toBe(section);
     });
 
-    it("names the entry whose activeWhen pattern matches a detail path", () => {
-        expect(findSidebarSectionByPath(entries, "/core/providers/74")).toBe("Providers");
-        expect(findSidebarSectionByPath(entries, "/core/applications/my-app")).toBe("Applications");
-    });
-
-    it("returns null for a path no entry claims", () => {
-        expect(findSidebarSectionByPath(entries, "/core/providers/74/extra")).toBeNull();
-        expect(findSidebarSectionByPath(entries, "/unknown")).toBeNull();
-    });
-
-    it("never names a group by its label alone", () => {
-        expect(findSidebarSectionByPath(entries, "Dashboards")).toBeNull();
+    it("returns null for a route no entry lists", () => {
+        expect(findSidebarSectionByRoute(entries, "outposts")).toBeNull();
+        expect(findSidebarSectionByRoute(entries, "stage-prompts")).toBeNull();
+        expect(findSidebarSectionByRoute(entries, null)).toBeNull();
     });
 });
