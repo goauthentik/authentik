@@ -1026,14 +1026,14 @@ wheels = [
 
 [[package]]
 name = "cron-converter"
-version = "2.0.1"
+version = "2.0.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "python-dateutil" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8d/1b/8848a83006366a29ea13eb5891c63d5956c80614d50ae48d956274d49300/cron_converter-2.0.1.tar.gz", hash = "sha256:767813cda685433707a91ab3eb2326d3a0dc53c017409c01a9a6df6770975b98", size = 17350, upload-time = "2026-08-17T09:39:12.302Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ba/da/4966883d9eedaddcb0a5c5c1e73654c9731130d9a97f9a9a03dd5e3371b0/cron_converter-2.0.2.tar.gz", hash = "sha256:7c60785af5fc104bced2fdb2a16664d4eb232a4ab10c0df9b97e4f125cb6869e", size = 17404, upload-time = "2026-09-30T18:10:05.137Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7c/d4/6d9941f2fe175410a87d0db1fb2ef7ccbbddc30db219e20eda280a81bb45/cron_converter-2.0.1-py3-none-any.whl", hash = "sha256:80875151d1918f90a41af304bbb74668a1badc2dc79db446d2f18153debbb708", size = 15434, upload-time = "2026-08-17T09:39:11.081Z" },
+    { url = "https://files.pythonhosted.org/packages/fa/08/2155630b4a1e87bc53a441804a781adcfbfcdd2176af3370bf3d5e0589d9/cron_converter-2.0.2-py3-none-any.whl", hash = "sha256:81993220ff9f18f998efdfe84bd6558edc96d56f831c17e9bf830c32d7793daa", size = 15525, upload-time = "2026-09-30T18:10:03.449Z" },
 ]
 
 [[package]]
