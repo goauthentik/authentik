@@ -125,7 +125,7 @@ class UserInterface extends WithLicenseSummary(
         const canAgentSelfService = this.can(CapabilitiesEnum.CanAgentSelfService);
 
         return guard([licensed, requests, agents, canRequest, canAgentSelfService], () => {
-            if (licensed) return null;
+            if (!licensed) return null;
 
             const navItems = [];
 

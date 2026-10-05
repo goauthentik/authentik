@@ -6,12 +6,13 @@ from dataclasses import dataclass
 from xml.etree.ElementTree import ParseError  # nosec
 
 from defusedxml import ElementTree
+from django.utils.translation import gettext_lazy as _
 
 from authentik.common.saml.constants import NS_SAML_ASSERTION, NS_SAML_PROTOCOL, SAML_STATUS_SUCCESS
 from authentik.common.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
 
-ERROR_CANNOT_DECODE_RESPONSE = "Cannot decode SAML response."
+ERROR_CANNOT_DECODE_RESPONSE = _("Cannot decode SAML response.")
 
 
 @dataclass(slots=True)
@@ -77,7 +78,7 @@ class LogoutResponseParser:
             raise CannotHandleAssertion(ERROR_CANNOT_DECODE_RESPONSE) from None
         return self._parse_xml(decoded_xml, relay_state)
 
-    def verify_status(self, response: LogoutResponse):
+    def verify_status(self, response: LogoutResponse) -> None:
         """Verify that the LogoutResponse has a successful status."""
         if response.status != SAML_STATUS_SUCCESS:
             raise CannotHandleAssertion(f"LogoutResponse status is not success: {response.status}")

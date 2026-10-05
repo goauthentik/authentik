@@ -1,6 +1,7 @@
 """Test SP-initiated SAML Single Logout Views"""
 
 from unittest.mock import MagicMock, patch
+from urllib.parse import parse_qs, urlparse
 
 from django.http import Http404
 from django.test import RequestFactory, TestCase
@@ -900,8 +901,6 @@ class TestSignatureVerification(TestCase):
         redirect_url = processor.get_redirect_url()
 
         # Parse the URL to get query params
-        from urllib.parse import parse_qs, urlparse
-
         parsed = urlparse(redirect_url)
         params = parse_qs(parsed.query)
 
@@ -1003,8 +1002,6 @@ class TestSignatureVerification(TestCase):
         redirect_url = processor.get_redirect_url()
 
         # Parse the URL to get query params
-        from urllib.parse import parse_qs, urlparse
-
         parsed = urlparse(redirect_url)
         params = parse_qs(parsed.query)
 
