@@ -34,6 +34,13 @@ class SmartRoleObjectPermissionSerializer(PassiveSerializer):
 
 
 class RolePermissionViewSet(BaseRolePermissionViewSet):
+    search_fields = [
+        "permission__name",
+        "permission__codename",
+        "content_type__model",
+        "content_type__app_label",
+    ]
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.use_suse_queryset_and_serializer = settings.OVERRIDE_ENDPOINT.get(
