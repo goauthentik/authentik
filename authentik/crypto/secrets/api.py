@@ -140,7 +140,13 @@ class SecretRotatePermissions(ObjectPermissions):
 
 
 class SecretViewSet(UsedByMixin, ModelViewSet):
-    """Manage secrets."""
+    """Create and manage named credentials referenced by authentik configuration objects.
+
+    List and detail responses contain metadata only. Reading a value requires the
+    view_value action and its separate permission. Replacing or manually rotating
+    a value requires rotate_secret permission and records an audit event.
+    Rotation changes the value stored in authentik; it does not update external systems.
+    """
 
     queryset = Secret.objects.all()
     serializer_class = SecretSerializer

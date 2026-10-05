@@ -37,7 +37,7 @@ class OAuthSource(NonCreatableType, Source):
     """Login using a Generic OAuth provider."""
 
     # Remove the legacy credential columns in 2027.2.
-    _consumer_secret = models.TextField(db_column="consumer_secret")
+    consumer_secret = models.TextField()
 
     provider_type = models.CharField(max_length=255)
     request_token_url = models.TextField(
