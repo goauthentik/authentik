@@ -18,8 +18,7 @@ class RadiusProvider(OutpostModel, Provider):
     """Allow applications to authenticate against authentik's users using Radius."""
 
     # Remove the legacy credential columns in 2027.2.
-    _shared_secret = models.TextField(
-        db_column="shared_secret",
+    shared_secret = models.TextField(
         default=generate_id,
         help_text=_("Shared secret between clients and server to hash packets."),
     )
