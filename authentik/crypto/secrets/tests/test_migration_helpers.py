@@ -4,6 +4,7 @@ from django.apps import apps
 from django.db import connection
 from django.db.migrations.loader import MigrationLoader
 from django.db.migrations.writer import MigrationWriter
+from django.db.models import NOT_PROVIDED
 from django.test import SimpleTestCase, TestCase
 from guardian.models import RoleObjectPermission
 
@@ -15,8 +16,8 @@ from authentik.providers.oauth2.models import OAuth2Provider
 
 
 class TestCredentialMigrationSchema(SimpleTestCase):
-    def test_existing_fields_are_unchanged(self):
-        """Adding secret references must preserve the fields used by older servers."""
+    def test_existing_columns_are_unchanged(self):
+        """Adding references must preserve the column definitions used by older servers."""
         loader = MigrationLoader(None)
         for node in loader.graph.nodes:
             if not node[1].endswith("_managed_secrets"):
@@ -29,9 +30,12 @@ class TestCredentialMigrationSchema(SimpleTestCase):
                 for name, field in model.fields.items():
                     with self.subTest(migration=node, model=key, field=name):
                         self.assertIn(name, after.models[key].fields)
+                        previous, current = field.clone(), after.models[key].fields[name].clone()
+                        # Python defaults can change when the API stops accepting legacy inputs.
+                        previous.default = current.default = NOT_PROVIDED
                         self.assertEqual(
-                            MigrationWriter.serialize(field)[0],
-                            MigrationWriter.serialize(after.models[key].fields[name])[0],
+                            MigrationWriter.serialize(previous)[0],
+                            MigrationWriter.serialize(current)[0],
                         )
 
 
