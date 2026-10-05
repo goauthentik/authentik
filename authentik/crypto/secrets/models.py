@@ -11,10 +11,10 @@ from django.utils.translation import gettext_lazy as _
 from yaml import YAMLError, safe_load
 
 from authentik.blueprints.models import ManagedModel
+from authentik.core.models import default_token_key
 from authentik.crypto.secrets.signals import secret_value_changed, secret_value_validating
 from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
-from authentik.lib.generators import generate_id
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 
 if TYPE_CHECKING:
@@ -36,8 +36,8 @@ class SecretType(models.TextChoices):
 
 
 def generate_secret_value() -> str:
-    """Generate a value safe for HTTP Basic authentication and similar protocols."""
-    return generate_id(128)
+    """Use the configured token length and a URL-safe alphabet for credentials."""
+    return default_token_key()
 
 
 def create_named_secret(name: str) -> Secret:
