@@ -139,6 +139,20 @@ class TestPasswordLockActions(APITestCase):
             self.assertEqual(self.client.post(url).status_code, 204)
         self.assertFalse(PasswordDevice.objects.get(user=self.target).locked)
 
+    def test_audit_failure_rolls_back_lock_transition(self):
+        for action, locked_at in (("lock", None), ("unlock", now())):
+            with self.subTest(action=action):
+                device = self.target.password_device
+                PasswordDevice.objects.filter(pk=device.pk).update(locked_at=locked_at)
+                url = reverse(f"authentik_api:passworddevice-{action}", kwargs={"pk": device.pk})
+                with (
+                    patch.object(Event, "from_http", side_effect=RuntimeError("audit failed")),
+                    self.assertRaisesMessage(RuntimeError, "audit failed"),
+                ):
+                    self.client.post(url)
+                device.refresh_from_db()
+                self.assertEqual(device.locked_at, locked_at)
+
     def test_deleted_device(self):
         device = self.target.password_device
         pk = device.pk

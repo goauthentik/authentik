@@ -1,5 +1,6 @@
 """PasswordStage API Views"""
 
+from django.db import transaction
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -77,6 +78,7 @@ class PasswordDeviceViewSet(
         responses={204: OpenApiResponse(description="Successfully unlocked authenticator")},
     )
     @action(detail=True, methods=["POST"])
+    @transaction.atomic
     def unlock(self, request: Request, pk: int) -> Response:
         """Allow a locked password authenticator to authenticate again."""
         device = self.get_object()

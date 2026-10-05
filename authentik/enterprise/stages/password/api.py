@@ -1,5 +1,6 @@
 """Enterprise password lockout API extensions."""
 
+from django.db import transaction
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from drf_spectacular.utils import OpenApiResponse, extend_schema
@@ -23,6 +24,7 @@ class PasswordDeviceLockoutMixin:
     )
     @action(detail=True, methods=["POST"])
     @enterprise_action
+    @transaction.atomic
     def lock(self, request: Request, pk: int) -> Response:
         """Prevent a password authenticator from authenticating."""
         device = self.get_object()
