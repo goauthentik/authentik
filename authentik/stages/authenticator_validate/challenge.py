@@ -9,6 +9,7 @@ from structlog.stdlib import get_logger
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import User
 from authentik.core.signals import login_failed
+from authentik.events.middleware import audit_ignore
 from authentik.flows.stage import StageView
 from authentik.stages.authenticator import devices_for_user
 from authentik.stages.authenticator.models import Device, ThrottlingMixin

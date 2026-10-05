@@ -198,7 +198,7 @@ class WebAuthnDevice(SerializerModel, Device):
     ):
         """Send the client a challenge that we'll check later"""
         executor.plan.context.pop(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, None)
-        stage = cast("AuthenticatorValidateStage", stage or executor.current_stage)
+        stage = cast(AuthenticatorValidateStage, stage or executor.current_stage)
 
         allowed_credentials = []
 
