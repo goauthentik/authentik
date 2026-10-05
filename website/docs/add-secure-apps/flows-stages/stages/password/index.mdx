@@ -41,9 +41,13 @@ Anyone who knows a username can trigger automatic lockout by submitting incorrec
 
 In the Admin interface, go to **Directory > Users**, select a user, and click **Lock password login** or **Unlock password login**. Both actions require permission to view the user and reset their password, granted globally or for that user. The same permissions apply when targeting your own account.
 
-Deactivated users can also have their passwords locked. Changing or resetting a password clears its failure count but preserves its lock. Unlock password login separately to allow it again.
+These actions are available for users with a password device. Deactivated users can also have their passwords locked. Changing or resetting a password clears its failure count but preserves its lock. Unlock password login separately to allow it again.
 
-An Enterprise license is required to create new locks, automatically or manually. Existing locks remain enforced without a valid license, and unlocking remains available. Lock and unlock actions create `password_locked` and `password_unlocked` audit events.
+An Enterprise license is required to create new locks, automatically or manually. Existing locks remain enforced without a valid license, and unlocking remains available. Lock and unlock actions create `authenticator_locked` and `authenticator_unlocked` audit events. Their `authenticator` context identifies the device; filter on `authenticator.model_name` equal to `passworddevice` to select password locks.
+
+### Manage locks through the API
+
+Use the user's `password_device` ID with `POST /api/v3/authenticators/password/{id}/lock/` or `POST /api/v3/authenticators/password/{id}/unlock/`. The ID is available from the users API and is `null` when the user has no password device. The same user permissions and license requirements apply as in the Admin interface.
 
 ## Flow integration
 
