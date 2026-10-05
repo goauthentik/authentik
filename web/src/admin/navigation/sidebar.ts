@@ -1,4 +1,3 @@
-
 import type { SidebarItemProperties } from "#elements/sidebar/SidebarItem";
 import type { LitPropertyRecord } from "#elements/types";
 
