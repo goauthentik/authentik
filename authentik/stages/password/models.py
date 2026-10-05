@@ -55,7 +55,30 @@ class PasswordStage(ConfigurableStage, Stage):
         default=5,
         help_text=_(
             "How many attempts a user has before the flow is canceled. "
-            "To lock the user out, use a reputation policy and a user_write stage."
+            "This only cancels the flow, it does not lock the user's password."
+        ),
+    )
+    failed_attempts_before_lockout = models.PositiveIntegerField(
+        default=0,
+        help_text=_(
+            "How many consecutive failed attempts lock the user's password until an "
+            "administrator unlocks it. Set to 0 to never lock."
+        ),
+    )
+    last_attempt_warning_message = models.TextField(
+        blank=True,
+        default="",
+        help_text=_(
+            "Warning shown when the user has one password attempt remaining. "
+            "Leave blank to show no warning."
+        ),
+    )
+    lockout_message = models.TextField(
+        blank=True,
+        default="",
+        help_text=_(
+            "Message shown when the user's password has been locked. "
+            "Leave blank to show a generic authentication error."
         ),
     )
     allow_show_password = models.BooleanField(
@@ -102,13 +125,15 @@ class PasswordDevice(Device):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="password_device")
     password = models.CharField(max_length=128)
     password_change_date = models.DateTimeField(default=now)
+    failed_attempts = models.PositiveIntegerField(default=0)
+    locked_at = models.DateTimeField(default=None, null=True)
 
     @classmethod
     def save_password_hash(
         cls, user: User, password: str, changed_at: datetime, using: str
     ) -> PasswordDevice:
         """Persist only password fields, preserving other device state."""
-        defaults = {"password": password, "password_change_date": changed_at}
+        defaults = {"password": password, "password_change_date": changed_at, "failed_attempts": 0}
         device, _ = cls.objects.using(using).update_or_create(
             user=user,
             defaults=defaults,
@@ -137,3 +162,8 @@ class PasswordDevice(Device):
         verbose_name = _("Password Device")
         verbose_name_plural = _("Password Devices")
         indexes = [models.Index(fields=["password_change_date"])]
+
+    @property
+    def locked(self) -> bool:
+        """Whether this password currently refuses authentication."""
+        return self.locked_at is not None

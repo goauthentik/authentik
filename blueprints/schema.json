@@ -17940,7 +17940,7 @@
                     "minimum": -2147483648,
                     "maximum": 2147483647,
                     "title": "Failed attempts before cancel",
-                    "description": "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage."
+                    "description": "How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password."
                 },
                 "allow_show_password": {
                     "type": "boolean",
