@@ -357,11 +357,7 @@ class NotificationTransport(TasksModel, SerializerModel):
     """Action which is executed when a Rule matches"""
 
     # Remove the legacy credential columns in 2027.2.
-    _webhook_url = models.TextField(
-        blank=True,
-        db_column="webhook_url",
-        validators=[DomainlessURLValidator()],
-    )
+    webhook_url = models.TextField(blank=True, validators=[DomainlessURLValidator()])
 
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 

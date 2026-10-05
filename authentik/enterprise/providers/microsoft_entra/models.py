@@ -79,7 +79,7 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
     """Sync users from authentik into Microsoft Entra."""
 
     # Remove the legacy credential columns in 2027.2.
-    _client_secret = models.TextField(db_column="client_secret")
+    client_secret = models.TextField()
 
     client_id = models.TextField()
     client_secret_ref = models.ForeignKey(

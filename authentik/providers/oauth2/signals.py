@@ -9,7 +9,8 @@ from authentik.common.oauth.constants import (
 )
 from authentik.core.models import AuthenticatedSession, ProviderPropertyMapping, User
 from authentik.core.signals import deactivation_token_cleanup_inhibited
-from authentik.crypto.secrets.models import Secret, secret_value_validating
+from authentik.crypto.secrets.models import Secret
+from authentik.crypto.secrets.signals import secret_value_validating
 from authentik.flows.models import in_memory_stage
 from authentik.providers.iframe_logout import IframeLogoutStageView
 from authentik.providers.oauth2.models import (

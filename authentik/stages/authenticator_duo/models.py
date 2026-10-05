@@ -19,9 +19,9 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
     """Setup Duo authentication for the user."""
 
     # Remove the legacy credential columns in 2027.2.
-    _client_secret = models.TextField(db_column="client_secret")
+    client_secret = models.TextField()
 
-    _admin_secret_key = models.TextField(blank=True, db_column="admin_secret_key", default="")
+    admin_secret_key = models.TextField(blank=True, default="")
 
     api_hostname = models.TextField()
 
