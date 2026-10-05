@@ -11,10 +11,10 @@ from django.utils.translation import gettext_lazy as _
 from yaml import YAMLError, safe_load
 
 from authentik.blueprints.models import ManagedModel
+from authentik.core.models import default_token_key
 from authentik.crypto.secrets.signals import secret_value_changed, secret_value_validating
 from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
-from authentik.lib.generators import generate_id
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 
 if TYPE_CHECKING:
@@ -35,11 +35,6 @@ class SecretType(models.TextChoices):
     FILE = "file", _("File")
 
 
-def generate_secret_value() -> str:
-    """Generate a value safe for HTTP Basic authentication and similar protocols."""
-    return generate_id(128)
-
-
 def create_named_secret(name: str) -> Secret:
     """Create a secret with a readable, collision-safe name."""
     for suffix in range(1, 100):
@@ -58,7 +53,7 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
     secret_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     name = models.TextField(unique=True)
     type = models.TextField(choices=SecretType.choices, default=SecretType.TEXT)
-    value = models.TextField(default=generate_secret_value)
+    value = models.TextField(default=default_token_key)
 
     def get_json(self) -> dict:
         """Read a JSON or YAML credential, including an uploaded file."""
@@ -110,7 +105,7 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
         """Generate and store a new text value."""
         if self.type != SecretType.TEXT:
             raise ValueError("Only text secrets can be rotated.")
-        value = generate_secret_value()
+        value = default_token_key()
         self.replace_value(value, request)
         return value
 

@@ -15,7 +15,7 @@ class FleetConnector(Connector):
     """Ingest device data and policy compliance from a Fleet instance."""
 
     # Remove the legacy credential columns in 2027.2.
-    _token = models.TextField(db_column="token")
+    token = models.TextField()
 
     url = models.URLField()
     token_ref = models.ForeignKey(

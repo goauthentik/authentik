@@ -77,7 +77,7 @@ class LDAPSource(IncomingSyncSource):
     """Federate LDAP Directory with authentik, or create new accounts in LDAP."""
 
     # Remove the legacy credential columns in 2027.2.
-    _bind_password = models.TextField(blank=True, db_column="bind_password")
+    bind_password = models.TextField(blank=True)
 
     server_uri = models.TextField(
         validators=[MultiURLValidator(schemes=["ldap", "ldaps"])],

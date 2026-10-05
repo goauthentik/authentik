@@ -23,7 +23,7 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
     """Setup Email-based authentication for the user."""
 
     # Remove the legacy credential columns in 2027.2.
-    _password = models.TextField(blank=True, db_column="password", default="")
+    password = models.TextField(default="", blank=True)
 
     use_global_settings = models.BooleanField(
         default=False,
