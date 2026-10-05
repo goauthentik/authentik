@@ -3,8 +3,25 @@
     box-shadow: none !important;
 }
 
-button.pf-c-nav__link {
+.pf-c-nav__link {
     margin-block-end: var(--pf-global--spacer--xs);
+    align-content: center;
+    align-items: center;
+    display: flex;
+    gap: var(--pf-global--spacer--sm);
+}
+
+.pf-c-nav__link-icon {
+    color: currentcolor;
+    flex: 0 0 auto;
+    font-size: var(--pf-global--FontSize--md);
+    opacity: 0.8;
+    text-align: center;
+    width: 1.25em;
+}
+
+.pf-c-nav__link-text {
+    min-width: 0;
 }
 
 :host([highlight]) .pf-c-nav__item {
@@ -14,6 +31,10 @@ button.pf-c-nav__link {
 
 :host([highlight]) .pf-c-nav__item .pf-c-nav__link {
     padding-left: 0.5rem;
+}
+
+.pf-c-nav__link:hover::before {
+    border-bottom-width: 0;
 }
 
 .pf-c-nav__link.pf-m-current::after,

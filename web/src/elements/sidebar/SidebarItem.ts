@@ -25,6 +25,7 @@ export interface SidebarItemProperties {
     path?: string | null;
     key?: string | null;
     activeWhen?: string[];
+    icon?: string | null;
     expanded?: boolean | null;
     enterprise?: boolean;
 }
@@ -56,6 +57,9 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
      */
     @property({ type: String })
     public key: string | null = null;
+
+    @property({ type: String })
+    public icon: string | null = null;
 
     activeMatchers: RegExp[] = [];
 
@@ -225,6 +229,14 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
         return this.renderInner();
     }
 
+    renderLabel() {
+        const icon = this.icon
+            ? html`<i class="pf-c-nav__link-icon ${this.icon}" aria-hidden="true"></i>`
+            : nothing;
+
+        return html`${icon}<span class="pf-c-nav__link-text">${this.label}</span>`;
+    }
+
     renderWithChildren() {
         return html`<li
             part="list-item-expandable"
@@ -246,7 +258,7 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
                 type="button"
                 @click=${this.#toggleExpanded}
             >
-                ${this.label}
+                ${this.renderLabel()}
                 <span class="pf-c-nav__toggle">
                     <span class="pf-c-nav__toggle-icon">
                         <i class="fas fa-angle-right" aria-hidden="true"></i>
@@ -302,7 +314,7 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
 
     renderEnterpriseRequired() {
         return html`<a href=${toAdminInterface("enterprise/licenses")} class="pf-c-nav__link">
-            ${this.label}
+            ${this.renderLabel()}
             <span class="pf-c-nav__enterprise-notice">${msg("Enterprise only")}</span>
         </a>`;
     }
@@ -324,13 +336,13 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
                 class="pf-c-nav__link ${this.current ? "pf-m-current" : ""}"
                 aria-current=${ifPresent(this.current ? "page" : undefined)}
             >
-                ${this.label}
+                ${this.renderLabel()}
             </a>
         `;
     }
 
     renderWithLabel() {
-        return html` <span class="pf-c-nav__link"> ${this.label}</span> `;
+        return html` <span class="pf-c-nav__link"> ${this.renderLabel()}</span> `;
     }
 
     renderInner() {

@@ -1,6 +1,6 @@
 import { ID_PATTERN, SLUG_PATTERN, UUID_PATTERN } from "#elements/router/core/constants";
-import { SidebarItemProperties } from "#elements/sidebar/SidebarItem";
-import { LitPropertyRecord } from "#elements/types";
+import type { SidebarItemProperties } from "#elements/sidebar/SidebarItem";
+import type { LitPropertyRecord } from "#elements/types";
 
 import { spread } from "@open-wc/lit-helpers";
 
@@ -8,6 +8,8 @@ import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { repeat } from "lit/directives/repeat.js";
+
+export { findSidebarBreadcrumbs, type SidebarBreadcrumb } from "./sidebar-breadcrumbs.js";
 
 // The second attribute type is of string[] to help with the 'activeWhen' control, which was
 // commonplace and singular enough to merit its own handler.
@@ -54,24 +56,24 @@ export function renderSidebarItem([
 
 // prettier-ignore
 export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
-    [null, msg("Dashboards"), { key: "dashboards", "?expanded": true }, [
+    [null, msg("Dashboards"), { key: "dashboards", "?expanded": true, icon: "fas fa-chart-pie"  }, [
         ["/administration/overview", msg("Overview")],
         ["/administration/dashboard/users", msg("User Statistics")],
         ["/administration/system-tasks", msg("System Tasks")]]
     ],
-    [null, msg("Applications"), { key: "applications" }, [
+    [null, msg("Applications"), { key: "applications", icon: "fas fa-th-large" }, [
         ["/core/applications", msg("Applications"), [`^/core/applications/(?<slug>${SLUG_PATTERN})$`]],
         ["/core/providers", msg("Providers"), [`^/core/providers/(?<id>${ID_PATTERN})$`]],
         ["/outpost/outposts", msg("Outposts"), [`^/outpost/outposts/(?<id>${UUID_PATTERN})$`]],
         ["/requests/rules", msg("Request Rules"), {enterprise:true}],
         ["/requests/access-requests", msg("Access Requests"), {enterprise:true}],]
     ],
-    [null, msg("Endpoint Devices"), { key: "endpoint-devices" }, [
+    [null, msg("Endpoint Devices"), { key: "endpoint-devices", icon: "fas fa-desktop" }, [
         ["/endpoints/devices", msg("Devices"), [`^/endpoints/devices/(?<uuid>${UUID_PATTERN})$`]],
         ["/endpoints/groups", msg("Device access groups")],
         ["/endpoints/connectors", msg("Connectors"), [`^/endpoints/connectors/(?<uuid>${UUID_PATTERN})$`]],
     ]],
-    [null, msg("Events"), { key: "events" }, [
+    [null, msg("Events"), { key: "events", icon: "fas fa-bell" }, [
         ["/events/log", msg("Logs"), [`^/events/log/(?<id>${UUID_PATTERN})$`]],
         ["/events/rules", msg("Notification Rules")],
         ["/events/transports", msg("Notification Transports")],
@@ -80,19 +82,19 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
         ["/events/offboardings", msg("Offboardings"), {enterprise:true}],
         ["/events/exports", msg("Data Exports"), {enterprise:true}]]
     ],
-    [null, msg("Customization"), { key: "customization" }, [
+    [null, msg("Customization"), { key: "customization", icon: "fas fa-sliders-h" }, [
         ["/policy/policies", msg("Policies")],
         ["/core/property-mappings", msg("Property Mappings")],
         ["/blueprints/instances", msg("Blueprints")],
         ["/files", msg("Files")],
         ["/policy/reputation", msg("Reputation scores")]],
     ],
-    [null, msg("Flows and Stages"), { key: "flows-stages" }, [
+    [null, msg("Flows and Stages"), { key: "flows-stages", icon: "fas fa-project-diagram" }, [
         ["/flow/flows", msg("Flows"), [`^/flow/flows/(?<slug>${SLUG_PATTERN})$`]],
         ["/flow/stages", msg("Stages")],
         ["/flow/stages/prompts", msg("Prompts")]]
     ],
-    [null, msg("Directory"), { key: "directory" }, [
+    [null, msg("Directory"), { key: "directory", icon: "fas fa-address-book" }, [
         ["/identity/users", msg("Users"), [`^/identity/users/(?<id>${ID_PATTERN})$`]],
         ["/identity/groups", msg("Groups"), [`^/identity/groups/(?<id>${UUID_PATTERN})$`]],
         ["/identity/roles", msg("Roles"), [`^/identity/roles/(?<id>${UUID_PATTERN})$`]],
@@ -103,7 +105,7 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
         ["/core/tokens", msg("Tokens and App passwords")],
         ["/flow/stages/invitations", msg("Invitations")]]
     ],
-    [null, msg("System"), { key: "system" }, [
+    [null, msg("System"), { key: "system", icon: "fas fa-cogs" }, [
         ["/core/brands", msg("Brands")],
         ["/crypto/certificates", msg("Certificates")],
         ["/outpost/integrations", msg("Outpost Integrations")],
@@ -113,7 +115,7 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
 
 // prettier-ignore
 export const createAdminSidebarEnterpriseEntries = (): readonly SidebarEntry[] => [
-    [null, msg("Enterprise"), { key: "enterprise" }, [
+    [null, msg("Enterprise"), { key: "enterprise", icon: "fas fa-building" }, [
         ["/enterprise/licenses", msg("Licenses"), null]
     ],
 ]];
