@@ -33,6 +33,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ("guardian", "0005_delete_userobjectpermission_and_groupobjectpermission"),
         ("authentik_crypto_secrets", "0001_initial"),
+        ("authentik_providers_oauth2", "0039_managed_secrets"),
         ("authentik_providers_proxy", "0016_proxysession"),
     ]
 
