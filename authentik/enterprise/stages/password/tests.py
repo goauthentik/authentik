@@ -28,11 +28,17 @@ class TestPasswordLockPermissions(APITestCase):
             with self.subTest(action=action, target=target.pk):
                 PasswordDevice.objects.filter(user=target).update(locked_at=locked_at)
                 events = Event.objects.filter(
-                    action__in=[EventAction.PASSWORD_LOCKED, EventAction.PASSWORD_UNLOCKED]
+                    action__in=[
+                        EventAction.AUTHENTICATOR_LOCKED,
+                        EventAction.AUTHENTICATOR_UNLOCKED,
+                    ]
                 )
                 count = events.count()
                 response = self.client.post(
-                    reverse(f"authentik_api:user-{action}-password", kwargs={"pk": target.pk})
+                    reverse(
+                        f"authentik_api:passworddevice-{action}",
+                        kwargs={"pk": target.password_device.pk},
+                    )
                 )
                 self.assertEqual(response.status_code, status, response.content)
                 device = PasswordDevice.objects.get(user=target)
@@ -102,7 +108,10 @@ class TestPasswordLockActions(APITestCase):
         password, changed_at = device.password, device.password_change_date
         for action in ("lock", "unlock"):
             PasswordDevice.objects.filter(pk=device.pk).update(failed_attempts=3)
-            url = reverse(f"authentik_api:user-{action}-password", kwargs={"pk": self.target.pk})
+            url = reverse(
+                f"authentik_api:passworddevice-{action}",
+                kwargs={"pk": self.target.password_device.pk},
+            )
             for _ in range(2):
                 self.assertEqual(self.client.post(url).status_code, 204)
             device.refresh_from_db()
@@ -112,39 +121,58 @@ class TestPasswordLockActions(APITestCase):
             self.assertEqual(device.password_change_date, changed_at)
             self.assertEqual(
                 Event.objects.filter(
-                    action=f"password_{action}ed", context__affected_user__pk=self.target.pk
+                    action=f"authenticator_{action}ed",
+                    context__affected_user__pk=self.target.pk,
+                    context__authenticator__pk=device.pk,
+                    context__authenticator__model_name="passworddevice",
                 ).count(),
                 1,
             )
-
-    def test_lock_before_setting_first_password(self):
-        """Locking a passwordless user also prevents a later password from logging in."""
-        PasswordDevice.objects.filter(user=self.target).delete()
-        url = reverse("authentik_api:user-lock-password", kwargs={"pk": self.target.pk})
-        self.assertEqual(self.client.post(url).status_code, 204)
-        self.target.refresh_from_db()
-        self.assertFalse(self.target.has_usable_password())
-        self.assertEqual(self.target.password_change_date, self.target.date_joined)
-        self.target.set_password("new password")
-        self.target.save()
-        self.assertTrue(PasswordDevice.objects.get(user=self.target).locked)
-
-    def test_unlock_missing_password_is_noop(self):
-        PasswordDevice.objects.filter(user=self.target).delete()
-        url = reverse("authentik_api:user-unlock-password", kwargs={"pk": self.target.pk})
-        self.assertEqual(self.client.post(url).status_code, 204)
-        self.assertFalse(PasswordDevice.objects.filter(user=self.target).exists())
-        self.assertFalse(
-            Event.objects.filter(
-                action__in=[EventAction.PASSWORD_LOCKED, EventAction.PASSWORD_UNLOCKED],
-                context__affected_user__pk=self.target.pk,
-            ).exists()
-        )
 
     def test_unlock_without_license(self):
         PasswordDevice.objects.filter(user=self.target).update(locked_at=now())
         with patch("authentik.enterprise.license.LicenseKey.cached_summary") as summary:
             summary.return_value.status.is_valid = False
-            url = reverse("authentik_api:user-unlock-password", kwargs={"pk": self.target.pk})
+            url = reverse(
+                "authentik_api:passworddevice-unlock", kwargs={"pk": self.target.password_device.pk}
+            )
             self.assertEqual(self.client.post(url).status_code, 204)
         self.assertFalse(PasswordDevice.objects.get(user=self.target).locked)
+
+    def test_deleted_device(self):
+        device = self.target.password_device
+        pk = device.pk
+        device.delete()
+        for action in ("lock", "unlock"):
+            url = reverse(f"authentik_api:passworddevice-{action}", kwargs={"pk": pk})
+            self.assertEqual(self.client.post(url).status_code, 404)
+        self.assertFalse(PasswordDevice.objects.filter(user=self.target).exists())
+        response = self.client.get(
+            reverse("authentik_api:user-detail", kwargs={"pk": self.target.pk})
+        )
+        self.assertIsNone(response.json()["password_device"])
+        self.assertFalse(response.json()["password_locked"])
+
+    def test_lock_requires_license_and_reports_status(self):
+        self.target.is_active = False
+        self.target.save(update_fields=["is_active"])
+        device = self.target.password_device
+        url = reverse("authentik_api:passworddevice-lock", kwargs={"pk": device.pk})
+        with patch("authentik.enterprise.license.LicenseKey.cached_summary") as summary:
+            summary.return_value.status.is_valid = False
+            self.assertEqual(self.client.post(url).status_code, 400)
+        device.refresh_from_db()
+        self.assertFalse(device.locked)
+        self.assertEqual(self.client.post(url).status_code, 204)
+        response = self.client.get(
+            reverse("authentik_api:user-detail", kwargs={"pk": self.target.pk})
+        )
+        self.assertTrue(response.json()["password_locked"])
+        self.assertEqual(response.json()["password_device"], device.pk)
+
+    def test_self_lock_with_reset_permission(self):
+        url = reverse(
+            "authentik_api:passworddevice-lock", kwargs={"pk": self.actor.password_device.pk}
+        )
+        self.assertEqual(self.client.post(url).status_code, 204)
+        self.assertTrue(PasswordDevice.objects.get(user=self.actor).locked)

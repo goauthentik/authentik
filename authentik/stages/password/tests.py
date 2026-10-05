@@ -309,7 +309,7 @@ class TestPasswordLockout(FlowTestCase):
         )
         self.assertTrue(
             Event.objects.filter(
-                action=EventAction.PASSWORD_LOCKED,
+                action=EventAction.AUTHENTICATOR_LOCKED,
                 context__affected_user__pk=self.user.pk,
             ).exists()
         )
@@ -356,20 +356,12 @@ class TestPasswordLockout(FlowTestCase):
 
     def test_success_resets_failures(self):
         """Test authenticating successfully forgets earlier failures"""
-        self.start_flow()
-        self.submit("wrong")
-        self.assertEqual(self.device.failed_attempts, 1)
-
-        self.submit(self.user.username)
-        self.assertEqual(self.device.failed_attempts, 0)
-
-    def test_unlicensed_success_resets_failures(self):
-        """License expiry must not preserve failures across a successful login."""
-        PasswordDevice.objects.filter(user=self.user).update(failed_attempts=1)
-        with self.licensed(False):
-            self.start_flow()
-            self.submit(self.user.username)
-        self.assertEqual(self.device.failed_attempts, 0)
+        for licensed in (True, False):
+            with self.subTest(licensed=licensed), self.licensed(licensed):
+                PasswordDevice.objects.filter(user=self.user).update(failed_attempts=1)
+                self.start_flow()
+                self.submit(self.user.username)
+                self.assertEqual(self.device.failed_attempts, 0)
 
     def test_new_password_preserves_lock(self):
         """Test setting a password clears failures but preserves the lock"""
@@ -524,62 +516,6 @@ class TestPasswordLockout(FlowTestCase):
             error_message="One attempt remains.",
         )
 
-    def test_api_unlock(self):
-        """Test an administrator can unlock a locked password"""
-        device = self.device
-        device.failed_attempts = 5
-        device.locked_at = now()
-        device.save()
-
-        self.client.force_login(self.user)
-        response = self.client.post(
-            reverse("authentik_api:user-unlock-password", kwargs={"pk": self.user.pk})
-        )
-
-        self.assertEqual(response.status_code, 204)
-        self.assertFalse(self.device.locked)
-        self.assertEqual(self.device.failed_attempts, 0)
-        self.assertTrue(
-            Event.objects.filter(
-                action=EventAction.PASSWORD_UNLOCKED,
-                context__affected_user__pk=self.user.pk,
-            ).exists()
-        )
-
-    def test_api_lock(self):
-        """Test an administrator can lock another user's password, even a deactivated one"""
-        target = create_test_admin_user()
-        target.is_active = False
-        target.save()
-        self.client.force_login(self.user)
-        url = reverse("authentik_api:user-lock-password", kwargs={"pk": target.pk})
-
-        with self.licensed(False):
-            response = self.client.post(url)
-        self.assertEqual(response.status_code, 400)
-
-        response = self.client.post(url)
-        self.assertEqual(response.status_code, 204)
-        self.assertTrue(PasswordDevice.objects.get(user=target).locked)
-        self.assertTrue(
-            Event.objects.filter(
-                action=EventAction.PASSWORD_LOCKED,
-                user__pk=self.user.pk,
-                context__affected_user__pk=target.pk,
-            ).exists()
-        )
-        response = self.client.get(reverse("authentik_api:user-detail", kwargs={"pk": target.pk}))
-        self.assertTrue(response.json()["password_locked"])
-
-    def test_api_allows_self_lock(self):
-        """Administrators can lock their own password"""
-        self.client.force_login(self.user)
-        response = self.client.post(
-            reverse("authentik_api:user-lock-password", kwargs={"pk": self.user.pk})
-        )
-        self.assertEqual(response.status_code, 204)
-        self.assertTrue(self.device.locked)
-
     def test_service_accounts_are_exempt(self):
         """Both service account types bypass automatic and explicit locking."""
         self.client.force_login(self.user)
@@ -590,7 +526,9 @@ class TestPasswordLockout(FlowTestCase):
                 for _ in range(self.stage.failed_attempts_before_lockout + 1):
                     self.assertEqual(policy.apply(user, None, {}), PasswordLockoutResult())
                 response = self.client.post(
-                    reverse("authentik_api:user-lock-password", kwargs={"pk": user.pk})
+                    reverse(
+                        "authentik_api:passworddevice-lock", kwargs={"pk": user.password_device.pk}
+                    )
                 )
                 self.assertEqual(response.status_code, 400)
                 device = PasswordDevice.objects.get(user=user)
@@ -598,7 +536,7 @@ class TestPasswordLockout(FlowTestCase):
                 self.assertEqual(device.failed_attempts, 0)
                 self.assertFalse(
                     Event.objects.filter(
-                        action=EventAction.PASSWORD_LOCKED, context__affected_user__pk=user.pk
+                        action=EventAction.AUTHENTICATOR_LOCKED, context__affected_user__pk=user.pk
                     ).exists()
                 )
 
@@ -654,7 +592,7 @@ class TestPasswordLockoutConcurrency(TransactionTestCase):
         )
         self.assertEqual(
             Event.objects.filter(
-                action=EventAction.PASSWORD_LOCKED,
+                action=EventAction.AUTHENTICATOR_LOCKED,
                 context__affected_user__pk=user.pk,
             ).count(),
             1,

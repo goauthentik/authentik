@@ -2,7 +2,7 @@
 
 from django.core.management.base import BaseCommand
 
-from authentik.core.models import User, UserTypes
+from authentik.core.models import SERVICE_ACCOUNT_TYPES, User, UserTypes
 
 
 class Command(BaseCommand):
@@ -15,11 +15,7 @@ class Command(BaseCommand):
 
     def handle(self, **options):
         new_type = UserTypes(options["type"])
-        qs = (
-            User.objects.exclude_anonymous()
-            .exclude(type=UserTypes.SERVICE_ACCOUNT)
-            .exclude(type=UserTypes.INTERNAL_SERVICE_ACCOUNT)
-        )
+        qs = User.objects.exclude_anonymous().exclude(type__in=SERVICE_ACCOUNT_TYPES)
         if options["usernames"] and options["all"]:
             self.stderr.write("--all and usernames specified, only one can be specified")
             return

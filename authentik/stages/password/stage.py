@@ -14,7 +14,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, CharField
 from structlog.stdlib import get_logger
 
-from authentik.core.models import User
+from authentik.core.models import SERVICE_ACCOUNT_TYPES, User
 from authentik.core.signals import login_failed
 from authentik.flows.challenge import (
     Challenge,
@@ -29,7 +29,6 @@ from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.reflection import path_to_class
 from authentik.policies.reputation.models import Reputation
 from authentik.stages.password.lockout import (
-    SERVICE_ACCOUNT_TYPES,
     PasswordLockout,
     PasswordLockoutResult,
 )

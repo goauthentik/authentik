@@ -58,6 +58,7 @@ export interface User {
      * Whether the user's password currently refuses authentication.
      */
     readonly passwordLocked: boolean;
+    readonly passwordDevice: number | null;
     readonly lastUpdated: Date;
 }
 
@@ -114,6 +115,13 @@ export function instanceOfUser(value: object): value is User {
     )
         return false;
     if (
+        (!("passwordDevice" in (value as Record<string, any>)) &&
+            !("password_device" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["passwordDevice"] === undefined &&
+            (value as Record<string, any>)["password_device"] === undefined)
+    )
+        return false;
+    if (
         (!("lastUpdated" in (value as Record<string, any>)) &&
             !("last_updated" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["lastUpdated"] === undefined &&
@@ -165,6 +173,7 @@ export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User
                 ? json["password_change_date"]
                 : parseDateTime(json["password_change_date"]),
         passwordLocked: json["password_locked"],
+        passwordDevice: json["password_device"],
         lastUpdated:
             json["last_updated"] == null
                 ? json["last_updated"]
@@ -189,6 +198,7 @@ export function UserToJSONTyped(
         | "uuid"
         | "passwordChangeDate"
         | "passwordLocked"
+        | "passwordDevice"
         | "lastUpdated"
     > | null,
     ignoreDiscriminator: boolean = false,

@@ -6,13 +6,12 @@ from typing import Any
 from django.db import transaction
 from django.http import HttpRequest
 
-from authentik.core.models import User, UserTypes
+from authentik.core.models import SERVICE_ACCOUNT_TYPES, User
 from authentik.core.signals import login_failed
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.stages.password.models import PasswordDevice, PasswordStage
 
 PLAN_CONTEXT_LOCKED_ATTEMPTS = "goauthentik.io/stages/password/locked_attempts"
-SERVICE_ACCOUNT_TYPES = (UserTypes.SERVICE_ACCOUNT, UserTypes.INTERNAL_SERVICE_ACCOUNT)
 
 
 @dataclass(frozen=True)
@@ -77,6 +76,3 @@ class PasswordLockout(
     PasswordLockoutBase,
 ):
     """Enforce password locks, with optional licensed failure counting."""
-
-    def __init__(self, password_stage: PasswordStage, request: HttpRequest):
-        super().__init__(password_stage, request)

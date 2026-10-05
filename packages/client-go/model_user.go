@@ -45,8 +45,9 @@ type User struct {
 	Uuid               string                 `json:"uuid"`
 	PasswordChangeDate time.Time              `json:"password_change_date"`
 	// Whether the user's password currently refuses authentication.
-	PasswordLocked       bool      `json:"password_locked"`
-	LastUpdated          time.Time `json:"last_updated"`
+	PasswordLocked       bool          `json:"password_locked"`
+	PasswordDevice       NullableInt32 `json:"password_device"`
+	LastUpdated          time.Time     `json:"last_updated"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -56,7 +57,7 @@ type _User User
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUser(pk int32, username string, name string, dateJoined time.Time, isSuperuser bool, groupsObj []PartialGroup, rolesObj []Role, avatar string, uid string, uuid string, passwordChangeDate time.Time, passwordLocked bool, lastUpdated time.Time) *User {
+func NewUser(pk int32, username string, name string, dateJoined time.Time, isSuperuser bool, groupsObj []PartialGroup, rolesObj []Role, avatar string, uid string, uuid string, passwordChangeDate time.Time, passwordLocked bool, passwordDevice NullableInt32, lastUpdated time.Time) *User {
 	this := User{}
 	this.Pk = pk
 	this.Username = username
@@ -70,6 +71,7 @@ func NewUser(pk int32, username string, name string, dateJoined time.Time, isSup
 	this.Uuid = uuid
 	this.PasswordChangeDate = passwordChangeDate
 	this.PasswordLocked = passwordLocked
+	this.PasswordDevice = passwordDevice
 	this.LastUpdated = lastUpdated
 	return &this
 }
@@ -641,6 +643,32 @@ func (o *User) SetPasswordLocked(v bool) {
 	o.PasswordLocked = v
 }
 
+// GetPasswordDevice returns the PasswordDevice field value
+// If the value is explicit nil, the zero value for int32 will be returned
+func (o *User) GetPasswordDevice() int32 {
+	if o == nil || o.PasswordDevice.Get() == nil {
+		var ret int32
+		return ret
+	}
+
+	return *o.PasswordDevice.Get()
+}
+
+// GetPasswordDeviceOk returns a tuple with the PasswordDevice field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *User) GetPasswordDeviceOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PasswordDevice.Get(), o.PasswordDevice.IsSet()
+}
+
+// SetPasswordDevice sets field value
+func (o *User) SetPasswordDevice(v int32) {
+	o.PasswordDevice.Set(&v)
+}
+
 // GetLastUpdated returns the LastUpdated field value
 func (o *User) GetLastUpdated() time.Time {
 	if o == nil {
@@ -715,6 +743,7 @@ func (o User) ToMap() (map[string]interface{}, error) {
 	toSerialize["uuid"] = o.Uuid
 	toSerialize["password_change_date"] = o.PasswordChangeDate
 	toSerialize["password_locked"] = o.PasswordLocked
+	toSerialize["password_device"] = o.PasswordDevice.Get()
 	toSerialize["last_updated"] = o.LastUpdated
 
 	for key, value := range o.AdditionalProperties {
@@ -741,6 +770,7 @@ func (o *User) UnmarshalJSON(data []byte) (err error) {
 		"uuid",
 		"password_change_date",
 		"password_locked",
+		"password_device",
 		"last_updated",
 	}
 
@@ -791,6 +821,7 @@ func (o *User) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "uuid")
 		delete(additionalProperties, "password_change_date")
 		delete(additionalProperties, "password_locked")
+		delete(additionalProperties, "password_device")
 		delete(additionalProperties, "last_updated")
 		o.AdditionalProperties = additionalProperties
 	}

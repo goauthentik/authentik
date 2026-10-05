@@ -63,6 +63,8 @@ pub struct User {
     /// Whether the user's password currently refuses authentication.
     #[serde(rename = "password_locked")]
     pub password_locked: bool,
+    #[serde(rename = "password_device", deserialize_with = "Option::deserialize")]
+    pub password_device: Option<i32>,
     #[serde(rename = "last_updated")]
     pub last_updated: chrono::DateTime<chrono::FixedOffset>,
 }
@@ -82,6 +84,7 @@ impl User {
         uuid: uuid::Uuid,
         password_change_date: chrono::DateTime<chrono::FixedOffset>,
         password_locked: bool,
+        password_device: Option<i32>,
         last_updated: chrono::DateTime<chrono::FixedOffset>,
     ) -> User {
         User {
@@ -105,6 +108,7 @@ impl User {
             uuid,
             password_change_date,
             password_locked,
+            password_device,
             last_updated,
         }
     }

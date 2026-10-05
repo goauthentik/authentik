@@ -30,8 +30,9 @@ class PasswordLockoutMixin:
 
         devices.update(failed_attempts=0, locked_at=now())
         Event.new(
-            EventAction.PASSWORD_LOCKED,
+            EventAction.AUTHENTICATOR_LOCKED,
             affected_user=device.user,
+            authenticator=device,
             reason="failed_attempts",
             threshold=threshold,
         ).from_http(self.request)
