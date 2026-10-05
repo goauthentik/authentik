@@ -1,5 +1,5 @@
 {
-    "extends": "@goauthentik/tsconfig/tsconfig.json",
+    "extends": "@goauthentik/tsconfig",
     "compilerOptions": {
         // Nothing imports this package — the generator runs straight from
         // source under Node's type stripping, so there is nothing to emit.

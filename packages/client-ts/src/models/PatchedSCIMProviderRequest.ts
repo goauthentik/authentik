@@ -45,6 +45,14 @@ export interface PatchedSCIMProviderRequest {
     token?: string;
     authMode?: SCIMAuthenticationModeEnum;
     /**
+     * Username used for Basic authentication
+     */
+    authBasicUser?: string;
+    /**
+     * Password used for Basic authentication
+     */
+    authBasicPassword?: string;
+    /**
      * OAuth Source used for authentication
      */
     authOauth?: string | null;
@@ -116,6 +124,9 @@ export function PatchedSCIMProviderRequestFromJSONTyped(
             json["auth_mode"] == null
                 ? undefined
                 : SCIMAuthenticationModeEnumFromJSON(json["auth_mode"]),
+        authBasicUser: json["auth_basic_user"] == null ? undefined : json["auth_basic_user"],
+        authBasicPassword:
+            json["auth_basic_password"] == null ? undefined : json["auth_basic_password"],
         authOauth:
             json["auth_oauth"] === undefined
                 ? undefined
@@ -163,6 +174,8 @@ export function PatchedSCIMProviderRequestToJSONTyped(
         verify_certificates: value["verifyCertificates"],
         token: value["token"],
         auth_mode: SCIMAuthenticationModeEnumToJSON(value["authMode"]),
+        auth_basic_user: value["authBasicUser"],
+        auth_basic_password: value["authBasicPassword"],
         auth_oauth: value["authOauth"],
         auth_oauth_params: value["authOauthParams"],
         compatibility_mode: CompatibilityModeEnumToJSON(value["compatibilityMode"]),

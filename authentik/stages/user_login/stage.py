@@ -24,6 +24,7 @@ from authentik.flows.planner import (
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.root.install_id import get_install_id
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import (
@@ -35,7 +36,6 @@ from authentik.stages.user_login.middleware import (
     SESSION_KEY_BINDING_NET,
 )
 from authentik.stages.user_login.models import UserLoginStage
-from authentik.tenants.utils import get_unique_identifier
 
 COOKIE_NAME_KNOWN_DEVICE = "authentik_device"
 
@@ -101,7 +101,7 @@ class UserLoginStageView(ChallengeStageView):
     def cookie_jwt_key(self) -> str:
         """Signing key for Known-device Cookie for this stage"""
         return sha256(
-            f"{get_unique_identifier()}:{self.executor.current_stage.pk.hex}".encode("ascii")
+            f"{get_install_id()}:{self.executor.current_stage.pk.hex}".encode("ascii")
         ).hexdigest()
 
     def set_known_device_cookie(self, user: User):
