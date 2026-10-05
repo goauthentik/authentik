@@ -35,11 +35,6 @@ class SecretType(models.TextChoices):
     FILE = "file", _("File")
 
 
-def generate_secret_value() -> str:
-    """Use the configured token length and a URL-safe alphabet for credentials."""
-    return default_token_key()
-
-
 def create_named_secret(name: str) -> Secret:
     """Create a secret with a readable, collision-safe name."""
     for suffix in range(1, 100):
@@ -58,7 +53,7 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
     secret_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     name = models.TextField(unique=True)
     type = models.TextField(choices=SecretType.choices, default=SecretType.TEXT)
-    value = models.TextField(default=generate_secret_value)
+    value = models.TextField(default=default_token_key)
 
     def get_json(self) -> dict:
         """Read a JSON or YAML credential, including an uploaded file."""
@@ -110,7 +105,7 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
         """Generate and store a new text value."""
         if self.type != SecretType.TEXT:
             raise ValueError("Only text secrets can be rotated.")
-        value = generate_secret_value()
+        value = default_token_key()
         self.replace_value(value, request)
         return value
 
