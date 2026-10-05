@@ -101,9 +101,7 @@ class LDAPPasswordTests(TestCase):
                     return_value=[{"attributes": user_attributes}],
                 ):
                     self.assertFalse(pwc._ad_check_password_existing("ErinA1!", "user"))
-                    self.assertFalse(
-                        pwc._ad_check_password_existing("HagensA1!", "user")
-                    )
+                    self.assertFalse(pwc._ad_check_password_existing("HagensA1!", "user"))
 
     @patch("authentik.sources.ldap.models.LDAPSource.connection", LDAP_CONNECTION_PATCH)
     def test_ad_check_password_existing_ignores_short_display_name_tokens(self):
