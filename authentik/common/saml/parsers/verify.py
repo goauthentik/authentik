@@ -1,9 +1,10 @@
 """Shared SAML signature verification"""
 
 from base64 import b64decode
-from urllib.parse import quote_plus
+from urllib.parse import urlencode
 
 import xmlsec
+from lxml.etree import _Element  # nosec
 
 from authentik.common.saml.constants import NS_MAP, SIGN_ALGORITHM_TRANSFORM_MAP
 from authentik.common.saml.exceptions import (
@@ -15,7 +16,9 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.xml import UnsafeXML, lxml_from_string
 
 
-def verify_enveloped_signature(raw_xml: bytes, verification_kp: CertificateKeyPair, xpath: str):
+def verify_enveloped_signature(
+    raw_xml: bytes, verification_kp: CertificateKeyPair, xpath: str
+) -> None:
     """Verify an enveloped XML signature (POST binding).
 
     `xpath` selects the signature node, for example `/samlp:LogoutRequest/ds:Signature`."""
@@ -25,7 +28,10 @@ def verify_enveloped_signature(raw_xml: bytes, verification_kp: CertificateKeyPa
         raise CannotHandleAssertion(str(exc)) from exc
     xmlsec.tree.add_ids(root, ["ID"])
     signature_nodes = root.xpath(xpath, namespaces=NS_MAP)
-    if len(signature_nodes) < 1:
+    if not isinstance(signature_nodes, list) or len(signature_nodes) < 1:
+        raise CannotHandleAssertion(ERROR_SIGNATURE_REQUIRED_BUT_ABSENT)
+    signature_node = signature_nodes[0]
+    if not isinstance(signature_node, _Element):
         raise CannotHandleAssertion(ERROR_SIGNATURE_REQUIRED_BUT_ABSENT)
 
     try:
@@ -35,7 +41,7 @@ def verify_enveloped_signature(raw_xml: bytes, verification_kp: CertificateKeyPa
             xmlsec.constants.KeyDataFormatCertPem,
             None,
         )
-        ctx.verify(signature_nodes[0])
+        ctx.verify(signature_node)
     except xmlsec.Error as exc:
         raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
 
@@ -47,7 +53,7 @@ def verify_detached_signature(  # noqa: PLR0913
     signature: str | None,
     sig_alg: str | None,
     verification_kp: CertificateKeyPair,
-):
+) -> None:
     """Verify a detached signature (Redirect binding).
 
     `saml_param_name` is either `SAMLRequest` or `SAMLResponse`, and `saml_value` the
@@ -55,10 +61,11 @@ def verify_detached_signature(  # noqa: PLR0913
     if not (signature and sig_alg):
         raise CannotHandleAssertion(ERROR_SIGNATURE_REQUIRED_BUT_ABSENT)
 
-    querystring = f"{saml_param_name}={quote_plus(saml_value)}&"
+    params = {saml_param_name: saml_value}
     if relay_state is not None:
-        querystring += f"RelayState={quote_plus(relay_state)}&"
-    querystring += f"SigAlg={quote_plus(sig_alg)}"
+        params["RelayState"] = relay_state
+    params["SigAlg"] = sig_alg
+    querystring = urlencode(params)
 
     ctx = xmlsec.SignatureContext()
     ctx.key = xmlsec.Key.from_memory(
