@@ -1,6 +1,6 @@
 import { ToggleUserPasswordLockButton } from "#admin/users/UserPasswordLockForm";
 
-import { CoreApi, UserFromJSON, UserTypeEnum } from "@goauthentik/api";
+import { AuthenticatorsApi, UserFromJSON, UserTypeEnum } from "@goauthentik/api";
 
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { page } from "vitest/browser";
@@ -21,6 +21,7 @@ function user(locked: boolean, type: UserTypeEnum = UserTypeEnum.Internal) {
         name: "Alice",
         type,
         password_locked: locked,
+        password_device: 73,
     });
 }
 
@@ -48,11 +49,21 @@ describe("password lock actions", () => {
         },
     );
 
+    it("hides lock actions when the user has no password device", () => {
+        const container = document.createElement("div");
+        const target = user(false);
+        target.passwordDevice = null;
+        render(ToggleUserPasswordLockButton(target, { hasEnterpriseLicense: true }), container);
+        expect(container.querySelector("button")).toBeNull();
+    });
+
     it.each([false, true])("submits the password action for locked=%s", async (locked) => {
-        const lock = vi.spyOn(CoreApi.prototype, "coreUsersLockPasswordCreate").mockResolvedValue();
+        const lock = vi
+            .spyOn(AuthenticatorsApi.prototype, "authenticatorsPasswordLockCreate")
+            .mockResolvedValue();
 
         const unlock = vi
-            .spyOn(CoreApi.prototype, "coreUsersUnlockPasswordCreate")
+            .spyOn(AuthenticatorsApi.prototype, "authenticatorsPasswordUnlockCreate")
             .mockResolvedValue();
 
         const form = document.createElement("ak-user-password-lock-form");
@@ -71,7 +82,7 @@ describe("password lock actions", () => {
             })
             .click();
 
-        await expect.poll(() => (locked ? unlock : lock).mock.calls).toEqual([[{ id: 42 }]]);
+        await expect.poll(() => (locked ? unlock : lock).mock.calls).toEqual([[{ id: 73 }]]);
         expect(locked ? lock : unlock).not.toHaveBeenCalled();
 
         await expect

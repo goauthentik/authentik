@@ -8,7 +8,7 @@ import { DestructiveModelForm } from "#elements/forms/DestructiveModelForm";
 import { WithLocale } from "#elements/mixins/locale";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { CoreApi, User, UserTypeEnum } from "@goauthentik/api";
+import { AuthenticatorsApi, User, UserTypeEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { html, nothing } from "lit";
@@ -18,20 +18,24 @@ import { customElement } from "lit/decorators.js";
 export class UserPasswordLockForm extends WithLocale(DestructiveModelForm<User>) {
     public override size = PFSize.Small;
 
-    protected coreAPI = aki(CoreApi);
+    protected authenticatorsAPI = aki(AuthenticatorsApi);
 
     protected get locked(): boolean {
         return !!this.instance?.passwordLocked;
     }
 
     protected override send(): Promise<unknown> {
-        if (!this.instance) {
-            return Promise.reject(new Error("No user instance provided"));
+        if (!this.instance?.passwordDevice) {
+            return Promise.reject(new Error("No password device provided"));
         }
 
         return this.locked
-            ? this.coreAPI.coreUsersUnlockPasswordCreate({ id: this.instance.pk })
-            : this.coreAPI.coreUsersLockPasswordCreate({ id: this.instance.pk });
+            ? this.authenticatorsAPI.authenticatorsPasswordUnlockCreate({
+                  id: this.instance.passwordDevice,
+              })
+            : this.authenticatorsAPI.authenticatorsPasswordLockCreate({
+                  id: this.instance.passwordDevice,
+              });
     }
 
     public override formatSubmitLabel(): string {
@@ -104,7 +108,7 @@ export function ToggleUserPasswordLockButton(
         user.type === UserTypeEnum.InternalServiceAccount;
 
     // Unlock remains available without a license.
-    if (!locked && (!hasEnterpriseLicense || serviceAccount)) {
+    if (!user.passwordDevice || (!locked && (!hasEnterpriseLicense || serviceAccount))) {
         return nothing;
     }
 
