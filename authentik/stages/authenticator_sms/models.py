@@ -43,9 +43,9 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
     """Use SMS-based TOTP instead of authenticator-based."""
 
     # Remove the legacy credential columns in 2027.2.
-    _auth_password = models.TextField(blank=True, db_column="auth_password", default="")
+    auth_password = models.TextField(default="", blank=True)
 
-    _auth = models.TextField(db_column="auth")
+    auth = models.TextField()
 
     provider = models.TextField(choices=SMSProviders.choices)
 

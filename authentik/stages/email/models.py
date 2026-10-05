@@ -69,7 +69,7 @@ class EmailStage(Stage):
     """Send an Email to the user with a token to confirm their Email address."""
 
     # Remove the legacy credential columns in 2027.2.
-    _password = models.TextField(blank=True, db_column="password", default="")
+    password = models.TextField(default="", blank=True)
 
     use_global_settings = models.BooleanField(
         default=False,

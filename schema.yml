@@ -23279,7 +23279,13 @@ paths:
   /secrets/secrets/:
     get:
       operationId: secrets_secrets_list
-      description: Manage secrets.
+      description: |-
+        Create and manage named credentials referenced by authentik configuration objects.
+
+        List and detail responses contain metadata only. Reading a value requires the
+        view_value action and its separate permission. Replacing or manually rotating
+        a value requires rotate_secret permission and records an audit event.
+        Rotation changes the value stored in authentik; it does not update external systems.
       parameters:
       - in: query
         name: managed
@@ -23320,7 +23326,13 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     post:
       operationId: secrets_secrets_create
-      description: Manage secrets.
+      description: |-
+        Create and manage named credentials referenced by authentik configuration objects.
+
+        List and detail responses contain metadata only. Reading a value requires the
+        view_value action and its separate permission. Replacing or manually rotating
+        a value requires rotate_secret permission and records an audit event.
+        Rotation changes the value stored in authentik; it does not update external systems.
       tags:
       - secrets
       requestBody:
@@ -23345,7 +23357,13 @@ paths:
   /secrets/secrets/{secret_uuid}/:
     get:
       operationId: secrets_secrets_retrieve
-      description: Manage secrets.
+      description: |-
+        Create and manage named credentials referenced by authentik configuration objects.
+
+        List and detail responses contain metadata only. Reading a value requires the
+        view_value action and its separate permission. Replacing or manually rotating
+        a value requires rotate_secret permission and records an audit event.
+        Rotation changes the value stored in authentik; it does not update external systems.
       parameters:
       - in: path
         name: secret_uuid
@@ -23371,7 +23389,13 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     put:
       operationId: secrets_secrets_update
-      description: Manage secrets.
+      description: |-
+        Create and manage named credentials referenced by authentik configuration objects.
+
+        List and detail responses contain metadata only. Reading a value requires the
+        view_value action and its separate permission. Replacing or manually rotating
+        a value requires rotate_secret permission and records an audit event.
+        Rotation changes the value stored in authentik; it does not update external systems.
       parameters:
       - in: path
         name: secret_uuid
@@ -23403,7 +23427,13 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     patch:
       operationId: secrets_secrets_partial_update
-      description: Manage secrets.
+      description: |-
+        Create and manage named credentials referenced by authentik configuration objects.
+
+        List and detail responses contain metadata only. Reading a value requires the
+        view_value action and its separate permission. Replacing or manually rotating
+        a value requires rotate_secret permission and records an audit event.
+        Rotation changes the value stored in authentik; it does not update external systems.
       parameters:
       - in: path
         name: secret_uuid
@@ -23434,7 +23464,13 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     delete:
       operationId: secrets_secrets_destroy
-      description: Manage secrets.
+      description: |-
+        Create and manage named credentials referenced by authentik configuration objects.
+
+        List and detail responses contain metadata only. Reading a value requires the
+        view_value action and its separate permission. Replacing or manually rotating
+        a value requires rotate_secret permission and records an audit event.
+        Rotation changes the value stored in authentik; it does not update external systems.
       parameters:
       - in: path
         name: secret_uuid

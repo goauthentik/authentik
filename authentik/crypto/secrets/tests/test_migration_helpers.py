@@ -1,17 +1,38 @@
 """Credential backfills preserve references when run again."""
 
-from importlib import import_module
-
 from django.apps import apps
 from django.db import connection
 from django.db.migrations.loader import MigrationLoader
-from django.test import TestCase
+from django.db.migrations.writer import MigrationWriter
+from django.test import SimpleTestCase, TestCase
 from guardian.models import RoleObjectPermission
 
 from authentik.core.tests.utils import create_test_user
 from authentik.crypto.secrets.migrations._credential_values import migrate_credentials
+from authentik.crypto.secrets.migrations._permissions import preserve_role_permissions
 from authentik.crypto.secrets.models import Secret, SecretType
 from authentik.providers.oauth2.models import OAuth2Provider
+
+
+class TestCredentialMigrationSchema(SimpleTestCase):
+    def test_existing_fields_are_unchanged(self):
+        """Adding secret references must preserve the fields used by older servers."""
+        loader = MigrationLoader(None)
+        for node in loader.graph.nodes:
+            if not node[1].endswith("_managed_secrets"):
+                continue
+            before = loader.project_state([node], at_end=False)
+            after = loader.project_state([node])
+            for key, model in before.models.items():
+                if key[0] != node[0]:
+                    continue
+                for name, field in model.fields.items():
+                    with self.subTest(migration=node, model=key, field=name):
+                        self.assertIn(name, after.models[key].fields)
+                        self.assertEqual(
+                            MigrationWriter.serialize(field)[0],
+                            MigrationWriter.serialize(after.models[key].fields[name])[0],
+                        )
 
 
 class TestCredentialBackfill(TestCase):
@@ -52,9 +73,6 @@ class TestCredentialBackfill(TestCase):
 
 class TestProviderPermissionBackfill(TestCase):
     def test_consumer_editors_do_not_gain_secret_write_permissions(self):
-        migration = import_module(
-            "authentik.crypto.secrets.migrations.0002_preserve_role_permissions"
-        )
         provider = OAuth2Provider.objects.create(name="provider")
         other = OAuth2Provider.objects.create(name="other")
         reader = create_test_user()
@@ -70,9 +88,17 @@ class TestProviderPermissionBackfill(TestCase):
             "authentik_providers_oauth2.change_oauth2provider"
         )
         historical_apps = MigrationLoader(connection).project_state().apps
-        migration.preserve_provider_permissions(historical_apps, connection.schema_editor())
+        preserve_role_permissions(
+            historical_apps,
+            connection.schema_editor(),
+            [("authentik_providers_oauth2", "oauth2provider")],
+        )
         count = RoleObjectPermission.objects.count()
-        migration.preserve_provider_permissions(historical_apps, connection.schema_editor())
+        preserve_role_permissions(
+            historical_apps,
+            connection.schema_editor(),
+            [("authentik_providers_oauth2", "oauth2provider")],
+        )
         self.assertEqual(RoleObjectPermission.objects.count(), count)
         for user in [reader, editor, global_editor]:
             with self.subTest(user=user):
