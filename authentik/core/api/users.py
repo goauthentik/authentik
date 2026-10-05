@@ -68,7 +68,6 @@ from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.brands.models import Brand
 from authentik.core import user_switching
 from authentik.core.api.object_attributes import AttributesMixinSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
     JSONDictField,
     LinkSerializer,
@@ -615,7 +614,6 @@ class UserViewSet(
         "authentik.enterprise.stages.account_lockdown.api.UserAccountLockdownMixin"
     ),
     ConditionalInheritance("authentik.enterprise.reports.api.reports.ExportMixin"),
-    UsedByMixin,
     ModelViewSet,
 ):
     """User Viewset"""

@@ -304,7 +304,6 @@ import {
     TelegramSourceRequestToJSON,
 } from "../models/TelegramSourceRequest";
 import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import {
     type UserKerberosSourceConnection,
     UserKerberosSourceConnectionFromJSON,
@@ -396,10 +395,6 @@ export interface SourcesAllRetrieveRequest {
     slug: string;
 }
 
-export interface SourcesAllUsedByListRequest {
-    slug: string;
-}
-
 export interface SourcesGroupConnectionsAllDestroyRequest {
     /**
      * A unique integer value identifying this group source connection.
@@ -449,13 +444,6 @@ export interface SourcesGroupConnectionsAllUpdateRequest {
      */
     id: number;
     groupSourceConnectionRequest: GroupSourceConnectionRequest;
-}
-
-export interface SourcesGroupConnectionsAllUsedByListRequest {
-    /**
-     * A unique integer value identifying this group source connection.
-     */
-    id: number;
 }
 
 export interface SourcesGroupConnectionsKerberosCreateRequest {
@@ -513,13 +501,6 @@ export interface SourcesGroupConnectionsKerberosUpdateRequest {
     groupKerberosSourceConnectionRequest: GroupKerberosSourceConnectionRequest;
 }
 
-export interface SourcesGroupConnectionsKerberosUsedByListRequest {
-    /**
-     * A unique integer value identifying this Group Kerberos Source Connection.
-     */
-    id: number;
-}
-
 export interface SourcesGroupConnectionsLdapCreateRequest {
     groupLDAPSourceConnectionRequest: GroupLDAPSourceConnectionRequest;
 }
@@ -573,13 +554,6 @@ export interface SourcesGroupConnectionsLdapUpdateRequest {
      */
     id: number;
     groupLDAPSourceConnectionRequest: GroupLDAPSourceConnectionRequest;
-}
-
-export interface SourcesGroupConnectionsLdapUsedByListRequest {
-    /**
-     * A unique integer value identifying this Group LDAP Source Connection.
-     */
-    id: number;
 }
 
 export interface SourcesGroupConnectionsOauthCreateRequest {
@@ -637,13 +611,6 @@ export interface SourcesGroupConnectionsOauthUpdateRequest {
     groupOAuthSourceConnectionRequest: GroupOAuthSourceConnectionRequest;
 }
 
-export interface SourcesGroupConnectionsOauthUsedByListRequest {
-    /**
-     * A unique integer value identifying this Group OAuth Source Connection.
-     */
-    id: number;
-}
-
 export interface SourcesGroupConnectionsPlexCreateRequest {
     groupPlexSourceConnectionRequest: GroupPlexSourceConnectionRequest;
 }
@@ -697,13 +664,6 @@ export interface SourcesGroupConnectionsPlexUpdateRequest {
      */
     id: number;
     groupPlexSourceConnectionRequest: GroupPlexSourceConnectionRequest;
-}
-
-export interface SourcesGroupConnectionsPlexUsedByListRequest {
-    /**
-     * A unique integer value identifying this Group Plex Source Connection.
-     */
-    id: number;
 }
 
 export interface SourcesGroupConnectionsSamlCreateRequest {
@@ -761,13 +721,6 @@ export interface SourcesGroupConnectionsSamlUpdateRequest {
     groupSAMLSourceConnectionRequest: GroupSAMLSourceConnectionRequest;
 }
 
-export interface SourcesGroupConnectionsSamlUsedByListRequest {
-    /**
-     * A unique integer value identifying this Group SAML Source Connection.
-     */
-    id: number;
-}
-
 export interface SourcesGroupConnectionsTelegramCreateRequest {
     groupTelegramSourceConnectionRequest: GroupTelegramSourceConnectionRequest;
 }
@@ -821,13 +774,6 @@ export interface SourcesGroupConnectionsTelegramUpdateRequest {
      */
     id: number;
     groupTelegramSourceConnectionRequest: GroupTelegramSourceConnectionRequest;
-}
-
-export interface SourcesGroupConnectionsTelegramUsedByListRequest {
-    /**
-     * A unique integer value identifying this Group Telegram Source Connection.
-     */
-    id: number;
 }
 
 export interface SourcesKerberosCreateRequest {
@@ -884,10 +830,6 @@ export interface SourcesKerberosSyncStatusRetrieveRequest {
 export interface SourcesKerberosUpdateRequest {
     slug: string;
     kerberosSourceRequest: KerberosSourceRequest;
-}
-
-export interface SourcesKerberosUsedByListRequest {
-    slug: string;
 }
 
 export interface SourcesLdapCreateRequest {
@@ -968,10 +910,6 @@ export interface SourcesLdapUpdateRequest {
     lDAPSourceRequest: LDAPSourceRequest;
 }
 
-export interface SourcesLdapUsedByListRequest {
-    slug: string;
-}
-
 export interface SourcesOauthCreateRequest {
     oAuthSourceRequest: OAuthSourceRequest;
 }
@@ -1037,10 +975,6 @@ export interface SourcesOauthUpdateRequest {
     oAuthSourceRequest: OAuthSourceRequest;
 }
 
-export interface SourcesOauthUsedByListRequest {
-    slug: string;
-}
-
 export interface SourcesPlexCreateRequest {
     plexSourceRequest: PlexSourceRequest;
 }
@@ -1101,10 +1035,6 @@ export interface SourcesPlexRetrieveRequest {
 export interface SourcesPlexUpdateRequest {
     slug: string;
     plexSourceRequest: PlexSourceRequest;
-}
-
-export interface SourcesPlexUsedByListRequest {
-    slug: string;
 }
 
 export interface SourcesSamlCreateRequest {
@@ -1176,10 +1106,6 @@ export interface SourcesSamlUpdateRequest {
     sAMLSourceRequest: SAMLSourceRequest;
 }
 
-export interface SourcesSamlUsedByListRequest {
-    slug: string;
-}
-
 export interface SourcesScimCreateRequest {
     sCIMSourceRequest: SCIMSourceRequest;
 }
@@ -1244,13 +1170,6 @@ export interface SourcesScimGroupsUpdateRequest {
     sCIMSourceGroupRequest: SCIMSourceGroupRequest;
 }
 
-export interface SourcesScimGroupsUsedByListRequest {
-    /**
-     * A unique value identifying this scim source group.
-     */
-    id: string;
-}
-
 export interface SourcesScimListRequest {
     name?: string;
     /**
@@ -1285,10 +1204,6 @@ export interface SourcesScimRetrieveRequest {
 export interface SourcesScimUpdateRequest {
     slug: string;
     sCIMSourceRequest: SCIMSourceRequest;
-}
-
-export interface SourcesScimUsedByListRequest {
-    slug: string;
 }
 
 export interface SourcesScimUsersCreateRequest {
@@ -1345,13 +1260,6 @@ export interface SourcesScimUsersUpdateRequest {
      */
     id: string;
     sCIMSourceUserRequest: SCIMSourceUserRequest;
-}
-
-export interface SourcesScimUsersUsedByListRequest {
-    /**
-     * A unique value identifying this scim source user.
-     */
-    id: string;
 }
 
 export interface SourcesTelegramConnectUserCreateRequest {
@@ -1411,10 +1319,6 @@ export interface SourcesTelegramUpdateRequest {
     telegramSourceRequest: TelegramSourceRequest;
 }
 
-export interface SourcesTelegramUsedByListRequest {
-    slug: string;
-}
-
 export interface SourcesUserConnectionsAllDestroyRequest {
     /**
      * A unique integer value identifying this user source connection.
@@ -1464,13 +1368,6 @@ export interface SourcesUserConnectionsAllUpdateRequest {
      */
     id: number;
     userSourceConnectionRequest: UserSourceConnectionRequest;
-}
-
-export interface SourcesUserConnectionsAllUsedByListRequest {
-    /**
-     * A unique integer value identifying this user source connection.
-     */
-    id: number;
 }
 
 export interface SourcesUserConnectionsKerberosCreateRequest {
@@ -1528,13 +1425,6 @@ export interface SourcesUserConnectionsKerberosUpdateRequest {
     userKerberosSourceConnectionRequest: UserKerberosSourceConnectionRequest;
 }
 
-export interface SourcesUserConnectionsKerberosUsedByListRequest {
-    /**
-     * A unique integer value identifying this User Kerberos Source Connection.
-     */
-    id: number;
-}
-
 export interface SourcesUserConnectionsLdapCreateRequest {
     userLDAPSourceConnectionRequest: UserLDAPSourceConnectionRequest;
 }
@@ -1588,13 +1478,6 @@ export interface SourcesUserConnectionsLdapUpdateRequest {
      */
     id: number;
     userLDAPSourceConnectionRequest: UserLDAPSourceConnectionRequest;
-}
-
-export interface SourcesUserConnectionsLdapUsedByListRequest {
-    /**
-     * A unique integer value identifying this User LDAP Source Connection.
-     */
-    id: number;
 }
 
 export interface SourcesUserConnectionsOauthCreateRequest {
@@ -1652,13 +1535,6 @@ export interface SourcesUserConnectionsOauthUpdateRequest {
     userOAuthSourceConnectionRequest: UserOAuthSourceConnectionRequest;
 }
 
-export interface SourcesUserConnectionsOauthUsedByListRequest {
-    /**
-     * A unique integer value identifying this User OAuth Source Connection.
-     */
-    id: number;
-}
-
 export interface SourcesUserConnectionsPlexCreateRequest {
     userPlexSourceConnectionRequest: UserPlexSourceConnectionRequest;
 }
@@ -1712,13 +1588,6 @@ export interface SourcesUserConnectionsPlexUpdateRequest {
      */
     id: number;
     userPlexSourceConnectionRequest: UserPlexSourceConnectionRequest;
-}
-
-export interface SourcesUserConnectionsPlexUsedByListRequest {
-    /**
-     * A unique integer value identifying this User Plex Source Connection.
-     */
-    id: number;
 }
 
 export interface SourcesUserConnectionsSamlCreateRequest {
@@ -1776,13 +1645,6 @@ export interface SourcesUserConnectionsSamlUpdateRequest {
     userSAMLSourceConnectionRequest: UserSAMLSourceConnectionRequest;
 }
 
-export interface SourcesUserConnectionsSamlUsedByListRequest {
-    /**
-     * A unique integer value identifying this User SAML Source Connection.
-     */
-    id: number;
-}
-
 export interface SourcesUserConnectionsTelegramCreateRequest {
     userTelegramSourceConnectionRequest: UserTelegramSourceConnectionRequest;
 }
@@ -1836,13 +1698,6 @@ export interface SourcesUserConnectionsTelegramUpdateRequest {
      */
     id: number;
     userTelegramSourceConnectionRequest: UserTelegramSourceConnectionRequest;
-}
-
-export interface SourcesUserConnectionsTelegramUsedByListRequest {
-    /**
-     * A unique integer value identifying this User Telegram Source Connection.
-     */
-    id: number;
 }
 
 export class SourcesApi extends runtime.BaseAPI {
@@ -2102,67 +1957,6 @@ export class SourcesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Array<TypeCreate>> {
         const response = await this.sourcesAllTypesListRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for sourcesAllUsedByList without sending the request
-     */
-    async sourcesAllUsedByListRequestOpts(
-        requestParameters: SourcesAllUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["slug"] == null) {
-            throw new runtime.RequiredError(
-                "slug",
-                'Required parameter "slug" was null or undefined when calling sourcesAllUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/all/{slug}/used_by/`;
-        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesAllUsedByListRaw(
-        requestParameters: SourcesAllUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesAllUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesAllUsedByList(
-        requestParameters: SourcesAllUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesAllUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2574,71 +2368,6 @@ export class SourcesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<GroupSourceConnection> {
         const response = await this.sourcesGroupConnectionsAllUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for sourcesGroupConnectionsAllUsedByList without sending the request
-     */
-    async sourcesGroupConnectionsAllUsedByListRequestOpts(
-        requestParameters: SourcesGroupConnectionsAllUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsAllUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/group_connections/all/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesGroupConnectionsAllUsedByListRaw(
-        requestParameters: SourcesGroupConnectionsAllUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.sourcesGroupConnectionsAllUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesGroupConnectionsAllUsedByList(
-        requestParameters: SourcesGroupConnectionsAllUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesGroupConnectionsAllUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -3082,72 +2811,6 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesGroupConnectionsKerberosUsedByList without sending the
-     * request
-     */
-    async sourcesGroupConnectionsKerberosUsedByListRequestOpts(
-        requestParameters: SourcesGroupConnectionsKerberosUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsKerberosUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/group_connections/kerberos/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesGroupConnectionsKerberosUsedByListRaw(
-        requestParameters: SourcesGroupConnectionsKerberosUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.sourcesGroupConnectionsKerberosUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesGroupConnectionsKerberosUsedByList(
-        requestParameters: SourcesGroupConnectionsKerberosUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesGroupConnectionsKerberosUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for sourcesGroupConnectionsLdapCreate without sending the request
      */
     async sourcesGroupConnectionsLdapCreateRequestOpts(
@@ -3575,71 +3238,6 @@ export class SourcesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<GroupLDAPSourceConnection> {
         const response = await this.sourcesGroupConnectionsLdapUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for sourcesGroupConnectionsLdapUsedByList without sending the request
-     */
-    async sourcesGroupConnectionsLdapUsedByListRequestOpts(
-        requestParameters: SourcesGroupConnectionsLdapUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsLdapUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/group_connections/ldap/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesGroupConnectionsLdapUsedByListRaw(
-        requestParameters: SourcesGroupConnectionsLdapUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.sourcesGroupConnectionsLdapUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesGroupConnectionsLdapUsedByList(
-        requestParameters: SourcesGroupConnectionsLdapUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesGroupConnectionsLdapUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -4081,72 +3679,6 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesGroupConnectionsOauthUsedByList without sending the
-     * request
-     */
-    async sourcesGroupConnectionsOauthUsedByListRequestOpts(
-        requestParameters: SourcesGroupConnectionsOauthUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsOauthUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/group_connections/oauth/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesGroupConnectionsOauthUsedByListRaw(
-        requestParameters: SourcesGroupConnectionsOauthUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.sourcesGroupConnectionsOauthUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesGroupConnectionsOauthUsedByList(
-        requestParameters: SourcesGroupConnectionsOauthUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesGroupConnectionsOauthUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for sourcesGroupConnectionsPlexCreate without sending the request
      */
     async sourcesGroupConnectionsPlexCreateRequestOpts(
@@ -4574,71 +4106,6 @@ export class SourcesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<GroupPlexSourceConnection> {
         const response = await this.sourcesGroupConnectionsPlexUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for sourcesGroupConnectionsPlexUsedByList without sending the request
-     */
-    async sourcesGroupConnectionsPlexUsedByListRequestOpts(
-        requestParameters: SourcesGroupConnectionsPlexUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsPlexUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/group_connections/plex/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesGroupConnectionsPlexUsedByListRaw(
-        requestParameters: SourcesGroupConnectionsPlexUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.sourcesGroupConnectionsPlexUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesGroupConnectionsPlexUsedByList(
-        requestParameters: SourcesGroupConnectionsPlexUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesGroupConnectionsPlexUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -5080,71 +4547,6 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesGroupConnectionsSamlUsedByList without sending the request
-     */
-    async sourcesGroupConnectionsSamlUsedByListRequestOpts(
-        requestParameters: SourcesGroupConnectionsSamlUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsSamlUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/group_connections/saml/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesGroupConnectionsSamlUsedByListRaw(
-        requestParameters: SourcesGroupConnectionsSamlUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.sourcesGroupConnectionsSamlUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesGroupConnectionsSamlUsedByList(
-        requestParameters: SourcesGroupConnectionsSamlUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesGroupConnectionsSamlUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for sourcesGroupConnectionsTelegramCreate without sending the request
      */
     async sourcesGroupConnectionsTelegramCreateRequestOpts(
@@ -5574,72 +4976,6 @@ export class SourcesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<GroupTelegramSourceConnection> {
         const response = await this.sourcesGroupConnectionsTelegramUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for sourcesGroupConnectionsTelegramUsedByList without sending the
-     * request
-     */
-    async sourcesGroupConnectionsTelegramUsedByListRequestOpts(
-        requestParameters: SourcesGroupConnectionsTelegramUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsTelegramUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/group_connections/telegram/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesGroupConnectionsTelegramUsedByListRaw(
-        requestParameters: SourcesGroupConnectionsTelegramUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.sourcesGroupConnectionsTelegramUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesGroupConnectionsTelegramUsedByList(
-        requestParameters: SourcesGroupConnectionsTelegramUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesGroupConnectionsTelegramUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -6157,67 +5493,6 @@ export class SourcesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<KerberosSource> {
         const response = await this.sourcesKerberosUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for sourcesKerberosUsedByList without sending the request
-     */
-    async sourcesKerberosUsedByListRequestOpts(
-        requestParameters: SourcesKerberosUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["slug"] == null) {
-            throw new runtime.RequiredError(
-                "slug",
-                'Required parameter "slug" was null or undefined when calling sourcesKerberosUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/kerberos/{slug}/used_by/`;
-        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesKerberosUsedByListRaw(
-        requestParameters: SourcesKerberosUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesKerberosUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesKerberosUsedByList(
-        requestParameters: SourcesKerberosUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesKerberosUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -6857,67 +6132,6 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesLdapUsedByList without sending the request
-     */
-    async sourcesLdapUsedByListRequestOpts(
-        requestParameters: SourcesLdapUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["slug"] == null) {
-            throw new runtime.RequiredError(
-                "slug",
-                'Required parameter "slug" was null or undefined when calling sourcesLdapUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/ldap/{slug}/used_by/`;
-        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesLdapUsedByListRaw(
-        requestParameters: SourcesLdapUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesLdapUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesLdapUsedByList(
-        requestParameters: SourcesLdapUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesLdapUsedByListRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Creates request options for sourcesOauthCreate without sending the request
      */
     async sourcesOauthCreateRequestOpts(
@@ -7436,67 +6650,6 @@ export class SourcesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<OAuthSource> {
         const response = await this.sourcesOauthUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for sourcesOauthUsedByList without sending the request
-     */
-    async sourcesOauthUsedByListRequestOpts(
-        requestParameters: SourcesOauthUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["slug"] == null) {
-            throw new runtime.RequiredError(
-                "slug",
-                'Required parameter "slug" was null or undefined when calling sourcesOauthUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/oauth/{slug}/used_by/`;
-        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesOauthUsedByListRaw(
-        requestParameters: SourcesOauthUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesOauthUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesOauthUsedByList(
-        requestParameters: SourcesOauthUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesOauthUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -8078,67 +7231,6 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesPlexUsedByList without sending the request
-     */
-    async sourcesPlexUsedByListRequestOpts(
-        requestParameters: SourcesPlexUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["slug"] == null) {
-            throw new runtime.RequiredError(
-                "slug",
-                'Required parameter "slug" was null or undefined when calling sourcesPlexUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/plex/{slug}/used_by/`;
-        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesPlexUsedByListRaw(
-        requestParameters: SourcesPlexUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesPlexUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesPlexUsedByList(
-        requestParameters: SourcesPlexUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesPlexUsedByListRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Creates request options for sourcesSamlCreate without sending the request
      */
     async sourcesSamlCreateRequestOpts(
@@ -8692,67 +7784,6 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesSamlUsedByList without sending the request
-     */
-    async sourcesSamlUsedByListRequestOpts(
-        requestParameters: SourcesSamlUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["slug"] == null) {
-            throw new runtime.RequiredError(
-                "slug",
-                'Required parameter "slug" was null or undefined when calling sourcesSamlUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/saml/{slug}/used_by/`;
-        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesSamlUsedByListRaw(
-        requestParameters: SourcesSamlUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesSamlUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesSamlUsedByList(
-        requestParameters: SourcesSamlUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesSamlUsedByListRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Creates request options for sourcesScimCreate without sending the request
      */
     async sourcesScimCreateRequestOpts(
@@ -9292,70 +8323,6 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesScimGroupsUsedByList without sending the request
-     */
-    async sourcesScimGroupsUsedByListRequestOpts(
-        requestParameters: SourcesScimGroupsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling sourcesScimGroupsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/scim_groups/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesScimGroupsUsedByListRaw(
-        requestParameters: SourcesScimGroupsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesScimGroupsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesScimGroupsUsedByList(
-        requestParameters: SourcesScimGroupsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesScimGroupsUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for sourcesScimList without sending the request
      */
     async sourcesScimListRequestOpts(
@@ -9631,67 +8598,6 @@ export class SourcesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<SCIMSource> {
         const response = await this.sourcesScimUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for sourcesScimUsedByList without sending the request
-     */
-    async sourcesScimUsedByListRequestOpts(
-        requestParameters: SourcesScimUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["slug"] == null) {
-            throw new runtime.RequiredError(
-                "slug",
-                'Required parameter "slug" was null or undefined when calling sourcesScimUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/scim/{slug}/used_by/`;
-        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesScimUsedByListRaw(
-        requestParameters: SourcesScimUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesScimUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesScimUsedByList(
-        requestParameters: SourcesScimUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesScimUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -10112,67 +9018,6 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesScimUsersUsedByList without sending the request
-     */
-    async sourcesScimUsersUsedByListRequestOpts(
-        requestParameters: SourcesScimUsersUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling sourcesScimUsersUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/scim_users/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesScimUsersUsedByListRaw(
-        requestParameters: SourcesScimUsersUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesScimUsersUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesScimUsersUsedByList(
-        requestParameters: SourcesScimUsersUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesScimUsersUsedByListRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Creates request options for sourcesTelegramConnectUserCreate without sending the request
      */
     async sourcesTelegramConnectUserCreateRequestOpts(
@@ -10219,9 +9064,6 @@ export class SourcesApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async sourcesTelegramConnectUserCreateRaw(
         requestParameters: SourcesTelegramConnectUserCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -10235,9 +9077,6 @@ export class SourcesApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async sourcesTelegramConnectUserCreate(
         requestParameters: SourcesTelegramConnectUserCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -10288,9 +9127,6 @@ export class SourcesApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async sourcesTelegramCreateRaw(
         requestParameters: SourcesTelegramCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -10303,9 +9139,6 @@ export class SourcesApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async sourcesTelegramCreate(
         requestParameters: SourcesTelegramCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -10351,9 +9184,6 @@ export class SourcesApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async sourcesTelegramDestroyRaw(
         requestParameters: SourcesTelegramDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -10364,9 +9194,6 @@ export class SourcesApi extends runtime.BaseAPI {
         return new runtime.VoidApiResponse(response);
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async sourcesTelegramDestroy(
         requestParameters: SourcesTelegramDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -10463,9 +9290,6 @@ export class SourcesApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async sourcesTelegramListRaw(
         requestParameters: SourcesTelegramListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -10478,9 +9302,6 @@ export class SourcesApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async sourcesTelegramList(
         requestParameters: SourcesTelegramListRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -10531,9 +9352,6 @@ export class SourcesApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async sourcesTelegramPartialUpdateRaw(
         requestParameters: SourcesTelegramPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -10547,9 +9365,6 @@ export class SourcesApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async sourcesTelegramPartialUpdate(
         requestParameters: SourcesTelegramPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -10598,9 +9413,6 @@ export class SourcesApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async sourcesTelegramRetrieveRaw(
         requestParameters: SourcesTelegramRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -10613,9 +9425,6 @@ export class SourcesApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async sourcesTelegramRetrieve(
         requestParameters: SourcesTelegramRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -10671,9 +9480,6 @@ export class SourcesApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async sourcesTelegramUpdateRaw(
         requestParameters: SourcesTelegramUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -10686,75 +9492,11 @@ export class SourcesApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Mixin to add a used_by endpoint to return a list of all objects using this object
-     */
     async sourcesTelegramUpdate(
         requestParameters: SourcesTelegramUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<TelegramSource> {
         const response = await this.sourcesTelegramUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for sourcesTelegramUsedByList without sending the request
-     */
-    async sourcesTelegramUsedByListRequestOpts(
-        requestParameters: SourcesTelegramUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["slug"] == null) {
-            throw new runtime.RequiredError(
-                "slug",
-                'Required parameter "slug" was null or undefined when calling sourcesTelegramUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/telegram/{slug}/used_by/`;
-        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesTelegramUsedByListRaw(
-        requestParameters: SourcesTelegramUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesTelegramUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesTelegramUsedByList(
-        requestParameters: SourcesTelegramUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesTelegramUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -11115,71 +9857,6 @@ export class SourcesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<UserSourceConnection> {
         const response = await this.sourcesUserConnectionsAllUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for sourcesUserConnectionsAllUsedByList without sending the request
-     */
-    async sourcesUserConnectionsAllUsedByListRequestOpts(
-        requestParameters: SourcesUserConnectionsAllUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsAllUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/user_connections/all/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesUserConnectionsAllUsedByListRaw(
-        requestParameters: SourcesUserConnectionsAllUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.sourcesUserConnectionsAllUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesUserConnectionsAllUsedByList(
-        requestParameters: SourcesUserConnectionsAllUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesUserConnectionsAllUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -11622,72 +10299,6 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesUserConnectionsKerberosUsedByList without sending the
-     * request
-     */
-    async sourcesUserConnectionsKerberosUsedByListRequestOpts(
-        requestParameters: SourcesUserConnectionsKerberosUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsKerberosUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/user_connections/kerberos/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesUserConnectionsKerberosUsedByListRaw(
-        requestParameters: SourcesUserConnectionsKerberosUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.sourcesUserConnectionsKerberosUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesUserConnectionsKerberosUsedByList(
-        requestParameters: SourcesUserConnectionsKerberosUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesUserConnectionsKerberosUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for sourcesUserConnectionsLdapCreate without sending the request
      */
     async sourcesUserConnectionsLdapCreateRequestOpts(
@@ -12115,71 +10726,6 @@ export class SourcesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<UserLDAPSourceConnection> {
         const response = await this.sourcesUserConnectionsLdapUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for sourcesUserConnectionsLdapUsedByList without sending the request
-     */
-    async sourcesUserConnectionsLdapUsedByListRequestOpts(
-        requestParameters: SourcesUserConnectionsLdapUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsLdapUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/user_connections/ldap/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesUserConnectionsLdapUsedByListRaw(
-        requestParameters: SourcesUserConnectionsLdapUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.sourcesUserConnectionsLdapUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesUserConnectionsLdapUsedByList(
-        requestParameters: SourcesUserConnectionsLdapUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesUserConnectionsLdapUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -12621,71 +11167,6 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesUserConnectionsOauthUsedByList without sending the request
-     */
-    async sourcesUserConnectionsOauthUsedByListRequestOpts(
-        requestParameters: SourcesUserConnectionsOauthUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsOauthUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/user_connections/oauth/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesUserConnectionsOauthUsedByListRaw(
-        requestParameters: SourcesUserConnectionsOauthUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.sourcesUserConnectionsOauthUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesUserConnectionsOauthUsedByList(
-        requestParameters: SourcesUserConnectionsOauthUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesUserConnectionsOauthUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for sourcesUserConnectionsPlexCreate without sending the request
      */
     async sourcesUserConnectionsPlexCreateRequestOpts(
@@ -13113,71 +11594,6 @@ export class SourcesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<UserPlexSourceConnection> {
         const response = await this.sourcesUserConnectionsPlexUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for sourcesUserConnectionsPlexUsedByList without sending the request
-     */
-    async sourcesUserConnectionsPlexUsedByListRequestOpts(
-        requestParameters: SourcesUserConnectionsPlexUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsPlexUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/user_connections/plex/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesUserConnectionsPlexUsedByListRaw(
-        requestParameters: SourcesUserConnectionsPlexUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.sourcesUserConnectionsPlexUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesUserConnectionsPlexUsedByList(
-        requestParameters: SourcesUserConnectionsPlexUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesUserConnectionsPlexUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -13619,71 +12035,6 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesUserConnectionsSamlUsedByList without sending the request
-     */
-    async sourcesUserConnectionsSamlUsedByListRequestOpts(
-        requestParameters: SourcesUserConnectionsSamlUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsSamlUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/user_connections/saml/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesUserConnectionsSamlUsedByListRaw(
-        requestParameters: SourcesUserConnectionsSamlUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.sourcesUserConnectionsSamlUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesUserConnectionsSamlUsedByList(
-        requestParameters: SourcesUserConnectionsSamlUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesUserConnectionsSamlUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for sourcesUserConnectionsTelegramCreate without sending the request
      */
     async sourcesUserConnectionsTelegramCreateRequestOpts(
@@ -14112,72 +12463,6 @@ export class SourcesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<UserTelegramSourceConnection> {
         const response = await this.sourcesUserConnectionsTelegramUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for sourcesUserConnectionsTelegramUsedByList without sending the
-     * request
-     */
-    async sourcesUserConnectionsTelegramUsedByListRequestOpts(
-        requestParameters: SourcesUserConnectionsTelegramUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsTelegramUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/sources/user_connections/telegram/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesUserConnectionsTelegramUsedByListRaw(
-        requestParameters: SourcesUserConnectionsTelegramUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.sourcesUserConnectionsTelegramUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async sourcesUserConnectionsTelegramUsedByList(
-        requestParameters: SourcesUserConnectionsTelegramUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.sourcesUserConnectionsTelegramUsedByListRaw(
             requestParameters,
             initOverrides,
         );

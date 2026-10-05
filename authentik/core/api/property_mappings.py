@@ -24,7 +24,6 @@ from rest_framework.viewsets import GenericViewSet
 from authentik.api.validation import validate
 from authentik.blueprints.api import ManagedSerializer
 from authentik.core.api.object_types import TypesMixin
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
     MetaNameSerializer,
     ModelSerializer,
@@ -93,7 +92,6 @@ class PropertyMappingViewSet(
     TypesMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
-    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

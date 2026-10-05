@@ -22,7 +22,6 @@ from structlog.stdlib import get_logger
 from authentik.api.pagination import Pagination
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.providers import ProviderSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import ModelSerializer, ThemedUrlsSerializer
 from authentik.core.apps import AppAccessWithoutBindings
@@ -139,7 +138,6 @@ class ApplicationSerializer(ModelSerializer):
 
 class ApplicationViewSet(
     ConditionalInheritance("authentik.enterprise.requests.api.apps.ApplicationsRequestableMixin"),
-    UsedByMixin,
     ModelViewSet,
 ):
     """Application Viewset"""

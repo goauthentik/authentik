@@ -248,7 +248,6 @@ import { type SyncObjectRequest, SyncObjectRequestToJSON } from "../models/SyncO
 import { type SyncObjectResult, SyncObjectResultFromJSON } from "../models/SyncObjectResult";
 import { type SyncStatus, SyncStatusFromJSON } from "../models/SyncStatus";
 import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import {
     type WSFederationProvider,
     WSFederationProviderFromJSON,
@@ -293,13 +292,6 @@ export interface ProvidersAllListRequest {
 }
 
 export interface ProvidersAllRetrieveRequest {
-    /**
-     * A unique integer value identifying this provider.
-     */
-    id: number;
-}
-
-export interface ProvidersAllUsedByListRequest {
     /**
      * A unique integer value identifying this provider.
      */
@@ -351,13 +343,6 @@ export interface ProvidersGoogleWorkspaceGroupsListRequest {
 }
 
 export interface ProvidersGoogleWorkspaceGroupsRetrieveRequest {
-    /**
-     * A UUID string identifying this Google Workspace Provider Group.
-     */
-    id: string;
-}
-
-export interface ProvidersGoogleWorkspaceGroupsUsedByListRequest {
     /**
      * A UUID string identifying this Google Workspace Provider Group.
      */
@@ -425,13 +410,6 @@ export interface ProvidersGoogleWorkspaceUpdateRequest {
     googleWorkspaceProviderRequest: GoogleWorkspaceProviderRequest;
 }
 
-export interface ProvidersGoogleWorkspaceUsedByListRequest {
-    /**
-     * A unique integer value identifying this Google Workspace Provider.
-     */
-    id: number;
-}
-
 export interface ProvidersGoogleWorkspaceUsersCreateRequest {
     googleWorkspaceProviderUserRequest: GoogleWorkspaceProviderUserRequest;
 }
@@ -466,13 +444,6 @@ export interface ProvidersGoogleWorkspaceUsersListRequest {
 }
 
 export interface ProvidersGoogleWorkspaceUsersRetrieveRequest {
-    /**
-     * A UUID string identifying this Google Workspace Provider User.
-     */
-    id: string;
-}
-
-export interface ProvidersGoogleWorkspaceUsersUsedByListRequest {
     /**
      * A UUID string identifying this Google Workspace Provider User.
      */
@@ -541,13 +512,6 @@ export interface ProvidersLdapUpdateRequest {
     lDAPProviderRequest: LDAPProviderRequest;
 }
 
-export interface ProvidersLdapUsedByListRequest {
-    /**
-     * A unique integer value identifying this LDAP Provider.
-     */
-    id: number;
-}
-
 export interface ProvidersMicrosoftEntraCreateRequest {
     microsoftEntraProviderRequest: MicrosoftEntraProviderRequest;
 }
@@ -593,13 +557,6 @@ export interface ProvidersMicrosoftEntraGroupsListRequest {
 }
 
 export interface ProvidersMicrosoftEntraGroupsRetrieveRequest {
-    /**
-     * A UUID string identifying this Microsoft Entra Provider Group.
-     */
-    id: string;
-}
-
-export interface ProvidersMicrosoftEntraGroupsUsedByListRequest {
     /**
      * A UUID string identifying this Microsoft Entra Provider Group.
      */
@@ -666,13 +623,6 @@ export interface ProvidersMicrosoftEntraUpdateRequest {
     microsoftEntraProviderRequest: MicrosoftEntraProviderRequest;
 }
 
-export interface ProvidersMicrosoftEntraUsedByListRequest {
-    /**
-     * A unique integer value identifying this Microsoft Entra Provider.
-     */
-    id: number;
-}
-
 export interface ProvidersMicrosoftEntraUsersCreateRequest {
     microsoftEntraProviderUserRequest: MicrosoftEntraProviderUserRequest;
 }
@@ -707,13 +657,6 @@ export interface ProvidersMicrosoftEntraUsersListRequest {
 }
 
 export interface ProvidersMicrosoftEntraUsersRetrieveRequest {
-    /**
-     * A UUID string identifying this Microsoft Entra Provider User.
-     */
-    id: string;
-}
-
-export interface ProvidersMicrosoftEntraUsersUsedByListRequest {
     /**
      * A UUID string identifying this Microsoft Entra Provider User.
      */
@@ -855,13 +798,6 @@ export interface ProvidersOauth2UpdateRequest {
     oAuth2ProviderRequest: OAuth2ProviderRequest;
 }
 
-export interface ProvidersOauth2UsedByListRequest {
-    /**
-     * A unique integer value identifying this OAuth2/OpenID Provider.
-     */
-    id: number;
-}
-
 export interface ProvidersProxyCreateRequest {
     proxyProviderRequest: ProxyProviderRequest;
 }
@@ -930,13 +866,6 @@ export interface ProvidersProxyUpdateRequest {
     proxyProviderRequest: ProxyProviderRequest;
 }
 
-export interface ProvidersProxyUsedByListRequest {
-    /**
-     * A unique integer value identifying this Proxy Provider.
-     */
-    id: number;
-}
-
 export interface ProvidersRacCreateRequest {
     rACProviderRequest: RACProviderRequest;
 }
@@ -990,13 +919,6 @@ export interface ProvidersRacUpdateRequest {
      */
     id: number;
     rACProviderRequest: RACProviderRequest;
-}
-
-export interface ProvidersRacUsedByListRequest {
-    /**
-     * A unique integer value identifying this RAC Provider.
-     */
-    id: number;
 }
 
 export interface ProvidersRadiusCreateRequest {
@@ -1054,13 +976,6 @@ export interface ProvidersRadiusUpdateRequest {
      */
     id: number;
     radiusProviderRequest: RadiusProviderRequest;
-}
-
-export interface ProvidersRadiusUsedByListRequest {
-    /**
-     * A unique integer value identifying this Radius Provider.
-     */
-    id: number;
 }
 
 export interface ProvidersSamlCreateRequest {
@@ -1170,13 +1085,6 @@ export interface ProvidersSamlUpdateRequest {
     sAMLProviderRequest: SAMLProviderRequest;
 }
 
-export interface ProvidersSamlUsedByListRequest {
-    /**
-     * A unique integer value identifying this SAML Provider.
-     */
-    id: number;
-}
-
 export interface ProvidersScimCreateRequest {
     sCIMProviderRequest: SCIMProviderRequest;
 }
@@ -1222,13 +1130,6 @@ export interface ProvidersScimGroupsListRequest {
 }
 
 export interface ProvidersScimGroupsRetrieveRequest {
-    /**
-     * A UUID string identifying this scim provider group.
-     */
-    id: string;
-}
-
-export interface ProvidersScimGroupsUsedByListRequest {
     /**
      * A UUID string identifying this scim provider group.
      */
@@ -1296,13 +1197,6 @@ export interface ProvidersScimUpdateRequest {
     sCIMProviderRequest: SCIMProviderRequest;
 }
 
-export interface ProvidersScimUsedByListRequest {
-    /**
-     * A unique integer value identifying this SCIM Provider.
-     */
-    id: number;
-}
-
 export interface ProvidersScimUsersCreateRequest {
     sCIMProviderUserRequest: SCIMProviderUserRequest;
 }
@@ -1337,13 +1231,6 @@ export interface ProvidersScimUsersListRequest {
 }
 
 export interface ProvidersScimUsersRetrieveRequest {
-    /**
-     * A UUID string identifying this scim provider user.
-     */
-    id: string;
-}
-
-export interface ProvidersScimUsersUsedByListRequest {
     /**
      * A UUID string identifying this scim provider user.
      */
@@ -1403,13 +1290,6 @@ export interface ProvidersSsfUpdateRequest {
      */
     id: number;
     sSFProviderRequest: SSFProviderRequest;
-}
-
-export interface ProvidersSsfUsedByListRequest {
-    /**
-     * A unique integer value identifying this Shared Signals Framework Provider.
-     */
-    id: number;
 }
 
 export interface ProvidersWsfedCreateRequest {
@@ -1511,13 +1391,6 @@ export interface ProvidersWsfedUpdateRequest {
      */
     id: number;
     wSFederationProviderRequest: WSFederationProviderRequest;
-}
-
-export interface ProvidersWsfedUsedByListRequest {
-    /**
-     * A unique integer value identifying this WS-Federation Provider.
-     */
-    id: number;
 }
 
 export class ProvidersApi extends runtime.BaseAPI {
@@ -1769,67 +1642,6 @@ export class ProvidersApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Array<TypeCreate>> {
         const response = await this.providersAllTypesListRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for providersAllUsedByList without sending the request
-     */
-    async providersAllUsedByListRequestOpts(
-        requestParameters: ProvidersAllUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling providersAllUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/providers/all/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersAllUsedByListRaw(
-        requestParameters: ProvidersAllUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.providersAllUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersAllUsedByList(
-        requestParameters: ProvidersAllUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.providersAllUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2246,72 +2058,6 @@ export class ProvidersApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<GoogleWorkspaceProviderGroup> {
         const response = await this.providersGoogleWorkspaceGroupsRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for providersGoogleWorkspaceGroupsUsedByList without sending the
-     * request
-     */
-    async providersGoogleWorkspaceGroupsUsedByListRequestOpts(
-        requestParameters: ProvidersGoogleWorkspaceGroupsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceGroupsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/providers/google_workspace_groups/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersGoogleWorkspaceGroupsUsedByListRaw(
-        requestParameters: ProvidersGoogleWorkspaceGroupsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.providersGoogleWorkspaceGroupsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersGoogleWorkspaceGroupsUsedByList(
-        requestParameters: ProvidersGoogleWorkspaceGroupsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.providersGoogleWorkspaceGroupsUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -2773,71 +2519,6 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersGoogleWorkspaceUsedByList without sending the request
-     */
-    async providersGoogleWorkspaceUsedByListRequestOpts(
-        requestParameters: ProvidersGoogleWorkspaceUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/providers/google_workspace/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersGoogleWorkspaceUsedByListRaw(
-        requestParameters: ProvidersGoogleWorkspaceUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.providersGoogleWorkspaceUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersGoogleWorkspaceUsedByList(
-        requestParameters: ProvidersGoogleWorkspaceUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.providersGoogleWorkspaceUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for providersGoogleWorkspaceUsersCreate without sending the request
      */
     async providersGoogleWorkspaceUsersCreateRequestOpts(
@@ -3117,72 +2798,6 @@ export class ProvidersApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<GoogleWorkspaceProviderUser> {
         const response = await this.providersGoogleWorkspaceUsersRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for providersGoogleWorkspaceUsersUsedByList without sending the
-     * request
-     */
-    async providersGoogleWorkspaceUsersUsedByListRequestOpts(
-        requestParameters: ProvidersGoogleWorkspaceUsersUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceUsersUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/providers/google_workspace_users/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersGoogleWorkspaceUsersUsedByListRaw(
-        requestParameters: ProvidersGoogleWorkspaceUsersUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.providersGoogleWorkspaceUsersUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersGoogleWorkspaceUsersUsedByList(
-        requestParameters: ProvidersGoogleWorkspaceUsersUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.providersGoogleWorkspaceUsersUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -3627,67 +3242,6 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersLdapUsedByList without sending the request
-     */
-    async providersLdapUsedByListRequestOpts(
-        requestParameters: ProvidersLdapUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling providersLdapUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/providers/ldap/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersLdapUsedByListRaw(
-        requestParameters: ProvidersLdapUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.providersLdapUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersLdapUsedByList(
-        requestParameters: ProvidersLdapUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.providersLdapUsedByListRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Creates request options for providersMicrosoftEntraCreate without sending the request
      */
     async providersMicrosoftEntraCreateRequestOpts(
@@ -4099,72 +3653,6 @@ export class ProvidersApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<MicrosoftEntraProviderGroup> {
         const response = await this.providersMicrosoftEntraGroupsRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for providersMicrosoftEntraGroupsUsedByList without sending the
-     * request
-     */
-    async providersMicrosoftEntraGroupsUsedByListRequestOpts(
-        requestParameters: ProvidersMicrosoftEntraGroupsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraGroupsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/providers/microsoft_entra_groups/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersMicrosoftEntraGroupsUsedByListRaw(
-        requestParameters: ProvidersMicrosoftEntraGroupsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.providersMicrosoftEntraGroupsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersMicrosoftEntraGroupsUsedByList(
-        requestParameters: ProvidersMicrosoftEntraGroupsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.providersMicrosoftEntraGroupsUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -4621,71 +4109,6 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersMicrosoftEntraUsedByList without sending the request
-     */
-    async providersMicrosoftEntraUsedByListRequestOpts(
-        requestParameters: ProvidersMicrosoftEntraUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/providers/microsoft_entra/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersMicrosoftEntraUsedByListRaw(
-        requestParameters: ProvidersMicrosoftEntraUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.providersMicrosoftEntraUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersMicrosoftEntraUsedByList(
-        requestParameters: ProvidersMicrosoftEntraUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.providersMicrosoftEntraUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for providersMicrosoftEntraUsersCreate without sending the request
      */
     async providersMicrosoftEntraUsersCreateRequestOpts(
@@ -4965,72 +4388,6 @@ export class ProvidersApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<MicrosoftEntraProviderUser> {
         const response = await this.providersMicrosoftEntraUsersRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for providersMicrosoftEntraUsersUsedByList without sending the
-     * request
-     */
-    async providersMicrosoftEntraUsersUsedByListRequestOpts(
-        requestParameters: ProvidersMicrosoftEntraUsersUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraUsersUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/providers/microsoft_entra_users/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersMicrosoftEntraUsersUsedByListRaw(
-        requestParameters: ProvidersMicrosoftEntraUsersUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.providersMicrosoftEntraUsersUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersMicrosoftEntraUsersUsedByList(
-        requestParameters: ProvidersMicrosoftEntraUsersUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.providersMicrosoftEntraUsersUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -6057,67 +5414,6 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersOauth2UsedByList without sending the request
-     */
-    async providersOauth2UsedByListRequestOpts(
-        requestParameters: ProvidersOauth2UsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling providersOauth2UsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/providers/oauth2/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersOauth2UsedByListRaw(
-        requestParameters: ProvidersOauth2UsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.providersOauth2UsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersOauth2UsedByList(
-        requestParameters: ProvidersOauth2UsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.providersOauth2UsedByListRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Creates request options for providersProxyCreate without sending the request
      */
     async providersProxyCreateRequestOpts(
@@ -6589,67 +5885,6 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersProxyUsedByList without sending the request
-     */
-    async providersProxyUsedByListRequestOpts(
-        requestParameters: ProvidersProxyUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling providersProxyUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/providers/proxy/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersProxyUsedByListRaw(
-        requestParameters: ProvidersProxyUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.providersProxyUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersProxyUsedByList(
-        requestParameters: ProvidersProxyUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.providersProxyUsedByListRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Creates request options for providersRacCreate without sending the request
      */
     async providersRacCreateRequestOpts(
@@ -7044,67 +6279,6 @@ export class ProvidersApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<RACProvider> {
         const response = await this.providersRacUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for providersRacUsedByList without sending the request
-     */
-    async providersRacUsedByListRequestOpts(
-        requestParameters: ProvidersRacUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling providersRacUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/providers/rac/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersRacUsedByListRaw(
-        requestParameters: ProvidersRacUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.providersRacUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersRacUsedByList(
-        requestParameters: ProvidersRacUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.providersRacUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -7526,67 +6700,6 @@ export class ProvidersApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<RadiusProvider> {
         const response = await this.providersRadiusUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for providersRadiusUsedByList without sending the request
-     */
-    async providersRadiusUsedByListRequestOpts(
-        requestParameters: ProvidersRadiusUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling providersRadiusUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/providers/radius/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersRadiusUsedByListRaw(
-        requestParameters: ProvidersRadiusUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.providersRadiusUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersRadiusUsedByList(
-        requestParameters: ProvidersRadiusUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.providersRadiusUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -8377,67 +7490,6 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersSamlUsedByList without sending the request
-     */
-    async providersSamlUsedByListRequestOpts(
-        requestParameters: ProvidersSamlUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling providersSamlUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/providers/saml/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersSamlUsedByListRaw(
-        requestParameters: ProvidersSamlUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.providersSamlUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersSamlUsedByList(
-        requestParameters: ProvidersSamlUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.providersSamlUsedByListRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Creates request options for providersScimCreate without sending the request
      */
     async providersScimCreateRequestOpts(
@@ -8830,71 +7882,6 @@ export class ProvidersApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<SCIMProviderGroup> {
         const response = await this.providersScimGroupsRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for providersScimGroupsUsedByList without sending the request
-     */
-    async providersScimGroupsUsedByListRequestOpts(
-        requestParameters: ProvidersScimGroupsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling providersScimGroupsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/providers/scim_groups/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersScimGroupsUsedByListRaw(
-        requestParameters: ProvidersScimGroupsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.providersScimGroupsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersScimGroupsUsedByList(
-        requestParameters: ProvidersScimGroupsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.providersScimGroupsUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -9334,67 +8321,6 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersScimUsedByList without sending the request
-     */
-    async providersScimUsedByListRequestOpts(
-        requestParameters: ProvidersScimUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling providersScimUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/providers/scim/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersScimUsedByListRaw(
-        requestParameters: ProvidersScimUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.providersScimUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersScimUsedByList(
-        requestParameters: ProvidersScimUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.providersScimUsedByListRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Creates request options for providersScimUsersCreate without sending the request
      */
     async providersScimUsersCreateRequestOpts(
@@ -9662,71 +8588,6 @@ export class ProvidersApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<SCIMProviderUser> {
         const response = await this.providersScimUsersRetrieveRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for providersScimUsersUsedByList without sending the request
-     */
-    async providersScimUsersUsedByListRequestOpts(
-        requestParameters: ProvidersScimUsersUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling providersScimUsersUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/providers/scim_users/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersScimUsersUsedByListRaw(
-        requestParameters: ProvidersScimUsersUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.providersScimUsersUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersScimUsersUsedByList(
-        requestParameters: ProvidersScimUsersUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.providersScimUsersUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
         return await response.value();
     }
 
@@ -10125,67 +8986,6 @@ export class ProvidersApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<SSFProvider> {
         const response = await this.providersSsfUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for providersSsfUsedByList without sending the request
-     */
-    async providersSsfUsedByListRequestOpts(
-        requestParameters: ProvidersSsfUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling providersSsfUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/providers/ssf/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersSsfUsedByListRaw(
-        requestParameters: ProvidersSsfUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.providersSsfUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersSsfUsedByList(
-        requestParameters: ProvidersSsfUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.providersSsfUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -10868,67 +9668,6 @@ export class ProvidersApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<WSFederationProvider> {
         const response = await this.providersWsfedUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for providersWsfedUsedByList without sending the request
-     */
-    async providersWsfedUsedByListRequestOpts(
-        requestParameters: ProvidersWsfedUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling providersWsfedUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/providers/wsfed/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersWsfedUsedByListRaw(
-        requestParameters: ProvidersWsfedUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.providersWsfedUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async providersWsfedUsedByList(
-        requestParameters: ProvidersWsfedUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.providersWsfedUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 }

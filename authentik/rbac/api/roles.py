@@ -20,7 +20,6 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.blueprints.api import ManagedSerializer
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import Group, User
 from authentik.rbac.decorators import permission_required
@@ -124,7 +123,7 @@ class RoleFilterSet(FilterSet):
         ]
 
 
-class RoleViewSet(UsedByMixin, ModelViewSet):
+class RoleViewSet(ModelViewSet):
     """Role viewset"""
 
     serializer_class = RoleSerializer

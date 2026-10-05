@@ -3,7 +3,6 @@
 from rest_framework.exceptions import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.models import Source
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.stages.source.models import SourceStage
@@ -35,7 +34,7 @@ class SourceStageSerializer(EnterpriseRequiredMixin, StageSerializer):
         ]
 
 
-class SourceStageViewSet(UsedByMixin, ModelViewSet):
+class SourceStageViewSet(ModelViewSet):
     """SourceStage Viewset"""
 
     queryset = SourceStage.objects.all()

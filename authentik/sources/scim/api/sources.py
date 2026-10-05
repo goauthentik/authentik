@@ -6,7 +6,6 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.tokens import TokenSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.sources.scim.models import SCIMSource
 
 
@@ -47,7 +46,7 @@ class SCIMSourceSerializer(SourceSerializer):
         ]
 
 
-class SCIMSourceViewSet(UsedByMixin, ModelViewSet):
+class SCIMSourceViewSet(ModelViewSet):
     """SCIMSource Viewset"""
 
     queryset = SCIMSource.objects.all()

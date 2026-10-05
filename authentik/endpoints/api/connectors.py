@@ -3,7 +3,6 @@ from rest_framework.fields import SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.object_types import TypesMixin
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, ModelSerializer
 from authentik.endpoints.models import Connector
 
@@ -35,7 +34,6 @@ class ConnectorViewSet(
     TypesMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
-    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

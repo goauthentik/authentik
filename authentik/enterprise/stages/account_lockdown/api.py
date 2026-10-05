@@ -12,7 +12,6 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.validation import validate
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import LinkSerializer, PassiveSerializer
 from authentik.core.models import (
     User,
@@ -44,7 +43,7 @@ class AccountLockdownStageSerializer(EnterpriseRequiredMixin, StageSerializer):
         ]
 
 
-class AccountLockdownStageViewSet(UsedByMixin, ModelViewSet):
+class AccountLockdownStageViewSet(ModelViewSet):
     """AccountLockdownStage Viewset"""
 
     queryset = AccountLockdownStage.objects.all()
