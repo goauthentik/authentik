@@ -34,7 +34,9 @@ AUTH_USER_MODEL = "authentik_core.User"
 
 CSRF_COOKIE_PATH = LANGUAGE_COOKIE_PATH = SESSION_COOKIE_PATH = CONFIG.get("web.path", "/")
 
-CSRF_COOKIE_NAME = "authentik_csrf"
+CSRF_COOKIE_NAME = CONFIG.get("web.csrf_cookie_name", "authentik_csrf")
+CSRF_COOKIE_AGE = CONFIG.get_optional_int("web.csrf_cookie_age", 31449600)
+
 CSRF_HEADER_NAME = "HTTP_X_AUTHENTIK_CSRF"
 LANGUAGE_COOKIE_NAME = "authentik_language"
 SESSION_COOKIE_NAME = "authentik_session"
