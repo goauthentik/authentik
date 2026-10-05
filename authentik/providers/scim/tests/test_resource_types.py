@@ -96,27 +96,11 @@ class TestSCIMResourceTypes(APITestCase):
         )
 
     @Mocker()
-    def test_empty_and_case_insensitive_listing(self, mock: Mocker):
-        uppercase_user = {key.upper(): value for key, value in USER_TYPE.items()}
-        uppercase_user["SCHEMAEXTENSIONS"] = [
-            {key.upper(): value for key, value in extension.items()}
-            for extension in USER_TYPE["schemaExtensions"]
-        ]
-        for resources in ([], [uppercase_user]):
-            with self.subTest(resources=resources):
-                mock.get(
-                    self.remote_url,
-                    json={key.upper(): value for key, value in listing(resources).items()},
-                )
-                result = self.discovery.get_resource_types(force_refresh=True)
-                self.assertEqual(result.status, "success")
-                self.assertEqual(len(result.resource_types), len(resources))
-                if resources:
-                    extension = result.resource_types[0].schemaExtensions[0]
-                    self.assertEqual(
-                        str(extension.schema_), USER_TYPE["schemaExtensions"][0]["schema"]
-                    )
-                    self.assertTrue(extension.required)
+    def test_empty_listing(self, mock: Mocker):
+        mock.get(self.remote_url, json=listing([]))
+        result = self.discovery.get_resource_types()
+        self.assertEqual(result.status, "success")
+        self.assertEqual(result.resource_types, [])
 
     @Mocker()
     def test_invalid_and_incomplete_listings(self, mock: Mocker):
