@@ -9,6 +9,7 @@ from django.urls import reverse
 from authentik.core.tests.utils import RequestFactory as AuthentikRequestFactory
 from authentik.core.tests.utils import create_test_flow
 from authentik.flows.models import Flow, FlowStageBinding
+from authentik.flows.planner import PLAN_CONTEXT_CONTINUOUS_LOGIN_HOLD, FlowPlan
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.utils.reflection import all_subclasses
@@ -43,6 +44,22 @@ class TestViews(TestCase):
             challenge.initial_data["flow_info"]["background"],
             "/static/dist/assets/images/flow_background.jpg",
         )
+
+    def test_challenge_stage_exposes_continuous_login_hold(self):
+        """Challenge flow info exposes whether authorization must retain the tab lock."""
+        flow = create_test_flow()
+        stage = DummyStage.objects.create(name="dummy")
+        request = self.authentik_factory.get("/")
+        plan = FlowPlan(flow_pk=flow.pk.hex)
+        plan.context[PLAN_CONTEXT_CONTINUOUS_LOGIN_HOLD] = False
+        executor = FlowExecutorView(flow=flow, request=request, plan=plan)
+        executor.current_stage = stage
+        view = DummyStageView(executor)
+        view.request = request
+
+        challenge = view._get_challenge()
+
+        self.assertFalse(challenge.initial_data["flow_info"]["continuous_login_hold"])
 
     def test_flow_interface_css_background_preserves_presigned_url_query(self):
         """Test flow CSS keeps signed URL query separators intact."""

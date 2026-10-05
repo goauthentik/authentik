@@ -47,6 +47,10 @@ export function suppressNextExitForSameOriginNavigation() {
     Broadcast.shared.suppressNextExit();
 }
 
+export function allowNextExitForSameOriginNavigation() {
+    Broadcast.shared.allowNextExit();
+}
+
 /**
  * Wait for a tab to exit, with a timeout and fallback to checking if the tab is still present.
  *
