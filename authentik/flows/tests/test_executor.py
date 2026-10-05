@@ -769,7 +769,7 @@ class TestFlowExecutor(FlowTestCase):
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
 
         with (
-            patch("authentik.tenants.utils.get_install_id", return_value="test-install-id"),
+            patch("authentik.enterprise.license.get_install_id", return_value="test-install-id"),
             override_settings(TEST=False, DEBUG=False),
         ):
             self.client.logout()
