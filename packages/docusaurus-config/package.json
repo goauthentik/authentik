@@ -42,7 +42,7 @@
     },
     "dependencies": {
         "@goauthentik/brand-assets": "^2.0.0",
-        "deepmerge-ts": "^8.0.0",
+        "deepmerge-ts": "^8.0.2",
         "prism-react-renderer": "^2.4.1"
     },
     "devDependencies": {
