@@ -132,12 +132,11 @@ class TestSetup(FlowTestCase):
 
         self.assertEqual(get_system_settings().base_url, "https://authentik.company")
 
+    @patch_flag(Setup, False)
     @apply_blueprint("default/flow-oobe.yaml")
     @apply_blueprint("system/bootstrap.yaml")
     def test_setup_flow_invalid_base_url(self):
         """An invalid base URL entered during setup is rejected and never persisted"""
-        Setup.set(False)
-
         res = self.client.get(reverse("authentik_core:setup"))
         self.assertEqual(res.status_code, HTTPStatus.FOUND)
 
@@ -166,12 +165,11 @@ class TestSetup(FlowTestCase):
         self.assertFalse(Setup.get())
         self.assertEqual(get_system_settings().base_url, "")
 
+    @patch_flag(Setup, False)
     @apply_blueprint("default/flow-oobe.yaml")
     @apply_blueprint("system/bootstrap.yaml")
     def test_setup_flow_empty_base_url(self):
         """A base URL that is empty once normalized is rejected, setup requires one"""
-        Setup.set(False)
-
         res = self.client.get(reverse("authentik_core:setup"))
         self.assertEqual(res.status_code, HTTPStatus.FOUND)
 
@@ -254,10 +252,10 @@ class TestSetup(FlowTestCase):
         self.assertEqual(user.password, password_hash)
         self.assertTrue(user.check_password(password))
 
+    @patch_flag(Setup, False)
     def test_setup_bootstrap_env_malformed_password_hash(self):
         """Test setup rejects a malformed password hash from the environment."""
         User.objects.filter(username="akadmin").delete()
-        Setup.set(False)
 
         environ.pop("AUTHENTIK_BOOTSTRAP_PASSWORD", None)
         environ["AUTHENTIK_BOOTSTRAP_PASSWORD_HASH"] = "pbkdf2_sha256$1000000/K4wGpWYKfJPSCcNM="
@@ -268,9 +266,9 @@ class TestSetup(FlowTestCase):
         self.assertFalse(Setup.get())
         self.assertFalse(User.objects.filter(username="akadmin").exists())
 
+    @patch_flag(Setup, False)
     def test_setup_bootstrap_env_apply_failure(self):
         """Test setup remains incomplete when the bootstrap blueprint fails to apply."""
-        Setup.set(False)
         environ["AUTHENTIK_BOOTSTRAP_TOKEN"] = generate_id()
         pre_startup.send(sender=self)
 
