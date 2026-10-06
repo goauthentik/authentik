@@ -17,4 +17,5 @@ canvas {
 
 ak-loading-overlay {
     z-index: 5;
+    color: white;
 }
