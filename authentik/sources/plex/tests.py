@@ -72,6 +72,32 @@ class TestPlexSource(TestCase):
             mocker.get("https://plex.tv/api/v2/resources", json=RESOURCES_RESPONSE)
             self.assertTrue(api.check_server_overlap())
 
+    def test_check_friends_overlap_owner(self):
+        """Test check_friends_overlap allows the owner without a friend list"""
+        api = PlexAuth(self.source, generate_key())
+        with Mocker() as mocker:
+            mocker.get("https://plex.tv/api/v2/user", json=USER_INFO_RESPONSE)
+            friends = mocker.get("https://plex.tv/api/v2/friends", status_code=410)
+            self.assertTrue(api.check_friends_overlap(USER_INFO_RESPONSE["id"]))
+            self.assertFalse(friends.called)
+
+    def test_check_friends_overlap_friend(self):
+        """Test check_friends_overlap allows a friend of the owner"""
+        api = PlexAuth(self.source, generate_key())
+        with Mocker() as mocker:
+            mocker.get("https://plex.tv/api/v2/user", json=USER_INFO_RESPONSE)
+            mocker.get("https://plex.tv/api/v2/friends", json=[{"id": 42}])
+            self.assertTrue(api.check_friends_overlap(42))
+            self.assertFalse(api.check_friends_overlap(43))
+
+    def test_check_friends_overlap_friends_gone(self):
+        """Test check_friends_overlap denies non-owners when plex.tv has no friend list"""
+        api = PlexAuth(self.source, generate_key())
+        with Mocker() as mocker:
+            mocker.get("https://plex.tv/api/v2/user", json=USER_INFO_RESPONSE)
+            mocker.get("https://plex.tv/api/v2/friends", status_code=410)
+            self.assertFalse(api.check_friends_overlap(42))
+
     def test_check_task(self):
         """Test token check task"""
         with Mocker() as mocker:
