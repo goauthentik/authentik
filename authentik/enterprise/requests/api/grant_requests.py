@@ -30,6 +30,7 @@ from authentik.core.api.utils import (
 )
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import User
+from authentik.core.sources.flow_manager import MessageStage
 from authentik.enterprise.agents.models import Agent
 from authentik.enterprise.api import EnterpriseRequiredMixin, enterprise_action
 from authentik.enterprise.requests.api.apps import (
@@ -290,6 +291,12 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
             },
         )
         plan.append_stage(in_memory_stage(GrantRequestFinalStageView))
+        plan.append_stage(
+            in_memory_stage(
+                MessageStage,
+                message=_("Successfully requested access!"),
+            )
+        )
         return Response({"link": plan.to_redirect(request, flow).url})
 
     @extend_schema(
