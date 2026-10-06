@@ -15,27 +15,24 @@
 <div class="pf-c-form">
     {% if user.is_authenticated %}
         <div class="pf-c-form__group">
-            <div class="form-control-static">
-                <div class="avatar">
+            <div class="ak-c-form-static">
+                <div class="primary-content">
                     <img class="pf-c-avatar" src="{{ user.avatar }}" alt="{% trans "User's avatar" %}" />
-                    {{ user.username }}
+                    <div class="username" aria-description="{% trans 'Username' %}">{{ user.username }}</div>
                 </div>
-                <div slot="link">
+                <div class="links">
                     <a href="{{ cancel }}">{% trans "Not you?" %}</a>
                 </div>
             </div>
         </div>
     {% endif %}
+    <h1 class="pf-c-title pf-m-lg">
+        <i class="pf-icon pf-icon-error-circle-o pf-u-font-size-2xl" role="img" aria-label="{% trans 'Error' %}"></i>
+        <span>{% trans 'Request has been denied.' %}</span>
+    </h1>
     <div class="pf-c-form__group">
-        <p>
-            <i class="pf-icon pf-icon-error-circle-o pf-u-font-size-2xl" role="img" aria-label="{% trans 'Error' %}"></i>
-            {% trans 'Request has been denied.' %}
-        </p>
         {% if error %}
-        <hr>
-        <p>
-            {{ error }}
-        </p>
+            <p>{{ error }}</p>
         {% endif %}
         {% if policy_result %}
             <hr>
