@@ -7,12 +7,13 @@ import { AKRefreshEvent } from "#common/events";
 
 import { listen } from "#elements/decorators/listen";
 import { AnchorPositionSupported, placeAnchoredPopover } from "#elements/dialogs/positioning";
-import { FormAssociatedElement, SettlingFormField } from "#elements/forms/form-associated-element";
+import { FormAssociatedElement } from "#elements/forms/form-associated-element";
 import {
     SearchSelectActionEvent,
     SearchSelectChangeEvent,
 } from "#elements/forms/SearchSelect/events";
 import { formatOptionID, SearchSelectSource } from "#elements/forms/SearchSelect/shared";
+import { SettlingFormField } from "#elements/forms/settle-form-fields";
 import type { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { isFirefox } from "#elements/utils/useragent";
