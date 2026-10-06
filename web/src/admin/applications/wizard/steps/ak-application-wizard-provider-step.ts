@@ -9,6 +9,7 @@ import "#admin/applications/wizard/steps/providers/ak-application-wizard-provide
 import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-wsfed";
 import { omitKeys } from "#common/objects";
 
+import { settleFormFields } from "#elements/forms/settle-form-fields";
 import { StrictUnsafe } from "#elements/utils/unsafe";
 
 import { type NavigableButton, type WizardButton } from "#components/ak-wizard/shared";
@@ -71,32 +72,53 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
         return this.element.formValues;
     }
 
+    /**
+     * The in-flight "next" navigation, so repeated clicks while the form settles are ignored.
+     */
+    #pendingNext: Promise<void> | null = null;
+
     public override handleButton(button: NavigableButton) {
         if (button.kind === "next") {
-            if (!this.valid) {
-                this.dispatchNavigationEvent({
-                    disabled: ["bindings", "submit"],
-                });
+            if (this.#pendingNext) return;
 
-                return;
-            }
-
-            const payload = {
-                provider: {
-                    ...this.formValues,
-                    mode: this.wizard.proxyMode,
-                },
-                errors: omitKeys(this.wizard.errors, "provider"),
-            };
-
-            return this.dispatchEvents({
-                update: payload,
-                destination: button.destination,
-                details: { enable: ["bindings", "submit"] },
+            this.#pendingNext = this.#next(button).finally(() => {
+                this.#pendingNext = null;
             });
+
+            return;
         }
 
         return super.handleButton(button);
+    }
+
+    async #next(button: NavigableButton): Promise<void> {
+        const { form } = this.element;
+
+        if (form) {
+            await settleFormFields(form);
+        }
+
+        if (!this.valid) {
+            this.dispatchNavigationEvent({
+                disabled: ["bindings", "submit"],
+            });
+
+            return;
+        }
+
+        const payload = {
+            provider: {
+                ...this.formValues,
+                mode: this.wizard.proxyMode,
+            },
+            errors: omitKeys(this.wizard.errors, "provider"),
+        };
+
+        return this.dispatchEvents({
+            update: payload,
+            destination: button.destination,
+            details: { enable: ["bindings", "submit"] },
+        });
     }
 
     protected buttons: WizardButton[] = [

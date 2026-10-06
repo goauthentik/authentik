@@ -15,8 +15,8 @@ import { APIError, parseAPIResponseError } from "#common/errors/network";
 import { AKElement } from "#elements/Base";
 import { modalInvoker } from "#elements/dialogs";
 import { WithLicenseSummary } from "#elements/mixins/license";
+import { setPageDetails } from "#elements/router/meta";
 
-import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList from "#components/DescriptionList";
 
 import { AgentConnectorForm } from "#admin/endpoints/connectors/agent/AgentConnectorForm";
