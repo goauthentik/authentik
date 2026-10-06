@@ -256,7 +256,8 @@ class SyncTasks:
         model: str,
         pk: str | int,
         provider_pk: int,
-    ):
+    ) -> bool | None:
+        """Sync an object, returning whether a provider connection was successfully written."""
         task = CurrentTask.get_task()
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
@@ -283,7 +284,8 @@ class SyncTasks:
             return
 
         try:
-            client.write_locked(instance)
+            connection, _ = client.write_locked(instance)
+            return connection is not None
         except TransientSyncException as exc:
             raise Retry() from exc
         except SkipObjectException:
