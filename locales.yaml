@@ -14,10 +14,10 @@
 locales:
   - { tag: ar, django: ar, transifex: ar_AA, ship: true }
   - { tag: bg-BG, django: bg_BG, transifex: bg_BG, ship: true }
-  - { tag: bn-BD, django: bn_BD, transifex: bn_BD, ship: false }
+  - { tag: bn-BD, django: bn_BD, transifex: bn_BD, ship: true }
   - { tag: ca-ES, django: ca_ES, transifex: ca_ES, ship: false }
   - { tag: cs-CZ, django: cs_CZ, transifex: cs_CZ, ship: true }
-  - { tag: sk-SK, django: sk_SK, transifex: sk_SK, ship: false }
+  - { tag: sk-SK, django: sk_SK, transifex: sk_SK, ship: true }
   - { tag: cy-GB, django: cy_GB, transifex: cy_GB, ship: false }
   - { tag: da-DK, django: da_DK, transifex: da_DK, ship: false }
   - { tag: de-DE, django: de_DE, transifex: de_DE, ship: true }
