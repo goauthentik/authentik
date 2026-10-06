@@ -16,7 +16,8 @@ import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 
-import { type PaginatedResponse } from "#common/api/responses";
+import type { NamedEntityElement } from "#common/api/entities";
+import type { PaginatedResponse } from "#common/api/responses";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { AKRefreshEvent } from "#common/events";
 import { truncateWords } from "#common/strings";
@@ -26,7 +27,6 @@ import { AKElement } from "#elements/Base";
 import { intersectionObserver } from "#elements/decorators/intersection-observer";
 import {
     isTransclusionParentElement,
-    NamedEntityElement,
     type TransclusionChildElement,
     TransclusionChildSymbol,
 } from "#elements/dialogs/shared";
@@ -336,6 +336,14 @@ export abstract class Table<T extends object, D = T>
     public page = 1;
 
     /**
+     * Method to convert an object into a string or number as a unique key the table can use to
+     * communicate objects back to client code. Provide or override when <T>.pk exists but may not
+     * be unique.
+     */
+    @property({ type: Object })
+    public makeItemKey = (i: T) => (hasPrimaryKey(i) ? i.pk : JSON.stringify(i));
+
+    /**
      * Set if your `selectedElements` use of the selection box is to enable bulk-delete,
      * so that stale data is cleared out when the API returns a new list minus the deleted entries.
      *
@@ -606,8 +614,7 @@ export abstract class Table<T extends object, D = T>
                 const nextExpanded = new Set<string | number>();
 
                 for (const result of data.results) {
-                    const itemKey = hasPrimaryKey(result) ? result.pk : JSON.stringify(result);
-
+                    const itemKey = this.makeItemKey(result);
                     this.#itemKeys.set(result, itemKey);
 
                     if (this.expandedElements.has(itemKey)) {

@@ -2,7 +2,6 @@ import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
 import { ISearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
-import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
 import { CoreApi, CoreGroupsListRequest, Group } from "@goauthentik/api";
 
@@ -39,7 +38,7 @@ const renderValue = (group: Group | null) => group?.pk;
  */
 
 @customElement("ak-core-group-search")
-export class CoreGroupSearch extends CustomListenerElement(AKElement) {
+export class CoreGroupSearch extends AKElement {
     /**
      * The current group known to the caller.
      *
