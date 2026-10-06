@@ -5,6 +5,7 @@ from urllib.parse import quote_plus
 
 import xmlsec
 from django.http import HttpRequest
+from django.urls import reverse
 from lxml import etree  # nosec
 from lxml.etree import Element  # nosec
 
@@ -59,8 +60,8 @@ class RequestProcessor:
     def get_auth_n(self) -> Element:
         """Get full AuthnRequest"""
         auth_n_request = Element(f"{{{NS_SAML_PROTOCOL}}}AuthnRequest", nsmap=NS_MAP)
-        auth_n_request.attrib["AssertionConsumerServiceURL"] = self.source.build_full_url(
-            self.http_request
+        auth_n_request.attrib["AssertionConsumerServiceURL"] = self.http_request.build_absolute_uri(
+            reverse("authentik_sources_saml:acs", kwargs={"source_slug": self.source.slug})
         )
         auth_n_request.attrib["Destination"] = self.source.sso_url
         auth_n_request.attrib["ID"] = self.request_id

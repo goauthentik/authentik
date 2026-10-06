@@ -49,7 +49,7 @@ import {
 } from "@goauthentik/api";
 
 import { spread } from "@open-wc/lit-helpers";
-import { match, P } from "ts-pattern";
+import { match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
@@ -239,13 +239,15 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         });
     }
 
+    protected synchronizeTitle(): void {
+        this.setTitle(this.challenge?.flowInfo?.title);
+    }
+
     // DOM post-processing has to happen after the render.
     protected override updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
 
-        document.title = match(this.challenge?.flowInfo?.title)
-            .with(P.nullish, () => this.brandingTitle)
-            .otherwise((title) => `${title} - ${this.brandingTitle}`);
+        this.synchronizeTitle();
 
         if (changedProperties.has("challenge") && this.challenge?.flowInfo) {
             this.layout = this.challenge?.flowInfo?.layout || FlowExecutor.DefaultLayout;

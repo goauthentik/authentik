@@ -6,12 +6,11 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 
 import { aki } from "#common/api/client";
-import { EVENT_REFRESH } from "#common/constants";
 import { parseAPIResponseError } from "#common/errors/network";
+import { AKRefreshEvent } from "#common/events";
 
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { SlottedTemplateResult } from "#elements/types";
-import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { WizardNavigationEvent } from "#components/ak-wizard/events";
 import { type WizardButton } from "#components/ak-wizard/shared";
@@ -89,7 +88,7 @@ const cleanBinding = (binding: PolicyBinding): TransactionPolicyBindingRequest =
 });
 
 @customElement("ak-application-wizard-submit-step")
-export class ApplicationWizardSubmitStep extends CustomEmitterElement(ApplicationWizardStep) {
+export class ApplicationWizardSubmitStep extends ApplicationWizardStep {
     static styles = [
         ...ApplicationWizardStep.styles,
         PFBullseye,
@@ -145,7 +144,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                 });
             }
 
-            this.dispatchCustomEvent(EVENT_REFRESH);
+            this.dispatchEvent(new AKRefreshEvent());
             this.state = "submitted";
         } catch (error) {
             const parsedError = await parseAPIResponseError(error);
@@ -214,7 +213,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                 transactionApplicationRequest: request,
             })
             .then((_response: TransactionApplicationResponse) => {
-                this.dispatchCustomEvent(EVENT_REFRESH);
+                this.dispatchEvent(new AKRefreshEvent());
                 this.state = "submitted";
             })
 
