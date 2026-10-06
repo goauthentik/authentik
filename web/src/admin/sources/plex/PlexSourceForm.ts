@@ -81,24 +81,25 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
         // the time the pin request resolves, and the popup would be blocked.
         const authWindow = popupCenterScreen("about:blank", "plex auth", 550, 700);
         const clientId = this.instance?.clientId || "";
-        const authInfo = await PlexAPIClient.getPin(clientId);
 
-        if (authWindow && !authWindow.closed) {
-            authWindow.location.replace(authInfo.authUrl);
+        try {
+            const authInfo = await PlexAPIClient.getPin(clientId);
+
+            if (authWindow && !authWindow.closed) {
+                authWindow.location.replace(authInfo.authUrl);
+            }
+
+            // Rejects when the pin expires unauthorized, which is where an
+            // unopened popup ends up too.
+            this.plexToken = await PlexAPIClient.pinPoll(clientId, authInfo.pin.id);
+
+            authWindow?.close();
+
+            await this.loadServers();
+        } catch (error: unknown) {
+            authWindow?.close();
+            await showAPIErrorMessage(error);
         }
-
-        PlexAPIClient.pinPoll(clientId, authInfo.pin.id)
-            .then((token) => {
-                authWindow?.close();
-                this.plexToken = token;
-                this.loadServers();
-            })
-            .catch(async (error: unknown) => {
-                // Rejects when the pin expires unauthorized, which is where an
-                // unopened popup ends up too.
-                authWindow?.close();
-                await showAPIErrorMessage(error);
-            });
     }
 
     async loadServers(): Promise<void> {
