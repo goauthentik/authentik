@@ -1,4 +1,7 @@
+from collections.abc import Callable
+
 from django.core.paginator import Paginator
+from django.db import transaction
 from django.db.models import Model, QuerySet
 from django.db.models.query import Q
 from dramatiq.actor import Actor
@@ -256,8 +259,10 @@ class SyncTasks:
         model: str,
         pk: str | int,
         provider_pk: int,
-    ) -> bool | None:
-        """Sync an object, returning whether a provider connection was successfully written."""
+        *,
+        on_create: Callable[[Model, OutgoingSyncProvider], None] | None = None,
+    ):
+        """Sync an object, optionally enqueueing work atomically with a new connection."""
         task = CurrentTask.get_task()
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
@@ -284,8 +289,16 @@ class SyncTasks:
             return
 
         try:
-            connection, _ = client.write_locked(instance)
-            return connection is not None
+            if on_create is None:
+                client.write_locked(instance)
+                return
+            # Commit the connection and any dependent jobs together, before releasing
+            # the object lock. An enqueue failure must not leave a connection whose
+            # follow-up work would be skipped when the user task is retried.
+            with client.object_lock(instance), transaction.atomic():
+                connection, created = client.write(instance)
+                if connection is not None and created:
+                    on_create(instance, provider)
         except TransientSyncException as exc:
             raise Retry() from exc
         except SkipObjectException:

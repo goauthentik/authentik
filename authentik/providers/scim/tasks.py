@@ -1,12 +1,19 @@
 """SCIM Provider tasks"""
 
+from django.db.models import Model, Q
 from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import actor
+from dramatiq.errors import Retry
 
+from authentik.core.expression.exceptions import SkipObjectException
 from authentik.core.models import Group, User
+from authentik.lib.sync.outgoing.exceptions import DryRunRejected, StopSync, TransientSyncException
+from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.sync.outgoing.tasks import SyncTasks
 from authentik.lib.utils.reflection import class_to_path
+from authentik.providers.scim.clients.groups import SCIMGroupClient
 from authentik.providers.scim.models import SCIMProvider
+from authentik.tasks.middleware import CurrentTask
 
 sync_tasks = SyncTasks(SCIMProvider)
 
@@ -24,22 +31,46 @@ def scim_sync(provider_pk: int, *args, **kwargs):
 
 @actor(description=_("Sync a direct object (user, group) for SCIM provider."))
 def scim_sync_direct(model: str, pk: str | int, provider_pk: int):
-    written = sync_tasks.sync_signal_direct(model, pk, provider_pk)
-    if not written or model != class_to_path(User):
-        return
-    provider = SCIMProvider.objects.filter(pk=provider_pk).first()
+    sync_tasks.sync_signal_direct(
+        model,
+        pk,
+        provider_pk,
+        on_create=_queue_user_memberships if model == class_to_path(User) else None,
+    )
+
+
+def _queue_user_memberships(user: Model, provider: OutgoingSyncProvider):
+    """The Postgres broker persists this job in the user connection's transaction."""
+    scim_sync_user_memberships.send_with_options(
+        args=(user.pk, provider.pk),
+        rel_obj=provider,
+        uid=f"{provider.name}:user:{user.pk}:memberships",
+    )
+
+
+@actor(description=_("Sync memberships for a newly provisioned SCIM user."))
+def scim_sync_user_memberships(user_pk: int, provider_pk: int):
+    task = CurrentTask.get_task()
+    provider = SCIMProvider.objects.filter(
+        Q(backchannel_application__isnull=False) | Q(application__isnull=False), pk=provider_pk
+    ).first()
     if not provider or provider.dry_run:
         return
-    # A membership task can run before the user's remote ID is available and silently
-    # omit it. Reconcile current memberships after the user write has committed and
-    # released its lock. Repeat this on updates too, so a retry after an interrupted
-    # dispatch repairs memberships even when the user connection already exists.
-    for group_pk in provider.get_object_qs(Group, users__pk=pk).values_list("pk", flat=True):
-        scim_sync_direct.send_with_options(
-            args=(class_to_path(Group), group_pk, provider.pk),
-            rel_obj=provider,
-            uid=f"{provider.name}:group:{group_pk}:direct",
-        )
+    if not provider.get_object_qs(User, pk=user_pk).exists():
+        return
+    try:
+        client = SCIMGroupClient(provider)
+        for group in provider.get_object_qs(Group, users__pk=user_pk).iterator():
+            try:
+                client.add_user_to_group(group, user_pk)
+            except SkipObjectException:
+                continue
+            except StopSync as exc:
+                task.warning(exc.detail())
+    except TransientSyncException as exc:
+        raise Retry() from exc
+    except DryRunRejected:
+        return
 
 
 @actor(description=_("Dispatch syncs for a direct object (user, group) for SCIM providers."))

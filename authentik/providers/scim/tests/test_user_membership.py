@@ -1,9 +1,11 @@
 """Membership reconciliation after signal-driven user provisioning."""
 
+from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
 from unittest.mock import patch
 
-from django.db import DatabaseError, transaction
-from django.test import TestCase
+from django.db import DatabaseError, close_old_connections, connections, transaction
+from django.test import TestCase, TransactionTestCase
 from dramatiq.results import ResultFailure
 from requests_mock import Mocker
 
@@ -13,9 +15,11 @@ from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.signals import sync_outgoing_inhibit_dispatch
 from authentik.lib.utils.reflection import class_to_path
+from authentik.providers.scim.clients.groups import SCIMGroupClient
 from authentik.providers.scim.clients.schema import SCIM_GROUP_SCHEMA, ServiceProviderConfiguration
 from authentik.providers.scim.clients.users import SCIMUserClient
 from authentik.providers.scim.models import (
+    SCIMCompatibilityMode,
     SCIMMapping,
     SCIMProvider,
     SCIMProviderGroup,
@@ -26,10 +30,12 @@ from authentik.providers.scim.tasks import (
     scim_sync_direct_dispatch,
     scim_sync_m2m,
     scim_sync_m2m_dispatch,
+    scim_sync_user_memberships,
 )
+from authentik.tasks.models import Task
 
 
-class SCIMUserMembershipTests(TestCase):
+class SCIMUserMembershipTestMixin:
     """Execute real queued tasks in a chosen order, mocking only SCIM HTTP."""
 
     @apply_blueprint("system/providers-scim.yaml")
@@ -40,6 +46,7 @@ class SCIMUserMembershipTests(TestCase):
         self.addCleanup(self.http.stop)
         self.config = ServiceProviderConfiguration.default()
         self.config.patch.supported = True
+        self.config.filter.supported = True
         self.http.get("https://localhost/ServiceProviderConfig", json=self.config.model_dump())
         self.user_id = generate_id()
         self.http.post(
@@ -135,7 +142,7 @@ class SCIMUserMembershipTests(TestCase):
 
     def _assert_reconciled(self):
         self.assertTrue(all(message.args[-1] == self.provider.pk for message in self.pending))
-        self._run(scim_sync_direct, Group)
+        self._run(scim_sync_user_memberships)
         self.assertEqual(self.remote_group["members"], [{"value": self.user_id}])
         self.assertEqual(self.pending, [])
 
@@ -147,6 +154,8 @@ class SCIMUserMembershipTests(TestCase):
         self._run(scim_sync_direct, User)
         self._assert_reconciled()
 
+
+class SCIMUserMembershipTests(SCIMUserMembershipTestMixin, TestCase):
     def test_membership_before_user(self):
         """An early membership task must be repaired after provisioning the user."""
         self._membership_before_user()
@@ -165,7 +174,14 @@ class SCIMUserMembershipTests(TestCase):
         self._run(scim_sync_direct, User)
         self._run(scim_sync_m2m)
         self._assert_reconciled()
-        self.assertEqual(sum(request.method == "PATCH" for request in self.http.request_history), 1)
+        # A targeted, idempotent add avoids reading the entire group to deduplicate it.
+        self.assertEqual(sum(request.method == "PATCH" for request in self.http.request_history), 2)
+        self.assertFalse(
+            any(
+                request.url == self.group_url and request.method == "GET"
+                for request in self.http.request_history
+            )
+        )
 
     def test_removed_before_followup(self):
         """A delayed group job reads current membership instead of replaying an add."""
@@ -174,7 +190,7 @@ class SCIMUserMembershipTests(TestCase):
         self._run(scim_sync_direct, User)
         with sync_outgoing_inhibit_dispatch():
             self.user.groups.remove(self.group)
-        self._run(scim_sync_direct, Group)
+        self._run(scim_sync_user_memberships)
         self.assertEqual(self.remote_group["members"], [])
         self.assertEqual(self.pending, [])
 
@@ -187,26 +203,38 @@ class SCIMUserMembershipTests(TestCase):
         self._run(scim_sync_m2m)
         self._run(scim_sync_direct, User)
         self.assertTrue(SCIMProviderUser.objects.filter(user=self.user).exists())
+        self._run(scim_sync_user_memberships)
         self.assertEqual(self.remote_group["members"], [])
         self.assertEqual(self.pending, [])
 
     def test_retry_after_followup_enqueue_failure(self):
-        """A retry repairs membership even though the user write is now a no-op."""
+        """Rollback the mapping if dispatch fails, then adopt the remote user on retry."""
         self._create_user_with_group()
         self._run(scim_sync_m2m)
         with patch.object(
-            scim_sync_direct, "send_with_options", side_effect=RuntimeError("Queue unavailable")
+            scim_sync_user_memberships,
+            "send_with_options",
+            side_effect=RuntimeError("Queue unavailable"),
         ):
             with self.assertRaises(ResultFailure):
                 self._run(scim_sync_direct, User)
-        self.assertTrue(SCIMProviderUser.objects.filter(user=self.user).exists())
+        self.assertFalse(SCIMProviderUser.objects.filter(user=self.user).exists())
         self.assertEqual(self.pending, [])
 
+        # The HTTP creation survived the local rollback. Exercise conflict adoption
+        # instead of pretending a second POST creates the same user again.
+        payload = next(
+            request.json() for request in self.http.request_history if request.method == "POST"
+        )
+        self.http.post("https://localhost/Users", status_code=409)
+        self.http.get(
+            "https://localhost/Users", json={"Resources": [payload | {"id": self.user_id}]}
+        )
         # The test broker disables automatic retries; explicitly redeliver the task.
         scim_sync_direct.send(class_to_path(User), self.user.pk, self.provider.pk)
         self._run(scim_sync_direct, User)
         self._assert_reconciled()
-        self.assertEqual(sum(request.method == "POST" for request in self.http.request_history), 1)
+        self.assertEqual(sum(request.method == "POST" for request in self.http.request_history), 2)
         self.assertFalse(any(request.method == "PUT" for request in self.http.request_history))
 
     def test_followup_transient_failure(self):
@@ -216,11 +244,11 @@ class SCIMUserMembershipTests(TestCase):
         self._run(scim_sync_direct, User)
         self.http.patch(self.group_url, status_code=503)
         with self.assertRaises(ResultFailure):
-            self._run(scim_sync_direct, Group)
+            self._run(scim_sync_user_memberships)
         self.assertEqual(self.remote_group["members"], [])
 
         self.http.patch(self.group_url, json=self._patch_group)
-        scim_sync_direct.send(class_to_path(Group), self.group.pk, self.provider.pk)
+        scim_sync_user_memberships.send(self.user.pk, self.provider.pk)
         self._assert_reconciled()
 
     def test_failed_user_provisioning(self):
@@ -270,4 +298,177 @@ class SCIMUserMembershipTests(TestCase):
         self._membership_before_user()
         self.assertTrue(
             SCIMProviderGroup.objects.filter(provider=self.provider, group=self.group).exists()
+        )
+
+    def test_noop_user_sync_does_not_enqueue_memberships(self):
+        """Repeated user updates must not fan out into group jobs or group reads."""
+        self._membership_before_user()
+        self.http.reset_mock()
+        for _ in range(3):
+            scim_sync_direct.send(class_to_path(User), self.user.pk, self.provider.pk)
+            self._run(scim_sync_direct, User)
+            self.assertEqual(self.pending, [])
+        self.assertEqual(self.http.call_count, 0)
+
+    def test_changed_user_does_not_enqueue_memberships(self):
+        """A profile update only writes the user, not their groups."""
+        self._membership_before_user()
+        self.http.reset_mock()
+        self.http.put(f"https://localhost/Users/{self.user_id}", json={"id": self.user_id})
+        self.user.name = generate_id()
+        self.user.save()
+        self._run(scim_sync_direct_dispatch)
+        self._run(scim_sync_direct, User)
+        self.assertEqual(self.pending, [])
+        self.assertEqual([request.method for request in self.http.request_history], ["PUT"])
+
+    def _preserve_other_members(self, patch_supported):
+        self.config.patch.supported = patch_supported
+        self.http.get("https://localhost/ServiceProviderConfig", json=self.config.model_dump())
+        self._create_user_with_group()
+        self._run(scim_sync_m2m)
+        with sync_outgoing_inhibit_dispatch():
+            other_user = User.objects.create(username=generate_id())
+            other_user.groups.add(self.group)
+        # Another local member is present remotely, but their SCIM mapping is not
+        # available yet. Repairing this user must not remove that other member.
+        other_id = generate_id()
+        other_member = {"value": other_id, "display": other_user.username}
+        self.remote_group["members"] = [other_member]
+        self._run(scim_sync_direct, User)
+        self.http.reset_mock()
+        self._run(scim_sync_user_memberships)
+        self.assertFalse(SCIMProviderUser.objects.filter(user=other_user).exists())
+        self.assertEqual(
+            {member["value"] for member in self.remote_group["members"]},
+            {other_id, self.user_id},
+        )
+        if patch_supported:
+            self.assertEqual([request.method for request in self.http.request_history], ["PATCH"])
+            operations = self.http.last_request.json()["Operations"]
+            self.assertEqual(
+                operations, [{"op": "add", "path": "members", "value": [{"value": self.user_id}]}]
+            )
+        else:
+            self.assertEqual(
+                [request.method for request in self.http.request_history], ["GET", "PUT"]
+            )
+            self.assertIn(other_member, self.remote_group["members"])
+
+    def test_patch_followup_preserves_unmapped_member(self):
+        self._preserve_other_members(patch_supported=True)
+
+    def test_put_followup_preserves_unmapped_member(self):
+        self._preserve_other_members(patch_supported=False)
+
+    def test_aws_followup_only_adds_new_user(self):
+        """AWS group reads cannot enumerate members; add only the provisioned user."""
+        SCIMProvider.objects.filter(pk=self.provider.pk).update(
+            compatibility_mode=SCIMCompatibilityMode.AWS
+        )
+        self._create_user_with_group()
+        self._run(scim_sync_m2m)
+        self._run(scim_sync_direct, User)
+        self.http.reset_mock()
+        # A target that cannot read its member list still supports targeted PATCH.
+        self.http.get(self.group_url, status_code=405)
+        self._assert_reconciled()
+        self.assertEqual([request.method for request in self.http.request_history], ["PATCH"])
+
+    def test_followup_without_service_provider_config(self):
+        """Retain the targeted PATCH fallback for providers without discovery/PUT."""
+        self.http.get("https://localhost/ServiceProviderConfig", status_code=404)
+        self.http.get(self.group_url, status_code=405)
+        self._membership_before_user()
+
+    def test_membership_rechecked_after_group_lock(self):
+        """A removal while waiting for the lock must not be overwritten by the repair."""
+        self._create_user_with_group()
+        self._run(scim_sync_m2m)
+        self._run(scim_sync_direct, User)
+        self.http.reset_mock()
+        object_lock = SCIMGroupClient.object_lock
+
+        @contextmanager
+        def remove_while_waiting(client, group):
+            with object_lock(client, group):
+                with sync_outgoing_inhibit_dispatch():
+                    self.user.groups.remove(group)
+                yield
+
+        with patch.object(
+            SCIMGroupClient, "object_lock", autospec=True, side_effect=remove_while_waiting
+        ):
+            self._run(scim_sync_user_memberships)
+        self.assertEqual(self.http.call_count, 0)
+        self.assertEqual(self.remote_group["members"], [])
+
+    def test_redelivered_user_does_not_duplicate_pending_followup(self):
+        """A crash after commit leaves the durable follow-up, not another fan-out."""
+        self._create_user_with_group()
+        self._run(scim_sync_m2m)
+        self._run(scim_sync_direct, User)
+        self.assertEqual(len(self.pending), 1)
+        followup_id = self.pending[0].message_id
+        scim_sync_direct.send(class_to_path(User), self.user.pk, self.provider.pk)
+        self._run(scim_sync_direct, User)
+        self.assertEqual([message.message_id for message in self.pending], [followup_id])
+        self._assert_reconciled()
+
+
+class SCIMUserMembershipTransactionTests(SCIMUserMembershipTestMixin, TransactionTestCase):
+    def test_mapping_and_followup_commit_together(self):
+        """A different worker can only see the mapping and its job after commit."""
+        self._create_user_with_group()
+        self._run(scim_sync_m2m)
+
+        def visible_from_worker():
+            close_old_connections()
+            try:
+                return (
+                    SCIMProviderUser.objects.filter(
+                        user=self.user, provider=self.provider
+                    ).exists(),
+                    Task.objects.filter(actor_name=scim_sync_user_memberships.actor_name).exists(),
+                )
+            finally:
+                connections.close_all()
+
+        send = scim_sync_user_memberships.send_with_options
+        with ThreadPoolExecutor(max_workers=1) as executor:
+
+            def enqueue_before_commit(**kwargs):
+                message = send(**kwargs)
+                self.assertEqual(
+                    executor.submit(visible_from_worker).result(timeout=5), (False, False)
+                )
+                return message
+
+            with patch.object(
+                scim_sync_user_memberships, "send_with_options", side_effect=enqueue_before_commit
+            ):
+                self._run(scim_sync_direct, User)
+            self.assertEqual(executor.submit(visible_from_worker).result(timeout=5), (True, True))
+        self._assert_reconciled()
+
+    def test_dispatch_failure_rolls_back_mapping_and_job(self):
+        """Even an exception after enqueueing cannot leave an orphan mapping or job."""
+        self._create_user_with_group()
+        self._run(scim_sync_m2m)
+        send = scim_sync_user_memberships.send_with_options
+
+        def enqueue_then_fail(**kwargs):
+            send(**kwargs)
+            raise RuntimeError("Dispatch interrupted")
+
+        with patch.object(
+            scim_sync_user_memberships, "send_with_options", side_effect=enqueue_then_fail
+        ):
+            with self.assertRaises(ResultFailure):
+                self._run(scim_sync_direct, User)
+        self.assertFalse(
+            SCIMProviderUser.objects.filter(user=self.user, provider=self.provider).exists()
+        )
+        self.assertFalse(
+            Task.objects.filter(actor_name=scim_sync_user_memberships.actor_name).exists()
         )
