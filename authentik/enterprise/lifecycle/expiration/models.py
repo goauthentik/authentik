@@ -122,18 +122,10 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
     def inactivity_timedelta(self) -> timedelta:
         return timedelta_from_string(self.inactivity_duration)
 
-    @property
-    def warn_timedelta(self) -> timedelta:
-        if not self.warn_before:
-            return timedelta()
-        return timedelta_from_string(self.warn_before)
-
-    @staticmethod
-    def last_activity(user: User) -> datetime:
-        return max(filter(None, (user.last_login, user.date_joined)))
-
     def due_at(self, user: User) -> datetime:
-        return self.last_activity(user) + self.inactivity_timedelta
+        # Must match the `last_activity` annotation in `candidates()`.
+        last_activity = max(filter(None, (user.last_login, user.date_joined)))
+        return last_activity + self.inactivity_timedelta
 
     def rank(self, user: User) -> Rank:
         """Lower ranks win `user`: the earliest expiration, then the least destructive
@@ -145,8 +137,8 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         """Rank of the rule that owns `row`, as stored on the row."""
         return (row.scheduled_at, ACTION_SEVERITY[row.action], row.rule_id)
 
-    def _take_over(self, row: UserOffboarding, due_at: datetime):
-        """Make this rule the owner of a locked pending row, with its own settings."""
+    def _update_offboarding(self, row: UserOffboarding, due_at: datetime):
+        """Write this rule's settings onto a locked pending row and make it the owner."""
         row.rule = self
         row.scheduled_at = due_at
         row.action = self.action
@@ -171,7 +163,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                 best, best_rank = rule, rank
         if best is None:
             return False
-        best._take_over(row, best_rank[0])
+        best._update_offboarding(row, best_rank[0])
         return True
 
     def scope(
@@ -207,19 +199,12 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
 
         return FilterPolicyEngine(self, qs).build().result
 
-    def _in_scope(self, user: User, *, threshold: datetime | None = None) -> bool:
-        return self._apply_policies(self.scope(threshold=threshold, user=user)).exists()
+    def _in_scope(self, user: User) -> bool:
+        return self._apply_policies(self.scope(user=user)).exists()
 
     def _threshold(self) -> datetime:
-        return timezone.now() - self.inactivity_timedelta + self.warn_timedelta
-
-    def qualifies(self, user: User) -> bool:
-        """Whether this rule should schedule `user`, including the warning window:
-        enabled, in scope and passing policies. `candidates()` is this predicate as a queryset,
-        minus users who already have a pending or newer terminal offboarding."""
-        if not self.enabled:
-            return False
-        return self._in_scope(user, threshold=self._threshold())
+        warn = timedelta_from_string(self.warn_before) if self.warn_before else timedelta()
+        return timezone.now() - self.inactivity_timedelta + warn
 
     def candidates(self) -> QuerySet[User]:
         """Users this rule would schedule a new offboarding for on its next run."""
@@ -299,17 +284,13 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
             return False, False
         due_at = self.due_at(row.user)
         rewarn = due_at < row.scheduled_at or row.action != self.action
-        values = {
-            "scheduled_at": due_at,
-            "action": self.action,
-            "revoke_sessions": self.revoke_sessions,
-            "revoke_tokens": self.revoke_tokens,
-        }
-        changed = [field for field, value in values.items() if getattr(row, field) != value]
-        if changed:
-            for field in changed:
-                setattr(row, field, values[field])
-            row.save(update_fields=changed)
+        if (row.scheduled_at, row.action, row.revoke_sessions, row.revoke_tokens) != (
+            due_at,
+            self.action,
+            self.revoke_sessions,
+            self.revoke_tokens,
+        ):
+            self._update_offboarding(row, due_at)
         return True, rewarn
 
     def _revisit_owned_rows(self):
@@ -331,13 +312,13 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
             if rewarn:
                 self._warn(row.user, row)
 
-    def _tighten_foreign_rows(self, threshold: datetime):
+    def _tighten_foreign_rows(self):
         """Tightening pass: take over pending rows of other rules when this rule outranks
         their owner (see `rank`). The user is warned again because date or action changed."""
         rows = (
             UserOffboarding.objects.filter(status=OffboardingStatus.PENDING, rule__isnull=False)
             .exclude(rule=self)
-            .filter(user__in=self.scope(threshold=threshold))
+            .filter(user__in=self.scope(threshold=self._threshold()))
             .select_related("user")
         )
         # Policies run only on the users behind these few rows, not the whole scope.
@@ -352,7 +333,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                 )
                 if locked is None or rank >= self.row_rank(locked):
                     continue
-                self._take_over(locked, rank[0])
+                self._update_offboarding(locked, rank[0])
             self._warn(row.user, locked)
 
     def apply(self) -> int:
@@ -360,7 +341,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         if not self.enabled:
             return 0
         self._revisit_owned_rows()
-        self._tighten_foreign_rows(self._threshold())
+        self._tighten_foreign_rows()
         created = 0
         for user in self.candidates().iterator(chunk_size=CANDIDATE_CHUNK_SIZE):
             try:
