@@ -21,10 +21,12 @@ NAME_ID = (
     .find(f"{{{NS_SAML_ASSERTION}}}Subject")
     .find(f"{{{NS_SAML_ASSERTION}}}NameID")
 )
-GOOGLE_ACS_URL = "https://127.0.0.1:9443/source/saml/google/acs/"
 
 
-@patch.object(SAMLSource, "build_full_url", MagicMock(return_value=GOOGLE_ACS_URL))
+@patch(
+    "authentik.sources.saml.processors.response.reverse",
+    MagicMock(return_value="https://127.0.0.1:9443/source/saml/google/acs/"),
+)
 class TestPropertyMappings(TestCase):
     """Test Property Mappings"""
 
