@@ -25,24 +25,6 @@ from authentik.sources.saml.processors.metadata_parser import (
 )
 
 
-def fetch_and_parse_metadata(url: str) -> IdentityProviderMetadata:
-    """Download and parse IdP metadata from `url`, converting errors to validation errors"""
-    try:
-        raw_metadata = fetch_metadata(url)
-    except MetadataFetchError as exc:
-        raise ValidationError({"metadata_url": str(exc)}) from None
-    try:
-        fromstring(raw_metadata)
-    except ParseError:
-        raise ValidationError({"metadata_url": _("Invalid XML Syntax")}) from None
-    try:
-        return IdentityProviderMetadataParser().parse(raw_metadata)
-    except (ValueError, KeyError) as exc:
-        raise ValidationError(
-            {"metadata_url": _("Failed to parse metadata: {message}").format(message=str(exc))}
-        ) from None
-
-
 class SAMLSourceSerializer(SourceSerializer):
     """SAMLSource Serializer."""
 
@@ -55,6 +37,23 @@ class SAMLSourceSerializer(SourceSerializer):
         if "request" not in self._context:
             return instance.issuer_override or ""
         return instance.get_issuer(self._context["request"]._request)
+
+    def _fetch_and_parse_metadata(self, url: str) -> IdentityProviderMetadata:
+        """Download and parse IdP metadata from `url`, converting errors to validation errors"""
+        try:
+            raw_metadata = fetch_metadata(url)
+        except MetadataFetchError as exc:
+            raise ValidationError({"metadata_url": str(exc)}) from None
+        try:
+            fromstring(raw_metadata)
+        except ParseError:
+            raise ValidationError({"metadata_url": _("Invalid XML Syntax")}) from None
+        try:
+            return IdentityProviderMetadataParser().parse(raw_metadata)
+        except (ValueError, KeyError) as exc:
+            raise ValidationError(
+                {"metadata_url": _("Failed to parse metadata: {message}").format(message=str(exc))}
+            ) from None
 
     def validate(self, attrs: dict):
         if attrs.get("verification_kp"):
@@ -69,7 +68,7 @@ class SAMLSourceSerializer(SourceSerializer):
         metadata_url = attrs.get("metadata_url", "")
         previous_url = self.instance.metadata_url if self.instance else ""
         if metadata_url and metadata_url != previous_url:
-            self._metadata = fetch_and_parse_metadata(metadata_url)
+            self._metadata = self._fetch_and_parse_metadata(metadata_url)
         has_sso_url = bool(attrs.get("sso_url") or (self.instance and self.instance.sso_url))
         if not has_sso_url and not metadata_url:
             raise ValidationError(
