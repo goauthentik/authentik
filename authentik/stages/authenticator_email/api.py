@@ -31,7 +31,10 @@ class AuthenticatorEmailStageSerializer(StageSerializer):
             "token_expiry",
             "template",
         ]
-        extra_kwargs = {"password": {"write_only": True}}
+        extra_kwargs = {
+            "password": {"write_only": True},
+            "template": {"required": True, "allow_null": False},
+        }
 
 
 class AuthenticatorEmailStageViewSet(UsedByMixin, ModelViewSet):

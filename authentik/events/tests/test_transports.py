@@ -5,7 +5,6 @@ from unittest.mock import PropertyMock, patch
 from django.core import mail
 from django.core.mail.backends.locmem import EmailBackend
 from django.test import TestCase
-from django.urls import reverse
 from requests_mock import Mocker
 
 from authentik import authentik_full_version
@@ -21,7 +20,7 @@ from authentik.events.models import (
     TransportMode,
 )
 from authentik.lib.generators import generate_id
-from authentik.stages.email.models import EmailTemplate, get_template_choices
+from authentik.stages.email.models import EmailTemplate
 
 
 class TestEventTransports(TestCase):
@@ -241,12 +240,17 @@ class TestEventTransports(TestCase):
     def test_transport_email_validation(self):
         """Test email transport template validation"""
 
+        template = EmailTemplate.objects.create(
+            path=f"{generate_id()}.html",
+            body="",
+        )
+
         # Test valid template
         serializer = NotificationTransportSerializer(
             data={
                 "name": generate_id(),
                 "mode": TransportMode.EMAIL,
-                "email_template": "email/event_notification.html",
+                "email_template": template.pk,
             }
         )
         self.assertTrue(serializer.is_valid())
@@ -256,27 +260,8 @@ class TestEventTransports(TestCase):
             data={
                 "name": generate_id(),
                 "mode": TransportMode.EMAIL,
-                "email_template": "invalid/template.html",
+                "email_template": None,
             }
         )
         self.assertFalse(serializer.is_valid())
         self.assertIn("email_template", serializer.errors)
-
-    def test_templates_api_endpoint(self):
-        """Test templates API endpoint returns valid templates"""
-        self.client.force_login(self.user)
-        response = self.client.get(reverse("authentik_api:emailstage-templates"))
-        self.assertEqual(response.status_code, 200)
-
-        data = response.json()
-        self.assertIsInstance(data, list)
-
-        # Check that we have at least the default templates
-        template_names = [item["name"] for item in data]
-        self.assertIn("email/event_notification.html", template_names)
-
-        # Verify all templates are valid choices
-        valid_choices = dict(get_template_choices())
-        for template in data:
-            self.assertIn(template["name"], valid_choices)
-            self.assertEqual(template["description"], valid_choices[template["name"]])

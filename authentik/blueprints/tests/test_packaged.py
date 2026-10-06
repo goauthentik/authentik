@@ -14,6 +14,8 @@ from authentik.brands.models import Brand
 class TestPackaged(TransactionTestCase):
     """Empty class, test methods are added dynamically"""
 
+    serialized_rollback = True
+
     @apply_blueprint("default/default-brand.yaml")
     def test_decorator_static(self):
         """Test @apply_blueprint decorator"""

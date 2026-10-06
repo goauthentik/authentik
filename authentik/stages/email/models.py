@@ -71,7 +71,7 @@ def get_template_choices():
     return static_choices
 
 
-BUILTIN_TEMPLATE_LABELS = {
+BUILTIN_TEMPLATE_DISPLAY_NAMES = {
     "goauthentik.io/email/base": gettext_lazy("Base Layout"),
     "goauthentik.io/email/password-reset": gettext_lazy("Password Reset"),
     "goauthentik.io/email/account-confirmation": gettext_lazy("Account Confirmation"),
@@ -100,8 +100,8 @@ class EmailTemplate(SerializerModel, ManagedModel):
     )
 
     @property
-    def label(self) -> str:
-        return str(BUILTIN_TEMPLATE_LABELS.get(self.managed, self.path))
+    def display_name(self) -> str:
+        return str(BUILTIN_TEMPLATE_DISPLAY_NAMES.get(self.managed, self.path))
 
     def render(self, context: dict) -> str:
         return render_email_template(self.body, context)
