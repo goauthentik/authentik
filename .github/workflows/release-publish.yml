@@ -53,10 +53,10 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
-      - uses: regclient/actions/regctl-installer@bb562fac724b7b37c17f19671df07fe34fabc376
+      - uses: regclient/actions/regctl-installer@b7d935a4b4f550aa3b5ad20941f7d2f9285565b2
       # logs in to ghcr.io by default
-      - uses: regclient/actions/regctl-login@bb562fac724b7b37c17f19671df07fe34fabc376
-      - uses: regclient/actions/regctl-login@bb562fac724b7b37c17f19671df07fe34fabc376
+      - uses: regclient/actions/regctl-login@b7d935a4b4f550aa3b5ad20941f7d2f9285565b2
+      - uses: regclient/actions/regctl-login@b7d935a4b4f550aa3b5ad20941f7d2f9285565b2
         with:
           registry: docker.io
           username: "${{ secrets.DOCKER_CORP_USERNAME }}"
