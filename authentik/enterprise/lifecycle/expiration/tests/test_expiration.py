@@ -432,9 +432,86 @@ class TestOverlapAndChange(ExpirationTestCase):
         self.assertIsNone(_pending(user))
         self.assertFalse(UserOffboarding.objects.filter(user=user).exists())
 
+    def test_same_date_tie_prefers_deactivate_in_either_order(self):
+        for delete_first in (True, False):
+            with self.subTest(delete_first=delete_first):
+                # Group-scoped so the rules of one subtest ignore the other's user.
+                group = Group.objects.create(name=generate_id())
+                deactivate = self._rule(group=group, warn_before="days=14")
+                delete = self._rule(
+                    group=group, action=OffboardingAction.DELETE, warn_before="days=14"
+                )
+                user = _dormant_user()
+                user.groups.add(group)
+                for rule in (delete, deactivate) if delete_first else (deactivate, delete):
+                    rule.apply()
+                pending = _pending(user)
+                self.assertEqual(pending.rule, deactivate)
+                self.assertEqual(pending.action, OffboardingAction.DEACTIVATE)
+                self.assertEqual(pending.scheduled_at, user.last_login + timedelta(days=90))
+
+    def test_full_tie_prefers_lowest_rule_id_and_its_settings(self):
+        for backwards in (False, True):
+            with self.subTest(backwards=backwards):
+                group = Group.objects.create(name=generate_id())
+                rules = [
+                    self._rule(group=group, revoke_sessions=False, revoke_tokens=True),
+                    self._rule(group=group, revoke_sessions=True, revoke_tokens=False),
+                ]
+                winner = min(rules, key=lambda rule: rule.pk)
+                user = _dormant_user()
+                user.groups.add(group)
+                for rule in reversed(rules) if backwards else rules:
+                    rule.apply()
+                pending = _pending(user)
+                self.assertEqual(pending.rule, winner)
+                self.assertEqual(pending.revoke_sessions, winner.revoke_sessions)
+                self.assertEqual(pending.revoke_tokens, winner.revoke_tokens)
+
+
+def _sweep_concurrently(test: TransactionTestCase, rules: tuple, user: User):
+    """Run `apply()` for every rule at once, each seeing `user` as a candidate regardless
+    of what the others inserted, so the insert race and the IntegrityError path run."""
+    barrier = Barrier(len(rules), timeout=10)
+    errors: list = []
+
+    def sweep(rule: UserExpirationRule):
+        try:
+            # Bound database waits so cleanup can join workers after a timeout.
+            with connection.cursor() as cursor:
+                cursor.execute("SET statement_timeout = '10s'")
+            barrier.wait()
+            rule.apply()
+        except Exception as exc:  # noqa: BLE001
+            errors.append(exc)
+        finally:
+            connection.close()
+
+    with patch.object(
+        UserExpirationRule, "candidates", lambda self: User.objects.filter(pk=user.pk)
+    ):
+        threads = [Thread(target=sweep, args=(rule,)) for rule in rules]
+        started_threads = []
+        try:
+            for thread in threads:
+                thread.start()
+                started_threads.append(thread)
+            for thread in started_threads:
+                thread.join(timeout=15)
+            test.assertFalse(
+                any(thread.is_alive() for thread in started_threads),
+                "Expiration sweep workers did not finish before the timeout",
+            )
+        finally:
+            barrier.abort()
+            # Keep the patch and database intact until every worker has exited.
+            for thread in started_threads:
+                thread.join()
+    test.assertEqual(errors, [])
+
 
 class TestConcurrency(TransactionTestCase):
-    """Two rules sweeping the same user at once converge on one row owned by the tighter rule."""
+    """Two rules sweeping the same user at once converge on one row owned by the winning rule."""
 
     def test_concurrent_sweeps_converge_on_tighter_rule(self):
         with patch(APPLY_RULE):
@@ -445,45 +522,7 @@ class TestConcurrency(TransactionTestCase):
                 name=generate_id(), inactivity_duration="days=90", enabled=True
             )
         user = _dormant_user(100)
-        barrier = Barrier(2, timeout=10)
-        errors: list = []
-
-        def sweep(rule: UserExpirationRule):
-            try:
-                # Bound database waits so cleanup can join workers after a timeout.
-                with connection.cursor() as cursor:
-                    cursor.execute("SET statement_timeout = '10s'")
-                barrier.wait()
-                rule.apply()
-            except Exception as exc:  # noqa: BLE001
-                errors.append(exc)
-            finally:
-                connection.close()
-
-        # Both rules see the user as a candidate regardless of what the other rule
-        # inserted, so the insert race and the IntegrityError path are exercised.
-        with patch.object(
-            UserExpirationRule, "candidates", lambda self: User.objects.filter(pk=user.pk)
-        ):
-            threads = [Thread(target=sweep, args=(rule,)) for rule in (loose, tight)]
-            started_threads = []
-            try:
-                for thread in threads:
-                    thread.start()
-                    started_threads.append(thread)
-                for thread in started_threads:
-                    thread.join(timeout=15)
-                self.assertFalse(
-                    any(thread.is_alive() for thread in started_threads),
-                    "Expiration sweep workers did not finish before the timeout",
-                )
-            finally:
-                barrier.abort()
-                # Keep the patch and database intact until every worker has exited.
-                for thread in started_threads:
-                    thread.join()
-
-        self.assertEqual(errors, [])
+        _sweep_concurrently(self, (loose, tight), user)
         self.assertEqual(UserOffboarding.objects.filter(user=user).count(), 1)
         # Whichever rule won the insert, the next sweep converges on the tighter one.
         apply_expiration_rule(str(loose.pk))
@@ -492,6 +531,24 @@ class TestConcurrency(TransactionTestCase):
         pending = _pending(user)
         self.assertEqual(pending.rule, tight)
         self.assertEqual(pending.scheduled_at, user.last_login + timedelta(days=90))
+
+    def test_concurrent_same_date_sweeps_execute_deactivation(self):
+        with patch(APPLY_RULE):
+            delete = UserExpirationRule.objects.create(
+                name=generate_id(), action=OffboardingAction.DELETE, enabled=True
+            )
+            deactivate = UserExpirationRule.objects.create(name=generate_id(), enabled=True)
+        user = _dormant_user(100)
+        _sweep_concurrently(self, (delete, deactivate), user)
+        self.assertEqual(UserOffboarding.objects.filter(user=user).count(), 1)
+        # Whichever rule won the insert, execution runs the winner without another sweep.
+        execute_offboarding(str(_pending(user).pk))
+        user.refresh_from_db()
+        self.assertFalse(user.is_active)
+        self.assertEqual(
+            UserOffboarding.objects.get(user=user, status=OffboardingStatus.COMPLETED).rule,
+            deactivate,
+        )
 
 
 class TestWithdrawal(ExpirationTestCase):
@@ -617,6 +674,43 @@ class TestExecution(ExpirationTestCase):
         self.assertFalse(user.is_active)
         event = Event.objects.get(action=EventAction.USER_OFFBOARDED)
         self.assertEqual(event.context["rule"]["pk"], rule.pk.hex)
+
+    def test_execution_hands_row_to_outranking_rule(self):
+        delete = self._rule(action=OffboardingAction.DELETE, revoke_tokens=False)
+        user = _dormant_user()
+        delete.apply()
+        row = _pending(user)
+        # Created after the sweep, as if it lost the insert race.
+        deactivate = self._rule()
+        execute_offboarding(str(row.pk))
+        user.refresh_from_db()
+        self.assertFalse(user.is_active)
+        row.refresh_from_db()
+        self.assertEqual(row.status, OffboardingStatus.COMPLETED)
+        self.assertEqual(row.rule, deactivate)
+        self.assertEqual(row.action, OffboardingAction.DEACTIVATE)
+        self.assertTrue(row.revoke_tokens)
+        event = Event.objects.get(action=EventAction.USER_OFFBOARDED)
+        self.assertEqual(event.context["rule"]["pk"], deactivate.pk.hex)
+
+    def test_execution_ignores_outranking_rule_that_does_not_apply(self):
+        for exempt in ("policy", "disabled"):
+            with self.subTest(exempt=exempt):
+                group = Group.objects.create(name=generate_id())
+                delete = self._rule(group=group, action=OffboardingAction.DELETE)
+                user = _dormant_user()
+                user.groups.add(group)
+                delete.apply()
+                row = _pending(user)
+                deactivate = self._rule(group=group, enabled=exempt != "disabled")
+                if exempt == "policy":
+                    PolicyBinding.objects.create(
+                        target=deactivate,
+                        policy=DummyPolicy.objects.create(name=generate_id(), result=False),
+                        order=0,
+                    )
+                execute_offboarding(str(row.pk))
+                self.assertFalse(User.objects.filter(pk=user.pk).exists())
 
     def test_recheck_disabled_rule(self):
         rule = self._rule()

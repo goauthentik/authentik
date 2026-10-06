@@ -1,7 +1,7 @@
 """Automatic user expiration: rules that schedule offboardings for inactive users."""
 
 from datetime import datetime, timedelta
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import IntegrityError, models, transaction
@@ -28,6 +28,13 @@ LOGGER = get_logger()
 # Users are read in chunks so a large dormant backlog on first enable does not
 # load every row into memory.
 CANDIDATE_CHUNK_SIZE = 500
+
+# When several rules would expire the same user, the earliest expiration wins. On the
+# same date the least destructive action wins, so a rule never deletes a user that
+# another rule would only deactivate at that time.
+ACTION_SEVERITY = {OffboardingAction.DEACTIVATE: 0, OffboardingAction.DELETE: 1}
+
+type Rank = tuple[datetime, int, UUID]
 
 
 def default_user_types() -> list[str]:
@@ -127,6 +134,45 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
 
     def due_at(self, user: User) -> datetime:
         return self.last_activity(user) + self.inactivity_timedelta
+
+    def rank(self, user: User) -> Rank:
+        """Lower ranks win `user`: the earliest expiration, then the least destructive
+        action, then the lowest rule ID so that full ties resolve the same way every time."""
+        return (self.due_at(user), ACTION_SEVERITY[self.action], self.pk)
+
+    @staticmethod
+    def row_rank(row: UserOffboarding) -> Rank:
+        """Rank of the rule that owns `row`, as stored on the row."""
+        return (row.scheduled_at, ACTION_SEVERITY[row.action], row.rule_id)
+
+    def _take_over(self, row: UserOffboarding, due_at: datetime):
+        """Make this rule the owner of a locked pending row, with its own settings."""
+        row.rule = self
+        row.scheduled_at = due_at
+        row.action = self.action
+        row.revoke_sessions = self.revoke_sessions
+        row.revoke_tokens = self.revoke_tokens
+        row.save(
+            update_fields=["rule", "scheduled_at", "action", "revoke_sessions", "revoke_tokens"]
+        )
+
+    @classmethod
+    def resolve_winner(cls, row: UserOffboarding) -> bool:
+        """Hand a locked, reconciled pending row to the enabled rule that outranks its
+        owner, if any. Execution calls this so a lost insert race, or a rule enabled or
+        edited since the last sweep, cannot run the wrong action. Returns whether the
+        owner changed."""
+        best: UserExpirationRule | None = None
+        best_rank = cls.row_rank(row)
+        for rule in cls.objects.filter(enabled=True).exclude(pk=row.rule_id):
+            # Ranking needs no queries; scope and policies only run for real contenders.
+            rank = rule.rank(row.user)
+            if rank < best_rank and rule._in_scope(row.user):
+                best, best_rank = rule, rank
+        if best is None:
+            return False
+        best._take_over(row, best_rank[0])
+        return True
 
     def scope(
         self, *, threshold: datetime | None = None, user: User | None = None
@@ -286,8 +332,8 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                 self._warn(row.user, row)
 
     def _tighten_foreign_rows(self, threshold: datetime):
-        """Tightening pass: take over pending rows of other rules when this rule would
-        expire the user earlier. The user is warned again because date and action changed."""
+        """Tightening pass: take over pending rows of other rules when this rule outranks
+        their owner (see `rank`). The user is warned again because date or action changed."""
         rows = (
             UserOffboarding.objects.filter(status=OffboardingStatus.PENDING, rule__isnull=False)
             .exclude(rule=self)
@@ -297,29 +343,16 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         # Policies run only on the users behind these few rows, not the whole scope.
         passing = self._apply_policies(User.objects.filter(pk__in=rows.values("user")))
         for row in rows.filter(user__in=passing):
-            due_at = self.due_at(row.user)
+            rank = self.rank(row.user)
             with transaction.atomic():
                 locked = (
                     UserOffboarding.objects.select_for_update()
-                    .filter(pk=row.pk, status=OffboardingStatus.PENDING, scheduled_at__gt=due_at)
+                    .filter(pk=row.pk, status=OffboardingStatus.PENDING, rule__isnull=False)
                     .first()
                 )
-                if locked is None:
+                if locked is None or rank >= self.row_rank(locked):
                     continue
-                locked.rule = self
-                locked.scheduled_at = due_at
-                locked.action = self.action
-                locked.revoke_sessions = self.revoke_sessions
-                locked.revoke_tokens = self.revoke_tokens
-                locked.save(
-                    update_fields=[
-                        "rule",
-                        "scheduled_at",
-                        "action",
-                        "revoke_sessions",
-                        "revoke_tokens",
-                    ]
-                )
+                self._take_over(locked, rank[0])
             self._warn(row.user, locked)
 
     def apply(self) -> int:
