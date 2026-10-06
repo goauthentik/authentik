@@ -7,11 +7,21 @@
  * @see https://playwright.dev/docs/test-configuration
  */
 
+import "@goauthentik/core/environment/load/node";
 import { ConsoleLogger } from "#logger/node";
 
 import { defineConfig, devices } from "@playwright/test";
 
 const CI = !!process.env.CI;
+
+// The Plex suite signs in to a real plex.tv account, so it only runs when one is supplied.
+const PLEX = !!(process.env.AK_TEST_PLEX_EMAIL && process.env.AK_TEST_PLEX_PASSWORD);
+
+const grepInvert = [
+    // These load CAPTCHA widgets from their vendors' servers, which CI can't rely on reaching.
+    ...(CI ? [/@vendor-network/] : []),
+    ...(PLEX ? [] : [/@plex/]),
+];
 
 /**
  * @type {Map<string, Logger>}
@@ -36,8 +46,7 @@ export default defineConfig({
         timeout: 15_000,
     },
     maxFailures: CI ? 5 : 2,
-    // These load CAPTCHA widgets from their vendors' servers, which CI can't rely on reaching.
-    grepInvert: CI ? /@vendor-network/ : undefined,
+    grepInvert: grepInvert.length ? grepInvert : undefined,
     reporter: CI
         ? [
               // ---

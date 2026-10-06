@@ -3,10 +3,12 @@
  */
 
 import { CaptchaFixture } from "#e2e/fixtures/CaptchaFixture";
+import { FlowFixture } from "#e2e/fixtures/FlowFixture";
 import { FormFixture } from "#e2e/fixtures/FormFixture";
 import { LicenseFixture } from "#e2e/fixtures/LicenseFixture";
 import { NavigatorFixture } from "#e2e/fixtures/NavigatorFixture";
 import { PasskeyFixture } from "#e2e/fixtures/PasskeyFixture";
+import { PlexFixture } from "#e2e/fixtures/PlexFixture";
 import { PointerFixture } from "#e2e/fixtures/PointerFixture";
 import { SessionFixture } from "#e2e/fixtures/SessionFixture";
 import { UserSwitcherFixture } from "#e2e/fixtures/UserSwitcherFixture";
@@ -24,7 +26,9 @@ interface E2EFixturesTestScope {
     pointer: PointerFixture;
     form: FormFixture;
     passkey: PasskeyFixture;
+    flows: FlowFixture;
     captcha: CaptchaFixture;
+    plex: PlexFixture;
     switcher: UserSwitcherFixture;
 }
 
@@ -53,8 +57,16 @@ export const test = base.extend<E2EFixturesTestScope, E2EWorkerScope>({
         await use(new PointerFixture({ page, testName }));
     },
 
+    flows: async ({ page, form, pointer, navigator }, use, { title: testName }) => {
+        await use(new FlowFixture({ page, testName, form, pointer, navigator }));
+    },
+
     captcha: async ({ page, form, pointer, navigator }, use, { title: testName }) => {
         await use(new CaptchaFixture({ page, testName, form, pointer, navigator }));
+    },
+
+    plex: async ({ page, form, pointer, navigator }, use, { title: testName }) => {
+        await use(new PlexFixture({ page, testName, form, pointer, navigator }));
     },
 
     passkey: async ({ page, context }, use, { title: testName }) => {
