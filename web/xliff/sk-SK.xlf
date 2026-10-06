@@ -70,14 +70,6 @@
   <source>Stop impersonation</source>
   <target>Ukončiť zosobnenie</target>
 </trans-unit>
-<trans-unit id="s6abff64e7ff7fde9">
-  <source>Avatar image</source>
-  <target>Obrázok avatara</target>
-</trans-unit>
-<trans-unit id="s7cfe12cd14df9950">
-  <source>Sign out</source>
-  <target>Odhlásiť sa</target>
-</trans-unit>
 <trans-unit id="saae1c70e168b45b4">
   <source>Admin</source>
   <target>Admin</target>
@@ -232,7 +224,7 @@
 </trans-unit>
 <trans-unit id="scb5c9a7cc4ccd68d">
   <source>Email info:</source>
-  <target>Email info:</target>
+  <target>Informácie o e-maile:</target>
 </trans-unit>
 <trans-unit id="s677f1b675fc21bb1">
   <source>Secret:</source>
@@ -509,22 +501,6 @@
 <trans-unit id="s08df8d0a773a3ea0">
   <source>Remove item</source>
   <target>Odstrániť položku</target>
-</trans-unit>
-<trans-unit id="s3633ffed92acaecb">
-  <source><x id="0" equiv-text="${this.label || &quot;&quot;}"/> table pagination</source>
-  <target>Stránkovanie tabuľky <x id="0" equiv-text="${this.label || &quot;&quot;}"/></target>
-</trans-unit>
-<trans-unit id="s04c5a637328c9b67">
-  <source><x id="0" equiv-text="${startIndex}"/> - <x id="1" equiv-text="${endIndex}"/> of <x id="2" equiv-text="${pageCount}"/></source>
-  <target><x id="0" equiv-text="${startIndex}"/> - <x id="1" equiv-text="${endIndex}"/> z <x id="2" equiv-text="${pageCount}"/></target>
-</trans-unit>
-<trans-unit id="s6a89bb10338369b4">
-  <source>Go to previous page</source>
-  <target>Ísť na predchádzajúcu stránku</target>
-</trans-unit>
-<trans-unit id="s7edad99c6b7bfe88">
-  <source>Go to next page</source>
-  <target>Ísť na ďalsiu stránku</target>
 </trans-unit>
 <trans-unit id="sc57b150b53a3b9e6">
   <source>This field is required.</source>
@@ -927,8 +903,8 @@
   <target>Nepoužívané žiadnym iným objektom.</target>
 </trans-unit>
 <trans-unit id="s55fa598b754cc3cc">
-  <source><x id="0" equiv-text="${item.username}"/> (<x id="1" equiv-text="${item.name}"/>)</source>
-  <target><x id="0" equiv-text="${item.username}"/> (<x id="1" equiv-text="${item.name}"/>)</target>
+  <source><x id="0" equiv-text="${item.facts.data.network.hostname}"/> (<x id="1" equiv-text="${item.name}"/>)</source>
+  <target><x id="0" equiv-text="${item.facts.data.network.hostname}"/> (<x id="1" equiv-text="${item.name}"/>)</target>
 </trans-unit>
 <trans-unit id="sdc673e73b5c13aea">
   <source>Delete</source>
@@ -1526,10 +1502,6 @@
   <source>Remove All</source>
   <target>Odstrániť všetky</target>
 </trans-unit>
-<trans-unit id="s3dc14a4b8129f989">
-  <source>Pagination</source>
-  <target>Stránkovanie</target>
-</trans-unit>
 <trans-unit id="s1efa17e3407e0f56">
   <source>Available options</source>
   <target>Dostupné možnosti</target>
@@ -1644,7 +1616,7 @@
 </trans-unit>
 <trans-unit id="s55d731be1ef66efe">
   <source>Base DN</source>
-  <target>Base DN</target>
+  <target>Základný DN</target>
 </trans-unit>
 <trans-unit id="s0b15ff11a0049cfd">
   <source>LDAP DN under which bind requests and search requests can be made.</source>
@@ -1802,10 +1774,6 @@
   <source>Select a signing key...</source>
   <target>Vybrať podpisový kľúč...</target>
 </trans-unit>
-<trans-unit id="sc6c57419ad3a01a8">
-  <source>Key used to sign the tokens.</source>
-  <target>Kľúč používaný na podpisovanie tokenov.</target>
-</trans-unit>
 <trans-unit id="s4347135696fc7cde">
   <source>Advanced flow settings</source>
   <target>Rozšírené nastavenia toku</target>
@@ -1888,7 +1856,7 @@
 </trans-unit>
 <trans-unit id="sbf41e0db12834133">
   <source>Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.</source>
-  <target>Zahrnúť nároky používateľa z rozsahov do id_token, pre aplikácie, ktoré nepristupujú k endpointu userinfo.</target>
+  <target>Zahrňte nároky používateľa z rozsahov do id_token pre aplikácie, ktoré nepristupujú ku koncovému bodu userinfo.</target>
 </trans-unit>
 <trans-unit id="s850a58c683682809">
   <source>Issuer mode</source>
@@ -2133,10 +2101,6 @@
 <trans-unit id="se9195c05c61d8ef8">
   <source>Selected Property Mappings</source>
   <target>Vybrané mapovanie vlastností</target>
-</trans-unit>
-<trans-unit id="s9b6bf63fddc7362f">
-  <source>List of CIDRs (comma-seperated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.</source>
-  <target>Zoznam CIDR (oddelených čiarkou), z ktorých sa môžu klienti pripájať. Špecifickejší CIDR bude mať prednosť pred menej špecifickým. Klienti pripájajúci sa z nešpecifikovaného CIDR budú odmietnutí.</target>
 </trans-unit>
 <trans-unit id="sb95baab425322600">
   <source>Shared secret</source>
@@ -2734,10 +2698,6 @@
   <source>Delete authorization on disconnect</source>
   <target>Odstrániť autorizáciu pri odpojení</target>
 </trans-unit>
-<trans-unit id="s3945449bd524d8a5">
-  <source>When enabled, connection authorizations will be deleted when a client disconnects. This will force clients with flaky internet connections to re-authorize the endpoint.</source>
-  <target>Ak je povolené, autorizácie pripojenia budú odstránené pri odpojení klienta. Toto prinúti klientov s nestabilným internetovým pripojením znovu autorizovať endpoint.</target>
-</trans-unit>
 <trans-unit id="s3271da6c18c25b18">
   <source>Connection settings.</source>
   <target>Nastavenia pripojenia.</target>
@@ -3080,15 +3040,7 @@
 </trans-unit>
 <trans-unit id="s526a525cdc79bbdc">
   <source>Endpoint</source>
-  <target>Endpoint</target>
-</trans-unit>
-<trans-unit id="s2f4ca2148183d692">
-  <source>Successfully updated endpoint.</source>
-  <target>Endpoint bol úspešne aktualizovaný.</target>
-</trans-unit>
-<trans-unit id="s5adee855dbe191d9">
-  <source>Successfully created endpoint.</source>
-  <target>Endpoint bol úspešne vytvorený.</target>
+  <target>Koncový bod</target>
 </trans-unit>
 <trans-unit id="s61e136c0658e27d5">
   <source>Protocol</source>
@@ -3110,17 +3062,9 @@
   <source>Host</source>
   <target>Hostiteľ</target>
 </trans-unit>
-<trans-unit id="s48a0d160d9e0a7be">
-  <source>Hostname/IP to connect to. Optionally specify the port.</source>
-  <target>Názov hostiteľa/IP adresa na pripojenie. Voliteľne zadajte port.</target>
-</trans-unit>
 <trans-unit id="sc39f6abf0daedb0f">
   <source>Maximum concurrent connections</source>
   <target>Maximálny počet súbežných pripojení</target>
-</trans-unit>
-<trans-unit id="s62418cbcd2a25498">
-  <source>Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.</source>
-  <target>Maximálny povolený počet súbežných pripojení k tomuto endpointu. Môže byť nastavený na -1 na zakázanie limitu.</target>
 </trans-unit>
 <trans-unit id="scb6620fcd5bff04c">
   <source>Advanced settings</source>
@@ -3584,14 +3528,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Paths may not start or end with a slash, but they can contain any other character as path segments. The paths are currently purely used for organization, it does not affect their permissions, group memberships, or anything else.</source>
   <target>Cesty nesmú začínať ani končiť lomkou, ale môžu obsahovať akýkoľvek iný znak ako segmenty cesty. Cesty sa momentálne používajú čisto na organizáciu a neovplyvňujú oprávnenia, členstvá v skupinách ani nič iné.</target>
 </trans-unit>
-<trans-unit id="s50c312bea93b6925">
-  <source>Edit Policy</source>
-  <target>Upraviť politiku</target>
-</trans-unit>
-<trans-unit id="s494e1ed913d9351a">
-  <source>Edit Group</source>
-  <target>Upraviť skupinu</target>
-</trans-unit>
 <trans-unit id="s5cd31f4a88adf180">
   <source>Edit User</source>
   <target>Upraviť používateľa</target>
@@ -3612,14 +3548,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>The currently selected policy engine mode is <x id="0" equiv-text="${policyEngineMode.label}"/>:</source>
   <target>Aktuálne vybraný režim politického enginu je <x id="0" equiv-text="${policyEngineMode.label}"/>:</target>
 </trans-unit>
-<trans-unit id="s8276649077e8715c">
-  <source>Endpoint(s)</source>
-  <target>Endpoint(-y)</target>
-</trans-unit>
-<trans-unit id="s008496c7716b9812">
-  <source>These bindings control which users will have access to this endpoint. Users must also have access to the application.</source>
-  <target>Tieto väzby určujú, ktorí používatelia budú mať prístup k tomuto endpointu. Používatelia musia mať tiež prístup k aplikácii.</target>
-</trans-unit>
 <trans-unit id="s5c18f85cda6e89be">
   <source>Connections</source>
   <target>Pripojenia</target>
@@ -3627,10 +3555,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s168565f5ac74a89f">
   <source>Update RAC Provider</source>
   <target>Aktualizovať poskytovateľa RAC</target>
-</trans-unit>
-<trans-unit id="s8465a2caa2d9ea5d">
-  <source>Endpoints</source>
-  <target>Endpointy</target>
 </trans-unit>
 <trans-unit id="s09b671b120443043">
   <source>Update Radius Provider</source>
@@ -3778,39 +3702,39 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="sa36117e97f49c86e">
   <source>Successfully updated entitlement.</source>
-  <target>Oprávnenie bolo úspešne aktualizované.</target>
+  <target>Aplikačné oprávnenie bolo úspešne aktualizované.</target>
 </trans-unit>
 <trans-unit id="s86bee999b735111f">
   <source>Successfully created entitlement.</source>
-  <target>Oprávnenie bolo úspešne vytvorené.</target>
+  <target>Aplikačné oprávnenie bolo úspešne vytvorené.</target>
 </trans-unit>
 <trans-unit id="s8a48455905fc14e6">
   <source>Application entitlement(s)</source>
-  <target>Oprávnenie(-ia) aplikácie</target>
+  <target>Aplikačné oprávnenie(-ia)</target>
 </trans-unit>
 <trans-unit id="sae971cbff672090b">
   <source>Update Entitlement</source>
-  <target>Aktualizovať oprávnenie</target>
+  <target>Aktualizovať aplikačné oprávnenie</target>
 </trans-unit>
 <trans-unit id="s537a58ae0ff50f1c">
   <source>These bindings control which users have access to this entitlement.</source>
-  <target>Tieto väzby určujú, ktorí používatelia majú prístup k tomuto oprávneniu.</target>
+  <target>Tieto väzby určujú, ktorí používatelia majú prístup k tomuto aplikačnému oprávneniu.</target>
 </trans-unit>
 <trans-unit id="s05849efeac672dc7">
   <source>No app entitlements created.</source>
-  <target>Žiadne oprávnenia aplikácie neboli vytvorené.</target>
+  <target>Neboli vytvorené žiadne aplikačné oprávnenia.</target>
 </trans-unit>
 <trans-unit id="sab4db6a3bd6abc1e">
   <source>This application does currently not have any application entitlements defined.</source>
-  <target>Táto aplikácia momentálne nemá definované žiadne oprávnenia aplikácie.</target>
+  <target>Táto aplikácia momentálne nemá definované žiadne aplikačné oprávnenia.</target>
 </trans-unit>
 <trans-unit id="sf0bd204ce3fea1de">
   <source>Create Entitlement</source>
-  <target>Vytvoriť oprávnenie</target>
+  <target>Vytvoriť aplikačné oprávnenie</target>
 </trans-unit>
 <trans-unit id="s55d8e42d0a1c057e">
   <source>Create entitlement</source>
-  <target>Vytvoriť oprávnenie</target>
+  <target>Vytvoriť aplikačné oprávnenie</target>
 </trans-unit>
 <trans-unit id="sb6fcdabf769208a1">
   <source>Failed to fetch application "<x id="0" equiv-text="${this.applicationSlug}"/>".</source>
@@ -3846,11 +3770,11 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="sc6479479c936939f">
   <source>Application entitlements</source>
-  <target>Oprávnenia aplikácie</target>
+  <target>Aplikačné oprávnenia</target>
 </trans-unit>
 <trans-unit id="s8e1c375a007d1839">
   <source>These entitlements can be used to configure user access in this application.</source>
-  <target>Tieto oprávnenia môžu byť použité na konfiguráciu prístupu používateľov v tejto aplikácii.</target>
+  <target>Tieto aplikačné oprávnenia možno použiť na nastavenie prístupu používateľov v tejto aplikácii.</target>
 </trans-unit>
 <trans-unit id="s2b1bc31276c4c477">
   <source>Policy / Group / User Bindings</source>
@@ -3934,7 +3858,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s150cf10289852e4a">
   <source>Endpoint Devices are in preview.</source>
-  <target>Zariadenia endpointov sú v náhľade.</target>
+  <target>Koncové zariadenia sú v skúšobnej verzii.</target>
 </trans-unit>
 <trans-unit id="s672b3d1982f585fa">
   <source>Total devices</source>
@@ -3966,7 +3890,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="sf655f75d8e14d5fe">
   <source>Endpoint Device(s)</source>
-  <target>Zariadenie(-ia) endpointu</target>
+  <target>Koncové zariadenie(-ia)</target>
 </trans-unit>
 <trans-unit id="sd667856c73082c35">
   <source>Device <x id="0" equiv-text="${this.device?.name}"/></source>
@@ -4009,8 +3933,8 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>CPU</target>
 </trans-unit>
 <trans-unit id="sa10af889ecd36687">
-  <source><x id="0" equiv-text="${this.device?.facts.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts.data.hardware?.cpuName}"/></source>
-  <target><x id="0" equiv-text="${this.device?.facts.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts.data.hardware?.cpuName}"/></target>
+  <source><x id="0" equiv-text="${this.device?.facts?.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts?.data.hardware?.cpuName}"/></source>
+  <target><x id="0" equiv-text="${this.device?.facts?.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts?.data.hardware?.cpuName}"/></target>
 </trans-unit>
 <trans-unit id="s16e1bead7b9c95ce">
   <source>Memory</source>
@@ -4387,10 +4311,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s000ee3e634868b3c">
   <source>TLS Client authentication certificate</source>
   <target>Certifikát klientskej autentifikácie TLS</target>
-</trans-unit>
-<trans-unit id="s5506b35a1bceb141">
-  <source>Client certificate keypair to authenticate against the LDAP Server's Certificate.</source>
-  <target>Pár kľúčov klientského certifikátu na autentifikáciu oproti certifikátu LDAP servera.</target>
 </trans-unit>
 <trans-unit id="sb7684e2910a33a1f">
   <source>Bind CN</source>
@@ -6128,7 +6048,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="sbdc1176ff9f93da2">
   <source>This is the full endpoint to send POST requests to.</source>
-  <target>Toto je celý endpoint na odosielanie POST požiadaviek.</target>
+  <target>Toto je úplná adresa koncového bodu na odosielanie požiadaviek POST.</target>
 </trans-unit>
 <trans-unit id="s51da4de00984fe51">
   <source>API Auth Username</source>
@@ -6352,11 +6272,11 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s33e3766d4a02b042">
   <source>Preferred: The authenticator can create and store a dedicated credential, but if it doesn't that's alright too</source>
-  <target>Preferované: Autentifikátor môže vytvoriť a uložiť vyhradené prihlasovacie údaje, ale ak to neurobí, je to tiež v poriadku.</target>
+  <target>Preferované: Autentifikátor môže vytvoriť a uložiť vyhradené prihlasovacie údaje, ale ak to neurobí, je to tiež v poriadku</target>
 </trans-unit>
 <trans-unit id="sfb852dd507c25c24">
   <source>Discouraged: The authenticator should not create a dedicated credential</source>
-  <target>Odrádzané: Autentifikátor by nemal vytvárať vyhradené prihlasovacie údaje.</target>
+  <target>Neodporúčané: Autentifikátor by nemal vytvárať vyhradené prihlasovacie údaje</target>
 </trans-unit>
 <trans-unit id="s5fbaeb14f42815e5">
   <source>Authenticator Attachment</source>
@@ -6666,10 +6586,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
   <target><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", typu <x id="2" equiv-text="${p.type}"/>)</target>
 </trans-unit>
-<trans-unit id="s5170f9ef331949c0">
-  <source>Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.</source>
-  <target>Zobrazte používateľovi ľubovoľné vstupné polia, napríklad počas registrácie. Dáta sú uložené v kontexte toku pod premennou 'prompt_data'.</target>
-</trans-unit>
 <trans-unit id="s36cb242ac90353bc">
   <source>Fields</source>
   <target>Polia</target>
@@ -6974,7 +6890,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="sabf8a430d504f8c8">
   <source>Endpoint Google Chrome Device Trust is in preview.</source>
-  <target>Endpoint Google Chrome Device Trust je v náhľade.</target>
+  <target>Google Chrome Device Trust pre koncové zariadenia je v skúšobnej verzii.</target>
 </trans-unit>
 <trans-unit id="s336936629cdeb3e5">
   <source>Stage used to verify users' browsers using Google Chrome Device Trust. This stage can be used in authentication/authorization flows.</source>
@@ -7149,10 +7065,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sfa88f413e287bb0f">
   <source>Stage type</source>
   <target>Typ fázy</target>
-</trans-unit>
-<trans-unit id="s04440099d97c0bef">
-  <source>Edit Stage</source>
-  <target>Upraviť fázu</target>
 </trans-unit>
 <trans-unit id="sfe938c1585e0bf68">
   <source>These bindings control if this stage will be applied to the flow.</source>
@@ -7492,7 +7404,7 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
 </trans-unit>
 <trans-unit id="saf1d289e3137c2ea">
   <source>CA which the endpoint's Certificate is verified against. Can be left empty for no validation.</source>
-  <target>CA, oproti ktorej sa overuje certifikát endpointu. Môže byť prázdne pre žiadne overenie.</target>
+  <target>Certifikačná autorita, voči ktorej sa overuje certifikát koncového bodu. Ak overovanie nepožadujete, ponechajte prázdne.</target>
 </trans-unit>
 <trans-unit id="s0f2e070d38cd36df">
   <source>TLS Authentication Certificate/SSH Keypair</source>
@@ -7830,16 +7742,11 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
 </trans-unit>
 <trans-unit id="sd6422f7004036cdd">
   <source>OCI Registry</source>
-  <target>OCI Registry</target>
+  <target>Register OCI</target>
 </trans-unit>
 <trans-unit id="sa556d7b744364dcf">
   <source>OCI URL</source>
   <target>URL OCI</target>
-</trans-unit>
-<trans-unit id="h3b1f38bb34f8b1b6">
-  <source> A valid OCI manifest URL, prefixed with the protocol
-                                              e.g. <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path/to/manifest<x id="1" equiv-text="&lt;/code&gt;"/></source>
-  <target>Platná URL manifestu OCI s predponou protokolu, napr. <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path/to/manifest<x id="1" equiv-text="&lt;/code&gt;"/></target>
 </trans-unit>
 <trans-unit id="sc19e397bee1e67f7">
   <source>Read more about</source>
@@ -7945,26 +7852,6 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
   <source>License(s)</source>
   <target>Licencia(-ie)</target>
 </trans-unit>
-<trans-unit id="sf58825457d61c429">
-  <source>Forecast internal users</source>
-  <target>Predpoveď interných používateľov</target>
-</trans-unit>
-<trans-unit id="sde9a3f41977ec1f8">
-  <source>Estimated user count one year from now based on <x id="0" equiv-text="${internalUsers}"/> current internal users and <x id="1" equiv-text="${forecastedInternalUsers}"/> forecasted internal users.</source>
-  <target>Odhadovaný počet používateľov o rok na základe <x id="0" equiv-text="${internalUsers}"/> aktuálnych interných používateľov a <x id="1" equiv-text="${forecastedInternalUsers}"/> predpokladaných interných používateľov.</target>
-</trans-unit>
-<trans-unit id="s531571491deb239a">
-  <source>Approximately</source>
-  <target>Približne</target>
-</trans-unit>
-<trans-unit id="s4557b6b9da258643">
-  <source>Forecast external users</source>
-  <target>Predpoveď externých používateľov</target>
-</trans-unit>
-<trans-unit id="sf52479d6daa0a4a8">
-  <source>Estimated user count one year from now based on <x id="0" equiv-text="${externalUsers}"/> current external users and <x id="1" equiv-text="${forecastedExternalUsers}"/> forecasted external users.</source>
-  <target>Odhadovaný počet používateľov o rok na základe <x id="0" equiv-text="${externalUsers}"/> aktuálnych externých používateľov a <x id="1" equiv-text="${forecastedExternalUsers}"/> predpokladaných externých používateľov.</target>
-</trans-unit>
 <trans-unit id="sd22bd01bdf28c548">
   <source>Cumulative license expiry</source>
   <target>Kumulatívna expirácia licencie</target>
@@ -8051,7 +7938,7 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
 </trans-unit>
 <trans-unit id="s0393ac07cf8a3097">
   <source>Endpoint Devices</source>
-  <target>Zariadenia endpointov</target>
+  <target>Koncové zariadenia</target>
 </trans-unit>
 <trans-unit id="s4f1ad6b48a5df506">
   <source>Logs</source>
@@ -8134,8 +8021,8 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
   <target>Zavrieť zásuvku API</target>
 </trans-unit>
 <trans-unit id="sfa991acd65f738bf">
-  <source>View details for <x id="0" equiv-text="${label}"/></source>
-  <target>Zobraziť podrobnosti pre <x id="0" equiv-text="${label}"/></target>
+  <source>View details for <x id="0" equiv-text="${displayName}"/></source>
+  <target>Zobraziť podrobnosti pre <x id="0" equiv-text="${displayName}"/></target>
 </trans-unit>
 <trans-unit id="s5bb4026da28b7914">
   <source>Mark as read</source>
@@ -8794,14 +8681,6 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
   <source>Via <x id="0" equiv-text="${event.context.device.name}"/></source>
   <target>Cez <x id="0" equiv-text="${event.context.device.name}"/></target>
 </trans-unit>
-<trans-unit id="s0b7ddc0168e79ea2">
-  <source>Failed to fetch files</source>
-  <target>Nepodarilo sa načítať súbory</target>
-</trans-unit>
-<trans-unit id="sdc4f1cfd587212b4">
-  <source>You can also enter a URL (https://...), Font Awesome icon (fa://fa-icon-name), or upload a new file.</source>
-  <target>Môžete tiež zadať URL (https://...), ikonu Font Awesome (fa://fa-icon-name) alebo nahrať nový súbor.</target>
-</trans-unit>
 <trans-unit id="s8015ac3b47172dc8">
   <source>Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.</source>
   <target>Vyberte z nahratých súborov alebo zadajte ikonu Font Awesome (fa://fa-icon-name) alebo URL.</target>
@@ -8874,22 +8753,6 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
   <source>If no device was provided, this stage will stop flow execution.</source>
   <target>Ak nebolo poskytnuté žiadne zariadenie, táto fáza zastaví vykonávanie toku.</target>
 </trans-unit>
-<trans-unit id="s3a3d5b2575cd32ea">
-  <source>File uploaded successfully</source>
-  <target>Súbor bol úspešne nahratý</target>
-</trans-unit>
-<trans-unit id="sd3775ef947e0de32">
-  <source>File Name</source>
-  <target>Názov súboru</target>
-</trans-unit>
-<trans-unit id="s1afc99a84a890514">
-  <source>Type an optional custom file name...</source>
-  <target>Zadajte voliteľný vlastný názov súboru...</target>
-</trans-unit>
-<trans-unit id="sb40e2763045466ea">
-  <source>Optionally rename the file (without extension). Leave empty to keep the original filename.</source>
-  <target>Voliteľne premenujte súbor (bez prípony). Nechajte prázdne na zachovanie pôvodného názvu súboru.</target>
-</trans-unit>
 <trans-unit id="s803ce7e1a2294d50">
   <source>Files</source>
   <target>Súbory</target>
@@ -8909,10 +8772,6 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
 <trans-unit id="s96668830629e0dfc">
   <source>Upload</source>
   <target>Nahrať</target>
-</trans-unit>
-<trans-unit id="sa32e9d0a108ee802">
-  <source>Upload File</source>
-  <target>Nahrať súbor</target>
 </trans-unit>
 <trans-unit id="s95094b57684716a5">
   <source>Failed to validate device.</source>
@@ -9134,14 +8993,6 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
   <source>Add new role</source>
   <target>Pridať novú rolu</target>
 </trans-unit>
-<trans-unit id="s8aa73079812f56b2">
-  <source>Refresh other flow tabs upon authentication</source>
-  <target>Obnoviť ostatné záložky toku pri autentifikácii</target>
-</trans-unit>
-<trans-unit id="s696386b762cd516c">
-  <source>When enabled, other flow tabs in a session will refresh upon a successful authentication.</source>
-  <target>Ak je povolené, ostatné záložky toku v relácii sa obnovia po úspešnej autentifikácii.</target>
-</trans-unit>
 <trans-unit id="s1af2337b6d11d4c6">
   <source>Data export ready</source>
   <target>Export dát je pripravený</target>
@@ -9269,12 +9120,6 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
 <trans-unit id="s7642bf28cf8f476c">
   <source>Select a device access group to be added to upon enrollment.</source>
   <target>Vyberte skupinu prístupu zariadení, do ktorej sa pridáte pri registrácii.</target>
-</trans-unit>
-<trans-unit id="h30bbf18fbf87fa57">
-  <source>To create a data export, navigate to
-                            <x id="0" equiv-text="&lt;a href=&quot;#/identity/users&quot;&gt;"/>Directory &gt; Users<x id="1" equiv-text="&lt;/a&gt;"/> or to
-                            <x id="2" equiv-text="&lt;a href=&quot;#/events/log&quot;&gt;"/>Events &gt; Logs<x id="3" equiv-text="&lt;/a&gt;"/>.</source>
-  <target>Na vytvorenie exportu dát prejdite na <x id="0" equiv-text="&lt;a href=&quot;#/identity/users&quot;&gt;"/>Adresár &gt; Používatelia<x id="1" equiv-text="&lt;/a&gt;"/> alebo na <x id="2" equiv-text="&lt;a href=&quot;#/events/log&quot;&gt;"/>Udalosti &gt; Protokoly<x id="3" equiv-text="&lt;/a&gt;"/>.</target>
 </trans-unit>
 <trans-unit id="s54af3ec70642782c">
   <source>Choose the object permissions that you want the selected role to have on this object. These object permissions are in addition to any global permissions already within the role.</source>
@@ -9606,7 +9451,7 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
 </trans-unit>
 <trans-unit id="s5f404525692ee652">
   <source>You can select from popular providers with preset configurations or choose a custom setup to specify your own endpoints and keys.</source>
-  <target>Môžete si vybrať z populárnych poskytovateľov s prednastavenými konfiguráciami alebo zvoliť vlastné nastavenie na zadanie vlastných endpointov a kľúčov.</target>
+  <target>Môžete si vybrať z obľúbených poskytovateľov s prednastavenými konfiguráciami alebo zvoliť vlastné nastavenie a zadať vlastné koncové body a kľúče.</target>
 </trans-unit>
 <trans-unit id="sb275cc802634f93d">
   <source>Paste your CAPTCHA public key...</source>
@@ -9619,10 +9464,6 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
 <trans-unit id="s4cbbb47ef050cd0e">
   <source>Paste your CAPTCHA secret key...</source>
   <target>Vložte váš tajný kľúč CAPTCHA...</target>
-</trans-unit>
-<trans-unit id="s896c7fc0f9277a74">
-  <source>Stage Name</source>
-  <target>Názov fázy</target>
 </trans-unit>
 <trans-unit id="s1baea28d44c34fef">
   <source>Type a stage name...</source>
@@ -9697,13 +9538,9 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
 </trans-unit>
 <trans-unit id="captcha.provider-link">
   <source>API keys can be obtained from the
-                                        <x id="0" equiv-text="${html `&lt;a&#10;                                                target=&quot;_blank&quot;&#10;                                                rel=&quot;noopener noreferrer&quot;&#10;                                                href=${keyURL}&#10;                                                &gt;${formatAPISource()}&lt;/a&#10;                                            &gt;.`}"/></source>
-  <target>Kľúče API je možné získať z <x id="0" equiv-text="${html `&lt;a                                                 target=&quot;_blank&quot;                                                 rel=&quot;noopener noreferrer&quot;                                                 href=${keyURL}                                                 &gt;${formatAPISource()}&lt;/a                                             &gt;.`}"/></target>
+                                            <x id="0" equiv-text="${html `&lt;a&#10;                                                    target=&quot;_blank&quot;&#10;                                                    rel=&quot;noopener noreferrer&quot;&#10;                                                    href=${keyURL}&#10;                                                    &gt;${formatAPISource()}&lt;/a&#10;                                                &gt;.`}"/></source>
+  <target>Kľúče API je možné získať z <x id="0" equiv-text="${html `&lt;a&#10;                                                    target=&quot;_blank&quot;&#10;                                                    rel=&quot;noopener noreferrer&quot;&#10;                                                    href=${keyURL}&#10;                                                    &gt;${formatAPISource()}&lt;/a&#10;                                                &gt;.`}"/></target>
   <note from="lit-localize">Supplementary help text with link to provider dashboard.</note>
-</trans-unit>
-<trans-unit id="s87f858ca3c8e5579">
-  <source>Filename can only contain letters, numbers, dots, hyphens, underscores, slashes, and the placeholder %(theme)s</source>
-  <target>Názov súboru môže obsahovať iba písmená, číslice, bodky, pomlčky, podčiarkovníky, lomky a zástupný symbol %(theme)s</target>
 </trans-unit>
 <trans-unit id="s3934affe32f6a454">
   <source><x id="0" equiv-text="${availableCount}"/> item marked to add.</source>
@@ -10229,7 +10066,7 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
 </trans-unit>
 <trans-unit id="se9be959bed7985e2">
   <source>Keypair used to validate the certificate of the webhook endpoint. When not configured, the standard CA bundle is used.</source>
-  <target>Pár kľúčov používaný na overenie certifikátu endpointu webhooku. Ak nie je nakonfigurovaný, použije sa štandardný balík CA.</target>
+  <target>Pár kľúčov používaný na overenie certifikátu koncového bodu webhooku. Ak nie je nakonfigurovaný, použije sa štandardný balík certifikačných autorít.</target>
 </trans-unit>
 <trans-unit id="s5b6d39d39a26028b">
   <source>Security key (e.g. YubiKey)</source>
@@ -10274,10 +10111,6 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
 <trans-unit id="s9e6f66c5246f0e8e">
   <source>See documentation for path rules and theme-aware names.</source>
   <target>Pozrite dokumentáciu pre pravidlá ciest a názvy s podporou tém.</target>
-</trans-unit>
-<trans-unit id="s7e9afe092ef50353">
-  <source>See documentation for supported values.</source>
-  <target>Pozrite dokumentáciu pre podporované hodnoty.</target>
 </trans-unit>
 <trans-unit id="sc0fccaeebcecbc47">
   <source>No assertion was returned by the authenticator</source>
@@ -10653,14 +10486,6 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
   <source>Authorizations (1 month)</source>
   <target>Autorizácie (1 mesiac)</target>
 </trans-unit>
-<trans-unit id="s767b102301dd9d7b">
-  <source>Prevent duplicate devices</source>
-  <target>Zabrániť duplicitným zariadeniam</target>
-</trans-unit>
-<trans-unit id="s477c7aa824db217c">
-  <source>When enabled, any unique authenticator can only be registered once.</source>
-  <target>Ak je povolené, každý jedinečný autentifikátor môže byť zaregistrovaný iba raz.</target>
-</trans-unit>
 <trans-unit id="sce00b83d404f4037">
   <source>Successfully imported blueprint.</source>
   <target>Blueprint bol úspešne importovaný.</target>
@@ -10695,7 +10520,7 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
 </trans-unit>
 <trans-unit id="s83cb0a6bd0b57d0c">
   <source>Verify Push stream endpoints' certificate</source>
-  <target>Overiť certifikát endpointov Push streamu</target>
+  <target>Overiť certifikát koncových bodov Push streamu</target>
 </trans-unit>
 <trans-unit id="s2044fd89e1e779ff">
   <source>Stream(s)</source>
@@ -10875,11 +10700,11 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
 </trans-unit>
 <trans-unit id="s77405bfeaefa5df7">
   <source>Endpoint Connector</source>
-  <target>Konektor endpointu</target>
+  <target>Konektor koncového zariadenia</target>
 </trans-unit>
 <trans-unit id="s9cb9d5c3536ce74c">
   <source>Endpoint Connectors</source>
-  <target>Konektory endpointov</target>
+  <target>Konektory koncových zariadení</target>
 </trans-unit>
 <trans-unit id="s728b14f2c1fc517e">
   <source>Provide your Fleet API token...</source>
@@ -11137,33 +10962,9 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
   <source>Search for provider by name, type or assigned application...</source>
   <target>Hľadať poskytovateľa podľa názvu, typu alebo priradenej aplikácie...</target>
 </trans-unit>
-<trans-unit id="sd8d09a02b5e34dda">
-  <source>RAC Endpoint</source>
-  <target>Endpoint RAC</target>
-</trans-unit>
-<trans-unit id="s4dc35b9b113cf62b">
-  <source>RAC Endpoints</source>
-  <target>Endpointy RAC</target>
-</trans-unit>
-<trans-unit id="s0be5af2db3c680cf">
-  <source>Endpoint Name</source>
-  <target>Názov endpointu</target>
-</trans-unit>
-<trans-unit id="sdaad41bf21e8e5f3">
-  <source>Type a name for this endpoint...</source>
-  <target>Zadajte názov tohto endpointu...</target>
-</trans-unit>
 <trans-unit id="sa6793a484bd8399b">
   <source>e.g. myserver.example.com, 10.0.0.1:22</source>
   <target>napr. myserver.example.com, 10.0.0.1:22</target>
-</trans-unit>
-<trans-unit id="s43f123e73d3882cb">
-  <source>Create an endpoint to get started.</source>
-  <target>Vytvorte endpoint na začatie.</target>
-</trans-unit>
-<trans-unit id="s0af49e3fd32c92a3">
-  <source>Search for an endpoint by name or host...</source>
-  <target>Hľadať endpoint podľa názvu alebo hostiteľa...</target>
 </trans-unit>
 <trans-unit id="s7fb4ba3dfb89c749">
   <source>Initial Permission Name</source>
@@ -11353,13 +11154,9 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
   <source>Copy to clipboard</source>
   <target>Kopírovať do schránky</target>
 </trans-unit>
-<trans-unit id="s757a4c2248c0b9da">
-  <source>Entity</source>
-  <target>Entita</target>
-</trans-unit>
 <trans-unit id="entity.edit.named">
-  <source>Edit "<x id="0" equiv-text="${itemName}"/>" <x id="1" equiv-text="${noun}"/></source>
-  <target>Upraviť "<x id="0" equiv-text="${itemName}"/>" <x id="1" equiv-text="${noun}"/></target>
+  <source>Edit "<x id="0" equiv-text="${label}"/>" <x id="1" equiv-text="${noun}"/></source>
+  <target>Upraviť "<x id="0" equiv-text="${label}"/>" <x id="1" equiv-text="${noun}"/></target>
 </trans-unit>
 <trans-unit id="entity.edit">
   <source>Edit <x id="0" equiv-text="${noun}"/></source>
@@ -11420,18 +11217,6 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
 <trans-unit id="s195ea6447a6b5486">
   <source>Cancel wizard</source>
   <target>Zrušiť sprievodcu</target>
-</trans-unit>
-<trans-unit id="s7ac4bf2be4d16ce4">
-  <source>Search for an endpoint by name...</source>
-  <target>Hľadať endpoint podľa názvu...</target>
-</trans-unit>
-<trans-unit id="sacc17a59268b8cf3">
-  <source>No endpoints found for this application.</source>
-  <target>Pre túto aplikáciu neboli nájdené žiadne endpointy.</target>
-</trans-unit>
-<trans-unit id="sa769d10eac7fbdb7">
-  <source>Launch Endpoint</source>
-  <target>Spustiť endpoint</target>
 </trans-unit>
 <trans-unit id="wizard.ariaLabel.default">
   <source>Wizard</source>
@@ -11809,10 +11594,6 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
   <source>This stage executes account lockdown actions on a target user. Configure which actions to perform when this stage runs.</source>
   <target>Táto fáza vykonáva akcie uzamknutia účtu na cieľovom používateľovi. Nakonfigurujte, ktoré akcie sa majú vykonať pri spustení tejto fázy.</target>
 </trans-unit>
-<trans-unit id="sc2908875e6774352">
-  <source>Type a name for this stage...</source>
-  <target>Zadajte názov tejto fázy...</target>
-</trans-unit>
 <trans-unit id="scf443deca2f466b6">
   <source>Deactivate user</source>
   <target>Deaktivovať používateľa</target>
@@ -11925,10 +11706,6 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
   <source>User Fields</source>
   <target>Polia používateľa</target>
 </trans-unit>
-<trans-unit id="s02b73793e5b4e1ba">
-  <source>This flag is deprecated.</source>
-  <target>Tento príznak je zastaraný.</target>
-</trans-unit>
 <trans-unit id="sc98037ccab57d329">
   <source>No preference: the browser may offer any available authenticator</source>
   <target>Bez preferencie: prehliadač môže ponúknuť akýkoľvek dostupný autentifikátor</target>
@@ -11995,11 +11772,11 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
 </trans-unit>
 <trans-unit id="sac974f7c36f0c5c1">
   <source>SAML Endpoint</source>
-  <target>Endpoint SAML</target>
+  <target>Koncový bod SAML</target>
 </trans-unit>
 <trans-unit id="sfb0aa7e424580866">
   <source>SAML provider endpoint. Use this URL for SP configuration.</source>
-  <target>Endpoint poskytovateľa SAML. Použite túto URL pre konfiguráciu SP.</target>
+  <target>Koncový bod poskytovateľa SAML. Použite túto URL na konfiguráciu SP.</target>
 </trans-unit>
 <trans-unit id="s2be14ff0704995c7">
   <source>Throttling settings</source>
@@ -12130,7 +11907,7 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
 </trans-unit>
 <trans-unit id="s00640d26256c4878">
   <source>Cap Endpoint</source>
-  <target>Endpoint Cap</target>
+  <target>Koncový bod Cap</target>
 </trans-unit>
 <trans-unit id="s40bf0fb50dad7090">
   <source>https://cap.example.com/site-key/</source>
@@ -12142,7 +11919,7 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
 </trans-unit>
 <trans-unit id="s4e1e8db555003a9a">
   <source>Cap's server-side verification endpoint, for example https://cap.example.com/site-key/siteverify.</source>
-  <target>Serverový overovací endpoint Cap, napríklad https://cap.example.com/site-key/siteverify.</target>
+  <target>Koncový bod na overovanie na strane servera Cap, napríklad https://cap.example.com/site-key/siteverify.</target>
 </trans-unit>
 <trans-unit id="sdb752cddc543357d">
   <source>Request Content Type</source>
@@ -12174,14 +11951,14 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
 </trans-unit>
 <trans-unit id="captcha.cap-endpoint.description">
   <source>The public site-key endpoint of your Cap server.</source>
-  <target>Verejný endpoint site-key vášho servera Cap.</target>
+  <target>Verejný koncový bod site-key vášho servera Cap.</target>
   <note from="lit-localize">Description for Cap endpoint field.</note>
 </trans-unit>
 <trans-unit id="captcha.provider-link.cap">
   <source>Use the
-                                        <x id="0" equiv-text="${html `&lt;a&#10;                                            target=&quot;_blank&quot;&#10;                                            rel=&quot;noopener noreferrer&quot;&#10;                                            href=${keyURL}&#10;                                            &gt;${formatAPISource()}&lt;/a&#10;                                        &gt;`}"/>
-                                        to self-host Cap and configure the endpoint.</source>
-  <target>Použite <x id="0" equiv-text="${html `&lt;a                                             target=&quot;_blank&quot;                                             rel=&quot;noopener noreferrer&quot;                                             href=${keyURL}                                             &gt;${formatAPISource()}&lt;/a                                         &gt;`}"/> na vlastné hosťovanie Cap a konfiguráciu endpointu.</target>
+                                            <x id="0" equiv-text="${html `&lt;a&#10;                                                target=&quot;_blank&quot;&#10;                                                rel=&quot;noopener noreferrer&quot;&#10;                                                href=${keyURL}&#10;                                                &gt;${formatAPISource()}&lt;/a&#10;                                            &gt;`}"/>
+                                            to self-host Cap and configure the endpoint.</source>
+  <target>Použite <x id="0" equiv-text="${html `&lt;a&#10;                                                target=&quot;_blank&quot;&#10;                                                rel=&quot;noopener noreferrer&quot;&#10;                                                href=${keyURL}&#10;                                                &gt;${formatAPISource()}&lt;/a&#10;                                            &gt;`}"/> na vlastné hosťovanie Cap a konfiguráciu koncového bodu.</target>
   <note from="lit-localize">Supplementary help text with link to Cap documentation.</note>
 </trans-unit>
 <trans-unit id="s71fed01f96762c78">
@@ -12570,494 +12347,1314 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
 </trans-unit>
 <trans-unit id="settings.base-url.label">
   <source>Base URL</source>
+  <target>Základná URL</target>
 </trans-unit>
 <trans-unit id="settings.base-url.description">
   <source>Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company. Do not include any path component (for example, /authentik).</source>
+  <target>Nastavte základnú URL, na ktorej je táto inštancia authentik dostupná, napr. https://authentik.company. Nezadávajte žiadnu cestu (napríklad /authentik).</target>
 </trans-unit>
 <trans-unit id="sb83f872f267d8506">
   <source>Sync Group Hierarchy</source>
+  <target>Synchronizovať hierarchiu skupín</target>
 </trans-unit>
 <trans-unit id="s9589dc36c516341a">
   <source>Sync group hierarchy from LDAP directories.</source>
+  <target>Synchronizujte hierarchiu skupín z adresárov LDAP.</target>
 </trans-unit>
 <trans-unit id="s9e8574c0abf42187">
   <source>Additional Parent Group</source>
+  <target>Ďalšia nadradená skupina</target>
 </trans-unit>
 <trans-unit id="banner.dismiss.aria-label">
   <source>Dismiss banner</source>
+  <target>Zavrieť oznámenie</target>
 </trans-unit>
 <trans-unit id="settings.base-url.banner.action">
   <source>Configure it in the system settings</source>
+  <target>Nastaviť v systémových nastaveniach</target>
 </trans-unit>
 <trans-unit id="settings.base-url.banner.label">
   <source>The base URL has not been configured.</source>
+  <target>Základná URL nie je nastavená.</target>
 </trans-unit>
 <trans-unit id="sf993bb199fefbe04">
   <source>All</source>
+  <target>Všetko</target>
 </trans-unit>
 <trans-unit id="sfa1b95e8d5f908ef">
   <source>Search for an offboarding by username...</source>
+  <target>Vyhľadajte vyradenie podľa používateľského mena...</target>
 </trans-unit>
 <trans-unit id="s666e836aa05114ac">
   <source>User Offboardings</source>
+  <target>Vyradenia používateľov</target>
 </trans-unit>
 <trans-unit id="s56d1d0a4e7bf5ae5">
   <source>Scheduled deactivation or deletion of users, and their outcomes.</source>
+  <target>Plánovaná deaktivácia alebo odstránenie používateľov a ich výsledky.</target>
 </trans-unit>
 <trans-unit id="s4677a21818ee3277">
   <source>Only show pending offboardings</source>
+  <target>Zobraziť iba čakajúce vyradenia</target>
 </trans-unit>
 <trans-unit id="s39689ea96631ed97">
   <source>Scheduled for</source>
+  <target>Naplánované na</target>
 </trans-unit>
 <trans-unit id="scae52d94b155a605">
   <source>Scheduled by</source>
+  <target>Naplánoval</target>
 </trans-unit>
 <trans-unit id="s116de51b09153006">
   <source>Offboarding(s)</source>
+  <target>Vyradenie(-ia)</target>
 </trans-unit>
 <trans-unit id="see8b386a20d5d43a">
   <source>canceled</source>
+  <target>zrušené</target>
 </trans-unit>
 <trans-unit id="sdaf25bddf0323e13">
   <source>Cancel Offboardings</source>
+  <target>Zrušiť vyradenia</target>
 </trans-unit>
 <trans-unit id="s3dfc819b4986e252">
   <source>Cancel Offboarding</source>
+  <target>Zrušiť vyradenie</target>
 </trans-unit>
 <trans-unit id="s78636b92c1a3909c">
   <source>Pending</source>
+  <target>Čakajúce</target>
 </trans-unit>
 <trans-unit id="s39ad5f4fbea4fb3f">
   <source>Offboardings</source>
+  <target>Vyradenia</target>
 </trans-unit>
 <trans-unit id="sfcfc3964931c0d94">
   <source>Hide managed</source>
+  <target>Skryť spravované</target>
 </trans-unit>
 <trans-unit id="s3ac26c004d6ba636">
   <source>Managed</source>
+  <target>Spravované</target>
 </trans-unit>
 <trans-unit id="common.boolean.yes">
   <source>Yes</source>
+  <target>Áno</target>
 </trans-unit>
 <trans-unit id="common.boolean.no">
   <source>No</source>
+  <target>Nie</target>
 </trans-unit>
 <trans-unit id="offboarding.cancel.success">
   <source>Successfully cancelled offboarding.</source>
+  <target>Vyradenie bolo úspešne zrušené.</target>
 </trans-unit>
 <trans-unit id="offboarding.cancel.error">
   <source>Failed to cancel offboarding</source>
+  <target>Zrušenie vyradenia zlyhalo</target>
 </trans-unit>
 <trans-unit id="offboarding.cancel.confirm.label">
   <source>Cancel offboarding</source>
+  <target>Zrušiť vyradenie</target>
 </trans-unit>
 <trans-unit id="offboarding.cancel.header">
   <source>Cancel scheduled offboarding</source>
+  <target>Zrušiť naplánované vyradenie</target>
 </trans-unit>
 <trans-unit id="offboarding.cancel.description">
   <source>The following scheduled offboarding will be cancelled:</source>
+  <target>Nasledujúce naplánované vyradenie bude zrušené:</target>
 </trans-unit>
 <trans-unit id="offboarding.cancel.tooltip">
   <source>Offboarding scheduled for <x id="0" equiv-text="${offboarding.scheduledAt.toLocaleString()}"/></source>
+  <target>Vyradenie naplánované na <x id="0" equiv-text="${offboarding.scheduledAt.toLocaleString()}"/></target>
 </trans-unit>
 <trans-unit id="offboarding.cancel.trigger.label">
   <source>Cancel Offboarding</source>
+  <target>Zrušiť vyradenie</target>
 </trans-unit>
 <trans-unit id="offboarding.schedule.submit.label">
   <source>Schedule</source>
+  <target>Naplánovať</target>
 </trans-unit>
 <trans-unit id="offboarding.schedule.header">
   <source>Schedule Offboarding</source>
+  <target>Naplánovať vyradenie</target>
 </trans-unit>
 <trans-unit id="offboarding.schedule.trigger.label">
   <source>Schedule Offboarding</source>
+  <target>Naplánovať vyradenie</target>
 </trans-unit>
 <trans-unit id="offboarding.form.verbose-name">
   <source>User Offboarding</source>
+  <target>Vyradenie používateľa</target>
 </trans-unit>
 <trans-unit id="offboarding.form.verbose-name-plural">
   <source>User Offboardings</source>
+  <target>Vyradenia používateľov</target>
 </trans-unit>
 <trans-unit id="offboarding.schedule.success">
   <source>Successfully scheduled offboarding.</source>
+  <target>Vyradenie bolo úspešne naplánované.</target>
 </trans-unit>
 <trans-unit id="offboarding.field.action.label">
   <source>Action</source>
+  <target>Akcia</target>
 </trans-unit>
 <trans-unit id="offboarding.action.deactivate.label">
   <source>Deactivate</source>
+  <target>Deaktivovať</target>
 </trans-unit>
 <trans-unit id="offboarding.action.deactivate.description">
   <source>Lock the user out of authentik without removing their account.</source>
+  <target>Zablokujte používateľovi prístup do authentik bez odstránenia jeho účtu.</target>
 </trans-unit>
 <trans-unit id="offboarding.action.delete.label">
   <source>Delete</source>
+  <target>Odstrániť</target>
 </trans-unit>
 <trans-unit id="offboarding.action.delete.description">
-  <source>Permanently delete the user&apos;s account.</source>
+  <source>Permanently delete the user's account.</source>
+  <target>Natrvalo odstráňte účet používateľa.</target>
 </trans-unit>
 <trans-unit id="offboarding.field.scheduled-for.label">
   <source>Scheduled for</source>
+  <target>Naplánované na</target>
 </trans-unit>
 <trans-unit id="offboarding.field.scheduled-for.description">
   <source>The offboarding runs on the next scheduled check after this time (within a few minutes).</source>
+  <target>Vyradenie sa vykoná pri najbližšej plánovanej kontrole po tomto čase (v priebehu niekoľkých minút).</target>
 </trans-unit>
 <trans-unit id="offboarding.field.revoke-sessions.label">
   <source>Revoke sessions</source>
+  <target>Odvolať relácie</target>
 </trans-unit>
 <trans-unit id="offboarding.field.revoke-sessions.description">
-  <source>Revoke all of the user&apos;s sessions when offboarding.</source>
+  <source>Revoke all of the user's sessions when offboarding.</source>
+  <target>Pri vyradení odvolajte všetky relácie používateľa.</target>
 </trans-unit>
 <trans-unit id="offboarding.field.revoke-tokens.label">
   <source>Revoke tokens</source>
+  <target>Odvolať tokeny</target>
 </trans-unit>
 <trans-unit id="offboarding.field.revoke-tokens.description">
-  <source>Revoke all of the user&apos;s tokens when offboarding.</source>
+  <source>Revoke all of the user's tokens when offboarding.</source>
+  <target>Pri vyradení odvolajte všetky tokeny používateľa.</target>
 </trans-unit>
 <trans-unit id="sbe3eca5340d724c3">
   <source>User was offboarded</source>
+  <target>Používateľ bol vyradený</target>
 </trans-unit>
 <trans-unit id="s7a677507399dca59">
   <source>Request rules</source>
+  <target>Pravidlá žiadostí</target>
 </trans-unit>
 <trans-unit id="s2072c9a69b14fee2">
   <source>Configure rules which grant users the ability to request access to this app.</source>
+  <target>Nastavte pravidlá, ktoré používateľom umožnia požiadať o prístup k tejto aplikácii.</target>
 </trans-unit>
 <trans-unit id="s1fc34f990dd8e442">
   <source>Request flow</source>
+  <target>Tok žiadosti</target>
 </trans-unit>
 <trans-unit id="s3926945b8747fe55">
   <source>Select a request flow...</source>
+  <target>Vyberte tok žiadosti...</target>
 </trans-unit>
 <trans-unit id="sf0e0d71b74a9e77f">
   <source>Default flow used by users requesting access.</source>
+  <target>Predvolený tok používaný pri žiadostiach o prístup.</target>
 </trans-unit>
 <trans-unit id="sa6e1274964f6a4b4">
   <source>Fulfill request</source>
+  <target>Vybaviť žiadosť</target>
 </trans-unit>
 <trans-unit id="sb3d4f79d9d8b71e5">
   <source>Submit</source>
+  <target>Odoslať</target>
 </trans-unit>
 <trans-unit id="sd348917df892e7a5">
   <source>Requester</source>
+  <target>Žiadateľ</target>
 </trans-unit>
 <trans-unit id="s7e09dc48031bb282">
   <source>Fulfiller</source>
+  <target>Vybavil</target>
 </trans-unit>
 <trans-unit id="sfecdd5e13f68c9ba">
   <source>Approved</source>
+  <target>Schválené</target>
 </trans-unit>
 <trans-unit id="s93390561e1afc0b6">
   <source>Denied</source>
+  <target>Zamietnuté</target>
 </trans-unit>
 <trans-unit id="sac8256732f2ee1e5">
   <source>Data</source>
+  <target>Údaje</target>
 </trans-unit>
 <trans-unit id="sfa9d8c928d994bf5">
   <source>Revoked</source>
+  <target>Odvolané</target>
 </trans-unit>
 <trans-unit id="s5105f7e2595f69cf">
   <source>Access Requests</source>
+  <target>Žiadosti o prístup</target>
 </trans-unit>
 <trans-unit id="scbf29ce484222325">
-  <source/>
+  <source></source>
+  <target></target>
 </trans-unit>
 <trans-unit id="sf7eeef8b4d6e602d">
   <source>Apps</source>
+  <target>Aplikácie</target>
 </trans-unit>
 <trans-unit id="s2fe7939fcead9e47">
   <source>Requester Data</source>
+  <target>Údaje žiadateľa</target>
 </trans-unit>
 <trans-unit id="s116f756708f81fc1">
   <source>Targets</source>
+  <target>Ciele</target>
 </trans-unit>
 <trans-unit id="sd85e6d7c4f752f89">
   <source>Fulfill</source>
+  <target>Vybaviť</target>
 </trans-unit>
 <trans-unit id="s570f91a499d87fa4">
   <source>Successfully revoked grant</source>
+  <target>Udelený prístup bol úspešne odvolaný</target>
 </trans-unit>
 <trans-unit id="sb64a788e51aa5737">
   <source>Failed to revoke grant</source>
+  <target>Odvolanie udeleného prístupu zlyhalo</target>
 </trans-unit>
 <trans-unit id="s0e871352ba4b17d3">
   <source>Revoke</source>
+  <target>Odvolať</target>
 </trans-unit>
 <trans-unit id="s6e05f32519eb6551">
   <source>Revoke grant</source>
+  <target>Odvolať udelený prístup</target>
 </trans-unit>
 <trans-unit id="s312cccc7c299a685">
   <source>Are you sure you want to revoke this grant? Access will be removed immediately.</source>
+  <target>Naozaj chcete odvolať tento udelený prístup? Prístup bude okamžite odobratý.</target>
 </trans-unit>
 <trans-unit id="sf4cfca0c6dcd5cc8">
   <source>Entitlement(s)</source>
+  <target>Aplikačné oprávnenie(-ia)</target>
 </trans-unit>
 <trans-unit id="s98b0bb374889b323">
   <source>Request rule binding(s)</source>
+  <target>Väzba(-by) pravidiel žiadostí</target>
 </trans-unit>
 <trans-unit id="sd700d2a7e8fe68e7">
   <source>Bind existing rule</source>
+  <target>Previazať existujúce pravidlo</target>
 </trans-unit>
 <trans-unit id="s84d52a11b0a6dbd2">
   <source>These bindings control which users/groups can request access to this object.</source>
+  <target>Tieto väzby určujú, ktorí používatelia alebo skupiny môžu požiadať o prístup k tomuto objektu.</target>
 </trans-unit>
 <trans-unit id="s3c7ee40c88248316">
   <source>No request rules bound.</source>
+  <target>Nie sú previazané žiadne pravidlá žiadostí.</target>
 </trans-unit>
 <trans-unit id="sb9c80985c2d1542c">
   <source>No request rules are currently bound to this object.</source>
+  <target>K tomuto objektu momentálne nie sú previazané žiadne pravidlá žiadostí.</target>
 </trans-unit>
 <trans-unit id="s8709be0a895e659b">
   <source>Request rule actions</source>
+  <target>Akcie pravidla žiadosti</target>
 </trans-unit>
 <trans-unit id="s377403d8bfe91b11">
   <source>Request Rule Binding</source>
+  <target>Väzba pravidla žiadosti</target>
 </trans-unit>
 <trans-unit id="s233deb4e19198786">
   <source>Request Rule Bindings</source>
+  <target>Väzby pravidiel žiadostí</target>
 </trans-unit>
 <trans-unit id="sc3564115b1095d47">
   <source>Pending expiry</source>
+  <target>Platnosť čakajúcej žiadosti</target>
 </trans-unit>
 <trans-unit id="s6aed0f4539da522a">
   <source>How long a request against this binding stays pending before it automatically lapses if not approved or denied.</source>
+  <target>Ako dlho žiadosť vytvorená na základe tejto väzby čaká na vybavenie, kým automaticky zanikne, ak nie je schválená ani zamietnutá.</target>
 </trans-unit>
 <trans-unit id="sc44b28e93e47e9a5">
   <source>Maximum granted expiry</source>
+  <target>Maximálna platnosť udeleného prístupu</target>
 </trans-unit>
 <trans-unit id="s2d0e00ac0ae213d9">
   <source>The maximum duration a grant approved against this binding can last. Requesters may ask for less, but never more.</source>
+  <target>Maximálna doba platnosti prístupu udeleného na základe tejto väzby. Žiadatelia môžu požiadať o kratšiu dobu, nikdy však o dlhšiu.</target>
 </trans-unit>
 <trans-unit id="sf896f79b1a8d4630">
   <source>Additional entitlements</source>
+  <target>Ďalšie aplikačné oprávnenia</target>
 </trans-unit>
 <trans-unit id="s79f726678209b6a4">
   <source>Available entitlements</source>
+  <target>Dostupné aplikačné oprávnenia</target>
 </trans-unit>
 <trans-unit id="s79bcc347f11b5328">
   <source>Granted entitlements</source>
+  <target>Udelené aplikačné oprávnenia</target>
 </trans-unit>
 <trans-unit id="s6c360d11fb96de23">
   <source>Application entitlements granted alongside access to this object when a request is approved.</source>
+  <target>Aplikačné oprávnenia udelené spolu s prístupom k tomuto objektu po schválení žiadosti.</target>
 </trans-unit>
 <trans-unit id="sc1d364a9eb95428f">
   <source>Everyone who can approve</source>
+  <target>Všetci, ktorí môžu schvaľovať</target>
 </trans-unit>
 <trans-unit id="s1d7c1b9c4e4df721">
   <source>Only individually-selected reviewers</source>
+  <target>Iba jednotlivo vybraní posudzovatelia</target>
 </trans-unit>
 <trans-unit id="se75f92adbb736d2e">
   <source>A random subset (of size “minimum reviewers”) of everyone who can approve</source>
+  <target>Náhodná podmnožina (veľkosti „minimálny počet posudzovateľov“) všetkých, ktorí môžu schvaľovať</target>
 </trans-unit>
 <trans-unit id="sa8b63f3fcf8c7990">
   <source>Request Rule</source>
+  <target>Pravidlo žiadosti</target>
 </trans-unit>
 <trans-unit id="s3a275c6dabb31cb9">
   <source>Request Rules</source>
+  <target>Pravidlá žiadostí</target>
 </trans-unit>
 <trans-unit id="s847bbdf12f129557">
   <source>Type a name for this request rule...</source>
+  <target>Zadajte názov tohto pravidla žiadosti...</target>
 </trans-unit>
 <trans-unit id="s7adc3ba259e3407b">
   <source>Number of reviewers that must approve the request before it is granted.</source>
+  <target>Počet posudzovateľov, ktorí musia schváliť žiadosť, aby bol udelený prístup.</target>
 </trans-unit>
 <trans-unit id="s9129035195f5d21c">
   <source>Notify</source>
+  <target>Upozorniť</target>
 </trans-unit>
 <trans-unit id="saedaac3c39d38950">
   <source>Who to notify when a request is created against this rule.</source>
+  <target>Koho upozorniť pri vytvorení žiadosti podľa tohto pravidla.</target>
 </trans-unit>
 <trans-unit id="sa12ce38de4a60975">
   <source>Optional flow to use when a user requests access to a target bound to this rule.</source>
+  <target>Voliteľný tok použitý, keď používateľ žiada o prístup k cieľu previazanému s týmto pravidlom.</target>
 </trans-unit>
 <trans-unit id="sec1b7428fb52aa12">
   <source>Select which transports should be used to notify reviewers. If none are selected, the notification will only be shown in the authentik UI.</source>
+  <target>Vyberte, ktoré transporty sa majú použiť na upozornenie posudzovateľov. Ak nie je vybraný žiadny, upozornenie sa zobrazí iba v rozhraní authentik.</target>
 </trans-unit>
 <trans-unit id="seeff588bc60db034">
   <source>Search for a request rule by name...</source>
+  <target>Vyhľadajte pravidlo žiadosti podľa názvu...</target>
 </trans-unit>
 <trans-unit id="s26f4259720f742fa">
   <source>Define who can approve access requests for the objects these rules are bound to.</source>
+  <target>Určite, kto môže schvaľovať žiadosti o prístup k objektom, ku ktorým sú tieto pravidlá previazané.</target>
 </trans-unit>
 <trans-unit id="s5b612c6c619807b0">
   <source>Bound to</source>
+  <target>Previazané s</target>
 </trans-unit>
 <trans-unit id="s0a6c5f79e64745b8">
   <source>Request rule(s)</source>
+  <target>Pravidlo(-á) žiadostí</target>
 </trans-unit>
 <trans-unit id="s569fd8461083ddc0">
   <source><x id="0" equiv-text="${item.targets.length}"/> object(s)</source>
+  <target>Počet objektov: <x id="0" equiv-text="${item.targets.length}"/></target>
 </trans-unit>
 <trans-unit id="s2479a752090884e8">
   <source>These bindings control which users/groups can approve requests.</source>
+  <target>Tieto väzby určujú, ktorí používatelia alebo skupiny môžu schvaľovať žiadosti.</target>
 </trans-unit>
 <trans-unit id="s3ab67886838d8ce6">
   <source>Access request created</source>
+  <target>Žiadosť o prístup bola vytvorená</target>
 </trans-unit>
 <trans-unit id="s623bd29021bd66ed">
   <source>Access request approved</source>
+  <target>Žiadosť o prístup bola schválená</target>
 </trans-unit>
 <trans-unit id="sb369884c94dd6c09">
   <source>Access request denied</source>
+  <target>Žiadosť o prístup bola zamietnutá</target>
 </trans-unit>
 <trans-unit id="sec37b60630a51c4c">
   <source>Access request revoked</source>
+  <target>Žiadosť o prístup bola odvolaná</target>
 </trans-unit>
 <trans-unit id="se1d45bc0235e1e95">
   <source>Show all schedules</source>
+  <target>Zobraziť všetky plány</target>
 </trans-unit>
 <trans-unit id="s70019e824a0ddf65">
   <source>Show all tasks</source>
+  <target>Zobraziť všetky úlohy</target>
 </trans-unit>
 <trans-unit id="s31bf1464d6e1e996">
   <source>Standalone</source>
+  <target>Samostatné</target>
 </trans-unit>
 <trans-unit id="s10e05123a5ebc6d9">
   <source>Include successful tasks</source>
+  <target>Zahrnúť úspešné úlohy</target>
 </trans-unit>
 <trans-unit id="s2d6a5f1d98d0738e">
   <source>Discover</source>
-</trans-unit>
-<trans-unit id="s6b3ade1f5b1361a6">
-  <source>Requests to review: </source>
+  <target>Objaviť</target>
 </trans-unit>
 <trans-unit id="sfccc1509c1ccb5af">
   <source>Access requests</source>
+  <target>Žiadosti o prístup</target>
 </trans-unit>
 <trans-unit id="s99fa943a22c13e67">
   <source>Browse</source>
+  <target>Prehliadať</target>
 </trans-unit>
 <trans-unit id="s7ad2216da77cf1c7">
   <source>My Requests</source>
+  <target>Moje žiadosti</target>
 </trans-unit>
 <trans-unit id="sc54fa983c3064e46">
   <source>For My Review</source>
+  <target>Na moje posúdenie</target>
 </trans-unit>
 <trans-unit id="sc9caf0426eadbec7">
   <source>Nothing available to request.</source>
+  <target>Nie je k dispozícii nič, o čo by sa dalo žiadať.</target>
 </trans-unit>
 <trans-unit id="sa18bee42f167d8a5">
-  <source>There&apos;s currently nothing you&apos;re eligible to request access to.</source>
+  <source>There's currently nothing you're eligible to request access to.</source>
+  <target>Momentálne nemáte možnosť požiadať o prístup k žiadnemu objektu.</target>
 </trans-unit>
 <trans-unit id="se7e7bc73ad0cf1a9">
   <source>Requestable applications</source>
+  <target>Aplikácie, ku ktorým možno požiadať o prístup</target>
 </trans-unit>
 <trans-unit id="sd3489b7df892f8a3">
   <source>Requested</source>
+  <target>Požiadané</target>
 </trans-unit>
 <trans-unit id="s1c0f85facbc5e032">
   <source>Successfully cancelled request</source>
+  <target>Žiadosť bola úspešne zrušená</target>
 </trans-unit>
 <trans-unit id="sace831616cf735f4">
   <source>Failed to cancel request</source>
+  <target>Zrušenie žiadosti zlyhalo</target>
 </trans-unit>
 <trans-unit id="sdc8e4cc65cb74f16">
   <source>Cancel request</source>
+  <target>Zrušiť žiadosť</target>
 </trans-unit>
 <trans-unit id="s69882ac7b03b16d4">
   <source>Are you sure you want to cancel this pending request?</source>
+  <target>Naozaj chcete zrušiť túto čakajúcu žiadosť?</target>
 </trans-unit>
 <trans-unit id="sccd6f7d0d94e8b9c">
   <source>No requests yet.</source>
+  <target>Zatiaľ žiadne žiadosti.</target>
 </trans-unit>
 <trans-unit id="s87e7dd8fdbee7446">
-  <source>Requests you&apos;ve made for access will show up here.</source>
+  <source>Requests you've made for access will show up here.</source>
+  <target>Tu sa zobrazia vaše žiadosti o prístup.</target>
 </trans-unit>
 <trans-unit id="s8a9b9b19ed901231">
   <source>Nothing to review.</source>
+  <target>Nič na posúdenie.</target>
 </trans-unit>
 <trans-unit id="sa4c37312c86d7ceb">
   <source>Requests waiting on your approval will show up here.</source>
+  <target>Tu sa zobrazia žiadosti čakajúce na vaše schválenie.</target>
 </trans-unit>
 <trans-unit id="requests.browse.entitlement-modal.search-placeholder">
   <source>Search for an entitlement...</source>
+  <target>Vyhľadajte aplikačné oprávnenie...</target>
 </trans-unit>
 <trans-unit id="requests.browse.entitlement-modal.empty-state">
   <source>No entitlements found for this application.</source>
+  <target>Pre túto aplikáciu sa nenašli žiadne aplikačné oprávnenia.</target>
 </trans-unit>
 <trans-unit id="requests.browse.entitlement-modal.header">
   <source>Select entitlement</source>
+  <target>Vybrať aplikačné oprávnenie</target>
 </trans-unit>
 <trans-unit id="requests.browse.entitlement-modal.column.entitlement">
   <source>Entitlement</source>
+  <target>Aplikačné oprávnenie</target>
 </trans-unit>
 <trans-unit id="s02af005e476ed332">
   <source>Requestor notes</source>
+  <target>Poznámky žiadateľa</target>
 </trans-unit>
 <trans-unit id="h91e3f27bdaf2308c">
   <source>When enabled, fulfilling the request requires at least that many reviewers
                         from <x id="0" equiv-text="&lt;em&gt;"/>each<x id="1" equiv-text="&lt;/em&gt;"/> of the reviewer groups bound to this rule. When disabled,
                         the value is a total across all reviewer groups.</source>
+  <target>Ak je povolené, vybavenie žiadosti vyžaduje aspoň tento počet posudzovateľov z <x id="0" equiv-text="&lt;em&gt;"/>každej<x id="1" equiv-text="&lt;/em&gt;"/> skupiny posudzovateľov previazanej s týmto pravidlom. Ak je zakázané, hodnota predstavuje celkový počet vo všetkých skupinách posudzovateľov.</target>
 </trans-unit>
 <trans-unit id="s2359768b2b1758f1">
   <source>Unknown Grant type</source>
+  <target>Neznámy typ grantu</target>
 </trans-unit>
 <trans-unit id="s22c7fdd77bf0e826">
   <source>Dynamic Client Registration</source>
+  <target>Dynamická registrácia klientov</target>
 </trans-unit>
 <trans-unit id="s3ceb0c74bfc02e24">
   <source>Successfully updated Dynamic Client Registration.</source>
+  <target>Dynamická registrácia klientov bola úspešne aktualizovaná.</target>
 </trans-unit>
 <trans-unit id="sb0f2f6351f4feb26">
   <source>Successfully enabled Dynamic Client Registration.</source>
+  <target>Dynamická registrácia klientov bola úspešne povolená.</target>
 </trans-unit>
 <trans-unit id="s293ab004e5f8471b">
   <source>Default application group</source>
+  <target>Predvolená skupina aplikácií</target>
 </trans-unit>
 <trans-unit id="sb9447a484a8e36db">
   <source>Group assigned to automatically created applications.</source>
+  <target>Skupina priradená automaticky vytvoreným aplikáciám.</target>
 </trans-unit>
 <trans-unit id="sb3932671e3f5c1f8">
   <source>Override authorization flow</source>
+  <target>Prepísať autorizačný tok</target>
 </trans-unit>
 <trans-unit id="sd00e1714556429bc">
   <source>Authorization flow applied to dynamically registered clients. When not selected, authorization flow of the parent provider is used.</source>
+  <target>Autorizačný tok použitý pre dynamicky registrovaných klientov. Ak nie je vybraný, použije sa autorizačný tok nadradeného poskytovateľa.</target>
 </trans-unit>
 <trans-unit id="s37a7c8fd3eb8c9dd">
   <source>Override invalidation flow</source>
+  <target>Prepísať tok zneplatnenia</target>
 </trans-unit>
 <trans-unit id="s6ceeb9457b7428bb">
   <source>Invalidation flow applied to dynamically registered clients. When not selected, authorization flow of the parent provider is used.</source>
+  <target>Tok zneplatnenia použitý pre dynamicky registrovaných klientov. Ak nie je vybraný, použije sa autorizačný tok nadradeného poskytovateľa.</target>
 </trans-unit>
 <trans-unit id="sa4ad8a8c594e1355">
   <source>Override property mappings</source>
-</trans-unit>
-<trans-unit id="s476bf94eb185f36c">
-  <source>Scope mappings applied to dynamically registered clients. When not selected, authorization flow of the parent provider is used.</source>
+  <target>Prepísať mapovania vlastností</target>
 </trans-unit>
 <trans-unit id="s9c21e17fba762b70">
   <source>Access token validity</source>
+  <target>Platnosť prístupového tokenu</target>
 </trans-unit>
 <trans-unit id="sfac8408c13382097">
   <source>Maximum access token validity for registered clients.</source>
+  <target>Maximálna platnosť prístupového tokenu pre registrovaných klientov.</target>
 </trans-unit>
 <trans-unit id="sec80d3ef86fdb459">
   <source>Refresh token validity</source>
+  <target>Platnosť obnovovacieho tokenu</target>
 </trans-unit>
 <trans-unit id="scf699415de52233e">
   <source>Maximum refresh token validity for registered clients.</source>
+  <target>Maximálna platnosť obnovovacieho tokenu pre registrovaných klientov.</target>
 </trans-unit>
 <trans-unit id="sdf7ebf88f98e5728">
   <source>Allowed grant types</source>
+  <target>Povolené typy grantov</target>
 </trans-unit>
 <trans-unit id="s35ec166b7499880b">
   <source>If none are selected, all grant types are allowed.</source>
+  <target>Ak nie je vybraný žiadny typ grantu, sú povolené všetky typy grantov.</target>
 </trans-unit>
 <trans-unit id="s752c7742ccf74988">
   <source>Dynamic Client Registration is not enabled.</source>
+  <target>Dynamická registrácia klientov nie je povolená.</target>
 </trans-unit>
 <trans-unit id="s8057d48d01ca8a97">
   <source>Allow OAuth2/OIDC clients to register themselves against this provider (RFC 7591).</source>
+  <target>Umožnite klientom OAuth2/OIDC registrovať sa u tohto poskytovateľa (RFC 7591).</target>
 </trans-unit>
 <trans-unit id="s617985af530d2fb3">
   <source>Enable Dynamic Client Registration</source>
+  <target>Povoliť dynamickú registráciu klientov</target>
 </trans-unit>
 <trans-unit id="s8f47c8a79b1a4062">
   <source>Dynamic application policies</source>
+  <target>Politiky dynamických aplikácií</target>
 </trans-unit>
 <trans-unit id="safbe8177d10f3a25">
-  <source>Bindings configured here will be copied to dynamically registered applications. If no bindings are created, bindings of this providers&apos; application are copied.</source>
+  <source>Bindings configured here will be copied to dynamically registered applications. If no bindings are created, bindings of this providers' application are copied.</source>
+  <target>Tu nastavené väzby sa skopírujú do dynamicky registrovaných aplikácií. Ak nie sú vytvorené žiadne väzby, skopírujú sa väzby aplikácie tohto poskytovateľa.</target>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.mirror.label">
+  <source>Mirror</source>
+  <target>Zrkadliť</target>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.mirror.description">
+  <source>The agent has exactly the parent user's access, evaluated live.</source>
+  <target>Agent má presne taký prístup ako nadradený používateľ, vyhodnocovaný priebežne.</target>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.copy.label">
+  <source>Copy</source>
+  <target>Kopírovať</target>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.copy.description">
+  <source>Copy the parent's policy bindings onto the agent.</source>
+  <target>Skopírujte väzby politík nadradeného používateľa na agenta.</target>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.none.label">
+  <source>None</source>
+  <target>Žiadne</target>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.none.description">
+  <source>The agent uses only its own policy bindings.</source>
+  <target>Agent používa iba vlastné väzby politík.</target>
+</trans-unit>
+<trans-unit id="s95416925fd51a346">
+  <source>Agent</source>
+  <target>Agent</target>
+</trans-unit>
+<trans-unit id="sefc8e08d71b8530f">
+  <source>Agents</source>
+  <target>Agenti</target>
+</trans-unit>
+<trans-unit id="agent.form.close.label">
+  <source>Close</source>
+  <target>Zavrieť</target>
+</trans-unit>
+<trans-unit id="s3687e4f7ae814ce1">
+  <source>Successfully created agent.</source>
+  <target>Agent bol úspešne vytvorený.</target>
+</trans-unit>
+<trans-unit id="s725865ad04deb9d4">
+  <source>Parent user</source>
+  <target>Nadradený používateľ</target>
+</trans-unit>
+<trans-unit id="sb4e8961d5ee9a6df">
+  <source>The user this agent acts on behalf of.</source>
+  <target>Používateľ, v mene ktorého tento agent koná.</target>
+</trans-unit>
+<trans-unit id="s41a70d75feb46cd2">
+  <source>Optional display name. Defaults to the parent user's name.</source>
+  <target>Voliteľné zobrazované meno. Predvolene sa použije meno nadradeného používateľa.</target>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.label">
+  <source>Policy behavior</source>
+  <target>Správanie politík</target>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.help">
+  <source>How the agent's access relates to its parent user.</source>
+  <target>Ako súvisí prístup agenta s jeho nadradeným používateľom.</target>
+</trans-unit>
+<trans-unit id="se105d24a03216c66">
+  <source>Whether this agent should be automatically removed once it expires.</source>
+  <target>Určuje, či sa má tento agent po vypršaní platnosti automaticky odstrániť.</target>
+</trans-unit>
+<trans-unit id="agent.token.description">
+  <source>Use the token below to authenticate as this agent. It is shown only once — store it now.</source>
+  <target>Použite nižšie uvedený token na autentifikáciu ako tento agent. Zobrazí sa iba raz — uložte si ho teraz.</target>
+</trans-unit>
+<trans-unit id="agent.token.label">
+  <source>Token</source>
+  <target>Token</target>
+</trans-unit>
+<trans-unit id="s2854025f8d4405b6">
+  <source>Search for a agent...</source>
+  <target>Vyhľadajte agenta...</target>
+</trans-unit>
+<trans-unit id="s4a29404019d64d40">
+  <source>Admin-provisioned delegate identities that access can be requested and granted for, separately from their parent user.</source>
+  <target>Delegované identity vytvorené správcom, pre ktoré je možné požiadať o prístup a udeliť ho oddelene od ich nadradeného používateľa.</target>
+</trans-unit>
+<trans-unit id="s4eb514ebcb80553d">
+  <source>Parent</source>
+  <target>Nadradený</target>
+</trans-unit>
+<trans-unit id="s9e5233ef650728d6">
+  <source>Agent(s)</source>
+  <target>Agent(i)</target>
+</trans-unit>
+<trans-unit id="hcdfe21735336b5ca">
+  <source> A valid OCI manifest URL, prefixed with the
+                                                  protocol e.g. <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path/to/manifest<x id="1" equiv-text="&lt;/code&gt;"/></source>
+  <target>Platná URL manifestu OCI s predponou protokolu, napr. <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path/to/manifest<x id="1" equiv-text="&lt;/code&gt;"/></target>
+</trans-unit>
+<trans-unit id="brand.map-tiles.label">
+  <source>Map tiles</source>
+  <target>Mapové dlaždice</target>
+</trans-unit>
+<trans-unit id="brand.map-tiles.description">
+  <source>Vector tile source for the events map. Accepts a pmtiles:// archive URL or an XYZ template such as /tiles/{z}/{x}/{y}.mvt. Leave empty to use the bundled basemap, which needs no tile server. This URL is served to unauthenticated clients along with the rest of the brand, so avoid tile providers that carry an API key in the URL.</source>
+  <target>Zdroj vektorových dlaždíc pre mapu udalostí. Prijíma URL archívu pmtiles:// alebo šablónu XYZ, napríklad /tiles/{z}/{x}/{y}.mvt. Ak ponecháte prázdne, použije sa priložená základná mapa, ktorá nepotrebuje dlaždicový server. Táto URL sa spolu so zvyškom značky poskytuje neprihláseným klientom, preto sa vyhnite poskytovateľom dlaždíc, ktorí v URL uvádzajú kľúč API.</target>
+</trans-unit>
+<trans-unit id="brand.form.flow-user-switch.label">
+  <source>User switch flow</source>
+  <target>Tok prepínania používateľov</target>
+</trans-unit>
+<trans-unit id="brand.form.flow-user-switch.placeholder">
+  <source>Select a user switch flow...</source>
+  <target>Vyberte tok prepínania používateľov...</target>
+</trans-unit>
+<trans-unit id="brand.form.flow-user-switch.description">
+  <source>Authentication flow used when switching between users signed in on the same browser. If left empty, user switching is disabled.</source>
+  <target>Autentifikačný tok používaný pri prepínaní medzi používateľmi prihlásenými v tom istom prehliadači. Ak ostane prázdny, prepínanie používateľov je zakázané.</target>
+</trans-unit>
+<trans-unit id="crypto.certificate-search.missing-private-key.description">
+  <source>This certificate is not a valid option here: it has no private key.</source>
+  <target>Tento certifikát tu nie je platnou voľbou: nemá súkromný kľúč.</target>
+</trans-unit>
+<trans-unit id="crypto.certificate-search.unsupported-key-type.description">
+  <source>This certificate is not a valid option here: unsupported key type.</source>
+  <target>Tento certifikát tu nie je platnou voľbou: nepodporovaný typ kľúča.</target>
+</trans-unit>
+<trans-unit id="sc056b79cc62ca6d4">
+  <source>Required for local device authentication.</source>
+  <target>Vyžaduje sa pre lokálnu autentifikáciu zariadenia.</target>
+</trans-unit>
+<trans-unit id="s15f79185ef55ef2c">
+  <source>Local authentication</source>
+  <target>Lokálna autentifikácia</target>
+</trans-unit>
+<trans-unit id="sd158a5fc0f062f18">
+  <source>Available</source>
+  <target>Dostupné</target>
+</trans-unit>
+<trans-unit id="sf132578fe25f08b6">
+  <source>Device compliance</source>
+  <target>Súlad zariadenia</target>
+</trans-unit>
+<trans-unit id="sbd3c86956da322e8">
+  <source>Successfully created device.</source>
+  <target>Zariadenie bolo úspešne vytvorené.</target>
+</trans-unit>
+<trans-unit id="s5165aba292574c6a">
+  <source>Hostname/IP to connect to. Optionally specify the port. Devices which are enrolled through a connector report this themselves.</source>
+  <target>Názov hostiteľa alebo IP adresa, ku ktorej sa pripojiť. Voliteľne zadajte port. Zariadenia registrované cez konektor tieto údaje hlásia samy.</target>
+</trans-unit>
+<trans-unit id="sbfa75b6f146142d8">
+  <source>Primary user</source>
+  <target>Primárny používateľ</target>
+</trans-unit>
+<trans-unit id="s777c12b4aa251689">
+  <source>Local IP</source>
+  <target>Lokálna IP</target>
+</trans-unit>
+<trans-unit id="enterprise.licensing.users.added-within.30-days.label">
+  <source>30 days</source>
+  <target>30 dní</target>
+</trans-unit>
+<trans-unit id="enterprise.licensing.users.added-within.90-days.label">
+  <source>90 days</source>
+  <target>90 dní</target>
+</trans-unit>
+<trans-unit id="enterprise.licensing.users.added-within.365-days.label">
+  <source>365 days</source>
+  <target>365 dní</target>
+</trans-unit>
+<trans-unit id="enterprise.licensing.users.added-within-last.title">
+  <source>Added within last</source>
+  <target>Pridaní za posledných</target>
+</trans-unit>
+<trans-unit id="enterprise.licensing.internal-users.label">
+  <source>Internal users</source>
+  <target>Interní používatelia</target>
+</trans-unit>
+<trans-unit id="enterprise.licensing.internal-users.total-active.label">
+  <source>Total active internal users</source>
+  <target>Celkový počet aktívnych interných používateľov</target>
+</trans-unit>
+<trans-unit id="enterprise.licensing.external-users.label">
+  <source>External users</source>
+  <target>Externí používatelia</target>
+</trans-unit>
+<trans-unit id="enterprise.licensing.external-users.total-active.label">
+  <source>Total active external users</source>
+  <target>Celkový počet aktívnych externých používateľov</target>
+</trans-unit>
+<trans-unit id="enterprise.licensing.install-id.copy-button.label">
+  <source>Copy Install ID</source>
+  <target>Kopírovať ID inštalácie</target>
+</trans-unit>
+<trans-unit id="enterprise.licensing.install-id.label">
+  <source>Install ID</source>
+  <target>ID inštalácie</target>
+</trans-unit>
+<trans-unit id="h36fac547ff79f28c">
+  <source>To create a data export, navigate to
+                            <x id="0" equiv-text="&lt;a href=&quot;${toAdminInterface(&quot;identity/users&quot;)}&quot;&gt;"/>Directory &gt; Users<x id="1" equiv-text="&lt;/a&gt;"/> or
+                            to <x id="2" equiv-text="&lt;a href=&quot;${toAdminInterface(&quot;events/log&quot;)}&quot;&gt;"/>Events &gt; Logs<x id="3" equiv-text="&lt;/a&gt;"/>.</source>
+  <target>Ak chcete vytvoriť export údajov, prejdite do časti <x id="0" equiv-text="&lt;a href=&quot;${toAdminInterface(&quot;identity/users&quot;)}&quot;&gt;"/>Adresár &gt; Používatelia<x id="1" equiv-text="&lt;/a&gt;"/> alebo do časti <x id="2" equiv-text="&lt;a href=&quot;${toAdminInterface(&quot;events/log&quot;)}&quot;&gt;"/>Udalosti &gt; Logy<x id="3" equiv-text="&lt;/a&gt;"/>.</target>
+</trans-unit>
+<trans-unit id="events.map.kind.login.label">
+  <source>Login</source>
+  <target>Prihlásenie</target>
+</trans-unit>
+<trans-unit id="events.map.kind.login-failed.label">
+  <source>Failed login</source>
+  <target>Neúspešné prihlásenie</target>
+</trans-unit>
+<trans-unit id="events.map.kind.logout.label">
+  <source>Logout</source>
+  <target>Odhlásenie</target>
+</trans-unit>
+<trans-unit id="events.map.kind.authorize-application.label">
+  <source>Authorize Application</source>
+  <target>Autorizácia aplikácie</target>
+</trans-unit>
+<trans-unit id="events.map.kind.other.label">
+  <source>Other</source>
+  <target>Iné</target>
+</trans-unit>
+<trans-unit id="s46eb6cf13a8022e9">
+  <source>Select File</source>
+  <target>Vybrať súbor</target>
+</trans-unit>
+<trans-unit id="s0d1ed094b601e76d">
+  <source>Type an optional file name without an extension...</source>
+  <target>Zadajte voliteľný názov súboru bez prípony...</target>
+</trans-unit>
+<trans-unit id="s384efdec2b99d471">
+  <source>Custom Name</source>
+  <target>Vlastný názov</target>
+</trans-unit>
+<trans-unit id="sd749d80c570a0d0e">
+  <source>Leave empty to keep the original filename.</source>
+  <target>Ak ponecháte prázdne, zachová sa pôvodný názov súboru.</target>
+</trans-unit>
+<trans-unit id="s6c3d02133d321ac4">
+  <source>End of the flow</source>
+  <target>Koniec toku</target>
+</trans-unit>
+<trans-unit id="sdfea8f885f8806d9">
+  <source>Pre-flow policies</source>
+  <target>Politiky pred tokom</target>
+</trans-unit>
+<trans-unit id="sf0f541e1ea73d4c8">
+  <source>&lt;strong&gt;<x id="0" equiv-text="${verboseName}"/>&lt;/strong&gt;</source>
+  <target>&lt;strong&gt;<x id="0" equiv-text="${verboseName}"/>&lt;/strong&gt;</target>
+</trans-unit>
+<trans-unit id="s2f47ae5526f68b0c">
+  <source>Flow authentication requirement</source>
+  <target>Požiadavka na autentifikáciu toku</target>
+</trans-unit>
+<trans-unit id="s518b3c50e3e3d981">
+  <source>Policy passed</source>
+  <target>Politika vyhovela</target>
+</trans-unit>
+<trans-unit id="se5545f49172651fe">
+  <source>Policy denied</source>
+  <target>Politika zamietla</target>
+</trans-unit>
+<trans-unit id="s4997ad214a64187e">
+  <source>Requirement met</source>
+  <target>Požiadavka splnená</target>
+</trans-unit>
+<trans-unit id="s624a3fe29b50b0b2">
+  <source>Binding: <x id="0" equiv-text="${order}"/></source>
+  <target>Väzba: <x id="0" equiv-text="${order}"/></target>
+</trans-unit>
+<trans-unit id="s0ef37c2c3c5770e4">
+  <source>Adding</source>
+  <target>Pridáva sa</target>
+</trans-unit>
+<trans-unit id="sdcded316146a0b76">
+  <source>Object Attributes are in preview.</source>
+  <target>Atribúty objektov sú v skúšobnej verzii.</target>
+</trans-unit>
+<trans-unit id="sf1d3d13eaff0f517">
+  <source>Enable automatic discovery of remote resources.</source>
+  <target>Povoľte automatické zisťovanie vzdialených zdrojov.</target>
+</trans-unit>
+<trans-unit id="common.actions.suspend.label">
+  <source>Suspend</source>
+  <target>Pozastaviť</target>
+</trans-unit>
+<trans-unit id="providers.user-deletion.suspend.description">
+  <source>User is suspended, and connection to user in authentik is removed.</source>
+  <target>Účet používateľa sa pozastaví a prepojenie s používateľom v authentik sa odstráni.</target>
+</trans-unit>
+<trans-unit id="s9d1116ec684cc9dc">
+  <source>Scope mappings applied to dynamically registered clients. When not selected, scope mappings of the parent provider are used.</source>
+  <target>Mapovania rozsahov použité pre dynamicky registrovaných klientov. Ak nie sú vybrané, použijú sa mapovania rozsahov nadradeného poskytovateľa.</target>
+</trans-unit>
+<trans-unit id="s7f9ff4596805832a">
+  <source>Key used to sign tokens. If no signing key is selected, tokens are signed with HS256 using this provider's client secret.</source>
+  <target>Kľúč používaný na podpisovanie tokenov. Ak nie je vybraný žiadny podpisový kľúč, tokeny sa podpisujú pomocou HS256 s použitím tajomstva klienta tohto poskytovateľa.</target>
+</trans-unit>
+<trans-unit id="s752d5cd8886fc545">
+  <source>Selected providers can authenticate to this provider with their JWTs, request its tokens via token exchange, and introspect or revoke them.</source>
+  <target>Vybraní poskytovatelia sa môžu voči tomuto poskytovateľovi autentifikovať pomocou svojich JWT, požadovať jeho tokeny cez výmenu tokenov a overovať ich alebo odvolávať.</target>
+</trans-unit>
+<trans-unit id="s5a64cc153009e9fb">
+  <source>Dynamic Client Registration URL</source>
+  <target>URL dynamickej registrácie klientov</target>
+</trans-unit>
+<trans-unit id="scb836fa821092872">
+  <source>Successfully deleted Dynamic Client Registration configuration</source>
+  <target>Konfigurácia dynamickej registrácie klientov bola úspešne odstránená</target>
+</trans-unit>
+<trans-unit id="sf21f2ef85ea4c84b">
+  <source>Failed to delete Dynamic Client Registration configuration</source>
+  <target>Odstránenie konfigurácie dynamickej registrácie klientov zlyhalo</target>
+</trans-unit>
+<trans-unit id="s36865a6d374ff739">
+  <source>Delete Dynamic Client Registration configuration</source>
+  <target>Odstrániť konfiguráciu dynamickej registrácie klientov</target>
+</trans-unit>
+<trans-unit id="s2242f5c6b4625d84">
+  <source>Are you sure you want to delete the Dynamic Client Registration configuration for this provider? No new clients will be able to register themselves, existing clients will not be removed.</source>
+  <target>Naozaj chcete odstrániť konfiguráciu dynamickej registrácie klientov pre tohto poskytovateľa? Noví klienti sa už nebudú môcť sami registrovať, existujúci klienti nebudú odstránení.</target>
+</trans-unit>
+<trans-unit id="s4a2af3d62c9f3674">
+  <source>When enabled, connection authorizations will be deleted when a client disconnects. This will force clients with flaky internet connections to re-authorize the device.</source>
+  <target>Ak je povolené, autorizácie pripojenia sa odstránia pri odpojení klienta. Klienti s nestabilným internetovým pripojením tak budú musieť zariadenie znova autorizovať.</target>
+</trans-unit>
+<trans-unit id="s814244c6095b7cfa">
+  <source>Only devices in this access group can be accessed through this provider. Leave empty to allow every device the user has access to.</source>
+  <target>Cez tohto poskytovateľa je možné pristupovať iba k zariadeniam v tejto skupine prístupu. Ak ponecháte prázdne, povolia sa všetky zariadenia, ku ktorým má používateľ prístup.</target>
+</trans-unit>
+<trans-unit id="sde377b3ff4aba070">
+  <source>Maximum concurrent allowed connections to a single device. Can be set to -1 to disable the limit.</source>
+  <target>Maximálny počet súbežných povolených pripojení k jednému zariadeniu. Hodnotou -1 sa limit vypne.</target>
+</trans-unit>
+<trans-unit id="s1ea1d3a777930fd3">
+  <source>List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.</source>
+  <target>Zoznam rozsahov CIDR oddelených čiarkami, z ktorých sa klienti môžu pripájať. Užší rozsah CIDR má pri vyhodnocovaní prednosť pred širším. Pripojenia klientov z neuvedených rozsahov CIDR budú odmietnuté.</target>
+</trans-unit>
+<trans-unit id="s480085c16f6574fd">
+  <source>Username to authenticate with.</source>
+  <target>Používateľské meno na autentifikáciu.</target>
+</trans-unit>
+<trans-unit id="sdc5dbccf72670824">
+  <source>Password to authenticate with.</source>
+  <target>Heslo na autentifikáciu.</target>
+</trans-unit>
+<trans-unit id="sed2d45e3f811c81d">
+  <source>Basic</source>
+  <target>Basic</target>
+</trans-unit>
+<trans-unit id="sde5560a5466240ce">
+  <source>Authenticate SCIM requests using HTTP Basic authentication.</source>
+  <target>Autentifikujte požiadavky SCIM pomocou autentifikácie HTTP Basic.</target>
+</trans-unit>
+<trans-unit id="scc6c6c028bc1968a">
+  <source>GitLab</source>
+  <target>GitLab</target>
+</trans-unit>
+<trans-unit id="sa9f8a401cf399e4b">
+  <source>Altered behavior for usage with GitLab.</source>
+  <target>Upravené správanie na použitie so službou GitLab.</target>
+</trans-unit>
+<trans-unit id="s583559b56228966c">
+  <source>Define who can approve access requests for the objects this rule is bound to.</source>
+  <target>Určite, kto môže schvaľovať žiadosti o prístup k objektom, ku ktorým je toto pravidlo previazané.</target>
+</trans-unit>
+<trans-unit id="s15ee5b29a732e82a">
+  <source>New Request Rule</source>
+  <target>Nové pravidlo žiadosti</target>
+</trans-unit>
+<trans-unit id="s90eefcc5ed423895">
+  <source>Create a new request rule to bind to this object.</source>
+  <target>Vytvorte nové pravidlo žiadosti a previažte ho s týmto objektom.</target>
+</trans-unit>
+<trans-unit id="s622e11fa5a62c709">
+  <source>Existing Request Rule</source>
+  <target>Existujúce pravidlo žiadosti</target>
+</trans-unit>
+<trans-unit id="scf0457b46d32a983">
+  <source>Bind an existing request rule to this object.</source>
+  <target>Previažte existujúce pravidlo žiadosti s týmto objektom.</target>
+</trans-unit>
+<trans-unit id="ldap-source.service-bind-method.label">
+  <source>Service bind method</source>
+  <target>Metóda servisného bindu</target>
+</trans-unit>
+<trans-unit id="ldap-source.service-bind-method.simple.label">
+  <source>Simple or anonymous bind</source>
+  <target>Jednoduchý alebo anonymný bind</target>
+</trans-unit>
+<trans-unit id="ldap-source.service-bind-method.sasl-external.label">
+  <source>SASL EXTERNAL</source>
+  <target>SASL EXTERNAL</target>
+</trans-unit>
+<trans-unit id="ldap-source.service-bind-method.description">
+  <source>Simple bind uses the Bind CN and password, or binds anonymously when both are empty. SASL EXTERNAL uses the TLS client certificate for synchronization and writeback.</source>
+  <target>Jednoduchý bind používa Bind CN a heslo. Ak sú obe polia prázdne, použije sa anonymný bind. SASL EXTERNAL používa na synchronizáciu a spätný zápis klientsky certifikát TLS.</target>
+</trans-unit>
+<trans-unit id="ldap-source.client-certificate.description">
+  <source>Client certificate keypair presented to the LDAP server. Required when the service bind method is SASL EXTERNAL.</source>
+  <target>Pár kľúčov klientskeho certifikátu predkladaný serveru LDAP. Vyžaduje sa, ak je metódou servisného bindu SASL EXTERNAL.</target>
+</trans-unit>
+<trans-unit id="stage.name.label">
+  <source>Stage Name</source>
+  <target>Názov fázy</target>
+</trans-unit>
+<trans-unit id="stage.name.placeholder">
+  <source>Type a name for this stage...</source>
+  <target>Zadajte názov tejto fázy...</target>
+</trans-unit>
+<trans-unit id="hc50d8e6b4c9f79f1">
+  <source>Show arbitrary input fields to the user, for example during enrollment.
+                        Data is saved in the flow context under the
+                        <x id="0" equiv-text="&lt;code class=&quot;ak-m-code-emphasis&quot;&gt;"/>prompt_data<x id="1" equiv-text="&lt;/code&gt;"/> variable.</source>
+  <target>Zobrazte používateľovi ľubovoľné vstupné polia, napríklad počas registrácie. Údaje sa uložia v kontexte toku do premennej <x id="0" equiv-text="&lt;code class=&quot;ak-m-code-emphasis&quot;&gt;"/>prompt_data<x id="1" equiv-text="&lt;/code&gt;"/>.</target>
+</trans-unit>
+<trans-unit id="stages.source.resume-on-match-failures.label">
+  <source>Resume on matching failures</source>
+  <target>Pokračovať pri zlyhaní párovania</target>
+</trans-unit>
+<trans-unit id="stages.source.resume-on-match-failures.description">
+  <source>Resume this flow for the selected source matching failures. No source connection is created.</source>
+  <target>Pri vybraných typoch zlyhania párovania so zdrojom pokračujte v tomto toku. Nevytvorí sa žiadne prepojenie so zdrojom.</target>
+</trans-unit>
+<trans-unit id="stages.source.match-failure.missing-property.label">
+  <source>Missing property</source>
+  <target>Chýbajúca vlastnosť</target>
+</trans-unit>
+<trans-unit id="s19d7851880801278">
+  <source>Use the username and password below to authenticate.</source>
+  <target>Na autentifikáciu použite nižšie uvedené používateľské meno a heslo.</target>
+</trans-unit>
+<trans-unit id="s4a71427ffe9a1b4a">
+  <source>You can retrieve the password from the user's Credentials/Tokens tab or from Directory &gt; Tokens and App Passwords.</source>
+  <target>Heslo môžete získať na karte Poverenia/Tokeny používateľa alebo v časti Adresár &gt; Tokeny a heslá aplikácií.</target>
+</trans-unit>
+<trans-unit id="user.activation.confirm.deactivate">
+  <source>Are you sure you want to deactivate <x id="0" equiv-text="&lt;code&gt;${displayName}&lt;/code&gt;"/>?</source>
+  <target>Naozaj chcete deaktivovať <x id="0" equiv-text="&lt;code&gt;${displayName}&lt;/code&gt;"/>?</target>
+</trans-unit>
+<trans-unit id="user.activation.confirm.activate">
+  <source>Are you sure you want to activate <x id="0" equiv-text="&lt;code&gt;${displayName}&lt;/code&gt;"/>?</source>
+  <target>Naozaj chcete aktivovať <x id="0" equiv-text="&lt;code&gt;${displayName}&lt;/code&gt;"/>?</target>
+</trans-unit>
+<trans-unit id="agent.column.name">
+  <source>Name</source>
+  <target>Názov</target>
+</trans-unit>
+<trans-unit id="agent.column.expires">
+  <source>Expires</source>
+  <target>Expiruje</target>
+</trans-unit>
+<trans-unit id="agent.column.actions">
+  <source>Actions</source>
+  <target>Akcie</target>
+</trans-unit>
+<trans-unit id="agent.delete.object-label">
+  <source>Agent(s)</source>
+  <target>Agent(i)</target>
+</trans-unit>
+<trans-unit id="agent.delete.trigger">
+  <source>Delete</source>
+  <target>Odstrániť</target>
+</trans-unit>
+<trans-unit id="agent.expires.never">
+  <source>-</source>
+  <target>-</target>
+</trans-unit>
+<trans-unit id="agent.delete.object-label-single">
+  <source>Agent</source>
+  <target>Agent</target>
+</trans-unit>
+<trans-unit id="agent.delete.tooltip">
+  <source>Delete</source>
+  <target>Odstrániť</target>
+</trans-unit>
+<trans-unit id="users.delete.self-warning.description">
+  <source>Warning: You are about to delete user <x id="0" equiv-text="${user.username}"/>, but you are currently logged in as this user. Proceed at your own risk.</source>
+  <target>Upozornenie: Chystáte sa odstrániť používateľa <x id="0" equiv-text="${user.username}"/>, ale momentálne ste prihlásení ako tento používateľ. Pokračujte na vlastné riziko.</target>
+</trans-unit>
+<trans-unit id="sdcfef055f5b959f5">
+  <source>The returned assertion was not a PublicKeyCredential</source>
+  <target>Vrátené tvrdenie nebolo PublicKeyCredential</target>
+</trans-unit>
+<trans-unit id="file-picker.upload-link.label">
+  <source>Upload file</source>
+  <target>Nahrať súbor</target>
+</trans-unit>
+<trans-unit id="file-picker.value.placeholder">
+  <source>Select a file or enter a value...</source>
+  <target>Vyberte súbor alebo zadajte hodnotu...</target>
+</trans-unit>
+<trans-unit id="file-picker.value.description">
+  <source>Choose an existing file, or enter a URL or Font Awesome icon.</source>
+  <target>Vyberte existujúci súbor alebo zadajte URL alebo ikonu Font Awesome.</target>
+</trans-unit>
+<trans-unit id="file-picker.documentation-link.label">
+  <source>Supported values</source>
+  <target>Podporované hodnoty</target>
+</trans-unit>
+<trans-unit id="s98d9f46353f3fd25">
+  <source>Copy value</source>
+  <target>Kopírovať hodnotu</target>
+</trans-unit>
+<trans-unit id="user-switcher.avatar.alt">
+  <source>User avatar</source>
+  <target>Avatar používateľa</target>
+</trans-unit>
+<trans-unit id="user-switcher.actions.current-user.label">
+  <source>Current user "<x id="0" equiv-text="${label}"/>"</source>
+  <target>Aktuálny používateľ „<x id="0" equiv-text="${label}"/>“</target>
+</trans-unit>
+<trans-unit id="user-switcher.actions.switch-to-user.label">
+  <source>Switch to user "<x id="0" equiv-text="${label}"/>"</source>
+  <target>Prepnúť na používateľa „<x id="0" equiv-text="${label}"/>“</target>
+</trans-unit>
+<trans-unit id="user-switcher.toggle.tooltip">
+  <source>Toggle user navigation menu</source>
+  <target>Prepnúť navigačnú ponuku používateľa</target>
+</trans-unit>
+<trans-unit id="user-switcher.open.tooltip">
+  <source>Open user navigation menu</source>
+  <target>Otvoriť navigačnú ponuku používateľa</target>
+</trans-unit>
+<trans-unit id="user-switcher.menu.label">
+  <source>User navigation menu</source>
+  <target>Navigačná ponuka používateľa</target>
+</trans-unit>
+<trans-unit id="user-switcher.actions.add-user.label">
+  <source>Add another user</source>
+  <target>Pridať ďalšieho používateľa</target>
+</trans-unit>
+<trans-unit id="user-switcher.actions.sign-out-current.label">
+  <source>Sign out current user</source>
+  <target>Odhlásiť aktuálneho používateľa</target>
+</trans-unit>
+<trans-unit id="sdc86ff734bf39f74">
+  <source>You've successfully requested access to:</source>
+  <target>Úspešne ste požiadali o prístup k:</target>
+</trans-unit>
+<trans-unit id="sd685c85b245c6e9f">
+  <source>Hide details</source>
+  <target>Skryť podrobnosti</target>
+</trans-unit>
+<trans-unit id="s851e009e07a9814d">
+  <source>Managed tokens cannot be edited.</source>
+  <target>Spravované tokeny nie je možné upravovať.</target>
+</trans-unit>
+<trans-unit id="pagination.first-page.aria-label">
+  <source>Go to first page</source>
+  <target>Prejsť na prvú stranu</target>
+</trans-unit>
+<trans-unit id="pagination.previous-page.aria-label">
+  <source>Go to previous page</source>
+  <target>Prejsť na predchádzajúcu stranu</target>
+</trans-unit>
+<trans-unit id="pagination.next-page.aria-label">
+  <source>Go to next page</source>
+  <target>Prejsť na ďalšiu stranu</target>
+</trans-unit>
+<trans-unit id="pagination.last-page.aria-label">
+  <source>Go to last page</source>
+  <target>Prejsť na poslednú stranu</target>
+</trans-unit>
+<trans-unit id="pagination.current-page.aria-label">
+  <source>Current page <x id="0" equiv-text="${this.pendingInput}"/></source>
+  <target>Aktuálna strana <x id="0" equiv-text="${this.pendingInput}"/></target>
+</trans-unit>
+<trans-unit id="pagination.page-select-of-pages">
+  <source>of <x id="0" equiv-text="${totalPages}"/></source>
+  <target>z <x id="0" equiv-text="${totalPages}"/></target>
+</trans-unit>
+<trans-unit id="pagination.total-count.summary">
+  <source><x id="0" equiv-text="&lt;b&gt;${start}"/> - <x id="1" equiv-text="${end}&lt;/b&gt;"/> of <x id="2" equiv-text="&lt;b&gt;${total}&lt;/b&gt;"/></source>
+  <target><x id="0" equiv-text="&lt;b&gt;${start}"/> - <x id="1" equiv-text="${end}&lt;/b&gt;"/> z <x id="2" equiv-text="&lt;b&gt;${total}&lt;/b&gt;"/></target>
+</trans-unit>
+<trans-unit id="pagination.nav.aria-label.labelled">
+  <source><x id="0" equiv-text="${this.label}"/> pagination</source>
+  <target>Stránkovanie: <x id="0" equiv-text="${this.label}"/></target>
+</trans-unit>
+<trans-unit id="pagination.nav.aria-label">
+  <source>Pagination</source>
+  <target>Stránkovanie</target>
+</trans-unit>
+<trans-unit id="router.view.error.heading">
+  <source>This page failed to load.</source>
+  <target>Túto stránku sa nepodarilo načítať.</target>
+</trans-unit>
+<trans-unit id="agent.verbose-name.label">
+  <source>Agent</source>
+  <target>Agent</target>
+</trans-unit>
+<trans-unit id="agent.verbose-name-plural.label">
+  <source>Agents</source>
+  <target>Agenti</target>
+</trans-unit>
+<trans-unit id="agent.create.label">
+  <source>Create</source>
+  <target>Vytvoriť</target>
+</trans-unit>
+<trans-unit id="agent.create.submit">
+  <source>Create</source>
+  <target>Vytvoriť</target>
+</trans-unit>
+<trans-unit id="agent.create.success">
+  <source>Successfully created agent.</source>
+  <target>Agent bol úspešne vytvorený.</target>
+</trans-unit>
+<trans-unit id="agent.label.label">
+  <source>Label</source>
+  <target>Označenie</target>
+</trans-unit>
+<trans-unit id="agent.label.description">
+  <source>Optional display name for this agent.</source>
+  <target>Voliteľné zobrazované meno tohto agenta.</target>
+</trans-unit>
+<trans-unit id="agent.mirror.description">
+  <source>This agent mirrors your access: it can act on exactly the applications you can, and never more.</source>
+  <target>Tento agent zrkadlí váš prístup: môže konať presne v tých aplikáciách, v ktorých môžete vy, a nikdy vo viacerých.</target>
+</trans-unit>
+<trans-unit id="agent.list.empty">
+  <source>No agents.</source>
+  <target>Žiadni agenti.</target>
+</trans-unit>
+<trans-unit id="agent.create.header">
+  <source>Create Agent</source>
+  <target>Vytvoriť agenta</target>
+</trans-unit>
+<trans-unit id="agent.create.trigger">
+  <source>Create Agent</source>
+  <target>Vytvoriť agenta</target>
+</trans-unit>
+<trans-unit id="agent.page.description">
+  <source>Create expiring agent identities and hand their token to a harness so it can act on your behalf via the API.</source>
+  <target>Vytvárajte agentské identity s obmedzenou platnosťou a odovzdajte ich token nástroju, aby mohol cez API konať vo vašom mene.</target>
+</trans-unit>
+<trans-unit id="s605002ecb0818b4d">
+  <source>Search for a device by name...</source>
+  <target>Vyhľadajte zariadenie podľa názvu...</target>
+</trans-unit>
+<trans-unit id="s2751f7d6fb0bc202">
+  <source>No devices found for this application.</source>
+  <target>Pre túto aplikáciu sa nenašli žiadne zariadenia.</target>
+</trans-unit>
+<trans-unit id="s9b1721f3a1a69134">
+  <source>Launch Device</source>
+  <target>Spustiť zariadenie</target>
+</trans-unit>
+<trans-unit id="sc217c7aa0b313c03">
+  <source>Connect with</source>
+  <target>Pripojiť cez</target>
+</trans-unit>
+<trans-unit id="s6c707fc92868c4c9">
+  <source>You have access requests to review</source>
+  <target>Máte žiadosti o prístup na posúdenie</target>
+</trans-unit>
+<trans-unit id="file.name.validation.html">
+  <source>Valid file names can contain letters, numbers, dots, hyphens, underscores, slashes, and
+        placeholders such as <x id="0" equiv-text="${unsafeHTML(replacements)}"/>.</source>
+  <target>Platné názvy súborov môžu obsahovať písmená, čísla, bodky, spojovníky, podčiarkovníky, lomky a zástupné výrazy, napríklad <x id="0" equiv-text="${unsafeHTML(replacements)}"/>.</target>
+  <note from="lit-localize">Validation message for file name input. The placeholders are displayed as code elements.</note>
+</trans-unit>
+<trans-unit id="file.name.validation.plaintext">
+  <source>Valid file names can contain letters, numbers, dots, hyphens, underscores, slashes, and
+        placeholders such as <x id="0" equiv-text="${replacements}"/>.</source>
+  <target>Platné názvy súborov môžu obsahovať písmená, čísla, bodky, spojovníky, podčiarkovníky, lomky a zástupné výrazy, napríklad <x id="0" equiv-text="${replacements}"/>.</target>
+  <note from="lit-localize">Validation message for file name input. The placeholders are displayed as plain text.</note>
 </trans-unit>
 </body>
 </file>
