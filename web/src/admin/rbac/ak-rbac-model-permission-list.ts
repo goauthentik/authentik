@@ -5,7 +5,12 @@ import { AKElement } from "#elements/Base";
 
 import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { map } from "lit/directives/map.js";
+
+export interface PermissionDisplay {
+    name: string;
+    kind: string | null;
+    active: boolean;
+}
 
 const Style = css`
     ul {
@@ -31,18 +36,17 @@ const Style = css`
     }
 `;
 
-@customElement("ak-model-permissions-card")
+@customElement("ak-rbac-model-permission-list")
 export class ModelPermissionsCard extends AKElement {
     static readonly styles = [PFCard, Style];
 
     @property({ type: Array })
-    items: { name: string; kind: string | null }[] = [];
+    items: PermissionDisplay[] = [];
 
     render() {
         return html`<ul part="permissions">
-            ${map(
-                this.items,
-                ({ name, kind }) =>
+            ${this.items.map(
+                ({ name, kind }: PermissionDisplay) =>
                     html`<li>
                         ${
                             kind
