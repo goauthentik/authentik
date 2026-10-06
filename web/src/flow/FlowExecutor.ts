@@ -34,6 +34,7 @@ import {
 import { StageMapping } from "#flow/FlowExecutorStageFactory";
 import { flowMessages } from "#flow/messages";
 import { BaseStage } from "#flow/stages/base";
+import { CAPTCHA_SLOT } from "#flow/stages/captcha/shared";
 import type { FlowChallengeResponseRequestBody, StageHost, SubmitOptions } from "#flow/types";
 import { submitAutosubmitChallenge } from "#flow/utils/autosubmit";
 
@@ -48,7 +49,7 @@ import {
 } from "@goauthentik/api";
 
 import { spread } from "@open-wc/lit-helpers";
-import { match, P } from "ts-pattern";
+import { match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
@@ -238,13 +239,15 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         });
     }
 
+    protected synchronizeTitle(): void {
+        this.setTitle(this.challenge?.flowInfo?.title);
+    }
+
     // DOM post-processing has to happen after the render.
     protected override updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
 
-        document.title = match(this.challenge?.flowInfo?.title)
-            .with(P.nullish, () => this.brandingTitle)
-            .otherwise((title) => `${title} - ${this.brandingTitle}`);
+        this.synchronizeTitle();
 
         if (changedProperties.has("challenge") && this.challenge?.flowInfo) {
             this.layout = this.challenge?.flowInfo?.layout || FlowExecutor.DefaultLayout;
@@ -361,7 +364,11 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 .exhaustive(),
         );
 
-        return staticHTML`<${unsafeStatic(tag)} ${props}></${unsafeStatic(tag)}>`;
+        // Forwarded so a stage can project light-DOM content of ours into its own shadow
+        // root. A stage whose shadow root has no matching slot simply renders nothing here.
+        return staticHTML`<${unsafeStatic(tag)} ${props}>
+            <slot name="${unsafeStatic(CAPTCHA_SLOT)}" slot="${unsafeStatic(CAPTCHA_SLOT)}"></slot>
+        </${unsafeStatic(tag)}>`;
     }
 
     protected renderChallengeError(error: unknown): SlottedTemplateResult {

@@ -2403,9 +2403,6 @@
 <trans-unit id="s56bc67239b9255a2">
   <source>Delete authorization on disconnect</source>
 </trans-unit>
-<trans-unit id="s3945449bd524d8a5">
-  <source>When enabled, connection authorizations will be deleted when a client disconnects. This will force clients with flaky internet connections to re-authorize the endpoint.</source>
-</trans-unit>
 <trans-unit id="s3271da6c18c25b18">
   <source>Connection settings.</source>
 </trans-unit>
@@ -2717,12 +2714,6 @@
 <trans-unit id="s526a525cdc79bbdc">
   <source>Endpoint</source>
 </trans-unit>
-<trans-unit id="s2f4ca2148183d692">
-  <source>Successfully updated endpoint.</source>
-</trans-unit>
-<trans-unit id="s5adee855dbe191d9">
-  <source>Successfully created endpoint.</source>
-</trans-unit>
 <trans-unit id="s61e136c0658e27d5">
   <source>Protocol</source>
 </trans-unit>
@@ -2738,14 +2729,8 @@
 <trans-unit id="s6b05f9d8801fc14f">
   <source>Host</source>
 </trans-unit>
-<trans-unit id="s48a0d160d9e0a7be">
-  <source>Hostname/IP to connect to. Optionally specify the port.</source>
-</trans-unit>
 <trans-unit id="sc39f6abf0daedb0f">
   <source>Maximum concurrent connections</source>
-</trans-unit>
-<trans-unit id="s62418cbcd2a25498">
-  <source>Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.</source>
 </trans-unit>
 <trans-unit id="scb6620fcd5bff04c">
   <source>Advanced settings</source>
@@ -3179,20 +3164,11 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sb7af25ce6e30d61a">
   <source>The currently selected policy engine mode is <x id="0" equiv-text="${policyEngineMode.label}"/>:</source>
 </trans-unit>
-<trans-unit id="s8276649077e8715c">
-  <source>Endpoint(s)</source>
-</trans-unit>
-<trans-unit id="s008496c7716b9812">
-  <source>These bindings control which users will have access to this endpoint. Users must also have access to the application.</source>
-</trans-unit>
 <trans-unit id="s5c18f85cda6e89be">
   <source>Connections</source>
 </trans-unit>
 <trans-unit id="s168565f5ac74a89f">
   <source>Update RAC Provider</source>
-</trans-unit>
-<trans-unit id="s8465a2caa2d9ea5d">
-  <source>Endpoints</source>
 </trans-unit>
 <trans-unit id="s09b671b120443043">
   <source>Update Radius Provider</source>
@@ -7070,23 +7046,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>License(s)</source>
   <target>授權許可證</target>
 </trans-unit>
-<trans-unit id="sf58825457d61c429">
-  <source>Forecast internal users</source>
-  <target>內部使用者預測</target>
-</trans-unit>
-<trans-unit id="sde9a3f41977ec1f8">
-  <source>Estimated user count one year from now based on <x id="0" equiv-text="${internalUsers}"/> current internal users and <x id="1" equiv-text="${forecastedInternalUsers}"/> forecasted internal users.</source>
-</trans-unit>
-<trans-unit id="s531571491deb239a">
-  <source>Approximately</source>
-</trans-unit>
-<trans-unit id="s4557b6b9da258643">
-  <source>Forecast external users</source>
-  <target>外部使用者預測</target>
-</trans-unit>
-<trans-unit id="sf52479d6daa0a4a8">
-  <source>Estimated user count one year from now based on <x id="0" equiv-text="${externalUsers}"/> current external users and <x id="1" equiv-text="${forecastedExternalUsers}"/> forecasted external users.</source>
-</trans-unit>
 <trans-unit id="sd22bd01bdf28c548">
   <source>Cumulative license expiry</source>
   <target>累計授權到期人數</target>
@@ -7232,7 +7191,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Close API drawer</source>
 </trans-unit>
 <trans-unit id="sfa991acd65f738bf">
-  <source>View details for <x id="0" equiv-text="${label}"/></source>
+  <source>View details for <x id="0" equiv-text="${displayName}"/></source>
 </trans-unit>
 <trans-unit id="s5bb4026da28b7914">
   <source>Mark as read</source>
@@ -9519,26 +9478,8 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s584808e53254531c">
   <source>Search for provider by name, type or assigned application...</source>
 </trans-unit>
-<trans-unit id="sd8d09a02b5e34dda">
-  <source>RAC Endpoint</source>
-</trans-unit>
-<trans-unit id="s4dc35b9b113cf62b">
-  <source>RAC Endpoints</source>
-</trans-unit>
-<trans-unit id="s0be5af2db3c680cf">
-  <source>Endpoint Name</source>
-</trans-unit>
-<trans-unit id="sdaad41bf21e8e5f3">
-  <source>Type a name for this endpoint...</source>
-</trans-unit>
 <trans-unit id="sa6793a484bd8399b">
   <source>e.g. myserver.example.com, 10.0.0.1:22</source>
-</trans-unit>
-<trans-unit id="s43f123e73d3882cb">
-  <source>Create an endpoint to get started.</source>
-</trans-unit>
-<trans-unit id="s0af49e3fd32c92a3">
-  <source>Search for an endpoint by name or host...</source>
 </trans-unit>
 <trans-unit id="s7fb4ba3dfb89c749">
   <source>Initial Permission Name</source>
@@ -9728,15 +9669,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s195ea6447a6b5486">
   <source>Cancel wizard</source>
-</trans-unit>
-<trans-unit id="s7ac4bf2be4d16ce4">
-  <source>Search for an endpoint by name...</source>
-</trans-unit>
-<trans-unit id="sacc17a59268b8cf3">
-  <source>No endpoints found for this application.</source>
-</trans-unit>
-<trans-unit id="sa769d10eac7fbdb7">
-  <source>Launch Endpoint</source>
 </trans-unit>
 <trans-unit id="wizard.ariaLabel.default">
   <source>Wizard</source>
@@ -10942,9 +10874,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s2d6a5f1d98d0738e">
   <source>Discover</source>
 </trans-unit>
-<trans-unit id="s6b3ade1f5b1361a6">
-  <source>Requests to review: </source>
-</trans-unit>
 <trans-unit id="sfccc1509c1ccb5af">
   <source>Access requests</source>
 </trans-unit>
@@ -11483,6 +11412,102 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="pagination.nav.aria-label">
   <source>Pagination</source>
+</trans-unit>
+<trans-unit id="users.delete.self-warning.description">
+  <source>Warning: You are about to delete user <x id="0" equiv-text="${user.username}"/>, but you are currently logged in as this user. Proceed at your own risk.</source>
+</trans-unit>
+<trans-unit id="s851e009e07a9814d">
+  <source>Managed tokens cannot be edited.</source>
+</trans-unit>
+<trans-unit id="common.actions.suspend.label">
+  <source>Suspend</source>
+</trans-unit>
+<trans-unit id="providers.user-deletion.suspend.description">
+  <source>User is suspended, and connection to user in authentik is removed.</source>
+</trans-unit>
+<trans-unit id="sbd3c86956da322e8">
+  <source>Successfully created device.</source>
+</trans-unit>
+<trans-unit id="s5165aba292574c6a">
+  <source>Hostname/IP to connect to. Optionally specify the port. Devices which are enrolled through a connector report this themselves.</source>
+</trans-unit>
+<trans-unit id="s777c12b4aa251689">
+  <source>Local IP</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.users.added-within.30-days.label">
+  <source>30 days</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.users.added-within.90-days.label">
+  <source>90 days</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.users.added-within.365-days.label">
+  <source>365 days</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.users.added-within-last.title">
+  <source>Added within last</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.internal-users.label">
+  <source>Internal users</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.internal-users.total-active.label">
+  <source>Total active internal users</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.external-users.label">
+  <source>External users</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.external-users.total-active.label">
+  <source>Total active external users</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.install-id.copy-button.label">
+  <source>Copy Install ID</source>
+</trans-unit>
+<trans-unit id="enterprise.licensing.install-id.label">
+  <source>Install ID</source>
+</trans-unit>
+<trans-unit id="s4a2af3d62c9f3674">
+  <source>When enabled, connection authorizations will be deleted when a client disconnects. This will force clients with flaky internet connections to re-authorize the device.</source>
+</trans-unit>
+<trans-unit id="s814244c6095b7cfa">
+  <source>Only devices in this access group can be accessed through this provider. Leave empty to allow every device the user has access to.</source>
+</trans-unit>
+<trans-unit id="sde377b3ff4aba070">
+  <source>Maximum concurrent allowed connections to a single device. Can be set to -1 to disable the limit.</source>
+</trans-unit>
+<trans-unit id="s605002ecb0818b4d">
+  <source>Search for a device by name...</source>
+</trans-unit>
+<trans-unit id="s2751f7d6fb0bc202">
+  <source>No devices found for this application.</source>
+</trans-unit>
+<trans-unit id="s9b1721f3a1a69134">
+  <source>Launch Device</source>
+</trans-unit>
+<trans-unit id="sc217c7aa0b313c03">
+  <source>Connect with</source>
+</trans-unit>
+<trans-unit id="s6c707fc92868c4c9">
+  <source>You have access requests to review</source>
+</trans-unit>
+<trans-unit id="sc056b79cc62ca6d4">
+  <source>Required for local device authentication.</source>
+</trans-unit>
+<trans-unit id="s15f79185ef55ef2c">
+  <source>Local authentication</source>
+</trans-unit>
+<trans-unit id="sd158a5fc0f062f18">
+  <source>Available</source>
+</trans-unit>
+<trans-unit id="sf132578fe25f08b6">
+  <source>Device compliance</source>
+</trans-unit>
+<trans-unit id="s752d5cd8886fc545">
+  <source>Selected providers can authenticate to this provider with their JWTs, request its tokens via token exchange, and introspect or revoke them.</source>
+</trans-unit>
+<trans-unit id="sdc86ff734bf39f74">
+  <source>You've successfully requested access to:</source>
+</trans-unit>
+<trans-unit id="sd685c85b245c6e9f">
+  <source>Hide details</source>
 </trans-unit>
 </body>
 </file>

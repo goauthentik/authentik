@@ -132,12 +132,75 @@ server {
 }
 ```
 
+## Example: Traefik
+
+This example uses Traefik's [Docker provider](https://doc.traefik.io/traefik/reference/install-configuration/providers/docker/) with Docker Compose labels. It assumes that Traefik already has a `websecure` entry point with TLS enabled and a valid certificate for your public hostname, and that Traefik and authentik share a Docker network.
+
+Add these labels to the `server` service in authentik's Compose file, and replace `sso.domain.tld` with your public hostname:
+
+```yaml
+services:
+    server:
+        labels:
+            traefik.enable: "true"
+            traefik.http.routers.authentik.rule: "Host(`sso.domain.tld`)"
+            traefik.http.routers.authentik.entrypoints: websecure
+            traefik.http.routers.authentik.service: authentik
+            traefik.http.services.authentik.loadbalancer.server.port: "9000"
+```
+
+Traefik terminates TLS for clients and forwards requests to authentik over HTTP on port `9000`. It sets the forwarded headers and passes WebSocket upgrades through without extra configuration.
+
+Traffic between Traefik and authentik on port `9000` is unencrypted, so only attach trusted containers to the shared network. If Traefik should be the only way to reach authentik, remove the `9000` and `9443` port mappings from the `server` service.
+
+If the authentik container is attached to more than one network, set the network Traefik should use with the `traefik.docker.network` label or the `providers.docker.network` option.
+
+authentik sees requests coming from Traefik's address on the shared network. Docker's default address pools are within `172.16.0.0/12` and `192.168.0.0/16`, which authentik trusts by default. If you use a custom address pool or have changed `AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`, make sure the list includes that network. See [Trusted proxy networks](#trusted-proxy-networks).
+
+If another proxy or load balancer sits in front of Traefik, add its address to the entry point's [forwarded headers trusted IPs](https://doc.traefik.io/traefik/reference/install-configuration/entrypoints/#forwarded-headers). Otherwise, Traefik replaces the forwarded headers that proxy sets.
+
+If Traefik also protects other applications with authentik forward auth, do not apply that middleware to authentik's router, either directly or through the entry point. Doing so causes a redirect loop.
+
+### Connect to authentik over HTTPS
+
+To encrypt the connection between Traefik and authentik, route to port `9443` instead. Traefik verifies the upstream certificate, so authentik's default self-signed certificate does not work. Assign a [Web Certificate](../sys-mgmt/certificates.mdx#web-certificates) that covers `sso.domain.tld` to the [brand](../customize/branding/index.mdx#web-certificate) for that domain.
+
+Change the port label to `"9443"` and add these labels:
+
+```yaml
+traefik.http.services.authentik.loadbalancer.server.scheme: https
+traefik.http.services.authentik.loadbalancer.serverstransport: authentik-tls@file
+```
+
+Traefik connects to the container IP address, so it needs a [ServersTransport](https://doc.traefik.io/traefik/reference/routing-configuration/http/load-balancing/serverstransport/) that tells it which hostname to verify. Define it in a [file provider](https://doc.traefik.io/traefik/reference/install-configuration/providers/others/file/) directory:
+
+```yaml title="traefik-dynamic.yml"
+http:
+    serversTransports:
+        authentik-tls:
+            serverName: sso.domain.tld
+```
+
+If Traefik does not have a file provider yet, start it with `--providers.file.directory=/etc/traefik/dynamic` and mount the directory that contains `traefik-dynamic.yml` at `/etc/traefik/dynamic`.
+
+If a private CA issued the Web Certificate, mount the CA certificate into the Traefik container and add it to `rootCAs`:
+
+```yaml title="traefik-dynamic.yml"
+http:
+    serversTransports:
+        authentik-tls:
+            serverName: sso.domain.tld
+            rootCAs:
+                - /etc/traefik/authentik-ca.pem
+```
+
 ## Troubleshooting
 
 - An endless loading indicator, a generic authentication error, or a browser error about blocked mixed content usually means that authentik is interpreting an HTTPS request as HTTP.
     1. Use the browser's developer tools to check whether the page is attempting to load an `http://` authentik URL from an `https://` page.
     2. Verify that the reverse proxy sets `X-Forwarded-Proto` to the original client scheme. For an HTTPS request, the proxy must send `X-Forwarded-Proto: https`, even if the proxy connects to authentik over HTTP on port `9000`.
     3. Verify that the address from which the proxy connects to authentik is included in `AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`. authentik ignores forwarded headers from untrusted addresses.
+- If Traefik returns `502 Bad Gateway`, check that Traefik can reach authentik on the shared network and that the port and scheme match: `9000` with HTTP or `9443` with HTTPS. On port `9443`, also check that the Web Certificate covers the `serverName` in the ServersTransport and that Traefik trusts the certificate issuer.
 - CSRF errors when saving objects are usually caused by incorrect `Host` or `Origin` handling. See [Troubleshooting CSRF Errors](../troubleshooting/csrf.mdx).
 - Incorrect client IP addresses usually mean the proxy IP is not covered by `AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`.
 - Broken outpost or proxy provider communication often means the WebSocket upgrade headers are missing or the proxy is not using HTTP/1.1 or newer.

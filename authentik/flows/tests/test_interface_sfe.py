@@ -79,6 +79,15 @@ class TestFlowInterfaceSimple(FlowTestCase):
             )
         )
 
+    def test_old_chrome(self):
+        """Unaffected browsers keep the default flow executor"""
+        self.assertTrue(
+            self.needs_sfe(
+                "Mozilla/5.0 (Linux; Android 11; sdk_gphone_x86_64) AppleWebKit/537.36 (KHTML, "
+                "like Gecko) Chrome/83.0.4103.106 Mobile Safari/537.36"
+            )
+        )
+
     def test_unknown_user_agent(self):
         """A user agent without a parseable version keeps the default flow executor"""
         self.assertFalse(self.needs_sfe(""))

@@ -165,6 +165,13 @@ export default /** @type {import("@docusaurus/types").Config} */ (
 
                 ...redirectPlugins,
             ],
+            scripts: [
+                {
+                    "src": "https://analytics.a7k.io/script.js",
+                    "defer": true,
+                    "data-website-id": "df428c2a-89e3-4abe-8e2b-0cb84353a312",
+                },
+            ],
 
             //#endregion
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-23 00:14+0000\n"
+"POT-Creation-Date: 2026-10-03 00:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,9 +17,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: authentik/admin/files/api.py
+#: authentik/admin/api/settings.py
 #, python-brace-format
-msgid "File size ({file.size}B) exceeds maximum allowed "
+msgid "Value for flag {flag_key} needs to be of type {type}."
 msgstr ""
 
 #: authentik/admin/files/validation.py
@@ -50,14 +50,82 @@ msgstr ""
 msgid "Paths cannot start with '.'"
 msgstr ""
 
-#: authentik/admin/files/validation.py
-#, python-brace-format
-msgid "File name too long (max {MAX_FILE_NAME_LENGTH} characters)"
+#: authentik/admin/models.py
+msgid "Configure how authentik should show avatars for users."
 msgstr ""
 
-#: authentik/admin/files/validation.py
-#, python-brace-format
-msgid "Path component too long (max {MAX_PATH_COMPONENT_LENGTH} characters)"
+#: authentik/admin/models.py
+msgid "Enter a valid URL, for example https://authentik.company"
+msgstr ""
+
+#: authentik/admin/models.py
+msgid ""
+"Configure the base URL under which this authentik instance is reachable, "
+"e.g. https://authentik.company"
+msgstr ""
+
+#: authentik/admin/models.py
+msgid "Enable the ability for users to change their name."
+msgstr ""
+
+#: authentik/admin/models.py
+msgid "Enable the ability for users to change their email address."
+msgstr ""
+
+#: authentik/admin/models.py
+msgid "Enable the ability for users to change their username."
+msgstr ""
+
+#: authentik/admin/models.py
+msgid ""
+"Events will be deleted after this duration.(Format: "
+"weeks=3;days=2;hours=3,seconds=2)."
+msgstr ""
+
+#: authentik/admin/models.py
+msgid "Reputation cannot decrease lower than this value. Zero or negative."
+msgstr ""
+
+#: authentik/admin/models.py
+msgid "Reputation cannot increase higher than this value. Zero or positive."
+msgstr ""
+
+#: authentik/admin/models.py
+msgid "The option configures the footer links on the flow executor pages."
+msgstr ""
+
+#: authentik/admin/models.py
+msgid ""
+"When enabled, all the events caused by a user will be deleted upon the "
+"user's deletion."
+msgstr ""
+
+#: authentik/admin/models.py
+msgid "Globally enable/disable impersonation."
+msgstr ""
+
+#: authentik/admin/models.py
+msgid "Require administrators to provide a reason for impersonating a user."
+msgstr ""
+
+#: authentik/admin/models.py
+msgid "Default token duration"
+msgstr ""
+
+#: authentik/admin/models.py
+msgid "Default token length"
+msgstr ""
+
+#: authentik/admin/models.py
+msgid "Default page size for API responses, if no size was requested."
+msgstr ""
+
+#: authentik/admin/models.py
+msgid "Maximum page size"
+msgstr ""
+
+#: authentik/admin/models.py
+msgid "System settings"
 msgstr ""
 
 #: authentik/admin/models.py
@@ -244,6 +312,12 @@ msgstr ""
 msgid "User does not have access to application."
 msgstr ""
 
+#: authentik/core/api/application_entitlements.py
+msgid ""
+"Entitlements assigned to this user, directly or through a group, regardless "
+"of the user's access to the application."
+msgstr ""
+
 #: authentik/core/api/applications.py
 #, python-brace-format
 msgid "The slug '{slug}' is reserved and cannot be used for applications."
@@ -301,14 +375,6 @@ msgstr ""
 
 #: authentik/core/api/users.py
 msgid "This field is required."
-msgstr ""
-
-#: authentik/core/api/users.py
-msgid "filter: failed to parse JSON"
-msgstr ""
-
-#: authentik/core/api/users.py
-msgid "filter: value must be key:value mapping"
 msgstr ""
 
 #: authentik/core/api/users.py
@@ -939,6 +1005,22 @@ msgid "Apple Nonces"
 msgstr ""
 
 #: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Authorization Code"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Authorization Codes"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Unlock Key"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Unlock Keys"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
 msgid "Apple Independent Secure Enclave"
 msgstr ""
 
@@ -1038,6 +1120,22 @@ msgstr ""
 
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to use this endpoint."
+msgstr ""
+
+#: authentik/enterprise/api.py
+msgid "Count steps must have a positive duration."
+msgstr ""
+
+#: authentik/enterprise/api.py
+msgid "Start and end must be specified together."
+msgstr ""
+
+#: authentik/enterprise/api.py
+msgid "Start must be earlier than end."
+msgstr ""
+
+#: authentik/enterprise/api.py
+msgid "Specify at least one count step or an absolute range."
 msgstr ""
 
 #: authentik/enterprise/audit/apps.py
@@ -1213,24 +1311,6 @@ msgstr ""
 
 #: authentik/enterprise/lifecycle/review/models.py
 msgid "Overdue"
-msgstr ""
-
-#: authentik/enterprise/lifecycle/review/models.py
-msgid "Go to {self._get_model_name()}"
-msgstr ""
-
-#: authentik/enterprise/lifecycle/review/models.py
-msgid ""
-"Access review is due for {self.content_type.name.lower()} {object_label}"
-msgstr ""
-
-#: authentik/enterprise/lifecycle/review/models.py
-msgid ""
-"Access review is overdue for {self.content_type.name} {str(self.object)}"
-msgstr ""
-
-#: authentik/enterprise/lifecycle/review/models.py
-msgid "Access review completed for {self.content_type.name} {str(self.object)}"
 msgstr ""
 
 #: authentik/enterprise/lifecycle/review/tasks.py
@@ -1573,16 +1653,15 @@ msgid "Data Exports"
 msgstr ""
 
 #: authentik/enterprise/reports/models.py
-#, python-brace-format
-msgid "{model_verbose_name} export generated successfully"
-msgstr ""
-
-#: authentik/enterprise/reports/models.py
 msgid "Download"
 msgstr ""
 
 #: authentik/enterprise/reports/tasks.py
 msgid "Generate data export."
+msgstr ""
+
+#: authentik/enterprise/requests/api/grant_requests.py
+msgid "Successfully requested access!"
 msgstr ""
 
 #: authentik/enterprise/requests/api/grant_requests.py
@@ -1595,6 +1674,10 @@ msgstr ""
 
 #: authentik/enterprise/requests/api/grant_requests.py
 msgid "Only agents with an expiry can request access."
+msgstr ""
+
+#: authentik/enterprise/requests/api/request_rules.py
+msgid "A request flow must either be set on this rule, or on the brand."
 msgstr ""
 
 #: authentik/enterprise/requests/models.py
@@ -2381,6 +2464,10 @@ msgid "Policy Binding Models"
 msgstr ""
 
 #: authentik/policies/models.py
+msgid "Execute the policy but ignore its result."
+msgstr ""
+
+#: authentik/policies/models.py
 msgid "Negates the outcome of the policy. Messages are unaffected."
 msgstr ""
 
@@ -2717,8 +2804,8 @@ msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid ""
-"Tokens not valid on or after current time + this value (Format: hours=1;"
-"minutes=2;seconds=3)."
+"Tokens not valid on or after current time + this value (Format: "
+"hours=1;minutes=2;seconds=3)."
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
@@ -2879,8 +2966,8 @@ msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid ""
-"Maximum access token validity for registered clients (Format: hours=1;"
-"minutes=2;seconds=3)."
+"Maximum access token validity for registered clients (Format: "
+"hours=1;minutes=2;seconds=3)."
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
@@ -2889,8 +2976,8 @@ msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid ""
-"Maximum refresh token validity for registered clients (Format: hours=1;"
-"minutes=2;seconds=3)."
+"Maximum refresh token validity for registered clients (Format: "
+"hours=1;minutes=2;seconds=3)."
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
@@ -3033,6 +3120,18 @@ msgstr ""
 msgid "Proxy Providers"
 msgstr ""
 
+#: authentik/providers/rac/models.py
+msgid ""
+"Only devices in this access group can be accessed through this provider. "
+"When left empty, every device the user has access to can be accessed."
+msgstr ""
+
+#: authentik/providers/rac/models.py
+msgid ""
+"Maximum concurrent connections to a single device. Can be set to -1 to "
+"disable the limit."
+msgstr ""
+
 #: authentik/providers/rac/models.py authentik/stages/user_login/models.py
 msgid ""
 "Determines how long a session lasts. Default of 0 means that the sessions "
@@ -3052,27 +3151,23 @@ msgid "RAC Providers"
 msgstr ""
 
 #: authentik/providers/rac/models.py
-msgid "RAC Endpoint"
-msgstr ""
-
-#: authentik/providers/rac/models.py
-msgid "RAC Endpoints"
-msgstr ""
-
-#: authentik/providers/rac/models.py
-msgid "Endpoint Property Mapping"
-msgstr ""
-
-#: authentik/providers/rac/models.py
-msgid "Endpoint Property Mappings"
-msgstr ""
-
-#: authentik/providers/rac/models.py
 msgid "RAC Provider Property Mapping"
 msgstr ""
 
 #: authentik/providers/rac/models.py
 msgid "RAC Provider Property Mappings"
+msgstr ""
+
+#: authentik/providers/rac/models.py
+msgid "Hostname/IP to connect to. Optionally specify the port."
+msgstr ""
+
+#: authentik/providers/rac/models.py
+msgid "RAC Connection override"
+msgstr ""
+
+#: authentik/providers/rac/models.py
+msgid "RAC Connection overrides"
 msgstr ""
 
 #: authentik/providers/rac/models.py
@@ -3209,20 +3304,20 @@ msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid ""
-"Assertion valid not before current time + this value (Format: hours=-1;"
-"minutes=-2;seconds=-3)."
+"Assertion valid not before current time + this value (Format: "
+"hours=-1;minutes=-2;seconds=-3)."
 msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid ""
-"Assertion not valid on or after current time + this value (Format: hours=1;"
-"minutes=2;seconds=3)."
+"Assertion not valid on or after current time + this value (Format: "
+"hours=1;minutes=2;seconds=3)."
 msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid ""
-"Session not valid on or after current time + this value (Format: hours=1;"
-"minutes=2;seconds=3)."
+"Session not valid on or after current time + this value (Format: "
+"hours=1;minutes=2;seconds=3)."
 msgstr ""
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
@@ -5350,8 +5445,8 @@ msgstr ""
 #: authentik/stages/user_login/models.py
 msgid ""
 "When set to a non-zero value, authentik will save a cookie with a longer "
-"expiry,to remember the device the user is logging in from. (Format: hours=-1;"
-"minutes=-2;seconds=-3)"
+"expiry,to remember the device the user is logging in from. (Format: "
+"hours=-1;minutes=-2;seconds=-3)"
 msgstr ""
 
 #: authentik/stages/user_login/models.py
@@ -5412,10 +5507,6 @@ msgid "Tasks that must complete for this task to run."
 msgstr ""
 
 #: authentik/tasks/models.py
-msgid "Tenant this task belongs to"
-msgstr ""
-
-#: authentik/tasks/models.py
 msgid "Retry failed task"
 msgstr ""
 
@@ -5457,107 +5548,6 @@ msgstr ""
 
 #: authentik/tasks/tasks.py
 msgid "Remove old worker statuses."
-msgstr ""
-
-#: authentik/tenants/api/settings.py
-#, python-brace-format
-msgid "Value for flag {flag_key} needs to be of type {type}."
-msgstr ""
-
-#: authentik/tenants/models.py
-msgid ""
-"Schema name must start with t_, only contain lowercase letters and numbers "
-"and be less than 63 characters."
-msgstr ""
-
-#: authentik/tenants/models.py
-msgid "Configure how authentik should show avatars for users."
-msgstr ""
-
-#: authentik/tenants/models.py
-msgid "Enter a valid URL, for example https://authentik.company"
-msgstr ""
-
-#: authentik/tenants/models.py
-msgid ""
-"Configure the base URL under which this authentik instance is reachable, e."
-"g. https://authentik.company"
-msgstr ""
-
-#: authentik/tenants/models.py
-msgid "Enable the ability for users to change their name."
-msgstr ""
-
-#: authentik/tenants/models.py
-msgid "Enable the ability for users to change their email address."
-msgstr ""
-
-#: authentik/tenants/models.py
-msgid "Enable the ability for users to change their username."
-msgstr ""
-
-#: authentik/tenants/models.py
-msgid ""
-"Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,"
-"seconds=2)."
-msgstr ""
-
-#: authentik/tenants/models.py
-msgid "Reputation cannot decrease lower than this value. Zero or negative."
-msgstr ""
-
-#: authentik/tenants/models.py
-msgid "Reputation cannot increase higher than this value. Zero or positive."
-msgstr ""
-
-#: authentik/tenants/models.py
-msgid "The option configures the footer links on the flow executor pages."
-msgstr ""
-
-#: authentik/tenants/models.py
-msgid ""
-"When enabled, all the events caused by a user will be deleted upon the "
-"user's deletion."
-msgstr ""
-
-#: authentik/tenants/models.py
-msgid "Globally enable/disable impersonation."
-msgstr ""
-
-#: authentik/tenants/models.py
-msgid "Require administrators to provide a reason for impersonating a user."
-msgstr ""
-
-#: authentik/tenants/models.py
-msgid "Default token duration"
-msgstr ""
-
-#: authentik/tenants/models.py
-msgid "Default token length"
-msgstr ""
-
-#: authentik/tenants/models.py
-msgid "Default page size for API responses, if no size was requested."
-msgstr ""
-
-#: authentik/tenants/models.py
-msgid "Maximum page size"
-msgstr ""
-
-#: authentik/tenants/models.py
-msgid "Tenant"
-msgstr ""
-
-#: authentik/tenants/models.py
-msgid "Tenants"
-msgstr ""
-
-#: authentik/tenants/models.py
-msgid "Domain"
-msgstr ""
-
-#: authentik/tenants/models.py
-msgid "Domains"
 msgstr ""
 
 #: packages/ak-guardian/guardian/models.py

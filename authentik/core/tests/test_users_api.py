@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 from json import loads
 
 from django.contrib.auth.hashers import make_password
+from django.db import connection
+from django.test.utils import CaptureQueriesContext
 from django.urls.base import reverse
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
@@ -69,15 +71,69 @@ class TestUsersAPI(APITestCase):
     def test_filter_type(self):
         """Test API filtering by type"""
         self.client.force_login(self.admin)
-        user = create_test_admin_user(type=UserTypes.EXTERNAL)
+        path = generate_id()
+        internal = create_test_user(path=path)
+        external = create_test_user(path=path, type=UserTypes.EXTERNAL)
+        service_account = create_test_user(path=path, type=UserTypes.SERVICE_ACCOUNT)
+        for types, expected in (
+            ([UserTypes.EXTERNAL], [external]),
+            ([UserTypes.EXTERNAL, UserTypes.SERVICE_ACCOUNT], [external, service_account]),
+            ([UserTypes.INTERNAL, UserTypes.EXTERNAL], [internal, external]),
+        ):
+            with self.subTest(types=types):
+                response = self.client.get(
+                    reverse("authentik_api:user-list"),
+                    data={"path": path, "type": types},
+                )
+                self.assertEqual(response.status_code, 200)
+                body = loads(response.content)
+                self.assertCountEqual(
+                    [user["pk"] for user in body["results"]], [user.pk for user in expected]
+                )
+                self.assertEqual(body["pagination"]["count"], len(expected))
+
+    def test_filter_type_no_distinct(self):
+        """Test that filtering by type doesn't make the list and count queries DISTINCT"""
+        self.client.force_login(self.admin)
+        with CaptureQueriesContext(connection) as queries:
+            response = self.client.get(
+                reverse("authentik_api:user-list"),
+                data={"type": UserTypes.INTERNAL},
+            )
+        self.assertEqual(response.status_code, 200)
+        user_queries = [
+            query["sql"]
+            for query in queries.captured_queries
+            if 'FROM "authentik_core_user"' in query["sql"]
+        ]
+        for sql in user_queries:
+            self.assertNotIn("DISTINCT", sql)
+        # The paginator counts the user table directly, not a DISTINCT subquery
+        self.assertTrue(
+            any(
+                sql.startswith('SELECT COUNT(*) AS "__count" FROM "authentik_core_user"')
+                for sql in user_queries
+            )
+        )
+
+    def test_filter_type_with_groups(self):
+        """Test filtering by type together with a to-many filter returns each user once"""
+        self.client.force_login(self.admin)
+        group_a = Group.objects.create(name=generate_id())
+        group_b = Group.objects.create(name=generate_id())
+        user = create_test_user(type=UserTypes.EXTERNAL)
+        user.groups.add(group_a, group_b)
         response = self.client.get(
             reverse("authentik_api:user-list"),
             data={
                 "type": UserTypes.EXTERNAL,
-                "username": user.username,
+                "groups_by_pk": [str(group_a.pk), str(group_b.pk)],
             },
         )
         self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        self.assertEqual([result["pk"] for result in body["results"]], [user.pk])
+        self.assertEqual(body["pagination"]["count"], 1)
 
     def test_filter_is_superuser(self):
         """Test API filtering by superuser status"""
@@ -107,6 +163,66 @@ class TestUsersAPI(APITestCase):
         body = loads(response.content)
         self.assertEqual(len(body["results"]), 1, body)
         self.assertEqual(body["results"][0]["username"], user.username)
+
+    def _create_superuser_hierarchy(self) -> dict[int, bool]:
+        """Create users with direct, inherited and no superuser status, and return the
+        expected is_superuser value for each of them"""
+        superuser_group = Group.objects.create(name=generate_id(), is_superuser=True)
+        child = Group.objects.create(name=generate_id())
+        child.parents.add(superuser_group)
+        grandchild = Group.objects.create(name=generate_id())
+        grandchild.parents.add(child)
+        parent = Group.objects.create(name=generate_id())
+        non_superuser_child = Group.objects.create(name=generate_id())
+        non_superuser_child.parents.add(parent)
+
+        direct = create_test_user()
+        superuser_group.users.add(direct)
+        via_child = create_test_user()
+        child.users.add(via_child)
+        via_grandchild = create_test_user()
+        grandchild.users.add(via_grandchild)
+        via_non_superuser_child = create_test_user()
+        non_superuser_child.users.add(via_non_superuser_child)
+        no_groups = create_test_user()
+        return {
+            direct.pk: True,
+            via_child.pk: True,
+            via_grandchild.pk: True,
+            via_non_superuser_child.pk: False,
+            no_groups.pk: False,
+        }
+
+    def test_list_is_superuser(self):
+        """Test is_superuser in the user list and detail for direct and inherited superuser
+        group membership"""
+        expected = self._create_superuser_hierarchy()
+        self.client.force_login(self.admin)
+        response = self.client.get(reverse("authentik_api:user-list"), {"page_size": 100})
+        self.assertEqual(response.status_code, 200)
+        listed = {user["pk"]: user["is_superuser"] for user in loads(response.content)["results"]}
+        for pk, is_superuser in expected.items():
+            self.assertEqual(User.objects.get(pk=pk).is_superuser, is_superuser, pk)
+            self.assertEqual(listed[pk], is_superuser, pk)
+            response = self.client.get(reverse("authentik_api:user-detail", kwargs={"pk": pk}))
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(loads(response.content)["is_superuser"], is_superuser, pk)
+
+    def test_list_is_superuser_query_count(self):
+        """Test is_superuser in the user list doesn't add group queries per user"""
+
+        def group_queries(ctx: CaptureQueriesContext) -> int:
+            return len([q for q in ctx.captured_queries if "authentik_core_group" in q["sql"]])
+
+        self._create_superuser_hierarchy()
+        self.client.force_login(self.admin)
+        url = reverse("authentik_api:user-list")
+        with CaptureQueriesContext(connection) as before:
+            self.assertEqual(self.client.get(url).status_code, 200)
+        self._create_superuser_hierarchy()
+        with CaptureQueriesContext(connection) as after:
+            self.assertEqual(self.client.get(url).status_code, 200)
+        self.assertEqual(group_queries(after), group_queries(before))
 
     def test_list_with_groups(self):
         """Test listing with groups"""
