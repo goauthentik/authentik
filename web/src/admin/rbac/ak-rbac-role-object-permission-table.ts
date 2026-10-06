@@ -213,8 +213,6 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
             return { name, kind: tooltip, active: Boolean(tooltip) };
         });
 
-        console.log(this.sortFilter);
-
         permissions = match(this.sortFilter)
             .with("default", () => permissions)
             .with("activefirst", () => permissions.toSorted(activeFirst))
