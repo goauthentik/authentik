@@ -1,4 +1,4 @@
-.PHONY: gen dev-reset all test web docs core-install i18n-extract install bump gen-changelog integrations
+.PHONY: gen dev-reset all test web docs core-install i18n-extract gen-locales locales-normalize install bump gen-changelog integrations
 
 SHELL := /usr/bin/env bash
 .SHELLFLAGS += ${SHELLFLAGS} -e -o pipefail
@@ -91,6 +91,9 @@ lint-spellcheck:  ## Reports spelling errors.
 lint-catalogs:  ## Reports pnpm catalog pins, and pnpm's own version pin, that drifted between workspaces.
 	node ./scripts/node/lint-catalogs.ts
 
+lint-locales:  ## Reports translation files and generated locale lists that drifted from locales.yaml.
+	$(UV) run python scripts/locales.py check
+
 lint-check-types:  ## Type-check the repository's Node.js scripts.
 	pnpm run build:types
 
@@ -111,6 +114,12 @@ migrate: ## Apply and check system and Django migrations
 	$(UV) run python -m lifecycle.migrate
 
 i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that require translation into files to send to a translation service
+
+gen-locales:  ## Regenerate lit-localize.json, the web locale loaders, and the Transifex language mapping from locales.yaml
+	$(UV) run python scripts/locales.py gen
+
+locales-normalize:  ## Move translation files that Transifex wrote under non-canonical names to their canonical paths
+	$(UV) run python scripts/locales.py normalize
 
 aws-cfn: node-install  ## Generate the AWS Cloudformation template
 	pnpm --dir lifecycle/aws install
@@ -394,6 +403,9 @@ ci-lint-clippy: ci--meta-debug
 
 ci-lint-catalogs: ci--meta-debug
 	node ./scripts/node/lint-catalogs.ts
+
+ci-lint-locales: ci--meta-debug
+	$(UV) run python scripts/locales.py check
 
 ci-lint-oxlint-fixtures: ci--meta-debug
 	pnpm --filter @goauthentik/oxlint-config run build
