@@ -31,7 +31,7 @@ Before you begin, ensure you have the following tools installed. You can run the
 
 ### Understanding the architecture
 
-authentik is primarily a Django application running under gunicorn, proxied by a Go application that serves static files. Most functions and classes have type hints and docstrings. For better code navigation, we recommend installing a Python type-checking extension in your IDE.
+authentik is primarily a Django application running under Gunicorn on Linux or a single Uvicorn process on macOS, proxied by a Rust application that also serves static files. Most functions and classes have type hints and docstrings. For better code navigation, we recommend installing a Python type-checking extension in your IDE.
 
 ## 1. Prepare your local working repository
 
@@ -171,15 +171,15 @@ Now that the backend has been set up and built, you can start authentik. Run the
 make run
 ```
 
+On macOS, the server uses a single Python process to avoid native networking crashes in forked workers, such as Gravatar lookups during login. Gunicorn worker-count and request-recycling settings do not apply to this development runner. Use `make run-watch` to restart it after code changes. Linux and container deployments use Gunicorn.
+
 :::info
 The very first time authentik runs, it might need some time to clear the initial task queue. Adjust [`AUTHENTIK_WORKER__THREADS`](../../../install-config/configuration/#authentik_worker__threads) as required.
 :::
 
 ### Hot-reloading
 
-When `AUTHENTIK_DEBUG` is set to `true` (the default for the development environment), the authentik server automatically reloads whenever changes are made to the code.
-
-Install [watchexec](https://github.com/watchexec/watchexec), and run:
+For automatic restarts when code changes, install [watchexec](https://github.com/watchexec/watchexec), and run:
 
 ```shell
 make run-watch

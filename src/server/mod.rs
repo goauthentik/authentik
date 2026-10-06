@@ -1,7 +1,7 @@
 use std::{
     env::temp_dir,
     os::unix,
-    path::PathBuf,
+    path::{Path, PathBuf},
     process::Stdio,
     sync::{
         Arc,
@@ -71,6 +71,36 @@ pub(crate) fn socket_path() -> PathBuf {
     temp_dir().join("authentik.sock")
 }
 
+fn server_command(socket_path: &Path) -> Command {
+    #[cfg(target_os = "macos")]
+    let mut command = {
+        // Apple networking APIs can abort in a forked Gunicorn worker. Start a
+        // fresh Python process without a pre-fork server for native development.
+        let mut command = Command::new("python");
+        command.args(["-m", "lifecycle.server"]);
+        command.arg(socket_path);
+        command
+    };
+    #[cfg(not(target_os = "macos"))]
+    let mut command = {
+        let mut command = Command::new("gunicorn");
+        command.args([
+            "--bind",
+            &format!("unix://{}", socket_path.display()),
+            "-c",
+            "./lifecycle/gunicorn.conf.py",
+            "authentik.root.asgi:application",
+        ]);
+        command
+    };
+    command
+        .kill_on_drop(true)
+        .stdin(Stdio::null())
+        .stdout(Stdio::inherit())
+        .stderr(Stdio::inherit());
+    command
+}
+
 #[derive(Debug)]
 pub(crate) struct Server {
     gunicorn: Mutex<Child>,
@@ -86,19 +116,7 @@ impl Server {
     fn new(socket_path: PathBuf) -> Result<Self> {
         info!("starting server");
 
-        let gunicorn = Command::new("gunicorn")
-            .args([
-                "--bind",
-                &format!("unix://{}", socket_path.display()),
-                "-c",
-                "./lifecycle/gunicorn.conf.py",
-                "authentik.root.asgi:application",
-            ])
-            .kill_on_drop(true)
-            .stdin(Stdio::null())
-            .stdout(Stdio::inherit())
-            .stderr(Stdio::inherit())
-            .spawn()?;
+        let gunicorn = server_command(&socket_path).spawn()?;
 
         let client = Client::builder(TokioExecutor::new())
             .pool_idle_timeout(Duration::from_mins(1))
@@ -379,4 +397,35 @@ pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
     }
 
     Ok(server)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn server_command_uses_platform_runner() {
+        let command = server_command(Path::new("/tmp/authentik test.sock"));
+        let command = command.as_std();
+        let args: Vec<_> = command.get_args().collect();
+        #[cfg(target_os = "macos")]
+        {
+            assert_eq!(command.get_program(), "python");
+            assert_eq!(args, ["-m", "lifecycle.server", "/tmp/authentik test.sock"]);
+        }
+        #[cfg(not(target_os = "macos"))]
+        {
+            assert_eq!(command.get_program(), "gunicorn");
+            assert_eq!(
+                args,
+                [
+                    "--bind",
+                    "unix:///tmp/authentik test.sock",
+                    "-c",
+                    "./lifecycle/gunicorn.conf.py",
+                    "authentik.root.asgi:application",
+                ]
+            );
+        }
+    }
 }
