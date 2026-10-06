@@ -1,5 +1,5 @@
 import "#elements/LoadingOverlay";
-import { isFormField, settleFormFields } from "./form-associated-element";
+import { isFormField } from "./form-associated-element";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -40,6 +40,7 @@ import { reportValidityDeep } from "#elements/forms/FormGroup";
 import { PreventFormSubmit } from "#elements/forms/helpers";
 import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
 import { serializeForm } from "#elements/forms/serialization";
+import { settleFormFields } from "#elements/forms/settle-form-fields";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { createFileMap } from "#elements/utils/inputs";
