@@ -365,7 +365,7 @@ class TestOverlapAndChange(ExpirationTestCase):
                     if change == "cancel":
                         row.cancel()
                     else:
-                        tight._tighten_foreign_rows(tight._threshold())
+                        tight._tighten_foreign_rows()
                     return iter(pks)
 
                 with patch.object(QuerySet, "iterator", stale_owned_rows):
