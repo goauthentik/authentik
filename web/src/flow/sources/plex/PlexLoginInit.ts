@@ -12,6 +12,14 @@ import { PlexAPIClient } from "#common/helpers/plex";
 
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 
+import {
+    clearAttempts,
+    clearPendingSignIn,
+    readAttempt,
+    readPendingSignIn,
+    writeAttempt,
+    writePendingSignIn,
+} from "#flow/sources/plex/storage";
 import { BaseStage } from "#flow/stages/base";
 
 import {
@@ -24,49 +32,10 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-// State for the round trip to app.plex.tv lives in sessionStorage rather than
-// in the flow URL used as Plex's forwardUrl. Storage binds the pin to the
-// browser session that started the round trip: a pin id carried in the URL
-// could be forged, letting an attacker authorize a pin with their own Plex
-// account and hand the resulting link to a victim (login CSRF).
-const PLEX_PIN_KEY = "authentik-plex-pin";
-const PLEX_ATTEMPT_KEY = "authentik-plex-attempt";
 // After this many automatic redirects without a completed sign-in, stop
 // redirecting so a broken return path cannot loop, and leave the manual
 // button as the way in.
 const MAX_REDIRECT_ATTEMPTS = 2;
-
-// sessionStorage access can throw outright in some embedded and lockdown
-// contexts; treat that the same as the value being absent.
-function readSessionItem(key: string): string | null {
-    try {
-        return window.sessionStorage.getItem(key);
-    } catch {
-        return null;
-    }
-}
-
-function writeSessionItem(key: string, value: string): boolean {
-    try {
-        window.sessionStorage.setItem(key, value);
-
-        return true;
-    } catch {
-        return false;
-    }
-}
-
-function removeSessionItem(key: string): void {
-    try {
-        window.sessionStorage.removeItem(key);
-    } catch {
-        // Nothing to clean up if storage is unavailable.
-    }
-}
-
-function readAttempt(): number {
-    return parseInt(readSessionItem(PLEX_ATTEMPT_KEY) ?? "", 10) || 0;
-}
 
 @customElement("ak-flow-source-plex")
 export class PlexLoginInit extends BaseStage<
@@ -90,13 +59,14 @@ export class PlexLoginInit extends BaseStage<
     }
 
     async firstUpdated(): Promise<void> {
-        const returnedPin = parseInt(readSessionItem(PLEX_PIN_KEY) ?? "", 10);
+        const pending = readPendingSignIn();
 
-        // Return leg: Plex sent the browser back here through forwardUrl, and
-        // the pin this session left with is waiting in sessionStorage.
-        if (!Number.isNaN(returnedPin)) {
-            removeSessionItem(PLEX_PIN_KEY);
-            await this.completeReturn(returnedPin);
+        // Return leg: Plex sent the browser back to the flow through
+        // forwardUrl, the identification stage handed over to this source's
+        // stage, and the pin this session left with is waiting in storage.
+        if (pending && pending.slug === this.challenge?.slug) {
+            clearPendingSignIn();
+            await this.completeReturn(pending.pin);
 
             return;
         }
@@ -123,7 +93,7 @@ export class PlexLoginInit extends BaseStage<
         // exists to stop a return path that never comes back from looping, and
         // a counter that survived until the next sign-in would cap a fresh
         // attempt that has not redirected yet.
-        removeSessionItem(PLEX_ATTEMPT_KEY);
+        clearAttempts();
         let token: string | undefined;
 
         try {
@@ -150,7 +120,7 @@ export class PlexLoginInit extends BaseStage<
                 slug: this.challenge?.slug || "",
             });
 
-            window.location.assign(redirectChallenge.to);
+            this.navigate(redirectChallenge.to);
         } catch (error: unknown) {
             await showAPIErrorMessage(error);
             this.errorMessage = msg("Plex sign-in succeeded, but completing the login failed.");
@@ -167,7 +137,12 @@ export class PlexLoginInit extends BaseStage<
         const returnUrl = `${window.location.origin}${window.location.pathname}${window.location.search}`;
         const authUrl = PlexAPIClient.authUrl(this.clientId, authInfo.pin.code, returnUrl);
 
-        if (!writeSessionItem(PLEX_PIN_KEY, authInfo.pin.id.toString())) {
+        const stored = writePendingSignIn({
+            slug: this.challenge?.slug || "",
+            pin: authInfo.pin.id,
+        });
+
+        if (!stored) {
             // Nothing recognizes the return leg without the stored pin, so the
             // trip to Plex could only come back to a page that starts another
             // one. Say so rather than sending the user out with no way home.
@@ -178,18 +153,24 @@ export class PlexLoginInit extends BaseStage<
             return;
         }
 
-        writeSessionItem(PLEX_ATTEMPT_KEY, (readAttempt() + 1).toString());
+        writeAttempt(readAttempt() + 1);
 
-        if (manual) {
-            window.location.assign(authUrl);
+        // An automatic redirect replaces rather than assigns: keeps the
+        // pre-redirect flow URL out of history, so the Back button on plex.tv
+        // does not land on a page that would immediately redirect there again.
+        this.navigate(authUrl, !manual);
+    }
+
+    // Every navigation away from the stage goes through here, so tests can
+    // observe it without the browser leaving the page.
+    protected navigate(url: string, replace = false): void {
+        if (replace) {
+            window.location.replace(url);
 
             return;
         }
 
-        // replace, not assign: keeps the pre-redirect flow URL out of history,
-        // so the Back button on plex.tv does not land on a page that would
-        // immediately redirect there again.
-        window.location.replace(authUrl);
+        window.location.assign(url);
     }
 
     private onContinue = (): void => {
