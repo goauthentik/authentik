@@ -42,7 +42,7 @@ use crate::server::socket_path;
 /// `io::Error` with `ErrorKind::NotFound`, indicating the Unix socket does
 /// not exist yet.  This is the expected condition during startup and should
 /// not be logged at `warn` level.
-fn is_connect_not_found(err: &dyn std::error::Error) -> bool {
+pub(crate) fn is_connect_not_found(err: &dyn std::error::Error) -> bool {
     // `source()` returns `&(dyn Error + 'static)`, so downcast_ref is valid on
     // every link after the first.  The io::Error sits below the top-level
     // hyper_util connect error, so iterating sources is sufficient.
