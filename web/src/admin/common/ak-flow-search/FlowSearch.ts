@@ -4,7 +4,6 @@ import { aki } from "#common/api/client";
 import { AKElement } from "#elements/Base";
 import type { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
 import type { SearchSelectBase } from "#elements/forms/SearchSelect/SearchSelect";
-import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
 import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
 
@@ -37,7 +36,7 @@ export function getFlowValue(flow: Flow | null): string {
  * code eliminates the long blocks of unreadable invocation that were embedded in every provider, as
  * well as in sources, brands, and applications.
  */
-export abstract class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement) {
+export abstract class FlowSearch<T extends Flow> extends AKElement {
     //#region Properties
 
     /**
