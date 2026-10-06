@@ -129,6 +129,7 @@ class UserOffboarding(SerializerModel):
         transaction, so a mid-way failure rolls back completely: the user is
         left untouched and the row stays `PENDING` for retry.
         """
+        from authentik.enterprise.lifecycle.expiration.models import UserExpirationRule
         from authentik.enterprise.lifecycle.offboarding.actions import offboard_user
 
         context = {}
@@ -142,6 +143,10 @@ class UserOffboarding(SerializerModel):
             kept, rewarn = self.rule.reconcile_offboarding(self)
             if not kept:
                 return
+            # Another rule may outrank the owner, for example after a lost insert race,
+            # so make sure the winning rule's action and settings are what runs.
+            if UserExpirationRule.resolve_winner(self):
+                rewarn = True
             # Eligibility for a warning is not eligibility for execution. A queued
             # task can outlive an edit that moves the actual expiry into the future.
             if self.scheduled_at > timezone.now():
