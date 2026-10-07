@@ -384,7 +384,9 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     //#region Render
 
     protected renderLoading(): SlottedTemplateResult {
-        return html`<slot name="placeholder"></slot>`;
+        return html`<ak-flow-card loading>
+            <span slot="title"> ${globalAK().flow?.title} </span>
+        </ak-flow-card>`;
     }
 
     protected renderFrameBackground(): SlottedTemplateResult {
