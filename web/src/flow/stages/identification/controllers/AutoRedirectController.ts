@@ -1,5 +1,5 @@
 import { AKFlowUpdateChallengeRequest } from "#flow/events";
-import { readPendingSignIn } from "#flow/sources/plex/storage";
+import { readReturningSignIn } from "#flow/sources/plex/storage";
 import type { IdentificationHost } from "#flow/stages/identification/IdentificationStage";
 
 import { LoginSource } from "@goauthentik/api";
@@ -15,7 +15,9 @@ import { ReactiveController } from "lit";
  * the source that started the round trip.
  */
 function findReturningSource(sources: LoginSource[]): LoginSource | null {
-    const pending = readPendingSignIn();
+    // Only a page loaded through Plex's forwardUrl is a return. A pin left over
+    // from a round trip that never came back must not take over the login page.
+    const pending = readReturningSignIn();
 
     if (!pending) return null;
 

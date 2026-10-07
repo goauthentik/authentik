@@ -15,8 +15,10 @@ import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import {
     clearAttempts,
     clearPendingSignIn,
+    clearReturnMarker,
     readAttempt,
-    readPendingSignIn,
+    readReturningSignIn,
+    returnUrlFor,
     writeAttempt,
     writePendingSignIn,
 } from "#flow/sources/plex/storage";
@@ -59,11 +61,15 @@ export class PlexLoginInit extends BaseStage<
     }
 
     async firstUpdated(): Promise<void> {
-        const pending = readPendingSignIn();
+        const pending = readReturningSignIn();
+
+        clearReturnMarker();
 
         // Return leg: Plex sent the browser back to the flow through
         // forwardUrl, the identification stage handed over to this source's
-        // stage, and the pin this session left with is waiting in storage.
+        // stage, and the pin this session left with is waiting in storage. A
+        // stored pin on a page without the return marker is left over from a
+        // round trip that never came back, and a fresh one replaces it below.
         if (pending && pending.slug === this.challenge?.slug) {
             clearPendingSignIn();
             await this.completeReturn(pending.pin);
@@ -133,8 +139,9 @@ export class PlexLoginInit extends BaseStage<
         const authInfo = await PlexAPIClient.getPin(this.clientId);
         // The return URL keeps the flow's whole query string: dropping `next`
         // would complete the flow but lose the final hop back to the
-        // application that started it.
-        const returnUrl = `${window.location.origin}${window.location.pathname}${window.location.search}`;
+        // application that started it. It also carries the return marker, so
+        // the page Plex sends back to can tell a return from a fresh visit.
+        const returnUrl = returnUrlFor(window.location);
         const authUrl = PlexAPIClient.authUrl(this.clientId, authInfo.pin.code, returnUrl);
 
         const stored = writePendingSignIn({

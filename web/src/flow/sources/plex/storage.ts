@@ -11,6 +11,15 @@ const PENDING_KEY = "authentik-plex-pin";
 const ATTEMPT_KEY = "authentik-plex-attempt";
 
 /**
+ * Query parameter added to the forwardUrl handed to Plex. A pending sign-in
+ * only counts as a return when the page was loaded with it: a pin left behind
+ * by a round trip the user walked away from (the Back button, an expired Plex
+ * page, a typed URL) is stale, and must not turn the next fresh sign-in into
+ * "cancelled or timed out".
+ */
+export const RETURN_PARAM = "plex_return";
+
+/**
  * A sign-in that left for app.plex.tv and has not come back yet.
  */
 export interface PendingPlexSignIn {
@@ -80,6 +89,60 @@ export function writePendingSignIn(pending: PendingPlexSignIn): boolean {
 
 export function clearPendingSignIn(): void {
     removeItem(PENDING_KEY);
+}
+
+// The query string is handled as raw `name=value` parts rather than through
+// URLSearchParams, which would re-encode the other parameters (`next` in
+// particular) on the way back out.
+function queryParts(search: string): string[] {
+    return search.replace(/^\?/, "").split("&").filter(Boolean);
+}
+
+function isReturnMarker(part: string): boolean {
+    return part.split("=")[0] === RETURN_PARAM;
+}
+
+/**
+ * @returns The URL Plex should send the browser back to: the current page with
+ *   its query string unchanged, plus the return marker.
+ */
+export function returnUrlFor(location: Pick<Location, "origin" | "pathname" | "search">): string {
+    const parts = queryParts(location.search).filter((part) => !isReturnMarker(part));
+
+    parts.push(`${RETURN_PARAM}=1`);
+
+    return `${location.origin}${location.pathname}?${parts.join("&")}`;
+}
+
+/**
+ * @returns The pending sign-in, but only when this page was loaded as Plex
+ *   sending the browser back.
+ */
+export function readReturningSignIn(): PendingPlexSignIn | null {
+    if (!queryParts(window.location.search).some(isReturnMarker)) return null;
+
+    return readPendingSignIn();
+}
+
+/**
+ * Drop the return marker from the address bar once it has been read, so a
+ * reload or a later visit to this history entry does not look like another
+ * return.
+ */
+export function clearReturnMarker(): void {
+    const parts = queryParts(window.location.search);
+
+    if (!parts.some(isReturnMarker)) return;
+
+    const rest = parts.filter((part) => !isReturnMarker(part));
+    const { pathname, hash } = window.location;
+    const search = rest.length ? `?${rest.join("&")}` : "";
+
+    try {
+        window.history.replaceState(window.history.state, "", `${pathname}${search}${hash}`);
+    } catch {
+        // The marker is only a hint; leaving it in place is harmless.
+    }
 }
 
 export function readAttempt(): number {
