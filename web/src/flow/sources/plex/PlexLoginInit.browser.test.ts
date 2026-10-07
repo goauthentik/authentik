@@ -73,11 +73,13 @@ function createStage(): PlexLoginInit {
 }
 
 /**
- * Mount the stage as the browser sees it coming back from app.plex.tv: the pin
- * this session left with is waiting in storage.
+ * Mount the stage as the browser sees it coming back from app.plex.tv: the page
+ * was loaded through the forwardUrl, so it carries the return marker, and the
+ * pin this session left with is waiting in storage.
  */
 function createReturningStage(pin = 42): PlexLoginInit {
     writePendingSignIn({ slug: "plex", pin });
+    history.replaceState(null, "", "?plex_return=1");
 
     return createStage();
 }
@@ -135,7 +137,25 @@ describe("PlexLoginInit", () => {
             await settled(stage, () => expect(navigate).toHaveBeenCalledOnce());
 
             expect(forwardUrlOf(navigate.mock.calls[0][0])).toBe(
-                `${window.location.origin}/if/flow/login/?next=%2Fapplication%2Fo%2Fauthorize%2F`,
+                `${window.location.origin}/if/flow/login/?next=%2Fapplication%2Fo%2Fauthorize%2F&plex_return=1`,
+            );
+        });
+
+        it("adds the return marker without re-encoding the rest of the query string", async () => {
+            // URLSearchParams would turn `+` into `%2B` and `%7E` into `~`, which
+            // changes what `next` decodes to on the way back.
+            history.replaceState(
+                null,
+                "",
+                "/if/flow/login/?next=%2Fapplication%2Fo%2Fauthorize%2F%3Fscope%3Dopenid+email%7E",
+            );
+
+            const stage = createStage();
+
+            await settled(stage, () => expect(navigate).toHaveBeenCalledOnce());
+
+            expect(forwardUrlOf(navigate.mock.calls[0][0])).toBe(
+                `${window.location.origin}/if/flow/login/?next=%2Fapplication%2Fo%2Fauthorize%2F%3Fscope%3Dopenid+email%7E&plex_return=1`,
             );
         });
 
@@ -144,11 +164,15 @@ describe("PlexLoginInit", () => {
 
             await settled(stage, () => expect(navigate).toHaveBeenCalledOnce());
 
-            // Exactly the page the stage was on, with nothing added: the runner's
-            // own URL can contain any digits, so a substring check proves nothing.
+            // Exactly the page the stage was on plus the return marker: the
+            // runner's own URL can contain any digits, so a substring check
+            // proves nothing.
             const { origin, pathname, search } = window.location;
+            const separator = search ? "&" : "?";
 
-            expect(forwardUrlOf(navigate.mock.calls[0][0])).toBe(`${origin}${pathname}${search}`);
+            expect(forwardUrlOf(navigate.mock.calls[0][0])).toBe(
+                `${origin}${pathname}${search}${separator}plex_return=1`,
+            );
         });
 
         it("ignores a pin carried in the URL and starts a fresh round trip", async () => {
@@ -252,6 +276,7 @@ describe("PlexLoginInit", () => {
                 outbound.remove();
 
                 pinStatus.mockResolvedValueOnce(undefined);
+                history.replaceState(null, "", "?plex_return=1");
 
                 const returning = createStage();
 
@@ -272,6 +297,7 @@ describe("PlexLoginInit", () => {
     describe("return leg", () => {
         it("leaves another source's pending sign-in alone", async () => {
             writePendingSignIn({ slug: "other-plex", pin: 7 });
+            history.replaceState(null, "", "?plex_return=1");
 
             const stage = createStage();
 
@@ -279,6 +305,44 @@ describe("PlexLoginInit", () => {
 
             expect(pinStatus).not.toHaveBeenCalled();
             expect(getPin).toHaveBeenCalledOnce();
+        });
+
+        it("starts a fresh round trip over a pin left by one that never came back", async () => {
+            // The user reached Plex and left without being sent back (the Back
+            // button, an expired Plex page, a typed URL), then started a fresh
+            // sign-in in the same tab. No return marker, so the stored pin is
+            // stale and must not be reported as a cancelled sign-in.
+            writePendingSignIn({ slug: "plex", pin: 7 });
+            sessionStorage.setItem(ATTEMPT_KEY, "1");
+
+            const stage = createStage();
+
+            await settled(stage, () => expect(navigate).toHaveBeenCalledOnce());
+
+            expect(pinStatus).not.toHaveBeenCalled();
+            expect(stage.shadowRoot?.textContent).not.toContain("cancelled or timed out");
+            expect(navigate.mock.calls[0][1]).toBe(true);
+            expect(readPendingSignIn()).toEqual({ slug: "plex", pin: 42 });
+        });
+
+        it("removes the return marker from the address bar and keeps the rest", async () => {
+            writePendingSignIn({ slug: "plex", pin: 42 });
+
+            history.replaceState(
+                null,
+                "",
+                "/if/flow/login/?next=%2Fapplication%2Fo%2Fauthorize%2F%3Fscope%3Dopenid+email%7E&plex_return=1",
+            );
+
+            const stage = createStage();
+
+            await settled(stage, () => expect(navigate).toHaveBeenCalledOnce());
+
+            expect(pinStatus).toHaveBeenCalledWith("client-id", 42);
+
+            expect(window.location.search).toBe(
+                "?next=%2Fapplication%2Fo%2Fauthorize%2F%3Fscope%3Dopenid+email%7E",
+            );
         });
 
         it("redeems the token and continues the flow", async () => {

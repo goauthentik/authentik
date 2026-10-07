@@ -33,6 +33,7 @@ function challengeOf(overrides: Partial<IdentificationChallenge> = {}): Identifi
 }
 
 const mounted: HTMLElement[] = [];
+const originalURL = window.location.href;
 
 let challengeRequests: ReturnType<typeof vi.fn<(event: AKFlowUpdateChallengeRequest) => void>>;
 
@@ -46,6 +47,7 @@ beforeEach(() => {
 afterEach(() => {
     document.body.removeEventListener(AKFlowUpdateChallengeRequest.eventName, challengeRequests);
     sessionStorage.clear();
+    history.replaceState(null, "", originalURL);
 
     for (const element of mounted.splice(0)) {
         element.remove();
@@ -76,6 +78,7 @@ describe("IdentificationStage", () => {
             // server still has the flow on identification, because the source
             // button swapped in the Plex stage client-side.
             writePendingSignIn({ slug: "plex", pin: 42 });
+            history.replaceState(null, "", "?plex_return=1");
 
             await createStage(challengeOf());
 
@@ -89,6 +92,7 @@ describe("IdentificationStage", () => {
 
         it("picks the source the sign-in started from when there are several", async () => {
             writePendingSignIn({ slug: "plex-family", pin: 42 });
+            history.replaceState(null, "", "?plex_return=1");
 
             await createStage(
                 challengeOf({
@@ -102,6 +106,18 @@ describe("IdentificationStage", () => {
 
         it("stays on identification when the pending source is not offered here", async () => {
             writePendingSignIn({ slug: "removed-source", pin: 42 });
+            history.replaceState(null, "", "?plex_return=1");
+
+            const stage = await createStage(challengeOf());
+
+            expect(challengeRequests).not.toHaveBeenCalled();
+            expect(stage.shadowRoot?.querySelector("input")).not.toBeNull();
+        });
+
+        it("stays on identification over a pin left by a round trip that never came back", async () => {
+            // Without the return marker this is a fresh visit to the login page,
+            // so a leftover pin must not take it over.
+            writePendingSignIn({ slug: "plex", pin: 42 });
 
             const stage = await createStage(challengeOf());
 
