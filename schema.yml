@@ -10248,8 +10248,11 @@ paths:
   /lifecycle/user_expiration_rules/{id}/preview/:
     get:
       operationId: lifecycle_user_expiration_rules_preview_retrieve
-      description: Users the next sweep of this rule would schedule an offboarding
-        for.
+      description: |-
+        Preview new offboardings and changes to pending rows if this rule is enabled.
+
+        POST accepts unsaved edits to the rule. Neither method saves the rule, changes
+        offboardings, or sends warnings. Existing policy bindings still apply.
       parameters:
       - in: path
         name: id
@@ -10260,6 +10263,42 @@ paths:
         required: true
       tags:
       - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserExpirationRulePreview'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: lifecycle_user_expiration_rules_preview_create
+      description: |-
+        Preview new offboardings and changes to pending rows if this rule is enabled.
+
+        POST accepts unsaved edits to the rule. Neither method saves the rule, changes
+        offboardings, or sends warnings. Existing policy bindings still apply.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Expiration Rule.
+        required: true
+      tags:
+      - lifecycle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserExpirationRuleRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -60782,6 +60821,76 @@ components:
       - group_obj
       - name
       - pbm_uuid
+    UserExpirationRulePendingPreview:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        previous_action:
+          allOf:
+          - $ref: '#/components/schemas/OffboardingActionEnum'
+          readOnly: true
+        action:
+          allOf:
+          - $ref: '#/components/schemas/OffboardingActionEnum'
+          readOnly: true
+          nullable: true
+        previous_scheduled_at:
+          type: string
+          format: date-time
+          readOnly: true
+        scheduled_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        previous_revoke_sessions:
+          type: boolean
+          readOnly: true
+        revoke_sessions:
+          type: boolean
+          readOnly: true
+          nullable: true
+        previous_revoke_tokens:
+          type: boolean
+          readOnly: true
+        revoke_tokens:
+          type: boolean
+          readOnly: true
+          nullable: true
+      required:
+      - action
+      - id
+      - previous_action
+      - previous_revoke_sessions
+      - previous_revoke_tokens
+      - previous_scheduled_at
+      - revoke_sessions
+      - revoke_tokens
+      - scheduled_at
+      - user
+    UserExpirationRulePendingPreviewGroup:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        count:
+          type: integer
+          readOnly: true
+        offboardings:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserExpirationRulePendingPreview'
+          readOnly: true
+      required:
+      - count
+      - offboardings
     UserExpirationRulePreview:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -60794,8 +60903,23 @@ components:
           items:
             $ref: '#/components/schemas/PartialUser'
           readOnly: true
+        updated:
+          allOf:
+          - $ref: '#/components/schemas/UserExpirationRulePendingPreviewGroup'
+          readOnly: true
+        taken_over:
+          allOf:
+          - $ref: '#/components/schemas/UserExpirationRulePendingPreviewGroup'
+          readOnly: true
+        removed:
+          allOf:
+          - $ref: '#/components/schemas/UserExpirationRulePendingPreviewGroup'
+          readOnly: true
       required:
       - count
+      - removed
+      - taken_over
+      - updated
       - users
     UserExpirationRuleRequest:
       type: object

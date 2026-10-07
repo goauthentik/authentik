@@ -203,6 +203,14 @@ export interface LifecycleUserExpirationRulesPartialUpdateRequest {
     patchedUserExpirationRuleRequest?: PatchedUserExpirationRuleRequest;
 }
 
+export interface LifecycleUserExpirationRulesPreviewCreateRequest {
+    /**
+     * A UUID string identifying this User Expiration Rule.
+     */
+    id: string;
+    userExpirationRuleRequest: UserExpirationRuleRequest;
+}
+
 export interface LifecycleUserExpirationRulesPreviewRetrieveRequest {
     /**
      * A UUID string identifying this User Expiration Rule.
@@ -1240,6 +1248,88 @@ export class LifecycleApi extends runtime.BaseAPI {
     }
 
     /**
+     * Creates request options for lifecycleUserExpirationRulesPreviewCreate without sending the
+     * request
+     */
+    async lifecycleUserExpirationRulesPreviewCreateRequestOpts(
+        requestParameters: LifecycleUserExpirationRulesPreviewCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling lifecycleUserExpirationRulesPreviewCreate().',
+            );
+        }
+
+        if (requestParameters["userExpirationRuleRequest"] == null) {
+            throw new runtime.RequiredError(
+                "userExpirationRuleRequest",
+                'Required parameter "userExpirationRuleRequest" was null or undefined when calling lifecycleUserExpirationRulesPreviewCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/lifecycle/user_expiration_rules/{id}/preview/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserExpirationRuleRequestToJSON(requestParameters["userExpirationRuleRequest"]),
+        };
+    }
+
+    /**
+     * Preview new offboardings and changes to pending rows if this rule is enabled. POST accepts
+     * unsaved edits to the rule. Neither method saves the rule, changes offboardings, or sends
+     * warnings. Existing policy bindings still apply.
+     */
+    async lifecycleUserExpirationRulesPreviewCreateRaw(
+        requestParameters: LifecycleUserExpirationRulesPreviewCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserExpirationRulePreview>> {
+        const requestOptions =
+            await this.lifecycleUserExpirationRulesPreviewCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserExpirationRulePreviewFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Preview new offboardings and changes to pending rows if this rule is enabled. POST accepts
+     * unsaved edits to the rule. Neither method saves the rule, changes offboardings, or sends
+     * warnings. Existing policy bindings still apply.
+     */
+    async lifecycleUserExpirationRulesPreviewCreate(
+        requestParameters: LifecycleUserExpirationRulesPreviewCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserExpirationRulePreview> {
+        const response = await this.lifecycleUserExpirationRulesPreviewCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
      * Creates request options for lifecycleUserExpirationRulesPreviewRetrieve without sending the
      * request
      */
@@ -1278,7 +1368,9 @@ export class LifecycleApi extends runtime.BaseAPI {
     }
 
     /**
-     * Users the next sweep of this rule would schedule an offboarding for.
+     * Preview new offboardings and changes to pending rows if this rule is enabled. POST accepts
+     * unsaved edits to the rule. Neither method saves the rule, changes offboardings, or sends
+     * warnings. Existing policy bindings still apply.
      */
     async lifecycleUserExpirationRulesPreviewRetrieveRaw(
         requestParameters: LifecycleUserExpirationRulesPreviewRetrieveRequest,
@@ -1294,7 +1386,9 @@ export class LifecycleApi extends runtime.BaseAPI {
     }
 
     /**
-     * Users the next sweep of this rule would schedule an offboarding for.
+     * Preview new offboardings and changes to pending rows if this rule is enabled. POST accepts
+     * unsaved edits to the rule. Neither method saves the rule, changes offboardings, or sends
+     * warnings. Existing policy bindings still apply.
      */
     async lifecycleUserExpirationRulesPreviewRetrieve(
         requestParameters: LifecycleUserExpirationRulesPreviewRetrieveRequest,

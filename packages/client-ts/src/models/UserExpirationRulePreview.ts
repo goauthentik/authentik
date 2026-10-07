@@ -12,6 +12,8 @@
 
 import type { PartialUser } from "./PartialUser";
 import { PartialUserFromJSON } from "./PartialUser";
+import type { UserExpirationRulePendingPreviewGroup } from "./UserExpirationRulePendingPreviewGroup";
+import { UserExpirationRulePendingPreviewGroupFromJSON } from "./UserExpirationRulePendingPreviewGroup";
 
 /**
  * Base serializer class which doesn't implement create/update methods
@@ -22,6 +24,9 @@ import { PartialUserFromJSON } from "./PartialUser";
 export interface UserExpirationRulePreview {
     readonly count: number;
     readonly users: Array<PartialUser>;
+    readonly updated: UserExpirationRulePendingPreviewGroup;
+    readonly takenOver: UserExpirationRulePendingPreviewGroup;
+    readonly removed: UserExpirationRulePendingPreviewGroup;
 }
 
 /**
@@ -32,6 +37,15 @@ export function instanceOfUserExpirationRulePreview(
 ): value is UserExpirationRulePreview {
     if (!("count" in value) || value["count"] === undefined) return false;
     if (!("users" in value) || value["users"] === undefined) return false;
+    if (!("updated" in value) || value["updated"] === undefined) return false;
+    if (
+        (!("takenOver" in (value as Record<string, any>)) &&
+            !("taken_over" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["takenOver"] === undefined &&
+            (value as Record<string, any>)["taken_over"] === undefined)
+    )
+        return false;
+    if (!("removed" in value) || value["removed"] === undefined) return false;
     return true;
 }
 
@@ -49,6 +63,9 @@ export function UserExpirationRulePreviewFromJSONTyped(
     return {
         count: json["count"],
         users: (json["users"] as Array<any>).map(PartialUserFromJSON),
+        updated: UserExpirationRulePendingPreviewGroupFromJSON(json["updated"]),
+        takenOver: UserExpirationRulePendingPreviewGroupFromJSON(json["taken_over"]),
+        removed: UserExpirationRulePendingPreviewGroupFromJSON(json["removed"]),
     };
 }
 
@@ -57,7 +74,10 @@ export function UserExpirationRulePreviewToJSON(json: any): UserExpirationRulePr
 }
 
 export function UserExpirationRulePreviewToJSONTyped(
-    value?: Omit<UserExpirationRulePreview, "count" | "users"> | null,
+    value?: Omit<
+        UserExpirationRulePreview,
+        "count" | "users" | "updated" | "takenOver" | "removed"
+    > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

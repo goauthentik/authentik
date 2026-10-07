@@ -878,6 +878,8 @@ export * from "./UserCreationModeEnum";
 export * from "./UserDeleteStage";
 export * from "./UserDeleteStageRequest";
 export * from "./UserExpirationRule";
+export * from "./UserExpirationRulePendingPreview";
+export * from "./UserExpirationRulePendingPreviewGroup";
 export * from "./UserExpirationRulePreview";
 export * from "./UserExpirationRuleRequest";
 export * from "./UserFieldsEnum";
