@@ -18,9 +18,9 @@ Choose an **Activity basis** for each rule:
 
 Only activity attributed to the user counts. Actions performed on another user's account do not count as that user's activity. Refreshes made during impersonation or a flow for a different user are not recorded as activity. Failed requests, expiration warnings, background events, and API-token requests do not count. Service accounts are excluded from expiration rules by default.
 
-Both modes use the account creation date as a baseline and retain the recorded last login even if its event is unavailable. Provisioned or invited accounts that are never used can therefore expire.
+For users with no recorded activity, inactivity is measured from the account creation date. Provisioned or invited accounts that are never used can therefore expire.
 
-Successful OAuth refreshes are normally recorded once per user every 24 hours across applications. Expiration calculations include a 24-hour allowance for refresh activity, which can delay expiration by up to 24 hours; other activity receives no allowance. Refreshes preserve the original login time and authentication methods in tokens.
+Successful OAuth refreshes are normally recorded once per user every 24 hours across applications. Expiration calculations include a 24-hour allowance for refresh activity, which can delay expiration by up to 24 hours; other activity receives no allowance.
 
 ### Event retention
 
