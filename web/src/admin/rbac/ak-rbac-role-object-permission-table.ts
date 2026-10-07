@@ -55,9 +55,6 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
     @property({ type: String, attribute: "objectPk" })
     public objectPk: string | null = null;
 
-    @property({ type: Boolean, attribute: "active-only", reflect: true })
-    public showActiveOnly = false;
-
     @property({ attribute: "sort-filter", reflect: true })
     public sortFilter: PermissionSorting = "default";
 
