@@ -77,9 +77,9 @@ export class UserExpirationRuleForm extends ModelForm<UserExpirationRule, string
                 return false;
             }
 
-            const data = this.toJSON();
+            const data = this.toRequest(this.toJSON());
 
-            if (data.enabled && data.action === OffboardingActionEnum.Delete) {
+            if (this.requiresDeleteConfirmation(data)) {
                 let confirmed = false;
 
                 const close = (click: Event) => {
@@ -100,10 +100,19 @@ export class UserExpirationRuleForm extends ModelForm<UserExpirationRule, string
                         </p>
                         <p>
                             ${msg(
-                                "This can permanently delete matching accounts, including users with an offboarding already scheduled. Deleted accounts cannot be restored. Preview your changes before proceeding.",
+                                "This can permanently delete matching accounts, including users with an offboarding already scheduled. Deleted accounts cannot be restored.",
                                 { id: "user-expiration.delete-confirmation.warning" },
                             )}
                         </p>
+                        ${
+                            this.instance?.pk
+                                ? html`<p>
+                                      ${msg("Preview your changes before proceeding.", {
+                                          id: "user-expiration.delete-confirmation.preview.description",
+                                      })}
+                                  </p>`
+                                : nothing
+                        }
                         <button
                             slot="actions"
                             class="pf-c-button pf-m-secondary"
@@ -159,12 +168,10 @@ export class UserExpirationRuleForm extends ModelForm<UserExpirationRule, string
               });
     }
 
-    public override toJSON(): UserExpirationRule {
+    protected toRequest(data: UserExpirationRule): UserExpirationRuleRequest {
         // An empty warning period means "no warning", and an empty group means "every
         // user". The API expects null for both, not the empty string the blank
         // selections serialize to.
-        const data = super.toJSON();
-
         return {
             ...data,
             group: data.group || null,
@@ -172,8 +179,35 @@ export class UserExpirationRuleForm extends ModelForm<UserExpirationRule, string
         };
     }
 
+    protected requiresDeleteConfirmation(data: UserExpirationRuleRequest): boolean {
+        if (!data.enabled || data.action !== OffboardingActionEnum.Delete) {
+            return false;
+        }
+
+        if (!this.instance?.enabled || this.instance.action !== OffboardingActionEnum.Delete) {
+            return true;
+        }
+
+        const saved = this.toRequest(this.instance);
+
+        // A different group may include new users; moving from all users to a
+        // group only narrows the scope. Type ordering does not affect the scope.
+        const scopeExpanded =
+            Boolean(saved.group && data.group !== saved.group) ||
+            Boolean(data.userTypes?.some((type) => !saved.userTypes?.includes(type))) ||
+            Boolean(saved.excludeSuperusers && !data.excludeSuperusers);
+
+        // Clock and policy changes can affect users differently. Confirm them
+        // without trying to reproduce backend activity or policy evaluation here.
+        const expirationChanged = (
+            ["activityBasis", "inactivityDuration", "warnBefore", "policyEngineMode"] as const
+        ).some((field) => data[field] !== saved[field]);
+
+        return scopeExpanded || expirationChanged;
+    }
+
     protected override async send(data: UserExpirationRule): Promise<UserExpirationRule> {
-        const request = data as unknown as UserExpirationRuleRequest;
+        const request = this.toRequest(data);
 
         if (this.instance?.pk) {
             return this.#api.lifecycleUserExpirationRulesUpdate({
@@ -212,7 +246,7 @@ export class UserExpirationRuleForm extends ModelForm<UserExpirationRule, string
                 this.instance?.pk
                     ? html`<ak-user-expiration-rule-preview
                           .rule=${this.instance}
-                          .getRequest=${() => this.toJSON() as unknown as UserExpirationRuleRequest}
+                          .getRequest=${() => this.toRequest(this.toJSON())}
                       >
                           <button slot="trigger" class="pf-c-button pf-m-secondary" type="button">
                               ${msg("Preview changes", {
