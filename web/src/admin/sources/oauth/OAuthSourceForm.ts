@@ -452,6 +452,27 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Forward query parameters", {
+                            id: "oauth-source.forward-query-parameters.label",
+                        })}
+                        name="forwardQueryParameters"
+                    >
+                        <input
+                            type="text"
+                            value="${this.instance?.forwardQueryParameters ?? ""}"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
+                            placeholder="prompt,idphint"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Query parameters to forward from the authorization request to the OAuth Provider, separated by comma. For example, prompt to pass prompt=select_account from a downstream application.",
+                                { id: "oauth-source.forward-query-parameters.description" },
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             ${this.renderUrlOptions()}

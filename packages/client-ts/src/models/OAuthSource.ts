@@ -124,6 +124,11 @@ export interface OAuthSource {
      */
     readonly callbackUrl: string;
     additionalScopes?: string;
+    /**
+     * Comma-separated list of query parameter names that should be forwarded from the authorization
+     * request to the upstream Identity Provider's authorization URL.
+     */
+    forwardQueryParameters?: string;
     readonly type: SourceType;
     oidcWellKnownUrl?: string;
     oidcJwksUrl?: string;
@@ -284,6 +289,8 @@ export function OAuthSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean
         consumerKey: json["consumer_key"],
         callbackUrl: json["callback_url"],
         additionalScopes: json["additional_scopes"] == null ? undefined : json["additional_scopes"],
+        forwardQueryParameters:
+            json["forward_query_parameters"] == null ? undefined : json["forward_query_parameters"],
         type: SourceTypeFromJSON(json["type"]),
         oidcWellKnownUrl:
             json["oidc_well_known_url"] == null ? undefined : json["oidc_well_known_url"],
@@ -342,6 +349,7 @@ export function OAuthSourceToJSONTyped(
         pkce: PKCEMethodEnumToJSON(value["pkce"]),
         consumer_key: value["consumerKey"],
         additional_scopes: value["additionalScopes"],
+        forward_query_parameters: value["forwardQueryParameters"],
         oidc_well_known_url: value["oidcWellKnownUrl"],
         oidc_jwks_url: value["oidcJwksUrl"],
         oidc_jwks: value["oidcJwks"],

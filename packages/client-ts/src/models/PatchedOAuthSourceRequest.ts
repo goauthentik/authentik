@@ -92,6 +92,11 @@ export interface PatchedOAuthSourceRequest {
     consumerKey?: string;
     consumerSecret?: string;
     additionalScopes?: string;
+    /**
+     * Comma-separated list of query parameter names that should be forwarded from the authorization
+     * request to the upstream Identity Provider's authorization URL.
+     */
+    forwardQueryParameters?: string;
     oidcWellKnownUrl?: string;
     oidcJwksUrl?: string;
     oidcJwks?: { [key: string]: any };
@@ -189,6 +194,8 @@ export function PatchedOAuthSourceRequestFromJSONTyped(
         consumerKey: json["consumer_key"] == null ? undefined : json["consumer_key"],
         consumerSecret: json["consumer_secret"] == null ? undefined : json["consumer_secret"],
         additionalScopes: json["additional_scopes"] == null ? undefined : json["additional_scopes"],
+        forwardQueryParameters:
+            json["forward_query_parameters"] == null ? undefined : json["forward_query_parameters"],
         oidcWellKnownUrl:
             json["oidc_well_known_url"] == null ? undefined : json["oidc_well_known_url"],
         oidcJwksUrl: json["oidc_jwks_url"] == null ? undefined : json["oidc_jwks_url"],
@@ -235,6 +242,7 @@ export function PatchedOAuthSourceRequestToJSONTyped(
         consumer_key: value["consumerKey"],
         consumer_secret: value["consumerSecret"],
         additional_scopes: value["additionalScopes"],
+        forward_query_parameters: value["forwardQueryParameters"],
         oidc_well_known_url: value["oidcWellKnownUrl"],
         oidc_jwks_url: value["oidcJwksUrl"],
         oidc_jwks: value["oidcJwks"],
