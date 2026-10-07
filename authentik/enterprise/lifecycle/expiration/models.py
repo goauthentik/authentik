@@ -1,11 +1,12 @@
 """Automatic user expiration: rules that schedule offboardings for inactive users."""
 
+from collections.abc import Collection, Iterator
 from datetime import datetime, timedelta
 from uuid import UUID, uuid4
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import IntegrityError, models, transaction
-from django.db.models import OuterRef, Q, QuerySet
+from django.db.models import OuterRef, Prefetch, Q, QuerySet
 from django.db.models.functions import Greatest
 from django.utils import timezone
 from django.utils.translation import gettext as _
@@ -246,7 +247,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         warn = timedelta_from_string(self.warn_before) if self.warn_before else timedelta()
         return timezone.now() - self.inactivity_timedelta + warn
 
-    def candidates(self) -> QuerySet[User]:
+    def candidates(self, *, withdrawn: Collection[UUID] = ()) -> QuerySet[User]:
         """Users this rule would schedule a new offboarding for on its next run."""
         qs = self.scope(threshold=self._threshold()).annotate(
             login_activity=Greatest("last_login", "date_joined")
@@ -254,7 +255,9 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         # Any pending row (manual or generated) excludes the user; one per user is a
         # DB constraint.
         qs = qs.exclude(
-            pk__in=UserOffboarding.objects.filter(status=OffboardingStatus.PENDING).values("user")
+            pk__in=UserOffboarding.objects.filter(status=OffboardingStatus.PENDING)
+            .exclude(pk__in=withdrawn)
+            .values("user")
         )
         # A terminal generated row newer than the user's last login exempts them
         # until they log in again: cancel is an exemption, a reactivated user is not
@@ -305,16 +308,8 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                 rel_obj=transport,
             )
 
-    def reconcile_offboarding(self, row: UserOffboarding) -> tuple[bool, bool]:
-        """Refresh a locked pending row owned by this rule.
-
-        Both the sweep and execution use this, so execution need not wait for a sweep
-        to pick up changed settings. Moving a deadline later is silent; moving it
-        earlier or changing the action requests another warning. The caller sends it
-        after releasing the row lock.
-
-        Returns whether the row was kept and whether another warning is needed.
-        """
+    def _pending_due_at(self, row: UserOffboarding) -> datetime | None:
+        """Re-evaluate an owned row without changing it, assuming the rule is enabled."""
         event_after_creation = False
         if self.activity_basis == ActivityBasis.SUCCESSFUL_EVENTS:
             if not hasattr(row.user, "expiration_event_at"):
@@ -327,14 +322,27 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                 )
             )
         if (
-            not self.enabled
-            or not self._in_scope(row.user)
+            not self._in_scope(row.user)
             or (row.user.last_login is not None and row.user.last_login >= row.created_at)
             or event_after_creation
         ):
+            return None
+        return self.due_at(row.user)
+
+    def reconcile_offboarding(self, row: UserOffboarding) -> tuple[bool, bool]:
+        """Refresh a locked pending row owned by this rule.
+
+        Both the sweep and execution use this, so execution need not wait for a sweep
+        to pick up changed settings. Moving a deadline later is silent; moving it
+        earlier or changing the action requests another warning. The caller sends it
+        after releasing the row lock.
+
+        Returns whether the row was kept and whether another warning is needed.
+        """
+        due_at = self._pending_due_at(row) if self.enabled else None
+        if due_at is None:
             row.delete()
             return False, False
-        due_at = self.due_at(row.user)
         rewarn = due_at < row.scheduled_at or row.action != self.action
         if (row.scheduled_at, row.action, row.revoke_sessions, row.revoke_tokens) != (
             due_at,
@@ -364,15 +372,51 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
             if rewarn:
                 self._warn(row.user, row)
 
-    def _tighten_foreign_rows(self):
-        """Tightening pass: take over pending rows of other rules when this rule outranks
-        their owner (see `rank`). The user is warned again because date or action changed."""
-        rows = (
+    def _foreign_rows(self) -> QuerySet[UserOffboarding]:
+        """Generated pending rows eligible for this rule's tightening pass."""
+        return (
             UserOffboarding.objects.filter(status=OffboardingStatus.PENDING, rule__isnull=False)
             .exclude(rule=self)
             .filter(user__in=self.scope(threshold=self._threshold()))
-            .select_related("user")
         )
+
+    def preview_pending(self) -> Iterator[tuple[str, UserOffboarding, datetime | None]]:
+        """Preview changes to existing rows if enabled, without writing or warning.
+
+        Manual rows and terminal exemptions are never taken over. Like the sweep,
+        foreign rows are compared to their stored rank, not their owner's current settings.
+        """
+        activity = Prefetch("user", queryset=with_activity(User.objects.all()))
+        owned = UserOffboarding.objects.filter(rule=self, status=OffboardingStatus.PENDING)
+        for row in (
+            owned.order_by("user__username")
+            .prefetch_related(activity)
+            .iterator(chunk_size=CANDIDATE_CHUNK_SIZE)
+        ):
+            due_at = self._pending_due_at(row)
+            if due_at is None:
+                yield "removed", row, None
+            elif (row.scheduled_at, row.action, row.revoke_sessions, row.revoke_tokens) != (
+                due_at,
+                self.action,
+                self.revoke_sessions,
+                self.revoke_tokens,
+            ):
+                yield "updated", row, due_at
+        for row in (
+            self._foreign_rows()
+            .order_by("user__username")
+            .prefetch_related(activity)
+            .iterator(chunk_size=CANDIDATE_CHUNK_SIZE)
+        ):
+            rank = self.rank(row.user)
+            if rank < self.row_rank(row) and self._in_scope(row.user):
+                yield "taken_over", row, rank[0]
+
+    def _tighten_foreign_rows(self):
+        """Tightening pass: take over pending rows of other rules when this rule outranks
+        their owner (see `rank`). The user is warned again because date or action changed."""
+        rows = self._foreign_rows().select_related("user")
         # Policies run only on the users behind these few rows, not the whole scope.
         passing = self._apply_policies(User.objects.filter(pk__in=rows.values("user")))
         # Fetch activity in a batch rather than querying events for each pending row.
