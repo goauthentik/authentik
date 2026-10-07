@@ -882,6 +882,8 @@ export * from "./UserCreationModeEnum.js";
 export * from "./UserDeleteStage.js";
 export * from "./UserDeleteStageRequest.js";
 export * from "./UserExpirationRule.js";
+export * from "./UserExpirationRulePendingPreview.js";
+export * from "./UserExpirationRulePendingPreviewGroup.js";
 export * from "./UserExpirationRulePreview.js";
 export * from "./UserExpirationRuleRequest.js";
 export * from "./UserFieldsEnum.js";
