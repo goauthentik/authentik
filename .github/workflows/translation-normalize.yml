@@ -1,9 +1,9 @@
 ---
 name: Translation - Normalize locale paths
 
-# Transifex writes backend catalogs to locale/<tag>/, which Django doesn't read.
-# Move them to their canonical paths (see locales.yaml) and push the result back to
-# the Transifex pull request. `make ci-lint-locales` in ci-main verifies the outcome.
+# Moves catalogs in Transifex pull requests to the paths listed in locales.yaml,
+# then pushes the result back to the pull request.
+# `make ci-lint-locales` in ci-main checks the outcome.
 
 on:
   pull_request:
@@ -12,6 +12,13 @@ on:
     paths:
       - "locale/**"
       - "web/xliff/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 jobs:
   normalize:
