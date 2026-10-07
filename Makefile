@@ -97,8 +97,8 @@ lint-check-types:  ## Type-check the repository's Node.js scripts.
 lint: ci-lint-bandit ci-lint-mypy ci-lint-cargo-deny ci-lint-cargo-machete  ## Check Python (bandit, mypy), Go (golangci) and Rust dependencies (cargo deny, machete)
 	golangci-lint run -v
 
-core-install:  ## Install python dependencies (uv)
-ifdef ($(BREW_EXISTS))
+core-install:
+ifneq ($(BREW_EXISTS),)
 # Clear cache to ensure fresh compilation
 	$(UV) cache clean
 # Force compilation from source for lxml and xmlsec with correct environment
