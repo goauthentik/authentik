@@ -12407,14 +12407,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Dismiss banner</source>
   <target>Закрыть баннер</target>
 </trans-unit>
-<trans-unit id="settings.base-url.banner.action">
-  <source>Configure it in the system settings</source>
-  <target>Настроить в системных настройках</target>
-</trans-unit>
-<trans-unit id="settings.base-url.banner.label">
-  <source>The base URL has not been configured.</source>
-  <target>Базовый URL не настроен.</target>
-</trans-unit>
 <trans-unit id="sf993bb199fefbe04">
   <source>All</source>
   <target>Все</target>

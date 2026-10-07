@@ -12369,14 +12369,6 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
   <source>Dismiss banner</source>
   <target>Zavrieť oznámenie</target>
 </trans-unit>
-<trans-unit id="settings.base-url.banner.action">
-  <source>Configure it in the system settings</source>
-  <target>Nastaviť v systémových nastaveniach</target>
-</trans-unit>
-<trans-unit id="settings.base-url.banner.label">
-  <source>The base URL has not been configured.</source>
-  <target>Základná URL nie je nastavená.</target>
-</trans-unit>
 <trans-unit id="sf993bb199fefbe04">
   <source>All</source>
   <target>Všetko</target>

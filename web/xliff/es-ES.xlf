@@ -10615,7 +10615,7 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 </trans-unit>
 <trans-unit id="sd30f00ff2135589c">
   <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
-  <target>Cuando está habilitado, se enviará una notificación al usuario que desencadenó el evento, además de a cualquier usuario en el grupo mencionado anteriormente. El usuario del evento siempre será el primer usuario; para enviar una notificación solo a este usuario, active &apos;Enviar una vez&apos; en el transporte de notificaciones.</target>
+  <target>Cuando está habilitado, se enviará una notificación al usuario que desencadenó el evento, además de a cualquier usuario en el grupo mencionado anteriormente. El usuario del evento siempre será el primer usuario; para enviar una notificación solo a este usuario, active 'Enviar una vez' en el transporte de notificaciones.</target>
 </trans-unit>
 <trans-unit id="s1c0267488c33401b">
   <source>Minimum reviewers</source>
@@ -11222,12 +11222,6 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 </trans-unit>
 <trans-unit id="banner.dismiss.aria-label">
   <source>Dismiss banner</source>
-</trans-unit>
-<trans-unit id="settings.base-url.banner.action">
-  <source>Configure it in the system settings</source>
-</trans-unit>
-<trans-unit id="settings.base-url.banner.label">
-  <source>The base URL has not been configured.</source>
 </trans-unit>
 <trans-unit id="sf993bb199fefbe04">
   <source>All</source>

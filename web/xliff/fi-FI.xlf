@@ -10868,7 +10868,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sd30f00ff2135589c">
   <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
-  <target>Kun tämä on käytössä, notifikaatio lähetetään sille käyttäjälle, joka laukaisi tapahtuman, niiden käyttäjien lisäksi, jotka ovat yllä olevan ryhmän jäseniä. Tapahtuman käyttäjä on aina ensimmäinen käyttäjä. Lähettääksesi notifikaation vain tapahtuman käyttäjälle, valitse &apos;Lähetä kerran&apos; notifikaation väylän asetuksissa.</target>
+  <target>Kun tämä on käytössä, notifikaatio lähetetään sille käyttäjälle, joka laukaisi tapahtuman, niiden käyttäjien lisäksi, jotka ovat yllä olevan ryhmän jäseniä. Tapahtuman käyttäjä on aina ensimmäinen käyttäjä. Lähettääksesi notifikaation vain tapahtuman käyttäjälle, valitse 'Lähetä kerran' notifikaation väylän asetuksissa.</target>
 </trans-unit>
 <trans-unit id="s1c0267488c33401b">
   <source>Minimum reviewers</source>
@@ -11475,12 +11475,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="banner.dismiss.aria-label">
   <source>Dismiss banner</source>
-</trans-unit>
-<trans-unit id="settings.base-url.banner.action">
-  <source>Configure it in the system settings</source>
-</trans-unit>
-<trans-unit id="settings.base-url.banner.label">
-  <source>The base URL has not been configured.</source>
 </trans-unit>
 <trans-unit id="sf993bb199fefbe04">
   <source>All</source>

@@ -1734,7 +1734,7 @@
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
   <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
-  <target>Aby zezwolić na dowolny identyfikator URI przekierowania, ustaw tryb na Regex i wartość na &quot;.*&quot;. Pamiętaj o potencjalnych konsekwencjach dla bezpieczeństwa.</target>
+  <target>Aby zezwolić na dowolny identyfikator URI przekierowania, ustaw tryb na Regex i wartość na ".*". Pamiętaj o potencjalnych konsekwencjach dla bezpieczeństwa.</target>
 </trans-unit>
 <trans-unit id="s62f7c59b0606a8d6">
   <source>Authorization flow</source>
@@ -4372,7 +4372,7 @@ nie przechodzi, gdy jedna lub obie wybrane opcje są równe lub wyższe od progu
 </trans-unit>
 <trans-unit id="s17359123e1f24504">
   <source>Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. 'memberOf'. To lookup nested groups in an Active Directory environment use 'memberOf:1.2.840.113556.1.4.1941:'.</source>
-  <target>Pole zawierające nazwy DN grup, których użytkownik jest członkiem. To pole służy do wyszukiwania grup na podstawie użytkowników, np. &apos;memberOf&apos;. Aby wyszukać grupy zagnieżdżone w środowisku Active Directory, użyj &apos;memberOf:1.2.840.113556.1.4.1941:&apos;.</target>
+  <target>Pole zawierające nazwy DN grup, których użytkownik jest członkiem. To pole służy do wyszukiwania grup na podstawie użytkowników, np. 'memberOf'. Aby wyszukać grupy zagnieżdżone w środowisku Active Directory, użyj 'memberOf:1.2.840.113556.1.4.1941:'.</target>
 </trans-unit>
 <trans-unit id="s026555347e589f0e">
   <source>Object uniqueness field</source>
@@ -6398,7 +6398,7 @@ Można tu używać tylko zasad, ponieważ dostęp jest sprawdzany przed uwierzyt
 </trans-unit>
 <trans-unit id="s844baf19a6c4a9b4">
   <source>Enable "Remember me on this device"</source>
-  <target>Włącz &quot;Zapamiętaj to urządzenie&quot;</target>
+  <target>Włącz "Zapamiętaj to urządzenie"</target>
 </trans-unit>
 <trans-unit id="sfa72bca733f40692">
   <source>When enabled, the user can save their username in a cookie, allowing them to skip directly to entering their password.</source>
@@ -11395,12 +11395,6 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="banner.dismiss.aria-label">
   <source>Dismiss banner</source>
-</trans-unit>
-<trans-unit id="settings.base-url.banner.action">
-  <source>Configure it in the system settings</source>
-</trans-unit>
-<trans-unit id="settings.base-url.banner.label">
-  <source>The base URL has not been configured.</source>
 </trans-unit>
 <trans-unit id="sf993bb199fefbe04">
   <source>All</source>

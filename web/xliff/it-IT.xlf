@@ -8506,7 +8506,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s78aa910bcb26034d">
   <source>Global and object permission</source>
-  <target>Permessi globali e dell&apos;oggetto</target>
+  <target>Permessi globali e dell'oggetto</target>
 </trans-unit>
 <trans-unit id="sc8f73affccb6ae4d">
   <source>Global permission</source>
@@ -8514,7 +8514,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="scf9ebad133d2d561">
   <source>Object permission</source>
-  <target>Permesso dell&apos;oggetto</target>
+  <target>Permesso dell'oggetto</target>
 </trans-unit>
 <trans-unit id="sa84d68ec57e21b0f">
   <source>Permissions on this object</source>
@@ -8522,7 +8522,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s4d83e4891c19ff14">
   <source>Permissions assigned to this role affecting specific object instances.</source>
-  <target>Permessi assegnati a questo ruolo che interessano specifiche istanze dell&apos;oggetto.</target>
+  <target>Permessi assegnati a questo ruolo che interessano specifiche istanze dell'oggetto.</target>
 </trans-unit>
 <trans-unit id="s3e07daaacb10f38a">
   <source>Parents</source>
@@ -8570,7 +8570,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s4a7ec7687e560e6a">
   <source>Is Primary user</source>
-  <target>È l&apos;utente principale</target>
+  <target>È l'utente principale</target>
 </trans-unit>
 <trans-unit id="se14ede3bc78d9599">
   <source>Primary</source>
@@ -8729,7 +8729,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s5f6ad947b4824e40">
   <source>Next, download the configuration to deploy the authentik Agent via MDM</source>
-  <target>Successivamente, scarica la configurazione per distribuire l&apos;Agente authentik tramite MDM</target>
+  <target>Successivamente, scarica la configurazione per distribuire l'Agente authentik tramite MDM</target>
 </trans-unit>
 <trans-unit id="s523337424b694d5c">
   <source>Device Access Group</source>
@@ -9239,7 +9239,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s19feda58eae87c66">
   <source>The interval between opening new reviews for matching objects.</source>
-  <target>L&apos;intervallo tra l&apos;apertura di nuove revisioni per gli oggetti corrispondenti.</target>
+  <target>L'intervallo tra l'apertura di nuove revisioni per gli oggetti corrispondenti.</target>
 </trans-unit>
 <trans-unit id="s760c656016171d08">
   <source>Grace period</source>
@@ -9267,7 +9267,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd530d226f68ec351">
   <source>When set, the rule will apply to the selected individual object. Otherwise, the rule applies to all objects of the selected type.</source>
-  <target>Se impostata, la regola si applica all&apos;oggetto selezionato. Altrimenti si applica a tutti gli oggetti del tipo selezionato.</target>
+  <target>Se impostata, la regola si applica all'oggetto selezionato. Altrimenti si applica a tutti gli oggetti del tipo selezionato.</target>
 </trans-unit>
 <trans-unit id="sea85769d2d8f3ea8">
   <source>Available Users</source>
@@ -9279,7 +9279,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s3899116cda378dcb">
   <source>A review will require approval from each of the users selected here in addition to group members as per above settings.</source>
-  <target>Una revisione richiederà l&apos;approvazione di ciascun utente selezionato qui, oltre ai membri dei gruppi indicati sopra.</target>
+  <target>Una revisione richiederà l'approvazione di ciascun utente selezionato qui, oltre ai membri dei gruppi indicati sopra.</target>
 </trans-unit>
 <trans-unit id="s56511df6b44ad5cc">
   <source>Notification transports</source>
@@ -9287,7 +9287,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s6273aa020677fe75">
   <source>Select which transports should be used to notify the user.</source>
-  <target>Seleziona quali canali utilizzare per notificare l&apos;utente.</target>
+  <target>Seleziona quali canali utilizzare per notificare l'utente.</target>
 </trans-unit>
 <trans-unit id="s78e31a199ca08cd9">
   <source>Object Lifecycle Rules</source>
@@ -9411,7 +9411,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s804ab712b1add3d3">
   <source>An unknown error occurred while submitting the form.</source>
-  <target>Si è verificato un errore sconosciuto durante l&apos;invio del modulo.</target>
+  <target>Si è verificato un errore sconosciuto durante l'invio del modulo.</target>
 </trans-unit>
 <trans-unit id="s78adb00480380ad9">
   <source>Sign logout response</source>
@@ -9429,7 +9429,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>If checked, approving a review will require at least that many users from
                         <x id="0" equiv-text="&lt;em&gt;"/>each<x id="1" equiv-text="&lt;/em&gt;"/> of the selected groups. When disabled, the value is a total
                         across all groups.</source>
-  <target>Se selezionato, l&apos;approvazione di una revisione richiederà almeno quel numero di utenti da
+  <target>Se selezionato, l'approvazione di una revisione richiederà almeno quel numero di utenti da
                         <x id="0" equiv-text="&lt;em&gt;"/>ciascuno<x id="1" equiv-text="&lt;/em&gt;"/> dei gruppi selezionati. Se disabilitato, il valore è     totale attraverso tutti i gruppi.</target>
 </trans-unit>
 <trans-unit id="s776d93092ad9ce90">
@@ -9486,7 +9486,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sac428aa7c586a35a">
   <source>One email address per line, or comma/semicolon separated. Each recipient will receive a separate email with an invitation link.</source>
-  <target>Un indirizzo email per riga, oppure separati da virgola/punto e virgola. Ogni destinatario riceverà un&apos;email separata con un link di invito.</target>
+  <target>Un indirizzo email per riga, oppure separati da virgola/punto e virgola. Ogni destinatario riceverà un'email separata con un link di invito.</target>
 </trans-unit>
 <trans-unit id="s090f2d07b5a6aee3">
   <source>CC</source>
@@ -9494,7 +9494,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s7f39ec207409ff19">
   <source>A comma-separated list of addresses to receive copies of the invitation. Recipients will receive the full list of other addresses in this list.</source>
-  <target>Un elenco di indirizzi separati da virgola che riceveranno copie dell&apos;invito. I destinatari vedranno l&apos;intero elenco degli altri indirizzi.</target>
+  <target>Un elenco di indirizzi separati da virgola che riceveranno copie dell'invito. I destinatari vedranno l'intero elenco degli altri indirizzi.</target>
 </trans-unit>
 <trans-unit id="s15db6d19b09a16c3">
   <source>BCC</source>
@@ -9502,7 +9502,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sf4021c7b40b6f54e">
   <source>A comma-separated list of addresses to receive copies of the invitation. Recipients will not receive the addresses of other recipients.</source>
-  <target>Un elenco di indirizzi separati da virgola che riceveranno copie dell&apos;invito. I destinatari non vedranno gli indirizzi degli altri.</target>
+  <target>Un elenco di indirizzi separati da virgola che riceveranno copie dell'invito. I destinatari non vedranno gli indirizzi degli altri.</target>
 </trans-unit>
 <trans-unit id="s7c37f1acb9f97ea3">
   <source>Select the email template to use for sending invitations.</source>
@@ -9514,7 +9514,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sf910cca0f06bbc31">
   <source>Enter the email address or username associated with your account.</source>
-  <target>Inserisci l&apos;indirizzo email o il nome utente associato al tuo account.</target>
+  <target>Inserisci l'indirizzo email o il nome utente associato al tuo account.</target>
 </trans-unit>
 <trans-unit id="s6e858c4c4c3b6b76">
   <source>You're about to be redirected to the following URL.</source>
@@ -9546,7 +9546,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="se9be959bed7985e2">
   <source>Keypair used to validate the certificate of the webhook endpoint. When not configured, the standard CA bundle is used.</source>
-  <target>Coppia di chiavi utilizzata per convalidare il certificato dell&apos;endpoint webhook. Se non configurata, viene utilizzato il bundle CA standard.</target>
+  <target>Coppia di chiavi utilizzata per convalidare il certificato dell'endpoint webhook. Se non configurata, viene utilizzato il bundle CA standard.</target>
 </trans-unit>
 <trans-unit id="s5b6d39d39a26028b">
   <source>Security key (e.g. YubiKey)</source>
@@ -9574,7 +9574,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="se29f57b668fb7a1b">
   <source>Optional hints to guide the browser in prioritizing the preferred authenticator type. Order matters - the first hint has highest priority. These are advisory and may be ignored by browsers.</source>
-  <target>Suggerimenti opzionali per guidare il browser nella priorità del tipo di autenticatore preferito. L&apos;ordine è importante: il primo suggerimento ha la priorità più alta. Sono indicativi e possono essere ignorati dai browser.</target>
+  <target>Suggerimenti opzionali per guidare il browser nella priorità del tipo di autenticatore preferito. L'ordine è importante: il primo suggerimento ha la priorità più alta. Sono indicativi e possono essere ignorati dai browser.</target>
 </trans-unit>
 <trans-unit id="sb67b82120563c611">
   <source>Hints</source>
@@ -9582,7 +9582,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa422ad938ad8da19">
   <source>Optional hints to guide the browser in prioritizing the preferred authenticator type during registration. Order matters - the first hint has highest priority. These are advisory and may be ignored by browsers.</source>
-  <target>Suggerimenti opzionali per guidare il browser nella priorità del tipo di autenticatore preferito durante la registrazione. L&apos;ordine è importante: il primo suggerimento ha la priorità più alta. Sono indicativi e possono essere ignorati dai browser.</target>
+  <target>Suggerimenti opzionali per guidare il browser nella priorità del tipo di autenticatore preferito durante la registrazione. L'ordine è importante: il primo suggerimento ha la priorità più alta. Sono indicativi e possono essere ignorati dai browser.</target>
 </trans-unit>
 <trans-unit id="sdbd03c084031f5c1">
   <source>Filtering</source>
@@ -9594,11 +9594,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sc0fccaeebcecbc47">
   <source>No assertion was returned by the authenticator</source>
-  <target>Nessuna asserzione restituita dall&apos;autenticatore</target>
+  <target>Nessuna asserzione restituita dall'autenticatore</target>
 </trans-unit>
 <trans-unit id="s77e1bdd20d7457b3">
   <source>Authentication was cancelled or timed out</source>
-  <target>L&apos;autenticazione è stata annullata o è scaduta</target>
+  <target>L'autenticazione è stata annullata o è scaduta</target>
 </trans-unit>
 <trans-unit id="sbc8f730711f5a0a1">
   <source>Registration was cancelled or timed out. Please try again.</source>
@@ -9614,7 +9614,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s80490368baf07290">
   <source>Upon successful authentication, re-start authentication in other open tabs.</source>
-  <target>Dopo un&apos;autenticazione riuscita, riavvia l&apos;autenticazione nelle altre schede aperte.</target>
+  <target>Dopo un'autenticazione riuscita, riavvia l'autenticazione nelle altre schede aperte.</target>
 </trans-unit>
 <trans-unit id="sb5db04b10b00f6fd">
   <source>About authentik</source>
@@ -9710,7 +9710,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s7ed2bed74a846fd0">
   <source>This name will be used to identify the role within authentik.</source>
-  <target>Questo nome verrà utilizzato per identificare il ruolo all&apos;interno di authentik.</target>
+  <target>Questo nome verrà utilizzato per identificare il ruolo all'interno di authentik.</target>
 </trans-unit>
 <trans-unit id="s99059109387c0163">
   <source>Service Account</source>
@@ -9734,7 +9734,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd29ddaadcc30d22c">
   <source>User "<x id="0" equiv-text="${query}"/>"</source>
-  <target>Utente &quot;<x id="0" equiv-text="${query}"/>&quot;</target>
+  <target>Utente "<x id="0" equiv-text="${query}"/>"</target>
 </trans-unit>
 <trans-unit id="s220bcce27242e1e9">
   <source>search</source>
@@ -9746,7 +9746,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s1809b50e79923494">
   <source>Search the docs for "<x id="0" equiv-text="${query}"/>"</source>
-  <target>Cerca nella documentazione &quot;<x id="0" equiv-text="${query}"/>&quot;</target>
+  <target>Cerca nella documentazione "<x id="0" equiv-text="${query}"/>"</target>
 </trans-unit>
 <trans-unit id="command-palette.suffix.view-docs">
   <source>New Tab</source>
@@ -9947,7 +9947,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sc574714bff5b18ea">
   <source>Altered behavior for usage with Cisco Webex.</source>
-  <target>Comportamento modificato per l&apos;uso con Cisco Webex.</target>
+  <target>Comportamento modificato per l'uso con Cisco Webex.</target>
 </trans-unit>
 <trans-unit id="s2293b71fd35fee2a">
   <source>Statistics</source>
@@ -10784,7 +10784,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd30f00ff2135589c">
   <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
-  <target>Se abilitata, la notifica verrà inviata all&apos;utente che ha attivato l&apos;evento, oltre a tutti gli utenti del gruppo sopra indicato. L&apos;utente dell&apos;evento sarà sempre il primo a inviare una notifica solo all&apos;utente dell&apos;evento che ha abilitato &quot;Invia una volta&quot; nel trasporto delle notifiche.</target>
+  <target>Se abilitata, la notifica verrà inviata all'utente che ha attivato l'evento, oltre a tutti gli utenti del gruppo sopra indicato. L'utente dell'evento sarà sempre il primo a inviare una notifica solo all'utente dell'evento che ha abilitato "Invia una volta" nel trasporto delle notifiche.</target>
 </trans-unit>
 <trans-unit id="s1c0267488c33401b">
   <source>Minimum reviewers</source>
@@ -11348,7 +11348,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
-  <target>Utilizzo dell&apos;utente esterno</target>
+  <target>Utilizzo dell'utente esterno</target>
 </trans-unit>
 <trans-unit id="s3bca5a165739e8c9">
   <source>Allow application access with no policies</source>
@@ -11391,12 +11391,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="banner.dismiss.aria-label">
   <source>Dismiss banner</source>
-</trans-unit>
-<trans-unit id="settings.base-url.banner.action">
-  <source>Configure it in the system settings</source>
-</trans-unit>
-<trans-unit id="settings.base-url.banner.label">
-  <source>The base URL has not been configured.</source>
 </trans-unit>
 <trans-unit id="sf993bb199fefbe04">
   <source>All</source>
