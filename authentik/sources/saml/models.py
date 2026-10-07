@@ -95,12 +95,6 @@ class SAMLSource(Source):
         help_text=_("Also known as Entity ID. Defaults to the Metadata URL."),
     )
 
-    audience_override = models.TextField(
-        blank=True,
-        default="",
-        help_text=_("Audience value this IdP sends for authentik."),
-    )
-
     sso_url = models.TextField(
         validators=[DomainlessURLValidator(schemes=("http", "https"))],
         verbose_name=_("SSO URL"),
@@ -263,14 +257,10 @@ class SAMLSource(Source):
     def get_issuer(self, request: HttpRequest) -> str:
         """Get Source's Issuer, falling back to our Metadata URL if none is set"""
         if not self.issuer_override:
-            return self.build_full_url(request, view="metadata")
+            return request.build_absolute_uri(
+                reverse("authentik_sources_saml:metadata", kwargs={"source_slug": self.slug})
+            )
         return self.issuer_override
-
-    def build_full_url(self, request: HttpRequest, view: str = "acs") -> str:
-        """Build Full ACS URL to be used in IDP"""
-        return request.build_absolute_uri(
-            reverse(f"authentik_sources_saml:{view}", kwargs={"source_slug": self.slug})
-        )
 
     @property
     def icon_url(self) -> str:

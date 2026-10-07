@@ -4,7 +4,7 @@ go 1.27.0
 
 require (
 	beryju.io/ldap v0.2.2
-	beryju.io/radius-eap v0.1.1
+	beryju.io/radius-eap v0.2.0
 	github.com/avast/retry-go/v4 v4.7.0
 	github.com/getsentry/sentry-go v0.49.0
 	github.com/go-ldap/ldap/v3 v3.4.14
@@ -14,7 +14,7 @@ require (
 	github.com/gorilla/mux v1.8.1
 	github.com/gorilla/securecookie v1.1.2
 	github.com/gorilla/websocket v1.5.3
-	github.com/grafana/pyroscope-go v1.4.2
+	github.com/grafana/pyroscope-go v1.4.3
 	github.com/jellydator/ttlcache/v3 v3.4.1
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/nmcclain/asn1-ber v0.0.0-20170104154839-2661553a0484
