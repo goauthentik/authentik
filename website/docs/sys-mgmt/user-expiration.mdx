@@ -7,7 +7,7 @@ authentik_version: "2026.11.0"
 authentik_preview: true
 ---
 
-User expiration rules automatically schedule a [user offboarding](./user-offboarding.mdx) for users who have been inactive for a configurable period. You can scope a rule to a group or to all users, choose whether inactive users are deactivated or deleted, and optionally warn users before their account expires.
+User expiration rules automatically schedule inactive users for [offboarding](./user-offboarding.mdx) after a configurable period. You can apply a rule to a group or all users, choose whether to deactivate or delete inactive users, and warn users before their accounts expire.
 
 ## How activity is measured
 
@@ -16,11 +16,11 @@ Choose an **Activity basis** for each rule:
 - **Last login** uses the user's recorded last login.
 - **Last activity**, the default, also counts successful authentication and application access: browser, LDAP, RADIUS, and proxy authentication, OAuth client credentials with an app password, password grants, JWT client assertions, token exchanges, application authorizations, and OAuth refresh grants.
 
-Only activity attributed to the user counts. Actions performed on another user's account do not count as that user's activity. Refreshes made during impersonation or a flow for a different user are not recorded as activity. Failed requests, expiration warnings, background events, and API-token requests do not count. Service accounts are excluded from expiration rules by default.
+Only activity attributed to the user counts. Actions performed on another user's account and refreshes made during impersonation or a flow for a different user do not count. Failed requests, expiration warnings, background events, and API token requests also do not count. Expiration rules exclude service accounts by default.
 
-For users with no recorded activity, inactivity is measured from the account creation date. Provisioned or invited accounts that are never used can therefore expire.
+For users with no recorded activity, the account creation date starts the inactivity period. Provisioned or invited accounts that are never used can therefore expire.
 
-Successful OAuth refreshes are normally recorded once per user every 24 hours across applications. Expiration calculations include a 24-hour allowance for refresh activity, which can delay expiration by up to 24 hours; other activity receives no allowance.
+A successful OAuth refresh normally creates an activity record only once per user every 24 hours across applications. Expiration calculations add a 24-hour allowance for refresh activity, which can delay expiration by up to 24 hours. Other activity receives no allowance.
 
 ### Event retention
 
@@ -30,24 +30,24 @@ Event retention defaults to 365 days. For **Last activity**, retain events for a
 
 1. In the Admin interface, navigate to **Events** > **Expiration Rules** and click **Create**.
 2. Enter a **Name**.
-3. Optionally select a **Group**. The rule applies to members of that group and of its child groups. Leave it empty to apply the rule to every user.
-4. Select the **User types** the rule applies to. Internal service accounts are never expired.
+3. Optionally select a **Group**. The rule applies to members of that group and its child groups. Leave **Group** empty to apply the rule to every user.
+4. Select the **User types** to which the rule applies. Internal service accounts never expire.
 5. Choose the **Activity basis** and enter the **Inactivity duration**, for example `days=90`. For **Last activity**, check that event retention covers the duration plus 24 hours.
 6. Select **Deactivate** or **Delete** for the **Action**, and configure **Revoke sessions** and **Revoke tokens**.
 7. Optionally enter a **Warning period**, for example `days=7`, and select the **Notification transports** used to warn the user. The warning period must be shorter than the inactivity duration.
-8. Leave **Exclude superusers** enabled unless you want the rule to apply to members of superuser groups as well.
-9. Leave **Enabled** off and click **Create**. New rules default to disabled, so no users are scheduled for offboarding until you enable the rule.
-10. Optionally bind policies to the rule. Expand the rule's row in the list to manage its policy bindings. A user is only expired if they pass the rule's policies, which lets you exempt users based on attributes or other criteria.
-11. Use the **Preview** action to see how many users the first run would schedule for offboarding.
-12. Edit the rule, enable **Enabled**, and click **Update**. The rule runs right away and then every hour.
+8. Leave **Exclude superusers** enabled unless you want to include members of superuser groups.
+9. Leave **Enabled** off, then click **Create**. The rule does not schedule users for offboarding until you enable it.
+10. Optionally bind policies to the rule. Expand the rule's row to manage its policy bindings. The rule expires only users who pass the bound policies, so you can exempt users based on attributes or other criteria.
+11. Click **Preview** to see how many users the first run would schedule for offboarding.
+12. Edit the rule, turn on **Enabled**, and click **Update**. The rule runs immediately and every hour thereafter.
 
 ## How rules run
 
-authentik evaluates enabled rules every hour. When a user reaches the inactivity threshold, authentik schedules an offboarding for their last activity plus the configured inactivity duration. The offboarding behaves like a [manually scheduled offboarding](./user-offboarding.mdx): it appears under **Events** > **Offboardings**, can be canceled, and is retried on failure. On the user's overview page, a **Cancel Expiration** button is shown, alongside the rule that scheduled it.
+Enabled rules run every hour. When a user reaches the inactivity threshold, the rule schedules an offboarding for the time of their last activity plus the configured inactivity duration. Like a [manually scheduled offboarding](./user-offboarding.mdx), it appears under **Events** > **Offboardings**. You can cancel it, and the offboarding is retried after a failure. The user's overview page shows **Cancel Expiration** and the rule that scheduled the offboarding.
 
-If a **Warning period** is configured, authentik creates the offboarding that long before it is due and generates a **User Expiration Warning** event. The warning is delivered through the selected notification transports, or as an in-app notification if none are selected. Without a warning period, the offboarding is created when due and runs within five minutes.
+If you configure a **Warning period**, the rule creates the offboarding that long before it is due, generates a **User Expiration Warning** event, and delivers the warning through the selected notification transports. If you select no transports, the warning appears as an in-app notification. Without a warning period, the rule creates the offboarding when it is due and runs it within five minutes.
 
-If the user logs in before the scheduled time, the pending offboarding is removed and the inactivity clock resets. Before execution, authentik checks that the rule still applies and the inactivity threshold has been reached. This prevents offboarding if the rule was disabled, the user's group membership changed, or the user logged in. Increasing the inactivity duration also postpones execution, even if the task is already queued.
+A login before the scheduled time removes the pending offboarding and resets the inactivity clock. Before execution, a final check confirms that the rule still applies and that the user has reached the inactivity threshold. These checks prevent offboarding if the rule is disabled, the user's group membership changes, or the user logs in. Increasing the inactivity duration also postpones execution, even if the task is already queued.
 
 Under **Events** > **Logs**, the **User Offboarded** event identifies the rule that triggered the offboarding.
 
@@ -55,19 +55,27 @@ For **Last activity** rules, activity recorded after scheduling removes the pend
 
 ## Exclusions and overlapping rules
 
-A rule skips the following users:
+### Excluded users
 
-- Internal service accounts, always.
-- Members of superuser groups, when **Exclude superusers** is enabled.
-- Users who already have a pending offboarding, whether manual or automatic.
-- Users with a completed, canceled, or failed automatic offboarding at or after their recorded last login (or account creation date if later). Canceling an automatic offboarding therefore exempts the user until a newer last login is recorded, and a user who is reactivated after an automatic deactivation is not expired again until they log in and become inactive again.
+A rule skips a user when any of these conditions apply:
 
-A canceled or reactivated user who never logs in again remains exempt indefinitely. You can still schedule a manual offboarding for that user.
+- The user is an internal service account.
+- The user belongs to a superuser group and **Exclude superusers** is enabled.
+- The user already has a pending manual or automatic offboarding.
+- An automatic offboarding for the user was completed, canceled, or marked as failed on or after the user's account creation or last login, whichever is later.
 
-This exemption uses the recorded login clock in both modes. Application authorizations and refreshes do not end it, and deleting or pruning activity events does not change it.
+A user with one of these automatic offboarding records remains exempt until their next login. This prevents a reactivated user from expiring again before they log in and become inactive. Application authorizations and OAuth refreshes do not end the exemption, and deleting activity events does not affect it. You can still schedule a manual offboarding.
 
-If several rules apply to the same user, the rule that expires them earliest wins. It takes over the pending offboarding, updates the date and action, and warns the user again. If two rules would expire the user at the same time, the rule that deactivates takes precedence over the rule that deletes, and if both use the same action, authentik consistently picks the same rule. For example, a rule that deletes contractors after 90 days does not override a rule that deactivates all users after 90 days. To delete contractors instead, exclude them from the deactivation rule with a negated group binding. Right before an offboarding runs, authentik checks again which rule wins. If a rule becomes less strict, for example because its inactivity duration was increased, pending offboardings are moved to the later date without a new warning.
+### Overlapping rules
 
-Editing a rule also updates its pending offboardings to use the current activity basis, inactivity duration, action, and session and token revocation settings. Preview the effect before changing the activity basis. Moving the expiration earlier or changing the action sends a new warning. Execution uses the current settings even if the next rule evaluation has not run yet. If execution itself discovers that changed settings make the expiration immediately due, authentik proceeds without sending another warning at the same time.
+If several rules apply to the same user, the rule with the earliest expiration takes precedence. The winning rule takes over the pending offboarding, updates its date and action, and warns the user again. A final check determines the winning rule before the offboarding runs.
 
-Deleting a rule removes its pending offboardings and keeps completed ones in the audit history. When the action is **Delete**, the offboarding is removed together with the user, so the **User Offboarded** event is the only lasting record.
+If two rules expire the user at the same time, a deactivation rule takes precedence over a deletion rule. If both rules use the same action, the same rule consistently takes precedence. For example, a rule that deletes contractors after 90 days does not override a rule that deactivates all users after 90 days. To delete contractors instead, exclude them from the deactivation rule with a negated group binding.
+
+### Change or delete a rule
+
+Editing a rule updates its pending offboardings to use the current activity basis, inactivity duration, action, and session and token revocation settings. Preview the effect before changing the activity basis. Moving expiration earlier or changing the action sends a new warning. Delaying expiration reschedules the offboarding without another warning.
+
+Execution uses the current settings even if the next rule evaluation has not run. If a change makes the expiration immediately due, the offboarding proceeds without another warning.
+
+Deleting a rule removes its pending offboardings but keeps completed records in the audit history. When the action is **Delete**, the offboarding is removed with the user, so the **User Offboarded** event is the only lasting record.
