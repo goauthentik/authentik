@@ -324,11 +324,12 @@ class ChannelsLoggingMiddleware:
     def log(self, scope: dict, **kwargs):
         """Log request"""
         headers = dict(scope.get("headers", {}))
+        # Header values are raw bytes and aren't guaranteed to be UTF-8
         LOGGER.info(
             scope["path"],
             scheme="ws",
-            remote=headers.get(b"x-forwarded-for", b"").decode(),
-            user_agent=headers.get(b"user-agent", b"").decode(),
+            remote=headers.get(b"x-forwarded-for", b"").decode(errors="backslashreplace"),
+            user_agent=headers.get(b"user-agent", b"").decode(errors="backslashreplace"),
             **kwargs,
         )
 
