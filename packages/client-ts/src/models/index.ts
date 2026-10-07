@@ -1,6 +1,7 @@
 export * from "./AccessDeniedChallenge.js";
 export * from "./AccountLockdownStage.js";
 export * from "./AccountLockdownStageRequest.js";
+export * from "./ActivityBasisEnum.js";
 export * from "./Agent.js";
 export * from "./AgentAuthenticationResponse.js";
 export * from "./AgentConfig.js";

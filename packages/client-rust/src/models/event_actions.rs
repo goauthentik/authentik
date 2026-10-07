@@ -37,6 +37,8 @@ pub enum EventActions {
     InvitationUsed,
     #[serde(rename = "authorize_application")]
     AuthorizeApplication,
+    #[serde(rename = "token_refresh")]
+    TokenRefresh,
     #[serde(rename = "source_linked")]
     SourceLinked,
     #[serde(rename = "impersonation_started")]
@@ -108,6 +110,7 @@ impl std::fmt::Display for EventActions {
             Self::SecretRotate => write!(f, "secret_rotate"),
             Self::InvitationUsed => write!(f, "invitation_used"),
             Self::AuthorizeApplication => write!(f, "authorize_application"),
+            Self::TokenRefresh => write!(f, "token_refresh"),
             Self::SourceLinked => write!(f, "source_linked"),
             Self::ImpersonationStarted => write!(f, "impersonation_started"),
             Self::ImpersonationEnded => write!(f, "impersonation_ended"),
