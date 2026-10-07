@@ -131,6 +131,7 @@ class UserOffboarding(SerializerModel):
         """
         from authentik.enterprise.lifecycle.expiration.models import UserExpirationRule
         from authentik.enterprise.lifecycle.offboarding.actions import offboard_user
+        from authentik.events.activity import load_activity
 
         context = {}
         if self.rule_id is not None:
@@ -140,6 +141,10 @@ class UserOffboarding(SerializerModel):
             # leaves the user untouched.
             if not apps.get_app_config("authentik_enterprise").enabled():
                 return
+            # Share fresh evidence across the owner and every competing rule.
+            # The row lock serializes workers, not event writers; activity can still
+            # commit between this read and the action.
+            load_activity(self.user)
             kept, rewarn = self.rule.reconcile_offboarding(self)
             if not kept:
                 return

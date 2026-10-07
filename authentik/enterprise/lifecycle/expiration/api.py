@@ -29,6 +29,7 @@ class UserExpirationRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
             "pbm_uuid",
             "name",
             "enabled",
+            "activity_basis",
             "group",
             "group_obj",
             "user_types",

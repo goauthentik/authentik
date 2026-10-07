@@ -54,6 +54,17 @@ class Migration(migrations.Migration):
                 ("name", models.TextField(unique=True)),
                 ("enabled", models.BooleanField(default=False)),
                 (
+                    "activity_basis",
+                    models.TextField(
+                        choices=[
+                            ("last_login", "Last login"),
+                            ("successful_events", "Last activity"),
+                        ],
+                        default="successful_events",
+                        help_text="Measure inactivity from the last login or successful user activity.",
+                    ),
+                ),
+                (
                     "user_types",
                     django.contrib.postgres.fields.ArrayField(
                         base_field=models.TextField(
@@ -66,7 +77,7 @@ class Migration(migrations.Migration):
                         ),
                         blank=True,
                         default=authentik.enterprise.lifecycle.expiration.models.default_user_types,
-                        help_text="Only expire users of these types. Service accounts authenticate with tokens, which does not count as activity, so they are excluded by default.",
+                        help_text="Only expire users of these types. Service accounts are excluded by default.",
                         size=None,
                     ),
                 ),
