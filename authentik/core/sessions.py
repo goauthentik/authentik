@@ -90,8 +90,11 @@ class SessionStore(SessionBase):
             #                  and their descriptors fail to initialize (e.g., missing storage)
             # TypeError - can happen with incompatible pickled objects
             # LookupError - Model that's referenced in the session no longer exists
-            # If any of these happen, just return an empty dictionary (an empty session)
+            # If any of these happen, return an empty dictionary (an empty session)
+            # and also delete the session (otherwise the user might be trapped in a
+            # broken session)
             LOGGER.warning("Failed to decode session data, deleting session", exc_info=True)
+            self.delete()
             pass
         return {}
 
