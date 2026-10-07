@@ -39,7 +39,13 @@ Event retention defaults to 365 days. For **Last activity**, retain events for a
 9. Leave **Enabled** off, then click **Create**. The rule does not schedule users for offboarding until you enable it.
 10. Optionally bind policies to the rule. Expand the rule's row to manage its policy bindings. The rule expires only users who pass the bound policies, so you can exempt users based on attributes or other criteria.
 11. Click **Preview** to see how many users the first run would schedule for offboarding.
-12. Edit the rule, turn on **Enabled**, and click **Update**. The rule runs immediately and every hour thereafter.
+12. Edit the rule, turn on **Enabled**, and click **Update**. For **Delete** rules, confirm with **Save delete rule**. The rule runs immediately and every hour thereafter.
+
+## Preview changes to a rule
+
+Use **Preview** in the rule list to review its saved settings, or **Preview changes** in the edit form to review unsaved edits before saving. Both previews show what the rule would do if enabled and do not save changes or send warnings.
+
+The preview separates new offboardings from pending offboardings that would be updated, taken over from another rule, or removed. For existing offboardings, it shows the action, expiration date, and session and token revocation settings before and after the change. Each section shows the total count and up to 20 users. Manual offboardings and canceled-offboarding exemptions are preserved; unchanged pending offboardings are not listed.
 
 ## How rules run
 
