@@ -6,7 +6,7 @@ draft: true
 
 ## Highlights
 
-- **User expiration**: :ak-enterprise Automatically deactivate or delete users who have been inactive for a configurable period, with an optional warning to the user.
+- **User expiration**: Automatically deactivate or delete users after a configurable period of inactivity and optionally warn them first. :ak-enterprise
 
 ## Breaking changes
 
@@ -74,7 +74,7 @@ A RAC provider signs into devices which are enrolled through the authentik agent
 
 ### User expiration :ak-enterprise
 
-User expiration rules build on scheduled user offboarding. A rule selects users by group and user type, and schedules an offboarding for anyone who has not logged in within the configured inactivity duration. If a warning period is set, the user is notified before their account expires, and a login before the scheduled time cancels the pending offboarding. If you rely on API tokens for some accounts, note that token usage does not count as activity, so service accounts are excluded by default. For more details, refer to the [user expiration documentation](../../sys-mgmt/user-expiration.mdx).
+User expiration rules schedule users for offboarding after they have not logged in for a configured period. A rule can target users by group and user type and warn them before their accounts expire. If a user logs in before the scheduled time, authentik cancels the pending offboarding. API token requests do not count as logins, and rules exclude service accounts by default. For details, see [User expiration](../../sys-mgmt/user-expiration.mdx).
 
 ## Upgrading
 
