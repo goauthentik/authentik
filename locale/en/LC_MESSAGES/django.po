@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 00:17+0000\n"
+"POT-Creation-Date: 2026-10-07 00:17+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2565,6 +2565,10 @@ msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
 msgid "User's avatar"
+msgstr ""
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Username"
 msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
