@@ -18,6 +18,12 @@ from authentik.enterprise.lifecycle.offboarding.models import (
     OffboardingStatus,
     UserOffboarding,
 )
+from authentik.events.activity import (
+    EXACT_ACTIVITY_ACTIONS,
+    REFRESH_ACTIVITY_INTERVAL,
+    load_activity,
+    with_activity,
+)
 from authentik.events.models import Event, EventAction, NotificationSeverity, NotificationTransport
 from authentik.lib.models import SerializerModel, SimpleThroughModel
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
@@ -41,16 +47,25 @@ def default_user_types() -> list[str]:
     return [UserTypes.INTERNAL, UserTypes.EXTERNAL]
 
 
+class ActivityBasis(models.TextChoices):
+    LAST_LOGIN = "last_login", _("Last login")
+    SUCCESSFUL_EVENTS = "successful_events", _("Last activity")
+
+
 class UserExpirationRule(SerializerModel, PolicyBindingModel):
     """Schedule an offboarding for every user in scope who has been inactive for
-    `inactivity_duration`. Inactivity is measured from the later of `last_login`
-    and `date_joined`."""
+    `inactivity_duration`, using the selected activity clock."""
 
     id = models.UUIDField(primary_key=True, default=uuid4)
     name = models.TextField(unique=True)
     # New rules start disabled so they can be previewed and have policies bound
     # before the first sweep schedules anyone.
     enabled = models.BooleanField(default=False)
+    activity_basis = models.TextField(
+        choices=ActivityBasis.choices,
+        default=ActivityBasis.SUCCESSFUL_EVENTS,
+        help_text=_("Measure inactivity from the last login or successful user activity."),
+    )
     group = models.ForeignKey(
         "authentik_core.Group",
         on_delete=models.CASCADE,
@@ -66,10 +81,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         models.TextField(choices=UserTypes.choices),
         default=default_user_types,
         blank=True,
-        help_text=_(
-            "Only expire users of these types. Service accounts authenticate with tokens, "
-            "which does not count as activity, so they are excluded by default."
-        ),
+        help_text=_("Only expire users of these types. Service accounts are excluded by default."),
     )
     inactivity_duration = models.TextField(
         default="days=90",
@@ -123,8 +135,22 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         return timedelta_from_string(self.inactivity_duration)
 
     def due_at(self, user: User) -> datetime:
-        # Must match the `last_activity` annotation in `candidates()`.
         last_activity = max(filter(None, (user.last_login, user.date_joined)))
+        if self.activity_basis == ActivityBasis.SUCCESSFUL_EVENTS:
+            if not hasattr(user, "expiration_event_at"):
+                load_activity(user)
+            event_at = getattr(user, "expiration_event_at", None)
+            refresh_at = getattr(user, "expiration_refresh_at", None)
+            last_activity = max(
+                filter(
+                    None,
+                    (
+                        last_activity,
+                        event_at,
+                        refresh_at + REFRESH_ACTIVITY_INTERVAL if refresh_at else None,
+                    ),
+                )
+            )
         return last_activity + self.inactivity_timedelta
 
     def rank(self, user: User) -> Rank:
@@ -157,7 +183,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         best: UserExpirationRule | None = None
         best_rank = cls.row_rank(row)
         for rule in cls.objects.filter(enabled=True).exclude(pk=row.rule_id):
-            # Ranking needs no queries; scope and policies only run for real contenders.
+            # Execution preloads activity once, so ranking needs no event queries.
             rank = rule.rank(row.user)
             if rank < best_rank and rule._in_scope(row.user):
                 best, best_rank = rule, rank
@@ -188,6 +214,20 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                 Q(last_login__isnull=True) | Q(last_login__lte=threshold),
                 date_joined__lte=threshold,
             )
+            if self.activity_basis == ActivityBasis.SUCCESSFUL_EVENTS:
+                recent = Event.objects.filter(
+                    user__pk=models.Func(
+                        OuterRef("pk"), function="to_jsonb", output_field=models.JSONField()
+                    )
+                ).filter(
+                    Q(action__in=EXACT_ACTIVITY_ACTIONS, created__gt=threshold)
+                    | Q(
+                        action=EventAction.TOKEN_REFRESH,
+                        created__gt=threshold - REFRESH_ACTIVITY_INTERVAL,
+                    )
+                )
+                # Reject recent activity before policies and exact timestamp loads.
+                qs = with_activity(qs.exclude(models.Exists(recent)))
         return qs
 
     def _apply_policies(self, qs: QuerySet[User]) -> QuerySet[User]:
@@ -209,14 +249,14 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
     def candidates(self) -> QuerySet[User]:
         """Users this rule would schedule a new offboarding for on its next run."""
         qs = self.scope(threshold=self._threshold()).annotate(
-            last_activity=Greatest("last_login", "date_joined")
+            login_activity=Greatest("last_login", "date_joined")
         )
         # Any pending row (manual or generated) excludes the user; one per user is a
         # DB constraint.
         qs = qs.exclude(
             pk__in=UserOffboarding.objects.filter(status=OffboardingStatus.PENDING).values("user")
         )
-        # A terminal generated row newer than the user's last activity exempts them
+        # A terminal generated row newer than the user's last login exempts them
         # until they log in again: cancel is an exemption, a reactivated user is not
         # re-expired the next hour, and a failed row is not retried in a loop.
         terminal = UserOffboarding.objects.filter(
@@ -227,7 +267,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                 OffboardingStatus.CANCELED,
                 OffboardingStatus.FAILED,
             ],
-            executed_at__gte=OuterRef("last_activity"),
+            executed_at__gte=OuterRef("login_activity"),
         )
         qs = qs.exclude(models.Exists(terminal))
         return self._apply_policies(qs)
@@ -275,10 +315,22 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
 
         Returns whether the row was kept and whether another warning is needed.
         """
+        event_after_creation = False
+        if self.activity_basis == ActivityBasis.SUCCESSFUL_EVENTS:
+            if not hasattr(row.user, "expiration_event_at"):
+                load_activity(row.user)
+            event_after_creation = any(
+                activity is not None and activity >= row.created_at
+                for activity in (
+                    getattr(row.user, "expiration_event_at", None),
+                    getattr(row.user, "expiration_refresh_at", None),
+                )
+            )
         if (
             not self.enabled
             or not self._in_scope(row.user)
             or (row.user.last_login is not None and row.user.last_login >= row.created_at)
+            or event_after_creation
         ):
             row.delete()
             return False, False
@@ -323,7 +375,10 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         )
         # Policies run only on the users behind these few rows, not the whole scope.
         passing = self._apply_policies(User.objects.filter(pk__in=rows.values("user")))
-        for row in rows.filter(user__in=passing):
+        # Fetch activity in a batch rather than querying events for each pending row.
+        users = {user.pk: user for user in with_activity(passing)}
+        for row in rows.filter(user_id__in=users):
+            row.user = users[row.user_id]
             rank = self.rank(row.user)
             with transaction.atomic():
                 locked = (
