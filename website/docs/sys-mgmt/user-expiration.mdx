@@ -47,6 +47,8 @@ Use **Preview** in the rule list to review its saved settings, or **Preview chan
 
 The preview separates new offboardings from pending offboardings that would be updated, taken over from another rule, or removed. For existing offboardings, it shows the action, expiration date, and session and token revocation settings before and after the change. Each section shows the total count and up to 20 users. Manual offboardings and canceled-offboarding exemptions are preserved; unchanged pending offboardings are not listed.
 
+Delete rules require confirmation when you enable them, expand their scope, or change the activity basis, inactivity duration, warning period, or policy mode. Renaming an enabled **Delete** rule does not require confirmation.
+
 ## How rules run
 
 Enabled rules run every hour. When a user reaches the inactivity threshold, the rule schedules an offboarding for the time of their last activity plus the configured inactivity duration. Like a [manually scheduled offboarding](./user-offboarding.mdx), it appears under **Events** > **Offboardings**. You can cancel it, and the offboarding is retried after a failure. The user's overview page shows **Cancel Expiration** and the rule that scheduled the offboarding.
