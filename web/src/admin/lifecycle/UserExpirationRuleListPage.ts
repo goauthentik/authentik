@@ -37,7 +37,7 @@ export class UserExpirationRuleListPage extends TablePage<UserExpirationRule> {
     });
 
     public override pageDescription = msg(
-        "Automatically deactivate or delete users who have not signed in for a configurable period.",
+        "Automatically deactivate or delete users who have been inactive for a configurable period.",
         { id: "user-expiration.list.description" },
     );
 

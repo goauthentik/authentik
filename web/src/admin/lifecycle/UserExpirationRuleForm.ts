@@ -19,6 +19,7 @@ import { eventTransportsProvider, eventTransportsSelector } from "#admin/events/
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
 import {
+    ActivityBasisEnum,
     CoreApi,
     CoreGroupsListRequest,
     Group,
@@ -137,6 +138,41 @@ export class UserExpirationRuleForm extends ModelForm<UserExpirationRule, string
                 )}
             ></ak-switch-input>
 
+            <ak-radio-input
+                label=${msg("Activity basis", {
+                    id: "user-expiration.field.activity-basis.label",
+                })}
+                name="activityBasis"
+                required
+                .value=${this.instance?.activityBasis ?? ActivityBasisEnum.SuccessfulEvents}
+                .options=${[
+                    {
+                        label: msg("Last login", {
+                            id: "user-expiration.activity-basis.last-login.label",
+                        }),
+                        value: ActivityBasisEnum.LastLogin,
+                        description: html`${msg("Use the user's recorded last login.", {
+                            id: "user-expiration.activity-basis.last-login.description",
+                        })}`,
+                    },
+                    {
+                        label: msg("Last activity", {
+                            id: "user-expiration.activity-basis.successful-events.label",
+                        }),
+                        value: ActivityBasisEnum.SuccessfulEvents,
+                        default: true,
+                        description: html`${msg(
+                            "Also count successful authentication, application authorization, and OAuth refreshes. Failed requests and API-token requests do not count. Refresh activity includes a 24-hour allowance before expiration.",
+                            { id: "user-expiration.activity-basis.successful-events.description" },
+                        )}`,
+                    },
+                ]}
+                help=${msg(
+                    "Event retention defaults to 365 days. For Last activity, retain events for at least the inactivity duration plus 24 hours. Increasing retention cannot recover deleted events. Preview the effect before changing this setting.",
+                    { id: "user-expiration.field.activity-basis.description" },
+                )}
+            ></ak-radio-input>
+
             <ak-form-element-horizontal
                 label=${msg("Group", { id: "user-expiration.field.group.label" })}
                 name="group"
@@ -169,7 +205,7 @@ export class UserExpirationRuleForm extends ModelForm<UserExpirationRule, string
                 )}
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "Only expire users of these types. Signing in with a token does not count as activity, so service accounts are excluded by default.",
+                        "Only expire users of these types. Service accounts are excluded by default. API-token requests do not count as activity.",
                         { id: "user-expiration.field.user-types.description" },
                     )}
                 </p>
@@ -194,7 +230,7 @@ export class UserExpirationRuleForm extends ModelForm<UserExpirationRule, string
                 value=${this.instance?.inactivityDuration || "days=90"}
                 input-hint="code"
                 help=${msg(
-                    "How long a user may go without signing in before they are expired. Measured from their last login, or from the date they were created if they have never signed in.",
+                    "How long a user may be inactive before they expire, using the selected activity basis. The account creation date is the baseline for users who have never been active.",
                     { id: "user-expiration.field.inactivity-duration.description" },
                 )}
                 .bighelp=${html`<ak-utils-time-delta-help></ak-utils-time-delta-help>`}
