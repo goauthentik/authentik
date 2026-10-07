@@ -10,13 +10,16 @@ import "#components/ak-text-input";
 import { aki } from "#common/api/client";
 import { userTypeToLabel } from "#common/labels";
 
+import { renderDialog } from "#elements/dialogs";
 import { ModelForm } from "#elements/forms/ModelForm";
+import { settleFormFields } from "#elements/forms/settle-form-fields";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { AKLabel } from "#components/ak-label";
 
 import { eventTransportsProvider, eventTransportsSelector } from "#admin/events/RuleFormHelpers";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
+import "#admin/lifecycle/UserExpirationRulePreview";
 
 import {
     ActivityBasisEnum,
@@ -30,8 +33,8 @@ import {
     UserTypeEnum,
 } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
-import { html } from "lit";
+import { msg, str } from "@lit/localize";
+import { html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -58,6 +61,90 @@ export class UserExpirationRuleForm extends ModelForm<UserExpirationRule, string
 
     #api = aki(LifecycleApi);
 
+    public constructor() {
+        super();
+        // Form.submit is an instance callback rather than a prototype method.
+        const submit = this.submit;
+
+        this.submit = async <T = unknown>(event: SubmitEvent): Promise<T | false> => {
+            event.preventDefault();
+
+            if (this.form) {
+                await settleFormFields(this.form);
+            }
+
+            if (!this.reportValidity()) {
+                return false;
+            }
+
+            const data = this.toJSON();
+
+            if (data.enabled && data.action === OffboardingActionEnum.Delete) {
+                let confirmed = false;
+
+                const close = (click: Event) => {
+                    const button = click.currentTarget as HTMLButtonElement;
+                    button.closest("ak-modal")?.close(button.value);
+                };
+
+                await renderDialog(
+                    html`<ak-modal
+                        headline=${msg("Confirm account deletion", {
+                            id: "user-expiration.delete-confirmation.title",
+                        })}
+                    >
+                        <p>
+                            ${msg(str`Save "${data.name}" as an enabled delete rule?`, {
+                                id: "user-expiration.delete-confirmation.description",
+                            })}
+                        </p>
+                        <p>
+                            ${msg(
+                                "This can permanently delete matching accounts, including users with an offboarding already scheduled. Deleted accounts cannot be restored. Preview your changes before proceeding.",
+                                { id: "user-expiration.delete-confirmation.warning" },
+                            )}
+                        </p>
+                        <button
+                            slot="actions"
+                            class="pf-c-button pf-m-secondary"
+                            type="button"
+                            value="cancel"
+                            autofocus
+                            @click=${close}
+                        >
+                            ${msg("Cancel", { id: "common.actions.cancel" })}
+                        </button>
+                        <button
+                            slot="actions"
+                            class="pf-c-button pf-m-danger"
+                            type="button"
+                            value="confirmed"
+                            @click=${close}
+                        >
+                            ${msg("Save delete rule", {
+                                id: "user-expiration.delete-confirmation.submit",
+                            })}
+                        </button>
+                    </ak-modal>`,
+                    {
+                        invokerElement: this,
+                        onDispose: (closeEvent) => {
+                            confirmed =
+                                closeEvent?.target instanceof HTMLDialogElement &&
+                                closeEvent.target.returnValue === "confirmed";
+                        },
+                    },
+                );
+
+                if (!confirmed) {
+                    return false;
+                }
+            }
+
+            return submit<T>(event);
+        };
+    }
+
     protected async loadInstance(pk: string): Promise<UserExpirationRule> {
         return this.#api.lifecycleUserExpirationRulesRetrieve({ id: pk });
     }
@@ -72,15 +159,21 @@ export class UserExpirationRuleForm extends ModelForm<UserExpirationRule, string
               });
     }
 
-    protected override async send(data: UserExpirationRule): Promise<UserExpirationRule> {
+    public override toJSON(): UserExpirationRule {
         // An empty warning period means "no warning", and an empty group means "every
         // user". The API expects null for both, not the empty string the blank
         // selections serialize to.
-        const request = {
+        const data = super.toJSON();
+
+        return {
             ...data,
             group: data.group || null,
             warnBefore: data.warnBefore || null,
-        } as unknown as UserExpirationRuleRequest;
+        };
+    }
+
+    protected override async send(data: UserExpirationRule): Promise<UserExpirationRule> {
+        const request = data as unknown as UserExpirationRuleRequest;
 
         if (this.instance?.pk) {
             return this.#api.lifecycleUserExpirationRulesUpdate({
@@ -115,7 +208,21 @@ export class UserExpirationRuleForm extends ModelForm<UserExpirationRule, string
             UserTypeEnum.External,
         ];
 
-        return html`<ak-text-input
+        return html`${
+                this.instance?.pk
+                    ? html`<ak-user-expiration-rule-preview
+                          .rule=${this.instance}
+                          .getRequest=${() => this.toJSON() as unknown as UserExpirationRuleRequest}
+                      >
+                          <button slot="trigger" class="pf-c-button pf-m-secondary" type="button">
+                              ${msg("Preview changes", {
+                                  id: "user-expiration.form.preview.label",
+                              })}
+                          </button>
+                      </ak-user-expiration-rule-preview>`
+                    : nothing
+            }
+            <ak-text-input
                 label=${msg("Name", { id: "user-expiration.field.name.label" })}
                 name="name"
                 required
