@@ -1,6 +1,7 @@
 export * from "./AccessDeniedChallenge";
 export * from "./AccountLockdownStage";
 export * from "./AccountLockdownStageRequest";
+export * from "./ActivityBasisEnum";
 export * from "./Agent";
 export * from "./AgentAuthenticationResponse";
 export * from "./AgentConfig";

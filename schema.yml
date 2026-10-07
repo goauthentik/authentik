@@ -35548,6 +35548,11 @@ components:
             flow should not require authentication since the user's session is deleted.
       required:
       - name
+    ActivityBasisEnum:
+      enum:
+      - last_login
+      - successful_events
+      type: string
     Agent:
       type: object
       description: |-
@@ -40631,6 +40636,7 @@ components:
       - secret_rotate
       - invitation_used
       - authorize_application
+      - token_refresh
       - source_linked
       - impersonation_started
       - impersonation_ended
@@ -53950,6 +53956,10 @@ components:
           minLength: 1
         enabled:
           type: boolean
+        activity_basis:
+          allOf:
+          - $ref: '#/components/schemas/ActivityBasisEnum'
+          description: Measure inactivity from the last login or successful user activity.
         group:
           type: string
           format: uuid
@@ -53960,9 +53970,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserTypeEnum'
-          description: Only expire users of these types. Service accounts authenticate
-            with tokens, which does not count as activity, so they are excluded by
-            default.
+          description: Only expire users of these types. Service accounts are excluded
+            by default.
         inactivity_duration:
           type: string
           minLength: 1
@@ -60722,6 +60731,10 @@ components:
           type: string
         enabled:
           type: boolean
+        activity_basis:
+          allOf:
+          - $ref: '#/components/schemas/ActivityBasisEnum'
+          description: Measure inactivity from the last login or successful user activity.
         group:
           type: string
           format: uuid
@@ -60736,9 +60749,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserTypeEnum'
-          description: Only expire users of these types. Service accounts authenticate
-            with tokens, which does not count as activity, so they are excluded by
-            default.
+          description: Only expire users of these types. Service accounts are excluded
+            by default.
         inactivity_duration:
           type: string
           description: How long a user may be inactive before they are expired.
@@ -60800,6 +60812,10 @@ components:
           minLength: 1
         enabled:
           type: boolean
+        activity_basis:
+          allOf:
+          - $ref: '#/components/schemas/ActivityBasisEnum'
+          description: Measure inactivity from the last login or successful user activity.
         group:
           type: string
           format: uuid
@@ -60810,9 +60826,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserTypeEnum'
-          description: Only expire users of these types. Service accounts authenticate
-            with tokens, which does not count as activity, so they are excluded by
-            default.
+          description: Only expire users of these types. Service accounts are excluded
+            by default.
         inactivity_duration:
           type: string
           minLength: 1

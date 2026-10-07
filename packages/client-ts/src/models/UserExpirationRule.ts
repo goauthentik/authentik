@@ -10,6 +10,8 @@
  * Do not edit the class manually.
  */
 
+import type { ActivityBasisEnum } from "./ActivityBasisEnum";
+import { ActivityBasisEnumFromJSON, ActivityBasisEnumToJSON } from "./ActivityBasisEnum";
 import type { OffboardingActionEnum } from "./OffboardingActionEnum";
 import {
     OffboardingActionEnumFromJSON,
@@ -35,14 +37,17 @@ export interface UserExpirationRule {
     name: string;
     enabled?: boolean;
     /**
+     * Measure inactivity from the last login or successful user activity.
+     */
+    activityBasis?: ActivityBasisEnum;
+    /**
      * Only expire members of this group (including descendant groups). Leave empty to apply to
      * every user.
      */
     group?: string | null;
     readonly groupObj: PartialGroup;
     /**
-     * Only expire users of these types. Service accounts authenticate with tokens, which does not
-     * count as activity, so they are excluded by default.
+     * Only expire users of these types. Service accounts are excluded by default.
      */
     userTypes?: Array<UserTypeEnum>;
     /**
@@ -107,6 +112,10 @@ export function UserExpirationRuleFromJSONTyped(
         pbmUuid: json["pbm_uuid"],
         name: json["name"],
         enabled: json["enabled"] == null ? undefined : json["enabled"],
+        activityBasis:
+            json["activity_basis"] == null
+                ? undefined
+                : ActivityBasisEnumFromJSON(json["activity_basis"]),
         group:
             json["group"] === undefined ? undefined : json["group"] === null ? null : json["group"],
         groupObj: PartialGroupFromJSON(json["group_obj"]),
@@ -152,6 +161,7 @@ export function UserExpirationRuleToJSONTyped(
         pk: value["pk"],
         name: value["name"],
         enabled: value["enabled"],
+        activity_basis: ActivityBasisEnumToJSON(value["activityBasis"]),
         group: value["group"],
         user_types:
             value["userTypes"] == null

@@ -8653,6 +8653,15 @@
                     "type": "boolean",
                     "title": "Enabled"
                 },
+                "activity_basis": {
+                    "type": "string",
+                    "enum": [
+                        "last_login",
+                        "successful_events"
+                    ],
+                    "title": "Activity basis",
+                    "description": "Measure inactivity from the last login or successful user activity."
+                },
                 "group": {
                     "type": "string",
                     "format": "uuid",
@@ -8672,7 +8681,7 @@
                         "title": "User types"
                     },
                     "title": "User types",
-                    "description": "Only expire users of these types. Service accounts authenticate with tokens, which does not count as activity, so they are excluded by default."
+                    "description": "Only expire users of these types. Service accounts are excluded by default."
                 },
                 "inactivity_duration": {
                     "type": "string",
@@ -10235,6 +10244,7 @@
                         "secret_rotate",
                         "invitation_used",
                         "authorize_application",
+                        "token_refresh",
                         "source_linked",
                         "impersonation_started",
                         "impersonation_ended",
@@ -10363,6 +10373,7 @@
                                 "secret_rotate",
                                 "invitation_used",
                                 "authorize_application",
+                                "token_refresh",
                                 "source_linked",
                                 "impersonation_started",
                                 "impersonation_ended",
@@ -11129,6 +11140,7 @@
                         "secret_rotate",
                         "invitation_used",
                         "authorize_application",
+                        "token_refresh",
                         "source_linked",
                         "impersonation_started",
                         "impersonation_ended",
