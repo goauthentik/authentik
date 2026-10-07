@@ -6,7 +6,12 @@ import { PlexLoginInit } from "#flow/sources/plex/PlexLoginInit";
 import { readPendingSignIn, writePendingSignIn } from "#flow/sources/plex/storage";
 import { StageHost } from "#flow/types";
 
-import { PlexAuthenticationChallenge, SourcesApi } from "@goauthentik/api";
+import {
+    JSONApiResponse,
+    PlexAuthenticationChallenge,
+    RedirectChallengeFromJSON,
+    SourcesApi,
+} from "@goauthentik/api";
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -25,6 +30,14 @@ let getPin: ReturnType<typeof vi.spyOn>;
 let pinStatus: ReturnType<typeof vi.spyOn>;
 let redeem: ReturnType<typeof vi.spyOn>;
 let toasts: CapturedMessages;
+
+/**
+ * The redeem endpoint's response, answering with `challenge` in the server's
+ * snake_case wire format, shaped as the generated client returns it.
+ */
+function redeemAnswer(challenge: object) {
+    return new JSONApiResponse(Response.json(challenge), RedirectChallengeFromJSON);
+}
 
 beforeEach(() => {
     sessionStorage.clear();
@@ -45,8 +58,10 @@ beforeEach(() => {
     pinStatus = vi.spyOn(PlexAPIClient, "pinStatus").mockResolvedValue("plex-token");
 
     redeem = vi
-        .spyOn(SourcesApi.prototype, "sourcesPlexRedeemTokenCreate")
-        .mockResolvedValue({ to: "/if/user/" });
+        .spyOn(SourcesApi.prototype, "sourcesPlexRedeemTokenCreateRaw")
+        .mockImplementation(async () =>
+            redeemAnswer({ component: "xak-flow-redirect", to: "/if/user/" }),
+        );
 });
 
 afterEach(() => {
@@ -404,6 +419,64 @@ describe("PlexLoginInit", () => {
 
             expect(stage.shadowRoot?.textContent).toContain("cancelled or timed out");
             expect(redeem).not.toHaveBeenCalled();
+        });
+
+        it("hands a denied sign-in to the flow executor instead of navigating", async () => {
+            // Access denied answers 200 with a challenge that has no `to`.
+            // Following it would send the browser to /if/flow/<slug>/undefined.
+            redeem.mockImplementation(async () =>
+                redeemAnswer({ component: "ak-stage-access-denied", error_message: "Not allowed" }),
+            );
+
+            const stage = createReturningStage();
+
+            await settled(stage, () => expect(stage.host.challenge).toBeDefined());
+
+            expect(stage.host.challenge).toMatchObject({
+                component: "ak-stage-access-denied",
+                errorMessage: "Not allowed",
+            });
+
+            expect(navigate).not.toHaveBeenCalled();
+            expect(stage.errorMessage).toBeUndefined();
+        });
+
+        it("keeps the body of a page answer the typed client would drop", async () => {
+            // A source without an enrollment flow answers with a rendered page.
+            redeem.mockImplementation(async () =>
+                redeemAnswer({ component: "xak-flow-shell", body: "<p>No enrollment flow</p>" }),
+            );
+
+            const stage = createReturningStage();
+
+            await settled(stage, () => expect(stage.host.challenge).toBeDefined());
+
+            expect(stage.host.challenge).toMatchObject({
+                component: "xak-flow-shell",
+                body: "<p>No enrollment flow</p>",
+            });
+
+            expect(navigate).not.toHaveBeenCalled();
+        });
+
+        it("offers a retry for a non-redirect answer when there is no flow executor", async () => {
+            redeem.mockImplementation(async () =>
+                redeemAnswer({ component: "ak-stage-access-denied", error_message: "Not allowed" }),
+            );
+
+            writePendingSignIn({ slug: "plex", pin: 42 });
+            history.replaceState(null, "", "?plex_return=1");
+
+            const stage = document.createElement("ak-flow-source-plex");
+
+            stage.challenge = challenge;
+            document.body.append(stage);
+            mounted.push(stage);
+
+            await settled(stage, () => expect(continueButton(stage)).toBeDefined());
+
+            expect(stage.shadowRoot?.textContent).toContain("completing the login failed");
+            expect(navigate).not.toHaveBeenCalled();
         });
 
         it("offers a retry when redeeming the token fails", async () => {
