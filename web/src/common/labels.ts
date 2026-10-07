@@ -52,6 +52,7 @@ export const EventActionLabelRecord: Record<EventActions, string> = {
     [EventActions.SecretRotate]: msg("Secret was rotated"),
     [EventActions.InvitationUsed]: msg("Invitation used"),
     [EventActions.AuthorizeApplication]: msg("Application authorized"),
+    [EventActions.TokenRefresh]: msg("Token refresh", { id: "events.action.token-refresh.label" }),
     [EventActions.SourceLinked]: msg("Source linked"),
     [EventActions.ImpersonationStarted]: msg("Impersonation started"),
     [EventActions.ImpersonationEnded]: msg("Impersonation ended"),
