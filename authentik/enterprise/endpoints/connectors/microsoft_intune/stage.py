@@ -47,6 +47,7 @@ class MicrosoftIntuneStageView(MTLSStageView):
             san_ext = cert.extensions.get_extension_for_class(SubjectAlternativeName)
             values.extend(san_ext.value.get_values_for_type(UniformResourceIdentifier))
         except ExtensionNotFound:
+            # SAN is optional; fall back to CN-derived identifiers only.
             pass
         return [str(x).rpartition(GUID_URI_MARKER)[2].lower() for x in values]
 
