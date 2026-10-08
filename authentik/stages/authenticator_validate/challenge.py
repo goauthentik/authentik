@@ -261,6 +261,8 @@ def validate_challenge_webauthn(
 def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) -> Device:
     """Duo authentication"""
     device = get_object_or_404(DuoDevice, pk=device_pk)
+    brand = stage_view.request.brand
+    client_ip = ClientIPMiddleware.get_client_ip(stage_view.request)
     if device.user != user:
         LOGGER.warning("device mismatch")
         raise Http404
@@ -268,7 +270,8 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
 
     # Get additional context for push
     pushinfo = {
-        __("Domain"): stage_view.request.get_host(),
+        __("Domain"): brand.domain,
+        __("Client IP"): client_ip,
     }
     if PLAN_CONTEXT_APPLICATION in stage_view.executor.plan.context:
         pushinfo[__("Application")] = stage_view.executor.plan.context.get(
@@ -279,11 +282,11 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
         response = stage.auth_client().auth(
             "auto",
             user_id=device.duo_user_id,
-            ipaddr=ClientIPMiddleware.get_client_ip(stage_view.request),
+            ipaddr=client_ip,
             type=__(
                 "{brand_name} Login request".format_map(
                     {
-                        "brand_name": stage_view.request.brand.branding_title,
+                        "brand_name": brand.branding_title,
                     }
                 )
             ),
