@@ -17,7 +17,11 @@ from authentik.core.tests.utils import (
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
-from authentik.sources.saml.exceptions import InvalidEncryption, InvalidSignature
+from authentik.sources.saml.exceptions import (
+    InvalidEncryption,
+    InvalidSignature,
+    MismatchedAudience,
+)
 from authentik.sources.saml.models import (
     GroupSAMLSourceConnection,
     SAMLSource,
@@ -32,7 +36,7 @@ SHIBBOLETH_ACS_URL = "https://sp.example.org:9443/source/saml/shibboleth-post/ac
 SHIBBOLETH_TRANSIENT_ACS_URL = "https://sp.example.org:10443/Shibboleth.sso/SAML2/POST"
 
 
-@patch.object(SAMLSource, "build_full_url", MagicMock(return_value=DEMO_ACS_URL))
+@patch("authentik.sources.saml.processors.response.reverse", MagicMock(return_value=DEMO_ACS_URL))
 class TestResponseProcessor(TestCase):
     """Test ResponseProcessor"""
 
@@ -41,7 +45,7 @@ class TestResponseProcessor(TestCase):
         self.source = SAMLSource.objects.create(
             name=generate_id(),
             slug=generate_id(),
-            issuer_override="authentik",
+            issuer_override="http://sp.example.com/demo1/metadata.php",
             allow_idp_initiated=True,
             pre_authentication_flow=create_test_flow(),
         )
@@ -78,8 +82,11 @@ class TestResponseProcessor(TestCase):
             },
         )
 
+        self.source.issuer_override = "https://accounts.google.com/o/saml2?idpid="
         parser = ResponseProcessor(self.source, request)
-        with patch.object(SAMLSource, "build_full_url", return_value=GOOGLE_ACS_URL):
+        with patch(
+            "authentik.sources.saml.processors.response.reverse", return_value=GOOGLE_ACS_URL
+        ):
             parser.parse()
         sfm = parser.prepare_flow_manager()
         self.assertEqual(
@@ -106,11 +113,103 @@ class TestResponseProcessor(TestCase):
             },
         )
 
-        with patch.object(SAMLSource, "build_full_url", return_value=GOOGLE_ACS_URL):
+        self.source.issuer_override = "https://accounts.google.com/o/saml2?idpid="
+        with patch(
+            "authentik.sources.saml.processors.response.reverse", return_value=GOOGLE_ACS_URL
+        ):
             parser = ResponseProcessor(self.source, request)
             parser.parse()
             sfm = parser.prepare_flow_manager()
         self.assertEqual(sfm.user_properties["username"], "jens@goauthentik.io")
+
+    @freeze_time("2022-10-14T14:15:00")
+    def test_audience_mismatch(self):
+        """Test that an assertion whose audience doesn't match our entity ID is rejected"""
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_success.xml").encode()
+                ).decode()
+            },
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        with self.assertRaises(MismatchedAudience):
+            parser.parse()
+
+    def _audience_request(self, restrictions: str):
+        """Build a request from the success fixture with its AudienceRestriction replaced"""
+        fixture = load_fixture("fixtures/response_success.xml")
+        start = fixture.index("<saml2:AudienceRestriction>")
+        end = fixture.index("</saml2:AudienceRestriction>") + len("</saml2:AudienceRestriction>")
+        fixture = fixture[:start] + restrictions + fixture[end:]
+        return self.factory.post(
+            "/",
+            data={"SAMLResponse": b64encode(fixture.encode()).decode()},
+        )
+
+    @freeze_time("2022-10-14T14:15:00")
+    def test_audience_no_restriction(self):
+        """Test that an assertion without any AudienceRestriction is accepted"""
+        request = self._audience_request("")
+
+        parser = ResponseProcessor(self.source, request)
+        with patch(
+            "authentik.sources.saml.processors.response.reverse", return_value=GOOGLE_ACS_URL
+        ):
+            parser.parse()
+
+    @freeze_time("2022-10-14T14:15:00")
+    def test_audience_multiple_in_one_restriction(self):
+        """Test that we are accepted when an AudienceRestriction lists us and another audience"""
+        request = self._audience_request(
+            "<saml2:AudienceRestriction>"
+            "<saml2:Audience>https://other.example.com</saml2:Audience>"
+            f"<saml2:Audience>{self.source.issuer_override}</saml2:Audience>"
+            "</saml2:AudienceRestriction>"
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        with patch(
+            "authentik.sources.saml.processors.response.reverse", return_value=GOOGLE_ACS_URL
+        ):
+            parser.parse()
+
+    @freeze_time("2022-10-14T14:15:00")
+    def test_audience_missing_from_one_restriction(self):
+        """Test that we are rejected when one of several AudienceRestrictions does not list us"""
+        request = self._audience_request(
+            "<saml2:AudienceRestriction>"
+            f"<saml2:Audience>{self.source.issuer_override}</saml2:Audience>"
+            "</saml2:AudienceRestriction>"
+            "<saml2:AudienceRestriction>"
+            "<saml2:Audience>https://other.example.com</saml2:Audience>"
+            "</saml2:AudienceRestriction>"
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        with self.assertRaises(MismatchedAudience):
+            parser.parse()
+
+    @freeze_time("2022-10-14T14:15:00")
+    def test_audience_in_every_restriction(self):
+        """Test that we are accepted when every AudienceRestriction lists us"""
+        request = self._audience_request(
+            "<saml2:AudienceRestriction>"
+            f"<saml2:Audience>{self.source.issuer_override}</saml2:Audience>"
+            "<saml2:Audience>https://other.example.com</saml2:Audience>"
+            "</saml2:AudienceRestriction>"
+            "<saml2:AudienceRestriction>"
+            f"<saml2:Audience>{self.source.issuer_override}</saml2:Audience>"
+            "</saml2:AudienceRestriction>"
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        with patch(
+            "authentik.sources.saml.processors.response.reverse", return_value=GOOGLE_ACS_URL
+        ):
+            parser.parse()
 
     @freeze_time("2022-10-14T14:16:40Z")
     def test_success_with_status_message_and_detail(self):
@@ -124,8 +223,11 @@ class TestResponseProcessor(TestCase):
             },
         )
 
+        self.source.issuer_override = "https://accounts.google.com/o/saml2?idpid="
         parser = ResponseProcessor(self.source, request)
-        with patch.object(SAMLSource, "build_full_url", return_value=GOOGLE_ACS_URL):
+        with patch(
+            "authentik.sources.saml.processors.response.reverse", return_value=GOOGLE_ACS_URL
+        ):
             parser.parse()
         sfm = parser.prepare_flow_manager()
         self.assertEqual(sfm.user_properties["username"], "jens@goauthentik.io")
@@ -166,8 +268,11 @@ class TestResponseProcessor(TestCase):
             },
         )
 
+        self.source.issuer_override = "authentik-saml-encrypt"
         parser = ResponseProcessor(self.source, request)
-        with patch.object(SAMLSource, "build_full_url", return_value=KEYCLOAK_ACS_URL):
+        with patch(
+            "authentik.sources.saml.processors.response.reverse", return_value=KEYCLOAK_ACS_URL
+        ):
             parser.parse()
 
     def test_encrypted_incorrect_key(self):
@@ -592,8 +697,11 @@ class TestResponseProcessor(TestCase):
             },
         )
 
+        self.source.issuer_override = "https://sp.example.org/shibboleth/POST"
         parser = ResponseProcessor(self.source, request)
-        with patch.object(SAMLSource, "build_full_url", return_value=SHIBBOLETH_ACS_URL):
+        with patch(
+            "authentik.sources.saml.processors.response.reverse", return_value=SHIBBOLETH_ACS_URL
+        ):
             parser.parse()
 
     @freeze_time("2026-01-21T14:23")
@@ -616,8 +724,12 @@ class TestResponseProcessor(TestCase):
             },
         )
 
+        self.source.issuer_override = "https://sp.example.org/shibboleth"
         parser = ResponseProcessor(self.source, request)
-        with patch.object(SAMLSource, "build_full_url", return_value=SHIBBOLETH_TRANSIENT_ACS_URL):
+        with patch(
+            "authentik.sources.saml.processors.response.reverse",
+            return_value=SHIBBOLETH_TRANSIENT_ACS_URL,
+        ):
             parser.parse()
         parser.prepare_flow_manager()
 

@@ -1,6 +1,7 @@
 """SCIM Membership tests"""
 
-from unittest.mock import patch
+from contextlib import nullcontext
+from unittest.mock import ANY, patch
 
 from django.test import TestCase
 from requests_mock import Mocker
@@ -11,6 +12,7 @@ from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.signals import sync_outgoing_inhibit_dispatch
 from authentik.policies.models import PolicyBinding
+from authentik.providers.scim.clients.groups import SCIMGroupClient
 from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
 from authentik.providers.scim.models import (
     SCIMCompatibilityMode,
@@ -149,6 +151,25 @@ class SCIMMembershipTests(TestCase):
     def test_policy_group_removal_deprovisions_user(self):
         """Removing from the group's manager must deprovision the scoped user."""
         self._assert_policy_group_removal_deprovisions(reverse=True)
+
+    def test_policy_group_removal_uses_group_lock(self):
+        """Deprovisioning must retain upstream membership serialization."""
+        with Mocker() as mock:
+            user, group, delete_user, _remote_members = self._provision_policy_group_user(mock)
+            with (
+                patch.object(
+                    SCIMGroupClient, "object_lock", autospec=True, return_value=nullcontext()
+                ) as object_lock,
+                self.captureOnCommitCallbacks(execute=True),
+            ):
+                group.users.remove(user)
+
+            object_lock.assert_called_once_with(ANY, group)
+            self._assert_no_scim_task_errors()
+            self.assertEqual(delete_user.call_count, 1)
+            self.assertFalse(
+                SCIMProviderUser.objects.filter(provider=self.provider, user=user).exists()
+            )
 
     def test_policy_group_removal_from_user_deprovisions_user(self):
         """Removing from the user's manager must also deprovision the scoped user."""

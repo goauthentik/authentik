@@ -14,6 +14,7 @@ from authentik.lib.sync.outgoing.exceptions import (
     BadRequestSyncException,
     DryRunRejected,
     NotFoundSyncException,
+    ObjectLockTimeout,
     StopSync,
     TransientSyncException,
 )
@@ -197,7 +198,7 @@ class SyncTasks:
         for obj in paginator.page(page).object_list:
             obj: Model
             try:
-                client.write(obj)
+                client.write_locked(obj)
             except SkipObjectException:
                 self.logger.debug("skipping object due to SkipObject", obj=obj)
                 continue
@@ -217,6 +218,8 @@ class SyncTasks:
                     obj=sanitize_item(obj),
                     exception=exception_to_dict(exc),
                 )
+            except ObjectLockTimeout as exc:
+                raise Retry() from exc
             except TransientSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, user=obj)
                 task.warning(
@@ -280,7 +283,7 @@ class SyncTasks:
             return
 
         try:
-            client.write(instance)
+            client.write_locked(instance)
         except TransientSyncException as exc:
             raise Retry() from exc
         except SkipObjectException:
@@ -400,12 +403,14 @@ class SyncTasks:
         if queryset.exists():
             client = provider.client_for_model(Group)
             try:
-                operation = None
                 if action == "post_add":
                     operation = Direction.add
-                if action == "post_remove":
+                elif action == "post_remove":
                     operation = Direction.remove
-                client.update_group(group, operation, pk_set)
+                else:
+                    self.logger.warning("Unknown group membership action", action=action)
+                    return
+                client.sync_group_membership(group, operation, pk_set)
             except NotFoundSyncException:
                 if action != "post_remove":
                     raise
