@@ -96,18 +96,27 @@ class PlexAuth:
 
     def check_friends_overlap(self, user_ident: int) -> bool:
         """Check if the user is a friend of the owner, or the owner themselves"""
-        friends_allowed = False
         _, owner_id = self.get_user_info()
-        owner_friends = self.get_friends()
+        if owner_id == user_ident:
+            return True
+        try:
+            owner_friends = self.get_friends()
+        except RequestException as exc:
+            status_code = exc.response.status_code if exc.response is not None else None
+            LOGGER.warning(
+                "Unable to fetch Plex friends",
+                exc_type=type(exc).__name__,
+                status_code=status_code,
+            )
+            return False
         for friend in owner_friends:
             if int(friend.get("id", "0")) == user_ident:
-                friends_allowed = True
                 LOGGER.info(
                     "allowing user for plex because of friend",
                     user=user_ident,
                 )
-        owner_allowed = owner_id == user_ident
-        return any([friends_allowed, owner_allowed])
+                return True
+        return False
 
 
 class PlexSourceFlowManager(SourceFlowManager):
