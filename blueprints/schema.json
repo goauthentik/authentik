@@ -5825,9 +5825,13 @@
                             "authentik_endpoints_connectors_google_chrome.delete_googlechromeconnector",
                             "authentik_endpoints_connectors_google_chrome.view_googlechromeconnector",
                             "authentik_endpoints_connectors_microsoft_intune.add_microsoftintuneconnector",
+                            "authentik_endpoints_connectors_microsoft_intune.add_microsoftintuneconnectorcertificateauthority",
                             "authentik_endpoints_connectors_microsoft_intune.change_microsoftintuneconnector",
+                            "authentik_endpoints_connectors_microsoft_intune.change_microsoftintuneconnectorcertificateauthority",
                             "authentik_endpoints_connectors_microsoft_intune.delete_microsoftintuneconnector",
+                            "authentik_endpoints_connectors_microsoft_intune.delete_microsoftintuneconnectorcertificateauthority",
                             "authentik_endpoints_connectors_microsoft_intune.view_microsoftintuneconnector",
+                            "authentik_endpoints_connectors_microsoft_intune.view_microsoftintuneconnectorcertificateauthority",
                             "authentik_enterprise.add_license",
                             "authentik_enterprise.add_licenseusage",
                             "authentik_enterprise.change_license",
@@ -7223,9 +7227,13 @@
                             "authentik_endpoints_connectors_google_chrome.delete_googlechromeconnector",
                             "authentik_endpoints_connectors_google_chrome.view_googlechromeconnector",
                             "authentik_endpoints_connectors_microsoft_intune.add_microsoftintuneconnector",
+                            "authentik_endpoints_connectors_microsoft_intune.add_microsoftintuneconnectorcertificateauthority",
                             "authentik_endpoints_connectors_microsoft_intune.change_microsoftintuneconnector",
+                            "authentik_endpoints_connectors_microsoft_intune.change_microsoftintuneconnectorcertificateauthority",
                             "authentik_endpoints_connectors_microsoft_intune.delete_microsoftintuneconnector",
+                            "authentik_endpoints_connectors_microsoft_intune.delete_microsoftintuneconnectorcertificateauthority",
                             "authentik_endpoints_connectors_microsoft_intune.view_microsoftintuneconnector",
+                            "authentik_endpoints_connectors_microsoft_intune.view_microsoftintuneconnectorcertificateauthority",
                             "authentik_enterprise.add_license",
                             "authentik_enterprise.add_licenseusage",
                             "authentik_enterprise.change_license",
@@ -8659,6 +8667,16 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Tenant id"
+                },
+                "certificate_authorities": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Certificate authorities which issue device certificates via Intune (Cloud PKI, SCEP or PKCS profiles), used by the endpoint stage to validate certificates. This option has a higher priority than the `client_certificate` option on `Brand`."
+                    },
+                    "title": "Certificate authorities",
+                    "description": "Certificate authorities which issue device certificates via Intune (Cloud PKI, SCEP or PKCS profiles), used by the endpoint stage to validate certificates. This option has a higher priority than the `client_certificate` option on `Brand`."
                 }
             },
             "required": []
@@ -13753,9 +13771,13 @@
                             "authentik_endpoints_connectors_google_chrome.delete_googlechromeconnector",
                             "authentik_endpoints_connectors_google_chrome.view_googlechromeconnector",
                             "authentik_endpoints_connectors_microsoft_intune.add_microsoftintuneconnector",
+                            "authentik_endpoints_connectors_microsoft_intune.add_microsoftintuneconnectorcertificateauthority",
                             "authentik_endpoints_connectors_microsoft_intune.change_microsoftintuneconnector",
+                            "authentik_endpoints_connectors_microsoft_intune.change_microsoftintuneconnectorcertificateauthority",
                             "authentik_endpoints_connectors_microsoft_intune.delete_microsoftintuneconnector",
+                            "authentik_endpoints_connectors_microsoft_intune.delete_microsoftintuneconnectorcertificateauthority",
                             "authentik_endpoints_connectors_microsoft_intune.view_microsoftintuneconnector",
+                            "authentik_endpoints_connectors_microsoft_intune.view_microsoftintuneconnectorcertificateauthority",
                             "authentik_enterprise.add_license",
                             "authentik_enterprise.add_licenseusage",
                             "authentik_enterprise.change_license",

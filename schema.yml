@@ -45323,6 +45323,15 @@ components:
           type: string
         tenant_id:
           type: string
+        certificate_authorities:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Certificate authorities which issue device certificates via
+            Intune (Cloud PKI, SCEP or PKCS profiles), used by the endpoint stage
+            to validate certificates. This option has a higher priority than the `client_certificate`
+            option on `Brand`.
       required:
       - client_id
       - component
@@ -45353,6 +45362,15 @@ components:
         tenant_id:
           type: string
           minLength: 1
+        certificate_authorities:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Certificate authorities which issue device certificates via
+            Intune (Cloud PKI, SCEP or PKCS profiles), used by the endpoint stage
+            to validate certificates. This option has a higher priority than the `client_certificate`
+            option on `Brand`.
       required:
       - client_id
       - client_secret
@@ -52033,6 +52051,15 @@ components:
         tenant_id:
           type: string
           minLength: 1
+        certificate_authorities:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Certificate authorities which issue device certificates via
+            Intune (Cloud PKI, SCEP or PKCS profiles), used by the endpoint stage
+            to validate certificates. This option has a higher priority than the `client_certificate`
+            option on `Brand`.
     PatchedMutualTLSStageRequest:
       type: object
       description: MutualTLSStage Serializer

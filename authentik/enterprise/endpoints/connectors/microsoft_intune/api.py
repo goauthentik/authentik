@@ -19,6 +19,7 @@ class MicrosoftIntuneConnectorSerializer(EnterpriseRequiredMixin, ConnectorSeria
             "client_id",
             "client_secret",
             "tenant_id",
+            "certificate_authorities",
         ]
         extra_kwargs = {
             "client_secret": {"write_only": True},

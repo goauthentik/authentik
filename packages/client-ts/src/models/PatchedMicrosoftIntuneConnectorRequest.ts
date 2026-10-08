@@ -23,6 +23,12 @@ export interface PatchedMicrosoftIntuneConnectorRequest {
     clientId?: string;
     clientSecret?: string;
     tenantId?: string;
+    /**
+     * Certificate authorities which issue device certificates via Intune (Cloud PKI, SCEP or PKCS
+     * profiles), used by the endpoint stage to validate certificates. This option has a higher
+     * priority than the `client_certificate` option on `Brand`.
+     */
+    certificateAuthorities?: Array<string>;
 }
 
 /**
@@ -54,6 +60,8 @@ export function PatchedMicrosoftIntuneConnectorRequestFromJSONTyped(
         clientId: json["client_id"] == null ? undefined : json["client_id"],
         clientSecret: json["client_secret"] == null ? undefined : json["client_secret"],
         tenantId: json["tenant_id"] == null ? undefined : json["tenant_id"],
+        certificateAuthorities:
+            json["certificate_authorities"] == null ? undefined : json["certificate_authorities"],
     };
 }
 
@@ -78,5 +86,6 @@ export function PatchedMicrosoftIntuneConnectorRequestToJSONTyped(
         client_id: value["clientId"],
         client_secret: value["clientSecret"],
         tenant_id: value["tenantId"],
+        certificate_authorities: value["certificateAuthorities"],
     };
 }
