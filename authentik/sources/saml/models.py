@@ -95,12 +95,6 @@ class SAMLSource(Source):
         help_text=_("Also known as Entity ID. Defaults to the Metadata URL."),
     )
 
-    audience_override = models.TextField(
-        blank=True,
-        default="",
-        help_text=_("Audience value this IdP sends for authentik."),
-    )
-
     metadata_url = models.TextField(
         blank=True,
         default="",
