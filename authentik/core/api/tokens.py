@@ -124,7 +124,7 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
     """Token Viewset"""
 
     lookup_field = "identifier"
-    queryset = Token.objects.including_expired().all()
+    queryset = Token.objects.including_expired().prefetch_related("user__groups", "user__roles")
     serializer_class = TokenSerializer
     search_fields = [
         "identifier",
