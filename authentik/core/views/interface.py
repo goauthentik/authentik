@@ -15,6 +15,7 @@ from authentik.admin.tasks import LOCAL_VERSION
 from authentik.api.v3.config import ConfigView
 from authentik.brands.api import CurrentBrandSerializer
 from authentik.brands.models import Brand
+from authentik.core import user_switching
 from authentik.core.apps import Setup
 from authentik.core.models import UserTypes
 from authentik.lib.config import CONFIG
@@ -72,6 +73,8 @@ class BrandDefaultRedirectView(InterfaceView):
     """By default redirect to default app"""
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        # Returning to an interface abandons an unfinished "Add user".
+        request.session.pop(user_switching.SESSION_KEY_ADD_USER, None)
         if request.user.is_authenticated and request.user.type in (
             UserTypes.EXTERNAL,
             UserTypes.SERVICE_ACCOUNT,
