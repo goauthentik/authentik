@@ -18,6 +18,7 @@ from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
 from django.db import models
 from django.db.models import Q, QuerySet, options
+from django.db.models.functions import Upper
 from django.http import HttpRequest
 from django.utils.functional import cached_property
 from django.utils.timezone import now
@@ -35,6 +36,8 @@ from structlog.stdlib import get_logger
 from authentik.admin.files.fields import FileField
 from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.usage import FileUsage
+from authentik.admin.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
+from authentik.admin.utils import get_system_settings
 from authentik.blueprints.models import ManagedModel
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
@@ -53,8 +56,7 @@ from authentik.lib.utils.inheritance import get_deepest_child
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel, RequestableChildModel, RequestableModel
 from authentik.rbac.models import Role
-from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
-from authentik.tenants.utils import get_current_tenant, get_unique_identifier
+from authentik.root.install_id import get_install_id
 
 LOGGER = get_logger()
 USERNAME_MAX_LENGTH = 150
@@ -94,10 +96,10 @@ def managed_role_name(user_or_group: models.Model):
 
 def default_token_duration() -> datetime:
     """Default duration a Token is valid"""
-    current_tenant = get_current_tenant()
+    settings = get_system_settings()
     token_duration = (
-        current_tenant.default_token_duration
-        if hasattr(current_tenant, "default_token_duration")
+        settings.default_token_duration
+        if hasattr(settings, "default_token_duration")
         else DEFAULT_TOKEN_DURATION
     )
     return now() + timedelta_from_string(token_duration)
@@ -105,10 +107,10 @@ def default_token_duration() -> datetime:
 
 def default_token_key() -> str:
     """Default token key"""
-    current_tenant = get_current_tenant()
+    settings = get_system_settings()
     token_length = (
-        current_tenant.default_token_length
-        if hasattr(current_tenant, "default_token_length")
+        settings.default_token_length
+        if hasattr(settings, "default_token_length")
         else DEFAULT_TOKEN_LENGTH
     )
     # We use generate_id since the chars in the key should be easy
@@ -345,13 +347,21 @@ class UserQuerySet(models.QuerySet):
         """Exclude anonymous user"""
         return self.exclude(**{User.USERNAME_FIELD: settings.ANONYMOUS_USER_NAME})
 
+    def filter_agents(self) -> Self:
+        """Include only agent users."""
+        from authentik.enterprise.agents.models import AgentUserQuerySet
 
-class UserManager(DjangoUserManager):
+        return AgentUserQuerySet.filter_agents(self)
+
+    def exclude_agents(self) -> Self:
+        """Exclude agent users."""
+        from authentik.enterprise.agents.models import AgentUserQuerySet
+
+        return AgentUserQuerySet.exclude_agents(self)
+
+
+class UserManager(DjangoUserManager.from_queryset(UserQuerySet)):
     """User manager that doesn't assign is_superuser and is_staff"""
-
-    def get_queryset(self):
-        """Create special user queryset"""
-        return UserQuerySet(self.model, using=self._db)
 
     def create_user(self, username, email=None, password=None, **extra_fields):
         """User manager that doesn't assign is_superuser and is_staff"""
@@ -403,6 +413,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             models.Index(fields=["date_joined"]),
             models.Index(fields=["last_updated"]),
             models.Index(fields=["username", "is_active", "type"]),
+            models.Index(Upper("email"), name="%(app_label)s_%(class)s_email_idx"),
         ]
 
     def __str__(self):
@@ -485,8 +496,12 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         """Get all entitlements this user has for `app`."""
         if not app:
             return []
+        return self.all_app_entitlements().filter(app=app)
+
+    def all_app_entitlements(self) -> QuerySet[ApplicationEntitlement]:
+        """Get all entitlements this user is assigned, regardless of access to the application."""
         all_groups = self.all_groups()
-        qs = app.applicationentitlement_set.filter(
+        return ApplicationEntitlement.objects.filter(
             Q(
                 Q(bindings__user=self) | Q(bindings__group__in=all_groups),
                 bindings__negate=False,
@@ -498,7 +513,6 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             ),
             bindings__enabled=True,
         ).order_by("name")
-        return qs
 
     def app_entitlements_attributes(self, app: Application | None) -> dict:
         """Get a dictionary containing all merged attributes from app entitlements for `app`."""
@@ -606,7 +620,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     @property
     def uid(self) -> str:
         """Generate a globally unique UID, based on the user ID and the hashed secret key"""
-        return sha256(f"{self.id}-{get_unique_identifier()}".encode("ascii")).hexdigest()
+        return sha256(f"{self.id}-{get_install_id()}".encode("ascii")).hexdigest()
 
     def locale(self, request: HttpRequest | None = None) -> str:
         """Get the locale the user has configured"""
@@ -1249,11 +1263,19 @@ class PropertyMapping(SerializerModel, ManagedModel):
         """Get serializer for this model"""
         raise NotImplementedError
 
-    def evaluate(self, user: User | None, request: HttpRequest | None, **kwargs) -> Any:
+    def evaluate(
+        self,
+        user: User | None,
+        request: HttpRequest | None,
+        globals: dict[str, Any] | None = None,
+        **kwargs,
+    ) -> Any:
         """Evaluate `self.expression` using `**kwargs` as Context."""
         from authentik.core.expression.evaluator import PropertyMappingEvaluator
 
         evaluator = PropertyMappingEvaluator(self, user, request, **kwargs)
+        if globals:
+            evaluator._globals.update(globals)
         try:
             return evaluator.evaluate(self.expression)
         except ControlFlowException as exc:
@@ -1545,7 +1567,7 @@ class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
 
         field_kwargs = {}
 
-        match (self.type):
+        match self.type:
             case self.AttributeType.TEXT:
                 field_cls = CharField
                 field_kwargs["allow_blank"] = True

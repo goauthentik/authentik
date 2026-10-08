@@ -1,5 +1,3 @@
-import "#admin/common/ak-crypto-certificate-search";
-import "#admin/common/ak-flow-search/ak-source-flow-search";
 import "#components/ak-file-search-input";
 import "#components/ak-slug-input";
 import "#components/ak-text-input";
@@ -13,16 +11,22 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLSource
 
 import { aki } from "#common/api/client";
 
-import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
+import type { SearchSelectChangeEvent } from "#elements/forms/SearchSelect/events";
+
+import { AKCertificateSearch } from "#admin/common/AKCertificateSearch";
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
+import {
+    AKSourceAuthenticationFlowField,
+    AKSourceEnrollmentFlowField,
+    AKSourcePreAuthenticationFlowField,
+} from "#admin/sources/components/flow-fields";
 import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
     BindingTypeEnum,
     DigestAlgorithmEnum,
-    FlowDesignationEnum,
     GroupMatchingModeEnum,
     SAMLNameIDPolicyEnum,
     SAMLSource,
@@ -30,6 +34,7 @@ import {
     SourcesApi,
     UsageEnum,
     UserMatchingModeEnum,
+    CertificateKeyPair,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -56,11 +61,8 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
         this.hasSigningCert = false;
     }
 
-    setHasSigningCert(ev: InputEvent): void {
-        const target = ev.target as AkCryptoCertificateSearch;
-
-        if (!target) return;
-        this.hasSigningCert = !!target.selectedKeypair;
+    setHasSigningCert({ detail }: SearchSelectChangeEvent<CertificateKeyPair>): void {
+        this.hasSigningCert = !!detail.value;
     }
 
     renderHasSigningCert(): TemplateResult {
@@ -252,9 +254,7 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         </ak-radio>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Signing keypair")} name="signingKp">
-                        <ak-crypto-certificate-search
-                            .certificate=${this.instance?.signingKp}
-                        ></ak-crypto-certificate-search>
+                        ${AKCertificateSearch({ name: "signingKp", value: this.instance?.signingKp })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Keypair which is used to sign outgoing requests. Leave empty to disable signing.",
@@ -265,11 +265,7 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         label=${msg("Verification Certificate")}
                         name="verificationKp"
                     >
-                        <ak-crypto-certificate-search
-                            .certificate=${this.instance?.verificationKp}
-                            @input=${this.setHasSigningCert}
-                            nokey
-                        ></ak-crypto-certificate-search>
+                        ${AKCertificateSearch({ name: "verificationKp", value: this.instance?.verificationKp, noKey: true, onChange: this.setHasSigningCert })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.",
@@ -457,9 +453,7 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         label=${msg("Encryption Certificate")}
                         name="encryptionKp"
                     >
-                        <ak-crypto-certificate-search
-                            .certificate=${this.instance?.encryptionKp}
-                        ></ak-crypto-certificate-search>
+                        ${AKCertificateSearch({ name: "encryptionKp", value: this.instance?.encryptionKp })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When selected, encrypted assertions will be decrypted using this keypair.",
@@ -506,49 +500,9 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
             </ak-form-group>
             <ak-form-group label="${msg("Flow settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Pre-authentication flow")}
-                        required
-                        name="preAuthenticationFlow"
-                    >
-                        <ak-source-flow-search
-                            flowType=${FlowDesignationEnum.StageConfiguration}
-                            .currentFlow=${this.instance?.preAuthenticationFlow}
-                            .instanceId=${this.instance?.pk}
-                            fallback="default-source-pre-authentication"
-                        ></ak-source-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow used before authentication.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Authentication Flow")}
-                        name="authenticationFlow"
-                    >
-                        <ak-source-flow-search
-                            flowType=${FlowDesignationEnum.Authentication}
-                            .currentFlow=${this.instance?.authenticationFlow}
-                            .instanceId=${this.instance?.pk}
-                            fallback="default-source-authentication"
-                        ></ak-source-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow to use when authenticating existing users.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Enrollment flow")}
-                        name="enrollmentFlow"
-                    >
-                        <ak-source-flow-search
-                            flowType=${FlowDesignationEnum.Enrollment}
-                            .currentFlow=${this.instance?.enrollmentFlow}
-                            .instanceId=${this.instance?.pk}
-                            fallback="default-source-enrollment"
-                        ></ak-source-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow to use when enrolling new users.")}
-                        </p>
-                    </ak-form-element-horizontal>
+                    ${AKSourcePreAuthenticationFlowField({ value: this.instance?.preAuthenticationFlow, sourcePk: this.instance?.pk })}
+                    ${AKSourceAuthenticationFlowField({ value: this.instance?.authenticationFlow, sourcePk: this.instance?.pk })}
+                    ${AKSourceEnrollmentFlowField({ value: this.instance?.enrollmentFlow, sourcePk: this.instance?.pk })}
                 </div>
             </ak-form-group>
             <ak-form-group label=${msg("Advanced settings")}>

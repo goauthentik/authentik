@@ -1,22 +1,18 @@
 import "./components/ak-dual-select-available-pane.js";
 import "./components/ak-dual-select-controls.js";
 import "./components/ak-dual-select-selected-pane.js";
-import "./components/ak-pagination.js";
-import "./components/ak-search-bar.js";
+import "#elements/Paginator";
 import { AkDualSelectAvailablePane } from "./components/ak-dual-select-available-pane.js";
 import { AkDualSelectSelectedPane } from "./components/ak-dual-select-selected-pane.js";
+import "./components/ak-search-bar.js";
+
 import { globalVariables, mainStyles } from "./components/styles.js";
-import {
-    BasePagination,
-    DualSelectEventType,
-    DualSelectPair,
-    SearchbarEventDetail,
-    SearchbarEventSource,
-} from "./types.js";
+import { DualSelectEvent, SearchbarEvent } from "./events.js";
+import { DualSelectEventType, DualSelectPair, SearchbarEventSource } from "./types.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 import { AKElement } from "#elements/Base";
-import { CustomEmitterElement, CustomListenerElement } from "#elements/utils/eventEmitter";
+import { pageBounds } from "#elements/Paginator";
 
 import { match } from "ts-pattern";
 
@@ -57,7 +53,7 @@ const DelegatedEvents = [
  * active pagination object (based on Django's pagination object) from the invoking component.
  */
 @customElement("ak-dual-select")
-export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKElement)) {
+export class AkDualSelect extends AKElement {
     static styles = [PFButton, globalVariables, mainStyles];
 
     //#region Properties
@@ -78,8 +74,14 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     @property({ type: Array })
     selected: DualSelectPair[] = [];
 
-    @property({ type: Object })
-    pages?: BasePagination;
+    @property({ type: Number, attribute: "item-count" })
+    itemCount = 0;
+
+    @property({ type: Number, attribute: "items-per-page" })
+    itemsPerPage = 20;
+
+    @property({ type: Number })
+    page = 1;
 
     @property({ attribute: "available-label" })
     availableLabel = msg("Available options");
@@ -125,14 +127,14 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         super();
 
         for (const eventName of DelegatedEvents) {
-            this.addCustomListener(eventName, this.#moveListener);
+            this.addEventListener(eventName, this.#moveListener);
         }
 
-        this.addCustomListener("ak-dual-select-move", () => {
+        this.addEventListener(DualSelectEventType.Move, () => {
             this.requestUpdate();
         });
 
-        this.addCustomListener("ak-search", this.#searchListener);
+        this.addEventListener(SearchbarEvent.eventName, this.#searchListener);
     }
 
     willUpdate(changedProperties: PropertyValues<this>) {
@@ -150,20 +152,22 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
 
     //#region Event Listeners
 
-    #moveListener = (event: CustomEvent<string>) => {
+    #moveListener = (event: DualSelectEvent<(typeof DelegatedEvents)[number]>) => {
+        const key = event.detail;
+
         match(event.type)
             .with(DualSelectEventType.AddSelected, () => this.addSelected())
             .with(DualSelectEventType.RemoveSelected, () => this.removeSelected())
             .with(DualSelectEventType.AddAll, () => this.addAllVisible())
             .with(DualSelectEventType.RemoveAll, () => this.removeAllVisible())
             .with(DualSelectEventType.DeleteAll, () => this.removeAll())
-            .with(DualSelectEventType.AddOne, () => this.addOne(event.detail))
-            .with(DualSelectEventType.RemoveOne, () => this.removeOne(event.detail))
+            .with(DualSelectEventType.AddOne, () => key !== undefined && this.addOne(key))
+            .with(DualSelectEventType.RemoveOne, () => key !== undefined && this.removeOne(key))
             .otherwise(() => {
                 throw new Error(`Expected move event here, got ${event.type}`);
             });
 
-        this.dispatchCustomEvent(DualSelectEventType.Change, { value: this.value });
+        this.dispatchEvent(new DualSelectEvent(DualSelectEventType.Change, { value: this.value }));
 
         event.stopPropagation();
     };
@@ -184,7 +188,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         this.availablePane.value!.clearMove();
     }
 
-    protected addOne(key: string) {
+    protected addOne(key: string | number) {
         const requested = this.options.find(keyfinder(key));
 
         if (!requested) return;
@@ -218,7 +222,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         this.selectedPane.value!.clearMove();
     }
 
-    protected removeOne(key: string) {
+    protected removeOne(key: string | number) {
         this.selected = this.selected.filter(([k]) => k !== key);
     }
 
@@ -236,12 +240,12 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         this.selectedPane.value!.clearMove();
     }
 
-    #searchListener = (event: CustomEvent<SearchbarEventDetail>) => {
+    #searchListener = (event: SearchbarEvent) => {
         const { source, value } = event.detail;
 
         match(source)
             .with(SearchbarEventSource.Available, () => {
-                this.dispatchCustomEvent(DualSelectEventType.Search, value);
+                this.dispatchEvent(new DualSelectEvent(DualSelectEventType.Search, value));
             })
             .with(SearchbarEventSource.Selected, () => {
                 this.selectedFilter = value;
@@ -279,7 +283,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     }
 
     get needPagination() {
-        return (this.pages?.next ?? 0) > 0 || (this.pages?.previous ?? 0) > 0;
+        return pageBounds(this.itemCount, this.itemsPerPage, this.page).totalPages > 1;
     }
 
     //#endregion
@@ -362,7 +366,12 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
                     ></ak-dual-select-available-pane>
                     ${
                         this.needPagination
-                            ? html`<ak-pagination .pages=${this.pages}></ak-pagination>`
+                            ? html`<ak-paginator
+                                  compact
+                                  item-count=${this.itemCount}
+                                  items-per-page=${this.itemsPerPage}
+                                  page=${this.page}
+                              ></ak-paginator>`
                             : nothing
                     }
                 </div>

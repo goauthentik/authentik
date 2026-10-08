@@ -42,6 +42,9 @@ class RACProviderSerializer(ProviderSerializer):
             "meta_model_name",
             "settings",
             "outpost_set",
+            "access_group",
+            "maximum_connections",
+            "auth_mode",
             "connection_expiry",
             "delete_token_on_disconnect",
         ]

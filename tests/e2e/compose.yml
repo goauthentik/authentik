@@ -1,6 +1,6 @@
 services:
   chromium:
-    image: ghcr.io/goauthentik/selenium:151.0-ak-0.61.0@sha256:41ee5470968ea8d565ae4ea73eda4b271b8b9c51c7ee4bb1c1b9e49119bbf358
+    image: ghcr.io/goauthentik/selenium:152.0-ak-0.70.0@sha256:dd1fb915a9b5bd1624101a1644c7fa78014f87b4470952e4b92f772367c7eb65
     shm_size: 2g
     network_mode: host
     restart: always
@@ -13,7 +13,7 @@ services:
     environment:
       VIDEO_READY_PORT: 9912
   mailpit:
-    image: docker.io/axllent/mailpit:v1.31.1
+    image: docker.io/axllent/mailpit:v1.31.4
     ports:
       - 1025:1025
       - 8025:8025
@@ -40,7 +40,7 @@ services:
     image: ghcr.io/beryju/saml-test-sp:1.1
     profiles: [pin-only]
   dex:
-    image: ghcr.io/dexidp/dex:v2.45.1
+    image: ghcr.io/dexidp/dex:v2.46.0
     profiles: [pin-only]
   oauth1-test-server:
     image: ghcr.io/beryju/oauth1-test-server:v1.1
@@ -62,6 +62,9 @@ services:
     profiles: [pin-only]
   openssh-server:
     image: ghcr.io/linuxserver/openssh-server:10.3_p1-r1-ls236
+    profiles: [pin-only]
+  platform-ssh:
+    image: ghcr.io/goauthentik/platform-ssh:26.04-ak-0.70.0@sha256:4c4992d611a3ac1ea1c8a308c4590750d405a87eba16e1ed1d9a8bb52b78e973
     profiles: [pin-only]
   traefik:
     image: docker.io/library/traefik:v3.7
