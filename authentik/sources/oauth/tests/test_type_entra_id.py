@@ -82,6 +82,7 @@ class TestEntraIDClient(TestCase):
                 patch("httpx.AsyncHTTPTransport.handle_async_request") as graph_request,
             ):
                 mocker.get(EntraIDType.profile_url, json=EID_USER)
+                token = {"token_type": "Bearer", "access_token": generate_id()}
                 pages = []
                 for index in range(count):
                     page = {
@@ -102,7 +103,7 @@ class TestEntraIDClient(TestCase):
                     pages.append(Response(200, json=page))
                 graph_request.side_effect = pages
 
-                info = self.oauth_client.get_profile_info(self.token)
+                info = self.oauth_client.get_profile_info(token)
                 self.assertEqual(len(info["raw_groups"]["value"]), count * 2)
                 self.assertEqual(
                     EntraIDType().get_base_user_properties(info)["groups"],
@@ -121,7 +122,7 @@ class TestEntraIDClient(TestCase):
                 self.assertEqual([str(request.url) for request in requests], self.urls[:count])
                 for request in requests:
                     self.assertEqual(
-                        request.headers["Authorization"], f"Bearer {self.token['access_token']}"
+                        request.headers["Authorization"], f"Bearer {token['access_token']}"
                     )
 
     def test_later_page_error(self):

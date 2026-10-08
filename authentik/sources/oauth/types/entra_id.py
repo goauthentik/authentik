@@ -10,6 +10,7 @@ from kiota_abstractions.authentication.anonymous_authentication_provider import 
     AnonymousAuthenticationProvider,
 )
 from kiota_abstractions.base_request_configuration import RequestConfiguration
+from kiota_abstractions.headers_collection import HeadersCollection
 from kiota_http.kiota_client_factory import KiotaClientFactory
 from msgraph.generated.models.entity import Entity
 from msgraph.graph_request_adapter import GraphRequestAdapter, options
@@ -64,7 +65,8 @@ class EntraIDClient(UserprofileHeaderAuthClient):
 
     async def get_groups(self, token):
         """Fetch all memberships and convert Graph entities for property mappings."""
-        config = RequestConfiguration()
+        # RequestConfiguration shares its default headers between instances
+        config = RequestConfiguration(headers=HeadersCollection())
         config.headers.add("Authorization", f"{token['token_type']} {token['access_token']}")
         async with GraphClientFactory.create_with_default_middleware(
             options=options, client=KiotaClientFactory.get_default_client()
