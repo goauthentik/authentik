@@ -195,19 +195,22 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
             const assignedToModel = modelPermissions.has(codename);
             const assignedToObject = objectPermissions.has(codename);
 
-            const tooltip = match([assignedToModel, assignedToObject])
-                .with([true, true], () =>
-                    msg("Global and object permission", { id: "permissions.kind.universal" }),
-                )
-                .with([true, false], () =>
-                    msg("Global permission", { id: "permissions.kind.global" }),
-                )
-                .with([false, true], () =>
+            const [kind, tag] = match([assignedToModel, assignedToObject])
+                .with([true, true], () => [
+                    msg("Global and object permission", { id: "permissions.aria.universal" }),
+                    msg("object + global", { id: "permissions.kind.universal" }),
+                ])
+                .with([true, false], () => [
+                    msg("Global permission", { id: "permissions.aria.global" }),
+                    msg("global", { id: "permissions.kind.global" }),
+                ])
+                .with([false, true], () => [
                     msg("Object permission", { id: "permissions.kind.object" }),
-                )
-                .otherwise(() => null);
+                    msg("object", { id: "permissions.kind.object" }),
+                ])
+                .otherwise(() => [null, null]);
 
-            return { name, kind: tooltip, active: Boolean(tooltip) };
+            return { name, kind, tag, active: Boolean(kind) };
         });
 
         permissions = match(this.sortFilter)
