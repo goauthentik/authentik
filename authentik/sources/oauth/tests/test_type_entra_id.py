@@ -6,6 +6,7 @@ from django.test import RequestFactory, TestCase
 from httpx import Response
 from requests_mock import Mocker
 
+from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.entra_id import EntraIDClient, EntraIDOAuthCallback, EntraIDType
 
@@ -64,7 +65,7 @@ class TestEntraIDClient(TestCase):
             additional_scopes="https://graph.microsoft.com/GroupMember.Read.All",
         )
         self.oauth_client = EntraIDClient(self.source, RequestFactory().get("/"))
-        self.token = {"token_type": "Bearer", "access_token": "test-token"}
+        self.token = {"token_type": "Bearer", "access_token": generate_id()}
         self.urls = [
             "https://graph.microsoft.com/v1.0/me/memberOf",
             "https://graph.microsoft.com/v1.0/me/memberOf?$skiptoken=Opaque%2BOne%3D",
@@ -112,7 +113,9 @@ class TestEntraIDClient(TestCase):
                 requests = [call.args[0] for call in graph_request.call_args_list]
                 self.assertEqual([str(request.url) for request in requests], self.urls[:count])
                 for request in requests:
-                    self.assertEqual(request.headers["Authorization"], "Bearer test-token")
+                    self.assertEqual(
+                        request.headers["Authorization"], f"Bearer {self.token['access_token']}"
+                    )
 
     def test_later_page_error(self):
         """A failed continuation must not return a partial profile for synchronization."""
