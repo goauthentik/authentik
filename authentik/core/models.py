@@ -53,7 +53,6 @@ from authentik.lib.models import (
     SimpleThroughModel,
 )
 from authentik.lib.utils.inheritance import get_deepest_child
-from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel, RequestableChildModel, RequestableModel
 from authentik.rbac.models import Role
@@ -341,15 +340,24 @@ class GroupAncestryNode(PostgresMaterializedViewModel):
         return f"Group Ancestry Node from {self.descendant_id} to {self.ancestor_id}"
 
 
-class UserQuerySet(
-    ConditionalInheritance("authentik.enterprise.agents.managers.AgentUserQuerySet"),
-    models.QuerySet,
-):
+class UserQuerySet(models.QuerySet):
     """User queryset"""
 
     def exclude_anonymous(self):
         """Exclude anonymous user"""
         return self.exclude(**{User.USERNAME_FIELD: settings.ANONYMOUS_USER_NAME})
+
+    def filter_agents(self) -> Self:
+        """Include only agent users."""
+        from authentik.enterprise.agents.models import AgentUserQuerySet
+
+        return AgentUserQuerySet.filter_agents(self)
+
+    def exclude_agents(self) -> Self:
+        """Exclude agent users."""
+        from authentik.enterprise.agents.models import AgentUserQuerySet
+
+        return AgentUserQuerySet.exclude_agents(self)
 
 
 class UserManager(DjangoUserManager.from_queryset(UserQuerySet)):
