@@ -86,4 +86,6 @@ Editing a rule updates its pending offboardings to use the current activity basi
 
 Execution uses the current settings even if the next rule evaluation has not run. If a change makes the expiration immediately due, the offboarding proceeds without another warning.
 
+Disabling a rule stops expiration and removes its pending offboardings shortly after saving. Users are not notified when these offboardings are removed. Re-enabling the rule can schedule eligible users again and send warnings according to its warning settings.
+
 Deleting a rule removes its pending offboardings but keeps completed records in the audit history. When the action is **Delete**, the offboarding is removed with the user, so the **User Offboarded** event is the only lasting record.
