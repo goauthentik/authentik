@@ -30,13 +30,10 @@ class OpenIDConnectClient(UserprofileHeaderAuthClient):
             args["client_id"] = client_id
             if client_secret:
                 args["client_secret"] = client_secret
-            else:
-                args.pop("client_secret", None)
         elif client_secret:
+            # Basic auth, credentials are sent in the header
             args.pop("client_id", None)
             args.pop("client_secret", None)
-        else:
-            args.setdefault("client_id", client_id)
         return args
 
     def get_access_token_auth(self) -> AuthBase | None:
