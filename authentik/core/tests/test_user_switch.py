@@ -2,16 +2,19 @@
 
 from datetime import timedelta
 from typing import cast
+from unittest.mock import patch
 
 from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.http import urlencode
 from rest_framework import status
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.test import APIClient
 
 from authentik.core import user_switching
+from authentik.core.api.users import UserViewSet
 from authentik.core.models import (
     AuthenticatedSession,
     Session,
@@ -230,21 +233,30 @@ class TestUserSwitch(FlowTestCase):
         response = _post_user_switch(self.client, {"user_pk": self.other_user.pk})
         self.assertEqual(response.status_code, 404)
 
-    def test_add_user_survives_clobbered_plan(self):
-        """Adding a user keeps the first login when a stale session save drops the plan"""
+    def test_add_user_survives_concurrent_user_me(self):
+        """Adding a user keeps the first login when `users/me` overlaps the switch request"""
         first_session_key = _login_through_flow(
             self.client, self.flow, self.login_binding, self.user
         )
-        response = _post_user_switch(self.client, {"action": "add"})
-        _assert_switch_redirect(response, self.flow)
-        plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, bindings=[self.login_binding], markers=[StageMarker()]
-        )
-        plan.context[PLAN_CONTEXT_PENDING_USER] = self.other_user
+        user_me = UserViewSet.user_me
+
+        def add_user_during_user_me(viewset: UserViewSet, request: Request) -> Response:
+            # `users/me` has loaded the session by now, so the plan saved here is lost
+            # if `users/me` writes its copy of the session back.
+            response = _post_user_switch(self.client, {"action": "add"})
+            _assert_switch_redirect(response, self.flow)
+            return user_me(viewset, request)
+
+        with patch.object(UserViewSet, "user_me", add_user_during_user_me):
+            response = self.client.get(reverse("authentik_api:user-me"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
         session = self.client.session
+        plan = session[SESSION_KEY_PLAN]
+        self.assertIn(PLAN_CONTEXT_USER_SWITCH_ADD_USER, plan.context)
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.other_user
         session[SESSION_KEY_PLAN] = plan
         session.save()
-
         self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
@@ -256,6 +268,16 @@ class TestUserSwitch(FlowTestCase):
             set(user_switching.live_sessions(token).values_list("user_id", flat=True)),
             {self.user.pk, self.other_user.pk},
         )
+
+    def test_plain_login_replaces_session_with_switching_enabled(self):
+        """Logging in as someone else without "Add another user" replaces the first login"""
+        first_session_key = _login_through_flow(
+            self.client, self.flow, self.login_binding, self.user
+        )
+
+        _login_through_flow(self.client, self.flow, self.login_binding, self.other_user)
+
+        self.assertFalse(Session.objects.filter(session_key=first_session_key).exists())
 
     def test_target_is_revalidated_before_login(self):
         first_session_key = _login_through_flow(

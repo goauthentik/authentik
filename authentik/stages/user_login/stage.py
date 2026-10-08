@@ -210,8 +210,6 @@ class UserLoginStageView(ChallengeStageView):
         is_user_switch_login = (
             PLAN_CONTEXT_USER_SWITCH_ADD_USER in self.executor.plan.context
             or PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION in self.executor.plan.context
-            # A concurrent request can overwrite the plan and drop the add-user marker.
-            or self.request.brand.flow_user_switch_id is not None
         )
         user_switching_token = getattr(self.request, "user_switching_token", None)
         if (

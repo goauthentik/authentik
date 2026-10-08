@@ -3,6 +3,7 @@
 import pickle  # nosec
 
 from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_KEY
+from django.contrib.sessions.backends.base import UpdateError
 from django.contrib.sessions.backends.db import SessionStore as SessionBase
 from django.core.exceptions import SuspiciousOperation
 from django.utils import timezone
@@ -22,6 +23,23 @@ class SessionStore(SessionBase):
             "last_ip": last_ip or ClientIPMiddleware.default_ip,
             "last_user_agent": last_user_agent,
         }
+        self.expiry_extended = False
+
+    def extend_expiry(self):
+        """Extend the session's expiry without saving its data.
+
+        A full save writes back the data loaded at the start of the request, which erases
+        anything a concurrent request saved in the meantime, like a flow plan."""
+        self.expiry_extended = True
+
+    def save_expiry(self):
+        """Save only the session's expiry and last use, see `extend_expiry`."""
+        updated = self.model.objects.filter(session_key=self.session_key).update(
+            expires=self.get_expiry_date(),
+            last_used=timezone.now(),
+        )
+        if not updated:
+            raise UpdateError
 
     @classmethod
     def get_model_class(cls):
