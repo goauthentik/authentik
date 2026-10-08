@@ -32,9 +32,8 @@ from authentik.policies.models import PolicyBinding, PolicyBindingModel
 
 LOGGER = get_logger()
 
-# Users are read in chunks so a large dormant backlog on first enable does not
-# load every row into memory.
-CANDIDATE_CHUNK_SIZE = 500
+# Users and pending offboardings are read in chunks to avoid loading every row into memory.
+CHUNK_SIZE = 500
 
 # When several rules would expire the same user, the earliest expiration wins. On the
 # same date the least destructive action wins, so a rule never deletes a user that
@@ -358,7 +357,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         rows = UserOffboarding.objects.filter(
             rule=self, status=OffboardingStatus.PENDING
         ).values_list("pk", flat=True)
-        for row_pk in rows.iterator(chunk_size=CANDIDATE_CHUNK_SIZE):
+        for row_pk in rows.iterator(chunk_size=CHUNK_SIZE):
             with transaction.atomic():
                 row = (
                     UserOffboarding.objects.select_for_update()
@@ -391,7 +390,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         for row in (
             owned.order_by("user__username")
             .prefetch_related(activity)
-            .iterator(chunk_size=CANDIDATE_CHUNK_SIZE)
+            .iterator(chunk_size=CHUNK_SIZE)
         ):
             due_at = self._pending_due_at(row)
             if due_at is None:
@@ -407,7 +406,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
             self._foreign_rows()
             .order_by("user__username")
             .prefetch_related(activity)
-            .iterator(chunk_size=CANDIDATE_CHUNK_SIZE)
+            .iterator(chunk_size=CHUNK_SIZE)
         ):
             rank = self.rank(row.user)
             if rank < self.row_rank(row) and self._in_scope(row.user):
@@ -442,7 +441,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
             return 0
         self._tighten_foreign_rows()
         created = 0
-        for user in self.candidates().iterator(chunk_size=CANDIDATE_CHUNK_SIZE):
+        for user in self.candidates().iterator(chunk_size=CHUNK_SIZE):
             try:
                 with transaction.atomic():
                     offboarding = UserOffboarding.objects.create(

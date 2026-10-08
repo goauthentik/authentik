@@ -9,10 +9,7 @@ from authentik.core.models import User
 from authentik.events.models import Event, EventAction
 
 REFRESH_ACTIVITY_INTERVAL = timedelta(hours=24)
-ACTIVITY_ACTIONS = (EventAction.LOGIN, EventAction.AUTHORIZE_APPLICATION, EventAction.TOKEN_REFRESH)
-EXACT_ACTIVITY_ACTIONS = tuple(
-    action for action in ACTIVITY_ACTIONS if action != EventAction.TOKEN_REFRESH
-)
+EXACT_ACTIVITY_ACTIONS = (EventAction.LOGIN, EventAction.AUTHORIZE_APPLICATION)
 
 
 def with_activity(users: QuerySet[User]) -> QuerySet[User]:
