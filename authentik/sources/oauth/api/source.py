@@ -1,5 +1,7 @@
 """OAuth Source Serializer"""
 
+from typing import Any
+
 from django.urls.base import reverse_lazy
 from django_filters.filters import BooleanFilter
 from django_filters.filterset import FilterSet
@@ -57,6 +59,25 @@ class OAuthSourceSerializer(SourceSerializer):
         """Get source's type configuration"""
         return SourceTypeSerializer(instance.source_type).data
 
+    def _get_value(self, attrs: dict[str, Any], key: str):
+        """Get a value based on a specific ordering:
+
+        - First try to get them from the request (attrs)
+        - Afterwards, If they're set on the instance, use that value
+        - After that, fallback to the source type"""
+        if key in attrs:
+            return attrs[key]
+        if self.instance:
+            return getattr(self.instance, key)
+        provider_type_name = attrs.get(
+            "provider_type",
+            self.instance.provider_type if self.instance else None,
+        )
+        source_type = registry.find_type(provider_type_name)
+        if type_value := getattr(source_type, key):
+            return type_value
+        return None
+
     def validate(self, attrs: dict) -> dict:
         session = get_http_session()
         provider_type_name = attrs.get(
@@ -65,7 +86,7 @@ class OAuthSourceSerializer(SourceSerializer):
         )
         source_type = registry.find_type(provider_type_name)
 
-        well_known = attrs.get("oidc_well_known_url") or source_type.oidc_well_known_url
+        well_known = self._get_value(attrs, "oidc_well_known_url")
         inferred_oidc_jwks_url = None
         enabled = attrs.get("enabled", self.instance.enabled if self.instance else True)
 
@@ -127,22 +148,12 @@ class OAuthSourceSerializer(SourceSerializer):
                     raise ValidationError(
                         f"{url} is required for provider {source_type.verbose_name}"
                     )
-        consumer_secret = attrs.get("consumer_secret")
-        if consumer_secret is None and self.instance:
-            consumer_secret = self.instance.consumer_secret
-        request_token_url = attrs.get("request_token_url")
-        if request_token_url is None and self.instance:
-            request_token_url = self.instance.request_token_url
-        if not request_token_url:
-            request_token_url = source_type.request_token_url
-        if source_type.name == "apple" and not consumer_secret:
-            raise ValidationError(
-                {"consumer_secret": "Consumer secret is required for Apple sources."}
-            )
-        if request_token_url and not consumer_secret:
-            raise ValidationError(
-                {"consumer_secret": "Consumer secret is required for OAuth1 sources."}
-            )
+        consumer_secret = self._get_value(attrs, "consumer_secret")
+        pkce = self._get_value(attrs, "pkce")
+        if source_type.requires_client_secret and not consumer_secret:
+            raise ValidationError({"consumer_secret": "Consumer secret is required."})
+        if not consumer_secret and pkce == PKCEMethod.NONE:
+            raise ValidationError({"pkce": "PKCE is required when no consumer secret is used."})
         return attrs
 
     class Meta:

@@ -32,12 +32,11 @@ class OpenIDConnectClient(UserprofileHeaderAuthClient):
                 args["client_secret"] = client_secret
             else:
                 args.pop("client_secret", None)
+        elif client_secret:
+            args.pop("client_id", None)
+            args.pop("client_secret", None)
         else:
-            if client_secret:
-                args.pop("client_id", None)
-                args.pop("client_secret", None)
-            else:
-                args.setdefault("client_id", client_id)
+            args.setdefault("client_id", client_id)
         return args
 
     def get_access_token_auth(self) -> AuthBase | None:
@@ -92,6 +91,7 @@ class OpenIDConnectType(SourceType):
     name = "openidconnect"
 
     urls_customizable = True
+    requires_client_secret = False
 
     def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
         return {
