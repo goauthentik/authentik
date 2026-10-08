@@ -51,7 +51,7 @@ dependencies = [
   "psycopg[c,pool]==3.3.4",
   "pydantic-scim==0.0.8",
   "pydantic==2.13.4",
-  "pyjwt==2.13.0",
+  "pyjwt==2.15.1",
   "pyrad==2.5.4",
   "pyroscope-io==1.2.1",
   "python-kadmin-rs==0.7.2",
