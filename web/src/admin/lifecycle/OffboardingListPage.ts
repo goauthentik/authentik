@@ -2,10 +2,12 @@ import "#components/ak-status-label";
 import "#components/ak-switch-input";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
+import "#elements/table/ak-table-filter-select";
 import "#elements/timestamp/ak-timestamp";
 import { aki } from "#common/api/client";
 
 import { toAdminInterface } from "#elements/router/core/interfaces";
+import type { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -19,8 +21,8 @@ import { html, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 /**
- * Which offboardings the list shows: every one, only those an administrator scheduled
- * by hand, or only those an expiration rule scheduled.
+ * Which offboardings the list shows: every one, only those scheduled manually,
+ * or only those an expiration rule scheduled.
  */
 const OffboardingSource = {
     All: "all",
@@ -83,8 +85,10 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
         this.fetch();
     };
 
-    protected sourceChangeListener = (event: Event): void => {
-        this.source = (event.target as HTMLSelectElement).value as OffboardingSource;
+    protected sourceChangeListener = (
+        event: CustomEvent<FilterOption<OffboardingSource>>,
+    ): void => {
+        this.source = event.detail.value;
         this.page = 1;
         this.fetch();
     };
@@ -97,40 +101,33 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
                 @change=${this.togglePendingOffboardingFilter}
             >
             </ak-switch-input>
-            <div class="pf-c-toolbar__item">
-                <label class="sr-only" for="offboarding-source-filter"
-                    >${msg("Scheduled by", { id: "offboarding.column.scheduled-by" })}</label
-                >
-                <select
-                    id="offboarding-source-filter"
-                    class="pf-c-form-control"
-                    @change=${this.sourceChangeListener}
-                >
-                    <option
-                        value=${OffboardingSource.All}
-                        ?selected=${this.source === OffboardingSource.All}
-                    >
-                        ${msg("All offboardings", { id: "offboarding.source.all" })}
-                    </option>
-                    <option
-                        value=${OffboardingSource.Manual}
-                        ?selected=${this.source === OffboardingSource.Manual}
-                    >
-                        ${msg("Scheduled by an administrator", {
-                            id: "offboarding.source.manual",
-                        })}
-                    </option>
-                    <option
-                        value=${OffboardingSource.Automatic}
-                        ?selected=${this.source === OffboardingSource.Automatic}
-                    >
-                        ${msg("Scheduled by an expiration rule", {
-                            id: "offboarding.source.automatic",
-                        })}
-                    </option>
-                </select>
-            </div>
             ${super.renderToolbar()}`;
+    }
+
+    protected override renderToolbarAfter(): TemplateResult {
+        return html`<div class="pf-c-toolbar__group pf-m-filter-group">
+            <div class="pf-c-toolbar__item pf-m-search-filter">
+                <ak-table-filter-select
+                    .options=${[
+                        {
+                            label: msg("All", { id: "offboarding.source.all" }),
+                            value: OffboardingSource.All,
+                        },
+                        {
+                            label: msg("Manual", { id: "offboarding.source.manual" }),
+                            value: OffboardingSource.Manual,
+                        },
+                        {
+                            label: msg("Expiration rule", { id: "offboarding.source.automatic" }),
+                            value: OffboardingSource.Automatic,
+                        },
+                    ]}
+                    group=${msg("Scheduled by", { id: "offboarding.column.scheduled-by" })}
+                    .value=${this.source}
+                    @change=${this.sourceChangeListener}
+                ></ak-table-filter-select>
+            </div>
+        </div>`;
     }
 
     protected override columns: TableColumn[] = [
