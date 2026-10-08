@@ -20,7 +20,7 @@ on:
 jobs:
   compress:
     name: compress
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     # Don't run on forks. Token will not be available. Will run on main and open a PR anyway
     if: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
     steps:

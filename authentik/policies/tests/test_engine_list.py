@@ -16,6 +16,7 @@ from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.engine import ListPolicyEngine, PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyBindingModel, PolicyEngineMode
 from authentik.policies.tests.test_process import clear_policy_cache
+from authentik.policies.types import CACHE_PREFIX
 
 
 class TestListPolicyEngine(TestCase):
@@ -115,6 +116,41 @@ class TestListPolicyEngine(TestCase):
         self.assertEqual(
             set(engine.build().result.values_list("pk", flat=True)),
             {self.obj_a.pk, self.obj_c.pk},
+        )
+
+    def test_list_engine_dry_run(self):
+        """Dry-run bindings do not affect the objects returned by the list engine."""
+        policy_false = DummyPolicy.objects.create(
+            name=generate_id(), result=False, wait_min=0, wait_max=1
+        )
+        self.obj_a.policy_engine_mode = PolicyEngineMode.MODE_ALL
+        self.obj_a.save()
+        PolicyBinding.objects.create(target=self.obj_a, group=self.group_b, order=0)
+        dry_run_a = PolicyBinding.objects.create(
+            target=self.obj_a, policy=policy_false, order=1, dry_run=True
+        )
+        PolicyBinding.objects.create(target=self.obj_b, group=self.group_b, order=0)
+        dry_run_b = PolicyBinding.objects.create(
+            target=self.obj_b, policy=self.policy_true, order=1, dry_run=True
+        )
+
+        result = ListPolicyEngine(self.objs, self.user).build().result
+
+        self.assertEqual(
+            set(result.values_list("pk", flat=True)),
+            {self.obj_c.pk},
+        )
+        self.assertEqual(len(cache.keys(f"{CACHE_PREFIX}{dry_run_a.policy_binding_uuid.hex}*")), 1)
+        self.assertEqual(len(cache.keys(f"{CACHE_PREFIX}{dry_run_b.policy_binding_uuid.hex}*")), 1)
+
+        with patch(
+            "authentik.policies.dummy.models.DummyPolicy.passes",
+            side_effect=AssertionError("cached dry-run policies should not be evaluated"),
+        ):
+            cached_result = ListPolicyEngine(self.objs, self.user).build().result
+        self.assertEqual(
+            set(cached_result.values_list("pk", flat=True)),
+            {self.obj_c.pk},
         )
 
     def test_list_engine_mode_all_static_prefilter_skips_dynamic(self):

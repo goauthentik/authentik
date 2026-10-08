@@ -658,13 +658,19 @@ class UserViewSet(
             base_qs = base_qs.prefetch_related(
                 Prefetch("roles", queryset=Role.objects.all().only("uuid"))
             )
-        # Annotate is_superuser to avoid N+1 query per user
+        # Annotate is_superuser to avoid N+1 query per user.
+        # Use two EXISTS subqueries (direct membership, membership through a descendant group)
+        # instead of one EXISTS with an OR across both join paths. PostgreSQL can't hash a
+        # subquery whose OR mixes two correlated conditions, so that form runs once per user row,
+        # including rows skipped by OFFSET, and a poor plan for the group ancestry join is paid
+        # for every row. Each separate EXISTS can run once per query as a hashed subplan.
         base_qs = base_qs.annotate(
             _annotated_is_superuser=Exists(
+                Group.objects.filter(is_superuser=True, users=OuterRef("pk"))
+            )
+            | Exists(
                 Group.objects.filter(
-                    is_superuser=True,
-                ).filter(
-                    Q(users=OuterRef("pk")) | Q(descendant_nodes__descendant__users=OuterRef("pk"))
+                    is_superuser=True, descendant_nodes__descendant__users=OuterRef("pk")
                 )
             )
         )

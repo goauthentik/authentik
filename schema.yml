@@ -39236,6 +39236,9 @@ components:
           description: Negates the outcome of the policy. Messages are unaffected.
         enabled:
           type: boolean
+        dry_run:
+          type: boolean
+          description: Execute the policy but ignore its result.
         order:
           type: integer
           maximum: 2147483647
@@ -39301,6 +39304,9 @@ components:
           description: Negates the outcome of the policy. Messages are unaffected.
         enabled:
           type: boolean
+        dry_run:
+          type: boolean
+          description: Execute the policy but ignore its result.
         order:
           type: integer
           maximum: 2147483647
@@ -50462,6 +50468,9 @@ components:
           description: Negates the outcome of the policy. Messages are unaffected.
         enabled:
           type: boolean
+        dry_run:
+          type: boolean
+          description: Execute the policy but ignore its result.
         order:
           type: integer
           maximum: 2147483647
@@ -52414,6 +52423,9 @@ components:
           description: Negates the outcome of the policy. Messages are unaffected.
         enabled:
           type: boolean
+        dry_run:
+          type: boolean
+          description: Execute the policy but ignore its result.
         order:
           type: integer
           maximum: 2147483647
@@ -53385,6 +53397,7 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
+          minLength: 1
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
           format: uri
@@ -54398,6 +54411,9 @@ components:
           description: Negates the outcome of the policy. Messages are unaffected.
         enabled:
           type: boolean
+        dry_run:
+          type: boolean
+          description: Execute the policy but ignore its result.
         order:
           type: integer
           maximum: 2147483647
@@ -54450,6 +54466,9 @@ components:
           description: Negates the outcome of the policy. Messages are unaffected.
         enabled:
           type: boolean
+        dry_run:
+          type: boolean
+          description: Execute the policy but ignore its result.
         order:
           type: integer
           maximum: 2147483647
@@ -58687,6 +58706,7 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
+          minLength: 1
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
           format: uri
@@ -59973,6 +59993,9 @@ components:
           description: Negates the outcome of the policy. Messages are unaffected.
         enabled:
           type: boolean
+        dry_run:
+          type: boolean
+          description: Execute the policy but ignore its result.
         order:
           type: integer
           maximum: 2147483647
