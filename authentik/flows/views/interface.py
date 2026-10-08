@@ -13,6 +13,10 @@ from authentik.flows.models import Flow
 # flow executor instead.
 MIN_WEBKIT_VERSION = (16, 4)
 MIN_EDGE_VERSION = (19,)
+# Based off of https://web-platform-dx.github.io/supported-browsers/?target=widelyAvailable
+# We don't know the exact version of chrome which is too old to render the standard flow executor
+# instead we base it off of the baseline
+MIN_CHROME_VERSION = (123, 0)
 
 
 def version_below(version: dict[str, Any], minimum: tuple[int, int]) -> bool:
@@ -59,6 +63,12 @@ class FlowInterfaceView(InterfaceView):
         # above does not cover.
         if ua["user_agent"]["family"] in ("Safari", "Mobile Safari") and version_below(
             ua["user_agent"], MIN_WEBKIT_VERSION
+        ):
+            return True
+        # Chrome versions behind the baseline get the SFE too, at least one reported case
+        # of the default flow executor not working in chrome 83
+        if ua["user_agent"]["family"] in ("Chrome", "Chrome Mobile") and version_below(
+            ua["user_agent"], MIN_CHROME_VERSION
         ):
             return True
         return False

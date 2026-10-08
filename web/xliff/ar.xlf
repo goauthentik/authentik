@@ -12267,9 +12267,11 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="sc4804358f202968c">
   <source>Internal user usage</source>
+  <target>Internal user usage</target>
 </trans-unit>
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
+  <target>External user usage</target>
 </trans-unit>
 <trans-unit id="s3bca5a165739e8c9">
   <source>Allow application access with no policies</source>
@@ -12312,12 +12314,6 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="banner.dismiss.aria-label">
   <source>Dismiss banner</source>
-</trans-unit>
-<trans-unit id="settings.base-url.banner.action">
-  <source>Configure it in the system settings</source>
-</trans-unit>
-<trans-unit id="settings.base-url.banner.label">
-  <source>The base URL has not been configured.</source>
 </trans-unit>
 <trans-unit id="sf993bb199fefbe04">
   <source>All</source>
@@ -13259,6 +13255,27 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="s6c707fc92868c4c9">
   <source>You have access requests to review</source>
+</trans-unit>
+<trans-unit id="sc056b79cc62ca6d4">
+  <source>Required for local device authentication.</source>
+</trans-unit>
+<trans-unit id="s15f79185ef55ef2c">
+  <source>Local authentication</source>
+</trans-unit>
+<trans-unit id="sd158a5fc0f062f18">
+  <source>Available</source>
+</trans-unit>
+<trans-unit id="sf132578fe25f08b6">
+  <source>Device compliance</source>
+</trans-unit>
+<trans-unit id="s752d5cd8886fc545">
+  <source>Selected providers can authenticate to this provider with their JWTs, request its tokens via token exchange, and introspect or revoke them.</source>
+</trans-unit>
+<trans-unit id="sdc86ff734bf39f74">
+  <source>You've successfully requested access to:</source>
+</trans-unit>
+<trans-unit id="sd685c85b245c6e9f">
+  <source>Hide details</source>
 </trans-unit>
 </body>
 </file>
