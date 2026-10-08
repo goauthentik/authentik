@@ -269,6 +269,16 @@ class TestUserSwitch(FlowTestCase):
             {self.user.pk, self.other_user.pk},
         )
 
+    def test_plain_login_replaces_session_with_switching_enabled(self):
+        """Logging in as someone else without "Add another user" replaces the first login"""
+        first_session_key = _login_through_flow(
+            self.client, self.flow, self.login_binding, self.user
+        )
+
+        _login_through_flow(self.client, self.flow, self.login_binding, self.other_user)
+
+        self.assertFalse(Session.objects.filter(session_key=first_session_key).exists())
+
     def test_target_is_revalidated_before_login(self):
         first_session_key = _login_through_flow(
             self.client, self.flow, self.login_binding, self.user
