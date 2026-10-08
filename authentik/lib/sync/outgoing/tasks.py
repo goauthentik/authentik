@@ -1,4 +1,7 @@
+from collections.abc import Callable
+
 from django.core.paginator import Paginator
+from django.db import transaction
 from django.db.models import Model, QuerySet
 from django.db.models.query import Q
 from dramatiq.actor import Actor
@@ -14,6 +17,7 @@ from authentik.lib.sync.outgoing.exceptions import (
     BadRequestSyncException,
     DryRunRejected,
     NotFoundSyncException,
+    ObjectLockTimeout,
     StopSync,
     TransientSyncException,
 )
@@ -197,7 +201,7 @@ class SyncTasks:
         for obj in paginator.page(page).object_list:
             obj: Model
             try:
-                client.write(obj)
+                client.write_locked(obj)
             except SkipObjectException:
                 self.logger.debug("skipping object due to SkipObject", obj=obj)
                 continue
@@ -217,6 +221,8 @@ class SyncTasks:
                     obj=sanitize_item(obj),
                     exception=exception_to_dict(exc),
                 )
+            except ObjectLockTimeout as exc:
+                raise Retry() from exc
             except TransientSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, user=obj)
                 task.warning(
@@ -253,7 +259,10 @@ class SyncTasks:
         model: str,
         pk: str | int,
         provider_pk: int,
+        *,
+        on_create: Callable[[Model, OutgoingSyncProvider], None] | None = None,
     ):
+        """Sync an object, optionally enqueueing work atomically with a new connection."""
         task = CurrentTask.get_task()
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
@@ -280,7 +289,16 @@ class SyncTasks:
             return
 
         try:
-            client.write(instance)
+            if on_create is None:
+                client.write_locked(instance)
+                return
+            # Commit the connection and any dependent jobs together, before releasing
+            # the object lock. An enqueue failure must not leave a connection whose
+            # follow-up work would be skipped when the user task is retried.
+            with client.object_lock(instance), transaction.atomic():
+                connection, created = client.write(instance)
+                if connection is not None and created:
+                    on_create(instance, provider)
         except TransientSyncException as exc:
             raise Retry() from exc
         except SkipObjectException:
@@ -404,12 +422,14 @@ class SyncTasks:
 
         client = provider.client_for_model(Group)
         try:
-            operation = None
             if action == "post_add":
                 operation = Direction.add
-            if action == "post_remove":
+            elif action == "post_remove":
                 operation = Direction.remove
-            client.update_group(group, operation, pk_set)
+            else:
+                self.logger.warning("Unknown group membership action", action=action)
+                return
+            client.sync_group_membership(group, operation, pk_set)
         except TransientSyncException as exc:
             raise Retry() from exc
         except SkipObjectException:
