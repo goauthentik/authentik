@@ -267,18 +267,6 @@ export class UserExpirationRuleForm extends ModelForm<UserExpirationRule, string
                 ?autofocus=${!this.instance}
             ></ak-text-input>
 
-            <ak-switch-input
-                name="enabled"
-                label=${msg("Enabled", { id: "user-expiration.field.enabled.label" })}
-                ?checked=${this.instance?.enabled ?? false}
-                help=${msg(
-                    "New rules start disabled so you can preview them and bind policies before enabling them. Disabling a rule stops expiration and removes its pending offboardings shortly after saving.",
-                    {
-                        id: "user-expiration.field.enabled.description",
-                    },
-                )}
-            ></ak-switch-input>
-
             <ak-radio-input
                 label=${msg("Activity basis", {
                     id: "user-expiration.field.activity-basis.label",
@@ -484,7 +472,19 @@ export class UserExpirationRuleForm extends ModelForm<UserExpirationRule, string
                     "How the policies bound to this rule are combined. A user is only expired if they pass them.",
                     { id: "user-expiration.field.policy-engine-mode.description" },
                 )}
-            ></ak-radio-input>`;
+            ></ak-radio-input>
+
+            <ak-switch-input
+                name="enabled"
+                label=${msg("Enabled", { id: "user-expiration.field.enabled.label" })}
+                ?checked=${this.instance?.enabled ?? false}
+                help=${msg(
+                    "New rules start disabled so you can preview them and bind policies before enabling them. Disabling a rule stops expiration and removes its pending offboardings shortly after saving.",
+                    {
+                        id: "user-expiration.field.enabled.description",
+                    },
+                )}
+            ></ak-switch-input>`;
     }
 }
 
