@@ -39,6 +39,7 @@ from authentik.flows.planner import (
 )
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET
+from authentik.lib.tracing import TracingIgnoredException
 from authentik.lib.views import bad_request_message
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.utils import delete_none_values
@@ -226,7 +227,9 @@ class SourceFlowManager:
                 if action == Action.ENROLL:
                     if self.is_user_switch_add_user:
                         return self.error_handler(
-                            Exception(_("New users can't enroll while adding a user."))
+                            TracingIgnoredException(
+                                _("New users can't enroll while adding a user.")
+                            )
                         )
                     self._logger.debug("Handling enrollment of new user")
                     return self.handle_enroll(connection)
