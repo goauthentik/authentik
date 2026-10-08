@@ -6,6 +6,7 @@ from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowStageBinding
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import StageView
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import FlowExecutorView
@@ -20,6 +21,10 @@ from authentik.stages.authenticator_validate.challenge import validate_challenge
 from authentik.stages.authenticator_validate.models import (
     AuthenticatorValidateStage,
     DeviceClasses,
+)
+from authentik.stages.authenticator_validate.stage import (
+    PLAN_CONTEXT_DEVICE_CHALLENGES,
+    AuthenticatorValidateStageView,
 )
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
@@ -96,7 +101,12 @@ class ValidateChallengeCodeThrottlingTests(FlowTestCase):
 
     def _stage_view(self, validate_stage: AuthenticatorValidateStage) -> StageView:
         request = self.request_factory.get("/")
-        return StageView(FlowExecutorView(current_stage=validate_stage), request=request)
+        plan = FlowPlan(flow_pk=generate_id(), context={PLAN_CONTEXT_PENDING_USER: self.user})
+        view = AuthenticatorValidateStageView(
+            FlowExecutorView(current_stage=validate_stage, plan=plan), request=request
+        )
+        plan.context[PLAN_CONTEXT_DEVICE_CHALLENGES] = view.get_device_challenges()
+        return view
 
     def _email_device(self, email: str = "throttle@authentik.local") -> EmailDevice:
         return EmailDevice.objects.create(

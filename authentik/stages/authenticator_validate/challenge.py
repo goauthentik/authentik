@@ -142,18 +142,38 @@ def select_challenge_email(request: HttpRequest, device: EmailDevice):
 
 
 def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Device:
-    """Validate code-based challenges. We test against every device, on purpose, as
-    the user mustn't choose between totp and static devices."""
+    """Validate code-based challenges against eligible devices.
+
+    TOTP and static challenges represent all of the user's devices of that class,
+    while email and SMS challenges are bound to a specific device.
+    """
+    from authentik.stages.authenticator_validate.stage import PLAN_CONTEXT_DEVICE_CHALLENGES
+
+    stage = stage_view.executor.current_stage
+    challenges = stage_view.executor.plan.context.get(PLAN_CONTEXT_DEVICE_CHALLENGES, [])
 
     # audit_ignore decorator to prevent them being logged during authentication,
     # and to send them via SSF
 
     with transaction.atomic(), audit_ignore():
         for device in devices_for_user(user, for_verify=True):
-            if isinstance(device, ThrottlingMixin):
-                throttling_factor = stage_view.executor.current_stage.get_throttling_factor(
-                    DeviceClasses.from_model_label(device.model_label())
+            device_class = DeviceClasses.from_model_label(device.model_label())
+            if device_class not in stage.device_classes:
+                continue
+            if not any(
+                challenge["device_class"] == device_class
+                and (
+                    device_class in (DeviceClasses.TOTP, DeviceClasses.STATIC)
+                    or (
+                        device_class in (DeviceClasses.EMAIL, DeviceClasses.SMS)
+                        and challenge["device_uid"] == str(device.pk)
+                    )
                 )
+                for challenge in challenges
+            ):
+                continue
+            if isinstance(device, ThrottlingMixin):
+                throttling_factor = stage.get_throttling_factor(device_class)
                 if throttling_factor is not None:
                     device.set_throttle_factor(throttling_factor)
             if device.verify_token(code):
