@@ -41,6 +41,15 @@ class SessionStore(SessionBase):
         if not updated:
             raise UpdateError
 
+    def save_last_ip(self, ip: str):
+        """Save only the session's last IP.
+
+        Setting it as a session key marks the session as modified, and the full save at the
+        end of the request writes back the data loaded at its start. That erases anything a
+        concurrent request saved in the meantime, like a flow plan."""
+        self.model.objects.filter(session_key=self.session_key).update(last_ip=ip)
+        self._session[self.model.Keys.LAST_IP] = ip
+
     @classmethod
     def get_model_class(cls):
         from authentik.core.models import Session
