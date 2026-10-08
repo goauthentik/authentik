@@ -657,7 +657,8 @@
 </trans-unit>
 <trans-unit id="s68a50b1ee6efee7b">
   <source><x id="0" equiv-text="${value.versionLatest}"/> is available!</source>
-  <target><x id="0" equiv-text="${value.versionLatest}"/> уже доступна!</target>
+  <target>
+        <x id="0" equiv-text="${value.versionLatest}"/>уже доступна!</target>
 </trans-unit>
 <trans-unit id="s08272eeeddfd244e">
   <source>An outpost is on an incorrect version!</source>
@@ -1364,7 +1365,7 @@
 </trans-unit>
 <trans-unit id="s082ea0f3c0a854ff">
   <source>Configure Policy Bindings</source>
-  <target>Настройка привязок политик</target>
+  <target>Настройка политики привязок </target>
 </trans-unit>
 <trans-unit id="s2e422519ed38f7d8">
   <source>Pass</source>
@@ -8214,7 +8215,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa11e92683c5860c7">
   <source>Request has been denied.</source>
-  <target>Запрос отклонён.</target>
+  <target>Запрос был отклонен.</target>
 </trans-unit>
 <trans-unit id="s2f7f35f6a5b733f5">
   <source>Show password</source>
@@ -8630,7 +8631,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s4facec1106c91cf9">
   <source>Search returned no results.</source>
-  <target>Поиск не дал результатов.</target>
+  <target>Поиск не дал никаких результатов.</target>
 </trans-unit>
 <trans-unit id="s91cfe4fac0957ee7">
   <source>Application list</source>
@@ -12406,14 +12407,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Dismiss banner</source>
   <target>Закрыть баннер</target>
 </trans-unit>
-<trans-unit id="settings.base-url.banner.action">
-  <source>Configure it in the system settings</source>
-  <target>Настроить в системных настройках</target>
-</trans-unit>
-<trans-unit id="settings.base-url.banner.label">
-  <source>The base URL has not been configured.</source>
-  <target>Базовый URL не настроен.</target>
-</trans-unit>
 <trans-unit id="sf993bb199fefbe04">
   <source>All</source>
   <target>Все</target>
@@ -13687,6 +13680,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s752d5cd8886fc545">
   <source>Selected providers can authenticate to this provider with their JWTs, request its tokens via token exchange, and introspect or revoke them.</source>
+</trans-unit>
+<trans-unit id="sdc86ff734bf39f74">
+  <source>You've successfully requested access to:</source>
+</trans-unit>
+<trans-unit id="sd685c85b245c6e9f">
+  <source>Hide details</source>
 </trans-unit>
 </body>
 </file>
