@@ -272,7 +272,7 @@ export class UserExpirationRuleForm extends ModelForm<UserExpirationRule, string
                 label=${msg("Enabled", { id: "user-expiration.field.enabled.label" })}
                 ?checked=${this.instance?.enabled ?? false}
                 help=${msg(
-                    "New rules start disabled so you can preview them and bind policies before enabling them. A disabled rule expires nobody and cancels the expirations it has already scheduled.",
+                    "New rules start disabled so you can preview them and bind policies before enabling them. Disabling a rule stops expiration and removes its pending offboardings shortly after saving.",
                     {
                         id: "user-expiration.field.enabled.description",
                     },
