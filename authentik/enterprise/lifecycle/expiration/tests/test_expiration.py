@@ -1,5 +1,6 @@
 from datetime import timedelta
 from threading import Barrier, Thread
+from threading import Event as ThreadEvent
 from unittest.mock import patch
 
 from django.db import connection
@@ -284,6 +285,117 @@ class TestSelection(ExpirationTestCase):
         self.assertIsNone(send.call_args.kwargs["args"][0])
 
 
+class TestDisabledRule(ExpirationTestCase):
+    def test_disabled_task_removes_only_owned_pending_rows(self):
+        rule = self._rule()
+        pending = UserOffboarding.objects.create(
+            user=_dormant_user(), rule=rule, scheduled_at=now() + timedelta(days=1)
+        )
+        preserved = [
+            UserOffboarding.objects.create(
+                user=_dormant_user(), scheduled_at=now() + timedelta(days=1)
+            ),
+            UserOffboarding.objects.create(
+                user=_dormant_user(), rule=self._rule(), scheduled_at=now() + timedelta(days=1)
+            ),
+        ]
+        for status in (
+            OffboardingStatus.COMPLETED,
+            OffboardingStatus.CANCELED,
+            OffboardingStatus.FAILED,
+        ):
+            preserved.append(
+                UserOffboarding.objects.create(
+                    user=_dormant_user(),
+                    rule=rule,
+                    scheduled_at=now(),
+                    status=status,
+                    executed_at=now(),
+                )
+            )
+        before = list(UserOffboarding.objects.exclude(pk=pending.pk).values())
+        rule.enabled = False
+        with patch(APPLY_RULE) as dispatch:
+            rule.save()
+        dispatch.assert_called_once()
+        self.assertEqual(dispatch.call_args.kwargs["args"], (str(rule.pk),))
+        # Cleanup is performed by the save-triggered task, not the save itself.
+        self.assertTrue(UserOffboarding.objects.filter(pk=pending.pk).exists())
+
+        with (
+            patch.object(UserExpirationRule, "_pending_due_at") as evaluate,
+            patch.object(UserExpirationRule, "_warn") as warn,
+            patch.object(UserExpirationRule, "_tighten_foreign_rows") as tighten,
+            patch.object(UserExpirationRule, "candidates") as candidates,
+        ):
+            apply_expiration_rule(str(rule.pk))
+
+        evaluate.assert_not_called()
+        warn.assert_not_called()
+        tighten.assert_not_called()
+        candidates.assert_not_called()
+        self.assertFalse(UserOffboarding.objects.filter(pk=pending.pk).exists())
+        self.assertCountEqual(list(UserOffboarding.objects.values()), before)
+        self.assertEqual(UserOffboarding.objects.count(), len(preserved))
+
+    def test_reenabling_schedules_and_warns_again_without_a_new_login(self):
+        group = Group.objects.create(name=generate_id())
+        rule = self._rule(group=group, warn_before="days=14")
+        user = _dormant_user(85)
+        user.groups.add(group)
+        original_login = user.last_login
+        self.assertEqual(rule.apply(), 1)
+        original = _pending(user)
+        warnings = Event.objects.filter(action=EventAction.USER_EXPIRATION_WARNING)
+        self.assertEqual(warnings.count(), 1)
+
+        rule.enabled = False
+        rule.save()
+        with patch(SEND_NOTIFICATION) as send:
+            apply_expiration_rule(str(rule.pk))
+        send.assert_not_called()
+        self.assertIsNone(_pending(user))
+        self.assertEqual(warnings.count(), 1)
+        self.assertFalse(UserOffboarding.objects.filter(user=user).exists())
+
+        rule.enabled = True
+        rule.save()
+        with patch(SEND_NOTIFICATION) as send:
+            apply_expiration_rule(str(rule.pk))
+        send.assert_called_once()
+        replacement = _pending(user)
+        self.assertIsNotNone(replacement)
+        self.assertNotEqual(replacement.pk, original.pk)
+        self.assertEqual(replacement.scheduled_at, original.scheduled_at)
+        self.assertEqual(warnings.count(), 2)
+        user.refresh_from_db()
+        self.assertEqual(user.last_login, original_login)
+
+    def test_disabled_cleanup_preserves_a_row_taken_over_before_locking(self):
+        rule = self._rule()
+        row = UserOffboarding.objects.create(
+            user=_dormant_user(), rule=rule, scheduled_at=now() + timedelta(days=1)
+        )
+        other = self._rule()
+        rule.enabled = False
+        rule.save()
+        original_iterator = QuerySet.iterator
+
+        def transfer_after_discovery(queryset, *args, **kwargs):
+            rows = original_iterator(queryset, *args, **kwargs)
+            if queryset.model is not UserOffboarding:
+                return rows
+            pks = list(rows)
+            UserOffboarding.objects.filter(pk=row.pk).update(rule=other)
+            return iter(pks)
+
+        with patch.object(QuerySet, "iterator", transfer_after_discovery):
+            self.assertEqual(rule.apply(), 0)
+        row.refresh_from_db()
+        self.assertEqual(row.rule, other)
+        self.assertEqual(row.status, OffboardingStatus.PENDING)
+
+
 class TestOverlapAndChange(ExpirationTestCase):
     def test_shortened_duration_updates_owned_row_and_rewarns_once(self):
         rule = self._rule(warn_before="days=14")
@@ -510,8 +622,20 @@ def _sweep_concurrently(test: TransactionTestCase, rules: tuple, user: User):
     test.assertEqual(errors, [])
 
 
+def _database_worker(callback, errors: list):
+    """Run a callback with bounded database waits and close its thread's connection."""
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SET statement_timeout = '10s'")
+        callback()
+    except Exception as exc:  # noqa: BLE001
+        errors.append(exc)
+    finally:
+        connection.close()
+
+
 class TestConcurrency(TransactionTestCase):
-    """Two rules sweeping the same user at once converge on one row owned by the winning rule."""
+    """Concurrent sweeps converge on one owner, and cleanup preserves completed history."""
 
     def test_concurrent_sweeps_converge_on_tighter_rule(self):
         with patch(APPLY_RULE):
@@ -549,6 +673,72 @@ class TestConcurrency(TransactionTestCase):
             UserOffboarding.objects.get(user=user, status=OffboardingStatus.COMPLETED).rule,
             deactivate,
         )
+
+    def test_disabled_cleanup_preserves_concurrently_completed_offboarding(self):
+        with patch(APPLY_RULE):
+            rule = UserExpirationRule.objects.create(name=generate_id(), enabled=True)
+        user = _dormant_user()
+        rule.apply()
+        row = _pending(user)
+        execution_checked = ThreadEvent()
+        finish_execution = ThreadEvent()
+        cleanup_lock_requested = ThreadEvent()
+        errors = []
+        original_reconcile = UserExpirationRule.reconcile_offboarding
+
+        def pause_execution(owner, offboarding):
+            result = original_reconcile(owner, offboarding)
+            if owner.enabled and offboarding.pk == row.pk:
+                execution_checked.set()
+                if not finish_execution.wait(timeout=10):
+                    raise TimeoutError("Execution was not released")
+            return result
+
+        def mark_cleanup_lock(execute, sql, params, many, context):
+            if "FOR UPDATE" in sql and UserOffboarding._meta.db_table in sql:
+                cleanup_lock_requested.set()
+            return execute(sql, params, many, context)
+
+        def cleanup():
+            with connection.execute_wrapper(mark_cleanup_lock):
+                rule.apply()
+
+        threads = [
+            Thread(
+                target=_database_worker,
+                args=(lambda: execute_offboarding(str(row.pk)), errors),
+            ),
+            Thread(target=_database_worker, args=(cleanup, errors)),
+        ]
+        started = []
+        with patch.object(UserExpirationRule, "reconcile_offboarding", pause_execution):
+            try:
+                threads[0].start()
+                started.append(threads[0])
+                self.assertTrue(execution_checked.wait(timeout=10))
+                # An execution that already passed its enabled check may finish.
+                rule.enabled = False
+                with patch(APPLY_RULE):
+                    rule.save()
+                threads[1].start()
+                started.append(threads[1])
+                self.assertTrue(cleanup_lock_requested.wait(timeout=10), errors)
+            finally:
+                finish_execution.set()
+                for thread in started:
+                    thread.join(timeout=15)
+                try:
+                    self.assertFalse(any(thread.is_alive() for thread in started))
+                finally:
+                    for thread in started:
+                        thread.join()
+
+        self.assertEqual(errors, [])
+        row.refresh_from_db()
+        self.assertEqual(row.status, OffboardingStatus.COMPLETED)
+        self.assertEqual(row.rule, rule)
+        user.refresh_from_db()
+        self.assertFalse(user.is_active)
 
 
 class TestWithdrawal(ExpirationTestCase):
