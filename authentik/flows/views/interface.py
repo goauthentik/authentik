@@ -37,6 +37,11 @@ class FlowInterfaceView(InterfaceView):
         kwargs["flow"] = flow
         kwargs["flow_background_url"] = flow.background_url(self.request)
         kwargs["inspector"] = "inspector" in self.request.GET
+        # `?compat` enables the compatibility path for this request only
+        # (like `?sfe` for the simplified executor).
+        # The flow setting still takes precedence when enabled.
+        force_compat = "compat" in self.request.GET
+        kwargs["compatibility_mode"] = flow.compatibility_mode or force_compat
         return super().get_context_data(**kwargs)
 
     def compat_needs_sfe(self) -> bool:
