@@ -11,7 +11,6 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
-from authentik.core import user_switching
 from authentik.core.models import (
     Group,
     GroupSourceConnection,
@@ -25,6 +24,7 @@ from authentik.core.sources.stage import (
     PLAN_CONTEXT_SOURCES_CONNECTION,
     PostSourceStage,
 )
+from authentik.core.user_switching import SESSION_KEY_ADD_USER
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow, FlowToken, Stage, in_memory_stage
@@ -130,9 +130,7 @@ class SourceFlowManager:
         self.policy_context = policy_context
         # The source was started from "Add user", so the login must add another user to this
         # browser instead of linking to or replacing the current user.
-        self.is_user_switch_add_user = bool(
-            request.session.pop(user_switching.SESSION_KEY_ADD_USER, False)
-        )
+        self.is_user_switch_add_user = bool(request.session.pop(SESSION_KEY_ADD_USER, False))
 
         self.user_properties = self.mapper.build_object_properties(
             object_type=User, request=request, user=None, **self.user_info
