@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_core", "0064_user_authentik_c_usernam_2f0e4b_idx"),
+        ("authentik_core", "0066_user_authentik_core_user_email_idx"),
         ("authentik_flows", "0031_alter_flow_layout"),
     ]
 
