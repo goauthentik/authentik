@@ -135,25 +135,19 @@ class UserOffboarding(SerializerModel):
 
         context = {}
         if self.rule_id is not None:
-            # Rule-generated rows are an enterprise feature: without a valid license
-            # they stay pending. Before acting, re-check the rule so a login that
-            # bypassed the withdrawal hooks, a group change, or a disabled rule
-            # leaves the user untouched.
+            # Rule-generated rows stay pending without a license. Re-check the rule
+            # before acting, since it or the user may have changed.
             if not apps.get_app_config("authentik_enterprise").enabled():
                 return
-            # Share fresh evidence across the owner and every competing rule.
-            # The row lock serializes workers, not event writers; activity can still
-            # commit between this read and the action.
+            # Load activity once for the owner and any competing rule. The row lock
+            # doesn't stop new activity from committing after this read.
             load_activity(self.user)
             kept, rewarn = self.rule.reconcile_offboarding(self)
             if not kept:
                 return
-            # Another rule may outrank the owner, for example after a lost insert race,
-            # so make sure the winning rule's action and settings are what runs.
             if UserExpirationRule.resolve_winner(self):
                 rewarn = True
-            # Eligibility for a warning is not eligibility for execution. A queued
-            # task can outlive an edit that moves the actual expiry into the future.
+            # The deadline may have moved later since this task was queued.
             if self.scheduled_at > timezone.now():
                 if rewarn:
                     # Execution holds this row lock. Queue the warning only after

@@ -139,8 +139,8 @@ class UserExpirationRuleViewSet(UsedByMixin, ModelViewSet):
             for field, value in serializer.validated_data.items():
                 if field not in ("pk", "id", "pbm_uuid", "notification_transports"):
                     setattr(rule, field, value)
-        # Preserve the rule's identity and bindings, and evaluate the hypothetical
-        # enabled state consistently in dynamic policies as well as row reconciliation.
+        # Preview as if enabled. Keep the rule's identity so its policy bindings
+        # still apply.
         rule.enabled = True
         counts = dict.fromkeys(("updated", "taken_over", "removed"), 0)
         offboardings: dict[str, list[dict]] = {change: [] for change in counts}
