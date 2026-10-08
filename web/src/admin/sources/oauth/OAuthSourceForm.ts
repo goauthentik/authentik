@@ -436,8 +436,9 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                         label=${msg("Consumer secret")}
                         name="consumerSecret"
                         input-hint="code"
-                        help=${msg("Also known as Client Secret.")}
-                        ?required=${!this.instance}
+                        help=${msg(
+                            "Also known as Client Secret. Can be left empty for public clients using PKCE.",
+                        )}
                         ?revealed=${!this.instance}
                     ></ak-secret-textarea-input>
                     <ak-form-element-horizontal label=${msg("Scopes")} name="additionalScopes">
