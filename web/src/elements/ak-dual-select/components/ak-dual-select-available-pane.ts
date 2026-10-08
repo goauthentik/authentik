@@ -1,10 +1,10 @@
+import { DualSelectEvent } from "../events.js";
 import { DualSelectEventType, DualSelectPair } from "../types.js";
 import { availablePaneStyles, listStyles } from "./styles.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDualListSelector from "@patternfly/patternfly/components/DualListSelector/dual-list-selector.css";
 
 import { AKElement } from "#elements/Base";
-import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
@@ -37,9 +37,7 @@ const hostAttributes = [
  * already in the "selected" collection and would be pointless to move.
  */
 @customElement("ak-dual-select-available-pane")
-export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEventType>(
-    AKElement,
-) {
+export class AkDualSelectAvailablePane extends AKElement {
     static styles = [PFButton, PFDualListSelector, listStyles, availablePaneStyles];
 
     //#region Properties
@@ -128,9 +126,9 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
 
         const moved = [...this.toMove].sort();
 
-        this.dispatchCustomEvent(DualSelectEventType.MoveChanged, moved);
+        this.dispatchEvent(new DualSelectEvent(DualSelectEventType.MoveChanged, moved));
 
-        this.dispatchCustomEvent(DualSelectEventType.Move);
+        this.dispatchEvent(new DualSelectEvent(DualSelectEventType.Move));
 
         // Necessary because updating a map won't trigger a state change
         this.requestUpdate();
@@ -139,7 +137,7 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
     #moveListener(key: string | number): void {
         this.toMove.delete(key);
 
-        this.dispatchCustomEvent(DualSelectEventType.AddOne, key);
+        this.dispatchEvent(new DualSelectEvent(DualSelectEventType.AddOne, key));
         this.requestUpdate();
     }
 

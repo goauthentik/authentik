@@ -14,10 +14,11 @@ from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 from authentik.sources.saml.models import SAMLSource
 
-GOOGLE_ACS_URL = "https://127.0.0.1:9443/source/saml/google/acs/"
 
-
-@patch.object(SAMLSource, "build_full_url", MagicMock(return_value=GOOGLE_ACS_URL))
+@patch(
+    "authentik.sources.saml.processors.response.reverse",
+    MagicMock(return_value="https://127.0.0.1:9443/source/saml/google/acs/"),
+)
 class TestViews(TestCase):
     """Test SAML Views"""
 
@@ -26,7 +27,7 @@ class TestViews(TestCase):
         self.source = SAMLSource.objects.create(
             name=generate_id(),
             slug=generate_id(),
-            issuer_override="authentik",
+            issuer_override="https://accounts.google.com/o/saml2?idpid=",
             allow_idp_initiated=True,
             pre_authentication_flow=create_test_flow(),
         )

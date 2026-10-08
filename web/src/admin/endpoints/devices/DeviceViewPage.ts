@@ -19,9 +19,9 @@ import { APIError, parseAPIResponseError } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
 import { modalInvoker } from "#elements/dialogs";
+import { setPageDetails } from "#elements/router/meta";
 import { Timestamp } from "#elements/table/shared";
 
-import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList, { DescriptionPair } from "#components/DescriptionList";
 
 import { EndpointDeviceForm } from "#admin/endpoints/devices/DeviceForm";
