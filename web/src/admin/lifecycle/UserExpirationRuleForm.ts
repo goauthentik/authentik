@@ -2,7 +2,6 @@ import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";
@@ -16,15 +15,15 @@ import { settleFormFields } from "#elements/forms/settle-form-fields";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { AKLabel } from "#components/ak-label";
+import { AKSearchSelect } from "#components/ak-search-select-field";
 
+import { groupSource } from "#admin/common/search-sources";
 import { eventTransportsProvider, eventTransportsSelector } from "#admin/events/RuleFormHelpers";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import "#admin/lifecycle/UserExpirationRulePreview";
 
 import {
     ActivityBasisEnum,
-    CoreApi,
-    CoreGroupsListRequest,
     Group,
     LifecycleApi,
     OffboardingActionEnum,
@@ -221,21 +220,6 @@ export class UserExpirationRuleForm extends ModelForm<UserExpirationRule, string
         });
     }
 
-    #fetchGroups = async (query?: string): Promise<Group[]> => {
-        const args: CoreGroupsListRequest = {
-            ordering: "name",
-            includeUsers: false,
-        };
-
-        if (query !== undefined) {
-            args.search = query;
-        }
-
-        const groups = await aki(CoreApi).coreGroupsList(args);
-
-        return groups.results;
-    };
-
     protected override renderForm(): SlottedTemplateResult {
         const selectedUserTypes = this.instance?.userTypes ?? [
             UserTypeEnum.Internal,
@@ -306,14 +290,13 @@ export class UserExpirationRuleForm extends ModelForm<UserExpirationRule, string
                 label=${msg("Group", { id: "user-expiration.field.group.label" })}
                 name="group"
             >
-                <ak-search-select
-                    .fetchObjects=${this.#fetchGroups}
-                    .renderElement=${(group: Group): string => group.name}
-                    .value=${(group: Group | undefined): string | undefined => group?.pk}
-                    .selected=${(group: Group): boolean => group.pk === this.instance?.group}
-                    blankable
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "group",
+                    source: groupSource,
+                    value: this.instance?.group,
+                    selectedObject: this.instance?.groupObj as Group | null | undefined,
+                    blankable: true,
+                })}
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         "Only expire members of this group, including members of its child groups. Leave empty to apply the rule to every user.",
