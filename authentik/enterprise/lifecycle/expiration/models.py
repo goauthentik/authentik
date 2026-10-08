@@ -437,9 +437,9 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
 
     def apply(self) -> int:
         """Run one sweep. Returns the number of offboardings created."""
+        self._revisit_owned_rows()
         if not self.enabled:
             return 0
-        self._revisit_owned_rows()
         self._tighten_foreign_rows()
         created = 0
         for user in self.candidates().iterator(chunk_size=CANDIDATE_CHUNK_SIZE):
