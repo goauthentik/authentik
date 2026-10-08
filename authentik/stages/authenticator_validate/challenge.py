@@ -151,6 +151,16 @@ def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Dev
 
     stage = stage_view.executor.current_stage
     challenges = stage_view.executor.plan.context.get(PLAN_CONTEXT_DEVICE_CHALLENGES, [])
+    class_wide_challenges = {
+        challenge["device_class"]
+        for challenge in challenges
+        if challenge["device_class"] in (DeviceClasses.TOTP, DeviceClasses.STATIC)
+    }
+    device_specific_challenges = {
+        (challenge["device_class"], challenge["device_uid"])
+        for challenge in challenges
+        if challenge["device_class"] in (DeviceClasses.EMAIL, DeviceClasses.SMS)
+    }
 
     # audit_ignore decorator to prevent them being logged during authentication,
     # and to send them via SSF
@@ -160,17 +170,16 @@ def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Dev
             device_class = DeviceClasses.from_model_label(device.model_label())
             if device_class not in stage.device_classes:
                 continue
-            if not any(
-                challenge["device_class"] == device_class
-                and (
-                    device_class in (DeviceClasses.TOTP, DeviceClasses.STATIC)
-                    or (
-                        device_class in (DeviceClasses.EMAIL, DeviceClasses.SMS)
-                        and challenge["device_uid"] == str(device.pk)
-                    )
-                )
-                for challenge in challenges
-            ):
+            if device_class in (DeviceClasses.TOTP, DeviceClasses.STATIC):
+                # One challenge covers all enrolled devices of this class.
+                if device_class not in class_wide_challenges:
+                    continue
+            elif device_class in (DeviceClasses.EMAIL, DeviceClasses.SMS):
+                # Delivery-based codes must belong to the challenged device.
+                if (device_class, str(device.pk)) not in device_specific_challenges:
+                    continue
+            else:
+                # Other device classes cannot authenticate through the code field.
                 continue
             if isinstance(device, ThrottlingMixin):
                 throttling_factor = stage.get_throttling_factor(device_class)
