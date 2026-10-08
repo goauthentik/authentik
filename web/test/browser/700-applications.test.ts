@@ -266,4 +266,63 @@ test.describe("Applications", () => {
             await expect($app, "Application is visible in the table").toBeVisible();
         });
     });
+
+    test("Advance past the provider step while a default flow is still loading", async ({
+        session,
+        form,
+        pointer,
+        page,
+    }, testInfo) => {
+        const appName = `${providerNames.get(testInfo.testId)!} App`;
+
+        const { fill, selectSearchValue } = form;
+        const { click } = pointer;
+
+        const wizardDialog = page.getByRole("dialog", { name: "New Application Wizard" });
+
+        // Hold back the invalidation flows, so the required field's default is preselected
+        // only after Next is clicked. Validating before the field settles rejects the step.
+        let releaseInvalidationFlows!: () => void;
+
+        const invalidationFlowsHeld = new Promise<void>((resolve) => {
+            releaseInvalidationFlows = resolve;
+        });
+
+        await page.route(/\/flows\/instances\/\?.*designation=invalidation/, async (route) => {
+            await invalidationFlowsHeld;
+            await route.continue();
+        });
+
+        await test.step("Authenticate", async () => {
+            await session.login({ to: "/if/admin/core/applications" });
+        });
+
+        await test.step("Reach the provider step", async () => {
+            await click("New Application", "button");
+            await expect(wizardDialog, "Wizard opens").toBeVisible();
+
+            await fill(/^Application Name/, appName, wizardDialog);
+            await click("Next", "button", wizardDialog);
+
+            await click("OAuth2/OpenID Provider", "option", wizardDialog);
+            await click("Next", "button", wizardDialog);
+
+            await selectSearchValue(
+                "Authorization Flow",
+                /default-provider-authorization-explicit-consent/,
+                wizardDialog,
+            );
+        });
+
+        await test.step("Click Next before the invalidation flow has loaded", async () => {
+            await click("Next", "button", wizardDialog);
+
+            releaseInvalidationFlows();
+
+            await expect(
+                wizardDialog.getByRole("button", { name: "Bind policy/group/user" }),
+                "The wizard advances once the default invalidation flow is preselected",
+            ).toBeVisible();
+        });
+    });
 });
