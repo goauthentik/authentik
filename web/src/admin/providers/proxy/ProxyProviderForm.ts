@@ -1,5 +1,3 @@
-import "#admin/common/ak-crypto-certificate-search";
-import "#admin/common/ak-flow-search/ak-flow-search";
 import { renderForm, SetMode, SetShowHttpBasic } from "./ProxyProviderFormForm.js";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
