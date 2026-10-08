@@ -85,4 +85,42 @@ describe("OAuth2 provider signing key", () => {
         expect(inputValue(element)).toBe(certificate.name);
         expect(element.toJSON()).toBe(certificate.pk);
     });
+
+    it("keeps an existing provider's signing key empty after clearing it and refreshing the options", async () => {
+        const element = await mountSigningKey({ pk: 1, signingKey: certificate.pk });
+
+        expect(inputValue(element)).toBe(certificate.name);
+        expect(element.toJSON()).toBe(certificate.pk);
+
+        element.select(null);
+        await element.refresh();
+        await element.settled;
+
+        expect(element.value).toBe("");
+        expect(element.selectedObject).toBeNull();
+        expect(inputValue(element)).toBe("");
+        expect(element.toJSON()).toBeNull();
+    });
+
+    it("serializes an explicitly selected certificate for an existing provider without a signing key", async () => {
+        const element = await mountSigningKey({ pk: 1, signingKey: null });
+
+        expect(element.toJSON()).toBeNull();
+
+        element.show();
+        await element.updateComplete;
+
+        const option = Array.from(
+            element.renderRoot.querySelectorAll<HTMLElement>('[role="option"]'),
+        ).find((item) => item.textContent?.includes(certificate.name))!;
+
+        option.click();
+        await element.settled;
+
+        expect(element.value).toBe(certificate.pk);
+        expect(element.selectedObject).toEqual(certificate);
+        expect(inputValue(element)).toBe(certificate.name);
+        expect(element.toJSON()).toBe(certificate.pk);
+        expect(new FormData(element.closest("form")!).get("signingKey")).toBe(certificate.pk);
+    });
 });
