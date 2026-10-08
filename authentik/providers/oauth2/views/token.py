@@ -246,15 +246,15 @@ class TokenView(View):
             self.params.refresh_token.save()
             response["refresh_token"] = refresh_token.token
 
-        # Refreshes are activity, but not interactive logins (in particular for
-        # GeoIP travel policies). Sample per user across clients, with an allowance
-        # in the expiration clock for activity hidden by this recording interval.
+        # Record refreshes as their own action, not `login`, so GeoIP travel checks
+        # ignore them. Recorded at most once per user per interval; expiration adds
+        # the interval as an allowance.
         from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
         from authentik.flows.views.executor import SESSION_KEY_PLAN
 
         user = self.params.refresh_token.user
-        # from_http follows session attribution. Do not record refresh activity
-        # when impersonation or a pending flow would credit a different identity.
+        # Skip when `from_http` would credit someone else (impersonation, or a flow
+        # for another user).
         if SESSION_KEY_IMPERSONATE_USER in self.request.session:
             return response
         plan = self.request.session.get(SESSION_KEY_PLAN)

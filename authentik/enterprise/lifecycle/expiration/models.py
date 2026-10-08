@@ -35,9 +35,7 @@ LOGGER = get_logger()
 # Users and pending offboardings are read in chunks to avoid loading every row into memory.
 CHUNK_SIZE = 500
 
-# When several rules would expire the same user, the earliest expiration wins. On the
-# same date the least destructive action wins, so a rule never deletes a user that
-# another rule would only deactivate at that time.
+# Same-date tie order, lower wins (see `rank()`).
 ACTION_SEVERITY = {OffboardingAction.DEACTIVATE: 0, OffboardingAction.DELETE: 1}
 
 type Rank = tuple[datetime, int, UUID]
@@ -196,8 +194,8 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         self, *, threshold: datetime | None = None, user: User | None = None
     ) -> QuerySet[User]:
         """Users this rule applies to, before policies. Pure SQL, so it is cheap to
-        evaluate over the whole population. With `threshold`, only users whose last
-        activity is at or before it. With `user`, narrowed to that user."""
+        evaluate over the whole population. With `threshold`, only users inactive since
+        then under this rule's activity basis. With `user`, narrowed to that user."""
         types = [t for t in self.user_types if t != UserTypes.INTERNAL_SERVICE_ACCOUNT]
         qs = User.objects.filter(is_active=True, type__in=types)
         if user is not None:
@@ -413,8 +411,8 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                 yield "taken_over", row, rank[0]
 
     def _tighten_foreign_rows(self):
-        """Tightening pass: take over pending rows of other rules when this rule outranks
-        their owner (see `rank`). The user is warned again because date or action changed."""
+        """Take over other rules' pending rows that this rule outranks (see `rank`), and
+        warn the user again."""
         rows = self._foreign_rows().select_related("user")
         # Policies run only on the users behind these few rows, not the whole scope.
         passing = self._apply_policies(User.objects.filter(pk__in=rows.values("user")))
