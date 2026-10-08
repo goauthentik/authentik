@@ -11,18 +11,12 @@ from authentik.core.models import SourceUserMatchingModes, User
 from authentik.core.sources.flow_manager import Action
 from authentik.core.sources.matcher import MatchFailureReason
 from authentik.core.sources.stage import PostSourceStage
-from authentik.core.tests.utils import RequestFactory, create_test_flow
+from authentik.core.tests.utils import RequestFactory, create_test_flow, create_test_user
 from authentik.events.models import Event, EventAction
-<<<<<<< HEAD
-from authentik.flows.planner import FlowPlan
-=======
 from authentik.flows.models import FlowAuthenticationRequirement
 from authentik.flows.planner import (
-    PLAN_CONTEXT_PENDING_USER,
-    PLAN_CONTEXT_USER_SWITCH_ADD_USER,
     FlowPlan,
 )
->>>>>>> c3f92b69f (flows: allow unauthenticated flows for re-authentication (#26785))
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.policies.denied import AccessDeniedResponse
