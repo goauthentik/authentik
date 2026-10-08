@@ -61,7 +61,7 @@ class SCIMGroupConcurrencyTests(TransactionTestCase):
                 if is_second:
                     second_started.set()
                 client = SCIMGroupClient(self.provider)
-                _, created = client.write(self.group)
+                _, created = client.write_locked(self.group)
                 if is_second:
                     second_finished.set()
                 return created
