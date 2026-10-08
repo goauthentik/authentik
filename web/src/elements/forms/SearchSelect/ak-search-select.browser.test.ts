@@ -1,7 +1,7 @@
 import "./ak-search-select.js";
 import { SearchSelect } from "./ak-search-select.js";
 import { SearchSelectActionEvent, SearchSelectChangeEvent } from "./events.js";
-import type { SearchSelectSource } from "./shared.js";
+import { formatOptionID, type SearchSelectSource } from "./shared.js";
 
 import { userEvent } from "@vitest/browser/context";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -178,7 +178,7 @@ describe("ak-search-select", () => {
         expect(
             input(element).getAttribute("aria-activedescendant"),
             "Second option is active",
-        ).toBe("option-2");
+        ).toBe("option-object-2");
 
         key(element, "Enter");
         await element.updateComplete;
@@ -195,7 +195,7 @@ describe("ak-search-select", () => {
         await element.updateComplete;
 
         element.renderRoot
-            .querySelector<HTMLElement>("#option-3 .ak-c-search-select__option-description")!
+            .querySelector<HTMLElement>("#option-object-3 .ak-c-search-select__option-description")!
             .click();
 
         expect(element.value, "Clicking the description chooses the option").toBe("3");
@@ -310,7 +310,7 @@ describe("ak-search-select", () => {
         await userEvent.click(input(element));
         await element.updateComplete;
 
-        await userEvent.click(element.renderRoot.querySelector<HTMLElement>("#option-2")!);
+        await userEvent.click(element.renderRoot.querySelector<HTMLElement>("#option-object-2")!);
         await element.updateComplete;
 
         expect(element.value, "Clicked option is chosen").toBe("2");
@@ -342,5 +342,54 @@ describe("ak-search-select", () => {
 
         expect(element.value, "The default is applied").toBe("1");
         expect(element.open, "The listbox stays open").toBe(true);
+    });
+
+    it("keeps object option IDs apart from the built-in options", async () => {
+        const reserved: Item[] = [
+            { pk: "blank", name: "Blank flow", slug: "blank" },
+            { pk: "action", name: "Action flow", slug: "action" },
+        ];
+
+        const { element } = await mount({
+            source: createSource({ fetchObjects: async () => reserved }),
+            blankable: true,
+            actionLabel: "Create new...",
+        });
+
+        element.show();
+        await element.updateComplete;
+
+        const ids = Array.from(element.renderRoot.querySelectorAll("[role=option]"), (o) => o.id);
+
+        expect(new Set(ids).size, "Every option has its own ID").toBe(ids.length);
+
+        element.renderRoot.querySelector<HTMLElement>(`#${formatOptionID("blank")}`)!.click();
+
+        expect(element.value, 'The object keyed "blank" is chosen, not the empty option').toBe(
+            "blank",
+        );
+    });
+
+    it("formats distinct keys as distinct IDs", () => {
+        const keys = ["a b", "a_b", "a%20b", "a_20b", "a__b", ""];
+        const ids = keys.map(formatOptionID);
+
+        expect(new Set(ids).size, "No two keys share an ID").toBe(keys.length);
+    });
+
+    it("sends the parsed key to the API when the source parses keys", async () => {
+        const { element } = await mount({
+            source: createSource({ parseKey: Number }),
+            value: "2",
+        });
+
+        expect(element.value, "The form value stays a string").toBe("2");
+        expect(element.toJSON(), "The API value is the original number").toBe(2);
+    });
+
+    it("sends the key unchanged without a parser", async () => {
+        const { element } = await mount({ value: "2" });
+
+        expect(element.toJSON(), "The API value is the string key").toBe("2");
     });
 });

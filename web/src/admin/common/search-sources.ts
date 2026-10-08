@@ -48,6 +48,7 @@ export const userSource: SearchSelectSource<User> = {
             .coreUsersList(withQuery(query, { ordering: "username" }))
             .then(({ results }) => results),
     keyOf: (user) => String(user.pk),
+    parseKey: Number,
     labelOf: (user) => user.username,
     describe: (user) => html`${user.name}`,
 };

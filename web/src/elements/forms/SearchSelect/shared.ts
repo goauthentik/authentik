@@ -1,5 +1,7 @@
 import type { SlottedTemplateResult } from "#elements/types";
 
+import type { Jsonifiable } from "type-fest";
+
 /**
  * Where a search select gets its objects, and how it presents them.
  *
@@ -15,6 +17,12 @@ export interface SearchSelectSource<T> {
      * The key identifying an object, which is also the select's form value.
      */
     keyOf(object: T): string;
+
+    /**
+     * Convert a key back to the value the API expects, e.g. `Number` for numeric
+     * primary keys. Without it, the key is sent as-is.
+     */
+    parseKey?(key: string): Jsonifiable;
 
     /**
      * The label shown for an object, in the input and in its option.
@@ -54,5 +62,8 @@ export function withQuery<T extends object>(search: string | undefined, args: T)
  * An element ID for an option, safe to reference from `aria-activedescendant`.
  */
 export function formatOptionID(key: string): string {
-    return `option-${key.replace(/\s+/g, "_")}`;
+    // A separate prefix keeps object keys like "blank" or "action" from colliding
+    // with the built-in options, and percent-encoding keeps distinct keys distinct
+    // while staying valid in an ID.
+    return `option-object-${encodeURIComponent(key).replace(/[_%]/g, (char) => (char === "_" ? "__" : "_"))}`;
 }

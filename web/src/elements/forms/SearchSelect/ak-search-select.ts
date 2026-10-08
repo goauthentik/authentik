@@ -20,6 +20,8 @@ import { isFirefox } from "#elements/utils/useragent";
 
 import { ConsoleLogger, Logger } from "#logger/browser";
 
+import type { Jsonifiable } from "type-fest";
+
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
@@ -57,7 +59,7 @@ interface SearchSelectOptionGroup<T> {
  */
 @customElement("ak-search-select")
 export class SearchSelect<T = unknown>
-    extends FormAssociatedElement<string, string | null>
+    extends FormAssociatedElement<string, Jsonifiable>
     implements SettlingFormField
 {
     public static styles: CSSResult[] = [PFFormControl, Styles];
@@ -212,21 +214,26 @@ export class SearchSelect<T = unknown>
             this.#syncFormValue();
         }
 
-        if (changedProperties.has("activeKey") && this.activeKey !== null) {
-            this.renderRoot
-                .querySelector(`#${CSS.escape(formatOptionID(this.activeKey))}`)
-                ?.scrollIntoView({
-                    block: "nearest",
-                });
+        const activeID = this.navigableOptions.find((option) => option.key === this.activeKey)?.id;
+
+        if (changedProperties.has("activeKey") && activeID) {
+            this.renderRoot.querySelector(`#${CSS.escape(activeID)}`)?.scrollIntoView({
+                block: "nearest",
+            });
         }
     }
 
     /**
-     * The value for the API: `emptyValue` when nothing is chosen, or an empty string for
+     * The value for the API: the key, parsed by the source's `parseKey` when it has one.
+     * `emptyValue` when nothing is chosen, or an empty string for
      * `creatable` fields, which hold free text rather than a relation.
      */
-    public toJSON(): string | null {
-        return this.value || (this.creatable ? "" : this.emptyValue);
+    public toJSON(): Jsonifiable {
+        if (!this.value) return this.creatable ? "" : this.emptyValue;
+
+        if (this.creatable) return this.value;
+
+        return this.source?.parseKey ? this.source.parseKey(this.value) : this.value;
     }
 
     //#endregion

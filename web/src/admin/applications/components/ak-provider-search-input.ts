@@ -91,6 +91,7 @@ export class AkProviderInput extends AKElement {
     #source: SearchSelectSource<Provider> = {
         fetchObjects: this.#fetch,
         keyOf: (provider) => String(provider.pk),
+        parseKey: Number,
         labelOf: (provider) => provider.name,
         groupBy: (providers) => groupBy(providers, (provider) => provider.verboseName),
     };
