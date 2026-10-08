@@ -1,7 +1,7 @@
 """EntraID OAuth2 Views"""
 
 from asyncio import run
-from json import loads
+from dataclasses import asdict
 from typing import Any
 
 from httpx import HTTPError
@@ -11,12 +11,13 @@ from kiota_abstractions.authentication.anonymous_authentication_provider import 
 )
 from kiota_abstractions.base_request_configuration import RequestConfiguration
 from kiota_http.kiota_client_factory import KiotaClientFactory
-from kiota_serialization_json.json_serialization_writer import JsonSerializationWriter
+from msgraph.generated.models.entity import Entity
 from msgraph.graph_request_adapter import GraphRequestAdapter, options
 from msgraph.graph_service_client import GraphServiceClient
 from msgraph_core import GraphClientFactory
 from structlog.stdlib import get_logger
 
+from authentik.events.utils import sanitize_item
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
 from authentik.sources.oauth.models import AuthorizationCodeAuthMethod
 from authentik.sources.oauth.types.oidc import OpenIDConnectOAuth2Callback
@@ -24,6 +25,18 @@ from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 LOGGER = get_logger()
+
+
+def entity_as_dict(entity: Entity) -> dict:
+    """Create a dictionary of a model instance, making sure to remove (known) things
+    we can't JSON serialize"""
+    return sanitize_item(
+        asdict(
+            entity,
+            # Nested entities carry their own backing store, so filter at every level
+            dict_factory=lambda items: {k: v for k, v in items if k != "backing_store"},
+        )
+    )
 
 
 class EntraIDOAuthRedirect(OAuthRedirect):
@@ -50,7 +63,7 @@ class EntraIDClient(UserprofileHeaderAuthClient):
         return profile_data
 
     async def get_groups(self, token):
-        """Fetch all memberships and retain Graph field names for property mappings."""
+        """Fetch all memberships and convert Graph entities for property mappings."""
         config = RequestConfiguration()
         config.headers.add("Authorization", f"{token['token_type']} {token['access_token']}")
         async with GraphClientFactory.create_with_default_middleware(
@@ -69,9 +82,7 @@ class EntraIDClient(UserprofileHeaderAuthClient):
                     if page.odata_next_link
                     else None
                 )
-        writer = JsonSerializationWriter()
-        writer.write_collection_of_object_values("value", groups)
-        return loads(writer.get_serialized_content())
+        return {"value": [entity_as_dict(group) for group in groups]}
 
 
 class EntraIDOAuthCallback(OpenIDConnectOAuth2Callback):
@@ -109,7 +120,7 @@ class EntraIDType(SourceType):
         groups = []
         group_id_dict = {}
         for group in info.get("raw_groups", {}).get("value", []):
-            if group["@odata.type"] != "#microsoft.graph.group":
+            if group["odata_type"] != "#microsoft.graph.group":
                 continue
             groups.append(group["id"])
             group_id_dict[group["id"]] = group
@@ -124,7 +135,7 @@ class EntraIDType(SourceType):
     def get_base_group_properties(self, source, group_id, **kwargs):
         raw_groups = kwargs["info"]["raw_groups"]
         if group_id in raw_groups:
-            name = raw_groups[group_id]["displayName"]
+            name = raw_groups[group_id]["display_name"]
         else:
             name = group_id
         return {

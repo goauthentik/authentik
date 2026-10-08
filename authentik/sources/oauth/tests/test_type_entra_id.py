@@ -1,5 +1,6 @@
 """Entra ID Type tests"""
 
+from json import dumps
 from unittest.mock import patch
 
 from django.test import RequestFactory, TestCase
@@ -90,6 +91,8 @@ class TestEntraIDClient(TestCase):
                                 "id": str(index),
                                 "displayName": f"Group {index}",
                                 "extension_custom": "retained",
+                                "createdDateTime": "2026-01-01T00:00:00Z",
+                                "owners": [{"@odata.type": "#microsoft.graph.user", "id": "owner"}],
                             },
                             {"@odata.type": "#microsoft.graph.directoryRole", "id": "role"},
                         ]
@@ -109,7 +112,11 @@ class TestEntraIDClient(TestCase):
                     EntraIDType().get_base_group_properties(self.source, "0", info=info),
                     {"name": "Group 0"},
                 )
-                self.assertEqual(info["raw_groups"]["0"]["extension_custom"], "retained")
+                group = info["raw_groups"]["0"]
+                self.assertEqual(group["additional_data"]["extension_custom"], "retained")
+                self.assertEqual(group["created_date_time"], "2026-01-01T00:00:00Z")
+                self.assertEqual(group["owners"][0]["id"], "owner")
+                self.assertNotIn("backing_store", dumps(group))
                 requests = [call.args[0] for call in graph_request.call_args_list]
                 self.assertEqual([str(request.url) for request in requests], self.urls[:count])
                 for request in requests:
