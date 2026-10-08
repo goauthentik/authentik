@@ -57,6 +57,7 @@ class TestOAuthClient(TestCase):
         request.session = {}
         request.user = get_anonymous_user()
         client = OAuth2Client(self.source, request)
+        self.assertIsNone(client.get_access_token_auth())
         args = client.get_access_token_args("", "")
         self.assertIn("client_id", args)
         self.assertNotIn("client_secret", args)

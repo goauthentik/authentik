@@ -16,6 +16,7 @@ class TestOAuthSourceAPI(APITestCase):
             authorization_url="",
             profile_url="",
             consumer_key=generate_id(),
+            consumer_secret=generate_id(),
         )
         self.user = create_test_admin_user()
 
