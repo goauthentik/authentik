@@ -24,9 +24,9 @@ def expiration_on_user_logged_in(sender, request: HttpRequest, user: User, **_):
 
 @receiver(post_save, sender=User)
 def expiration_on_user_save(sender, instance: User, created: bool, update_fields, **_):
-    """Fallback for `last_login` writes that bypass `login()` (OAuth client credentials,
-    federated token exchange). Only rows created before the login are withdrawn, so an
-    unrelated full save of a dormant user does not clear their pending row."""
+    """Fallback for `last_login` writes that bypass `login()`. Only rows created before
+    the login are withdrawn, so an unrelated full save of a dormant user does not clear
+    their pending row."""
     if created or instance.last_login is None:
         return
     if update_fields is not None and "last_login" not in update_fields:
