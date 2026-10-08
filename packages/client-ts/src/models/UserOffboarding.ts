@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -26,29 +24,18 @@ import { PartialUserFromJSON } from "./PartialUser";
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface UserOffboarding
  */
 export interface UserOffboarding {
-    /**
-     *
-     */
     readonly id: string;
-    /**
-     *
-     */
     user: number;
-    /**
-     *
-     */
     readonly userObj: PartialUser;
     /**
      * Absolute time at which the offboarding action is executed.
      */
     scheduledAt: Date;
-    /**
-     *
-     */
     action?: OffboardingActionEnum;
     /**
      * Revoke all of the user's sessions when offboarding.
@@ -58,21 +45,9 @@ export interface UserOffboarding {
      * Revoke all of the user's tokens when offboarding.
      */
     revokeTokens?: boolean;
-    /**
-     *
-     */
     readonly status: OffboardingStatusEnum;
-    /**
-     *
-     */
     readonly createdByObj: PartialUser;
-    /**
-     *
-     */
     readonly createdAt: Date;
-    /**
-     *
-     */
     readonly executedAt: Date | null;
 }
 

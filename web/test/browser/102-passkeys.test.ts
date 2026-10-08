@@ -6,7 +6,9 @@ import { series } from "@goauthentik/core/promises";
 
 import { snakeCase } from "change-case";
 
-const CREDENTIALS_SETTINGS = `/if/user/#/settings;${JSON.stringify({ page: "page-credentials" })}`;
+// Tabs are path segments now: the `page-credentials` panel lives at
+// `/if/user/settings/credentials`, not behind a legacy hash tab token.
+const CREDENTIALS_SETTINGS = "/if/user/settings/credentials";
 
 test.describe("Passkeys", () => {
     const usernames = new Map<string, string>();
@@ -161,7 +163,7 @@ test.describe("Passkeys", () => {
             await assertionSubmitted;
 
             await expect(
-                page.getByRole("button", { name: "Switch user" }),
+                page.getByRole("button", { name: "Toggle user navigation menu" }),
                 "Enrollee is authenticated after the passkey challenge",
             ).toBeVisible();
         });

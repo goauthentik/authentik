@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -145,9 +143,6 @@ import { type UserTypeEnum } from "../models/UserTypeEnum";
 import * as runtime from "../runtime";
 
 export interface CoreApplicationEntitlementsCreateRequest {
-    /**
-     *
-     */
     applicationEntitlementRequest: ApplicationEntitlementRequest;
 }
 
@@ -159,13 +154,12 @@ export interface CoreApplicationEntitlementsDestroyRequest {
 }
 
 export interface CoreApplicationEntitlementsListRequest {
-    /**
-     *
-     */
     app?: string;
     /**
-     *
+     * Entitlements assigned to this user, directly or through a group, regardless of the user's
+     * access to the application.
      */
+    forUser?: string;
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -179,9 +173,6 @@ export interface CoreApplicationEntitlementsListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     pbmUuid?: string;
     /**
      * A search term.
@@ -194,20 +185,16 @@ export interface CoreApplicationEntitlementsPartialUpdateRequest {
      * A UUID string identifying this Application Entitlement.
      */
     pbmUuid: string;
-    /**
-     *
-     */
     patchedApplicationEntitlementRequest?: PatchedApplicationEntitlementRequest;
 }
 
 export interface CoreApplicationEntitlementsRequestableListRequest {
-    /**
-     *
-     */
     app?: string;
     /**
-     *
+     * Entitlements assigned to this user, directly or through a group, regardless of the user's
+     * access to the application.
      */
+    forUser?: string;
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -221,9 +208,6 @@ export interface CoreApplicationEntitlementsRequestableListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     pbmUuid?: string;
     /**
      * A search term.
@@ -243,9 +227,6 @@ export interface CoreApplicationEntitlementsUpdateRequest {
      * A UUID string identifying this Application Entitlement.
      */
     pbmUuid: string;
-    /**
-     *
-     */
     applicationEntitlementRequest: ApplicationEntitlementRequest;
 }
 
@@ -257,58 +238,25 @@ export interface CoreApplicationEntitlementsUsedByListRequest {
 }
 
 export interface CoreApplicationsCheckAccessRetrieveRequest {
-    /**
-     *
-     */
     slug: string;
-    /**
-     *
-     */
     forUser?: number;
 }
 
 export interface CoreApplicationsCreateRequest {
-    /**
-     *
-     */
     applicationRequest: ApplicationRequest;
 }
 
 export interface CoreApplicationsDestroyRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface CoreApplicationsListRequest {
-    /**
-     *
-     */
     forUser?: number;
-    /**
-     *
-     */
     group?: string;
-    /**
-     *
-     */
     metaDescription?: string;
-    /**
-     *
-     */
     metaLaunchUrl?: string;
-    /**
-     *
-     */
     metaPublisher?: string;
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     onlyWithLaunchUrl?: boolean;
     /**
      * Which field to use when ordering the results.
@@ -326,47 +274,20 @@ export interface CoreApplicationsListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     slug?: string;
-    /**
-     *
-     */
     superuserFullList?: boolean;
 }
 
 export interface CoreApplicationsPartialUpdateRequest {
-    /**
-     *
-     */
     slug: string;
-    /**
-     *
-     */
     patchedApplicationRequest?: PatchedApplicationRequest;
 }
 
 export interface CoreApplicationsRequestableListRequest {
-    /**
-     *
-     */
     group?: string;
-    /**
-     *
-     */
     metaDescription?: string;
-    /**
-     *
-     */
     metaLaunchUrl?: string;
-    /**
-     *
-     */
     metaPublisher?: string;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -384,34 +305,19 @@ export interface CoreApplicationsRequestableListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     slug?: string;
 }
 
 export interface CoreApplicationsRetrieveRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
 export interface CoreApplicationsUpdateRequest {
-    /**
-     *
-     */
     slug: string;
-    /**
-     *
-     */
     applicationRequest: ApplicationRequest;
 }
 
 export interface CoreApplicationsUsedByListRequest {
-    /**
-     *
-     */
     slug: string;
 }
 
@@ -423,9 +329,6 @@ export interface CoreAuthenticatedSessionsBulkDeleteDestroyRequest {
 }
 
 export interface CoreAuthenticatedSessionsDestroyRequest {
-    /**
-     *
-     */
     uuid: string;
 }
 
@@ -446,38 +349,20 @@ export interface CoreAuthenticatedSessionsListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     sessionLastIp?: string;
-    /**
-     *
-     */
     sessionLastUserAgent?: string;
-    /**
-     *
-     */
     userUsername?: string;
 }
 
 export interface CoreAuthenticatedSessionsRetrieveRequest {
-    /**
-     *
-     */
     uuid: string;
 }
 
 export interface CoreAuthenticatedSessionsUsedByListRequest {
-    /**
-     *
-     */
     uuid: string;
 }
 
 export interface CoreBrandsCreateRequest {
-    /**
-     *
-     */
     brandRequest: BrandRequest;
 }
 
@@ -489,73 +374,22 @@ export interface CoreBrandsDestroyRequest {
 }
 
 export interface CoreBrandsListRequest {
-    /**
-     *
-     */
     brandUuid?: string;
-    /**
-     *
-     */
     brandingDefaultFlowBackground?: string;
-    /**
-     *
-     */
     brandingFavicon?: string;
-    /**
-     *
-     */
     brandingLogo?: string;
-    /**
-     *
-     */
     brandingTitle?: string;
-    /**
-     *
-     */
     clientCertificates?: Array<string>;
-    /**
-     *
-     */
     _default?: boolean;
-    /**
-     *
-     */
     domain?: string;
-    /**
-     *
-     */
     flowAuthentication?: string;
-    /**
-     *
-     */
     flowDeviceCode?: string;
-    /**
-     *
-     */
     flowInvalidation?: string;
-    /**
-     *
-     */
     flowLockdown?: string;
-    /**
-     *
-     */
     flowRecovery?: string;
-    /**
-     *
-     */
     flowRequest?: string;
-    /**
-     *
-     */
     flowUnenrollment?: string;
-    /**
-     *
-     */
     flowUserSettings?: string;
-    /**
-     *
-     */
     flowUserSwitch?: string;
     /**
      * Which field to use when ordering the results.
@@ -573,9 +407,6 @@ export interface CoreBrandsListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     webCertificate?: string;
 }
 
@@ -584,9 +415,6 @@ export interface CoreBrandsPartialUpdateRequest {
      * A UUID string identifying this Brand.
      */
     brandUuid: string;
-    /**
-     *
-     */
     patchedBrandRequest?: PatchedBrandRequest;
 }
 
@@ -602,9 +430,6 @@ export interface CoreBrandsUpdateRequest {
      * A UUID string identifying this Brand.
      */
     brandUuid: string;
-    /**
-     *
-     */
     brandRequest: BrandRequest;
 }
 
@@ -620,16 +445,10 @@ export interface CoreGroupsAddUserCreateRequest {
      * A UUID string identifying this Group.
      */
     groupUuid: string;
-    /**
-     *
-     */
     userAccountRequest: UserAccountRequest;
 }
 
 export interface CoreGroupsCreateRequest {
-    /**
-     *
-     */
     groupRequest: GroupRequest;
 }
 
@@ -641,41 +460,16 @@ export interface CoreGroupsDestroyRequest {
 }
 
 export interface CoreGroupsListRequest {
-    /**
-     * Attributes
-     */
-    attributes?: string;
-    /**
-     *
-     */
     includeChildren?: boolean;
-    /**
-     *
-     */
     includeInheritedRoles?: boolean;
-    /**
-     *
-     */
     includeParents?: boolean;
-    /**
-     *
-     */
     includeUsers?: boolean;
-    /**
-     *
-     */
     isSuperuser?: boolean;
-    /**
-     *
-     */
     membersByPk?: Array<number>;
     /**
      * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
      */
     membersByUsername?: Array<string>;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -700,9 +494,6 @@ export interface CoreGroupsPartialUpdateRequest {
      * A UUID string identifying this Group.
      */
     groupUuid: string;
-    /**
-     *
-     */
     patchedGroupRequest?: PatchedGroupRequest;
 }
 
@@ -711,9 +502,6 @@ export interface CoreGroupsRemoveUserCreateRequest {
      * A UUID string identifying this Group.
      */
     groupUuid: string;
-    /**
-     *
-     */
     userAccountRequest: UserAccountRequest;
 }
 
@@ -722,21 +510,9 @@ export interface CoreGroupsRetrieveRequest {
      * A UUID string identifying this Group.
      */
     groupUuid: string;
-    /**
-     *
-     */
     includeChildren?: boolean;
-    /**
-     *
-     */
     includeInheritedRoles?: boolean;
-    /**
-     *
-     */
     includeParents?: boolean;
-    /**
-     *
-     */
     includeUsers?: boolean;
 }
 
@@ -745,9 +521,6 @@ export interface CoreGroupsUpdateRequest {
      * A UUID string identifying this Group.
      */
     groupUuid: string;
-    /**
-     *
-     */
     groupRequest: GroupRequest;
 }
 
@@ -759,9 +532,6 @@ export interface CoreGroupsUsedByListRequest {
 }
 
 export interface CoreObjectAttributesCreateRequest {
-    /**
-     *
-     */
     objectAttributeRequest: ObjectAttributeRequest;
 }
 
@@ -773,17 +543,8 @@ export interface CoreObjectAttributesDestroyRequest {
 }
 
 export interface CoreObjectAttributesListRequest {
-    /**
-     *
-     */
     enabled?: boolean;
-    /**
-     *
-     */
     objectTypeAppLabel?: string;
-    /**
-     *
-     */
     objectTypeModel?: string;
     /**
      * Which field to use when ordering the results.
@@ -808,9 +569,6 @@ export interface CoreObjectAttributesPartialUpdateRequest {
      * A UUID string identifying this Object Attribute.
      */
     attributeId: string;
-    /**
-     *
-     */
     patchedObjectAttributeRequest?: PatchedObjectAttributeRequest;
 }
 
@@ -826,50 +584,23 @@ export interface CoreObjectAttributesUpdateRequest {
      * A UUID string identifying this Object Attribute.
      */
     attributeId: string;
-    /**
-     *
-     */
     objectAttributeRequest: ObjectAttributeRequest;
 }
 
 export interface CoreTokensCreateRequest {
-    /**
-     *
-     */
     tokenRequest: TokenRequest;
 }
 
 export interface CoreTokensDestroyRequest {
-    /**
-     *
-     */
     identifier: string;
 }
 
 export interface CoreTokensListRequest {
-    /**
-     *
-     */
     description?: string;
-    /**
-     *
-     */
     expires?: Date;
-    /**
-     *
-     */
     expiring?: boolean;
-    /**
-     *
-     */
     identifier?: string;
-    /**
-     *
-     */
     intent?: IntentEnum;
-    /**
-     *
-     */
     managed?: string;
     /**
      * Which field to use when ordering the results.
@@ -887,70 +618,37 @@ export interface CoreTokensListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     userUsername?: string;
 }
 
 export interface CoreTokensPartialUpdateRequest {
-    /**
-     *
-     */
     identifier: string;
-    /**
-     *
-     */
     patchedTokenRequest?: PatchedTokenRequest;
 }
 
 export interface CoreTokensRetrieveRequest {
-    /**
-     *
-     */
     identifier: string;
 }
 
 export interface CoreTokensSetKeyCreateRequest {
-    /**
-     *
-     */
     identifier: string;
-    /**
-     *
-     */
     tokenSetKeyRequest: TokenSetKeyRequest;
 }
 
 export interface CoreTokensUpdateRequest {
-    /**
-     *
-     */
     identifier: string;
-    /**
-     *
-     */
     tokenRequest: TokenRequest;
 }
 
 export interface CoreTokensUsedByListRequest {
-    /**
-     *
-     */
     identifier: string;
 }
 
 export interface CoreTokensViewKeyRetrieveRequest {
-    /**
-     *
-     */
     identifier: string;
 }
 
 export interface CoreTransactionalApplicationsUpdateRequest {
-    /**
-     *
-     */
     transactionApplicationRequest: TransactionApplicationRequest;
 }
 
@@ -962,9 +660,6 @@ export interface CoreUserConsentDestroyRequest {
 }
 
 export interface CoreUserConsentListRequest {
-    /**
-     *
-     */
     application?: string;
     /**
      * Which field to use when ordering the results.
@@ -982,9 +677,6 @@ export interface CoreUserConsentListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     user?: number;
 }
 
@@ -1003,16 +695,10 @@ export interface CoreUserConsentUsedByListRequest {
 }
 
 export interface CoreUsersAccountLockdownCreateRequest {
-    /**
-     *
-     */
     userAccountLockdownRequest?: UserAccountLockdownRequest;
 }
 
 export interface CoreUsersCreateRequest {
-    /**
-     *
-     */
     userRequest: UserRequest;
 }
 
@@ -1024,109 +710,36 @@ export interface CoreUsersDestroyRequest {
 }
 
 export interface CoreUsersExportCreateRequest {
-    /**
-     * Attributes
-     */
-    attributes?: string;
-    /**
-     *
-     */
     dateJoined?: Date;
-    /**
-     *
-     */
     dateJoinedGt?: Date;
-    /**
-     *
-     */
     dateJoinedLt?: Date;
-    /**
-     *
-     */
     email?: string;
-    /**
-     *
-     */
     groupsByName?: Array<string>;
-    /**
-     *
-     */
     groupsByPk?: Array<string>;
-    /**
-     *
-     */
     isActive?: boolean;
-    /**
-     *
-     */
     isSuperuser?: boolean;
-    /**
-     *
-     */
     lastLogin?: Date;
-    /**
-     *
-     */
     lastLoginGt?: Date;
-    /**
-     *
-     */
     lastLoginIsnull?: boolean;
-    /**
-     *
-     */
     lastLoginLt?: Date;
-    /**
-     *
-     */
     lastUpdated?: Date;
-    /**
-     *
-     */
     lastUpdatedGt?: Date;
-    /**
-     *
-     */
     lastUpdatedLt?: Date;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
      */
     ordering?: string;
-    /**
-     *
-     */
     path?: string;
-    /**
-     *
-     */
     pathStartswith?: string;
-    /**
-     *
-     */
     rolesByName?: Array<string>;
-    /**
-     *
-     */
     rolesByPk?: Array<string>;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     type?: Array<UserTypeEnum>;
-    /**
-     *
-     */
     username?: string;
-    /**
-     *
-     */
     uuid?: string;
 }
 
@@ -1135,88 +748,27 @@ export interface CoreUsersImpersonateCreateRequest {
      * A unique integer value identifying this User.
      */
     id: number;
-    /**
-     *
-     */
     impersonationRequest: ImpersonationRequest;
 }
 
 export interface CoreUsersListRequest {
-    /**
-     * Attributes
-     */
-    attributes?: string;
-    /**
-     *
-     */
     dateJoined?: Date;
-    /**
-     *
-     */
     dateJoinedGt?: Date;
-    /**
-     *
-     */
     dateJoinedLt?: Date;
-    /**
-     *
-     */
     email?: string;
-    /**
-     *
-     */
     groupsByName?: Array<string>;
-    /**
-     *
-     */
     groupsByPk?: Array<string>;
-    /**
-     *
-     */
     includeGroups?: boolean;
-    /**
-     *
-     */
     includeRoles?: boolean;
-    /**
-     *
-     */
     isActive?: boolean;
-    /**
-     *
-     */
     isSuperuser?: boolean;
-    /**
-     *
-     */
     lastLogin?: Date;
-    /**
-     *
-     */
     lastLoginGt?: Date;
-    /**
-     *
-     */
     lastLoginIsnull?: boolean;
-    /**
-     *
-     */
     lastLoginLt?: Date;
-    /**
-     *
-     */
     lastUpdated?: Date;
-    /**
-     *
-     */
     lastUpdatedGt?: Date;
-    /**
-     *
-     */
     lastUpdatedLt?: Date;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -1230,37 +782,16 @@ export interface CoreUsersListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     path?: string;
-    /**
-     *
-     */
     pathStartswith?: string;
-    /**
-     *
-     */
     rolesByName?: Array<string>;
-    /**
-     *
-     */
     rolesByPk?: Array<string>;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     type?: Array<UserTypeEnum>;
-    /**
-     *
-     */
     username?: string;
-    /**
-     *
-     */
     uuid?: string;
 }
 
@@ -1269,9 +800,6 @@ export interface CoreUsersPartialUpdateRequest {
      * A unique integer value identifying this User.
      */
     id: number;
-    /**
-     *
-     */
     patchedUserRequest?: PatchedUserRequest;
 }
 
@@ -1287,9 +815,6 @@ export interface CoreUsersRecoveryCreateRequest {
      * A unique integer value identifying this User.
      */
     id: number;
-    /**
-     *
-     */
     userRecoveryLinkRequest?: UserRecoveryLinkRequest;
 }
 
@@ -1298,9 +823,6 @@ export interface CoreUsersRecoveryEmailCreateRequest {
      * A unique integer value identifying this User.
      */
     id: number;
-    /**
-     *
-     */
     userRecoveryEmailRequest: UserRecoveryEmailRequest;
 }
 
@@ -1312,9 +834,6 @@ export interface CoreUsersRetrieveRequest {
 }
 
 export interface CoreUsersServiceAccountCreateRequest {
-    /**
-     *
-     */
     userServiceAccountRequest: UserServiceAccountRequest;
 }
 
@@ -1323,9 +842,6 @@ export interface CoreUsersSetPasswordCreateRequest {
      * A unique integer value identifying this User.
      */
     id: number;
-    /**
-     *
-     */
     userPasswordSetRequest: UserPasswordSetRequest;
 }
 
@@ -1334,20 +850,11 @@ export interface CoreUsersSetPasswordHashCreateRequest {
      * A unique integer value identifying this User.
      */
     id: number;
-    /**
-     *
-     */
     userPasswordHashSetRequest: UserPasswordHashSetRequest;
 }
 
 export interface CoreUsersSwitchCreateRequest {
-    /**
-     *
-     */
     next?: string;
-    /**
-     *
-     */
     userSwitchRequest?: UserSwitchRequest;
 }
 
@@ -1356,9 +863,6 @@ export interface CoreUsersUpdateRequest {
      * A unique integer value identifying this User.
      */
     id: number;
-    /**
-     *
-     */
     userRequest: UserRequest;
 }
 
@@ -1369,9 +873,6 @@ export interface CoreUsersUsedByListRequest {
     id: number;
 }
 
-/**
- *
- */
 export class CoreApi extends runtime.BaseAPI {
     /**
      * Creates request options for coreApplicationEntitlementsCreate without sending the request
@@ -1401,7 +902,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/application_entitlements/`;
+        const urlPath = `/core/application_entitlements/`;
 
         return {
             path: urlPath,
@@ -1520,6 +1021,10 @@ export class CoreApi extends runtime.BaseAPI {
             queryParameters["app"] = requestParameters["app"];
         }
 
+        if (requestParameters["forUser"] != null) {
+            queryParameters["for_user"] = requestParameters["forUser"];
+        }
+
         if (requestParameters["name"] != null) {
             queryParameters["name"] = requestParameters["name"];
         }
@@ -1555,7 +1060,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/application_entitlements/`;
+        const urlPath = `/core/application_entitlements/`;
 
         return {
             path: urlPath,
@@ -1596,7 +1101,8 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for coreApplicationEntitlementsPartialUpdate without sending the request
+     * Creates request options for coreApplicationEntitlementsPartialUpdate without sending the
+     * request
      */
     async coreApplicationEntitlementsPartialUpdateRequestOpts(
         requestParameters: CoreApplicationEntitlementsPartialUpdateRequest,
@@ -1671,7 +1177,8 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for coreApplicationEntitlementsRequestableList without sending the request
+     * Creates request options for coreApplicationEntitlementsRequestableList without sending the
+     * request
      */
     async coreApplicationEntitlementsRequestableListRequestOpts(
         requestParameters: CoreApplicationEntitlementsRequestableListRequest,
@@ -1680,6 +1187,10 @@ export class CoreApi extends runtime.BaseAPI {
 
         if (requestParameters["app"] != null) {
             queryParameters["app"] = requestParameters["app"];
+        }
+
+        if (requestParameters["forUser"] != null) {
+            queryParameters["for_user"] = requestParameters["forUser"];
         }
 
         if (requestParameters["name"] != null) {
@@ -1717,7 +1228,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/application_entitlements/requestable/`;
+        const urlPath = `/core/application_entitlements/requestable/`;
 
         return {
             path: urlPath,
@@ -2076,7 +1587,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/applications/`;
+        const urlPath = `/core/applications/`;
 
         return {
             path: urlPath,
@@ -2242,7 +1753,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/applications/`;
+        const urlPath = `/core/applications/`;
 
         return {
             path: urlPath,
@@ -2405,7 +1916,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/applications/requestable/`;
+        const urlPath = `/core/applications/requestable/`;
 
         return {
             path: urlPath,
@@ -2639,7 +2150,8 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for coreAuthenticatedSessionsBulkDeleteDestroy without sending the request
+     * Creates request options for coreAuthenticatedSessionsBulkDeleteDestroy without sending the
+     * request
      */
     async coreAuthenticatedSessionsBulkDeleteDestroyRequestOpts(
         requestParameters: CoreAuthenticatedSessionsBulkDeleteDestroyRequest,
@@ -2668,7 +2180,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/authenticated_sessions/bulk_delete/`;
+        const urlPath = `/core/authenticated_sessions/bulk_delete/`;
 
         return {
             path: urlPath,
@@ -2816,7 +2328,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/authenticated_sessions/`;
+        const urlPath = `/core/authenticated_sessions/`;
 
         return {
             path: urlPath,
@@ -3016,7 +2528,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/brands/`;
+        const urlPath = `/core/brands/`;
 
         return {
             path: urlPath,
@@ -3068,7 +2580,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/brands/current/`;
+        const urlPath = `/core/brands/current/`;
 
         return {
             path: urlPath,
@@ -3273,7 +2785,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/brands/`;
+        const urlPath = `/core/brands/`;
 
         return {
             path: urlPath,
@@ -3679,7 +3191,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/groups/`;
+        const urlPath = `/core/groups/`;
 
         return {
             path: urlPath,
@@ -3785,10 +3297,6 @@ export class CoreApi extends runtime.BaseAPI {
     ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["attributes"] != null) {
-            queryParameters["attributes"] = requestParameters["attributes"];
-        }
-
         if (requestParameters["includeChildren"] != null) {
             queryParameters["include_children"] = requestParameters["includeChildren"];
         }
@@ -3848,7 +3356,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/groups/`;
+        const urlPath = `/core/groups/`;
 
         return {
             path: urlPath,
@@ -4270,7 +3778,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/object_attributes/`;
+        const urlPath = `/core/object_attributes/`;
 
         return {
             path: urlPath,
@@ -4281,8 +3789,6 @@ export class CoreApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async coreObjectAttributesCreateRaw(
         requestParameters: CoreObjectAttributesCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -4295,8 +3801,6 @@ export class CoreApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async coreObjectAttributesCreate(
         requestParameters: CoreObjectAttributesCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -4345,8 +3849,6 @@ export class CoreApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async coreObjectAttributesDestroyRaw(
         requestParameters: CoreObjectAttributesDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -4357,8 +3859,6 @@ export class CoreApi extends runtime.BaseAPI {
         return new runtime.VoidApiResponse(response);
     }
 
-    /**
-     */
     async coreObjectAttributesDestroy(
         requestParameters: CoreObjectAttributesDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -4413,7 +3913,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/object_attributes/`;
+        const urlPath = `/core/object_attributes/`;
 
         return {
             path: urlPath,
@@ -4423,8 +3923,6 @@ export class CoreApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async coreObjectAttributesListRaw(
         requestParameters: CoreObjectAttributesListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -4437,8 +3935,6 @@ export class CoreApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async coreObjectAttributesList(
         requestParameters: CoreObjectAttributesListRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -4492,8 +3988,6 @@ export class CoreApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async coreObjectAttributesPartialUpdateRaw(
         requestParameters: CoreObjectAttributesPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -4507,8 +4001,6 @@ export class CoreApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async coreObjectAttributesPartialUpdate(
         requestParameters: CoreObjectAttributesPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -4560,8 +4052,6 @@ export class CoreApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async coreObjectAttributesRetrieveRaw(
         requestParameters: CoreObjectAttributesRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -4575,8 +4065,6 @@ export class CoreApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async coreObjectAttributesRetrieve(
         requestParameters: CoreObjectAttributesRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -4638,8 +4126,6 @@ export class CoreApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async coreObjectAttributesUpdateRaw(
         requestParameters: CoreObjectAttributesUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -4652,8 +4138,6 @@ export class CoreApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async coreObjectAttributesUpdate(
         requestParameters: CoreObjectAttributesUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -4690,7 +4174,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/tokens/`;
+        const urlPath = `/core/tokens/`;
 
         return {
             path: urlPath,
@@ -4853,7 +4337,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/tokens/`;
+        const urlPath = `/core/tokens/`;
 
         return {
             path: urlPath,
@@ -5071,7 +4555,8 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Set token key. Action is logged as event. `authentik_core.set_token_key` permission is required.
+     * Set token key. Action is logged as event. `authentik_core.set_token_key` permission is
+     * required.
      */
     async coreTokensSetKeyCreateRaw(
         requestParameters: CoreTokensSetKeyCreateRequest,
@@ -5084,7 +4569,8 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Set token key. Action is logged as event. `authentik_core.set_token_key` permission is required.
+     * Set token key. Action is logged as event. `authentik_core.set_token_key` permission is
+     * required.
      */
     async coreTokensSetKeyCreate(
         requestParameters: CoreTokensSetKeyCreateRequest,
@@ -5323,7 +4809,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/transactional/applications/`;
+        const urlPath = `/core/transactional/applications/`;
 
         return {
             path: urlPath,
@@ -5469,7 +4955,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/user_consent/`;
+        const urlPath = `/core/user_consent/`;
 
         return {
             path: urlPath,
@@ -5648,7 +5134,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/users/account_lockdown/`;
+        const urlPath = `/core/users/account_lockdown/`;
 
         return {
             path: urlPath,
@@ -5715,7 +5201,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/users/`;
+        const urlPath = `/core/users/`;
 
         return {
             path: urlPath,
@@ -5817,10 +5303,6 @@ export class CoreApi extends runtime.BaseAPI {
         requestParameters: CoreUsersExportCreateRequest,
     ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
-
-        if (requestParameters["attributes"] != null) {
-            queryParameters["attributes"] = requestParameters["attributes"];
-        }
 
         if (requestParameters["dateJoined"] != null) {
             queryParameters["date_joined"] = runtime.serializeDateTime(
@@ -5951,7 +5433,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/users/export/`;
+        const urlPath = `/core/users/export/`;
 
         return {
             path: urlPath,
@@ -5962,7 +5444,10 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Create a data export for this data type. Note that the export is generated asynchronously: this method returns a `DataExport` object that will initially have `completed=false` as well as the permanent URL to that object in the `Location` header. You can poll that URL until `completed=true`, at which point the `file_url` property will contain a URL to download
+     * Create a data export for this data type. Note that the export is generated asynchronously:
+     * this method returns a `DataExport` object that will initially have `completed=false` as well
+     * as the permanent URL to that object in the `Location` header. You can poll that URL until
+     * `completed=true`, at which point the `file_url` property will contain a URL to download
      */
     async coreUsersExportCreateRaw(
         requestParameters: CoreUsersExportCreateRequest,
@@ -5975,7 +5460,10 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Create a data export for this data type. Note that the export is generated asynchronously: this method returns a `DataExport` object that will initially have `completed=false` as well as the permanent URL to that object in the `Location` header. You can poll that URL until `completed=true`, at which point the `file_url` property will contain a URL to download
+     * Create a data export for this data type. Note that the export is generated asynchronously:
+     * this method returns a `DataExport` object that will initially have `completed=false` as well
+     * as the permanent URL to that object in the `Location` header. You can poll that URL until
+     * `completed=true`, at which point the `file_url` property will contain a URL to download
      */
     async coreUsersExportCreate(
         requestParameters: CoreUsersExportCreateRequest = {},
@@ -6072,7 +5560,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/users/impersonate_end/`;
+        const urlPath = `/core/users/impersonate_end/`;
 
         return {
             path: urlPath,
@@ -6110,10 +5598,6 @@ export class CoreApi extends runtime.BaseAPI {
         requestParameters: CoreUsersListRequest,
     ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
-
-        if (requestParameters["attributes"] != null) {
-            queryParameters["attributes"] = requestParameters["attributes"];
-        }
 
         if (requestParameters["dateJoined"] != null) {
             queryParameters["date_joined"] = runtime.serializeDateTime(
@@ -6260,7 +5744,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/users/`;
+        const urlPath = `/core/users/`;
 
         return {
             path: urlPath,
@@ -6313,7 +5797,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/users/me/`;
+        const urlPath = `/core/users/me/`;
 
         return {
             path: urlPath,
@@ -6432,7 +5916,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/users/paths/`;
+        const urlPath = `/core/users/paths/`;
 
         return {
             path: urlPath,
@@ -6690,7 +6174,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/users/service_account/`;
+        const urlPath = `/core/users/service_account/`;
 
         return {
             path: urlPath,
@@ -6849,7 +6333,10 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Set a user\'s password from a pre-hashed Django password value.  Submit the Django password hash in the shared ``password`` request field.  This updates authentik\'s local password verifier only. It does not attempt to propagate the password change to LDAP or Kerberos because no raw password is available from the request payload.
+     * Set a user's password from a pre-hashed Django password value. Submit the Django password
+     * hash in the shared `password` request field. This updates authentik's local password verifier
+     * only. It does not attempt to propagate the password change to LDAP or Kerberos because no raw
+     * password is available from the request payload.
      */
     async coreUsersSetPasswordHashCreateRaw(
         requestParameters: CoreUsersSetPasswordHashCreateRequest,
@@ -6863,7 +6350,10 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Set a user\'s password from a pre-hashed Django password value.  Submit the Django password hash in the shared ``password`` request field.  This updates authentik\'s local password verifier only. It does not attempt to propagate the password change to LDAP or Kerberos because no raw password is available from the request payload.
+     * Set a user's password from a pre-hashed Django password value. Submit the Django password
+     * hash in the shared `password` request field. This updates authentik's local password verifier
+     * only. It does not attempt to propagate the password change to LDAP or Kerberos because no raw
+     * password is available from the request payload.
      */
     async coreUsersSetPasswordHashCreate(
         requestParameters: CoreUsersSetPasswordHashCreateRequest,
@@ -6897,7 +6387,7 @@ export class CoreApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/core/users/switch/`;
+        const urlPath = `/core/users/switch/`;
 
         return {
             path: urlPath,

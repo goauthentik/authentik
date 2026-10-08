@@ -333,6 +333,14 @@ Timeout for cached policies until they expire in seconds.
 
 Defaults to `300`.
 
+##### `AUTHENTIK_CACHE__TIMEOUT_APPLICATION_POLICIES`
+
+Duration during which a user's application list will be cached. When it expires the cache will be
+regenerated, filtered according to [policy-driven
+authorization](../../add-secure-apps/applications/manage_apps.mdx#policy-driven-authorization).
+
+Defaults to `86400` (one day).
+
 ## Worker settings
 
 ##### `AUTHENTIK_WORKER__PROCESSES`
@@ -391,6 +399,8 @@ List of comma-separated `address:port` values for HTTP.
 
 Applies to the Server, the Worker, and Proxy outposts.
 
+Set to an empty value to disable the HTTP listener.
+
 Defaults to `[::]:9000`.
 
 ##### `AUTHENTIK_LISTEN__HTTPS`
@@ -398,6 +408,8 @@ Defaults to `[::]:9000`.
 List of comma-separated `address:port` values for HTTPS.
 
 Applies to the Server and Proxy outposts.
+
+Set to an empty value to disable the HTTPS listener.
 
 Defaults to `[::]:9443`.
 
@@ -430,6 +442,8 @@ Defaults to `[::]:1812`.
 List of comma-separated `address:port` values for Prometheus metrics.
 
 Applies to all.
+
+Set to an empty value to disable the metrics listener.
 
 Defaults to `[::]:9300`.
 
@@ -470,6 +484,8 @@ This parameter defines where to store files. Valid values are `file` and `s3`. F
 Defaults to `file`.
 
 ### File storage backend settings
+
+See [File storage requirements](../../customize/files.mdx#storage-requirements) before enabling local uploads.
 
 #### `AUTHENTIK_STORAGE__FILE__PATH`
 
@@ -845,7 +861,9 @@ Defaults to `/`.
 
 The base URL under which this authentik instance is reachable, for example `https://authentik.company`.
 
-This option is a bootstrap value. On first start, authentik copies it into the **Base URL** [system setting](../../sys-mgmt/settings.mdx) when that setting has not been configured yet. It never overwrites a Base URL that was already set through the Admin interface or API, and when it is empty authentik falls back to the host configured on the embedded outpost. Once the system setting holds a value, this option is no longer consulted, so it does not need to remain in your environment configuration.
+This option is a bootstrap value. On startup, authentik copies it into the **Base URL** [system setting](../../sys-mgmt/settings.mdx) when that setting has not been configured yet. It never overwrites a Base URL that was already set through the Admin interface or API, and when it is empty authentik falls back to the host configured on the embedded outpost. Once the system setting holds a value, this option is no longer consulted, so it does not need to remain in your environment configuration.
+
+The Base URL system setting is required. Set this option for an [automated install](../automated-install.mdx), or when an existing instance has no Base URL configured. After the initial setup, authentik does not start until a base URL is configured.
 
 Any trailing slash is removed, so `https://authentik.company` and `https://authentik.company/` are equivalent.
 
@@ -854,8 +872,6 @@ Set this to the scheme and host only, without a path. All of authentik is served
 :::
 
 Defaults to an empty string.
-
-This setting is currently unused until it can be marked as required, starting from authentik version 2026.11.
 
 ### `AUTHENTIK_WEB__TIMEOUT_HTTP`
 

@@ -157,8 +157,8 @@ class SCIMClientTests(TestCase):
             client_factory.side_effect = client_for_model
             scim_sync.send(self.provider.pk).get_result()
 
-        self.assertGreater(user_client.write.call_count, 1)
-        self.assertGreater(group_client.write.call_count, 1)
+        self.assertGreater(user_client.write_locked.call_count, 1)
+        self.assertGreater(group_client.write_locked.call_count, 1)
         user_client.discover.assert_called_once_with()
         group_client.discover.assert_called_once_with()
 

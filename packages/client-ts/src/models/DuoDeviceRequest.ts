@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,6 +12,7 @@
 
 /**
  * Serializer for Duo authenticator devices
+ *
  * @export
  * @interface DuoDeviceRequest
  */

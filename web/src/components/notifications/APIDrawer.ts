@@ -1,4 +1,8 @@
 import "#elements/timestamp/ak-timestamp";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
 
 import { AKRequestPostEvent, APIRequestInfo } from "#common/api/events";
 import { globalAK } from "#common/global";
@@ -11,11 +15,6 @@ import { AKDrawerChangeEvent } from "#components/notifications/events";
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
-import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
 
 function renderItem(item: APIRequestInfo, idx: number): TemplateResult {
     const subheading = `${item.method}: ${item.status}`;

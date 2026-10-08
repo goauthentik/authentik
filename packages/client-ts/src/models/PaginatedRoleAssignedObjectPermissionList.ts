@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,22 +19,12 @@ import {
 } from "./RoleAssignedObjectPermission";
 
 /**
- *
  * @export
  * @interface PaginatedRoleAssignedObjectPermissionList
  */
 export interface PaginatedRoleAssignedObjectPermissionList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<RoleAssignedObjectPermission>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

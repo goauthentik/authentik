@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,17 +15,12 @@ import { PolicyTestResultFromJSON, PolicyTestResultToJSON } from "./PolicyTestRe
 
 /**
  * Base serializer class which doesn't implement create/update methods
+ *
  * @export
  * @interface RadiusCheckAccess
  */
 export interface RadiusCheckAccess {
-    /**
-     *
-     */
     attributes?: string;
-    /**
-     *
-     */
     access: PolicyTestResult;
 }
 

@@ -1,9 +1,16 @@
 {
     "name": "@goauthentik/docusaurus-theme",
     "version": "0.0.0",
-    "license": "MIT",
     "private": true,
+    "license": "MIT",
     "type": "module",
+    "imports": {
+        "#remark": "./remark/index.mjs",
+        "#remark/*": "./remark/*",
+        "#components/*": "./components/*",
+        "#hooks/*": "./hooks/*",
+        "#theme/*": "./theme/*"
+    },
     "exports": {
         "./package.json": "./package.json",
         ".": "./index.js",
@@ -22,13 +29,6 @@
         "./llms-txt/node": "./llms-txt/node.mjs",
         "./llms-txt/common": "./llms-txt/common.mjs",
         "./mdx-only/plugin": "./mdx-only/plugin.mjs"
-    },
-    "imports": {
-        "#remark": "./remark/index.mjs",
-        "#remark/*": "./remark/*",
-        "#components/*": "./components/*",
-        "#hooks/*": "./hooks/*",
-        "#theme/*": "./theme/*"
     },
     "dependencies": {
         "@docusaurus/preset-classic": "catalog:",

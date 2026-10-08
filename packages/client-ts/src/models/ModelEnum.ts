@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,11 +11,9 @@
  */
 
 /**
- *
  * @export
  */
 export const ModelEnum = {
-    AuthentikTenantsDomain: "authentik_tenants.domain",
     AuthentikCoreGroup: "authentik_core.group",
     AuthentikCoreUser: "authentik_core.user",
     AuthentikCoreApplication: "authentik_core.application",
@@ -62,7 +58,6 @@ export const ModelEnum = {
         "authentik_providers_oauth2.oauth2dynamicclientregistration",
     AuthentikProvidersProxyProxyprovider: "authentik_providers_proxy.proxyprovider",
     AuthentikProvidersRacRacprovider: "authentik_providers_rac.racprovider",
-    AuthentikProvidersRacEndpoint: "authentik_providers_rac.endpoint",
     AuthentikProvidersRacRacpropertymapping: "authentik_providers_rac.racpropertymapping",
     AuthentikProvidersRadiusRadiusprovider: "authentik_providers_radius.radiusprovider",
     AuthentikProvidersRadiusRadiusproviderpropertymapping:

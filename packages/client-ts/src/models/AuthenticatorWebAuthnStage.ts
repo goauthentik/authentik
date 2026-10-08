@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -28,17 +26,12 @@ import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHint
 
 /**
  * AuthenticatorWebAuthnStage Serializer
+ *
  * @export
  * @interface AuthenticatorWebAuthnStage
  */
 export interface AuthenticatorWebAuthnStage {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
@@ -56,45 +49,19 @@ export interface AuthenticatorWebAuthnStage {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly flowSet: Array<FlowSet>;
     /**
-     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able
+     * to configure this stage.
      */
     configureFlow?: string | null;
-    /**
-     *
-     */
     friendlyName?: string;
-    /**
-     *
-     */
     userVerification?: UserVerificationEnum;
-    /**
-     *
-     */
     authenticatorAttachment?: AuthenticatorAttachmentEnum | null;
-    /**
-     *
-     */
     residentKeyRequirement?: UserVerificationEnum;
-    /**
-     *
-     */
     hints?: Array<WebAuthnHintEnum>;
-    /**
-     *
-     */
     deviceTypeRestrictions?: Array<string>;
-    /**
-     *
-     */
     readonly deviceTypeRestrictionsObj: Array<WebAuthnDeviceType>;
-    /**
-     *
-     */
     maxAttempts?: number;
 }
 

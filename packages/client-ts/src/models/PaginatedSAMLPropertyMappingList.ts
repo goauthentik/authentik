@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { SAMLPropertyMapping } from "./SAMLPropertyMapping";
 import { SAMLPropertyMappingFromJSON, SAMLPropertyMappingToJSON } from "./SAMLPropertyMapping";
 
 /**
- *
  * @export
  * @interface PaginatedSAMLPropertyMappingList
  */
 export interface PaginatedSAMLPropertyMappingList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<SAMLPropertyMapping>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

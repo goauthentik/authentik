@@ -1,5 +1,10 @@
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -11,12 +16,6 @@ import { SessionEndChallenge } from "@goauthentik/api";
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 @customElement("ak-stage-session-end")
 export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
@@ -32,6 +31,7 @@ export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
                 str`You've logged out of ${challenge.applicationName}. You can log out of your authentik account.`,
             );
         }
+
         return msg(str`You've logged out of ${challenge.applicationName}.`);
     }
 
@@ -44,35 +44,41 @@ export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
 
         return html`<ak-flow-card .challenge=${challenge}>
             <form class="pf-c-form">
-                ${FlowUserDetails({ challenge: challenge })}
+                ${FlowUserDetails({ challenge })}
 
                 <p>${this.getText(challenge)}</p>
-                ${challenge.overviewUrl
-                    ? html`<a href="${challenge.overviewUrl}" class="pf-c-button pf-m-primary">
-                          ${msg("Go back to overview")}
-                      </a>`
-                    : nothing}
-                ${challenge.invalidationFlowUrl
-                    ? html`
-                          <a
-                              href="${challenge.invalidationFlowUrl}"
-                              class="pf-c-button pf-m-secondary"
-                              id="logout"
-                          >
-                              ${msg(str`Log out of ${challenge.brandName}`)}
-                          </a>
-                      `
-                    : nothing}
-                ${challenge.applicationLaunchUrl && challenge.applicationName
-                    ? html`
-                          <a
-                              href="${challenge.applicationLaunchUrl}"
-                              class="pf-c-button pf-m-secondary"
-                          >
-                              ${msg(str`Log back into ${challenge.applicationName}`)}
-                          </a>
-                      `
-                    : nothing}
+                ${
+                    challenge.overviewUrl
+                        ? html`<a href="${challenge.overviewUrl}" class="pf-c-button pf-m-primary">
+                              ${msg("Go back to overview")}
+                          </a>`
+                        : nothing
+                }
+                ${
+                    challenge.invalidationFlowUrl
+                        ? html`
+                              <a
+                                  href="${challenge.invalidationFlowUrl}"
+                                  class="pf-c-button pf-m-secondary"
+                                  id="logout"
+                              >
+                                  ${msg(str`Log out of ${challenge.brandName}`)}
+                              </a>
+                          `
+                        : nothing
+                }
+                ${
+                    challenge.applicationLaunchUrl && challenge.applicationName
+                        ? html`
+                              <a
+                                  href="${challenge.applicationLaunchUrl}"
+                                  class="pf-c-button pf-m-secondary"
+                              >
+                                  ${msg(str`Log back into ${challenge.applicationName}`)}
+                              </a>
+                          `
+                        : nothing
+                }
             </form>
         </ak-flow-card>`;
     }

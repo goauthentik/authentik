@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { SCIMMapping } from "./SCIMMapping";
 import { SCIMMappingFromJSON, SCIMMappingToJSON } from "./SCIMMapping";
 
 /**
- *
  * @export
  * @interface PaginatedSCIMMappingList
  */
 export interface PaginatedSCIMMappingList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<SCIMMapping>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

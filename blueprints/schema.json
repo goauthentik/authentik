@@ -2664,46 +2664,6 @@
                     ],
                     "properties": {
                         "model": {
-                            "const": "authentik_providers_rac.endpoint"
-                        },
-                        "id": {
-                            "type": "string"
-                        },
-                        "state": {
-                            "type": "string",
-                            "enum": [
-                                "absent",
-                                "created",
-                                "must_created",
-                                "present"
-                            ],
-                            "default": "present"
-                        },
-                        "conditions": {
-                            "type": "array",
-                            "items": {
-                                "type": "boolean"
-                            }
-                        },
-                        "permissions": {
-                            "$ref": "#/definitions/model_authentik_providers_rac.endpoint_permissions"
-                        },
-                        "attrs": {
-                            "$ref": "#/definitions/model_authentik_providers_rac.endpoint"
-                        },
-                        "identifiers": {
-                            "$ref": "#/definitions/model_authentik_providers_rac.endpoint"
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "required": [
-                        "model",
-                        "identifiers"
-                    ],
-                    "properties": {
-                        "model": {
                             "const": "authentik_providers_rac.racpropertymapping"
                         },
                         "id": {
@@ -5335,46 +5295,6 @@
                             "$ref": "#/definitions/model_authentik_tasks_schedules.schedule"
                         }
                     }
-                },
-                {
-                    "type": "object",
-                    "required": [
-                        "model",
-                        "identifiers"
-                    ],
-                    "properties": {
-                        "model": {
-                            "const": "authentik_tenants.domain"
-                        },
-                        "id": {
-                            "type": "string"
-                        },
-                        "state": {
-                            "type": "string",
-                            "enum": [
-                                "absent",
-                                "created",
-                                "must_created",
-                                "present"
-                            ],
-                            "default": "present"
-                        },
-                        "conditions": {
-                            "type": "array",
-                            "items": {
-                                "type": "boolean"
-                            }
-                        },
-                        "permissions": {
-                            "$ref": "#/definitions/model_authentik_tenants.domain_permissions"
-                        },
-                        "attrs": {
-                            "$ref": "#/definitions/model_authentik_tenants.domain"
-                        },
-                        "identifiers": {
-                            "$ref": "#/definitions/model_authentik_tenants.domain"
-                        }
-                    }
                 }
             ]
         },
@@ -5855,8 +5775,10 @@
                             "authentik_endpoints_connectors_agent.add_agentconnectorjwtfederationprovider",
                             "authentik_endpoints_connectors_agent.add_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.add_appleauthorizationcode",
                             "authentik_endpoints_connectors_agent.add_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.add_applenonce",
+                            "authentik_endpoints_connectors_agent.add_appleunlockkey",
                             "authentik_endpoints_connectors_agent.add_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.add_devicetoken",
                             "authentik_endpoints_connectors_agent.add_enrollmenttoken",
@@ -5864,8 +5786,10 @@
                             "authentik_endpoints_connectors_agent.change_agentconnectorjwtfederationprovider",
                             "authentik_endpoints_connectors_agent.change_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.change_appleauthorizationcode",
                             "authentik_endpoints_connectors_agent.change_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.change_applenonce",
+                            "authentik_endpoints_connectors_agent.change_appleunlockkey",
                             "authentik_endpoints_connectors_agent.change_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.change_devicetoken",
                             "authentik_endpoints_connectors_agent.change_enrollmenttoken",
@@ -5873,8 +5797,10 @@
                             "authentik_endpoints_connectors_agent.delete_agentconnectorjwtfederationprovider",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.delete_appleauthorizationcode",
                             "authentik_endpoints_connectors_agent.delete_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.delete_applenonce",
+                            "authentik_endpoints_connectors_agent.delete_appleunlockkey",
                             "authentik_endpoints_connectors_agent.delete_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.delete_devicetoken",
                             "authentik_endpoints_connectors_agent.delete_enrollmenttoken",
@@ -5882,8 +5808,10 @@
                             "authentik_endpoints_connectors_agent.view_agentconnectorjwtfederationprovider",
                             "authentik_endpoints_connectors_agent.view_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.view_appleauthorizationcode",
                             "authentik_endpoints_connectors_agent.view_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.view_applenonce",
+                            "authentik_endpoints_connectors_agent.view_appleunlockkey",
                             "authentik_endpoints_connectors_agent.view_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.view_devicetoken",
                             "authentik_endpoints_connectors_agent.view_enrollment_token_key",
@@ -6107,6 +6035,7 @@
                             "authentik_providers_oauth2.add_oauth2provider",
                             "authentik_providers_oauth2.add_oauth2providerjwtfederationprovider",
                             "authentik_providers_oauth2.add_oauth2providerjwtfederationsource",
+                            "authentik_providers_oauth2.add_oauth2sessionlogin",
                             "authentik_providers_oauth2.add_refreshtoken",
                             "authentik_providers_oauth2.add_scopemapping",
                             "authentik_providers_oauth2.change_accesstoken",
@@ -6117,6 +6046,7 @@
                             "authentik_providers_oauth2.change_oauth2provider",
                             "authentik_providers_oauth2.change_oauth2providerjwtfederationprovider",
                             "authentik_providers_oauth2.change_oauth2providerjwtfederationsource",
+                            "authentik_providers_oauth2.change_oauth2sessionlogin",
                             "authentik_providers_oauth2.change_refreshtoken",
                             "authentik_providers_oauth2.change_scopemapping",
                             "authentik_providers_oauth2.delete_accesstoken",
@@ -6127,6 +6057,7 @@
                             "authentik_providers_oauth2.delete_oauth2provider",
                             "authentik_providers_oauth2.delete_oauth2providerjwtfederationprovider",
                             "authentik_providers_oauth2.delete_oauth2providerjwtfederationsource",
+                            "authentik_providers_oauth2.delete_oauth2sessionlogin",
                             "authentik_providers_oauth2.delete_refreshtoken",
                             "authentik_providers_oauth2.delete_scopemapping",
                             "authentik_providers_oauth2.view_accesstoken",
@@ -6137,6 +6068,7 @@
                             "authentik_providers_oauth2.view_oauth2provider",
                             "authentik_providers_oauth2.view_oauth2providerjwtfederationprovider",
                             "authentik_providers_oauth2.view_oauth2providerjwtfederationsource",
+                            "authentik_providers_oauth2.view_oauth2sessionlogin",
                             "authentik_providers_oauth2.view_refreshtoken",
                             "authentik_providers_oauth2.view_scopemapping",
                             "authentik_providers_proxy.add_proxyprovider",
@@ -6148,23 +6080,19 @@
                             "authentik_providers_proxy.view_proxyprovider",
                             "authentik_providers_proxy.view_proxysession",
                             "authentik_providers_rac.add_connectiontoken",
-                            "authentik_providers_rac.add_endpoint",
-                            "authentik_providers_rac.add_endpointpropertymapping",
+                            "authentik_providers_rac.add_racconnectionoverride",
                             "authentik_providers_rac.add_racpropertymapping",
                             "authentik_providers_rac.add_racprovider",
                             "authentik_providers_rac.change_connectiontoken",
-                            "authentik_providers_rac.change_endpoint",
-                            "authentik_providers_rac.change_endpointpropertymapping",
+                            "authentik_providers_rac.change_racconnectionoverride",
                             "authentik_providers_rac.change_racpropertymapping",
                             "authentik_providers_rac.change_racprovider",
                             "authentik_providers_rac.delete_connectiontoken",
-                            "authentik_providers_rac.delete_endpoint",
-                            "authentik_providers_rac.delete_endpointpropertymapping",
+                            "authentik_providers_rac.delete_racconnectionoverride",
                             "authentik_providers_rac.delete_racpropertymapping",
                             "authentik_providers_rac.delete_racprovider",
                             "authentik_providers_rac.view_connectiontoken",
-                            "authentik_providers_rac.view_endpoint",
-                            "authentik_providers_rac.view_endpointpropertymapping",
+                            "authentik_providers_rac.view_racconnectionoverride",
                             "authentik_providers_rac.view_racpropertymapping",
                             "authentik_providers_rac.view_racprovider",
                             "authentik_providers_radius.add_radiusprovider",
@@ -6583,15 +6511,7 @@
                             "authentik_tasks.view_task",
                             "authentik_tasks_schedules.change_schedule",
                             "authentik_tasks_schedules.send_schedule",
-                            "authentik_tasks_schedules.view_schedule",
-                            "authentik_tenants.add_domain",
-                            "authentik_tenants.add_tenant",
-                            "authentik_tenants.change_domain",
-                            "authentik_tenants.change_tenant",
-                            "authentik_tenants.delete_domain",
-                            "authentik_tenants.delete_tenant",
-                            "authentik_tenants.view_domain",
-                            "authentik_tenants.view_tenant"
+                            "authentik_tasks_schedules.view_schedule"
                         ]
                     },
                     "title": "Permissions"
@@ -7253,8 +7173,10 @@
                             "authentik_endpoints_connectors_agent.add_agentconnectorjwtfederationprovider",
                             "authentik_endpoints_connectors_agent.add_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.add_appleauthorizationcode",
                             "authentik_endpoints_connectors_agent.add_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.add_applenonce",
+                            "authentik_endpoints_connectors_agent.add_appleunlockkey",
                             "authentik_endpoints_connectors_agent.add_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.add_devicetoken",
                             "authentik_endpoints_connectors_agent.add_enrollmenttoken",
@@ -7262,8 +7184,10 @@
                             "authentik_endpoints_connectors_agent.change_agentconnectorjwtfederationprovider",
                             "authentik_endpoints_connectors_agent.change_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.change_appleauthorizationcode",
                             "authentik_endpoints_connectors_agent.change_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.change_applenonce",
+                            "authentik_endpoints_connectors_agent.change_appleunlockkey",
                             "authentik_endpoints_connectors_agent.change_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.change_devicetoken",
                             "authentik_endpoints_connectors_agent.change_enrollmenttoken",
@@ -7271,8 +7195,10 @@
                             "authentik_endpoints_connectors_agent.delete_agentconnectorjwtfederationprovider",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.delete_appleauthorizationcode",
                             "authentik_endpoints_connectors_agent.delete_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.delete_applenonce",
+                            "authentik_endpoints_connectors_agent.delete_appleunlockkey",
                             "authentik_endpoints_connectors_agent.delete_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.delete_devicetoken",
                             "authentik_endpoints_connectors_agent.delete_enrollmenttoken",
@@ -7280,8 +7206,10 @@
                             "authentik_endpoints_connectors_agent.view_agentconnectorjwtfederationprovider",
                             "authentik_endpoints_connectors_agent.view_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.view_appleauthorizationcode",
                             "authentik_endpoints_connectors_agent.view_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.view_applenonce",
+                            "authentik_endpoints_connectors_agent.view_appleunlockkey",
                             "authentik_endpoints_connectors_agent.view_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.view_devicetoken",
                             "authentik_endpoints_connectors_agent.view_enrollment_token_key",
@@ -7505,6 +7433,7 @@
                             "authentik_providers_oauth2.add_oauth2provider",
                             "authentik_providers_oauth2.add_oauth2providerjwtfederationprovider",
                             "authentik_providers_oauth2.add_oauth2providerjwtfederationsource",
+                            "authentik_providers_oauth2.add_oauth2sessionlogin",
                             "authentik_providers_oauth2.add_refreshtoken",
                             "authentik_providers_oauth2.add_scopemapping",
                             "authentik_providers_oauth2.change_accesstoken",
@@ -7515,6 +7444,7 @@
                             "authentik_providers_oauth2.change_oauth2provider",
                             "authentik_providers_oauth2.change_oauth2providerjwtfederationprovider",
                             "authentik_providers_oauth2.change_oauth2providerjwtfederationsource",
+                            "authentik_providers_oauth2.change_oauth2sessionlogin",
                             "authentik_providers_oauth2.change_refreshtoken",
                             "authentik_providers_oauth2.change_scopemapping",
                             "authentik_providers_oauth2.delete_accesstoken",
@@ -7525,6 +7455,7 @@
                             "authentik_providers_oauth2.delete_oauth2provider",
                             "authentik_providers_oauth2.delete_oauth2providerjwtfederationprovider",
                             "authentik_providers_oauth2.delete_oauth2providerjwtfederationsource",
+                            "authentik_providers_oauth2.delete_oauth2sessionlogin",
                             "authentik_providers_oauth2.delete_refreshtoken",
                             "authentik_providers_oauth2.delete_scopemapping",
                             "authentik_providers_oauth2.view_accesstoken",
@@ -7535,6 +7466,7 @@
                             "authentik_providers_oauth2.view_oauth2provider",
                             "authentik_providers_oauth2.view_oauth2providerjwtfederationprovider",
                             "authentik_providers_oauth2.view_oauth2providerjwtfederationsource",
+                            "authentik_providers_oauth2.view_oauth2sessionlogin",
                             "authentik_providers_oauth2.view_refreshtoken",
                             "authentik_providers_oauth2.view_scopemapping",
                             "authentik_providers_proxy.add_proxyprovider",
@@ -7546,23 +7478,19 @@
                             "authentik_providers_proxy.view_proxyprovider",
                             "authentik_providers_proxy.view_proxysession",
                             "authentik_providers_rac.add_connectiontoken",
-                            "authentik_providers_rac.add_endpoint",
-                            "authentik_providers_rac.add_endpointpropertymapping",
+                            "authentik_providers_rac.add_racconnectionoverride",
                             "authentik_providers_rac.add_racpropertymapping",
                             "authentik_providers_rac.add_racprovider",
                             "authentik_providers_rac.change_connectiontoken",
-                            "authentik_providers_rac.change_endpoint",
-                            "authentik_providers_rac.change_endpointpropertymapping",
+                            "authentik_providers_rac.change_racconnectionoverride",
                             "authentik_providers_rac.change_racpropertymapping",
                             "authentik_providers_rac.change_racprovider",
                             "authentik_providers_rac.delete_connectiontoken",
-                            "authentik_providers_rac.delete_endpoint",
-                            "authentik_providers_rac.delete_endpointpropertymapping",
+                            "authentik_providers_rac.delete_racconnectionoverride",
                             "authentik_providers_rac.delete_racpropertymapping",
                             "authentik_providers_rac.delete_racprovider",
                             "authentik_providers_rac.view_connectiontoken",
-                            "authentik_providers_rac.view_endpoint",
-                            "authentik_providers_rac.view_endpointpropertymapping",
+                            "authentik_providers_rac.view_racconnectionoverride",
                             "authentik_providers_rac.view_racpropertymapping",
                             "authentik_providers_rac.view_racprovider",
                             "authentik_providers_radius.add_radiusprovider",
@@ -7981,15 +7909,7 @@
                             "authentik_tasks.view_task",
                             "authentik_tasks_schedules.change_schedule",
                             "authentik_tasks_schedules.send_schedule",
-                            "authentik_tasks_schedules.view_schedule",
-                            "authentik_tenants.add_domain",
-                            "authentik_tenants.add_tenant",
-                            "authentik_tenants.change_domain",
-                            "authentik_tenants.change_tenant",
-                            "authentik_tenants.delete_domain",
-                            "authentik_tenants.delete_tenant",
-                            "authentik_tenants.view_domain",
-                            "authentik_tenants.view_tenant"
+                            "authentik_tasks_schedules.view_schedule"
                         ]
                     },
                     "title": "Permissions"
@@ -8211,6 +8131,11 @@
                     "type": "boolean",
                     "title": "Enabled"
                 },
+                "dry_run": {
+                    "type": "boolean",
+                    "title": "Dry run",
+                    "description": "Execute the policy but ignore its result."
+                },
                 "order": {
                     "type": "integer",
                     "minimum": -2147483648,
@@ -8395,6 +8320,11 @@
                 "enabled": {
                     "type": "boolean",
                     "title": "Enabled"
+                },
+                "dry_run": {
+                    "type": "boolean",
+                    "title": "Dry run",
+                    "description": "Execute the policy but ignore its result."
                 },
                 "order": {
                     "type": "integer",
@@ -11177,7 +11107,6 @@
                     "enum": [
                         null,
                         "authentik.commands",
-                        "authentik.tenants",
                         "authentik.tasks",
                         "authentik.admin",
                         "authentik.api",
@@ -11237,6 +11166,7 @@
                         "authentik.stages.user_logout",
                         "authentik.stages.user_write",
                         "authentik.tasks.schedules",
+                        "authentik.tenants",
                         "authentik.brands",
                         "authentik.blueprints",
                         "authentik.enterprise.agents",
@@ -11270,7 +11200,6 @@
                     ],
                     "enum": [
                         null,
-                        "authentik_tenants.domain",
                         "authentik_core.group",
                         "authentik_core.user",
                         "authentik_core.application",
@@ -11310,7 +11239,6 @@
                         "authentik_providers_oauth2.oauth2dynamicclientregistration",
                         "authentik_providers_proxy.proxyprovider",
                         "authentik_providers_rac.racprovider",
-                        "authentik_providers_rac.endpoint",
                         "authentik_providers_rac.racpropertymapping",
                         "authentik_providers_radius.radiusprovider",
                         "authentik_providers_radius.radiusproviderpropertymapping",
@@ -11916,6 +11844,11 @@
                 "enabled": {
                     "type": "boolean",
                     "title": "Enabled"
+                },
+                "dry_run": {
+                    "type": "boolean",
+                    "title": "Dry run",
+                    "description": "Execute the policy but ignore its result."
                 },
                 "order": {
                     "type": "integer",
@@ -12784,88 +12717,6 @@
                 }
             }
         },
-        "model_authentik_providers_rac.endpoint": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Name"
-                },
-                "provider": {
-                    "type": "integer",
-                    "title": "Provider"
-                },
-                "protocol": {
-                    "type": "string",
-                    "enum": [
-                        "rdp",
-                        "vnc",
-                        "ssh"
-                    ],
-                    "title": "Protocol"
-                },
-                "host": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Host"
-                },
-                "settings": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "Settings"
-                },
-                "property_mappings": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "title": "Property mappings"
-                },
-                "auth_mode": {
-                    "type": "string",
-                    "enum": [
-                        "static",
-                        "prompt"
-                    ],
-                    "title": "Auth mode"
-                },
-                "maximum_connections": {
-                    "type": "integer",
-                    "minimum": -2147483648,
-                    "maximum": 2147483647,
-                    "title": "Maximum connections"
-                }
-            },
-            "required": []
-        },
-        "model_authentik_providers_rac.endpoint_permissions": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "required": [
-                    "permission"
-                ],
-                "properties": {
-                    "permission": {
-                        "type": "string",
-                        "enum": [
-                            "add_endpoint",
-                            "change_endpoint",
-                            "delete_endpoint",
-                            "view_endpoint"
-                        ]
-                    },
-                    "user": {
-                        "type": "integer"
-                    },
-                    "role": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
         "model_authentik_providers_rac.racpropertymapping": {
             "type": "object",
             "properties": {
@@ -12953,6 +12804,27 @@
                     "type": "object",
                     "additionalProperties": true,
                     "title": "Settings"
+                },
+                "access_group": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Access group",
+                    "description": "Only devices in this access group can be accessed through this provider. When left empty, every device the user has access to can be accessed."
+                },
+                "maximum_connections": {
+                    "type": "integer",
+                    "minimum": -2147483648,
+                    "maximum": 2147483647,
+                    "title": "Maximum connections",
+                    "description": "Maximum concurrent connections to a single device. Can be set to -1 to disable the limit."
+                },
+                "auth_mode": {
+                    "type": "string",
+                    "enum": [
+                        "static",
+                        "prompt"
+                    ],
+                    "title": "Auth mode"
                 },
                 "connection_expiry": {
                     "type": "string",
@@ -13506,10 +13378,21 @@
                     "type": "string",
                     "enum": [
                         "token",
+                        "basic",
                         "oauth",
                         "oauth_interactive"
                     ],
                     "title": "Auth mode"
+                },
+                "auth_basic_user": {
+                    "type": "string",
+                    "title": "Auth basic user",
+                    "description": "Username used for Basic authentication"
+                },
+                "auth_basic_password": {
+                    "type": "string",
+                    "title": "Auth basic password",
+                    "description": "Password used for Basic authentication"
                 },
                 "auth_oauth": {
                     "type": "integer",
@@ -13820,8 +13703,10 @@
                             "authentik_endpoints_connectors_agent.add_agentconnectorjwtfederationprovider",
                             "authentik_endpoints_connectors_agent.add_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.add_appleauthorizationcode",
                             "authentik_endpoints_connectors_agent.add_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.add_applenonce",
+                            "authentik_endpoints_connectors_agent.add_appleunlockkey",
                             "authentik_endpoints_connectors_agent.add_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.add_devicetoken",
                             "authentik_endpoints_connectors_agent.add_enrollmenttoken",
@@ -13829,8 +13714,10 @@
                             "authentik_endpoints_connectors_agent.change_agentconnectorjwtfederationprovider",
                             "authentik_endpoints_connectors_agent.change_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.change_appleauthorizationcode",
                             "authentik_endpoints_connectors_agent.change_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.change_applenonce",
+                            "authentik_endpoints_connectors_agent.change_appleunlockkey",
                             "authentik_endpoints_connectors_agent.change_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.change_devicetoken",
                             "authentik_endpoints_connectors_agent.change_enrollmenttoken",
@@ -13838,8 +13725,10 @@
                             "authentik_endpoints_connectors_agent.delete_agentconnectorjwtfederationprovider",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.delete_appleauthorizationcode",
                             "authentik_endpoints_connectors_agent.delete_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.delete_applenonce",
+                            "authentik_endpoints_connectors_agent.delete_appleunlockkey",
                             "authentik_endpoints_connectors_agent.delete_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.delete_devicetoken",
                             "authentik_endpoints_connectors_agent.delete_enrollmenttoken",
@@ -13847,8 +13736,10 @@
                             "authentik_endpoints_connectors_agent.view_agentconnectorjwtfederationprovider",
                             "authentik_endpoints_connectors_agent.view_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.view_appleauthorizationcode",
                             "authentik_endpoints_connectors_agent.view_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.view_applenonce",
+                            "authentik_endpoints_connectors_agent.view_appleunlockkey",
                             "authentik_endpoints_connectors_agent.view_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.view_devicetoken",
                             "authentik_endpoints_connectors_agent.view_enrollment_token_key",
@@ -14072,6 +13963,7 @@
                             "authentik_providers_oauth2.add_oauth2provider",
                             "authentik_providers_oauth2.add_oauth2providerjwtfederationprovider",
                             "authentik_providers_oauth2.add_oauth2providerjwtfederationsource",
+                            "authentik_providers_oauth2.add_oauth2sessionlogin",
                             "authentik_providers_oauth2.add_refreshtoken",
                             "authentik_providers_oauth2.add_scopemapping",
                             "authentik_providers_oauth2.change_accesstoken",
@@ -14082,6 +13974,7 @@
                             "authentik_providers_oauth2.change_oauth2provider",
                             "authentik_providers_oauth2.change_oauth2providerjwtfederationprovider",
                             "authentik_providers_oauth2.change_oauth2providerjwtfederationsource",
+                            "authentik_providers_oauth2.change_oauth2sessionlogin",
                             "authentik_providers_oauth2.change_refreshtoken",
                             "authentik_providers_oauth2.change_scopemapping",
                             "authentik_providers_oauth2.delete_accesstoken",
@@ -14092,6 +13985,7 @@
                             "authentik_providers_oauth2.delete_oauth2provider",
                             "authentik_providers_oauth2.delete_oauth2providerjwtfederationprovider",
                             "authentik_providers_oauth2.delete_oauth2providerjwtfederationsource",
+                            "authentik_providers_oauth2.delete_oauth2sessionlogin",
                             "authentik_providers_oauth2.delete_refreshtoken",
                             "authentik_providers_oauth2.delete_scopemapping",
                             "authentik_providers_oauth2.view_accesstoken",
@@ -14102,6 +13996,7 @@
                             "authentik_providers_oauth2.view_oauth2provider",
                             "authentik_providers_oauth2.view_oauth2providerjwtfederationprovider",
                             "authentik_providers_oauth2.view_oauth2providerjwtfederationsource",
+                            "authentik_providers_oauth2.view_oauth2sessionlogin",
                             "authentik_providers_oauth2.view_refreshtoken",
                             "authentik_providers_oauth2.view_scopemapping",
                             "authentik_providers_proxy.add_proxyprovider",
@@ -14113,23 +14008,19 @@
                             "authentik_providers_proxy.view_proxyprovider",
                             "authentik_providers_proxy.view_proxysession",
                             "authentik_providers_rac.add_connectiontoken",
-                            "authentik_providers_rac.add_endpoint",
-                            "authentik_providers_rac.add_endpointpropertymapping",
+                            "authentik_providers_rac.add_racconnectionoverride",
                             "authentik_providers_rac.add_racpropertymapping",
                             "authentik_providers_rac.add_racprovider",
                             "authentik_providers_rac.change_connectiontoken",
-                            "authentik_providers_rac.change_endpoint",
-                            "authentik_providers_rac.change_endpointpropertymapping",
+                            "authentik_providers_rac.change_racconnectionoverride",
                             "authentik_providers_rac.change_racpropertymapping",
                             "authentik_providers_rac.change_racprovider",
                             "authentik_providers_rac.delete_connectiontoken",
-                            "authentik_providers_rac.delete_endpoint",
-                            "authentik_providers_rac.delete_endpointpropertymapping",
+                            "authentik_providers_rac.delete_racconnectionoverride",
                             "authentik_providers_rac.delete_racpropertymapping",
                             "authentik_providers_rac.delete_racprovider",
                             "authentik_providers_rac.view_connectiontoken",
-                            "authentik_providers_rac.view_endpoint",
-                            "authentik_providers_rac.view_endpointpropertymapping",
+                            "authentik_providers_rac.view_racconnectionoverride",
                             "authentik_providers_rac.view_racpropertymapping",
                             "authentik_providers_rac.view_racprovider",
                             "authentik_providers_radius.add_radiusprovider",
@@ -14548,15 +14439,7 @@
                             "authentik_tasks.view_task",
                             "authentik_tasks_schedules.change_schedule",
                             "authentik_tasks_schedules.send_schedule",
-                            "authentik_tasks_schedules.view_schedule",
-                            "authentik_tenants.add_domain",
-                            "authentik_tenants.add_tenant",
-                            "authentik_tenants.change_domain",
-                            "authentik_tenants.change_tenant",
-                            "authentik_tenants.delete_domain",
-                            "authentik_tenants.delete_tenant",
-                            "authentik_tenants.view_domain",
-                            "authentik_tenants.view_tenant"
+                            "authentik_tasks_schedules.view_schedule"
                         ]
                     },
                     "title": "Permissions"
@@ -15075,6 +14958,15 @@
                     "type": "string",
                     "title": "Bind password"
                 },
+                "service_bind_method": {
+                    "type": "string",
+                    "enum": [
+                        "simple",
+                        "sasl_external"
+                    ],
+                    "title": "Service bind method",
+                    "description": "Authentication method used for LDAP synchronization and writeback."
+                },
                 "start_tls": {
                     "type": "boolean",
                     "title": "Enable Start TLS"
@@ -15501,7 +15393,6 @@
                 },
                 "consumer_secret": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Consumer secret"
                 },
                 "additional_scopes": {
@@ -18671,53 +18562,6 @@
                             "change_schedule",
                             "send_schedule",
                             "view_schedule"
-                        ]
-                    },
-                    "user": {
-                        "type": "integer"
-                    },
-                    "role": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "model_authentik_tenants.domain": {
-            "type": "object",
-            "properties": {
-                "domain": {
-                    "type": "string",
-                    "maxLength": 253,
-                    "minLength": 1,
-                    "title": "Domain"
-                },
-                "is_primary": {
-                    "type": "boolean",
-                    "title": "Is primary"
-                },
-                "tenant": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Tenant"
-                }
-            },
-            "required": []
-        },
-        "model_authentik_tenants.domain_permissions": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "required": [
-                    "permission"
-                ],
-                "properties": {
-                    "permission": {
-                        "type": "string",
-                        "enum": [
-                            "add_domain",
-                            "change_domain",
-                            "delete_domain",
-                            "view_domain"
                         ]
                     },
                     "user": {

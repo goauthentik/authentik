@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,29 +12,15 @@
 
 /**
  * SCIMSourceGroup Serializer
+ *
  * @export
  * @interface PatchedSCIMSourceGroupRequest
  */
 export interface PatchedSCIMSourceGroupRequest {
-    /**
-     *
-     */
     id?: string;
-    /**
-     *
-     */
     externalId?: string;
-    /**
-     *
-     */
     group?: string;
-    /**
-     *
-     */
     source?: string;
-    /**
-     *
-     */
     attributes?: { [key: string]: any };
 }
 

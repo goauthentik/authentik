@@ -1,20 +1,21 @@
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#components/ak-switch-input";
-import "#admin/common/ak-crypto-certificate-search";
-import "#admin/common/ak-flow-search/ak-branded-flow-search";
-import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-secret-text-input";
 import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#elements/LicenseNotice";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./RadiusProviderFormHelpers.js";
 
 import { ascii_letters, digits, randomString } from "#common/utils";
 
-import { ifPresent } from "#elements/utils/attributes";
+import { AKCertificateSearch } from "#admin/common/AKCertificateSearch";
+import { TLSKeyTypes } from "#admin/common/certificate-key-types";
+import {
+    AKAuthorizationFlowField,
+    AKInvalidationFlowField,
+} from "#admin/providers/components/flow-fields";
 
 import {
     CurrentBrand,
@@ -64,22 +65,15 @@ export function renderForm({ provider, errors, brand }: RADIUSProviderFormProps)
         >
         </ak-text-input>
 
-        <ak-form-element-horizontal
-            label=${msg("Authentication Flow")}
-            required
-            name="authorizationFlow"
-            .errorMessages=${errors.authorizationFlow}
-        >
-            <ak-branded-flow-search
-                label=${msg("Authentication Flow")}
-                placeholder=${msg("Select an authentication flow...")}
-                flowType=${FlowDesignationEnum.Authentication}
-                .currentFlow=${provider.authorizationFlow}
-                .brandFlow=${brand?.flowAuthentication}
-                required
-            ></ak-branded-flow-search>
-            <p class="pf-c-form__helper-text">${msg("Flow used for users to authenticate.")}</p>
-        </ak-form-element-horizontal>
+        ${AKAuthorizationFlowField({
+            label: msg("Authentication Flow"),
+            placeholder: msg("Select an authentication flow..."),
+            help: msg("Flow used for users to authenticate."),
+            flowType: FlowDesignationEnum.Authentication,
+            value: provider.authorizationFlow,
+            defaultFlowSlug: brand?.flowAuthentication,
+            errors: errors.authorizationFlow,
+        })}
 
         <ak-switch-input
             name="mfaSupport"
@@ -115,9 +109,7 @@ export function renderForm({ provider, errors, brand }: RADIUSProviderFormProps)
                     input-hint="code"
                 ></ak-text-input>
                 <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
-                    <ak-crypto-certificate-search
-                        certificate=${ifPresent(provider?.certificate)}
-                    ></ak-crypto-certificate-search>
+                    ${AKCertificateSearch({ name: "certificate", value: provider?.certificate, allowedKeyTypes: TLSKeyTypes })}
                     <p class="pf-c-form__helper-text">
                         ${msg(
                             "Certificate used for EAP-TLS. Requires Mutual TLS Stage in authentication flow.",
@@ -140,24 +132,11 @@ export function renderForm({ provider, errors, brand }: RADIUSProviderFormProps)
         </ak-form-group>
         <ak-form-group label="${msg("Advanced flow settings")}">
             <div class="pf-c-form">
-                <ak-form-element-horizontal
-                    label=${msg("Invalidation Flow")}
-                    name="invalidationFlow"
-                    required
-                >
-                    <ak-flow-search
-                        label=${msg("Invalidation Flow")}
-                        placeholder=${msg("Select an invalidation flow...")}
-                        flowType=${FlowDesignationEnum.Invalidation}
-                        .currentFlow=${provider.invalidationFlow}
-                        .errorMessages=${errors.invalidationFlow}
-                        defaultFlowSlug="default-invalidation-flow"
-                        required
-                    ></ak-flow-search>
-                    <p class="pf-c-form__helper-text">
-                        ${msg("Flow used when logging out of this provider.")}
-                    </p>
-                </ak-form-element-horizontal>
+                ${AKInvalidationFlowField({
+                    value: provider.invalidationFlow,
+                    defaultFlowSlug: "default-invalidation-flow",
+                    errors: errors.invalidationFlow,
+                })}
             </div></ak-form-group
         >
     `;

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,26 +11,13 @@
  */
 
 /**
- *
  * @export
  * @interface SoftwareRequest
  */
 export interface SoftwareRequest {
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     version?: string;
-    /**
-     *
-     */
     source: string;
-    /**
-     *
-     */
     path?: string;
 }
 

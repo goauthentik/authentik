@@ -175,6 +175,7 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
 
         logs = LogEventSerializer(many=True, read_only=True)
         success = BooleanField(read_only=True)
+        imported = BooleanField(read_only=True)
 
     @extend_schema(
         responses={
@@ -211,16 +212,7 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
         apply_blueprint.send_with_options(args=(blueprint.pk,), rel_obj=blueprint)
         return self.retrieve(request, *args, **kwargs)
 
-    @extend_schema(
-        request={"multipart/form-data": BlueprintUploadSerializer},
-        responses={200: BlueprintImportResultSerializer},
-    )
-    @action(url_path="import", detail=False, methods=["POST"], parser_classes=(MultiPartParser,))
-    @validate(
-        BlueprintUploadSerializer,
-    )
-    def import_(self, request: Request, body: BlueprintUploadSerializer) -> Response:
-        """Import blueprint from .yaml file and apply it once, without creating an instance"""
+    def _blueprint_from_upload(self, body: BlueprintUploadSerializer) -> Importer:
         string_contents = ""
         if body.validated_data.get("file"):
             file = cast(InMemoryUploadedFile, body.validated_data["file"])
@@ -237,19 +229,63 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
         except EntryInvalidError as exc:
             raise ValidationError(_("Invalid blueprint file: {exc}".format(exc=str(exc)))) from None
 
-        check_blueprint_perms(importer.blueprint, request.user)
+        check_blueprint_perms(importer.blueprint, self.request.user)
+        return importer
 
+    @extend_schema(
+        request={"multipart/form-data": BlueprintUploadSerializer},
+        responses={200: BlueprintImportResultSerializer},
+    )
+    @action(
+        url_path="validate",
+        url_name="validate",
+        detail=False,
+        methods=["POST"],
+        parser_classes=(MultiPartParser,),
+    )
+    @validate(BlueprintUploadSerializer)
+    def validate_(self, request: Request, body: BlueprintUploadSerializer) -> Response:
+        """Validate blueprint from .yaml file and return any errors"""
+        importer = self._blueprint_from_upload(body)
         valid, logs = importer.validate()
 
         import_response = self.BlueprintImportResultSerializer(
             data={
                 "logs": [LogEventSerializer(log).data for log in logs],
                 "success": valid,
+                "imported": False,
+            }
+        )
+        import_response.is_valid(raise_exception=True)
+        return Response(data=import_response.initial_data, status=200)
+
+    @extend_schema(
+        request={"multipart/form-data": BlueprintUploadSerializer},
+        responses={200: BlueprintImportResultSerializer},
+    )
+    @action(
+        url_path="import",
+        url_name="import",
+        detail=False,
+        methods=["POST"],
+        parser_classes=(MultiPartParser,),
+    )
+    @validate(BlueprintUploadSerializer)
+    def import_(self, request: Request, body: BlueprintUploadSerializer) -> Response:
+        """Import blueprint from .yaml file and apply it once, without creating an instance"""
+        importer = self._blueprint_from_upload(body)
+        valid, logs = importer.validate()
+
+        import_response = self.BlueprintImportResultSerializer(
+            data={
+                "logs": [LogEventSerializer(log).data for log in logs],
+                "success": valid,
+                "imported": False,
             }
         )
         import_response.is_valid(raise_exception=True)
 
         if valid:
-            import_response.initial_data["success"] = importer.apply()
+            import_response.initial_data["imported"] = importer.apply()
             import_response.is_valid()
         return Response(data=import_response.initial_data, status=200)

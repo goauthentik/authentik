@@ -4,10 +4,10 @@ import "#admin/endpoints/connectors/fleet/FleetConnectorForm";
 import "#admin/endpoints/connectors/gdtc/GoogleChromeConnectorForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-
 import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, ModalInvokerButton } from "#elements/dialogs";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -47,7 +47,9 @@ export class ConnectorsListPage extends TablePage<Connector> {
 
     protected override row(item: Connector): SlottedTemplateResult[] {
         return [
-            html`<a href="#/endpoints/connectors/${item.connectorUuid}">${item.name}</a>`,
+            html`<a href=${toAdminInterface(`endpoints/connectors/${item.connectorUuid}`)}
+                >${item.name}</a
+            >`,
             item.verboseName,
             html`<div class="ak-c-table__actions">
                 ${IconEditButtonByTagName(item.component, item.connectorUuid, item.verboseName)}
@@ -61,6 +63,7 @@ export class ConnectorsListPage extends TablePage<Connector> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Connector(s)")}
             .objects=${this.selectedElements}

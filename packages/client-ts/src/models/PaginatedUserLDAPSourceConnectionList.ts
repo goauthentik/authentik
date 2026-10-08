@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,22 +19,12 @@ import {
 } from "./UserLDAPSourceConnection";
 
 /**
- *
  * @export
  * @interface PaginatedUserLDAPSourceConnectionList
  */
 export interface PaginatedUserLDAPSourceConnectionList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<UserLDAPSourceConnection>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

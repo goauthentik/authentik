@@ -18,9 +18,11 @@ import { ifDefined } from "lit/directives/if-defined.js";
 // code.
 
 export const dividerVariant = ["default", "strong", "subtle"] as const;
+
 export type DividerVariant = (typeof dividerVariant)[number];
 
 export const dividerOrientation = ["horizontal", "vertical"] as const;
+
 export type DividerOrientation = (typeof dividerOrientation)[number];
 
 /**
@@ -50,6 +52,7 @@ export class Divider extends LitElement {
 
     private onSlotChange = (ev: Event) => {
         const nodes = (ev.target as HTMLSlotElement).assignedNodes({ flatten: true });
+
         this.hasContent = nodes.some(
             (n) =>
                 n.nodeType === Node.ELEMENT_NODE ||
@@ -59,6 +62,7 @@ export class Divider extends LitElement {
 
     render() {
         const contentClass = classList([this.hasContent && "has-content"]);
+
         return html`<div part="divider">
             <span part="line start"></span>
             <span part="content" class=${contentClass}
@@ -84,9 +88,8 @@ export type DividerProps = ElementRest & {
 };
 
 /**
- * @summary Helper function to create a Divider component programmatically
- *
  * @returns {TemplateResult} A Lit template result containing the configured ak-divider element
+ * @summary Helper function to create a Divider component programmatically
  *
  * @see {@link Divider} - The underlying web component
  */

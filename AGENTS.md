@@ -26,7 +26,7 @@ packages/           # Shared workspace packages, polyglot:
                     #   client-go / client-rust / client-ts  — GENERATED API clients (do not hand-edit)
                     #   ak-axum / ak-common / ak-guardian     — Rust crates
                     #   django-*                              — reusable Django apps (channels, dramatiq, cache)
-                    #   eslint-config / prettier-config / tsconfig / theme / docusaurus-config — shared JS config
+                    #   oxlint-config / oxfmt-config / tsconfig / theme / docusaurus-config — shared JS config
 web/                # TypeScript web UI (own AGENTS.md)
 website/            # Docs / integrations / API sites (own AGENTS.md)
 blueprints/         # YAML declarative config (default/ system/ example/) applied at startup
@@ -52,7 +52,7 @@ go.mod              # Go module (module path: goauthentik.io)
 - **`sources/`** — inbound identity (LDAP, OAuth, SAML, SCIM, Kerberos source).
 - **`providers/`** — outbound protocols authentik exposes (SAML, OAuth2/OIDC, Proxy, LDAP, RADIUS, SCIM, RAC).
 - **`outposts/`** — management/coordination of the Go outposts.
-- **`brands/`** + **`tenants/`** — branding/theming and multi-tenancy (`django-tenants`).
+- **`brands/`** — branding/theming per domain.
 - **`blueprints/`** — the engine that applies the YAML under the top-level `blueprints/` directory.
 - **`rbac/`**, **`crypto/`**, **`events/`** (audit log), **`enterprise/`** (EE-licensed features), **`api/`** - **`admin/`** (REST surfaces), **`root/`** (Django project: settings, URLs, ASGI/WSGI).
 
@@ -108,6 +108,7 @@ make lint-fix          # Auto-fix: black + ruff (Python) and rustfmt (Rust)
 make lint              # Check: bandit, mypy --strict, golangci-lint, cargo deny/machete
 make lint-spellcheck   # cspell across the repo (typo-only mode: reports known misspellings and forbidden British spellings, not unknown words)
 make lint-catalogs     # pnpm catalog pins in sync across the root/web/website workspaces
+make lint-locales      # translation files + generated locale lists match locales.yaml (`make gen-locales` regenerates)
 ```
 
 CI mirrors these as `ci-lint-*` / `ci-test` targets. Run the matching `make lint` / `make test` (plus `make web` / `make docs` for those subtrees) before pushing — CI runs the same checks.
@@ -154,7 +155,7 @@ Authoritative contributor docs live under `website/docs/developer-docs/` and are
 | --------------- | ------------------------------------------------------------------------ |
 | Core server     | Python 3.14, Django 5.2 + Django REST Framework, Channels (ASGI)         |
 | Background work | Dramatiq (Postgres broker)                                               |
-| Datastore       | PostgreSQL (multi-tenant via `django-tenants`)                           |
+| Datastore       | PostgreSQL                                                               |
 | Outposts        | Go 1.26 (`goauthentik.io` module) — LDAP, proxy, RAC, RADIUS             |
 | Native services | Rust (2024 edition, `axum`) — server/worker components + shared crates   |
 | Web UI          | TypeScript, Lit 3, PatternFly 4 (see `web/`)                             |

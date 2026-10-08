@@ -1,8 +1,8 @@
+import { CSRFHeaderName, readCSRFToken } from "#common/api/csrf";
 import { AKRequestPostEvent, APIRequestInfo } from "#common/api/events";
 import { AKEnterpriseRefreshEvent, AKRefreshEvent } from "#common/events";
 import { MessageLevel } from "#common/messages";
 import { formatAcceptLanguageHeader } from "#common/ui/locale/utils";
-import { getCookie } from "#common/utils";
 
 import { showMessage } from "#elements/messages/MessageContainer";
 
@@ -19,7 +19,6 @@ import {
 import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail } from "@lit/localize";
 import { html } from "lit";
 
-export const CSRFHeaderName = "X-authentik-CSRF";
 export const AcceptLanguage = "Accept-Language";
 
 export class LoggingMiddleware implements Middleware {
@@ -30,12 +29,14 @@ export class LoggingMiddleware implements Middleware {
             brand.matchedDomain && brand.matchedDomain !== "authentik-default"
                 ? `api/${brand.matchedDomain}`
                 : "api";
+
         this.#logger = ConsoleLogger.prefix(prefix);
     }
 
     post({ response, init, url }: ResponseContext): Promise<Response> {
         const parsedURL = URL.canParse(url) ? new URL(url) : null;
         const path = parsedURL ? parsedURL.pathname + parsedURL.search : url;
+
         if (response.ok) {
             this.#logger.debug(`${init.method} ${path}`);
         } else {
@@ -50,7 +51,7 @@ export class CSRFMiddleware implements Middleware {
     pre?(context: RequestContext): Promise<FetchParams | void> {
         context.init.headers = {
             ...context.init.headers,
-            [CSRFHeaderName]: getCookie("authentik_csrf"),
+            [CSRFHeaderName]: readCSRFToken(),
         };
 
         return Promise.resolve(context);
@@ -102,6 +103,7 @@ export class LocaleMiddleware implements Middleware, Disposable {
         return Promise.resolve(context);
     }
 }
+
 export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
     #requests: string[] = [];
     #counts = new Map<string, number>();

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -25,57 +23,22 @@ import { ReviewFromJSON } from "./Review";
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface LifecycleIteration
  */
 export interface LifecycleIteration {
-    /**
-     *
-     */
     readonly id: string;
-    /**
-     *
-     */
     contentType: ContentTypeEnum;
-    /**
-     *
-     */
     readonly objectId: string;
-    /**
-     *
-     */
     readonly objectVerbose: string;
-    /**
-     *
-     */
     readonly objectAdminUrl: string;
-    /**
-     *
-     */
     readonly state: LifecycleIterationStateEnum;
-    /**
-     *
-     */
     readonly openedOn: Date;
-    /**
-     *
-     */
     readonly gracePeriodEnd: Date;
-    /**
-     *
-     */
     readonly nextReviewDate: Date;
-    /**
-     *
-     */
     readonly reviews: Array<Review>;
-    /**
-     *
-     */
     readonly rule: RelatedRule;
-    /**
-     *
-     */
     readonly userCanReview: boolean;
 }
 

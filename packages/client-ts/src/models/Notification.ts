@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,41 +18,18 @@ import { SeverityEnumFromJSON } from "./SeverityEnum";
 
 /**
  * Notification Serializer
+ *
  * @export
  * @interface Notification
  */
 export interface Notification {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     readonly severity: SeverityEnum;
-    /**
-     *
-     */
     readonly body: string;
-    /**
-     *
-     */
     hyperlink?: string | null;
-    /**
-     *
-     */
     hyperlinkLabel?: string | null;
-    /**
-     *
-     */
     readonly created: Date;
-    /**
-     *
-     */
     event?: Event;
-    /**
-     *
-     */
     seen?: boolean;
 }
 

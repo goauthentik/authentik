@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,21 +15,13 @@ import { DiagramEdgeTypeEnumFromJSON } from "./DiagramEdgeTypeEnum";
 
 /**
  * Base serializer class which doesn't implement create/update methods
+ *
  * @export
  * @interface DiagramEdge
  */
 export interface DiagramEdge {
-    /**
-     *
-     */
     readonly origin: string;
-    /**
-     *
-     */
     readonly target: string;
-    /**
-     *
-     */
     readonly type: DiagramEdgeTypeEnum;
 }
 

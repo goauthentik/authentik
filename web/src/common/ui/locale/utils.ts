@@ -24,6 +24,7 @@ export function safeParseLocale(candidate: string): Intl.Locale | null {
     }
 
     let locale: Intl.Locale | null = null;
+
     try {
         locale = new Intl.Locale(candidate);
     } catch {
@@ -31,6 +32,7 @@ export function safeParseLocale(candidate: string): Intl.Locale | null {
     }
 
     localeCache.set(candidate, locale);
+
     return locale;
 }
 
@@ -69,6 +71,7 @@ function getParsedSupportedLocales(): ParsedLocale[] {
 export function getBestMatchLocale(candidate: string): TargetLanguageTag | null {
     // Normalize common variations
     const normalized = candidate.trim();
+
     if (!normalized) return null;
 
     const locale = safeParseLocale(normalized);
@@ -103,56 +106,25 @@ export function getBestMatchLocale(candidate: string): TargetLanguageTag | null 
 /**
  * Find the first supported locale from a list of candidates.
  *
- * @param candidates An array of locale strings to check.
- * @returns The first supported locale code, or null if none found.
- *
  * @remarks
- * This looks weird, but it's sensible: we have several candidates, and we want to find the first
- * one that has a supported locale. Then, from *that*, we have to extract that first supported
- * locale.
+ *   This looks weird, but it's sensible: we have several candidates, and we want to find the first
+ *   one that has a supported locale. Then, from _that_, we have to extract that first supported
+ *   locale.
+ * @param candidates An array of locale strings to check.
+ *
+ * @returns The first supported locale code, or null if none found.
  */
 export function findSupportedLocale(candidates: string[]): TargetLanguageTag | null {
     for (const candidate of candidates) {
         const match = getBestMatchLocale(candidate);
+
         if (match) return match;
     }
+
     return null;
 }
 
 //#endregion
-
-//#region Persistence
-
-const sessionLocaleKey = "authentik:locale";
-
-/**
- * Persist the given locale code to sessionStorage.
- */
-export function setSessionLocale(languageTag: TargetLanguageTag | null): void {
-    try {
-        if (!languageTag || languageTag === SourceLanguageTag) {
-            sessionStorage?.removeItem?.(sessionLocaleKey);
-            return;
-        }
-
-        sessionStorage?.setItem?.(sessionLocaleKey, languageTag);
-    } catch (error) {
-        console.debug("authentik/locale: Unable to persist locale to sessionStorage", error);
-    }
-}
-
-/**
- * Retrieve the persisted locale code from sessionStorage.
- */
-export function getSessionLocale(): string | null {
-    try {
-        return sessionStorage?.getItem?.(sessionLocaleKey) || null;
-    } catch (error) {
-        console.debug("authentik/locale: Unable to read locale from sessionStorage", error);
-    }
-
-    return null;
-}
 
 //#region Type Guards
 
@@ -174,19 +146,22 @@ export function isTargetLanguageTag(
 /**
  * Auto-detect the best locale to use from several sources.
  *
+ * @remarks
+ *   The persisted preference is not read here: it lives in the Django language cookie, which the
+ *   server reads to produce the locale hint. See {@link persistLocale}.
+ *   The order of precedence is:
+ *
+ *   1. A `locale` URL parameter (a dev/test override; the server honors the same parameter when
+ *      rendering the shell, so client and server cannot disagree)
+ *   2. The server-resolved locale hint (`window.authentik.locale`)
+ *   3. The browser's navigator language (only relevant on a first anonymous visit, when the server had
+ *      nothing persisted to resolve from)
+ *   4. A provided fallback locale code
+ *   5. The source locale (English)
  * @param languageTagHint An optional locale code hint.
  * @param fallbackLanguageTag An optional fallback locale code.
+ *
  * @returns The best-matching supported locale code.
- *
- * @remarks
- * The order of precedence is:
- *
- * 1. A `locale` URL parameter
- * 2. A previously persisted session locale
- * 3. A provided locale hint
- * 4. The browser's navigator language
- * 5. A provided fallback locale code
- * 6. The source locale (English)
  */
 export function autoDetectLanguage(
     languageTagHint?: Intl.UnicodeBCP47LocaleIdentifier,
@@ -200,11 +175,8 @@ export function autoDetectLanguage(
         localeParam = searchParam.get("locale");
     }
 
-    const sessionLocale = getSessionLocale();
-
     const candidates = [
         localeParam,
-        sessionLocale,
         languageTagHint,
         ...(self.navigator?.languages || []),
         fallbackLanguageTag,

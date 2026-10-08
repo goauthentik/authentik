@@ -9,7 +9,7 @@ import { themes as BaseThemes } from "storybook/theming";
 const brand = {
     brandTitle: "authentik Storybook",
     brandUrl: "https://goauthentik.io",
-    brandImage: "https://goauthentik.io/img/icon_left_brand_colour.svg",
+    brandImage: "https://goauthentik.io/img/icon_left_brand_color.svg",
     brandTarget: "_self",
     barBg: "rgba(255,255,255,.05)",
     colorSecondary: "#fd4b2c",
@@ -36,6 +36,7 @@ const themes = {
 
 /**
  * @param {ResolvedUITheme | ThemeVars} base
+ *
  * @returns {ThemeVars}
  */
 export function extendStorybookTheme(base) {

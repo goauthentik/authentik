@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,63 +12,31 @@
 
 /**
  * MicrosoftIntuneConnector Serializer
+ *
  * @export
  * @interface MicrosoftIntuneConnector
  */
 export interface MicrosoftIntuneConnector {
-    /**
-     *
-     * @type {string}
-     * @memberof MicrosoftIntuneConnector
-     */
     connectorUuid?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof MicrosoftIntuneConnector
-     */
     name: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof MicrosoftIntuneConnector
-     */
     enabled?: boolean;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof MicrosoftIntuneConnector
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof MicrosoftIntuneConnector
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof MicrosoftIntuneConnector
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof MicrosoftIntuneConnector
      */
     readonly metaModelName: string;
-    /**
-     *
-     * @type {string}
-     * @memberof MicrosoftIntuneConnector
-     */
     clientId: string;
-    /**
-     *
-     * @type {string}
-     * @memberof MicrosoftIntuneConnector
-     */
     tenantId: string;
 }
 

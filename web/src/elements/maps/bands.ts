@@ -22,5 +22,6 @@ export function bandForZoom(zoom: number): HexBand {
     // is showing overzoomed tiles from that band, so events must resolve to its
     // resolution, not fall through to the coarsest one.
     const z = Math.floor(Math.max(0, Math.min(MAX_BAND_ZOOM, zoom)));
+
     return HEX_BANDS.find((band) => z >= band.minzoom && z <= band.maxzoom) ?? HEX_BANDS[0]!;
 }

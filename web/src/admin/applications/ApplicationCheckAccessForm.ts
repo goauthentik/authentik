@@ -1,7 +1,7 @@
 import "#components/ak-status-label";
 import "#elements/events/LogViewer";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
@@ -11,19 +11,15 @@ import { Form } from "#elements/forms/Form";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
-import {
-    Application,
-    CoreApi,
-    CoreUsersListRequest,
-    PolicyTestResult,
-    User,
-} from "@goauthentik/api";
+import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { userSource } from "#admin/common/search-sources";
+
+import { Application, CoreApi, PolicyTestResult } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-application-check-access-form")
 export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
@@ -64,6 +60,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
             })
             .then((result) => {
                 this.result = result;
+
                 return result;
             });
     }
@@ -105,38 +102,13 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
 
     protected override renderForm(): SlottedTemplateResult {
         return html`<ak-form-element-horizontal label=${msg("User")} required name="forUser">
-                <ak-search-select
-                    placeholder=${msg("Select a user...")}
-                    .fetchObjects=${async (query?: string): Promise<User[]> => {
-                        const args: CoreUsersListRequest = {
-                            ordering: "username",
-                        };
-
-                        if (query) {
-                            args.search = query;
-                        }
-
-                        const users = await this.#api.coreUsersList(args);
-
-                        return users.results;
-                    }}
-                    .renderElement=${(user: User): string => {
-                        return user.username;
-                    }}
-                    .renderDescription=${(user: User): SlottedTemplateResult => {
-                        return html`${user.name}`;
-                    }}
-                    .value=${(user: User | undefined): number | undefined => {
-                        return user?.pk;
-                    }}
-                    .selected=${(user: User): boolean => {
-                        return (
-                            typeof this.request === "number" &&
-                            user.pk.toString() === this.request.toString()
-                        );
-                    }}
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "forUser",
+                    source: userSource,
+                    placeholder: msg("Select a user..."),
+                    value: this.request === null ? null : String(this.request),
+                    blankable: false,
+                })}
             </ak-form-element-horizontal>
             ${this.renderResult()}`;
     }

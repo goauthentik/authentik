@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,17 +12,12 @@
 
 /**
  * Serializer for Service connection state
+ *
  * @export
  * @interface ServiceConnectionState
  */
 export interface ServiceConnectionState {
-    /**
-     *
-     */
     readonly healthy: boolean;
-    /**
-     *
-     */
     readonly version: string;
 }
 

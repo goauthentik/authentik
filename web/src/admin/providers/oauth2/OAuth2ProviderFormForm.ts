@@ -1,6 +1,4 @@
 import "#components/ak-switch-input";
-import "#admin/common/ak-crypto-certificate-search";
-import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-radio-input";
 import "#components/ak-secret-text-input";
 import "#components/ak-text-input";
@@ -15,7 +13,6 @@ import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 import "#admin/providers/oauth2/OAuth2ProviderRedirectURI";
 import "#elements/ak-checkbox-group/ak-checkbox-group";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuth2ProviderFormHelpers.js";
 import { oauth2ProvidersProvider, oauth2ProvidersSelector } from "./OAuth2ProvidersProvider.js";
 import { oauth2SourcesProvider, oauth2SourcesSelector } from "./OAuth2Sources.js";
@@ -23,13 +20,17 @@ import { oauth2SourcesProvider, oauth2SourcesSelector } from "./OAuth2Sources.js
 import { ascii_letters, digits, randomString } from "#common/utils";
 
 import { RadioOption } from "#elements/forms/Radio";
-import { ifPresent } from "#elements/utils/attributes";
 
-import { AKLabel } from "#components/ak-label";
+import { AKCertificateSearch } from "#admin/common/AKCertificateSearch";
+import { JWEEncryptionKeyTypes, JWTSigningKeyTypes } from "#admin/common/certificate-key-types";
+import {
+    AKAuthenticationFlowField,
+    AKAuthorizationFlowField,
+    AKInvalidationFlowField,
+} from "#admin/providers/components/flow-fields";
 
 import {
     ClientTypeEnum,
-    FlowDesignationEnum,
     GrantTypeEnum,
     IssuerModeEnum,
     MatchingModeEnum,
@@ -156,6 +157,7 @@ const defaultGrantTypes = [
 ];
 
 type ShowClientSecret = (show: boolean) => void;
+
 type ShowLogoutMethod = (show: boolean) => void;
 
 export interface OAuth2ProviderFormProps {
@@ -177,6 +179,7 @@ export function renderForm({
 }: OAuth2ProviderFormProps) {
     provider ||= {};
     errors ||= {};
+
     return html` <ak-text-input
             name="name"
             placeholder=${msg("Type a provider name...")}
@@ -187,30 +190,10 @@ export function renderForm({
             required
         ></ak-text-input>
 
-        <ak-form-element-horizontal name="authorizationFlow" required>
-            ${AKLabel(
-                {
-                    className: "pf-c-form__group-label",
-                    slot: "label",
-                    htmlFor: "authorizationFlow",
-                    required: true,
-                },
-                msg("Authorization Flow"),
-            )}
-
-            <ak-flow-search
-                id="authorizationFlow"
-                label=${msg("Authorization Flow")}
-                placeholder=${msg("Select an authorization flow...")}
-                flowType=${FlowDesignationEnum.Authorization}
-                .currentFlow=${provider.authorizationFlow}
-                .errorMessages=${errors.authorizationFlow}
-                required
-            ></ak-flow-search>
-            <p class="pf-c-form__helper-text">
-                ${msg("Flow used when authorizing this provider.")}
-            </p>
-        </ak-form-element-horizontal>
+        ${AKAuthorizationFlowField({
+            value: provider.authorizationFlow,
+            errors: errors.authorizationFlow,
+        })}
         <ak-form-group open label="${msg("Protocol settings")}">
             <div class="pf-c-form">
                 <ak-radio-input
@@ -309,28 +292,27 @@ export function renderForm({
                     }}
                 ></ak-text-input>
 
-                ${showLogoutMethod
-                    ? html`<ak-radio-input
-                          label=${msg("Logout Method")}
-                          name="logoutMethod"
-                          .value=${provider.logoutMethod ||
-                          OAuth2ProviderLogoutMethodEnum.Backchannel}
-                          required
-                          .options=${logoutMethodOptions}
-                          .help=${msg(
-                              "The logout method determines how the logout URI is called — back-channel (server-to-server) or front-channel (browser iframe).",
-                          )}
-                      ></ak-radio-input>`
-                    : html``}
+                ${
+                    showLogoutMethod
+                        ? html`<ak-radio-input
+                              label=${msg("Logout Method")}
+                              name="logoutMethod"
+                              .value=${
+                                  provider.logoutMethod ||
+                                  OAuth2ProviderLogoutMethodEnum.Backchannel
+                              }
+                              required
+                              .options=${logoutMethodOptions}
+                              .help=${msg(
+                                  "The logout method determines how the logout URI is called — back-channel (server-to-server) or front-channel (browser iframe).",
+                              )}
+                          ></ak-radio-input>`
+                        : html``
+                }
 
                 <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
                     <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->
-                    <ak-crypto-certificate-search
-                        label=${msg("Signing Key")}
-                        placeholder=${msg("Select a signing key...")}
-                        certificate=${ifPresent(provider.signingKey)}
-                        singleton
-                    ></ak-crypto-certificate-search>
+                    ${AKCertificateSearch({ name: "signingKey", label: msg("Signing Key"), placeholder: msg("Select a signing key..."), value: provider.signingKey, singleton: true, allowedKeyTypes: JWTSigningKeyTypes })}
                     <p class="pf-c-form__helper-text">
                         ${msg(
                             "Key used to sign tokens. If no signing key is selected, tokens are signed with HS256 using this provider's client secret.",
@@ -342,39 +324,14 @@ export function renderForm({
 
         <ak-form-group label=${msg("Advanced flow settings")}>
             <div class="pf-c-form">
-                <ak-form-element-horizontal
-                    name="authenticationFlow"
-                    label=${msg("Authentication Flow")}
-                >
-                    <ak-flow-search
-                        label=${msg("Authentication Flow")}
-                        placeholder=${msg("Select an authentication flow...")}
-                        flowType=${FlowDesignationEnum.Authentication}
-                        .currentFlow=${provider.authenticationFlow}
-                    ></ak-flow-search>
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "Flow used when a user access this provider and is not authenticated.",
-                        )}
-                    </p>
-                </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Invalidation Flow")}
-                    name="invalidationFlow"
-                    required
-                >
-                    <ak-flow-search
-                        label=${msg("Invalidation Flow")}
-                        placeholder=${msg("Select an invalidation flow...")}
-                        flowType=${FlowDesignationEnum.Invalidation}
-                        .currentFlow=${provider.invalidationFlow}
-                        defaultFlowSlug="default-provider-invalidation-flow"
-                        required
-                    ></ak-flow-search>
-                    <p class="pf-c-form__helper-text">
-                        ${msg("Flow used when logging out of this provider.")}
-                    </p>
-                </ak-form-element-horizontal>
+                ${AKAuthenticationFlowField({
+                    value: provider.authenticationFlow,
+                    errors: errors.authenticationFlow,
+                })}
+                ${AKInvalidationFlowField({
+                    value: provider.invalidationFlow,
+                    errors: errors.invalidationFlow,
+                })}
             </div>
         </ak-form-group>
 
@@ -447,11 +404,7 @@ export function renderForm({
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal label=${msg("Encryption Key")} name="encryptionKey">
                     <!-- NOTE: 'null' cast to 'undefined' on encryptionKey to satisfy Lit requirements -->
-                    <ak-crypto-certificate-search
-                        label=${msg("Encryption Key")}
-                        placeholder=${msg("Select an encryption key...")}
-                        certificate=${ifPresent(provider.encryptionKey)}
-                    ></ak-crypto-certificate-search>
+                    ${AKCertificateSearch({ name: "encryptionKey", label: msg("Encryption Key"), placeholder: msg("Select an encryption key..."), value: provider.encryptionKey, allowedKeyTypes: JWEEncryptionKeyTypes })}
                     <p class="pf-c-form__helper-text">
                         ${msg(
                             "Key used to encrypt the tokens. Only enable this if the application using this provider supports JWE tokens.",
@@ -523,7 +476,7 @@ export function renderForm({
                     ></ak-dual-select-dynamic-selected>
                     <p class="pf-c-form__helper-text">
                         ${msg(
-                            "JWTs signed by the selected providers can be used to authenticate to this provider.",
+                            "Selected providers can authenticate to this provider with their JWTs, request its tokens via token exchange, and introspect or revoke them.",
                         )}
                     </p>
                 </ak-form-element-horizontal>

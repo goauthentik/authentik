@@ -11,8 +11,7 @@ export enum MessageLevel {
  * An error message returned from an API endpoint.
  *
  * @remarks
- * This interface must align with the server-side event dispatcher.
- *
+ *   This interface must align with the server-side event dispatcher.
  * @see {@link ../authentik/core/templates/base/skeleton.html}
  */
 export interface APIMessage {

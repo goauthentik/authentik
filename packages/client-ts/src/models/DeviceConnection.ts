@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,26 +16,13 @@ import type { DeviceFactSnapshot } from "./DeviceFactSnapshot";
 import { DeviceFactSnapshotFromJSON } from "./DeviceFactSnapshot";
 
 /**
- *
  * @export
  * @interface DeviceConnection
  */
 export interface DeviceConnection {
-    /**
-     *
-     */
     device: string;
-    /**
-     *
-     */
     connector: string;
-    /**
-     *
-     */
     readonly connectorObj: Connector;
-    /**
-     *
-     */
     readonly latestSnapshot: DeviceFactSnapshot | null;
 }
 

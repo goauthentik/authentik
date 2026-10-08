@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { PasswordPolicy } from "./PasswordPolicy";
 import { PasswordPolicyFromJSON, PasswordPolicyToJSON } from "./PasswordPolicy";
 
 /**
- *
  * @export
  * @interface PaginatedPasswordPolicyList
  */
 export interface PaginatedPasswordPolicyList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<PasswordPolicy>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

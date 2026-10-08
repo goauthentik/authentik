@@ -1,10 +1,12 @@
 import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
+
+import { SearchSelectSource } from "#elements/forms/SearchSelect/shared";
+
+import { AKSearchSelect } from "#components/ak-search-select-field";
 
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
@@ -22,6 +24,40 @@ import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+const eventActionSource: SearchSelectSource<TypeCreate> = {
+    fetchObjects: async (query) => {
+        const actions = await aki(EventsApi).eventsEventsActionsList();
+
+        return actions.filter((action) =>
+            query ? action.name.toLowerCase().includes(query.toLowerCase()) : true,
+        );
+    },
+    keyOf: (action) => action.component,
+    labelOf: (action) => action.name,
+};
+
+const appSource: SearchSelectSource<App> = {
+    fetchObjects: async (query) => {
+        const apps = await aki(AdminApi).adminAppsList();
+
+        return apps.filter((app) => (query ? app.name.includes(query) : true));
+    },
+    keyOf: (app) => app.name,
+    labelOf: (app) => app.label,
+};
+
+const modelSource: SearchSelectSource<App> = {
+    fetchObjects: async (query) => {
+        const models = await aki(AdminApi).adminModelsList();
+
+        return models
+            .filter((model) => (query ? model.name.includes(query) : true))
+            .sort((a, b) => a.name.localeCompare(b.name));
+    },
+    keyOf: (model) => model.name,
+    labelOf: (model) => `${model.label} (${model.name.split(".")[0]})`,
+};
+
 @customElement("ak-policy-event-matcher-form")
 export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
     override loadInstance(pk: string): Promise<EventMatcherPolicy> {
@@ -32,16 +68,22 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
 
     async send(data: EventMatcherPolicy): Promise<EventMatcherPolicy> {
         if (data.query?.toString() === "") data.query = null;
+
         if (data.action?.toString() === "") data.action = null;
+
         if (data.clientIp?.toString() === "") data.clientIp = null;
+
         if (data.app?.toString() === "") data.app = null;
+
         if (data.model?.toString() === "") data.model = null;
+
         if (this.instance) {
             return aki(PoliciesApi).policiesEventMatcherUpdate({
                 policyUuid: this.instance.pk || "",
                 eventMatcherPolicyRequest: data,
             });
         }
+
         return aki(PoliciesApi).policiesEventMatcherCreate({
             eventMatcherPolicyRequest: data,
         });
@@ -94,27 +136,12 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Action")} name="action">
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<TypeCreate[]> => {
-                                const items = await aki(EventsApi).eventsEventsActionsList();
-                                return items.filter((item) =>
-                                    query
-                                        ? item.name.toLowerCase().includes(query.toLowerCase())
-                                        : true,
-                                );
-                            }}
-                            .renderElement=${(item: TypeCreate): string => {
-                                return item.name;
-                            }}
-                            .value=${(item: TypeCreate | undefined): string | undefined => {
-                                return item?.component;
-                            }}
-                            .selected=${(item: TypeCreate): boolean => {
-                                return this.instance?.action === item.component;
-                            }}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKSearchSelect({
+                            name: "action",
+                            source: eventActionSource,
+                            value: this.instance?.action,
+                            blankable: true,
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Match created events with this action type. When left empty, all action types will be matched.",
@@ -136,25 +163,12 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("App")} name="app">
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<App[]> => {
-                                const items = await aki(AdminApi).adminAppsList();
-                                return items.filter((item) =>
-                                    query ? item.name.includes(query) : true,
-                                );
-                            }}
-                            .renderElement=${(item: App): string => {
-                                return item.label;
-                            }}
-                            .value=${(item: App | undefined): string | undefined => {
-                                return item?.name;
-                            }}
-                            .selected=${(item: App): boolean => {
-                                return this.instance?.app === item.name;
-                            }}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKSearchSelect({
+                            name: "app",
+                            source: appSource,
+                            value: this.instance?.app,
+                            blankable: true,
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Match events created by selected application. When left empty, all applications are matched.",
@@ -162,29 +176,12 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Model")} name="model">
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<App[]> => {
-                                const items = await aki(AdminApi).adminModelsList();
-                                return items
-                                    .filter((item) => (query ? item.name.includes(query) : true))
-                                    .sort((a, b) => {
-                                        if (a.name < b.name) return -1;
-                                        if (a.name > b.name) return 1;
-                                        return 0;
-                                    });
-                            }}
-                            .renderElement=${(item: App): string => {
-                                return `${item.label} (${item.name.split(".")[0]})`;
-                            }}
-                            .value=${(item: App | undefined): string | undefined => {
-                                return item?.name;
-                            }}
-                            .selected=${(item: App): boolean => {
-                                return this.instance?.model === item.name;
-                            }}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKSearchSelect({
+                            name: "model",
+                            source: modelSource,
+                            value: this.instance?.model,
+                            blankable: true,
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Match events created by selected model. When left empty, all models are matched.",
