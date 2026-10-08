@@ -74,7 +74,7 @@ A RAC provider signs into devices which are enrolled through the authentik agent
 
 ### User expiration :ak-enterprise
 
-User expiration rules schedule users for offboarding after they have not logged in for a configured period. A rule can target users by group and user type and warn them before their accounts expire. If a user logs in before the scheduled time, authentik cancels the pending offboarding. API token requests do not count as logins, and rules exclude service accounts by default. For details, see [User expiration](../../sys-mgmt/user-expiration.mdx).
+User expiration rules schedule users for offboarding after a configured period of inactivity. The default **Last activity** basis counts successful authentication and application access, including OAuth refresh grants. Choose **Last login** to measure inactivity using only the recorded last login. A rule can target users by group and user type and warn them before their accounts expire. If a user logs in before the scheduled time, authentik removes the pending offboarding. API token requests do not count as activity, and rules exclude service accounts by default. For details, see [User expiration](../../sys-mgmt/user-expiration.mdx).
 
 ## Upgrading
 
