@@ -117,7 +117,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
             user_switching.reconcile_session(request)
             accessed = request.session.accessed
             modified = request.session.modified or settings.SESSION_SAVE_EVERY_REQUEST
-            expiry_extended = getattr(request.session, "expiry_extended", False)
+            expiry_extended = request.session.expiry_extended
             empty = request.session.is_empty()
         except AttributeError:
             return response
