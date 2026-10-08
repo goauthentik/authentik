@@ -14,7 +14,6 @@ from authentik.core.sources.matcher import MatchFailureReason
 from authentik.core.sources.stage import PostSourceStage
 from authentik.core.tests.utils import RequestFactory, create_test_flow, create_test_user
 from authentik.events.models import Event, EventAction
-from authentik.flows.models import FlowAuthenticationRequirement
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
     PLAN_CONTEXT_USER_SWITCH_ADD_USER,
@@ -176,10 +175,6 @@ class TestSourceFlowManager(TestCase):
 
     def test_add_user_auth_logs_in_connected_user(self):
         """Test "Add user" logs in the source's user instead of linking the current user"""
-        self.authentication_flow.authentication = (
-            FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED
-        )
-        self.authentication_flow.save()
         current_user = create_test_user()
         other_user = create_test_user()
         UserOAuthSourceConnection.objects.create(

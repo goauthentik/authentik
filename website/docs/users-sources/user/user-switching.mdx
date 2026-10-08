@@ -25,6 +25,8 @@ Only internal users can be added or switched to, because the switcher is only av
 
 **Add user** can also sign in through a source, such as an OAuth or SAML source. The source must match an existing user; new users can't enroll through a source during **Add user**.
 
+The brand's authentication flow and any source authentication flows used during **Add user** must allow authenticated users. Flows with **Authentication** set to **Require no authentication** reject **Add user** because the current user is still signed in.
+
 ## Configure user switching
 
 User switches authenticate through the brand's **User switch flow**. If no user switch

@@ -169,12 +169,18 @@ class TestUserSwitch(FlowTestCase):
         self.assertNotEqual(self.client.session.session_key, first_session_key)
         self.assertTrue(Session.objects.filter(session_key=first_session_key).exists())
 
-    def test_add_user_with_unauthenticated_only_flow(self):
-        _login_through_flow(self.client, self.flow, self.login_binding, self.user)
+    def test_add_user_rejects_unauthenticated_only_flow(self):
+        first_session_key = _login_through_flow(
+            self.client, self.flow, self.login_binding, self.user
+        )
         self.flow.authentication = FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED
         self.flow.save()
 
-        _assert_switch_redirect(_post_user_switch(self.client, {"action": "add"}), self.flow)
+        response = _post_user_switch(self.client, {"action": "add"})
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(self.client.session.session_key, first_session_key)
+        self.assertNotIn(user_switching.SESSION_KEY_ADD_USER, self.client.session)
 
     def test_interface_abandons_add_user(self):
         _login_through_flow(self.client, self.flow, self.login_binding, self.user)

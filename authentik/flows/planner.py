@@ -215,11 +215,9 @@ class FlowPlanner:
             and not request.user.is_authenticated
         ):
             raise FlowNonApplicableException()
-        # Adding a user to user switching is a new login, even though the browser is signed in.
         if (
             self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED
             and request.user.is_authenticated
-            and not context.get(PLAN_CONTEXT_USER_SWITCH_ADD_USER)
         ):
             raise FlowNonApplicableException()
         if (
