@@ -489,7 +489,7 @@ jobs:
       registry:
         image: registry:2
         ports:
-          - 80:5000
+          - 5000:5000
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
@@ -503,7 +503,7 @@ jobs:
         run: | # shell
           skopeo copy --dest-tls-verify=false \
             "oci-archive:container/server-amd64.oci.tar" \
-            "docker://127.0.0.1/server:e2e"
+            "docker://127.0.0.1:5000/server:e2e"
       - name: Resolve Playwright version
         id: playwright-version
         working-directory: web
@@ -530,9 +530,9 @@ jobs:
           fi
       - name: Start authentik
         id: authentik
-        uses: goauthentik/action-setup-authentik@5b35e5951a1ec761847711a5d8170dbd67675526 # v3.3
+        uses: goauthentik/action-setup-authentik@4569e38c9dc09b4f275ffa7d356ae0de95cb5ccf # goauthentik/action-setup-authentik#42
         with:
-          version: 127.0.0.1/server:e2e
+          version: 127.0.0.1:5000/server:e2e
           blueprints_path: web/test/blueprints
           # The image tag is per-commit, so the cache key never hits and every run
           # would `docker save` a gigabyte for nothing.
