@@ -62,6 +62,20 @@ class TestOAuthClient(TestCase):
         self.assertIn("client_id", args)
         self.assertNotIn("client_secret", args)
 
+    def test_client_basic_auth_public(self):
+        """Test public client with a basic auth source type"""
+        self.source.provider_type = "reddit"
+        self.source.consumer_secret = ""
+        self.source.save()
+        request = self.factory.get("/")
+        request.session = {}
+        request.user = get_anonymous_user()
+        client = OAuth2Client(self.source, request)
+        self.assertIsNone(client.get_access_token_auth())
+        args = client.get_access_token_args("", "")
+        self.assertIn("client_id", args)
+        self.assertNotIn("client_secret", args)
+
     def test_client_openid_auth(self):
         """Test login_challenge"""
         request = self.factory.get("/")

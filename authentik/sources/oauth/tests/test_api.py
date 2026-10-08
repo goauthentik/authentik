@@ -102,15 +102,18 @@ class TestOAuthSourceAPI(APITestCase):
     def test_create_secret_required(self):
         """Source types that require a secret reject a missing one"""
         self.client.force_login(self.user)
-        res = self.client.post(
-            reverse("authentik_api:oauthsource-list"),
-            {
-                "name": generate_id(),
-                "slug": generate_id(),
-                "provider_type": "discord",
-                "consumer_key": generate_id(),
-            },
-            content_type="application/json",
-        )
-        self.assertEqual(res.status_code, 400)
-        self.assertIn("consumer_secret", res.json())
+        for provider_type in ["discord", "apple"]:
+            with self.subTest(provider_type):
+                res = self.client.post(
+                    reverse("authentik_api:oauthsource-list"),
+                    {
+                        "name": generate_id(),
+                        "slug": generate_id(),
+                        "provider_type": provider_type,
+                        "consumer_key": generate_id(),
+                        "pkce": "S256",
+                    },
+                    content_type="application/json",
+                )
+                self.assertEqual(res.status_code, 400)
+                self.assertIn("consumer_secret", res.json())
