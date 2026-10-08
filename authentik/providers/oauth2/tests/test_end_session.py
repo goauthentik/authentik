@@ -8,9 +8,14 @@ from authentik.core.models import Application, AuthenticatedSession, Session
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.flows.models import FlowDesignation, FlowStageBinding, in_memory_stage
 from authentik.flows.planner import FlowPlan
+from authentik.flows.stage import SessionEndStage
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
+<<<<<<< HEAD
 from authentik.lib.utils.time import timedelta_from_string
+=======
+from authentik.providers.iframe_logout import IframeLogoutStageView
+>>>>>>> 377d6d7dc (providers/oauth2: allow logout with unfinished flows (#26565))
 from authentik.providers.oauth2.models import (
     AccessToken,
     OAuth2LogoutMethod,
@@ -34,7 +39,7 @@ class TestEndSessionView(OAuthTestCase):
     def setUp(self) -> None:
         super().setUp()
         self.user = create_test_admin_user()
-        self.invalidation_flow = create_test_flow()
+        self.invalidation_flow = create_test_flow(FlowDesignation.INVALIDATION)
         self.app = Application.objects.create(name=generate_id(), slug="test-app")
         self.provider = OAuth2Provider.objects.create(
             name=generate_id(),
@@ -76,8 +81,18 @@ class TestEndSessionView(OAuthTestCase):
         )
 
     def test_post_logout_redirect_uri_strict_match(self):
-        """Test strict URI matching redirects to flow"""
+        """A validated logout redirect still works after opening an unrelated flow."""
         self.client.force_login(self.user)
+        settings_flow = create_test_flow(FlowDesignation.STAGE_CONFIGURATION)
+        FlowStageBinding.objects.create(
+            target=settings_flow,
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=0,
+        )
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": settings_flow.slug}),
+        )
+        self.assertEqual(response.json()["component"], "ak-stage-dummy")
         response = self.client.get(
             reverse(
                 "authentik_providers_oauth2:end-session",
@@ -217,11 +232,7 @@ class TestEndSessionView(OAuthTestCase):
         self.assertNotIn(authentication_flow.slug, response.url)
 
     def _brand_authentication_flow(self) -> None:
-        """Give the brand a usable authentication flow.
-
-        Without one, `handle_no_permission` raises Http404 instead of planning a flow, which
-        would mask the regression these tests guard against.
-        """
+        """Give the brand a usable authentication flow."""
         authentication_flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         FlowStageBinding.objects.create(
             target=authentication_flow,
@@ -231,38 +242,62 @@ class TestEndSessionView(OAuthTestCase):
         self.brand.flow_authentication = authentication_flow
         self.brand.save()
 
-    def test_active_flow_plan_returns_early(self):
-        """An end-session request during an active flow plan must not touch that plan.
-
-        Front-channel logout iframes reach this endpoint while the invalidation flow is
-        still running. Falling through to PolicyAccessView would plan an authentication
-        flow and overwrite SESSION_KEY_PLAN.
-        """
-        self._brand_authentication_flow()
+    def test_iframe_callback_preserves_plan(self):
+        """Only the iframe callback should preserve an active iframe logout plan."""
         plan = FlowPlan(flow_pk=self.invalidation_flow.pk.hex)
+        plan.append_stage(in_memory_stage(IframeLogoutStageView))
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
-
-        response = self.client.get(
-            reverse(
-                "authentik_providers_oauth2:end-session",
-                kwargs={"application_slug": self.app.slug},
-            ),
-            HTTP_HOST=self.brand.domain,
+        endpoint = reverse(
+            "authentik_providers_oauth2:end-session",
+            kwargs={"application_slug": self.app.slug},
         )
 
+        response = self.client.get(endpoint, headers={"Sec-Fetch-Dest": "iframe"})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.client.session[SESSION_KEY_PLAN].flow_pk, plan.flow_pk)
+        self.assertEqual(response.content, b"")
+        self.assertEqual(self.client.session[SESSION_KEY_PLAN], plan)
+
+        response = self.client.get(endpoint, headers={"Sec-Fetch-Dest": "document"})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            self.client.session[SESSION_KEY_PLAN].bindings[0].stage.view, SessionEndStage
+        )
+
+    def test_consecutive_logouts(self):
+        """A terminal plan from another app using the same flow must be replaced."""
+        self.client.force_login(self.user)
+        other_provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=self.provider.authorization_flow,
+            invalidation_flow=self.invalidation_flow,
+        )
+        other_app = Application.objects.create(
+            name=generate_id(), slug=generate_id(), provider=other_provider
+        )
+        executor = reverse(
+            "authentik_api:flow-executor", kwargs={"flow_slug": self.invalidation_flow.slug}
+        )
+        for app in (self.app, other_app):
+            response = self.client.get(
+                reverse(
+                    "authentik_providers_oauth2:end-session",
+                    kwargs={"application_slug": app.slug},
+                ),
+            )
+            self.assertEqual(response.status_code, 302)
+            response = self.client.get(executor)
+            self.assertEqual(response.json()["component"], "ak-stage-session-end")
+            self.assertEqual(response.json()["application_name"], app.name)
 
     def test_frontchannel_iframe_callback_preserves_injected_stages(self):
         """Stages injected into the logout plan survive the iframe's end-session hit.
 
         Regression test: the hidden logout iframe navigates to end-session after
         UserLogoutStage has already logged the user out, so the request is anonymous.
-        Planning an authentication flow there replaces SESSION_KEY_PLAN, and the executor
-        then discards the invalidation plan and re-plans it from the flow's bindings. Stages
-        injected by `flow_pre_user_logout` receivers exist only in memory, so they are lost.
+        Planning another flow there replaces SESSION_KEY_PLAN. Stages injected by
+        `flow_pre_user_logout` receivers exist only in memory, so they are lost.
         """
         self._brand_authentication_flow()
         logout_flow = create_test_flow(FlowDesignation.INVALIDATION)
