@@ -359,6 +359,10 @@ class UserManager(DjangoUserManager.from_queryset(UserQuerySet)):
         """User manager that doesn't assign is_superuser and is_staff"""
         return self._create_user(username, email, password, **extra_fields)
 
+    def exclude_anonymous(self) -> QuerySet:
+        """Exclude anonymous user"""
+        return self.get_queryset().exclude_anonymous()
+
 
 class User(SerializerModel, AttributesMixin, AbstractUser):
     """authentik User model, based on django's contrib auth user model."""
