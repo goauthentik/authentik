@@ -20,25 +20,6 @@ import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-/**
- * Which offboardings the list shows: every one, only those scheduled manually,
- * or only those an expiration rule scheduled.
- */
-const OffboardingSource = {
-    All: "all",
-    Manual: "manual",
-    Automatic: "automatic",
-} as const;
-
-type OffboardingSource = (typeof OffboardingSource)[keyof typeof OffboardingSource];
-
-// Maps the selected source onto the API's `rule__isnull` filter.
-const OFFBOARDING_SOURCE_FILTER: Record<OffboardingSource, boolean | undefined> = {
-    [OffboardingSource.All]: undefined,
-    [OffboardingSource.Manual]: true,
-    [OffboardingSource.Automatic]: false,
-};
-
 @customElement("ak-offboarding-list")
 export class OffboardingListPage extends TablePage<UserOffboarding> {
     public override checkbox = true;
@@ -58,7 +39,7 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
     showOnlyPending = true;
 
     @state()
-    protected source: OffboardingSource = OffboardingSource.All;
+    protected source: boolean | undefined = undefined;
 
     // Shared by the bulk and per-row cancel paths so they stay in sync.
     #cancelOffboarding = (item: UserOffboarding) =>
@@ -75,7 +56,7 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
             status: this.showOnlyPending ? OffboardingStatusEnum.Pending : undefined,
             // `rule` is null on an offboarding an administrator scheduled by hand, and
             // set on one an expiration rule scheduled.
-            ruleIsnull: OFFBOARDING_SOURCE_FILTER[this.source],
+            ruleIsnull: this.source,
         });
     }
 
@@ -86,7 +67,7 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
     };
 
     protected sourceChangeListener = (
-        event: CustomEvent<FilterOption<OffboardingSource>>,
+        event: CustomEvent<FilterOption<boolean | undefined>>,
     ): void => {
         this.source = event.detail.value;
         this.page = 1;
@@ -111,15 +92,15 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
                     .options=${[
                         {
                             label: msg("All", { id: "offboarding.source.all" }),
-                            value: OffboardingSource.All,
+                            value: undefined,
                         },
                         {
                             label: msg("Manual", { id: "offboarding.source.manual" }),
-                            value: OffboardingSource.Manual,
+                            value: true,
                         },
                         {
                             label: msg("Expiration rule", { id: "offboarding.source.automatic" }),
-                            value: OffboardingSource.Automatic,
+                            value: false,
                         },
                     ]}
                     group=${msg("Scheduled by", { id: "offboarding.column.scheduled-by" })}
