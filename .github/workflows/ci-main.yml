@@ -503,7 +503,7 @@ jobs:
         run: | # shell
           skopeo copy --dest-tls-verify=false \
             "oci-archive:container/server-amd64.oci.tar" \
-            "docker://localhost/server:e2e"
+            "docker://127.0.0.1/server:e2e"
       - name: Resolve Playwright version
         id: playwright-version
         working-directory: web
@@ -532,7 +532,7 @@ jobs:
         id: authentik
         uses: goauthentik/action-setup-authentik@5b35e5951a1ec761847711a5d8170dbd67675526 # v3.3
         with:
-          version: localhost/server:e2e
+          version: 127.0.0.1/server:e2e
           blueprints_path: web/test/blueprints
           # The image tag is per-commit, so the cache key never hits and every run
           # would `docker save` a gigabyte for nothing.
