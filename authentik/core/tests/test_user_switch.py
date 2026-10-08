@@ -230,6 +230,33 @@ class TestUserSwitch(FlowTestCase):
         response = _post_user_switch(self.client, {"user_pk": self.other_user.pk})
         self.assertEqual(response.status_code, 404)
 
+    def test_add_user_survives_clobbered_plan(self):
+        """Adding a user keeps the first login when a stale session save drops the plan"""
+        first_session_key = _login_through_flow(
+            self.client, self.flow, self.login_binding, self.user
+        )
+        response = _post_user_switch(self.client, {"action": "add"})
+        _assert_switch_redirect(response, self.flow)
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, bindings=[self.login_binding], markers=[StageMarker()]
+        )
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.other_user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertNotEqual(self.client.session.session_key, first_session_key)
+        self.assertTrue(Session.objects.filter(session_key=first_session_key).exists())
+        token = _get_switching_token(self.client)
+        self.assertEqual(
+            set(user_switching.live_sessions(token).values_list("user_id", flat=True)),
+            {self.user.pk, self.other_user.pk},
+        )
+
     def test_target_is_revalidated_before_login(self):
         first_session_key = _login_through_flow(
             self.client, self.flow, self.login_binding, self.user
