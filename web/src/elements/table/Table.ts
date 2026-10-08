@@ -3,7 +3,7 @@ import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
-import "#elements/table/TablePagination";
+import "#elements/Paginator";
 import "#elements/table/TableSearch";
 import "#elements/timestamp/ak-timestamp";
 import { BaseTableListRequest, TableLike } from "./shared.js";
@@ -16,7 +16,8 @@ import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 
-import { type PaginatedResponse } from "#common/api/responses";
+import type { NamedEntityElement } from "#common/api/entities";
+import type { PaginatedResponse } from "#common/api/responses";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { AKRefreshEvent } from "#common/events";
 import { truncateWords } from "#common/strings";
@@ -26,11 +27,11 @@ import { AKElement } from "#elements/Base";
 import { intersectionObserver } from "#elements/decorators/intersection-observer";
 import {
     isTransclusionParentElement,
-    NamedEntityElement,
     type TransclusionChildElement,
     TransclusionChildSymbol,
 } from "#elements/dialogs/shared";
 import { WithSession } from "#elements/mixins/session";
+import { PageChangeEvent, toPaginator } from "#elements/Paginator";
 import { getSearchParam, updateSearchParams } from "#elements/router/core/search-params";
 import { AKTableRefreshEvent } from "#elements/table/events";
 import Styles from "#elements/table/Table.css";
@@ -80,6 +81,10 @@ export type RowType =
 
 export interface ColumnOptions {
     style?: string;
+}
+
+export interface PaginatorOptions {
+    compact?: boolean;
 }
 
 /**
@@ -288,10 +293,6 @@ export abstract class Table<T extends object, D = T>
 
     #synchronizeRefreshSchedule(): Promise<void> {
         if (!this.visible) {
-            if (!this.#deferredRefreshRequestAt) {
-                this.#deferredRefreshRequestAt = new Date();
-            }
-
             return Promise.resolve();
         }
 
@@ -333,6 +334,14 @@ export abstract class Table<T extends object, D = T>
 
     @property({ type: Number, useDefault: true })
     public page = 1;
+
+    /**
+     * Method to convert an object into a string or number as a unique key the table can use to
+     * communicate objects back to client code. Provide or override when <T>.pk exists but may not
+     * be unique.
+     */
+    @property({ type: Object })
+    public makeItemKey = (i: T) => (hasPrimaryKey(i) ? i.pk : JSON.stringify(i));
 
     /**
      * Set if your `selectedElements` use of the selection box is to enable bulk-delete,
@@ -583,7 +592,6 @@ export abstract class Table<T extends object, D = T>
             }
 
             this.logger.debug("Scheduling fetch for when table becomes visible");
-
             this.#deferredRefreshRequestAt = new Date();
 
             return Promise.resolve();
@@ -606,8 +614,7 @@ export abstract class Table<T extends object, D = T>
                 const nextExpanded = new Set<string | number>();
 
                 for (const result of data.results) {
-                    const itemKey = hasPrimaryKey(result) ? result.pk : JSON.stringify(result);
-
+                    const itemKey = this.makeItemKey(result);
                     this.#itemKeys.set(result, itemKey);
 
                     if (this.expandedElements.has(itemKey)) {
@@ -740,7 +747,7 @@ export abstract class Table<T extends object, D = T>
             return this.renderEmpty(this.renderError());
         }
 
-        if (!this.visible || (this.loading && this.data === null)) {
+        if (this.loading && this.data === null) {
             return this.renderLoading();
         }
 
@@ -1024,7 +1031,7 @@ export abstract class Table<T extends object, D = T>
                 <div class="pf-c-toolbar__group">
                     ${this.renderToolbar()} ${this.renderToolbarSelected()}
                 </div>
-                ${this.renderTablePagination()}
+                ${this.renderTablePagination({ compact: true })}
             </div>
         </header>`;
     }
@@ -1149,26 +1156,34 @@ export abstract class Table<T extends object, D = T>
         </ak-chip-group>`;
     }
 
+    onPageChange({ page }: PageChangeEvent) {
+        this.page = page;
+        this.fetch();
+    }
+
     /**
      * A simple pagination display, shown at both the top and bottom of the page.
      */
-    protected renderTablePagination(): SlottedTemplateResult {
+    protected renderTablePagination(
+        options: PaginatorOptions = { compact: false },
+    ): SlottedTemplateResult {
         if (!this.paginated || !this.data || this.data?.pagination.totalPages < 2) {
             return nothing;
         }
 
-        const handler = (page: number) => {
-            this.page = page;
-            this.fetch();
-        };
+        const { compact } = options;
+        const { itemCount, itemsPerPage, page } = toPaginator(this.data?.pagination);
 
-        return html`<ak-table-pagination
-            ?loading=${this.loading}
-            label=${ifPresent(this.label)}
+        return html`<ak-paginator
             class="pf-c-toolbar__item pf-m-pagination"
-            .pages=${this.data?.pagination}
-            .onPageChange=${handler}
-        ></ak-table-pagination>`;
+            ?compact=${Boolean(compact)}
+            ?disabled=${this.loading}
+            label=${ifPresent(this.label)}
+            item-count=${itemCount}
+            items-per-page=${itemsPerPage}
+            page=${page}
+            @ak-page-changed=${this.onPageChange}
+        ></ak-paginator>`;
     }
 
     protected renderLoadingBar(): SlottedTemplateResult {
