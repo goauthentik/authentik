@@ -38,6 +38,11 @@ from authentik.providers.oauth2.tasks import send_backchannel_logout_request
 from authentik.providers.oauth2.utils import build_frontchannel_logout_url
 
 
+def is_iframe_request(request: HttpRequest) -> bool:
+    """Treat requests without Fetch Metadata as possible iframe callbacks."""
+    return request.headers.get("Sec-Fetch-Dest") in (None, "iframe", "frame")
+
+
 class EndSessionView(PolicyAccessView):
     """OIDC RP-Initiated Logout endpoint"""
 
@@ -124,7 +129,7 @@ class EndSessionView(PolicyAccessView):
         # A top-level navigation starts a new logout, even if an iframe stage was abandoned.
         # Without Fetch Metadata, only the current iframe stage identifies a callback.
         if (
-            request.headers.get("Sec-Fetch-Dest") in (None, "iframe", "frame")
+            is_iframe_request(request)
             and plan
             and plan.bindings
             and plan.bindings[0].stage.view == IframeLogoutStageView
