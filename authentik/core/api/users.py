@@ -1,7 +1,6 @@
 """User API Views"""
 
 from datetime import timedelta
-from json import loads
 from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
@@ -58,6 +57,7 @@ from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.admin.utils import get_system_settings
 from authentik.api.authentication import TokenAuthentication
 from authentik.api.search.fields import (
     ChoiceSearchField,
@@ -533,13 +533,6 @@ class UserRecoveryEmailSerializer(UserRecoveryLinkSerializer):
 class UsersFilter(FilterSet):
     """Filter for users"""
 
-    attributes = CharFilter(
-        field_name="attributes",
-        lookup_expr="",
-        label="Attributes",
-        method="filter_attributes",
-    )
-
     date_joined__lt = IsoDateTimeFilter(field_name="date_joined", lookup_expr="lt")
     date_joined = IsoDateTimeFilter(field_name="date_joined")
     date_joined__gt = IsoDateTimeFilter(field_name="date_joined", lookup_expr="gt")
@@ -598,23 +591,6 @@ class UsersFilter(FilterSet):
             return queryset
         return queryset.filter(Q(path=value) | Q(path__startswith=f"{value}/"))
 
-    def filter_attributes(self, queryset, name, value):
-        """Filter attributes by query args"""
-        try:
-            value = loads(value)
-        except ValueError:
-            raise ValidationError(_("filter: failed to parse JSON")) from None
-        if not isinstance(value, dict):
-            raise ValidationError(_("filter: value must be key:value mapping"))
-        qs = {}
-        for key, _value in value.items():
-            qs[f"attributes__{key}"] = _value
-        try:
-            __ = len(queryset.filter(**qs))
-            return queryset.filter(**qs)
-        except ValueError:
-            return queryset
-
     class Meta:
         model = User
         fields = [
@@ -626,7 +602,6 @@ class UsersFilter(FilterSet):
             "name",
             "is_active",
             "is_superuser",
-            "attributes",
             "groups_by_name",
             "groups_by_pk",
             "roles_by_name",
@@ -683,13 +658,19 @@ class UserViewSet(
             base_qs = base_qs.prefetch_related(
                 Prefetch("roles", queryset=Role.objects.all().only("uuid"))
             )
-        # Annotate is_superuser to avoid N+1 query per user
+        # Annotate is_superuser to avoid N+1 query per user.
+        # Use two EXISTS subqueries (direct membership, membership through a descendant group)
+        # instead of one EXISTS with an OR across both join paths. PostgreSQL can't hash a
+        # subquery whose OR mixes two correlated conditions, so that form runs once per user row,
+        # including rows skipped by OFFSET, and a poor plan for the group ancestry join is paid
+        # for every row. Each separate EXISTS can run once per query as a hashed subplan.
         base_qs = base_qs.annotate(
             _annotated_is_superuser=Exists(
+                Group.objects.filter(is_superuser=True, users=OuterRef("pk"))
+            )
+            | Exists(
                 Group.objects.filter(
-                    is_superuser=True,
-                ).filter(
-                    Q(users=OuterRef("pk")) | Q(descendant_nodes__descendant__users=OuterRef("pk"))
+                    is_superuser=True, descendant_nodes__descendant__users=OuterRef("pk")
                 )
             )
         )
@@ -1045,7 +1026,7 @@ class UserViewSet(
     @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
     def impersonate(self, request: Request, pk: int) -> Response:
         """Impersonate a user"""
-        if not request.tenant.impersonation:
+        if not get_system_settings().impersonation:
             LOGGER.debug("User attempted to impersonate", user=request.user)
             return Response(status=401)
         user_to_be = self.get_object()
@@ -1062,7 +1043,7 @@ class UserViewSet(
         if user_to_be.pk == self.request.user.pk:
             LOGGER.debug("User attempted to impersonate themselves", user=request.user)
             return Response(status=401)
-        if not reason and request.tenant.impersonation_require_reason:
+        if not reason and get_system_settings().impersonation_require_reason:
             LOGGER.debug(
                 "User attempted to impersonate without providing a reason",
                 user=request.user,

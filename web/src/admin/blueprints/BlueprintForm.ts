@@ -4,14 +4,16 @@ import "#components/ak-switch-input";
 import "#elements/CodeMirror";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { SearchSelectSource } from "#elements/forms/SearchSelect/shared";
 import { ToggleGroupEvent } from "#elements/ToggleGroup";
+
+import { AKSearchSelect } from "#components/ak-search-select-field";
 
 import { BlueprintFile, BlueprintInstance, ManagedApi } from "@goauthentik/api";
 
@@ -28,6 +30,19 @@ export enum BlueprintSource {
     OCI = "oci",
     Internal = "internal",
 }
+
+/**
+ * A search select source for the blueprint files available to the server.
+ */
+export const blueprintFileSource: SearchSelectSource<BlueprintFile> = {
+    fetchObjects: async (query) => {
+        const files = await aki(ManagedApi).managedBlueprintsAvailableList();
+
+        return files.filter((file) => (query ? file.path.includes(query) : true));
+    },
+    keyOf: (file) => file.path,
+    labelOf: (file) => (file.meta?.name ? `${file.path} (${file.meta.name})` : file.path),
+};
 
 @customElement("ak-blueprint-form")
 export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
@@ -113,37 +128,13 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                     ${
                         this.source === BlueprintSource.File
                             ? html`<ak-form-element-horizontal label=${msg("Path")} name="path">
-                                  <ak-search-select
-                                      .fetchObjects=${async (
-                                          query?: string,
-                                      ): Promise<BlueprintFile[]> => {
-                                          const items =
-                                              await aki(
-                                                  ManagedApi,
-                                              ).managedBlueprintsAvailableList();
-
-                                          return items.filter((item) =>
-                                              query ? item.path.includes(query) : true,
-                                          );
-                                      }}
-                                      .renderElement=${(item: BlueprintFile): string => {
-                                          const name = item.path;
-
-                                          if (item.meta && item.meta.name) {
-                                              return `${name} (${item.meta.name})`;
-                                          }
-
-                                          return name;
-                                      }}
-                                      .value=${(item: BlueprintFile | null) => {
-                                          return item?.path;
-                                      }}
-                                      .selected=${(item: BlueprintFile): boolean => {
-                                          return this.instance?.path === item.path;
-                                      }}
-                                      blankable
-                                  >
-                                  </ak-search-select>
+                                  ${AKSearchSelect({
+                                      name: "path",
+                                      emptyValue: "",
+                                      source: blueprintFileSource,
+                                      value: this.instance?.path,
+                                      blankable: true,
+                                  })}
                               </ak-form-element-horizontal>`
                             : nothing
                     }

@@ -16,15 +16,6 @@ export const DEFAULT_PATH = "/library";
  */
 export const ROUTES: RouteLike[] = [
     new Route("/library", () => html`<ak-library></ak-library>`, "library"),
-    new Route(
-        "/requests{/*}?",
-        async () => {
-            await import("#user/requests/AccessRequestsPage");
-
-            return html`<ak-access-requests-page></ak-access-requests-page>`;
-        },
-        "requests",
-    ),
     new Route<{ uuid: string }>(
         `/requests/access-request/:uuid(${UUID_PATTERN})/fulfill`,
         async ({ uuid }) => {
@@ -35,6 +26,15 @@ export const ROUTES: RouteLike[] = [
             ></ak-access-requests-page>`;
         },
         "requests.fulfill",
+    ),
+    new Route(
+        "/requests{/*}?",
+        async () => {
+            await import("#user/requests/AccessRequestsPage");
+
+            return html`<ak-access-requests-page></ak-access-requests-page>`;
+        },
+        "requests",
     ),
     new Route(
         // The `{/*}?` tail lets the tab segment (`/settings/sessions`) resolve to

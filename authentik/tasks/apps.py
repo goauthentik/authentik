@@ -12,7 +12,7 @@ class AuthentikTasksConfig(ManagedAppConfig):
     default = True
 
     @property
-    def global_schedule_specs(self) -> list[ScheduleSpec]:
+    def schedule_specs(self) -> list[ScheduleSpec]:
         from authentik.tasks.tasks import clean_worker_statuses
 
         return [
