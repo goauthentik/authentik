@@ -31,7 +31,7 @@ def get_docker_tag() -> str:
     branch_name = os.environ.get(default_branch, "main")
     if os.environ.get(env_pr_branch, "") != "":
         branch_name = os.environ[env_pr_branch]
-    branch_name = re.sub(r"[^a-zA-Z0-9-]", "-", branch_name.replace("refs/heads/", ""))
+    branch_name = re.sub(r"[^a-zA-Z0-9-.]", "-", branch_name.replace("refs/heads/", ""))
     return f"gh-{branch_name}"
 
 
@@ -75,7 +75,6 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
             "events.context_processors.asn": "tests/geoip/GeoLite2-ASN-Test.mmdb",
             "blueprints_dir": "./blueprints",
             "outposts.container_image_base": f"ghcr.io/goauthentik/dev-%(type)s:{get_docker_tag()}",
-            "tenants.enabled": False,
             "outposts.disable_embedded_outpost": False,
             "error_reporting.sample_rate": 0,
             "error_reporting.environment": "testing",

@@ -36,7 +36,12 @@ test.describe("ak-mdx renders compiled markdown", () => {
 
         await test.step("Create provider via wizard", async () => {
             await expect(dialog).toBeHidden();
-            await page.getByRole("button", { name: "New Provider" }).click();
+
+            await page
+                .locator('[part="toolbar-secondary"]')
+                .getByRole("button", { name: "New Provider" })
+                .click();
+
             await expect(dialog).toBeVisible();
 
             await series(
@@ -118,13 +123,18 @@ test.describe("ak-mdx renders compiled markdown", () => {
         await expect($external).toHaveAttribute("rel", "noopener noreferrer");
 
         const $relative = mdx
-            .locator('ak-md-a > a[href*="next.goauthentik.io"][href*="create-oauth2-provider"]')
+            .locator('ak-md-a > a[href*=".goauthentik.io/"][href*="create-oauth2-provider"]')
             .first();
 
         await expect(
             $relative,
             "Relative `./create-oauth2-provider.md` resolved to docs site URL at build time",
         ).toBeVisible();
+
+        await expect(
+            $relative,
+            "The docs host is the pre-release or the versioned docs site, depending on the build",
+        ).toHaveAttribute("href", /^https:\/\/(next|version-\d+-\d+)\.goauthentik\.io\//);
 
         await expect($relative).toHaveAttribute("target", "_blank");
 

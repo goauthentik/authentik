@@ -26,7 +26,6 @@ from authentik.lib.config import CONFIG
 from authentik.tasks.middleware import CurrentTask
 from authentik.tasks.models import Task
 from authentik.tasks.schedules.models import Schedule
-from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
 
@@ -88,15 +87,12 @@ class CertificateEventHandler(FileSystemEventHandler):
         return super().dispatch(event)
 
     def run_tasks(self):
-        for tenant in Tenant.objects.filter(ready=True):
-            with tenant:
-                if Task.objects.filter(
-                    tenant=tenant,
-                    actor_name=certificate_discovery.actor_name,
-                    state=TaskState.QUEUED,
-                ).exists():
-                    continue
-                Schedule.dispatch_by_actor(certificate_discovery)
+        if Task.objects.filter(
+            actor_name=certificate_discovery.actor_name,
+            state=TaskState.QUEUED,
+        ).exists():
+            return
+        Schedule.dispatch_by_actor(certificate_discovery)
 
     def on_created(self, event: FileSystemEvent):
         """Process certificate file creation"""
