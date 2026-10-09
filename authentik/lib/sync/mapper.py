@@ -48,6 +48,7 @@ class PropertyMappingManager:
             evaluator = PropertyMappingEvaluator(
                 mapping, **{key: None for key in self.context_keys}
             )
+            evaluator.allowed_types = mapping.expression_allowed_types
             evaluator._globals.update(self.globals)
             # Compile and cache expression
             evaluator.compile()
@@ -73,7 +74,6 @@ class PropertyMappingManager:
                 raise exc from exc
             except Exception as exc:
                 raise PropertyMappingExpressionException(exc, mapping.model) from exc
-            mapping.model.check_result(value)
             if value is None:
                 continue
             if return_mapping:
