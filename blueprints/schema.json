@@ -2944,6 +2944,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_rbac.custompermission"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/definitions/model_authentik_rbac.custompermission_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/definitions/model_authentik_rbac.custompermission"
+                        },
+                        "identifiers": {
+                            "$ref": "#/definitions/model_authentik_rbac.custompermission"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_rbac.initialpermissions"
                         },
                         "id": {
@@ -9372,6 +9412,7 @@
                         "authentik_providers_scim.scimmapping",
                         "authentik_rbac.role",
                         "authentik_rbac.initialpermissions",
+                        "authentik_rbac.custompermission",
                         "authentik_sources_kerberos.kerberossource",
                         "authentik_sources_kerberos.kerberossourcepropertymapping",
                         "authentik_sources_kerberos.userkerberossourceconnection",
@@ -11603,6 +11644,55 @@
                             "change_scimprovider",
                             "delete_scimprovider",
                             "view_scimprovider"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_rbac.custompermission": {
+            "type": "object",
+            "properties": {
+                "codename": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 1,
+                    "title": "Codename"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "model": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Model"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_rbac.custompermission_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_custompermission",
+                            "change_custompermission",
+                            "delete_custompermission",
+                            "view_custompermission"
                         ]
                     },
                     "user": {

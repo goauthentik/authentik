@@ -68,6 +68,7 @@ export const ModelEnum = {
     AuthentikProvidersScimScimmapping: "authentik_providers_scim.scimmapping",
     AuthentikRbacRole: "authentik_rbac.role",
     AuthentikRbacInitialpermissions: "authentik_rbac.initialpermissions",
+    AuthentikRbacCustompermission: "authentik_rbac.custompermission",
     AuthentikSourcesKerberosKerberossource: "authentik_sources_kerberos.kerberossource",
     AuthentikSourcesKerberosKerberossourcepropertymapping:
         "authentik_sources_kerberos.kerberossourcepropertymapping",

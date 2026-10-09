@@ -21680,6 +21680,166 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /rbac/custom_permissions/:
+    get:
+      operationId: rbac_custom_permissions_list
+      description: Custom permissions
+      parameters:
+      - in: query
+        name: codename
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCustomPermissionList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: rbac_custom_permissions_create
+      description: Custom permissions
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomPermissionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomPermission'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /rbac/custom_permissions/{id}/:
+    get:
+      operationId: rbac_custom_permissions_retrieve
+      description: Custom permissions
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Custom permission.
+        required: true
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomPermission'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: rbac_custom_permissions_update
+      description: Custom permissions
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Custom permission.
+        required: true
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomPermissionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomPermission'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: rbac_custom_permissions_partial_update
+      description: Custom permissions
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Custom permission.
+        required: true
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCustomPermissionRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomPermission'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: rbac_custom_permissions_destroy
+      description: Custom permissions
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Custom permission.
+        required: true
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /rbac/initial_permissions/:
     get:
       operationId: rbac_initial_permissions_list
@@ -38791,6 +38951,51 @@ components:
       - matched_domain
       - ui_footer_links
       - ui_theme
+    CustomPermission:
+      type: object
+      description: Custom permission
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        codename:
+          type: string
+          maxLength: 100
+        name:
+          type: string
+          maxLength: 255
+        model:
+          type: string
+        permission:
+          type: string
+          description: The string to check with has_perm()
+          readOnly: true
+      required:
+      - codename
+      - model
+      - name
+      - permission
+      - pk
+    CustomPermissionRequest:
+      type: object
+      description: Custom permission
+      properties:
+        codename:
+          type: string
+          minLength: 1
+          maxLength: 100
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        model:
+          type: string
+          minLength: 1
+      required:
+      - codename
+      - model
+      - name
     DataExport:
       type: object
       description: |-
@@ -45199,6 +45404,7 @@ components:
       - authentik_providers_scim.scimmapping
       - authentik_rbac.role
       - authentik_rbac.initialpermissions
+      - authentik_rbac.custompermission
       - authentik_sources_kerberos.kerberossource
       - authentik_sources_kerberos.kerberossourcepropertymapping
       - authentik_sources_kerberos.userkerberossourceconnection
@@ -47247,6 +47453,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ConsentStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedCustomPermissionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomPermission'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -50473,6 +50694,21 @@ components:
           minLength: 1
           title: Consent expires in
           description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
+    PatchedCustomPermissionRequest:
+      type: object
+      description: Custom permission
+      properties:
+        codename:
+          type: string
+          minLength: 1
+          maxLength: 100
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        model:
+          type: string
+          minLength: 1
     PatchedDenyStageRequest:
       type: object
       description: DenyStage Serializer

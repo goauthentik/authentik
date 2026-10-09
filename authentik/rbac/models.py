@@ -128,3 +128,31 @@ class SystemPermission(models.Model):
 
     def __str__(self) -> str:
         return "System Permission"
+
+
+CUSTOM_PERMISSION_PREFIX = "custom_"
+
+
+class CustomPermissionManager(models.Manager):
+    def get_queryset(self) -> models.QuerySet:
+        return super().get_queryset().filter(codename__startswith=CUSTOM_PERMISSION_PREFIX)
+
+
+class CustomPermission(SerializerModel, Permission):
+    """The permissions admins define. This is a proxy model to make API and blueprints simple."""
+
+    objects = CustomPermissionManager()
+
+    @property
+    def serializer(self) -> type[BaseSerializer]:
+        from authentik.rbac.api.custom_permissions import CustomPermissionSerializer
+
+        return CustomPermissionSerializer
+
+    def __str__(self) -> str:
+        return f"Custom permission {self.codename}"
+
+    class Meta:
+        proxy = True
+        verbose_name = _("Custom permission")
+        verbose_name_plural = _("Custom permissions")
