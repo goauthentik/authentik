@@ -1,12 +1,15 @@
 """Session user switching tests."""
 
+from datetime import timedelta
+
 from django.conf import settings
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.crypto import get_random_string
+from django.utils.timezone import now
 
 from authentik.core import user_switching
-from authentik.core.models import UserSwitchingSession
+from authentik.core.models import Session, UserSwitchingSession
 from authentik.core.tests.utils import create_test_session, create_test_user
 
 
@@ -29,6 +32,19 @@ class TestUserSwitchingSessions(TestCase):
             user_switching.decode_cookie(cookie.value),
             target.user_switching_session_id,
         )
+
+    def test_user_me_extends_expiry(self):
+        """Fetching the current user moves the session's expiry forward."""
+        target = create_test_session(create_test_user())
+        Session.objects.filter(pk=target.session_id).update(expires=now() + timedelta(minutes=1))
+        self.client.cookies[settings.SESSION_COOKIE_NAME] = target.session_id
+
+        response = self.client.get(reverse("authentik_api:user-me"))
+
+        self.assertEqual(response.status_code, 200)
+        session = Session.objects.get(pk=target.session_id)
+        self.assertGreater(session.expires, now() + timedelta(minutes=1))
+        self.assertIn(settings.SESSION_COOKIE_NAME, response.cookies)
 
     def test_superseded_session_is_rejected(self):
         """A recorded session cookie cannot be replayed after a switch."""
