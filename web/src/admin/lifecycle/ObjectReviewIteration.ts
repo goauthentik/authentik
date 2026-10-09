@@ -129,7 +129,7 @@ export class ObjectReviewIteration extends Table<Review> {
                 <div class="pf-c-description-list__text">
                     <ak-timestamp
                         .timestamp=${this.iteration?.openedOn}
-                        .elapsed=${false}
+                        hide-elapsed
                         dateonly
                         datetime
                     ></ak-timestamp>
@@ -147,7 +147,7 @@ export class ObjectReviewIteration extends Table<Review> {
                 <div class="pf-c-description-list__text">
                     <ak-timestamp
                         .timestamp=${this.iteration?.gracePeriodEnd}
-                        .elapsed=${false}
+                        hide-elapsed
                         dateonly
                         datetime
                     ></ak-timestamp>
@@ -165,7 +165,7 @@ export class ObjectReviewIteration extends Table<Review> {
                 <div class="pf-c-description-list__text">
                     <ak-timestamp
                         .timestamp=${this.iteration?.nextReviewDate}
-                        .elapsed=${false}
+                        hide-elapsed
                         dateonly
                         datetime
                     ></ak-timestamp>
