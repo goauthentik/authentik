@@ -11,6 +11,9 @@ import { msg } from "@lit/localize";
 import { html, nothing, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+/** Re-render interval when not in "per-seconds" mode */
+const ELAPSED_REFRESH_SECONDS = 60;
+
 @customElement("ak-timestamp")
 export class AKTimestamp extends AKElement {
     static readonly styles = [Styles];
@@ -41,8 +44,6 @@ export class AKTimestamp extends AKElement {
 
     @property({ type: Boolean })
     public refresh: boolean = false;
-
-    public static updateDelay = 60;
 
     protected static reducedMotionMediaQuery: MediaQueryList | null = null;
 
@@ -99,8 +100,8 @@ export class AKTimestamp extends AKElement {
 
         const moment = this.timestamp.getTime();
         const start = Date.now();
-        const { updateDelay, reducedMotionMediaQuery } = AKTimestamp;
-        const updateInterval = updateDelay * 1000;
+        const { reducedMotionMediaQuery } = AKTimestamp;
+        const updateInterval = ELAPSED_REFRESH_SECONDS * 1000;
 
         const startWithinInterval =
             start >= moment - updateInterval && start <= moment + updateInterval;
