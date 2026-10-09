@@ -675,6 +675,8 @@ Resources:
                   - Endpoint.Address
             - Name: AUTHENTIK_POSTGRESQL__USER
               Value: authentik
+            - Name: AUTHENTIK_POSTGRESQL__SSLMODE
+              Value: require
           Essential: true
           HealthCheck:
             Command:
@@ -903,6 +905,8 @@ Resources:
                   - Endpoint.Address
             - Name: AUTHENTIK_POSTGRESQL__USER
               Value: authentik
+            - Name: AUTHENTIK_POSTGRESQL__SSLMODE
+              Value: require
           Essential: true
           HealthCheck:
             Command:
