@@ -8,26 +8,64 @@ You can install authentik to run on AWS with a CloudFormation template.
 ### Prerequisites
 
 - An AWS account.
-- An [AWS Certificate Manager](https://aws.amazon.com/certificate-manager/) certificate. Take note of the ARN of the certificate.
+- An [AWS Certificate Manager](https://aws.amazon.com/certificate-manager/) (ACM) certificate for the domain you will use for authentik. Take note of the ARN of the certificate. The certificate must:
+    - Be in the same AWS region as the stack. ACM certificates are [regional resources](https://docs.aws.amazon.com/acm/latest/userguide/acm-regions.html).
+    - Have the status **Issued** before you create the stack. A certificate starts in **Pending validation** and only becomes **Issued** after ACM validates the domain (see [`CertificateDetail` status](https://docs.aws.amazon.com/acm/latest/APIReference/API_CertificateDetail.html)). If the certificate isn't issued yet, creating the HTTPS listener fails with an error that ends with:
+
+        ```text
+        must have a fully-qualified domain name, a supported signature, and a supported key size.
+        ```
+
+#### Certificate validation
+
+If your domain has CAA DNS records, one of them must allow Amazon to issue certificates, for example `0 issue "amazon.com"`. Otherwise ACM can't issue the certificate and the request fails with the reason `CAA_ERROR`. For the full list of accepted values, see [Configure a CAA record](https://docs.aws.amazon.com/acm/latest/userguide/setup.html#setup-caa) and [CAA problems](https://docs.aws.amazon.com/acm/latest/userguide/troubleshooting-caa.html).
+
+If your DNS is hosted on Cloudflare, set the DNS validation CNAME records that ACM gives you to **DNS only**. Cloudflare recommends not proxying [records used for domain verification](https://developers.cloudflare.com/dns/proxy-status/).
 
 ### Installation
 
 Log in to your AWS account and create a CloudFormation stack [with our template](https://console.aws.amazon.com/cloudformation/home#/stacks/create/review?stackName=authentik&templateURL=https://authentik-cloudformation-templates.s3.amazonaws.com/authentik.ecs.latest.yaml).
 
-Under the **Certificate ARN** input, enter the previously created certificate ARN. You can also configure other settings if needed. You can follow the prompts to create the stack.
+Under the **CertificateARN** parameter, enter the previously created certificate ARN. You can also configure other settings if needed. You can follow the prompts to create the stack.
+
+The template has the following parameters:
+
+| Parameter                     | Default                                       | Description                                                                                                                   |
+| ----------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `CertificateARN`              | None, required                                | ARN of the ACM certificate used by the HTTPS listener of the load balancer.                                                   |
+| `DBInstanceType`              | `m5.large`                                    | RDS PostgreSQL instance type, without the leading `db.`.                                                                      |
+| `DBVersion`                   | `17.1`                                        | RDS PostgreSQL engine version. It must be a version that RDS currently offers, see [PostgreSQL version](#postgresql-version). |
+| `DBStorage`                   | `10`                                          | RDS PostgreSQL storage size in GB. The minimum is 10.                                                                         |
+| `AuthentikImage`              | `ghcr.io/goauthentik/server`                  | authentik container image.                                                                                                    |
+| `AuthentikVersion`            | The authentik version the template ships with | authentik container image tag.                                                                                                |
+| `AuthentikServerCPU`          | `512`                                         | CPU units for each authentik server task (1024 = 1 vCPU).                                                                     |
+| `AuthentikServerMemory`       | `1024`                                        | Memory in MiB for each authentik server task.                                                                                 |
+| `AuthentikServerDesiredCount` | `2`                                           | Number of authentik server tasks. The minimum is 1.                                                                           |
+| `AuthentikWorkerCPU`          | `512`                                         | CPU units for each authentik worker task (1024 = 1 vCPU).                                                                     |
+| `AuthentikWorkerMemory`       | `1024`                                        | Memory in MiB for each authentik worker task.                                                                                 |
+| `AuthentikWorkerDesiredCount` | `2`                                           | Number of authentik worker tasks. The minimum is 1.                                                                           |
 
 This stack will create the following resources:
 
-- AWS SSM secrets for the PostgreSQL user and the authentik secret key
+- AWS Secrets Manager secrets for the PostgreSQL user and the authentik secret key
 - A VPC for all other resources
-- A RDS PostgreSQL Multi-AZ cluster
-- An ECS cluster with two tasks:
+- A RDS PostgreSQL Multi-AZ instance
+- An ECS cluster with two services:
     - One for the authentik server
     - One for the authentik worker
-- An ALB (Application Load Balancer) pointing to the authentik server ECS task with the configured certificate
-- An EFS filesystem mounted on both ECS tasks for file storage
+- An ALB (Application Load Balancer) pointing to the authentik server ECS service with the configured certificate
+- Two EFS file systems, for data and media, mounted on both ECS services
+- A CloudWatch Logs log group for each of the server and worker containers
 
 The stack will output the endpoint of the ALB to which you can point your DNS records.
+
+#### PostgreSQL version
+
+`DBVersion` must be a PostgreSQL version that RDS currently offers in your region. RDS retires older minor versions over time, so the default value might no longer be available. To list the versions you can use, run [`describe-db-engine-versions`](https://docs.aws.amazon.com/cli/latest/reference/rds/describe-db-engine-versions.html):
+
+```sh
+aws rds describe-db-engine-versions --engine postgres --region <region> --query "DBEngineVersions[].EngineVersion" --output text
+```
 
 ## Access authentik from AWS CloudFormation
 
@@ -42,3 +80,39 @@ If you run into issues, refer to our [troubleshooting docs](../../troubleshootin
 ### Further customization
 
 If you require further customization, we recommend you install authentik via [Docker Compose](./docker-compose.mdx) or [Kubernetes](./kubernetes.mdx).
+
+## Troubleshooting
+
+### Logs
+
+The authentik server and worker containers send their logs to [CloudWatch Logs](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_awslogs.html). Each container has its own log group, which you can find on the **Resources** tab of the stack in the CloudFormation console, with the type `AWS::Logs::LogGroup`. Log streams start with `authentik-server` or `authentik-worker`.
+
+### ECS service events
+
+If tasks keep stopping or never become healthy, check the [service events](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-event-messages.html). In the ECS console, choose **Clusters**, select the cluster created by the stack, select the service, and open the **Events** tab. You can also use the AWS CLI:
+
+```sh
+aws ecs describe-services --cluster <cluster_name> --services <service_name>
+```
+
+### Stack stuck in progress
+
+When creating or updating the stack, CloudFormation waits until each ECS service runs its desired number of tasks. If the tasks keep failing, for example because they can't connect to the database, the stack can stay in `CREATE_IN_PROGRESS` or `UPDATE_IN_PROGRESS` for several hours.
+
+To let CloudFormation finish, set the desired count of the affected service to `0`. This stops all of its tasks, so avoid doing this on a deployment that is serving users.
+
+```sh
+aws ecs update-service --cluster <cluster_name> --service <service_name> --desired-count 0
+```
+
+After you fix the cause, set the desired count back to its previous value. For more information, see the [AWS Knowledge Center article on ECS services that fail to stabilize](https://repost.aws/knowledge-center/cloudformation-ecs-service-stabilize).
+
+## Delete the stack
+
+When you delete the stack, CloudFormation keeps some resources so that your data isn't lost:
+
+- The two EFS file systems are retained.
+- The two CloudWatch Logs log groups are retained.
+- The RDS database is deleted, but CloudFormation takes a final snapshot of it first.
+
+Retained resources and snapshots [continue to incur charges](https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-attribute-deletionpolicy.html) until you delete them. If you no longer need them, delete the file systems in the EFS console, the log groups in the CloudWatch console, and the snapshot under **Snapshots** in the RDS console.
