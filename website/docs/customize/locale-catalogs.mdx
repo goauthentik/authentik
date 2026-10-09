@@ -4,7 +4,7 @@ title: Locale catalogs
 
 Locale catalogs let administrators change the wording of authentik, or add translations, without rebuilding authentik. A catalog contains custom translations for a single locale and is applied on top of the built-in translations, both in the web interface and in messages rendered by the server, such as emails and error messages.
 
-Catalogs are managed from **System** > **Locale Catalogs** in the Admin interface, and only apply to the [brands](../sys-mgmt/brands/index.md) they are bound to. Outside of a request, for example in background tasks, the catalogs of the default brand are used.
+Catalogs are managed from **System** > **Locale Catalogs** in the Admin interface, and only apply to the [brands](./branding/index.mdx) they are bound to. Outside of a request, for example in background tasks, the catalogs of the default brand are used.
 
 ## Create a catalog
 
@@ -17,6 +17,13 @@ Catalogs are managed from **System** > **Locale Catalogs** in the Admin interfac
     - **Messages**: a YAML or JSON object which maps English source strings to their translation.
 4. Click **Create**.
 
+For example, the following messages change the label of the username field and the login button:
+
+```yaml
+Username: Employee ID
+Log in: Sign in to ACME
+```
+
 ## Bind a catalog to a brand
 
 1. Navigate to **System** > **Brands** and expand the brand.
@@ -25,13 +32,6 @@ Catalogs are managed from **System** > **Locale Catalogs** in the Admin interfac
 4. Click **Create**.
 
 The same catalog can be bound to multiple brands, with a different order for each.
-
-For example, the following messages change the label of the username field and the login button:
-
-```yaml
-Username: Employee ID
-Log in: Sign in to ACME
-```
 
 Changes are picked up by the server within a few seconds. Users see changes in the web interface after reloading the page.
 
