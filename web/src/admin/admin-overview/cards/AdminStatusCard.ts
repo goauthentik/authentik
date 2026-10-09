@@ -6,6 +6,8 @@ import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/error
 import { AggregateCard } from "#elements/cards/AggregateCard";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { P4Disposition } from "#styles/patternfly/constants";
+
 import { msg } from "@lit/localize";
 import { html, nothing, PropertyValues } from "lit";
 import { state } from "lit/decorators.js";
@@ -13,6 +15,7 @@ import { state } from "lit/decorators.js";
 export interface AdminStatus {
     icon: string;
     message?: SlottedTemplateResult;
+    tone: P4Disposition;
 }
 
 /**
@@ -21,6 +24,9 @@ export interface AdminStatus {
  * @template T - Type of the primary data value used in the card
  */
 export abstract class AdminStatusCard<T> extends AggregateCard {
+    // Neutral (gray) banner while loading, until the first status resolves
+    public override tone: P4Disposition = P4Disposition.Neutral;
+
     // Current data value state
     @state()
     value?: T;
@@ -63,6 +69,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
             })
             .catch(async (error: unknown) => {
                 this.status = undefined;
+                this.tone = P4Disposition.Neutral;
                 this.error = await parseAPIResponseError(error);
             });
     }
@@ -80,10 +87,12 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
             this.getStatus(this.value)
                 .then((status) => {
                     this.status = status;
+                    this.tone = status.tone;
                     this.error = undefined;
                 })
                 .catch(async (error: unknown) => {
                     this.status = undefined;
+                    this.tone = P4Disposition.Neutral;
                     this.error = await parseAPIResponseError(error);
                 });
 
@@ -141,7 +150,11 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * @returns TemplateResult for loading spinner
      */
     private renderLoading(): SlottedTemplateResult {
-        return html`<ak-spinner size="${PFSize.Large}"></ak-spinner>`;
+        return html`<div class="status-container">
+            <h2 class="status-heading">
+                <ak-spinner size="${PFSize.Large}"></ak-spinner>
+            </h2>
+        </div> `;
     }
 
     /**

@@ -5,6 +5,8 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
 
+import { P4Disposition } from "#styles/patternfly/constants";
+
 import { AdminApi, OutpostsApi, SystemInfo } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -16,7 +18,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
     now?: Date;
 
     public override icon = "pf-icon pf-icon-server";
-    public override label = msg("System Status");
+    public override label = msg("Status");
 
     @state()
     statusSummary?: string;
@@ -68,6 +70,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg("Embedded outpost is not configured correctly.")}
                     <a href=${toAdminInterface("outpost/outposts")}>${msg("Check outposts.")}</a>`,
+                tone: P4Disposition.Warning,
             });
         }
 
@@ -77,6 +80,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg("HTTPS is not detected correctly")}`,
+                tone: P4Disposition.Warning,
             });
         }
 
@@ -88,6 +92,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg("Server and client are further than 5 seconds apart.")}`,
+                tone: P4Disposition.Warning,
             });
         }
 
@@ -96,6 +101,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
         return Promise.resolve<AdminStatus>({
             icon: "fa fa-check-circle pf-m-success",
             message: html`${msg("Everything is ok.")}`,
+            tone: P4Disposition.Success,
         });
     }
 
