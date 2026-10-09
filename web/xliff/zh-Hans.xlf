@@ -969,10 +969,6 @@
   <source>Pause this schedule</source>
   <target>暂停这个定时任务</target>
 </trans-unit>
-<trans-unit id="sc0448bc8a76227cb">
-  <source>Failed to fetch objects: </source>
-  <target>拉取对象失败：</target>
-</trans-unit>
 <trans-unit id="sf485014051ad0cf7">
   <source>Successfully assigned permission.</source>
   <target>已成功分配权限。</target>
@@ -1732,10 +1728,6 @@
 <trans-unit id="s4c49d27de60a532b">
   <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
   <target>要允许任何重定向 URI，请设置模式为正则表达式，并将此值设置为 ".*"。请注意这可能带来的安全影响。</target>
-</trans-unit>
-<trans-unit id="s62f7c59b0606a8d6">
-  <source>Authorization flow</source>
-  <target>授权流程</target>
 </trans-unit>
 <trans-unit id="s69d33a50b908b96f">
   <source>Select an authorization flow...</source>
@@ -4496,10 +4488,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sabaf0061f7e41b0b">
   <source>Consumer secret</source>
   <target>消费者 Secret</target>
-</trans-unit>
-<trans-unit id="sd46fd9b647cfea10">
-  <source>Also known as Client Secret.</source>
-  <target>也称为客户端密钥。</target>
 </trans-unit>
 <trans-unit id="sa61966cd83b4924c">
   <source>Additional scopes to be passed to the OAuth Provider, separated by space. To replace existing scopes, prefix with *.</source>
@@ -10885,9 +10873,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="se0bf7f662ec09302">
   <source>An error occurred while loading <x id="0" equiv-text="${this.verboseName}"/>.</source>
 </trans-unit>
-<trans-unit id="s4fd2fe9adfd426e9">
-  <source>Select an option...</source>
-</trans-unit>
 <trans-unit id="s195ea6447a6b5486">
   <source>Cancel wizard</source>
 </trans-unit>
@@ -11654,9 +11639,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s82c71ab0a2d18257">
   <source>Type a name for the stage...</source>
-</trans-unit>
-<trans-unit id="s10dd794d4839378e">
-  <source>Select an enrollment flow.</source>
 </trans-unit>
 <trans-unit id="sece0e7e9d7ad08bf">
   <source>e.g. my-invite</source>
@@ -12769,6 +12751,15 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd685c85b245c6e9f">
   <source>Hide details</source>
+</trans-unit>
+<trans-unit id="s8e4a12c5930cf212">
+  <source>Also known as Client Secret. Can be left empty for public clients using PKCE.</source>
+</trans-unit>
+<trans-unit id="sfd44da578f6445a9">
+  <source>Failed to fetch objects:</source>
+</trans-unit>
+<trans-unit id="sa81413e2e309b882">
+  <source>No results found.</source>
 </trans-unit>
 </body>
 </file>

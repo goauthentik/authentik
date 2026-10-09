@@ -962,10 +962,6 @@
   <source>Pause this schedule</source>
   <target>Pozastaviť tento plán</target>
 </trans-unit>
-<trans-unit id="sc0448bc8a76227cb">
-  <source>Failed to fetch objects: </source>
-  <target>Nepodarilo sa načítať objekty: </target>
-</trans-unit>
 <trans-unit id="sf485014051ad0cf7">
   <source>Successfully assigned permission.</source>
   <target>Oprávnenie bolo úspešne priradené.</target>
@@ -1725,10 +1721,6 @@
 <trans-unit id="s4c49d27de60a532b">
   <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
   <target>Ak chcete povoliť akékoľvek URI presmerovania, nastavte režim na Regex a hodnotu na ".*". Buďte si vedomí možných bezpečnostných dôsledkov.</target>
-</trans-unit>
-<trans-unit id="s62f7c59b0606a8d6">
-  <source>Authorization flow</source>
-  <target>Autorizačný tok</target>
 </trans-unit>
 <trans-unit id="s69d33a50b908b96f">
   <source>Select an authorization flow...</source>
@@ -4491,10 +4483,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sabaf0061f7e41b0b">
   <source>Consumer secret</source>
   <target>Tajomstvo spotrebiteľa</target>
-</trans-unit>
-<trans-unit id="sd46fd9b647cfea10">
-  <source>Also known as Client Secret.</source>
-  <target>Tiež známe ako tajomstvo klienta.</target>
 </trans-unit>
 <trans-unit id="sa61966cd83b4924c">
   <source>Additional scopes to be passed to the OAuth Provider, separated by space. To replace existing scopes, prefix with *.</source>
@@ -11210,10 +11198,6 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
   <source>An error occurred while loading <x id="0" equiv-text="${this.verboseName}"/>.</source>
   <target>Pri načítaní <x id="0" equiv-text="${this.verboseName}"/> nastala chyba.</target>
 </trans-unit>
-<trans-unit id="s4fd2fe9adfd426e9">
-  <source>Select an option...</source>
-  <target>Vybrať možnosť...</target>
-</trans-unit>
 <trans-unit id="s195ea6447a6b5486">
   <source>Cancel wizard</source>
   <target>Zrušiť sprievodcu</target>
@@ -12168,10 +12152,6 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
 <trans-unit id="s82c71ab0a2d18257">
   <source>Type a name for the stage...</source>
   <target>Zadajte názov fázy...</target>
-</trans-unit>
-<trans-unit id="s10dd794d4839378e">
-  <source>Select an enrollment flow.</source>
-  <target>Vybrať tok registrácie.</target>
 </trans-unit>
 <trans-unit id="sece0e7e9d7ad08bf">
   <source>e.g. my-invite</source>
@@ -13647,6 +13627,15 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
         placeholders such as <x id="0" equiv-text="${replacements}"/>.</source>
   <target>Platné názvy súborov môžu obsahovať písmená, čísla, bodky, spojovníky, podčiarkovníky, lomky a zástupné výrazy, napríklad <x id="0" equiv-text="${replacements}"/>.</target>
   <note from="lit-localize">Validation message for file name input. The placeholders are displayed as plain text.</note>
+</trans-unit>
+<trans-unit id="s8e4a12c5930cf212">
+  <source>Also known as Client Secret. Can be left empty for public clients using PKCE.</source>
+</trans-unit>
+<trans-unit id="sfd44da578f6445a9">
+  <source>Failed to fetch objects:</source>
+</trans-unit>
+<trans-unit id="sa81413e2e309b882">
+  <source>No results found.</source>
 </trans-unit>
 </body>
 </file>
