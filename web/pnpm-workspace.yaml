@@ -30,8 +30,8 @@ nodeLinker: hoisted
 # `scripts/node/lint-catalogs.ts` keeps them in sync with the other workspace roots.
 catalog:
   "@playwright/test": "^1.62.1"
-  oxfmt: "0.70.0"
-  oxlint: "^1.85.0"
+  oxfmt: "0.71.0"
+  oxlint: "^1.86.0"
   "@types/node": "^26.1.2"
   "@vitest/browser": "^4.1.10"
   "@vitest/browser-playwright": "^4.1.10"
