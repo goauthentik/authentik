@@ -5,7 +5,7 @@ Parameters:
     Description: RDS PostgreSQL instance type (without the leading db.)
   DBVersion:
     Type: String
-    Default: "17.1"
+    Default: "17"
     Description: RDS PostgreSQL version
   DBStorage:
     Type: Number
