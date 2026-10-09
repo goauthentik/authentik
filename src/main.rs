@@ -8,6 +8,8 @@ use eyre::{Result, eyre};
 use tracing::{error, info, trace};
 
 #[cfg(feature = "core")]
+mod boot;
+#[cfg(feature = "core")]
 pub(crate) mod brands;
 mod healthcheck;
 mod metrics;
@@ -29,6 +31,8 @@ struct Cli {
 #[argh(subcommand)]
 enum Command {
     #[cfg(feature = "core")]
+    Boot(boot::Cli),
+    #[cfg(feature = "core")]
     AllInOne(AllInOne),
     #[cfg(feature = "core")]
     Server(server::Cli),
@@ -48,13 +52,49 @@ enum Command {
 )]
 pub(crate) struct AllInOne {}
 
+/// Parse the command line, allowing for the `/lifecycle/ak` symlink.
+///
+/// The container ships `/lifecycle/ak` as a symlink to this binary, because the
+/// documented management commands are all invoked as `ak <command>`. When we
+/// are called under that name, insert the `boot` subcommand.
+#[expect(
+    clippy::print_stdout,
+    clippy::exit,
+    reason = "argh reports --help and --version as an EarlyExit that must be printed"
+)]
+fn parse_args() -> Cli {
+    let argv: Vec<String> = std::env::args().collect();
+    let (program, rest) = argv
+        .split_first()
+        .map_or(("authentik", &[][..]), |(p, r)| (p.as_str(), r));
+
+    #[cfg(feature = "core")]
+    let inserted: Vec<&str> = if boot::invoked_as_ak(program) {
+        std::iter::once("boot")
+            .chain(rest.iter().map(String::as_str))
+            .collect()
+    } else {
+        rest.iter().map(String::as_str).collect()
+    };
+    #[cfg(not(feature = "core"))]
+    let inserted: Vec<&str> = rest.iter().map(String::as_str).collect();
+
+    Cli::from_args(&[program], &inserted).unwrap_or_else(|early_exit| {
+        print!("{}", early_exit.output);
+        std::process::exit(i32::from(early_exit.status.is_err()));
+    })
+}
+
 fn main() -> Result<()> {
     let tracing_crude = ak_tracing::install_crude();
     info!(version = authentik_full_version(), "authentik is starting");
 
-    let cli: Cli = argh::from_env();
+    let cli = parse_args();
 
     match &cli.command {
+        // The entrypoint execs away, so handle it before anything is set up.
+        #[cfg(feature = "core")]
+        Command::Boot(args) => return boot::run(args),
         #[cfg(feature = "core")]
         Command::AllInOne(_) => Mode::set(Mode::AllInOne)?,
         #[cfg(feature = "core")]
@@ -130,7 +170,9 @@ fn main() -> Result<()> {
                     )
                     .await?;
                 }
-                // We're checking for this before starting anything else
+                // We're checking for these before starting anything else
+                #[cfg(feature = "core")]
+                Command::Boot(_) => unreachable!(),
                 Command::Healthcheck(_) => unreachable!(),
             }
 

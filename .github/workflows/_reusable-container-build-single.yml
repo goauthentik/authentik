@@ -28,6 +28,10 @@ on:
         description: "Build args to pass to Docker"
         type: string
         default: ""
+      image-target:
+        description: "Dockerfile stage to build. Empty builds the last stage."
+        type: string
+        default: ""
       should-cache:
         description: "Whether a build cache should be created"
         type: boolean
@@ -74,6 +78,7 @@ jobs:
           # inputs
           context: .
           file: "${{ inputs.image-dockerfile }}"
+          target: "${{ inputs.image-target }}"
           build-args: "${{ inputs.image-build-args }}"
           secrets: |
             GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
