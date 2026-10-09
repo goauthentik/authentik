@@ -13,6 +13,7 @@ const DAY = 24 * HOUR;
 
 const ago = (ms: number) => new Date(Date.now() - ms);
 const fromNow = (ms: number) => new Date(Date.now() + ms);
+const EMPTY_TIMESTAMP: Date | null = null;
 
 const meta: Meta = {
     title: "Elements / Timestamp",
@@ -93,7 +94,7 @@ export const Refreshing: Story = {
 
 export const Empty: Story = {
     parameters: describe("A null timestamp renders a placeholder."),
-    render: () => container(html`<ak-timestamp .timestamp=${null}></ak-timestamp>`),
+    render: () => container(html`<ak-timestamp .timestamp=${EMPTY_TIMESTAMP}></ak-timestamp>`),
 };
 
 export const Themed: Story = {
