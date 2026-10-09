@@ -179,7 +179,7 @@ class EmailStage(Stage):
     subject = models.TextField(default="authentik")
     template = models.ForeignKey(
         "EmailTemplate",
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
         default=None,

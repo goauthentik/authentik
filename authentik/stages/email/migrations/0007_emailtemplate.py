@@ -196,7 +196,7 @@ class Migration(migrations.Migration):
                 null=True,
                 default=None,
                 help_text="Email template to use",
-                on_delete=django.db.models.deletion.PROTECT,
+                on_delete=django.db.models.deletion.SET_NULL,
             ),
         ),
         migrations.RunPython(backfill_emailstage_template, backfill_emailstage_template_reverse),

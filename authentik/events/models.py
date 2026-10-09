@@ -372,7 +372,7 @@ class NotificationTransport(TasksModel, SerializerModel):
         null=True,
         blank=True,
         default=None,
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
     )
 
     webhook_url = models.TextField(blank=True, validators=[DomainlessURLValidator()])

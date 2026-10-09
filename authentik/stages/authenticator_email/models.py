@@ -49,7 +49,7 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
         null=True,
         blank=True,
         default=None,
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
     )
 
     @property
