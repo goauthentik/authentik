@@ -26,7 +26,7 @@ export class LocaleCatalogListPage extends TablePage<LocaleCatalog> {
     });
     public pageTitle = msg("Locale Catalogs", { id: "locale-catalog.list.title" });
     public pageDescription = msg(
-        "Customize and add translations of the interface and messages sent by authentik.",
+        "Customize and add translations of the interface and messages sent by authentik. Catalogs apply to the brands they are bound to.",
         { id: "locale-catalog.list.description" },
     );
     public pageIcon = "pf-icon pf-icon-globe-route";
@@ -48,7 +48,6 @@ export class LocaleCatalogListPage extends TablePage<LocaleCatalog> {
     protected columns: TableColumn[] = [
         [msg("Name"), "name"],
         [msg("Locale", { id: "locale-catalog.list.column.locale" }), "locale"],
-        [msg("Order"), "order"],
         [msg("Messages", { id: "locale-catalog.list.column.messages" })],
         [msg("Enabled"), "enabled"],
         [msg("Actions"), null, msg("Row Actions")],
@@ -92,7 +91,6 @@ export class LocaleCatalogListPage extends TablePage<LocaleCatalog> {
         return [
             item.name,
             html`<code>${item.locale}</code>`,
-            String(item.order ?? 0),
             msg(str`${count} message(s)`, { id: "locale-catalog.list.message-count" }),
             html`<ak-status-label ?good=${item.enabled}></ak-status-label>`,
             html`<div class="ak-c-table__actions">

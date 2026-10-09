@@ -3,7 +3,7 @@
 from collections.abc import Callable
 from threading import Lock, local
 from time import monotonic
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from django.apps import apps
 from django.core.cache import cache
@@ -36,7 +36,7 @@ def canonicalize_language(code: str) -> str:
     return "-".join(canonical)
 
 
-def catalog_query(language: str) -> Q:
+def catalog_query(language: str, prefix: str = "") -> Q:
     """Query for all catalogs applicable to `language`.
 
     `de-AT` uses catalogs for `de` and `de-AT`. A language without a region (Django
@@ -44,9 +44,10 @@ def catalog_query(language: str) -> Q:
     catalogs of any regional variant."""
     language = canonicalize_language(language)
     base = language.split("-", 1)[0]
-    query = Q(locale=base) | Q(locale=language)
+    field = f"{prefix}locale"
+    query = Q(**{field: base}) | Q(**{field: language})
     if language == base:
-        query |= Q(locale__startswith=f"{base}-")
+        query |= Q(**{f"{field}__startswith": f"{base}-"})
     return query
 
 
@@ -60,7 +61,7 @@ def specificity(catalog_locale: str, language: str) -> int:
 
 
 class CatalogStore:
-    """Per-process cache of custom messages, per language.
+    """Per-process cache of custom messages, per brand and language.
 
     Lookups happen on every gettext call, so messages are kept in memory and only
     re-checked against a version key in the cache every few seconds."""
@@ -69,21 +70,29 @@ class CatalogStore:
         self.refresh_interval = refresh_interval
         self._lock = Lock()
         self._local = local()
-        self._messages: dict[str, Messages] = {}
+        self._messages: dict[tuple[UUID, str], Messages] = {}
+        # Primary key of the default brand, used outside of requests
+        self._default_brand: UUID | None = None
+        self._default_brand_loaded = False
         self._version: str | None = None
         self._next_check = 0.0
 
-    def messages(self, language: str) -> Messages:
-        """All custom messages for `language`"""
+    def messages(self, language: str, brand_pk: UUID | None = None) -> Messages:
+        """All custom messages for `language` of the given brand, by default the brand of the
+        current request, or the default brand outside of requests"""
         language = canonicalize_language(language)
         if monotonic() >= self._next_check:
             self._guarded(self._check_version)
-        messages = self._messages.get(language)
+        brand_pk = brand_pk or self._current_brand()
+        if not brand_pk:
+            return {}
+        key = (brand_pk, language)
+        messages = self._messages.get(key)
         if messages is None:
             messages = self._guarded(
-                lambda: self._load(language),
+                lambda: self._load(key),
                 # Don't retry on every call, only after the next version check
-                on_error=lambda: self._messages.setdefault(language, {}),
+                on_error=lambda: self._messages.setdefault(key, {}),
             )
         return messages or {}
 
@@ -91,10 +100,30 @@ class CatalogStore:
         """Get the custom translation of `message`, if any"""
         return self.messages(language).get(message)
 
+    def _current_brand(self) -> UUID | None:
+        from authentik.brands.utils import CTX_BRAND
+
+        brand = CTX_BRAND.get()
+        if brand:
+            return brand.pk
+        if not self._default_brand_loaded:
+            self._guarded(self._load_default_brand)
+        return self._default_brand
+
+    def _load_default_brand(self):
+        from authentik.brands.models import Brand
+
+        # Also when loading fails, to only retry after the next version check
+        self._default_brand_loaded = True
+        self._default_brand = (
+            Brand.objects.filter(default=True).values_list("pk", flat=True).first()
+        )
+
     def invalidate(self):
         """Signal all processes to reload their catalogs"""
         cache.set(CACHE_KEY_VERSION, uuid4().hex, timeout=None)
         self._messages = {}
+        self._default_brand_loaded = False
         self._next_check = 0.0
 
     def _guarded[T](
@@ -129,24 +158,28 @@ class CatalogStore:
         version = cache.get_or_set(CACHE_KEY_VERSION, lambda: uuid4().hex, timeout=None)
         if version != self._version:
             self._messages = {}
+            self._default_brand_loaded = False
             self._version = version
 
-    def _load(self, language: str) -> Messages:
-        from authentik.admin.i18n.models import LocaleCatalog
+    def _load(self, key: tuple[UUID, str]) -> Messages:
+        from authentik.admin.i18n.models import BrandLocaleCatalog
 
+        brand_pk, language = key
         # Keep a reference, so results loaded while being invalidated are discarded
         loaded = self._messages
-        catalogs = LocaleCatalog.objects.filter(catalog_query(language), enabled=True).values_list(
-            "locale", "order", "name", "messages"
-        )
+        bindings = BrandLocaleCatalog.objects.filter(
+            catalog_query(language, prefix="catalog__"),
+            brand_id=brand_pk,
+            catalog__enabled=True,
+        ).values_list("catalog__locale", "order", "catalog__name", "catalog__messages")
         merged: Messages = {}
         # Least specific locale first, then by order, so later catalogs override earlier ones
         for _locale, _order, _name, messages in sorted(
-            catalogs, key=lambda catalog: (specificity(catalog[0], language), *catalog[1:3])
+            bindings, key=lambda binding: (specificity(binding[0], language), *binding[1:3])
         ):
             if isinstance(messages, dict):
                 merged.update(messages)
-        loaded[language] = merged
+        loaded[key] = merged
         return merged
 
 

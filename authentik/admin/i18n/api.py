@@ -16,7 +16,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.admin.i18n.catalog import CATALOG_STORE, canonicalize_language
-from authentik.admin.i18n.models import LocaleCatalog
+from authentik.admin.i18n.models import BrandLocaleCatalog, LocaleCatalog
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 
@@ -84,7 +84,6 @@ class LocaleCatalogSerializer(ModelSerializer):
             "name",
             "locale",
             "enabled",
-            "order",
             "messages",
         ]
 
@@ -103,7 +102,7 @@ class LocaleCatalogViewSet(UsedByMixin, ModelViewSet):
     serializer_class = LocaleCatalogSerializer
     search_fields = ["name", "locale"]
     filterset_fields = ["name", "locale", "enabled"]
-    ordering = ["locale", "order", "name"]
+    ordering = ["locale", "name"]
 
     @extend_schema(
         parameters=[
@@ -123,16 +122,46 @@ class LocaleCatalogViewSet(UsedByMixin, ModelViewSet):
         filter_backends=[],
     )
     def resolve(self, request: Request) -> Response:
-        """Custom messages of all enabled catalogs merged for a single locale"""
+        """Custom messages of all enabled catalogs of the current brand merged for a
+        single locale"""
         locale = request.query_params.get("locale") or get_language() or ""
         if not LANGUAGE_CODE_RE.match(locale):
             raise ValidationError({"locale": _("Invalid locale code.")})
         locale = canonicalize_language(locale)
         messages = {
             source: translation
-            for source, translation in CATALOG_STORE.messages(locale).items()
+            for source, translation in CATALOG_STORE.messages(
+                locale, brand_pk=request._request.brand.pk
+            ).items()
             if isinstance(translation, str)
         }
         return Response(
             ResolvedLocaleCatalogSerializer({"locale": locale, "messages": messages}).data
         )
+
+
+class BrandLocaleCatalogSerializer(ModelSerializer):
+    """BrandLocaleCatalog Serializer"""
+
+    catalog_obj = LocaleCatalogSerializer(read_only=True, source="catalog")
+
+    class Meta:
+        model = BrandLocaleCatalog
+        fields = [
+            "binding_uuid",
+            "brand",
+            "catalog",
+            "catalog_obj",
+            "order",
+        ]
+
+
+class BrandLocaleCatalogViewSet(UsedByMixin, ModelViewSet):
+    """BrandLocaleCatalog Viewset"""
+
+    queryset = BrandLocaleCatalog.objects.select_related("catalog")
+    serializer_class = BrandLocaleCatalogSerializer
+    search_fields = ["catalog__name", "catalog__locale"]
+    filterset_fields = ["brand", "catalog"]
+    ordering = ["order", "catalog__name"]
+    ordering_fields = ["order", "catalog__name", "catalog__locale"]

@@ -1,5 +1,6 @@
 """Brand utilities"""
 
+from contextvars import ContextVar
 from typing import Any
 
 from django.db.models import Case, F, IntegerField, Q, Value, When
@@ -16,6 +17,8 @@ from authentik.lib.tracing import active_tracer
 
 _q_default = Q(default=True)
 DEFAULT_BRAND = Brand(domain="fallback")
+# Brand of the request currently being handled, for code without access to the request
+CTX_BRAND: ContextVar[Brand | None] = ContextVar("authentik_brand", default=None)
 
 
 def session_safe_mode(request: HttpRequest) -> bool:

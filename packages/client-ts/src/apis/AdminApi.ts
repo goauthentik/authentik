@@ -11,6 +11,11 @@
  */
 
 import { type App, AppFromJSON } from "../models/App";
+import { type BrandLocaleCatalog, BrandLocaleCatalogFromJSON } from "../models/BrandLocaleCatalog";
+import {
+    type BrandLocaleCatalogRequest,
+    BrandLocaleCatalogRequestToJSON,
+} from "../models/BrandLocaleCatalogRequest";
 import { type FileList, FileListFromJSON } from "../models/FileList";
 import { type LocaleCatalog, LocaleCatalogFromJSON } from "../models/LocaleCatalog";
 import {
@@ -18,9 +23,17 @@ import {
     LocaleCatalogRequestToJSON,
 } from "../models/LocaleCatalogRequest";
 import {
+    type PaginatedBrandLocaleCatalogList,
+    PaginatedBrandLocaleCatalogListFromJSON,
+} from "../models/PaginatedBrandLocaleCatalogList";
+import {
     type PaginatedLocaleCatalogList,
     PaginatedLocaleCatalogListFromJSON,
 } from "../models/PaginatedLocaleCatalogList";
+import {
+    type PatchedBrandLocaleCatalogRequest,
+    PatchedBrandLocaleCatalogRequestToJSON,
+} from "../models/PatchedBrandLocaleCatalogRequest";
 import {
     type PatchedLocaleCatalogRequest,
     PatchedLocaleCatalogRequestToJSON,
@@ -64,6 +77,68 @@ export interface AdminFileListRequest {
 
 export interface AdminFileUsedByListRequest {
     name?: string;
+}
+
+export interface AdminLocaleCatalogBindingsCreateRequest {
+    brandLocaleCatalogRequest: BrandLocaleCatalogRequest;
+}
+
+export interface AdminLocaleCatalogBindingsDestroyRequest {
+    /**
+     * A UUID string identifying this Brand Locale Catalog Binding.
+     */
+    bindingUuid: string;
+}
+
+export interface AdminLocaleCatalogBindingsListRequest {
+    brand?: string;
+    catalog?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
+    ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    pageSize?: number;
+    /**
+     * A search term.
+     */
+    search?: string;
+}
+
+export interface AdminLocaleCatalogBindingsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Brand Locale Catalog Binding.
+     */
+    bindingUuid: string;
+    patchedBrandLocaleCatalogRequest?: PatchedBrandLocaleCatalogRequest;
+}
+
+export interface AdminLocaleCatalogBindingsRetrieveRequest {
+    /**
+     * A UUID string identifying this Brand Locale Catalog Binding.
+     */
+    bindingUuid: string;
+}
+
+export interface AdminLocaleCatalogBindingsUpdateRequest {
+    /**
+     * A UUID string identifying this Brand Locale Catalog Binding.
+     */
+    bindingUuid: string;
+    brandLocaleCatalogRequest: BrandLocaleCatalogRequest;
+}
+
+export interface AdminLocaleCatalogBindingsUsedByListRequest {
+    /**
+     * A UUID string identifying this Brand Locale Catalog Binding.
+     */
+    bindingUuid: string;
 }
 
 export interface AdminLocaleCatalogsCreateRequest {
@@ -482,6 +557,516 @@ export class AdminApi extends runtime.BaseAPI {
     }
 
     /**
+     * Creates request options for adminLocaleCatalogBindingsCreate without sending the request
+     */
+    async adminLocaleCatalogBindingsCreateRequestOpts(
+        requestParameters: AdminLocaleCatalogBindingsCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["brandLocaleCatalogRequest"] == null) {
+            throw new runtime.RequiredError(
+                "brandLocaleCatalogRequest",
+                'Required parameter "brandLocaleCatalogRequest" was null or undefined when calling adminLocaleCatalogBindingsCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/admin/locale_catalog_bindings/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: BrandLocaleCatalogRequestToJSON(requestParameters["brandLocaleCatalogRequest"]),
+        };
+    }
+
+    /**
+     * BrandLocaleCatalog Viewset
+     */
+    async adminLocaleCatalogBindingsCreateRaw(
+        requestParameters: AdminLocaleCatalogBindingsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<BrandLocaleCatalog>> {
+        const requestOptions =
+            await this.adminLocaleCatalogBindingsCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            BrandLocaleCatalogFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * BrandLocaleCatalog Viewset
+     */
+    async adminLocaleCatalogBindingsCreate(
+        requestParameters: AdminLocaleCatalogBindingsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<BrandLocaleCatalog> {
+        const response = await this.adminLocaleCatalogBindingsCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for adminLocaleCatalogBindingsDestroy without sending the request
+     */
+    async adminLocaleCatalogBindingsDestroyRequestOpts(
+        requestParameters: AdminLocaleCatalogBindingsDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["bindingUuid"] == null) {
+            throw new runtime.RequiredError(
+                "bindingUuid",
+                'Required parameter "bindingUuid" was null or undefined when calling adminLocaleCatalogBindingsDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/admin/locale_catalog_bindings/{binding_uuid}/`;
+        urlPath = urlPath.replace(
+            "{binding_uuid}",
+            encodeURIComponent(String(requestParameters["bindingUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * BrandLocaleCatalog Viewset
+     */
+    async adminLocaleCatalogBindingsDestroyRaw(
+        requestParameters: AdminLocaleCatalogBindingsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.adminLocaleCatalogBindingsDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * BrandLocaleCatalog Viewset
+     */
+    async adminLocaleCatalogBindingsDestroy(
+        requestParameters: AdminLocaleCatalogBindingsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.adminLocaleCatalogBindingsDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for adminLocaleCatalogBindingsList without sending the request
+     */
+    async adminLocaleCatalogBindingsListRequestOpts(
+        requestParameters: AdminLocaleCatalogBindingsListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["brand"] != null) {
+            queryParameters["brand"] = requestParameters["brand"];
+        }
+
+        if (requestParameters["catalog"] != null) {
+            queryParameters["catalog"] = requestParameters["catalog"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/admin/locale_catalog_bindings/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * BrandLocaleCatalog Viewset
+     */
+    async adminLocaleCatalogBindingsListRaw(
+        requestParameters: AdminLocaleCatalogBindingsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedBrandLocaleCatalogList>> {
+        const requestOptions =
+            await this.adminLocaleCatalogBindingsListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedBrandLocaleCatalogListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * BrandLocaleCatalog Viewset
+     */
+    async adminLocaleCatalogBindingsList(
+        requestParameters: AdminLocaleCatalogBindingsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedBrandLocaleCatalogList> {
+        const response = await this.adminLocaleCatalogBindingsListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for adminLocaleCatalogBindingsPartialUpdate without sending the
+     * request
+     */
+    async adminLocaleCatalogBindingsPartialUpdateRequestOpts(
+        requestParameters: AdminLocaleCatalogBindingsPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["bindingUuid"] == null) {
+            throw new runtime.RequiredError(
+                "bindingUuid",
+                'Required parameter "bindingUuid" was null or undefined when calling adminLocaleCatalogBindingsPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/admin/locale_catalog_bindings/{binding_uuid}/`;
+        urlPath = urlPath.replace(
+            "{binding_uuid}",
+            encodeURIComponent(String(requestParameters["bindingUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedBrandLocaleCatalogRequestToJSON(
+                requestParameters["patchedBrandLocaleCatalogRequest"],
+            ),
+        };
+    }
+
+    /**
+     * BrandLocaleCatalog Viewset
+     */
+    async adminLocaleCatalogBindingsPartialUpdateRaw(
+        requestParameters: AdminLocaleCatalogBindingsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<BrandLocaleCatalog>> {
+        const requestOptions =
+            await this.adminLocaleCatalogBindingsPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            BrandLocaleCatalogFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * BrandLocaleCatalog Viewset
+     */
+    async adminLocaleCatalogBindingsPartialUpdate(
+        requestParameters: AdminLocaleCatalogBindingsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<BrandLocaleCatalog> {
+        const response = await this.adminLocaleCatalogBindingsPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for adminLocaleCatalogBindingsRetrieve without sending the request
+     */
+    async adminLocaleCatalogBindingsRetrieveRequestOpts(
+        requestParameters: AdminLocaleCatalogBindingsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["bindingUuid"] == null) {
+            throw new runtime.RequiredError(
+                "bindingUuid",
+                'Required parameter "bindingUuid" was null or undefined when calling adminLocaleCatalogBindingsRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/admin/locale_catalog_bindings/{binding_uuid}/`;
+        urlPath = urlPath.replace(
+            "{binding_uuid}",
+            encodeURIComponent(String(requestParameters["bindingUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * BrandLocaleCatalog Viewset
+     */
+    async adminLocaleCatalogBindingsRetrieveRaw(
+        requestParameters: AdminLocaleCatalogBindingsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<BrandLocaleCatalog>> {
+        const requestOptions =
+            await this.adminLocaleCatalogBindingsRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            BrandLocaleCatalogFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * BrandLocaleCatalog Viewset
+     */
+    async adminLocaleCatalogBindingsRetrieve(
+        requestParameters: AdminLocaleCatalogBindingsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<BrandLocaleCatalog> {
+        const response = await this.adminLocaleCatalogBindingsRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for adminLocaleCatalogBindingsUpdate without sending the request
+     */
+    async adminLocaleCatalogBindingsUpdateRequestOpts(
+        requestParameters: AdminLocaleCatalogBindingsUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["bindingUuid"] == null) {
+            throw new runtime.RequiredError(
+                "bindingUuid",
+                'Required parameter "bindingUuid" was null or undefined when calling adminLocaleCatalogBindingsUpdate().',
+            );
+        }
+
+        if (requestParameters["brandLocaleCatalogRequest"] == null) {
+            throw new runtime.RequiredError(
+                "brandLocaleCatalogRequest",
+                'Required parameter "brandLocaleCatalogRequest" was null or undefined when calling adminLocaleCatalogBindingsUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/admin/locale_catalog_bindings/{binding_uuid}/`;
+        urlPath = urlPath.replace(
+            "{binding_uuid}",
+            encodeURIComponent(String(requestParameters["bindingUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: BrandLocaleCatalogRequestToJSON(requestParameters["brandLocaleCatalogRequest"]),
+        };
+    }
+
+    /**
+     * BrandLocaleCatalog Viewset
+     */
+    async adminLocaleCatalogBindingsUpdateRaw(
+        requestParameters: AdminLocaleCatalogBindingsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<BrandLocaleCatalog>> {
+        const requestOptions =
+            await this.adminLocaleCatalogBindingsUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            BrandLocaleCatalogFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * BrandLocaleCatalog Viewset
+     */
+    async adminLocaleCatalogBindingsUpdate(
+        requestParameters: AdminLocaleCatalogBindingsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<BrandLocaleCatalog> {
+        const response = await this.adminLocaleCatalogBindingsUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for adminLocaleCatalogBindingsUsedByList without sending the request
+     */
+    async adminLocaleCatalogBindingsUsedByListRequestOpts(
+        requestParameters: AdminLocaleCatalogBindingsUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["bindingUuid"] == null) {
+            throw new runtime.RequiredError(
+                "bindingUuid",
+                'Required parameter "bindingUuid" was null or undefined when calling adminLocaleCatalogBindingsUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/admin/locale_catalog_bindings/{binding_uuid}/used_by/`;
+        urlPath = urlPath.replace(
+            "{binding_uuid}",
+            encodeURIComponent(String(requestParameters["bindingUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async adminLocaleCatalogBindingsUsedByListRaw(
+        requestParameters: AdminLocaleCatalogBindingsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.adminLocaleCatalogBindingsUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async adminLocaleCatalogBindingsUsedByList(
+        requestParameters: AdminLocaleCatalogBindingsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.adminLocaleCatalogBindingsUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
      * Creates request options for adminLocaleCatalogsCreate without sending the request
      */
     async adminLocaleCatalogsCreateRequestOpts(
@@ -801,7 +1386,7 @@ export class AdminApi extends runtime.BaseAPI {
     }
 
     /**
-     * Custom messages of all enabled catalogs merged for a single locale
+     * Custom messages of all enabled catalogs of the current brand merged for a single locale
      */
     async adminLocaleCatalogsResolveRetrieveRaw(
         requestParameters: AdminLocaleCatalogsResolveRetrieveRequest,
@@ -817,7 +1402,7 @@ export class AdminApi extends runtime.BaseAPI {
     }
 
     /**
-     * Custom messages of all enabled catalogs merged for a single locale
+     * Custom messages of all enabled catalogs of the current brand merged for a single locale
      */
     async adminLocaleCatalogsResolveRetrieve(
         requestParameters: AdminLocaleCatalogsResolveRetrieveRequest = {},

@@ -31,12 +31,6 @@ export interface LocaleCatalogRequest {
     locale: string;
     enabled?: boolean;
     /**
-     * Catalogs for the same locale are applied in ascending order, so when multiple catalogs
-     * translate the same message, the catalog with the highest order wins. Catalogs for a more
-     * specific locale (`de-AT`) always win over catalogs for the base language (`de`).
-     */
-    order?: number;
-    /**
      * Maps a source string (or a web interface message ID) to its translation. A list of plural
      * forms may be given instead of a single translation.
      */
@@ -67,7 +61,6 @@ export function LocaleCatalogRequestFromJSONTyped(
         name: json["name"],
         locale: json["locale"],
         enabled: json["enabled"] == null ? undefined : json["enabled"],
-        order: json["order"] == null ? undefined : json["order"],
         messages:
             json["messages"] == null
                 ? undefined
@@ -91,7 +84,6 @@ export function LocaleCatalogRequestToJSONTyped(
         name: value["name"],
         locale: value["locale"],
         enabled: value["enabled"],
-        order: value["order"],
         messages:
             value["messages"] == null
                 ? undefined

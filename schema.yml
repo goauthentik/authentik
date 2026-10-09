@@ -130,6 +130,205 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /admin/locale_catalog_bindings/:
+    get:
+      operationId: admin_locale_catalog_bindings_list
+      description: BrandLocaleCatalog Viewset
+      parameters:
+      - in: query
+        name: brand
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: catalog
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBrandLocaleCatalogList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: admin_locale_catalog_bindings_create
+      description: BrandLocaleCatalog Viewset
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandLocaleCatalogRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandLocaleCatalog'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /admin/locale_catalog_bindings/{binding_uuid}/:
+    get:
+      operationId: admin_locale_catalog_bindings_retrieve
+      description: BrandLocaleCatalog Viewset
+      parameters:
+      - in: path
+        name: binding_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Brand Locale Catalog Binding.
+        required: true
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandLocaleCatalog'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: admin_locale_catalog_bindings_update
+      description: BrandLocaleCatalog Viewset
+      parameters:
+      - in: path
+        name: binding_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Brand Locale Catalog Binding.
+        required: true
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandLocaleCatalogRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandLocaleCatalog'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: admin_locale_catalog_bindings_partial_update
+      description: BrandLocaleCatalog Viewset
+      parameters:
+      - in: path
+        name: binding_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Brand Locale Catalog Binding.
+        required: true
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBrandLocaleCatalogRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandLocaleCatalog'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: admin_locale_catalog_bindings_destroy
+      description: BrandLocaleCatalog Viewset
+      parameters:
+      - in: path
+        name: binding_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Brand Locale Catalog Binding.
+        required: true
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /admin/locale_catalog_bindings/{binding_uuid}/used_by/:
+    get:
+      operationId: admin_locale_catalog_bindings_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: binding_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Brand Locale Catalog Binding.
+        required: true
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /admin/locale_catalogs/:
     get:
       operationId: admin_locale_catalogs_list
@@ -331,7 +530,9 @@ paths:
   /admin/locale_catalogs/resolve/:
     get:
       operationId: admin_locale_catalogs_resolve_retrieve
-      description: Custom messages of all enabled catalogs merged for a single locale
+      description: |-
+        Custom messages of all enabled catalogs of the current brand merged for a
+        single locale
       parameters:
       - in: query
         name: locale
@@ -37867,6 +38068,58 @@ components:
       required:
       - brand_uuid
       - domain
+    BrandLocaleCatalog:
+      type: object
+      description: BrandLocaleCatalog Serializer
+      properties:
+        binding_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        brand:
+          type: string
+          format: uuid
+        catalog:
+          type: string
+          format: uuid
+        catalog_obj:
+          allOf:
+          - $ref: '#/components/schemas/LocaleCatalog'
+          readOnly: true
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: Catalogs for the same locale are applied in ascending order,
+            so when multiple catalogs translate the same message, the catalog with
+            the highest order wins. Catalogs for a more specific locale (`de-AT`)
+            always win over catalogs for the base language (`de`).
+      required:
+      - binding_uuid
+      - brand
+      - catalog
+      - catalog_obj
+    BrandLocaleCatalogRequest:
+      type: object
+      description: BrandLocaleCatalog Serializer
+      properties:
+        brand:
+          type: string
+          format: uuid
+        catalog:
+          type: string
+          format: uuid
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: Catalogs for the same locale are applied in ascending order,
+            so when multiple catalogs translate the same message, the catalog with
+            the highest order wins. Catalogs for a more specific locale (`de-AT`)
+            always win over catalogs for the base language (`de`).
+      required:
+      - brand
+      - catalog
     BrandRequest:
       type: object
       description: Brand Serializer
@@ -44907,14 +45160,6 @@ components:
           description: Locale code, for example `de` or `de-DE`.
         enabled:
           type: boolean
-        order:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          description: Catalogs for the same locale are applied in ascending order,
-            so when multiple catalogs translate the same message, the catalog with
-            the highest order wins. Catalogs for a more specific locale (`de-AT`)
-            always win over catalogs for the base language (`de`).
         messages:
           type: object
           additionalProperties:
@@ -44942,14 +45187,6 @@ components:
           description: Locale code, for example `de` or `de-DE`.
         enabled:
           type: boolean
-        order:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          description: Catalogs for the same locale are applied in ascending order,
-            so when multiple catalogs translate the same message, the catalog with
-            the highest order wins. Catalogs for a more specific locale (`de-AT`)
-            always win over catalogs for the base language (`de`).
         messages:
           type: object
           additionalProperties:
@@ -45420,6 +45657,7 @@ components:
       - authentik_events.notificationrule
       - authentik_events.notificationwebhookmapping
       - authentik_admin_i18n.localecatalog
+      - authentik_admin_i18n.brandlocalecatalog
       - authentik_flows.flow
       - authentik_flows.flowstagebinding
       - authentik_outposts.dockerserviceconnection
@@ -47421,6 +47659,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Brand'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedBrandLocaleCatalogList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BrandLocaleCatalog'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -50567,6 +50820,24 @@ components:
           type: boolean
         content:
           type: string
+    PatchedBrandLocaleCatalogRequest:
+      type: object
+      description: BrandLocaleCatalog Serializer
+      properties:
+        brand:
+          type: string
+          format: uuid
+        catalog:
+          type: string
+          format: uuid
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: Catalogs for the same locale are applied in ascending order,
+            so when multiple catalogs translate the same message, the catalog with
+            the highest order wins. Catalogs for a more specific locale (`de-AT`)
+            always win over catalogs for the base language (`de`).
     PatchedBrandRequest:
       type: object
       description: Brand Serializer
@@ -51989,14 +52260,6 @@ components:
           description: Locale code, for example `de` or `de-DE`.
         enabled:
           type: boolean
-        order:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          description: Catalogs for the same locale are applied in ascending order,
-            so when multiple catalogs translate the same message, the catalog with
-            the highest order wins. Catalogs for a more specific locale (`de-AT`)
-            always win over catalogs for the base language (`de`).
         messages:
           type: object
           additionalProperties:

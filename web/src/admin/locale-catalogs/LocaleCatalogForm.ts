@@ -74,20 +74,6 @@ export class LocaleCatalogForm extends ModelForm<LocaleCatalog, string> {
                 ?checked=${this.instance?.enabled ?? true}
             >
             </ak-switch-input>
-            <ak-form-element-horizontal label=${msg("Order")} required name="order">
-                <input
-                    type="number"
-                    value="${this.instance?.order ?? 0}"
-                    class="pf-c-form-control"
-                    required
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "When multiple catalogs for the same locale translate the same message, the catalog with the highest order wins.",
-                        { id: "locale-catalog.form.order.description" },
-                    )}
-                </p>
-            </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Messages", { id: "locale-catalog.form.messages.label" })}
                 name="messages"

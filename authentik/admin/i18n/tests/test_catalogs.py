@@ -5,8 +5,10 @@ from django.utils.translation import gettext, ngettext, override, pgettext
 from rest_framework.test import APITestCase
 
 from authentik.admin.i18n.catalog import CATALOG_STORE, canonicalize_language
-from authentik.admin.i18n.models import LocaleCatalog
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.admin.i18n.models import BrandLocaleCatalog, LocaleCatalog
+from authentik.brands.models import Brand
+from authentik.brands.utils import CTX_BRAND
+from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.lib.generators import generate_id
 
 
@@ -16,12 +18,21 @@ class TestLocaleCatalogs(APITestCase):
     def setUp(self):
         super().setUp()
         self.admin = create_test_admin_user()
-
-    def create(self, locale: str, messages: dict, **kwargs) -> LocaleCatalog:
         with self.captureOnCommitCallbacks(execute=True):
-            return LocaleCatalog.objects.create(
+            self.brand = create_test_brand()
+
+    def create(
+        self, locale: str, messages: dict, order: int = 0, brand: Brand | None = None, **kwargs
+    ) -> LocaleCatalog:
+        """Create a catalog bound to the default brand"""
+        with self.captureOnCommitCallbacks(execute=True):
+            catalog = LocaleCatalog.objects.create(
                 name=generate_id(), locale=locale, messages=messages, **kwargs
             )
+            BrandLocaleCatalog.objects.create(
+                brand=brand or self.brand, catalog=catalog, order=order
+            )
+        return catalog
 
     def test_canonicalize(self):
         """Language tags are compared in their canonical form"""
@@ -93,8 +104,56 @@ class TestLocaleCatalogs(APITestCase):
             catalog.save()
         self.assertEqual(CATALOG_STORE.lookup("de", "Username"), "Benutzer-ID")
         with self.captureOnCommitCallbacks(execute=True):
+            BrandLocaleCatalog.objects.filter(catalog=catalog).delete()
+        self.assertIsNone(CATALOG_STORE.lookup("de", "Username"))
+        with self.captureOnCommitCallbacks(execute=True):
             catalog.delete()
         self.assertIsNone(CATALOG_STORE.lookup("de", "Username"))
+
+    def test_brand_scope(self):
+        """Catalogs only apply to the brands they're bound to"""
+        other = Brand.objects.create(domain=generate_id())
+        self.create("de", {"Username": "Kennung"})
+        self.create("de", {"Username": "Login-Name"}, brand=other)
+        self.create("de", {"Password": "Kennwort"}, brand=other)
+        self.assertEqual(CATALOG_STORE.messages("de"), {"Username": "Kennung"})
+        self.assertEqual(
+            CATALOG_STORE.messages("de", brand_pk=other.pk),
+            {"Username": "Login-Name", "Password": "Kennwort"},
+        )
+        # Outside of requests, the default brand is used
+        with override("de"):
+            self.assertEqual(gettext("Username"), "Kennung")
+        token = CTX_BRAND.set(other)
+        try:
+            with override("de"):
+                self.assertEqual(gettext("Username"), "Login-Name")
+        finally:
+            CTX_BRAND.reset(token)
+
+    def test_unbound(self):
+        """Catalogs which aren't bound to any brand don't apply"""
+        with self.captureOnCommitCallbacks(execute=True):
+            LocaleCatalog.objects.create(
+                name=generate_id(), locale="de", messages={"Username": "Kennung"}
+            )
+        self.assertEqual(CATALOG_STORE.messages("de"), {})
+
+    def test_api_bind(self):
+        """Bind a catalog to a brand"""
+        self.client.force_login(self.admin)
+        catalog = LocaleCatalog.objects.create(
+            name=generate_id(), locale="de", messages={"Username": "Kennung"}
+        )
+        with self.captureOnCommitCallbacks(execute=True):
+            response = self.client.post(
+                reverse("authentik_api:brandlocalecatalog-list"),
+                data={"brand": str(self.brand.pk), "catalog": str(catalog.pk), "order": 5},
+                format="json",
+            )
+        self.assertEqual(response.status_code, 201, response.content)
+        self.assertEqual(response.json()["catalog_obj"]["name"], catalog.name)
+        self.assertEqual(CATALOG_STORE.lookup("de", "Username"), "Kennung")
 
     def test_api_create(self):
         """Create a catalog, normalizing its locale"""

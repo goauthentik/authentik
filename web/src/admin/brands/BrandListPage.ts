@@ -1,4 +1,5 @@
 import "#admin/brands/BrandForm";
+import "#admin/locale-catalogs/BoundLocaleCatalogsList";
 import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
@@ -30,6 +31,7 @@ export class BrandListPage extends TablePage<Brand> {
 
     checkbox = true;
     clearOnRefresh = true;
+    expandable = true;
 
     @property()
     order = "domain";
@@ -90,6 +92,13 @@ export class BrandListPage extends TablePage<Brand> {
                 </ak-rbac-object-permission-modal>
             </div>`,
         ];
+    }
+
+    protected override renderExpanded(item: Brand): SlottedTemplateResult {
+        return html`<div class="pf-c-content">
+            <h3>${msg("Locale Catalogs", { id: "locale-catalog.list.title" })}</h3>
+            <ak-bound-locale-catalogs-list brand=${item.brandUuid}></ak-bound-locale-catalogs-list>
+        </div>`;
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {

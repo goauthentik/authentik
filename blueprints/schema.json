@@ -68,6 +68,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_admin_i18n.brandlocalecatalog"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/definitions/model_authentik_admin_i18n.brandlocalecatalog_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/definitions/model_authentik_admin_i18n.brandlocalecatalog"
+                        },
+                        "identifiers": {
+                            "$ref": "#/definitions/model_authentik_admin_i18n.brandlocalecatalog"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_admin_i18n.localecatalog"
                         },
                         "id": {
@@ -5298,6 +5338,55 @@
                 }
             ]
         },
+        "model_authentik_admin_i18n.brandlocalecatalog": {
+            "type": "object",
+            "properties": {
+                "brand": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Brand"
+                },
+                "catalog": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Catalog"
+                },
+                "order": {
+                    "type": "integer",
+                    "minimum": -2147483648,
+                    "maximum": 2147483647,
+                    "title": "Order",
+                    "description": "Catalogs for the same locale are applied in ascending order, so when multiple catalogs translate the same message, the catalog with the highest order wins. Catalogs for a more specific locale (`de-AT`) always win over catalogs for the base language (`de`)."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_admin_i18n.brandlocalecatalog_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_brandlocalecatalog",
+                            "change_brandlocalecatalog",
+                            "delete_brandlocalecatalog",
+                            "view_brandlocalecatalog"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_admin_i18n.localecatalog": {
             "type": "object",
             "properties": {
@@ -5315,13 +5404,6 @@
                 "enabled": {
                     "type": "boolean",
                     "title": "Enabled"
-                },
-                "order": {
-                    "type": "integer",
-                    "minimum": -2147483648,
-                    "maximum": 2147483647,
-                    "title": "Order",
-                    "description": "Catalogs for the same locale are applied in ascending order, so when multiple catalogs translate the same message, the catalog with the highest order wins. Catalogs for a more specific locale (`de-AT`) always win over catalogs for the base language (`de`)."
                 },
                 "messages": {
                     "type": "object",
@@ -5686,9 +5768,13 @@
                     "items": {
                         "type": "string",
                         "enum": [
+                            "authentik_admin_i18n.add_brandlocalecatalog",
                             "authentik_admin_i18n.add_localecatalog",
+                            "authentik_admin_i18n.change_brandlocalecatalog",
                             "authentik_admin_i18n.change_localecatalog",
+                            "authentik_admin_i18n.delete_brandlocalecatalog",
                             "authentik_admin_i18n.delete_localecatalog",
+                            "authentik_admin_i18n.view_brandlocalecatalog",
                             "authentik_admin_i18n.view_localecatalog",
                             "authentik_agents.add_agent",
                             "authentik_agents.add_agent_self_service",
@@ -7084,9 +7170,13 @@
                     "items": {
                         "type": "string",
                         "enum": [
+                            "authentik_admin_i18n.add_brandlocalecatalog",
                             "authentik_admin_i18n.add_localecatalog",
+                            "authentik_admin_i18n.change_brandlocalecatalog",
                             "authentik_admin_i18n.change_localecatalog",
+                            "authentik_admin_i18n.delete_brandlocalecatalog",
                             "authentik_admin_i18n.delete_localecatalog",
+                            "authentik_admin_i18n.view_brandlocalecatalog",
                             "authentik_admin_i18n.view_localecatalog",
                             "authentik_agents.add_agent",
                             "authentik_agents.add_agent_self_service",
@@ -11220,6 +11310,7 @@
                         "authentik_events.notificationrule",
                         "authentik_events.notificationwebhookmapping",
                         "authentik_admin_i18n.localecatalog",
+                        "authentik_admin_i18n.brandlocalecatalog",
                         "authentik_flows.flow",
                         "authentik_flows.flowstagebinding",
                         "authentik_outposts.dockerserviceconnection",
@@ -13553,9 +13644,13 @@
                     "items": {
                         "type": "string",
                         "enum": [
+                            "authentik_admin_i18n.add_brandlocalecatalog",
                             "authentik_admin_i18n.add_localecatalog",
+                            "authentik_admin_i18n.change_brandlocalecatalog",
                             "authentik_admin_i18n.change_localecatalog",
+                            "authentik_admin_i18n.delete_brandlocalecatalog",
                             "authentik_admin_i18n.delete_localecatalog",
+                            "authentik_admin_i18n.view_brandlocalecatalog",
                             "authentik_admin_i18n.view_localecatalog",
                             "authentik_agents.add_agent",
                             "authentik_agents.add_agent_self_service",

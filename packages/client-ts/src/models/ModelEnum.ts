@@ -38,6 +38,7 @@ export const ModelEnum = {
     AuthentikEventsNotificationrule: "authentik_events.notificationrule",
     AuthentikEventsNotificationwebhookmapping: "authentik_events.notificationwebhookmapping",
     AuthentikAdminI18nLocalecatalog: "authentik_admin_i18n.localecatalog",
+    AuthentikAdminI18nBrandlocalecatalog: "authentik_admin_i18n.brandlocalecatalog",
     AuthentikFlowsFlow: "authentik_flows.flow",
     AuthentikFlowsFlowstagebinding: "authentik_flows.flowstagebinding",
     AuthentikOutpostsDockerserviceconnection: "authentik_outposts.dockerserviceconnection",

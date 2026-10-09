@@ -6,7 +6,7 @@ from django.http.request import HttpRequest
 from django.http.response import HttpResponse
 from django.utils.translation import override
 
-from authentik.brands.utils import get_brand_for_request
+from authentik.brands.utils import CTX_BRAND, get_brand_for_request
 
 
 class BrandMiddleware:
@@ -25,7 +25,11 @@ class BrandMiddleware:
             locale = brand.default_locale
             if locale != "":
                 locale_to_set = locale
-        if locale_to_set:
-            with override(locale_to_set):
-                return self.get_response(request)
-        return self.get_response(request)
+        token = CTX_BRAND.set(request.brand)
+        try:
+            if locale_to_set:
+                with override(locale_to_set):
+                    return self.get_response(request)
+            return self.get_response(request)
+        finally:
+            CTX_BRAND.reset(token)
