@@ -114,7 +114,8 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
         ["/blueprints/instances", msg("Blueprints")],
         ["/files", msg("Files")],
         ["/policy/reputation", msg("Reputation scores")],
-        ["/identity/initial-permissions", msg("Initial Permissions")]],
+        ["/identity/initial-permissions", msg("Initial Permissions")],
+        ["/identity/custom-permissions", msg("Custom Permissions")]],
     ],
     [null, msg("Flows and Stages"), { key: "flows-stages" }, [
         ["/flow/flows", msg("Flows"), ["flow-view"]],
