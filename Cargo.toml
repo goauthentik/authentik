@@ -61,7 +61,7 @@ hyper-util = { version = "= 0.1.21", features = [
   "tokio",
 ] }
 ipnet = { version = "= 2.12.2", features = ["serde"] }
-json-subscriber = "= 0.3.0"
+json-subscriber = "= 0.3.1"
 jsonwebtoken = { version = "= 11.1.0", features = ["aws_lc_rs"] }
 metrics = "= 0.24.6"
 metrics-exporter-prometheus = { version = "= 0.18.3", default-features = false }
