@@ -1255,6 +1255,9 @@ class PropertyMapping(SerializerModel, ManagedModel):
 
     objects = InheritanceManager()
 
+    # Types the expression may return (besides None); empty allows any type
+    expression_allowed_types: list[type] = []
+
     @property
     def component(self) -> str:
         """Return component used to edit this object"""
@@ -1279,11 +1282,26 @@ class PropertyMapping(SerializerModel, ManagedModel):
         if globals:
             evaluator._globals.update(globals)
         try:
-            return evaluator.evaluate(self.expression)
+            value = evaluator.evaluate(self.expression)
         except ControlFlowException as exc:
             raise exc
         except Exception as exc:
             raise PropertyMappingExpressionException(exc, self) from exc
+        self.check_result(value)
+        return value
+
+    def check_result(self, value: Any):
+        """Raise if the expression returned a value of the wrong type"""
+        if value is None or not self.expression_allowed_types:
+            return
+        if not isinstance(value, tuple(self.expression_allowed_types)):
+            allowed = ", ".join(t.__name__ for t in self.expression_allowed_types)
+            raise PropertyMappingExpressionException(
+                TypeError(
+                    f"Property mapping must return one of {allowed}, got {type(value).__name__}"
+                ),
+                self,
+            )
 
     def __str__(self):
         return f"Property Mapping {self.name}"

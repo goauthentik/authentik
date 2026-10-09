@@ -73,6 +73,7 @@ class PropertyMappingManager:
                 raise exc from exc
             except Exception as exc:
                 raise PropertyMappingExpressionException(exc, mapping.model) from exc
+            mapping.model.check_result(value)
             if value is None:
                 continue
             if return_mapping:
