@@ -31,7 +31,7 @@ def get_docker_tag() -> str:
     branch_name = os.environ.get(default_branch, "main")
     if os.environ.get(env_pr_branch, "") != "":
         branch_name = os.environ[env_pr_branch]
-    branch_name = re.sub(r"[^a-zA-Z0-9-]", "-", branch_name.replace("refs/heads/", ""))
+    branch_name = re.sub(r"[^a-zA-Z0-9-.]", "-", branch_name.replace("refs/heads/", ""))
     return f"gh-{branch_name}"
 
 
