@@ -366,6 +366,9 @@ importers:
       country-flag-icons:
         specifier: ^1.6.20
         version: 1.6.20
+      cronstrue:
+        specifier: ^3.30.0
+        version: 3.30.0
       date-fns:
         specifier: ^4.4.0
         version: 4.4.0
@@ -3404,6 +3407,10 @@ packages:
 
   crelt@1.0.7:
     resolution: {integrity: sha512-aK6BbWfhf4U/wCcLHKPJl/xa6VkVstRaPywWtMKGwuOLc/wZTyQYuoxgvZnNsBvv7Kg3YTBQYYBCggcviQczuA==}
+
+  cronstrue@3.30.0:
+    resolution: {integrity: sha512-yyID2G7xhMPgVy+Kd6VPJC9s1czj5z1J8AaVsBmt5K5q9Ck9eEkWezMtm4Oe/D01Jg2K43edfhPIjk0qYEjZqA==}
+    hasBin: true
 
   cross-spawn@6.0.6:
     resolution: {integrity: sha512-VqCUuhcd1iB+dsv8gxPttb5iZh/D0iubSP21g36KXdEuf6I5JiioesUVjpCdHV9MZRUfVFlvwtIUyPfxo5trtw==}
@@ -8948,6 +8955,8 @@ snapshots:
   country-flag-icons@1.6.20: {}
 
   crelt@1.0.7: {}
+
+  cronstrue@3.30.0: {}
 
   cross-spawn@6.0.6:
     dependencies:

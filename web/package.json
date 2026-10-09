@@ -209,6 +209,7 @@
         "cookie": "^2.0.1",
         "core-js": "^3.49.0",
         "country-flag-icons": "^1.6.20",
+        "cronstrue": "^3.30.0",
         "date-fns": "^4.4.0",
         "deepmerge-ts": "^8.0.0",
         "dompurify": "^3.4.13",
