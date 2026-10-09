@@ -173,19 +173,9 @@ time {
 }
 
 .pf-c-pagination {
-    ak-timestamp {
-        font-size: 0.75rem;
-        font-style: italic;
-        color: var(--pf-global--Color--200);
-
-        &::part(label) {
-            display: inline-block;
-        }
-
-        &::part(elapsed) {
-            display: inline-block;
-        }
-    }
+    --ak-timestamp--FontSize: var(--pf-global--FontSize--xs);
+    --ak-timestamp--FontStyle: italic;
+    --ak-timestamp--Color: var(--pf-global--Color--200);
 }
 
 /* Fix alignment issues with images in tables */
