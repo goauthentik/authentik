@@ -147,6 +147,9 @@ class AuthenticatorEmailStageView(ChallengeStageView):
         user = self.get_pending_user()
 
         stage: AuthenticatorEmailStage = self.executor.current_stage
+        # Remove any unconfirmed device left over from a previous failed
+        # enrollment attempt, which would otherwise block re-enrollment below
+        EmailDevice.objects.filter(user=user, stage=stage.pk, confirmed=False).delete()
         # For the moment we only allow one email device per user
         if EmailDevice.objects.filter(Q(user=user), stage=stage.pk).exists():
             return self.executor.stage_invalid(
