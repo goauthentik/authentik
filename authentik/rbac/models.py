@@ -2,7 +2,6 @@
 
 from uuid import uuid4
 
-from django.contrib.auth.management import _get_all_permissions
 from django.contrib.auth.models import Permission
 from django.db import models
 from django.db.transaction import atomic
@@ -12,24 +11,6 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.blueprints.models import ManagedModel
 from authentik.lib.models import SerializerModel, SimpleThroughModel
-from authentik.lib.utils.reflection import get_apps
-
-
-def get_permission_choices():
-    all_perms = []
-    for app in get_apps():
-        for model in app.get_models():
-            for perm, _desc in _get_all_permissions(model._meta):
-                all_perms.append((model, perm))
-    return sorted(
-        [
-            (
-                f"{model._meta.app_label}.{perm}",
-                f"{model._meta.app_label}.{perm}",
-            )
-            for model, perm in all_perms
-        ]
-    )
 
 
 class Role(SerializerModel, ManagedModel):

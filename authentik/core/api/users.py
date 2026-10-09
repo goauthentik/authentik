@@ -4,7 +4,7 @@ from datetime import timedelta
 from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.models import AnonymousUser, Permission
+from django.contrib.auth.models import AnonymousUser
 from django.db import models
 from django.db.models import Exists, OuterRef, Prefetch, Q
 from django.db.transaction import atomic
@@ -102,9 +102,10 @@ from authentik.lib.avatars import get_avatar
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.lib.validators import validate_password_hash
+from authentik.rbac.api.rbac import PermissionField
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
-from authentik.rbac.models import Role, get_permission_choices
+from authentik.rbac.models import Role
 from authentik.stages.email.flow import pickle_flow_token_for_email
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
@@ -201,10 +202,7 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             self.fields["password"] = CharField(required=False, allow_null=True)
             self.fields["password_hash"] = CharField(required=False, allow_null=True)
-            self.fields["permissions"] = ListField(
-                required=False,
-                child=ChoiceField(choices=get_permission_choices()),
-            )
+            self.fields["permissions"] = ListField(required=False, child=PermissionField())
 
     def create(self, validated_data: dict) -> User:
         """Create a user, with blueprint-only password and permission writes."""
@@ -217,11 +215,7 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         instance: User = super().create(validated_data)
         if is_blueprint:
             self._set_password(instance, password, password_hash)
-            perms_qs = Permission.objects.filter(
-                codename__in=[permission.split(".")[1] for permission in permissions]
-            ).values_list("content_type__app_label", "codename")
-            perms_list = [f"{ct}.{name}" for ct, name in perms_qs]
-            instance.assign_perms_to_managed_role(perms_list)
+            instance.assign_perms_to_managed_role(permissions)
         self._ensure_password_not_empty(instance)
         return instance
 
@@ -236,11 +230,7 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         instance = super().update(instance, validated_data)
         if is_blueprint:
             self._set_password(instance, password, password_hash)
-            perms_qs = Permission.objects.filter(
-                codename__in=[permission.split(".")[1] for permission in permissions]
-            ).values_list("content_type__app_label", "codename")
-            perms_list = [f"{ct}.{name}" for ct, name in perms_qs]
-            instance.assign_perms_to_managed_role(perms_list)
+            instance.assign_perms_to_managed_role(permissions)
         self._ensure_password_not_empty(instance)
         return instance
 
