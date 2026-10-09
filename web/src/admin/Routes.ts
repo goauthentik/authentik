@@ -188,6 +188,15 @@ export const ROUTES: RouteLike[] = [
         },
         "brands",
     ),
+    new Route(
+        "/core/locale-catalogs",
+        async () => {
+            await import("#admin/locale-catalogs/LocaleCatalogListPage");
+
+            return html`<ak-locale-catalog-list></ak-locale-catalog-list>`;
+        },
+        "locale-catalogs",
+    ),
 
     new Route(
         "/policy/policies",

@@ -133,6 +133,7 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
     ],
     [null, msg("System"), { key: "system" }, [
         ["/core/brands", msg("Brands")],
+        ["/core/locale-catalogs", msg("Locale Catalogs", { id: "locale-catalog.list.title" })],
         ["/crypto/certificates", msg("Certificates")],
         ["/outpost/integrations", msg("Outpost Integrations")],
         ["/admin/settings", msg("Settings")]]

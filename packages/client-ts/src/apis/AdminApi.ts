@@ -12,10 +12,27 @@
 
 import { type App, AppFromJSON } from "../models/App";
 import { type FileList, FileListFromJSON } from "../models/FileList";
+import { type LocaleCatalog, LocaleCatalogFromJSON } from "../models/LocaleCatalog";
+import {
+    type LocaleCatalogRequest,
+    LocaleCatalogRequestToJSON,
+} from "../models/LocaleCatalogRequest";
+import {
+    type PaginatedLocaleCatalogList,
+    PaginatedLocaleCatalogListFromJSON,
+} from "../models/PaginatedLocaleCatalogList";
+import {
+    type PatchedLocaleCatalogRequest,
+    PatchedLocaleCatalogRequestToJSON,
+} from "../models/PatchedLocaleCatalogRequest";
 import {
     type PatchedSettingsRequest,
     PatchedSettingsRequestToJSON,
 } from "../models/PatchedSettingsRequest";
+import {
+    type ResolvedLocaleCatalog,
+    ResolvedLocaleCatalogFromJSON,
+} from "../models/ResolvedLocaleCatalog";
 import { type Settings, SettingsFromJSON } from "../models/Settings";
 import { type SettingsRequest, SettingsRequestToJSON } from "../models/SettingsRequest";
 import { type SystemInfo, SystemInfoFromJSON } from "../models/SystemInfo";
@@ -47,6 +64,76 @@ export interface AdminFileListRequest {
 
 export interface AdminFileUsedByListRequest {
     name?: string;
+}
+
+export interface AdminLocaleCatalogsCreateRequest {
+    localeCatalogRequest: LocaleCatalogRequest;
+}
+
+export interface AdminLocaleCatalogsDestroyRequest {
+    /**
+     * A UUID string identifying this Locale Catalog.
+     */
+    catalogUuid: string;
+}
+
+export interface AdminLocaleCatalogsListRequest {
+    enabled?: boolean;
+    locale?: string;
+    name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
+    ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    pageSize?: number;
+    /**
+     * A search term.
+     */
+    search?: string;
+}
+
+export interface AdminLocaleCatalogsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Locale Catalog.
+     */
+    catalogUuid: string;
+    patchedLocaleCatalogRequest?: PatchedLocaleCatalogRequest;
+}
+
+export interface AdminLocaleCatalogsResolveRetrieveRequest {
+    /**
+     * Locale code; defaults to the language of the request.
+     */
+    locale?: string;
+}
+
+export interface AdminLocaleCatalogsRetrieveRequest {
+    /**
+     * A UUID string identifying this Locale Catalog.
+     */
+    catalogUuid: string;
+}
+
+export interface AdminLocaleCatalogsUpdateRequest {
+    /**
+     * A UUID string identifying this Locale Catalog.
+     */
+    catalogUuid: string;
+    localeCatalogRequest: LocaleCatalogRequest;
+}
+
+export interface AdminLocaleCatalogsUsedByListRequest {
+    /**
+     * A UUID string identifying this Locale Catalog.
+     */
+    catalogUuid: string;
 }
 
 export interface AdminModelsListRequest {
@@ -391,6 +478,568 @@ export class AdminApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Array<UsedBy>> {
         const response = await this.adminFileUsedByListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for adminLocaleCatalogsCreate without sending the request
+     */
+    async adminLocaleCatalogsCreateRequestOpts(
+        requestParameters: AdminLocaleCatalogsCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["localeCatalogRequest"] == null) {
+            throw new runtime.RequiredError(
+                "localeCatalogRequest",
+                'Required parameter "localeCatalogRequest" was null or undefined when calling adminLocaleCatalogsCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/admin/locale_catalogs/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: LocaleCatalogRequestToJSON(requestParameters["localeCatalogRequest"]),
+        };
+    }
+
+    /**
+     * LocaleCatalog Viewset
+     */
+    async adminLocaleCatalogsCreateRaw(
+        requestParameters: AdminLocaleCatalogsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<LocaleCatalog>> {
+        const requestOptions = await this.adminLocaleCatalogsCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            LocaleCatalogFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * LocaleCatalog Viewset
+     */
+    async adminLocaleCatalogsCreate(
+        requestParameters: AdminLocaleCatalogsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<LocaleCatalog> {
+        const response = await this.adminLocaleCatalogsCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for adminLocaleCatalogsDestroy without sending the request
+     */
+    async adminLocaleCatalogsDestroyRequestOpts(
+        requestParameters: AdminLocaleCatalogsDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["catalogUuid"] == null) {
+            throw new runtime.RequiredError(
+                "catalogUuid",
+                'Required parameter "catalogUuid" was null or undefined when calling adminLocaleCatalogsDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/admin/locale_catalogs/{catalog_uuid}/`;
+        urlPath = urlPath.replace(
+            "{catalog_uuid}",
+            encodeURIComponent(String(requestParameters["catalogUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * LocaleCatalog Viewset
+     */
+    async adminLocaleCatalogsDestroyRaw(
+        requestParameters: AdminLocaleCatalogsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.adminLocaleCatalogsDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * LocaleCatalog Viewset
+     */
+    async adminLocaleCatalogsDestroy(
+        requestParameters: AdminLocaleCatalogsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.adminLocaleCatalogsDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for adminLocaleCatalogsList without sending the request
+     */
+    async adminLocaleCatalogsListRequestOpts(
+        requestParameters: AdminLocaleCatalogsListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["enabled"] != null) {
+            queryParameters["enabled"] = requestParameters["enabled"];
+        }
+
+        if (requestParameters["locale"] != null) {
+            queryParameters["locale"] = requestParameters["locale"];
+        }
+
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/admin/locale_catalogs/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * LocaleCatalog Viewset
+     */
+    async adminLocaleCatalogsListRaw(
+        requestParameters: AdminLocaleCatalogsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedLocaleCatalogList>> {
+        const requestOptions = await this.adminLocaleCatalogsListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedLocaleCatalogListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * LocaleCatalog Viewset
+     */
+    async adminLocaleCatalogsList(
+        requestParameters: AdminLocaleCatalogsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedLocaleCatalogList> {
+        const response = await this.adminLocaleCatalogsListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for adminLocaleCatalogsPartialUpdate without sending the request
+     */
+    async adminLocaleCatalogsPartialUpdateRequestOpts(
+        requestParameters: AdminLocaleCatalogsPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["catalogUuid"] == null) {
+            throw new runtime.RequiredError(
+                "catalogUuid",
+                'Required parameter "catalogUuid" was null or undefined when calling adminLocaleCatalogsPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/admin/locale_catalogs/{catalog_uuid}/`;
+        urlPath = urlPath.replace(
+            "{catalog_uuid}",
+            encodeURIComponent(String(requestParameters["catalogUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedLocaleCatalogRequestToJSON(
+                requestParameters["patchedLocaleCatalogRequest"],
+            ),
+        };
+    }
+
+    /**
+     * LocaleCatalog Viewset
+     */
+    async adminLocaleCatalogsPartialUpdateRaw(
+        requestParameters: AdminLocaleCatalogsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<LocaleCatalog>> {
+        const requestOptions =
+            await this.adminLocaleCatalogsPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            LocaleCatalogFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * LocaleCatalog Viewset
+     */
+    async adminLocaleCatalogsPartialUpdate(
+        requestParameters: AdminLocaleCatalogsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<LocaleCatalog> {
+        const response = await this.adminLocaleCatalogsPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for adminLocaleCatalogsResolveRetrieve without sending the request
+     */
+    async adminLocaleCatalogsResolveRetrieveRequestOpts(
+        requestParameters: AdminLocaleCatalogsResolveRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["locale"] != null) {
+            queryParameters["locale"] = requestParameters["locale"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/admin/locale_catalogs/resolve/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Custom messages of all enabled catalogs merged for a single locale
+     */
+    async adminLocaleCatalogsResolveRetrieveRaw(
+        requestParameters: AdminLocaleCatalogsResolveRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ResolvedLocaleCatalog>> {
+        const requestOptions =
+            await this.adminLocaleCatalogsResolveRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ResolvedLocaleCatalogFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Custom messages of all enabled catalogs merged for a single locale
+     */
+    async adminLocaleCatalogsResolveRetrieve(
+        requestParameters: AdminLocaleCatalogsResolveRetrieveRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ResolvedLocaleCatalog> {
+        const response = await this.adminLocaleCatalogsResolveRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for adminLocaleCatalogsRetrieve without sending the request
+     */
+    async adminLocaleCatalogsRetrieveRequestOpts(
+        requestParameters: AdminLocaleCatalogsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["catalogUuid"] == null) {
+            throw new runtime.RequiredError(
+                "catalogUuid",
+                'Required parameter "catalogUuid" was null or undefined when calling adminLocaleCatalogsRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/admin/locale_catalogs/{catalog_uuid}/`;
+        urlPath = urlPath.replace(
+            "{catalog_uuid}",
+            encodeURIComponent(String(requestParameters["catalogUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * LocaleCatalog Viewset
+     */
+    async adminLocaleCatalogsRetrieveRaw(
+        requestParameters: AdminLocaleCatalogsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<LocaleCatalog>> {
+        const requestOptions = await this.adminLocaleCatalogsRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            LocaleCatalogFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * LocaleCatalog Viewset
+     */
+    async adminLocaleCatalogsRetrieve(
+        requestParameters: AdminLocaleCatalogsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<LocaleCatalog> {
+        const response = await this.adminLocaleCatalogsRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for adminLocaleCatalogsUpdate without sending the request
+     */
+    async adminLocaleCatalogsUpdateRequestOpts(
+        requestParameters: AdminLocaleCatalogsUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["catalogUuid"] == null) {
+            throw new runtime.RequiredError(
+                "catalogUuid",
+                'Required parameter "catalogUuid" was null or undefined when calling adminLocaleCatalogsUpdate().',
+            );
+        }
+
+        if (requestParameters["localeCatalogRequest"] == null) {
+            throw new runtime.RequiredError(
+                "localeCatalogRequest",
+                'Required parameter "localeCatalogRequest" was null or undefined when calling adminLocaleCatalogsUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/admin/locale_catalogs/{catalog_uuid}/`;
+        urlPath = urlPath.replace(
+            "{catalog_uuid}",
+            encodeURIComponent(String(requestParameters["catalogUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: LocaleCatalogRequestToJSON(requestParameters["localeCatalogRequest"]),
+        };
+    }
+
+    /**
+     * LocaleCatalog Viewset
+     */
+    async adminLocaleCatalogsUpdateRaw(
+        requestParameters: AdminLocaleCatalogsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<LocaleCatalog>> {
+        const requestOptions = await this.adminLocaleCatalogsUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            LocaleCatalogFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * LocaleCatalog Viewset
+     */
+    async adminLocaleCatalogsUpdate(
+        requestParameters: AdminLocaleCatalogsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<LocaleCatalog> {
+        const response = await this.adminLocaleCatalogsUpdateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for adminLocaleCatalogsUsedByList without sending the request
+     */
+    async adminLocaleCatalogsUsedByListRequestOpts(
+        requestParameters: AdminLocaleCatalogsUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["catalogUuid"] == null) {
+            throw new runtime.RequiredError(
+                "catalogUuid",
+                'Required parameter "catalogUuid" was null or undefined when calling adminLocaleCatalogsUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/admin/locale_catalogs/{catalog_uuid}/used_by/`;
+        urlPath = urlPath.replace(
+            "{catalog_uuid}",
+            encodeURIComponent(String(requestParameters["catalogUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async adminLocaleCatalogsUsedByListRaw(
+        requestParameters: AdminLocaleCatalogsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.adminLocaleCatalogsUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async adminLocaleCatalogsUsedByList(
+        requestParameters: AdminLocaleCatalogsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.adminLocaleCatalogsUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 

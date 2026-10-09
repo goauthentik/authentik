@@ -1,11 +1,11 @@
 import { SourceLanguageTag, TargetLanguageTag } from "#common/ui/locale/definitions";
+import type { LocalizationRuntime } from "#common/ui/locale/runtime";
 
 import { createMixin } from "#elements/types";
 
 import { consume, createContext } from "@lit/context";
-import type { configureLocalization } from "@lit/localize";
 
-export type LocaleContextValue = ReturnType<typeof configureLocalization>;
+export type LocaleContextValue = LocalizationRuntime;
 
 export const kAKLocale = Symbol("kAKLocale");
 

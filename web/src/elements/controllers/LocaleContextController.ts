@@ -1,7 +1,9 @@
 import { sourceLocale, targetLocales } from "../../locale-codes.js";
 
+import { loadCustomTemplates } from "#common/ui/locale/custom";
 import { LocaleLoaderRecord, TargetLanguageTag } from "#common/ui/locale/definitions";
 import { formatDisplayName } from "#common/ui/locale/format";
+import { configureLocalization, RuntimeLocaleModule } from "#common/ui/locale/runtime";
 import { autoDetectLanguage, isTargetLanguageTag } from "#common/ui/locale/utils";
 
 import { kAKLocale, LocaleContext, LocaleContextValue, LocaleMixin } from "#elements/mixins/locale";
@@ -10,25 +12,21 @@ import type { ReactiveElementHost } from "#elements/types";
 import { ConsoleLogger } from "#logger/browser";
 
 import { ContextProvider } from "@lit/context";
-import {
-    configureLocalization,
-    LOCALE_STATUS_EVENT,
-    LocaleModule,
-    LocaleStatusEventDetail,
-} from "@lit/localize";
+import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail } from "@lit/localize";
 import type { ReactiveController } from "lit";
 
 const logger = ConsoleLogger.prefix("controller/locale");
 
 /**
- * Loads the locale module for the given locale code.
+ * Loads the locale module for the given locale code, along with the
+ * custom locale catalogs configured by administrators.
  *
  * @remarks
- *   This is used by `@lit/localize` to dynamically load locale modules,
+ *   This is used by the localization runtime to dynamically load locale modules,
  *   as well synchronizing the document's `lang` attribute.
  * @param locale The locale code to load.
  */
-function loadLocale(locale: string): Promise<LocaleModule> {
+async function loadLocale(locale: string): Promise<RuntimeLocaleModule> {
     const languageNames = new Intl.DisplayNames([locale, sourceLocale], {
         type: "language",
     });
@@ -46,7 +44,9 @@ function loadLocale(locale: string): Promise<LocaleModule> {
 
     const loader = LocaleLoaderRecord[locale];
 
-    return loader();
+    const [{ templates }, overrides] = await Promise.all([loader(), loadCustomTemplates(locale)]);
+
+    return { templates, overrides };
 }
 
 /**
@@ -176,7 +176,10 @@ export class LocaleContextController implements ReactiveController {
 
         const nextLocale = localeHint || autoDetectLanguage();
 
-        if (nextLocale !== sourceLocale) {
+        if (nextLocale === this.activeLanguageTag) {
+            // The source locale is active initially, but may still have custom templates.
+            LocaleContextController.context.reloadLocale();
+        } else {
             this.#applyLocale(nextLocale);
         }
     }

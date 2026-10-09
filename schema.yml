@@ -130,6 +130,230 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /admin/locale_catalogs/:
+    get:
+      operationId: admin_locale_catalogs_list
+      description: LocaleCatalog Viewset
+      parameters:
+      - in: query
+        name: enabled
+        schema:
+          type: boolean
+      - in: query
+        name: locale
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLocaleCatalogList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: admin_locale_catalogs_create
+      description: LocaleCatalog Viewset
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocaleCatalogRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocaleCatalog'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /admin/locale_catalogs/{catalog_uuid}/:
+    get:
+      operationId: admin_locale_catalogs_retrieve
+      description: LocaleCatalog Viewset
+      parameters:
+      - in: path
+        name: catalog_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Locale Catalog.
+        required: true
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocaleCatalog'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: admin_locale_catalogs_update
+      description: LocaleCatalog Viewset
+      parameters:
+      - in: path
+        name: catalog_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Locale Catalog.
+        required: true
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocaleCatalogRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocaleCatalog'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: admin_locale_catalogs_partial_update
+      description: LocaleCatalog Viewset
+      parameters:
+      - in: path
+        name: catalog_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Locale Catalog.
+        required: true
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLocaleCatalogRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocaleCatalog'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: admin_locale_catalogs_destroy
+      description: LocaleCatalog Viewset
+      parameters:
+      - in: path
+        name: catalog_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Locale Catalog.
+        required: true
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /admin/locale_catalogs/{catalog_uuid}/used_by/:
+    get:
+      operationId: admin_locale_catalogs_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: catalog_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Locale Catalog.
+        required: true
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /admin/locale_catalogs/resolve/:
+    get:
+      operationId: admin_locale_catalogs_resolve_retrieve
+      description: Custom messages of all enabled catalogs merged for a single locale
+      parameters:
+      - in: query
+        name: locale
+        schema:
+          type: string
+        description: Locale code; defaults to the language of the request.
+      tags:
+      - admin
+      security:
+      - authentik: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResolvedLocaleCatalog'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /admin/models/:
     get:
       operationId: admin_models_list
@@ -35753,6 +35977,7 @@ components:
       - authentik.enterprise
       - authentik.events
       - authentik.admin.files
+      - authentik.admin.i18n
       - authentik.flows
       - authentik.outposts
       - authentik.policies.dummy
@@ -44667,6 +44892,77 @@ components:
           type: string
       required:
       - link
+    LocaleCatalog:
+      type: object
+      description: LocaleCatalog Serializer
+      properties:
+        catalog_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+        locale:
+          type: string
+          description: Locale code, for example `de` or `de-DE`.
+        enabled:
+          type: boolean
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: Catalogs for the same locale are applied in ascending order,
+            so when multiple catalogs translate the same message, the catalog with
+            the highest order wins. Catalogs for a more specific locale (`de-AT`)
+            always win over catalogs for the base language (`de`).
+        messages:
+          type: object
+          additionalProperties:
+            oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+          description: Maps a source string (or a web interface message ID) to its
+            translation. A list of plural forms may be given instead of a single translation.
+      required:
+      - catalog_uuid
+      - locale
+      - name
+    LocaleCatalogRequest:
+      type: object
+      description: LocaleCatalog Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        locale:
+          type: string
+          minLength: 1
+          description: Locale code, for example `de` or `de-DE`.
+        enabled:
+          type: boolean
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: Catalogs for the same locale are applied in ascending order,
+            so when multiple catalogs translate the same message, the catalog with
+            the highest order wins. Catalogs for a more specific locale (`de-AT`)
+            always win over catalogs for the base language (`de`).
+        messages:
+          type: object
+          additionalProperties:
+            oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+          description: Maps a source string (or a web interface message ID) to its
+            translation. A list of plural forms may be given instead of a single translation.
+      required:
+      - locale
+      - name
     LogEvent:
       type: object
       description: Single log message with all context logged.
@@ -45123,6 +45419,7 @@ components:
       - authentik_events.notification
       - authentik_events.notificationrule
       - authentik_events.notificationwebhookmapping
+      - authentik_admin_i18n.localecatalog
       - authentik_flows.flow
       - authentik_flows.flowstagebinding
       - authentik_outposts.dockerserviceconnection
@@ -47964,6 +48261,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LifecycleRule'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedLocaleCatalogList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocaleCatalog'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -51664,6 +51976,37 @@ components:
           description: Select which transports should be used to notify the reviewers.
             If none are selected, the notification will only be shown in the authentik
             UI.
+    PatchedLocaleCatalogRequest:
+      type: object
+      description: LocaleCatalog Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        locale:
+          type: string
+          minLength: 1
+          description: Locale code, for example `de` or `de-DE`.
+        enabled:
+          type: boolean
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: Catalogs for the same locale are applied in ascending order,
+            so when multiple catalogs translate the same message, the catalog with
+            the highest order wins. Catalogs for a more specific locale (`de-AT`)
+            always win over catalogs for the base language (`de`).
+        messages:
+          type: object
+          additionalProperties:
+            oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+          description: Maps a source string (or a web interface message ID) to its
+            translation. A list of plural forms may be given instead of a single translation.
     PatchedMicrosoftEntraProviderMappingRequest:
       type: object
       description: MicrosoftEntraProviderMapping Serializer
@@ -56484,6 +56827,21 @@ components:
       - pbm_uuid
       - verbose_name
       - verbose_name_plural
+    ResolvedLocaleCatalog:
+      type: object
+      description: Custom messages applicable to a single locale
+      properties:
+        locale:
+          type: string
+          readOnly: true
+        messages:
+          type: object
+          additionalProperties:
+            type: string
+          readOnly: true
+      required:
+      - locale
+      - messages
     ResumeOnMatchFailuresEnum:
       enum:
       - missing_property

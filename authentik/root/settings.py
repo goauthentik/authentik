@@ -86,6 +86,7 @@ INSTALLED_APPS = [
     "authentik.endpoints.connectors.agent",
     "authentik.events",
     "authentik.admin.files",
+    "authentik.admin.i18n",
     "authentik.flows",
     "authentik.outposts",
     "authentik.policies.dummy",

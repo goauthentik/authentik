@@ -68,6 +68,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_admin_i18n.localecatalog"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/definitions/model_authentik_admin_i18n.localecatalog_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/definitions/model_authentik_admin_i18n.localecatalog"
+                        },
+                        "identifiers": {
+                            "$ref": "#/definitions/model_authentik_admin_i18n.localecatalog"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_blueprints.blueprintinstance"
                         },
                         "id": {
@@ -5258,6 +5298,66 @@
                 }
             ]
         },
+        "model_authentik_admin_i18n.localecatalog": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "locale": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Locale",
+                    "description": "Locale code, for example `de` or `de-DE`."
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "title": "Enabled"
+                },
+                "order": {
+                    "type": "integer",
+                    "minimum": -2147483648,
+                    "maximum": 2147483647,
+                    "title": "Order",
+                    "description": "Catalogs for the same locale are applied in ascending order, so when multiple catalogs translate the same message, the catalog with the highest order wins. Catalogs for a more specific locale (`de-AT`) always win over catalogs for the base language (`de`)."
+                },
+                "messages": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Messages",
+                    "description": "Maps a source string (or a web interface message ID) to its translation. A list of plural forms may be given instead of a single translation."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_admin_i18n.localecatalog_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_localecatalog",
+                            "change_localecatalog",
+                            "delete_localecatalog",
+                            "view_localecatalog"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_blueprints.blueprintinstance": {
             "type": "object",
             "properties": {
@@ -5586,6 +5686,10 @@
                     "items": {
                         "type": "string",
                         "enum": [
+                            "authentik_admin_i18n.add_localecatalog",
+                            "authentik_admin_i18n.change_localecatalog",
+                            "authentik_admin_i18n.delete_localecatalog",
+                            "authentik_admin_i18n.view_localecatalog",
                             "authentik_agents.add_agent",
                             "authentik_agents.add_agent_self_service",
                             "authentik_agents.change_agent",
@@ -6980,6 +7084,10 @@
                     "items": {
                         "type": "string",
                         "enum": [
+                            "authentik_admin_i18n.add_localecatalog",
+                            "authentik_admin_i18n.change_localecatalog",
+                            "authentik_admin_i18n.delete_localecatalog",
+                            "authentik_admin_i18n.view_localecatalog",
                             "authentik_agents.add_agent",
                             "authentik_agents.add_agent_self_service",
                             "authentik_agents.change_agent",
@@ -11008,6 +11116,7 @@
                         "authentik.enterprise",
                         "authentik.events",
                         "authentik.admin.files",
+                        "authentik.admin.i18n",
                         "authentik.flows",
                         "authentik.outposts",
                         "authentik.policies.dummy",
@@ -11110,6 +11219,7 @@
                         "authentik_events.notification",
                         "authentik_events.notificationrule",
                         "authentik_events.notificationwebhookmapping",
+                        "authentik_admin_i18n.localecatalog",
                         "authentik_flows.flow",
                         "authentik_flows.flowstagebinding",
                         "authentik_outposts.dockerserviceconnection",
@@ -13443,6 +13553,10 @@
                     "items": {
                         "type": "string",
                         "enum": [
+                            "authentik_admin_i18n.add_localecatalog",
+                            "authentik_admin_i18n.change_localecatalog",
+                            "authentik_admin_i18n.delete_localecatalog",
+                            "authentik_admin_i18n.view_localecatalog",
                             "authentik_agents.add_agent",
                             "authentik_agents.add_agent_self_service",
                             "authentik_agents.change_agent",

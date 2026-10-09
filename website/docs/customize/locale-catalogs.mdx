@@ -1,0 +1,47 @@
+---
+title: Locale catalogs
+---
+
+Locale catalogs let administrators change the wording of authentik, or add translations, without rebuilding authentik. A catalog contains custom translations for a single locale and is applied on top of the built-in translations, both in the web interface and in messages rendered by the server, such as emails and error messages.
+
+Catalogs are managed from **System** > **Locale Catalogs** in the Admin interface.
+
+## Create a catalog
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **System** > **Locale Catalogs** and click **Create**.
+3. Configure the following settings:
+    - **Name**: a unique name for the catalog.
+    - **Locale**: the language tag the catalog applies to, for example `de` or `de-DE`. Use `en` to change the default English wording.
+    - **Enabled**: disabled catalogs are ignored.
+    - **Order**: when multiple catalogs for the same locale translate the same message, the catalog with the highest order wins.
+    - **Messages**: a YAML or JSON object which maps English source strings to their translation.
+4. Click **Create**.
+
+For example, the following messages change the label of the username field and the login button:
+
+```yaml
+Username: Employee ID
+Log in: Sign in to ACME
+```
+
+Changes are picked up by the server within a few seconds. Users see changes in the web interface after reloading the page.
+
+## Messages
+
+Messages are keyed by the English text as it appears in authentik. In the web interface, messages can also be keyed by their message ID, as found in the `web/xliff` directory of the authentik repository.
+
+Messages which contain dynamic values use placeholders:
+
+- In the web interface, values are referenced by position, for example `Welcome to ${0}`. The translation can use the placeholders in a different order.
+- In messages rendered by the server, values are referenced by name, for example `%(name)s`. Use the same placeholders in the key and in the translation.
+
+Messages rendered by the server which depend on a number can be given as a list of plural forms, in the order used by the locale:
+
+```yaml
+"%(count)s item": ["%(count)s Element", "%(count)s Elemente"]
+```
+
+## Locale matching
+
+A catalog for a language without a region, such as `de`, applies to all regions of that language. A catalog for a specific region, such as `de-AT`, takes precedence over a catalog for its language.

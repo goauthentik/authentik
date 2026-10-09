@@ -1,6 +1,6 @@
 /**
  * @file Reader for the values the server injects into the interface documents.
- *   The server renders them as data — two `json_script` blocks and a handful of
+ *   The server renders them as data — a few `json_script` blocks and a handful of
  *   `<meta>` tags — rather than as an executable `window.authentik` assignment,
  *   so the interface pages can eventually be served under a strict CSP. See
  *   `authentik/core/templates/base/header_js.html`.
@@ -17,8 +17,20 @@ import {
     FlowLayoutEnum,
 } from "@goauthentik/api";
 
+export interface InjectedLocaleCatalog {
+    /**
+     * The server's language code the custom messages were resolved for.
+     */
+    locale: string;
+    messages: Record<string, string>;
+}
+
 export interface GlobalAuthentik {
     locale: TargetLanguageTag;
+    /**
+     * Custom messages for {@linkcode GlobalAuthentik.locale}.
+     */
+    localeCatalog: InjectedLocaleCatalog | null;
     flow?: {
         layout: FlowLayoutEnum;
         title?: string;
@@ -62,11 +74,20 @@ function readJSONScript(id: string): unknown {
     }
 }
 
+function readLocaleCatalog(): InjectedLocaleCatalog | null {
+    const value = readJSONScript("ak-locale-catalog") as Partial<InjectedLocaleCatalog> | null;
+
+    if (typeof value?.locale !== "string" || typeof value.messages !== "object") return null;
+
+    return { locale: value.locale, messages: value.messages ?? {} };
+}
+
 function readServerContext(): GlobalAuthentik {
     const fallbackAPIBase = new URL(import.meta.env.AK_API_BASE_PATH || window.location.origin);
 
     const context: GlobalAuthentik = {
         locale: autoDetectLanguage(readMeta("ak-locale") ?? undefined),
+        localeCatalog: readLocaleCatalog(),
         // `ConfigFromJSON`/`CurrentBrandFromJSON` pass a nullish value straight
         // through, so the empty shapes stand in when nothing was injected.
         config: ConfigFromJSON(readJSONScript("ak-config") ?? { capabilities: [] }),
