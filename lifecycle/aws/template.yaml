@@ -5,7 +5,7 @@ Parameters:
     Description: RDS PostgreSQL instance type (without the leading db.)
   DBVersion:
     Type: String
-    Default: "17.1"
+    Default: "17"
     Description: RDS PostgreSQL version
   DBStorage:
     Type: Number
@@ -675,6 +675,8 @@ Resources:
                   - Endpoint.Address
             - Name: AUTHENTIK_POSTGRESQL__USER
               Value: authentik
+            - Name: AUTHENTIK_POSTGRESQL__SSLMODE
+              Value: require
           Essential: true
           HealthCheck:
             Command:
@@ -903,6 +905,8 @@ Resources:
                   - Endpoint.Address
             - Name: AUTHENTIK_POSTGRESQL__USER
               Value: authentik
+            - Name: AUTHENTIK_POSTGRESQL__SSLMODE
+              Value: require
           Essential: true
           HealthCheck:
             Command:
