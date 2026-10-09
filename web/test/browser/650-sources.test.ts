@@ -62,7 +62,7 @@ test.describe("Sources", () => {
                 [fill, legacyTextInput("Server URI", dialog), "ldap://ldap.example.com"],
                 [fill, legacyTextInput("Base DN", dialog), "dc=example,dc=com"],
                 [setFormGroup, "Additional settings", true, dialog],
-                [selectSearchValue, legacyTextInput("Additional Parent Group", dialog), groups[0]],
+                [selectSearchValue, "Additional Parent Group", groups[0], dialog],
                 [fill, legacyTextInput("User path", dialog), "sources/ldap-created"],
                 [fill, legacyTextInput("Additional User DN", dialog), "ou=people"],
                 [click, "Create", "button", dialog],
@@ -72,6 +72,11 @@ test.describe("Sources", () => {
         });
 
         const dialog = page.getByRole("dialog", { name: "Edit LDAP Source" });
+
+        const parentGroupInput = dialog.getByRole("combobox", {
+            name: "Additional Parent Group",
+            exact: true,
+        });
 
         const openEditor = async () => {
             // Navigate again so assertions use freshly retrieved data, not form state.
@@ -97,10 +102,9 @@ test.describe("Sources", () => {
                 ).not.toBeChecked();
             }
 
-            await expect(
-                legacyTextInput("Additional Parent Group", dialog),
-                "Parent group persists on creation",
-            ).toHaveValue(groups[0]);
+            await expect(parentGroupInput, "Parent group persists on creation").toHaveValue(
+                groups[0],
+            );
 
             await expect(
                 legacyTextInput("User path", dialog),
@@ -113,7 +117,7 @@ test.describe("Sources", () => {
             ).toHaveValue("ou=people");
 
             await series(
-                [selectSearchValue, legacyTextInput("Additional Parent Group", dialog), groups[1]],
+                [selectSearchValue, "Additional Parent Group", groups[1], dialog],
                 [fill, legacyTextInput("User path", dialog), "sources/ldap-updated"],
                 [fill, legacyTextInput("Additional User DN", dialog), "ou=users"],
                 [click, "Save Changes", "button", dialog],
@@ -125,10 +129,7 @@ test.describe("Sources", () => {
         await test.step("Verify updated settings and clear the parent group", async () => {
             await openEditor();
 
-            await expect(
-                legacyTextInput("Additional Parent Group", dialog),
-                "Changed parent group persists",
-            ).toHaveValue(groups[1]);
+            await expect(parentGroupInput, "Changed parent group persists").toHaveValue(groups[1]);
 
             await expect(
                 legacyTextInput("User path", dialog),
@@ -140,10 +141,7 @@ test.describe("Sources", () => {
                 "Changed additional user DN persists",
             ).toHaveValue("ou=users");
 
-            await selectSearchValue(
-                legacyTextInput("Additional Parent Group", dialog),
-                /---------/,
-            );
+            await selectSearchValue("Additional Parent Group", /---------/, dialog);
 
             await click("Save Changes", "button", dialog);
             await expect(dialog, "Editor closes after clearing parent group").toBeHidden();
@@ -153,7 +151,7 @@ test.describe("Sources", () => {
             await openEditor();
 
             await expect(
-                legacyTextInput("Additional Parent Group", dialog),
+                parentGroupInput,
                 "Parent group remains cleared after reopening",
             ).toHaveValue("");
         });

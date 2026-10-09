@@ -10492,12 +10492,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="banner.dismiss.aria-label">
   <source>Dismiss banner</source>
 </trans-unit>
-<trans-unit id="settings.base-url.banner.action">
-  <source>Configure it in the system settings</source>
-</trans-unit>
-<trans-unit id="settings.base-url.banner.label">
-  <source>The base URL has not been configured.</source>
-</trans-unit>
 <trans-unit id="sf993bb199fefbe04">
   <source>All</source>
 </trans-unit>
