@@ -310,6 +310,15 @@ export const ROUTES: RouteLike[] = [
         },
         "custom-permissions",
     ),
+    new Route(
+        "/identity/permission-checks",
+        async () => {
+            await import("#admin/rbac/ak-permission-check-list");
+
+            return html`<ak-permission-check-list></ak-permission-check-list>`;
+        },
+        "permission-checks",
+    ),
     new Route<{ id: string }>(
         "/identity/roles/:id{/*}?",
         async (args) => {
