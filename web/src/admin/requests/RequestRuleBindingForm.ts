@@ -1,14 +1,15 @@
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-text-input";
-
 import { aki } from "#common/api/client";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 import { ModelForm } from "#elements/forms/ModelForm";
+import { SearchSelectSource, withQuery } from "#elements/forms/SearchSelect/shared";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { AKSearchSelect } from "#components/ak-search-select-field";
 
 import {
     ApplicationEntitlement,
@@ -17,12 +18,12 @@ import {
     RequestRule,
     RequestRuleBinding,
     RequestsApi,
-    RequestsRulesListRequest,
 } from "@goauthentik/api";
+
+import { ifDefined } from "lit-html/directives/if-defined.js";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
-import { ifDefined } from "lit-html/directives/if-defined.js";
 import { customElement, property, state } from "lit/decorators.js";
 
 function entitlementToPair(entitlement: ApplicationEntitlement): DualSelectPair {
@@ -30,6 +31,15 @@ function entitlementToPair(entitlement: ApplicationEntitlement): DualSelectPair 
 }
 
 const CHILD_BINDING_PAGE_SIZE = 100;
+
+const requestRuleSource: SearchSelectSource<RequestRule> = {
+    fetchObjects: (query) =>
+        aki(RequestsApi)
+            .requestsRulesList(withQuery(query, { ordering: "name" }))
+            .then(({ results }) => results),
+    keyOf: (rule) => rule.uuid ?? "",
+    labelOf: (rule) => rule.name,
+};
 
 @customElement("ak-request-rule-binding-form")
 export class RequestRuleBindingForm extends ModelForm<RequestRuleBinding, string> {
@@ -47,12 +57,14 @@ export class RequestRuleBindingForm extends ModelForm<RequestRuleBinding, string
     protected async loadInstance(pk: string): Promise<RequestRuleBinding> {
         const binding = await aki(RequestsApi).requestsRuleBindingsRetrieve({ uuid: pk });
         await this.#loadChildBindings(pk);
+
         return binding;
     }
 
     #loadChildBindings = async (bindingPk: string): Promise<void> => {
         if (!this.targetPk) {
             this.selectedEntitlementPairs = [];
+
             return;
         }
 
@@ -83,6 +95,7 @@ export class RequestRuleBindingForm extends ModelForm<RequestRuleBinding, string
             page,
             search,
         };
+
         return this.#coreApi.coreApplicationEntitlementsList(args).then((results) => {
             return {
                 pagination: results.pagination,
@@ -97,6 +110,7 @@ export class RequestRuleBindingForm extends ModelForm<RequestRuleBinding, string
         if (this.targetPk) {
             data.target = this.targetPk;
         }
+
         const relatedTargets = (data.relatedTargets ?? []).map((target) => String(target));
 
         const binding = this.instance?.uuid
@@ -145,23 +159,12 @@ export class RequestRuleBindingForm extends ModelForm<RequestRuleBinding, string
 
     protected renderForm(): SlottedTemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Rule")} required name="rule">
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<RequestRule[]> => {
-                        const args: RequestsRulesListRequest = {
-                            ordering: "name",
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const rules = await aki(RequestsApi).requestsRulesList(args);
-                        return rules.results;
-                    }}
-                    .renderElement=${(rule: RequestRule) => rule.name}
-                    .value=${(rule: RequestRule | null) => rule?.uuid}
-                    .selected=${(rule: RequestRule) => rule.uuid === this.instance?.rule}
-                    blankable
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "rule",
+                    source: requestRuleSource,
+                    value: this.instance?.rule,
+                    blankable: true,
+                })}
             </ak-form-element-horizontal>
             <ak-text-input
                 label=${msg("Pending expiry")}
@@ -198,6 +201,7 @@ export class RequestRuleBindingForm extends ModelForm<RequestRuleBinding, string
         if (!this.targetPk) {
             return nothing;
         }
+
         return html`<ak-form-element-horizontal
             label=${msg("Additional entitlements")}
             name="relatedTargets"

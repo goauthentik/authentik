@@ -1,25 +1,30 @@
 import "#components/ak-text-input";
 import "#elements/forms/Radio";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
 import "#elements/forms/FormGroup";
-
 import { aki } from "#common/api/client";
+
+import { SearchSelectSource, withQuery } from "#elements/forms/SearchSelect/shared";
+
+import { AKSearchSelect } from "#components/ak-search-select-field";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
-import {
-    Connector,
-    EndpointsApi,
-    EndpointsConnectorsListRequest,
-    EndpointStage,
-    StageModeEnum,
-    StagesApi,
-} from "@goauthentik/api";
+import { Connector, EndpointsApi, EndpointStage, StageModeEnum, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
+
+const connectorSource: SearchSelectSource<Connector> = {
+    fetchObjects: (query) =>
+        aki(EndpointsApi)
+            .endpointsConnectorsList(withQuery(query, { ordering: "name" }))
+            .then(({ results }) => results),
+    keyOf: (connector) => connector.connectorUuid ?? "",
+    labelOf: (connector) => connector.name,
+    describe: (connector) => connector.verboseName,
+};
 
 @customElement("ak-endpoints-stage-form")
 export class EndpointStageForm extends BaseStageForm<EndpointStage> {
@@ -50,31 +55,12 @@ export class EndpointStageForm extends BaseStageForm<EndpointStage> {
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Connector")} required name="connector">
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Connector[]> => {
-                                const args: EndpointsConnectorsListRequest = {
-                                    ordering: "name",
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const users = await aki(EndpointsApi).endpointsConnectorsList(args);
-                                return users.results;
-                            }}
-                            .renderElement=${(connector: Connector): string => {
-                                return connector.name;
-                            }}
-                            .renderDescription=${(connector: Connector): TemplateResult => {
-                                return html`${connector.verboseName}`;
-                            }}
-                            .value=${(connector: Connector | undefined): string | undefined => {
-                                return connector?.connectorUuid;
-                            }}
-                            .selected=${(connector: Connector): boolean => {
-                                return connector.connectorUuid === this.instance?.connector;
-                            }}
-                        >
-                        </ak-search-select>
+                        ${AKSearchSelect({
+                            name: "connector",
+                            source: connectorSource,
+                            value: this.instance?.connector,
+                            blankable: false,
+                        })}
                     </ak-form-element-horizontal>
 
                     <ak-form-element-horizontal label=${msg("Mode")} required name="mode">

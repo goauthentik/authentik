@@ -20,6 +20,7 @@
  * Creates a logger with the given prefix.
  *
  * @param {string} [prefix]
+ *
  * @returns {ConsoleLike}
  */
 export function createLogger(prefix = "[Build Observer]") {

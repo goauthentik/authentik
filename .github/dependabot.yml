@@ -8,7 +8,7 @@ updates:
       # Required to update composite actions
       # https://github.com/dependabot/dependabot-core/issues/6704
       - /.github/actions/setup
-      - /.github/actions/comment-pr-instructions
+      - /.github/actions/comment-pr
       - /.github/actions/test-results
     schedule:
       interval: daily
@@ -26,7 +26,7 @@ updates:
           - "github/codeql-action/*"
       regclient:
         patterns:
-          - "regclient/actions//*"
+          - "regclient/actions/*"
 
   #endregion
 
@@ -95,13 +95,17 @@ updates:
 
   #endregion
 
-  #region Web
+  #region Web & Documentation
 
+  # One entry for every workspace root that shares the pnpm catalog pins, so a
+  # group bump lands in all of them in a single PR. Groups don't span entries,
+  # and `scripts/node/lint-catalogs.ts` fails when the roots drift apart.
   - package-ecosystem: npm
     directories:
       - "/"
       - "/web"
       - "/web/packages/*"
+      - "/website"
     schedule:
       interval: daily
       time: "04:00"
@@ -122,13 +126,20 @@ updates:
         patterns:
           - "@babel/*"
           - "babel-*"
-      eslint:
+      oxc:
         patterns:
-          - "@eslint/*"
-          - "@typescript-eslint/*"
-          - "eslint-*"
-          - "eslint"
-          - "typescript-eslint"
+          - "@oxc-project/*"
+          - "oxc-*"
+          - "oxfmt"
+          - "oxlint"
+      lint:
+        patterns:
+          # Rule sources for @goauthentik/oxlint-config; oxlint reads their rule
+          # definitions, so they move in lockstep with it.
+          - "eslint-plugin-lit"
+          - "eslint-plugin-wc"
+          - "stylelint"
+          - "stylelint-*"
       storybook:
         patterns:
           - "@storybook/*"
@@ -148,6 +159,17 @@ updates:
         patterns:
           - "@swc/*"
           - "swc-*"
+      # Listed before `goauthentik` so the config package moves with Docusaurus.
+      docusaurus:
+        patterns:
+          - "@docusaurus/*"
+          - "@goauthentik/docusaurus-config"
+          - "docusaurus-plugin-openapi-docs"
+          - "docusaurus-theme-openapi-docs"
+      website-build:
+        patterns:
+          - "lightningcss*"
+          - "@rspack/binding*"
       goauthentik:
         patterns:
           - "@goauthentik/*"
@@ -164,12 +186,15 @@ updates:
 
   - package-ecosystem: npm
     directories:
-      - "/packages/prettier-config"
-      - "/packages/tsconfig"
       - "/packages/docusaurus-config"
-      - "/packages/eslint-config"
-      - "/packages/logger-js"
       - "/packages/esbuild-plugin-live-reload"
+      - "/packages/fonts"
+      - "/packages/geo"
+      - "/packages/logger-js"
+      - "/packages/oxfmt-config"
+      - "/packages/oxlint-config"
+      - "/packages/theme"
+      - "/packages/tsconfig"
     schedule:
       interval: daily
       time: "04:00"
@@ -190,13 +215,20 @@ updates:
         patterns:
           - "@babel/*"
           - "babel-*"
-      eslint:
+      oxc:
         patterns:
-          - "@eslint/*"
-          - "@typescript-eslint/*"
-          - "eslint-*"
-          - "eslint"
-          - "typescript-eslint"
+          - "@oxc-project/*"
+          - "oxc-*"
+          - "oxfmt"
+          - "oxlint"
+      lint:
+        patterns:
+          # Rule sources for @goauthentik/oxlint-config; oxlint reads their rule
+          # definitions, so they move in lockstep with it.
+          - "eslint-plugin-lit"
+          - "eslint-plugin-wc"
+          - "stylelint"
+          - "stylelint-*"
       storybook:
         patterns:
           - "@storybook/*"
@@ -228,51 +260,7 @@ updates:
 
   #endregion
 
-  # #region Documentation
-
-  - package-ecosystem: npm
-    directory: "/website"
-    schedule:
-      interval: daily
-      time: "04:00"
-    open-pull-requests-limit: 10
-    commit-message:
-      prefix: "website:"
-    labels:
-      - dependencies
-    cooldown:
-      default-days: 7
-      semver-major-days: 14
-      semver-patch-days: 3
-    groups:
-      docusaurus:
-        patterns:
-          - "@docusaurus/*"
-          - "@goauthentik/docusaurus-config"
-          - "docusaurus-plugin-openapi-docs"
-          - "docusaurus-theme-openapi-docs"
-      build:
-        patterns:
-          - "@swc/*"
-          - "swc-*"
-          - "lightningcss*"
-          - "@rspack/binding*"
-      goauthentik:
-        patterns:
-          - "@goauthentik/eslint-config"
-          - "@goauthentik/prettier-config"
-          - "@goauthentik/tsconfig"
-      eslint:
-        patterns:
-          - "@eslint/*"
-          - "@typescript-eslint/*"
-          - "eslint-*"
-          - "eslint"
-          - "typescript-eslint"
-
-  #endregion
-
-  # AWS Lifecycle
+  #region AWS Lifecycle
 
   - package-ecosystem: npm
     directory: "/lifecycle/aws"
@@ -341,6 +329,10 @@ updates:
       - dependencies
     cooldown:
       default-days: 3
+    groups:
+      pnpm:
+        patterns:
+          - "*pnpm/pnpm"
   - package-ecosystem: docker-compose
     directories:
       - /packages/client-go

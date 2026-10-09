@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -121,12 +119,14 @@ export class BaseAPI {
     /**
      * Check if the given MIME is a JSON MIME.
      * JSON MIME examples:
-     *   application/json
-     *   application/json; charset=UTF8
-     *   APPLICATION/JSON
-     *   application/vnd.company+json
+     * application/json
+     * application/json; charset=UTF8
+     * APPLICATION/JSON
+     * application/vnd.company+json
+     *
      * @param mime - MIME (Multipurpose Internet Mail Extensions)
-     * @return True if the given MIME is JSON, false otherwise.
+     *
+     * @returns True if the given MIME is JSON, false otherwise.
      */
     protected isJsonMime(mime: string | null | undefined): boolean {
         if (!mime) {
@@ -279,7 +279,7 @@ function isFormData(value: any): value is FormData {
 }
 
 export class ResponseError extends Error {
-    override name: "ResponseError" = "ResponseError";
+    override name = "ResponseError" as const;
     constructor(
         public response: Response,
         msg?: string,
@@ -295,7 +295,7 @@ export class ResponseError extends Error {
 }
 
 export class FetchError extends Error {
-    override name: "FetchError" = "FetchError";
+    override name = "FetchError" as const;
     constructor(
         public cause: Error,
         msg?: string,
@@ -311,7 +311,7 @@ export class FetchError extends Error {
 }
 
 export class RequiredError extends Error {
-    override name: "RequiredError" = "RequiredError";
+    override name = "RequiredError" as const;
     constructor(
         public field: string,
         msg?: string,

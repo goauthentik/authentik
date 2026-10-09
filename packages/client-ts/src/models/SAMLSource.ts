@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -37,13 +35,11 @@ import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./User
 
 /**
  * SAMLSource Serializer
+ *
  * @export
  * @interface SAMLSource
  */
 export interface SAMLSource {
-    /**
-     *
-     */
     readonly pk: string;
     /**
      * Source's display Name.
@@ -53,12 +49,10 @@ export interface SAMLSource {
      * Internal source name, used in URLs.
      */
     slug: string;
-    /**
-     *
-     */
     enabled?: boolean;
     /**
-     * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
+     * When enabled, this source will be displayed as a prominent button on the login page, instead
+     * of a small icon.
      */
     promoted?: boolean;
     /**
@@ -69,13 +63,7 @@ export interface SAMLSource {
      * Flow to use when enrolling new users.
      */
     enrollmentFlow?: string | null;
-    /**
-     *
-     */
     userPropertyMappings?: Array<string>;
-    /**
-     *
-     */
     groupPropertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
@@ -93,33 +81,20 @@ export interface SAMLSource {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
      */
     userMatchingMode?: UserMatchingModeEnum;
     /**
-     * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+     * Objects that are managed by authentik. These objects are created and updated automatically.
+     * This flag only indicates that an object can be overwritten by migrations. You can still
+     * modify the objects via the API, but expect changes to be overwritten in a later update.
      */
     readonly managed: string | null;
-    /**
-     *
-     */
     userPathTemplate?: string;
-    /**
-     *
-     */
     icon?: string;
-    /**
-     *
-     */
     readonly iconUrl: string;
-    /**
-     *
-     */
     readonly iconThemedUrls: ThemedUrls | null;
     /**
      * How the source determines if an existing group should be used or a new group created.
@@ -146,7 +121,8 @@ export interface SAMLSource {
      */
     sloUrl?: string | null;
     /**
-     * Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.
+     * Allows authentication flows initiated by the IdP. This can be a security risk, as no
+     * validation of the request ID is done.
      */
     allowIdpInitiated?: boolean;
     /**
@@ -157,41 +133,30 @@ export interface SAMLSource {
      * NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
      */
     nameIdPolicy?: SAMLNameIDPolicyEnum;
-    /**
-     *
-     */
     bindingType?: BindingTypeEnum;
     /**
-     * When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.
+     * When selected, incoming assertion's Signatures will be validated against this certificate. To
+     * allow unsigned Requests, leave on default.
      */
     verificationKp?: string | null;
     /**
      * Keypair used to sign outgoing Responses going to the Identity Provider.
      */
     signingKp?: string | null;
-    /**
-     *
-     */
     digestAlgorithm?: DigestAlgorithmEnum;
-    /**
-     *
-     */
     signatureAlgorithm?: SignatureAlgorithmEnum;
     /**
-     * Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3).
+     * Time offset when temporary users should be deleted. This only applies if your IDP uses the
+     * NameID Format 'transient', and the user doesn't log out manually. (Format:
+     * hours=1;minutes=2;seconds=3).
      */
     temporaryUserDeleteAfter?: string;
     /**
-     * When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
+     * When selected, incoming assertions are encrypted by the IdP using the public key of the
+     * encryption keypair. The assertion is decrypted by the SP using the the private key.
      */
     encryptionKp?: string | null;
-    /**
-     *
-     */
     signedAssertion?: boolean;
-    /**
-     *
-     */
     signedResponse?: boolean;
 }
 

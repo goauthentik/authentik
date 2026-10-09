@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { Pagination } from "./Pagination";
 import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- *
  * @export
  * @interface PaginatedBlueprintInstanceList
  */
 export interface PaginatedBlueprintInstanceList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<BlueprintInstance>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

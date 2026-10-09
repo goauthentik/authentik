@@ -20,7 +20,7 @@ from rest_framework.serializers import ValidationError
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.exceptions import StageInvalidException
-from authentik.flows.models import FlowDesignation, FlowToken
+from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED, PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import QS_KEY_TOKEN, QS_QUERY
@@ -104,10 +104,11 @@ class EmailStageView(ChallengeStageView):
         """Helper function that sends the actual email. Implies that you've
         already checked that there is a pending user."""
         pending_user = self.get_pending_user()
-        if not pending_user.pk and self.executor.flow.designation == FlowDesignation.RECOVERY:
-            # Pending user does not have a primary key, and we're in a recovery flow,
-            # which means the user entered an invalid identifier, so we pretend to send the
-            # email, to not disclose if the user exists
+        if not pending_user.pk:
+            # Do not create a FlowToken or send email for an unsaved pending user.
+            # This occurs when Identification pretends that an unknown user exists;
+            # persisting a token or conditionally sending mail would either fail or
+            # disclose account existence.
             return
         email = self.executor.plan.context.get(PLAN_CONTEXT_EMAIL_OVERRIDE, None)
         if not email:
@@ -141,7 +142,9 @@ class EmailStageView(ChallengeStageView):
         # Check if the user came back from the email link to verify
         restore_token: FlowToken = self.executor.plan.context.get(PLAN_CONTEXT_IS_RESTORED, None)
         user = self.get_pending_user()
-        if restore_token:
+        # Check if we have an actual pending user (no fallbacks, we only care if
+        # a pending user was set by an identification stage/etc)
+        if restore_token and self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER):
             if restore_token.user != user:
                 self.logger.warning("Flow token for non-matching user, denying request")
                 return self.executor.stage_invalid()

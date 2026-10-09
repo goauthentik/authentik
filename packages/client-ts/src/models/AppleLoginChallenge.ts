@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,37 +16,17 @@ import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * Special challenge for apple-native authentication flow, which happens on the client.
+ *
  * @export
  * @interface AppleLoginChallenge
  */
 export interface AppleLoginChallenge {
-    /**
-     *
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     */
     component?: string;
-    /**
-     *
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     */
     clientId: string;
-    /**
-     *
-     */
     scope: string;
-    /**
-     *
-     */
     redirectUri: string;
-    /**
-     *
-     */
     state: string;
 }
 

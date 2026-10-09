@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -22,17 +20,12 @@ import {
 
 /**
  * RedirectStage Serializer
+ *
  * @export
  * @interface RedirectStage
  */
 export interface RedirectStage {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
@@ -50,25 +43,10 @@ export interface RedirectStage {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly flowSet: Array<FlowSet>;
-    /**
-     *
-     */
     keepContext?: boolean;
-    /**
-     *
-     */
     mode: RedirectStageModeEnum;
-    /**
-     *
-     */
     targetStatic?: string;
-    /**
-     *
-     */
     targetFlow?: string | null;
 }
 

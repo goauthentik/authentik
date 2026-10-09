@@ -40,6 +40,7 @@ export class BrandLinks extends AKElement {
                 href: null,
             },
         ];
+
         return html`<ul
             aria-label=${msg("Site links")}
             class="pf-c-list pf-m-inline"
@@ -55,9 +56,11 @@ export class BrandLinks extends AKElement {
                     data-kind=${link.href ? "link" : "text"}
                     data-track-name=${idx === 0 ? "start" : idx === links.length - 1 ? "end" : idx}
                 >
-                    ${link.href
-                        ? html`<a part="list-item-link" href=${link.href}>${children}</a>`
-                        : children}
+                    ${
+                        link.href
+                            ? html`<a part="list-item-link" href=${link.href}>${children}</a>`
+                            : children
+                    }
                 </li>`;
             })}
         </ul>`;

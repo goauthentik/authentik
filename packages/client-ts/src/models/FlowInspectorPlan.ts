@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,17 +15,12 @@ import { FlowStageBindingFromJSON } from "./FlowStageBinding";
 
 /**
  * Serializer for an active FlowPlan
+ *
  * @export
  * @interface FlowInspectorPlan
  */
 export interface FlowInspectorPlan {
-    /**
-     *
-     */
     readonly currentStage: FlowStageBinding;
-    /**
-     *
-     */
     readonly nextPlannedStage: FlowStageBinding;
     /**
      * Get the plan's context, sanitized

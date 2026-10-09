@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,22 +19,12 @@ import type { Pagination } from "./Pagination";
 import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- *
  * @export
  * @interface PaginatedGroupPlexSourceConnectionList
  */
 export interface PaginatedGroupPlexSourceConnectionList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<GroupPlexSourceConnection>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

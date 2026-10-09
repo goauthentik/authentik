@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,49 +15,20 @@ import { DiagramNodeTypeEnumFromJSON } from "./DiagramNodeTypeEnum";
 
 /**
  * Base serializer class which doesn't implement create/update methods
+ *
  * @export
  * @interface DiagramNode
  */
 export interface DiagramNode {
-    /**
-     *
-     */
     readonly identifier: string;
-    /**
-     *
-     */
     readonly type: DiagramNodeTypeEnum;
-    /**
-     *
-     */
     readonly name: string;
-    /**
-     *
-     */
     readonly verboseName: string;
-    /**
-     *
-     */
     readonly model: string;
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     readonly component: string;
-    /**
-     *
-     */
     readonly bindingModel: string;
-    /**
-     *
-     */
     readonly bindingPk: string;
-    /**
-     *
-     */
     readonly bindingOrder: number | null;
 }
 

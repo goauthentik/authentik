@@ -93,6 +93,19 @@ The following flow stages are supported by the LDAP provider:
 - [User Login stage](../../flows-stages/stages/user_login/index.mdx)
 - [Deny stage](../../flows-stages/stages/deny/index.mdx)
 
+### Bind with an app password
+
+An [app password](../../../users-sources/user/user-interface.mdx#tokens-and-app-passwords) can replace the user's regular password in an LDAP bind. To enable this:
+
+1. In the Admin interface, open the LDAP provider under **Applications** > **Providers** and identify its **Bind Flow**.
+2. Open that flow under **Flows and Stages** > **Flows** and locate its [password stage](../../flows-stages/stages/password/index.mdx). If the identification stage has a **Password stage** configured, use that stage.
+3. Edit the password stage under **Flows and Stages** > **Stages** and select **User database + app passwords** in **Backends**.
+4. Configure the LDAP client with the user's bind DN, such as `cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`, adjusted for your username and **Base DN**. Use the generated app password as the bind password.
+
+The app password must belong to the user in the bind DN and must not have expired. An API token cannot be used as an app password.
+
+An app password satisfies the password stage only. Other stages and policies in the **Bind Flow**, including MFA requirements, still apply unless explicitly skipped by a policy. If the flow requires MFA, configure a supported method as described in [Code-based MFA support](#code-based-mfa-support). The user must also have [access to the LDAP application](#searching).
+
 ### Bind modes
 
 The LDAP provider supports two different bind modes:

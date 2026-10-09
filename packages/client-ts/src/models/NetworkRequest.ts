@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,26 +17,13 @@ import {
 } from "./NetworkInterfaceRequest";
 
 /**
- *
  * @export
  * @interface NetworkRequest
  */
 export interface NetworkRequest {
-    /**
-     *
-     */
     hostname: string;
-    /**
-     *
-     */
     firewallEnabled?: boolean;
-    /**
-     *
-     */
     interfaces: Array<NetworkInterfaceRequest>;
-    /**
-     *
-     */
     gateway?: string;
 }
 

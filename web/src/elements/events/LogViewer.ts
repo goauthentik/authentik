@@ -1,6 +1,7 @@
 import "#components/ak-status-label";
 import "#elements/EmptyState";
 import "#elements/timestamp/ak-timestamp";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { formatElapsedTime } from "#common/temporal";
 
@@ -13,8 +14,6 @@ import { LogEvent, LogLevelEnum } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-log-viewer")
 export class LogViewer extends StaticTable<LogEvent> {

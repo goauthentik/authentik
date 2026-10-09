@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,17 +17,12 @@ import { UserFieldsEnumFromJSON, UserFieldsEnumToJSON } from "./UserFieldsEnum";
 
 /**
  * IdentificationStage Serializer
+ *
  * @export
  * @interface IdentificationStage
  */
 export interface IdentificationStage {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
@@ -47,9 +40,6 @@ export interface IdentificationStage {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly flowSet: Array<FlowSet>;
     /**
      * Fields of the user object to match against. (Hold shift to select multiple options)
@@ -60,7 +50,8 @@ export interface IdentificationStage {
      */
     passwordStage?: string | null;
     /**
-     * When set, adds functionality exactly like a Captcha stage, but baked into the Identification stage.
+     * When set, adds functionality exactly like a Captcha stage, but baked into the Identification
+     * stage.
      */
     captchaStage?: string | null;
     /**
@@ -68,7 +59,8 @@ export interface IdentificationStage {
      */
     caseInsensitiveMatching?: boolean;
     /**
-     * When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown
+     * When a valid username/email has been entered, and this option is enabled, the user's username
+     * and avatar will be shown. Otherwise, the text that the user entered will be shown
      */
     showMatchedUser?: boolean;
     /**
@@ -87,20 +79,19 @@ export interface IdentificationStage {
      * Specify which sources should be shown.
      */
     sources?: Array<string>;
-    /**
-     *
-     */
     showSourceLabels?: boolean;
     /**
      * When enabled, the stage will succeed and continue even when incorrect user info is entered.
      */
     pretendUserExists?: boolean;
     /**
-     * Show the user the 'Remember me on this device' toggle, allowing repeat users to skip straight to entering their password.
+     * Show the user the 'Remember me on this device' toggle, allowing repeat users to skip straight
+     * to entering their password.
      */
     enableRememberMe?: boolean;
     /**
-     * When set, and conditional WebAuthn is available, allow the user to use their passkey as a first factor.
+     * When set, and conditional WebAuthn is available, allow the user to use their passkey as a
+     * first factor.
      */
     webauthnStage?: string | null;
 }

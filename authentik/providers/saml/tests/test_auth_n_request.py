@@ -11,6 +11,7 @@ from django.urls import reverse
 from guardian.utils import get_anonymous_user
 from lxml import etree  # nosec
 
+from authentik.admin.flags import patch_flag
 from authentik.blueprints.tests import apply_blueprint
 from authentik.common.saml.constants import (
     NS_MAP,
@@ -31,6 +32,7 @@ from authentik.flows.apps import ContinuousLogin
 from authentik.flows.models import FlowStageBinding
 from authentik.lib.generators import generate_id
 from authentik.lib.xml import lxml_from_string
+from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
@@ -39,7 +41,6 @@ from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID, RequestProcessor
 from authentik.sources.saml.processors.response import ResponseProcessor
 from authentik.stages.dummy.models import DummyStage
-from authentik.tenants.flags import patch_flag
 
 POST_REQUEST = (
     "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c2FtbDJwOkF1dGhuUmVxdWVzdCB4bWxuczpzYW1sMn"
@@ -754,3 +755,18 @@ class TestAuthNRequest(TestCase):
             b64encode(request.encode()).decode(), "test_state"
         )
         self.assertTrue(parsed_request.force_authn)
+
+    def test_doctype(self):
+        """Test that a request with a document type declaration is refused"""
+        request = (
+            '<?xml version="1.0"?>'
+            "<!DOCTYPE samlp:AuthnRequest>"
+            '<samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" '
+            'ID="_1" Version="2.0" IssueInstant="2026-05-19T01:01:53.461Z" '
+            'AssertionConsumerServiceURL="http://testserver/source/saml/provider/acs/"/>'
+        )
+
+        with self.assertRaisesMessage(
+            CannotHandleAssertion, "XML document contains a DOCTYPE declaration"
+        ):
+            AuthNRequestParser(self.provider).parse(b64encode(request.encode()).decode())

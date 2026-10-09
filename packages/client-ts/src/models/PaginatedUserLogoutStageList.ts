@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { UserLogoutStage } from "./UserLogoutStage";
 import { UserLogoutStageFromJSON, UserLogoutStageToJSON } from "./UserLogoutStage";
 
 /**
- *
  * @export
  * @interface PaginatedUserLogoutStageList
  */
 export interface PaginatedUserLogoutStageList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<UserLogoutStage>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

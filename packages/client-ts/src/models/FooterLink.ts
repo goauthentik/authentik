@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,17 +12,12 @@
 
 /**
  * Links returned in Config API
+ *
  * @export
  * @interface FooterLink
  */
 export interface FooterLink {
-    /**
-     *
-     */
     readonly href: string | null;
-    /**
-     *
-     */
     readonly name: string;
 }
 

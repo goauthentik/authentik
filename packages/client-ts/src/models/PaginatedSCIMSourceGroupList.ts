@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { SCIMSourceGroup } from "./SCIMSourceGroup";
 import { SCIMSourceGroupFromJSON, SCIMSourceGroupToJSON } from "./SCIMSourceGroup";
 
 /**
- *
  * @export
  * @interface PaginatedSCIMSourceGroupList
  */
 export interface PaginatedSCIMSourceGroupList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<SCIMSourceGroup>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

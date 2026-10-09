@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,13 +19,11 @@ import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./User
 
 /**
  * Source Serializer
+ *
  * @export
  * @interface TelegramSource
  */
 export interface TelegramSource {
-    /**
-     *
-     */
     readonly pk: string;
     /**
      * Source's display Name.
@@ -37,12 +33,10 @@ export interface TelegramSource {
      * Internal source name, used in URLs.
      */
     slug: string;
-    /**
-     *
-     */
     enabled?: boolean;
     /**
-     * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
+     * When enabled, this source will be displayed as a prominent button on the login page, instead
+     * of a small icon.
      */
     promoted?: boolean;
     /**
@@ -53,13 +47,7 @@ export interface TelegramSource {
      * Flow to use when enrolling new users.
      */
     enrollmentFlow?: string | null;
-    /**
-     *
-     */
     userPropertyMappings?: Array<string>;
-    /**
-     *
-     */
     groupPropertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
@@ -77,33 +65,20 @@ export interface TelegramSource {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
      */
     userMatchingMode?: UserMatchingModeEnum;
     /**
-     * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+     * Objects that are managed by authentik. These objects are created and updated automatically.
+     * This flag only indicates that an object can be overwritten by migrations. You can still
+     * modify the objects via the API, but expect changes to be overwritten in a later update.
      */
     readonly managed: string | null;
-    /**
-     *
-     */
     userPathTemplate?: string;
-    /**
-     *
-     */
     icon?: string;
-    /**
-     *
-     */
     readonly iconUrl: string | null;
-    /**
-     *
-     */
     readonly iconThemedUrls: ThemedUrls | null;
     /**
      * Telegram bot username

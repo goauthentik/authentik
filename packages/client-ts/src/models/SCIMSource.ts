@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,13 +15,11 @@ import { TokenFromJSON } from "./Token";
 
 /**
  * SCIMSource Serializer
+ *
  * @export
  * @interface SCIMSource
  */
 export interface SCIMSource {
-    /**
-     *
-     */
     readonly pk: string;
     /**
      * Source's display Name.
@@ -33,17 +29,8 @@ export interface SCIMSource {
      * Internal source name, used in URLs.
      */
     slug: string;
-    /**
-     *
-     */
     enabled?: boolean;
-    /**
-     *
-     */
     userPropertyMappings?: Array<string>;
-    /**
-     *
-     */
     groupPropertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
@@ -62,20 +49,16 @@ export interface SCIMSource {
      */
     readonly metaModelName: string;
     /**
-     * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+     * Objects that are managed by authentik. These objects are created and updated automatically.
+     * This flag only indicates that an object can be overwritten by migrations. You can still
+     * modify the objects via the API, but expect changes to be overwritten in a later update.
      */
     readonly managed: string | null;
-    /**
-     *
-     */
     userPathTemplate?: string;
     /**
      * Get Root URL
      */
     readonly rootUrl: string;
-    /**
-     *
-     */
     readonly tokenObj: Token;
 }
 

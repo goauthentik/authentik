@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -23,93 +21,31 @@ import { UiThemeEnumFromJSON } from "./UiThemeEnum";
 
 /**
  * Partial brand information for styling
+ *
  * @export
  * @interface CurrentBrand
  */
 export interface CurrentBrand {
-    /**
-     *
-     */
     matchedDomain: string;
-    /**
-     *
-     */
     brandingTitle: string;
-    /**
-     *
-     */
     brandingLogo: string;
-    /**
-     *
-     */
     readonly brandingLogoThemedUrls: ThemedUrls | null;
-    /**
-     *
-     */
     brandingFavicon: string;
-    /**
-     *
-     */
     readonly brandingFaviconThemedUrls: ThemedUrls | null;
-    /**
-     *
-     */
     brandingCustomCss: string;
-    /**
-     *
-     */
     brandingMapTiles: string;
-    /**
-     *
-     */
     readonly uiFooterLinks: Array<FooterLink>;
-    /**
-     *
-     */
     readonly uiTheme: UiThemeEnum;
-    /**
-     *
-     */
     flowAuthentication?: string;
-    /**
-     *
-     */
     flowUserSwitch?: string;
-    /**
-     *
-     */
     flowInvalidation?: string;
-    /**
-     *
-     */
     flowRecovery?: string;
-    /**
-     *
-     */
     flowUnenrollment?: string;
-    /**
-     *
-     */
     flowUserSettings?: string;
-    /**
-     *
-     */
     flowDeviceCode?: string;
-    /**
-     *
-     */
     flowLockdown?: string;
-    /**
-     *
-     */
     flowRequest?: string;
-    /**
-     *
-     */
     readonly defaultLocale: string;
-    /**
-     *
-     */
     flags: CurrentBrandFlags;
 }
 

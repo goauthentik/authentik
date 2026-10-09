@@ -9,6 +9,9 @@ import {
     WizardStepState,
 } from "./shared.js";
 import { wizardStepContext } from "./WizardContexts.js";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
 
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
@@ -25,26 +28,18 @@ import { property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { map } from "lit/directives/map.js";
 
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
-
 /**
- * @class WizardStep
+ * @fires WizardNavigationEvent - Request ak-wizard-steps to move to another step
+ * @class WizardStep Superclass for a single step in the wizard. Contains all of the styling for the
+ *   Patternfly wizard pattern. Child classes must:
  *
- * Superclass for a single step in the wizard.  Contains all of the styling for the Patternfly
- * wizard pattern.  Child classes must:
- *
- * - Specify the *Wizard* title, optional description, and if to show the cancel icon in the upper
- *   right hand corner. Ideally, this is the same for all child classes, so for simplicity these
- *   could be overridden
- * - Specify what goes into the main content for this step.
- * - Specify what buttons to render for this step, and to what step(s) the navigable button(s) must go.
- * - Specify what validation must be done before the 'next' button can be honored.
- *
- * Events
- *
- * @fires WizardNavigationEvent - request ak-wizard-steps to move to another step
+ *   - Specify the _Wizard_ title, optional description, and if to show the cancel icon in the upper
+ *     right hand corner. Ideally, this is the same for all child classes, so for simplicity these
+ *     could be overridden
+ *   - Specify what goes into the main content for this step.
+ *   - Specify what buttons to render for this step, and to what step(s) the navigable button(s) must
+ *     go.
+ *   - Specify what validation must be done before the 'next' button can be honored. Events
  */
 export abstract class WizardStep extends AKElement {
     public static styles = [
@@ -120,12 +115,20 @@ export abstract class WizardStep extends AKElement {
     public abstract checkValidity(): boolean;
 
     /**
+     * Resolves once the step's fields have final values and are safe to validate, e.g. after a
+     * search select has preselected its default. Steps with such fields override this.
+     */
+    public settled(): Promise<void> {
+        return Promise.resolve();
+    }
+
+    /**
      * The ID of the current step.
      */
     declare public id: string;
 
     /**
-     *The label of the current step.  Displayed in the navigation bar.
+     * *The label of the current step. Displayed in the navigation bar.
      */
     public label: string = "--unset--";
 
@@ -148,7 +151,8 @@ export abstract class WizardStep extends AKElement {
     protected abstract buttons: WizardButton[];
 
     /**
-     * Render the main content of the step. This is where the form or other content for the step should be rendered.
+     * Render the main content of the step. This is where the form or other content for the step
+     * should be rendered.
      *
      * @abstract
      */
@@ -194,6 +198,11 @@ export abstract class WizardStep extends AKElement {
 
     //#endregion
 
+    /**
+     * The in-flight forward navigation, so repeated clicks while the fields settle are ignored.
+     */
+    #pendingForward: Promise<void> | null = null;
+
     protected navigateWizardStep(button: WizardButton, event?: Event) {
         event?.stopPropagation();
 
@@ -201,24 +210,37 @@ export abstract class WizardStep extends AKElement {
             throw new Error("Non-navigable button sent to handleNavigationEvent");
         }
 
-        if (button.kind === "next" || button.kind === "finish") {
-            // Check and report form validation to the user before allowing navigation to proceed.
-            if (!this.reportValidity()) {
-                return;
-            }
+        if (button.kind !== "next" && button.kind !== "finish") {
+            return this.handleButton(button);
         }
+
+        if (this.#pendingForward) return;
+
+        this.#pendingForward = this.#navigateForward(button).finally(() => {
+            this.#pendingForward = null;
+        });
+    }
+
+    async #navigateForward(button: WizardButton): Promise<void> {
+        // Validating before the fields settle would reject a value that is still loading.
+        await this.settled();
+
+        // Check and report form validation to the user before allowing navigation to proceed.
+        if (!this.reportValidity()) return;
 
         if (button.kind === "finish") {
             this.requestClose("finish");
+
             return;
         }
 
-        return this.handleButton(button);
+        await this.handleButton(button);
     }
 
     public requestClose = (returnValue?: string) => {
         if (!this.dialog) {
             this.logger.warn("Skipping close request: No dialog found for wizard.");
+
             return;
         }
 

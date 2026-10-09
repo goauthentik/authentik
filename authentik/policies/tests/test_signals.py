@@ -1,14 +1,16 @@
-"""Tests for ``authentik.policies.signals.invalidate_policy_cache``.
+"""Tests for policy cache invalidation.
 
-Regression guards for the per-login cache-invalidation skip. ``last_login``-
-only User saves must not trigger the broad ``cache.keys(...)`` invalidation.
+Policy and binding changes must invalidate cached results, while ``last_login``-
+only User saves must avoid the broad ``cache.keys(...)`` invalidation.
 """
 
 from unittest import TestCase, mock
+from uuid import UUID
 
 from authentik.core.models import User
 from authentik.policies import signals
-from authentik.policies.models import Policy
+from authentik.policies.models import Policy, PolicyBinding
+from authentik.policies.types import CACHE_PREFIX
 
 
 class _FakeUser:
@@ -19,11 +21,14 @@ class _FakePolicy:
     pk = "fake-policy-pk"
 
 
-class TestInvalidatePolicyCacheSkipsLastLoginOnly(TestCase):
-    """The handler must NOT touch the cache when a User save is purely a
-    ``last_login`` update."""
+class _FakeBinding:
+    policy_binding_uuid = UUID("12345678-1234-5678-1234-567812345678")
 
-    def _run_handler(self, sender, instance, update_fields):
+
+class TestInvalidatePolicyCache(TestCase):
+    """Test policy and application cache invalidation."""
+
+    def _run_handler(self, sender, instance, update_fields, policy_bindings=()):
         """Run the handler with mocked cache/PolicyBinding; return the
         cache mock for assertions."""
 
@@ -32,7 +37,7 @@ class TestInvalidatePolicyCacheSkipsLastLoginOnly(TestCase):
             mock.patch.object(signals, "PolicyBinding") as mock_pb,
         ):
             mock_cache.keys.return_value = []
-            mock_pb.objects.filter.return_value = []
+            mock_pb.objects.filter.return_value = policy_bindings
             signals.invalidate_policy_cache(
                 sender=sender,
                 instance=instance,
@@ -87,10 +92,26 @@ class TestInvalidatePolicyCacheSkipsLastLoginOnly(TestCase):
         Policy/PolicyBinding/PolicyBindingModel/Group saves must continue to
         invalidate as before — those changes affect access decisions for
         every user."""
+        binding = _FakeBinding()
         mock_cache = self._run_handler(
             sender=Policy,
             instance=_FakePolicy(),
             update_fields=["last_login"],  # irrelevant — sender isn't User
+            policy_bindings=[binding],
         )
-        mock_cache.keys.assert_called()
+        mock_cache.keys.assert_any_call(f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}_*")
         mock_cache.delete_many.assert_called()
+
+    def test_policy_binding_save_invalidates_binding_cache(self):
+        """Binding updates invalidate every cached result for that binding."""
+        binding = _FakeBinding()
+        with mock.patch.object(signals, "cache") as mock_cache:
+            mock_cache.keys.side_effect = [["policy-cache-key"], []]
+
+            signals.invalidate_policy_cache(
+                sender=PolicyBinding,
+                instance=binding,
+            )
+
+        mock_cache.keys.assert_any_call(f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}_*")
+        mock_cache.delete_many.assert_any_call(["policy-cache-key"])

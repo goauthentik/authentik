@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -22,21 +20,16 @@ import {
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface UserOffboardingRequest
  */
 export interface UserOffboardingRequest {
-    /**
-     *
-     */
     user: number;
     /**
      * Absolute time at which the offboarding action is executed.
      */
     scheduledAt: Date;
-    /**
-     *
-     */
     action?: OffboardingActionEnum;
     /**
      * Revoke all of the user's sessions when offboarding.

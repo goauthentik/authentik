@@ -4,15 +4,20 @@ import "#flow/components/ak-brand-footer";
 import "#flow/components/ak-flow-card";
 import "#flow/inspector/FlowInspectorButton";
 import "#flow/tabs/broadcast";
-
 import { FlowIframeMessageController } from "./controllers/FlowIframeMessageController";
 import { FlowMultitabController } from "./controllers/FlowMultitabController";
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
+import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
-import { applyBackgroundImageProperty } from "#common/theme";
+import { applyBackgroundImageProperty, resolveThemedUrl } from "#common/theme";
 
 import { Interface } from "#elements/Interface";
 import { showAPIErrorMessage, showMessage } from "#elements/messages/MessageContainer";
@@ -29,6 +34,7 @@ import {
 import { StageMapping } from "#flow/FlowExecutorStageFactory";
 import { flowMessages } from "#flow/messages";
 import { BaseStage } from "#flow/stages/base";
+import { CAPTCHA_SLOT } from "#flow/stages/captcha/shared";
 import type { FlowChallengeResponseRequestBody, StageHost, SubmitOptions } from "#flow/types";
 import { submitAutosubmitChallenge } from "#flow/utils/autosubmit";
 
@@ -43,7 +49,7 @@ import {
 } from "@goauthentik/api";
 
 import { spread } from "@open-wc/lit-helpers";
-import { match, P } from "ts-pattern";
+import { match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
@@ -53,21 +59,13 @@ import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
 import { html as staticHTML, unsafeStatic } from "lit/static-html.js";
 
-import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-
 /// <reference types="../../types/lit.d.ts" />
 
 /**
  * An executor for authentik flows.
  *
+ * @property {ChallengeTypes | null} challenge - The current challenge to render.
  * @attr {string} slug - The slug of the flow to execute.
- * @prop {ChallengeTypes | null} challenge - The current challenge to render.
- *
  * @part main - The main container for the flow content.
  * @part content - The container for the stage content.
  * @part content-iframe - The iframe element when using a frame background layout.
@@ -173,8 +171,11 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     #synchronizeFlowInfo() {
         if (!this.flowInfo || this.#layoutUsesSidebarFrames) return;
 
-        const background =
-            this.flowInfo.backgroundThemedUrls?.[this.activeTheme] || this.flowInfo.background;
+        const background = resolveThemedUrl(
+            this.activeTheme,
+            this.flowInfo.backgroundThemedUrls,
+            this.flowInfo.background,
+        );
 
         // Storybook has a different document structure, so we need to adjust the target accordingly.
         const target =
@@ -202,6 +203,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     protected refresh = async () => {
         if (!this.flowSlug) {
             this.#logger.debug("Skipping refresh, no flow slug provided");
+
             return Promise.resolve();
         }
 
@@ -214,12 +216,14 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             })
             .then((challenge) => {
                 this.challenge = challenge;
+
                 return !!this.challenge;
             })
             .catch(async (error) => {
                 const parsedError = await parseAPIResponseError(error);
                 showAPIErrorMessage(parsedError);
                 this.setFlowErrorChallenge(parsedError);
+
                 return false;
             })
             .finally(() => {
@@ -227,7 +231,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             });
     };
 
-    public async firstUpdated(changed: PropertyValues<this>): Promise<void> {
+    protected override async firstUpdated(changed: PropertyValues<this>): Promise<void> {
         super.firstUpdated(changed);
 
         this.refresh().then(() => {
@@ -235,13 +239,15 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         });
     }
 
+    protected synchronizeTitle(): void {
+        this.setTitle(this.challenge?.flowInfo?.title);
+    }
+
     // DOM post-processing has to happen after the render.
-    public updated(changedProperties: PropertyValues<this>) {
+    protected override updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
 
-        document.title = match(this.challenge?.flowInfo?.title)
-            .with(P.nullish, () => this.brandingTitle)
-            .otherwise((title) => `${title} - ${this.brandingTitle}`);
+        this.synchronizeTitle();
 
         if (changedProperties.has("challenge") && this.challenge?.flowInfo) {
             this.layout = this.challenge?.flowInfo?.layout || FlowExecutor.DefaultLayout;
@@ -261,6 +267,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         options?: SubmitOptions,
     ): Promise<boolean> => {
         if (!payload) throw new Error("No payload provided");
+
         if (!this.challenge) throw new Error("No challenge provided");
 
         if (!this.flowSlug) {
@@ -291,16 +298,21 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             })
             .then((challenge) => {
                 window.dispatchEvent(new AKFlowAdvanceEvent());
+
                 if (challenge.component === "ak-stage-autosubmit") {
                     submitAutosubmitChallenge(challenge);
                     this.inert = true;
+
                     return true;
                 }
+
                 this.challenge = challenge;
+
                 return !this.challenge.responseErrors;
             })
             .catch((error: APIError) => {
                 this.setFlowErrorChallenge(error);
+
                 return false;
             })
             .finally(() => {
@@ -352,7 +364,11 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 .exhaustive(),
         );
 
-        return staticHTML`<${unsafeStatic(tag)} ${props}></${unsafeStatic(tag)}>`;
+        // Forwarded so a stage can project light-DOM content of ours into its own shadow
+        // root. A stage whose shadow root has no matching slot simply renders nothing here.
+        return staticHTML`<${unsafeStatic(tag)} ${props}>
+            <slot name="${unsafeStatic(CAPTCHA_SLOT)}" slot="${unsafeStatic(CAPTCHA_SLOT)}"></slot>
+        </${unsafeStatic(tag)}>`;
     }
 
     protected renderChallengeError(error: unknown): SlottedTemplateResult {
@@ -375,7 +391,9 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     //#region Render
 
     protected renderLoading(): SlottedTemplateResult {
-        return html`<slot name="placeholder"></slot>`;
+        return html`<ak-flow-card loading>
+            <span slot="title"> ${globalAK().flow?.title} </span>
+        </ak-flow-card>`;
     }
 
     protected renderFrameBackground(): SlottedTemplateResult {
@@ -383,6 +401,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             if (!this.#layoutUsesSidebarFrames) return;
 
             const src = this.challenge?.flowInfo?.background;
+
             if (!src) return nothing;
 
             return html`
@@ -404,9 +423,9 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 aria-label=${msg("Site footer")}
                 name="site-footer"
                 part="footer"
-                class="pf-c-login__footer ${this.layout === FlowLayoutEnum.Stacked
-                    ? "pf-m-dark"
-                    : ""}"
+                class="pf-c-login__footer ${
+                    this.layout === FlowLayoutEnum.Stacked ? "pf-m-dark" : ""
+                }"
             >
                 <slot name="footer"></slot>
             </footer>`;

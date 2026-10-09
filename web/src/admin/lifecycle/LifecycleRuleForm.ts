@@ -1,21 +1,21 @@
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-import "#elements/forms/SearchSelect/index";
-import "#elements/ak-list-select/ak-list-select";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-text-input";
 import "#components/ak-radio-input";
 import "#components/ak-number-input";
 import "#components/ak-switch-input";
-
 import { aki } from "#common/api/client";
 
+import type { AkDualSelectProvider } from "#elements/ak-dual-select/ak-dual-select-provider";
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { RadioChangeEventDetail, RadioOption } from "#elements/forms/Radio";
-import type SearchSelect from "#elements/forms/SearchSelect/SearchSelect";
+import { SearchSelectSource } from "#elements/forms/SearchSelect/shared";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { AKSearchSelect } from "#components/ak-search-select-field";
 
 import { eventTransportsProvider, eventTransportsSelector } from "#admin/events/RuleFormHelpers";
 
@@ -30,14 +30,13 @@ import {
     PartialUser,
     RbacApi,
     Role,
-    User,
 } from "@goauthentik/api";
 
+import { ifDefined } from "lit-html/directives/if-defined.js";
 import { match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
-import { ifDefined } from "lit-html/directives/if-defined.js";
 import { customElement, state } from "lit/decorators.js";
 import { keyed } from "lit/directives/keyed.js";
 import { createRef, ref } from "lit/directives/ref.js";
@@ -84,9 +83,8 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
     public static override verboseName = msg("Lifecycle Rule");
     public static override verboseNamePlural = msg("Lifecycle Rules");
 
-    #targetSelectRef = createRef<SearchSelect<TargetObject>>();
-    #reviewerGroupsSelectRef = createRef<SearchSelect<Group>>();
-    #reviewerUsersSelectRef = createRef<SearchSelect<User>>();
+    #reviewerGroupsSelectRef = createRef<AkDualSelectProvider>();
+    #reviewerUsersSelectRef = createRef<AkDualSelectProvider>();
 
     #coreApi = aki(CoreApi);
     #lifecycleApi = aki(LifecycleApi);
@@ -108,8 +106,8 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
     #fetchGroups = (page: number, search?: string): Promise<DataProvision> => {
         return this.#coreApi
             .coreGroupsList({
-                page: page,
-                search: search,
+                page,
+                search,
             })
             .then((results) => {
                 return {
@@ -122,8 +120,8 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
     #fetchUsers = (page: number, search?: string): Promise<DataProvision> => {
         return this.#coreApi
             .coreUsersList({
-                page: page,
-                search: search,
+                page,
+                search,
             })
             .then((results) => {
                 return {
@@ -188,6 +186,12 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
         }
 
         return promise.then((response) => response.results);
+    };
+
+    #targetSource: SearchSelectSource<TargetObject> = {
+        fetchObjects: (query) => this.#loadObjects(query),
+        keyOf: (target) => target.pk,
+        labelOf: (target) => target.name,
     };
 
     #contentTypeChangeListener = async (
@@ -273,17 +277,13 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
         return keyed(
             this.selectedContentType,
             html`<ak-form-element-horizontal label=${msg("Object")} name="objectId">
-                <ak-search-select
-                    ${ref(this.#targetSelectRef)}
-                    placeholder=${formatContentTypePlaceholder(this.selectedContentType)}
-                    .fetchObjects=${this.#loadObjects}
-                    .renderElement=${(obj: TargetObject) => obj.name}
-                    .value=${(obj?: TargetObject) => obj?.pk}
-                    .selected=${(obj: TargetObject): boolean => {
-                        return obj.pk === this.instance?.objectId;
-                    }}
-                    blankable
-                ></ak-search-select>
+                ${AKSearchSelect({
+                    name: "objectId",
+                    source: this.#targetSource,
+                    placeholder: formatContentTypePlaceholder(this.selectedContentType),
+                    value: this.instance?.objectId,
+                    blankable: true,
+                })}
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         "When set, the rule will apply to the selected individual object. Otherwise, the rule applies to all objects of the selected type.",

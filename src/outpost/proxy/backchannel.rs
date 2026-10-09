@@ -11,6 +11,25 @@ use crate::outpost::proxy::claims::Claims;
 
 const X_FORWARDED_PROTO: HeaderName = HeaderName::from_static("x-forwarded-proto");
 
+/// OAuth transport that preserves browser-facing `Host` overrides.
+///
+/// HTTP/2 derives `:authority` from the internal URL, conflicting with the
+/// overridden `Host` (RFC 9113 §8.3.1). Require HTTP/1.1 for this connection pool
+/// and keep it separate from the authenticated API client.
+#[derive(Debug, Clone)]
+pub(crate) struct BackchannelClient {
+    inner: ClientWithMiddleware,
+}
+
+impl BackchannelClient {
+    pub(crate) fn new(builder: reqwest::ClientBuilder) -> Result<Self> {
+        let client = builder.http1_only().build()?;
+        Ok(Self {
+            inner: reqwest_middleware::ClientBuilder::new(client).build(),
+        })
+    }
+}
+
 /// `host[:port]` for `url`, leaving out the scheme's default port.
 fn authority(url: &Url) -> Option<String> {
     let host = url.host_str()?;
@@ -43,10 +62,9 @@ impl TokenHost {
 
     /// Claim the host and scheme on a request bound for `target`.
     ///
-    /// A request that already addresses this host is left untouched: the
-    /// transport derives the authority from the URL on its own (as `:authority`
-    /// over HTTP/2), so adding a `Host` header would send it twice and strict
-    /// reverse proxies answer duplicate `Host` headers with a 400.
+    /// Omit an unnecessary override when the target authority already matches.
+    /// HTTP/2 permits `Host` alongside `:authority`, but forbids conflicting
+    /// values. The backchannel client uses HTTP/1.1 so an override is effective.
     fn apply(&self, request: RequestBuilder, target: &str) -> RequestBuilder {
         if self.addresses(target) {
             return request;
@@ -88,7 +106,7 @@ struct IntrospectionResponse {
 /// claim the browser-facing host and scheme so the issuer matches even though
 /// the request goes over the backchannel.
 pub(crate) async fn exchange_code(
-    client: &ClientWithMiddleware,
+    client: &BackchannelClient,
     token_url: &str,
     token_host: Option<&TokenHost>,
     code: &str,
@@ -96,7 +114,7 @@ pub(crate) async fn exchange_code(
     client_id: &str,
     client_secret: &str,
 ) -> Result<String> {
-    let mut request = client.post(token_url).form(&[
+    let mut request = client.inner.post(token_url).form(&[
         ("grant_type", "authorization_code"),
         ("code", code),
         ("redirect_uri", redirect_uri),
@@ -111,14 +129,19 @@ pub(crate) async fn exchange_code(
 }
 
 /// Fetch and parse the provider JWKS.
-pub(crate) async fn fetch_jwks(client: &ClientWithMiddleware, jwks_uri: &str) -> Result<JwkSet> {
-    let response = client.get(jwks_uri).send().await?.error_for_status()?;
+pub(crate) async fn fetch_jwks(client: &BackchannelClient, jwks_uri: &str) -> Result<JwkSet> {
+    let response = client
+        .inner
+        .get(jwks_uri)
+        .send()
+        .await?
+        .error_for_status()?;
     Ok(response.json::<JwkSet>().await?)
 }
 
 /// Request a token via the `client_credentials` grant, returning the id token.
 pub(crate) async fn client_credentials_token(
-    client: &ClientWithMiddleware,
+    client: &BackchannelClient,
     token_url: &str,
     token_host: Option<&TokenHost>,
     client_id: &str,
@@ -126,7 +149,7 @@ pub(crate) async fn client_credentials_token(
     password: &str,
     scope: &str,
 ) -> Result<Option<String>> {
-    let mut request = client.post(token_url).form(&[
+    let mut request = client.inner.post(token_url).form(&[
         ("grant_type", "client_credentials"),
         ("client_id", client_id),
         ("username", username),
@@ -145,14 +168,14 @@ pub(crate) async fn client_credentials_token(
 
 /// Introspect a bearer token, returning its claims when the token is active.
 pub(crate) async fn introspect_token(
-    client: &ClientWithMiddleware,
+    client: &BackchannelClient,
     introspection_url: &str,
     token_host: Option<&TokenHost>,
     client_id: &str,
     client_secret: &str,
     token: &str,
 ) -> Result<Option<Claims>> {
-    let mut request = client.post(introspection_url).form(&[
+    let mut request = client.inner.post(introspection_url).form(&[
         ("client_id", client_id),
         ("client_secret", client_secret),
         ("token", token),
@@ -216,8 +239,7 @@ mod tests {
 
     #[test]
     fn leaves_request_alone_when_target_matches() {
-        // The transport already derives the authority from the URL, so overriding it here would
-        // send `Host` twice (next to `:authority` over HTTP/2) and strict proxies reply 400.
+        // The transport already derives the desired authority from the URL.
         for target in [
             "https://authentik.test.goauthentik.io/application/o/token/",
             "https://authentik.test.goauthentik.io:443/application/o/token/",
@@ -267,3 +289,6 @@ mod tests {
         assert!(TokenHost::new(&Url::parse("file:///tmp/authentik").expect("valid url")).is_none());
     }
 }
+
+#[cfg(test)]
+mod transport_tests;

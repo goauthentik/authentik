@@ -1,31 +1,30 @@
 /**
  * @file Path-router outlet for the new route table.
- *
- * Renders the route matched from `location.pathname` (with the interface
- * `prefix` stripped per the matcher's leading-slash contract), owns the
- * loading and error states, and claims in-interface anchor clicks. Ships
- * inert: nothing imports it until the interface flip in Plan 3b.
- *
- * App-context-free: imports only the router core, the reused 404/empty-state
- * elements, `AKElement`, lit, `@sentry/browser` (plus the leaf
- * `sentry/tracing` predicate), and `@lit/localize`.
+ *   Renders the route matched from `location.pathname` (with the interface
+ *   `prefix` stripped per the matcher's leading-slash contract), owns the
+ *   loading and error states, and claims in-interface anchor clicks. Ships
+ *   inert: nothing imports it until the interface flip in Plan 3b.
+ *   App-context-free: imports only the router core, the reused 404/empty-state
+ *   elements, `AKElement`, lit, `@sentry/browser` (plus the leaf
+ *   `sentry/tracing` predicate), and `@lit/localize`.
  */
 
 import "#elements/router/Router404";
 import "#elements/EmptyState";
-
 import { sentryReporting } from "#common/sentry/tracing";
 
 import { AKElement } from "#elements/Base";
 import { getRouterConfig } from "#elements/router/core/config";
 import { applyHashRedirect } from "#elements/router/core/hash-shim";
-import { matchRoute, type RouteMatch } from "#elements/router/core/matcher";
+import { matchRoute, type RouteMatch, sameRouteMatch } from "#elements/router/core/matcher";
 import {
     createClickInterceptor,
     navigate,
     RouterNavigateEvent,
 } from "#elements/router/core/navigation";
-import { Route } from "#elements/router/core/Route";
+import { joinPath, stripPrefix, stripTrailingSlash } from "#elements/router/core/paths";
+import { type RouteLike } from "#elements/router/core/Route";
+import { routedTabBaseContext } from "#elements/tabs/tab-context";
 import { type SlottedTemplateResult } from "#elements/types";
 
 import {
@@ -36,6 +35,7 @@ import {
     startBrowserTracingPageLoadSpan,
 } from "@sentry/browser";
 
+import { ContextProvider } from "@lit/context";
 import { msg } from "@lit/localize";
 import { html, type PropertyValues, type TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
@@ -51,7 +51,7 @@ import { until } from "lit/directives/until.js";
 export function formatSpanName(prefix: string, routeName: string | null, pathname: string): string {
     if (routeName === null) return pathname;
 
-    return `${prefix.replace(/\/+$/, "")}/${routeName.replace(/^\/+/, "")}`;
+    return joinPath(prefix, routeName);
 }
 
 @customElement("ak-router-view")
@@ -69,7 +69,7 @@ export class RouterView extends AKElement {
     //#region Properties
 
     @property({ attribute: false })
-    public routes: Route[] = [];
+    public routes: RouteLike[] = [];
 
     @property({ type: String })
     public prefix = "";
@@ -78,7 +78,7 @@ export class RouterView extends AKElement {
     public defaultPath = "/";
 
     @state()
-    private current: RouteMatch<Route> | null = null;
+    private current: RouteMatch<RouteLike> | null = null;
 
     //#endregion
 
@@ -86,6 +86,14 @@ export class RouterView extends AKElement {
 
     #sentryClient = getClient();
     #pageLoadSpan: Span | null = null;
+
+    /**
+     * Publishes the current page's mount path to routed `<ak-tabs>` descendants.
+     */
+    #tabBaseProvider = new ContextProvider(this, {
+        context: routedTabBaseContext,
+        initialValue: "",
+    });
 
     constructor() {
         super();
@@ -147,22 +155,34 @@ export class RouterView extends AKElement {
     //#region Matching
 
     /**
-     * Strip the interface prefix, preserving the leading slash the matcher
-     * requires: `/if/user/settings` → `/settings`, `/if/user/` → `/`. A
-     * pathname outside the prefix is returned unchanged so it falls through to
-     * the 404 branch.
+     * Strip this outlet's prefix. Paths outside the prefix are returned unchanged.
      */
     #strip(pathname: string): string {
-        if (!pathname.startsWith(this.prefix)) return pathname;
-
-        return `/${pathname.slice(this.prefix.length).replace(/^\/+/, "")}`;
+        return stripPrefix(pathname, this.prefix);
     }
 
     /**
-     * Join a route-relative path onto the prefix for navigation.
+     * Join a route-relative path onto the prefix for navigation, normalizing to
+     * exactly one separator regardless of whether the prefix ends in a slash.
      */
     #join(path: string): string {
-        return `${this.prefix}${path.replace(/^\/+/, "")}`;
+        return joinPath(this.prefix, path);
+    }
+
+    /**
+     * The absolute path consumed to reach a match, excluding its wildcard tail —
+     * the mount path a tabbed page hands to its nested outlet. `/settings` and
+     * `/settings/sessions` (a subtree route) both resolve to base
+     * `/if/user/settings`; the tail (`sessions`) belongs to the nested outlet.
+     */
+    #basePath(match: RouteMatch<RouteLike>): string {
+        const tail = match.parameters["0"];
+
+        if (tail === undefined) return this.#join(match.pathname);
+
+        const consumed = match.pathname.slice(0, match.pathname.length - tail.length);
+
+        return this.#join(stripTrailingSlash(consumed) || "/");
     }
 
     #syncRoute = (): void => {
@@ -175,14 +195,27 @@ export class RouterView extends AKElement {
             stripped = this.#strip(window.location.pathname);
         }
 
-        this.current = matchRoute(stripped, this.routes);
+        const next = matchRoute(stripped, this.routes);
+
+        // Publish the mount path (minus any tab tail) so routed `<ak-tabs>` under
+        // this outlet can consume it as their base. Refreshed even when the route
+        // is unchanged, so re-entering the same page restores a correct base.
+        this.#tabBaseProvider.setValue(next ? this.#basePath(next) : "");
+
+        // Skip re-resolving when the route and its path parameters are unchanged
+        // (a search-param-only change — a tab, a table filter). Reassigning would
+        // hand `until()` a new promise and flash the loading state over a view
+        // that is already mounted.
+        if (sameRouteMatch(this.current, next)) return;
+
+        this.current = next;
     };
 
     //#endregion
 
     //#region Rendering
 
-    async #resolve(match: RouteMatch<Route>): Promise<SlottedTemplateResult> {
+    async #resolve(match: RouteMatch<RouteLike>): Promise<SlottedTemplateResult> {
         try {
             return await match.route.resolve(match.parameters);
         } catch (error) {
@@ -209,6 +242,7 @@ export class RouterView extends AKElement {
 
     protected override updated(changedProperties: PropertyValues): void {
         if (!changedProperties.has("current")) return;
+
         if (!this.#sentryClient || !sentryReporting(this.#sentryClient)) return;
 
         const name = this.#spanName();

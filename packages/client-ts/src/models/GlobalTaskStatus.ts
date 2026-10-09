@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,50 +11,19 @@
  */
 
 /**
- *
  * @export
  * @interface GlobalTaskStatus
  */
 export interface GlobalTaskStatus {
-    /**
-     *
-     */
     readonly queued: number;
-    /**
-     *
-     */
     readonly consumed: number;
-    /**
-     *
-     */
     readonly preprocess: number;
-    /**
-     *
-     */
     readonly running: number;
-    /**
-     *
-     */
     readonly postprocess: number;
-    /**
-     *
-     */
     readonly rejected: number;
-    /**
-     *
-     */
     readonly done: number;
-    /**
-     *
-     */
     readonly info: number;
-    /**
-     *
-     */
     readonly warning: number;
-    /**
-     *
-     */
     readonly error: number;
 }
 

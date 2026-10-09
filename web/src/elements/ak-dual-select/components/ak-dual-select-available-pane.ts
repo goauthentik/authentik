@@ -1,17 +1,16 @@
+import { DualSelectEvent } from "../events.js";
 import { DualSelectEventType, DualSelectPair } from "../types.js";
 import { availablePaneStyles, listStyles } from "./styles.js";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDualListSelector from "@patternfly/patternfly/components/DualListSelector/dual-list-selector.css";
 
 import { AKElement } from "#elements/Base";
-import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { map } from "lit/directives/map.js";
 import { createRef, ref } from "lit/directives/ref.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDualListSelector from "@patternfly/patternfly/components/DualListSelector/dual-list-selector.css";
 
 const hostAttributes = [
     ["aria-labelledby", "dual-list-selector-available-pane-status"],
@@ -20,29 +19,25 @@ const hostAttributes = [
 ] as const satisfies Array<[string, string]>;
 
 /**
+ * @fires ak-dual-select-available-move-changed - When the list of "to move" entries changed.
+ *   Includes the current * `toMove` content.
+ * @fires ak-dual-select-add-one - Double-click with the element clicked on.
+ * @property {DualSelectPair[]} options - The full list of key/value pairs that are currently
+ *   available to be selected.
+ * @property {Set<string | number>} selected - A set of keys that are currently selected, so they
+ *   can be marked as such.
+ *
+ *   It is not expected that the `ak-dual-select-available-move-changed` event will be used;
+ *   instead, the attribute will be read by the parent when a control is clicked.
  * @element ak-dual-select-available-panel
  *
  * The "available options" or "left" pane in a dual-list multi-select. It receives from its parent a
- * list of options to show *now*, the list of all "selected" options, and maintains an internal list
+ * list of options to show _now_, the list of all "selected" options, and maintains an internal list
  * of objects selected to move. "selected" options are marked with a checkmark to show they're
  * already in the "selected" collection and would be pointless to move.
- *
- * @fires ak-dual-select-available-move-changed - When the list of "to move" entries changed.
- * Includes the current * `toMove` content.
- *
- * @fires ak-dual-select-add-one - Double-click with the element clicked on.
- *
- * @prop {DualSelectPair[]} options - The full list of key/value pairs that are currently available to be selected.
- *
- * @prop {Set<string|number>} selected - A set of keys that are currently selected, so they can be marked as such.
- *
- * It is not expected that the `ak-dual-select-available-move-changed` event will be used; instead,
- * the attribute will be read by the parent when a control is clicked.
  */
 @customElement("ak-dual-select-available-pane")
-export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEventType>(
-    AKElement,
-) {
+export class AkDualSelectAvailablePane extends AKElement {
     static styles = [PFButton, PFDualListSelector, listStyles, availablePaneStyles];
 
     //#region Properties
@@ -131,9 +126,9 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
 
         const moved = [...this.toMove].sort();
 
-        this.dispatchCustomEvent(DualSelectEventType.MoveChanged, moved);
+        this.dispatchEvent(new DualSelectEvent(DualSelectEventType.MoveChanged, moved));
 
-        this.dispatchCustomEvent(DualSelectEventType.Move);
+        this.dispatchEvent(new DualSelectEvent(DualSelectEventType.Move));
 
         // Necessary because updating a map won't trigger a state change
         this.requestUpdate();
@@ -142,7 +137,7 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
     #moveListener(key: string | number): void {
         this.toMove.delete(key);
 
-        this.dispatchCustomEvent(DualSelectEventType.AddOne, key);
+        this.dispatchEvent(new DualSelectEvent(DualSelectEventType.AddOne, key));
         this.requestUpdate();
     }
 
@@ -175,12 +170,17 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
                                 <span class="pf-c-dual-list-selector__item">
                                     <span class="pf-c-dual-list-selector__item-main">
                                         <span class="pf-c-dual-list-selector__item-text"
-                                            ><span>${label}</span>${this.selected.has(key)
-                                                ? html`<span
-                                                      class="pf-c-dual-list-selector__item-text-selected-indicator"
-                                                      ><i class="fa fa-check" aria-hidden="true"></i
-                                                  ></span>`
-                                                : nothing}</span
+                                            ><span>${label}</span>${
+                                                this.selected.has(key)
+                                                    ? html`<span
+                                                          class="pf-c-dual-list-selector__item-text-selected-indicator"
+                                                          ><i
+                                                              class="fa fa-check"
+                                                              aria-hidden="true"
+                                                          ></i
+                                                      ></span>`
+                                                    : nothing
+                                            }</span
                                         ></span
                                     ></span
                                 >

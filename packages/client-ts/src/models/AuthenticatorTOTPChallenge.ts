@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,33 +16,16 @@ import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * TOTP Setup challenge
+ *
  * @export
  * @interface AuthenticatorTOTPChallenge
  */
 export interface AuthenticatorTOTPChallenge {
-    /**
-     *
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     */
     component?: string;
-    /**
-     *
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     */
     pendingUser: string;
-    /**
-     *
-     */
     pendingUserAvatar: string;
-    /**
-     *
-     */
     configUrl: string;
 }
 

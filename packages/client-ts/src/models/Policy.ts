@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,23 +11,18 @@
  */
 
 import { parseDateTime } from "../runtime";
-
 /**
  * Policy Serializer
+ *
  * @export
  * @interface Policy
  */
 export interface Policy {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
-     * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+     * When this option is enabled, all executions of this policy will be logged. By default, only
+     * execution errors are logged.
      */
     executionLogging?: boolean;
     /**
@@ -52,13 +45,7 @@ export interface Policy {
      * Return objects policy is bound to
      */
     readonly boundTo: number;
-    /**
-     *
-     */
     readonly lastUpdated: Date;
-    /**
-     *
-     */
     readonly created: Date;
 }
 
