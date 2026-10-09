@@ -245,7 +245,6 @@ class AuthentikStack(Stack):
         environment = {
             "AUTHENTIK_POSTGRESQL__HOST": database.instance_endpoint.hostname,
             "AUTHENTIK_POSTGRESQL__USER": "authentik",
-            # RDS PostgreSQL 15+ enforces TLS by default (rds.force_ssl=1)
             "AUTHENTIK_POSTGRESQL__SSLMODE": "require",
         }
 
