@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.fields import CharField, SkipField
+from rest_framework.fields import CharField, IntegerField, SkipField
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
@@ -17,9 +17,12 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.blueprints.api import ManagedSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
-from authentik.crypto.secrets.models import Secret, SecretType
+from authentik.crypto.secrets.models import Secret, SecretType, generate_secret_value
 from authentik.events.models import Event, EventAction
 from authentik.rbac.decorators import permission_required
+
+# Long enough for any credential, short enough not to be abused to store large values.
+MAX_GENERATED_LENGTH = 1024
 
 
 class SecretReferenceField(PrimaryKeyRelatedField):
@@ -63,6 +66,16 @@ class SecretSerializer(ManagedSerializer, ModelSerializer):
         allow_blank=True,
         trim_whitespace=False,
     )
+    length = IntegerField(
+        write_only=True,
+        required=False,
+        min_value=1,
+        max_value=MAX_GENERATED_LENGTH,
+        help_text=_(
+            "Length of the generated value when creating a text secret without a value. "
+            "Defaults to the default token length."
+        ),
+    )
 
     def validate_value(self, value: str) -> str:
         if value == "":
@@ -84,12 +97,23 @@ class SecretSerializer(ManagedSerializer, ModelSerializer):
         secret_type = attrs.get("type", instance.type if instance else SecretType.TEXT)
         if not instance and secret_type != SecretType.TEXT and not attrs.get("secret_value"):
             raise ValidationError({"value": _("A value is required for this type.")})
+        if "length" in attrs and (
+            instance or secret_type != SecretType.TEXT or attrs.get("secret_value")
+        ):
+            raise ValidationError(
+                {"length": _("Length only applies when generating a new text secret.")}
+            )
         if "secret_value" in attrs:
             try:
                 (instance or Secret(type=secret_type)).validate_value(attrs["secret_value"])
             except DjangoValidationError as exc:
                 raise ValidationError({"value": exc.messages}) from exc
         return attrs
+
+    def create(self, validated_data: dict) -> Secret:
+        if length := validated_data.pop("length", None):
+            validated_data["secret_value"] = generate_secret_value(length)
+        return super().create(validated_data)
 
     def update(self, instance: Secret, validated_data: dict) -> Secret:
         value = validated_data.pop("secret_value", None)
@@ -104,7 +128,7 @@ class SecretSerializer(ManagedSerializer, ModelSerializer):
 
     class Meta:
         model = Secret
-        fields = ["pk", "name", "type", "managed", "value", "created", "last_updated"]
+        fields = ["pk", "name", "type", "managed", "value", "length", "created", "last_updated"]
         extra_kwargs = {
             "managed": {"read_only": True},
             "created": {"read_only": True},
