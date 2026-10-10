@@ -46634,6 +46634,7 @@ components:
         consumer_secret_ref:
           type: string
           format: uuid
+          nullable: true
           title: Consumer secret
         callback_url:
           type: string
@@ -46661,7 +46662,6 @@ components:
       - callback_url
       - component
       - consumer_key
-      - consumer_secret_ref
       - icon_themed_urls
       - icon_url
       - managed
@@ -46823,6 +46823,7 @@ components:
         consumer_secret_ref:
           type: string
           format: uuid
+          nullable: true
           title: Consumer secret
         additional_scopes:
           type: string
@@ -46840,7 +46841,6 @@ components:
             token request flow
       required:
       - consumer_key
-      - consumer_secret_ref
       - name
       - provider_type
       - slug
@@ -52491,6 +52491,7 @@ components:
         consumer_secret_ref:
           type: string
           format: uuid
+          nullable: true
           title: Consumer secret
         additional_scopes:
           type: string
@@ -53787,6 +53788,13 @@ components:
         value:
           type: string
           writeOnly: true
+        length:
+          type: integer
+          maximum: 1024
+          minimum: 1
+          writeOnly: true
+          description: Length of the generated value when creating a text secret without
+            a value. Defaults to the default token length.
     PatchedSettingsRequest:
       type: object
       description: Settings Serializer
@@ -53797,6 +53805,7 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
+          minLength: 1
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
           format: uri
@@ -58962,12 +58971,19 @@ components:
         value:
           type: string
           writeOnly: true
+        length:
+          type: integer
+          maximum: 1024
+          minimum: 1
+          writeOnly: true
+          description: Length of the generated value when creating a text secret without
+            a value. Defaults to the default token length.
       required:
       - name
     SecretTypeEnum:
       enum:
       - text
-      - multiline
+      - json
       - file
       type: string
     SecretValue:
@@ -59208,6 +59224,7 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
+          minLength: 1
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
           format: uri
