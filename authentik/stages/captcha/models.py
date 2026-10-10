@@ -27,7 +27,6 @@ class CaptchaStage(Stage):
         help_text=_("Private key, acquired your captcha Provider."),
         on_delete=models.PROTECT,
         null=True,
-        blank=True,
         default=None,
         related_name="captcha_stages",
     )

@@ -6,13 +6,12 @@ from random import SystemRandom
 from urllib.parse import urljoin
 from uuid import uuid4
 
-from django.db import models, transaction
+from django.db import models
 from django.templatetags.static import static
 from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
 
 from authentik.crypto.models import CertificateKeyPair
-from authentik.crypto.secrets.models import create_named_secret
 from authentik.lib.models import DomainlessURLValidator, ExpiringModel, InternallyManagedMixin
 from authentik.outposts.models import OutpostModel
 from authentik.providers.oauth2.models import (
@@ -74,6 +73,11 @@ class ProxyMode(models.TextChoices):
 class ProxyProvider(OutpostModel, OAuth2Provider):
     """Protect applications that don't support any of the other
     Protocols by using a Reverse-Proxy."""
+
+    generated_secrets = {
+        **OAuth2Provider.generated_secrets,
+        "cookie_secret_ref": ("cookie secret", get_cookie_secret),
+    }
 
     internal_host = models.TextField(
         validators=[DomainlessURLValidator(schemes=("http", "https"))],
@@ -148,16 +152,6 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         related_name="proxy_providers",
     )
     cookie_domain = models.TextField(default="", blank=True)
-
-    def save(self, *args, **kwargs):
-        with transaction.atomic():
-            if not self.cookie_secret_ref_id:
-                self.cookie_secret_ref = create_named_secret(
-                    f"{self.name} cookie secret", secret_value=get_cookie_secret()
-                )
-                if (update_fields := kwargs.get("update_fields")) is not None:
-                    kwargs["update_fields"] = set(update_fields) | {"cookie_secret_ref"}
-            return super().save(*args, **kwargs)
 
     @property
     def component(self) -> str:

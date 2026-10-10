@@ -1,6 +1,7 @@
 """Managed secret models."""
 
 from base64 import b64decode
+from collections.abc import Callable
 from json import JSONDecodeError, dumps, loads
 from typing import TYPE_CHECKING
 from uuid import uuid4
@@ -157,3 +158,26 @@ def create_named_secret(name: str, **fields) -> Secret:
         except IntegrityError:
             continue
     raise IntegrityError(f"Could not allocate a name for {name!r}")
+
+
+class GeneratedSecretsMixin:
+    """Create the secrets a model needs when it is saved without them.
+
+    `generated_secrets` maps each reference field to the suffix of the secret's name and
+    the function that generates its value.
+    """
+
+    generated_secrets: dict[str, tuple[str, Callable[[], str]]] = {}
+
+    def save(self, *args, **kwargs):
+        missing = [
+            field for field in self.generated_secrets if getattr(self, f"{field}_id") is None
+        ]
+        with transaction.atomic():
+            for field in missing:
+                label, generate = self.generated_secrets[field]
+                secret = create_named_secret(f"{self.name} {label}", secret_value=generate())
+                setattr(self, field, secret)
+            if missing and (update_fields := kwargs.get("update_fields")) is not None:
+                kwargs["update_fields"] = {*update_fields, *missing}
+            return super().save(*args, **kwargs)
