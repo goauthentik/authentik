@@ -1,10 +1,7 @@
 """email stage models"""
 
-from os import R_OK, access
-from pathlib import Path
 from uuid import uuid4
 
-from django.conf import settings
 from django.core.mail.backends.base import BaseEmailBackend
 from django.core.mail.backends.smtp import EmailBackend
 from django.db import models
@@ -25,50 +22,6 @@ from authentik.stages.email.loaders import render_email_template
 EMAIL_RECOVERY_MAX_ATTEMPTS = 5
 
 LOGGER = get_logger()
-
-
-class EmailTemplates(models.TextChoices):
-    """Templates used for rendering the Email"""
-
-    PASSWORD_RESET = (
-        "email/password_reset.html",
-        _("Password Reset"),
-    )  # nosec
-    ACCOUNT_CONFIRM = (
-        "email/account_confirmation.html",
-        _("Account Confirmation"),
-    )
-    EMAIL_OTP = (
-        "email/email_otp.html",
-        _("Email OTP"),
-    )  # nosec
-    EVENT_NOTIFICATION = (
-        "email/event_notification.html",
-        _("Event Notification"),
-    )
-    INVITATION = (
-        "email/invitation.html",
-        _("Invitation"),
-    )
-
-
-def get_template_choices():
-    """Get all available Email templates, including dynamically mounted ones.
-    Directories are taken from TEMPLATES.DIR setting"""
-    static_choices = EmailTemplates.choices
-
-    dirs = [Path(x) for x in settings.TEMPLATES[0]["DIRS"]]
-    for template_dir in dirs:
-        if not template_dir.exists() or not template_dir.is_dir():
-            continue
-        for template in template_dir.glob("**/*.html"):
-            path = str(template)
-            if not access(path, R_OK):
-                LOGGER.warning("Custom template file is not readable, check permissions", path=path)
-                continue
-            rel_path = template.relative_to(template_dir)
-            static_choices.append((str(rel_path), f"Custom Template: {rel_path}"))
-    return static_choices
 
 
 BUILTIN_TEMPLATE_DISPLAY_NAMES = {
