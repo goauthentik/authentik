@@ -28,7 +28,7 @@ Credentials that were stored on providers, sources, stages, and connectors are n
 
 During the upgrade, authentik creates a secret for each existing credential with its exact value, and copies existing role permissions to the new secrets. See [Permissions after upgrading](../../sys-mgmt/secrets/permissions.mdx#permissions-after-upgrading).
 
-The credential fields in the API and blueprints, such as `client_secret`, `shared_secret`, `bind_password`, and `token`, are replaced by reference fields named `<field>_ref`, such as `client_secret_ref`. Requests and blueprints that still set an old field fail with a validation error that names the new field. In blueprints, define the secret as its own entry and reference it with `!KeyOf` or `!Find`. See [API and blueprints](../../sys-mgmt/secrets/index.mdx#api-and-blueprints).
+The credential fields in the API and blueprints, such as `client_secret`, `shared_secret`, `bind_password`, and `token`, are replaced by reference fields named `<field>_ref`, such as `client_secret_ref`. Requests and blueprints that still set an old field fail with a validation error that names the new field. In blueprints, define the secret as its own entry and reference it with `!KeyOf` or `!Find`. Blueprint exports no longer include credential values, including OAuth2 client secrets and RADIUS shared secrets that earlier exports contained. See [API and blueprints](../../sys-mgmt/secrets/index.mdx#api-and-blueprints).
 
 :::info
 The previous credential database columns are kept until 2027.2 to support downgrades.
