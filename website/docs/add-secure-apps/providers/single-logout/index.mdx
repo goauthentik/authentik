@@ -120,6 +120,36 @@ See the [OIDC Front-channel and Back-channel logout documentation](../oauth2/fro
 2. Enable the desired **Logout Method**; front-channel or back-channel
 3. Optionally configure logout token signing for back-channel requests
 
+## Single Logout for proxy providers and outposts
+
+[Proxy providers](../proxy/index.mdx) support Single Logout without any additional configuration. A proxy provider has no **Logout URI** or **Logout Method** setting, because the application's session is managed by the [outpost](../../outposts/index.mdx) and authentik notifies the outpost directly.
+
+### Logout from authentik
+
+When a user's authentik session ends, authentik notifies all connected outposts. Each outpost then deletes the proxy sessions that were created from that authentik session. The next time that the user accesses the application, the outpost redirects them to authentik to log in again.
+
+Outposts are notified when the authentik session ends for any of the following reasons:
+
+- The user logs out via a logout flow.
+- An administrator deletes the session or deactivates the user.
+- The session expires.
+
+Only proxy sessions that were created from the ended authentik session are deleted. Proxy sessions that the same user created from another browser or device remain active.
+
+:::info
+Outposts are notified asynchronously, and only outposts that are connected to authentik receive the notification. If an outpost is not connected to the authentik server when the authentik session ends, its proxy sessions remain valid until they expire. The lifetime of a proxy session is defined by the **Token validity** setting of the proxy provider.
+:::
+
+### Logout from a proxied application
+
+To log out of an application that is protected by a proxy provider, the user navigates to `/outpost.goauthentik.io/sign_out`. For the host to use in each proxy mode, see [Log out](../proxy/index.mdx#log-out).
+
+The outpost deletes all proxy sessions for that user within the outpost, and then redirects the user to authentik, where the invalidation flow of the provider runs. By default, the user's authentik session and their sessions in other applications remain active. To also end those sessions, see [Enable full Single Logout for RP-initiated logout](#enable-full-single-logout-for-rp-initiated-logout).
+
+### RAC providers
+
+Connections to a [RAC provider](../rac/index.mdx) also end when the user's authentik session ends. For more information, see [Connection and session expiry](../rac/index.mdx#connection-and-session-expiry).
+
 ## Session tracking
 
 authentik tracks provider sessions to enable single logout:
@@ -142,6 +172,7 @@ These requests are processed asynchronously to avoid blocking administrative ope
 
 - [SAML Single Logout](../saml/saml_single_logout.mdx)
 - [OIDC Front-channel and Back-channel Logout](../oauth2/frontchannel_and_backchannel_logout.mdx)
+- [Proxy provider logout](../proxy/index.mdx#log-out)
 - [User Logout Stage](../../flows-stages/stages/user_logout/index.mdx)
 - [SAML Profiles 2.0 Specification](https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf)
 - [OpenID Connect Front-Channel Logout 1.0](https://openid.net/specs/openid-connect-frontchannel-1_0.html)
