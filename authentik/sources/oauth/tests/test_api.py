@@ -32,6 +32,39 @@ class TestOAuthSourceAPI(APITestCase):
         )
         self.assertEqual(res.status_code, 200)
 
+    def test_patch_enrollment_only_user_properties(self):
+        self.client.force_login(self.user)
+        res = self.client.patch(
+            reverse("authentik_api:oauthsource-detail", kwargs={"slug": self.source.slug}),
+            {
+                "enrollment_only_user_properties": ["username", "name"],
+                "authorization_url": f"https://{generate_id()}",
+                "profile_url": f"https://{generate_id()}",
+                "access_token_url": f"https://{generate_id()}",
+            },
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 200)
+        self.source.refresh_from_db()
+        self.assertEqual(self.source.enrollment_only_user_properties, ["username", "name"])
+
+    def test_patch_enrollment_only_user_properties_groups(self):
+        """Group membership has its own sync, so it can't be listed as an enrollment-only
+        user property"""
+        self.client.force_login(self.user)
+        res = self.client.patch(
+            reverse("authentik_api:oauthsource-detail", kwargs={"slug": self.source.slug}),
+            {
+                "enrollment_only_user_properties": ["username", "groups"],
+                "authorization_url": f"https://{generate_id()}",
+                "profile_url": f"https://{generate_id()}",
+                "access_token_url": f"https://{generate_id()}",
+            },
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertIn("enrollment_only_user_properties", res.json())
+
     def test_patch_long_url(self):
         """URL fields are TextField, so URLs longer than 255 chars (e.g. an
         authorization URL carrying many static query parameters) must save."""
