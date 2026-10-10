@@ -143,7 +143,7 @@ export interface KerberosSource {
      */
     spnegoServerName?: string;
     /**
-     * SPNEGO keytab. A file secret with the keytab, or a text secret in the form FILE:path
+     * SPNEGO keytab. A file secret with the keytab, or a text secret in the form TYPE:residual
      */
     spnegoKeytabRef?: string | null;
     /**

@@ -43606,7 +43606,7 @@ components:
           nullable: true
           title: SPNEGO keytab
           description: SPNEGO keytab. A file secret with the keytab, or a text secret
-            in the form FILE:path
+            in the form TYPE:residual
         spnego_ccache_ref:
           type: string
           format: uuid
@@ -43808,7 +43808,7 @@ components:
           nullable: true
           title: SPNEGO keytab
           description: SPNEGO keytab. A file secret with the keytab, or a text secret
-            in the form FILE:path
+            in the form TYPE:residual
         spnego_ccache_ref:
           type: string
           format: uuid
@@ -51787,7 +51787,7 @@ components:
           nullable: true
           title: SPNEGO keytab
           description: SPNEGO keytab. A file secret with the keytab, or a text secret
-            in the form FILE:path
+            in the form TYPE:residual
         spnego_ccache_ref:
           type: string
           format: uuid
