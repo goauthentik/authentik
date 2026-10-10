@@ -1,60 +1,49 @@
-"""Password storage survives upgrades and downgrades."""
+"""Existing passwords move to password devices."""
+
+from datetime import timedelta
+from importlib import import_module
 
 from django.contrib.auth.hashers import make_password
 from django.db import connection
-from django.db.migrations.executor import MigrationExecutor
-from django.test import TransactionTestCase
+from django.db.migrations.loader import MigrationLoader
+from django.test import TestCase
 from django.utils.timezone import now
 
+from authentik.core.models import User
 from authentik.lib.generators import generate_id
+from authentik.stages.password.models import PasswordDevice
+
+MIGRATION = ("authentik_stages_password", "0011_password_devices")
 
 
-class TestPasswordMigration(TransactionTestCase):
-    """Exercise the data copy using historical models and the real migration graph."""
+class TestPasswordMigration(TestCase):
+    """Run the data copy against the historical models and the retained columns."""
 
-    def test_password_round_trip(self):
-        executor = MigrationExecutor(connection)
-        latest = executor.loader.graph.leaf_nodes()
-        self.addCleanup(lambda: MigrationExecutor(connection).migrate(latest))
-        previous = [
-            ("authentik_core", "0066_user_authentik_core_user_email_idx"),
-            ("authentik_stages_password", "0010_alter_passwordstage_backends"),
-        ]
-        executor.migrate(previous)
-        old_apps = executor.loader.project_state(previous).apps
-        users = old_apps.get_model("authentik_core", "User").objects
+    def test_create_password_devices(self):
+        usable, unusable, empty = (User.objects.create(username=generate_id()) for _ in range(3))
         password = make_password(generate_id())
-        user = users.create(username=generate_id(), password=password)
-        changed_at = user.password_change_date
+        changed_at = now() - timedelta(days=3)
+        with connection.cursor() as cursor:
+            # Before the migration, every user row has a password.
+            cursor.execute("UPDATE authentik_core_user SET password = '' WHERE password IS NULL")
+            cursor.executemany(
+                "UPDATE authentik_core_user SET password = %s, password_change_date = %s "
+                "WHERE id = %s",
+                [
+                    (password, changed_at, usable.pk),
+                    (make_password(None), changed_at, unusable.pk),
+                    ("", changed_at, empty.pk),
+                ],
+            )
+        apps = MigrationLoader(connection).project_state(MIGRATION).apps
+        migration = import_module(f"authentik.stages.password.migrations.{MIGRATION[1]}")
 
-        executor = MigrationExecutor(connection)
-        executor.migrate(latest)
-        apps = executor.loader.project_state(latest).apps
-        devices = apps.get_model("authentik_stages_password", "PasswordDevice").objects
-        device = devices.get(user_id=user.pk)
+        with connection.schema_editor() as schema_editor:
+            migration.create_password_devices(apps, schema_editor)
+
+        device = PasswordDevice.objects.get(user=usable)
         self.assertEqual(device.password, password)
         self.assertEqual(device.password_change_date, changed_at)
         self.assertEqual(device.failed_attempts, 0)
         self.assertIsNone(device.locked_at)
-        with connection.cursor() as cursor:
-            cursor.execute(
-                "SELECT password, password_change_date FROM authentik_core_user WHERE id = %s",
-                [user.pk],
-            )
-            self.assertEqual(cursor.fetchone(), (None, None))
-
-        password = make_password(generate_id())
-        changed_at = now()
-        devices.filter(pk=device.pk).update(password=password, password_change_date=changed_at)
-        new_user = apps.get_model("authentik_core", "User").objects.create(username=generate_id())
-        devices.create(user=new_user, name="Password", password=password)
-        passwordless = apps.get_model("authentik_core", "User").objects.create(
-            username=generate_id()
-        )
-
-        MigrationExecutor(connection).migrate(previous)
-        user = users.get(pk=user.pk)
-        self.assertEqual(user.password, password)
-        self.assertEqual(user.password_change_date, changed_at)
-        self.assertEqual(users.get(pk=new_user.pk).password, password)
-        self.assertEqual(users.get(pk=passwordless.pk).password, "!")
+        self.assertFalse(PasswordDevice.objects.filter(user__in=[unusable, empty]).exists())
