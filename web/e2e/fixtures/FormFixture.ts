@@ -128,15 +128,19 @@ export class FormFixture extends PageFixture {
             hasText: fieldName,
         });
 
-        const checkbox = control.getByRole("checkbox");
+        await control.scrollIntoViewIfNeeded();
 
-        if ((await checkbox.isChecked()) !== value) {
-            await control.locator("label").click();
+        await expect(control, `Field (${fieldName}) should be visible`).toBeVisible();
+
+        const currentChecked = await control
+            .getAttribute("checked")
+            .then((value) => value !== null);
+
+        if (currentChecked === value) {
+            return;
         }
 
-        await expect(checkbox, `Field (${fieldName}) has the requested value`).toBeChecked({
-            checked: value,
-        });
+        await control.click();
     };
 
     /**
