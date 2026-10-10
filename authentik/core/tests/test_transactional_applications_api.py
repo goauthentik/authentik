@@ -5,6 +5,7 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import Application, Group
 from authentik.core.tests.utils import create_test_flow, create_test_user
+from authentik.crypto.secrets.models import Secret
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import OAuth2Provider
@@ -44,6 +45,35 @@ class TestTransactionalApplicationsAPI(APITestCase):
         app = Application.objects.filter(slug=uid).first()
         self.assertIsNotNone(app)
         self.assertEqual(app.provider.pk, provider.pk)
+
+    def test_create_transactional_secret_permission(self):
+        """Attaching an existing secret needs permission to view its value"""
+        self.client.force_login(self.user)
+        secret = Secret.objects.create(name=generate_id())
+        uid = generate_id()
+        data = {
+            "app": {"name": uid, "slug": uid},
+            "provider_model": "authentik_providers_oauth2.oauth2provider",
+            "provider": {
+                "name": uid,
+                "authorization_flow": str(create_test_flow().pk),
+                "invalidation_flow": str(create_test_flow().pk),
+                "redirect_uris": [],
+                "client_secret_ref": str(secret.pk),
+            },
+        }
+        response = self.client.put(
+            reverse("authentik_api:core-transactional-application"), data=data, format="json"
+        )
+        self.assertEqual(response.status_code, 403, response.content)
+        self.assertFalse(OAuth2Provider.objects.filter(name=uid).exists())
+
+        self.user.assign_perms_to_managed_role("authentik_crypto_secrets.view_secret_value", secret)
+        response = self.client.put(
+            reverse("authentik_api:core-transactional-application"), data=data, format="json"
+        )
+        self.assertJSONEqual(response.content.decode(), {"applied": True, "logs": []})
+        self.assertEqual(OAuth2Provider.objects.get(name=uid).client_secret_ref, secret)
 
     def test_create_transactional_permission_denied(self):
         """Test transactional Application + provider creation (missing permissions)"""
