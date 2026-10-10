@@ -3,8 +3,10 @@
 from json import JSONDecodeError, loads
 from typing import cast
 
+from django.apps import apps
 from django.conf import settings
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.db.models import Model
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework.decorators import action
@@ -23,7 +25,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.validation import validate
 from authentik.blueprints.models import BlueprintInstance
-from authentik.blueprints.v1.common import Blueprint, EntryInvalidError
+from authentik.blueprints.v1.common import Blueprint, BlueprintEntry, EntryInvalidError, YAMLTag
 from authentik.blueprints.v1.importer import Importer
 from authentik.blueprints.v1.oci import OCI_PREFIX
 from authentik.blueprints.v1.tasks import apply_blueprint, blueprints_find_dict
@@ -159,6 +161,28 @@ def check_blueprint_perms(blueprint: Blueprint, user: User, explicit_action: str
                         )
                     }
                 )
+        check_secret_references(entry, apps.get_model(full_model), user)
+
+
+def check_secret_references(entry: BlueprintEntry, model: type[Model], user: User):
+    """Attaching a secret can disclose it through the object, like in the API.
+
+    Serializers only check this with a request, and blueprints are imported without one.
+    """
+    from authentik.crypto.secrets.models import Secret
+
+    for field in model._meta.fields:
+        if field.related_model is not Secret:
+            continue
+        value = entry.attrs.get(field.name)
+        # References to secrets created by the same blueprint need permission to create them.
+        if value is None or isinstance(value, YAMLTag):
+            continue
+        secret = Secret.objects.filter(pk=getattr(value, "pk", value)).first()
+        if secret and not user.has_perm("authentik_crypto_secrets.view_secret_value", secret):
+            raise PermissionDenied(
+                {entry.id: _("User lacks permission to use secret {secret}").format(secret=secret)}
+            )
 
 
 class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
