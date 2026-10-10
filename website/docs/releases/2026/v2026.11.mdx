@@ -8,6 +8,32 @@ draft: true
 
 ## Breaking changes
 
+### Credentials are stored as secrets
+
+Credentials that were stored on providers, sources, stages, and connectors are now stored as [secrets](../../sys-mgmt/secrets/index.mdx), which those objects reference. This applies to credentials such as:
+
+- OAuth2/OpenID client secrets
+- Proxy provider cookie secrets
+- RADIUS shared secrets
+- LDAP and Kerberos source bind and sync passwords
+- OAuth, Plex, and Telegram source credentials
+- SCIM provider tokens and Basic authentication passwords
+- SMTP passwords
+- Duo, captcha, and SMS stage keys
+- Notification transport webhook URLs
+- Microsoft Entra and Fleet credentials
+- Google service account keys
+- Kubernetes kubeconfigs
+- Kerberos keytabs and credential caches
+
+During the upgrade, authentik creates a secret for each existing credential with its exact value, and copies existing role permissions to the new secrets. See [Permissions after upgrading](../../sys-mgmt/secrets/permissions.mdx#permissions-after-upgrading).
+
+The credential fields in the API and blueprints, such as `client_secret`, `shared_secret`, `bind_password`, and `token`, are replaced by reference fields named `<field>_ref`, such as `client_secret_ref`. Requests and blueprints that still set an old field fail with a validation error that names the new field. In blueprints, define the secret as its own entry and reference it with `!KeyOf` or `!Find`. Blueprint exports no longer include credential values, including OAuth2 client secrets and RADIUS shared secrets that earlier exports contained. See [API and blueprints](../../sys-mgmt/secrets/index.mdx#api-and-blueprints).
+
+:::info
+The previous credential database columns are kept until 2027.2 to support downgrades.
+:::
+
 ### RAC endpoints are now devices
 
 RAC providers now use [devices](../../endpoint-devices/index.mdx) instead of maintaining separate endpoints. This allows machines enrolled through connectors, such as the authentik agent, to be accessed directly through RAC without configuring them again.
@@ -65,6 +91,18 @@ The **Base URL** [system setting](../../sys-mgmt/settings.mdx#base-url), introdu
 ## New features and improvements
 
 - **Display names in `ak_send_email` recipients**: The `address`, `cc`, and `bcc` parameters of `ak_send_email` now accept `(name, email)` tuples and `"Name <email>"` strings, so emails sent from expressions can include a display name in the `To` and `CC` headers, matching the Email stage. See [`ak_send_email`](../../customize/policies/types/expression/reference.mdx).
+
+### Secrets
+
+Manage the credentials used by providers, sources, stages, and connectors under **System** > **Secrets**, or create them directly from the form that uses them.
+
+Each secret has its own permissions, so a role can edit an integration without being able to read its password. Viewing a value and replacing or rotating it require their own permissions, and authentik records an event each time someone does either.
+
+Several objects can reference the same secret, so you update a shared credential in one place. You can rotate text secrets from the Admin interface or the API. Rotation changes the value in authentik only, so update the clients that use it afterward.
+
+Secret values are stored unencrypted in the database, as these credentials were before.
+
+See [Secrets](../../sys-mgmt/secrets/index.mdx).
 
 ### Single sign-on into devices managed by the authentik agent
 
