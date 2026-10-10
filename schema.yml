@@ -29538,6 +29538,11 @@ paths:
           type: integer
       - $ref: '#/components/parameters/QuerySearch'
       - in: query
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: subject
         schema:
           type: string
