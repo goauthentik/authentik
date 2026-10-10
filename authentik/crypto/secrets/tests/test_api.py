@@ -27,6 +27,21 @@ class TestSecretsAPI(APITestCase):
         self.assertTrue(secret.secret_value)
         self.assertNotIn(secret.secret_value, response.content.decode())
 
+    def test_create_generated_with_length(self):
+        self.client.force_login(self.admin)
+        list_url = reverse("authentik_api:secret-list")
+        response = self.client.post(list_url, {"name": "long", "length": 128})
+        self.assertEqual(response.status_code, 201, response.content)
+        self.assertEqual(len(Secret.objects.get(name="long").secret_value), 128)
+        for data in [
+            {"name": "given", "length": 128, "value": "given"},
+            {"name": "json", "length": 128, "type": "json", "value": "{}"},
+        ]:
+            with self.subTest(data=data):
+                response = self.client.post(list_url, data)
+                self.assertEqual(response.status_code, 400, response.content)
+                self.assertIn("length", response.json())
+
     def test_value_whitespace_is_preserved(self):
         self.client.force_login(self.admin)
         value = "  -----BEGIN KEY-----\nexact credential\n"

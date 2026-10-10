@@ -53710,6 +53710,13 @@ components:
         value:
           type: string
           writeOnly: true
+        length:
+          type: integer
+          maximum: 1024
+          minimum: 1
+          writeOnly: true
+          description: Length of the generated value when creating a text secret without
+            a value. Defaults to the default token length.
     PatchedSettingsRequest:
       type: object
       description: Settings Serializer
@@ -58858,6 +58865,13 @@ components:
         value:
           type: string
           writeOnly: true
+        length:
+          type: integer
+          maximum: 1024
+          minimum: 1
+          writeOnly: true
+          description: Length of the generated value when creating a text secret without
+            a value. Defaults to the default token length.
       required:
       - name
     SecretTypeEnum:
