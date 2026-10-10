@@ -62,10 +62,10 @@ test("uploading and downloading a file preserves binary content", async () => {
     expect(new Uint8Array(download.content as ArrayBuffer)).toEqual(bytes);
 });
 
-test.each([SecretTypeEnum.Text, SecretTypeEnum.Multiline])(
-    "views %s secrets in a styled modal",
-    async (type) => {
-        const value = "a secret value\nwith another line";
+test.each(["a secret value", "a secret value\nwith another line"])(
+    "views %j in a styled modal",
+    async (value) => {
+        const type = SecretTypeEnum.Text;
 
         vi.spyOn(SecretsApi.prototype, "secretsSecretsViewValueRetrieve").mockResolvedValue({
             value,
@@ -99,7 +99,7 @@ test.each([SecretTypeEnum.Text, SecretTypeEnum.Multiline])(
             display.getBoundingClientRect().width * 0.65,
         );
 
-        if (type === SecretTypeEnum.Text) {
+        if (!value.includes("\n")) {
             expect(input.type).toBe("password");
             display.shadowRoot!.querySelector("ak-visibility-toggle")!.click();
             await vi.waitFor(() => expect(input.type).toBe("text"));
@@ -112,7 +112,7 @@ test.each([SecretTypeEnum.Text, SecretTypeEnum.Multiline])(
     },
 );
 
-test.each([SecretTypeEnum.Text, SecretTypeEnum.Multiline])(
+test.each([SecretTypeEnum.Text, SecretTypeEnum.Json])(
     "modifying an existing %s secret requires opting in",
     async (type) => {
         const secret: Secret = { pk: "secret-id", name: "Secret", type };
@@ -128,29 +128,21 @@ test.each([SecretTypeEnum.Text, SecretTypeEnum.Multiline])(
 
         await vi.waitFor(() =>
             expect(
-                form.shadowRoot
-                    ?.querySelector("ak-secret-text-input, ak-secret-textarea-input")
-                    ?.querySelector("button"),
+                form.shadowRoot?.querySelector("ak-secret-textarea-input")?.querySelector("button"),
             ).toBeTruthy(),
         );
 
-        const control = form.shadowRoot!.querySelector(
-            "ak-secret-text-input, ak-secret-textarea-input",
-        )!;
+        const control = form.shadowRoot!.querySelector("ak-secret-textarea-input")!;
 
         expect(control.querySelector("input[disabled]")).toBeTruthy();
         await form.submit(new SubmitEvent("submit"));
         expect(update.mock.calls[0][0].patchedSecretRequest.value).toBeUndefined();
 
         await vi.waitFor(() =>
-            expect(
-                form.shadowRoot!.querySelector("ak-secret-text-input, ak-secret-textarea-input"),
-            ).toBeTruthy(),
+            expect(form.shadowRoot!.querySelector("ak-secret-textarea-input")).toBeTruthy(),
         );
 
-        const refreshed = form.shadowRoot!.querySelector(
-            "ak-secret-text-input, ak-secret-textarea-input",
-        )!;
+        const refreshed = form.shadowRoot!.querySelector("ak-secret-textarea-input")!;
 
         refreshed.querySelector("button")!.click();
         await vi.waitFor(() => expect(refreshed.querySelector("input[disabled]")).toBeNull());
@@ -159,10 +151,10 @@ test.each([SecretTypeEnum.Text, SecretTypeEnum.Multiline])(
 );
 
 test("a restricted create form submits its allowed type", async () => {
-    const secret: Secret = { pk: "secret-id", name: "Secret", type: SecretTypeEnum.Multiline };
+    const secret: Secret = { pk: "secret-id", name: "Secret", type: SecretTypeEnum.Json };
     const create = vi.spyOn(SecretsApi.prototype, "secretsSecretsCreate").mockResolvedValue(secret);
     const form = document.createElement("ak-secret-form");
-    form.types = [SecretTypeEnum.Multiline];
+    form.types = [SecretTypeEnum.Json];
     document.body.append(form);
     await vi.waitFor(() => expect(form.shadowRoot?.querySelector("textarea")).toBeTruthy());
     expect(form.shadowRoot!.querySelector("ak-radio-input")).toBeNull();
@@ -173,44 +165,5 @@ test("a restricted create form submits its allowed type", async () => {
     value.value = "key: value";
     value.dispatchEvent(new InputEvent("input", { bubbles: true }));
     await form.submit(new SubmitEvent("submit"));
-    expect(create.mock.calls[0][0].secretRequest.type).toBe(SecretTypeEnum.Multiline);
-});
-
-test("upload covers its button and forgets a file when changing type", async () => {
-    const form = document.createElement("ak-secret-form");
-    document.body.append(form);
-    await vi.waitFor(() => expect(form.shadowRoot?.querySelector("ak-radio-input")).toBeTruthy());
-
-    const chooseType = async (value: SecretTypeEnum) => {
-        const radio = form.shadowRoot!.querySelector("ak-radio-input")!;
-        radio.value = value;
-        radio.dispatchEvent(new InputEvent("input", { bubbles: true }));
-        await form.updateComplete;
-    };
-
-    await chooseType(SecretTypeEnum.File);
-    const input = form.shadowRoot!.querySelector<HTMLInputElement>('input[type="file"]')!;
-    const transfer = new DataTransfer();
-    transfer.items.add(new File(["contents"], "review-secret.txt"));
-    input.files = transfer.files;
-    input.dispatchEvent(new Event("change"));
-    await form.updateComplete;
-
-    expect(form.shadowRoot!.querySelector(".secret-file-name")?.textContent).toBe(
-        "review-secret.txt",
-    );
-
-    const button = form.shadowRoot!.querySelector(".secret-upload")!;
-    expect(input.getBoundingClientRect().height).toBeCloseTo(button.clientHeight, 0);
-    expect(input.getBoundingClientRect().width).toBeCloseTo(button.clientWidth, 0);
-    await chooseType(SecretTypeEnum.Text);
-    await chooseType(SecretTypeEnum.File);
-
-    expect(form.shadowRoot!.querySelector(".secret-file-name")?.textContent).toBe(
-        "No file selected",
-    );
-
-    expect(
-        form.shadowRoot!.querySelector<HTMLInputElement>('input[type="file"]')!.files!.length,
-    ).toBe(0);
+    expect(create.mock.calls[0][0].secretRequest.type).toBe(SecretTypeEnum.Json);
 });

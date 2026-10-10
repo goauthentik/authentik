@@ -39,7 +39,7 @@ class TesOAuth2Introspection(OAuthTestCase):
         )
         self.user = create_test_admin_user()
         self.auth = b64encode(
-            f"{self.provider.client_id}:{self.provider.client_secret_ref.value}".encode()
+            f"{self.provider.client_id}:{self.provider.client_secret_ref.secret_value}".encode()
         ).decode()
 
     def test_introspect_refresh(self):
@@ -130,7 +130,7 @@ class TesOAuth2Introspection(OAuthTestCase):
             signing_key=create_test_cert(),
         )
         auth = b64encode(
-            f"{provider.client_id}:{provider.client_secret_ref.value}".encode()
+            f"{provider.client_id}:{provider.client_secret_ref.secret_value}".encode()
         ).decode()
 
         token = AccessToken.objects.create(

@@ -101,9 +101,6 @@ impl Application {
     /// Resolve claims by introspecting a bearer token.
     pub(super) async fn attempt_bearer_auth(&self, token: &str) -> Option<Claims> {
         let client_id = self.provider.client_id.as_deref()?;
-        if self.provider.client_secret.is_empty() {
-            return None;
-        }
         let client_secret = self.provider.client_secret.as_str();
         backchannel::introspect_token(
             &self.backchannel_client,
@@ -133,6 +130,7 @@ impl Application {
             .iter()
             .any(|alg| alg == "HS256");
         if supports_hs256 {
+            // An empty HMAC key would accept tokens signed by anyone.
             if self.provider.client_secret.is_empty() {
                 return Err(eyre!("provider has no client secret"));
             }

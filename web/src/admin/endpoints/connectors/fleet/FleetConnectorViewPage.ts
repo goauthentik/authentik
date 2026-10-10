@@ -16,8 +16,8 @@ import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
+import { setPageDetails } from "#elements/router/meta";
 
-import { setPageDetails } from "#components/ak-page-navbar";
 import { scheduleCard } from "#components/tasks/scheduleCard";
 import { taskCard } from "#components/tasks/taskCard";
 
