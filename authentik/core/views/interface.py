@@ -16,7 +16,7 @@ from authentik.brands.api import CurrentBrandSerializer
 from authentik.brands.models import Brand
 from authentik.core import user_switching
 from authentik.core.apps import Setup
-from authentik.core.models import SERVICE_ACCOUNT_TYPES, UserTypes
+from authentik.core.models import UserTypes
 from authentik.lib.config import CONFIG
 from authentik.policies.denied import AccessDeniedResponse
 
@@ -30,7 +30,8 @@ class RootRedirectView(AccessMixin, RedirectView):
     def redirect_to_app(self, request: HttpRequest):
         if request.user.is_authenticated and request.user.type in (
             UserTypes.EXTERNAL,
-            *SERVICE_ACCOUNT_TYPES,
+            UserTypes.SERVICE_ACCOUNT,
+            UserTypes.INTERNAL_SERVICE_ACCOUNT,
         ):
             brand: Brand = request.brand
             if brand.default_application:
@@ -76,7 +77,8 @@ class BrandDefaultRedirectView(InterfaceView):
         request.session.pop(user_switching.SESSION_KEY_ADD_USER, None)
         if request.user.is_authenticated and request.user.type in (
             UserTypes.EXTERNAL,
-            *SERVICE_ACCOUNT_TYPES,
+            UserTypes.SERVICE_ACCOUNT,
+            UserTypes.INTERNAL_SERVICE_ACCOUNT,
         ):
             brand: Brand = request.brand
             if brand.default_application:
