@@ -43865,6 +43865,7 @@ components:
           type: string
           format: uuid
           nullable: true
+          title: Kubeconfig
         verify_ssl:
           type: boolean
           description: Verify SSL Certificates of the Kubernetes API endpoint
@@ -43890,6 +43891,7 @@ components:
           type: string
           format: uuid
           nullable: true
+          title: Kubeconfig
         verify_ssl:
           type: boolean
           description: Verify SSL Certificates of the Kubernetes API endpoint
@@ -51813,6 +51815,7 @@ components:
           type: string
           format: uuid
           nullable: true
+          title: Kubeconfig
         verify_ssl:
           type: boolean
           description: Verify SSL Certificates of the Kubernetes API endpoint
