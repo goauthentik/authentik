@@ -20,9 +20,6 @@ class FleetConnectorSerializer(EnterpriseRequiredMixin, ConnectorSerializer):
             "map_users",
             "map_teams_access_group",
         ]
-        extra_kwargs = {
-            "token_ref": {"required": True, "allow_null": False},
-        }
 
 
 class FleetConnectorViewSet(UsedByMixin, ModelViewSet):
