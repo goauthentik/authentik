@@ -22,8 +22,6 @@ class TestKerberosAuth(KerberosTestCase):
             password_login_update_internal_password=True,
         )
         self.user = User.objects.create(username=generate_id())
-        self.user.set_unusable_password()
-        self.user.save()
         UserKerberosSourceConnection.objects.create(
             source=self.source, user=self.user, identifier=self.realm.user_princ
         )

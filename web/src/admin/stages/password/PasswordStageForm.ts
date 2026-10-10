@@ -1,28 +1,19 @@
-import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#components/ak-number-input";
-import "#components/ak-switch-input";
 import "#components/ak-text-input";
+import "#elements/ak-checkbox-group/ak-checkbox-group";
+import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
 import { aki } from "#common/api/client";
 
 import { WithLicenseSummary } from "#elements/mixins/license";
 
 import { AKLabel } from "#components/ak-label";
 
-import { RenderFlowOption } from "#admin/flows/utils";
+import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
-import {
-    BackendsEnum,
-    Flow,
-    FlowDesignationEnum,
-    FlowsApi,
-    FlowsInstancesListRequest,
-    PasswordStage,
-    StagesApi,
-} from "@goauthentik/api";
+import { BackendsEnum, FlowDesignationEnum, PasswordStage, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -60,7 +51,7 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
                 required
                 name="failedAttemptsBeforeLockout"
                 min=${0}
-                value="${this.instance?.failedAttemptsBeforeLockout ?? 0}"
+                value=${this.instance?.failedAttemptsBeforeLockout ?? 0}
                 ?readonly=${readOnly}
                 help=${
                     readOnly
@@ -90,7 +81,7 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
                     id: "password-stage.lockout-message.label",
                 })}
                 name="lockoutMessage"
-                value="${this.instance?.lockoutMessage ?? ""}"
+                value=${this.instance?.lockoutMessage ?? ""}
                 ?readonly=${readOnly}
                 help=${msg(
                     "Message shown when the user's password has been locked. Leave blank to show a generic authentication error.",
@@ -163,46 +154,13 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
                         required
                         name="configureFlow"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation: FlowDesignationEnum.StageConfiguration,
-                                };
-
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-
-                                const flows = await aki(FlowsApi).flowsInstancesList(args);
-
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                let selected = this.instance?.configureFlow === flow.pk;
-
-                                if (
-                                    !this.instance?.pk &&
-                                    !this.instance?.configureFlow &&
-                                    flow.slug === "default-password-change"
-                                ) {
-                                    selected = true;
-                                }
-
-                                return selected;
-                            }}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKFlowSearch({
+                            name: "configureFlow",
+                            flowType: FlowDesignationEnum.StageConfiguration,
+                            value: this.instance?.configureFlow,
+                            blankable: true,
+                            defaultFlowSlug: this.instance?.pk ? null : "default-password-change",
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Flow used by an authenticated user to configure their password. If empty, user will not be able to change their password.",
@@ -222,7 +180,7 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "How many failed password attempts are allowed before the flow is canceled. This setting does not deactivate the user.",
+                                "How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password.",
                                 {
                                     id: "password-stage.failed-attempts-before-cancel.description",
                                 },

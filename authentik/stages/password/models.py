@@ -1,16 +1,18 @@
 """password stage models"""
 
-from datetime import datetime
+from typing import Any
 
 from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.postgres.fields import ArrayField
-from django.db import models
+from django.db import models, transaction
+from django.http import HttpRequest
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 
 from authentik.core.models import User
+from authentik.core.signals import password_changed, password_hash_changed
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, Stage
 from authentik.stages.authenticator.models import Device
@@ -129,17 +131,66 @@ class PasswordDevice(Device):
     locked_at = models.DateTimeField(default=None, null=True)
 
     @classmethod
-    def save_password_hash(
-        cls, user: User, password: str, changed_at: datetime, using: str
-    ) -> PasswordDevice:
-        """Persist only password fields, preserving other device state."""
-        defaults = {"password": password, "password_change_date": changed_at, "failed_attempts": 0}
-        device, _ = cls.objects.using(using).update_or_create(
-            user=user,
-            defaults=defaults,
-            create_defaults={"name": "Password", **defaults},
-        )
-        return device
+    def set_password(
+        cls,
+        user: User,
+        raw_password: str | None,
+        *,
+        signal: bool = True,
+        sender: Any = None,
+        request: HttpRequest | None = None,
+    ):
+        """Hash and store a password. `None` revokes the password."""
+        if signal:
+            password_changed.send(
+                sender=sender or user, user=user, password=raw_password, request=request
+            )
+        cls._store(user, make_password(raw_password))
+
+    @classmethod
+    def set_password_from_hash(
+        cls,
+        user: User,
+        password_hash: str,
+        *,
+        signal: bool = True,
+        sender: Any = None,
+        request: HttpRequest | None = None,
+    ):
+        """Store an already validated password hash as-is.
+
+        Because no raw password is available, downstream password sync integrations
+        such as LDAP and Kerberos cannot be updated from this code path."""
+        if signal:
+            password_hash_changed.send(sender=sender or user, user=user, request=request)
+        cls._store(user, password_hash)
+
+    @classmethod
+    def set_unusable_password(cls, user: User):
+        """Refuse password authentication until a new password is set.
+
+        A user without a password device already has no usable password."""
+        with transaction.atomic():
+            device = cls.objects.select_for_update().filter(user=user).first()
+            if device is None:
+                return
+            device.password = make_password(None)
+            device.save(update_fields=["password", "last_updated"])
+            user.password_device = device
+            # Saving the user dispatches outgoing sync and invalidates cached policy results.
+            user.save(update_fields=["last_updated"])
+
+    @classmethod
+    def _store(cls, user: User, password_hash: str):
+        """Replace the password, keeping any lock on the device."""
+        defaults = {"password": password_hash, "password_change_date": now(), "failed_attempts": 0}
+        with transaction.atomic():
+            device, _ = cls.objects.update_or_create(
+                user=user, defaults=defaults, create_defaults={"name": "Password", **defaults}
+            )
+            user.password_device = device
+            # Saving the user dispatches outgoing sync and invalidates cached policy results.
+            user.save(update_fields=["last_updated"])
 
     def check_password(self, raw_password: str) -> bool:
         """Upgrade outdated hashes without replacing a concurrently changed password."""

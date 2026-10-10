@@ -19,8 +19,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
-
-import { setPageDetails } from "#components/ak-page-navbar";
+import { setPageDetails } from "#elements/router/meta";
 
 import { AdminSettingsForm } from "#admin/admin-settings/AdminSettingsForm";
 
