@@ -20,6 +20,7 @@ import { oauth2SourcesProvider, oauth2SourcesSelector } from "./OAuth2Sources.js
 import { ascii_letters, digits, randomString } from "#common/utils";
 
 import { RadioOption } from "#elements/forms/Radio";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { AKCertificateSearch } from "#admin/common/AKCertificateSearch";
 import { JWEEncryptionKeyTypes, JWTSigningKeyTypes } from "#admin/common/certificate-key-types";
@@ -220,7 +221,7 @@ export function renderForm({
                     name="clientSecretRef"
                     label=${msg("Client Secret")}
                     value=${ifPresent(provider.clientSecretRef)}
-                    blankable
+                    ?blankable=${!provider.pk}
                     help=${
                         provider.pk
                             ? msg("Secret the client authenticates with.", {
