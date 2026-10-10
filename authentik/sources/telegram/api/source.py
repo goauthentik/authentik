@@ -23,9 +23,6 @@ class TelegramSourceSerializer(SourceSerializer):
             "request_message_access",
             "pre_authentication_flow",
         ]
-        extra_kwargs = {
-            "bot_token_ref": {"required": True, "allow_null": False},
-        }
 
 
 class TelegramAuthSerializer(TelegramAuth):

@@ -3,11 +3,7 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-from authentik.crypto.secrets.migrations._credential_values import (
-    migrate_credentials,
-    restore_credentials,
-)
-from authentik.crypto.secrets.migrations._permissions import preserve_permissions
+from authentik.crypto.secrets.migrations._credential_values import move_credentials
 
 
 def keytab_type(column):
@@ -22,21 +18,6 @@ FIELDS = [
     ("spnego_keytab", "spnego_keytab_ref", keytab_type("spnego_keytab"), "SPNEGO keytab"),
     ("spnego_ccache", "spnego_ccache_ref", "text", "SPNEGO credentials cache"),
 ]
-
-
-def forwards(apps, schema_editor):
-    migrate_credentials(
-        apps,
-        schema_editor,
-        "authentik_sources_kerberos",
-        "KerberosSource",
-        FIELDS,
-    )
-    preserve_permissions(apps, schema_editor, "authentik_sources_kerberos", "kerberossource")
-
-
-def backwards(apps, schema_editor):
-    restore_credentials(apps, schema_editor, "authentik_sources_kerberos", "KerberosSource", FIELDS)
 
 
 class Migration(migrations.Migration):
@@ -119,5 +100,5 @@ class Migration(migrations.Migration):
                 verbose_name="Sync password",
             ),
         ),
-        migrations.RunPython(forwards, backwards),
+        move_credentials("authentik_sources_kerberos", "KerberosSource", FIELDS),
     ]

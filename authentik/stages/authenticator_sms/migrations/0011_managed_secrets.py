@@ -3,35 +3,12 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-from authentik.crypto.secrets.migrations._credential_values import (
-    migrate_credentials,
-    restore_credentials,
-)
-from authentik.crypto.secrets.migrations._permissions import preserve_permissions
+from authentik.crypto.secrets.migrations._credential_values import move_credentials
 
 FIELDS = [
     ("auth", "auth_ref", "text", "SMS auth token"),
     ("auth_password", "auth_password_ref", "text", "SMS auth password"),
 ]
-
-
-def forwards(apps, schema_editor):
-    migrate_credentials(
-        apps,
-        schema_editor,
-        "authentik_stages_authenticator_sms",
-        "AuthenticatorSMSStage",
-        FIELDS,
-    )
-    preserve_permissions(
-        apps, schema_editor, "authentik_stages_authenticator_sms", "authenticatorsmsstage"
-    )
-
-
-def backwards(apps, schema_editor):
-    restore_credentials(
-        apps, schema_editor, "authentik_stages_authenticator_sms", "AuthenticatorSMSStage", FIELDS
-    )
 
 
 class Migration(migrations.Migration):
@@ -61,7 +38,6 @@ class Migration(migrations.Migration):
             model_name="authenticatorsmsstage",
             name="auth_ref",
             field=models.ForeignKey(
-                blank=True,
                 default=None,
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
@@ -70,5 +46,5 @@ class Migration(migrations.Migration):
                 verbose_name="Auth token",
             ),
         ),
-        migrations.RunPython(forwards, backwards),
+        move_credentials("authentik_stages_authenticator_sms", "AuthenticatorSMSStage", FIELDS),
     ]
