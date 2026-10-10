@@ -11,6 +11,9 @@ import { IdentificationChallenge } from "@goauthentik/api";
 
 import { ReactiveController } from "lit";
 
+// Ask once when the flow interface loads, so the answer is ready before the first challenge.
+const conditionalMediationAvailable = isConditionalMediationAvailable().catch(() => false);
+
 type PasskeyChallenge = Omit<IdentificationChallenge, "passkeyChallenge"> & {
     passkeyChallenge?: PublicKeyCredentialRequestOptions;
 };
@@ -35,6 +38,16 @@ type PasskeyChallenge = Omit<IdentificationChallenge, "passkeyChallenge"> & {
 export class WebauthnController implements ReactiveController {
     public passkey: PublicKeyCredentialRequestOptions | null = null;
 
+    /**
+     * Resolves once the conditional request for the current challenge is pending, or once it is
+     * clear there will be none.
+     *
+     * Safari chooses between password and passkey autofill when the identification field gains
+     * focus. If no conditional request is pending at that moment it offers only the saved
+     * password, so the host must not focus the field before this resolves.
+     */
+    public ready: Promise<void> = Promise.resolve();
+
     constructor(private host: IdentificationHost) {}
 
     #abortController: AbortController | null = null;
@@ -56,7 +69,9 @@ export class WebauthnController implements ReactiveController {
             this.passkey = this.#hostPasskey;
 
             if (this.passkey) {
-                this.#startConditionalWebAuthn(this.passkey);
+                this.ready = this.#startConditionalWebAuthn(this.passkey).catch((error) => {
+                    console.warn("authentik/identification: Conditional WebAuthn failed", error);
+                });
             }
         }
     }
@@ -69,14 +84,13 @@ export class WebauthnController implements ReactiveController {
     /**
      * Start a conditional WebAuthn request for passkey autofill.
      * This allows users to select a passkey from the browser's autofill dropdown.
+     *
+     * Resolves as soon as the request is pending, not when the user picks a passkey.
      */
     async #startConditionalWebAuthn(
         passkeyRequestOptions: PublicKeyCredentialRequestOptions,
     ): Promise<void> {
-        // Check if browser supports conditional mediation
-        const isAvailable = await isConditionalMediationAvailable();
-
-        if (!isAvailable) {
+        if (!(await conditionalMediationAvailable)) {
             console.debug("authentik/identification: Conditional mediation not available");
 
             return;
@@ -87,35 +101,31 @@ export class WebauthnController implements ReactiveController {
         this.#abortController = new AbortController();
         const { signal } = this.#abortController;
 
-        try {
-            const publicKey = transformCredentialRequestOptions(passkeyRequestOptions);
+        const publicKey = transformCredentialRequestOptions(passkeyRequestOptions);
 
-            // Start the conditional WebAuthn request
-            const credential = (await navigator.credentials.get({
-                publicKey,
-                mediation: "conditional",
-                signal,
-            })) as PublicKeyCredential | null;
+        navigator.credentials
+            .get({ publicKey, mediation: "conditional", signal })
+            .then((credential) => {
+                if (!credential) {
+                    console.debug("authentik/identification: No credential returned");
 
-            if (!credential) {
-                console.debug("authentik/identification: No credential returned");
+                    return;
+                }
 
-                return;
-            }
+                // Transform and submit the passkey response
+                const passkey = transformAssertionForServer(credential as PublicKeyCredential);
+                this.host.dispatchEvent(new AKFlowSubmitRequest({ passkey }, { invisible: true }));
+            })
+            .catch((error: unknown) => {
+                if (error instanceof Error && error.name === "AbortError") {
+                    // Request was aborted, this is expected when navigating away
+                    console.debug("authentik/identification: Conditional WebAuthn aborted");
 
-            // Transform and submit the passkey response
-            const passkey = transformAssertionForServer(credential);
-            this.host.dispatchEvent(new AKFlowSubmitRequest({ passkey }, { invisible: true }));
-        } catch (error) {
-            if (error instanceof Error && error.name === "AbortError") {
-                // Request was aborted, this is expected when navigating away
-                console.debug("authentik/identification: Conditional WebAuthn aborted");
+                    return;
+                }
 
-                return;
-            }
-
-            console.warn("authentik/identification: Conditional WebAuthn failed", error);
-        }
+                console.warn("authentik/identification: Conditional WebAuthn failed", error);
+            });
     }
 }
 

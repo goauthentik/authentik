@@ -92,6 +92,17 @@ export class IdentificationStage extends BaseStage<
     #captcha = new CaptchaDisplayController(this);
     #webauthn = new WebauthnController(this);
 
+    // The base class focus; must stay declared above the override below.
+    #focusField = this.focus;
+
+    /**
+     * Every focus path waits for the passkey autofill request, see
+     * {@linkcode WebauthnController.ready}.
+     */
+    public override focus = (): void => {
+        this.#webauthn.ready.then(this.#focusField);
+    };
+
     //#endregion
 
     //#region Lifecycle
@@ -313,7 +324,7 @@ export class IdentificationStage extends BaseStage<
             type=${type}
             name="uidField"
             placeholder=${label}
-            autofocus
+            ?autofocus=${!this.#webauthn.live}
             autocomplete=${autocomplete}
             spellcheck="false"
             inputmode=${type === "email" ? "email" : "text"}
