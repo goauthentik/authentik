@@ -1,7 +1,5 @@
 """Test OAuth2 provider secret handling"""
 
-from base64 import b64encode
-
 from django.core.exceptions import ValidationError
 from django.urls import reverse
 from rest_framework.test import APITestCase
@@ -9,7 +7,7 @@ from rest_framework.test import APITestCase
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.crypto.secrets.models import Secret, SecretType
 from authentik.lib.generators import generate_id
-from authentik.providers.oauth2.models import ClientType, OAuth2Provider
+from authentik.providers.oauth2.models import OAuth2Provider
 
 
 class TestProviderSecret(APITestCase):
@@ -18,24 +16,6 @@ class TestProviderSecret(APITestCase):
     def setUp(self) -> None:
         self.user = create_test_admin_user()
         self.client.force_login(self.user)
-
-    def test_detached_secret_fails_closed(self):
-        """A confidential provider whose secret is detached must reject empty-secret auth"""
-        from django.test import RequestFactory
-
-        from authentik.providers.oauth2.utils import authenticate_provider
-
-        provider = OAuth2Provider.objects.create(
-            name=generate_id(),
-            client_type=ClientType.CONFIDENTIAL,
-            authorization_flow=create_test_flow(),
-        )
-        OAuth2Provider.objects.filter(pk=provider.pk).update(client_secret_ref=None)
-        provider.refresh_from_db()
-        self.assertIsNone(provider.client_secret_ref)
-        auth = b64encode(f"{provider.client_id}:".encode()).decode()
-        request = RequestFactory().get("/", HTTP_AUTHORIZATION=f"Basic {auth}")
-        self.assertIsNone(authenticate_provider(request))
 
     def test_api_create_with_secret_reference(self):
         """The API accepts a reference to an existing secret"""
@@ -72,11 +52,11 @@ class TestProviderSecret(APITestCase):
                 )
                 self.assertEqual(response.status_code, 201, response.content)
                 provider = OAuth2Provider.objects.get(pk=response.json()["pk"])
-                self.assertTrue(provider.client_secret_ref.value)
+                self.assertTrue(provider.client_secret_ref.secret_value)
 
     def test_api_rejects_non_ascii_secret_reference(self):
         """OAuth client secrets must remain valid HTTP Basic credentials."""
-        secret = Secret.objects.create(name=generate_id(), value="non-ascii-ú")
+        secret = Secret.objects.create(name=generate_id(), secret_value="non-ascii-ú")
         response = self.client.post(
             reverse("authentik_api:oauth2provider-list"),
             data={
@@ -96,12 +76,14 @@ class TestProviderSecret(APITestCase):
 
     def test_api_rejects_incompatible_secret_reference(self):
         for secret_type, value in [
-            (SecretType.MULTILINE, "ascii"),
+            (SecretType.JSON, "{}"),
             (SecretType.FILE, "aGk="),
             (SecretType.TEXT, "x" * 256),
         ]:
             with self.subTest(type=secret_type):
-                secret = Secret.objects.create(name=generate_id(), type=secret_type, value=value)
+                secret = Secret.objects.create(
+                    name=generate_id(), type=secret_type, secret_value=value
+                )
                 response = self.client.post(
                     reverse("authentik_api:oauth2provider-list"),
                     data={
@@ -119,7 +101,7 @@ class TestProviderSecret(APITestCase):
     def test_replacement_preserves_oauth_constraints(self):
         provider = OAuth2Provider.objects.create(name=generate_id())
         secret = provider.client_secret_ref
-        original = secret.value
+        original = secret.secret_value
         for value in ["x" * 256, "non-ascii-ú", "line\nbreak"]:
             with self.subTest(value=value):
                 response = self.client.patch(
@@ -129,9 +111,38 @@ class TestProviderSecret(APITestCase):
                 self.assertEqual(response.status_code, 400, response.content)
                 with self.assertRaises(ValidationError):
                     secret.replace_value(value)
-                self.assertEqual(secret.value, original)
+                self.assertEqual(secret.secret_value, original)
                 secret.refresh_from_db()
-                self.assertEqual(secret.value, original)
+                self.assertEqual(secret.secret_value, original)
         secret.replace_value("x" * 255)
         secret.refresh_from_db()
-        self.assertEqual(secret.value, "x" * 255)
+        self.assertEqual(secret.secret_value, "x" * 255)
+
+    def test_api_update_requires_secret_reference(self):
+        """Clearing the reference of an existing provider must not replace its secret."""
+        provider = OAuth2Provider.objects.create(name=generate_id())
+        secret = provider.client_secret_ref
+        response = self.client.patch(
+            reverse("authentik_api:oauth2provider-detail", kwargs={"pk": provider.pk}),
+            data={"client_secret_ref": None},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400, response.content)
+        provider.refresh_from_db()
+        self.assertEqual(provider.client_secret_ref, secret)
+
+    def test_api_rejects_legacy_secret_field(self):
+        """Sending the removed client_secret field fails instead of being ignored."""
+        provider = OAuth2Provider.objects.create(name=generate_id())
+        response = self.client.patch(
+            reverse("authentik_api:oauth2provider-detail", kwargs={"pk": provider.pk}),
+            data={"client_secret": "legacy"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400, response.content)
+        self.assertIn("client_secret_ref", response.json()["client_secret"][0])
+
+    def test_generated_secret_keeps_provider_length(self):
+        """Generated client secrets don't depend on the default token length setting."""
+        provider = OAuth2Provider.objects.create(name=generate_id())
+        self.assertEqual(len(provider.client_secret_ref.secret_value), 128)

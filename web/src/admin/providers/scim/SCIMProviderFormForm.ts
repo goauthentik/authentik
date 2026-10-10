@@ -5,7 +5,6 @@ import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-import "#elements/forms/SearchSelect/index";
 import "#elements/CodeMirror";
 import "#elements/LicenseNotice";
 import "#components/ak-number-input";
@@ -20,7 +19,10 @@ import {
 
 import { aki } from "#common/api/client";
 
+import { SearchSelectSource, withQuery } from "#elements/forms/SearchSelect/shared";
 import { ifPresent } from "#elements/utils/attributes";
+
+import { AKSearchSelect } from "#components/ak-search-select-field";
 
 import {
     CompatibilityModeEnum,
@@ -28,7 +30,6 @@ import {
     SCIMAuthenticationModeEnum,
     SCIMProvider,
     SourcesApi,
-    SourcesOauthListRequest,
     ValidationError,
 } from "@goauthentik/api";
 
@@ -74,32 +75,12 @@ export function renderAuthBasic(provider?: Partial<SCIMProvider>, errors: Valida
 
 export function renderAuthOAuth(provider?: Partial<SCIMProvider>, _errors: ValidationError = {}) {
     return html`<ak-form-element-horizontal label=${msg("OAuth Source")} name="authOauth">
-            <ak-search-select
-                .fetchObjects=${async (query?: string): Promise<OAuthSource[]> => {
-                    const args: SourcesOauthListRequest = {
-                        ordering: "name",
-                    };
-
-                    if (query !== undefined) {
-                        args.search = query;
-                    }
-
-                    const sources = await aki(SourcesApi).sourcesOauthList(args);
-
-                    return sources.results;
-                }}
-                .renderElement=${(source: OAuthSource): string => {
-                    return source.name;
-                }}
-                .value=${(source: OAuthSource | undefined): string | undefined => {
-                    return source ? source.pk : undefined;
-                }}
-                .selected=${(source: OAuthSource): boolean => {
-                    return source.pk === provider?.authOauth;
-                }}
-                blankable
-            >
-            </ak-search-select>
+            ${AKSearchSelect({
+                name: "authOauth",
+                source: oauthSourceSource,
+                value: provider?.authOauth,
+                blankable: true,
+            })}
             <p class="pf-c-form__helper-text">
                 ${msg("Specify OAuth source used for authentication.")}
             </p>
@@ -131,6 +112,15 @@ export interface SCIMProviderFormProps {
     provider?: Partial<SCIMProvider> | null;
     errors?: ValidationError | null;
 }
+
+const oauthSourceSource: SearchSelectSource<OAuthSource> = {
+    fetchObjects: (query) =>
+        aki(SourcesApi)
+            .sourcesOauthList(withQuery(query, { ordering: "name" }))
+            .then(({ results }) => results),
+    keyOf: (source) => source.pk,
+    labelOf: (source) => source.name,
+};
 
 export function renderForm({ provider, errors, update }: SCIMProviderFormProps) {
     provider ||= {};

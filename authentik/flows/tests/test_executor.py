@@ -768,10 +768,7 @@ class TestFlowExecutor(FlowTestCase):
         )
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
 
-        with (
-            patch("authentik.enterprise.license.get_install_id", return_value="test-install-id"),
-            override_settings(TEST=False, DEBUG=False),
-        ):
+        with override_settings(TEST=False, DEBUG=False):
             self.client.logout()
             response = self.client.post(url, data="{", content_type="application/json")
             self.assertEqual(response.status_code, 200)
