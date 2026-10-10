@@ -9,24 +9,8 @@ if TYPE_CHECKING:
 
 
 def verify_token(user, device_id, token):
-    """
-    Attempts to verify a :term:`token` against a specific device, identified by
-    :attr:`~authentik.stages.authenticator.models.Device.persistent_id`.
-
-    This wraps the verification process in a transaction to ensure that things
-    like throttling polices are properly enforced.
-
-    :param user: The user supplying the token.
-    :type user: :class:`~django.contrib.auth.models.User`
-
-    :param str device_id: A device's persistent_id value.
-
-    :param str token: An OTP token to verify.
-
-    :returns: The device that accepted ``token``, if any.
-    :rtype: :class:`~authentik.stages.authenticator.models.Device` or ``None``
-
-    """
+    """Verify a token against a specific device, identified by its persistent_id.
+    Runs in a transaction so throttling is enforced."""
     from authentik.stages.authenticator.models import Device
 
     verified = None
@@ -39,25 +23,7 @@ def verify_token(user, device_id, token):
 
 
 def match_token(user, token):
-    """
-    Attempts to verify a :term:`token` on every device attached to the given
-    user until one of them succeeds.
-
-    .. warning::
-
-        This originally existed for more convenient integration with the admin
-        site. Its use is no longer recommended and it is not guaranteed to
-        interact well with more recent features (such as throttling). Tokens
-        should always be verified against specific devices.
-
-    :param user: The user supplying the token.
-    :type user: :class:`~django.contrib.auth.models.User`
-
-    :param str token: An OTP token to verify.
-
-    :returns: The device that accepted ``token``, if any.
-    :rtype: :class:`~authentik.stages.authenticator.models.Device` or ``None``
-    """
+    """Verify a token against all of a user's devices, returning the first match"""
     with transaction.atomic():
         for device in devices_for_user(user, for_verify=True):
             if device.verify_token(token):
@@ -69,25 +35,9 @@ def match_token(user, token):
 
 
 def devices_for_user(user: User, confirmed: bool | None = True, for_verify: bool = False):
-    """
-    Return an iterable of all devices registered to the given user.
-
-    Returns an empty iterable for anonymous users.
-
-    :param user: standard or custom user object.
-    :type user: :class:`~django.contrib.auth.models.User`
-
-    :param bool confirmed: If ``None``, all matching devices are returned.
-        Otherwise, this can be any true or false value to limit the query
-        to confirmed or unconfirmed devices, respectively.
-
-    :param bool for_verify: If ``True``, we'll load the devices with
-        :meth:`~django.db.models.query.QuerySet.select_for_update` to prevent
-        concurrent verifications from succeeding. In which case, this must be
-        called inside a transaction.
-
-    :rtype: iterable
-    """
+    """Iterate all devices of a user, optionally filtered by `confirmed`.
+    With `for_verify`, devices are locked with select_for_update, so this must
+    be called inside a transaction."""
     if user.is_anonymous:
         return
 
@@ -100,18 +50,7 @@ def devices_for_user(user: User, confirmed: bool | None = True, for_verify: bool
 
 
 def user_has_device(user, confirmed=True):
-    """
-    Return ``True`` if the user has at least one device.
-
-    Returns ``False`` for anonymous users.
-
-    :param user: standard or custom user object.
-    :type user: :class:`~django.contrib.auth.models.User`
-
-    :param confirmed: If ``None``, all matching devices are considered.
-        Otherwise, this can be any true or false value to limit the query
-        to confirmed or unconfirmed devices, respectively.
-    """
+    """Check if a user has at least one device"""
     try:
         next(devices_for_user(user, confirmed=confirmed))
     except StopIteration:
@@ -123,9 +62,7 @@ def user_has_device(user, confirmed=True):
 
 
 def device_classes():
-    """
-    Returns an iterable of all loaded device models.
-    """
+    """Iterate all loaded device models"""
     from django.apps import apps
 
     from authentik.stages.authenticator.models import Device

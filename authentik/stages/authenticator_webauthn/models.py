@@ -1,22 +1,46 @@
 """WebAuthn stage"""
 
+from typing import TYPE_CHECKING, cast
+
 from cryptography.x509 import Certificate, load_pem_x509_certificate
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields.array import ArrayField
 from django.db import models
+from django.http import HttpRequest
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from rest_framework.serializers import BaseSerializer, Serializer
+from rest_framework.serializers import BaseSerializer, Serializer, ValidationError
+from structlog.stdlib import get_logger
+from webauthn.authentication.generate_authentication_options import generate_authentication_options
+from webauthn.authentication.verify_authentication_response import verify_authentication_response
+from webauthn.helpers import parse_authentication_credential_json
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
-from webauthn.helpers.structs import PublicKeyCredentialDescriptor
+from webauthn.helpers.exceptions import InvalidAuthenticationResponse, InvalidJSONStructure
+from webauthn.helpers.options_to_json_dict import options_to_json_dict
+from webauthn.helpers.structs import (
+    PublicKeyCredentialDescriptor,
+    PublicKeyCredentialType,
+    UserVerificationRequirement,
+)
 
+from authentik.core.models import User
+from authentik.core.signals import login_failed
 from authentik.core.types import UserSettingSerializer
+from authentik.events.middleware import audit_ignore
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
+from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.models import InternallyManagedMixin, SerializerModel, SimpleThroughModel
 from authentik.stages.authenticator.models import Device
+from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
+from authentik.stages.password.stage import PLAN_CONTEXT_METHOD_ARGS
 
 UNKNOWN_DEVICE_TYPE_AAGUID = "00000000-0000-0000-0000-000000000000"
+PLAN_CONTEXT_WEBAUTHN_CHALLENGE = "goauthentik.io/stages/authenticator_webauthn/challenge"
+LOGGER = get_logger()
+
+if TYPE_CHECKING:
+    from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
 
 
 class UserVerification(models.TextChoices):
@@ -168,6 +192,116 @@ class WebAuthnDevice(SerializerModel, Device):
     device_type = models.ForeignKey(
         "WebAuthnDeviceType", on_delete=models.SET_DEFAULT, null=True, default=None
     )
+
+    def get_challenge_for_device(
+        self, request: HttpRequest, executor: FlowExecutorView, stage: Stage | None = None
+    ):
+        """Send the client a challenge that we'll check later"""
+        executor.plan.context.pop(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, None)
+        stage = cast(AuthenticatorValidateStage, stage or executor.current_stage)
+
+        allowed_credentials = []
+
+        if self.pk:
+            # We want all the user's WebAuthn devices and merge their challenges
+            for user_device in WebAuthnDevice.objects.filter(user=self.user).order_by("name"):
+                user_device: WebAuthnDevice
+                allowed_credentials.append(user_device.descriptor)
+
+        authentication_options = generate_authentication_options(
+            rp_id=get_rp_id(request),
+            allow_credentials=allowed_credentials,
+            user_verification=UserVerificationRequirement(stage.webauthn_user_verification),
+        )
+
+        executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = authentication_options.challenge
+
+        options_dict = options_to_json_dict(authentication_options)
+        if stage.webauthn_hints:
+            options_dict["hints"] = list(stage.webauthn_hints)
+        return options_dict
+
+    def validate_challenge(
+        self,
+        request: HttpRequest,
+        input: dict,
+        executor: FlowExecutorView,
+        user: User,
+        stage: Stage | None = None,
+    ):
+        """Validate WebAuthn Challenge"""
+        from authentik.stages.authenticator_validate.models import DeviceClasses
+
+        challenge = executor.plan.context.get(PLAN_CONTEXT_WEBAUTHN_CHALLENGE)
+        stage = stage or executor.current_stage
+
+        if "MinuteMaid" in request.META.get("HTTP_USER_AGENT", ""):
+            # Workaround for Android sign-in, when signing into Google Workspace on android while
+            # adding the account to the system (not in Chrome), for some reason `type` is not set
+            # so in that case we fall back to `public-key`
+            # since that's the only option we support anyways
+            input.setdefault("type", PublicKeyCredentialType.PUBLIC_KEY)
+        try:
+            credential = parse_authentication_credential_json(input)
+        except InvalidJSONStructure as exc:
+            LOGGER.warning("Invalid WebAuthn challenge response", exc=exc)
+            raise ValidationError("Invalid device", "invalid") from None
+
+        device = WebAuthnDevice.objects.filter(credential_id=credential.id).first()
+        if not device:
+            raise ValidationError("Invalid device", "invalid")
+        # We can only check the device's user if the user we're given isn't anonymous
+        # as this validation is also used for password-less login where webauthn is the very first
+        # step done by a user. Only if this validation happens at a later stage we can check
+        # that the device belongs to the user
+        if not user.is_anonymous and device.user != user:
+            raise ValidationError("Invalid device", "invalid")
+        # When a device_type was set when creating the device (2024.4+), and we have a limitation,
+        # make sure the device type is allowed.
+        if (
+            device.device_type
+            and stage.webauthn_allowed_device_types.exists()
+            and not stage.webauthn_allowed_device_types.filter(pk=device.device_type.pk).exists()
+        ):
+            raise ValidationError(
+                _(
+                    "Invalid device type. Contact your {brand} administrator for help.".format(
+                        brand=request.brand.branding_title
+                    )
+                ),
+                "invalid",
+            )
+        try:
+            authentication_verification = verify_authentication_response(
+                credential=credential,
+                expected_challenge=challenge,
+                expected_rp_id=get_rp_id(request),
+                expected_origin=get_origin(request),
+                credential_public_key=base64url_to_bytes(device.public_key),
+                credential_current_sign_count=device.sign_count,
+                require_user_verification=stage.webauthn_user_verification
+                == UserVerification.REQUIRED,
+            )
+        except InvalidAuthenticationResponse as exc:
+            LOGGER.warning("Assertion failed", exc=exc)
+            login_failed.send(
+                sender=__name__,
+                credentials={"username": user.username},
+                request=request,
+                stage=executor.current_stage,
+                context={
+                    PLAN_CONTEXT_METHOD_ARGS: {
+                        "device": device,
+                        "device_class": DeviceClasses.WEBAUTHN.value,
+                        "device_type": device.device_type,
+                    },
+                },
+            )
+            raise ValidationError("Assertion failed") from exc
+
+        with audit_ignore():
+            device.set_sign_count(authentication_verification.new_sign_count)
+        return device
 
     @property
     def descriptor(self) -> PublicKeyCredentialDescriptor:

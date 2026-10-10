@@ -40,6 +40,7 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_webauthn.models import (
+    PLAN_CONTEXT_WEBAUTHN_CHALLENGE,
     UNKNOWN_DEVICE_TYPE_AAGUID,
     AuthenticatorWebAuthnStage,
     WebAuthnDevice,
@@ -47,7 +48,6 @@ from authentik.stages.authenticator_webauthn.models import (
 )
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
 
-PLAN_CONTEXT_WEBAUTHN_CHALLENGE = "goauthentik.io/stages/authenticator_webauthn/challenge"
 PLAN_CONTEXT_WEBAUTHN_ATTEMPT = "goauthentik.io/stages/authenticator_webauthn/attempt"
 
 
