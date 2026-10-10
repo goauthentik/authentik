@@ -23,7 +23,6 @@ from authentik.flows.planner import (
 )
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_GET, SESSION_KEY_PLAN
-from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.install_id import get_install_id
 from authentik.root.middleware import ClientIPMiddleware
@@ -57,10 +56,7 @@ class UserLoginChallengeResponse(ChallengeResponse):
     remember_me = BooleanField(required=True)
 
 
-class UserLoginStageView(
-    ConditionalInheritance("authentik.enterprise.next_actions.stages.NextActionsLoginMixin"),
-    ChallengeStageView,
-):
+class UserLoginStageView(ChallengeStageView):
     """Finalize Authentication flow by logging the user in"""
 
     response_class = UserLoginChallengeResponse

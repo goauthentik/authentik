@@ -21,7 +21,6 @@ from authentik.flows.planner import (
 )
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_GET, SESSION_KEY_PLAN, InvalidStageError
-from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.lib.utils.urls import reverse_with_qs
 from authentik.stages.redirect.models import RedirectMode, RedirectStage
 
@@ -35,7 +34,7 @@ class RedirectChallengeResponse(ChallengeResponse):
     to = CharField()
 
 
-class BaseRedirectStageView(ChallengeStageView):
+class RedirectStageView(ChallengeStageView):
     """Redirect stage to redirect to other Flows with context"""
 
     response_class = RedirectChallengeResponse
@@ -111,14 +110,3 @@ class BaseRedirectStageView(ChallengeStageView):
                 "to": redirect_to,
             }
         )
-
-
-class RedirectStageView(
-    ConditionalInheritance("authentik.enterprise.next_actions.stages.NextActionsRedirectMixin"),
-    BaseRedirectStageView,
-):
-    """Redirect stage with optional enterprise flow handling."""
-
-    def __init__(self, *args, **kwargs):
-        # Make initialization explicit for static analysis of the optional base.
-        super().__init__(*args, **kwargs)
