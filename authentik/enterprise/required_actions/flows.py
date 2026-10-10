@@ -10,13 +10,26 @@ from authentik.core.models import User
 from authentik.enterprise.required_actions import USER_ATTRIBUTE_REQUIRED_ACTIONS
 from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
-from authentik.flows.models import Flow, FlowDesignation, Stage, in_memory_stage
+from authentik.flows.models import (
+    Flow,
+    FlowAuthenticationRequirement,
+    FlowDesignation,
+    Stage,
+    in_memory_stage,
+)
 from authentik.flows.planner import FlowPlan, FlowPlanner
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 
 # Flows that create or end a session cannot run as a required action
 DISALLOWED_DESIGNATIONS = [FlowDesignation.AUTHENTICATION, FlowDesignation.INVALIDATION]
+# Flows that a logged-in user can never plan
+DISALLOWED_AUTHENTICATION = [
+    FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED,
+    FlowAuthenticationRequirement.REQUIRE_OUTPOST,
+    FlowAuthenticationRequirement.REQUIRE_REDIRECT,
+    FlowAuthenticationRequirement.REQUIRE_TOKEN,
+]
 
 
 def resolve_required_actions(value: Any) -> list[Flow]:
@@ -24,13 +37,15 @@ def resolve_required_actions(value: Any) -> list[Flow]:
     slugs = value if isinstance(value, list) else [value]
     if any(not isinstance(slug, str) for slug in slugs):
         raise ValueError("Required actions must be flow slugs")
-    flows = Flow.objects.exclude(designation__in=DISALLOWED_DESIGNATIONS).in_bulk(
-        slugs, field_name="slug"
+    flows = (
+        Flow.objects.exclude(designation__in=DISALLOWED_DESIGNATIONS)
+        .exclude(authentication__in=DISALLOWED_AUTHENTICATION)
+        .in_bulk(slugs, field_name="slug")
     )
     try:
         return [flows[slug] for slug in slugs]
     except KeyError as exc:
-        raise ValueError("Required action flow is missing or has a disallowed designation") from exc
+        raise ValueError("Required action flow is missing or cannot run") from exc
 
 
 def plan_required_action(
@@ -72,7 +87,7 @@ class RequiredActionCompleteStageView(StageView):
         stage = self.executor.current_stage
         # The completion event replaces the user update event
         with transaction.atomic(), audit_ignore():
-            user = User.objects.select_for_update().get(pk=request.user.pk)
+            user = User.objects.select_for_update().get(pk=self.get_pending_user().pk)
             value = user.attributes.get(USER_ATTRIBUTE_REQUIRED_ACTIONS, [])
             actions = value if isinstance(value, list) else [value]
             if stage.flow_slug in actions:

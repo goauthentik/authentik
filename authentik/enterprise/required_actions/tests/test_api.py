@@ -5,7 +5,7 @@ from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
 from authentik.enterprise.required_actions import USER_ATTRIBUTE_REQUIRED_ACTIONS
-from authentik.flows.models import FlowDesignation
+from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation
 
 
 class TestRequiredActionsAPI(APITestCase):
@@ -28,10 +28,21 @@ class TestRequiredActionsAPI(APITestCase):
                 self.assertEqual(self.user.attributes[USER_ATTRIBUTE_REQUIRED_ACTIONS], value)
 
     def test_set_invalid(self):
-        """Unknown flows, disallowed designations, and non-slugs are rejected"""
+        """Flows that are missing or cannot run, and values that aren't slugs, are rejected"""
         authentication = create_test_flow(FlowDesignation.AUTHENTICATION)
         invalidation = create_test_flow(FlowDesignation.INVALIDATION)
-        for value in ["does-not-exist", [authentication.slug], [invalidation.slug], [42], None]:
+        recovery = create_test_flow(
+            FlowDesignation.RECOVERY,
+            authentication=FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED,
+        )
+        for value in [
+            "does-not-exist",
+            [authentication.slug],
+            [invalidation.slug],
+            [recovery.slug],
+            [42],
+            None,
+        ]:
             with self.subTest(value=value):
                 response = self.patch_attributes({USER_ATTRIBUTE_REQUIRED_ACTIONS: value})
                 self.assertEqual(response.status_code, 400)
@@ -39,8 +50,8 @@ class TestRequiredActionsAPI(APITestCase):
                     response.json(),
                     {
                         "attributes": [
-                            "Required actions must reference existing flows other than "
-                            "authentication or invalidation flows."
+                            "Required actions must reference existing flows that a logged-in "
+                            "user can run, other than authentication or invalidation flows."
                         ]
                     },
                 )
