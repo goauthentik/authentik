@@ -136,7 +136,9 @@ class PartialGroupSerializer(ModelSerializer):
 
 
 class UserSerializer(
-    ConditionalInheritance("authentik.enterprise.next_actions.api.NextActionsUserSerializerMixin"),
+    ConditionalInheritance(
+        "authentik.enterprise.required_actions.api.RequiredActionsUserSerializerMixin"
+    ),
     AttributesMixinSerializer,
     ModelSerializer,
 ):

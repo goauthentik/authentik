@@ -22,8 +22,7 @@ import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithLazyTabs } from "#elements/mixins/lazy-tabs";
 import { WithLocale } from "#elements/mixins/locale";
 import { WithSession } from "#elements/mixins/session";
-
-import { setPageDetails } from "#components/ak-page-navbar";
+import { setPageDetails } from "#elements/router/meta";
 
 import { CapabilitiesEnum, CoreApi, ModelEnum, User } from "@goauthentik/api";
 

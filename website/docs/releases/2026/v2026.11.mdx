@@ -54,6 +54,14 @@ The following are removed or changed:
 - The `AUTHENTIK_TENANTS__ENABLED` and `AUTHENTIK_TENANTS__API_KEY` configuration settings
 - `request.http_request.tenant` (in any Expression policies), replaced by `authentik.admin.utils.get_system_settings()`
 
+### Base URL is required
+
+The **Base URL** [system setting](../../sys-mgmt/settings.mdx#base-url), introduced in [2026.8](./v2026.8.mdx#base-url-system-setting), is now required. After the initial setup, authentik does not start until a base URL is configured.
+
+- **Existing instances:** Before you upgrade, open the Admin interface, navigate to **System** > **Settings**, and verify that **Base URL** is set. If the setting is empty during the upgrade, authentik fills it from [`AUTHENTIK_WEB__BASE_URL`](../../install-config/configuration/configuration.mdx#authentik_web__base_url) or from the host configured on the embedded outpost. If neither is available, authentik does not start until you set `AUTHENTIK_WEB__BASE_URL`.
+- **Automated installs:** Set `AUTHENTIK_WEB__BASE_URL` along with the [bootstrap environment variables](../../install-config/automated-install.mdx). Without it, the automated install fails.
+- **API:** The `base_url` field of the system settings no longer accepts an empty value.
+
 ## New features and improvements
 
 - **Display names in `ak_send_email` recipients**: The `address`, `cc`, and `bcc` parameters of `ak_send_email` now accept `(name, email)` tuples and `"Name <email>"` strings, so emails sent from expressions can include a display name in the `To` and `CC` headers, matching the Email stage. See [`ak_send_email`](../../customize/policies/types/expression/reference.mdx).
@@ -62,9 +70,9 @@ The following are removed or changed:
 
 A RAC provider signs into devices which are enrolled through the authentik agent as the user who launched the connection, with no credentials configured for the device. authentik issues a token for the device, the RAC outpost turns it into an SSH certificate, and the agent validates the token before accepting the login. See [the RAC provider documentation](../../add-secure-apps/providers/rac/index.mdx#signing-in-with-the-authentik-agent).
 
-### Require actions on next login :ak-enterprise
+### Required actions :ak-enterprise
 
-Require users to change their password, set up an authenticator, or complete another flow at their next login. The new session stays restricted until every required action is complete. See [Require actions on next login](../../users-sources/user/next_actions.mdx).
+Administrators can require users to complete one or more flows, such as changing their password or setting up an authenticator, before they can continue. Actions apply on the user's next request, including in sessions that are already logged in, and are cleared as the user completes them. See [Required actions](../../users-sources/user/required_actions.mdx).
 
 ## Upgrading
 
