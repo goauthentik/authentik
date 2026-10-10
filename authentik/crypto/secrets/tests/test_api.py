@@ -42,6 +42,17 @@ class TestSecretsAPI(APITestCase):
                 self.assertEqual(response.status_code, 400, response.content)
                 self.assertIn("length", response.json())
 
+    def test_length_is_ignored_on_update(self):
+        """Re-applying a blueprint that sets a length doesn't fail or change the value."""
+        previous = self.secret.secret_value
+        serializer = SecretSerializer(
+            instance=self.secret, data={"name": "test", "length": 128}, partial=True
+        )
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        serializer.save()
+        self.secret.refresh_from_db()
+        self.assertEqual(self.secret.secret_value, previous)
+
     def test_value_whitespace_is_preserved(self):
         self.client.force_login(self.admin)
         value = "  -----BEGIN KEY-----\nexact credential\n"
