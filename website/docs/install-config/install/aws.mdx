@@ -34,7 +34,7 @@ The template has the following parameters:
 | ----------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | `CertificateARN`              | None, required                                | ARN of the ACM certificate used by the HTTPS listener of the load balancer.                                                   |
 | `DBInstanceType`              | `m5.large`                                    | RDS PostgreSQL instance type, without the leading `db.`.                                                                      |
-| `DBVersion`                   | `17.1`                                        | RDS PostgreSQL engine version. It must be a version that RDS currently offers, see [PostgreSQL version](#postgresql-version). |
+| `DBVersion`                   | `17`                                        | RDS PostgreSQL engine version. It must be a version that RDS currently offers, see [PostgreSQL version](#postgresql-version). |
 | `DBStorage`                   | `10`                                          | RDS PostgreSQL storage size in GB. The minimum is 10.                                                                         |
 | `AuthentikImage`              | `ghcr.io/goauthentik/server`                  | authentik container image.                                                                                                    |
 | `AuthentikVersion`            | The authentik version the template ships with | authentik container image tag.                                                                                                |
