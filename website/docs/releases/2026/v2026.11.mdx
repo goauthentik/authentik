@@ -70,9 +70,9 @@ The **Base URL** [system setting](../../sys-mgmt/settings.mdx#base-url), introdu
 
 A RAC provider signs into devices which are enrolled through the authentik agent as the user who launched the connection, with no credentials configured for the device. authentik issues a token for the device, the RAC outpost turns it into an SSH certificate, and the agent validates the token before accepting the login. See [the RAC provider documentation](../../add-secure-apps/providers/rac/index.mdx#signing-in-with-the-authentik-agent).
 
-### Require actions on next login :ak-enterprise
+### Required actions :ak-enterprise
 
-Require users to change their password, set up an authenticator, or complete another flow at their next login. The new session stays restricted until every required action is complete. See [Require actions on next login](../../users-sources/user/next_actions.mdx).
+Administrators can require users to complete one or more flows, such as changing their password or setting up an authenticator, before they can continue. Actions apply on the user's next request, including in sessions that are already logged in, and are cleared as the user completes them. See [Required actions](../../users-sources/user/required_actions.mdx).
 
 ## Upgrading
 
