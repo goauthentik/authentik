@@ -20,11 +20,12 @@ use axum::{
 };
 use http_body_util::BodyExt as _;
 use serde_json::json;
-use tracing::{instrument, warn};
+use tracing::{debug, instrument, warn};
 
 use crate::server::{
     GUNICORN_READY, Server,
     core::websockets::{handle_websocket_upgrade, is_websocket_upgrade},
+    is_connect_not_found,
 };
 
 static STARTUP_RESPONSE_JSON: LazyLock<Response<String>> = LazyLock::new(|| {
@@ -237,8 +238,17 @@ async fn health_live(State(server): State<Arc<Server>>) -> Result<StatusCode> {
         return Ok(StatusCode::SERVICE_UNAVAILABLE);
     }
 
-    if !server.health_live().await? {
-        return Ok(StatusCode::SERVICE_UNAVAILABLE);
+    match server.health_live().await {
+        Ok(true) => {}
+        Ok(false) => return Ok(StatusCode::SERVICE_UNAVAILABLE),
+        Err(err) => {
+            if is_connect_not_found(err.as_ref()) {
+                debug!(?err, "upstream socket not yet ready (health live)");
+            } else {
+                warn!(?err, "failed to check server health liveness");
+            }
+            return Ok(StatusCode::SERVICE_UNAVAILABLE);
+        }
     }
     match server.health_live().await {
         Ok(true) => {}
