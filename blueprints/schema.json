@@ -8660,7 +8660,7 @@
                 "credentials_ref": {
                     "type": "string",
                     "format": "uuid",
-                    "title": "Credentials ref"
+                    "title": "Google credentials"
                 }
             },
             "required": []
@@ -9983,7 +9983,7 @@
                 "credentials_ref": {
                     "type": "string",
                     "format": "uuid",
-                    "title": "Credentials ref"
+                    "title": "Google credentials"
                 }
             },
             "required": []

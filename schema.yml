@@ -36912,6 +36912,7 @@ components:
         credentials_ref:
           type: string
           format: uuid
+          title: Google credentials
       required:
       - component
       - credentials_ref
@@ -36939,6 +36940,7 @@ components:
         credentials_ref:
           type: string
           format: uuid
+          title: Google credentials
       required:
       - credentials_ref
       - name
@@ -41962,6 +41964,7 @@ components:
         credentials_ref:
           type: string
           format: uuid
+          title: Google credentials
         chrome_url:
           type: string
           nullable: true
@@ -41990,6 +41993,7 @@ components:
         credentials_ref:
           type: string
           format: uuid
+          title: Google credentials
       required:
       - credentials_ref
       - name
@@ -50493,6 +50497,7 @@ components:
         credentials_ref:
           type: string
           format: uuid
+          title: Google credentials
     PatchedAuthenticatorSMSStageRequest:
       type: object
       description: AuthenticatorSMSStage Serializer
@@ -51346,6 +51351,7 @@ components:
         credentials_ref:
           type: string
           format: uuid
+          title: Google credentials
     PatchedGoogleEndpointDeviceRequest:
       type: object
       description: Serializer for Endpoint authenticator devices
