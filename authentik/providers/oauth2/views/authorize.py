@@ -563,7 +563,10 @@ class AuthorizationFlowInitView(PolicyAccessView):
             self.params.scope, self.params.provider
         )
         # Regardless, we start the planner and return to it
-        planner = FlowPlanner(self.provider.authorization_flow)
+        authz_flow = (
+            self.provider.authorization_flow or self.request.brand.flow_provider_authorization
+        )
+        planner = FlowPlanner(authz_flow)
         planner.allow_empty_flows = True
         try:
             plan = planner.plan(
@@ -596,7 +599,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
 
         return plan.to_redirect(
             self.request,
-            self.provider.authorization_flow,
+            authz_flow,
             # We can only skip the flow executor and directly go to the final redirect URL if
             #  we can submit the data to the RP via URL
             allowed_silent_types=(

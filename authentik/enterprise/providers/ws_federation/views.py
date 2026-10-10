@@ -69,7 +69,10 @@ class WSFedEntryView(PolicyAccessView):
             return HttpResponse("Unsupported WS-Federation action", status=400)
 
     def ws_fed_sign_in(self) -> HttpResponse:
-        planner = FlowPlanner(self.provider.authorization_flow)
+        authz_flow = (
+            self.provider.authorization_flow or self.request.brand.flow_provider_authorization
+        )
+        planner = FlowPlanner(authz_flow)
         planner.allow_empty_flows = True
         try:
             plan = planner.plan(
@@ -88,7 +91,7 @@ class WSFedEntryView(PolicyAccessView):
         plan.append_stage(in_memory_stage(WSFedFlowFinalView))
         return plan.to_redirect(
             self.request,
-            self.provider.authorization_flow,
+            authz_flow,
         )
 
     def ws_fed_sign_out(self) -> HttpResponse:
