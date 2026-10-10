@@ -92,6 +92,9 @@ def post_fork(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
     """Tell prometheus to use worker number instead of process ID for multiprocess"""
     _worker_id["value"] = worker._worker_id
 
+    if worker._worker_id == 1:
+        start_debug_server()
+
     from authentik.lib.debug import start_pyroscope
 
     start_pyroscope("server", worker_id=str(worker._worker_id))
@@ -184,5 +187,4 @@ if not CONFIG.get_bool("disable_startup_analytics", False):
         except Exception:  # nosec # noqa
             pass
 
-start_debug_server()
 run_migrations()
