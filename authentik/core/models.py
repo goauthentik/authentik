@@ -9,8 +9,10 @@ from typing import Any, Self
 from uuid import uuid4
 
 import pgtrigger
+from asgiref.sync import sync_to_async
 from deepmerge import always_merger
-from django.contrib.auth.models import Permission
+from django.contrib.auth.hashers import UNUSABLE_PASSWORD_PREFIX
+from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.base_session import AbstractBaseSession
@@ -39,7 +41,6 @@ from authentik.admin.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
 from authentik.admin.utils import get_system_settings
 from authentik.blueprints.models import ManagedModel
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
-from authentik.core.password import PasswordUser
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
 from authentik.lib.expression.exceptions import ControlFlowException
@@ -365,14 +366,19 @@ class UserManager(DjangoUserManager.from_queryset(UserQuerySet)):
 
     def create_user(self, username, email=None, password=None, **extra_fields):
         """User manager that doesn't assign is_superuser and is_staff"""
-        return self._create_user(username, email, password, **extra_fields)
+        from authentik.stages.password.models import PasswordDevice
+
+        user = self.create(username=username, email=self.normalize_email(email), **extra_fields)
+        if password is not None:
+            PasswordDevice.set_password(user, password, signal=False)
+        return user
 
     def exclude_anonymous(self) -> QuerySet:
         """Exclude anonymous user"""
         return self.get_queryset().exclude_anonymous()
 
 
-class User(SerializerModel, AttributesMixin, PasswordUser):
+class User(SerializerModel, AttributesMixin, AbstractUser):
     """authentik User model, based on django's contrib auth user model."""
 
     # Overwriting PermissionsMixin: permissions are handled by roles.
@@ -571,6 +577,34 @@ class User(SerializerModel, AttributesMixin, PasswordUser):
         )
         return self.groups
 
+    # Passwords are written through authentik.stages.password.models.PasswordDevice.
+    # These read-only properties keep `user.password` and `user.password_change_date`
+    # working in expressions, Django's session hash and the user API.
+    @property
+    def password(self) -> str:
+        device = getattr(self, "password_device", None)
+        return device.password if device else UNUSABLE_PASSWORD_PREFIX
+
+    @property
+    def password_change_date(self) -> datetime:
+        device = getattr(self, "password_device", None)
+        return device.password_change_date if device else self.date_joined
+
+    def check_password(self, raw_password: str) -> bool:
+        # Django's version writes `password` when it upgrades an outdated hash.
+        device = getattr(self, "password_device", None)
+        return device.check_password(raw_password) if device else False
+
+    async def acheck_password(self, raw_password: str) -> bool:
+        return await sync_to_async(self.check_password)(raw_password)
+
+    # Django's password writes would assign the read-only `password`; fail loudly instead.
+    def set_password(self, raw_password):
+        raise NotImplementedError("Use PasswordDevice.set_password()")
+
+    def set_unusable_password(self):
+        raise NotImplementedError("Use PasswordDevice.set_unusable_password()")
+
     @property
     def uid(self) -> str:
         """Generate a globally unique UID, based on the user ID and the hashed secret key"""
@@ -592,6 +626,13 @@ class User(SerializerModel, AttributesMixin, PasswordUser):
     def avatar(self) -> str:
         """Get avatar, depending on authentik.avatar setting"""
         return get_avatar(self)
+
+
+def get_init_anonymous_user(user_model: type[User]) -> User:
+    """Build guardian's anonymous user, which has no password device and so no password.
+
+    guardian's default calls `set_unusable_password()`, which needs a writable `password`."""
+    return user_model(username=settings.ANONYMOUS_USER_NAME)
 
 
 class Provider(SerializerModel):
@@ -1646,6 +1687,4 @@ class Actor(ExpiringModel, User):
             type=UserTypes.SERVICE_ACCOUNT,
             **kwargs,
         )
-        actor.set_unusable_password()
-        actor.save()
         return actor

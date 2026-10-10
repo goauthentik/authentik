@@ -144,6 +144,7 @@ INSTALLED_APPS = [
 
 GUARDIAN_GROUP_MODEL = "authentik_core.Group"
 GUARDIAN_ROLE_MODEL = "authentik_rbac.Role"
+GUARDIAN_GET_INIT_ANONYMOUS_USER = "authentik.core.models.get_init_anonymous_user"
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "authentik",

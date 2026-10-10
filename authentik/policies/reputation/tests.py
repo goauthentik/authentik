@@ -14,6 +14,7 @@ from authentik.policies.reputation.signals import (
 )
 from authentik.policies.types import PolicyRequest
 from authentik.stages.password import BACKEND_INBUILT
+from authentik.stages.password.models import PasswordDevice
 from authentik.stages.password.stage import authenticate
 
 
@@ -28,7 +29,7 @@ class TestReputationPolicy(TestCase):
         self.password = generate_id()
         # We need a user for the one-to-one in userreputation
         self.user = User.objects.create(username=self.username)
-        self.user.set_password(self.password)
+        PasswordDevice.set_password(self.user, self.password)
         self.backends = [BACKEND_INBUILT]
 
     def test_ip_reputation(self):

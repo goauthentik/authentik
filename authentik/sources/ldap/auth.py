@@ -7,6 +7,7 @@ from structlog.stdlib import get_logger
 from authentik.core.auth import InbuiltBackend
 from authentik.core.models import User
 from authentik.sources.ldap.models import LDAP_DISTINGUISHED_NAME, LDAPSource
+from authentik.stages.password.models import PasswordDevice
 
 LOGGER = get_logger()
 
@@ -47,8 +48,7 @@ class LDAPBackend(InbuiltBackend):
             if source.password_login_update_internal_password:
                 # Password given successfully binds to LDAP, so we save it in our Database
                 LOGGER.debug("Updating user's password in DB", user=user)
-                user.set_password(password, sender=source, request=request)
-                user.save()
+                PasswordDevice.set_password(user, password, sender=source, request=request)
             return user
         # Password doesn't match
         LOGGER.debug("Failed to bind, password invalid")
