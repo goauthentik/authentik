@@ -26,13 +26,13 @@ A required action must finish in its own flow. Don't use [Redirect](../../add-se
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Users** and click the name of the user.
-3. Click **Edit**, expand **Advanced settings**, and add the attribute to **Attributes**, keeping the user's other attributes:
+3. In the **Required actions** card, select a flow and click **Add**. The card lists the user's pending actions, and you can remove one with its trash icon.
 
-    ```yaml
-    goauthentik.io/user/required-actions:
-        - default-password-change
-    ```
+You can also set the attribute yourself. Click **Edit** on the user page, expand **Advanced settings**, and add it to **Attributes**, keeping the user's other attributes:
 
-4. Click **Save Changes**.
+```yaml
+goauthentik.io/user/required-actions:
+    - default-password-change
+```
 
-You can also set the attribute through the API, a [blueprint](../../customize/blueprints/index.mdx), or from within a flow, for example with a [User Write stage](../../add-secure-apps/flows-stages/stages/user_write/index.mdx) in an enrollment flow. The API rejects flows that don't exist or have a disallowed designation.
+The API, a [blueprint](../../customize/blueprints/index.mdx), or a flow can also set the attribute, for example a [User Write stage](../../add-secure-apps/flows-stages/stages/user_write/index.mdx) in an enrollment flow. The API rejects flows that don't exist or can't be used as required actions.
