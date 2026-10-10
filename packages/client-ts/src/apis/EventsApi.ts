@@ -482,7 +482,6 @@ export interface EventsTransportsListRequest {
      */
     search?: string;
     sendOnce?: boolean;
-    webhookUrl?: string;
 }
 
 export interface EventsTransportsPartialUpdateRequest {
@@ -2570,10 +2569,6 @@ export class EventsApi extends runtime.BaseAPI {
 
         if (requestParameters["sendOnce"] != null) {
             queryParameters["send_once"] = requestParameters["sendOnce"];
-        }
-
-        if (requestParameters["webhookUrl"] != null) {
-            queryParameters["webhook_url"] = requestParameters["webhookUrl"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

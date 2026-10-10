@@ -22,7 +22,7 @@ import { TransportModeEnumFromJSON, TransportModeEnumToJSON } from "./TransportM
 export interface NotificationTransportRequest {
     name: string;
     mode?: TransportModeEnum;
-    webhookUrl?: string;
+    webhookUrlRef?: string | null;
     /**
      * When set, the selected certificate is used to validate the certificate of the webhook server.
      */
@@ -68,7 +68,12 @@ export function NotificationTransportRequestFromJSONTyped(
     return {
         name: json["name"],
         mode: json["mode"] == null ? undefined : TransportModeEnumFromJSON(json["mode"]),
-        webhookUrl: json["webhook_url"] == null ? undefined : json["webhook_url"],
+        webhookUrlRef:
+            json["webhook_url_ref"] === undefined
+                ? undefined
+                : json["webhook_url_ref"] === null
+                  ? null
+                  : json["webhook_url_ref"],
         webhookCa:
             json["webhook_ca"] === undefined
                 ? undefined
@@ -109,7 +114,7 @@ export function NotificationTransportRequestToJSONTyped(
     return {
         name: value["name"],
         mode: TransportModeEnumToJSON(value["mode"]),
-        webhook_url: value["webhookUrl"],
+        webhook_url_ref: value["webhookUrlRef"],
         webhook_ca: value["webhookCa"],
         webhook_mapping_body: value["webhookMappingBody"],
         webhook_mapping_headers: value["webhookMappingHeaders"],
