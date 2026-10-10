@@ -26,8 +26,22 @@ class TestProviderSecret(APITestCase):
         provider = RadiusProvider.objects.create(
             name=generate_id(), authorization_flow=create_test_flow()
         )
-        self.assertIsNotNone(provider.shared_secret_ref)
-        self.assertNotEqual(provider.shared_secret_ref.value, "")
+        self.assertEqual(len(provider.shared_secret_ref.secret_value), 40)
+
+    def test_api_update_requires_secret_reference(self):
+        """Clearing the reference of an existing provider must not replace its secret."""
+        provider = RadiusProvider.objects.create(
+            name=generate_id(), authorization_flow=create_test_flow()
+        )
+        secret = provider.shared_secret_ref
+        response = self.client.patch(
+            reverse("authentik_api:radiusprovider-detail", kwargs={"pk": provider.pk}),
+            data={"shared_secret_ref": None},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400, response.content)
+        provider.refresh_from_db()
+        self.assertEqual(provider.shared_secret_ref, secret)
 
     def test_rotation_triggers_outpost_update(self):
         """Rotating a secret pushes new config to outposts whose providers use it"""
@@ -71,7 +85,7 @@ class TestProviderSecret(APITestCase):
         self.assertEqual(response.status_code, 201, response.content)
         provider = RadiusProvider.objects.get(pk=response.json()["pk"])
         self.assertEqual(provider.shared_secret_ref, secret)
-        self.assertEqual(provider.shared_secret_ref.value, secret.value)
+        self.assertEqual(provider.shared_secret_ref.secret_value, secret.secret_value)
 
     def test_outpost_config_shared_secret(self):
         """The outpost config endpoint returns the value for the outpost to use"""
@@ -86,4 +100,4 @@ class TestProviderSecret(APITestCase):
         self.assertEqual(response.status_code, 200)
         results = response.json()["results"]
         self.assertEqual(len(results), 1)
-        self.assertEqual(results[0]["shared_secret"], provider.shared_secret_ref.value)
+        self.assertEqual(results[0]["shared_secret"], provider.shared_secret_ref.secret_value)

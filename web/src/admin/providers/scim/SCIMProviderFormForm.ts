@@ -39,11 +39,13 @@ import { msg } from "@lit/localize";
 import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-export function renderAuthToken(provider?: Partial<SCIMProvider>) {
+export function renderAuthToken(provider?: Partial<SCIMProvider>, errors: ValidationError = {}) {
     return html`<ak-secret-search-input
         name="tokenRef"
         label=${msg("Token")}
-        value=${ifPresent(provider?.tokenRef ?? undefined)}
+        value=${ifPresent(provider?.tokenRef)}
+        .errorMessages=${errors?.tokenRef}
+        ?required=${!provider}
         blankable
         help=${msg("Token to authenticate with.", {
             id: "provider.scim.form.secret.description",
@@ -65,7 +67,9 @@ export function renderAuthBasic(provider?: Partial<SCIMProvider>, errors: Valida
         <ak-secret-search-input
             name="authBasicPasswordRef"
             label=${msg("Password")}
-            value=${ifPresent(provider?.authBasicPasswordRef ?? undefined)}
+            value=${ifPresent(provider?.authBasicPasswordRef)}
+            .errorMessages=${errors?.authBasicPasswordRef}
+            ?required=${!provider}
             blankable
             help=${msg("Password to authenticate with.", {
                 id: "provider.scim.form.basic-password.description",
@@ -98,7 +102,7 @@ export function renderAuth(provider?: Partial<SCIMProvider>, errors: ValidationE
     switch (provider?.authMode) {
         default:
         case SCIMAuthenticationModeEnum.Token:
-            return renderAuthToken(provider);
+            return renderAuthToken(provider, errors);
         case SCIMAuthenticationModeEnum.Basic:
             return renderAuthBasic(provider, errors);
         case SCIMAuthenticationModeEnum.Oauth:

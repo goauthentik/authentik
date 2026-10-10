@@ -89,7 +89,8 @@ export function renderForm({ provider, errors, brand }: RADIUSProviderFormProps)
                     name="sharedSecretRef"
                     label=${msg("Shared secret")}
                     value=${ifPresent(provider.sharedSecretRef)}
-                    blankable
+                    .errorMessages=${errors.sharedSecretRef}
+                    ?blankable=${!provider.pk}
                     help=${
                         provider.pk
                             ? msg("Secret between clients and server to hash packets.", {
