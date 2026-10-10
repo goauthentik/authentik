@@ -57,7 +57,7 @@ class NotificationTransportSerializer(ModelSerializer):
             if not secret:
                 raise ValidationError({"webhook_url_ref": "Webhook URL may not be empty."})
             try:
-                DomainlessURLValidator()(secret.value)
+                DomainlessURLValidator()(secret.secret_value)
             except DjangoValidationError as exc:
                 raise ValidationError({"webhook_url_ref": exc.messages}) from exc
         return attrs

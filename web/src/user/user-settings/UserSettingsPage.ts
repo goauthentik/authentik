@@ -27,6 +27,7 @@ import { AKElement } from "#elements/Base";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
+import { setPageDetails } from "#elements/router/meta";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -73,6 +74,12 @@ export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement))
     constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, this.refresh);
+    }
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+
+        setPageDetails({ header: msg("User settings") });
     }
 
     public async firstUpdated(): Promise<void> {

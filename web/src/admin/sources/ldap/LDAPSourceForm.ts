@@ -1,4 +1,3 @@
-import "#admin/common/ak-crypto-certificate-search";
 import "#components/ak-secret-search-input";
 import "#components/ak-slug-input";
 import "#components/ak-radio-input";
@@ -6,7 +5,6 @@ import "#components/ak-switch-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
 import { propertyMappingsProvider, propertyMappingsSelector } from "./LDAPSourceFormHelpers.js";
 
 import { aki } from "#common/api/client";
@@ -14,13 +12,14 @@ import { aki } from "#common/api/client";
 import { RadioOption } from "#elements/forms/Radio";
 import { ifPresent } from "#elements/utils/attributes";
 
+import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { AKCertificateSearch } from "#admin/common/AKCertificateSearch";
+import { groupSource } from "#admin/common/search-sources";
 import { placeholderHelperText } from "#admin/helperText";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 
 import {
-    CoreApi,
-    CoreGroupsListRequest,
-    Group,
     LDAPSource,
     LDAPSourceRequest,
     ServiceBindMethodEnum,
@@ -205,10 +204,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         label=${msg("TLS Verification Certificate")}
                         name="peerCertificate"
                     >
-                        <ak-crypto-certificate-search
-                            .certificate=${this.instance?.peerCertificate}
-                            nokey
-                        ></ak-crypto-certificate-search>
+                        ${AKCertificateSearch({ name: "peerCertificate", value: this.instance?.peerCertificate, noKey: true })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Leave empty to skip certificate validation, or select a certificate/keypair containing the LDAP server CA chain to validate the remote certificate.",
@@ -219,9 +215,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         label=${msg("TLS Client authentication certificate")}
                         name="clientCertificate"
                     >
-                        <ak-crypto-certificate-search
-                            .certificate=${this.instance?.clientCertificate}
-                        ></ak-crypto-certificate-search>
+                        ${AKCertificateSearch({ name: "clientCertificate", value: this.instance?.clientCertificate })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Client certificate keypair presented to the LDAP server. Required when the service bind method is SASL EXTERNAL.",
@@ -295,35 +289,14 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Additional Parent Group")}
-                        name="additionalParentGroup"
+                        name="syncParentGroup"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Group[]> => {
-                                const args: CoreGroupsListRequest = {
-                                    ordering: "name",
-                                    includeUsers: false,
-                                };
-
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-
-                                const groups = await aki(CoreApi).coreGroupsList(args);
-
-                                return groups.results;
-                            }}
-                            .renderElement=${(group: Group): string => {
-                                return group.name;
-                            }}
-                            .value=${(group: Group | undefined): string | undefined => {
-                                return group ? group.pk : undefined;
-                            }}
-                            .selected=${(group: Group): boolean => {
-                                return group.pk === this.instance?.syncParentGroup;
-                            }}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKSearchSelect({
+                            name: "syncParentGroup",
+                            source: groupSource,
+                            value: this.instance?.syncParentGroup,
+                            blankable: true,
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg("Parent group for all the groups imported from LDAP.")}
                         </p>
