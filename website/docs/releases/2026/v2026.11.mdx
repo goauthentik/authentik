@@ -56,6 +56,14 @@ The following are removed or changed:
 - The `AUTHENTIK_TENANTS__ENABLED` and `AUTHENTIK_TENANTS__API_KEY` configuration settings
 - `request.http_request.tenant` (in any Expression policies), replaced by `authentik.admin.utils.get_system_settings()`
 
+### Base URL is required
+
+The **Base URL** [system setting](../../sys-mgmt/settings.mdx#base-url), introduced in [2026.8](./v2026.8.mdx#base-url-system-setting), is now required. After the initial setup, authentik does not start until a base URL is configured.
+
+- **Existing instances:** Before you upgrade, open the Admin interface, navigate to **System** > **Settings**, and verify that **Base URL** is set. If the setting is empty during the upgrade, authentik fills it from [`AUTHENTIK_WEB__BASE_URL`](../../install-config/configuration/configuration.mdx#authentik_web__base_url) or from the host configured on the embedded outpost. If neither is available, authentik does not start until you set `AUTHENTIK_WEB__BASE_URL`.
+- **Automated installs:** Set `AUTHENTIK_WEB__BASE_URL` along with the [bootstrap environment variables](../../install-config/automated-install.mdx). Without it, the automated install fails.
+- **API:** The `base_url` field of the system settings no longer accepts an empty value.
+
 ## New features and improvements
 
 - **Display names in `ak_send_email` recipients**: The `address`, `cc`, and `bcc` parameters of `ak_send_email` now accept `(name, email)` tuples and `"Name <email>"` strings, so emails sent from expressions can include a display name in the `To` and `CC` headers, matching the Email stage. See [`ak_send_email`](../../customize/policies/types/expression/reference.mdx).

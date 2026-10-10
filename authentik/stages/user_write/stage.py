@@ -20,6 +20,7 @@ from authentik.flows.stage import StageView
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.utils.dict import set_path_in_dict
 from authentik.stages.password import BACKEND_INBUILT
+from authentik.stages.password.models import PasswordDevice
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from authentik.stages.user_write.models import UserCreationMode
@@ -112,10 +113,11 @@ class UserWriteStageView(StageView):
         data.pop("component", None)
         for key, value in data.items():
             setter_name = f"set_{key}"
-            # Check if user has a setter for this key, like set_password
+            # The password is stored once the user is saved, see dispatch()
             if key == "password":
-                user.set_password(value, request=self.request)
-            elif hasattr(user, setter_name):
+                continue
+            # Check if user has a setter for this key
+            if hasattr(user, setter_name):
                 setter = getattr(user, setter_name)
                 if callable(setter):
                     setter(value)
@@ -161,15 +163,13 @@ class UserWriteStageView(StageView):
 
     @staticmethod
     def user_state(user: User) -> dict[str, Any]:
-        """Snapshot user fields and the staged password to detect changes."""
+        """Snapshot of the user's concrete field values, used to detect whether
+        `update_user` actually changed anything. Only concrete fields are captured;
+        m2m relations (`groups`, `roles`) are handled separately and auto-managed
+        fields (`last_updated`) only change on save, so they never produce a false
+        positive when comparing before/after an update."""
         return deepcopy(
-            {
-                **{
-                    field.attname: getattr(user, field.attname)
-                    for field in user._meta.concrete_fields
-                },
-                "password": user.password,
-            }
+            {field.attname: getattr(user, field.attname) for field in user._meta.concrete_fields}
         )
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
@@ -208,7 +208,8 @@ class UserWriteStageView(StageView):
             self.logger.warning("Aborting write to empty username", user=user)
             return self.executor.stage_invalid()
         user_changed = user_created or pre_update_state != self.user_state(user)
-        if not user_changed:
+        writes_password = "password" in data
+        if not user_changed and not writes_password:
             # Nothing changed on the user; skip the save (and the downstream
             # `model_updated` event / provider sync it would otherwise trigger).
             # Group membership is still reconciled below as it is idempotent.
@@ -218,17 +219,25 @@ class UserWriteStageView(StageView):
                 flow_slug=self.executor.flow.slug,
             )
         try:
+            if writes_password and not user_created:
+                # Outside the transaction, so an LDAP or Kerberos source that refuses the
+                # password keeps the configuration error event it records.
+                PasswordDevice.set_password(user, data["password"], request=self.request)
             with transaction.atomic():
                 if user_changed:
                     user.save()
+                if writes_password and user_created:
+                    # A new user's first password does not count as a password change.
+                    PasswordDevice.set_password(user, data["password"], signal=False)
                 if self.executor.current_stage.create_users_group:
                     user.groups.add(self.executor.current_stage.create_users_group)
                 if PLAN_CONTEXT_GROUPS in self.executor.plan.context:
                     user.groups.add(*self.executor.plan.context[PLAN_CONTEXT_GROUPS])
-        except (IntegrityError, ValueError, TypeError, InternalError) as exc:
+        except (IntegrityError, ValueError, TypeError, InternalError, ValidationError) as exc:
+            # ValidationError: an LDAP or Kerberos source refused the password
             self.logger.warning("Failed to save user", exc=exc)
             return self.executor.stage_invalid(_("Failed to update user. Please try again later."))
-        if not user_changed:
+        if not user_changed and not writes_password:
             return self.executor.stage_ok()
         user_write.send(sender=self, request=request, user=user, data=data, created=user_created)
         # Check if the password has been updated, and update the session auth hash

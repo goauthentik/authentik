@@ -20,6 +20,7 @@ from authentik.enterprise.providers.ssf.models import (
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
+from authentik.stages.password.models import PasswordDevice
 
 
 class TestSignals(APITestCase):
@@ -95,8 +96,7 @@ class TestSignals(APITestCase):
         user = create_test_user()
         self.client.force_login(user)
         StreamEvent.objects.all().delete()
-        user.set_password(generate_id())
-        user.save()
+        PasswordDevice.set_password(user, generate_id())
 
         self._assert_password_credential_change(user, "update")
 
@@ -105,8 +105,7 @@ class TestSignals(APITestCase):
         user = create_test_user()
         self.client.force_login(user)
         StreamEvent.objects.all().delete()
-        user.set_password_from_hash(make_password(generate_id()))
-        user.save()
+        PasswordDevice.set_password_from_hash(user, make_password(generate_id()))
 
         self._assert_password_credential_change(user, "update")
 
@@ -115,8 +114,7 @@ class TestSignals(APITestCase):
         user = create_test_user()
         self.client.force_login(user)
         StreamEvent.objects.all().delete()
-        user.set_password(None)
-        user.save()
+        PasswordDevice.set_password(user, None)
 
         self._assert_password_credential_change(user, "revoke")
 
@@ -185,8 +183,7 @@ class TestSignals(APITestCase):
         user = create_test_user()
         self.client.force_login(user)
         StreamEvent.objects.all().delete()
-        user.set_password(generate_id())
-        user.save()
+        PasswordDevice.set_password(user, generate_id())
 
         stream = Stream.objects.filter(provider=self.provider).first()
         self.assertIsNotNone(stream)

@@ -46518,7 +46518,6 @@ components:
         consumer_secret:
           type: string
           writeOnly: true
-          minLength: 1
         additional_scopes:
           type: string
         oidc_well_known_url:
@@ -46535,7 +46534,6 @@ components:
             token request flow
       required:
       - consumer_key
-      - consumer_secret
       - name
       - provider_type
       - slug
@@ -52188,7 +52186,6 @@ components:
         consumer_secret:
           type: string
           writeOnly: true
-          minLength: 1
         additional_scopes:
           type: string
         oidc_well_known_url:
@@ -53489,6 +53486,7 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
+          minLength: 1
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
           format: uri
@@ -58797,6 +58795,7 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
+          minLength: 1
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
           format: uri

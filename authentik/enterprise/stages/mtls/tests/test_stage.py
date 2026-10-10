@@ -234,5 +234,6 @@ class MTLSStageTests(FlowTestCase):
                 "issuer": "OU=Self-signed,O=authentik,CN=authentik Test CA",
                 "serial_number": "70153443448884702681996102271549704759327537151",
                 "subject": "CN=client",
+                "san": {"DNSName": ["client"]},
             },
         )
