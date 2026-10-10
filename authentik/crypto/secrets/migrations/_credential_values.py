@@ -1,12 +1,17 @@
 """Move credential columns to secrets using historical models."""
 
-from base64 import b64decode
-from json import dumps
+from json import JSONDecodeError, dumps, loads
 
 from yaml import safe_load
 
 
 def migrate_credentials(apps, schema_editor, app_label, model_name, fields, *, include_empty=False):
+    """Create a secret for each credential and reference it from its object.
+
+    `fields` lists `(column, reference, type, label)` tuples. `type` is a secret type, or a
+    callable that picks one for each row. Empty credentials stay without a secret unless
+    `include_empty` is set.
+    """
     alias = schema_editor.connection.alias
     Model = apps.get_model(app_label, model_name)
     Secret = apps.get_model("authentik_crypto_secrets", "Secret")
@@ -17,10 +22,10 @@ def migrate_credentials(apps, schema_editor, app_label, model_name, fields, *, i
             if getattr(instance, f"{new}_id") is not None:
                 continue
             value = getattr(instance, old)
-            if Model._meta.get_field(old).get_internal_type() == "JSONField":
-                value = dumps(value)
             if not value and not include_empty:
                 continue
+            if Model._meta.get_field(old).get_internal_type() == "JSONField":
+                value = dumps(value)
             base = f"{instance.name} {label}"
             name, suffix = base, 2
             while name in names:
@@ -29,16 +34,21 @@ def migrate_credentials(apps, schema_editor, app_label, model_name, fields, *, i
             names.add(name)
             secret = Secret.objects.using(alias).create(
                 name=name,
-                type=secret_type(instance) if callable(secret_type) else secret_type or "text",
-                value=value,
+                type=secret_type(instance) if callable(secret_type) else secret_type,
+                secret_value=value,
             )
             setattr(instance, new, secret)
             updated_fields.append(new)
         if updated_fields:
             instance.save(update_fields=updated_fields)
+    # The updates above queue deferred foreign key checks on this table. Django adds the
+    # reference's constraint and index at the end of the migration, and Postgres refuses to
+    # ALTER a table with pending trigger events in the same transaction.
+    schema_editor.execute("SET CONSTRAINTS ALL IMMEDIATE")
 
 
 def restore_credentials(apps, schema_editor, app_label, model_name, fields):
+    """Copy secret values back into the legacy columns."""
     Model = apps.get_model(app_label, model_name)
     for instance in (
         Model.objects.using(schema_editor.connection.alias)
@@ -47,10 +57,12 @@ def restore_credentials(apps, schema_editor, app_label, model_name, fields):
     ):
         for old, new, _, _ in fields:
             secret = getattr(instance, new)
-            value = secret.value if secret else ""
+            value = secret.secret_value if secret else ""
             if Model._meta.get_field(old).get_internal_type() == "JSONField":
-                if secret and secret.type == "file":
-                    value = b64decode(value)
-                value = safe_load(value) if value else {}
+                # JSON secrets may be written in YAML syntax.
+                try:
+                    value = loads(value) if value else {}
+                except JSONDecodeError:
+                    value = safe_load(value)
             setattr(instance, old, value)
         instance.save(update_fields=[old for old, _, _, _ in fields])

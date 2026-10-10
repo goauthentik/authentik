@@ -72,7 +72,7 @@ class TestSecretFields(APITestCase):
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
         self.assertEqual(body["plex_token_ref"], str(self.secret.pk))
-        self.assertNotIn(self.secret.value, res.content.decode())
+        self.assertNotIn(self.secret.secret_value, res.content.decode())
 
     def test_source_detail_change_object(self):
         """Test source detail (role has change permission on the object)"""
@@ -86,7 +86,7 @@ class TestSecretFields(APITestCase):
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
         self.assertEqual(body["plex_token_ref"], str(self.secret.pk))
-        self.assertNotIn(self.secret.value, res.content.decode())
+        self.assertNotIn(self.secret.secret_value, res.content.decode())
 
     def test_source_detail_superuser(self):
         """Test source detail (superuser)"""

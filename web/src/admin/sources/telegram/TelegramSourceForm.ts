@@ -1,4 +1,3 @@
-import "#admin/common/ak-flow-search/ak-source-flow-search";
 import "#components/ak-slug-input";
 import "#components/ak-text-input";
 import "#components/ak-secret-search-input";
@@ -13,10 +12,14 @@ import { ifPresent } from "#elements/utils/attributes";
 
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
+import {
+    AKSourceAuthenticationFlowField,
+    AKSourceEnrollmentFlowField,
+    AKSourcePreAuthenticationFlowField,
+} from "#admin/sources/components/flow-fields";
 import { UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
-    FlowDesignationEnum,
     SourcesApi,
     TelegramSource,
     TelegramSourceRequest,
@@ -141,49 +144,9 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
             ></ak-switch-input>
             <ak-form-group label="${msg("Flow settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Pre-authentication flow")}
-                        required
-                        name="preAuthenticationFlow"
-                    >
-                        <ak-source-flow-search
-                            flowType=${FlowDesignationEnum.StageConfiguration}
-                            .currentFlow=${this.instance?.preAuthenticationFlow}
-                            .instanceId=${this.instance?.pk}
-                            fallback="default-source-pre-authentication"
-                        ></ak-source-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow used before authentication.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Authentication Flow")}
-                        name="authenticationFlow"
-                    >
-                        <ak-source-flow-search
-                            flowType=${FlowDesignationEnum.Authentication}
-                            .currentFlow=${this.instance?.authenticationFlow}
-                            .instanceId=${this.instance?.pk}
-                            fallback="default-source-authentication"
-                        ></ak-source-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow to use when authenticating existing users.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Enrollment flow")}
-                        name="enrollmentFlow"
-                    >
-                        <ak-source-flow-search
-                            flowType=${FlowDesignationEnum.Enrollment}
-                            .currentFlow=${this.instance?.enrollmentFlow}
-                            .instanceId=${this.instance?.pk}
-                            fallback="default-source-enrollment"
-                        ></ak-source-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow to use when enrolling new users.")}
-                        </p>
-                    </ak-form-element-horizontal>
+                    ${AKSourcePreAuthenticationFlowField({ value: this.instance?.preAuthenticationFlow, sourcePk: this.instance?.pk })}
+                    ${AKSourceAuthenticationFlowField({ value: this.instance?.authenticationFlow, sourcePk: this.instance?.pk })}
+                    ${AKSourceEnrollmentFlowField({ value: this.instance?.enrollmentFlow, sourcePk: this.instance?.pk })}
                 </div>
             </ak-form-group>
             <ak-form-group open label="${msg("Telegram Attribute mapping")}">

@@ -16,14 +16,14 @@ class TestSecretReferenceTypes(TestCase):
             (SecretReferenceField(queryset=Secret.objects.all()), {SecretType.TEXT}),
             (
                 JSONSecretReferenceField(queryset=Secret.objects.all()),
-                {SecretType.MULTILINE, SecretType.FILE},
+                {SecretType.JSON},
             ),
             (
                 SecretReferenceField(
                     queryset=Secret.objects.all(),
-                    allowed_types=(SecretType.MULTILINE, SecretType.FILE),
+                    allowed_types=(SecretType.TEXT, SecretType.FILE),
                 ),
-                {SecretType.MULTILINE, SecretType.FILE},
+                {SecretType.TEXT, SecretType.FILE},
             ),
         ]:
             field.bind("secret", Serializer())
@@ -32,17 +32,12 @@ class TestSecretReferenceTypes(TestCase):
                     secret = Secret.objects.create(
                         name=f"{Secret.objects.count()}",
                         type=secret_type,
-                        value=b64encode(b"{}").decode() if secret_type == SecretType.FILE else "{}",
+                        secret_value=(
+                            b64encode(b"{}").decode() if secret_type == SecretType.FILE else "{}"
+                        ),
                     )
                     if secret_type in allowed:
                         self.assertEqual(field.run_validation(str(secret.pk)), secret)
                     else:
                         with self.assertRaises(ValidationError):
                             field.run_validation(str(secret.pk))
-
-    def test_structured_reference_rejects_scalar_content(self):
-        field = JSONSecretReferenceField(queryset=Secret.objects.all())
-        field.bind("secret", Serializer())
-        secret = Secret.objects.create(name="scalar", type=SecretType.MULTILINE, value="plain")
-        with self.assertRaises(ValidationError):
-            field.run_validation(str(secret.pk))

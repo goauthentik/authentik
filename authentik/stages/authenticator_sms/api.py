@@ -38,6 +38,7 @@ class AuthenticatorSMSStageViewSet(UsedByMixin, ModelViewSet):
     queryset = AuthenticatorSMSStage.objects.all()
     serializer_class = AuthenticatorSMSStageSerializer
     filterset_fields = [
+        "stage_uuid",
         "name",
         "configure_flow",
         "friendly_name",

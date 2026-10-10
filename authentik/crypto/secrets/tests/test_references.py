@@ -21,7 +21,7 @@ class TestSecretReferenceFields(TestCase):
                 Secret.objects.create(
                     name=f"{name}-{secret_type}",
                     type=secret_type,
-                    value="e30=" if secret_type == SecretType.FILE else "{}",
+                    secret_value="e30=" if secret_type == SecretType.FILE else "{}",
                 )
                 for name in ("restricted", "other")
             ]
@@ -74,7 +74,7 @@ class TestSecretReferenceAPI(APITestCase):
     def test_provider_edit_does_not_grant_access_to_other_secrets(self):
         user = create_test_user()
         provider = OAuth2Provider.objects.create(name="provider")
-        secret = Secret.objects.create(name="restricted", value="{}")
+        secret = Secret.objects.create(name="restricted", secret_value="{}")
         user.assign_perms_to_managed_role(
             [
                 "authentik_providers_oauth2.view_oauth2provider",

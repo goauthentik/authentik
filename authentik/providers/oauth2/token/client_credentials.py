@@ -40,10 +40,7 @@ class ClientCredentialsTokenRequest(FederatedTokenRequest):
                 request, request.POST.get("username"), request.POST.get("password")
             )
         # Standard method which creates an automatic user
-        if (
-            self.provider.client_secret_ref
-            and self.client_secret == self.provider.client_secret_ref.value
-        ):
+        if self.client_secret == self.provider.client_secret_ref.secret_value:
             return self.post_init_client_credentials_generated(request)
         # Standard workaround method which stores username:password
         # as client_secret

@@ -787,6 +787,7 @@ export interface StagesAuthenticatorSmsListRequest {
      * A search term.
      */
     search?: string;
+    stageUuid?: string;
     verifyOnly?: boolean;
 }
 
@@ -5245,6 +5246,10 @@ export class StagesApi extends runtime.BaseAPI {
 
         if (requestParameters["search"] != null) {
             queryParameters["search"] = requestParameters["search"];
+        }
+
+        if (requestParameters["stageUuid"] != null) {
+            queryParameters["stage_uuid"] = requestParameters["stageUuid"];
         }
 
         if (requestParameters["verifyOnly"] != null) {

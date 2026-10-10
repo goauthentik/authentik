@@ -84,8 +84,8 @@ test.describe("User switching", () => {
 
             await form.setFormGroup("Default flows", true, dialog);
 
-            const $flowSearch = dialog.getByRole("textbox", { name: "User switch flow" });
-            const configuredFlow = await $flowSearch.inputValue();
+            const { combobox } = await form.findSearchSelect("User switch flow", dialog);
+            const configuredFlow = await combobox.inputValue();
 
             if (USER_SWITCH_FLOW.test(configuredFlow)) {
                 // An earlier run already pointed the brand at the switch flow. Leaving
@@ -141,7 +141,10 @@ test.describe("User switching", () => {
         await test.step("Create the secondary account", async () => {
             const dialog = page.getByRole("dialog", { name: "New User Wizard" });
 
-            await page.getByRole("button", { name: "New User" }).click();
+            await page
+                .locator('[part="toolbar-secondary"]')
+                .getByRole("button", { name: "New User" })
+                .click();
 
             await expect(dialog, "Create dialog opens").toBeVisible();
 
