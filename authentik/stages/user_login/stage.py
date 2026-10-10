@@ -12,7 +12,7 @@ from jwt import PyJWTError, decode, encode
 from rest_framework.fields import BooleanField, CharField
 
 from authentik.core import user_switching
-from authentik.core.models import AuthenticatedSession, Session, User
+from authentik.core.models import AuthenticatedSession, Session, User, UserTypes
 from authentik.core.sessions import SessionStore
 from authentik.events.middleware import audit_ignore
 from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
@@ -202,6 +202,15 @@ class UserLoginStageView(
         if not user.is_active:
             self.logger.warning("User is not active, login will not work.")
             return self.executor.stage_invalid()
+        # The account switcher is only available in the User interface, which non-internal
+        # users can't access, so adding them would leave the other logins unreachable.
+        if (
+            PLAN_CONTEXT_USER_SWITCH_ADD_USER in self.executor.plan.context
+            and user.type != UserTypes.INTERNAL
+        ):
+            message = _("Only internal users can be added to user switching.")
+            self.logger.warning(message, user=user.username)
+            return self.executor.stage_invalid(message)
         is_user_switch_login = (
             PLAN_CONTEXT_USER_SWITCH_ADD_USER in self.executor.plan.context
             or PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION in self.executor.plan.context
