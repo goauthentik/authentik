@@ -58863,7 +58863,7 @@ components:
     SecretTypeEnum:
       enum:
       - text
-      - multiline
+      - json
       - file
       type: string
     SecretValue:

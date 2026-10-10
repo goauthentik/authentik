@@ -1,7 +1,7 @@
 """Managed secret models."""
 
 from base64 import b64decode
-from binascii import Error as BinasciiError
+from json import JSONDecodeError, dumps, loads
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
@@ -12,7 +12,7 @@ from yaml import YAMLError, safe_load
 
 from authentik.blueprints.models import ManagedModel
 from authentik.core.models import default_token_key
-from authentik.crypto.secrets.signals import secret_value_changed
+from authentik.crypto.secrets.signals import secret_value_changed, secret_value_validating
 from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
@@ -23,28 +23,38 @@ if TYPE_CHECKING:
 
 
 class SecretType(models.TextChoices):
-    """Input form and generation policy, not a content format.
+    """What a secret value contains.
 
-    Text values can be generated and rotated. Multiline and file values must
-    be supplied by the administrator and are never replaced with random text.
-    Consumers validate content such as JSON or YAML separately.
+    Only text values can be generated and rotated. JSON and file values are
+    issued by another system and must be supplied by the administrator.
     """
 
     TEXT = "text", _("Text")
-    MULTILINE = "multiline", _("Multi-line text")
+    JSON = "json", _("JSON")
     FILE = "file", _("File")
 
 
-def create_named_secret(name: str) -> Secret:
-    """Create a secret with a readable, collision-safe name."""
-    for suffix in range(1, 100):
-        candidate = name if suffix == 1 else f"{name} ({suffix})"
+def parse_json(value: str) -> dict:
+    """Parse a JSON object, accepting YAML syntax for files such as kubeconfigs.
+
+    The parsed object must also be serializable as JSON, since consumers and
+    downgrade migrations store it in JSON fields. YAML dates are rejected.
+    """
+    try:
+        data = loads(value)
+    except JSONDecodeError:
         try:
-            with transaction.atomic():
-                return Secret.objects.create(name=candidate)
-        except IntegrityError:
-            continue
-    raise IntegrityError(f"Could not allocate a name for {name!r}")
+            data = safe_load(value)
+        except YAMLError:
+            # The parser error quotes the input, which is the credential.
+            raise ValueError("Value is not valid JSON or YAML") from None
+    if not isinstance(data, dict):
+        raise ValueError("Value must be a JSON or YAML object")
+    try:
+        dumps(data)
+    except TypeError:
+        raise ValueError("Value must only contain JSON types") from None
+    return data
 
 
 class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
@@ -53,50 +63,46 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
     secret_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     name = models.TextField(unique=True)
     type = models.TextField(choices=SecretType.choices, default=SecretType.TEXT)
-    value = models.TextField(default=default_token_key)
+    # Named so that event diffs hide it, like other credential fields.
+    secret_value = models.TextField(default=default_token_key)
 
     def get_json(self) -> dict:
-        """Read a JSON or YAML credential, including an uploaded file."""
-        try:
-            value = (
-                b64decode(self.value, validate=True) if self.type == SecretType.FILE else self.value
-            )
-            data = safe_load(value)
-        except BinasciiError, YAMLError, UnicodeError:
-            raise ValueError("Invalid JSON or YAML credential") from None
-        if not isinstance(data, dict):
-            raise ValueError("Credential must be a JSON or YAML object")
-        return data
+        """Read the object stored in a JSON secret."""
+        if self.type != SecretType.JSON:
+            raise ValueError("Secret is not a JSON secret")
+        return parse_json(self.secret_value)
 
     def validate_value(self, value: str) -> None:
-        """Validate a replacement before changing the stored value."""
-        if self.type == SecretType.FILE:
-            try:
+        """Validate a value against this secret's type."""
+        try:
+            if self.type == SecretType.JSON:
+                parse_json(value)
+            elif self.type == SecretType.FILE:
                 b64decode(value, validate=True)
-            except (BinasciiError, ValueError) as exc:
-                raise ValidationError(_("Value must be base64-encoded.")) from exc
+        except ValueError as exc:
+            raise ValidationError(
+                _("Value must be base64-encoded.")
+                if self.type == SecretType.FILE
+                else _("Value must be a JSON or YAML object.")
+            ) from exc
+        if not self._state.adding:
+            secret_value_validating.send(sender=Secret, secret=self, value=value)
 
     def replace_value(self, value: str, request: Request | None = None) -> None:
         """Replace and audit the value, then signal consumers."""
-        if value == self.value:
+        if value == self.secret_value:
             return
-
         self.validate_value(value)
-        previous_value, previous_updated = self.value, self.last_updated
         with transaction.atomic():
-            try:
-                self.value = value
-                with audit_ignore():
-                    self.save(update_fields=["value", "last_updated"])
-                event = Event.new(EventAction.SECRET_ROTATE, secret=self)
-                if request:
-                    event.from_http(request)
-                else:
-                    event.save()
-                secret_value_changed.send(sender=Secret, secret=self)
-            except Exception:
-                self.value, self.last_updated = previous_value, previous_updated
-                raise
+            self.secret_value = value
+            with audit_ignore():
+                self.save(update_fields=["secret_value", "last_updated"])
+            event = Event.new(EventAction.SECRET_ROTATE, secret=self)
+            if request:
+                event.from_http(request)
+            else:
+                event.save()
+            secret_value_changed.send(sender=Secret, secret=self)
 
     def rotate(self, request: Request | None = None) -> str:
         """Generate and store a new text value."""
@@ -122,3 +128,15 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
             ("view_secret_value", _("View secret's value")),
             ("rotate_secret", _("Rotate secret's value")),
         ]
+
+
+def create_named_secret(name: str, **fields) -> Secret:
+    """Create a secret with a readable, collision-safe name."""
+    for suffix in range(1, 100):
+        candidate = name if suffix == 1 else f"{name} ({suffix})"
+        try:
+            with transaction.atomic():
+                return Secret.objects.create(name=candidate, **fields)
+        except IntegrityError:
+            continue
+    raise IntegrityError(f"Could not allocate a name for {name!r}")
