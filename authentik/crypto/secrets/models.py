@@ -10,11 +10,13 @@ from django.db import IntegrityError, models, transaction
 from django.utils.translation import gettext_lazy as _
 from yaml import YAMLError, safe_load
 
+from authentik.admin.utils import get_system_settings
 from authentik.blueprints.models import ManagedModel
 from authentik.core.models import default_token_key
 from authentik.crypto.secrets.signals import secret_value_changed, secret_value_validating
 from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
+from authentik.lib.generators import generate_id
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 
 if TYPE_CHECKING:
@@ -32,6 +34,15 @@ class SecretType(models.TextChoices):
     TEXT = "text", _("Text")
     JSON = "json", _("JSON")
     FILE = "file", _("File")
+
+
+def generate_secret_value(length: int | None = None) -> str:
+    """Generate a text value, by default with the configured default token length.
+
+    Values only use ASCII letters and digits, which every consumer accepts: OAuth2 requires
+    VSCHAR client secrets, and HTTP Basic authentication splits credentials on colons.
+    """
+    return generate_id(length) if length else default_token_key()
 
 
 def parse_json(value: str) -> dict:
@@ -64,7 +75,7 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
     name = models.TextField(unique=True)
     type = models.TextField(choices=SecretType.choices, default=SecretType.TEXT)
     # Named so that event diffs hide it, like other credential fields.
-    secret_value = models.TextField(default=default_token_key)
+    secret_value = models.TextField(default=generate_secret_value)
 
     def get_json(self) -> dict:
         """Read the object stored in a JSON secret."""
@@ -105,10 +116,16 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
             secret_value_changed.send(sender=Secret, secret=self)
 
     def rotate(self, request: Request | None = None) -> str:
-        """Generate and store a new text value."""
+        """Generate and store a new text value.
+
+        The new value is at least as long as the current one, so a secret generated with a
+        consumer's own length, such as a 128 character OAuth2 client secret, keeps it.
+        """
         if self.type != SecretType.TEXT:
             raise ValueError("Only text secrets can be rotated.")
-        value = default_token_key()
+        value = generate_secret_value(
+            max(len(self.secret_value), get_system_settings().default_token_length)
+        )
         self.replace_value(value, request)
         return value
 
