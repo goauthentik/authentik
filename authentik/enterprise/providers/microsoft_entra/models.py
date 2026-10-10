@@ -86,7 +86,6 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
         verbose_name=_("Client Secret"),
         on_delete=models.PROTECT,
         null=True,
-        blank=True,
         default=None,
         related_name="microsoft_entra_providers",
     )
