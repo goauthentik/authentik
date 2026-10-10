@@ -1,4 +1,5 @@
 import "#components/ak-secret-textarea-input";
+import "#components/ak-number-input";
 import "#components/ak-radio-input";
 import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
@@ -99,6 +100,11 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
 
     protected override async send(data: SecretRequest): Promise<unknown> {
         data.type = this.type;
+
+        // The length only applies when the server generates the value.
+        if (data.value || !data.length) {
+            delete data.length;
+        }
 
         if (this.type === SecretTypeEnum.File) {
             const file = this.files<"value">().get("value");
@@ -206,7 +212,21 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
                           }}
                       ></ak-radio-input> `
             }
-            ${this.renderValueInput()}`;
+            ${this.renderValueInput()}
+            ${
+                this.instance || this.type !== SecretTypeEnum.Text
+                    ? nothing
+                    : html`<ak-number-input
+                          name="length"
+                          label=${msg("Length", { id: "secret.form.length.label" })}
+                          min="1"
+                          max="1024"
+                          help=${msg(
+                              "Length of the generated value. Leave empty to use the default token length.",
+                              { id: "secret.form.length.description" },
+                          )}
+                      ></ak-number-input>`
+            }`;
     }
 }
 

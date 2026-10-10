@@ -8021,6 +8021,13 @@
                 "value": {
                     "type": "string",
                     "title": "Value"
+                },
+                "length": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 1024,
+                    "title": "Length",
+                    "description": "Length of the generated value when creating a text secret without a value. Defaults to the default token length."
                 }
             },
             "required": []
