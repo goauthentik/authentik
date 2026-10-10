@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.core.models import Token, TokenIntents, User
+from authentik.lib.tracing import active_tracer
 from authentik.sources.scim.models import SCIMSource
 
 
@@ -33,7 +34,7 @@ class SCIMTokenAuth(BaseAuthentication):
 
     def check_token(self, key: str, source_slug: str) -> Token | None:
         """Check that a token exists, is not expired, and is assigned to the correct source"""
-        token = Token.filter_not_expired(key=key, intent=TokenIntents.INTENT_API).first()
+        token = Token.objects.filter(key=key, intent=TokenIntents.INTENT_API).first()
         if not token:
             return None
         source: SCIMSource = token.scimsource_set.first()
@@ -44,6 +45,7 @@ class SCIMTokenAuth(BaseAuthentication):
         self.view.source = source
         return token
 
+    @active_tracer().instrument()
     def authenticate(self, request: Request) -> tuple[User, Any] | None:
         kwargs = request._request.resolver_match.kwargs
         source_slug = kwargs.get("source_slug", None)

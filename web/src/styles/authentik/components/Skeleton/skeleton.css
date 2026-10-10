@@ -1,0 +1,292 @@
+/** #region Variables */
+
+.ak-c-loading-skeleton {
+    --ak-c-skeleton--ColumnCount: 1;
+    --ak-c-skeleton--RowCount: 1;
+    --ak-c-skeleton--CellWidth: 1fr;
+    --ak-c-skeleton--CellHeight: 30dvh;
+    --ak-c-skeleton--Gap: var(--pf-global--gutter, 1rem);
+    --ak-c-skeleton--BoneColor: var(--pf-global--BackgroundColor--200);
+    --ak-c-skeleton--ShimmerColor: var(--pf-global--BackgroundColor--150);
+    --ak-c-skeleton--ShimmerSpeed: 1.25s;
+    --ak-c-skeleton--FadeInDelay: 0.5s;
+
+    @media (prefers-reduced-motion: reduce) {
+        --ak-c-skeleton--ShimmerSpeed: 2s;
+    }
+}
+
+/** #endregion */
+
+/** #region Base */
+
+.ak-c-loading-skeleton {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: repeat(
+        var(--ak-c-skeleton--ColumnCount),
+        var(--ak-c-skeleton--CellWidth)
+    );
+    grid-template-rows: repeat(var(--ak-c-skeleton--RowCount), var(--ak-c-skeleton--CellHeight));
+    gap: var(--ak-c-skeleton--Gap);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+
+    opacity: 0;
+    animation: ak-c-skeleton-fade-in 0.2s ease-out forwards;
+    animation-delay: var(--ak-c-skeleton--FadeInDelay);
+}
+
+@keyframes ak-c-skeleton-fade-in {
+    to {
+        opacity: 1;
+    }
+}
+
+.ak-c-loading-skeleton::before {
+    content: "";
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+
+    background: var(--ak-c-skeleton--BoneColor);
+    border-radius: var(--ak-c-skeleton--CellRadius);
+
+    /* Mask that carves out vertical gaps. */
+    --mask-col: repeating-linear-gradient(
+        to right,
+        #000 0,
+        #000
+            calc(
+                (100% - var(--ak-c-skeleton--Gap) * (var(--ak-c-skeleton--ColumnCount) - 1)) /
+                    var(--ak-c-skeleton--ColumnCount)
+            ),
+        transparent
+            calc(
+                (100% - var(--ak-c-skeleton--Gap) * (var(--ak-c-skeleton--ColumnCount) - 1)) /
+                    var(--ak-c-skeleton--ColumnCount)
+            ),
+        transparent
+            calc(
+                (100% - var(--ak-c-skeleton--Gap) * (var(--ak-c-skeleton--ColumnCount) - 1)) /
+                    var(--ak-c-skeleton--ColumnCount) + var(--ak-c-skeleton--Gap)
+            )
+    );
+
+    /* Mask that carves out horizontal gaps. */
+    --mask-row: repeating-linear-gradient(
+        to bottom,
+        #000 0,
+        #000
+            calc(
+                (100% - var(--ak-c-skeleton--Gap) * (var(--ak-c-skeleton--RowCount) - 1)) /
+                    var(--ak-c-skeleton--RowCount)
+            ),
+        transparent
+            calc(
+                (100% - var(--ak-c-skeleton--Gap) * (var(--ak-c-skeleton--RowCount) - 1)) /
+                    var(--ak-c-skeleton--RowCount)
+            ),
+        transparent
+            calc(
+                (100% - var(--ak-c-skeleton--Gap) * (var(--ak-c-skeleton--RowCount) - 1)) /
+                    var(--ak-c-skeleton--RowCount) + var(--ak-c-skeleton--Gap)
+            )
+    );
+
+    -webkit-mask-image: var(--mask-col), var(--mask-row);
+    -webkit-mask-composite: source-in;
+
+    mask-image: var(--mask-col), var(--mask-row);
+    mask-composite: intersect;
+}
+
+/* Shimmer sweep — a second pseudo layered on top. */
+.ak-c-loading-skeleton::after {
+    content: "";
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+    z-index: 1;
+
+    background: linear-gradient(
+        100deg,
+        transparent 20%,
+        var(--ak-c-skeleton--ShimmerColor) 45%,
+        transparent 80%
+    );
+    background-size: 200% 100%;
+
+    /* Inherit the same cell mask so shimmer only shows on bones. */
+    --mask-col: repeating-linear-gradient(
+        to right,
+        #000 0,
+        #000
+            calc(
+                (100% - var(--ak-c-skeleton--Gap) * (var(--ak-c-skeleton--ColumnCount) - 1)) /
+                    var(--ak-c-skeleton--ColumnCount)
+            ),
+        transparent
+            calc(
+                (100% - var(--ak-c-skeleton--Gap) * (var(--ak-c-skeleton--ColumnCount) - 1)) /
+                    var(--ak-c-skeleton--ColumnCount)
+            ),
+        transparent
+            calc(
+                (100% - var(--ak-c-skeleton--Gap) * (var(--ak-c-skeleton--ColumnCount) - 1)) /
+                    var(--ak-c-skeleton--ColumnCount) + var(--ak-c-skeleton--Gap)
+            )
+    );
+
+    --mask-row: repeating-linear-gradient(
+        to bottom,
+        #000 0,
+        #000
+            calc(
+                (100% - var(--ak-c-skeleton--Gap) * (var(--ak-c-skeleton--RowCount) - 1)) /
+                    var(--ak-c-skeleton--RowCount)
+            ),
+        transparent
+            calc(
+                (100% - var(--ak-c-skeleton--Gap) * (var(--ak-c-skeleton--RowCount) - 1)) /
+                    var(--ak-c-skeleton--RowCount)
+            ),
+        transparent
+            calc(
+                (100% - var(--ak-c-skeleton--Gap) * (var(--ak-c-skeleton--RowCount) - 1)) /
+                    var(--ak-c-skeleton--RowCount) + var(--ak-c-skeleton--Gap)
+            )
+    );
+
+    -webkit-mask-image: var(--mask-col), var(--mask-row);
+    -webkit-mask-composite: source-in;
+    mask-image: var(--mask-col), var(--mask-row);
+    mask-composite: intersect;
+
+    animation: ak-c-skeleton-shimmer-anim var(--ak-c-skeleton--ShimmerSpeed) ease-in-out infinite;
+}
+
+@keyframes ak-c-skeleton-shimmer-anim {
+    0% {
+        background-position: 150% 0;
+    }
+    100% {
+        background-position: -50% 0;
+    }
+}
+
+/** #endregion */
+
+/** #region Dark theme */
+
+[data-theme="dark"] .ak-c-loading-skeleton,
+:host([theme="dark"]) .ak-c-loading-skeleton {
+    --ak-c-skeleton--BoneColor: var(--pf-global--BackgroundColor--300);
+    --ak-c-skeleton--ShimmerColor: var(--pf-global--BackgroundColor--150);
+}
+
+/** #endregion */
+
+/** #region Grid variant */
+
+.ak-c-loading-skeleton.ak-m-grid {
+    --ak-c-skeleton--ColumnCount: 3;
+    --ak-c-skeleton--RowCount: 2;
+
+    @supports (container-type: inline-size) {
+        container-type: inline-size;
+
+        --ak-c-skeleton--Ratio: 2 / 1;
+        --ak-c-skeleton--CellHeight: calc(
+            (100cqi - var(--ak-c-skeleton--Gap) * (var(--ak-c-skeleton--ColumnCount) - 1)) /
+                var(--ak-c-skeleton--ColumnCount) / (var(--ak-c-skeleton--Ratio))
+        );
+    }
+}
+
+/** #endregion */
+
+/** #region List variant */
+
+/**
+ * Fills available height with fixed-size rows using auto-fill.
+ * Requires the element (or its parent) to have a defined height.
+ *
+ * Because auto-fill means --RowCount is unknown, this variant
+ * uses a simplified repeating mask with fixed stops instead of
+ * the percentage-based mask used by the base/grid variants.
+ */
+.ak-c-loading-skeleton.ak-m-list {
+    --ak-c-skeleton--ColumnCount: 1;
+    --ak-c-skeleton--CellHeight: 2em;
+
+    grid-template-rows: repeat(auto-fill, var(--ak-c-skeleton--CellHeight));
+}
+
+/* Override masks for list: single column, fixed-size row stops. */
+.ak-c-loading-skeleton.ak-m-list::before,
+.ak-c-loading-skeleton.ak-m-list::after {
+    --mask-row: repeating-linear-gradient(
+        to bottom,
+        #000 0,
+        #000 var(--ak-c-skeleton--CellHeight),
+        transparent var(--ak-c-skeleton--CellHeight),
+        transparent calc(var(--ak-c-skeleton--CellHeight) + var(--ak-c-skeleton--Gap))
+    );
+
+    -webkit-mask-image: var(--mask-row);
+    -webkit-mask-composite: source-over;
+    mask-image: var(--mask-row);
+    mask-composite: add;
+}
+
+/** #endregion */
+
+/** #region Column / row / ratio modifiers */
+
+.ak-c-loading-skeleton {
+    &.ak-m-2-col {
+        --ak-c-skeleton--ColumnCount: 2;
+    }
+
+    &.ak-m-3-col {
+        --ak-c-skeleton--ColumnCount: 3;
+    }
+
+    &.ak-m-4-col {
+        --ak-c-skeleton--ColumnCount: 4;
+    }
+
+    &.ak-m-5-col {
+        --ak-c-skeleton--ColumnCount: 5;
+    }
+
+    &.ak-m-6-col {
+        --ak-c-skeleton--ColumnCount: 6;
+    }
+
+    &.ak-m-2-row {
+        --ak-c-skeleton--RowCount: 2;
+    }
+
+    &.ak-m-3-row {
+        --ak-c-skeleton--RowCount: 3;
+    }
+
+    &.ak-m-4-row {
+        --ak-c-skeleton--RowCount: 4;
+    }
+
+    &.ak-m-5-row {
+        --ak-c-skeleton--RowCount: 5;
+    }
+
+    &.ak-m-6-row {
+        --ak-c-skeleton--RowCount: 6;
+    }
+
+    &.ak-m-ratio-square {
+        --ak-c-skeleton--Ratio: 1 / 1;
+    }
+}
+
+/** #endregion */

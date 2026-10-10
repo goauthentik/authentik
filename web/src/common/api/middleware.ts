@@ -1,7 +1,8 @@
+import { CSRFHeaderName, readCSRFToken } from "#common/api/csrf";
 import { AKRequestPostEvent, APIRequestInfo } from "#common/api/events";
+import { AKEnterpriseRefreshEvent, AKRefreshEvent } from "#common/events";
 import { MessageLevel } from "#common/messages";
 import { formatAcceptLanguageHeader } from "#common/ui/locale/utils";
-import { getCookie } from "#common/utils";
 
 import { showMessage } from "#elements/messages/MessageContainer";
 
@@ -18,7 +19,6 @@ import {
 import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail } from "@lit/localize";
 import { html } from "lit";
 
-export const CSRFHeaderName = "X-authentik-CSRF";
 export const AcceptLanguage = "Accept-Language";
 
 export class LoggingMiddleware implements Middleware {
@@ -29,12 +29,14 @@ export class LoggingMiddleware implements Middleware {
             brand.matchedDomain && brand.matchedDomain !== "authentik-default"
                 ? `api/${brand.matchedDomain}`
                 : "api";
+
         this.#logger = ConsoleLogger.prefix(prefix);
     }
 
     post({ response, init, url }: ResponseContext): Promise<Response> {
         const parsedURL = URL.canParse(url) ? new URL(url) : null;
         const path = parsedURL ? parsedURL.pathname + parsedURL.search : url;
+
         if (response.ok) {
             this.#logger.debug(`${init.method} ${path}`);
         } else {
@@ -49,7 +51,7 @@ export class CSRFMiddleware implements Middleware {
     pre?(context: RequestContext): Promise<FetchParams | void> {
         context.init.headers = {
             ...context.init.headers,
-            [CSRFHeaderName]: getCookie("authentik_csrf"),
+            [CSRFHeaderName]: readCSRFToken(),
         };
 
         return Promise.resolve(context);
@@ -101,22 +103,35 @@ export class LocaleMiddleware implements Middleware, Disposable {
         return Promise.resolve(context);
     }
 }
+
 export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
     #requests: string[] = [];
     #counts = new Map<string, number>();
-    #logger = ConsoleLogger.prefix("repeated-requests-middleware");
+    #warnings = new Set<string>();
 
-    #navigationHandler = () => {
+    public clear = () => {
         this.#requests = [];
         this.#counts.clear();
+        this.#warnings.clear();
+    };
+
+    #timeoutId = -1;
+
+    public clearAfterIdle = () => {
+        clearTimeout(this.#timeoutId);
+        this.#timeoutId = window.setTimeout(this.clear, 1000);
     };
 
     constructor(protected readonly maxRequests: number = 10) {
-        window.addEventListener("hashchange", this.#navigationHandler);
+        window.addEventListener("hashchange", this.clear, { passive: true });
+        window.addEventListener(AKRefreshEvent.eventName, this.clear, { passive: true });
+        window.addEventListener(AKEnterpriseRefreshEvent.eventName, this.clear, { passive: true });
+
+        window.addEventListener("click", this.clearAfterIdle, { passive: true });
     }
 
     public [Symbol.dispose]() {
-        window.removeEventListener("hashchange", this.#navigationHandler);
+        window.removeEventListener("hashchange", this.clear);
     }
 
     public async pre(context: RequestContext): Promise<FetchParams | void> {
@@ -130,18 +145,22 @@ export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
         this.#counts.set(reqSig, count);
         this.#requests.push(reqSig);
 
-        if (count > 2) {
-            showMessage(
-                {
-                    level: MessageLevel.warning,
-                    message: "[Dev] Consecutive requests detected",
-                    description: html`${count} identical requests to
-                        <pre>${reqSig}</pre>`,
-                },
-                true,
-            );
+        if (count > 2 && !this.#warnings.has(reqSig)) {
+            this.#warnings.add(reqSig);
 
-            this.#logger.trace("Repeated request", reqSig);
+            const formattedURL = URL.canParse(reqSig) ? new URL(reqSig).pathname : reqSig;
+
+            requestAnimationFrame(() => {
+                showMessage(
+                    {
+                        level: MessageLevel.warning,
+                        message: "[Dev] Consecutive requests detected",
+                        description: html`${count} identical requests to
+                            <pre style="text-wrap: auto">${formattedURL}</pre>`,
+                    },
+                    true,
+                );
+            });
         }
 
         if (this.#requests.length > this.maxRequests) {
@@ -150,6 +169,7 @@ export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
 
             if (removedCount === 1) {
                 this.#counts.delete(removed);
+                this.#warnings.delete(removed);
             } else {
                 this.#counts.set(removed, removedCount - 1);
             }

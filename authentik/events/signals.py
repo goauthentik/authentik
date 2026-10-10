@@ -10,14 +10,16 @@ from django.dispatch import receiver
 from django.http import HttpRequest
 from rest_framework.request import Request
 
+from authentik.admin.utils import get_system_settings
 from authentik.core.models import AuthenticatedSession, User
-from authentik.core.signals import login_failed, password_changed
+from authentik.core.signals import login_failed, password_changed, password_hash_changed
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_DEVICE,
     PLAN_CONTEXT_OUTPOST,
     PLAN_CONTEXT_SOURCE,
+    PLAN_CONTEXT_USER_SWITCH_FROM_USER,
     FlowPlan,
 )
 from authentik.flows.views.executor import SESSION_KEY_PLAN
@@ -25,7 +27,6 @@ from authentik.stages.invitation.models import Invitation
 from authentik.stages.invitation.signals import invitation_used
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 from authentik.stages.user_write.signals import user_write
-from authentik.tenants.utils import get_current_tenant
 
 SESSION_LOGIN_EVENT = "login_event"
 _session_engine = import_module(settings.SESSION_ENGINE)
@@ -50,6 +51,10 @@ def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
         if PLAN_CONTEXT_DEVICE in flow_plan.context:
             # Save device
             kwargs[PLAN_CONTEXT_DEVICE] = flow_plan.context[PLAN_CONTEXT_DEVICE]
+        if from_user := flow_plan.context.get(PLAN_CONTEXT_USER_SWITCH_FROM_USER):
+            # Record that this login came from a user switch.
+            kwargs["is_user_switch"] = True
+            kwargs[PLAN_CONTEXT_USER_SWITCH_FROM_USER] = from_user
     event = Event.new(EventAction.LOGIN, **kwargs).from_http(request, user=user)
     request.session[SESSION_LOGIN_EVENT] = event
     request.session.save()
@@ -112,8 +117,15 @@ def on_invitation_used(sender, request: HttpRequest, invitation: Invitation, **_
     )
 
 
+@receiver(password_hash_changed)
 @receiver(password_changed)
-def on_password_changed(sender, user: User, password: str, request: HttpRequest | None, **_):
+def on_password_changed(
+    sender,
+    user: User,
+    password: str | None = None,
+    request: HttpRequest | None = None,
+    **_,
+):
     """Log password change"""
     Event.new(EventAction.PASSWORD_SET).from_http(request, user=user)
 
@@ -131,5 +143,5 @@ def event_user_pre_delete_cleanup(sender, instance: User, **_):
     """If gdpr_compliance is enabled, remove all the user's events"""
     from authentik.events.tasks import gdpr_cleanup
 
-    if get_current_tenant().gdpr_compliance:
+    if get_system_settings().gdpr_compliance:
         gdpr_cleanup.send(instance.pk)

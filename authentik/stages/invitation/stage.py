@@ -18,7 +18,7 @@ PLAN_CONTEXT_INVITATION = "invitation"
 
 
 class InvitationStageView(StageView):
-    """Finalise Authentication flow by logging the user in"""
+    """Finalize Authentication flow by logging the user in"""
 
     def get_token(self) -> str | None:
         """Get token from saved get-arguments or prompt_data"""
@@ -38,7 +38,7 @@ class InvitationStageView(StageView):
         if not token:
             return None
         try:
-            invite: Invitation | None = Invitation.filter_not_expired(pk=token).first()
+            invite: Invitation | None = Invitation.objects.filter(pk=token).first()
         except ValidationError:
             self.logger.debug("invalid invitation", token=token)
             return None

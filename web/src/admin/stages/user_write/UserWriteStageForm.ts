@@ -2,21 +2,19 @@ import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-import "#elements/forms/SearchSelect/index";
+import "#components/ak-text-input";
+import "#components/ak-radio-input";
+import { aki } from "#common/api/client";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { RadioOption } from "#elements/forms/Radio";
 
+import { AKLabel } from "#components/ak-label";
+import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { groupSource } from "#admin/common/search-sources";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
-import {
-    CoreApi,
-    CoreGroupsListRequest,
-    Group,
-    StagesApi,
-    UserTypeEnum,
-    UserWriteStage,
-} from "@goauthentik/api";
-import { UserCreationModeEnum } from "@goauthentik/api/dist/models/UserCreationModeEnum.js";
+import { StagesApi, UserCreationModeEnum, UserTypeEnum, UserWriteStage } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -25,42 +23,44 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-user-write-form")
 export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
-    loadInstance(pk: string): Promise<UserWriteStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesUserWriteRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: UserWriteStage): Promise<UserWriteStage> {
-        if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesUserWriteUpdate({
-                stageUuid: this.instance.pk || "",
-                userWriteStageRequest: data,
-            });
-        }
-        return new StagesApi(DEFAULT_CONFIG).stagesUserWriteCreate({
-            userWriteStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesUserWriteRetrieve({ stageUuid }),
+        create: (userWriteStageRequest: UserWriteStage) =>
+            aki(StagesApi).stagesUserWriteCreate({ userWriteStageRequest }),
+        update: (stageUuid: string, userWriteStageRequest: UserWriteStage) =>
+            aki(StagesApi).stagesUserWriteUpdate({ stageUuid, userWriteStageRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
-        return html` <span>
+        return html` <div>
                 ${msg(
                     `Write any data from the flow's context's 'prompt_data' to the currently pending user. If no user
         is pending, a new user is created, and data is written to them.`,
                 )}
-            </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name || "")}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-            <ak-form-group open label="${msg("Stage-specific settings")}">
+            </div>
+            <ak-text-input
+                autofocus
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                placeholder=${msg("Type a stage name...")}
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name || "")}"
+            >
+            </ak-text-input>
+            <ak-form-group open label=${msg("Stage-specific settings")}>
                 <div class="pf-c-form">
                     <ak-form-element-horizontal name="userCreationMode">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "userCreationMode",
+                            },
+                            msg("User creation mode"),
+                        )}
+
                         <ak-radio
                             .options=${[
                                 {
@@ -96,9 +96,12 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                         ?checked=${this.instance?.createUsersAsInactive ?? true}
                         help=${msg("Mark newly created users as inactive.")}
                     ></ak-switch-input>
-                    <ak-form-element-horizontal label=${msg("User type")} name="userType">
-                        <ak-radio
-                            .options=${[
+                    <ak-radio-input
+                        label=${msg("User type")}
+                        name="userType"
+                        help=${msg("User type used for newly created users.")}
+                        .options=${
+                            [
                                 {
                                     label: msg("Internal"),
                                     value: UserTypeEnum.Internal,
@@ -121,14 +124,11 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                                         "Service accounts should be used for machine-to-machine authentication or other automations.",
                                     )}`,
                                 },
-                            ]}
-                            .value=${this.instance?.userType}
-                        >
-                        </ak-radio>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("User type used for newly created users.")}
-                        </p>
-                    </ak-form-element-horizontal>
+                            ] satisfies RadioOption<UserTypeEnum>[]
+                        }
+                        .value=${this.instance?.userType}
+                    >
+                    </ak-radio-input>
                     <ak-form-element-horizontal
                         label=${msg("User path template")}
                         name="userPathTemplate"
@@ -147,32 +147,12 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Group")} name="createUsersGroup">
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Group[]> => {
-                                const args: CoreGroupsListRequest = {
-                                    ordering: "name",
-                                    includeUsers: false,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
-                                    args,
-                                );
-                                return groups.results;
-                            }}
-                            .renderElement=${(group: Group): string => {
-                                return group.name;
-                            }}
-                            .value=${(group: Group | undefined): string | undefined => {
-                                return group ? group.pk : undefined;
-                            }}
-                            .selected=${(group: Group): boolean => {
-                                return group.pk === this.instance?.createUsersGroup;
-                            }}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKSearchSelect({
+                            name: "createUsersGroup",
+                            source: groupSource,
+                            value: this.instance?.createUsersGroup,
+                            blankable: true,
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Newly created users are added to this group, if a group is selected.",

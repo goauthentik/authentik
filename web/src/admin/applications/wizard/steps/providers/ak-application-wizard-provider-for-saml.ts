@@ -1,12 +1,16 @@
-import "#admin/applications/wizard/ak-wizard-title";
 import "#elements/forms/FormGroup";
+import type { SearchSelectChangeEvent } from "#elements/forms/SearchSelect/events";
 
-import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
-
-import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
+import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
 import { renderForm } from "#admin/providers/saml/SAMLProviderFormForm";
 
-import { KeyTypeEnum, SAMLBindingsEnum, SAMLLogoutMethods, SAMLProvider } from "@goauthentik/api";
+import {
+    KeyTypeEnum,
+    SAMLBindingsEnum,
+    SAMLLogoutMethods,
+    SAMLProvider,
+    CertificateKeyPair,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { customElement, state } from "@lit/reactive-element/decorators.js";
@@ -44,19 +48,19 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
                 logoutMethod: SAMLLogoutMethods.FrontchannelIframe,
             };
         }
+
         return values;
     }
 
     renderForm() {
-        const setHasSigningKp = (ev: InputEvent) => {
-            const target = ev.target as AkCryptoCertificateSearch;
-            if (!target) return;
-            this.hasSigningKp = !!target.selectedKeypair;
-            this.signingKeyType = target.selectedKeypair?.keyType ?? KeyTypeEnum.Rsa;
+        const setHasSigningKp = ({ detail }: SearchSelectChangeEvent<CertificateKeyPair>) => {
+            this.hasSigningKp = !!detail.value;
+            this.signingKeyType = detail.value?.keyType ?? KeyTypeEnum.Rsa;
         };
 
         const setHasSlsUrl = (ev: Event) => {
             const akTextInput = ev.currentTarget as HTMLElement & { value?: string };
+
             if (!akTextInput) return;
 
             const value = akTextInput.value || "";
@@ -81,10 +85,10 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
             this.logoutMethod = target.value;
         };
 
-        return html` <ak-wizard-title>${this.label}</ak-wizard-title>
+        return html`<h3 class="pf-c-wizard__main-title">${this.label}</h3>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
                 ${renderForm({
-                    provider: this.wizard.provider as SAMLProvider,
+                    provider: this.wizard.provider,
                     errors: this.wizard.errors?.provider,
                     setHasSigningKp,
                     hasSigningKp: this.hasSigningKp,
@@ -103,6 +107,7 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("SAML Provider Step received uninitialized wizard context.");
         }
+
         return this.renderForm();
     }
 }

@@ -13,10 +13,11 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.radius.models import RadiusProvider
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.live import E2ETestCase
 
 
-class TestProviderRadius(SeleniumTestCase):
+class TestProviderRadius(E2ETestCase):
     """Radius Outpost e2e tests"""
 
     def setUp(self):
@@ -72,6 +73,7 @@ class TestProviderRadius(SeleniumTestCase):
             code=AccessRequest, User_Name=self.user.username, NAS_Identifier="localhost"
         )
         req["User-Password"] = req.PwCrypt(self.user.username)
+        req.add_message_authenticator()
 
         reply = srv.SendPacket(req)
         self.assertEqual(reply.code, AccessAccept)
@@ -94,6 +96,7 @@ class TestProviderRadius(SeleniumTestCase):
             code=AccessRequest, User_Name=self.user.username, NAS_Identifier="localhost"
         )
         req["User-Password"] = req.PwCrypt(self.user.username + "foo")
+        req.add_message_authenticator()
 
         reply = srv.SendPacket(req)
         self.assertEqual(reply.code, AccessReject)

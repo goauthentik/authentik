@@ -2,24 +2,23 @@ import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 import { groupBy } from "#common/utils";
 
 import { DataProvider, DualSelectPair } from "#elements/ak-dual-select/types";
 import { ModelForm } from "#elements/forms/ModelForm";
+import { SearchSelectSource, withQuery } from "#elements/forms/SearchSelect/shared";
 import { PaginatedResponse } from "#elements/table/Table";
 
 import { AKLabel } from "#components/ak-label";
+import { AKSearchSelect } from "#components/ak-search-select-field";
 
 import {
     Outpost,
     OutpostDefaultConfig,
     OutpostsApi,
-    OutpostsServiceConnectionsAllListRequest,
     OutpostTypeEnum,
     ProvidersApi,
     ServiceConnection,
@@ -40,7 +39,8 @@ interface ProviderBase {
     assignedApplicationName?: string | null;
 }
 
-const api = () => new ProvidersApi(DEFAULT_CONFIG);
+const api = () => aki(ProvidersApi);
+
 const providerListArgs = (page: number, search = "") => ({
     ordering: "name",
     applicationIsnull: false,
@@ -95,16 +95,31 @@ function providerProvider(type: OutpostTypeEnum): DataProvider {
 
 @customElement("ak-outpost-form")
 export class OutpostForm extends ModelForm<Outpost, string> {
-    @property()
-    type: OutpostTypeEnum = OutpostTypeEnum.Proxy;
+    public static verboseName = msg("Outpost");
+    public static verboseNamePlural = msg("Outposts");
+
+    @property({ type: String })
+    public type: OutpostTypeEnum = OutpostTypeEnum.Proxy;
 
     @property({ type: Boolean })
-    embedded = false;
+    public embedded = false;
 
     @state()
-    providers: DataProvider = providerProvider(this.type);
+    protected providers: DataProvider = providerProvider(this.type);
 
-    defaultConfig?: OutpostDefaultConfig;
+    protected defaultConfig?: OutpostDefaultConfig;
+
+    protected serviceConnectionSource: SearchSelectSource<ServiceConnection> = {
+        fetchObjects: (query) =>
+            aki(OutpostsApi)
+                .outpostsServiceConnectionsAllList(withQuery(query, { ordering: "name" }))
+                .then(({ results }) => results),
+        keyOf: (connection) => connection.pk,
+        labelOf: (connection) => connection.name,
+        groupBy: (connections) => groupBy(connections, (connection) => connection.verboseName),
+        preselect: (connections) =>
+            !this.instance && connections.length === 1 ? connections[0] : undefined,
+    };
 
     public override reset(): void {
         super.reset();
@@ -114,18 +129,18 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     }
 
     async loadInstance(pk: string): Promise<Outpost> {
-        const o = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesRetrieve({
+        const o = await aki(OutpostsApi).outpostsInstancesRetrieve({
             uuid: pk,
         });
+
         this.type = o.type || OutpostTypeEnum.Proxy;
         this.providers = providerProvider(o.type);
+
         return o;
     }
 
     async load(): Promise<void> {
-        this.defaultConfig = await new OutpostsApi(
-            DEFAULT_CONFIG,
-        ).outpostsInstancesDefaultSettingsRetrieve();
+        this.defaultConfig = await aki(OutpostsApi).outpostsInstancesDefaultSettingsRetrieve();
         this.providers = providerProvider(this.type);
     }
 
@@ -137,12 +152,13 @@ export class OutpostForm extends ModelForm<Outpost, string> {
 
     async send(data: Outpost): Promise<Outpost> {
         if (this.instance) {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesUpdate({
+            return aki(OutpostsApi).outpostsInstancesUpdate({
                 uuid: this.instance.pk || "",
                 outpostRequest: data,
             });
         }
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesCreate({
+
+        return aki(OutpostsApi).outpostsInstancesCreate({
             outpostRequest: data,
         });
     }
@@ -195,40 +211,13 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     },
                     msg("Integration"),
                 )}
-
-                <ak-search-select
-                    id="serviceConnection"
-                    name="serviceConnection"
-                    aria-describedby="service-connection-help"
-                    .fetchObjects=${async (query?: string): Promise<ServiceConnection[]> => {
-                        const args: OutpostsServiceConnectionsAllListRequest = {
-                            ordering: "name",
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const items = await new OutpostsApi(
-                            DEFAULT_CONFIG,
-                        ).outpostsServiceConnectionsAllList(args);
-                        return items.results;
-                    }}
-                    .renderElement=${(item: ServiceConnection): string => {
-                        return item.name;
-                    }}
-                    .value=${(item: ServiceConnection | null) => item?.pk}
-                    .groupBy=${(items: ServiceConnection[]) => {
-                        return groupBy(items, (item) => item.verboseName);
-                    }}
-                    .selected=${(item: ServiceConnection, items: ServiceConnection[]): boolean => {
-                        let selected = this.instance?.serviceConnection === item.pk;
-                        if (items.length === 1 && !this.instance) {
-                            selected = true;
-                        }
-                        return selected;
-                    }}
-                    blankable
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    id: "serviceConnection",
+                    name: "serviceConnection",
+                    source: this.serviceConnectionSource,
+                    value: this.instance?.serviceConnection,
+                    blankable: true,
+                })}
                 <div id="service-connection-help">
                     <p class="pf-c-form__helper-text">
                         ${msg(

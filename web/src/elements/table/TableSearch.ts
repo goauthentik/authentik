@@ -1,22 +1,20 @@
-import "#components/ak-search-ql/index";
-
-import { AKElement } from "#elements/Base";
-import { WithLicenseSummary } from "#elements/mixins/license";
-import { PaginatedResponse } from "#elements/table/Table";
-import { ifPresent } from "#elements/utils/attributes";
-
-import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { createRef, ref } from "lit/directives/ref.js";
-
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 
+import { AKElement } from "#elements/Base";
+import type { PaginatedResponse } from "#elements/table/Table";
+import { ifPresent } from "#elements/utils/attributes";
+
+import { msg } from "@lit/localize";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { createRef, ref } from "lit/directives/ref.js";
+import { until } from "lit/directives/until.js";
+
 @customElement("ak-table-search")
-export class TableSearchForm extends WithLicenseSummary(AKElement) {
+export class TableSearchForm extends AKElement {
     @property({ type: String, reflect: false })
     public defaultValue?: string;
 
@@ -72,12 +70,19 @@ export class TableSearchForm extends WithLicenseSummary(AKElement) {
     ];
 
     #formRef = createRef<HTMLFormElement>();
+    #searchQLImport: Promise<unknown> | null = null;
 
     public reset = (): void => {
         this.#formRef.value?.reset();
 
         this.onSearch?.("");
     };
+
+    #importSearchQL(): Promise<unknown> {
+        this.#searchQLImport ??= import("#components/ak-search-ql/index");
+
+        return this.#searchQLImport;
+    }
 
     #searchListener = (event: InputEvent) => {
         const target = event.target;
@@ -95,6 +100,7 @@ export class TableSearchForm extends WithLicenseSummary(AKElement) {
 
     #submitListener = (event: SubmitEvent) => {
         event.preventDefault();
+        event.stopPropagation();
 
         const form = this.#formRef.value;
 
@@ -109,17 +115,21 @@ export class TableSearchForm extends WithLicenseSummary(AKElement) {
         this.onSearch(value);
     };
 
-    protected renderInput(): TemplateResult {
-        if (this.supportsQL && this.hasEnterpriseLicense) {
-            return html`<ak-search-ql
-                    label=${ifPresent(this.label)}
-                    role="presentation"
-                    name="search"
-                    placeholder=${ifPresent(this.placeholder)}
-                    value=${ifPresent(this.defaultValue)}
-                    .apiResponse=${this.apiResponse}
-                ></ak-search-ql>
-                <button type="reset" aria-label=${msg("Clear search")}>&times;</button>`;
+    protected renderInput() {
+        if (this.supportsQL) {
+            const content = this.#importSearchQL().then(
+                () => html`<ak-search-ql
+                        label=${ifPresent(this.label)}
+                        role="presentation"
+                        name="search"
+                        placeholder=${ifPresent(this.placeholder)}
+                        value=${ifPresent(this.defaultValue)}
+                        .apiResponse=${this.apiResponse}
+                    ></ak-search-ql>
+                    <button type="reset" aria-label=${msg("Clear search")}>&times;</button>`,
+            );
+
+            return until(content, nothing);
         }
 
         // The ts-ignore comment is lit-analyzer's solution to "ignore semantic errors in the
@@ -133,6 +143,7 @@ export class TableSearchForm extends WithLicenseSummary(AKElement) {
         return html` <!-- @ts-ignore -->
             <input
                 aria-label=${ifPresent(this.label)}
+                part="search-input"
                 name="search"
                 type="search"
                 autocomplete="off"
@@ -147,6 +158,7 @@ export class TableSearchForm extends WithLicenseSummary(AKElement) {
         return html`<form
             ${ref(this.#formRef)}
             class="pf-c-input-group"
+            part="search-form"
             @submit=${this.#submitListener}
             @reset=${this.reset}
         >

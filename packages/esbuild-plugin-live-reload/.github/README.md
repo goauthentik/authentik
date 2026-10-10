@@ -43,7 +43,7 @@ Add the following import near the beginning of your application's entry point.
 
 ```js
 if (process.env.NODE_ENV === "development") {
-    await import("@goauthentik/esbuild-plugin-live-reload/client");
+    await import("@goauthentik/esbuild-plugin-live-reload");
 }
 ```
 

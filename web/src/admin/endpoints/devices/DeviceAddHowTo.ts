@@ -1,7 +1,6 @@
 import "#admin/endpoints/connectors/agent/AgentConnectorSetup";
 import "#elements/Tabs";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModalButton } from "#elements/buttons/ModalButton";
 
@@ -18,10 +17,13 @@ export class DeviceAddHowTo extends ModalButton {
 
     connectedCallback(): void {
         super.connectedCallback();
+
         this.addEventListener("ak-modal-show", () => {
-            new EndpointsApi(DEFAULT_CONFIG).endpointsConnectorsList().then((e) => {
-                this.connectors = e.results;
-            });
+            aki(EndpointsApi)
+                .endpointsConnectorsList()
+                .then((e) => {
+                    this.connectors = e.results;
+                });
         });
     }
 
@@ -32,6 +34,7 @@ export class DeviceAddHowTo extends ModalButton {
                     .connector=${connector}
                 ></ak-endpoints-connector-agent-setup>`;
         }
+
         return html`<p>${msg("Configured connector does not support setup.")}</p>`;
     }
 
@@ -48,24 +51,27 @@ export class DeviceAddHowTo extends ModalButton {
                 <h1 class="pf-c-title pf-m-2xl">${msg("Connector setup")}</h1>
             </div>
             <div class="pf-c-modal-box__body">
-                ${this.connectors.length === 0
-                    ? this.renderNone()
-                    : html` <ak-tabs part="tabs" vertical>
-                          ${this.connectors.map((c) => {
-                              return html`<div
-                                  role="tabpanel"
-                                  tabindex="0"
-                                  slot="page-${c.connectorUuid}"
-                                  id="page-${c.connectorUuid}"
-                                  aria-label="${c.verboseName} ${c.name}"
-                                  class="pf-c-page__main-section pf-m-no-padding-mobile"
-                              >
-                                  ${this.renderSetup(c)}
-                              </div>`;
-                          })}
-                      </ak-tabs>`}
+                ${
+                    this.connectors.length === 0
+                        ? this.renderNone()
+                        : html` <ak-tabs part="tabs" vertical>
+                              ${this.connectors.map((c) => {
+                                  return html`<div
+                                      role="tabpanel"
+                                      tabindex="0"
+                                      slot="page-${c.connectorUuid}"
+                                      id="page-${c.connectorUuid}"
+                                      aria-label="${c.verboseName} ${c.name}"
+                                      class="pf-c-page__main-section pf-m-no-padding-mobile"
+                                  >
+                                      ${this.renderSetup(c)}
+                                  </div>`;
+                              })}
+                          </ak-tabs>`
+                }
             </div>
-            <footer class="pf-c-modal-box__footer pf-m-align-left">
+            <fieldset class="ak-c-fieldset pf-c-modal-box__footer">
+                <legend class="sr-only">${msg("Form actions")}</legend>
                 <button
                     class="pf-c-button pf-m-primary"
                     @click=${() => {
@@ -74,7 +80,7 @@ export class DeviceAddHowTo extends ModalButton {
                 >
                     ${msg("Close")}
                 </button>
-            </footer>`;
+            </fieldset>`;
     }
 }
 

@@ -26,6 +26,7 @@ from authentik.flows.models import (
 )
 from authentik.flows.planner import (
     PLAN_CONTEXT_IS_REDIRECTED,
+    PLAN_CONTEXT_IS_RESTORED,
     PLAN_CONTEXT_PENDING_USER,
     FlowPlanner,
     cache_key,
@@ -129,6 +130,22 @@ class TestFlowPlanner(TestCase):
         planner.allow_empty_flows = True
         planner.plan(request)
 
+    def test_authentication_require_token(self):
+        """Test flow authentication (require_token)"""
+        flow = create_test_flow()
+        flow.authentication = FlowAuthenticationRequirement.REQUIRE_TOKEN
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        planner = FlowPlanner(flow)
+        planner.allow_empty_flows = True
+
+        with self.assertRaises(FlowNonApplicableException):
+            planner.plan(request)
+
+        context = {PLAN_CONTEXT_IS_RESTORED: True}
+        planner.plan(request, context)
+
     @patch(
         "authentik.policies.engine.PolicyEngine.result",
         POLICY_RETURN_FALSE,
@@ -179,6 +196,26 @@ class TestFlowPlanner(TestCase):
         planner.plan(request, default_context={PLAN_CONTEXT_PENDING_USER: user})
         key = cache_key(flow, user)
         self.assertTrue(cache.get(key) is not None)
+
+    def test_dry_run_policy_does_not_block_plan(self):
+        """A failing dry-run policy does not block flow planning."""
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        stage_binding = FlowStageBinding.objects.create(
+            target=flow,
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=0,
+        )
+        policy = DummyPolicy.objects.create(
+            name=generate_id(), result=False, wait_min=0, wait_max=1
+        )
+        PolicyBinding.objects.create(target=flow, policy=policy, order=0, dry_run=True)
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+
+        plan = FlowPlanner(flow).plan(request)
+
+        self.assertEqual(plan.bindings, [stage_binding])
 
     def test_planner_marker_reevaluate(self):
         """Test that the planner creates the proper marker"""

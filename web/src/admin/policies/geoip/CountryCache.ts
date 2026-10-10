@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { DetailedCountry, PoliciesApi } from "@goauthentik/api";
 
@@ -23,10 +23,12 @@ class CountryCache {
             return this.countries;
         }
 
-        await new PoliciesApi(DEFAULT_CONFIG).policiesGeoipIso3166List().then((response) => {
-            this.countries = response;
-            this.lastReceivedAt = new Date().getTime();
-        });
+        await aki(PoliciesApi)
+            .policiesGeoipIso3166List()
+            .then((response) => {
+                this.countries = response;
+                this.lastReceivedAt = new Date().getTime();
+            });
 
         return this.countries;
     }

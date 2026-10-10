@@ -1,7 +1,6 @@
 import "#elements/EmptyState";
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
-
 import { BaseStage } from "#flow/stages/base";
 
 import { OAuthDeviceCodeFinishChallenge } from "@goauthentik/api";

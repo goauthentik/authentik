@@ -1,0 +1,35 @@
+[data-is="command-palette-modal"] {
+    display: block;
+}
+
+.ak-c-dialog:has([data-is="command-palette-modal"]) {
+    --ak-c-dialog--MarginBlockStart: 25dvh;
+    --ak-c-dialog--BackgroundColor: var(--pf-global--BackgroundColor--dark-transparent-200);
+    --ak-c-dialog--BorderWidth: 0.5px;
+    --ak-c-dialog--BorderColor: var(--pf-global--BorderColor--100);
+    --ak-c-dialog__backdrop--active--BackdropFilter: blur(1px);
+
+    --ak-c-command-palette--BackdropFilter: blur(4px);
+
+    --ak-c-command-palette--BackgroundColor: var(--pf-global--BackgroundColor--dark-100);
+    --ak-c-command-palette--Translucency: 25%;
+
+    --ak-c-dialog--BackgroundColor: color-mix(
+        var(--ak-c-command-palette--BackgroundColor),
+        transparent var(--ak-c-command-palette--Translucency)
+    );
+
+    @media (prefers-reduced-transparency: reduce) {
+        --ak-c-command-palette--Translucency: 0% !important;
+    }
+
+    border-radius: var(--pf-global--BorderRadius--sm);
+    backdrop-filter: var(--ak-c-command-palette--BackdropFilter);
+    transform: translate3d(0, 0, 0); /* Fixes rendering artifacts. */
+    margin-block-start: var(--ak-c-dialog--MarginBlockStart);
+}
+
+.ak-c-dialog:has([data-is="command-palette-modal"][theme="dark"]) {
+    --ak-c-command-palette--Translucency: 75%;
+    --ak-c-dialog--BorderColor: var(--pf-global--BorderColor--400);
+}

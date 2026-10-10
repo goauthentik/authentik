@@ -1,39 +1,36 @@
 import "#components/ak-number-input";
-import "#admin/applications/wizard/ak-wizard-title";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
-import "#components/ak-toggle-group";
+import "#elements/ToggleGroup";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/ak-search-select-ez";
-import "#elements/forms/SearchSelect/index";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
-import { groupBy } from "#common/utils";
-
-import { ISearchSelectConfig } from "#elements/forms/SearchSelect/ak-search-select-ez";
-import { type SearchSelectBase } from "#elements/forms/SearchSelect/SearchSelect";
-
-import { type NavigableButton, type WizardButton } from "#components/ak-wizard/types";
-
-import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
 import {
     createPassFailOptions,
     PolicyBindingCheckTarget,
     PolicyObjectKeys,
-} from "#admin/policies/utils";
+} from "#common/policies/utils";
 
-import { CoreApi, Group, PoliciesApi, Policy, PolicyBinding, User } from "@goauthentik/api";
+import type { SearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
+import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
-import { msg } from "@lit/localize";
+import { AKSearchSelect } from "#components/ak-search-select-field";
+import { type NavigableButton, type WizardButton } from "#components/ak-wizard/shared";
+
+import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
+import { groupSource, policySource, userSource } from "#admin/common/search-sources";
+
+import { Group, Policy, PolicyBinding, User } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 
-const withQuery = <T>(search: string | undefined, args: T) => (search ? { ...args, search } : args);
-
+/**
+ * @property wizard - The current state of the application wizard, shared across all steps.
+ */
 @customElement("ak-application-wizard-edit-binding-step")
-export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
+export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<PolicyBinding> {
     label = msg("Edit Binding");
 
     hide = true;
@@ -42,25 +39,23 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
         return this.renderRoot.querySelector("form#bindingform");
     }
 
-    @query(".policy-search-select")
-    searchSelect!: SearchSelectBase<Policy> | SearchSelectBase<Group> | SearchSelectBase<User>;
+    @query("ak-search-select")
+    searchSelect!: SearchSelect<Policy> | SearchSelect<Group> | SearchSelect<User>;
 
     @state()
     policyGroupUser: PolicyBindingCheckTarget = PolicyBindingCheckTarget.Policy;
 
-    instanceId = -1;
+    protected instanceId = -1;
 
-    instance?: PolicyBinding;
+    protected instance: PolicyBinding | null = null;
 
-    get buttons(): WizardButton[] {
-        return [
-            { kind: "next", label: msg("Save Binding"), destination: "bindings" },
-            { kind: "back", destination: "bindings" },
-            { kind: "cancel" },
-        ];
-    }
+    protected buttons: WizardButton[] = [
+        { kind: "cancel" },
+        { kind: "back", destination: "bindings" },
+        { kind: "next", label: msg("Save Binding"), destination: "bindings" },
+    ];
 
-    override handleButton(button: NavigableButton) {
+    public override handleButton(button: NavigableButton) {
         if (button.kind === "next") {
             if (!this.form?.checkValidity()) {
                 return;
@@ -68,8 +63,9 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
 
             const policyObject = this.searchSelect.selectedObject;
             const policyKey = PolicyObjectKeys[this.policyGroupUser];
+
             const newBinding: PolicyBinding = {
-                ...(this.formValues as unknown as PolicyBinding),
+                ...this.formValues,
                 [policyKey]: policyObject,
             };
 
@@ -82,98 +78,72 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
             }
 
             this.instanceId = -1;
-            this.handleUpdate({ bindings }, "bindings");
 
-            return;
+            return this.dispatchEvents({
+                update: { bindings },
+                destination: "bindings",
+            });
         }
 
-        super.handleButton(button);
+        return super.handleButton(button);
     }
 
-    // The search select configurations for the three different types of fetches that we care about,
-    // policy, user, and group, all using the SearchSelectEZ protocol.
-    searchSelectConfigs(
-        kind: PolicyBindingCheckTarget,
-    ): ISearchSelectConfig<Policy> | ISearchSelectConfig<Group> | ISearchSelectConfig<User> {
-        switch (kind) {
-            case PolicyBindingCheckTarget.Policy:
-                return {
-                    fetchObjects: async (query) => {
-                        const policies = await new PoliciesApi(DEFAULT_CONFIG).policiesAllList(
-                            withQuery(query, {
-                                ordering: "name",
-                            }),
-                        );
-
-                        return policies.results;
-                    },
-                    groupBy: (items) => groupBy(items, (policy) => policy.verboseNamePlural),
-                    renderElement: (policy): string => policy.name,
-                    value: (policy) => policy?.pk ?? "",
-                    selected: (policy) => policy.pk === this.instance?.policy,
-                } satisfies ISearchSelectConfig<Policy>;
-
-            case PolicyBindingCheckTarget.Group:
-                return {
-                    fetchObjects: async (query) => {
-                        const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
-                            withQuery(query, {
-                                ordering: "name",
-                                includeUsers: false,
-                            }),
-                        );
-
-                        return groups.results;
-                    },
-                    renderElement: (group) => group.name,
-                    value: (group) => group?.pk ?? "",
-                    selected: (group) => group.pk === this.instance?.group,
-                } satisfies ISearchSelectConfig<Group>;
-            case PolicyBindingCheckTarget.User:
-                return {
-                    fetchObjects: async (query) => {
-                        const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(
-                            withQuery(query, {
-                                ordering: "username",
-                            }),
-                        );
-
-                        return users.results;
-                    },
-                    renderElement: (user): string => user.username,
-                    renderDescription: (user) => html`${user.name}`,
-                    value: (user) => String(user?.pk ?? ""),
-                    selected: (user) => user.pk === this.instance?.user,
-                } satisfies ISearchSelectConfig<User>;
-
-            default:
-                throw new Error(`Unrecognized policy binding target ${kind}`);
-        }
-    }
-
-    renderSearch(title: string, policyKind: PolicyBindingCheckTarget) {
+    protected renderSearch(title: string, policyKind: PolicyBindingCheckTarget) {
         if (policyKind !== this.policyGroupUser) {
             return nothing;
         }
 
+        const { instance } = this;
+        const placeholder = msg(str`Select a ${title}...`);
+
+        const search = (() => {
+            switch (policyKind) {
+                case PolicyBindingCheckTarget.Policy:
+                    return AKSearchSelect({
+                        name: policyKind,
+                        source: policySource,
+                        value: instance?.policy,
+                        selectedObject: instance?.policyObj,
+                        label: title,
+                        placeholder,
+                    });
+                case PolicyBindingCheckTarget.Group:
+                    return AKSearchSelect({
+                        name: policyKind,
+                        source: groupSource,
+                        value: instance?.group,
+                        selectedObject: instance?.groupObj,
+                        label: title,
+                        placeholder,
+                    });
+                case PolicyBindingCheckTarget.User:
+                    return AKSearchSelect({
+                        name: policyKind,
+                        source: userSource,
+                        value: instance?.user?.toString(),
+                        selectedObject: instance?.userObj,
+                        label: title,
+                        placeholder,
+                    });
+            }
+        })();
+
         return html`<ak-form-element-horizontal label=${title} name=${policyKind}>
-            <ak-search-select-ez
-                .config=${this.searchSelectConfigs(policyKind)}
-                class="policy-search-select"
-                blankable
-            ></ak-search-select-ez>
+            ${search}
         </ak-form-element-horizontal>`;
     }
 
-    renderForm(instance?: PolicyBinding) {
-        return html`<ak-wizard-title>${msg("Create a Policy/User/Group Binding")}</ak-wizard-title>
+    protected renderForm(instance?: PolicyBinding | null) {
+        return html`<h3 class="pf-c-wizard__main-title">
+                ${msg("Create a Policy/User/Group Binding")}
+            </h3>
             <form id="bindingform" class="pf-c-form pf-m-horizontal" slot="form">
                 <div class="pf-c-card pf-m-selectable pf-m-selected">
                     <div class="pf-c-card__body">
                         <ak-toggle-group
                             value=${this.policyGroupUser}
-                            @ak-toggle=${(ev: CustomEvent<{ value: PolicyBindingCheckTarget }>) => {
-                                this.policyGroupUser = ev.detail.value;
+                            @ak-toggle=${(ev: ToggleGroupEvent<PolicyBindingCheckTarget>) => {
+                                this.policyGroupUser = ev.value;
                             }}
                         >
                             <option value=${PolicyBindingCheckTarget.Policy}>
@@ -197,7 +167,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
                 <ak-switch-input
                     name="negate"
                     ?checked=${instance?.negate ?? false}
-                    label=${msg("Negate result")}
+                    label=${msg("Negate Result")}
                     help=${msg("Negates the outcome of the binding. Messages are unaffected.")}
                 ></ak-switch-input>
                 <ak-number-input
@@ -214,22 +184,25 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
                 ></ak-number-input>
                 <ak-radio-input
                     name="failureResult"
-                    label=${msg("Failure result")}
+                    label=${msg("Failure Result")}
                     .options=${createPassFailOptions}
+                    required
                 ></ak-radio-input>
             </form>`;
     }
 
-    renderMain() {
+    protected renderMain() {
         if (!(this.wizard.bindings && this.wizard.errors)) {
             throw new Error("Application Step received uninitialized wizard context.");
         }
+
         const currentBinding = this.wizard.currentBinding ?? -1;
+
         if (this.instanceId !== currentBinding) {
             this.instanceId = currentBinding;
-            this.instance =
-                this.instanceId === -1 ? undefined : this.wizard.bindings[this.instanceId];
+            this.instance = this.instanceId === -1 ? null : this.wizard.bindings[this.instanceId];
         }
+
         return this.renderForm(this.instance);
     }
 }

@@ -76,7 +76,7 @@ class GitHubType(SourceType):
         chosen_email = info.get("email")
         if not chosen_email:
             # The GitHub Userprofile API only returns an email address if the profile
-            # has a public email address set (despite us asking for user:email, this behaviour
+            # has a public email address set (despite us asking for user:email, this behavior
             # doesn't change.). So we fetch all the user's email addresses
             emails = client.get_github_emails(token)
             for email in emails:

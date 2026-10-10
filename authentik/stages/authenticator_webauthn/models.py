@@ -1,5 +1,6 @@
 """WebAuthn stage"""
 
+from cryptography.x509 import Certificate, load_pem_x509_certificate
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields.array import ArrayField
 from django.db import models
@@ -12,7 +13,7 @@ from webauthn.helpers.structs import PublicKeyCredentialDescriptor
 
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
-from authentik.lib.models import InternallyManagedMixin, SerializerModel
+from authentik.lib.models import InternallyManagedMixin, SerializerModel, SimpleThroughModel
 from authentik.stages.authenticator.models import Device
 
 UNKNOWN_DEVICE_TYPE_AAGUID = "00000000-0000-0000-0000-000000000000"
@@ -107,7 +108,9 @@ class AuthenticatorWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
         blank=True,
     )
 
-    device_type_restrictions = models.ManyToManyField("WebAuthnDeviceType", blank=True)
+    device_type_restrictions = models.ManyToManyField(
+        "WebAuthnDeviceType", blank=True, through="AuthenticatorWebAuthnStageDeviceTypeRestriction"
+    )
 
     max_attempts = models.PositiveIntegerField(default=0)
 
@@ -159,6 +162,8 @@ class WebAuthnDevice(SerializerModel, Device):
     created_on = models.DateTimeField(auto_now_add=True)
     last_t = models.DateTimeField(default=now)
 
+    attestation_certificate_pem = models.TextField(null=True, default=None)
+    attestation_certificate_fingerprint = models.TextField(null=True, default=None)
     aaguid = models.TextField(default=UNKNOWN_DEVICE_TYPE_AAGUID)
     device_type = models.ForeignKey(
         "WebAuthnDeviceType", on_delete=models.SET_DEFAULT, null=True, default=None
@@ -168,6 +173,12 @@ class WebAuthnDevice(SerializerModel, Device):
     def descriptor(self) -> PublicKeyCredentialDescriptor:
         """Get a publickeydescriptor for this device"""
         return PublicKeyCredentialDescriptor(id=base64url_to_bytes(self.credential_id))
+
+    @property
+    def attestation_certificate(self) -> Certificate | None:
+        if not self.attestation_certificate_pem:
+            return None
+        return load_pem_x509_certificate(self.attestation_certificate_pem.encode())
 
     def set_sign_count(self, sign_count: int) -> None:
         """Set the sign_count and update the last_t datetime."""
@@ -211,3 +222,29 @@ class WebAuthnDeviceType(InternallyManagedMixin, SerializerModel):
 
     def __str__(self) -> str:
         return f"WebAuthn device type {self.description} ({self.aaguid})"
+
+
+class AuthenticatorWebAuthnStageDeviceTypeRestriction(SimpleThroughModel):
+    authenticator_webauthn_stage = models.ForeignKey(
+        AuthenticatorWebAuthnStage,
+        on_delete=models.CASCADE,
+        db_column="authenticatorwebauthnstage_id",
+    )
+    device_type_restriction = models.ForeignKey(
+        WebAuthnDeviceType,
+        on_delete=models.CASCADE,
+        db_column="webauthndevicetype_id",
+    )
+
+    class Meta:
+        db_table = "authentik_stages_authenticator_webauthn_authenticatorwebaute3a7"
+        unique_together = (("authenticator_webauthn_stage", "device_type_restriction"),)
+        verbose_name = _("Authenticator WebAuthn Stage Device Type Restriction")
+        verbose_name_plural = _("Authenticator WebAuthn Stage Device Type Restrictions")
+
+    def __str__(self):
+        return (
+            "AuthenticatorWebAuthnStageDeviceTypeRestriction for AuthenticatorWebAuthnStage "
+            f"{self.authenticator_webauthn_stage_id} "
+            f"and WebAuthnDeviceType {self.device_type_restriction_id}."
+        )

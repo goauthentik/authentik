@@ -1,9 +1,11 @@
 import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
 
 import { bound } from "#elements/decorators/bound";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { kebabCase } from "change-case";
 
+import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -11,28 +13,21 @@ import { ifDefined } from "lit/directives/if-defined.js";
 const slugify = (s: string) => kebabCase(s, { suffixCharacters: "-" });
 
 /**
+ * @class AkSlugInput A wrapper around `ak-form-element-horizontal` and a text input control that
+ *   listens for input on a peer text input control and automatically mirrors that control's value,
+ *   transforming the value into a slug and displaying it separately. If the user manually changes
+ *   the slug, mirroring and transformation stop. If, after that, both fields are cleared manually,
+ *   mirroring and transformation resume.
+ *
+ *   ## Limitations:
+ *
+ *   Both the source text field and the slug field must be rendered in the same render pass (i.e.,
+ *   part of the same singular call to a `render` function) so that the slug field can find its
+ *   source. For the same reason, both the source text field and the slug field must share the same
+ *   immediate parent DOM object. Since we expect the source text field and the slug to be part of
+ *   the same form and rendered not just in the same form but in the same form group, these are not
+ *   considered burdensome restrictions.
  * @element ak-slug-input
- * @class AkSlugInput
- *
- * A wrapper around `ak-form-element-horizontal` and a text input control that listens for input on
- * a peer text input control and automatically mirrors that control's value, transforming the value
- * into a slug and displaying it separately.
- *
- * If the user manually changes the slug, mirroring and transformation stop. If, after that, both
- * fields are cleared manually, mirroring and transformation resume.
- *
- * ## Limitations:
- *
- * Both the source text field and the slug field must be rendered in the same render pass (i.e.,
- * part of the same singular call to a `render` function) so that the slug field can find its
- * source.
- *
- * For the same reason, both the source text field and the slug field must share the same immediate
- * parent DOM object.
- *
- * Since we expect the source text field and the slug to be part of the same form and rendered not
- * just in the same form but in the same form group, these are not considered burdensome
- * restrictions.
  */
 @customElement("ak-slug-input")
 export class AkSlugInput extends HorizontalLightComponent<string> {
@@ -50,6 +45,9 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
     @query("input")
     private input!: HTMLInputElement;
 
+    @property({ type: String })
+    public placeholder: string | null = msg("e.g. my-slug");
+
     #origin?: HTMLInputElement | null;
 
     #touched: boolean = false;
@@ -62,6 +60,7 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
         // Reset 'touched' status if the slug & target have been reset
         if (this.#origin && this.#origin.value === "" && this.input.value === "") {
             this.#touched = false;
+
             return;
         }
 
@@ -95,6 +94,7 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
 
         const newSlug = slugify(ev.target.value);
         const oldSlug = this.input.value;
+
         const [shorter, longer] =
             newSlug.length < oldSlug.length ? [newSlug, oldSlug] : [oldSlug, newSlug];
 
@@ -108,6 +108,7 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
         // input. The name is already handled since it's both required and automatically
         // forwarded to our templated input, but the value must also be set.
         this.value = this.input.value = newSlug;
+
         this.dispatchEvent(
             new Event("input", {
                 bubbles: true,
@@ -120,6 +121,7 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
         if (this.#origin) {
             this.#origin.removeEventListener("input", this.slugify);
         }
+
         super.disconnectedCallback();
     }
 
@@ -128,9 +130,12 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
             id=${ifDefined(this.fieldID)}
             @input=${(ev: Event) => this.handleTouch(ev)}
             type="text"
+            spellcheck="false"
+            autocomplete="off"
             value=${ifDefined(this.value)}
-            class="pf-c-form-control"
+            class="pf-c-form-control pf-m-monospace"
             ?required=${this.required}
+            placeholder=${ifPresent(this.placeholder)}
         />`;
     }
 
@@ -140,9 +145,11 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
         }
 
         const rootNode = this.getRootNode();
+
         if (rootNode instanceof ShadowRoot || rootNode instanceof Document) {
             this.#origin = rootNode.querySelector(this.source);
         }
+
         if (this.#origin) {
             this.#origin.addEventListener("input", this.slugify);
         }

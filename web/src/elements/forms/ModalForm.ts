@@ -1,11 +1,11 @@
 import "#elements/LoadingOverlay";
 import "#elements/buttons/SpinnerButton/index";
-
 import { EVENT_REFRESH } from "#common/constants";
 
 import { ModalButton } from "#elements/buttons/ModalButton";
 import { ModalHideEvent } from "#elements/controllers/ModalOrchestrationController";
 import { Form } from "#elements/forms/Form";
+import { settleFormFields } from "#elements/forms/settle-form-fields";
 import { SlottedTemplateResult } from "#elements/types";
 import { findSlottedInstance } from "#elements/utils/slots";
 
@@ -52,8 +52,8 @@ export class ModalForm extends ModalButton {
 
     //#region Properties
 
-    @property({ type: Boolean })
-    public closeAfterSuccessfulSubmit = true;
+    @property({ type: Boolean, attribute: "keep-open-after-submit" })
+    public keepOpenAfterSubmit = false;
 
     @property({ type: Boolean })
     public showSubmitButton = true;
@@ -66,13 +66,24 @@ export class ModalForm extends ModalButton {
 
     //#endregion
 
-    // #region Private methods
+    // #region Public methods
 
-    #confirm = async (): Promise<void> => {
+    public submit = async (event?: Event): Promise<void> => {
         const form = findSlottedInstance(Form, this.formSlot);
 
         if (!form) {
             throw new Error(msg("No form found"));
+        }
+
+        // Ignore repeated clicks while a submission is settling or in flight.
+        if (this.locked) return;
+
+        this.loading = true;
+        this.locked = true;
+
+        // Validating before the fields settle would reject a value that is still loading.
+        if (form.form) {
+            await settleFormFields(form.form);
         }
 
         if (!form.reportValidity()) {
@@ -82,18 +93,20 @@ export class ModalForm extends ModalButton {
             return;
         }
 
-        this.loading = true;
-        this.locked = true;
+        const submitter =
+            event instanceof SubmitEvent
+                ? event.submitter
+                : ((event?.currentTarget || this) as HTMLElement);
 
         const formPromise = form.submit(
             new SubmitEvent("submit", {
-                submitter: this,
+                submitter,
             }),
         );
 
         return formPromise
             .then(() => {
-                if (this.closeAfterSuccessfulSubmit) {
+                if (!this.keepOpenAfterSubmit) {
                     this.open = false;
                     form?.reset();
 
@@ -118,7 +131,7 @@ export class ModalForm extends ModalButton {
             });
     };
 
-    #cancel = (): void => {
+    public requestClose = (): void => {
         const defaultInvoked = this.dispatchEvent(new ModalHideEvent(this));
 
         if (defaultInvoked) {
@@ -130,20 +143,33 @@ export class ModalForm extends ModalButton {
 
     //#region Listeners
 
-    #refreshListener = (e: Event): void => {
+    protected refreshListener = (e: Event): void => {
         // if the modal should stay open after successful submit, prevent EVENT_REFRESH from bubbling
         // to the parent components (which would cause table refreshes that destroy the modal)
-        if (!this.closeAfterSuccessfulSubmit) {
+        if (this.keepOpenAfterSubmit) {
             e.stopPropagation();
         }
     };
 
-    #scrollListener = () => {
+    protected scrollListener = () => {
         window.dispatchEvent(
             new CustomEvent("scroll", {
                 bubbles: true,
             }),
         );
+    };
+
+    protected slotChangeListener = () => {
+        const slottedForm = findSlottedInstance(Form, this.formSlot);
+
+        if (!slottedForm) {
+            return;
+        }
+
+        slottedForm.visible = true;
+
+        this.headingContent = slottedForm.headline || null;
+        this.submitButtonContent = slottedForm.submitLabel || null;
     };
 
     //#endregion
@@ -163,16 +189,9 @@ export class ModalForm extends ModalButton {
         this.submitSlot = this.ownerDocument.createElement("slot");
         this.submitSlot.name = "submit";
 
-        this.formSlot.addEventListener("slotchange", () => {
-            const slottedForm = this.hasSlotted("header")
-                ? null
-                : findSlottedInstance(Form, this.formSlot);
+        this.formSlot.addEventListener("slotchange", this.slotChangeListener);
 
-            this.headingContent = slottedForm?.headline || null;
-            this.submitButtonContent = slottedForm?.actionLabel || null;
-        });
-
-        this.addEventListener(EVENT_REFRESH, this.#refreshListener);
+        this.addEventListener(EVENT_REFRESH, this.refreshListener);
     }
 
     //#endregion
@@ -197,7 +216,7 @@ export class ModalForm extends ModalButton {
 
             return html`<button
                 type="button"
-                @click=${this.#confirm}
+                @click=${this.submit}
                 class="pf-c-button pf-m-primary"
                 aria-description=${msg("Submit action")}
             >
@@ -207,27 +226,27 @@ export class ModalForm extends ModalButton {
     }
 
     protected renderActions(): SlottedTemplateResult {
-        return html`<fieldset class="pf-c-modal-box__footer">
+        return html`<fieldset class="ak-c-fieldset pf-c-modal-box__footer">
             <legend class="sr-only">${msg("Form actions")}</legend>
-            ${this.renderSubmitButton()}
             <button
                 type="button"
                 aria-description=${msg("Cancel action")}
-                @click=${this.#cancel}
-                class="pf-c-button pf-m-secondary"
+                @click=${this.requestClose}
+                class="pf-c-button pf-m-plain"
             >
                 ${this.cancelText}
             </button>
+            ${this.renderSubmitButton()}
         </fieldset>`;
     }
 
     protected override renderModalInner(): TemplateResult {
-        return html`${this.loading
-                ? html`<ak-loading-overlay topmost></ak-loading-overlay>`
-                : nothing}
+        return html`${
+                this.loading ? html`<ak-loading-overlay topmost></ak-loading-overlay>` : nothing
+            }
             ${this.renderHeading()}
             <slot name="above-form"></slot>
-            <div class="pf-c-modal-box__body" @scroll=${this.#scrollListener}>${this.formSlot}</div>
+            <div class="pf-c-modal-box__body" @scroll=${this.scrollListener}>${this.formSlot}</div>
             ${this.renderActions()}`;
     }
 

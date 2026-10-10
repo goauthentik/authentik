@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"goauthentik.io/api/v3"
+	api "goauthentik.io/packages/client-go"
 )
 
 func (pi *ProviderInstance) GroupsForUser(user api.User) []string {
@@ -30,7 +30,6 @@ func (pi *ProviderInstance) MembersForGroup(group api.Group) []string {
 func (pi *ProviderInstance) MemberOfForGroup(group api.Group) []string {
 	groups := make([]string, len(group.ParentsObj))
 	for i, group := range group.ParentsObj {
-		fmt.Printf("in range")
 		groups[i] = pi.GetGroupDN(group.Name)
 	}
 	return groups

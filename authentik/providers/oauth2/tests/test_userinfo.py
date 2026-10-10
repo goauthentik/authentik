@@ -40,7 +40,7 @@ class TestUserinfo(OAuthTestCase):
         self.app.provider = self.provider
         self.app.save()
         self.user = create_test_admin_user()
-        self.token: AccessToken = AccessToken.objects.create(
+        self.token = AccessToken.objects.create(
             provider=self.provider,
             user=self.user,
             token=generate_id(),
@@ -68,6 +68,8 @@ class TestUserinfo(OAuthTestCase):
                 "nickname": self.user.name,
                 "groups": [group.name for group in self.user.groups.all()],
                 "sub": "bar",
+                # The stock profile mapping only exposes URL-based avatars; the
+                # test user falls back to a generated inline data-URI avatar.
             },
         )
         self.assertEqual(res.status_code, 200)
@@ -90,6 +92,8 @@ class TestUserinfo(OAuthTestCase):
                 "nickname": self.user.name,
                 "groups": [group.name for group in self.user.groups.all()],
                 "sub": "bar",
+                # The stock profile mapping only exposes URL-based avatars; the
+                # test user falls back to a generated inline data-URI avatar.
             },
         )
         self.assertEqual(res.status_code, 200)
@@ -102,3 +106,33 @@ class TestUserinfo(OAuthTestCase):
             events.first().context["message"],
             "Failed to evaluate property-mapping: 'test'",
         )
+
+    def test_userinfo_non_dict_scope(self):
+        """test user info with a scope returning a non-dict value"""
+        scope = ScopeMapping.objects.create(
+            name="test", scope_name="openid", expression="return ['foo']"
+        )
+        self.provider.property_mappings.add(scope)
+
+        res = self.client.get(
+            reverse("authentik_providers_oauth2:userinfo"),
+            HTTP_AUTHORIZATION=f"Bearer {self.token.token}",
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.CONFIGURATION_ERROR,
+                context__message="Failed to evaluate property-mapping: 'test'",
+            ).exists()
+        )
+
+        # The mapping test endpoint reports the same failure
+        self.client.force_login(self.user)
+        res = self.client.post(
+            reverse("authentik_api:propertymapping-test", kwargs={"pk": scope.pk}),
+            data={"user": self.user.pk},
+            content_type="application/json",
+        )
+        body = res.json()
+        self.assertFalse(body["successful"])
+        self.assertIn("must return one of dict", body["result"])

@@ -1,6 +1,5 @@
 import "#elements/EmptyState";
 import "chartjs-adapter-date-fns";
-
 import { EVENT_REFRESH } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { formatElapsedTime } from "#common/temporal";
@@ -41,8 +40,8 @@ Chart.register(LineController, BarController, DoughnutController);
 Chart.register(ArcElement, BarElement, PointElement, LineElement);
 Chart.register(TimeScale, TimeSeriesScale, LinearScale, Filler);
 
-export const FONT_COLOUR_DARK_MODE = "#fafafa";
-export const FONT_COLOUR_LIGHT_MODE = "#151515";
+export const FONT_COLOR_DARK_MODE = "#fafafa";
+export const FONT_COLOR_LIGHT_MODE = "#151515";
 
 export abstract class AKChart<T> extends AKElement {
     public role = "figure";
@@ -59,7 +58,7 @@ export abstract class AKChart<T> extends AKElement {
     @property()
     centerText?: string;
 
-    fontColour = FONT_COLOUR_LIGHT_MODE;
+    fontColor = FONT_COLOR_LIGHT_MODE;
 
     static styles: CSSResult[] = [
         css`
@@ -89,12 +88,14 @@ export abstract class AKChart<T> extends AKElement {
         super.connectedCallback();
         window.addEventListener("resize", this.resizeHandler);
         this.addEventListener(EVENT_REFRESH, this.refreshHandler);
+
         this.addEventListener(ThemeChangeEvent.eventName, ((ev: CustomEvent<UiThemeEnum>) => {
             if (ev.detail === UiThemeEnum.Light) {
-                this.fontColour = FONT_COLOUR_LIGHT_MODE;
+                this.fontColor = FONT_COLOR_LIGHT_MODE;
             } else {
-                this.fontColour = FONT_COLOUR_DARK_MODE;
+                this.fontColor = FONT_COLOR_DARK_MODE;
             }
+
             this.chart?.update();
         }) as EventListener);
     }
@@ -117,6 +118,7 @@ export abstract class AKChart<T> extends AKElement {
         if (!this.chart) {
             return;
         }
+
         this.chart.resize();
     }
 
@@ -127,6 +129,7 @@ export abstract class AKChart<T> extends AKElement {
 
                 if (!canvas) {
                     console.warn("Failed to get canvas element");
+
                     return;
                 }
 
@@ -134,6 +137,7 @@ export abstract class AKChart<T> extends AKElement {
 
                 if (!ctx) {
                     console.warn("failed to get 2d context");
+
                     return;
                 }
 
@@ -153,8 +157,9 @@ export abstract class AKChart<T> extends AKElement {
         return [];
     }
 
-    timeTickCallback(tickValue: string | number, index: number, ticks: Tick[]): string {
+    timeTickCallback(_tickValue: string | number, index: number, ticks: Tick[]): string {
         const valueStamp = ticks[index];
+
         return formatElapsedTime(new Date(valueStamp.value));
     }
 
@@ -198,20 +203,23 @@ export abstract class AKChart<T> extends AKElement {
             options: this.getOptions(),
             plugins: this.getPlugins(),
         };
+
         return new Chart(ctx, config as ChartConfiguration);
     }
 
     render(): TemplateResult {
         return html`
             <div class="container">
-                ${this.error
-                    ? html`
-                          <ak-empty-state icon="fa-times"
-                              ><span>${msg("Failed to fetch data.")}</span>
-                              <p slot="body">${pluckErrorDetail(this.error)}</p>
-                          </ak-empty-state>
-                      `
-                    : html`${this.chart ? nothing : html`<ak-empty-state loading></ak-empty-state>`}`}
+                ${
+                    this.error
+                        ? html`
+                              <ak-empty-state icon="fa-times"
+                                  ><span>${msg("Failed to fetch data.")}</span>
+                                  <p slot="body">${pluckErrorDetail(this.error)}</p>
+                              </ak-empty-state>
+                          `
+                        : html`${this.chart ? nothing : html`<ak-empty-state loading></ak-empty-state>`}`
+                }
                 ${this.centerText ? html` <span>${this.centerText}</span> ` : nothing}
                 <canvas
                     role="img"

@@ -1,31 +1,33 @@
 import "#elements/forms/Radio";
-import "#admin/common/ak-flow-search/ak-source-flow-search";
 import "#components/ak-file-search-input";
 import "#components/ak-slug-input";
+import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./PlexSourceFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PlexAPIClient, PlexResource, popupCenterScreen } from "#common/helpers/plex";
 import { ascii_letters, digits, randomString } from "#common/utils";
 
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
+import {
+    AKSourceAuthenticationFlowField,
+    AKSourceEnrollmentFlowField,
+} from "#admin/sources/components/flow-fields";
 import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
-    AdminFileListUsageEnum,
-    FlowsInstancesListDesignationEnum,
     GroupMatchingModeEnum,
     PlexSource,
     SourcesApi,
+    UsageEnum,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
 
@@ -37,11 +39,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-source-plex-form")
 export class PlexSourceForm extends BaseSourceForm<PlexSource> {
     async loadInstance(pk: string): Promise<PlexSource> {
-        const source = await new SourcesApi(DEFAULT_CONFIG).sourcesPlexRetrieve({
+        const source = await aki(SourcesApi).sourcesPlexRetrieve({
             slug: pk,
         });
+
         this.plexToken = source.plexToken;
         this.loadServers();
+
         return source;
     }
 
@@ -51,7 +55,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
     @property({ attribute: false })
     plexResources?: PlexResource[];
 
-    get defaultInstance(): PlexSource | undefined {
+    public override createDefaultInstance(): PlexSource {
         return {
             clientId: randomString(40, ascii_letters + digits),
         } as PlexSource;
@@ -59,14 +63,15 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
 
     async send(data: PlexSource): Promise<PlexSource> {
         data.plexToken = this.plexToken || "";
+
         if (this.instance?.pk) {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesPlexUpdate({
+            return aki(SourcesApi).sourcesPlexUpdate({
                 slug: this.instance.slug,
                 plexSourceRequest: data,
             });
         }
 
-        return new SourcesApi(DEFAULT_CONFIG).sourcesPlexCreate({
+        return aki(SourcesApi).sourcesPlexCreate({
             plexSourceRequest: data,
         });
     }
@@ -74,6 +79,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
     async doAuth(): Promise<void> {
         const authInfo = await PlexAPIClient.getPin(this.instance?.clientId || "");
         const authWindow = await popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
+
         PlexAPIClient.pinPoll(this.instance?.clientId || "", authInfo.pin.id).then((token) => {
             authWindow?.close();
             this.plexToken = token;
@@ -85,6 +91,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
         if (!this.plexToken) {
             return;
         }
+
         this.plexResources = await new PlexAPIClient(this.plexToken).getServers();
     }
 
@@ -100,6 +107,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
                 ${msg("Load servers")}
             </button>`;
         }
+
         return html` <button
                 class="pf-c-button pf-m-secondary"
                 type="button"
@@ -128,6 +136,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
                                 return server === r.clientIdentifier;
                             },
                         );
+
                         return html`<option value=${r.clientIdentifier} ?selected=${selected}>
                             ${r.name}
                         </option>`;
@@ -142,23 +151,21 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
     }
 
     protected override renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-
+        return html`<ak-text-input
+                label=${msg("Source Name")}
+                placeholder=${msg("Type a name for this source...")}
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+            ></ak-text-input>
             <ak-slug-input
                 name="slug"
+                placeholder=${msg("e.g. my-plex-source")}
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
                 required
                 input-hint="code"
             ></ak-slug-input>
-
             <ak-switch-input
                 name="enabled"
                 label=${msg("Enabled")}
@@ -180,36 +187,41 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
                 <select class="pf-c-form-control">
                     <option
                         value=${UserMatchingModeEnum.Identifier}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.Identifier}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.Identifier
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.EmailLink}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.EmailLink}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.EmailLink
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailLink)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.EmailDeny}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.EmailDeny}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.EmailDeny
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailDeny)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.UsernameLink}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.UsernameLink}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.UsernameLink
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameLink)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.UsernameDeny}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.UsernameDeny}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.UsernameDeny
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameDeny)}
                     </option>
@@ -223,22 +235,25 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
                 <select class="pf-c-form-control">
                     <option
                         value=${GroupMatchingModeEnum.Identifier}
-                        ?selected=${this.instance?.groupMatchingMode ===
-                        GroupMatchingModeEnum.Identifier}
+                        ?selected=${
+                            this.instance?.groupMatchingMode === GroupMatchingModeEnum.Identifier
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
                     </option>
                     <option
                         value=${GroupMatchingModeEnum.NameLink}
-                        ?selected=${this.instance?.groupMatchingMode ===
-                        GroupMatchingModeEnum.NameLink}
+                        ?selected=${
+                            this.instance?.groupMatchingMode === GroupMatchingModeEnum.NameLink
+                        }
                     >
                         ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameLink)}
                     </option>
                     <option
                         value=${GroupMatchingModeEnum.NameDeny}
-                        ?selected=${this.instance?.groupMatchingMode ===
-                        GroupMatchingModeEnum.NameDeny}
+                        ?selected=${
+                            this.instance?.groupMatchingMode === GroupMatchingModeEnum.NameDeny
+                        }
                     >
                         ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameDeny)}
                     </option>
@@ -256,7 +271,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
                 name="icon"
                 label=${msg("Icon")}
                 .value=${this.instance?.icon}
-                .usage=${AdminFileListUsageEnum.Media}
+                .usage=${UsageEnum.Media}
                 blankable
                 help=${iconHelperText}
             ></ak-file-search-input>
@@ -275,34 +290,8 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
             </ak-form-group>
             <ak-form-group label="${msg("Flow settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Authentication flow")}
-                        name="authenticationFlow"
-                    >
-                        <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                            .currentFlow=${this.instance?.authenticationFlow}
-                            .instanceId=${this.instance?.pk}
-                            fallback="default-source-authentication"
-                        ></ak-source-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow to use when authenticating existing users.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Enrollment flow")}
-                        name="enrollmentFlow"
-                    >
-                        <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Enrollment}
-                            .currentFlow=${this.instance?.enrollmentFlow}
-                            .instanceId=${this.instance?.pk}
-                            fallback="default-source-enrollment"
-                        ></ak-source-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow to use when enrolling new users.")}
-                        </p>
-                    </ak-form-element-horizontal>
+                    ${AKSourceAuthenticationFlowField({ value: this.instance?.authenticationFlow, sourcePk: this.instance?.pk })}
+                    ${AKSourceEnrollmentFlowField({ value: this.instance?.enrollmentFlow, sourcePk: this.instance?.pk })}
                 </div>
             </ak-form-group>
             <ak-form-group open label="${msg("Plex Attribute mapping")}">

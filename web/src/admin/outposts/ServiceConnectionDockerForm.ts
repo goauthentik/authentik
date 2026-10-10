@@ -1,11 +1,11 @@
-import "#admin/common/ak-crypto-certificate-search";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#components/ak-switch-input";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+
+import { AKCertificateSearch } from "#admin/common/AKCertificateSearch";
 
 import { DockerServiceConnection, OutpostsApi } from "@goauthentik/api";
 
@@ -16,28 +16,26 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-service-connection-docker-form")
 export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnection, string> {
-    loadInstance(pk: string): Promise<DockerServiceConnection> {
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerRetrieve({
-            uuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (uuid: string) =>
+            aki(OutpostsApi).outpostsServiceConnectionsDockerRetrieve({
+                uuid,
+            }),
+        create: (dockerServiceConnectionRequest: DockerServiceConnection) =>
+            aki(OutpostsApi).outpostsServiceConnectionsDockerCreate({
+                dockerServiceConnectionRequest,
+            }),
+        update: (uuid: string, dockerServiceConnectionRequest: DockerServiceConnection) =>
+            aki(OutpostsApi).outpostsServiceConnectionsDockerUpdate({
+                uuid,
+                dockerServiceConnectionRequest,
+            }),
+    };
 
     getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated integration.")
             : msg("Successfully created integration.");
-    }
-
-    async send(data: DockerServiceConnection): Promise<DockerServiceConnection> {
-        if (this.instance) {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerUpdate({
-                uuid: this.instance.pk || "",
-                dockerServiceConnectionRequest: data,
-            });
-        }
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerCreate({
-            dockerServiceConnectionRequest: data,
-        });
     }
 
     protected override renderForm(): TemplateResult {
@@ -80,9 +78,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 label=${msg("TLS Verification Certificate")}
                 name="tlsVerification"
             >
-                <ak-crypto-certificate-search
-                    .certificate=${this.instance?.tlsVerification}
-                ></ak-crypto-certificate-search>
+                ${AKCertificateSearch({ name: "tlsVerification", value: this.instance?.tlsVerification, noKey: true })}
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         "CA which the endpoint's Certificate is verified against. Can be left empty for no validation.",
@@ -93,9 +89,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 label=${msg("TLS Authentication Certificate/SSH Keypair")}
                 name="tlsAuthentication"
             >
-                <ak-crypto-certificate-search
-                    .certificate=${this.instance?.tlsAuthentication}
-                ></ak-crypto-certificate-search>
+                ${AKCertificateSearch({ name: "tlsAuthentication", value: this.instance?.tlsAuthentication })}
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         "Certificate/Key used for authentication. Can be left empty for no authentication.",

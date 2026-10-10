@@ -13,6 +13,7 @@ from django.core.exceptions import SuspiciousOperation
 from django.db.models import Model
 from django.db.models.signals import m2m_changed, post_save, pre_delete
 from django.http import HttpRequest, HttpResponse
+from django_postgres_cache.models import CacheEntry
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.blueprints.v1.importer import excluded_models
@@ -20,7 +21,7 @@ from authentik.core.models import Group, User
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.utils import model_to_dict
 from authentik.lib.models import InternallyManagedMixin
-from authentik.lib.sentry import should_ignore_exception
+from authentik.lib.tracing.exceptions import should_ignore_exception
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.stages.authenticator_static.models import StaticToken
 
@@ -31,6 +32,7 @@ IGNORED_MODELS = tuple(
         Notification,
         StaticToken,
         Session,
+        CacheEntry,
     )
 )
 
@@ -151,14 +153,20 @@ class AuditMiddleware:
         m2m_changed.disconnect(dispatch_uid=request.request_id)
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
-        _CTX_REQUEST.set(request)
-        self.connect(request)
+        token = _CTX_REQUEST.set(request)
+        try:
+            self.connect(request)
+            return self.get_response(request)
+        finally:
+            try:
+                self.disconnect(request)
+            finally:
+                _CTX_REQUEST.reset(token)
 
-        response = self.get_response(request)
-
-        self.disconnect(request)
-        _CTX_REQUEST.set(None)
-        return response
+    def is_current_request(self, request: HttpRequest) -> bool:
+        """Signals are shared across requests; only handle the current request's receiver."""
+        current_request = _CTX_REQUEST.get()
+        return current_request is not None and request.request_id == current_request.request_id
 
     def process_exception(self, request: HttpRequest, exception: Exception):
         """Disconnect handlers in case of exception"""
@@ -198,8 +206,7 @@ class AuditMiddleware:
             return
         if _CTX_IGNORE.get():
             return
-        current_request = _CTX_REQUEST.get()
-        if current_request is None or request.request_id != current_request.request_id:
+        if not self.is_current_request(request):
             return
         user = self.get_user(request)
 
@@ -214,8 +221,7 @@ class AuditMiddleware:
             return
         if _CTX_IGNORE.get():
             return
-        current_request = _CTX_REQUEST.get()
-        if current_request is None or request.request_id != current_request.request_id:
+        if not self.is_current_request(request):
             return
         user = self.get_user(request)
 
@@ -242,8 +248,7 @@ class AuditMiddleware:
             return
         if _CTX_IGNORE.get():
             return
-        current_request = _CTX_REQUEST.get()
-        if current_request is None or request.request_id != current_request.request_id:
+        if not self.is_current_request(request):
             return
         user = self.get_user(request)
 
@@ -252,5 +257,5 @@ class AuditMiddleware:
             request,
             user=user,
             model=model_to_dict(instance),
-            **thread_kwargs,
+            **(thread_kwargs or {}),
         ).run()

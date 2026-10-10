@@ -1,22 +1,22 @@
 import "#components/ak-switch-input";
+import "#components/ak-text-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-import "#elements/forms/SearchSelect/index";
-
 import { eventTransportsProvider, eventTransportsSelector } from "./RuleFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { severityToLabel } from "#common/labels";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { RadioOption } from "#elements/forms/Radio";
 
+import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { groupSource } from "#admin/common/search-sources";
+
 import {
-    CoreApi,
-    CoreGroupsListRequest,
     EventsApi,
-    Group,
     NotificationRule,
     PaginatedNotificationTransportList,
     SeverityEnum,
@@ -29,16 +29,29 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-event-rule-form")
 export class RuleForm extends ModelForm<NotificationRule, string> {
+    public static verboseName = msg("Notification Rule");
+    public static verboseNamePlural = msg("Notification Rules");
+
+    protected endpoints = {
+        load: (pbmUuid: string) =>
+            aki(EventsApi).eventsRulesRetrieve({
+                pbmUuid,
+            }),
+        create: (notificationRuleRequest: NotificationRule) =>
+            aki(EventsApi).eventsRulesCreate({
+                notificationRuleRequest,
+            }),
+        update: (pbmUuid: string, notificationRuleRequest: NotificationRule) =>
+            aki(EventsApi).eventsRulesUpdate({
+                pbmUuid,
+                notificationRuleRequest,
+            }),
+    };
+
     eventTransports?: PaginatedNotificationTransportList;
 
-    loadInstance(pk: string): Promise<NotificationRule> {
-        return new EventsApi(DEFAULT_CONFIG).eventsRulesRetrieve({
-            pbmUuid: pk,
-        });
-    }
-
     async load(): Promise<void> {
-        this.eventTransports = await new EventsApi(DEFAULT_CONFIG).eventsTransportsList({
+        this.eventTransports = await aki(EventsApi).eventsTransportsList({
             ordering: "name",
         });
     }
@@ -49,57 +62,30 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
             : msg("Successfully created rule.");
     }
 
-    async send(data: NotificationRule): Promise<NotificationRule> {
-        if (this.instance) {
-            return new EventsApi(DEFAULT_CONFIG).eventsRulesUpdate({
-                pbmUuid: this.instance.pk || "",
-                notificationRuleRequest: data,
-            });
-        }
-        return new EventsApi(DEFAULT_CONFIG).eventsRulesCreate({
-            notificationRuleRequest: data,
-        });
-    }
-
     protected override renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+        return html` <ak-text-input
+                required
+                autocomplete="off"
+                name="name"
+                label=${msg("Rule Name")}
+                placeholder=${msg("Type a name for this rule...")}
+                value="${ifDefined(this.instance?.name)}"
+            ></ak-text-input>
             <ak-form-element-horizontal label=${msg("Group")} name="destinationGroup">
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Group[]> => {
-                        const args: CoreGroupsListRequest = {
-                            ordering: "name",
-                            includeUsers: false,
-                        };
-
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-
-                        const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(args);
-
-                        return groups.results;
-                    }}
-                    .renderElement=${(group: Group) => group.name}
-                    .value=${(group: Group | null) => group?.pk}
-                    .selected=${(group: Group): boolean => {
-                        return group.pk === this.instance?.destinationGroup;
-                    }}
-                    blankable
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "destinationGroup",
+                    source: groupSource,
+                    placeholder: msg("Select a group..."),
+                    value: this.instance?.destinationGroup,
+                    selectedObject: this.instance?.destinationGroupObj,
+                    blankable: true,
+                })}
                 <p class="pf-c-form__helper-text">
                     ${msg("Select the group of users which the alerts are sent to. ")}
                 </p>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "If no group is selected and 'Send notification to event user' is disabled the rule is disabled. ",
+                        "If no group is selected and 'Send notification to event user' is disabled, the rule is disabled.",
                     )}
                 </p>
             </ak-form-element-horizontal>
@@ -108,7 +94,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 label=${msg("Send notification to event user")}
                 ?checked=${this.instance?.destinationEventUser ?? false}
                 help=${msg(
-                    "When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport. If no group is selected and 'Send notification to event user' is disabled the rule is disabled. ",
+                    "When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.",
                 )}
             >
             </ak-switch-input>
@@ -127,21 +113,23 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Severity")} required name="severity">
                 <ak-radio
-                    .options=${[
-                        {
-                            label: severityToLabel(SeverityEnum.Alert),
-                            value: SeverityEnum.Alert,
-                            default: true,
-                        },
-                        {
-                            label: severityToLabel(SeverityEnum.Warning),
-                            value: SeverityEnum.Warning,
-                        },
-                        {
-                            label: severityToLabel(SeverityEnum.Notice),
-                            value: SeverityEnum.Notice,
-                        },
-                    ] satisfies RadioOption<SeverityEnum>[]}
+                    .options=${
+                        [
+                            {
+                                label: severityToLabel(SeverityEnum.Alert),
+                                value: SeverityEnum.Alert,
+                                default: true,
+                            },
+                            {
+                                label: severityToLabel(SeverityEnum.Warning),
+                                value: SeverityEnum.Warning,
+                            },
+                            {
+                                label: severityToLabel(SeverityEnum.Notice),
+                                value: SeverityEnum.Notice,
+                            },
+                        ] satisfies RadioOption<SeverityEnum>[]
+                    }
                     .value=${this.instance?.severity}
                 >
                 </ak-radio>

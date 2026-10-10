@@ -116,7 +116,7 @@ class PlexSource(ScheduledModel, Source):
                     "slug": self.slug,
                 }
             ),
-            icon_url=self.icon_url,
+            icon_url=self.get_icon_url(request, use_cache=False) or self.icon_url,
             name=self.name,
             promoted=self.promoted,
         )
@@ -138,6 +138,8 @@ class PlexSource(ScheduledModel, Source):
 
 class PlexSourcePropertyMapping(PropertyMapping):
     """Map Plex properties to User of Group object attributes"""
+
+    expression_allowed_types = [dict]
 
     @property
     def component(self) -> str:

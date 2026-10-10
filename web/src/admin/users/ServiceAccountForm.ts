@@ -3,12 +3,12 @@ import "#elements/forms/HorizontalFormElement";
 import "#components/ak-text-input";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
 
 import { Form } from "#elements/forms/Form";
 import { ModalForm } from "#elements/forms/ModalForm";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { AKLabel } from "#components/ak-label";
 
@@ -26,10 +26,16 @@ import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-const EXPIRATION_DURATION = 1000 * 60 ** 2 * 24 * 360; // 360 days
+const EXPIRATION_DURATION = 1000 * 60 ** 2 * 24 * 360;
+
+// 360 days
 
 @customElement("ak-user-service-account-form")
 export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
+    public static override verboseName = msg("Service Account");
+    public static override verboseNamePlural = msg("Service Accounts");
+    public override cancelButtonLabel = msg("Close");
+
     @state()
     protected expiresAt: Date | null = new Date(Date.now() + EXPIRATION_DURATION);
 
@@ -50,31 +56,39 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         if (this.targetGroup) {
             return msg(str`Successfully created user and added to group ${this.targetGroup.name}`);
         }
+
         return msg("Successfully created user.");
     }
 
     async send(data: UserServiceAccountRequest): Promise<UserServiceAccountResponse> {
-        const result = await new CoreApi(DEFAULT_CONFIG).coreUsersServiceAccountCreate({
+        const result = await aki(CoreApi).coreUsersServiceAccountCreate({
             userServiceAccountRequest: data,
         });
+
         this.result = result;
-        (this.parentElement as ModalForm).showSubmitButton = false;
+
+        if (this.parentElement instanceof ModalForm) {
+            this.parentElement.showSubmitButton = false;
+        }
+
         if (this.targetGroup) {
-            await new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
+            await aki(CoreApi).coreGroupsAddUserCreate({
                 groupUuid: this.targetGroup.pk,
                 userAccountRequest: {
                     pk: this.result.userPk,
                 },
             });
         }
+
         if (this.targetRole) {
-            await new RbacApi(DEFAULT_CONFIG).rbacRolesAddUserCreate({
+            await aki(RbacApi).rbacRolesAddUserCreate({
                 uuid: this.targetRole.pk,
                 userAccountSerializerForRoleRequest: {
                     pk: this.result.userPk,
                 },
             });
         }
+
         return result;
     }
 
@@ -83,7 +97,10 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         this.result = null;
 
         this.expiresAt = new Date(Date.now() + EXPIRATION_DURATION);
-        (this.parentElement as ModalForm).showSubmitButton = true;
+
+        if (this.parentElement instanceof ModalForm) {
+            this.parentElement.showSubmitButton = true;
+        }
     }
 
     //#region Event Listeners
@@ -104,7 +121,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         return html`<ak-text-input
                 name="name"
                 label=${msg("Username")}
-                placeholder=${msg("Type a username for the user...")}
+                placeholder=${msg("Type a username for the service account...")}
                 value=""
                 input-hint="code"
                 required
@@ -153,12 +170,8 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             </ak-form-element-horizontal>`;
     }
 
-    renderResponseForm(): TemplateResult {
-        return html`<p>
-                ${msg(
-                    "Use the username and password below to authenticate. The password can be retrieved later on the Tokens page.",
-                )}
-            </p>
+    protected renderResponseForm(): SlottedTemplateResult {
+        return html`<p>${msg("Use the username and password below to authenticate.")}</p>
             <form class="pf-c-form pf-m-horizontal">
                 <ak-text-input
                     name="name"
@@ -175,17 +188,18 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                     input-hint="code"
                     readonly
                     .help=${msg(
-                        "Valid for 360 days, after which the password will automatically rotate. You can copy the password from the Token List.",
+                        "You can retrieve the password from the user's Credentials/Tokens tab or from Directory > Tokens and App Passwords.",
                     )}
                 >
                 </ak-hidden-text-input>
             </form>`;
     }
 
-    renderFormWrapper(): TemplateResult {
+    protected override renderFormWrapper(): SlottedTemplateResult {
         if (this.result) {
             return this.renderResponseForm();
         }
+
         return super.renderFormWrapper();
     }
 

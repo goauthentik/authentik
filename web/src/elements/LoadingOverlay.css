@@ -2,12 +2,12 @@
 ak-loading-overlay.style-scope {
     position: absolute;
     inset: 0;
-    z-index: 1;
+    z-index: var(--ak-c-loading-overlay--ZIndex, var(--pf-global--ZIndex--lg));
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: var(
-        --ak-loading-overlay--BackgroundColor,
+        --ak-c-loading-overlay--BackgroundColor,
         var(--pf-global--BackgroundColor--dark-transparent-200)
     );
 }

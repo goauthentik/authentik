@@ -1,32 +1,58 @@
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:25.8.1-trixie@sha256:394048fb359d02efc485852ab638cac322a35af228c2cef83d23fc7dd01f4a36 AS docs-builder
+# Tag must track the root package.json `packageManager` version. ${BUILDPLATFORM}
+# keeps the binary's arch aligned with the builder stage on cross-arch builds.
+FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:12.9.1@sha256:77123fd40a39db0eb8be6bddfcf0cea15e000122b9221ccce2e4415be29050f2 AS pnpm
+
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:26.10.0-trixie@sha256:a723b54c35a76e947095a20a67d39585bb09c862e6b1adeb8a9f518f95e34fb0 AS docs-builder
 
 ENV NODE_ENV=production
 
 WORKDIR /work
 
-# TODO: Use setup-corepack.mjs
-RUN --mount=type=bind,target=/work/package.json,src=./package.json \
-    --mount=type=bind,target=/work/package-lock.json,src=./package-lock.json \
-    npm install --force -g corepack@latest && \
-    corepack install -g npm@11.11.0+sha512.f36811c4aae1fde639527368ae44c571d050006a608d67a191f195a801a52637a312d259186254aa3a3799b05335b7390539cf28656d18f0591a1125ba35f973 && \
-    corepack enable
-
-WORKDIR /work/website
+COPY --from=pnpm /opt/pnpm /opt/pnpm
+ENV PATH="/opt/pnpm:${PATH}"
 
 RUN --mount=type=bind,target=/work/package.json,src=./package.json \
-    --mount=type=bind,target=/work/package-lock.json,src=./package-lock.json \
-    --mount=type=bind,target=/work/packages/tsconfig/,src=./packages/tsconfig/ \
-    --mount=type=bind,target=/work/packages/eslint-config/,src=./packages/eslint-config/ \
-    --mount=type=bind,target=/work/packages/prettier-config/,src=./packages/prettier-config/ \
+    --mount=type=bind,target=/work/scripts/node/,src=./scripts/node/ \
+    --mount=type=bind,target=/work/packages/logger-js/,src=./packages/logger-js/ \
     --mount=type=bind,target=/work/website/package.json,src=./website/package.json \
-    --mount=type=bind,target=/work/website/package-lock.json,src=./website/package-lock.json \
+    --mount=type=bind,target=/work/website/pnpm-lock.yaml,src=./website/pnpm-lock.yaml \
+    node ./scripts/node/lint-runtime.ts ./website
+
+# Hoisted root install so `@goauthentik/docusaurus-config` resolves its own deps
+# (e.g. `deepmerge-ts`) during the docs build. Its source, `@goauthentik/fonts`
+# and `@goauthentik/tsconfig` are copied rather than bind-mounted, so pnpm can
+# write the per-package node_modules it places workspace links in.
+COPY ./packages/tsconfig /work/packages/tsconfig/
+COPY ./packages/docusaurus-config /work/packages/docusaurus-config/
+COPY ./packages/fonts /work/packages/fonts/
+
+RUN --mount=type=bind,target=/work/.npmrc,src=./.npmrc \
+    --mount=type=bind,target=/work/package.json,src=./package.json \
+    --mount=type=bind,target=/work/pnpm-lock.yaml,src=./pnpm-lock.yaml \
+    --mount=type=bind,target=/work/pnpm-workspace.yaml,src=./pnpm-workspace.yaml \
+    --mount=type=bind,target=/work/packages/esbuild-plugin-live-reload/package.json,src=./packages/esbuild-plugin-live-reload/package.json \
+    --mount=type=bind,target=/work/packages/oxlint-config/package.json,src=./packages/oxlint-config/package.json \
+    --mount=type=bind,target=/work/packages/logger-js/package.json,src=./packages/logger-js/package.json \
+    --mount=type=bind,target=/work/packages/oxfmt-config/package.json,src=./packages/oxfmt-config/package.json \
+    --mount=type=bind,target=/work/packages/tsconfig/package.json,src=./packages/tsconfig/package.json \
+    --mount=type=bind,target=/work/lifecycle/aws/package.json,src=./lifecycle/aws/package.json \
+    --mount=type=cache,id=pnpm-root,sharing=shared,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile --config.node-linker=hoisted \
+    --filter "@goauthentik/docusaurus-config"
+
+RUN --mount=type=bind,target=/work/.npmrc,src=./.npmrc \
+    --mount=type=bind,target=/work/website/package.json,src=./website/package.json \
+    --mount=type=bind,target=/work/website/pnpm-lock.yaml,src=./website/pnpm-lock.yaml \
+    --mount=type=bind,target=/work/website/pnpm-workspace.yaml,src=./website/pnpm-workspace.yaml \
     --mount=type=bind,target=/work/website/vendored/detect-package-manager,src=./website/vendored/detect-package-manager \
     --mount=type=bind,target=/work/website/docusaurus-theme/package.json,src=./website/docusaurus-theme/package.json \
     --mount=type=bind,target=/work/website/api/package.json,src=./website/api/package.json \
     --mount=type=bind,target=/work/website/integrations/package.json,src=./website/integrations/package.json \
     --mount=type=bind,target=/work/website/docs/package.json,src=./website/docs/package.json \
-    --mount=type=cache,id=npm-website,sharing=shared,target=/root/.npm \
-    corepack npm ci --workspaces --include-workspace-root
+    --mount=type=cache,id=pnpm-website,sharing=shared,target=/root/.local/share/pnpm/store \
+    pnpm --dir website install --frozen-lockfile
+
+WORKDIR /work/website
 
 COPY ./website /work/website/
 COPY ./blueprints /work/blueprints/
@@ -34,8 +60,17 @@ COPY ./schema.yml /work/
 COPY ./lifecycle/container/compose.yml /work/lifecycle/container/
 COPY ./SECURITY.md /work/
 
-RUN corepack npm run build
+RUN pnpm run build
 
-FROM docker.io/library/nginx:1.29-trixie@sha256:dec7a90bd0973b076832dc56933fe876bc014929e14b4ec49923951405370112
+FROM docker.io/library/nginx:1.31.6-trixie@sha256:908dc23e643a1447dbfb2e189ed268bfde6a51a5bf9a34d3dd3440a24f58ccf7
+LABEL org.opencontainers.image.authors="Authentik Security Inc." \
+    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
+    org.opencontainers.image.description="authentik product documentation" \
+    org.opencontainers.image.documentation="https://docs.goauthentik.io" \
+    org.opencontainers.image.licenses="https://github.com/goauthentik/authentik/blob/main/LICENSE" \
+    org.opencontainers.image.title="authentik docs image" \
+    org.opencontainers.image.url="https://goauthentik.io" \
+    org.opencontainers.image.vendor="Authentik Security Inc."
+
 
 COPY --from=docs-builder /work/website/docs/build /usr/share/nginx/html

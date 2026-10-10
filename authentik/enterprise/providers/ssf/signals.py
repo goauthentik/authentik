@@ -1,8 +1,9 @@
 from hashlib import sha256
 
 from django.db.models import Model
-from django.db.models.signals import post_delete, post_save, pre_delete
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
+from django.http import HttpRequest
 
 from authentik.core.models import (
     USER_PATH_SYSTEM_PREFIX,
@@ -12,7 +13,11 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
-from authentik.core.signals import password_changed
+from authentik.core.signals import (
+    admin_authenticated_session_deleted,
+    password_changed,
+    password_hash_changed,
+)
 from authentik.enterprise.providers.ssf.models import (
     EventTypes,
     SSFProvider,
@@ -59,8 +64,10 @@ def ssf_providers_post_save(sender: type[Model], instance: SSFProvider, created:
             instance.save()
 
 
-@receiver(pre_delete, sender=AuthenticatedSession)
-def ssf_user_session_delete_session_revoked(sender, instance: AuthenticatedSession, **_):
+@receiver(admin_authenticated_session_deleted)
+def ssf_user_session_delete_session_revoked(
+    sender, instance: AuthenticatedSession, request: HttpRequest, **_
+):
     """Session revoked trigger (users' session has been deleted)
 
     As this signal is also triggered with a regular logout, we can't be sure
@@ -70,6 +77,7 @@ def ssf_user_session_delete_session_revoked(sender, instance: AuthenticatedSessi
         {
             "initiating_entity": "user",
         },
+        request=request,
         sub_id={
             "format": "complex",
             "session": {
@@ -84,14 +92,13 @@ def ssf_user_session_delete_session_revoked(sender, instance: AuthenticatedSessi
     )
 
 
-@receiver(password_changed)
-def ssf_password_changed_cred_change(sender, user: User, password: str | None, **_):
+def _send_password_credential_change(user: User, change_type: str):
     """Credential change trigger (password changed)"""
     send_ssf_events(
         EventTypes.CAEP_CREDENTIAL_CHANGE,
         {
             "credential_type": "password",
-            "change_type": "revoke" if password is None else "update",
+            "change_type": change_type,
         },
         sub_id={
             "format": "complex",
@@ -101,6 +108,16 @@ def ssf_password_changed_cred_change(sender, user: User, password: str | None, *
             },
         },
     )
+
+
+@receiver(password_hash_changed)
+@receiver(password_changed)
+def ssf_password_changed_cred_change(signal, sender, user: User, password: str | None = None, **_):
+    """Credential change trigger (password changed)"""
+    if signal is password_hash_changed:
+        _send_password_credential_change(user, "update")
+        return
+    _send_password_credential_change(user, "revoke" if password is None else "update")
 
 
 device_type_map = {

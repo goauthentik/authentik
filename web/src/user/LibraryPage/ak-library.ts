@@ -1,11 +1,11 @@
 import "#elements/EmptyState";
 import "./ak-library-impl.js";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { APIResult } from "#common/api/responses";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
+import { setPageDetails } from "#elements/router/meta";
 
 import { Application, CoreApi } from "@goauthentik/api";
 
@@ -20,12 +20,12 @@ import { customElement, state } from "lit/decorators.js";
  * apps: a list of the applications available to the user.
  *
  * Aggregates two functions:
- *   - Display the list of applications available to the user
- *   - Filter that list using the search bar
  *
+ * - Display the list of applications available to the user
+ * - Filter that list using the search bar
  */
 
-const coreApi = () => new CoreApi(DEFAULT_CONFIG);
+const coreApi = () => aki(CoreApi);
 
 @customElement("ak-library")
 export class LibraryPage extends AKElement {
@@ -48,12 +48,15 @@ export class LibraryPage extends AKElement {
     public override connectedCallback(): void {
         super.connectedCallback();
 
+        setPageDetails({ header: msg("Applications") });
+
         this.fetchApplications()
             .then((apps) => {
                 this.apps = apps;
             })
             .catch(async (error: unknown) => {
                 const parsedError = await parseAPIResponseError(error);
+
                 this.apps = {
                     loading: false,
                     error: parsedError,
@@ -69,8 +72,12 @@ export class LibraryPage extends AKElement {
             onlyWithLaunchUrl: true,
         });
 
-        const applicationListFetch = await coreApi().coreApplicationsAccessibleList(applicationListParams(1));
+        const applicationListFetch = await coreApi().coreApplicationsAccessibleList(
+            applicationListParams(1),
+        );
+
         const pageCount = applicationListFetch.pagination.totalPages;
+
         if (pageCount === 1) {
             return applicationListFetch.results;
         }
@@ -87,13 +94,14 @@ export class LibraryPage extends AKElement {
                     const reason = JSON.stringify(result.reason, null, 2);
                     throw new Error(`Could not retrieve list of applications. Reason: ${reason}`);
                 }
+
                 return [...acc, ...result.value.results];
             },
             [...applicationListFetch.results],
         );
     }
 
-    public pageTitle = msg("My Applications");
+    public pageTitle = msg("Application Dashboard");
 
     render() {
         if (this.apps.loading) {

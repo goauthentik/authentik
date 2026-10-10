@@ -194,9 +194,6 @@ class TOTPDevice(SerializerModel, ThrottlingMixin, Device):
 
         return verified
 
-    def get_throttle_factor(self):
-        return getattr(settings, "OTP_TOTP_THROTTLE_FACTOR", 1)
-
     @property
     def config_url(self):
         """

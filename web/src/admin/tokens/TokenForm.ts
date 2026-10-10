@@ -1,27 +1,39 @@
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
 import "#components/ak-switch-input";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
 import { AKLabel } from "#components/ak-label";
+import { AKSearchSelect } from "#components/ak-search-select-field";
 
-import { CoreApi, CoreUsersListRequest, IntentEnum, Token, User } from "@goauthentik/api";
+import { userSource } from "#admin/common/search-sources";
+
+import { CoreApi, IntentEnum, Token, User } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
-const EXPIRATION_DURATION = 30 * 60 * 1000; // 30 minutes
+const EXPIRATION_DURATION = 30 * 60 * 1000;
+
+// 30 minutes
 
 @customElement("ak-token-form")
 export class TokenForm extends ModelForm<Token, string> {
+    public static override verboseName = msg("Token");
+    public static override verboseNamePlural = msg("Tokens");
+
+    /**
+     * Pre-selected user for new tokens, e.g. when creating a token from a user's detail page.
+     */
+    @property({ attribute: false })
+    public defaultUser: User | null = null;
+
     protected expirationMinimumDate = new Date();
 
     @state()
@@ -34,7 +46,7 @@ export class TokenForm extends ModelForm<Token, string> {
     }
 
     async loadInstance(pk: string): Promise<Token> {
-        const token = await new CoreApi(DEFAULT_CONFIG).coreTokensRetrieve({
+        const token = await aki(CoreApi).coreTokensRetrieve({
             identifier: pk,
         });
 
@@ -53,12 +65,13 @@ export class TokenForm extends ModelForm<Token, string> {
 
     async send(data: Token): Promise<Token> {
         if (this.instance?.identifier) {
-            return new CoreApi(DEFAULT_CONFIG).coreTokensUpdate({
+            return aki(CoreApi).coreTokensUpdate({
                 identifier: this.instance.identifier,
                 tokenRequest: data,
             });
         }
-        return new CoreApi(DEFAULT_CONFIG).coreTokensCreate({
+
+        return aki(CoreApi).coreTokensCreate({
             tokenRequest: data,
         });
     }
@@ -70,11 +83,13 @@ export class TokenForm extends ModelForm<Token, string> {
 
         if (!expiringElement.checked) {
             this.expiresAt = null;
+
             return;
         }
 
         if (this.instance?.expiring && this.instance.expires) {
             this.expiresAt = new Date(this.instance.expires);
+
             return;
         }
 
@@ -99,43 +114,14 @@ export class TokenForm extends ModelForm<Token, string> {
             ></ak-text-input>
 
             <ak-form-element-horizontal label=${msg("User")} required name="user">
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<User[]> => {
-                        const args: CoreUsersListRequest = {
-                            ordering: "username",
-                        };
-
-                        if (typeof query !== "undefined") {
-                            args.search = query;
-                        }
-
-                        const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(args);
-                        const instanceUser = this.instance?.userObj;
-
-                        if (!instanceUser) {
-                            return users.results;
-                        }
-
-                        if (users.results.find((user) => user.pk === instanceUser.pk)) {
-                            return users.results;
-                        }
-
-                        return [instanceUser, ...users.results];
-                    }}
-                    .renderElement=${(user: User): string => {
-                        return user.username;
-                    }}
-                    .renderDescription=${(user: User): TemplateResult => {
-                        return html`${user.name}`;
-                    }}
-                    .value=${(user: User | undefined): number | undefined => {
-                        return user?.pk;
-                    }}
-                    .selected=${(user: User): boolean => {
-                        return this.instance?.user === user.pk;
-                    }}
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "user",
+                    source: userSource,
+                    placeholder: msg("Select a user..."),
+                    value: (this.instance?.user ?? this.defaultUser?.pk)?.toString(),
+                    selectedObject: this.instance?.userObj ?? this.defaultUser,
+                    blankable: false,
+                })}
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Intent")} required name="intent">
                 <ak-radio

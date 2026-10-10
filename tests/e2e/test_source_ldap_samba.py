@@ -12,17 +12,18 @@ from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 from authentik.tasks.models import Task
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.live import E2ETestCase
 
 
-class TestSourceLDAPSamba(SeleniumTestCase):
+class TestSourceLDAPSamba(E2ETestCase):
     """test LDAP Source"""
 
     def setUp(self):
         self.admin_password = generate_key()
         super().setUp()
         self.samba = self.run_container(
-            image="ghcr.io/beryju/test-samba-dc:latest",
+            image=self.pinned_image("test-samba-dc", "e2e/compose.yml"),
             cap_add=["SYS_ADMIN"],
             ports={
                 "389": "389/tcp",

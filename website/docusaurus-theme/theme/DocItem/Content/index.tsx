@@ -1,15 +1,13 @@
 /**
  * @file Swizzled DocItemContent component.
- *
- * This component is a swizzled version of the original DocItemContent component.
- *
- * Similar to Docusaurus' default `DocItemContent`, this component renders
- * the content of a documentation page. However, it also adds support for
- * support badges, and Authentik version badges.
+ *   This component is a swizzled version of the original DocItemContent component.
+ *   Similar to Docusaurus' default `DocItemContent`, this component renders
+ *   the content of a documentation page. However, it also adds support for
+ *   support badges, and authentik version badges.
  */
 
 import "./styles.css";
-
+import { MarkdownPageActions } from "#components/MarkdownPageActions.tsx";
 import { SupportBadge } from "#components/SupportBadge.tsx";
 import { VersionBadge } from "#components/VersionBadge.tsx";
 
@@ -126,13 +124,19 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
 
     return (
         <div className={clsx(ThemeClassNames.docs.docMarkdown, "markdown")}>
-            {syntheticTitle ? (
-                <header>
-                    <Heading as="h1">{syntheticTitle}</Heading>
+            <header>
+                <div className="authentik-doc-title-row">
+                    {syntheticTitle ? (
+                        <Heading as="h1">{syntheticTitle}</Heading>
+                    ) : (
+                        <span className="authentik-doc-title-spacer" />
+                    )}
 
-                    <BadgeGroup badges={badges} />
-                </header>
-            ) : null}
+                    <MarkdownPageActions />
+                </div>
+
+                {syntheticTitle ? <BadgeGroup badges={badges} /> : null}
+            </header>
 
             {preReleaseDoc ? <PreReleaseAdmonition /> : null}
 

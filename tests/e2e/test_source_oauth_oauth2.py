@@ -4,6 +4,10 @@ from pathlib import Path
 from time import sleep
 
 from docker.types import Healthcheck
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    TimeoutException,
+)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
@@ -15,7 +19,8 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.identification.models import IdentificationStage
-from tests.e2e.utils import NoSuchElementException, SeleniumTestCase, TimeoutException, retry
+from tests.decorators import retry
+from tests.selenium import SeleniumTestCase
 
 MAX_REFRESH_RETRIES = 5
 INTERFACE_TIMEOUT = 10
@@ -29,7 +34,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.slug = generate_id()
         super().setUp()
         self.run_container(
-            image="ghcr.io/dexidp/dex:v2.44.0",
+            image=self.pinned_image("dex", "e2e/compose.yml"),
             ports={"5556": "5556"},
             healthcheck=Healthcheck(
                 test=["CMD", "wget", "--spider", "http://localhost:5556/dex/healthz"],
@@ -56,12 +61,10 @@ class TestSourceOAuth2(SeleniumTestCase):
         url_after_login = self.driver.current_url
 
         user_settings_url = self.if_user_url("/settings")
-        hash_route = ';%7B"page"%3A"page-' + tab_name + '"%7D'
+        # Tabs are path segments now: `/if/user/settings/<tab>` selects the tab.
+        tab_url = self.if_user_url(f"/settings/{tab_name}")
 
-        self.driver.get(user_settings_url + hash_route)
-
-        # A refresh is required because the hash change doesn't always trigger a reload.
-        self.driver.refresh()
+        self.driver.get(tab_url)
 
         try:
             self.wait.until(ec.url_contains(user_settings_url))
@@ -239,11 +242,14 @@ class TestSourceOAuth2(SeleniumTestCase):
 
         self.login_via_oauth_provider()
 
-        post_login_expected_url = self.if_user_url("/settings;page-sources")
+        # The source flow manager now redirects straight to the path-segment tab,
+        # so no hash translation is involved. Still waited on rather than read
+        # directly: the redirect chain settles a moment after the OAuth provider
+        # hands control back.
+        post_login_expected_url = self.if_user_url("/settings/sources")
 
-        self.assertEqual(
-            self.driver.current_url,
-            post_login_expected_url,
+        WebDriverWait(self.driver, 30).until(
+            ec.url_to_be(post_login_expected_url),
             "Expected to be redirected to user settings after linking OAuth source",
         )
 

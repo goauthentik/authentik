@@ -1,8 +1,10 @@
 /**
+ * @import {Config} from "@docusaurus/types"
+ * @import {
+ *   UserThemeConfig,
+ *   UserThemeConfigExtra
+ * } from "./theme.js"
  * @file Common Docusaurus configuration utilities.
- *
- * @import { Config } from "@docusaurus/types"
- * @import { UserThemeConfig, UserThemeConfigExtra } from "./theme.js"
  */
 
 import { createThemeConfig } from "./theme.js";
@@ -14,25 +16,27 @@ import { deepmerge } from "deepmerge-ts";
 /**
  * @typedef {Omit<Config, 'themeConfig'>} DocusaurusConfigBase
  *
- * Represents the base configuration for Docusaurus, excluding the theme configuration.
+ *   Represents the base configuration for Docusaurus, excluding the theme configuration.
  */
 
 /**
  * @typedef DocusaurusConfigBaseTheme
  * @property {UserThemeConfig & UserThemeConfigExtra} themeConfig The theme configuration.
  *
- * Represents a configuration object, only including the theme configuration.
+ *   Represents a configuration object, only including the theme configuration.
  */
 
 /**
- * @typedef {Partial<DocusaurusConfigBase & DocusaurusConfigBaseTheme>} DocusaurusConfigInit
- *
- * The initial configuration for Docusaurus.
- *
  * @remarks
- * This type is the result of Docusaurus's less than ideal type definitions.
- * Much of the configuration is not strictly typed, however, this type
- * is a good starting point.
+ *   This type is intentionally loose: it references the theme config we care about
+ *   but keeps the remaining fields as a plain index signature rather than
+ *   `Partial<Config>`. Consumers (the website site configs) resolve their own copy
+ *   of `@docusaurus/types`, and comparing two peer-resolved `Config` instances
+ *   structurally overflows the type checker (TS2321). Keeping this type free of
+ *   `Config` avoids that cross-package comparison at the call boundary.
+ * @typedef {Partial<DocusaurusConfigBaseTheme> & Record<string, unknown>} DocusaurusConfigInit
+ *
+ *   The initial configuration for Docusaurus.
  */
 
 //#endregion
@@ -56,7 +60,7 @@ export function createDefaultDocusaurusConfig() {
                 removeLegacyPostBuildHeadAttribute: true,
                 useCssCascadeLayers: false,
             },
-            experimental_faster: {
+            faster: {
                 swcJsLoader: true,
                 rspackBundler: true,
                 lightningCssMinimizer: production,
@@ -93,9 +97,9 @@ export function createDefaultDocusaurusConfig() {
 /**
  * Create a Docusaurus configuration.
  *
- * @template {Partial<Config>} T
- * @param {T} overrides The options to override.
- * @returns {T & ReturnType<typeof createDefaultDocusaurusConfig>}
+ * @param {DocusaurusConfigInit} overrides The options to override.
+ *
+ * @returns {Config}
  */
 export function createDocusaurusConfig({ themeConfig, ...overrides }) {
     const config = {
@@ -103,8 +107,27 @@ export function createDocusaurusConfig({ themeConfig, ...overrides }) {
         themeConfig: createThemeConfig(themeConfig),
     };
 
-    // @ts-expect-error JSDoc types cannot infer that `overrides` is of the correct type.
-    return deepmerge(config, overrides);
+    const merged = /** @type {Config} */ (deepmerge(config, overrides));
+
+    // Declare the site name for search engines. Without an explicit `WebSite`
+    // structured-data `name`, Google synthesizes the site name from the hostname
+    // and renders it title-cased ("authentik"); the product name is always
+    // lowercase. https://developers.google.com/search/docs/appearance/site-names
+    merged.headTags = [
+        ...(merged.headTags ?? []),
+        {
+            tagName: "script",
+            attributes: { type: "application/ld+json" },
+            innerHTML: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "name": "authentik",
+                "url": `${merged.url}${merged.baseUrl}`,
+            }),
+        },
+    ];
+
+    return merged;
 }
 
 //#endregion

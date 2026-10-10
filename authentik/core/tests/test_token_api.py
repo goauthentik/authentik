@@ -173,7 +173,7 @@ class TestTokenAPI(APITestCase):
 
     def test_list(self):
         """Test Token List (Test normal authentication)"""
-        Token.objects.all().delete()
+        Token.objects.including_expired().all().delete()
         token_should: Token = Token.objects.create(
             identifier="test", expiring=False, user=self.user
         )
@@ -185,7 +185,7 @@ class TestTokenAPI(APITestCase):
 
     def test_list_with_permission(self):
         """Test Token List (Test with `view_token` permission)"""
-        Token.objects.all().delete()
+        Token.objects.including_expired().all().delete()
         token_should: Token = Token.objects.create(
             identifier="test", expiring=False, user=self.user
         )

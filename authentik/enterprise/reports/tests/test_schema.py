@@ -1,10 +1,10 @@
 from django.test.testcases import TestCase
 from drf_spectacular.generators import SchemaGenerator
 
-from authentik.enterprise.reports.tests.utils import patch_license
+from authentik.enterprise.tests import enterprise_test
 
 
-@patch_license
+@enterprise_test()
 class TestSchemaMatch(TestCase):
     def setUp(self) -> None:
         generator = SchemaGenerator()

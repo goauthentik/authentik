@@ -1,30 +1,13 @@
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/scim/SCIMSourceForm";
 import "#admin/sources/scim/SCIMSourceGroups";
 import "#admin/sources/scim/SCIMSourceUsers";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/buttons/TokenCopyButton/index";
 import "#elements/forms/ModalForm";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
-import { EVENT_REFRESH } from "#common/constants";
-
-import { AKElement } from "#elements/Base";
-import { SlottedTemplateResult } from "#elements/types";
-
-import {
-    RbacPermissionsAssignedByRolesListModelEnum,
-    SCIMSource,
-    SourcesApi,
-} from "@goauthentik/api";
-
-import { msg } from "@lit/localize";
-import { CSSResult, html, nothing } from "lit";
-import { customElement, property } from "lit/decorators.js";
-
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -34,11 +17,23 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
+import { aki } from "#common/api/client";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { ModelEnum, SCIMSource, SourcesApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { CSSResult, html, nothing } from "lit";
+import { customElement, property } from "lit/decorators.js";
+
 @customElement("ak-source-scim-view")
 export class SCIMSourceViewPage extends AKElement {
     @property({ type: String })
     set sourceSlug(value: string) {
-        new SourcesApi(DEFAULT_CONFIG)
+        aki(SourcesApi)
             .sourcesScimRetrieve({
                 slug: value,
             })
@@ -63,6 +58,7 @@ export class SCIMSourceViewPage extends AKElement {
 
     constructor() {
         super();
+
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.source?.pk) return;
             this.sourceSlug = this.source?.slug;
@@ -73,8 +69,9 @@ export class SCIMSourceViewPage extends AKElement {
         if (!this.source) {
             return nothing;
         }
+
         return html`<main>
-            <ak-tabs>
+            <ak-tabs routed>
                 <div
                     role="tabpanel"
                     tabindex="0"
@@ -116,7 +113,7 @@ export class SCIMSourceViewPage extends AKElement {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit">${msg("Update")}</span>
+                                    <span slot="submit">${msg("Save Changes")}</span>
                                     <span slot="header">${msg("Update SCIM Source")}</span>
                                     <ak-source-scim-form
                                         slot="form"
@@ -157,7 +154,7 @@ export class SCIMSourceViewPage extends AKElement {
                                                     class="pf-m-primary"
                                                     identifier="${this.source?.tokenObj.identifier}"
                                                 >
-                                                    ${msg("Click to copy token")}
+                                                    ${msg("Copy token")}
                                                 </ak-token-copy-button>
                                             </div>
                                         </div>
@@ -177,14 +174,11 @@ export class SCIMSourceViewPage extends AKElement {
                 >
                     <div class="pf-l-grid pf-m-gutter">
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__body">
-                                <ak-object-changelog
-                                    targetModelPk=${this.source.pk || ""}
-                                    targetModelApp="authentik_sources_scim"
-                                    targetModelName="scimsource"
-                                >
-                                </ak-object-changelog>
-                            </div>
+                            <ak-object-changelog
+                                targetModelPk=${this.source.pk || ""}
+                                targetModelName=${ModelEnum.AuthentikSourcesScimScimsource}
+                            >
+                            </ak-object-changelog>
                         </div>
                     </div>
                 </div>
@@ -217,13 +211,12 @@ export class SCIMSourceViewPage extends AKElement {
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesScimScimsource}
+                    model=${ModelEnum.AuthentikSourcesScimScimsource}
                     objectPk=${this.source.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

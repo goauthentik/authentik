@@ -14,8 +14,8 @@ import { TemplateResult } from "lit";
 // content by providing a `keyBy` function. See the documentation for `convertContent`.
 
 /**
- * - key (string, option): the value to return on "click", if the table is clickable / selectable
- * - content (TemplateResult[]): The contents of the rows to be shown
+ * - Key (string, option): the value to return on "click", if the table is clickable / selectable
+ * - Content (TemplateResult[]): The contents of the rows to be shown
  */
 export type TableRow = {
     key?: string;
@@ -25,7 +25,6 @@ export type TableRow = {
 
 /**
  * For a collection of rows without groups
- *
  */
 export type TableFlat = {
     kind: "flat";
@@ -57,7 +56,9 @@ export type TableGrouped = {
 export type Column = TableColumn | string | [string, string?];
 
 export type RawType = string | number | TemplateResult;
+
 export type TableInputType = RawType[][] | TableRow[] | TableGrouped | TableFlat;
+
 export type TableType = TableGrouped | TableFlat;
 
 export type KeyBy = (_: RawType[]) => string;

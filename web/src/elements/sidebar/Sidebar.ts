@@ -1,4 +1,6 @@
 import "#elements/sidebar/SidebarVersion";
+import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { AKElement } from "#elements/Base";
 import Styles from "#elements/sidebar/Sidebar.css";
@@ -6,9 +8,6 @@ import Styles from "#elements/sidebar/Sidebar.css";
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-sidebar")
 export class Sidebar extends AKElement {
@@ -29,7 +28,7 @@ export class Sidebar extends AKElement {
                 ?hidden=${this.hidden}
                 aria-label=${msg("Global navigation")}
                 role="navigation"
-                class="pf-c-nav__list"
+                class="pf-c-nav__list ak-m-thin-scrollbar ak-m-scroll-shadows"
                 part="list"
             >
                 <slot></slot>

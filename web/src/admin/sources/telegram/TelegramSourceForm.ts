@@ -1,20 +1,23 @@
-import "#admin/common/ak-flow-search/ak-source-flow-search";
 import "#components/ak-slug-input";
+import "#components/ak-text-input";
 import "#components/ak-secret-text-input";
 import "#elements/forms/Radio";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#components/ak-switch-input";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./TelegramSourceFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
+import {
+    AKSourceAuthenticationFlowField,
+    AKSourceEnrollmentFlowField,
+    AKSourcePreAuthenticationFlowField,
+} from "#admin/sources/components/flow-fields";
 import { UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
-    FlowsInstancesListDesignationEnum,
     SourcesApi,
     TelegramSource,
     TelegramSourceRequest,
@@ -28,47 +31,32 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-telegram-form")
 export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
-    async loadInstance(pk: string): Promise<TelegramSource> {
-        const source = await new SourcesApi(DEFAULT_CONFIG).sourcesTelegramRetrieve({
-            slug: pk,
-        });
-        return source;
-    }
-
-    async send(data: TelegramSource): Promise<TelegramSource> {
-        let source: TelegramSource;
-        if (this.instance?.pk) {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesTelegramPartialUpdate({
-                slug: this.instance.slug,
-                patchedTelegramSourceRequest: data,
-            });
-        } else {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesTelegramCreate({
-                telegramSourceRequest: data as unknown as TelegramSourceRequest,
-            });
-        }
-        return source;
-    }
+    protected endpoints = {
+        load: (slug: string) => aki(SourcesApi).sourcesTelegramRetrieve({ slug }),
+        create: (telegramSource: TelegramSource) =>
+            aki(SourcesApi).sourcesTelegramCreate({
+                telegramSourceRequest: telegramSource as unknown as TelegramSourceRequest,
+            }),
+        update: (slug: string, patchedTelegramSourceRequest: TelegramSource) =>
+            aki(SourcesApi).sourcesTelegramPartialUpdate({ slug, patchedTelegramSourceRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
-        return html`
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-
+        return html`<ak-text-input
+                label=${msg("Source Name")}
+                placeholder=${msg("Type a name for this source...")}
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+            ></ak-text-input>
             <ak-slug-input
                 name="slug"
+                placeholder=${msg("e.g. my-telegram-source")}
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
                 required
                 input-hint="code"
             ></ak-slug-input>
-
             <ak-switch-input
                 name="enabled"
                 label=${msg("Enabled")}
@@ -90,36 +78,41 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
                 <select class="pf-c-form-control">
                     <option
                         value=${UserMatchingModeEnum.Identifier}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.Identifier}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.Identifier
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.EmailLink}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.EmailLink}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.EmailLink
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailLink)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.EmailDeny}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.EmailDeny}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.EmailDeny
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailDeny)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.UsernameLink}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.UsernameLink}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.UsernameLink
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameLink)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.UsernameDeny}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.UsernameDeny}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.UsernameDeny
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameDeny)}
                     </option>
@@ -136,9 +129,10 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
             <ak-secret-text-input
                 label=${msg("Bot token")}
                 name="botToken"
+                plaintext
                 input-hint="code"
-                ?required=${this.instance === undefined}
-                ?revealed=${this.instance === undefined}
+                ?required=${!this.instance}
+                ?revealed=${!this.instance}
             ></ak-secret-text-input>
             <ak-switch-input
                 name="requestMessageAccess"
@@ -147,49 +141,9 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
             ></ak-switch-input>
             <ak-form-group label="${msg("Flow settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Pre-authentication flow")}
-                        required
-                        name="preAuthenticationFlow"
-                    >
-                        <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.StageConfiguration}
-                            .currentFlow=${this.instance?.preAuthenticationFlow}
-                            .instanceId=${this.instance?.pk}
-                            fallback="default-source-pre-authentication"
-                        ></ak-source-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow used before authentication.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Authentication flow")}
-                        name="authenticationFlow"
-                    >
-                        <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                            .currentFlow=${this.instance?.authenticationFlow}
-                            .instanceId=${this.instance?.pk}
-                            fallback="default-source-authentication"
-                        ></ak-source-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow to use when authenticating existing users.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Enrollment flow")}
-                        name="enrollmentFlow"
-                    >
-                        <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Enrollment}
-                            .currentFlow=${this.instance?.enrollmentFlow}
-                            .instanceId=${this.instance?.pk}
-                            fallback="default-source-enrollment"
-                        ></ak-source-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow to use when enrolling new users.")}
-                        </p>
-                    </ak-form-element-horizontal>
+                    ${AKSourcePreAuthenticationFlowField({ value: this.instance?.preAuthenticationFlow, sourcePk: this.instance?.pk })}
+                    ${AKSourceAuthenticationFlowField({ value: this.instance?.authenticationFlow, sourcePk: this.instance?.pk })}
+                    ${AKSourceEnrollmentFlowField({ value: this.instance?.enrollmentFlow, sourcePk: this.instance?.pk })}
                 </div>
             </ak-form-group>
             <ak-form-group open label="${msg("Telegram Attribute mapping")}">
@@ -242,8 +196,7 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
                         </ak-radio>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        `;
+            </ak-form-group>`;
     }
 }
 

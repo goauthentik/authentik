@@ -16,36 +16,22 @@ export class FormFixture extends PageFixture {
      * Set the value of a text input.
      *
      * @param fieldName The name of the form element.
-     * @param value the value to set.
+     * @param value The value to set.
      */
     public findTextualInput = async (
         fieldName: string | RegExp,
         context: LocatorContext = this.page,
     ) => {
-        const control = context
-            .getByLabel(fieldName, { exact: true })
-            .filter({
-                hasNot: context.getByRole("presentation"),
-            })
-            .or(
-                context.getByRole("textbox", {
-                    name: fieldName,
-                }),
-            )
-            .or(
-                context.getByRole("spinbutton", {
-                    name: fieldName,
-                }),
-            );
+        const textbox = context.getByRole("textbox", { name: fieldName });
+        const searchbox = context.getByRole("searchbox", { name: fieldName });
+        const spinbutton = context.getByRole("spinbutton", { name: fieldName });
 
-        const role = await control.getAttribute("role");
+        // Comboboxes (e.g. the Query Language input) wrap an inner textbox.
+        const comboboxTextbox = context
+            .getByRole("combobox", { name: fieldName })
+            .getByRole("textbox");
 
-        if (role === "combobox") {
-            // Comboboxes, such as our Query Language input need additional handling...
-            const textbox = control.getByRole("textbox");
-
-            return textbox;
-        }
+        const control = textbox.or(searchbox).or(spinbutton).or(comboboxTextbox);
 
         await expect(control, `Field (${fieldName}) should be visible`).toBeVisible();
 
@@ -56,7 +42,7 @@ export class FormFixture extends PageFixture {
      * Set the value of a text input.
      *
      * @param target The name of the form element.
-     * @param value the value to set.
+     * @param value The value to set.
      */
     public fill = async (
         target: string | RegExp | Locator,
@@ -76,12 +62,23 @@ export class FormFixture extends PageFixture {
 
     /**
      * Search for a row containing the given text.
+     *
+     * @returns A locator for the row entry matching the query.
      */
     public search = async (
         query: string,
         context: LocatorContext = this.page,
     ): Promise<Locator> => {
-        const searchInput = await this.findTextualInput(/search/i, context);
+        // Scoped to `ak-table-search` rather than the whole page: tables render either a
+        // plain searchbox or a query-language combobox, so the match has to stay
+        // role-based — but pages that mount a wizard (e.g. providers) also carry the
+        // dual-list-select search boxes for scopes, sources, and providers, which an
+        // unscoped match picks up and then fails strict mode on.
+        const searchInput = await this.findTextualInput(
+            /search/i,
+            context.locator("ak-table-search"),
+        );
+
         // We have to wait for the user to appear in the table,
         // but several UI elements will be rendered asynchronously.
         // We attempt several times to find the user to avoid flakiness.
@@ -108,6 +105,7 @@ export class FormFixture extends PageFixture {
 
             if (found) {
                 this.logger.info(`"${query}" found in the table`);
+
                 return $rowEntry;
             }
         }
@@ -119,7 +117,7 @@ export class FormFixture extends PageFixture {
      * Set the value of a radio or checkbox input.
      *
      * @param fieldName The name of the form element.
-     * @param value the value to set.
+     * @param value The value to set.
      */
     public setInputCheck = async (
         fieldName: string,
@@ -149,7 +147,7 @@ export class FormFixture extends PageFixture {
      * Set the value of a radio or checkbox input.
      *
      * @param fieldName The name of the form element.
-     * @param pattern the value to set.
+     * @param pattern The value to set.
      */
     public setRadio = async (
         groupName: string,
@@ -165,47 +163,61 @@ export class FormFixture extends PageFixture {
     };
 
     /**
-     * Set the value of a search select input.
+     * Find a search select's combobox by its label.
      *
-     * @param fieldLabel The name of the search select element.
-     * @param pattern The text to match against the search select entry.
+     * @param fieldLabel The accessible name of the search select.
      */
-    public selectSearchValue = async (
-        fieldLabel: string,
-        pattern: string | RegExp,
+    public findSearchSelect = async (
+        fieldLabel: string | RegExp,
         parent: LocatorContext = this.page,
-    ): Promise<void> => {
-        const control = parent.getByRole("textbox", { name: fieldLabel });
+    ): Promise<{ host: Locator; combobox: Locator }> => {
+        const byName = (exact: boolean) =>
+            parent.getByRole("combobox", { name: fieldLabel, exact });
+
+        const exact = typeof fieldLabel === "string" && (await byName(true).count()) > 0;
+        const combobox = byName(exact);
 
         await expect(
-            control,
+            combobox,
             `Search select control (${fieldLabel}) should be visible`,
         ).toBeVisible();
 
-        const fieldName = await control.getAttribute("name");
+        const host = parent.locator("ak-search-select").filter({
+            has: this.page.getByRole("combobox", { name: fieldLabel, exact }),
+        });
 
-        if (!fieldName) {
-            throw new Error(`Unable to find name attribute on search select (${fieldLabel})`);
+        return { host, combobox };
+    };
+
+    /**
+     * Choose an option in a search select.
+     *
+     * @param fieldLabel The accessible name of the search select.
+     * @param pattern The option to choose. A string is also typed in to search for it.
+     */
+    public selectSearchValue = async (
+        fieldLabel: string | RegExp,
+        pattern: string | RegExp,
+        parent: LocatorContext = this.page,
+    ): Promise<void> => {
+        const { host, combobox } = await this.findSearchSelect(fieldLabel, parent);
+
+        await combobox.click();
+
+        if (typeof pattern === "string") {
+            await combobox.fill(pattern);
         }
 
-        // Find the search select input control and activate it.
-        await control.click();
+        const option = host.getByRole("option", { name: pattern }).first();
 
-        const button = this.page
-            // ---
-            .locator(`div[data-managed-for*="${fieldName}"] button`, {
-                hasText: pattern,
-            });
+        await expect(option, `Search select option (${pattern}) should be visible`).toBeVisible();
 
-        if (!button) {
-            throw new Error(
-                `Unable to find an ak-search-select entry matching ${fieldLabel}:${pattern.toString()}`,
-            );
-        }
+        await option.click();
 
-        await button.click();
-        await this.page.keyboard.press("Tab");
-        await control.blur();
+        await expect(
+            host.getByRole("listbox"),
+            `Search select (${fieldLabel}) closes after choosing`,
+        ).toBeHidden();
     };
 
     public setFormGroup = async (
@@ -223,6 +235,7 @@ export class FormFixture extends PageFixture {
 
         if (currentOpen === value) {
             this.logger.debug(`Form group ${pattern} is already ${value ? "open" : "closed"}`);
+
             return;
         }
 

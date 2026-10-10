@@ -1,0 +1,23 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "compilerOptions": {
+        "isolatedModules": true,
+        "rootDir": "src",
+        "strict": true,
+        "newLine": "lf",
+        "target": "ESNext",
+        // The generator emits extensionless relative imports, which `NodeNext` rejects.
+        // Every consumer links this package and bundles `src` directly, so resolve the way they do.
+        "module": "preserve",
+        "moduleResolution": "bundler",
+        "outDir": "dist",
+        "skipDefaultLibCheck": true,
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "declaration": true,
+        "declarationMap": true,
+        "lib": ["DOM", "DOM.Iterable", "ESNext"]
+    },
+    "include": ["src"],
+    "exclude": ["node_modules", "./out/**/*", "./dist/**/*"]
+}

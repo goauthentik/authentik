@@ -1,36 +1,43 @@
 import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
 import { Form } from "#elements/forms/Form";
+import { SearchSelectSource, withQuery } from "#elements/forms/SearchSelect/shared";
 
-import {
-    CoreApi,
-    Stage,
-    StagesAllListRequest,
-    StagesApi,
-    User,
-    UserRecoveryEmailRequest,
-} from "@goauthentik/api";
+import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { CoreApi, Stage, StagesApi, User, UserRecoveryEmailRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+const emailStageSource: SearchSelectSource<Stage> = {
+    fetchObjects: (query) =>
+        aki(StagesApi)
+            .stagesEmailList(withQuery(query, { ordering: "name" }))
+            .then(({ results }) => results),
+    keyOf: (stage) => stage.pk,
+    labelOf: (stage) => stage.name,
+    groupBy: (stages) => groupBy(stages, (stage) => stage.verboseNamePlural),
+};
+
 @customElement("ak-user-reset-email-form")
 export class UserResetEmailForm extends Form<UserRecoveryEmailRequest> {
-    @property({ attribute: false })
-    user!: User;
+    public override submitLabel = msg("Send link");
+    public override headline = msg("Send recovery link to user");
 
-    getSuccessMessage(): string {
+    @property({ attribute: false })
+    public user!: User;
+
+    public override getSuccessMessage(): string {
         return msg("Successfully queued email.");
     }
 
     async send(data: UserRecoveryEmailRequest): Promise<void> {
-        return new CoreApi(DEFAULT_CONFIG).coreUsersRecoveryEmailCreate({
+        return aki(CoreApi).coreUsersRecoveryEmailCreate({
             id: this.user.pk,
             userRecoveryEmailRequest: data,
         });
@@ -42,28 +49,12 @@ export class UserResetEmailForm extends Form<UserRecoveryEmailRequest> {
                 required
                 name="emailStage"
             >
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Stage[]> => {
-                        const args: StagesAllListRequest = {
-                            ordering: "name",
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const stages = await new StagesApi(DEFAULT_CONFIG).stagesEmailList(args);
-                        return stages.results;
-                    }}
-                    .groupBy=${(items: Stage[]) => {
-                        return groupBy(items, (stage) => stage.verboseNamePlural);
-                    }}
-                    .renderElement=${(stage: Stage): string => {
-                        return stage.name;
-                    }}
-                    .value=${(stage: Stage | undefined): string | undefined => {
-                        return stage?.pk;
-                    }}
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "emailStage",
+                    source: emailStageSource,
+                    placeholder: msg("Select email stage..."),
+                    blankable: false,
+                })}
             </ak-form-element-horizontal>
             <ak-text-input
                 name="tokenDuration"

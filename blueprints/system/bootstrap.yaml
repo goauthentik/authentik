@@ -11,6 +11,7 @@ context:
   group_name: authentik Admins
   email: !Env [AUTHENTIK_BOOTSTRAP_EMAIL, "root@example.com"]
   password: !Env [AUTHENTIK_BOOTSTRAP_PASSWORD, null]
+  password_hash: !Env [AUTHENTIK_BOOTSTRAP_PASSWORD_HASH, null]
   token: !Env [AUTHENTIK_BOOTSTRAP_TOKEN, null]
 entries:
   - model: authentik_core.group
@@ -31,6 +32,7 @@ entries:
       groups:
         - !KeyOf admin-group
       password: !Context password
+      password_hash: !Context password_hash
   - model: authentik_core.token
     state: created
     conditions:

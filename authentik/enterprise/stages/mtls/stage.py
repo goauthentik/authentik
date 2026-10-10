@@ -6,6 +6,7 @@ from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives import hashes
 from cryptography.x509 import (
     Certificate,
+    ExtensionNotFound,
     NameOID,
     ObjectIdentifier,
     RFC822Name,
@@ -13,8 +14,11 @@ from cryptography.x509 import (
     UnsupportedGeneralNameType,
     load_pem_x509_certificate,
 )
+from cryptography.x509.general_name import GeneralName
 from cryptography.x509.verification import PolicyBuilder, Store, VerificationError
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from rest_framework.exceptions import PermissionDenied
 
 from authentik.brands.models import Brand
 from authentik.core.models import User
@@ -25,10 +29,10 @@ from authentik.enterprise.stages.mtls.models import (
     MutualTLSStage,
     UserAttributes,
 )
-from authentik.flows.challenge import AccessDeniedChallenge
 from authentik.flows.models import FlowDesignation
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
+from authentik.lib.utils.reflection import all_subclasses
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
@@ -102,7 +106,7 @@ class MTLSStageView(ChallengeStageView):
             return []
         certs = []
         for cert in ftcc_raw.split(","):
-            certs.extend(self.__parse_single_cert(cert, ParseOptions.UNQUOTE, ParseOptions.FORMAT))
+            certs.extend(self.__parse_single_cert(cert, ParseOptions.FORMAT))
         return certs
 
     def _parse_cert_outpost(self) -> list[Certificate]:
@@ -138,9 +142,9 @@ class MTLSStageView(ChallengeStageView):
         authorities_cert = [x.certificate for x in authorities]
         for _cert in certs:
             try:
-                PolicyBuilder().store(Store(authorities_cert)).build_client_verifier().verify(
-                    _cert, []
-                )
+                PolicyBuilder().store(Store(authorities_cert)).time(
+                    now()
+                ).build_client_verifier().verify(_cert, [])
                 return _cert
             except (
                 InvalidSignature,
@@ -175,7 +179,7 @@ class MTLSStageView(ChallengeStageView):
 
     def _cert_to_dict(self, cert: Certificate) -> dict:
         """Represent a certificate in a dictionary, as certificate objects cannot be pickled"""
-        return {
+        cert_dict = {
             "serial_number": str(cert.serial_number),
             "subject": cert.subject.rfc4514_string(),
             "issuer": cert.issuer.rfc4514_string(),
@@ -183,7 +187,20 @@ class MTLSStageView(ChallengeStageView):
             "fingerprint_sha1": hexlify(cert.fingerprint(hashes.SHA1()), ":").decode(  # nosec
                 "utf-8"
             ),
+            "san": {},
         }
+        try:
+            san_ext = cert.extensions.get_extension_for_class(SubjectAlternativeName)
+        except ExtensionNotFound:
+            return cert_dict
+        # Map all SAN values into the dict, grouped by their type
+        for san_type in all_subclasses(GeneralName):
+            for san in san_ext.value.get_values_for_type(san_type):
+                type_str = san_type.__name__
+                if type_str not in cert_dict["san"]:
+                    cert_dict["san"][type_str] = []
+                cert_dict["san"][type_str].append(san)
+        return cert_dict
 
     def auth_user(self, user: User, cert: Certificate):
         self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = user
@@ -217,8 +234,7 @@ class MTLSStageView(ChallengeStageView):
             return None
         return str(_cert_attr[0])
 
-    def dispatch(self, request, *args, **kwargs):
-        stage: MutualTLSStage = self.executor.current_stage
+    def get_cert(self, mode: StageMode):
         certs = [
             *self._parse_cert_xfcc(),
             *self._parse_cert_nginx(),
@@ -228,21 +244,26 @@ class MTLSStageView(ChallengeStageView):
         authorities = self.get_authorities()
         if not authorities:
             self.logger.warning("No Certificate authority found")
-            if stage.mode == StageMode.OPTIONAL:
-                return self.executor.stage_ok()
-            if stage.mode == StageMode.REQUIRED:
-                return super().dispatch(request, *args, **kwargs)
+            if mode == StageMode.OPTIONAL:
+                return None
+            if mode == StageMode.REQUIRED:
+                raise PermissionDenied("Unknown error")
         cert = self.validate_cert(authorities, certs)
-        if not cert and stage.mode == StageMode.REQUIRED:
+        if not cert and mode == StageMode.REQUIRED:
             self.logger.warning("Client certificate required but no certificates given")
-            return super().dispatch(
-                request,
-                *args,
-                error_message=_("Certificate required but no certificate was given."),
-                **kwargs,
-            )
-        if not cert and stage.mode == StageMode.OPTIONAL:
+            raise PermissionDenied(str(_("Certificate required but no certificate was given.")))
+        if not cert and mode == StageMode.OPTIONAL:
             self.logger.info("No certificate given, continuing")
+            return None
+        return cert
+
+    def dispatch(self, request, *args, **kwargs):
+        stage: MutualTLSStage = self.executor.current_stage
+        try:
+            cert = self.get_cert(stage.mode)
+        except PermissionDenied as exc:
+            return self.executor.stage_invalid(error_message=exc.detail)
+        if not cert:
             return self.executor.stage_ok()
         self.logger.debug("Received certificate", cert=fingerprint_sha256(cert))
         existing_user = self.check_if_user(cert)
@@ -251,15 +272,5 @@ class MTLSStageView(ChallengeStageView):
         elif existing_user:
             self.auth_user(existing_user, cert)
         else:
-            return super().dispatch(
-                request, *args, error_message=_("No user found for certificate."), **kwargs
-            )
+            return self.executor.stage_invalid(_("No user found for certificate."))
         return self.executor.stage_ok()
-
-    def get_challenge(self, *args, error_message: str | None = None, **kwargs):
-        return AccessDeniedChallenge(
-            data={
-                "component": "ak-stage-access-denied",
-                "error_message": str(error_message or "Unknown error"),
-            }
-        )

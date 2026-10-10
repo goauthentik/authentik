@@ -2,10 +2,14 @@ import "#flow/components/ak-flow-card";
 import "#flow/stages/authenticator_validate/AuthenticatorValidateStageCode";
 import "#flow/stages/authenticator_validate/AuthenticatorValidateStageDuo";
 import "#flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";
-
 import Styles from "./AuthenticatorValidateStage.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { SlottedTemplateResult } from "#elements/types";
 import { StrictUnsafe } from "#elements/utils/unsafe";
@@ -29,12 +33,6 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 interface DevicePickerProps {
     icon?: string;
@@ -117,7 +115,7 @@ export class AuthenticatorValidateStage
         Styles,
     ];
 
-    #api = new FlowsApi(DEFAULT_CONFIG);
+    #api = aki(FlowsApi);
 
     public flowSlug = "";
 
@@ -202,6 +200,7 @@ export class AuthenticatorValidateStage
         // If user only has a single device, autoselect that device.
         if (this.challenge.deviceChallenges.length === 1) {
             this.selectedDeviceChallenge = this.challenge.deviceChallenges[0];
+
             return;
         }
 
@@ -210,6 +209,7 @@ export class AuthenticatorValidateStage
         const totpChallenge = this.challenge.deviceChallenges.find(
             (challenge) => challenge.deviceClass === DeviceClassesEnum.Totp,
         );
+
         if (PasswordManagerPrefill.totp && totpChallenge) {
             this.logger.debug("Found prefill TOTP code to select");
             this.selectedDeviceChallenge = totpChallenge;
@@ -267,7 +267,10 @@ export class AuthenticatorValidateStage
             },
         );
 
-        return html`<fieldset class="pf-c-form__group pf-m-action" name="device-challenges">
+        return html`<fieldset
+            class="ak-c-fieldset pf-c-form__group pf-m-action"
+            name="device-challenges"
+        >
             <legend class="pf-c-title">${msg("Select an authentication method")}</legend>
             ${deviceChallengeButtons}
         </fieldset>`;
@@ -300,7 +303,7 @@ export class AuthenticatorValidateStage
             },
         );
 
-        return html`<fieldset class="pf-c-form__group pf-m-action" name="stages">
+        return html`<fieldset class="ak-c-fieldset pf-c-form__group pf-m-action" name="stages">
             <legend class="sr-only">${msg("Select a configuration stage")}</legend>
             ${stageButtons}
         </fieldset>`;
@@ -312,6 +315,7 @@ export class AuthenticatorValidateStage
         }
 
         const tag = resolveAuthenticatorComponentTag(this.selectedDeviceChallenge.deviceClass);
+
         if (!tag) return null;
 
         const showBackButton = (this.challenge?.deviceChallenges || []).length > 1;
@@ -332,9 +336,11 @@ export class AuthenticatorValidateStage
 
     protected override render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-            ${this.selectedDeviceChallenge
-                ? this.renderDeviceChallenge()
-                : this.renderAuthenticatorSelection()}
+            ${
+                this.selectedDeviceChallenge
+                    ? this.renderDeviceChallenge()
+                    : this.renderAuthenticatorSelection()
+            }
         </ak-flow-card>`;
     }
 }

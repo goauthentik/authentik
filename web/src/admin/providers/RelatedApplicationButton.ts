@@ -1,46 +1,54 @@
 import "#admin/applications/ApplicationForm";
 import "#elements/Spinner";
 import "#elements/forms/ModalForm";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 import { AKElement } from "#elements/Base";
+import { ModalInvokerButton } from "#elements/dialogs";
+import { toAdminInterface } from "#elements/router/core/interfaces";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { ApplicationForm } from "#admin/applications/ApplicationForm";
 
 import { Provider } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 @customElement("ak-provider-related-application")
 export class RelatedApplicationButton extends AKElement {
     static styles: CSSResult[] = [PFButton];
 
     @property({ attribute: false })
-    provider?: Provider;
+    public provider?: Provider | null = null;
 
-    @property()
-    mode: "primary" | "backchannel" = "primary";
+    @property({ type: String })
+    public mode: "primary" | "backchannel" = "primary";
 
-    render(): TemplateResult {
+    protected override render(): SlottedTemplateResult {
         if (this.mode === "primary" && this.provider?.assignedApplicationSlug) {
-            return html`<a href="#/core/applications/${this.provider.assignedApplicationSlug}">
+            return html`<a
+                href=${toAdminInterface(
+                    `core/applications/${this.provider.assignedApplicationSlug}`,
+                )}
+            >
                 ${this.provider.assignedApplicationName}
             </a>`;
         }
+
         if (this.mode === "backchannel" && this.provider?.assignedBackchannelApplicationSlug) {
             return html`<a
-                href="#/core/applications/${this.provider.assignedBackchannelApplicationSlug}"
+                href=${toAdminInterface(
+                    `core/applications/${this.provider.assignedBackchannelApplicationSlug}`,
+                )}
             >
                 ${this.provider.assignedBackchannelApplicationName}
             </a>`;
         }
-        return html`<ak-forms-modal>
-            <span slot="submit">${msg("Create")}</span>
-            <span slot="header">${msg("Create Application")}</span>
-            <ak-application-form slot="form" .provider=${this.provider?.pk}> </ak-application-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-        </ak-forms-modal>`;
+
+        return ModalInvokerButton(ApplicationForm, {
+            provider: this.provider?.pk,
+        });
     }
 }
 

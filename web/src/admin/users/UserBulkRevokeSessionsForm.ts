@@ -1,29 +1,25 @@
 import "#elements/buttons/SpinnerButton/index";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
+import { createPaginatedResponse } from "#common/api/responses";
 import { EVENT_REFRESH } from "#common/constants";
 import { MessageLevel } from "#common/messages";
 
 import { ModalButton } from "#elements/buttons/ModalButton";
 import { showMessage } from "#elements/messages/MessageContainer";
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { StaticTable } from "#elements/table/StaticTable";
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { CoreApi, User } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 type UserMetadata = { key: string; value: string }[];
 
 @customElement("ak-user-bulk-revoke-sessions-table")
-export class UserBulkRevokeSessionsTable extends Table<User> {
-    paginated = false;
-
-    @property({ attribute: false })
-    objects: User[] = [];
-
+export class UserBulkRevokeSessionsTable extends StaticTable<User> {
     @property({ attribute: false })
     metadata!: (item: User) => UserMetadata;
 
@@ -32,30 +28,21 @@ export class UserBulkRevokeSessionsTable extends Table<User> {
 
     async apiEndpoint(): Promise<PaginatedResponse<User>> {
         // Fetch session counts for each user
-        for (const user of this.objects) {
+        for (const user of this.items ?? []) {
             try {
-                const sessions = await new CoreApi(DEFAULT_CONFIG).coreAuthenticatedSessionsList({
+                const sessions = await aki(CoreApi).coreAuthenticatedSessionsList({
                     userUsername: user.username,
                 });
+
                 this.sessionCounts.set(user.pk, sessions.pagination.count);
             } catch {
                 this.sessionCounts.set(user.pk, 0);
             }
         }
+
         this.requestUpdate();
 
-        return Promise.resolve({
-            pagination: {
-                count: this.objects.length,
-                current: 1,
-                totalPages: 1,
-                startIndex: 1,
-                endIndex: this.objects.length,
-                next: 0,
-                previous: 0,
-            },
-            results: this.objects,
-        });
+        return createPaginatedResponse(this.items);
     }
 
     protected override rowLabel(item: User): string | null {
@@ -68,17 +55,16 @@ export class UserBulkRevokeSessionsTable extends Table<User> {
 
     row(item: User): SlottedTemplateResult[] {
         const sessionCount = this.sessionCounts.get(item.pk);
+
         return [
             html`${item.username}`,
             html`${item.name || msg("No name set")}`,
-            html`${sessionCount !== undefined
-                ? sessionCount
-                : html`<ak-spinner size="sm"></ak-spinner>`}`,
+            html`${
+                sessionCount !== undefined
+                    ? sessionCount
+                    : html`<ak-spinner size="sm"></ak-spinner>`
+            }`,
         ];
-    }
-
-    renderToolbarContainer(): SlottedTemplateResult {
-        return nothing;
     }
 }
 
@@ -105,21 +91,22 @@ export class UserBulkRevokeSessionsForm extends ModalButton {
 
             // Delete all sessions for these users in a single API call
             if (userIds.length > 0) {
-                const response = await new CoreApi(
-                    DEFAULT_CONFIG,
-                ).coreAuthenticatedSessionsBulkDeleteDestroy({
+                const response = await aki(CoreApi).coreAuthenticatedSessionsBulkDeleteDestroy({
                     userPks: userIds,
                 });
+
                 this.revokedCount = response.deleted || 0;
             }
 
             this.onSuccess();
+
             this.dispatchEvent(
                 new CustomEvent(EVENT_REFRESH, {
                     bubbles: true,
                     composed: true,
                 }),
             );
+
             this.open = false;
         } catch (e) {
             this.onError(e as Error);
@@ -167,7 +154,7 @@ export class UserBulkRevokeSessionsForm extends ModalButton {
             </section>
             <section class="pf-c-modal-box__body pf-m-light">
                 <ak-user-bulk-revoke-sessions-table
-                    .objects=${this.users}
+                    .items=${this.users}
                     .metadata=${(item: User) => {
                         return [
                             { key: msg("Username"), value: item.username },
@@ -177,24 +164,23 @@ export class UserBulkRevokeSessionsForm extends ModalButton {
                 >
                 </ak-user-bulk-revoke-sessions-table>
             </section>
-            <footer class="pf-c-modal-box__footer">
+            <fieldset class="ak-c-fieldset pf-c-modal-box__footer">
+                <legend class="sr-only">${msg("Form actions")}</legend>
+                <ak-spinner-button
+                    .callAction=${async () => {
+                        this.open = false;
+                    }}
+                    class="pf-m-plain"
+                    >${msg("Cancel")}</ak-spinner-button
+                >
                 <ak-spinner-button
                     .callAction=${() => {
                         return this.confirm();
                     }}
                     class="pf-m-warning"
+                    >${msg("Revoke Sessions")}</ak-spinner-button
                 >
-                    ${msg("Revoke Sessions")} </ak-spinner-button
-                >&nbsp;
-                <ak-spinner-button
-                    .callAction=${async () => {
-                        this.open = false;
-                    }}
-                    class="pf-m-secondary"
-                >
-                    ${msg("Cancel")}
-                </ak-spinner-button>
-            </footer>`;
+            </fieldset>`;
     }
 }
 

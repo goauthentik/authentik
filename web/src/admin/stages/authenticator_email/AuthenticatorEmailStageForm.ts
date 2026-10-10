@@ -1,23 +1,19 @@
 import "#components/ak-secret-text-input";
+import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-import "#elements/forms/SearchSelect/index";
 import "#components/ak-switch-input";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { SlottedTemplateResult } from "#elements/types";
 
-import { RenderFlowOption } from "#admin/flows/utils";
+import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
     AuthenticatorEmailStage,
-    Flow,
-    FlowsApi,
-    FlowsInstancesListDesignationEnum,
-    FlowsInstancesListRequest,
+    FlowDesignationEnum,
     StagesApi,
     TypeCreate,
 } from "@goauthentik/api";
@@ -30,15 +26,17 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-stage-authenticator-email-form")
 export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmailStage> {
     async loadInstance(pk: string): Promise<AuthenticatorEmailStage> {
-        const stage = await new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEmailRetrieve({
+        const stage = await aki(StagesApi).stagesAuthenticatorEmailRetrieve({
             stageUuid: pk,
         });
+
         this.showConnectionSettings = !stage.useGlobalSettings;
+
         return stage;
     }
 
     async load(): Promise<void> {
-        this.templates = await new StagesApi(DEFAULT_CONFIG).stagesEmailTemplatesList();
+        this.templates = await aki(StagesApi).stagesEmailTemplatesList();
     }
 
     templates?: TypeCreate[];
@@ -48,12 +46,13 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
 
     async send(data: AuthenticatorEmailStage): Promise<AuthenticatorEmailStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEmailUpdate({
+            return aki(StagesApi).stagesAuthenticatorEmailUpdate({
                 stageUuid: this.instance.pk || "",
                 authenticatorEmailStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEmailCreate({
+
+        return aki(StagesApi).stagesAuthenticatorEmailCreate({
             authenticatorEmailStageRequest: data,
         });
     }
@@ -62,6 +61,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
         if (!this.showConnectionSettings) {
             return nothing;
         }
+
         return html`<ak-form-group open label="${msg("Connection settings")}">
             <div class="pf-c-form">
                 <ak-form-element-horizontal label=${msg("SMTP Host")} required name="host">
@@ -135,14 +135,18 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
 
     protected override renderForm(): TemplateResult {
         return html` <span> ${msg("Stage used to configure an email-based authenticator.")}</span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${this.instance?.name ?? ""}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-element-horizontal
                 label=${msg("Authenticator type name")}
                 ?required=${false}
@@ -206,36 +210,12 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                         label=${msg("Configuration flow")}
                         name="configureFlow"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation:
-                                        FlowsInstancesListDesignationEnum.StageConfiguration,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                return this.instance?.configureFlow === flow.pk;
-                            }}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKFlowSearch({
+                            name: "configureFlow",
+                            flowType: FlowDesignationEnum.StageConfiguration,
+                            value: this.instance?.configureFlow,
+                            blankable: true,
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.",
@@ -247,18 +227,22 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                             class="pf-c-form-control"
                             ?disabled=${!this.templates || this.templates.length === 0}
                         >
-                            ${this.templates && this.templates.length > 0
-                                ? this.templates.map((template: TypeCreate) => {
-                                      return html`<option
-                                          value="${template.name}"
-                                          ?selected=${this.instance?.template === template.name ||
-                                          (!this.instance?.template &&
-                                              template.name === "email/email_otp.html")}
-                                      >
-                                          ${template.description}
-                                      </option>`;
-                                  })
-                                : html`<option value="">${msg("Loading templates...")}</option>`}
+                            ${
+                                this.templates && this.templates.length > 0
+                                    ? this.templates.map((template: TypeCreate) => {
+                                          return html`<option
+                                              value="${template.name}"
+                                              ?selected=${
+                                                  this.instance?.template === template.name ||
+                                                  (!this.instance?.template &&
+                                                      template.name === "email/email_otp.html")
+                                              }
+                                          >
+                                              ${template.description}
+                                          </option>`;
+                                      })
+                                    : html`<option value="">${msg("Loading templates...")}</option>`
+                            }
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${msg("Template used for the verification email.")}

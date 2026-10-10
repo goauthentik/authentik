@@ -1,25 +1,20 @@
 import "#components/ak-number-input";
+import "#components/ak-text-input";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-import "#elements/forms/SearchSelect/index";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 
-import { RenderFlowOption } from "#admin/flows/utils";
+import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
 import { deviceTypeRestrictionPair } from "#admin/stages/authenticator_webauthn/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
     AuthenticatorAttachmentEnum,
     AuthenticatorWebAuthnStage,
-    Flow,
-    FlowsApi,
-    FlowsInstancesListDesignationEnum,
-    FlowsInstancesListRequest,
-    ResidentKeyRequirementEnum,
+    FlowDesignationEnum,
     StagesApi,
     UserVerificationEnum,
     WebAuthnHintEnum,
@@ -32,7 +27,7 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-stage-authenticator-webauthn-form")
 export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorWebAuthnStage> {
     async loadInstance(pk: string): Promise<AuthenticatorWebAuthnStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnRetrieve({
+        return aki(StagesApi).stagesAuthenticatorWebauthnRetrieve({
             stageUuid: pk,
         });
     }
@@ -41,13 +36,15 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
         if (data.authenticatorAttachment?.toString() === "") {
             data.authenticatorAttachment = null;
         }
+
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnUpdate({
+            return aki(StagesApi).stagesAuthenticatorWebauthnUpdate({
                 stageUuid: this.instance.pk || "",
                 authenticatorWebAuthnStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnCreate({
+
+        return aki(StagesApi).stagesAuthenticatorWebauthnCreate({
             authenticatorWebAuthnStageRequest: data,
         });
     }
@@ -58,22 +55,28 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
             [WebAuthnHintEnum.ClientDevice, msg("Client device (e.g. Touch ID, Windows Hello)")],
             [WebAuthnHintEnum.Hybrid, msg("Hybrid (e.g. QR code, phone)")],
         ];
+
         const selectedHints: DualSelectPair[] = (this.instance?.hints ?? [])
             .map((hint) => allHints.find(([key]) => key === hint)!)
             .filter(Boolean);
+
         return html` <span>
                 ${msg(
                     "Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${this.instance?.name ?? ""}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-element-horizontal
                 label=${msg("Authenticator type name")}
                 ?required=${false}
@@ -130,20 +133,20 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                                     label: msg(
                                         "Required: The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur",
                                     ),
-                                    value: ResidentKeyRequirementEnum.Required,
+                                    value: UserVerificationEnum.Required,
                                     default: true,
                                 },
                                 {
                                     label: msg(
                                         "Preferred: The authenticator can create and store a dedicated credential, but if it doesn't that's alright too",
                                     ),
-                                    value: ResidentKeyRequirementEnum.Preferred,
+                                    value: UserVerificationEnum.Preferred,
                                 },
                                 {
                                     label: msg(
                                         "Discouraged: The authenticator should not create a dedicated credential",
                                     ),
-                                    value: ResidentKeyRequirementEnum.Discouraged,
+                                    value: UserVerificationEnum.Discouraged,
                                 },
                             ]}
                             .value=${this.instance?.residentKeyRequirement}
@@ -158,24 +161,33 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                         <ak-radio
                             .options=${[
                                 {
-                                    label: msg("No preference is sent"),
+                                    label: msg(
+                                        "No preference: the browser may offer any available authenticator",
+                                    ),
                                     value: null,
                                     default: true,
                                 },
                                 {
                                     label: msg(
-                                        "A non-removable authenticator, like TouchID or Windows Hello",
+                                        "Platform: a non-removable authenticator built into the device, such as Touch ID, Face ID, or Windows Hello",
                                     ),
                                     value: AuthenticatorAttachmentEnum.Platform,
                                 },
                                 {
-                                    label: msg('A "roaming" authenticator, like a YubiKey'),
+                                    label: msg(
+                                        "Cross-platform: a roaming authenticator, such as a YubiKey or Google Titan",
+                                    ),
                                     value: AuthenticatorAttachmentEnum.CrossPlatform,
                                 },
                             ]}
                             .value=${this.instance?.authenticatorAttachment}
                         >
                         </ak-radio>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Controls the authenticatorAttachment parameter sent to the browser during WebAuthn registration. If Hints are configured and this is left as 'No preference', a value is inferred from the selected hints for backward compatibility with older browsers.",
+                            )}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Hints")} name="hints">
                         <ak-dual-select-provider
@@ -212,10 +224,10 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                     >
                         <ak-dual-select-provider
                             .provider=${(page: number, search?: string): Promise<DataProvision> => {
-                                return new StagesApi(DEFAULT_CONFIG)
+                                return aki(StagesApi)
                                     .stagesAuthenticatorWebauthnDeviceTypesList({
-                                        page: page,
-                                        search: search,
+                                        page,
+                                        search,
                                     })
                                     .then((results) => {
                                         return {
@@ -240,36 +252,12 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                         label=${msg("Configuration flow")}
                         name="configureFlow"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation:
-                                        FlowsInstancesListDesignationEnum.StageConfiguration,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                return this.instance?.configureFlow === flow.pk;
-                            }}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKFlowSearch({
+                            name: "configureFlow",
+                            flowType: FlowDesignationEnum.StageConfiguration,
+                            value: this.instance?.configureFlow,
+                            blankable: true,
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.",

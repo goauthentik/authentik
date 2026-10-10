@@ -1,3 +1,5 @@
+import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
+
 import { PFSize } from "#common/enums";
 
 import { AKElement } from "#elements/Base";
@@ -5,8 +7,6 @@ import { AKElement } from "#elements/Base";
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 
 @customElement("ak-spinner")
 export class Spinner extends AKElement {
@@ -24,6 +24,7 @@ export class Spinner extends AKElement {
             <span class="pf-c-spinner__clipper"></span>
             <span class="pf-c-spinner__lead-ball"></span>
             <span class="pf-c-spinner__tail-ball"></span>
+            <slot></slot>
         </span>`;
     }
 }

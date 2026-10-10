@@ -1,26 +1,11 @@
 import "#admin/admin-settings/AdminSettingsForm";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/EmptyState";
 import "#elements/Tabs";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/ModalForm";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
-
-import { AKElement } from "#elements/Base";
-
-import { setPageDetails } from "#components/ak-page-navbar";
-
-import { AdminSettingsForm } from "#admin/admin-settings/AdminSettingsForm";
-
-import { AdminApi, Settings } from "@goauthentik/api";
-
-import { msg } from "@lit/localize";
-import { html, nothing, PropertyValues } from "lit";
-import { customElement, query, state } from "lit/decorators.js";
-
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -30,6 +15,19 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+
+import { aki } from "#common/api/client";
+
+import { AKElement } from "#elements/Base";
+import { setPageDetails } from "#elements/router/meta";
+
+import { AdminSettingsForm } from "#admin/admin-settings/AdminSettingsForm";
+
+import { AdminApi, Settings } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, nothing, PropertyValues } from "lit";
+import { customElement, query, state } from "lit/decorators.js";
 
 @customElement("ak-admin-settings")
 export class AdminSettingsPage extends AKElement {
@@ -57,33 +55,35 @@ export class AdminSettingsPage extends AKElement {
     }
 
     #refresh = () => {
-        return new AdminApi(DEFAULT_CONFIG).adminSettingsRetrieve().then((settings) => {
-            this.settings = settings;
-        });
+        return aki(AdminApi)
+            .adminSettingsRetrieve()
+            .then((settings) => {
+                this.settings = settings;
+            });
     };
 
     render() {
         if (!this.settings) return nothing;
 
         return html`
-            <section class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
+            <main class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card">
                     <div class="pf-c-card__body">
                         <ak-admin-settings-form
                             id="form"
                             .settings=${this.settings}
-                            action-label=${msg("Update settings")}
                             @ak-form-submitted=${{ handleEvent: this.#refresh, passive: true }}
                         >
                         </ak-admin-settings-form>
                     </div>
                 </div>
-            </section>
+            </main>
         `;
     }
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             icon: "fa fa-cog",
             header: msg("System settings"),

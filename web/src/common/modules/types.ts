@@ -6,7 +6,7 @@
  * A type representing a resolved ES module with a default export of type `DefaultExport`.
  *
  * ```ts
- * const mod: ResolvedESModule<MyType> = await import('./my-module.js');
+ * const mod: ResolvedESModule<MyType> = await import("./my-module.js");
  * const myValue: MyType = mod.default;
  * ```
  */

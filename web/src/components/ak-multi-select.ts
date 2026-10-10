@@ -1,15 +1,14 @@
 import "#elements/forms/HorizontalFormElement";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 
-import { AkControlElement } from "#elements/AkControlElement";
+import { AKControlElement } from "#elements/ControlElement";
 
 import { css, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { map } from "lit/directives/map.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
-
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 
 type Pair = [string, string];
 
@@ -25,7 +24,7 @@ const selectStyles = css`
  * @part select - The select itself, to override the height specified above.
  */
 @customElement("ak-multi-select")
-export class AkMultiSelect extends AkControlElement {
+export class AkMultiSelect extends AKControlElement {
     static styles = [PFForm, PFFormControl, selectStyles];
 
     /**
@@ -83,7 +82,7 @@ export class AkMultiSelect extends AkControlElement {
      * control that produces values of specific interest to our REST API. This is our modern
      * accessor name.
      */
-    json() {
+    toJSON() {
         return this.values;
     }
 
@@ -104,6 +103,7 @@ export class AkMultiSelect extends AkControlElement {
             this.values = Array.from(this.selectRef.value!.querySelectorAll("option"))
                 .filter((option) => option.selected)
                 .map((option) => option.value);
+
             this.dispatchEvent(
                 new CustomEvent("ak-select", {
                     detail: this.values,

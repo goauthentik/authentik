@@ -1,6 +1,5 @@
 import "#elements/messages/MessageContainer";
 import "./ak-checkbox-group.js";
-
 import { CheckboxGroup as AkCheckboxGroup } from "./ak-checkbox-group.js";
 
 import { Meta } from "@storybook/web-components";
@@ -55,7 +54,7 @@ export const CheckboxGroup = () => {
             Values sent in event: ${event.detail.join(", ")}
         </p>
         <p>
-            Values present as data-ak-control: <kbd>${JSON.stringify(target.json(), null)}</kbd>
+            Values present as data-ak-control: <kbd>${JSON.stringify(target.toJSON(), null)}</kbd>
         </p>
     `;
     };

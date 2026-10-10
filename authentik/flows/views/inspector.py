@@ -71,7 +71,11 @@ class FlowInspectorView(APIView):
 
     flow: Flow
     _logger: BoundLogger
-    permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        if settings.DEBUG:
+            return []
+        return [IsAuthenticated()]
 
     def setup(self, request: HttpRequest, flow_slug: str):
         super().setup(request, flow_slug=flow_slug)

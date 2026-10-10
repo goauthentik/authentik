@@ -18,7 +18,10 @@ from authentik.rbac.decorators import permission_required
 class EnrollmentTokenSerializer(ModelSerializer):
 
     device_group_obj = DeviceAccessGroupSerializer(
-        source="device_group", read_only=True, required=False
+        source="device_group",
+        read_only=True,
+        required=False,
+        allow_null=True,
     )
 
     def __init__(self, *args, **kwargs) -> None:

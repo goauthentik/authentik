@@ -1,4 +1,6 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+
+import { aki } from "#common/api/client";
 
 import { EventChart } from "#elements/charts/EventChart";
 
@@ -8,8 +10,6 @@ import { ChartData } from "chart.js";
 
 import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 @customElement("ak-events-volume-chart")
 export class EventVolumeChart extends EventChart {
@@ -39,7 +39,7 @@ export class EventVolumeChart extends EventChart {
     ];
 
     apiRequest(): Promise<EventVolume[]> {
-        return new EventsApi(DEFAULT_CONFIG).eventsEventsVolumeList({
+        return aki(EventsApi).eventsEventsVolumeList({
             historyDays: 7,
             ...this._query,
         });

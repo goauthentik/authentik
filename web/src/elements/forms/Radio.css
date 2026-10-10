@@ -1,4 +1,6 @@
 .pf-c-form__group-control {
+    --pf-c-grid__group-control--m-stack--Gap: var(--pf-global--spacer--xs);
+
     /**
      * There's enough complexity within the group label variable composition
      * to add a fallback value.
@@ -18,6 +20,15 @@
     }
 }
 
+/**
+ * P5 puts a line separating the entries, but this looks odd in our stacked usage. Specifying
+ * `.pf-m-stack` here also raises the specificity above the P4 default.
+ */
+.pf-m-stack label.pf-c-radio:not(:last-child) {
+    --pf-c-radio--BoxShadowColor: transparent;
+}
+
 .pf-c-radio__description {
     text-wrap: balance;
+    text-wrap: pretty;
 }

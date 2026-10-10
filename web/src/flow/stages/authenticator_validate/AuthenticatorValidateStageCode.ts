@@ -1,5 +1,4 @@
 import "#flow/components/ak-flow-card";
-
 import { formatDeviceChallengeMessage } from "#common/labels";
 
 import { AKFormErrors } from "#components/ak-field-errors";
@@ -30,7 +29,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
 
         return html`<form class="pf-c-form" @submit=${this.submitForm}>
             ${this.renderUserInfo()}
-            <fieldset class="pf-c-form__group">
+            <fieldset class="ak-c-fieldset pf-c-form__group">
                 <legend class="sr-only">${msg("Authentication code")}</legend>
                 ${AKLabel(
                     {
@@ -40,13 +39,13 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                     staticDevice ? msg("Static token") : msg("Authentication code"),
                 )}
                 <input
-                    ${this.autofocusTarget.toRef()}
+                    ${this.primaryFocusTarget.toRef()}
                     id="validation-code-input"
                     aria-describedby="validation-code-help"
                     type="text"
                     name="code"
                     inputmode=${staticDevice ? "text" : "numeric"}
-                    pattern=${staticDevice ? "[0-9a-zA-Z]*" : "[0-9]*"}
+                    pattern=${staticDevice ? "[0-9a-zA-Z\\-\\s]*" : "[0-9]*"}
                     placeholder=${msg("Type an authentication code...")}
                     autofocus
                     spellcheck="false"
@@ -62,7 +61,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                 ${AKFormErrors({ errors: this.challenge?.responseErrors?.code })}
             </fieldset>
 
-            <fieldset class="pf-c-form__group pf-m-action">
+            <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                 <legend class="sr-only">${msg("Form actions")}</legend>
                 <button name="continue" type="submit" class="pf-c-button pf-m-primary pf-m-block">
                     ${msg("Continue")}

@@ -15,8 +15,9 @@ from authentik.stages.authenticator_webauthn.models import (
     WebAuthnDevice,
 )
 from authentik.stages.identification.models import IdentificationStage
+from tests.decorators import retry
 from tests.e2e.test_flows_login_sfe import login_sfe
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.selenium import SeleniumTestCase
 
 
 class TestFlowsAuthenticatorWebAuthn(SeleniumTestCase):

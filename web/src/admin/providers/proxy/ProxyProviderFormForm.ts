@@ -1,17 +1,23 @@
 import "#components/ak-text-input";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";
-import "#admin/common/ak-crypto-certificate-search";
-import "#admin/common/ak-flow-search/ak-flow-search";
-import "#components/ak-toggle-group";
+import "#elements/ToggleGroup";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./ProxyProviderFormHelpers.js";
 
+import { ToggleGroupEvent } from "#elements/ToggleGroup";
+
+import { AKCertificateSearch } from "#admin/common/AKCertificateSearch";
+import { TLSKeyTypes } from "#admin/common/certificate-key-types";
+import {
+    AKAuthenticationFlowField,
+    AKAuthorizationFlowField,
+    AKInvalidationFlowField,
+} from "#admin/providers/components/flow-fields";
 import {
     oauth2ProviderSelector,
     oauth2ProvidersProvider,
@@ -21,12 +27,7 @@ import {
     oauth2SourcesSelector,
 } from "#admin/providers/oauth2/OAuth2Sources";
 
-import {
-    FlowsInstancesListDesignationEnum,
-    ProxyMode,
-    ProxyProvider,
-    ValidationError,
-} from "@goauthentik/api";
+import { ProxyMode, ProxyProvider, ValidationError } from "@goauthentik/api";
 
 import { match } from "ts-pattern";
 
@@ -34,8 +35,8 @@ import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-export type ProxyModeValue = { value: ProxyMode };
-export type SetMode = (ev: CustomEvent<ProxyModeValue>) => void;
+export type SetMode = (ev: ToggleGroupEvent<ProxyMode>) => void;
+
 export type SetShowHttpBasic = (ev: Event) => void;
 
 export interface ProxyModeExtraArgs {
@@ -224,20 +225,7 @@ export function renderForm({ provider = {}, errors = {}, args }: ProxyProviderFo
             required
         ></ak-text-input>
 
-        <ak-form-element-horizontal
-            label=${msg("Authorization flow")}
-            required
-            name="authorizationFlow"
-        >
-            <ak-flow-search
-                flowType=${FlowsInstancesListDesignationEnum.Authorization}
-                .currentFlow=${provider.authorizationFlow}
-                required
-            ></ak-flow-search>
-            <p class="pf-c-form__helper-text">
-                ${msg("Flow used when authorizing this provider.")}
-            </p>
-        </ak-form-element-horizontal>
+        ${AKAuthorizationFlowField({ value: provider.authorizationFlow })}
 
         <div class="pf-c-card pf-m-selectable pf-m-selected">
             <div class="pf-c-card__body">${renderModeSelector(mode, onSetMode)}</div>
@@ -257,9 +245,7 @@ export function renderForm({ provider = {}, errors = {}, args }: ProxyProviderFo
         <ak-form-group label="${msg("Advanced protocol settings")}">
             <div class="pf-c-form">
                 <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
-                    <ak-crypto-certificate-search
-                        .certificate=${provider.certificate}
-                    ></ak-crypto-certificate-search>
+                    ${AKCertificateSearch({ name: "certificate", value: provider.certificate, allowedKeyTypes: TLSKeyTypes })}
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Additional scopes")}
@@ -277,14 +263,15 @@ export function renderForm({ provider = {}, errors = {}, args }: ProxyProviderFo
                 </ak-form-element-horizontal>
 
                 <ak-form-element-horizontal
-                    label="${mode === ProxyMode.ForwardDomain
-                        ? msg("Unauthenticated URLs")
-                        : msg("Unauthenticated Paths")}"
+                    label="${
+                        mode === ProxyMode.ForwardDomain
+                            ? msg("Unauthenticated URLs")
+                            : msg("Unauthenticated Paths")
+                    }"
                     name="skipPathRegex"
                 >
                     <textarea class="pf-c-form-control pf-m-monospace">
-${provider.skipPathRegex}</textarea
-                    >
+${provider.skipPathRegex}</textarea>
                     <p class="pf-c-form__helper-text">
                         ${msg(
                             "Regular expressions for which authentication is not required. Each new line is interpreted as a new expression.",
@@ -339,7 +326,7 @@ ${provider.skipPathRegex}</textarea
                     </p>
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
-                    label=${msg("Federated OIDC Providers")}
+                    label=${msg("Federated OAuth2/OpenID Providers")}
                     name="jwtFederationProviders"
                 >
                     <ak-dual-select-dynamic-selected
@@ -359,35 +346,8 @@ ${provider.skipPathRegex}</textarea
 
         <ak-form-group label="${msg("Advanced flow settings")}">
             <div class="pf-c-form">
-                <ak-form-element-horizontal
-                    label=${msg("Authentication flow")}
-                    name="authenticationFlow"
-                >
-                    <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                        .currentFlow=${provider.authenticationFlow}
-                    ></ak-flow-search>
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "Flow used when a user access this provider and is not authenticated.",
-                        )}
-                    </p>
-                </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Invalidation flow")}
-                    name="invalidationFlow"
-                    required
-                >
-                    <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Invalidation}
-                        .currentFlow=${provider.invalidationFlow}
-                        defaultFlowSlug="default-provider-invalidation-flow"
-                        required
-                    ></ak-flow-search>
-                    <p class="pf-c-form__helper-text">
-                        ${msg("Flow used when logging out of this provider.")}
-                    </p>
-                </ak-form-element-horizontal>
+                ${AKAuthenticationFlowField({ value: provider.authenticationFlow })}
+                ${AKInvalidationFlowField({ value: provider.invalidationFlow })}
             </div>
         </ak-form-group>
     `;

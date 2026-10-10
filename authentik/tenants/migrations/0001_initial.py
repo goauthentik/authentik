@@ -3,12 +3,9 @@
 import uuid
 
 import django.db.models.deletion
-import django_tenants.postgresql_backend.base
 from django.db import migrations, models
-from django_tenants.utils import get_tenant_base_schema
 
 import authentik.lib.utils.time
-import authentik.tenants.models
 from authentik.lib.config import CONFIG
 
 
@@ -16,8 +13,8 @@ def create_default_tenant(apps, schema_editor):
     db_alias = schema_editor.connection.alias
 
     Tenant = apps.get_model("authentik_tenants", "Tenant")
-    tenant = Tenant.objects.using(db_alias).create(
-        schema_name="public",
+    Tenant.objects.using(db_alias).create(
+        schema_name=CONFIG.get("postgresql.default_schema", "public"),
         name="Default",
         ready=True,
         avatars=CONFIG.get("avatars", "gravatar,initials"),
@@ -45,7 +42,6 @@ class Migration(migrations.Migration):
                         db_index=True,
                         max_length=63,
                         unique=True,
-                        validators=[authentik.tenants.models._validate_schema_name],
                     ),
                 ),
                 (
@@ -144,8 +140,4 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.RunPython(code=create_default_tenant, reverse_code=migrations.RunPython.noop),
-        migrations.RunSQL(
-            sql=f"CREATE SCHEMA IF NOT EXISTS {get_tenant_base_schema()};",
-            reverse_sql=f"DROP SCHEMA IF EXISTS {get_tenant_base_schema()};",
-        ),
     ]

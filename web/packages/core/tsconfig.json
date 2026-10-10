@@ -1,11 +1,8 @@
 {
-    "extends": "@goauthentik/tsconfig",
+    "extends": "@goauthentik/tsconfig/node",
     "compilerOptions": {
-        "lib": ["DOM", "DOM.Iterable", "ESNext"],
-        "resolveJsonModule": true,
-        "baseUrl": ".",
-        "checkJs": true,
-        "allowJs": true,
-        "emitDeclarationOnly": true
-    }
+        "lib": ["DOM", "DOM.Iterable", "ESNext"]
+    },
+    "include": ["./**/*.ts"],
+    "exclude": ["./out/**", "./node_modules/**"]
 }

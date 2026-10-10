@@ -1,0 +1,146 @@
+---
+title: Integrate with Plane
+sidebar_label: Plane
+support_level: community
+---
+
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+## What is Plane?
+
+> Plane is a project and knowledge management platform that brings projects, documentation, and workflows into a single workspace.
+>
+> -- https://plane.so/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `plane.company` is the FQDN of the self-hosted Plane installation. This placeholder is not used for Plane Cloud.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::info Plane requirements
+OIDC SSO requires a Plane Cloud Business plan or a self-hosted Plane Pro or Business plan. Plane Cloud also requires a verified email domain before you configure SSO. Domain verification is outside the scope of this guide.
+:::
+
+Choose your Plane deployment below.
+
+<Tabs
+  defaultValue="cloud"
+  values={[
+    { label: "Plane Cloud", value: "cloud" },
+    { label: "Self-hosted Plane", value: "self-hosted" },
+  ]}
+>
+  <TabItem value="cloud">
+
+## authentik configuration
+
+<RedirectURI20265Note />
+
+To support the integration of Plane Cloud with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it is required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), select the authorization flow to use for this provider, and configure the following settings:
+        - Note the **Client ID** and **Client Secret** values because they are required later.
+        - Add a `Strict` `Authorization` redirect URI with the temporary value `https://temp.temp`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+3. Click **Submit** to save the application and provider.
+
+## Plane configuration
+
+### Get the Plane connection details
+
+1. Log in to Plane Cloud as a workspace administrator.
+2. Navigate to **Workspace Settings** > **Identity**.
+3. Click **Configure** next to **Enable OIDC**, and then click **Get setup details**.
+4. Copy the **Redirect URL** and **Logout URL**. You need these values to update the authentik provider.
+
+### Update the authentik provider
+
+1. In a separate browser tab, log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and open the provider that you created for Plane.
+3. Replace the temporary **Redirect URI** with the **Redirect URL** that you copied from Plane. Keep the URI type set to `Strict` `Authorization`.
+4. Add the **Logout URL** from Plane as a `Strict` `Post Logout` redirect URI.
+5. Click **Update** to save the provider.
+
+### Configure OIDC
+
+1. Return to the Plane Cloud OIDC configuration page.
+2. Configure the following settings:
+    - **Client ID**: enter the Client ID from authentik.
+    - **Client secret**: enter the Client Secret from authentik.
+    - **Authorize URL**: `https://authentik.company/application/o/authorize/`
+    - **Token URL**: `https://authentik.company/application/o/token/`
+    - **Users' info URL**: `https://authentik.company/application/o/userinfo/`
+    - **Logout URL**: `https://authentik.company/application/o/<application_slug>/end-session/`
+3. Click **Save changes** to enable OIDC authentication.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Plane Cloud, log out, open Plane, and click **Sign in with Single Sign-On**. You should be redirected to authentik and then returned to Plane after authentication.
+
+  </TabItem>
+  <TabItem value="self-hosted">
+
+## authentik configuration
+
+<RedirectURI20265Note />
+
+To support the integration of self-hosted Plane with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it is required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), select the authorization flow to use for this provider, and configure the following settings:
+        - Note the **Client ID** and **Client Secret** values because they are required later.
+        - Add the following redirect URIs:
+            - `Strict` `Authorization`: `https://plane.company/auth/oidc/callback/`
+            - `Strict` `Post Logout`: `https://plane.company/auth/oidc/logout/`
+            - `Strict` `Authorization`: `https://plane.company/auth/mobile/oidc/callback/`
+            - `Strict` `Post Logout`: `https://plane.company/auth/mobile/oidc/logout/`
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+3. Click **Submit** to save the application and provider.
+
+## Plane configuration
+
+1. Log in to Plane as an instance administrator and open **God Mode**.
+2. Navigate to **Authentication** > **OIDC**.
+3. Configure the following settings:
+    - **Client ID**: enter the Client ID from authentik.
+    - **Client secret**: enter the Client Secret from authentik.
+    - **Authorize URL**: `https://authentik.company/application/o/authorize/`
+    - **Token URL**: `https://authentik.company/application/o/token/`
+    - **Users' info URL**: `https://authentik.company/application/o/userinfo/`
+    - **Logout URL**: `https://authentik.company/application/o/<application_slug>/end-session/`
+    - **IdP's name**: `authentik`
+4. Click **Save changes**, and then enable OIDC using the toggle at the top of the page.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with self-hosted Plane, log out, open Plane, and click **Continue with authentik**. You should be redirected to authentik and then returned to Plane after authentication.
+
+  </TabItem>
+</Tabs>
+
+## Resources
+
+- [Plane documentation - Single sign-on](https://docs.plane.so/authentication/sso)
+- [Plane developer documentation - OIDC SSO](https://developers.plane.so/self-hosting/govern/oidc-sso)
+- [Plane developer documentation - Instance admin and God mode](https://developers.plane.so/self-hosting/govern/instance-admin)

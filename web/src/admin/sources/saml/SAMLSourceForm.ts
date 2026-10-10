@@ -1,35 +1,40 @@
-import "#admin/common/ak-crypto-certificate-search";
-import "#admin/common/ak-flow-search/ak-source-flow-search";
 import "#components/ak-file-search-input";
 import "#components/ak-slug-input";
+import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/utils/TimeDeltaHelp";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLSourceFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
-import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
+import type { SearchSelectChangeEvent } from "#elements/forms/SearchSelect/events";
+
+import { AKCertificateSearch } from "#admin/common/AKCertificateSearch";
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
+import {
+    AKSourceAuthenticationFlowField,
+    AKSourceEnrollmentFlowField,
+    AKSourcePreAuthenticationFlowField,
+} from "#admin/sources/components/flow-fields";
 import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
-    AdminFileListUsageEnum,
     BindingTypeEnum,
     DigestAlgorithmEnum,
-    FlowsInstancesListDesignationEnum,
     GroupMatchingModeEnum,
     SAMLNameIDPolicyEnum,
     SAMLSource,
     SignatureAlgorithmEnum,
     SourcesApi,
+    UsageEnum,
     UserMatchingModeEnum,
+    CertificateKeyPair,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -39,6 +44,14 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-saml-form")
 export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
+    protected endpoints = {
+        load: (slug: string) => aki(SourcesApi).sourcesSamlRetrieve({ slug }),
+        create: (sAMLSourceRequest: SAMLSource) =>
+            aki(SourcesApi).sourcesSamlCreate({ sAMLSourceRequest }),
+        update: (slug: string, sAMLSourceRequest: SAMLSource) =>
+            aki(SourcesApi).sourcesSamlUpdate({ slug, sAMLSourceRequest }),
+    };
+
     @state()
     protected hasSigningCert = false;
 
@@ -48,29 +61,8 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
         this.hasSigningCert = false;
     }
 
-    setHasSigningCert(ev: InputEvent): void {
-        const target = ev.target as AkCryptoCertificateSearch;
-        if (!target) return;
-        this.hasSigningCert = !!target.selectedKeypair;
-    }
-
-    async loadInstance(pk: string): Promise<SAMLSource> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesSamlRetrieve({
-            slug: pk,
-        });
-    }
-
-    async send(data: SAMLSource): Promise<SAMLSource> {
-        if (this.instance) {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesSamlUpdate({
-                slug: this.instance.slug,
-                sAMLSourceRequest: data,
-            });
-        }
-
-        return new SourcesApi(DEFAULT_CONFIG).sourcesSamlCreate({
-            sAMLSourceRequest: data,
-        });
+    setHasSigningCert({ detail }: SearchSelectChangeEvent<CertificateKeyPair>): void {
+        this.hasSigningCert = !!detail.value;
     }
 
     renderHasSigningCert(): TemplateResult {
@@ -93,23 +85,21 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
     }
 
     protected override renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-
+        return html`<ak-text-input
+                label=${msg("Source Name")}
+                placeholder=${msg("Type a name for this source...")}
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+            ></ak-text-input>
             <ak-slug-input
                 name="slug"
+                placeholder=${msg("e.g. my-saml-source")}
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
                 required
                 input-hint="code"
             ></ak-slug-input>
-
             <ak-switch-input
                 name="enabled"
                 label=${msg("Enabled")}
@@ -131,36 +121,41 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                 <select class="pf-c-form-control">
                     <option
                         value=${UserMatchingModeEnum.Identifier}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.Identifier}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.Identifier
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.EmailLink}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.EmailLink}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.EmailLink
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailLink)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.EmailDeny}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.EmailDeny}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.EmailDeny
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailDeny)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.UsernameLink}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.UsernameLink}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.UsernameLink
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameLink)}
                     </option>
                     <option
                         value=${UserMatchingModeEnum.UsernameDeny}
-                        ?selected=${this.instance?.userMatchingMode ===
-                        UserMatchingModeEnum.UsernameDeny}
+                        ?selected=${
+                            this.instance?.userMatchingMode === UserMatchingModeEnum.UsernameDeny
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameDeny)}
                     </option>
@@ -174,22 +169,25 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                 <select class="pf-c-form-control">
                     <option
                         value=${GroupMatchingModeEnum.Identifier}
-                        ?selected=${this.instance?.groupMatchingMode ===
-                        GroupMatchingModeEnum.Identifier}
+                        ?selected=${
+                            this.instance?.groupMatchingMode === GroupMatchingModeEnum.Identifier
+                        }
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
                     </option>
                     <option
                         value=${GroupMatchingModeEnum.NameLink}
-                        ?selected=${this.instance?.groupMatchingMode ===
-                        GroupMatchingModeEnum.NameLink}
+                        ?selected=${
+                            this.instance?.groupMatchingMode === GroupMatchingModeEnum.NameLink
+                        }
                     >
                         ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameLink)}
                     </option>
                     <option
                         value=${GroupMatchingModeEnum.NameDeny}
-                        ?selected=${this.instance?.groupMatchingMode ===
-                        GroupMatchingModeEnum.NameDeny}
+                        ?selected=${
+                            this.instance?.groupMatchingMode === GroupMatchingModeEnum.NameDeny
+                        }
                     >
                         ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameDeny)}
                     </option>
@@ -199,7 +197,7 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                 name="icon"
                 label=${msg("Icon")}
                 .value=${this.instance?.icon}
-                .usage=${AdminFileListUsageEnum.Media}
+                .usage=${UsageEnum.Media}
                 blankable
                 help=${iconHelperText}
             ></ak-file-search-input>
@@ -225,16 +223,6 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg("Optional URL if the IDP supports Single-Logout.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Issuer")} name="issuer">
-                        <input
-                            type="text"
-                            value="${ifDefined(this.instance?.issuer)}"
-                            class="pf-c-form-control"
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Also known as Entity ID. Defaults the Metadata URL.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
@@ -266,9 +254,7 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         </ak-radio>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Signing keypair")} name="signingKp">
-                        <ak-crypto-certificate-search
-                            .certificate=${this.instance?.signingKp}
-                        ></ak-crypto-certificate-search>
+                        ${AKCertificateSearch({ name: "signingKp", value: this.instance?.signingKp })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Keypair which is used to sign outgoing requests. Leave empty to disable signing.",
@@ -279,11 +265,7 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         label=${msg("Verification Certificate")}
                         name="verificationKp"
                     >
-                        <ak-crypto-certificate-search
-                            .certificate=${this.instance?.verificationKp}
-                            @input=${this.setHasSigningCert}
-                            nokey
-                        ></ak-crypto-certificate-search>
+                        ${AKCertificateSearch({ name: "verificationKp", value: this.instance?.verificationKp, noKey: true, onChange: this.setHasSigningCert })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.",
@@ -303,6 +285,27 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                             "Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.",
                         )}
                     ></ak-switch-input>
+                    <ak-switch-input
+                        name="forceAuthn"
+                        label=${msg("Force authentication")}
+                        ?checked=${!!this.instance?.forceAuthn}
+                        help=${msg(
+                            "When enabled, the IdP is requested to force re-authentication of the user, even if the user has an existing session.",
+                        )}
+                    ></ak-switch-input>
+                    <ak-form-element-horizontal
+                        label=${msg("Issuer override")}
+                        name="issuerOverride"
+                    >
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.issuerOverride)}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Also known as Entity ID. Defaults to the Metadata URL.")}
+                        </p>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("NameID Policy")}
                         required
@@ -311,36 +314,46 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         <select class="pf-c-form-control">
                             <option
                                 value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
-                                ?selected=${this.instance?.nameIdPolicy ===
-                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
+                                ?selected=${
+                                    this.instance?.nameIdPolicy ===
+                                    SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent
+                                }
                             >
                                 ${msg("Persistent")}
                             </option>
                             <option
                                 value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
-                                ?selected=${this.instance?.nameIdPolicy ===
-                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
+                                ?selected=${
+                                    this.instance?.nameIdPolicy ===
+                                    SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress
+                                }
                             >
                                 ${msg("Email address")}
                             </option>
                             <option
                                 value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
-                                ?selected=${this.instance?.nameIdPolicy ===
-                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
+                                ?selected=${
+                                    this.instance?.nameIdPolicy ===
+                                    SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName
+                                }
                             >
                                 ${msg("Windows")}
                             </option>
                             <option
                                 value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
-                                ?selected=${this.instance?.nameIdPolicy ===
-                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
+                                ?selected=${
+                                    this.instance?.nameIdPolicy ===
+                                    SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName
+                                }
                             >
                                 ${msg("X509 Subject")}
                             </option>
                             <option
                                 value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
-                                ?selected=${this.instance?.nameIdPolicy ===
-                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
+                                ?selected=${
+                                    this.instance?.nameIdPolicy ===
+                                    SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient
+                                }
                             >
                                 ${msg("Transient")}
                             </option>
@@ -349,8 +362,9 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                     <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
                         <input
                             type="text"
-                            value="${this.instance?.userPathTemplate ??
-                            "goauthentik.io/sources/%(slug)s"}"
+                            value="${
+                                this.instance?.userPathTemplate ?? "goauthentik.io/sources/%(slug)s"
+                            }"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
@@ -439,9 +453,7 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         label=${msg("Encryption Certificate")}
                         name="encryptionKp"
                     >
-                        <ak-crypto-certificate-search
-                            .certificate=${this.instance?.encryptionKp}
-                        ></ak-crypto-certificate-search>
+                        ${AKCertificateSearch({ name: "encryptionKp", value: this.instance?.encryptionKp })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When selected, encrypted assertions will be decrypted using this keypair.",
@@ -488,49 +500,9 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
             </ak-form-group>
             <ak-form-group label="${msg("Flow settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Pre-authentication flow")}
-                        required
-                        name="preAuthenticationFlow"
-                    >
-                        <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.StageConfiguration}
-                            .currentFlow=${this.instance?.preAuthenticationFlow}
-                            .instanceId=${this.instance?.pk}
-                            fallback="default-source-pre-authentication"
-                        ></ak-source-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow used before authentication.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Authentication flow")}
-                        name="authenticationFlow"
-                    >
-                        <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                            .currentFlow=${this.instance?.authenticationFlow}
-                            .instanceId=${this.instance?.pk}
-                            fallback="default-source-authentication"
-                        ></ak-source-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow to use when authenticating existing users.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Enrollment flow")}
-                        name="enrollmentFlow"
-                    >
-                        <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Enrollment}
-                            .currentFlow=${this.instance?.enrollmentFlow}
-                            .instanceId=${this.instance?.pk}
-                            fallback="default-source-enrollment"
-                        ></ak-source-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow to use when enrolling new users.")}
-                        </p>
-                    </ak-form-element-horizontal>
+                    ${AKSourcePreAuthenticationFlowField({ value: this.instance?.preAuthenticationFlow, sourcePk: this.instance?.pk })}
+                    ${AKSourceAuthenticationFlowField({ value: this.instance?.authenticationFlow, sourcePk: this.instance?.pk })}
+                    ${AKSourceEnrollmentFlowField({ value: this.instance?.enrollmentFlow, sourcePk: this.instance?.pk })}
                 </div>
             </ak-form-group>
             <ak-form-group label=${msg("Advanced settings")}>

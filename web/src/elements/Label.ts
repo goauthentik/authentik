@@ -1,3 +1,5 @@
+import PFLabel from "@patternfly/patternfly/components/Label/label.css";
+
 import { AKElement } from "#elements/Base";
 import type { SlottedTemplateResult, Spread } from "#elements/types";
 
@@ -7,26 +9,26 @@ import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
-import PFLabel from "@patternfly/patternfly/components/Label/label.css";
-
 export enum PFColor {
     Green = "pf-m-green",
     Orange = "pf-m-orange",
     Red = "pf-m-red",
     Blue = "pf-m-blue",
-    Grey = "",
+    Gray = "",
 }
 
 export const levelNames = ["warning", "info", "success", "danger"];
+
 export type Level = (typeof levelNames)[number];
 
 type Chrome = [Level, PFColor, string, string];
+
 const chromeList: Chrome[] = [
     ["danger", PFColor.Red, "pf-m-red", "fa-times"],
     ["warning", PFColor.Orange, "pf-m-orange", "fa-exclamation-triangle"],
     ["success", PFColor.Green, "pf-m-green", "fa-check"],
     ["running", PFColor.Blue, "pf-m-blue", "fa-clock"],
-    ["info", PFColor.Grey, "pf-m-grey", "fa-info-circle"],
+    ["info", PFColor.Gray, "pf-m-grey", "fa-info-circle"],
 ];
 
 export interface ILabel {
@@ -38,7 +40,7 @@ export interface ILabel {
 @customElement("ak-label")
 export class Label extends AKElement implements ILabel {
     @property()
-    color: PFColor = PFColor.Grey;
+    color: PFColor = PFColor.Gray;
 
     @property()
     icon?: string;
@@ -81,6 +83,7 @@ export class Label extends AKElement implements ILabel {
 
 export function akLabel(properties: ILabel, content: SlottedTemplateResult = nothing) {
     const message = typeof content === "string" ? html`<span>${content}</span>` : content;
+
     return html`<ak-label ${spread(properties as Spread)}>${message}</ak-label>`;
 }
 

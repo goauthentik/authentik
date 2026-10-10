@@ -63,10 +63,13 @@ class TOTPDeviceMixin:
 
 @override_settings(
     OTP_TOTP_SYNC=False,
-    OTP_TOTP_THROTTLE_FACTOR=0,
 )
 class TOTPTest(TOTPDeviceMixin, TestCase):
     """TOTP tests"""
+
+    def setUp(self):
+        super().setUp()
+        self.device.set_throttle_factor(0)
 
     def test_default_key(self):
         """Ensure default_key is valid"""
@@ -190,9 +193,6 @@ class TOTPTest(TOTPDeviceMixin, TestCase):
         self.assertEqual(params["image"][0], image_url)
 
 
-@override_settings(
-    OTP_TOTP_THROTTLE_FACTOR=1,
-)
 class ThrottlingTestCase(TOTPDeviceMixin, ThrottlingTestMixin, TestCase):
     """Test TOTP Throttling"""
 

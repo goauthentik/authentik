@@ -6,20 +6,11 @@
 //
 // @see https://docusaurus.io/docs/typescript-support
 {
-    "extends": "@goauthentik/tsconfig",
+    "extends": "@goauthentik/tsconfig/web",
     "compilerOptions": {
-        "emitDeclarationOnly": true,
-        "checkJs": true,
-        "allowJs": true,
-        "composite": true,
-        "esModuleInterop": true,
-        "target": "esnext",
         "module": "esnext",
-        "moduleResolution": "bundler",
-        "allowImportingTsExtensions": true,
         "jsx": "preserve",
         "lib": ["DOM", "DOM.Iterable", "ESNext"],
-        "baseUrl": "${configDir}",
         "rootDir": "${configDir}"
     },
     "exclude": [

@@ -28,7 +28,11 @@ class SourceStageSerializer(EnterpriseRequiredMixin, StageSerializer):
 
     class Meta:
         model = SourceStage
-        fields = StageSerializer.Meta.fields + ["source", "resume_timeout"]
+        fields = StageSerializer.Meta.fields + [
+            "source",
+            "resume_timeout",
+            "resume_on_match_failures",
+        ]
 
 
 class SourceStageViewSet(UsedByMixin, ModelViewSet):
@@ -36,6 +40,6 @@ class SourceStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = SourceStage.objects.all()
     serializer_class = SourceStageSerializer
-    filterset_fields = "__all__"
+    filterset_fields = ["stage_uuid", "name", "source", "resume_timeout"]
     ordering = ["name"]
     search_fields = ["name"]

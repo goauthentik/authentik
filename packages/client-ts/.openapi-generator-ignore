@@ -1,0 +1,6 @@
+.gitignore
+.npmignore
+docs/**
+README.md
+package.json
+tsconfig.esm.json

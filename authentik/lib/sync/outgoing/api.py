@@ -1,6 +1,6 @@
 from django.db.models import Model
 from dramatiq.actor import Actor
-from dramatiq.results.errors import ResultFailure
+from dramatiq.results.errors import ResultError
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, ChoiceField
@@ -113,13 +113,13 @@ class OutgoingSyncProviderStatusMixin:
                 "override_dry_run": body.validated_data["override_dry_run"],
                 "pk": pk,
             },
-            retries=0,
+            retries=1,
             rel_obj=provider,
             uid=f"{provider.name}:{_object_type._meta.model_name}:{pk}:manual",
         )
         try:
             msg.get_result(block=True)
-        except ResultFailure:
+        except ResultError:
             pass
         task: Task = msg.options["task"]
         task.refresh_from_db()

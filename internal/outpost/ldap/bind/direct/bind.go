@@ -23,7 +23,7 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 	fe.Params.Add("goauthentik.io/outpost/ldap", "true")
 
 	fe.Answers[flow.StageIdentification] = username
-	fe.SetSecrets(req.BindPW, db.si.GetMFASupport())
+	fe.SetSecrets(req.Password, db.si.GetMFASupport())
 
 	passed, err := fe.Execute()
 	flags := flags.UserFlags{

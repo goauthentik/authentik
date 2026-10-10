@@ -12,7 +12,8 @@ from authentik.enterprise.providers.ws_federation.models import WSFederationProv
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.providers.saml.models import SAMLPropertyMapping
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.selenium import SeleniumTestCase
 
 
 class TestProviderWSFed(SeleniumTestCase):
@@ -31,7 +32,7 @@ class TestProviderWSFed(SeleniumTestCase):
             + "?download"
         )
         self.run_container(
-            image="ghcr.io/beryju/wsfed-test-sp:v0.1.2",
+            image=self.pinned_image("wsfed-test-sp", "e2e/compose.yml"),
             ports={
                 "8080": "8080",
             },

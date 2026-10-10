@@ -5,7 +5,9 @@ from copy import deepcopy
 from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.tests.utils import RequestFactory
+from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource, OAuthSourcePropertyMapping
 from authentik.sources.oauth.views.callback import OAuthSourceFlowManager
@@ -80,6 +82,24 @@ class TestPropertyMappings(TestCase):
             },
         )
 
+    def test_user_property_mappings_non_dict(self):
+        """Test that a mapping returning a non-dict raises a configuration error"""
+        self.source.user_property_mappings.add(
+            OAuthSourcePropertyMapping.objects.create(
+                name="test",
+                expression="return ['foo']",
+            )
+        )
+        request = self.request_factory.get("/", user=AnonymousUser())
+        with self.assertRaises(PropertyMappingExpressionException):
+            OAuthSourceFlowManager(self.source, request, IDENTIFIER, {"info": INFO}, {})
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.CONFIGURATION_ERROR,
+                context__message="Failed to evaluate property mapping: 'test'",
+            ).exists()
+        )
+
     def test_grup_property_mappings(self):
         info = deepcopy(INFO)
         info["groups"] = ["group 1", "group 2"]
@@ -108,3 +128,20 @@ class TestPropertyMappings(TestCase):
                 },
             },
         )
+
+    def test_group_property_mappings_with_object_groups(self):
+        """An object-shaped `groups` entry is skipped instead of aborting the flow.
+
+        Added in #25195 asserting the `TypeError` that #25191 is about; the
+        identifier is still unusable as a key, so the entry is dropped rather
+        than mapped.
+        """
+        info = deepcopy(INFO)
+        info["groups"] = [
+            {"id": "group-1", "name": "Admins"},
+        ]
+
+        request = self.request_factory.get("/", user=AnonymousUser())
+
+        flow_manager = OAuthSourceFlowManager(self.source, request, IDENTIFIER, {"info": info}, {})
+        self.assertEqual(flow_manager.groups_properties, {})

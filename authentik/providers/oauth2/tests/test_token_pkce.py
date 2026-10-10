@@ -11,6 +11,7 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import (
     AuthorizationCode,
+    GrantType,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
@@ -37,6 +38,7 @@ class TestTokenPKCE(OAuthTestCase):
             authorization_flow=flow,
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
             access_code_validity="seconds=100",
+            grant_types=[GrantType.AUTHORIZATION_CODE],
         )
         Application.objects.create(name="app", slug="app", provider=provider)
         state = generate_id()
@@ -95,6 +97,7 @@ class TestTokenPKCE(OAuthTestCase):
             authorization_flow=flow,
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
             access_code_validity="seconds=100",
+            grant_types=[GrantType.AUTHORIZATION_CODE],
         )
         Application.objects.create(name="app", slug="app", provider=provider)
         state = generate_id()
@@ -151,6 +154,7 @@ class TestTokenPKCE(OAuthTestCase):
             authorization_flow=flow,
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
             access_code_validity="seconds=100",
+            grant_types=[GrantType.AUTHORIZATION_CODE],
         )
         Application.objects.create(name="app", slug="app", provider=provider)
         state = generate_id()
@@ -196,6 +200,7 @@ class TestTokenPKCE(OAuthTestCase):
             authorization_flow=flow,
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
             access_code_validity="seconds=100",
+            grant_types=[GrantType.AUTHORIZATION_CODE],
         )
         Application.objects.create(name="app", slug="app", provider=provider)
         state = generate_id()

@@ -330,10 +330,20 @@ class TestPromptStage(FlowTestCase):
 
     def test_static_hidden_overwrite(self):
         """Test that static and hidden fields ignore any value sent to them"""
+        alert_prompt = Prompt.objects.create(
+            name=generate_id(),
+            field_key="alert_prompt",
+            type=FieldTypes.ALERT_INFO,
+            required=True,
+            placeholder="alert fallback",
+            initial_value="alert content",
+        )
+        self.stage.fields.add(alert_prompt)
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PROMPT] = {"hidden_prompt": "hidden"}
         self.prompt_data["hidden_prompt"] = "foo"
         self.prompt_data["static_prompt"] = "foo"
+        self.prompt_data["alert_prompt"] = "foo"
         challenge_response = PromptChallengeResponse(
             None, stage_instance=self.stage, plan=plan, data=self.prompt_data, stage=self.stage_view
         )
@@ -341,6 +351,7 @@ class TestPromptStage(FlowTestCase):
         self.assertNotEqual(challenge_response.validated_data["hidden_prompt"], "foo")
         self.assertEqual(challenge_response.validated_data["hidden_prompt"], "hidden")
         self.assertNotEqual(challenge_response.validated_data["static_prompt"], "foo")
+        self.assertEqual(challenge_response.validated_data["alert_prompt"], "alert content")
 
     def test_prompt_placeholder(self):
         """Test placeholder and expression"""

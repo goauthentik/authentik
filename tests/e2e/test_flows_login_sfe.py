@@ -10,7 +10,8 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
 from authentik.flows.models import NotConfiguredAction
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.selenium import SeleniumTestCase
 
 
 def login_sfe(driver: WebDriver, user: User):

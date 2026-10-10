@@ -6,6 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
+        ("authentik_core", "0056_user_roles"),  # must run before group field is removed
         ("authentik_rbac", "0009_remove_initialpermissions_mode"),
     ]
 

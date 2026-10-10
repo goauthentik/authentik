@@ -1,19 +1,15 @@
+import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
+import { aki } from "#common/api/client";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
-
-import { RenderFlowOption } from "#admin/flows/utils";
+import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
     AuthenticatorTOTPStage,
     DigitsEnum,
-    Flow,
-    FlowsApi,
-    FlowsInstancesListDesignationEnum,
-    FlowsInstancesListRequest,
+    FlowDesignationEnum,
     StagesApi,
 } from "@goauthentik/api";
 
@@ -23,23 +19,16 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-totp-form")
 export class AuthenticatorTOTPStageForm extends BaseStageForm<AuthenticatorTOTPStage> {
-    loadInstance(pk: string): Promise<AuthenticatorTOTPStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorTotpRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: AuthenticatorTOTPStage): Promise<AuthenticatorTOTPStage> {
-        if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorTotpUpdate({
-                stageUuid: this.instance.pk || "",
-                authenticatorTOTPStageRequest: data,
-            });
-        }
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorTotpCreate({
-            authenticatorTOTPStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesAuthenticatorTotpRetrieve({ stageUuid }),
+        create: (authenticatorTOTPStageRequest: AuthenticatorTOTPStage) =>
+            aki(StagesApi).stagesAuthenticatorTotpCreate({ authenticatorTOTPStageRequest }),
+        update: (stageUuid: string, authenticatorTOTPStageRequest: AuthenticatorTOTPStage) =>
+            aki(StagesApi).stagesAuthenticatorTotpUpdate({
+                stageUuid,
+                authenticatorTOTPStageRequest,
+            }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>
@@ -47,14 +36,18 @@ export class AuthenticatorTOTPStageForm extends BaseStageForm<AuthenticatorTOTPS
                     "Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator).",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${this.instance?.name ?? ""}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-element-horizontal
                 label=${msg("Authenticator type name")}
                 ?required=${false}
@@ -95,36 +88,12 @@ export class AuthenticatorTOTPStageForm extends BaseStageForm<AuthenticatorTOTPS
                         label=${msg("Configuration flow")}
                         name="configureFlow"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation:
-                                        FlowsInstancesListDesignationEnum.StageConfiguration,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                return this.instance?.configureFlow === flow.pk;
-                            }}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKFlowSearch({
+                            name: "configureFlow",
+                            flowType: FlowDesignationEnum.StageConfiguration,
+                            value: this.instance?.configureFlow,
+                            blankable: true,
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.",

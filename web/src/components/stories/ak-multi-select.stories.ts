@@ -1,6 +1,5 @@
 import "#elements/messages/MessageContainer";
 import "../ak-multi-select.js";
-
 import AkMultiSelect from "../ak-multi-select.js";
 
 import { Meta } from "@storybook/web-components";
@@ -49,6 +48,7 @@ export const RadioInput = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const displayChange = (ev: any) => {
         const messagePad = document.getElementById("message-pad");
+
         const component: AkMultiSelect | null = document.querySelector(
             'ak-multi-select[name="ak-test-multi-select"]',
         );
@@ -60,7 +60,7 @@ export const RadioInput = () => {
             </ul>
             <p>Results from component:</p>
             <ul style="list-style-type: disc">
-                ${component!.json().map((v: string) => html`<li>${v}</li>`)}
+                ${component!.toJSON().map((v: string) => html`<li>${v}</li>`)}
             </ul>
         `;
 

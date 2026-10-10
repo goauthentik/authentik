@@ -1,5 +1,4 @@
 import "#elements/forms/HorizontalFormElement";
-
 import { SlottedTemplateResult } from "../elements/types";
 
 import { AKElement, type AKElementProps } from "#elements/Base";
@@ -10,8 +9,9 @@ import { AKLabel } from "#components/ak-label";
 
 import { IDGenerator } from "@goauthentik/core/id";
 
-import { html, nothing, PropertyValues } from "lit";
+import { html, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
+import { guard } from "lit/directives/guard.js";
 
 export interface HorizontalLightComponentProps<T> extends AKElementProps {
     name: string;
@@ -56,7 +56,8 @@ export abstract class HorizontalLightComponent<T>
 
     /**
      * The name attribute for the form element
-     * @property
+     *
+     * @property *
      * @attribute
      */
     @property({ type: String, reflect: true })
@@ -64,14 +65,15 @@ export abstract class HorizontalLightComponent<T>
 
     /**
      * The label for the input control
-     * @property
+     *
+     * @property *
      * @attribute
      */
     @property({ type: String })
     label: string | null = null;
 
     /**
-     * @property
+     * @property *
      * @attribute
      */
     @property({ type: Boolean, reflect: false })
@@ -88,7 +90,8 @@ export abstract class HorizontalLightComponent<T>
 
     /**
      * Help text to display below the form element. Optional
-     * @property
+     *
+     * @property *
      * @attribute
      */
     @property({ reflect: false })
@@ -96,13 +99,14 @@ export abstract class HorizontalLightComponent<T>
 
     /**
      * Extended help content. Optional. Expects to be a TemplateResult
+     *
      * @property
      */
     @property({ type: Object })
     bighelp?: SlottedTemplateResult | SlottedTemplateResult[];
 
     /**
-     * @property
+     * @property *
      * @attribute
      */
     @property({ type: Boolean })
@@ -115,7 +119,7 @@ export abstract class HorizontalLightComponent<T>
     }
 
     /**
-     * @property
+     * @property *
      * @attribute
      */
     @property({ type: Boolean, reflect: true })
@@ -131,12 +135,14 @@ export abstract class HorizontalLightComponent<T>
      * @property
      */
     @property({ attribute: false })
-    value?: T;
+    public value?: T;
 
     /**
      * Input hint.
-     *   - `code`: uses a monospace font and disables spellcheck & autocomplete
-     * @property
+     *
+     * - `code`: uses a monospace font and disables spellcheck & autocomplete
+     *
+     * @property *
      * @attribute
      */
     @property({ type: String, attribute: "input-hint" })
@@ -148,6 +154,7 @@ export abstract class HorizontalLightComponent<T>
 
     /**
      * A unique ID to associate with the input and label.
+     *
      * @property
      */
     @property({ type: String, reflect: false })
@@ -182,6 +189,10 @@ export abstract class HorizontalLightComponent<T>
         }
     }
 
+    public toJSON(): T | undefined {
+        return this.value;
+    }
+
     //#endregion
 
     //#region Rendering
@@ -192,14 +203,18 @@ export abstract class HorizontalLightComponent<T>
     protected abstract renderControl(): SlottedTemplateResult;
 
     protected renderHelp(): SlottedTemplateResult | SlottedTemplateResult[] {
-        const bigHelp: SlottedTemplateResult[] = Array.isArray(this.bighelp)
-            ? this.bighelp
-            : [this.bighelp ?? nothing];
+        const { help, bighelp } = this;
 
-        return [
-            this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing,
-            ...bigHelp,
-        ];
+        return guard([help, bighelp], () => {
+            const bigHelp: SlottedTemplateResult[] = Array.isArray(this.bighelp)
+                ? this.bighelp
+                : [this.bighelp ?? null];
+
+            return [
+                this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : null,
+                ...bigHelp,
+            ].filter(Boolean);
+        });
     }
 
     render() {
@@ -210,8 +225,7 @@ export abstract class HorizontalLightComponent<T>
             name=${this.name}
             role="presentation"
             .errorMessages=${this.errorMessages}
-        >
-            ${AKLabel(
+            >${AKLabel(
                 {
                     id: this.labelID,
                     className: "pf-c-form__group-label",
@@ -222,7 +236,7 @@ export abstract class HorizontalLightComponent<T>
                 this.label || "",
             )}
             ${this.renderControl()}
-            <div id=${this.helpID}>${this.renderHelp()}</div>
+            <div id=${this.helpID} part="help">${this.renderHelp()}</div>
         </ak-form-element-horizontal> `;
     }
 
