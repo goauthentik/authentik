@@ -92,13 +92,6 @@ class UserInfoView(View):
                 LOGGER.warning("Failed to evaluate property mapping", exc=exc)
             if value is None:
                 continue
-            if not isinstance(value, dict):
-                LOGGER.warning(
-                    "Scope returned a non-dict value, ignoring",
-                    scope=scope,
-                    value=value,
-                )
-                continue
             always_merger.merge(final_claims, value)
             LOGGER.debug("updated scope", scope=scope)
         return final_claims

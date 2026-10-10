@@ -2,12 +2,9 @@
 
 from unittest.mock import patch
 
-from asgiref.sync import async_to_sync
-from django.contrib.auth.hashers import PBKDF2PasswordHasher, make_password
-from django.db import IntegrityError, transaction
+from django.contrib.auth.hashers import make_password
 from django.http import HttpRequest
 from django.test.testcases import TestCase
-from django.utils.timezone import now
 
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.users import UserSerializer
@@ -85,158 +82,6 @@ class TestUsers(TestCase):
         user = User.objects.create(username=generate_id())
         self.assertEqual(user.locale(), "")
 
-    def test_password_change_updates_device(self):
-        """Test changing a password updates the user's single password device"""
-        user = User.objects.create_user(username=generate_id(), password="initial")  # nosec
-        user.set_password("changed")
-        user.save()
-        self.assertEqual(PasswordDevice.objects.filter(user=user).count(), 1)
-        user = User.objects.get(pk=user.pk)
-        self.assertTrue(user.check_password("changed"))
-        self.assertFalse(user.check_password("initial"))
-
-    def test_second_password_device_rejected(self):
-        """Test the database only allows one password device per user"""
-        user = User.objects.create_user(username=generate_id(), password="initial")  # nosec
-        with self.assertRaises(IntegrityError), transaction.atomic():
-            PasswordDevice.objects.create(user=user, name="Password", password="second")
-
-    def test_password_staged_until_save(self):
-        """Test a password is only written to the device once the user is saved"""
-        user = User.objects.create(username=generate_id())
-        user.set_password("staged")
-        self.assertFalse(PasswordDevice.objects.filter(user=user).exists())
-        user.save()
-        self.assertTrue(User.objects.get(pk=user.pk).check_password("staged"))
-
-    def test_existing_password_staged_until_save(self):
-        """Changing a loaded user leaves the stored password alone until save()."""
-        user = User.objects.create_user(username=generate_id(), password="initial")  # nosec
-        user.set_password("changed")
-        self.assertTrue(User.objects.get(pk=user.pk).check_password("initial"))
-        user.save()
-        self.assertTrue(User.objects.get(pk=user.pk).check_password("changed"))
-
-    def test_password_save_failure_rolls_back_user(self):
-        """User and password changes commit together."""
-        user = User.objects.create_user(username=generate_id(), password="initial")  # nosec
-        user.name = "Changed name"
-        user.set_password("changed")
-        with (
-            patch.object(PasswordDevice, "save", side_effect=IntegrityError),
-            self.assertRaises(IntegrityError),
-        ):
-            user.save()
-        stored = User.objects.get(pk=user.pk)
-        self.assertNotEqual(stored.name, user.name)
-        self.assertTrue(stored.check_password("initial"))
-
-    def test_user_save_does_not_write_cached_password(self):
-        """Saving a name must not overwrite a concurrent password change."""
-        user = User.objects.create_user(username=generate_id(), password="initial")  # nosec
-        password = make_password(generate_id())
-        PasswordDevice.objects.filter(user=user).update(password=password)
-        user.name = "Changed name"
-        user.save()
-        self.assertEqual(PasswordDevice.objects.get(user=user).password, password)
-
-    def test_password_unusable_without_device(self):
-        """Test a user without a password device cannot authenticate with a password"""
-        user = User.objects.create(username=generate_id())
-        self.assertFalse(PasswordDevice.objects.filter(user=user).exists())
-        self.assertFalse(user.has_usable_password())
-        self.assertFalse(user.check_password("anything"))
-
-    def test_password_partial_save(self):
-        """Partial user updates leave a staged password pending until explicitly saved."""
-        user = User.objects.create_user(username=generate_id(), password="initial")  # nosec
-        user.set_password("changed")
-        user.name = "Changed name"
-        user.save(update_fields=["name"])
-        self.assertTrue(User.objects.get(pk=user.pk).check_password("initial"))
-        user.save(update_fields=["password"])
-        self.assertTrue(User.objects.get(pk=user.pk).check_password("changed"))
-
-    def test_check_staged_password_does_not_save(self):
-        """Checking an imported, outdated hash must not persist an unsaved password."""
-        user = User.objects.create(username=generate_id())
-        user.password = PBKDF2PasswordHasher().encode("staged", "salt", iterations=1)
-        self.assertTrue(user.check_password("staged"))
-        self.assertFalse(PasswordDevice.objects.filter(user=user).exists())
-
-    def test_refresh_discards_staged_password(self):
-        """Refreshing a user discards an unsaved password along with other changes."""
-        user = User.objects.create_user(username=generate_id(), password="initial")  # nosec
-        user.set_password("changed")
-        user.refresh_from_db()
-        self.assertTrue(user.check_password("initial"))
-        user.save()
-        self.assertTrue(User.objects.get(pk=user.pk).check_password("initial"))
-
-    def test_first_password_from_two_loaded_users(self):
-        """A missing device cached by another writer must not cause a duplicate insert."""
-        user = User.objects.create(username=generate_id())
-        other = User.objects.get(pk=user.pk)
-        self.assertFalse(other.has_usable_password())
-        user.set_password("first")
-        user.save()
-        other.set_password("second")
-        other.save()
-        self.assertTrue(User.objects.get(pk=user.pk).check_password("second"))
-
-    def test_session_auth_hash_follows_password(self):
-        """Test changing a password invalidates existing sessions"""
-        user = User.objects.create_user(username=generate_id(), password="initial")  # nosec
-        previous_hash = user.get_session_auth_hash()
-        user.set_password("changed")
-        user.save()
-        self.assertNotEqual(previous_hash, user.get_session_auth_hash())
-
-    def test_hash_upgrade_preserves_password_metadata(self):
-        """Rehashing a cached device must not overwrite newer password metadata."""
-        password = generate_id()
-        old_hash = PBKDF2PasswordHasher().encode(password, "salt", iterations=1)
-        user = User.objects.create(username=generate_id(), password=old_hash)
-        changed_at = now()
-        PasswordDevice.objects.filter(user=user).update(password_change_date=changed_at)
-
-        with patch.object(password_changed, "send") as signal:
-            self.assertTrue(user.check_password(password))
-        signal.assert_not_called()
-        user.name = "Changed name"
-        user.save()
-
-        device = PasswordDevice.objects.get(user=user)
-        self.assertNotEqual(device.password, old_hash)
-        self.assertEqual(device.password_change_date, changed_at)
-
-    def test_hash_upgrade_preserves_concurrent_password_change(self):
-        """An outdated cached hash cannot overwrite a newly reset password."""
-        old_hash = PBKDF2PasswordHasher().encode("initial", "salt", iterations=1)
-        user = User.objects.create(username=generate_id(), password=old_hash)
-        changed_hash = make_password("changed")
-        PasswordDevice.objects.filter(user=user).update(password=changed_hash)
-
-        self.assertTrue(user.check_password("initial"))
-
-        self.assertEqual(PasswordDevice.objects.get(user=user).password, changed_hash)
-
-    def test_async_password_check_upgrades_hash(self):
-        """Django's async password API can load and rehash a password device."""
-        old_hash = PBKDF2PasswordHasher().encode("initial", "salt", iterations=1)
-        user = User.objects.create(username=generate_id(), password=old_hash)
-        user = User.objects.get(pk=user.pk)
-        changed_at = user.password_change_date
-        user = User.objects.get(pk=user.pk)
-
-        with patch.object(password_changed, "send") as signal:
-            self.assertTrue(async_to_sync(user.acheck_password)("initial"))
-
-        signal.assert_not_called()
-        device = PasswordDevice.objects.get(user=user)
-        self.assertNotEqual(device.password, old_hash)
-        self.assertEqual(device.password_change_date, changed_at)
-
     def test_set_password_from_hash_signal_skips_source_sync_receivers(self):
         """Test hash password updates do not expose a raw password to sync receivers."""
         user = User.objects.create(
@@ -268,8 +113,7 @@ class TestUsers(TestCase):
                     "UserKerberosSourceConnection.objects.select_related"
                 ) as kerberos_connections_select,
             ):
-                user.set_password_from_hash(make_password("new-password"))  # nosec
-                user.save()
+                PasswordDevice.set_password_from_hash(user, make_password("new-password"))  # nosec
         finally:
             password_changed.disconnect(dispatch_uid=dispatch_uid)
             password_hash_changed.disconnect(dispatch_uid=hash_dispatch_uid)

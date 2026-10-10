@@ -109,6 +109,7 @@ from authentik.stages.email.flow import pickle_flow_token_for_email
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
+from authentik.stages.password.models import PasswordDevice
 
 LOGGER = get_logger()
 
@@ -230,7 +231,6 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             ).values_list("content_type__app_label", "codename")
             perms_list = [f"{ct}.{name}" for ct, name in perms_qs]
             instance.assign_perms_to_managed_role(perms_list)
-        self._ensure_password_not_empty(instance)
         return instance
 
     def update(self, instance: User, validated_data: dict) -> User:
@@ -249,23 +249,14 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             ).values_list("content_type__app_label", "codename")
             perms_list = [f"{ct}.{name}" for ct, name in perms_qs]
             instance.assign_perms_to_managed_role(perms_list)
-        self._ensure_password_not_empty(instance)
         return instance
 
     def _set_password(self, instance: User, password: str | None, password_hash: str | None = None):
         """Set password from plain text or hash."""
         if password_hash is not None:
-            instance.set_password_from_hash(password_hash)
-            instance.save()
+            PasswordDevice.set_password_from_hash(instance, password_hash)
         elif password:
-            instance.set_password(password)
-            instance.save()
-
-    def _ensure_password_not_empty(self, instance: User):
-        """Store an explicit unusable password instead of an empty password field."""
-        if len(instance.password) == 0:
-            instance.set_unusable_password()
-            instance.save()
+            PasswordDevice.set_password(instance, password)
 
     def get_avatar(self, user: User) -> str:
         """User's avatar, either a http/https URL or a data URI"""
@@ -806,9 +797,6 @@ class UserViewSet(
                     attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: expiring},
                     path=USER_PATH_SERVICE_ACCOUNT,
                 )
-                user.set_unusable_password()
-                user.save()
-
                 response = {
                     "username": user.username,
                     "user_uid": user.uid,
@@ -919,8 +907,7 @@ class UserViewSet(
         """Set password for user"""
         user: User = self.get_object()
         try:
-            user.set_password(body.validated_data["password"], request=request)
-            user.save()
+            PasswordDevice.set_password(user, body.validated_data["password"], request=request)
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password", exc=exc)
             return Response(status=400)
@@ -954,8 +941,9 @@ class UserViewSet(
         """
         user: User = self.get_object()
         try:
-            user.set_password_from_hash(body.validated_data["password"], request=request)
-            user.save()
+            PasswordDevice.set_password_from_hash(
+                user, body.validated_data["password"], request=request
+            )
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password hash", exc=exc)
             return Response(status=400)

@@ -53,10 +53,10 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
-      - uses: regclient/actions/regctl-installer@bb562fac724b7b37c17f19671df07fe34fabc376
+      - uses: regclient/actions/regctl-installer@b7d935a4b4f550aa3b5ad20941f7d2f9285565b2
       # logs in to ghcr.io by default
-      - uses: regclient/actions/regctl-login@bb562fac724b7b37c17f19671df07fe34fabc376
-      - uses: regclient/actions/regctl-login@bb562fac724b7b37c17f19671df07fe34fabc376
+      - uses: regclient/actions/regctl-login@b7d935a4b4f550aa3b5ad20941f7d2f9285565b2
+      - uses: regclient/actions/regctl-login@b7d935a4b4f550aa3b5ad20941f7d2f9285565b2
         with:
           registry: docker.io
           username: "${{ secrets.DOCKER_CORP_USERNAME }}"
@@ -165,7 +165,7 @@ jobs:
           container=$(docker container create "$image")
           docker cp ${container}:web/ .
       - name: Create a Sentry.io release
-        uses: getsentry/action-release@ff07929a6537bac57790c3451cf4d364aca38528 # v3
+        uses: getsentry/action-release@6fb9aeade7061441cf3864e34fbe11a1457ad7dc # v3
         continue-on-error: true
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
