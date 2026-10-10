@@ -33,7 +33,6 @@ class TelegramSource(Source):
         help_text=_("Telegram bot token"),
         on_delete=models.PROTECT,
         null=True,
-        blank=True,
         default=None,
         related_name="telegram_sources",
     )

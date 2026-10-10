@@ -54,7 +54,6 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
         verbose_name=_("Auth token"),
         on_delete=models.PROTECT,
         null=True,
-        blank=True,
         default=None,
         related_name="sms_auth_stages",
     )

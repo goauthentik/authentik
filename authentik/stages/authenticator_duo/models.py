@@ -28,7 +28,6 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
         verbose_name=_("Client secret"),
         on_delete=models.PROTECT,
         null=True,
-        blank=True,
         default=None,
         related_name="duo_client_secret_stages",
     )
