@@ -6,6 +6,8 @@ draft: true
 
 ## Highlights
 
+- **User expiration**: Automatically deactivate or delete users after a configurable period of inactivity and optionally warn them first. :ak-enterprise
+
 ## Breaking changes
 
 ### RAC endpoints are now devices
@@ -69,6 +71,10 @@ The **Base URL** [system setting](../../sys-mgmt/settings.mdx#base-url), introdu
 ### Single sign-on into devices managed by the authentik agent
 
 A RAC provider signs into devices which are enrolled through the authentik agent as the user who launched the connection, with no credentials configured for the device. authentik issues a token for the device, the RAC outpost turns it into an SSH certificate, and the agent validates the token before accepting the login. See [the RAC provider documentation](../../add-secure-apps/providers/rac/index.mdx#signing-in-with-the-authentik-agent).
+
+### User expiration :ak-enterprise
+
+User expiration rules schedule users for offboarding after a configured period of inactivity. The default **Last activity** basis counts successful authentication and application access, including OAuth refresh grants. Choose **Last login** to measure inactivity using only the recorded last login. A rule can target users by group and user type and warn them before their accounts expire. If a user logs in before the scheduled time, authentik removes the pending offboarding. API token requests do not count as activity, and rules exclude service accounts by default. For details, see [User expiration](../../sys-mgmt/user-expiration.mdx).
 
 ## Upgrading
 
