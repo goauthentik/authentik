@@ -9,7 +9,7 @@ use axum_server::{
     accept::DefaultAcceptor,
     tls_rustls::{RustlsAcceptor, RustlsConfig},
 };
-use eyre::Result;
+use eyre::{Result, WrapErr as _};
 use tracing::{info, trace};
 
 use crate::{
@@ -37,7 +37,8 @@ async fn run_plain(
         ))
         .handle(handle)
         .serve(router.into_make_service_with_connect_info::<net::SocketAddr>())
-        .await?;
+        .await
+        .wrap_err_with(|| format!("failed to listen on {addr} for {name}"))?;
 
     Ok(())
 }
@@ -145,7 +146,8 @@ async fn run_tls(
         ))
         .handle(handle)
         .serve(router.into_make_service_with_connect_info::<net::SocketAddr>())
-        .await?;
+        .await
+        .wrap_err_with(|| format!("failed to listen on {addr} for {name}"))?;
 
     Ok(())
 }
@@ -167,4 +169,37 @@ pub fn start_tls(
         .name(&format!("{}::run_tls({name}, {addr})", module_path!()))
         .spawn(run_tls(arbiter, name, router, addr, config))?;
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use std::{io, net};
+
+    use ak_common::Tasks;
+    use axum::Router;
+
+    use super::run_plain;
+
+    #[tokio::test]
+    async fn plain_bind_error_names_address_and_server() {
+        let tasks = Tasks::new().expect("failed to create tasks");
+        let taken = net::TcpListener::bind("127.0.0.1:0").expect("failed to bind test listener");
+        let addr = taken
+            .local_addr()
+            .expect("failed to get test listener address");
+
+        let err = run_plain(tasks.arbiter(), "worker", Router::new(), addr)
+            .await
+            .expect_err("binding a used address should fail");
+
+        assert_eq!(
+            err.to_string(),
+            format!("failed to listen on {addr} for worker")
+        );
+        let cause = err
+            .root_cause()
+            .downcast_ref::<io::Error>()
+            .expect("root cause should be an io::Error");
+        assert_eq!(cause.kind(), io::ErrorKind::AddrInUse);
+    }
 }
