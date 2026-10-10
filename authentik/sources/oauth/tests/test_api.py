@@ -3,6 +3,7 @@ from requests_mock import Mocker
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
 
@@ -16,6 +17,7 @@ class TestOAuthSourceAPI(APITestCase):
             authorization_url="",
             profile_url="",
             consumer_key=generate_id(),
+            consumer_secret_ref=create_test_secret(generate_id()),
         )
         self.user = create_test_admin_user()
 
@@ -73,3 +75,46 @@ class TestOAuthSourceAPI(APITestCase):
         )
         self.assertEqual(res.status_code, 200)
         self.assertEqual(mock.call_count, 0)
+
+    def test_create_public_client(self):
+        """Public clients (no secret) must use PKCE"""
+        self.client.force_login(self.user)
+        data = {
+            "name": generate_id(),
+            "slug": generate_id(),
+            "provider_type": "openidconnect",
+            "consumer_key": generate_id(),
+            "authorization_url": f"https://{generate_id()}",
+            "profile_url": f"https://{generate_id()}",
+            "access_token_url": f"https://{generate_id()}",
+        }
+        res = self.client.post(
+            reverse("authentik_api:oauthsource-list"), data, content_type="application/json"
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertIn("pkce", res.json())
+        res = self.client.post(
+            reverse("authentik_api:oauthsource-list"),
+            {**data, "pkce": "S256"},
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 201)
+
+    def test_create_secret_required(self):
+        """Source types that require a secret reject a missing one"""
+        self.client.force_login(self.user)
+        for provider_type in ["discord", "apple"]:
+            with self.subTest(provider_type):
+                res = self.client.post(
+                    reverse("authentik_api:oauthsource-list"),
+                    {
+                        "name": generate_id(),
+                        "slug": generate_id(),
+                        "provider_type": provider_type,
+                        "consumer_key": generate_id(),
+                        "pkce": "S256",
+                    },
+                    content_type="application/json",
+                )
+                self.assertEqual(res.status_code, 400)
+                self.assertIn("consumer_secret_ref", res.json())

@@ -78,10 +78,9 @@ class MicrosoftEntraProviderGroup(InternallyManagedMixin, SerializerModel):
 class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
     """Sync users from authentik into Microsoft Entra."""
 
-    # Remove the legacy credential columns in 2027.2.
-    client_secret = models.TextField()
-
     client_id = models.TextField()
+    # Legacy column, kept for downgrades. Remove in 2027.2.
+    client_secret = models.TextField()
     client_secret_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Client Secret"),
@@ -168,7 +167,7 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
     def microsoft_credentials(self):
         return {
             "credentials": ClientSecretCredential(
-                self.tenant_id, self.client_id, self.client_secret_ref.value
+                self.tenant_id, self.client_id, self.client_secret_ref.secret_value
             )
         }
 
@@ -222,6 +221,8 @@ class MicrosoftEntraProviderPropertyMappingsGroup(SimpleThroughModel):
 
 class MicrosoftEntraProviderMapping(PropertyMapping):
     """Map authentik data to outgoing Microsoft requests"""
+
+    expression_allowed_types = [dict]
 
     @property
     def component(self) -> str:

@@ -39,6 +39,7 @@ class AuthenticatorEmailStageViewSet(UsedByMixin, ModelViewSet):
     queryset = AuthenticatorEmailStage.objects.all()
     serializer_class = AuthenticatorEmailStageSerializer
     filterset_fields = [
+        "stage_uuid",
         "name",
         "configure_flow",
         "friendly_name",

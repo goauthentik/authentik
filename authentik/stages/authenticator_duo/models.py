@@ -18,14 +18,11 @@ from authentik.stages.authenticator.models import Device
 class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
     """Setup Duo authentication for the user."""
 
-    # Remove the legacy credential columns in 2027.2.
-    client_secret = models.TextField()
-
-    admin_secret_key = models.TextField(blank=True, default="")
-
     api_hostname = models.TextField()
 
     client_id = models.TextField()
+    # Legacy column, kept for downgrades. Remove in 2027.2.
+    client_secret = models.TextField()
     client_secret_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Client secret"),
@@ -33,10 +30,12 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
         null=True,
         blank=True,
         default=None,
-        related_name="duo_stages",
+        related_name="duo_client_secret_stages",
     )
 
     admin_integration_key = models.TextField(blank=True, default="")
+    # Legacy column, kept for downgrades. Remove in 2027.2.
+    admin_secret_key = models.TextField(blank=True, default="")
     admin_secret_key_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Admin secret key"),
@@ -44,7 +43,7 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
         null=True,
         blank=True,
         default=None,
-        related_name="duo_stages_admin",
+        related_name="duo_admin_secret_key_stages",
     )
 
     @property
@@ -63,7 +62,7 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
         """Get an API Client to talk to duo"""
         return Auth(
             self.client_id,
-            self.client_secret_ref.value,
+            self.client_secret_ref.secret_value,
             self.api_hostname,
             user_agent=authentik_user_agent(),
         )
@@ -74,7 +73,7 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
             raise ValueError("Admin credentials not configured")
         client = Admin(
             self.admin_integration_key,
-            self.admin_secret_key_ref.value,
+            self.admin_secret_key_ref.secret_value,
             self.api_hostname,
             user_agent=authentik_user_agent(),
         )
