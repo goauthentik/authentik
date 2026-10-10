@@ -4784,6 +4784,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_stages_email.emailtemplate"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/definitions/model_authentik_stages_email.emailtemplate_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/definitions/model_authentik_stages_email.emailtemplate"
+                        },
+                        "identifiers": {
+                            "$ref": "#/definitions/model_authentik_stages_email.emailtemplate"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_stages_identification.identificationstage"
                         },
                         "id": {
@@ -6391,9 +6431,13 @@
                             "authentik_stages_dummy.delete_dummystage",
                             "authentik_stages_dummy.view_dummystage",
                             "authentik_stages_email.add_emailstage",
+                            "authentik_stages_email.add_emailtemplate",
                             "authentik_stages_email.change_emailstage",
+                            "authentik_stages_email.change_emailtemplate",
                             "authentik_stages_email.delete_emailstage",
+                            "authentik_stages_email.delete_emailtemplate",
                             "authentik_stages_email.view_emailstage",
+                            "authentik_stages_email.view_emailtemplate",
                             "authentik_stages_identification.add_identificationstage",
                             "authentik_stages_identification.add_identificationstagesource",
                             "authentik_stages_identification.change_identificationstage",
@@ -7785,9 +7829,13 @@
                             "authentik_stages_dummy.delete_dummystage",
                             "authentik_stages_dummy.view_dummystage",
                             "authentik_stages_email.add_emailstage",
+                            "authentik_stages_email.add_emailtemplate",
                             "authentik_stages_email.change_emailstage",
+                            "authentik_stages_email.change_emailtemplate",
                             "authentik_stages_email.delete_emailstage",
+                            "authentik_stages_email.delete_emailtemplate",
                             "authentik_stages_email.view_emailstage",
+                            "authentik_stages_email.view_emailtemplate",
                             "authentik_stages_identification.add_identificationstage",
                             "authentik_stages_identification.add_identificationstagesource",
                             "authentik_stages_identification.change_identificationstage",
@@ -10397,7 +10445,7 @@
                 },
                 "email_template": {
                     "type": "string",
-                    "minLength": 1,
+                    "format": "uuid",
                     "title": "Email template"
                 },
                 "send_once": {
@@ -11181,6 +11229,7 @@
                         "authentik_stages_consent.consentstage",
                         "authentik_stages_deny.denystage",
                         "authentik_stages_dummy.dummystage",
+                        "authentik_stages_email.emailtemplate",
                         "authentik_stages_email.emailstage",
                         "authentik_stages_identification.identificationstage",
                         "authentik_stages_invitation.invitationstage",
@@ -14248,9 +14297,13 @@
                             "authentik_stages_dummy.delete_dummystage",
                             "authentik_stages_dummy.view_dummystage",
                             "authentik_stages_email.add_emailstage",
+                            "authentik_stages_email.add_emailtemplate",
                             "authentik_stages_email.change_emailstage",
+                            "authentik_stages_email.change_emailtemplate",
                             "authentik_stages_email.delete_emailstage",
+                            "authentik_stages_email.delete_emailtemplate",
                             "authentik_stages_email.view_emailstage",
+                            "authentik_stages_email.view_emailtemplate",
                             "authentik_stages_identification.add_identificationstage",
                             "authentik_stages_identification.add_identificationstagesource",
                             "authentik_stages_identification.change_identificationstage",
@@ -16669,7 +16722,7 @@
                 },
                 "template": {
                     "type": "string",
-                    "minLength": 1,
+                    "format": "uuid",
                     "title": "Template"
                 }
             },
@@ -17616,8 +17669,9 @@
                 },
                 "template": {
                     "type": "string",
-                    "minLength": 1,
-                    "title": "Template"
+                    "format": "uuid",
+                    "title": "Template",
+                    "description": "Email template to use"
                 },
                 "activate_user_on_success": {
                     "type": "boolean",
@@ -17654,6 +17708,65 @@
                             "change_emailstage",
                             "delete_emailstage",
                             "view_emailstage"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_stages_email.emailtemplate": {
+            "type": "object",
+            "properties": {
+                "path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Path"
+                },
+                "description": {
+                    "type": "string",
+                    "title": "Description"
+                },
+                "body": {
+                    "type": "string",
+                    "title": "Body"
+                },
+                "body_plaintext": {
+                    "type": "string",
+                    "title": "Body plaintext",
+                    "description": "Plain text version of the email. If left empty, emails are sent as HTML only."
+                },
+                "managed": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Managed by authentik",
+                    "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_stages_email.emailtemplate_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_emailtemplate",
+                            "change_emailtemplate",
+                            "delete_emailtemplate",
+                            "view_emailtemplate"
                         ]
                     },
                     "user": {

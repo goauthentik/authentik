@@ -137,6 +137,7 @@ export const ModelEnum = {
     AuthentikStagesConsentConsentstage: "authentik_stages_consent.consentstage",
     AuthentikStagesDenyDenystage: "authentik_stages_deny.denystage",
     AuthentikStagesDummyDummystage: "authentik_stages_dummy.dummystage",
+    AuthentikStagesEmailEmailtemplate: "authentik_stages_email.emailtemplate",
     AuthentikStagesEmailEmailstage: "authentik_stages_email.emailstage",
     AuthentikStagesIdentificationIdentificationstage:
         "authentik_stages_identification.identificationstage",

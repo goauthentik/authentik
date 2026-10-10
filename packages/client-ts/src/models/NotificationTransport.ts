@@ -42,7 +42,7 @@ export interface NotificationTransport {
      */
     webhookMappingHeaders?: string | null;
     emailSubjectPrefix?: string;
-    emailTemplate?: string;
+    emailTemplate?: string | null;
     /**
      * Only send notification once, for example when sending a webhook into a chat channel.
      */
@@ -102,7 +102,12 @@ export function NotificationTransportFromJSONTyped(
                   : json["webhook_mapping_headers"],
         emailSubjectPrefix:
             json["email_subject_prefix"] == null ? undefined : json["email_subject_prefix"],
-        emailTemplate: json["email_template"] == null ? undefined : json["email_template"],
+        emailTemplate:
+            json["email_template"] === undefined
+                ? undefined
+                : json["email_template"] === null
+                  ? null
+                  : json["email_template"],
         sendOnce: json["send_once"] == null ? undefined : json["send_once"],
     };
 }

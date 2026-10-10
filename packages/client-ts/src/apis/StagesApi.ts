@@ -109,6 +109,11 @@ import {
 } from "../models/DuoDeviceEnrollmentStatus";
 import { type EmailStage, EmailStageFromJSON } from "../models/EmailStage";
 import { type EmailStageRequest, EmailStageRequestToJSON } from "../models/EmailStageRequest";
+import { type EmailTemplate, EmailTemplateFromJSON } from "../models/EmailTemplate";
+import {
+    type EmailTemplateRequest,
+    EmailTemplateRequestToJSON,
+} from "../models/EmailTemplateRequest";
 import { type EndpointStage, EndpointStageFromJSON } from "../models/EndpointStage";
 import {
     type EndpointStageRequest,
@@ -197,6 +202,10 @@ import {
     type PaginatedEmailStageList,
     PaginatedEmailStageListFromJSON,
 } from "../models/PaginatedEmailStageList";
+import {
+    type PaginatedEmailTemplateList,
+    PaginatedEmailTemplateListFromJSON,
+} from "../models/PaginatedEmailTemplateList";
 import {
     type PaginatedEndpointStageList,
     PaginatedEndpointStageListFromJSON,
@@ -319,6 +328,10 @@ import {
     type PatchedEmailStageRequest,
     PatchedEmailStageRequestToJSON,
 } from "../models/PatchedEmailStageRequest";
+import {
+    type PatchedEmailTemplateRequest,
+    PatchedEmailTemplateRequestToJSON,
+} from "../models/PatchedEmailTemplateRequest";
 import {
     type PatchedEndpointStageRequest,
     PatchedEndpointStageRequestToJSON,
@@ -1423,6 +1436,68 @@ export interface StagesEmailRetrieveRequest {
      * A UUID string identifying this Email Stage.
      */
     stageUuid: string;
+}
+
+export interface StagesEmailTemplatesCreateRequest {
+    emailTemplateRequest: EmailTemplateRequest;
+}
+
+export interface StagesEmailTemplatesDestroyRequest {
+    /**
+     * A UUID string identifying this Email Template.
+     */
+    uuid: string;
+}
+
+export interface StagesEmailTemplatesListRequest {
+    managed?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
+    ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    pageSize?: number;
+    path?: string;
+    /**
+     * A search term.
+     */
+    search?: string;
+}
+
+export interface StagesEmailTemplatesPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Email Template.
+     */
+    uuid: string;
+    patchedEmailTemplateRequest?: PatchedEmailTemplateRequest;
+}
+
+export interface StagesEmailTemplatesRetrieveRequest {
+    /**
+     * A UUID string identifying this Email Template.
+     */
+    uuid: string;
+}
+
+export interface StagesEmailTemplatesUpdateRequest {
+    /**
+     * A UUID string identifying this Email Template.
+     */
+    uuid: string;
+    emailTemplateRequest: EmailTemplateRequest;
+}
+
+export interface StagesEmailTemplatesUsedByListRequest {
+    /**
+     * A UUID string identifying this Email Template.
+     */
+    uuid: string;
 }
 
 export interface StagesEmailUpdateRequest {
@@ -10196,10 +10271,161 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
+     * Creates request options for stagesEmailTemplatesCreate without sending the request
+     */
+    async stagesEmailTemplatesCreateRequestOpts(
+        requestParameters: StagesEmailTemplatesCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["emailTemplateRequest"] == null) {
+            throw new runtime.RequiredError(
+                "emailTemplateRequest",
+                'Required parameter "emailTemplateRequest" was null or undefined when calling stagesEmailTemplatesCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/stages/email/templates/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: EmailTemplateRequestToJSON(requestParameters["emailTemplateRequest"]),
+        };
+    }
+
+    /**
+     * EmailTemplate Viewset
+     */
+    async stagesEmailTemplatesCreateRaw(
+        requestParameters: StagesEmailTemplatesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<EmailTemplate>> {
+        const requestOptions = await this.stagesEmailTemplatesCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            EmailTemplateFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * EmailTemplate Viewset
+     */
+    async stagesEmailTemplatesCreate(
+        requestParameters: StagesEmailTemplatesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<EmailTemplate> {
+        const response = await this.stagesEmailTemplatesCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesEmailTemplatesDestroy without sending the request
+     */
+    async stagesEmailTemplatesDestroyRequestOpts(
+        requestParameters: StagesEmailTemplatesDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling stagesEmailTemplatesDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/email/templates/{uuid}/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * EmailTemplate Viewset
+     */
+    async stagesEmailTemplatesDestroyRaw(
+        requestParameters: StagesEmailTemplatesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.stagesEmailTemplatesDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * EmailTemplate Viewset
+     */
+    async stagesEmailTemplatesDestroy(
+        requestParameters: StagesEmailTemplatesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.stagesEmailTemplatesDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
      * Creates request options for stagesEmailTemplatesList without sending the request
      */
-    async stagesEmailTemplatesListRequestOpts(): Promise<runtime.RequestOpts> {
+    async stagesEmailTemplatesListRequestOpts(
+        requestParameters: StagesEmailTemplatesListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
+
+        if (requestParameters["managed"] != null) {
+            queryParameters["managed"] = requestParameters["managed"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["path"] != null) {
+            queryParameters["path"] = requestParameters["path"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -10223,26 +10449,305 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get all available templates, including custom templates
+     * EmailTemplate Viewset
      */
     async stagesEmailTemplatesListRaw(
+        requestParameters: StagesEmailTemplatesListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<TypeCreate>>> {
-        const requestOptions = await this.stagesEmailTemplatesListRequestOpts();
+    ): Promise<runtime.ApiResponse<PaginatedEmailTemplateList>> {
+        const requestOptions = await this.stagesEmailTemplatesListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) =>
-            jsonValue.map(TypeCreateFromJSON),
+            PaginatedEmailTemplateListFromJSON(jsonValue),
         );
     }
 
     /**
-     * Get all available templates, including custom templates
+     * EmailTemplate Viewset
      */
     async stagesEmailTemplatesList(
+        requestParameters: StagesEmailTemplatesListRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<TypeCreate>> {
-        const response = await this.stagesEmailTemplatesListRaw(initOverrides);
+    ): Promise<PaginatedEmailTemplateList> {
+        const response = await this.stagesEmailTemplatesListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesEmailTemplatesPartialUpdate without sending the request
+     */
+    async stagesEmailTemplatesPartialUpdateRequestOpts(
+        requestParameters: StagesEmailTemplatesPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling stagesEmailTemplatesPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/email/templates/{uuid}/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedEmailTemplateRequestToJSON(
+                requestParameters["patchedEmailTemplateRequest"],
+            ),
+        };
+    }
+
+    /**
+     * EmailTemplate Viewset
+     */
+    async stagesEmailTemplatesPartialUpdateRaw(
+        requestParameters: StagesEmailTemplatesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<EmailTemplate>> {
+        const requestOptions =
+            await this.stagesEmailTemplatesPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            EmailTemplateFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * EmailTemplate Viewset
+     */
+    async stagesEmailTemplatesPartialUpdate(
+        requestParameters: StagesEmailTemplatesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<EmailTemplate> {
+        const response = await this.stagesEmailTemplatesPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesEmailTemplatesRetrieve without sending the request
+     */
+    async stagesEmailTemplatesRetrieveRequestOpts(
+        requestParameters: StagesEmailTemplatesRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling stagesEmailTemplatesRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/email/templates/{uuid}/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * EmailTemplate Viewset
+     */
+    async stagesEmailTemplatesRetrieveRaw(
+        requestParameters: StagesEmailTemplatesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<EmailTemplate>> {
+        const requestOptions =
+            await this.stagesEmailTemplatesRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            EmailTemplateFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * EmailTemplate Viewset
+     */
+    async stagesEmailTemplatesRetrieve(
+        requestParameters: StagesEmailTemplatesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<EmailTemplate> {
+        const response = await this.stagesEmailTemplatesRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesEmailTemplatesUpdate without sending the request
+     */
+    async stagesEmailTemplatesUpdateRequestOpts(
+        requestParameters: StagesEmailTemplatesUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling stagesEmailTemplatesUpdate().',
+            );
+        }
+
+        if (requestParameters["emailTemplateRequest"] == null) {
+            throw new runtime.RequiredError(
+                "emailTemplateRequest",
+                'Required parameter "emailTemplateRequest" was null or undefined when calling stagesEmailTemplatesUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/email/templates/{uuid}/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: EmailTemplateRequestToJSON(requestParameters["emailTemplateRequest"]),
+        };
+    }
+
+    /**
+     * EmailTemplate Viewset
+     */
+    async stagesEmailTemplatesUpdateRaw(
+        requestParameters: StagesEmailTemplatesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<EmailTemplate>> {
+        const requestOptions = await this.stagesEmailTemplatesUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            EmailTemplateFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * EmailTemplate Viewset
+     */
+    async stagesEmailTemplatesUpdate(
+        requestParameters: StagesEmailTemplatesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<EmailTemplate> {
+        const response = await this.stagesEmailTemplatesUpdateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesEmailTemplatesUsedByList without sending the request
+     */
+    async stagesEmailTemplatesUsedByListRequestOpts(
+        requestParameters: StagesEmailTemplatesUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling stagesEmailTemplatesUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/email/templates/{uuid}/used_by/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async stagesEmailTemplatesUsedByListRaw(
+        requestParameters: StagesEmailTemplatesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.stagesEmailTemplatesUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async stagesEmailTemplatesUsedByList(
+        requestParameters: StagesEmailTemplatesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.stagesEmailTemplatesUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 

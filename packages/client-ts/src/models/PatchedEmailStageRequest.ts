@@ -36,6 +36,9 @@ export interface PatchedEmailStageRequest {
      */
     tokenExpiry?: string;
     subject?: string;
+    /**
+     * Email template to use
+     */
     template?: string;
     /**
      * Activate users upon completion of stage.

@@ -56,7 +56,10 @@ export interface EmailStage {
      */
     tokenExpiry?: string;
     subject?: string;
-    template?: string;
+    /**
+     * Email template to use
+     */
+    template: string;
     /**
      * Activate users upon completion of stage.
      */
@@ -105,6 +108,7 @@ export function instanceOfEmailStage(value: object): value is EmailStage {
             (value as Record<string, any>)["flow_set"] === undefined)
     )
         return false;
+    if (!("template" in value) || value["template"] === undefined) return false;
     return true;
 }
 
@@ -135,7 +139,7 @@ export function EmailStageFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         fromAddress: json["from_address"] == null ? undefined : json["from_address"],
         tokenExpiry: json["token_expiry"] == null ? undefined : json["token_expiry"],
         subject: json["subject"] == null ? undefined : json["subject"],
-        template: json["template"] == null ? undefined : json["template"],
+        template: json["template"],
         activateUserOnSuccess:
             json["activate_user_on_success"] == null ? undefined : json["activate_user_on_success"],
         recoveryMaxAttempts:
