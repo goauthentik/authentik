@@ -6,7 +6,11 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import (
+    create_test_admin_user,
+    create_test_flow,
+    create_test_user,
+)
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
@@ -81,7 +85,7 @@ class TestApplicationsAPI(APITestCase):
         self.assertEqual(body["messages"], ["dummy"])
 
     def test_list_accessible(self):
-        """Test list operation without"""
+        """Test listing applications the user passes policies for"""
         self.client.force_login(self.user)
         response = self.client.get(reverse("authentik_api:application-accessible"))
         self.assertJSONEqual(
@@ -139,7 +143,7 @@ class TestApplicationsAPI(APITestCase):
         )
 
     def test_list_rbac(self):
-        """Test list operation"""
+        """Test listing applications the user has RBAC permissions for"""
         self.client.force_login(self.user)
         response = self.client.get(reverse("authentik_api:application-list"))
         self.assertJSONEqual(
@@ -216,6 +220,32 @@ class TestApplicationsAPI(APITestCase):
                 ],
             },
         )
+
+    def test_list_rbac_ignores_policies(self):
+        """RBAC access and policy access are separate: the list only checks
+        permissions, @accessible only checks policies"""
+        user = create_test_user()
+        user.assign_perms_to_managed_role("authentik_core.view_application", self.denied)
+        self.client.force_login(user)
+        response = self.client.get(reverse("authentik_api:application-list"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual([app["slug"] for app in response.json()["results"]], [self.denied.slug])
+        response = self.client.get(reverse("authentik_api:application-accessible"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual([app["slug"] for app in response.json()["results"]], [self.allowed.slug])
+
+    def test_list_accessible_for_user(self):
+        """for_user requires the view_user_applications permission on that user"""
+        user = create_test_user()
+        PolicyBinding.objects.create(target=self.allowed, user=user, order=0)
+        url = reverse("authentik_api:application-accessible") + f"?for_user={user.pk}"
+        self.client.force_login(create_test_user())
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 400)
+        self.client.force_login(self.user)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual([app["slug"] for app in response.json()["results"]], [self.allowed.slug])
 
     def test_get_provider(self):
         """Ensure that proxy providers (at the time of writing that is the only provider
