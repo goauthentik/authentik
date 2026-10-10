@@ -222,14 +222,6 @@ class ScopeMapping(PropertyMapping):
 class OAuth2Provider(WebfingerProvider, Provider):
     """OAuth2 Provider for generic OAuth and OpenID Connect Applications."""
 
-    # Remove the legacy credential columns in 2027.2.
-    client_secret = models.CharField(
-        blank=True,
-        default=generate_client_secret,
-        max_length=255,
-        verbose_name=_("Client Secret"),
-    )
-
     client_type = models.CharField(
         max_length=30,
         choices=ClientType.choices,
@@ -247,13 +239,18 @@ class OAuth2Provider(WebfingerProvider, Provider):
         verbose_name=_("Client ID"),
         default=generate_id,
     )
+    # Legacy column, kept for downgrades. Remove in 2027.2.
+    client_secret = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("Client Secret"),
+        default=generate_client_secret,
+    )
     client_secret_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Client Secret"),
         on_delete=models.PROTECT,
-        null=True,
         blank=True,
-        default=None,
         related_name="oauth2_providers",
     )
     _redirect_uris = models.JSONField(
@@ -371,7 +368,7 @@ class OAuth2Provider(WebfingerProvider, Provider):
         """Get either the configured certificate or the client secret"""
         if not self.signing_key:
             # No Certificate at all, assume HS256
-            return self.client_secret_ref.value, JWTAlgorithms.HS256
+            return self.client_secret_ref.secret_value, JWTAlgorithms.HS256
         key: CertificateKeyPair = self.signing_key
         private_key = key.private_key
         return private_key, JWTAlgorithms.from_private_key(private_key)
@@ -379,7 +376,9 @@ class OAuth2Provider(WebfingerProvider, Provider):
     def save(self, *args, **kwargs):
         with transaction.atomic():
             if not self.client_secret_ref_id:
-                self.client_secret_ref = create_named_secret(f"{self.name} client secret")
+                self.client_secret_ref = create_named_secret(
+                    f"{self.name} client secret", secret_value=generate_client_secret()
+                )
                 if (update_fields := kwargs.get("update_fields")) is not None:
                     kwargs["update_fields"] = set(update_fields) | {"client_secret_ref"}
             return super().save(*args, **kwargs)
