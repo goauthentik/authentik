@@ -8660,7 +8660,7 @@
                 "credentials_ref": {
                     "type": "string",
                     "format": "uuid",
-                    "title": "Credentials ref"
+                    "title": "Google credentials"
                 }
             },
             "required": []
@@ -9065,7 +9065,7 @@
                 "credentials_ref": {
                     "type": "string",
                     "format": "uuid",
-                    "title": "Credentials ref"
+                    "title": "Google credentials"
                 },
                 "scopes": {
                     "type": "string",
@@ -9983,7 +9983,7 @@
                 "credentials_ref": {
                     "type": "string",
                     "format": "uuid",
-                    "title": "Credentials ref"
+                    "title": "Google credentials"
                 }
             },
             "required": []
@@ -10862,7 +10862,7 @@
                 "kubeconfig_ref": {
                     "type": "string",
                     "format": "uuid",
-                    "title": "Kubeconfig ref"
+                    "title": "Kubeconfig"
                 },
                 "verify_ssl": {
                     "type": "boolean",

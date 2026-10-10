@@ -27,9 +27,6 @@ class AuthenticatorSMSStageSerializer(StageSerializer):
             "verify_only",
             "mapping",
         ]
-        extra_kwargs = {
-            "auth_ref": {"required": True, "allow_null": False},
-        }
 
 
 class AuthenticatorSMSStageViewSet(UsedByMixin, ModelViewSet):

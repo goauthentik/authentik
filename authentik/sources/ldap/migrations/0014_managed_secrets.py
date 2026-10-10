@@ -3,28 +3,9 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-from authentik.crypto.secrets.migrations._credential_values import (
-    migrate_credentials,
-    restore_credentials,
-)
-from authentik.crypto.secrets.migrations._permissions import preserve_permissions
+from authentik.crypto.secrets.migrations._credential_values import move_credentials
 
 FIELDS = [("bind_password", "bind_password_ref", "text", "bind password")]
-
-
-def forwards(apps, schema_editor):
-    migrate_credentials(
-        apps,
-        schema_editor,
-        "authentik_sources_ldap",
-        "LDAPSource",
-        FIELDS,
-    )
-    preserve_permissions(apps, schema_editor, "authentik_sources_ldap", "ldapsource")
-
-
-def backwards(apps, schema_editor):
-    restore_credentials(apps, schema_editor, "authentik_sources_ldap", "LDAPSource", FIELDS)
 
 
 class Migration(migrations.Migration):
@@ -50,5 +31,5 @@ class Migration(migrations.Migration):
                 verbose_name="Bind password",
             ),
         ),
-        migrations.RunPython(forwards, backwards),
+        move_credentials("authentik_sources_ldap", "LDAPSource", FIELDS),
     ]

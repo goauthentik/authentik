@@ -61,12 +61,8 @@ class OAuth2ProviderSerializer(ProviderSerializer):
         return secret
 
     def validate_client_secret_ref(self, secret: Secret | None) -> Secret | None:
-        if not secret:
-            # A new provider generates its own secret, an existing one must keep a secret.
-            if self.instance:
-                raise ValidationError(_("A client secret is required."))
-            return secret
-        validate_client_secret(secret.secret_value)
+        if secret:
+            validate_client_secret(secret.secret_value)
         return secret
 
     def validate_redirect_uris(self, data: list) -> list:
@@ -109,7 +105,6 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             **ProviderSerializer.Meta.extra_write_kwargs,
             "signing_key": {"validators": [KeyTypeValidator(*JWT_SIGNING_KEY_TYPES)]},
             "encryption_key": {"validators": [KeyTypeValidator(*JWE_ENCRYPTION_KEY_TYPES)]},
-            "client_secret_ref": {"allow_null": True},
         }
 
 

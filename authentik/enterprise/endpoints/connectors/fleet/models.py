@@ -22,7 +22,6 @@ class FleetConnector(Connector):
         verbose_name=_("Fleet API Token"),
         on_delete=models.PROTECT,
         null=True,
-        blank=True,
         default=None,
         related_name="fleet_connectors",
     )
