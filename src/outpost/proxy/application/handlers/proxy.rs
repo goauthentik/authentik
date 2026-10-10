@@ -41,7 +41,7 @@ pub(crate) async fn handle(
         ))
         .ok();
         if !request_url.is_some_and(|url| app.is_allowlisted(&url)) {
-            return super::redirect_to_start(&app, request.headers(), request.uri());
+            return super::redirect_to_start(&app, request.headers(), request.uri()).await;
         }
     }
 
