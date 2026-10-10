@@ -82,7 +82,9 @@ An Enterprise license is required to create new locks. Existing locks remain enf
 
 ### Passwords stored as authenticator devices
 
-Password hashes are now stored on password devices belonging to users. Existing passwords migrate automatically during upgrade; no configuration changes are required.
+Password hashes are now stored on password devices belonging to users. Existing passwords migrate automatically during upgrade.
+
+Expressions can still read `user.password` and `user.password_change_date`. Expressions that change a password must use `PasswordDevice.set_password(user, password)` or `PasswordDevice.set_unusable_password(user)` from `authentik.stages.password.models`; `user.set_password()` and `user.set_unusable_password()` now raise an error.
 
 Password devices are excluded from MFA discovery and validation. Their lock state can be managed through the [password authenticator API](../../add-secure-apps/flows-stages/stages/password/index.mdx#manage-locks-through-the-api).
 
