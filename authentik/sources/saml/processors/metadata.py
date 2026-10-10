@@ -9,6 +9,7 @@ from authentik.common.saml.constants import (
     NS_SAML_METADATA,
     NS_SIGNATURE,
     SAML_BINDING_POST,
+    SAML_BINDING_REDIRECT,
 )
 from authentik.common.saml.utils import x509_certificate_b64
 from authentik.sources.saml.models import SAMLSource
@@ -71,6 +72,21 @@ class MetadataProcessor:
         encryption_descriptor = self.get_encryption_key_descriptor()
         if encryption_descriptor is not None:
             sp_sso_descriptor.append(encryption_descriptor)
+
+        if self.source.slo_url:
+            slo_location = self.http_request.build_absolute_uri(
+                reverse("authentik_sources_saml:slo", kwargs={"source_slug": self.source.slug})
+            )
+
+            slo_redirect = SubElement(
+                sp_sso_descriptor, f"{{{NS_SAML_METADATA}}}SingleLogoutService"
+            )
+            slo_redirect.attrib["Binding"] = SAML_BINDING_REDIRECT
+            slo_redirect.attrib["Location"] = slo_location
+
+            slo_post = SubElement(sp_sso_descriptor, f"{{{NS_SAML_METADATA}}}SingleLogoutService")
+            slo_post.attrib["Binding"] = SAML_BINDING_POST
+            slo_post.attrib["Location"] = slo_location
 
         sp_sso_descriptor.append(self.get_name_id_format())
 
