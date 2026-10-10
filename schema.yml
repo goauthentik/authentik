@@ -42076,6 +42076,7 @@ components:
         credentials_ref:
           type: string
           format: uuid
+          title: Google credentials
         scopes:
           type: string
         exclude_users_service_account:
@@ -42257,6 +42258,7 @@ components:
         credentials_ref:
           type: string
           format: uuid
+          title: Google credentials
         scopes:
           type: string
           minLength: 1
@@ -43870,6 +43872,7 @@ components:
           type: string
           format: uuid
           nullable: true
+          title: Kubeconfig
         verify_ssl:
           type: boolean
           description: Verify SSL Certificates of the Kubernetes API endpoint
@@ -43895,6 +43898,7 @@ components:
           type: string
           format: uuid
           nullable: true
+          title: Kubeconfig
         verify_ssl:
           type: boolean
           description: Verify SSL Certificates of the Kubernetes API endpoint
@@ -51400,6 +51404,7 @@ components:
         credentials_ref:
           type: string
           format: uuid
+          title: Google credentials
         scopes:
           type: string
           minLength: 1
@@ -51818,6 +51823,7 @@ components:
           type: string
           format: uuid
           nullable: true
+          title: Kubeconfig
         verify_ssl:
           type: boolean
           description: Verify SSL Certificates of the Kubernetes API endpoint
