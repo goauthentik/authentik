@@ -3,28 +3,9 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-from authentik.crypto.secrets.migrations._credential_values import (
-    migrate_credentials,
-    restore_credentials,
-)
-from authentik.crypto.secrets.migrations._permissions import preserve_permissions
+from authentik.crypto.secrets.migrations._credential_values import move_credentials
 
 FIELDS = [("bot_token", "bot_token_ref", "text", "bot token")]
-
-
-def forwards(apps, schema_editor):
-    migrate_credentials(
-        apps,
-        schema_editor,
-        "authentik_sources_telegram",
-        "TelegramSource",
-        FIELDS,
-    )
-    preserve_permissions(apps, schema_editor, "authentik_sources_telegram", "telegramsource")
-
-
-def backwards(apps, schema_editor):
-    restore_credentials(apps, schema_editor, "authentik_sources_telegram", "TelegramSource", FIELDS)
 
 
 class Migration(migrations.Migration):
@@ -41,7 +22,6 @@ class Migration(migrations.Migration):
             model_name="telegramsource",
             name="bot_token_ref",
             field=models.ForeignKey(
-                blank=True,
                 default=None,
                 help_text="Telegram bot token",
                 null=True,
@@ -51,5 +31,5 @@ class Migration(migrations.Migration):
                 verbose_name="Bot token",
             ),
         ),
-        migrations.RunPython(forwards, backwards),
+        move_credentials("authentik_sources_telegram", "TelegramSource", FIELDS),
     ]
