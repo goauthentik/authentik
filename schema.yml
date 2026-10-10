@@ -42071,6 +42071,7 @@ components:
         credentials_ref:
           type: string
           format: uuid
+          title: Google credentials
         scopes:
           type: string
         exclude_users_service_account:
@@ -42252,6 +42253,7 @@ components:
         credentials_ref:
           type: string
           format: uuid
+          title: Google credentials
         scopes:
           type: string
           minLength: 1
@@ -51397,6 +51399,7 @@ components:
         credentials_ref:
           type: string
           format: uuid
+          title: Google credentials
         scopes:
           type: string
           minLength: 1

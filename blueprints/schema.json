@@ -9065,7 +9065,7 @@
                 "credentials_ref": {
                     "type": "string",
                     "format": "uuid",
-                    "title": "Credentials ref"
+                    "title": "Google credentials"
                 },
                 "scopes": {
                     "type": "string",
