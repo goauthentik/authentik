@@ -4,7 +4,6 @@ import os
 from base64 import b64decode
 from pathlib import Path
 from tempfile import gettempdir
-from typing import Any
 
 import gssapi
 import pglock
@@ -26,6 +25,7 @@ from authentik.core.models import (
     UserTypes,
 )
 from authentik.core.types import UILoginButton, UserSettingSerializer
+from authentik.crypto.secrets.models import Secret, SecretType
 from authentik.flows.challenge import RedirectChallenge
 from authentik.lib.config import advisory_lock_db_alias
 from authentik.lib.sync.incoming.models import IncomingSyncSource
@@ -37,7 +37,7 @@ LOGGER = get_logger()
 
 # Creating kadmin connections is expensive. As such, this global is used to reuse
 # existing kadmin connections instead of creating new ones
-_kadmin_connections: dict[str, Any] = {}
+_kadmin_connections: dict[str, tuple[tuple, KAdmin]] = {}
 
 
 class KAdminType(models.TextChoices):
@@ -68,9 +68,21 @@ class KerberosSource(IncomingSyncSource):
     sync_principal = models.TextField(
         help_text=_("Principal to authenticate to kadmin for sync."), blank=True
     )
+    # Legacy column, kept for downgrades. Remove in 2027.2.
     sync_password = models.TextField(
         help_text=_("Password to authenticate to kadmin for sync"), blank=True
     )
+    sync_password_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Sync password"),
+        help_text=_("Password to authenticate to kadmin for sync"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="kerberos_sync_password_sources",
+    )
+    # Legacy column, kept for downgrades. Remove in 2027.2.
     sync_keytab = models.TextField(
         help_text=_(
             "Keytab to authenticate to kadmin for sync. "
@@ -78,12 +90,39 @@ class KerberosSource(IncomingSyncSource):
         ),
         blank=True,
     )
+    sync_keytab_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Sync keytab"),
+        help_text=_(
+            "Keytab to authenticate to kadmin for sync. "
+            "A file secret with the keytab, or a text secret in the form TYPE:residual"
+        ),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="kerberos_sync_keytab_sources",
+    )
+    # Legacy column, kept for downgrades. Remove in 2027.2.
     sync_ccache = models.TextField(
         help_text=_(
             "Credentials cache to authenticate to kadmin for sync. "
             "Must be in the form TYPE:residual"
         ),
         blank=True,
+    )
+    sync_ccache_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Sync credentials cache"),
+        help_text=_(
+            "Credentials cache to authenticate to kadmin for sync. "
+            "A text secret in the form TYPE:residual, or a file secret with the cache"
+        ),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="kerberos_sync_ccache_sources",
     )
 
     spnego_server_name = models.TextField(
@@ -92,13 +131,41 @@ class KerberosSource(IncomingSyncSource):
         ),
         blank=True,
     )
+    # Legacy column, kept for downgrades. Remove in 2027.2.
     spnego_keytab = models.TextField(
         help_text=_("SPNEGO keytab base64-encoded or path to keytab in the form FILE:path"),
         blank=True,
     )
+    spnego_keytab_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("SPNEGO keytab"),
+        help_text=_(
+            "SPNEGO keytab. A file secret with the keytab, "
+            "or a text secret in the form TYPE:residual"
+        ),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="kerberos_spnego_keytab_sources",
+    )
+    # Legacy column, kept for downgrades. Remove in 2027.2.
     spnego_ccache = models.TextField(
         help_text=_("Credential cache to use for SPNEGO in form type:residual"),
         blank=True,
+    )
+    spnego_ccache_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("SPNEGO credentials cache"),
+        help_text=_(
+            "Credentials cache to use for SPNEGO. "
+            "A text secret in the form TYPE:residual, or a file secret with the cache"
+        ),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="kerberos_spnego_ccache_sources",
     )
 
     password_login_update_internal_password = models.BooleanField(
@@ -246,42 +313,43 @@ class KerberosSource(IncomingSyncSource):
         # as such, we don't need to create a separate ccache for each source
         if not self.sync_principal:
             return None
-        if self.sync_password:
+        if self.sync_password_ref:
             return KAdmin.with_password(
                 variant,
                 self.sync_principal,
-                self.sync_password,
+                self.sync_password_ref.secret_value,
                 api_version=api_version,
             )
-        if self.sync_keytab:
-            keytab = self.sync_keytab
-            if ":" not in keytab:
-                keytab_path = self.tempdir / "kadmin_keytab"
-                keytab_path.touch(mode=0o600)
-                keytab_path.write_bytes(b64decode(self.sync_keytab))
-                keytab = f"FILE:{keytab_path}"
+        if self.sync_keytab_ref:
             return KAdmin.with_keytab(
                 variant,
                 self.sync_principal,
-                keytab,
+                self._credential_location(self.sync_keytab_ref, "kadmin_keytab"),
                 api_version=api_version,
             )
-        if self.sync_ccache:
+        if self.sync_ccache_ref:
             return KAdmin.with_ccache(
                 variant,
                 self.sync_principal,
-                self.sync_ccache,
+                self._credential_location(self.sync_ccache_ref, "kadmin_ccache"),
                 api_version=api_version,
             )
         return None
 
     def connection(self) -> KAdmin | None:
         """Get kadmin connection"""
-        if str(self.pk) not in _kadmin_connections:
-            kadm = self._kadmin_init()
-            if kadm is not None:
-                _kadmin_connections[str(self.pk)] = self._kadmin_init()
-        return _kadmin_connections.get(str(self.pk), None)
+        credentials = tuple(
+            (secret.pk, secret.last_updated) if secret else None
+            for secret in (self.sync_password_ref, self.sync_keytab_ref, self.sync_ccache_ref)
+        )
+        config = (self.sync_principal, self.kadmin_type, self.krb5_conf, credentials)
+        cached = _kadmin_connections.get(str(self.pk))
+        if cached and cached[0] == config:
+            return cached[1]
+        _kadmin_connections.pop(str(self.pk), None)
+        if (kadm := self._kadmin_init()) is not None:
+            _kadmin_connections[str(self.pk)] = (config, kadm)
+        return kadm
 
     def check_connection(self) -> dict[str, str | bool]:
         """Check Kerberos Connection"""
@@ -299,30 +367,32 @@ class KerberosSource(IncomingSyncSource):
                 status["status"] = str(exc)
         return status
 
+    def _credential_location(self, secret: Secret, filename: str) -> str:
+        """Locate a keytab or credentials cache in the form TYPE:residual.
+
+        Text secrets already hold a location. File secrets are written to this source's
+        temporary directory first.
+        """
+        if secret.type != SecretType.FILE:
+            return secret.secret_value
+        path = self.tempdir / filename
+        path.touch(mode=0o600)
+        path.write_bytes(b64decode(secret.secret_value))
+        return f"FILE:{path}"
+
     def get_gssapi_store(self) -> dict[str, str]:
         """Get GSSAPI credentials store for this source"""
-        ccache = self.spnego_ccache
-        keytab = None
-
-        if not ccache:
+        if self.spnego_ccache_ref:
+            ccache = self._credential_location(self.spnego_ccache_ref, "spnego_ccache")
+        else:
+            # GSSAPI needs a credentials cache to store the credentials it acquires
             ccache_path = self.tempdir / "spnego_ccache"
             ccache_path.touch(mode=0o600)
             ccache = f"FILE:{ccache_path}"
 
-        if self.spnego_keytab:
-            # Keytab is of the form type:residual, use as-is
-            if ":" in self.spnego_keytab:
-                keytab = self.spnego_keytab
-            # Parse the keytab and write it in the file
-            else:
-                keytab_path = self.tempdir / "spnego_keytab"
-                keytab_path.touch(mode=0o600)
-                keytab_path.write_bytes(b64decode(self.spnego_keytab))
-                keytab = f"FILE:{keytab_path}"
-
         store = {"ccache": ccache}
-        if keytab is not None:
-            store["keytab"] = keytab
+        if self.spnego_keytab_ref:
+            store["keytab"] = self._credential_location(self.spnego_keytab_ref, "spnego_keytab")
         return store
 
     def get_gssapi_creds(self) -> gssapi.creds.Credentials | None:

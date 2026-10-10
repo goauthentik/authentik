@@ -100,7 +100,17 @@ class LDAPSource(IncomingSyncSource):
     )
 
     bind_cn = models.TextField(verbose_name=_("Bind CN"), blank=True)
+    # Legacy column, kept for downgrades. Remove in 2027.2.
     bind_password = models.TextField(blank=True)
+    bind_password_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Bind password"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="ldap_sources",
+    )
     service_bind_method = models.TextField(
         choices=LDAPSourceBindMethod,
         default=LDAPSourceBindMethod.SIMPLE,
@@ -294,7 +304,9 @@ class LDAPSource(IncomingSyncSource):
             )
         else:
             connection_kwargs.setdefault("user", self.bind_cn)
-            connection_kwargs.setdefault("password", self.bind_password)
+            connection_kwargs.setdefault(
+                "password", self.bind_password_ref.secret_value if self.bind_password_ref else ""
+            )
         return self._connect_and_bind(server, server_kwargs, connection_kwargs)
 
     def connection_as_user(self, user: str, password: str) -> Connection:
