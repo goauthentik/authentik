@@ -23,6 +23,11 @@ export interface SecretRequest {
     name: string;
     type?: SecretTypeEnum;
     value?: string;
+    /**
+     * Length of the generated value when creating a text secret without a value. Defaults to the
+     * default token length.
+     */
+    length?: number;
 }
 
 /**
@@ -45,6 +50,7 @@ export function SecretRequestFromJSONTyped(json: any, ignoreDiscriminator: boole
         name: json["name"],
         type: json["type"] == null ? undefined : SecretTypeEnumFromJSON(json["type"]),
         value: json["value"] == null ? undefined : json["value"],
+        length: json["length"] == null ? undefined : json["length"],
     };
 }
 
@@ -64,5 +70,6 @@ export function SecretRequestToJSONTyped(
         name: value["name"],
         type: SecretTypeEnumToJSON(value["type"]),
         value: value["value"],
+        length: value["length"],
     };
 }

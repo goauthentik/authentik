@@ -2,21 +2,17 @@ import "#components/ak-secret-search-input";
 import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
 import { aki } from "#common/api/client";
 
 import { ifPresent } from "#elements/utils/attributes";
 
-import { RenderFlowOption } from "#admin/flows/utils";
+import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
     AuthenticatorDuoStage,
     AuthenticatorDuoStageRequest,
-    Flow,
     FlowDesignationEnum,
-    FlowsApi,
-    FlowsInstancesListRequest,
     StagesApi,
 } from "@goauthentik/api";
 
@@ -101,7 +97,7 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                     <ak-secret-search-input
                         name="clientSecretRef"
                         label=${msg("Secret key")}
-                        value=${ifPresent(this.instance?.clientSecretRef ?? undefined)}
+                        value=${ifPresent(this.instance?.clientSecretRef)}
                         required
                         help=${msg("Secret key of the Duo Auth API application.", {
                             id: "stage.authenticator-duo.form.secret.description",
@@ -131,7 +127,7 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                     <ak-secret-search-input
                         name="adminSecretKeyRef"
                         label=${msg("Secret key")}
-                        value=${ifPresent(this.instance?.adminSecretKeyRef ?? undefined)}
+                        value=${ifPresent(this.instance?.adminSecretKeyRef)}
                         blankable
                         help=${msg("Secret key of the Duo Admin API application.", {
                             id: "stage.authenticator-duo.form.admin-secret.description",
@@ -145,36 +141,12 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                         label=${msg("Configuration flow")}
                         name="configureFlow"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation: FlowDesignationEnum.StageConfiguration,
-                                };
-
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-
-                                const flows = await aki(FlowsApi).flowsInstancesList(args);
-
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                return this.instance?.configureFlow === flow.pk;
-                            }}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKFlowSearch({
+                            name: "configureFlow",
+                            flowType: FlowDesignationEnum.StageConfiguration,
+                            value: this.instance?.configureFlow,
+                            blankable: true,
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.",

@@ -1,14 +1,14 @@
 import "#elements/forms/DeleteBulkForm";
 import { aki } from "#common/api/client";
 
-import { IconRotateSecretButton } from "#elements/buttons/IconRotateSecretButton";
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { SecretForm } from "#admin/secrets/SecretForm";
+import { RotateSecretButton } from "#admin/secrets/RotateSecretButton";
+import { SecretForm, secretTypeLabel } from "#admin/secrets/SecretForm";
 import { SecretValueButton } from "#admin/secrets/SecretValueButton";
 
 import { ModelEnum, Secret, SecretsApi, SecretTypeEnum } from "@goauthentik/api";
@@ -27,7 +27,7 @@ export class SecretListPage extends TablePage<Secret> {
 
     protected override searchEnabled = true;
 
-    public pageTitle = msg("Secrets", { id: "secret.list.title" });
+    public pageTitle = msg("Secrets", { id: "secret.verbose-name-plural" });
     public pageDescription = msg(
         "Credentials used by providers, sources, stages, and connectors. Each secret has its own permissions.",
         { id: "secret.list.description" },
@@ -48,7 +48,7 @@ export class SecretListPage extends TablePage<Secret> {
         [
             msg("Actions", { id: "secret.list.column.actions" }),
             null,
-            msg("Row Actions", { id: "secret.list.row-actions" }),
+            msg("Row Actions", { id: "secret.list.row-actions.label" }),
         ],
     ];
 
@@ -78,20 +78,9 @@ export class SecretListPage extends TablePage<Secret> {
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${msg("Delete", { id: "secret.list.delete" })}
+                ${msg("Delete", { id: "secret.list.delete.label" })}
             </button>
         </ak-forms-delete-bulk>`;
-    }
-
-    protected typeLabel(type?: SecretTypeEnum): string {
-        switch (type) {
-            case SecretTypeEnum.Multiline:
-                return msg("Multi-line text", { id: "secret.type.multiline.label" });
-            case SecretTypeEnum.File:
-                return msg("File", { id: "secret.type.file.label" });
-            default:
-                return msg("Text", { id: "secret.type.text.label" });
-        }
     }
 
     protected override row(item: Secret): SlottedTemplateResult[] {
@@ -100,23 +89,14 @@ export class SecretListPage extends TablePage<Secret> {
                 ${
                     item.managed
                         ? html`<small
-                              >${msg("Managed by authentik", { id: "secret.list.managed" })}</small
+                              >${msg("Managed by authentik", { id: "secret.list.managed.label" })}</small
                           >`
                         : nothing
                 }`,
-            html`${this.typeLabel(item.type)}`,
+            html`${secretTypeLabel(item.type ?? SecretTypeEnum.Text)}`,
             html`<div>
                 ${SecretValueButton(item)} ${IconEditButton(SecretForm, item.pk, item.name)}
-                ${
-                    item.type === SecretTypeEnum.Text
-                        ? IconRotateSecretButton({
-                              rotate: () =>
-                                  aki(SecretsApi).secretsSecretsRotateCreate({
-                                      secretUuid: item.pk,
-                                  }),
-                          })
-                        : nothing
-                }
+                ${item.type === SecretTypeEnum.Text ? RotateSecretButton(item) : nothing}
                 ${IconPermissionButton(item.name, {
                     model: ModelEnum.AuthentikCryptoSecretsSecret,
                     objectPk: item.pk,

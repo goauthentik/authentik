@@ -85,7 +85,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                 <ak-secret-search-input
                     name="passwordRef"
                     label=${msg("SMTP Password")}
-                    value=${ifPresent(this.instance?.passwordRef ?? undefined)}
+                    value=${ifPresent(this.instance?.passwordRef)}
                     blankable
                     help=${msg("Password used to authenticate with the SMTP server.", {
                         id: "stage.email.form.secret.description",
