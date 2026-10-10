@@ -102,7 +102,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                     aria-describedby="notification-count"
                     @click=${AKDrawerChangeEvent.dispatchNotificationsToggle}
                 >
-                    <span class="pf-c-notification-badge ${notificationCount ? "pf-m-unread" : ""}">
+                    <div class="pf-c-notification-badge ${notificationCount ? "pf-m-unread" : ""}">
                         <pf-tooltip
                             position="top"
                             content=${msg("Notification Drawer", {
@@ -120,7 +120,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                             ${notificationCount}
                             <span class="sr-only">unread</span>
                         </span>
-                    </span>
+                    </div>
                 </button>
             </div>`;
         });
