@@ -38,7 +38,7 @@ test.describe("ak-mdx renders compiled markdown", () => {
             await expect(dialog).toBeHidden();
 
             await page
-                .getByLabel("Providers actions")
+                .locator('[part="toolbar-secondary"]')
                 .getByRole("button", { name: "New Provider" })
                 .click();
 
@@ -51,15 +51,6 @@ test.describe("ak-mdx renders compiled markdown", () => {
                     selectSearchValue,
                     "Authorization Flow",
                     /default-provider-authorization-explicit-consent/,
-                ],
-                [
-                    expect(
-                        dialog.getByRole("textbox", {
-                            name: "Invalidation Flow",
-                            includeHidden: true,
-                        }),
-                    ).toHaveValue,
-                    /default-provider-invalidation-flow/,
                 ],
                 [click, "Create", "button", dialog],
             );

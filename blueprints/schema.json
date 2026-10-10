@@ -8013,7 +8013,7 @@
                     "type": "string",
                     "enum": [
                         "text",
-                        "multiline",
+                        "json",
                         "file"
                     ],
                     "title": "Type"
@@ -15390,7 +15390,6 @@
                 },
                 "consumer_secret": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Consumer secret"
                 },
                 "additional_scopes": {
