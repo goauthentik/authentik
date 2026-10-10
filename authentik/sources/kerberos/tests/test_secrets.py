@@ -36,7 +36,9 @@ class TestKerberosSecrets(TestCase):
             ("sync_ccache_ref", "with_ccache"),
         ]:
             with self.subTest(field=field):
-                secret = Secret(type=SecretType.FILE, value=b64encode(b"credential file").decode())
+                secret = Secret(
+                    type=SecretType.FILE, secret_value=b64encode(b"credential file").decode()
+                )
                 setattr(self.source, field, secret)
                 with patch(f"authentik.sources.kerberos.models.KAdmin.{method}") as factory:
                     self.source._kadmin_init()
@@ -50,9 +52,18 @@ class TestKerberosSecrets(TestCase):
         for value in store.values():
             self.assertEqual(Path(value.removeprefix("FILE:")).read_bytes(), b"credential file")
 
+    def test_text_locations_are_used_as_is(self):
+        location = Secret(type=SecretType.TEXT, secret_value="FILE:/etc/krb5.keytab")
+        self.source.sync_keytab_ref = location
+        with patch("authentik.sources.kerberos.models.KAdmin.with_keytab") as factory:
+            self.source._kadmin_init()
+        self.assertEqual(factory.call_args.args[2], "FILE:/etc/krb5.keytab")
+        self.source.spnego_keytab_ref = location
+        self.assertEqual(self.source.get_gssapi_store()["keytab"], "FILE:/etc/krb5.keytab")
+
     def test_credential_replacement_refreshes_connection(self):
         self.source.sync_password_ref = Secret.objects.create(
-            name=generate_id(), value="old password"
+            name=generate_id(), secret_value="old password"
         )
         self.source.save()
         with patch("authentik.sources.kerberos.models.KAdmin.with_password") as factory:
@@ -76,12 +87,12 @@ class TestKerberosSecrets(TestCase):
             allowed_types = (
                 (SecretType.TEXT,)
                 if field == "sync_password_ref"
-                else (SecretType.MULTILINE, SecretType.FILE)
+                else (SecretType.TEXT, SecretType.FILE)
             )
             for secret_type in SecretType:
                 with self.subTest(field=field, type=secret_type):
                     secret = Secret.objects.create(
-                        name=generate_id(), type=secret_type, value="aGk="
+                        name=generate_id(), type=secret_type, secret_value="aGk="
                     )
                     serializer = KerberosSourceSerializer(
                         instance=self.source, data={field: str(secret.pk)}, partial=True

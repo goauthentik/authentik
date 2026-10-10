@@ -240,12 +240,12 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
             <ak-secret-search-input
                 name="privateKeyRef"
                 label=${msg("Secret Key")}
-                value=${ifPresent(this.instance?.privateKeyRef ?? undefined)}
+                value=${ifPresent(this.instance?.privateKeyRef)}
                 required
                 help=${msg(
                     "The secret key allows communication between authentik and the CAPTCHA provider to validate user responses.",
                     {
-                        id: "captcha.form.secret.description",
+                        id: "captcha.secret-key.description",
                         desc: "Description for CAPTCHA secret key field.",
                     },
                 )}

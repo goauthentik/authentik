@@ -8013,7 +8013,7 @@
                     "type": "string",
                     "enum": [
                         "text",
-                        "multiline",
+                        "json",
                         "file"
                     ],
                     "title": "Type"
@@ -8021,6 +8021,13 @@
                 "value": {
                     "type": "string",
                     "title": "Value"
+                },
+                "length": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 1024,
+                    "title": "Length",
+                    "description": "Length of the generated value when creating a text secret without a value. Defaults to the default token length."
                 }
             },
             "required": []
@@ -14651,12 +14658,14 @@
                 "sync_keytab_ref": {
                     "type": "string",
                     "format": "uuid",
-                    "title": "Sync keytab"
+                    "title": "Sync keytab",
+                    "description": "Keytab to authenticate to kadmin for sync. A file secret with the keytab, or a text secret in the form TYPE:residual"
                 },
                 "sync_ccache_ref": {
                     "type": "string",
                     "format": "uuid",
-                    "title": "Sync ccache"
+                    "title": "Sync credentials cache",
+                    "description": "Credentials cache to authenticate to kadmin for sync. A text secret in the form TYPE:residual, or a file secret with the cache"
                 },
                 "spnego_server_name": {
                     "type": "string",
@@ -14666,12 +14675,14 @@
                 "spnego_keytab_ref": {
                     "type": "string",
                     "format": "uuid",
-                    "title": "Spnego keytab"
+                    "title": "SPNEGO keytab",
+                    "description": "SPNEGO keytab. A file secret with the keytab, or a text secret in the form FILE:path"
                 },
                 "spnego_ccache_ref": {
                     "type": "string",
                     "format": "uuid",
-                    "title": "Spnego ccache"
+                    "title": "SPNEGO credentials cache",
+                    "description": "Credentials cache to use for SPNEGO. A text secret in the form TYPE:residual, or a file secret with the cache"
                 },
                 "password_login_update_internal_password": {
                     "type": "boolean",
