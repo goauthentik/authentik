@@ -114,6 +114,9 @@ class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
     )
 
     def validate(self, attrs):
+        # Only check what changed, so a stored kubeconfig doesn't block unrelated updates.
+        if "local" not in attrs and "kubeconfig_ref" not in attrs:
+            return attrs
         local = attrs.get("local", getattr(self.instance, "local", False))
         secret = attrs.get("kubeconfig_ref", getattr(self.instance, "kubeconfig_ref", None))
         if not local:
@@ -122,7 +125,7 @@ class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
                     {"kubeconfig_ref": _("A kubeconfig secret is required for a remote cluster.")}
                 )
             try:
-                validate_kubeconfig(secret)
+                validate_kubeconfig(secret.get_json())
             except DjangoValidationError as exc:
                 raise serializers.ValidationError({"kubeconfig_ref": exc.messages}) from exc
         return attrs

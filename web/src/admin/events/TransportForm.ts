@@ -144,7 +144,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
             <ak-secret-search-input
                 name="webhookUrlRef"
                 label=${msg("Webhook URL")}
-                value=${ifPresent(this.instance?.webhookUrlRef ?? undefined)}
+                value=${ifPresent(this.instance?.webhookUrlRef)}
                 blankable
                 ?required=${this.showWebhook}
                 ?hidden=${!this.showWebhook}
