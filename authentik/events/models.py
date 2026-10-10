@@ -96,6 +96,7 @@ class EventAction(models.TextChoices):
 
     USER_WRITE = "user_write"
     USER_OFFBOARDED = "user_offboarded"
+    USER_EXPIRATION_WARNING = "user_expiration_warning"
     SUSPICIOUS_REQUEST = "suspicious_request"
     PASSWORD_SET = "password_set"  # noqa # nosec
 
@@ -105,6 +106,7 @@ class EventAction(models.TextChoices):
     INVITE_USED = "invitation_used"
 
     AUTHORIZE_APPLICATION = "authorize_application"
+    TOKEN_REFRESH = "token_refresh"
     SOURCE_LINKED = "source_linked"
 
     IMPERSONATION_STARTED = "impersonation_started"

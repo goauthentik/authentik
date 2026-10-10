@@ -1,5 +1,6 @@
 """API URLs"""
 
+from authentik.enterprise.lifecycle.expiration.api import UserExpirationRuleViewSet
 from authentik.enterprise.lifecycle.offboarding.api import UserOffboardingViewSet
 from authentik.enterprise.lifecycle.review.api.iterations import IterationViewSet
 from authentik.enterprise.lifecycle.review.api.reviews import ReviewViewSet
@@ -10,4 +11,5 @@ api_urlpatterns = [
     ("lifecycle/reviews", ReviewViewSet),
     ("lifecycle/rules", LifecycleRuleViewSet),
     ("lifecycle/user_offboarding", UserOffboardingViewSet),
+    ("lifecycle/user_expiration_rules", UserExpirationRuleViewSet),
 ]
