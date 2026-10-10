@@ -8,7 +8,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.admin.files.validation import validate_upload_file_name
 from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
-from authentik.stages.email.loaders import email_engine
+from authentik.stages.email.loaders import compile_email_template
 from authentik.stages.email.models import EmailStage, EmailTemplate
 
 
@@ -78,24 +78,18 @@ class EmailTemplateSerializer(ModelSerializer):
             conflicts = conflicts.exclude(pk=self.instance.pk)
         if conflicts.exists():
             raise ValidationError({"path": "A template with this path already exists."})
+        for field in ("body", "body_plaintext"):
+            if field not in attrs:
+                continue
+            try:
+                compile_email_template(attrs[field], path, managed is not None)
+            except TemplateSyntaxError as exc:
+                raise ValidationError({field: str(exc)}) from exc
         return super().validate(attrs)
 
     def validate_path(self, path: str) -> str:
         validate_upload_file_name(path, ValidationError=ValidationError)
         return path
-
-    def validate_body(self, body: str) -> str:
-        return self._validate_template(body)
-
-    def validate_body_plaintext(self, body_plaintext: str) -> str:
-        return self._validate_template(body_plaintext)
-
-    def _validate_template(self, value: str) -> str:
-        try:
-            email_engine().from_string(value)
-        except TemplateSyntaxError as exc:
-            raise ValidationError(str(exc)) from exc
-        return value
 
     class Meta:
         model = EmailTemplate

@@ -25,6 +25,16 @@ class TestEmailTemplateLoader(TestCase):
         )
         self.assertEqual(child.render({"name": "child"}), "[child]")
 
+    def test_relative_extends(self):
+        """Test relative extends resolve against template's own path"""
+        dir = generate_id()
+        self.template("[{% block content %}{% endblock %}]", path=f"{dir}/base.html")
+        child = self.template(
+            '{% extends "./base.html" %}{% block content %}child{% endblock %}',
+            path=f"{dir}/child.html",
+        )
+        self.assertEqual(child.render({}), "[child]")
+
     def test_custom_shadows_managed(self):
         """Test a custom template is used over a managed template with the same path"""
         path = f"{generate_id()}.html"

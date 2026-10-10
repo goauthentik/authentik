@@ -1,11 +1,13 @@
 """email stage models"""
 
+import posixpath
 from uuid import uuid4
 
 from django.core.mail.backends.base import BaseEmailBackend
 from django.core.mail.backends.smtp import EmailBackend
 from django.db import models
-from django.db.models import Q
+from django.db.models import F, Q
+from django.template import TemplateDoesNotExist
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy
 from django.views import View
@@ -57,10 +59,22 @@ class EmailTemplate(SerializerModel, ManagedModel):
         return str(BUILTIN_TEMPLATE_DISPLAY_NAMES.get(self.managed, self.path))
 
     def render(self, context: dict) -> str:
-        return render_email_template(self.body, context)
+        return render_email_template(self.body, self.path, context, self.managed is not None)
 
     def render_plaintext(self, context: dict) -> str:
-        return render_email_template(self.body_plaintext, context)
+        return render_email_template(
+            self.body_plaintext, self.path, context, self.managed is not None
+        )
+
+    @classmethod
+    def resolve(cls, path: str) -> EmailTemplate:
+        path = posixpath.normpath(path)
+        template = (
+            cls.objects.filter(path=path).order_by(F("managed").asc(nulls_first=True)).first()
+        )
+        if not template:
+            raise TemplateDoesNotExist(path)
+        return template
 
     @property
     def serializer(self) -> type[BaseSerializer]:

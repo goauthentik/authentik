@@ -2,7 +2,7 @@
 
 from functools import cache
 
-from django.template import Context, Engine, Origin, TemplateDoesNotExist
+from django.template import Context, Engine, Origin, Template, TemplateDoesNotExist
 from django.template.backends.django import get_installed_libraries
 from django.template.loaders.base import Loader
 
@@ -34,5 +34,15 @@ def email_engine() -> Engine:
     )
 
 
-def render_email_template(body: str, context: dict | None) -> str:
-    return email_engine().from_string(body).render(Context(context or {}))
+def render_email_template(body: str, path: str, context: dict | None, managed: bool = False) -> str:
+    return compile_email_template(body, path, managed).render(Context(context or {}))
+
+
+def compile_email_template(body: str, path: str, managed: bool = False) -> Template:
+    engine = email_engine()
+    origin = Origin(
+        name=f"{'managed' if managed else 'custom'}:{path}",
+        template_name=path,
+        loader=engine.template_loaders[0],
+    )
+    return Template(body, origin=origin, engine=engine)

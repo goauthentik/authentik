@@ -13,6 +13,7 @@ from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.lib.generators import generate_id
 from authentik.stages.email.models import EmailStage, EmailTemplate
 from authentik.stages.email.utils import TemplateEmailMessage
 
@@ -70,3 +71,9 @@ class TestEmailStageTemplates(FlowTestCase):
         message = TemplateEmailMessage(to=[("some-name", "foo@bar.baz")])
         [sanitize_address(addr, "utf-8") for addr in message.recipients()]
         self.assertEqual(message.recipients(), ["some-name <foo@bar.baz>"])
+
+    def test_template_name_relative(self):
+        """Test template names are normalized before lookup"""
+        template = EmailTemplate.objects.create(path=f"{generate_id()}.html", body="body")
+        message = TemplateEmailMessage(to=[("", "foo@bar.baz")], template_name=f"./{template.path}")
+        self.assertEqual(message.alternatives[0][0], "body")
