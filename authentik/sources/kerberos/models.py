@@ -140,7 +140,8 @@ class KerberosSource(IncomingSyncSource):
         "authentik_crypto_secrets.Secret",
         verbose_name=_("SPNEGO keytab"),
         help_text=_(
-            "SPNEGO keytab. A file secret with the keytab, or a text secret in the form TYPE:residual"
+            "SPNEGO keytab. A file secret with the keytab, "
+            "or a text secret in the form TYPE:residual"
         ),
         on_delete=models.PROTECT,
         null=True,
