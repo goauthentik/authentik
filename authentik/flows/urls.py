@@ -13,6 +13,7 @@ from authentik.flows.views.executor import (
     ToDefaultFlow,
 )
 from authentik.flows.views.inspector import FlowInspectorView
+from authentik.flows.views.passkey_debug import PasskeyDebugView
 
 urlpatterns = [
     path(
@@ -26,6 +27,7 @@ urlpatterns = [
         name="default-invalidation",
     ),
     path("-/cancel/", CancelView.as_view(), name="cancel"),
+    path("-/passkey-debug/", PasskeyDebugView.as_view(), name="passkey-debug"),
     path(
         "-/configure/<uuid:stage_uuid>/",
         ConfigureFlowInitView.as_view(),
