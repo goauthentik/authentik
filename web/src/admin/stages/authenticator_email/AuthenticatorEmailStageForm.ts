@@ -92,7 +92,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                 <ak-secret-search-input
                     name="passwordRef"
                     label=${msg("SMTP Password")}
-                    value=${ifPresent(this.instance?.passwordRef ?? undefined)}
+                    value=${ifPresent(this.instance?.passwordRef)}
                     blankable
                     help=${msg("Password used to authenticate with the SMTP server.", {
                         id: "stage.authenticator-email.form.secret.description",
