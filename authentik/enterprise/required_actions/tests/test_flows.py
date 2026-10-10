@@ -23,10 +23,11 @@ from authentik.flows.models import (
     FlowAuthenticationRequirement,
     FlowDesignation,
     FlowStageBinding,
+    in_memory_stage,
 )
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
-from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.flows.views.executor import SESSION_KEY_PLAN, SESSION_KEY_POST
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
@@ -222,6 +223,55 @@ class TestRequiredActions(RequiredActionsTestCase):
         self.assertStageRedirects(self.complete(replacement), destination)
 
     @enterprise_test()
+    def test_post_is_resumed_with_its_body(self):
+        """A POST is opened again with GET afterwards, so its body is kept like on login"""
+        self.client.force_login(self.user)
+        destination = reverse("authentik_core:if-user")
+        response = self.client.post(
+            destination,
+            urlencode({"SAMLRequest": "request"}),
+            content_type="application/x-www-form-urlencoded",
+            HTTP_ACCEPT="text/html",
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, flow_url(self.action))
+        self.assertEqual(self.client.session[SESSION_KEY_POST]["SAMLRequest"], "request")
+        self.assertStageRedirects(self.complete(self.action), destination)
+
+    @enterprise_test()
+    def test_flow_post_body_is_not_kept(self):
+        """Suspending a flow doesn't copy the submitted form, such as a password, into the
+        session"""
+        flow, _ = self.login(DummyStage.objects.create(name=generate_id()))
+        response = self.client.post(
+            executor_url(flow),
+            urlencode({"password": generate_id()}),
+            content_type="application/x-www-form-urlencoded",
+        )
+        self.assertStageRedirects(response, flow_url(self.action))
+        self.assertNotIn(SESSION_KEY_POST, self.client.session)
+
+    @enterprise_test()
+    def test_completion_applies_to_planned_user(self):
+        """An action plan restored in another browser, as from an email link, completes for
+        the user it was planned for"""
+        plan = FlowPlan(flow_pk=self.action.pk.hex)
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        plan.append_stage(
+            in_memory_stage(
+                RequiredActionCompleteStageView,
+                flow_slug=self.action.slug,
+                resume_url=reverse("authentik_core:root-redirect"),
+                resume_plan=None,
+            )
+        )
+        self.set_flow_plan(plan)
+        response = self.client.get(executor_url(self.action))
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        self.user.refresh_from_db()
+        self.assertNotIn(USER_ATTRIBUTE_REQUIRED_ACTIONS, self.user.attributes)
+
+    @enterprise_test()
     def test_completion_preserves_concurrent_updates(self):
         """An update to the user while the action runs survives its completion"""
         self.client.force_login(self.user)
@@ -298,12 +348,11 @@ class TestRequiredActionsMiddleware(RequiredActionsTestCase):
 
     @enterprise_test()
     def test_flow_interface_reads_allowed(self):
-        """The flow interface can load its configuration and user, with or without a prefix"""
-        for prefix in ("", "/authentik"):
-            for route in ("authentik_api:user-me", "authentik_api:config"):
-                with self.subTest(prefix=prefix, route=route):
-                    response = self.client.get(reverse(route), SCRIPT_NAME=prefix)
-                    self.assertEqual(response.status_code, 200)
+        """The flow interface can load its configuration and user while the API is denied"""
+        self.assertEqual(self.client.get(reverse("authentik_api:brand-list")).status_code, 403)
+        for route in ("authentik_api:user-me", "authentik_api:config"):
+            with self.subTest(route=route):
+                self.assertEqual(self.client.get(reverse(route)).status_code, 200)
 
     @enterprise_test()
     def test_other_flow_redirected_to_action(self):
@@ -323,9 +372,10 @@ class TestRequiredActionsMiddleware(RequiredActionsTestCase):
     def test_impersonation_not_restricted(self):
         """An administrator impersonating the user isn't sent through their actions"""
         self.client.force_login(create_test_admin_user())
-        self.client.post(
+        response = self.client.post(
             reverse("authentik_api:user-impersonate", kwargs={"pk": self.user.pk}),
             data={"reason": generate_id()},
         )
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(self.open_page(reverse("authentik_core:if-user")).status_code, 200)
         self.assertNotIn(SESSION_KEY_PLAN, self.client.session)

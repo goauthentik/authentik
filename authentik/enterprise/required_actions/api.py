@@ -22,8 +22,8 @@ class RequiredActionsUserSerializerMixin:
         except ValueError as exc:
             raise ValidationError(
                 _(
-                    "Required actions must reference existing flows other than "
-                    "authentication or invalidation flows."
+                    "Required actions must reference existing flows that a logged-in user "
+                    "can run, other than authentication or invalidation flows."
                 )
             ) from exc
         return attributes
