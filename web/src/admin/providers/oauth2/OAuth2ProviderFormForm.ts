@@ -311,8 +311,7 @@ export function renderForm({
                 }
 
                 <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
-                    <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->
-                    ${AKCertificateSearch({ name: "signingKey", label: msg("Signing Key"), placeholder: msg("Select a signing key..."), value: provider.signingKey, singleton: true, allowedKeyTypes: JWTSigningKeyTypes })}
+                    ${AKCertificateSearch({ name: "signingKey", label: msg("Signing Key"), placeholder: msg("Select a signing key..."), value: provider.signingKey, singleton: !provider.pk, allowedKeyTypes: JWTSigningKeyTypes })}
                     <p class="pf-c-form__helper-text">
                         ${msg(
                             "Key used to sign tokens. If no signing key is selected, tokens are signed with HS256 using this provider's client secret.",
