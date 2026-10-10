@@ -4,25 +4,21 @@ import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-import "#elements/forms/SearchSelect/index";
 import { aki } from "#common/api/client";
 
 import { ifPresent } from "#elements/utils/attributes";
 
-import { RenderFlowOption } from "#admin/flows/utils";
+import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
+import { notificationMappingSource } from "#admin/common/search-sources";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
     AuthenticatorSMSStage,
     AuthenticatorSMSStageRequest,
     AuthTypeEnum,
-    Flow,
     FlowDesignationEnum,
-    FlowsApi,
-    FlowsInstancesListRequest,
-    NotificationWebhookMapping,
-    PropertymappingsApi,
-    PropertymappingsNotificationListRequest,
     ProviderEnum,
     StagesApi,
 } from "@goauthentik/api";
@@ -88,7 +84,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                 label=${msg("Twilio Auth Token", {
                     id: "stage.authenticator-sms.form.twilio-auth-secret.label",
                 })}
-                value=${ifPresent(this.instance?.authRef ?? undefined)}
+                value=${ifPresent(this.instance?.authRef)}
                 required
                 help=${msg("Auth token from https://console.twilio.com.", {
                     id: "stage.authenticator-sms.form.twilio-auth-secret.description",
@@ -147,7 +143,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                               id: "stage.authenticator-sms.form.api-auth-username-secret.label",
                           })
                 }
-                value=${ifPresent(this.instance?.authRef ?? undefined)}
+                value=${ifPresent(this.instance?.authRef)}
                 required
             ></ak-secret-search-input>
             <ak-secret-search-input
@@ -156,7 +152,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                 label=${msg("API Auth password", {
                     id: "stage.authenticator-sms.form.api-auth-password-secret.label",
                 })}
-                value=${ifPresent(this.instance?.authPasswordRef ?? undefined)}
+                value=${ifPresent(this.instance?.authPasswordRef)}
                 blankable
                 help=${msg("The password to be used with basic auth.", {
                     id: "stage.authenticator-sms.form.auth-password-secret.description",
@@ -244,37 +240,12 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                             : this.renderProviderTwillio()
                     }
                     <ak-form-element-horizontal label=${msg("Mapping")} name="mapping">
-                        <ak-search-select
-                            .fetchObjects=${async (
-                                query?: string,
-                            ): Promise<NotificationWebhookMapping[]> => {
-                                const args: PropertymappingsNotificationListRequest = {
-                                    ordering: "name",
-                                };
-
-                                if (query) {
-                                    args.search = query;
-                                }
-
-                                const items =
-                                    await aki(PropertymappingsApi).propertymappingsNotificationList(
-                                        args,
-                                    );
-
-                                return items.results;
-                            }}
-                            .renderElement=${(item: NotificationWebhookMapping): string => {
-                                return item.name;
-                            }}
-                            .value=${(item?: NotificationWebhookMapping) => {
-                                return item?.pk;
-                            }}
-                            .selected=${(item: NotificationWebhookMapping): boolean => {
-                                return this.instance?.mapping === item.pk;
-                            }}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKSearchSelect({
+                            name: "mapping",
+                            source: notificationMappingSource,
+                            value: this.instance?.mapping,
+                            blankable: true,
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg("Modify the payload sent to the provider.")}
                         </p>
@@ -291,36 +262,12 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                         label=${msg("Configuration flow")}
                         name="configureFlow"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation: FlowDesignationEnum.StageConfiguration,
-                                };
-
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-
-                                const flows = await aki(FlowsApi).flowsInstancesList(args);
-
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                return this.instance?.configureFlow === flow.pk;
-                            }}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKFlowSearch({
+                            name: "configureFlow",
+                            flowType: FlowDesignationEnum.StageConfiguration,
+                            value: this.instance?.configureFlow,
+                            blankable: true,
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.",

@@ -1,4 +1,5 @@
 import "#elements/EmptyState";
+import { isNamedEntity } from "#common/api/entities";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { AKRefreshEvent } from "#common/events";
 
@@ -15,11 +16,6 @@ import type { CSSResult } from "lit";
 import { html, noChange } from "lit-html";
 import { property, state } from "lit/decorators.js";
 
-interface NamedInstance {
-    verboseName?: string;
-    verboseNamePlural?: string;
-}
-
 /*
  * Type for saving and retrieving data ops from the authentik API.
  */
@@ -27,19 +23,6 @@ export interface ModelEndpoints<T, PKT extends string | number = string, D = T> 
     load: (pk: PKT) => Promise<T>;
     create: (data: NonNullable<D>) => Promise<unknown>;
     update: (pk: PKT, data: NonNullable<D>) => Promise<unknown>;
-}
-
-/**
- * Predicate to determine if a given instance has verbose name properties.
- *
- * This is useful for plucking out the labels for dynamic forms.
- */
-function isNamedInstance(instance: unknown): instance is NamedInstance {
-    if (!instance || typeof instance !== "object") {
-        return false;
-    }
-
-    return "verboseName" in instance || "verboseNamePlural" in instance;
 }
 
 /**
@@ -155,7 +138,7 @@ export abstract class ModelForm<
     protected assignInstance(instance: T | null): void {
         this.instance = instance;
 
-        if (instance && isNamedInstance(instance)) {
+        if (instance && isNamedEntity(instance)) {
             this.verboseName = instance.verboseName ?? this.verboseName;
             this.verboseNamePlural = instance.verboseNamePlural ?? this.verboseNamePlural;
         }

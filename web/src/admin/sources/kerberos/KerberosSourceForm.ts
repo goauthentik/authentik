@@ -1,4 +1,3 @@
-import "#admin/common/ak-flow-search/ak-source-flow-search";
 import "#components/ak-secret-search-input";
 import "#components/ak-slug-input";
 import "#components/ak-text-input";
@@ -19,10 +18,13 @@ import { ifPresent } from "#elements/utils/attributes";
 
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
+import {
+    AKSourceAuthenticationFlowField,
+    AKSourceEnrollmentFlowField,
+} from "#admin/sources/components/flow-fields";
 import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
-    FlowDesignationEnum,
     GroupMatchingModeEnum,
     KadminTypeEnum,
     KerberosSource,
@@ -276,23 +278,23 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                     ></ak-secret-search-input>
                     <ak-secret-search-input
                         name="syncKeytabRef"
-                        .types=${[SecretTypeEnum.Multiline, SecretTypeEnum.File]}
+                        .types=${[SecretTypeEnum.Text, SecretTypeEnum.File]}
                         label=${msg("Sync keytab")}
                         value=${ifPresent(this.instance?.syncKeytabRef)}
                         blankable
                         help=${msg(
-                            "Keytab used to authenticate to the KDC for syncing. Optional if Sync password or Sync credentials cache is provided. Select a file secret, or a multi-line text secret containing base64 or TYPE:residual.",
+                            "Keytab used to authenticate to the KDC for syncing. Optional if Sync password or Sync credentials cache is provided. Select a file secret with the keytab, or a text secret with its location in the form TYPE:residual.",
                             { id: "source.kerberos.form.sync-keytab.description" },
                         )}
                     ></ak-secret-search-input>
                     <ak-secret-search-input
                         name="syncCcacheRef"
-                        .types=${[SecretTypeEnum.Multiline, SecretTypeEnum.File]}
+                        .types=${[SecretTypeEnum.Text, SecretTypeEnum.File]}
                         label=${msg("Sync credentials cache")}
                         value=${ifPresent(this.instance?.syncCcacheRef)}
                         blankable
                         help=${msg(
-                            "Credentials cache used to authenticate to the KDC for syncing. Optional if Sync password or Sync keytab is provided. Select a file secret, or a multi-line text secret containing TYPE:residual.",
+                            "Credentials cache used to authenticate to the KDC for syncing. Optional if Sync password or Sync keytab is provided. Select a text secret with its location in the form TYPE:residual, or a file secret with the cache.",
                             { id: "source.kerberos.form.sync-ccache.description" },
                         )}
                     ></ak-secret-search-input>
@@ -310,23 +312,23 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                     ></ak-text-input>
                     <ak-secret-search-input
                         name="spnegoKeytabRef"
-                        .types=${[SecretTypeEnum.Multiline, SecretTypeEnum.File]}
+                        .types=${[SecretTypeEnum.Text, SecretTypeEnum.File]}
                         label=${msg("SPNEGO keytab")}
                         value=${ifPresent(this.instance?.spnegoKeytabRef)}
                         blankable
                         help=${msg(
-                            "Keytab used for SPNEGO. Optional if SPNEGO credentials cache is provided. Select a file secret, or a multi-line text secret containing base64 or TYPE:residual.",
+                            "Keytab used for SPNEGO. Optional if SPNEGO credentials cache is provided. Select a file secret with the keytab, or a text secret with its location in the form TYPE:residual.",
                             { id: "source.kerberos.form.spnego-keytab.description" },
                         )}
                     ></ak-secret-search-input>
                     <ak-secret-search-input
                         name="spnegoCcacheRef"
-                        .types=${[SecretTypeEnum.Multiline, SecretTypeEnum.File]}
+                        .types=${[SecretTypeEnum.Text, SecretTypeEnum.File]}
                         label=${msg("SPNEGO credentials cache")}
                         value=${ifPresent(this.instance?.spnegoCcacheRef)}
                         blankable
                         help=${msg(
-                            "Credentials cache used for SPNEGO. Optional if SPNEGO keytab is provided. Select a file secret, or a multi-line text secret containing TYPE:residual.",
+                            "Credentials cache used for SPNEGO. Optional if SPNEGO keytab is provided. Select a text secret with its location in the form TYPE:residual, or a file secret with the cache.",
                             { id: "source.kerberos.form.spnego-ccache.description" },
                         )}
                     ></ak-secret-search-input>
@@ -372,34 +374,8 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
             </ak-form-group>
             <ak-form-group label="${msg("Flow settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Authentication Flow")}
-                        name="authenticationFlow"
-                    >
-                        <ak-source-flow-search
-                            flowType=${FlowDesignationEnum.Authentication}
-                            .currentFlow=${this.instance?.authenticationFlow}
-                            .instanceId=${this.instance?.pk}
-                            fallback="default-source-authentication"
-                        ></ak-source-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow to use when authenticating existing users.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Enrollment flow")}
-                        name="enrollmentFlow"
-                    >
-                        <ak-source-flow-search
-                            flowType=${FlowDesignationEnum.Enrollment}
-                            .currentFlow=${this.instance?.enrollmentFlow}
-                            .instanceId=${this.instance?.pk}
-                            fallback="default-source-enrollment"
-                        ></ak-source-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow to use when enrolling new users.")}
-                        </p>
-                    </ak-form-element-horizontal>
+                    ${AKSourceAuthenticationFlowField({ value: this.instance?.authenticationFlow, sourcePk: this.instance?.pk })}
+                    ${AKSourceEnrollmentFlowField({ value: this.instance?.enrollmentFlow, sourcePk: this.instance?.pk })}
                 </div>
             </ak-form-group>
             <ak-form-group label="${msg("Additional settings")}">

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 00:16+0000\n"
+"POT-Creation-Date: 2026-10-09 00:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -749,6 +749,10 @@ msgstr ""
 
 #: authentik/core/models.py
 msgid "Policy behavior cannot be changed after creation."
+msgstr ""
+
+#: authentik/core/sources/flow_manager.py
+msgid "New users can't enroll while adding a user."
 msgstr ""
 
 #: authentik/core/sources/flow_manager.py
@@ -2568,6 +2572,10 @@ msgid "User's avatar"
 msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
+msgid "Username"
+msgstr ""
+
+#: authentik/policies/templates/policies/denied.html
 msgid "Not you?"
 msgstr ""
 
@@ -4289,10 +4297,6 @@ msgid "Also known as Entity ID. Defaults to the Metadata URL."
 msgstr ""
 
 #: authentik/sources/saml/models.py
-msgid "Audience value this IdP sends for authentik."
-msgstr ""
-
-#: authentik/sources/saml/models.py
 msgid "SSO URL"
 msgstr ""
 
@@ -5463,6 +5467,10 @@ msgstr ""
 
 #: authentik/stages/user_login/stage.py
 msgid "The selected session is no longer available. Please try again."
+msgstr ""
+
+#: authentik/stages/user_login/stage.py
+msgid "Only internal users can be added to user switching."
 msgstr ""
 
 #: authentik/stages/user_logout/models.py

@@ -56,7 +56,7 @@ class TestToken(OAuthTestCase):
             signing_key=self.keypair,
         )
         header = b64encode(
-            f"{provider.client_id}:{provider.client_secret_ref.value}".encode()
+            f"{provider.client_id}:{provider.client_secret_ref.secret_value}".encode()
         ).decode()
         user = create_test_admin_user()
         code = AuthorizationCode.objects.create(
@@ -73,7 +73,7 @@ class TestToken(OAuthTestCase):
         )
         with self.assertRaises(TokenError) as cm:
             parse_token_request(
-                request, provider, provider.client_id, provider.client_secret_ref.value
+                request, provider, provider.client_id, provider.client_secret_ref.secret_value
             )
         self.assertEqual(cm.exception.cause, "grant_type_not_configured")
 
@@ -87,7 +87,7 @@ class TestToken(OAuthTestCase):
             signing_key=self.keypair,
         )
         header = b64encode(
-            f"{provider.client_id}:{provider.client_secret_ref.value}".encode()
+            f"{provider.client_id}:{provider.client_secret_ref.secret_value}".encode()
         ).decode()
         user = create_test_admin_user()
         code = AuthorizationCode.objects.create(
@@ -103,7 +103,7 @@ class TestToken(OAuthTestCase):
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
         params = parse_token_request(
-            request, provider, provider.client_id, provider.client_secret_ref.value
+            request, provider, provider.client_id, provider.client_secret_ref.secret_value
         )
         self.assertEqual(params.provider, provider)
         with self.assertRaises(TokenError):
@@ -119,7 +119,7 @@ class TestToken(OAuthTestCase):
             signing_key=self.keypair,
         )
         header = b64encode(
-            f"{provider.client_id}:{provider.client_secret_ref.value}".encode()
+            f"{provider.client_id}:{provider.client_secret_ref.secret_value}".encode()
         ).decode()
         request = self.factory.post(
             "/",
@@ -132,7 +132,7 @@ class TestToken(OAuthTestCase):
         )
         with self.assertRaises(TokenError):
             parse_token_request(
-                request, provider, provider.client_id, provider.client_secret_ref.value
+                request, provider, provider.client_id, provider.client_secret_ref.secret_value
             )
 
     def test_redirect_uri_regex(self):
@@ -145,7 +145,7 @@ class TestToken(OAuthTestCase):
             signing_key=self.keypair,
         )
         header = b64encode(
-            f"{provider.client_id}:{provider.client_secret_ref.value}".encode()
+            f"{provider.client_id}:{provider.client_secret_ref.secret_value}".encode()
         ).decode()
         user = create_test_admin_user()
         code = AuthorizationCode.objects.create(
@@ -161,7 +161,7 @@ class TestToken(OAuthTestCase):
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
         params = parse_token_request(
-            request, provider, provider.client_id, provider.client_secret_ref.value
+            request, provider, provider.client_id, provider.client_secret_ref.secret_value
         )
         self.assertEqual(params.provider, provider)
 
@@ -175,7 +175,7 @@ class TestToken(OAuthTestCase):
             signing_key=self.keypair,
         )
         header = b64encode(
-            f"{provider.client_id}:{provider.client_secret_ref.value}".encode()
+            f"{provider.client_id}:{provider.client_secret_ref.secret_value}".encode()
         ).decode()
         request = self.factory.post(
             "/",
@@ -188,7 +188,7 @@ class TestToken(OAuthTestCase):
         )
         with self.assertRaises(TokenError) as cm:
             parse_token_request(
-                request, provider, provider.client_id, provider.client_secret_ref.value
+                request, provider, provider.client_id, provider.client_secret_ref.secret_value
             )
         self.assertEqual(cm.exception.error, "invalid_client")
         events = Event.objects.filter(action=EventAction.CONFIGURATION_ERROR)
@@ -207,7 +207,7 @@ class TestToken(OAuthTestCase):
             signing_key=self.keypair,
         )
         header = b64encode(
-            f"{provider.client_id}:{provider.client_secret_ref.value}".encode()
+            f"{provider.client_id}:{provider.client_secret_ref.secret_value}".encode()
         ).decode()
         request = self.factory.post(
             "/",
@@ -220,7 +220,7 @@ class TestToken(OAuthTestCase):
         )
         with self.assertRaises(TokenError) as cm:
             parse_token_request(
-                request, provider, provider.client_id, provider.client_secret_ref.value
+                request, provider, provider.client_id, provider.client_secret_ref.secret_value
             )
         self.assertEqual(cm.exception.error, "invalid_client")
         # The unparsable pattern is reported on its own, and the request then falls through
@@ -245,7 +245,7 @@ class TestToken(OAuthTestCase):
             ),
         )
         header = b64encode(
-            f"{provider.client_id}:{provider.client_secret_ref.value}".encode()
+            f"{provider.client_id}:{provider.client_secret_ref.secret_value}".encode()
         ).decode()
         request = self.factory.post(
             "/",
@@ -258,7 +258,7 @@ class TestToken(OAuthTestCase):
         )
         with self.assertRaises(TokenError) as cm:
             parse_token_request(
-                request, provider, provider.client_id, provider.client_secret_ref.value
+                request, provider, provider.client_id, provider.client_secret_ref.secret_value
             )
         self.assertEqual(cm.exception.error, "invalid_client")
         self.assertEqual(cm.exception.cause, "invalid_secret")
@@ -273,7 +273,7 @@ class TestToken(OAuthTestCase):
             signing_key=self.keypair,
         )
         header = b64encode(
-            f"{provider.client_id}:{provider.client_secret_ref.value}".encode()
+            f"{provider.client_id}:{provider.client_secret_ref.secret_value}".encode()
         ).decode()
         user = create_test_admin_user()
         token = RefreshToken.objects.create(
@@ -292,7 +292,7 @@ class TestToken(OAuthTestCase):
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
         params = parse_token_request(
-            request, provider, provider.client_id, provider.client_secret_ref.value
+            request, provider, provider.client_id, provider.client_secret_ref.secret_value
         )
         self.assertEqual(params.provider, provider)
 
@@ -323,7 +323,7 @@ class TestToken(OAuthTestCase):
         self.app.provider = provider
         self.app.save()
         header = b64encode(
-            f"{provider.client_id}:{provider.client_secret_ref.value}".encode()
+            f"{provider.client_id}:{provider.client_secret_ref.secret_value}".encode()
         ).decode()
         user = create_test_admin_user()
         code = AuthorizationCode.objects.create(
@@ -367,7 +367,7 @@ class TestToken(OAuthTestCase):
         self.app.provider = provider
         self.app.save()
         header = b64encode(
-            f"{provider.client_id}:{provider.client_secret_ref.value}".encode()
+            f"{provider.client_id}:{provider.client_secret_ref.secret_value}".encode()
         ).decode()
         user = create_test_admin_user()
         code = AuthorizationCode.objects.create(
@@ -410,7 +410,7 @@ class TestToken(OAuthTestCase):
         self.app.provider = provider
         self.app.save()
         header = b64encode(
-            f"{provider.client_id}:{provider.client_secret_ref.value}".encode()
+            f"{provider.client_id}:{provider.client_secret_ref.secret_value}".encode()
         ).decode()
         user = create_test_admin_user()
         token = RefreshToken.objects.create(
@@ -471,7 +471,7 @@ class TestToken(OAuthTestCase):
             )
         )
         header = b64encode(
-            f"{provider.client_id}:{provider.client_secret_ref.value}".encode()
+            f"{provider.client_id}:{provider.client_secret_ref.secret_value}".encode()
         ).decode()
         user = create_test_admin_user()
         token = RefreshToken.objects.create(
@@ -534,7 +534,7 @@ class TestToken(OAuthTestCase):
         self.app.provider = provider
         self.app.save()
         header = b64encode(
-            f"{provider.client_id}:{provider.client_secret_ref.value}".encode()
+            f"{provider.client_id}:{provider.client_secret_ref.secret_value}".encode()
         ).decode()
         user = create_test_admin_user()
         token = RefreshToken.objects.create(
@@ -610,7 +610,7 @@ class TestToken(OAuthTestCase):
         self.app.provider = provider
         self.app.save()
         header = b64encode(
-            f"{provider.client_id}:{provider.client_secret_ref.value}".encode()
+            f"{provider.client_id}:{provider.client_secret_ref.secret_value}".encode()
         ).decode()
         user = create_test_admin_user()
         token = RefreshToken.objects.create(
@@ -703,7 +703,7 @@ class TestToken(OAuthTestCase):
         self.app.save()
 
         header = b64encode(
-            f"{provider.client_id}:{provider.client_secret_ref.value}".encode()
+            f"{provider.client_id}:{provider.client_secret_ref.secret_value}".encode()
         ).decode()
         user = create_test_admin_user()
         code = AuthorizationCode.objects.create(

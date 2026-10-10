@@ -6,26 +6,26 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
-import { IconRotateSecretButton } from "#elements/buttons/IconRotateSecretButton";
 import { renderModal } from "#elements/dialogs";
 import { AKFormSubmittedEvent } from "#elements/forms/events";
-import SearchSelect from "#elements/forms/SearchSelect/index";
+import type { SearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
+import type { SearchSelectChangeEvent } from "#elements/forms/SearchSelect/events";
+import { type SearchSelectSource, withQuery } from "#elements/forms/SearchSelect/shared";
 import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { HorizontalLightComponent } from "#components/HorizontalLightComponent";
 
+import { RotateSecretButton } from "#admin/secrets/RotateSecretButton";
 import { SecretForm } from "#admin/secrets/SecretForm";
 import { SecretValueButton } from "#admin/secrets/SecretValueButton";
 
 import { Secret, SecretsApi, SecretTypeEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing, PropertyValues } from "lit";
+import { html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
-
-const renderElement = (item: Secret) => item.name;
-const renderValue = (item?: Secret | null) => item?.pk;
 
 /**
  * Secret Search Input Component
@@ -43,32 +43,49 @@ export class AKSecretSearchInput extends HorizontalLightComponent<string> {
     @property({ type: Boolean })
     public blankable = false;
 
-    @property({
-        attribute: false,
-        hasChanged: (next: SecretTypeEnum[], previous?: SecretTypeEnum[]) =>
-            next.join() !== previous?.join(),
-    })
+    @property({ attribute: false })
     public types: SecretTypeEnum[] = [SecretTypeEnum.Text];
 
-    protected override willUpdate(changed: PropertyValues<this>) {
-        super.willUpdate(changed);
-
-        if (changed.has("types") && changed.get("types")) {
-            this.value = "";
-            this.selectedSecret = undefined;
-            const select = this.secretSearchRef.value;
-
-            if (select) {
-                select.selectedObject = null;
-                select.updateData();
-            }
-        }
-    }
-
-    protected secretSearchRef = createRef<SearchSelect>();
+    protected secretSearchRef = createRef<SearchSelect<Secret>>();
 
     @state()
-    protected selectedSecret?: Secret;
+    protected selectedSecret: Secret | null = null;
+
+    protected source: SearchSelectSource<Secret> = {
+        fetchObjects: async (query) => {
+            const { results } = await aki(SecretsApi).secretsSecretsList(
+                withQuery(query, { ordering: "name", typeIn: this.types, pageSize: 100 }),
+            );
+
+            if (query || !this.value) return results;
+
+            let selected = results.find((secret) => secret.pk === this.value);
+
+            // The selected secret may sort beyond the first page, or the user may not be allowed
+            // to view it. Keep it either way, so saving the form doesn't clear the reference.
+            if (!selected) {
+                selected = await aki(SecretsApi)
+                    .secretsSecretsRetrieve({ secretUuid: this.value })
+                    .catch(
+                        () =>
+                            ({
+                                pk: this.value,
+                                name: msg("Secret not visible", {
+                                    id: "secret.picker.hidden.label",
+                                }),
+                            }) as Secret,
+                    );
+
+                results.unshift(selected);
+            }
+
+            this.selectedSecret = selected;
+
+            return results;
+        },
+        keyOf: (secret) => secret.pk,
+        labelOf: (secret) => secret.name,
+    };
 
     protected openSecretCreateModal = (invocationEvent?: Event) => {
         invocationEvent?.stopPropagation();
@@ -78,14 +95,16 @@ export class AKSecretSearchInput extends HorizontalLightComponent<string> {
 
         secretForm.addEventListener(AKFormSubmittedEvent.eventName, (event) => {
             const secret = (event as AKFormSubmittedEvent<Secret>).response;
-            this.value = secret.pk;
-            this.selectedSecret = secret;
             const secretSearch = this.secretSearchRef.value;
 
-            if (secretSearch) {
-                secretSearch.query = undefined;
+            this.value = secret.pk;
+            this.selectedSecret = secret;
 
-                return secretSearch.updateData();
+            if (secretSearch) {
+                secretSearch.selectedObject = secret;
+                secretSearch.value = secret.pk;
+
+                return secretSearch.refresh();
             }
         });
 
@@ -98,56 +117,30 @@ export class AKSecretSearchInput extends HorizontalLightComponent<string> {
         });
     };
 
-    #selected = (item: Secret) => {
-        return this.value === item.pk;
-    };
-
-    protected changeListener = (event: CustomEvent<{ value: Secret | null }>) => {
+    protected changeListener = (event: SearchSelectChangeEvent<Secret>) => {
         this.value = event.detail.value?.pk ?? "";
-        this.selectedSecret = event.detail.value ?? undefined;
-    };
-
-    protected refresh = async (query?: string): Promise<Secret[]> => {
-        const secrets = await aki(SecretsApi).secretsSecretsList({
-            ordering: "name",
-            typeIn: this.types,
-            pageSize: 100,
-            ...(query ? { search: query } : {}),
-        });
-
-        // The selected secret may sort beyond the first page; make sure it is present so
-        // the control can display and keep it instead of silently clearing on save.
-        if (!query && this.value) {
-            const selected =
-                secrets.results.find((secret) => secret.pk === this.value) ??
-                (await aki(SecretsApi).secretsSecretsRetrieve({ secretUuid: this.value }));
-
-            this.selectedSecret = selected;
-
-            if (this.types.includes(selected.type!) && !secrets.results.includes(selected)) {
-                return [selected, ...secrets.results];
-            }
-        }
-
-        return secrets.results;
+        this.selectedSecret = event.detail.value;
     };
 
     protected override renderControl(): SlottedTemplateResult {
-        const createLabel = msg("Create secret", { id: "secret-picker.create-action.label" });
+        const createLabel = msg("Create secret", { id: "secret.picker.create.label" });
+        const secret = this.selectedSecret;
 
-        return html`<div class="pf-c-input-group">
+        // The picker updates itself after creating or rotating a secret. Letting the refresh
+        // reach the surrounding form would reload it and discard unsaved changes.
+        return html`<div
+            class="pf-c-input-group"
+            @ak-refresh=${(event: Event) => event.stopPropagation()}
+        >
             <ak-search-select
                 ${ref(this.secretSearchRef)}
                 class="ak-secret-search-input__select"
-                .fieldID=${this.fieldID}
-                .label=${this.label ?? undefined}
-                .fetchObjects=${this.refresh}
-                .renderElement=${renderElement}
-                .value=${renderValue}
-                .selected=${this.#selected}
-                placeholder=${msg("Select a secret...", {
-                    id: "secret-picker.value.placeholder",
-                })}
+                id=${ifPresent(this.fieldID)}
+                name=${ifPresent(this.name)}
+                .source=${this.source}
+                .value=${this.value}
+                placeholder=${msg("Select a secret...", { id: "secret.picker.value.placeholder" })}
+                ?required=${this.required}
                 ?blankable=${this.blankable}
                 @ak-change=${this.changeListener}
                 action-label=${createLabel}
@@ -162,18 +155,8 @@ export class AKSecretSearchInput extends HorizontalLightComponent<string> {
             >
                 <i class="fas fa-plus" aria-hidden="true"></i>
             </button>
-            ${this.selectedSecret ? SecretValueButton(this.selectedSecret, true) : nothing}
-            ${
-                this.value && this.selectedSecret?.type === SecretTypeEnum.Text
-                    ? IconRotateSecretButton({
-                          control: true,
-                          rotate: () =>
-                              aki(SecretsApi).secretsSecretsRotateCreate({
-                                  secretUuid: this.value,
-                              }),
-                      })
-                    : nothing
-            }
+            ${secret?.type ? SecretValueButton(secret, true) : nothing}
+            ${secret?.type === SecretTypeEnum.Text ? RotateSecretButton(secret, true) : nothing}
         </div>`;
     }
 }

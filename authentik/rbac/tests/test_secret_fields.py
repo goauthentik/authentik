@@ -33,7 +33,7 @@ class TestSecretFields(APITestCase):
             "contexts": [{"name": "test", "context": {"cluster": "test", "user": "test"}}],
             "users": [{"name": "test", "user": {"token": generate_id()}}],
         }
-        self.secret = create_test_secret(dumps(self.kubeconfig), SecretType.MULTILINE)
+        self.secret = create_test_secret(dumps(self.kubeconfig), SecretType.JSON)
         self.connection = KubernetesServiceConnection.objects.create(
             name=generate_id(), kubeconfig_ref=self.secret
         )
@@ -85,7 +85,7 @@ class TestSecretFields(APITestCase):
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
         self.assertEqual(body["kubeconfig_ref"], str(self.secret.pk))
-        self.assertNotIn(self.secret.value, res.content.decode())
+        self.assertNotIn(self.secret.secret_value, res.content.decode())
 
     def test_connection_detail_change_object(self):
         """Test connection detail (role has change permission on the object)"""
@@ -106,7 +106,7 @@ class TestSecretFields(APITestCase):
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
         self.assertEqual(body["kubeconfig_ref"], str(self.secret.pk))
-        self.assertNotIn(self.secret.value, res.content.decode())
+        self.assertNotIn(self.secret.secret_value, res.content.decode())
 
     def test_connection_detail_superuser(self):
         """Test connection detail (superuser)"""
@@ -121,7 +121,7 @@ class TestSecretFields(APITestCase):
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
         self.assertEqual(body["kubeconfig_ref"], str(self.secret.pk))
-        self.assertNotIn(self.secret.value, res.content.decode())
+        self.assertNotIn(self.secret.secret_value, res.content.decode())
 
     def test_connection_create(self):
         """Test connection create (role has global add permission, but no change permission)"""
@@ -129,7 +129,7 @@ class TestSecretFields(APITestCase):
         self.client.force_login(self.user)
 
         name = generate_id()
-        secret = create_test_secret(dumps(self.kubeconfig), SecretType.MULTILINE)
+        secret = create_test_secret(dumps(self.kubeconfig), SecretType.JSON)
         self.role.assign_perms("authentik_crypto_secrets.view_secret_value", secret)
         res = self.client.post(
             reverse("authentik_api:kubernetesserviceconnection-list"),

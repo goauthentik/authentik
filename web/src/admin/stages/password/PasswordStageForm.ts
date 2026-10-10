@@ -3,23 +3,14 @@ import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
 import { aki } from "#common/api/client";
 
 import { AKLabel } from "#components/ak-label";
 
-import { RenderFlowOption } from "#admin/flows/utils";
+import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
-import {
-    BackendsEnum,
-    Flow,
-    FlowDesignationEnum,
-    FlowsApi,
-    FlowsInstancesListRequest,
-    PasswordStage,
-    StagesApi,
-} from "@goauthentik/api";
+import { BackendsEnum, FlowDesignationEnum, PasswordStage, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -111,46 +102,13 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                         required
                         name="configureFlow"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation: FlowDesignationEnum.StageConfiguration,
-                                };
-
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-
-                                const flows = await aki(FlowsApi).flowsInstancesList(args);
-
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                let selected = this.instance?.configureFlow === flow.pk;
-
-                                if (
-                                    !this.instance?.pk &&
-                                    !this.instance?.configureFlow &&
-                                    flow.slug === "default-password-change"
-                                ) {
-                                    selected = true;
-                                }
-
-                                return selected;
-                            }}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKFlowSearch({
+                            name: "configureFlow",
+                            flowType: FlowDesignationEnum.StageConfiguration,
+                            value: this.instance?.configureFlow,
+                            blankable: true,
+                            defaultFlowSlug: this.instance?.pk ? null : "default-password-change",
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Flow used by an authenticated user to configure their password. If empty, user will not be able to change their password.",

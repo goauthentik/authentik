@@ -17,9 +17,8 @@ from kubernetes.config.incluster_config import SERVICE_TOKEN_FILENAME
 from kubernetes.config.kube_config import KUBE_CONFIG_DEFAULT_LOCATION
 from structlog.stdlib import get_logger
 
-from authentik.crypto.secrets.models import Secret, SecretType
+from authentik.crypto.secrets.models import SecretType, create_named_secret
 from authentik.lib.config import CONFIG
-from authentik.lib.generators import generate_id
 from authentik.outposts.consumer import build_outpost_group
 from authentik.outposts.controllers.base import BaseController, ControllerException
 from authentik.outposts.controllers.docker import DockerClient
@@ -187,10 +186,10 @@ def outpost_connection_discovery():
             with kubeconfig_path.open("r", encoding="utf8") as _kubeconfig, transaction.atomic():
                 KubernetesServiceConnection.objects.create(
                     name=kubeconfig_local_name,
-                    kubeconfig_ref=Secret.objects.create(
-                        name=f"{kubeconfig_local_name} kubeconfig {generate_id(8)}",
-                        type=SecretType.MULTILINE,
-                        value=_kubeconfig.read(),
+                    kubeconfig_ref=create_named_secret(
+                        f"{kubeconfig_local_name} kubeconfig",
+                        type=SecretType.JSON,
+                        secret_value=_kubeconfig.read(),
                     ),
                 )
     unix_socket_path = urlparse(DEFAULT_UNIX_SOCKET).path
