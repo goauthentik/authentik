@@ -11,6 +11,7 @@ import xmlsec
 from django.core.cache import cache
 from django.core.exceptions import SuspiciousOperation
 from django.http import HttpRequest
+from django.urls import reverse
 from django.utils.timezone import now
 from lxml import etree  # nosec
 from lxml.etree import _Element  # nosec
@@ -275,7 +276,9 @@ class ResponseProcessor:
         destination = self._root.attrib.get("Destination")
         if not destination:
             return
-        acs_url = self._source.build_full_url(self._http_request)
+        acs_url = self._http_request.build_absolute_uri(
+            reverse("authentik_sources_saml:acs", kwargs={"source_slug": self._source.slug})
+        )
         if destination.lower() != acs_url.lower():
             LOGGER.warning(
                 "Destination of Response does not match ACS URL",
@@ -305,7 +308,9 @@ class ResponseProcessor:
         """Check one SubjectConfirmationData"""
         recipient = data.attrib.get("Recipient")
         if recipient:
-            acs_url = self._source.build_full_url(self._http_request)
+            acs_url = self._http_request.build_absolute_uri(
+                reverse("authentik_sources_saml:acs", kwargs={"source_slug": self._source.slug})
+            )
             if recipient.lower() != acs_url.lower():
                 LOGGER.warning(
                     "Recipient of assertion does not match ACS URL",

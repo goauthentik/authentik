@@ -9,11 +9,13 @@ import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-import "#elements/forms/SearchSelect/index";
 import { aki } from "#common/api/client";
 
 import { ifPresent } from "#elements/utils/attributes";
 
+import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { groupSource } from "#admin/common/search-sources";
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
     propertyMappingsProvider,
@@ -21,9 +23,6 @@ import {
 } from "#admin/providers/microsoft_entra/MicrosoftEntraProviderFormHelpers";
 
 import {
-    CoreApi,
-    CoreGroupsListRequest,
-    Group,
     MicrosoftEntraProvider,
     MicrosoftEntraProviderRequest,
     OutgoingSyncDeleteAction,
@@ -167,33 +166,12 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                         ?checked=${this.instance?.excludeUsersServiceAccount ?? true}
                     ></ak-switch-input>
                     <ak-form-element-horizontal label=${msg("Group")} name="filterGroup">
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Group[]> => {
-                                const args: CoreGroupsListRequest = {
-                                    ordering: "name",
-                                    includeUsers: false,
-                                };
-
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-
-                                const groups = await aki(CoreApi).coreGroupsList(args);
-
-                                return groups.results;
-                            }}
-                            .renderElement=${(group: Group): string => {
-                                return group.name;
-                            }}
-                            .value=${(group: Group | undefined): string | undefined => {
-                                return group ? group.pk : undefined;
-                            }}
-                            .selected=${(group: Group): boolean => {
-                                return group.pk === this.instance?.filterGroup;
-                            }}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKSearchSelect({
+                            name: "filterGroup",
+                            source: groupSource,
+                            value: this.instance?.filterGroup,
+                            blankable: true,
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg("Only sync users within the selected group.")}
                         </p>

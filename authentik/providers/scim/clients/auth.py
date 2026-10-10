@@ -14,7 +14,7 @@ class SCIMTokenAuth:
         self.provider = provider
 
     def __call__(self, request: Request) -> Request:
-        token = self.provider.token_ref.value if self.provider.token_ref else ""
+        token = self.provider.token_ref.secret_value if self.provider.token_ref else ""
         request.headers["Authorization"] = f"Bearer {token}"
         return request
 
@@ -28,7 +28,7 @@ class SCIMBasicAuth:
     def __call__(self, request: Request) -> Request:
         # requests' HTTPBasicAuth encodes credentials as latin-1, RFC 7617 expects UTF-8
         password = self.provider.auth_basic_password_ref
-        credentials = f"{self.provider.auth_basic_user}:{password.value if password else ''}"
+        credentials = f"{self.provider.auth_basic_user}:{password.secret_value if password else ''}"
         encoded = b64encode(credentials.encode("utf-8")).decode()
         request.headers["Authorization"] = f"Basic {encoded}"
         return request

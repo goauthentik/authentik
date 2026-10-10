@@ -115,12 +115,9 @@ impl Application {
         let upstream_client =
             upstream::build_client(provider.internal_host_ssl_validation == Some(false))?;
 
-        if provider.cookie_secret.is_empty() {
-            return Err(eyre!("provider has no cookie secret"));
-        }
         let session_cookie = SessionCookie::new(
             provider.client_id.as_deref().unwrap_or_default(),
-            provider.cookie_secret.as_str(),
+            &provider.cookie_secret,
             external_url.scheme() == "https",
             provider.cookie_domain.clone(),
         )?;

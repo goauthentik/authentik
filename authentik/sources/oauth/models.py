@@ -36,9 +36,6 @@ class PKCEMethod(models.TextChoices):
 class OAuthSource(NonCreatableType, Source):
     """Login using a Generic OAuth provider."""
 
-    # Remove the legacy credential columns in 2027.2.
-    consumer_secret = models.TextField()
-
     provider_type = models.CharField(max_length=255)
     request_token_url = models.TextField(
         null=True,
@@ -66,6 +63,8 @@ class OAuthSource(NonCreatableType, Source):
         default="", blank=True, verbose_name=_("Additional Scopes")
     )
     consumer_key = models.TextField()
+    # Legacy column, kept for downgrades. Remove in 2027.2.
+    consumer_secret = models.TextField(blank=True, default="")
     consumer_secret_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Consumer secret"),
@@ -75,6 +74,7 @@ class OAuthSource(NonCreatableType, Source):
         default=None,
         related_name="oauth_sources",
     )
+
     oidc_well_known_url = models.TextField(default="", blank=True)
     oidc_jwks_url = models.TextField(default="", blank=True)
     oidc_jwks = models.JSONField(default=dict, blank=True)
@@ -313,6 +313,8 @@ class WeChatOAuthSource(CreatableType, OAuthSource):
 
 class OAuthSourcePropertyMapping(PropertyMapping):
     """Map OAuth properties to User or Group object attributes"""
+
+    expression_allowed_types = [dict]
 
     @property
     def component(self) -> str:

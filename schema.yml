@@ -29990,6 +29990,11 @@ paths:
           $ref: '#/components/schemas/ProviderEnum'
       - $ref: '#/components/parameters/QuerySearch'
       - in: query
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: verify_only
         schema:
           type: boolean
@@ -43565,11 +43570,15 @@ components:
           format: uuid
           nullable: true
           title: Sync keytab
+          description: Keytab to authenticate to kadmin for sync. A file secret with
+            the keytab, or a text secret in the form TYPE:residual
         sync_ccache_ref:
           type: string
           format: uuid
           nullable: true
-          title: Sync ccache
+          title: Sync credentials cache
+          description: Credentials cache to authenticate to kadmin for sync. A text
+            secret in the form TYPE:residual, or a file secret with the cache
         connectivity:
           type: object
           additionalProperties:
@@ -43585,12 +43594,16 @@ components:
           type: string
           format: uuid
           nullable: true
-          title: Spnego keytab
+          title: SPNEGO keytab
+          description: SPNEGO keytab. A file secret with the keytab, or a text secret
+            in the form FILE:path
         spnego_ccache_ref:
           type: string
           format: uuid
           nullable: true
-          title: Spnego ccache
+          title: SPNEGO credentials cache
+          description: Credentials cache to use for SPNEGO. A text secret in the form
+            TYPE:residual, or a file secret with the cache
         password_login_update_internal_password:
           type: boolean
           description: If enabled, the authentik-stored password will be updated upon
@@ -43766,11 +43779,15 @@ components:
           format: uuid
           nullable: true
           title: Sync keytab
+          description: Keytab to authenticate to kadmin for sync. A file secret with
+            the keytab, or a text secret in the form TYPE:residual
         sync_ccache_ref:
           type: string
           format: uuid
           nullable: true
-          title: Sync ccache
+          title: Sync credentials cache
+          description: Credentials cache to authenticate to kadmin for sync. A text
+            secret in the form TYPE:residual, or a file secret with the cache
         spnego_server_name:
           type: string
           description: Force the use of a specific server name for SPNEGO. Must be
@@ -43779,12 +43796,16 @@ components:
           type: string
           format: uuid
           nullable: true
-          title: Spnego keytab
+          title: SPNEGO keytab
+          description: SPNEGO keytab. A file secret with the keytab, or a text secret
+            in the form FILE:path
         spnego_ccache_ref:
           type: string
           format: uuid
           nullable: true
-          title: Spnego ccache
+          title: SPNEGO credentials cache
+          description: Credentials cache to use for SPNEGO. A text secret in the form
+            TYPE:residual, or a file secret with the cache
         password_login_update_internal_password:
           type: boolean
           description: If enabled, the authentik-stored password will be updated upon
@@ -46648,6 +46669,7 @@ components:
         consumer_secret_ref:
           type: string
           format: uuid
+          nullable: true
           title: Consumer secret
         callback_url:
           type: string
@@ -46675,7 +46697,6 @@ components:
       - callback_url
       - component
       - consumer_key
-      - consumer_secret_ref
       - icon_themed_urls
       - icon_url
       - managed
@@ -46837,6 +46858,7 @@ components:
         consumer_secret_ref:
           type: string
           format: uuid
+          nullable: true
           title: Consumer secret
         additional_scopes:
           type: string
@@ -46854,7 +46876,6 @@ components:
             token request flow
       required:
       - consumer_key
-      - consumer_secret_ref
       - name
       - provider_type
       - slug
@@ -51737,11 +51758,15 @@ components:
           format: uuid
           nullable: true
           title: Sync keytab
+          description: Keytab to authenticate to kadmin for sync. A file secret with
+            the keytab, or a text secret in the form TYPE:residual
         sync_ccache_ref:
           type: string
           format: uuid
           nullable: true
-          title: Sync ccache
+          title: Sync credentials cache
+          description: Credentials cache to authenticate to kadmin for sync. A text
+            secret in the form TYPE:residual, or a file secret with the cache
         spnego_server_name:
           type: string
           description: Force the use of a specific server name for SPNEGO. Must be
@@ -51750,12 +51775,16 @@ components:
           type: string
           format: uuid
           nullable: true
-          title: Spnego keytab
+          title: SPNEGO keytab
+          description: SPNEGO keytab. A file secret with the keytab, or a text secret
+            in the form FILE:path
         spnego_ccache_ref:
           type: string
           format: uuid
           nullable: true
-          title: Spnego ccache
+          title: SPNEGO credentials cache
+          description: Credentials cache to use for SPNEGO. A text secret in the form
+            TYPE:residual, or a file secret with the cache
         password_login_update_internal_password:
           type: boolean
           description: If enabled, the authentik-stored password will be updated upon
@@ -52510,6 +52539,7 @@ components:
         consumer_secret_ref:
           type: string
           format: uuid
+          nullable: true
           title: Consumer secret
         additional_scopes:
           type: string
@@ -53806,6 +53836,13 @@ components:
         value:
           type: string
           writeOnly: true
+        length:
+          type: integer
+          maximum: 1024
+          minimum: 1
+          writeOnly: true
+          description: Length of the generated value when creating a text secret without
+            a value. Defaults to the default token length.
     PatchedSettingsRequest:
       type: object
       description: Settings Serializer
@@ -53816,6 +53853,7 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
+          minLength: 1
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
           format: uri
@@ -58981,12 +59019,19 @@ components:
         value:
           type: string
           writeOnly: true
+        length:
+          type: integer
+          maximum: 1024
+          minimum: 1
+          writeOnly: true
+          description: Length of the generated value when creating a text secret without
+            a value. Defaults to the default token length.
       required:
       - name
     SecretTypeEnum:
       enum:
       - text
-      - multiline
+      - json
       - file
       type: string
     SecretValue:
@@ -59227,6 +59272,7 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
+          minLength: 1
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
           format: uri

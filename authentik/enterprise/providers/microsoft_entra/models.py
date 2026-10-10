@@ -223,6 +223,8 @@ class MicrosoftEntraProviderPropertyMappingsGroup(SimpleThroughModel):
 class MicrosoftEntraProviderMapping(PropertyMapping):
     """Map authentik data to outgoing Microsoft requests"""
 
+    expression_allowed_types = [dict]
+
     @property
     def component(self) -> str:
         return "ak-property-mapping-provider-microsoft-entra-form"

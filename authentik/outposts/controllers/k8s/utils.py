@@ -1,7 +1,6 @@
 """k8s utils"""
 
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -14,14 +13,11 @@ from kubernetes.config.kube_config import load_kube_config_from_dict
 
 from authentik.outposts.controllers.k8s.triggers import NeedsRecreate
 
-if TYPE_CHECKING:
-    from authentik.crypto.secrets.models import Secret
 
-
-def validate_kubeconfig(secret: Secret) -> None:
-    """Validate the credential using the same loader as the Kubernetes client."""
+def validate_kubeconfig(kubeconfig: dict) -> None:
+    """Validate a kubeconfig using the same loader as the Kubernetes client."""
     try:
-        load_kube_config_from_dict(secret.get_json(), client_configuration=Configuration())
+        load_kube_config_from_dict(kubeconfig, client_configuration=Configuration())
     except ConfigException, ValueError, AttributeError, TypeError:
         raise ValidationError(_("Invalid kubeconfig")) from None
 

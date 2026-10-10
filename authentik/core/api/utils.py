@@ -4,6 +4,7 @@ from typing import Any
 
 from django.db import models
 from django.db.models import Model
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.extensions import OpenApiSerializerFieldExtension
 from drf_spectacular.plumbing import build_basic_type
 from drf_spectacular.types import OpenApiTypes
@@ -65,6 +66,23 @@ class ModelSerializer(BaseModelSerializer):
         for field_name in secret_fields:
             data.pop(field_name, None)
         return data
+
+    def to_internal_value(self, data):
+        from authentik.crypto.secrets.api import SecretReferenceField
+
+        # Credentials moved from their own fields to secret references. Reject the old field
+        # names instead of ignoring them, so existing blueprints and API clients fail loudly.
+        # Remove with the legacy credential columns in 2027.2.
+        if hasattr(data, "keys"):
+            legacy = {
+                name: [_("Use %(field)s to reference a secret instead.") % {"field": f"{name}_ref"}]
+                for name in data.keys()
+                if name not in self.fields
+                and isinstance(self.fields.get(f"{name}_ref"), SecretReferenceField)
+            }
+            if legacy:
+                raise ValidationError(legacy)
+        return super().to_internal_value(data)
 
     def update(self, instance: Model, validated_data):
         raise_errors_on_nested_writes("update", self, validated_data)

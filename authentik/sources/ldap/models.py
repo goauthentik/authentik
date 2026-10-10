@@ -76,9 +76,6 @@ class LDAPSourceBindMethod(models.TextChoices):
 class LDAPSource(IncomingSyncSource):
     """Federate LDAP Directory with authentik, or create new accounts in LDAP."""
 
-    # Remove the legacy credential columns in 2027.2.
-    bind_password = models.TextField(blank=True)
-
     server_uri = models.TextField(
         validators=[MultiURLValidator(schemes=["ldap", "ldaps"])],
         verbose_name=_("Server URI"),
@@ -103,6 +100,8 @@ class LDAPSource(IncomingSyncSource):
     )
 
     bind_cn = models.TextField(verbose_name=_("Bind CN"), blank=True)
+    # Legacy column, kept for downgrades. Remove in 2027.2.
+    bind_password = models.TextField(blank=True)
     bind_password_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Bind password"),
@@ -306,7 +305,7 @@ class LDAPSource(IncomingSyncSource):
         else:
             connection_kwargs.setdefault("user", self.bind_cn)
             connection_kwargs.setdefault(
-                "password", self.bind_password_ref.value if self.bind_password_ref else ""
+                "password", self.bind_password_ref.secret_value if self.bind_password_ref else ""
             )
         return self._connect_and_bind(server, server_kwargs, connection_kwargs)
 
@@ -437,6 +436,8 @@ class LDAPSource(IncomingSyncSource):
 
 class LDAPSourcePropertyMapping(PropertyMapping):
     """Map LDAP Property to User or Group object attribute"""
+
+    expression_allowed_types = [dict]
 
     @property
     def component(self) -> str:

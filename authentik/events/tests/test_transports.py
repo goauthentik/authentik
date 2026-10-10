@@ -3,6 +3,7 @@
 from unittest.mock import PropertyMock, patch
 
 from django.core import mail
+from django.core.exceptions import ValidationError
 from django.core.mail.backends.locmem import EmailBackend
 from django.test import TestCase
 from django.urls import reverse
@@ -18,6 +19,7 @@ from authentik.events.models import (
     Notification,
     NotificationSeverity,
     NotificationTransport,
+    NotificationTransportError,
     NotificationWebhookMapping,
     TransportMode,
 )
@@ -273,3 +275,25 @@ class TestEventTransports(TestCase):
         for template in data:
             self.assertIn(template["name"], valid_choices)
             self.assertEqual(template["description"], valid_choices[template["name"]])
+
+    def test_webhook_secret_must_stay_a_url(self):
+        """Replacing or rotating a webhook URL secret can't break the transport."""
+        secret = create_test_secret("https://example.com/webhook")
+        NotificationTransport.objects.create(
+            name=generate_id(), mode=TransportMode.WEBHOOK, webhook_url_ref=secret
+        )
+        with self.assertRaises(ValidationError):
+            secret.replace_value("not a URL")
+        with self.assertRaises(ValidationError):
+            secret.rotate()
+        secret.refresh_from_db()
+        self.assertEqual(secret.secret_value, "https://example.com/webhook")
+        secret.replace_value("https://example.com/replacement")
+
+    def test_webhook_without_secret(self):
+        """Transports saved without a URL fail with a transport error."""
+        transport = NotificationTransport.objects.create(
+            name=generate_id(), mode=TransportMode.WEBHOOK
+        )
+        with self.assertRaises(NotificationTransportError):
+            transport.send(self.notification)

@@ -15,7 +15,7 @@
  */
 export const SecretTypeEnum = {
     Text: "text",
-    Multiline: "multiline",
+    Json: "json",
     File: "file",
     UnknownDefaultOpenApi: "11184809",
 } as const;
