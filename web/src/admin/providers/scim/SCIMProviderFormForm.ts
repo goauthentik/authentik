@@ -5,7 +5,6 @@ import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-import "#elements/forms/SearchSelect/index";
 import "#elements/CodeMirror";
 import "#elements/LicenseNotice";
 import "#components/ak-number-input";
@@ -20,7 +19,10 @@ import {
 
 import { aki } from "#common/api/client";
 
+import { SearchSelectSource, withQuery } from "#elements/forms/SearchSelect/shared";
 import { ifPresent } from "#elements/utils/attributes";
+
+import { AKSearchSelect } from "#components/ak-search-select-field";
 
 import {
     CompatibilityModeEnum,
@@ -28,7 +30,6 @@ import {
     SCIMAuthenticationModeEnum,
     SCIMProvider,
     SourcesApi,
-    SourcesOauthListRequest,
     ValidationError,
 } from "@goauthentik/api";
 
@@ -38,11 +39,13 @@ import { msg } from "@lit/localize";
 import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-export function renderAuthToken(provider?: Partial<SCIMProvider>) {
+export function renderAuthToken(provider?: Partial<SCIMProvider>, errors: ValidationError = {}) {
     return html`<ak-secret-search-input
         name="tokenRef"
         label=${msg("Token")}
-        value=${ifPresent(provider?.tokenRef ?? undefined)}
+        value=${ifPresent(provider?.tokenRef)}
+        .errorMessages=${errors?.tokenRef}
+        ?required=${!provider}
         blankable
         help=${msg("Token to authenticate with.", {
             id: "provider.scim.form.secret.description",
@@ -64,7 +67,9 @@ export function renderAuthBasic(provider?: Partial<SCIMProvider>, errors: Valida
         <ak-secret-search-input
             name="authBasicPasswordRef"
             label=${msg("Password")}
-            value=${ifPresent(provider?.authBasicPasswordRef ?? undefined)}
+            value=${ifPresent(provider?.authBasicPasswordRef)}
+            .errorMessages=${errors?.authBasicPasswordRef}
+            ?required=${!provider}
             blankable
             help=${msg("Password to authenticate with.", {
                 id: "provider.scim.form.basic-password.description",
@@ -74,32 +79,12 @@ export function renderAuthBasic(provider?: Partial<SCIMProvider>, errors: Valida
 
 export function renderAuthOAuth(provider?: Partial<SCIMProvider>, _errors: ValidationError = {}) {
     return html`<ak-form-element-horizontal label=${msg("OAuth Source")} name="authOauth">
-            <ak-search-select
-                .fetchObjects=${async (query?: string): Promise<OAuthSource[]> => {
-                    const args: SourcesOauthListRequest = {
-                        ordering: "name",
-                    };
-
-                    if (query !== undefined) {
-                        args.search = query;
-                    }
-
-                    const sources = await aki(SourcesApi).sourcesOauthList(args);
-
-                    return sources.results;
-                }}
-                .renderElement=${(source: OAuthSource): string => {
-                    return source.name;
-                }}
-                .value=${(source: OAuthSource | undefined): string | undefined => {
-                    return source ? source.pk : undefined;
-                }}
-                .selected=${(source: OAuthSource): boolean => {
-                    return source.pk === provider?.authOauth;
-                }}
-                blankable
-            >
-            </ak-search-select>
+            ${AKSearchSelect({
+                name: "authOauth",
+                source: oauthSourceSource,
+                value: provider?.authOauth,
+                blankable: true,
+            })}
             <p class="pf-c-form__helper-text">
                 ${msg("Specify OAuth source used for authentication.")}
             </p>
@@ -117,7 +102,7 @@ export function renderAuth(provider?: Partial<SCIMProvider>, errors: ValidationE
     switch (provider?.authMode) {
         default:
         case SCIMAuthenticationModeEnum.Token:
-            return renderAuthToken(provider);
+            return renderAuthToken(provider, errors);
         case SCIMAuthenticationModeEnum.Basic:
             return renderAuthBasic(provider, errors);
         case SCIMAuthenticationModeEnum.Oauth:
@@ -131,6 +116,15 @@ export interface SCIMProviderFormProps {
     provider?: Partial<SCIMProvider> | null;
     errors?: ValidationError | null;
 }
+
+const oauthSourceSource: SearchSelectSource<OAuthSource> = {
+    fetchObjects: (query) =>
+        aki(SourcesApi)
+            .sourcesOauthList(withQuery(query, { ordering: "name" }))
+            .then(({ results }) => results),
+    keyOf: (source) => source.pk,
+    labelOf: (source) => source.name,
+};
 
 export function renderForm({ provider, errors, update }: SCIMProviderFormProps) {
     provider ||= {};

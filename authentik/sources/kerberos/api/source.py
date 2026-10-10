@@ -48,7 +48,7 @@ class KerberosSourceSerializer(SourceSerializer):
             "sync_outgoing_trigger_mode",
         ]
         extra_kwargs = {
-            field: {"allowed_types": (SecretType.MULTILINE, SecretType.FILE)}
+            field: {"allowed_types": (SecretType.TEXT, SecretType.FILE)}
             for field in (
                 "sync_keytab_ref",
                 "sync_ccache_ref",

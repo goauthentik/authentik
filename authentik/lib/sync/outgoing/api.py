@@ -113,7 +113,7 @@ class OutgoingSyncProviderStatusMixin:
                 "override_dry_run": body.validated_data["override_dry_run"],
                 "pk": pk,
             },
-            retries=0,
+            retries=1,
             rel_obj=provider,
             uid=f"{provider.name}:{_object_type._meta.model_name}:{pk}:manual",
         )

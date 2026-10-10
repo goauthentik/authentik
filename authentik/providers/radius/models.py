@@ -17,20 +17,17 @@ from authentik.outposts.models import OutpostModel
 class RadiusProvider(OutpostModel, Provider):
     """Allow applications to authenticate against authentik's users using Radius."""
 
-    # Remove the legacy credential columns in 2027.2.
+    # Legacy column, kept for downgrades. Remove in 2027.2.
     shared_secret = models.TextField(
         default=generate_id,
         help_text=_("Shared secret between clients and server to hash packets."),
     )
-
     shared_secret_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Shared Secret"),
         help_text=_("Shared secret between clients and server to hash packets."),
         on_delete=models.PROTECT,
-        null=True,
         blank=True,
-        default=None,
         related_name="radius_providers",
     )
 
@@ -66,7 +63,9 @@ class RadiusProvider(OutpostModel, Provider):
     def save(self, *args, **kwargs):
         with transaction.atomic():
             if not self.shared_secret_ref_id:
-                self.shared_secret_ref = create_named_secret(f"{self.name} shared secret")
+                self.shared_secret_ref = create_named_secret(
+                    f"{self.name} shared secret", secret_value=generate_id()
+                )
                 if (update_fields := kwargs.get("update_fields")) is not None:
                     kwargs["update_fields"] = set(update_fields) | {"shared_secret_ref"}
             return super().save(*args, **kwargs)
