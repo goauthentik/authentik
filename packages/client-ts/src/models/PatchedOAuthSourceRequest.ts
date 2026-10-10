@@ -90,7 +90,7 @@ export interface PatchedOAuthSourceRequest {
     profileUrl?: string | null;
     pkce?: PKCEMethodEnum;
     consumerKey?: string;
-    consumerSecretRef?: string;
+    consumerSecretRef?: string | null;
     additionalScopes?: string;
     oidcWellKnownUrl?: string;
     oidcJwksUrl?: string;
@@ -188,7 +188,11 @@ export function PatchedOAuthSourceRequestFromJSONTyped(
         pkce: json["pkce"] == null ? undefined : PKCEMethodEnumFromJSON(json["pkce"]),
         consumerKey: json["consumer_key"] == null ? undefined : json["consumer_key"],
         consumerSecretRef:
-            json["consumer_secret_ref"] == null ? undefined : json["consumer_secret_ref"],
+            json["consumer_secret_ref"] === undefined
+                ? undefined
+                : json["consumer_secret_ref"] === null
+                  ? null
+                  : json["consumer_secret_ref"],
         additionalScopes: json["additional_scopes"] == null ? undefined : json["additional_scopes"],
         oidcWellKnownUrl:
             json["oidc_well_known_url"] == null ? undefined : json["oidc_well_known_url"],

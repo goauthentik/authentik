@@ -3,19 +3,19 @@ import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-import "#elements/forms/SearchSelect/index";
-import "#admin/common/ak-crypto-certificate-search";
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { ifPresent } from "#elements/utils/attributes";
 
+import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { AKCertificateSearch } from "#admin/common/AKCertificateSearch";
+import { notificationMappingSource } from "#admin/common/search-sources";
+
 import {
     EventsApi,
     NotificationTransport,
-    NotificationWebhookMapping,
-    PropertymappingsApi,
-    PropertymappingsNotificationListRequest,
     StagesApi,
     TransportModeEnum,
     TypeCreate,
@@ -144,7 +144,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
             <ak-secret-search-input
                 name="webhookUrlRef"
                 label=${msg("Webhook URL")}
-                value=${ifPresent(this.instance?.webhookUrlRef ?? undefined)}
+                value=${ifPresent(this.instance?.webhookUrlRef)}
                 blankable
                 ?required=${this.showWebhook}
                 ?hidden=${!this.showWebhook}
@@ -157,10 +157,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 label=${msg("Webhook Certificate Authority")}
                 name="webhookCa"
             >
-                <ak-crypto-certificate-search
-                    .certificate=${this.instance?.webhookCa}
-                    nokey
-                ></ak-crypto-certificate-search>
+                ${AKCertificateSearch({ name: "webhookCa", value: this.instance?.webhookCa, noKey: true })}
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         "Keypair used to validate the certificate of the webhook endpoint. When not configured, the standard CA bundle is used.",
@@ -172,64 +169,24 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 label=${msg("Webhook Body Mapping")}
                 name="webhookMappingBody"
             >
-                <ak-search-select
-                    .fetchObjects=${async (
-                        query?: string,
-                    ): Promise<NotificationWebhookMapping[]> => {
-                        const args: PropertymappingsNotificationListRequest = {
-                            ordering: "name",
-                        };
-
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-
-                        const items =
-                            await aki(PropertymappingsApi).propertymappingsNotificationList(args);
-
-                        return items.results;
-                    }}
-                    .renderElement=${(item: NotificationWebhookMapping) => item.name}
-                    .value=${(item: NotificationWebhookMapping | null) => item?.pk}
-                    .selected=${(item: NotificationWebhookMapping): boolean => {
-                        return this.instance?.webhookMappingBody === item.pk;
-                    }}
-                    blankable
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "webhookMappingBody",
+                    source: notificationMappingSource,
+                    value: this.instance?.webhookMappingBody,
+                    blankable: true,
+                })}
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 ?hidden=${!this.showWebhook}
                 label=${msg("Webhook Header Mapping")}
                 name="webhookMappingHeaders"
             >
-                <ak-search-select
-                    .fetchObjects=${async (
-                        query?: string,
-                    ): Promise<NotificationWebhookMapping[]> => {
-                        const args: PropertymappingsNotificationListRequest = {
-                            ordering: "name",
-                        };
-
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-
-                        const items =
-                            await aki(PropertymappingsApi).propertymappingsNotificationList(args);
-
-                        return items.results;
-                    }}
-                    .renderElement=${(item: NotificationWebhookMapping): string => {
-                        return item.name;
-                    }}
-                    .value=${(item: NotificationWebhookMapping | null) => item?.pk}
-                    .selected=${(item: NotificationWebhookMapping): boolean => {
-                        return this.instance?.webhookMappingHeaders === item.pk;
-                    }}
-                    blankable
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "webhookMappingHeaders",
+                    source: notificationMappingSource,
+                    value: this.instance?.webhookMappingHeaders,
+                    blankable: true,
+                })}
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 ?hidden=${!this.showEmail}

@@ -1,6 +1,5 @@
 """Managed credentials preserve their original columns across upgrades and downgrades."""
 
-from base64 import b64encode
 from importlib import import_module
 from json import loads
 from unittest.mock import patch
@@ -43,27 +42,22 @@ class TestCredentialUpgrades(TransactionTestCase):
         for app_label, model_name, pk, fields, values in records:
             obj = state.apps.get_model(app_label, model_name).objects.get(pk=pk)
             with self.subTest(upgrade=model_name, pk=pk):
-                for old, new, _, _ in fields:
+                for old, new, secret_type, _ in fields:
                     secret = getattr(obj, new)
-                    value = loads(secret.value) if isinstance(values[old], dict) else secret.value
+                    structured = isinstance(values[old], dict)
+                    value = loads(secret.secret_value) if structured else secret.secret_value
                     self.assertEqual(value, values[old])
+                    if not callable(secret_type):
+                        self.assertEqual(secret.type, secret_type)
                     self.assertEqual(getattr(obj, old), values[old])
                     with connection.cursor() as cursor:
                         columns = connection.introspection.get_table_description(
                             cursor, obj._meta.db_table
                         )
                     self.assertIn(old, {column.name for column in columns})
-                    replacement = (
-                        '{"token": "replacement"}'
-                        if isinstance(values[old], dict)
-                        else "replacement"
-                    )
-                    secret.value = replacement
-                    # Exercise decoding uploaded structured files during rollback too.
-                    if isinstance(values[old], dict):
-                        secret.type = "file"
-                        secret.value = b64encode(replacement.encode()).decode()
-                    secret.save(update_fields=["type", "value"])
+                    # JSON secrets may use YAML syntax, which the rollback must parse too.
+                    secret.secret_value = "token: replacement" if structured else "replacement"
+                    secret.save(update_fields=["secret_value"])
 
         executor = MigrationExecutor(connection)
         executor.migrate(before)

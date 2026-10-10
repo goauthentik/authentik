@@ -232,7 +232,7 @@ class DockerServiceConnection(SerializerModel, OutpostServiceConnection):
 class KubernetesServiceConnection(SerializerModel, OutpostServiceConnection):
     """Service Connection to a Kubernetes cluster"""
 
-    # Remove the legacy credential columns in 2027.2.
+    # Legacy column, kept for downgrades. Remove in 2027.2.
     kubeconfig = models.JSONField(
         blank=True,
         default=dict,
@@ -241,7 +241,6 @@ class KubernetesServiceConnection(SerializerModel, OutpostServiceConnection):
             "currently selected context."
         ),
     )
-
     kubeconfig_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Kubeconfig"),

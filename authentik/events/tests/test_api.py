@@ -183,7 +183,7 @@ class TestEventsAPI(APITestCase):
 
     def test_transport(self):
         """Test transport API"""
-        secret = Secret.objects.create(name=generate_id(), value="http://foo.com")
+        secret = Secret.objects.create(name=generate_id(), secret_value="http://foo.com")
         response = self.client.post(
             reverse("authentik_api:notificationtransport-list"),
             data={
@@ -202,7 +202,7 @@ class TestEventsAPI(APITestCase):
             },
         )
         self.assertEqual(response.status_code, 400)
-        invalid_secret = Secret.objects.create(name=generate_id(), value="not a URL")
+        invalid_secret = Secret.objects.create(name=generate_id(), secret_value="not a URL")
         response = self.client.patch(
             reverse("authentik_api:notificationtransport-detail", kwargs={"pk": transport.pk}),
             data={"webhook_url_ref": invalid_secret.pk},

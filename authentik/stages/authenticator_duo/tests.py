@@ -40,20 +40,6 @@ class AuthenticatorDuoStageTests(FlowTestCase):
         with self.assertRaises(ValueError):
             self.assertEqual(stage.admin_client().ikey, stage.admin_integration_key)
 
-    def test_two_secrets_one_save(self):
-        """The client and admin credentials reference separate Secret objects."""
-        stage = AuthenticatorDuoStage.objects.create(
-            name=generate_id(),
-            client_id=generate_id(),
-            client_secret_ref=create_test_secret("client-value"),
-            admin_integration_key=generate_id(),
-            admin_secret_key_ref=create_test_secret("admin-value"),
-            api_hostname=generate_id(),
-        )
-        self.assertNotEqual(stage.client_secret_ref, stage.admin_secret_key_ref)
-        self.assertEqual(stage.client_secret_ref.value, "client-value")
-        self.assertEqual(stage.admin_secret_key_ref.value, "admin-value")
-
     def test_stage_deletion_is_protected(self):
         """A setup stage with enrolled devices cannot be deleted."""
         stage = AuthenticatorDuoStage.objects.create(

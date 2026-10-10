@@ -24,10 +24,9 @@ from authentik.flows.models import Flow
 class TelegramSource(Source):
     """Log in with Telegram."""
 
-    # Remove the legacy credential columns in 2027.2.
-    bot_token = models.TextField(help_text=_("Telegram bot token"))
-
     bot_username = models.TextField(help_text=_("Telegram bot username"))
+    # Legacy column, kept for downgrades. Remove in 2027.2.
+    bot_token = models.TextField(help_text=_("Telegram bot token"))
     bot_token_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Bot token"),
@@ -125,6 +124,8 @@ class TelegramSource(Source):
 
 class TelegramSourcePropertyMapping(PropertyMapping):
     """Map Telegram properties to User or Group object attributes"""
+
+    expression_allowed_types = [dict]
 
     @property
     def component(self) -> str:

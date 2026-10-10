@@ -11,7 +11,7 @@ from authentik.brands.models import Brand
 from authentik.core.models import AuthenticatedSession, Provider
 from authentik.core.signals import impersonation_changed
 from authentik.crypto.models import CertificateKeyPair
-from authentik.crypto.secrets.models import Secret
+from authentik.crypto.secrets.models import Secret, parse_json
 from authentik.crypto.secrets.signals import secret_value_changed, secret_value_validating
 from authentik.outposts.controllers.k8s.utils import validate_kubeconfig
 from authentik.outposts.models import Outpost, OutpostModel, OutpostServiceConnection
@@ -19,6 +19,7 @@ from authentik.outposts.tasks import (
     CACHE_KEY_OUTPOST_DOWN,
     outpost_controller,
     outpost_send_update,
+    outpost_service_connection_monitor,
     outpost_session_end,
 )
 
@@ -170,6 +171,11 @@ def outpost_secret_value_changed(sender, secret: Secret, **_):
                 rel_obj=outpost,
                 uid=outpost.name,
             )
+        # Saving a connection refreshes its state, a new kubeconfig must do the same.
+        for connection in secret.kubernetes_connections.all():
+            outpost_service_connection_monitor.send_with_options(
+                args=(connection.pk,), rel_obj=connection
+            )
 
     transaction.on_commit(send_updates)
 
@@ -204,4 +210,4 @@ def outpost_impersonation_revoke(sender, session_key: str, **_):
 def validate_kubernetes_secret(sender, secret: Secret, value: str, **_):
     """Validate kubeconfig replacements before notifying outposts."""
     if secret.kubernetes_connections.filter(local=False).exists():
-        validate_kubeconfig(Secret(type=secret.type, value=value))
+        validate_kubeconfig(parse_json(value))

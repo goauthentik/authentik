@@ -23,7 +23,7 @@ class TestGoogleChromeConnector(APITestCase):
     def setUp(self):
         self.connector = GoogleChromeConnector.objects.create(
             name=generate_id(),
-            credentials_ref=create_test_secret("{}", SecretType.MULTILINE),
+            credentials_ref=create_test_secret("{}", SecretType.JSON),
         )
         self.factory = RequestFactory()
         self.api_key = generate_id()
