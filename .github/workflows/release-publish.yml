@@ -152,6 +152,51 @@ jobs:
           if [ "$(gh release list --json tagName,isLatest --jq '.[] | select(.tagName=="${{ needs.metadata.outputs.tag-name }} ") | .isLatest')" = "true" ]; then
             aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.latest.yaml
           fi
+  upload-helm-charts:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # Needed to upload container images to ghcr.io
+      packages: write
+      # Needed for attestation
+      id-token: write
+      attestations: write
+    strategy:
+      fail-fast: false
+      matrix:
+        name:
+          - name: authentik
+          - name: authentik-remote-cluster
+    needs:
+      - publish-containers
+    env:
+      AWS_REGION: eu-central-1
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+      - name: Set up Helm
+        uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5
+      - uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # v6.2.4
+        with:
+          role-to-assume: "arn:aws:iam::016170277896:role/github_goauthentik_authentik"
+          aws-region: ${{ env.AWS_REGION }}
+      - uses: regclient/actions/regctl-installer@bb562fac724b7b37c17f19671df07fe34fabc376
+      # logs in to ghcr.io by default
+      - uses: regclient/actions/regctl-login@bb562fac724b7b37c17f19671df07fe34fabc376
+      - name: Download release container artifact
+        run: |
+          gh release download "helm-build-${{ matrix.name }}" --pattern "${{ matrix.name }}.tgz"
+          gh attestation verify "${{ matrix.name }}.tgz" --owner goauthentik
+      - id: publish-s3
+        name: Push to S3
+        run: |
+          helm plugin install https://github.com/hypnoglow/helm-s3.git
+          helm repo add goauthentik s3://TODO-NAME
+          helm s3 push ./${{ matrix.name }}*.tgz goauthentik
+      - id: publish-oci
+        name: Push to OCI
+        run: |
+          helm push "./${{ matrix.name }}*.tgz" oci://ghcr.io/${GITHUB_REPOSITORY_OWNER}/helm-charts
   sentry-release:
     needs:
       - publish-containers

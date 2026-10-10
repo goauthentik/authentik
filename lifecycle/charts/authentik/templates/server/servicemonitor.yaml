@@ -1,0 +1,52 @@
+{{- if .Values.server.enabled }}
+{{- if and .Values.server.metrics.enabled .Values.server.metrics.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "authentik.server.fullname" . }}
+  namespace: {{ .Values.server.metrics.serviceMonitor.namespace | default (include "authentik.namespace" .) | quote }}
+  labels:
+    {{- include "authentik.labels" (dict "context" . "component" (printf "%s-metrics" .Values.server.name)) | nindent 4 }}
+    {{- with .Values.server.metrics.serviceMonitor.selector }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with .Values.server.metrics.serviceMonitor.labels }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.server.metrics.serviceMonitor.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  endpoints:
+    - port: {{ .Values.server.metrics.service.portName }}
+      {{- with .Values.server.metrics.serviceMonitor.interval }}
+      interval: {{ . }}
+      {{- end }}
+      {{- with .Values.server.metrics.serviceMonitor.scrapeTimeout }}
+      scrapeTimeout: {{ . }}
+      {{- end }}
+      path: /metrics
+      {{- with .Values.server.metrics.serviceMonitor.relabelings }}
+      relabelings:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.server.metrics.serviceMonitor.metricRelabelings }}
+      metricRelabelings:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.server.metrics.serviceMonitor.scheme }}
+      scheme: {{ . }}
+      {{- end }}
+      {{- with .Values.server.metrics.serviceMonitor.tlsConfig }}
+      tlsConfig:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  namespaceSelector:
+    matchNames:
+      - {{ include "authentik.namespace" . }}
+  selector:
+    matchLabels:
+      {{- include "authentik.selectorLabels" (dict "context" . "component" (printf "%s-metrics" .Values.server.name)) | nindent 6 }}
+{{- end }}
+{{- end }}
