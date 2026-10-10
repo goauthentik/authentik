@@ -35,7 +35,7 @@ A trusted web certificate must be bound to the GlobalProtect portal. The certifi
 
 ## authentik configuration
 
-To support the integration of GlobalProtect with authentik, you need to create an application/provider pair in authentik.
+To support the integration of GlobalProtect with authentik, you need to create an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) in authentik.
 
 If multiple GlobalProtect portals or gateways initiate SAML requests with different FQDNs, create a separate application/provider pair for each FQDN. Each provider must use the matching FQDN in the **ACS URL** and **Audience**.
 
