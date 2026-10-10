@@ -462,6 +462,15 @@ export const ROUTES: RouteLike[] = [
     ),
 
     new Route(
+        "/secrets",
+        async () => {
+            await import("#admin/secrets/SecretListPage");
+
+            return html`<ak-secret-list></ak-secret-list>`;
+        },
+        "secrets",
+    ),
+    new Route(
         "/crypto/certificates",
         async () => {
             await import("#admin/crypto/CertificateKeyPairListPage");
