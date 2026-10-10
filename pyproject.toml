@@ -3,7 +3,7 @@ name = "authentik"
 version = "2026.11.0-rc1"
 description = ""
 authors = [{ name = "authentik Team", email = "hello@goauthentik.io" }]
-requires-python = "==3.14.*"
+requires-python = "==3.15.*"
 dependencies = [
   "ak-guardian==3.2.0",
   "argon2-cffi==25.1.0",
@@ -59,11 +59,9 @@ dependencies = [
   "paramiko==5.0.0",
   "psycopg[c,pool]==3.3.6",
   "pydantic-scim==0.0.8",
-  "pydantic==2.13.5",
+  "pydantic==2.14.0",
   "pyjwt==2.15.1",
   "pyrad==2.5.4",
-  "pyroscope-io==1.2.5",
-  "pyroscope-otel==1.1.0",
   "python-kadmin-rs==0.7.4",
   "pyyaml==6.0.3",
   "requests-oauthlib==2.0.0",
@@ -112,7 +110,7 @@ dev = [
   "pytest-timeout==2.4.0",
   "pytest==9.1.1",
   "requests-mock==1.12.1",
-  "ruff==0.16.10",
+  "ruff==0.17.0",
   "selenium==4.50.0",
   "types-channels==4.3.0.20260518",
   "types-docker==7.2.0.20260923",
@@ -166,7 +164,7 @@ exclude = 'node_modules'
 
 [tool.ruff]
 line-length = 100
-target-version = "py314"
+target-version = "py315"
 exclude = ["**/migrations/**", "**/node_modules/**"]
 
 [tool.ruff.lint]

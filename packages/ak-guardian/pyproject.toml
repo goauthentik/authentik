@@ -2,7 +2,7 @@
 name = "ak-guardian"
 version = "3.2.0"
 description = "Model and object permissions for Django"
-requires-python = ">=3.9,<3.15"
+requires-python = ">=3.9,<3.16"
 readme = "README.md"
 license = { text = "BSD-2-Clause" }
 authors = [{ name = "Authentik Security Inc.", email = "hello@goauthentik.io" }]
