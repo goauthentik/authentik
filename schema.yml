@@ -60716,6 +60716,7 @@ components:
       - cascade_many
       - set_null
       - set_default
+      - protect
       - left_dangling
       type: string
     User:
