@@ -3,7 +3,6 @@
 from typing import Any
 
 from django.urls.base import reverse_lazy
-from django.utils.translation import gettext_lazy as _
 from django_filters.filters import BooleanFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes

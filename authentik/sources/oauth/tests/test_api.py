@@ -3,6 +3,7 @@ from requests_mock import Mocker
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
 
@@ -16,7 +17,7 @@ class TestOAuthSourceAPI(APITestCase):
             authorization_url="",
             profile_url="",
             consumer_key=generate_id(),
-            consumer_secret=generate_id(),
+            consumer_secret_ref=create_test_secret(generate_id()),
         )
         self.user = create_test_admin_user()
 
@@ -116,4 +117,4 @@ class TestOAuthSourceAPI(APITestCase):
                     content_type="application/json",
                 )
                 self.assertEqual(res.status_code, 400)
-                self.assertIn("consumer_secret", res.json())
+                self.assertIn("consumer_secret_ref", res.json())
