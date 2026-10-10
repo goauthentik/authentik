@@ -189,6 +189,8 @@ class JWTAlgorithms(models.TextChoices):
 class ScopeMapping(PropertyMapping):
     """Map an OAuth Scope to users properties"""
 
+    expression_allowed_types = [dict]
+
     scope_name = models.TextField(help_text=_("Scope used by the client"))
     description = models.TextField(
         blank=True,
