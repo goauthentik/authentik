@@ -35728,6 +35728,9 @@ components:
       - ecdsa
       - ed25519
       - ed448
+      - mldsa44
+      - mldsa65
+      - mldsa87
       type: string
     App:
       type: object
@@ -38021,6 +38024,9 @@ components:
       - dsa
       - ed25519
       - ed448
+      - mldsa44
+      - mldsa65
+      - mldsa87
       type: string
     CertificateKeyPairRequest:
       type: object
@@ -43459,6 +43465,9 @@ components:
       - ec
       - ed25519
       - ed448
+      - mldsa44
+      - mldsa65
+      - mldsa87
       - rsa
     KubernetesServiceConnection:
       type: object

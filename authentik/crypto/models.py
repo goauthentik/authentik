@@ -8,12 +8,18 @@ from ssl import PEM_FOOTER, PEM_HEADER
 from textwrap import wrap
 from uuid import uuid4
 
+from cryptography.exceptions import InternalError, UnsupportedAlgorithm
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric.dsa import DSAPublicKey
 from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePublicKey
 from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PublicKey
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
+from cryptography.hazmat.primitives.asymmetric.mldsa import (
+    MLDSA44PublicKey,
+    MLDSA65PublicKey,
+    MLDSA87PublicKey,
+)
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes, PublicKeyTypes
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
@@ -58,6 +64,9 @@ class KeyType(models.TextChoices):
     DSA = "dsa", _("DSA")
     ED25519 = "ed25519", _("Ed25519")
     ED448 = "ed448", _("Ed448")
+    MLDSA44 = "mldsa44", _("ML-DSA-44")
+    MLDSA65 = "mldsa65", _("ML-DSA-65")
+    MLDSA87 = "mldsa87", _("ML-DSA-87")
 
 
 def fingerprint_sha256(cert: Certificate) -> str:
@@ -79,6 +88,12 @@ def detect_key_type(certificate: Certificate) -> str | None:
             return KeyType.ED25519
         if isinstance(public_key, Ed448PublicKey):
             return KeyType.ED448
+        if isinstance(public_key, MLDSA44PublicKey):
+            return KeyType.MLDSA44
+        if isinstance(public_key, MLDSA65PublicKey):
+            return KeyType.MLDSA65
+        if isinstance(public_key, MLDSA87PublicKey):
+            return KeyType.MLDSA87
     except (ValueError, TypeError, AttributeError) as exc:
         LOGGER.warning("Failed to detect key type", exc=exc)
     return None
@@ -183,8 +198,11 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
                 self._private_key = _load_private_key(
                     "\n".join(x.strip() for x in self.key_data.split("\n"))
                 )
-            except ValueError as exc:
-                LOGGER.warning(exc)
+            except (ValueError, InternalError, UnsupportedAlgorithm) as exc:
+                # InternalError/UnsupportedAlgorithm: OpenSSL has no implementation for the key's
+                # algorithm in the current configuration (e.g. ML-DSA under a FIPS provider that
+                # predates it), so treat the key as unusable rather than failing the caller
+                LOGGER.warning("Failed to load private key", exc=exc)
                 return None
         return self._private_key
 
