@@ -95,7 +95,6 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
         verbose_name=_("Google credentials"),
         on_delete=models.PROTECT,
         null=True,
-        blank=True,
         default=None,
         related_name="google_workspace_providers",
     )

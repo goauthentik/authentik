@@ -23,7 +23,7 @@ from dacite import Config
 from dacite.core import from_dict
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.indexes import HashIndex
-from django.db import models, transaction
+from django.db import models
 from django.http import HttpRequest
 from django.templatetags.static import static
 from django.urls import reverse
@@ -54,7 +54,7 @@ from authentik.core.models import (
     User,
 )
 from authentik.crypto.models import CertificateKeyPair
-from authentik.crypto.secrets.models import create_named_secret
+from authentik.crypto.secrets.models import GeneratedSecretsMixin
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
 from authentik.lib.models import (
     DomainlessURLValidator,
@@ -219,8 +219,10 @@ class ScopeMapping(PropertyMapping):
         verbose_name_plural = _("Scope Mappings")
 
 
-class OAuth2Provider(WebfingerProvider, Provider):
+class OAuth2Provider(GeneratedSecretsMixin, WebfingerProvider, Provider):
     """OAuth2 Provider for generic OAuth and OpenID Connect Applications."""
+
+    generated_secrets = {"client_secret_ref": ("client secret", generate_client_secret)}
 
     client_type = models.CharField(
         max_length=30,
@@ -372,16 +374,6 @@ class OAuth2Provider(WebfingerProvider, Provider):
         key: CertificateKeyPair = self.signing_key
         private_key = key.private_key
         return private_key, JWTAlgorithms.from_private_key(private_key)
-
-    def save(self, *args, **kwargs):
-        with transaction.atomic():
-            if not self.client_secret_ref_id:
-                self.client_secret_ref = create_named_secret(
-                    f"{self.name} client secret", secret_value=generate_client_secret()
-                )
-                if (update_fields := kwargs.get("update_fields")) is not None:
-                    kwargs["update_fields"] = set(update_fields) | {"client_secret_ref"}
-            return super().save(*args, **kwargs)
 
     def get_issuer(self, request: HttpRequest) -> str | None:
         """Get issuer, based on request"""

@@ -6,7 +6,7 @@ from django.test import TestCase
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import Serializer
 
-from authentik.crypto.secrets.api import JSONSecretReferenceField, SecretReferenceField
+from authentik.crypto.secrets.api import SecretReferenceField
 from authentik.crypto.secrets.models import Secret, SecretType
 
 
@@ -15,7 +15,9 @@ class TestSecretReferenceTypes(TestCase):
         for field, allowed in [
             (SecretReferenceField(queryset=Secret.objects.all()), {SecretType.TEXT}),
             (
-                JSONSecretReferenceField(queryset=Secret.objects.all()),
+                SecretReferenceField(
+                    queryset=Secret.objects.all(), allowed_types=(SecretType.JSON,)
+                ),
                 {SecretType.JSON},
             ),
             (

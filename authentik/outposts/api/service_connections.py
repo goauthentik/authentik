@@ -19,8 +19,7 @@ from authentik.core.api.utils import (
     ModelSerializer,
     PassiveSerializer,
 )
-from authentik.crypto.secrets.api import JSONSecretReferenceField
-from authentik.crypto.secrets.models import Secret
+from authentik.crypto.secrets.models import SecretType
 from authentik.outposts.controllers.k8s.utils import validate_kubeconfig
 from authentik.outposts.models import (
     DockerServiceConnection,
@@ -109,10 +108,6 @@ class DockerServiceConnectionViewSet(UsedByMixin, ModelViewSet):
 class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
     """KubernetesServiceConnection Serializer"""
 
-    kubeconfig_ref = JSONSecretReferenceField(
-        queryset=Secret.objects.all(), required=False, allow_null=True
-    )
-
     def validate(self, attrs):
         # Only check what changed, so a stored kubeconfig doesn't block unrelated updates.
         if "local" not in attrs and "kubeconfig_ref" not in attrs:
@@ -133,6 +128,7 @@ class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
     class Meta:
         model = KubernetesServiceConnection
         fields = ServiceConnectionSerializer.Meta.fields + ["kubeconfig_ref", "verify_ssl"]
+        extra_kwargs = {"kubeconfig_ref": {"allowed_types": (SecretType.JSON,)}}
 
 
 class KubernetesServiceConnectionViewSet(UsedByMixin, ModelViewSet):
