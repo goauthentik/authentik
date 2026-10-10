@@ -1,7 +1,7 @@
-import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#components/ak-number-input";
-import "#components/ak-switch-input";
 import "#components/ak-text-input";
+import "#elements/ak-checkbox-group/ak-checkbox-group";
+import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import { aki } from "#common/api/client";
@@ -51,7 +51,7 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
                 required
                 name="failedAttemptsBeforeLockout"
                 min=${0}
-                value="${this.instance?.failedAttemptsBeforeLockout ?? 0}"
+                value=${this.instance?.failedAttemptsBeforeLockout ?? 0}
                 ?readonly=${readOnly}
                 help=${
                     readOnly
@@ -81,7 +81,7 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
                     id: "password-stage.lockout-message.label",
                 })}
                 name="lockoutMessage"
-                value="${this.instance?.lockoutMessage ?? ""}"
+                value=${this.instance?.lockoutMessage ?? ""}
                 ?readonly=${readOnly}
                 help=${msg(
                     "Message shown when the user's password has been locked. Leave blank to show a generic authentication error.",
@@ -180,7 +180,7 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "How many failed password attempts are allowed before the flow is canceled. This setting does not deactivate the user.",
+                                "How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password.",
                                 {
                                     id: "password-stage.failed-attempts-before-cancel.description",
                                 },
