@@ -6,13 +6,24 @@ import {
 
 import { AKFlowSubmitRequest } from "#flow/events";
 import type { IdentificationHost } from "#flow/stages/identification/IdentificationStage";
+import { passkeyDebug } from "#flow/stages/identification/passkeyDebug";
 
 import { IdentificationChallenge } from "@goauthentik/api";
 
 import { ReactiveController } from "lit";
 
 // Ask once when the flow interface loads, so the answer is ready before the first challenge.
-const conditionalMediationAvailable = isConditionalMediationAvailable().catch(() => false);
+const conditionalMediationAvailable = isConditionalMediationAvailable().catch((error: unknown) => {
+    passkeyDebug("isConditionalMediationAvailable failed", { error: `${error}` });
+
+    return false;
+});
+
+passkeyDebug("isConditionalMediationAvailable called");
+
+conditionalMediationAvailable.then((available) =>
+    passkeyDebug("isConditionalMediationAvailable resolved", { available }),
+);
 
 type PasskeyChallenge = Omit<IdentificationChallenge, "passkeyChallenge"> & {
     passkeyChallenge?: PublicKeyCredentialRequestOptions;
@@ -67,9 +78,12 @@ export class WebauthnController implements ReactiveController {
         // the pending request and the passkey autofill dropdown would never appear.
         if (this.passkey !== this.#hostPasskey) {
             this.passkey = this.#hostPasskey;
+            passkeyDebug("hostUpdated: challenge changed", { hasPasskey: !!this.passkey });
 
             if (this.passkey) {
                 this.ready = this.#startConditionalWebAuthn(this.passkey).catch((error) => {
+                    passkeyDebug("start failed", { error: `${error}` });
+
                     console.warn("authentik/identification: Conditional WebAuthn failed", error);
                 });
             }
@@ -77,6 +91,7 @@ export class WebauthnController implements ReactiveController {
     }
 
     public hostDisconnected() {
+        passkeyDebug("hostDisconnected: aborting request", { pending: !!this.#abortController });
         this.#abortController?.abort();
         this.#abortController = null;
     }
@@ -90,7 +105,11 @@ export class WebauthnController implements ReactiveController {
     async #startConditionalWebAuthn(
         passkeyRequestOptions: PublicKeyCredentialRequestOptions,
     ): Promise<void> {
+        passkeyDebug("start: waiting for availability");
+
         if (!(await conditionalMediationAvailable)) {
+            passkeyDebug("start: conditional mediation not available");
+
             console.debug("authentik/identification: Conditional mediation not available");
 
             return;
@@ -103,9 +122,13 @@ export class WebauthnController implements ReactiveController {
 
         const publicKey = transformCredentialRequestOptions(passkeyRequestOptions);
 
+        passkeyDebug("credentials.get called");
+
         navigator.credentials
             .get({ publicKey, mediation: "conditional", signal })
             .then((credential) => {
+                passkeyDebug("credentials.get resolved", { credential: !!credential });
+
                 if (!credential) {
                     console.debug("authentik/identification: No credential returned");
 
@@ -117,6 +140,11 @@ export class WebauthnController implements ReactiveController {
                 this.host.dispatchEvent(new AKFlowSubmitRequest({ passkey }, { invisible: true }));
             })
             .catch((error: unknown) => {
+                passkeyDebug("credentials.get rejected", {
+                    name: error instanceof Error ? error.name : null,
+                    message: `${error}`,
+                });
+
                 if (error instanceof Error && error.name === "AbortError") {
                     // Request was aborted, this is expected when navigating away
                     console.debug("authentik/identification: Conditional WebAuthn aborted");

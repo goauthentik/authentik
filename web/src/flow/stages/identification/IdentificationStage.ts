@@ -21,6 +21,7 @@ import AutoRedirect from "#flow/stages/identification/controllers/AutoRedirectCo
 import CaptchaDisplayController from "#flow/stages/identification/controllers/CaptchaDisplayController";
 import RememberMeController from "#flow/stages/identification/controllers/RememberMeController";
 import WebauthnController from "#flow/stages/identification/controllers/WebauthnController";
+import { deepActiveElement, passkeyDebug } from "#flow/stages/identification/passkeyDebug";
 import Styles from "#flow/stages/identification/styles.css";
 import {
     compareLoginSource,
@@ -100,7 +101,16 @@ export class IdentificationStage extends BaseStage<
      * {@linkcode WebauthnController.ready}.
      */
     public override focus = (): void => {
-        this.#webauthn.ready.then(this.#focusField);
+        passkeyDebug("focus requested", {
+            live: this.#webauthn.live,
+            active: deepActiveElement(),
+            stack: new Error().stack?.split("\n").slice(1, 4).join(" < ") ?? null,
+        });
+
+        this.#webauthn.ready.then(() => {
+            this.#focusField();
+            passkeyDebug("focus applied", { active: deepActiveElement() });
+        });
     };
 
     //#endregion
@@ -313,6 +323,11 @@ export class IdentificationStage extends BaseStage<
     ) {
         // When webauthn is enabled, add "webauthn" to autocomplete to enable passkey autofill
         let autocomplete: AutoFill = type === "email" ? "email" : "username";
+
+        passkeyDebug("render identification field", {
+            live: this.#webauthn.live,
+            autofocus: !this.#webauthn.live,
+        });
 
         if (this.#webauthn.live) {
             autocomplete = `${autocomplete} webauthn`;
