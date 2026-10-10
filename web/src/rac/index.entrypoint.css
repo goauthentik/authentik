@@ -1,21 +1,111 @@
 :host {
-    cursor: none;
+    display: block;
+    height: 100vh;
+    height: 100dvh;
 }
-
 canvas {
     z-index: unset !important;
 }
-
-.container {
-    overflow: hidden;
-    height: 100vh;
-    background-color: black;
+.rac-shell {
+    height: 100%;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    overflow: hidden;
 }
-
+.rac-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 0 0 2.5rem;
+    padding: 0 0.75rem;
+    color: var(--pf-global--Color--100);
+    background: var(--pf-global--BackgroundColor--100);
+    border-bottom: 1px solid var(--pf-global--BorderColor--100);
+    cursor: auto;
+}
+.endpoint-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.files-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+.transfer-count {
+    background: var(--pf-global--primary-color--100);
+    color: white;
+    border-radius: 1rem;
+    padding: 0 0.4rem;
+    font-size: 0.75rem;
+}
+.error-indicator {
+    color: var(--pf-global--danger-color--100);
+}
+.rac-layout {
+    position: relative;
+    flex: 1;
+    display: flex;
+    min-height: 0;
+    min-width: 0;
+}
+.desktop-viewport {
+    position: relative;
+    overflow: hidden;
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    background: black;
+    cursor: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.desktop-viewport:focus-visible {
+    outline: 2px solid var(--pf-global--primary-color--100);
+    outline-offset: -2px;
+}
+.files-panel {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    z-index: 10;
+    width: 26rem;
+    max-width: calc(100% - 1.5rem);
+    height: min(40rem, calc(100% - 1.5rem));
+    min-height: 0;
+    overflow: hidden;
+    background: var(--pf-global--BackgroundColor--100);
+    border: 1px solid var(--pf-global--BorderColor--100);
+    border-radius: 0.5rem;
+    box-shadow: var(--pf-global--BoxShadow--lg);
+}
+.files-panel[hidden] {
+    display: none;
+}
 ak-loading-overlay {
     z-index: 5;
     color: white;
+}
+.file-drop-overlay {
+    position: absolute;
+    inset: 3rem 1rem 1rem;
+    z-index: 6;
+    display: grid;
+    place-items: center;
+    border: 3px dashed var(--pf-global--primary-color--100);
+    color: white;
+    background: rgb(0 0 0 / 65%);
+    pointer-events: none;
+    font-size: 1.25rem;
+}
+@media (max-width: 700px) {
+    .files-panel {
+        top: 0.5rem;
+        right: 0.5rem;
+        max-width: calc(100% - 1rem);
+        height: min(40rem, calc(100% - 1rem));
+    }
 }

@@ -16,6 +16,11 @@ import {
     ConnectionTokenRequestToJSON,
 } from "../models/ConnectionTokenRequest";
 import {
+    type FileListQueryRequest,
+    FileListQueryRequestToJSON,
+} from "../models/FileListQueryRequest";
+import { type FileListResult, FileListResultFromJSON } from "../models/FileListResult";
+import {
     type PaginatedConnectionTokenList,
     PaginatedConnectionTokenListFromJSON,
 } from "../models/PaginatedConnectionTokenList";
@@ -27,6 +32,15 @@ import {
     type PatchedConnectionTokenRequest,
     PatchedConnectionTokenRequestToJSON,
 } from "../models/PatchedConnectionTokenRequest";
+import { type Transfer, TransferFromJSON } from "../models/Transfer";
+import {
+    type TransferActionRequest,
+    TransferActionRequestToJSON,
+} from "../models/TransferActionRequest";
+import {
+    type TransferCreateRequest,
+    TransferCreateRequestToJSON,
+} from "../models/TransferCreateRequest";
 import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
@@ -108,6 +122,23 @@ export interface RacDevicesListRequest {
      */
     search?: string;
     superuserFullList?: boolean;
+}
+
+export interface RacFileTransfersCreateRequest {
+    transferCreateRequest: TransferCreateRequest;
+}
+
+export interface RacFileTransfersDestroyRequest {
+    id: string;
+}
+
+export interface RacFileTransfersFinishCreateRequest {
+    id: string;
+    transferActionRequest: TransferActionRequest;
+}
+
+export interface RacFilesListCreateRequest {
+    fileListQueryRequest: FileListQueryRequest;
 }
 
 export class RacApi extends runtime.BaseAPI {
@@ -628,6 +659,265 @@ export class RacApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<PaginatedRACDeviceList> {
         const response = await this.racDevicesListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for racFileTransfersCreate without sending the request
+     */
+    async racFileTransfersCreateRequestOpts(
+        requestParameters: RacFileTransfersCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["transferCreateRequest"] == null) {
+            throw new runtime.RequiredError(
+                "transferCreateRequest",
+                'Required parameter "transferCreateRequest" was null or undefined when calling racFileTransfersCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/rac/file_transfers/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: TransferCreateRequestToJSON(requestParameters["transferCreateRequest"]),
+        };
+    }
+
+    /**
+     * Prepare and finish file transfers through low-volume Outpost control messages.
+     */
+    async racFileTransfersCreateRaw(
+        requestParameters: RacFileTransfersCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Transfer>> {
+        const requestOptions = await this.racFileTransfersCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => TransferFromJSON(jsonValue));
+    }
+
+    /**
+     * Prepare and finish file transfers through low-volume Outpost control messages.
+     */
+    async racFileTransfersCreate(
+        requestParameters: RacFileTransfersCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Transfer> {
+        const response = await this.racFileTransfersCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for racFileTransfersDestroy without sending the request
+     */
+    async racFileTransfersDestroyRequestOpts(
+        requestParameters: RacFileTransfersDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling racFileTransfersDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/rac/file_transfers/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Prepare and finish file transfers through low-volume Outpost control messages.
+     */
+    async racFileTransfersDestroyRaw(
+        requestParameters: RacFileTransfersDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.racFileTransfersDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Prepare and finish file transfers through low-volume Outpost control messages.
+     */
+    async racFileTransfersDestroy(
+        requestParameters: RacFileTransfersDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.racFileTransfersDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for racFileTransfersFinishCreate without sending the request
+     */
+    async racFileTransfersFinishCreateRequestOpts(
+        requestParameters: RacFileTransfersFinishCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling racFileTransfersFinishCreate().',
+            );
+        }
+
+        if (requestParameters["transferActionRequest"] == null) {
+            throw new runtime.RequiredError(
+                "transferActionRequest",
+                'Required parameter "transferActionRequest" was null or undefined when calling racFileTransfersFinishCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/rac/file_transfers/{id}/finish/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: TransferActionRequestToJSON(requestParameters["transferActionRequest"]),
+        };
+    }
+
+    /**
+     * Prepare and finish file transfers through low-volume Outpost control messages.
+     */
+    async racFileTransfersFinishCreateRaw(
+        requestParameters: RacFileTransfersFinishCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.racFileTransfersFinishCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Prepare and finish file transfers through low-volume Outpost control messages.
+     */
+    async racFileTransfersFinishCreate(
+        requestParameters: RacFileTransfersFinishCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.racFileTransfersFinishCreateRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for racFilesListCreate without sending the request
+     */
+    async racFilesListCreateRequestOpts(
+        requestParameters: RacFilesListCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["fileListQueryRequest"] == null) {
+            throw new runtime.RequiredError(
+                "fileListQueryRequest",
+                'Required parameter "fileListQueryRequest" was null or undefined when calling racFilesListCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/rac/files/list/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: FileListQueryRequestToJSON(requestParameters["fileListQueryRequest"]),
+        };
+    }
+
+    /**
+     * List only the authenticated connection's redirected RDP drive.
+     */
+    async racFilesListCreateRaw(
+        requestParameters: RacFilesListCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<FileListResult>> {
+        const requestOptions = await this.racFilesListCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            FileListResultFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * List only the authenticated connection's redirected RDP drive.
+     */
+    async racFilesListCreate(
+        requestParameters: RacFilesListCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<FileListResult> {
+        const response = await this.racFilesListCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 }
