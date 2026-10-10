@@ -129,7 +129,13 @@ class ModelSerializer(BaseModelSerializer):
         if relation_info.related_model._meta.label_lower == "authentik_crypto_secrets.secret":
             from authentik.crypto.secrets.api import SecretReferenceField
 
+            # The model field says whether a secret is required, optional, or generated when
+            # the object is created: generated references are blank, but not null.
+            model_field = relation_info.model_field
             field_class = SecretReferenceField
+            field_kwargs["required"] = not model_field.blank
+            field_kwargs["allow_null"] = model_field.blank
+            field_kwargs["required_on_update"] = not model_field.null
         return field_class, field_kwargs
 
 

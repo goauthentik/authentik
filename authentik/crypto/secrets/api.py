@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.fields import CharField, IntegerField, SkipField
+from rest_framework.fields import CharField, IntegerField, SkipField, empty
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
@@ -28,11 +28,16 @@ MAX_GENERATED_LENGTH = 1024
 class SecretReferenceField(PrimaryKeyRelatedField):
     """Attaching a credential can disclose it through the consumer."""
 
-    allowed_types = (SecretType.TEXT,)
-
-    def __init__(self, **kwargs):
-        self.allowed_types = kwargs.pop("allowed_types", self.allowed_types)
+    def __init__(self, allowed_types=(SecretType.TEXT,), required_on_update=False, **kwargs):
+        self.allowed_types = allowed_types
+        self.required_on_update = required_on_update
         super().__init__(**kwargs)
+
+    def run_validation(self, data=empty):
+        # Objects that generate their secret may omit it when created, but must keep one.
+        if data in (None, "") and self.required_on_update and self.parent.instance:
+            raise ValidationError(_("A secret is required."))
+        return super().run_validation(data)
 
     def to_internal_value(self, data):
         secret = super().to_internal_value(data)
@@ -48,12 +53,6 @@ class SecretReferenceField(PrimaryKeyRelatedField):
         if secret.type not in self.allowed_types:
             raise ValidationError(_("This secret type is not supported by this field."))
         return secret
-
-
-class JSONSecretReferenceField(SecretReferenceField):
-    """A reference to a structured credential."""
-
-    allowed_types = (SecretType.JSON,)
 
 
 class SecretSerializer(ManagedSerializer, ModelSerializer):
