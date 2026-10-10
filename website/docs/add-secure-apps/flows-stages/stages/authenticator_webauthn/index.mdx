@@ -48,6 +48,10 @@ For passkey-based passwordless login, set **Resident key requirement** to **Pref
 
 Use **Authenticator Attachment** when the flow should prefer either removable authenticators such as YubiKeys or built-in authenticators such as Touch ID, Windows Hello, or password-manager passkeys.
 
+### Signature algorithms
+
+Registration accepts EdDSA, ES256, and RS256 credentials, and the post-quantum ML-DSA-44, ML-DSA-65, and ML-DSA-87 algorithms (FIPS 204). Authenticators pick the first algorithm they support, so ML-DSA is only used by devices that offer nothing else. No shipping authenticator supports ML-DSA yet.
+
 This controls the `authenticatorAttachment` parameter sent to the browser during WebAuthn registration:
 
 - **No preference is sent**: the browser can offer any available authenticator.
