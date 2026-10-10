@@ -13,6 +13,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { findNearestDialog } from "#elements/utils/render-roots";
 import { WizardPage } from "#elements/wizard/WizardPage";
 
+import { WizardCloseEvent } from "#components/ak-wizard/events";
 import { ButtonKindLabelRecord } from "#components/ak-wizard/shared";
 
 import { ConsoleLogger } from "#logger/browser";
@@ -401,7 +402,8 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
 
     public requestClose = (returnValue?: string) => {
         if (!this.dialog) {
-            this.logger.warn("Skipping close request: No dialog found for wizard.");
+            // Full-page wizards have no dialog; the host decides what closing means.
+            this.dispatchEvent(new WizardCloseEvent());
 
             return;
         }
@@ -423,7 +425,10 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     //#region Rendering
 
     public renderHeader(): SlottedTemplateResult {
-        const { cancelable, description } = this;
+        const { cancelable, description, dialog } = this;
+
+        // Full-page wizards use the standard page header instead of their own.
+        if (!dialog) return null;
 
         return guard([cancelable, description], () => {
             const header = this.formatHeader();
@@ -564,19 +569,20 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                             : ButtonKindLabelRecord.finish()
                         : ButtonKindLabelRecord.next());
 
-                return [
-                    cancelable
-                        ? html`<div class="pf-c-wizard__footer-cancel">
-                              <button
-                                  data-test-id="wizard-navigation-cancel"
-                                  class="pf-c-button pf-m-link"
-                                  type="button"
-                                  @click=${() => this.requestClose("cancel")}
-                              >
-                                  ${msg("Cancel")}
-                              </button>
-                          </div>`
-                        : null,
+                const cancelButton = cancelable
+                    ? html`<div class="pf-c-wizard__footer-cancel">
+                          <button
+                              data-test-id="wizard-navigation-cancel"
+                              class="pf-c-button pf-m-link"
+                              type="button"
+                              @click=${() => this.requestClose("cancel")}
+                          >
+                              ${msg("Cancel")}
+                          </button>
+                      </div>`
+                    : null;
+
+                const navigationButtons = [
                     activeStepIndex > 0 && canBack
                         ? html`<button
                               data-test-id="wizard-navigation-previous"
@@ -597,6 +603,12 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                         ${nextLabel}
                     </button>`,
                 ];
+
+                // Full-page wizards put the cancel button after the navigation buttons,
+                // where a modal's close affordance would otherwise sit.
+                return this.dialog
+                    ? [cancelButton, ...navigationButtons]
+                    : [...navigationButtons, cancelButton];
             },
         );
     }

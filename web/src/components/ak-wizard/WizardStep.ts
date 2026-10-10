@@ -1,4 +1,4 @@
-import { NavigationEventInit, WizardNavigationEvent } from "./events.js";
+import { NavigationEventInit, WizardCloseEvent, WizardNavigationEvent } from "./events.js";
 import {
     ButtonKindClassnameRecord,
     ButtonKindLabelRecord,
@@ -239,7 +239,8 @@ export abstract class WizardStep extends AKElement {
 
     public requestClose = (returnValue?: string) => {
         if (!this.dialog) {
-            this.logger.warn("Skipping close request: No dialog found for wizard.");
+            // Full-page wizards have no dialog; the host decides what closing means.
+            this.dispatchEvent(new WizardCloseEvent());
 
             return;
         }
@@ -290,6 +291,19 @@ export abstract class WizardStep extends AKElement {
         </button>`;
     }
 
+    /**
+     * The step's buttons in render order. Full-page wizards put the cancel button after the
+     * navigation buttons, where a modal's close affordance would otherwise sit.
+     */
+    protected get orderedButtons(): WizardButton[] {
+        if (this.dialog) return this.buttons;
+
+        const isCancel = (button: WizardButton) =>
+            button.kind === "cancel" || button.kind === "close";
+
+        return [...this.buttons.filter((b) => !isCancel(b)), ...this.buttons.filter(isCancel)];
+    }
+
     protected renderButton = (button: WizardButton) => {
         return match(button)
             .with({ kind: P.union("close", "cancel") }, () => this.renderCloseButton(button))
@@ -337,13 +351,24 @@ export abstract class WizardStep extends AKElement {
         }
 
         return html`<div class="pf-c-wizard">
-            <header class="pf-c-wizard__header" data-ouid-component-id="wizard-header">
-                ${this.canCancel ? this.renderHeaderCancelIcon() : nothing}
-                <h1 class="pf-c-title pf-m-3xl pf-c-wizard__title" data-test-id="wizard-title">
-                    ${this.wizardTitle}
-                </h1>
-                <p class="pf-c-wizard__description">${this.wizardDescription}</p>
-            </header>
+            <!-- Full-page wizards use the standard page header instead of their own. -->
+            ${
+                this.dialog
+                    ? html`<header
+                          class="pf-c-wizard__header"
+                          data-ouid-component-id="wizard-header"
+                      >
+                          ${this.canCancel ? this.renderHeaderCancelIcon() : nothing}
+                          <h1
+                              class="pf-c-title pf-m-3xl pf-c-wizard__title"
+                              data-test-id="wizard-title"
+                          >
+                              ${this.wizardTitle}
+                          </h1>
+                          <p class="pf-c-wizard__description">${this.wizardDescription}</p>
+                      </header>`
+                    : nothing
+            }
 
             <div class="pf-c-wizard__outer-wrap">
                 <div class="pf-c-wizard__inner-wrap">
@@ -367,7 +392,7 @@ export abstract class WizardStep extends AKElement {
                     </main>
                 </div>
                 <nav class="pf-c-wizard__footer" aria-label="${msg("Wizard navigation")}">
-                    ${this.buttons.map(this.renderButton)}
+                    ${this.orderedButtons.map(this.renderButton)}
                 </nav>
             </div>
         </div>`;
