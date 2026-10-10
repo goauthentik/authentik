@@ -20,7 +20,12 @@ from authentik.enterprise.required_actions.flows import (
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow, FlowDesignation, Stage
 from authentik.flows.planner import FlowPlan
-from authentik.flows.views.executor import QS_QUERY, SESSION_KEY_PLAN, to_stage_response
+from authentik.flows.views.executor import (
+    QS_QUERY,
+    SESSION_KEY_PLAN,
+    SESSION_KEY_POST,
+    to_stage_response,
+)
 from authentik.lib.utils.urls import reverse_with_qs
 
 LOGGER = get_logger()
@@ -108,13 +113,17 @@ class RequiredActionsMiddleware(MiddlewareMixin):
         elif flow == action:
             resume_url, resume_plan = reverse("authentik_core:root-redirect"), None
         else:
-            resume_url = request.get_full_path()
             if request.resolver_match.view_name == ROUTE_FLOW_EXECUTOR:
                 resume_url = reverse_with_qs(
                     ROUTE_FLOW_INTERFACE,
                     QueryDict(request.GET.get(QS_QUERY, "")),
                     kwargs=request.resolver_match.kwargs,
                 )
+            else:
+                resume_url = request.get_full_path()
+                # The page is opened again with GET, so keep a POST body for it (mostly SAML)
+                if request.method == "POST":
+                    request.session[SESSION_KEY_POST] = request.POST
             in_progress = plan and flow and plan.flow_pk == flow.pk.hex
             resume_plan = plan if in_progress else None
         plan_required_action(request, action, resume_url, resume_plan)
