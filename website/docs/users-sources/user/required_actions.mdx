@@ -10,7 +10,7 @@ Required actions are flows that a user must complete before they can continue to
 
 The `goauthentik.io/user/required-actions` attribute on a user defines their required actions. Its value can be a single flow slug or a list of flow slugs.
 
-On the user's next request, authentik sends them to the first flow in the list. This includes sessions that are already logged in, so the user doesn't need to log in again for a new action to apply. Until every action is complete, the user can only run their required actions or log out, and API requests from their session are denied.
+On the user's next request, authentik sends them to the first flow in the list. This includes sessions that are already logged in, so the user doesn't need to log in again for a new action to apply. Until every action is complete, the user can only run their required actions or log out, and API requests from their session are denied. API tokens and app passwords that the user already has keep working.
 
 When the user completes a flow, authentik removes it from the attribute and moves on to the next one. After the last action, the user continues where they left off: authentik opens the page they requested, or resumes the flow they were in, such as a login or an application authorization.
 
@@ -18,7 +18,7 @@ If a listed flow doesn't exist or its policies deny the user, the user can't con
 
 ## Choose a flow
 
-Required actions can't use flows with the **Authentication** or **Invalidation** [designation](../../add-secure-apps/flows-stages/flow/index.mdx). authentik's [default flows](../../add-secure-apps/flows-stages/flow/default-flows.mdx) cover changing the password (`default-password-change`) and setting up each authenticator type, for example `default-authenticator-totp-setup`. You can also [create a flow](../../add-secure-apps/flows-stages/flow/index.mdx#create-a-flow) to collect profile details or accept updated terms.
+Required actions can't use flows with the **Authentication** or **Invalidation** [designation](../../add-secure-apps/flows-stages/flow/index.mdx), or flows that a logged-in user can't run, such as flows that require the user to be logged out. authentik's [default flows](../../add-secure-apps/flows-stages/flow/default-flows.mdx) cover changing the password (`default-password-change`) and setting up each authenticator type, for example `default-authenticator-totp-setup`. You can also [create a flow](../../add-secure-apps/flows-stages/flow/index.mdx#create-a-flow) to collect profile details or accept updated terms.
 
 A required action must finish in its own flow. Don't use [Redirect](../../add-secure-apps/flows-stages/stages/redirect/index.mdx) or [Source](../../add-secure-apps/flows-stages/stages/source/index.mdx) stages in it: they send the user away before the flow completes, and authentik sends them straight back to the action.
 
