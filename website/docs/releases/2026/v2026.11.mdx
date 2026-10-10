@@ -6,6 +6,8 @@ draft: true
 
 ## Highlights
 
+- **Password lockout**: :ak-enterprise Lock password login after a configured number of consecutive failed attempts.
+
 ## Breaking changes
 
 ### RAC endpoints are now devices
@@ -69,6 +71,22 @@ The **Base URL** [system setting](../../sys-mgmt/settings.mdx#base-url), introdu
 ### Single sign-on into devices managed by the authentik agent
 
 A RAC provider signs into devices which are enrolled through the authentik agent as the user who launched the connection, with no credentials configured for the device. authentik issues a token for the device, the RAC outpost turns it into an SSH certificate, and the agent validates the token before accepting the login. See [the RAC provider documentation](../../add-secure-apps/providers/rac/index.mdx#signing-in-with-the-authentik-agent).
+
+### Password lockout :ak-enterprise
+
+The [Password stage](../../add-secure-apps/flows-stages/stages/password/index.mdx#password-lockout) can lock password login after a configured number of consecutive failed attempts. Lockout is disabled by default and also works when password validation is embedded in an Identification stage.
+
+Administrators with permission to view a user and reset their password can use **Lock password login** or **Unlock password login** on the user's details page. Changing the password preserves the lock. Existing sessions and passwordless authentication are unaffected. App passwords submitted through password stages also obey the lock. Optional warning and lockout messages help users understand failed attempts, and lock transitions appear in the audit log.
+
+An Enterprise license is required to create new locks. Existing locks remain enforced without a valid license, and administrators can still unlock them.
+
+### Passwords stored as authenticator devices
+
+Password hashes are now stored on password devices belonging to users. Existing passwords migrate automatically during upgrade.
+
+Expressions can still read `user.password` and `user.password_change_date`. Expressions that change a password must use `PasswordDevice.set_password(user, password)` or `PasswordDevice.set_unusable_password(user)` from `authentik.stages.password.models`; `user.set_password()` and `user.set_unusable_password()` now raise an error.
+
+Password devices are excluded from MFA discovery and validation. Their lock state can be managed through the [password authenticator API](../../add-secure-apps/flows-stages/stages/password/index.mdx#manage-locks-through-the-api).
 
 ## Upgrading
 
