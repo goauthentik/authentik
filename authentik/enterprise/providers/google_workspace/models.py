@@ -87,10 +87,9 @@ class GoogleWorkspaceProviderGroup(InternallyManagedMixin, SerializerModel):
 class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
     """Sync users from authentik into Google Workspace."""
 
-    # Remove the legacy credential columns in 2027.2.
-    credentials = models.JSONField(default=dict)
-
     delegated_subject = models.EmailField()
+    # Legacy column, kept for downgrades. Remove in 2027.2.
+    credentials = models.JSONField(default=dict)
     credentials_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Google credentials"),
