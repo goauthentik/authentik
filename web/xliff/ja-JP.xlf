@@ -960,10 +960,6 @@
   <source>Pause this schedule</source>
   <target>このスケジュールを一時停止</target>
 </trans-unit>
-<trans-unit id="sc0448bc8a76227cb">
-  <source>Failed to fetch objects: </source>
-  <target>オブジェクトの取得に失敗しました: </target>
-</trans-unit>
 <trans-unit id="sf485014051ad0cf7">
   <source>Successfully assigned permission.</source>
   <target>権限を割り当てました。</target>
@@ -1724,10 +1720,6 @@
 <trans-unit id="s4c49d27de60a532b">
   <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
   <target>すべてのリダイレクトURIを許可するには、モードを正規表現に設定し、値を「.*」にします。これによるセキュリティへの影響に注意してください。</target>
-</trans-unit>
-<trans-unit id="s62f7c59b0606a8d6">
-  <source>Authorization flow</source>
-  <target>認可フロー</target>
 </trans-unit>
 <trans-unit id="s69d33a50b908b96f">
   <source>Select an authorization flow...</source>
@@ -4441,10 +4433,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sabaf0061f7e41b0b">
   <source>Consumer secret</source>
   <target>コンシューマーシークレット</target>
-</trans-unit>
-<trans-unit id="sd46fd9b647cfea10">
-  <source>Also known as Client Secret.</source>
-  <target>クライアントシークレットとも呼ばれます。</target>
 </trans-unit>
 <trans-unit id="sa61966cd83b4924c">
   <source>Additional scopes to be passed to the OAuth Provider, separated by space. To replace existing scopes, prefix with *.</source>
@@ -9870,6 +9858,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s74cb3d66f6a668e1">
   <source>Documentation</source>
+  <target>ドキュメント</target>
 </trans-unit>
 <trans-unit id="sdf1d745af5aa858f">
   <source>Release notes</source>
@@ -10365,6 +10354,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s8489d5559dda260c">
   <source>Role Object Permissions</source>
+  <target>ロールオブジェクト権限</target>
 </trans-unit>
 <trans-unit id="se84477a0cb9d8781">
   <source>Object Permission</source>
@@ -10374,6 +10364,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s8b0432eecbd8b034">
   <source>Update</source>
+  <target>更新</target>
 </trans-unit>
 <trans-unit id="sa6f726a43ec55a63">
   <source>Search for a role...</source>
@@ -10530,9 +10521,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="se0bf7f662ec09302">
   <source>An error occurred while loading <x id="0" equiv-text="${this.verboseName}"/>.</source>
-</trans-unit>
-<trans-unit id="s4fd2fe9adfd426e9">
-  <source>Select an option...</source>
 </trans-unit>
 <trans-unit id="s195ea6447a6b5486">
   <source>Cancel wizard</source>
@@ -10803,6 +10791,8 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd30f00ff2135589c">
   <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
+  <target>有効になると、イベントをトリガーしたユーザーと上記のグループ内のユーザーに通知が送信されます。イベントユーザーは常に最初のユーザーになります。イベントユーザーにのみ通知を送信するには、通知トランスポートで「1
+          回だけ送信」を有効にします。</target>
 </trans-unit>
 <trans-unit id="s1c0267488c33401b">
   <source>Minimum reviewers</source>
@@ -11258,9 +11248,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s82c71ab0a2d18257">
   <source>Type a name for the stage...</source>
 </trans-unit>
-<trans-unit id="s10dd794d4839378e">
-  <source>Select an enrollment flow.</source>
-</trans-unit>
 <trans-unit id="sece0e7e9d7ad08bf">
   <source>e.g. my-invite</source>
 </trans-unit>
@@ -11362,9 +11349,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sc4804358f202968c">
   <source>Internal user usage</source>
+  <target>内部ユーザー使用量</target>
 </trans-unit>
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
+  <target>外部ユーザー使用量</target>
 </trans-unit>
 <trans-unit id="s3bca5a165739e8c9">
   <source>Allow application access with no policies</source>
@@ -11407,12 +11396,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="banner.dismiss.aria-label">
   <source>Dismiss banner</source>
-</trans-unit>
-<trans-unit id="settings.base-url.banner.action">
-  <source>Configure it in the system settings</source>
-</trans-unit>
-<trans-unit id="settings.base-url.banner.label">
-  <source>The base URL has not been configured.</source>
 </trans-unit>
 <trans-unit id="sf993bb199fefbe04">
   <source>All</source>
@@ -11560,6 +11543,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sb3d4f79d9d8b71e5">
   <source>Submit</source>
+  <target>送信</target>
 </trans-unit>
 <trans-unit id="sd348917df892e7a5">
   <source>Requester</source>
@@ -12375,6 +12359,15 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd685c85b245c6e9f">
   <source>Hide details</source>
+</trans-unit>
+<trans-unit id="s8e4a12c5930cf212">
+  <source>Also known as Client Secret. Can be left empty for public clients using PKCE.</source>
+</trans-unit>
+<trans-unit id="sfd44da578f6445a9">
+  <source>Failed to fetch objects:</source>
+</trans-unit>
+<trans-unit id="sa81413e2e309b882">
+  <source>No results found.</source>
 </trans-unit>
 </body>
 </file>

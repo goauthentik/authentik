@@ -1,3 +1,6 @@
+from typing import Self
+
+from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 
 from authentik.core.models import (
@@ -11,6 +14,18 @@ from authentik.core.models import (
 from authentik.lib.generators import generate_id
 
 USER_PATH_AGENTS = f"{USER_PATH_SYSTEM_PREFIX}/agents"
+
+
+class AgentUserQuerySet(QuerySet):
+    """Select users by their agent relationship."""
+
+    def filter_agents(self) -> Self:
+        """Include only agent users."""
+        return self.filter(actor__agent__isnull=False)
+
+    def exclude_agents(self) -> Self:
+        """Exclude agent users."""
+        return self.filter(actor__agent__isnull=True)
 
 
 class Agent(Actor):

@@ -11,11 +11,10 @@ import { aki } from "#common/api/client";
 import { IconEditButton } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
 import { toAdminInterface } from "#elements/router/core/interfaces";
+import { setPageDetails } from "#elements/router/meta";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
-
-import { setPageDetails } from "#components/ak-page-navbar";
 
 import { InvitationForm } from "#admin/stages/invitation/InvitationForm";
 

@@ -88,6 +88,161 @@ test.describe("Provider Wizard", () => {
         );
     });
 
+    test("OAuth2 Provider submitted while a default flow is still loading", async ({
+        form,
+        pointer,
+        page,
+    }, testInfo) => {
+        const providerName = providerNames.get(testInfo.testId)!;
+        const { fill, selectSearchValue } = form;
+        const { click } = pointer;
+        const dialog = page.getByRole("dialog", { name: "New Provider Wizard" });
+
+        await test.step("Slow down loading the invalidation flows", async () => {
+            await page.route(/\/flows\/instances\/.*designation=invalidation/, async (route) => {
+                await new Promise((resolve) => setTimeout(resolve, 3_000));
+                await route.continue();
+            });
+        });
+
+        const request = page.waitForRequest(
+            (request) =>
+                request.method() === "POST" && request.url().includes("/providers/oauth2/"),
+        );
+
+        await test.step("Create the provider without waiting for the defaults", async () => {
+            await series(
+                [click, "OAuth2/OpenID", "option"],
+                [fill, "Provider Name", providerName],
+                [
+                    selectSearchValue,
+                    "Authorization Flow",
+                    /default-provider-authorization-explicit-consent/,
+                ],
+                [click, "Create", "button", dialog],
+            );
+        });
+
+        await test.step("The default invalidation flow is submitted", async () => {
+            const { invalidation_flow } = (await request).postDataJSON();
+
+            expect(invalidation_flow, "Invalidation flow is not null").toEqual(expect.any(String));
+
+            await expect(dialog, "Dialog closes after creation").toBeHidden();
+        });
+    });
+
+    test("OAuth2 Provider chosen with the keyboard and search", async ({
+        form,
+        pointer,
+        page,
+    }, testInfo) => {
+        const providerName = providerNames.get(testInfo.testId)!;
+        const { fill, findSearchSelect } = form;
+        const { click } = pointer;
+        const dialog = page.getByRole("dialog", { name: "New Provider Wizard" });
+
+        await click("OAuth2/OpenID", "option");
+        await fill("Provider Name", providerName, dialog);
+
+        const { host, combobox } = await findSearchSelect("Authorization Flow", dialog);
+        const listbox = host.getByRole("listbox");
+
+        await test.step("Open with the keyboard and search", async () => {
+            await combobox.focus();
+            await combobox.press("ArrowDown");
+
+            await expect(listbox, "ArrowDown opens the options").toBeVisible();
+
+            await combobox.fill("implicit");
+
+            await expect(host.getByRole("option"), "Only the matching flow is listed").toHaveCount(
+                1,
+            );
+        });
+
+        await test.step("Choose with the keyboard", async () => {
+            await combobox.press("ArrowDown");
+            await combobox.press("Enter");
+
+            await expect(listbox, "Choosing closes the options").toBeHidden();
+
+            await expect(combobox, "The chosen flow's label is shown").toHaveValue(
+                /default-provider-authorization-implicit-consent/,
+            );
+        });
+
+        await test.step("Close by clicking outside", async () => {
+            await combobox.click();
+
+            await expect(listbox, "Clicking the field opens the options").toBeVisible();
+
+            await dialog.getByRole("heading", { name: "Create New Provider" }).click();
+
+            await expect(listbox, "Clicking outside closes the options").toBeHidden();
+        });
+
+        await click("Create", "button", dialog);
+    });
+
+    test("Saved OAuth2 Provider shows its flows and signing key", async ({
+        form,
+        pointer,
+        page,
+    }, testInfo) => {
+        const providerName = providerNames.get(testInfo.testId)!;
+        const { fill, search, findSearchSelect, selectSearchValue, setFormGroup } = form;
+        const { click } = pointer;
+        const wizard = page.getByRole("dialog", { name: "New Provider Wizard" });
+
+        await test.step("Create the provider", async () => {
+            await series(
+                [click, "OAuth2/OpenID", "option"],
+                [fill, "Provider Name", providerName],
+                [
+                    selectSearchValue,
+                    "Authorization Flow",
+                    /default-provider-authorization-explicit-consent/,
+                ],
+                [click, "Create", "button", wizard],
+            );
+
+            await expect(wizard, "Wizard closes after creation").toBeHidden();
+        });
+
+        const editDialog = page.getByRole("dialog");
+
+        await test.step("Open the provider's edit form", async () => {
+            const $provider = await search(providerName);
+
+            await $provider.getByRole("button", { name: /Edit/ }).first().click();
+
+            await expect(editDialog, "Edit form opens").toBeVisible();
+        });
+
+        await test.step("The saved choices are shown by label", async () => {
+            const authorization = await findSearchSelect("Authorization Flow", editDialog);
+
+            await expect(authorization.combobox, "Authorization flow is labeled").toHaveValue(
+                /default-provider-authorization-explicit-consent/,
+            );
+
+            const signingKey = await findSearchSelect("Signing Key", editDialog);
+
+            await expect(signingKey.combobox, "Signing key is labeled").toHaveValue(
+                "authentik Self-signed Certificate",
+            );
+
+            await setFormGroup(/Advanced flow settings/, true, editDialog);
+
+            const invalidation = await findSearchSelect("Invalidation Flow", editDialog);
+
+            await expect(invalidation.combobox, "Invalidation flow is labeled").toHaveValue(
+                /default-provider-invalidation-flow/,
+            );
+        });
+    });
+
     test("Complete OAuth2 Provider", async ({ page, form, pointer }, testInfo) => {
         const providerName = providerNames.get(testInfo.testId)!;
 
