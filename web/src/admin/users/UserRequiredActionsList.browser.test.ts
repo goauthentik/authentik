@@ -1,12 +1,15 @@
 import { createPaginatedResponse } from "#common/api/responses";
 
-import { USER_ATTRIBUTE_NEXT_ACTIONS, UserNextActionsList } from "#admin/users/UserNextActionsList";
+import {
+    USER_ATTRIBUTE_REQUIRED_ACTIONS,
+    UserRequiredActionsList,
+} from "#admin/users/UserRequiredActionsList";
 
 import { CoreApi, Flow, FlowFromJSON, FlowsApi, UserFromJSON } from "@goauthentik/api";
 
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-class TestNextActionsList extends UserNextActionsList {
+class TestRequiredActionsList extends UserRequiredActionsList {
     public loadActions() {
         return this.apiEndpoint();
     }
@@ -18,17 +21,17 @@ class TestNextActionsList extends UserNextActionsList {
     }
 }
 
-customElements.define("ak-test-next-actions-list", TestNextActionsList);
+customElements.define("ak-test-required-actions-list", TestRequiredActionsList);
 
 afterEach(() => vi.restoreAllMocks());
 
-describe("User next actions", () => {
+describe("User required actions", () => {
     it("refreshes actions completed since the user page loaded", async () => {
         const flow = FlowFromJSON({ slug: "setup", name: "Set up authenticator" });
 
         const user = UserFromJSON({
             pk: 1,
-            attributes: { [USER_ATTRIBUTE_NEXT_ACTIONS]: [flow.slug] },
+            attributes: { [USER_ATTRIBUTE_REQUIRED_ACTIONS]: [flow.slug] },
         });
 
         const retrieve = vi.spyOn(CoreApi.prototype, "coreUsersRetrieve").mockResolvedValue(user);
@@ -37,7 +40,7 @@ describe("User next actions", () => {
             createPaginatedResponse([flow]),
         );
 
-        const list = new TestNextActionsList();
+        const list = new TestRequiredActionsList();
         list.user = user;
 
         expect((await list.loadActions()).results).toEqual([flow]);
@@ -49,14 +52,19 @@ describe("User next actions", () => {
     it("preserves current attributes and avoids adding a flow twice", async () => {
         const flow = FlowFromJSON({ slug: "setup" });
         const user = UserFromJSON({ pk: 1, attributes: {} });
-        const attributes = { department: "Support", [USER_ATTRIBUTE_NEXT_ACTIONS]: [flow.slug] };
+
+        const attributes = {
+            department: "Support",
+            [USER_ATTRIBUTE_REQUIRED_ACTIONS]: [flow.slug],
+        };
+
         vi.spyOn(CoreApi.prototype, "coreUsersRetrieve").mockResolvedValue({ ...user, attributes });
 
         const update = vi
             .spyOn(CoreApi.prototype, "coreUsersPartialUpdate")
             .mockResolvedValue({ ...user, attributes });
 
-        const list = new TestNextActionsList();
+        const list = new TestRequiredActionsList();
         list.user = user;
 
         await list.addAction(flow);

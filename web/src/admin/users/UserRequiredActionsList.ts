@@ -16,14 +16,14 @@ import { msg } from "@lit/localize";
 import { css, CSSResult, html, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-export const USER_ATTRIBUTE_NEXT_ACTIONS = "goauthentik.io/user/next-actions";
+export const USER_ATTRIBUTE_REQUIRED_ACTIONS = "goauthentik.io/user/required-actions";
 
 const disallowedDesignations: FlowDesignationEnum[] = [
     FlowDesignationEnum.Authentication,
     FlowDesignationEnum.Invalidation,
 ];
 
-type NextActionRow = Pick<Flow, "name" | "slug">;
+type RequiredActionRow = Pick<Flow, "name" | "slug">;
 
 function toSlugs(value: unknown): string[] {
     const values = Array.isArray(value) ? value : [value];
@@ -31,13 +31,13 @@ function toSlugs(value: unknown): string[] {
     return values.filter((entry): entry is string => typeof entry === "string");
 }
 
-@customElement("ak-user-next-actions-list")
-export class UserNextActionsList extends Table<NextActionRow> {
-    public static override verboseName = msg("Next action", {
-        id: "user-next-actions.object.label.one",
+@customElement("ak-user-required-actions-list")
+export class UserRequiredActionsList extends Table<RequiredActionRow> {
+    public static override verboseName = msg("Required action", {
+        id: "user-required-actions.object.label.one",
     });
-    public static override verboseNamePlural = msg("Next actions", {
-        id: "user-next-actions.object.label.other",
+    public static override verboseNamePlural = msg("Required actions", {
+        id: "user-required-actions.object.label.other",
     });
 
     public static override styles: CSSResult[] = [
@@ -60,13 +60,13 @@ export class UserNextActionsList extends Table<NextActionRow> {
     @state()
     protected selectedFlow: Flow | null = null;
 
-    protected override async apiEndpoint(): Promise<PaginatedResponse<NextActionRow>> {
+    protected override async apiEndpoint(): Promise<PaginatedResponse<RequiredActionRow>> {
         if (!this.user) {
             return createPaginatedResponse();
         }
 
         const user = await this.#api.coreUsersRetrieve({ id: this.user.pk });
-        const slugs = toSlugs(user.attributes?.[USER_ATTRIBUTE_NEXT_ACTIONS]);
+        const slugs = toSlugs(user.attributes?.[USER_ATTRIBUTE_REQUIRED_ACTIONS]);
 
         const rows = await Promise.all(
             slugs.map(async (slug) => {
@@ -80,9 +80,9 @@ export class UserNextActionsList extends Table<NextActionRow> {
     }
 
     protected override columns: TableColumn[] = [
-        [msg("Flow", { id: "user-next-actions.column.flow.label" })],
-        [msg("Slug", { id: "user-next-actions.column.slug.label" })],
-        [msg("Actions", { id: "user-next-actions.column.actions.label" })],
+        [msg("Flow", { id: "user-required-actions.column.flow.label" })],
+        [msg("Slug", { id: "user-required-actions.column.slug.label" })],
+        [msg("Actions", { id: "user-required-actions.column.actions.label" })],
     ];
 
     protected override updated(changed: PropertyValues<this>) {
@@ -100,13 +100,13 @@ export class UserNextActionsList extends Table<NextActionRow> {
 
         // Re-fetch the user so consecutive changes don't work on stale attributes
         const user = await this.#api.coreUsersRetrieve({ id: this.user.pk });
-        const actions = mutate(toSlugs(user.attributes?.[USER_ATTRIBUTE_NEXT_ACTIONS]));
+        const actions = mutate(toSlugs(user.attributes?.[USER_ATTRIBUTE_REQUIRED_ACTIONS]));
         const attributes = { ...user.attributes };
 
         if (actions.length) {
-            attributes[USER_ATTRIBUTE_NEXT_ACTIONS] = actions;
+            attributes[USER_ATTRIBUTE_REQUIRED_ACTIONS] = actions;
         } else {
-            delete attributes[USER_ATTRIBUTE_NEXT_ACTIONS];
+            delete attributes[USER_ATTRIBUTE_REQUIRED_ACTIONS];
         }
 
         await this.#api.coreUsersPartialUpdate({
@@ -141,14 +141,14 @@ export class UserNextActionsList extends Table<NextActionRow> {
     protected override renderToolbar(): SlottedTemplateResult {
         return html`
             <ak-search-select
-                label=${msg("Flow", { id: "user-next-actions.column.flow.label" })}
+                label=${msg("Flow", { id: "user-required-actions.column.flow.label" })}
                 .fetchObjects=${this.fetchFlows}
                 .selectedObject=${this.selectedFlow}
                 .renderElement=${RenderFlowOption}
                 .renderDescription=${(flow: Flow) => html`${flow.slug}`}
                 .value=${(flow: Flow | null) => String(flow?.pk ?? "")}
                 placeholder=${msg("Select a flow...", {
-                    id: "user-next-actions.select.placeholder",
+                    id: "user-required-actions.select.placeholder",
                 })}
                 blankable
                 @ak-change=${(event: CustomEvent<{ value: Flow | null }>) => {
@@ -162,19 +162,19 @@ export class UserNextActionsList extends Table<NextActionRow> {
                 .disabled=${!this.selectedFlow}
                 .callAction=${this.addSelected}
             >
-                ${msg("Add", { id: "user-next-actions.add.label" })}
+                ${msg("Add", { id: "user-required-actions.add.label" })}
             </ak-spinner-button>
             ${super.renderToolbar()}
         `;
     }
 
-    protected override row(item: NextActionRow): SlottedTemplateResult[] {
+    protected override row(item: RequiredActionRow): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
             html`${item.slug}`,
             html`<ak-forms-delete-bulk
-                object-label=${msg("Next action", {
-                    id: "user-next-actions.object.label.one",
+                object-label=${msg("Required action", {
+                    id: "user-required-actions.object.label.one",
                 })}
                 .objects=${[item]}
                 .delete=${() =>
@@ -183,11 +183,11 @@ export class UserNextActionsList extends Table<NextActionRow> {
                 <button
                     slot="trigger"
                     class="pf-c-button pf-m-plain"
-                    aria-label=${msg("Remove", { id: "user-next-actions.remove.label" })}
+                    aria-label=${msg("Remove", { id: "user-required-actions.remove.label" })}
                 >
                     <pf-tooltip
                         position="top"
-                        content=${msg("Remove", { id: "user-next-actions.remove.label" })}
+                        content=${msg("Remove", { id: "user-required-actions.remove.label" })}
                     >
                         <i class="fas fa-trash" aria-hidden="true"></i>
                     </pf-tooltip>
@@ -199,6 +199,6 @@ export class UserNextActionsList extends Table<NextActionRow> {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-user-next-actions-list": UserNextActionsList;
+        "ak-user-required-actions-list": UserRequiredActionsList;
     }
 }

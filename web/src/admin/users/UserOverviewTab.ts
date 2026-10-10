@@ -1,6 +1,6 @@
 import "#admin/users/UserChart";
 import "#admin/users/UserInfoCard";
-import "#admin/users/UserNextActionsList";
+import "#admin/users/UserRequiredActionsList";
 import "#admin/users/UserNotesCard";
 import "#components/ak-object-attributes-card";
 import "#admin/events/ObjectChangelog";
@@ -69,9 +69,17 @@ export class UserOverviewTab extends WithLicenseSummary(AKElement) {
                 this.licenseSummary.status !== LicenseSummaryStatusEnum.Unlicensed
                     ? html`<div class="pf-c-card pf-l-grid__item pf-m-12-col">
                           <div class="pf-c-card__title">
-                              ${msg("Next actions on login", { id: "user-next-actions.card.title" })}
+                              ${msg("Required actions", { id: "user-required-actions.card.title" })}
                           </div>
-                          <ak-user-next-actions-list .user=${this.user}></ak-user-next-actions-list>
+                          <div class="pf-c-card__body">
+                              ${msg(
+                                  "The user must complete these flows in order before they can continue. Changes apply on their next request.",
+                                  { id: "user-required-actions.card.description" },
+                              )}
+                          </div>
+                          <ak-user-required-actions-list
+                              .user=${this.user}
+                          ></ak-user-required-actions-list>
                       </div>`
                     : nothing
             }
