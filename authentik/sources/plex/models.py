@@ -67,7 +67,6 @@ class PlexSource(ScheduledModel, Source):
         help_text=_("Plex token used to check friends"),
         on_delete=models.PROTECT,
         null=True,
-        blank=True,
         default=None,
         related_name="plex_sources",
     )

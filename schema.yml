@@ -36912,6 +36912,7 @@ components:
         credentials_ref:
           type: string
           format: uuid
+          title: Google credentials
       required:
       - component
       - credentials_ref
@@ -36939,6 +36940,7 @@ components:
         credentials_ref:
           type: string
           format: uuid
+          title: Google credentials
       required:
       - credentials_ref
       - name
@@ -41962,6 +41964,7 @@ components:
         credentials_ref:
           type: string
           format: uuid
+          title: Google credentials
         chrome_url:
           type: string
           nullable: true
@@ -41990,6 +41993,7 @@ components:
         credentials_ref:
           type: string
           format: uuid
+          title: Google credentials
       required:
       - credentials_ref
       - name
@@ -42076,6 +42080,7 @@ components:
         credentials_ref:
           type: string
           format: uuid
+          title: Google credentials
         scopes:
           type: string
         exclude_users_service_account:
@@ -42257,6 +42262,7 @@ components:
         credentials_ref:
           type: string
           format: uuid
+          title: Google credentials
         scopes:
           type: string
           minLength: 1
@@ -43870,6 +43876,7 @@ components:
           type: string
           format: uuid
           nullable: true
+          title: Kubeconfig
         verify_ssl:
           type: boolean
           description: Verify SSL Certificates of the Kubernetes API endpoint
@@ -43895,6 +43902,7 @@ components:
           type: string
           format: uuid
           nullable: true
+          title: Kubeconfig
         verify_ssl:
           type: boolean
           description: Verify SSL Certificates of the Kubernetes API endpoint
@@ -50489,6 +50497,7 @@ components:
         credentials_ref:
           type: string
           format: uuid
+          title: Google credentials
     PatchedAuthenticatorSMSStageRequest:
       type: object
       description: AuthenticatorSMSStage Serializer
@@ -51342,6 +51351,7 @@ components:
         credentials_ref:
           type: string
           format: uuid
+          title: Google credentials
     PatchedGoogleEndpointDeviceRequest:
       type: object
       description: Serializer for Endpoint authenticator devices
@@ -51400,6 +51410,7 @@ components:
         credentials_ref:
           type: string
           format: uuid
+          title: Google credentials
         scopes:
           type: string
           minLength: 1
@@ -51818,6 +51829,7 @@ components:
           type: string
           format: uuid
           nullable: true
+          title: Kubeconfig
         verify_ssl:
           type: boolean
           description: Verify SSL Certificates of the Kubernetes API endpoint

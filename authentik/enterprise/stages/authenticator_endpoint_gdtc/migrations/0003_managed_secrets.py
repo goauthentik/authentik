@@ -3,40 +3,9 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-from authentik.crypto.secrets.migrations._credential_values import (
-    migrate_credentials,
-    restore_credentials,
-)
-from authentik.crypto.secrets.migrations._permissions import preserve_permissions
+from authentik.crypto.secrets.migrations._credential_values import move_credentials
 
 FIELDS = [("credentials", "credentials_ref", "json", "credentials")]
-
-
-def forwards(apps, schema_editor):
-    migrate_credentials(
-        apps,
-        schema_editor,
-        "authentik_stages_authenticator_endpoint_gdtc",
-        "AuthenticatorEndpointGDTCStage",
-        FIELDS,
-    )
-    preserve_permissions(
-        apps,
-        schema_editor,
-        "authentik_stages_authenticator_endpoint_gdtc",
-        "authenticatorendpointgdtcstage",
-        value_permission="change",
-    )
-
-
-def backwards(apps, schema_editor):
-    restore_credentials(
-        apps,
-        schema_editor,
-        "authentik_stages_authenticator_endpoint_gdtc",
-        "AuthenticatorEndpointGDTCStage",
-        FIELDS,
-    )
 
 
 class Migration(migrations.Migration):
@@ -56,7 +25,6 @@ class Migration(migrations.Migration):
             model_name="authenticatorendpointgdtcstage",
             name="credentials_ref",
             field=models.ForeignKey(
-                blank=True,
                 default=None,
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
@@ -70,5 +38,10 @@ class Migration(migrations.Migration):
             name="credentials",
             field=models.JSONField(default=dict),
         ),
-        migrations.RunPython(forwards, backwards),
+        move_credentials(
+            "authentik_stages_authenticator_endpoint_gdtc",
+            "AuthenticatorEndpointGDTCStage",
+            FIELDS,
+            value_permission="change",
+        ),
     ]

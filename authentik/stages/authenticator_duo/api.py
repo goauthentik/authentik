@@ -46,9 +46,6 @@ class AuthenticatorDuoStageSerializer(StageSerializer):
             "admin_integration_key",
             "admin_secret_key_ref",
         ]
-        extra_kwargs = {
-            "client_secret_ref": {"required": True, "allow_null": False},
-        }
 
 
 class AuthenticatorDuoStageManualDeviceImport(Serializer):

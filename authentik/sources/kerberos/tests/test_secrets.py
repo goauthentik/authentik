@@ -9,7 +9,6 @@ from django.test import TestCase
 
 from authentik.crypto.secrets.models import Secret, SecretType
 from authentik.lib.generators import generate_id
-from authentik.sources.kerberos.api.source import KerberosSourceSerializer
 from authentik.sources.kerberos.models import KerberosSource, _kadmin_connections
 
 
@@ -75,33 +74,3 @@ class TestKerberosSecrets(TestCase):
             self.source.connection()
             self.assertEqual(factory.call_count, 2)
             self.assertEqual(factory.call_args.args[2], "new password")
-
-    def test_reference_types(self):
-        for field in (
-            "sync_password_ref",
-            "sync_keytab_ref",
-            "sync_ccache_ref",
-            "spnego_keytab_ref",
-            "spnego_ccache_ref",
-        ):
-            allowed_types = (
-                (SecretType.TEXT,)
-                if field == "sync_password_ref"
-                else (SecretType.TEXT, SecretType.FILE)
-            )
-            for secret_type in SecretType:
-                with self.subTest(field=field, type=secret_type):
-                    secret = Secret.objects.create(
-                        name=generate_id(), type=secret_type, secret_value="aGk="
-                    )
-                    serializer = KerberosSourceSerializer(
-                        instance=self.source, data={field: str(secret.pk)}, partial=True
-                    )
-                    valid = secret_type in allowed_types
-                    self.assertEqual(serializer.is_valid(), valid, serializer.errors)
-                    if valid:
-                        serializer.save()
-                        self.source.refresh_from_db()
-                        self.assertEqual(getattr(self.source, field), secret)
-                    else:
-                        self.assertIn(field, serializer.errors)

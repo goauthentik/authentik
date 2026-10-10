@@ -25,7 +25,6 @@ class AuthenticatorEndpointGDTCStage(DeprecatedMixin, ConfigurableStage, Friendl
         verbose_name=_("Google credentials"),
         on_delete=models.PROTECT,
         null=True,
-        blank=True,
         default=None,
         related_name="gdtc_stages",
     )
