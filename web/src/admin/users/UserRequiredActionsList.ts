@@ -10,7 +10,14 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { RenderFlowOption } from "#admin/flows/utils";
 
-import { CoreApi, Flow, FlowDesignationEnum, FlowsApi, User } from "@goauthentik/api";
+import {
+    AuthenticationEnum,
+    CoreApi,
+    Flow,
+    FlowDesignationEnum,
+    FlowsApi,
+    User,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, PropertyValues } from "lit";
@@ -18,9 +25,17 @@ import { customElement, property, state } from "lit/decorators.js";
 
 export const USER_ATTRIBUTE_REQUIRED_ACTIONS = "goauthentik.io/user/required-actions";
 
+// Matches the server's rules for flows that can be required actions
 const disallowedDesignations: FlowDesignationEnum[] = [
     FlowDesignationEnum.Authentication,
     FlowDesignationEnum.Invalidation,
+];
+
+const disallowedAuthentication: AuthenticationEnum[] = [
+    AuthenticationEnum.RequireUnauthenticated,
+    AuthenticationEnum.RequireOutpost,
+    AuthenticationEnum.RequireRedirect,
+    AuthenticationEnum.RequireToken,
 ];
 
 type RequiredActionRow = Pick<Flow, "name" | "slug">;
@@ -135,7 +150,14 @@ export class UserRequiredActionsList extends Table<RequiredActionRow> {
                 search: query,
             })
             .then((flows) =>
-                flows.results.filter((flow) => !disallowedDesignations.includes(flow.designation)),
+                flows.results.filter(
+                    (flow) =>
+                        !disallowedDesignations.includes(flow.designation) &&
+                        !(
+                            flow.authentication &&
+                            disallowedAuthentication.includes(flow.authentication)
+                        ),
+                ),
             );
 
     protected override renderToolbar(): SlottedTemplateResult {
