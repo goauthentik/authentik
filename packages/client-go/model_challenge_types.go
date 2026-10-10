@@ -37,6 +37,7 @@ type ChallengeTypes struct {
 	FrameChallenge                   *FrameChallenge
 	IdentificationChallenge          *IdentificationChallenge
 	IframeLogoutChallenge            *IframeLogoutChallenge
+	MessageChallenge                 *MessageChallenge
 	NativeLogoutChallenge            *NativeLogoutChallenge
 	OAuthDeviceCodeChallenge         *OAuthDeviceCodeChallenge
 	OAuthDeviceCodeFinishChallenge   *OAuthDeviceCodeFinishChallenge
@@ -180,6 +181,13 @@ func IdentificationChallengeAsChallengeTypes(v *IdentificationChallenge) Challen
 func IframeLogoutChallengeAsChallengeTypes(v *IframeLogoutChallenge) ChallengeTypes {
 	return ChallengeTypes{
 		IframeLogoutChallenge: v,
+	}
+}
+
+// MessageChallengeAsChallengeTypes is a convenience function that returns MessageChallenge wrapped in ChallengeTypes
+func MessageChallengeAsChallengeTypes(v *MessageChallenge) ChallengeTypes {
+	return ChallengeTypes{
+		MessageChallenge: v,
 	}
 }
 
@@ -546,6 +554,18 @@ func (dst *ChallengeTypes) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	// check if the discriminator value is 'ak-stage-message'
+	if jsonDict["component"] == "ak-stage-message" {
+		// try to unmarshal JSON data into MessageChallenge
+		err = json.Unmarshal(data, &dst.MessageChallenge)
+		if err == nil {
+			return nil // data stored in dst.MessageChallenge, return on the first match
+		} else {
+			dst.MessageChallenge = nil
+			return fmt.Errorf("failed to unmarshal ChallengeTypes as MessageChallenge: %s", err.Error())
+		}
+	}
+
 	// check if the discriminator value is 'ak-stage-password'
 	if jsonDict["component"] == "ak-stage-password" {
 		// try to unmarshal JSON data into PasswordChallenge
@@ -711,6 +731,10 @@ func (src ChallengeTypes) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.IframeLogoutChallenge)
 	}
 
+	if src.MessageChallenge != nil {
+		return json.Marshal(&src.MessageChallenge)
+	}
+
 	if src.NativeLogoutChallenge != nil {
 		return json.Marshal(&src.NativeLogoutChallenge)
 	}
@@ -839,6 +863,10 @@ func (obj *ChallengeTypes) GetActualInstance() interface{} {
 		return obj.IframeLogoutChallenge
 	}
 
+	if obj.MessageChallenge != nil {
+		return obj.MessageChallenge
+	}
+
 	if obj.NativeLogoutChallenge != nil {
 		return obj.NativeLogoutChallenge
 	}
@@ -963,6 +991,10 @@ func (obj ChallengeTypes) GetActualInstanceValue() interface{} {
 
 	if obj.IframeLogoutChallenge != nil {
 		return *obj.IframeLogoutChallenge
+	}
+
+	if obj.MessageChallenge != nil {
+		return *obj.MessageChallenge
 	}
 
 	if obj.NativeLogoutChallenge != nil {
