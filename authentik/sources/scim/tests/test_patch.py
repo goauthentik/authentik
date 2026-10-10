@@ -435,6 +435,19 @@ class TestSCIMPatchProcessor(APITestCase):
 
             self.assertEqual(result[SCIM_URN_USER_ENTERPRISE]["manager"], {"value": "newmgr456"})
 
+    def test_apply_replace_enterprise_manager_complex(self):
+        """Test replacing enterprise manager attribute with a complex value"""
+        patches = [
+            PatchOperation(
+                op=PatchOp.replace,
+                path=f"{SCIM_URN_USER_ENTERPRISE}:manager",
+                value={"value": "newmgr456"},
+            )
+        ]
+        result = self.processor.apply_patches(self.sample_data, patches)
+
+        self.assertEqual(result[SCIM_URN_USER_ENTERPRISE]["manager"], {"value": "newmgr456"})
+
     # Test bulk operations (path is None)
     def test_apply_bulk_add_operation(self):
         """Test bulk add operation when path is None"""
