@@ -31,6 +31,7 @@ from authentik.sources.oauth.models import (
     UserOAuthSourceConnection,
 )
 from authentik.sources.oauth.views.callback import OAuthSourceFlowManager
+from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 
 class TestSourceFlowManager(TestCase):
@@ -384,6 +385,63 @@ class TestSourceFlowManager(TestCase):
         action, _ = flow_manager.get_action()
         self.assertEqual(action, Action.ENROLL)
         flow_manager.get_flow()
+
+    def test_enrollment_only_user_properties_auth(self):
+        """Test enrollment-only properties are left out of the prompt data when a linked user
+        logs in, so a User Write stage in the authentication flow can't overwrite them"""
+        self.source.enrollment_only_user_properties = ["username", "name"]
+        UserOAuthSourceConnection.objects.create(
+            user=create_test_user(), source=self.source, identifier=self.identifier
+        )
+        request = self.request_factory.get("/", user=AnonymousUser())
+        flow_manager = OAuthSourceFlowManager(
+            self.source,
+            request,
+            self.identifier,
+            {"info": {"username": "foo", "name": "Foo", "email": "foo@bar.baz"}},
+            {},
+        )
+        flow_manager.get_flow()
+        prompt_data = request.session[SESSION_KEY_PLAN].context[PLAN_CONTEXT_PROMPT]
+        self.assertNotIn("username", prompt_data)
+        self.assertNotIn("name", prompt_data)
+        self.assertEqual(prompt_data["email"], "foo@bar.baz")
+
+    def test_enrollment_only_user_properties_email_link(self):
+        """Test enrollment-only properties are left out of the prompt data when the source
+        links an existing user by email for the first time"""
+        create_test_user(email="foo@bar.baz")
+        self.source.user_matching_mode = SourceUserMatchingModes.EMAIL_LINK
+        self.source.enrollment_only_user_properties = ["username"]
+        request = self.request_factory.get("/", user=AnonymousUser())
+        flow_manager = OAuthSourceFlowManager(
+            self.source,
+            request,
+            self.identifier,
+            {"info": {"username": "foo", "email": "foo@bar.baz"}},
+            {},
+        )
+        flow_manager.get_flow()
+        prompt_data = request.session[SESSION_KEY_PLAN].context[PLAN_CONTEXT_PROMPT]
+        self.assertNotIn("username", prompt_data)
+        self.assertEqual(prompt_data["email"], "foo@bar.baz")
+
+    def test_enrollment_only_user_properties_enroll(self):
+        """Test enrollment-only properties are passed to the enrollment flow"""
+        self.source.enrollment_only_user_properties = ["username", "name"]
+        request = self.request_factory.get("/", user=AnonymousUser())
+        flow_manager = OAuthSourceFlowManager(
+            self.source,
+            request,
+            self.identifier,
+            {"info": {"username": "foo", "name": "Foo", "email": "foo@bar.baz"}},
+            {},
+        )
+        flow_manager.get_flow()
+        prompt_data = request.session[SESSION_KEY_PLAN].context[PLAN_CONTEXT_PROMPT]
+        self.assertEqual(prompt_data["username"], "foo")
+        self.assertEqual(prompt_data["name"], "Foo")
+        self.assertEqual(prompt_data["email"], "foo@bar.baz")
 
     def test_error_non_applicable_flow(self):
         """Test error handling when a source selected flow is non-applicable due to a policy"""

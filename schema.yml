@@ -43170,6 +43170,13 @@ components:
           items:
             type: string
             format: uuid
+        enrollment_only_user_properties:
+          type: array
+          items:
+            type: string
+          description: User properties, such as username or email, that this source
+            only sets when it creates a user. Logins and syncs through this source
+            don't overwrite them on existing users.
         component:
           type: string
           description: Get object component so that we know how to edit the object
@@ -43376,6 +43383,14 @@ components:
           items:
             type: string
             format: uuid
+        enrollment_only_user_properties:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: User properties, such as username or email, that this source
+            only sets when it creates a user. Logins and syncs through this source
+            don't overwrite them on existing users.
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -43855,6 +43870,13 @@ components:
           items:
             type: string
             format: uuid
+        enrollment_only_user_properties:
+          type: array
+          items:
+            type: string
+          description: User properties, such as username or email, that this source
+            only sets when it creates a user. Logins and syncs through this source
+            don't overwrite them on existing users.
         component:
           type: string
           description: Get object component so that we know how to edit the object
@@ -44112,6 +44134,14 @@ components:
           items:
             type: string
             format: uuid
+        enrollment_only_user_properties:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: User properties, such as username or email, that this source
+            only sets when it creates a user. Logins and syncs through this source
+            don't overwrite them on existing users.
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -46208,6 +46238,13 @@ components:
           items:
             type: string
             format: uuid
+        enrollment_only_user_properties:
+          type: array
+          items:
+            type: string
+          description: User properties, such as username or email, that this source
+            only sets when it creates a user. Logins and syncs through this source
+            don't overwrite them on existing users.
         component:
           type: string
           description: Get object component so that we know how to edit the object
@@ -46424,6 +46461,14 @@ components:
           items:
             type: string
             format: uuid
+        enrollment_only_user_properties:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: User properties, such as username or email, that this source
+            only sets when it creates a user. Logins and syncs through this source
+            don't overwrite them on existing users.
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -51295,6 +51340,14 @@ components:
           items:
             type: string
             format: uuid
+        enrollment_only_user_properties:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: User properties, such as username or email, that this source
+            only sets when it creates a user. Logins and syncs through this source
+            don't overwrite them on existing users.
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -51506,6 +51559,14 @@ components:
           items:
             type: string
             format: uuid
+        enrollment_only_user_properties:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: User properties, such as username or email, that this source
+            only sets when it creates a user. Logins and syncs through this source
+            don't overwrite them on existing users.
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -52064,6 +52125,14 @@ components:
           items:
             type: string
             format: uuid
+        enrollment_only_user_properties:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: User properties, such as username or email, that this source
+            only sets when it creates a user. Logins and syncs through this source
+            don't overwrite them on existing users.
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -52362,6 +52431,14 @@ components:
           items:
             type: string
             format: uuid
+        enrollment_only_user_properties:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: User properties, such as username or email, that this source
+            only sets when it creates a user. Logins and syncs through this source
+            don't overwrite them on existing users.
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -53044,6 +53121,14 @@ components:
           items:
             type: string
             format: uuid
+        enrollment_only_user_properties:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: User properties, such as username or email, that this source
+            only sets when it creates a user. Logins and syncs through this source
+            don't overwrite them on existing users.
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -53568,6 +53653,14 @@ components:
           items:
             type: string
             format: uuid
+        enrollment_only_user_properties:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: User properties, such as username or email, that this source
+            only sets when it creates a user. Logins and syncs through this source
+            don't overwrite them on existing users.
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -54076,6 +54169,13 @@ components:
           items:
             type: string
             format: uuid
+        enrollment_only_user_properties:
+          type: array
+          items:
+            type: string
+          description: User properties, such as username or email, that this source
+            only sets when it creates a user. Logins and syncs through this source
+            don't overwrite them on existing users.
         component:
           type: string
           description: Get object component so that we know how to edit the object
@@ -54258,6 +54358,14 @@ components:
           items:
             type: string
             format: uuid
+        enrollment_only_user_properties:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: User properties, such as username or email, that this source
+            only sets when it creates a user. Logins and syncs through this source
+            don't overwrite them on existing users.
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -57168,6 +57276,13 @@ components:
           items:
             type: string
             format: uuid
+        enrollment_only_user_properties:
+          type: array
+          items:
+            type: string
+          description: User properties, such as username or email, that this source
+            only sets when it creates a user. Logins and syncs through this source
+            don't overwrite them on existing users.
         component:
           type: string
           description: Get object component so that we know how to edit the object
@@ -57409,6 +57524,14 @@ components:
           items:
             type: string
             format: uuid
+        enrollment_only_user_properties:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: User properties, such as username or email, that this source
+            only sets when it creates a user. Logins and syncs through this source
+            don't overwrite them on existing users.
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -58893,6 +59016,13 @@ components:
           items:
             type: string
             format: uuid
+        enrollment_only_user_properties:
+          type: array
+          items:
+            type: string
+          description: User properties, such as username or email, that this source
+            only sets when it creates a user. Logins and syncs through this source
+            don't overwrite them on existing users.
         component:
           type: string
           description: Get object component so that we know how to edit the object
@@ -59592,6 +59722,13 @@ components:
           items:
             type: string
             format: uuid
+        enrollment_only_user_properties:
+          type: array
+          items:
+            type: string
+          description: User properties, such as username or email, that this source
+            only sets when it creates a user. Logins and syncs through this source
+            don't overwrite them on existing users.
         component:
           type: string
           description: Get object component so that we know how to edit the object
@@ -59766,6 +59903,14 @@ components:
           items:
             type: string
             format: uuid
+        enrollment_only_user_properties:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: User properties, such as username or email, that this source
+            only sets when it creates a user. Logins and syncs through this source
+            don't overwrite them on existing users.
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:

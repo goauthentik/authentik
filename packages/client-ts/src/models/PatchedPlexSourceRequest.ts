@@ -51,6 +51,11 @@ export interface PatchedPlexSourceRequest {
     enrollmentFlow?: string | null;
     userPropertyMappings?: Array<string>;
     groupPropertyMappings?: Array<string>;
+    /**
+     * User properties, such as username or email, that this source only sets when it creates a
+     * user. Logins and syncs through this source don't overwrite them on existing users.
+     */
+    enrollmentOnlyUserProperties?: Array<string>;
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
@@ -122,6 +127,10 @@ export function PatchedPlexSourceRequestFromJSONTyped(
             json["user_property_mappings"] == null ? undefined : json["user_property_mappings"],
         groupPropertyMappings:
             json["group_property_mappings"] == null ? undefined : json["group_property_mappings"],
+        enrollmentOnlyUserProperties:
+            json["enrollment_only_user_properties"] == null
+                ? undefined
+                : json["enrollment_only_user_properties"],
         policyEngineMode:
             json["policy_engine_mode"] == null
                 ? undefined
@@ -165,6 +174,7 @@ export function PatchedPlexSourceRequestToJSONTyped(
         enrollment_flow: value["enrollmentFlow"],
         user_property_mappings: value["userPropertyMappings"],
         group_property_mappings: value["groupPropertyMappings"],
+        enrollment_only_user_properties: value["enrollmentOnlyUserProperties"],
         policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
         user_matching_mode: UserMatchingModeEnumToJSON(value["userMatchingMode"]),
         user_path_template: value["userPathTemplate"],

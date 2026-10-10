@@ -50,6 +50,11 @@ export interface Source {
     userPropertyMappings?: Array<string>;
     groupPropertyMappings?: Array<string>;
     /**
+     * User properties, such as username or email, that this source only sets when it creates a
+     * user. Logins and syncs through this source don't overwrite them on existing users.
+     */
+    enrollmentOnlyUserProperties?: Array<string>;
+    /**
      * Get object component so that we know how to edit the object
      */
     readonly component: string;
@@ -162,6 +167,10 @@ export function SourceFromJSONTyped(json: any, ignoreDiscriminator: boolean): So
             json["user_property_mappings"] == null ? undefined : json["user_property_mappings"],
         groupPropertyMappings:
             json["group_property_mappings"] == null ? undefined : json["group_property_mappings"],
+        enrollmentOnlyUserProperties:
+            json["enrollment_only_user_properties"] == null
+                ? undefined
+                : json["enrollment_only_user_properties"],
         component: json["component"],
         verboseName: json["verbose_name"],
         verboseNamePlural: json["verbose_name_plural"],
@@ -214,6 +223,7 @@ export function SourceToJSONTyped(
         enrollment_flow: value["enrollmentFlow"],
         user_property_mappings: value["userPropertyMappings"],
         group_property_mappings: value["groupPropertyMappings"],
+        enrollment_only_user_properties: value["enrollmentOnlyUserProperties"],
         policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
         user_matching_mode: UserMatchingModeEnumToJSON(value["userMatchingMode"]),
         user_path_template: value["userPathTemplate"],

@@ -14,6 +14,7 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.postgres.fields import ArrayField
 from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
 from django.db import models
@@ -981,6 +982,16 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         related_name="source_grouppropertymappings_set",
         through="SourceGroupPropertyMapping",
     )
+    enrollment_only_user_properties = ArrayField(
+        models.TextField(),
+        default=list,
+        blank=True,
+        help_text=_(
+            "User properties, such as username or email, that this source only sets when it "
+            "creates a user. Logins and syncs through this source don't overwrite them on "
+            "existing users."
+        ),
+    )
 
     icon = FileField(blank=True, default="")
 
@@ -1060,6 +1071,16 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         except Exception as exc:  # noqa
             LOGGER.warning("Failed to template user path", exc=exc, source=self)
             return User.default_path()
+
+    def drop_enrollment_only_user_properties(
+        self, properties: dict[str, Any | dict[str, Any]]
+    ) -> dict[str, Any | dict[str, Any]]:
+        """Properties to write to a user this source didn't just create"""
+        return {
+            key: value
+            for key, value in properties.items()
+            if key not in self.enrollment_only_user_properties
+        }
 
     @property
     def component(self) -> str:

@@ -394,7 +394,9 @@ class SourceFlowManager:
             ],
             **{
                 PLAN_CONTEXT_PENDING_USER: connection.user,
-                PLAN_CONTEXT_PROMPT: delete_none_values(self.user_properties),
+                PLAN_CONTEXT_PROMPT: delete_none_values(
+                    self.source.drop_enrollment_only_user_properties(self.user_properties)
+                ),
                 PLAN_CONTEXT_USER_PATH: self.source.get_user_path(),
             },
         )
