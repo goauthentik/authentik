@@ -5,6 +5,8 @@ import { aki } from "#common/api/client";
 import { createPaginatedResponse } from "#common/api/responses";
 import { AKRefreshEvent } from "#common/events";
 
+import { SearchSelectChangeEvent } from "#elements/forms/SearchSelect/events";
+import { SearchSelectSource, withQuery } from "#elements/forms/SearchSelect/shared";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -37,6 +39,23 @@ const disallowedAuthentication: AuthenticationEnum[] = [
     AuthenticationEnum.RequireRedirect,
     AuthenticationEnum.RequireToken,
 ];
+
+function canBeRequiredAction(flow: Flow): boolean {
+    return (
+        !disallowedDesignations.includes(flow.designation) &&
+        !(flow.authentication && disallowedAuthentication.includes(flow.authentication))
+    );
+}
+
+const flowSource: SearchSelectSource<Flow> = {
+    fetchObjects: (query) =>
+        aki(FlowsApi)
+            .flowsInstancesList(withQuery(query, { ordering: "slug" }))
+            .then(({ results }) => results.filter(canBeRequiredAction)),
+    keyOf: (flow) => flow.pk,
+    labelOf: RenderFlowOption,
+    describe: (flow) => flow.slug,
+};
 
 type RequiredActionRow = Pick<Flow, "name" | "slug">;
 
@@ -143,42 +162,22 @@ export class UserRequiredActionsList extends Table<RequiredActionRow> {
         this.selectedFlow = null;
     };
 
-    protected fetchFlows = (query?: string): Promise<Flow[]> =>
-        aki(FlowsApi)
-            .flowsInstancesList({
-                ordering: "slug",
-                search: query,
-            })
-            .then((flows) =>
-                flows.results.filter(
-                    (flow) =>
-                        !disallowedDesignations.includes(flow.designation) &&
-                        !(
-                            flow.authentication &&
-                            disallowedAuthentication.includes(flow.authentication)
-                        ),
-                ),
-            );
-
     protected override renderToolbar(): SlottedTemplateResult {
         return html`
             <ak-search-select
                 label=${msg("Flow", { id: "user-required-actions.column.flow.label" })}
-                .fetchObjects=${this.fetchFlows}
+                .source=${flowSource}
                 .selectedObject=${this.selectedFlow}
-                .renderElement=${RenderFlowOption}
-                .renderDescription=${(flow: Flow) => html`${flow.slug}`}
-                .value=${(flow: Flow | null) => String(flow?.pk ?? "")}
+                .value=${this.selectedFlow?.pk ?? ""}
                 placeholder=${msg("Select a flow...", {
                     id: "user-required-actions.select.placeholder",
                 })}
                 blankable
-                @ak-change=${(event: CustomEvent<{ value: Flow | null }>) => {
+                @ak-change=${(event: SearchSelectChangeEvent<Flow>) => {
                     event.stopPropagation();
                     this.selectedFlow = event.detail.value;
                 }}
-            >
-            </ak-search-select>
+            ></ak-search-select>
             <ak-spinner-button
                 class="pf-m-primary"
                 .disabled=${!this.selectedFlow}
