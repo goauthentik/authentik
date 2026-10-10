@@ -1,7 +1,9 @@
 """proxy provider tests"""
 
 from json import loads
+from unittest.mock import patch
 
+from django.core.exceptions import ValidationError
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
@@ -19,6 +21,34 @@ class ProxyProviderTests(APITestCase):
     def setUp(self) -> None:
         self.user = create_test_admin_user()
         self.client.force_login(self.user)
+
+    def test_secret_rotation_triggers_outpost_update(self):
+        """Both Proxy credentials notify their outposts when rotated."""
+        outpost = Outpost.objects.create(name=generate_id(), type=OutpostType.PROXY)
+        provider = ProxyProvider.objects.create(name=generate_id())
+        outpost.providers.add(provider)
+
+        for secret in [provider.client_secret_ref, provider.cookie_secret_ref]:
+            with self.subTest(secret=secret.name):
+                with patch(
+                    "authentik.outposts.signals.outpost_send_update.send_with_options"
+                ) as sender:
+                    with self.captureOnCommitCallbacks(execute=True):
+                        secret.rotate()
+
+                self.assertTrue(
+                    any(call.kwargs.get("args") == (outpost.pk,) for call in sender.call_args_list),
+                    sender.call_args_list,
+                )
+
+    def test_cookie_secret_length(self):
+        """Outposts can't sign sessions with cookie secrets shorter than 32 bytes."""
+        provider = ProxyProvider.objects.create(name=generate_id())
+        secret = provider.cookie_secret_ref
+        self.assertEqual(len(secret.secret_value), 32)
+        with self.assertRaises(ValidationError):
+            secret.replace_value("too-short")
+        secret.replace_value("x" * 32)
 
     def test_basic_auth(self):
         """Test basic_auth_enabled"""

@@ -54,6 +54,7 @@ from authentik.core.models import (
     User,
 )
 from authentik.crypto.models import CertificateKeyPair
+from authentik.crypto.secrets.models import GeneratedSecretsMixin
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
 from authentik.lib.models import (
     DomainlessURLValidator,
@@ -218,8 +219,10 @@ class ScopeMapping(PropertyMapping):
         verbose_name_plural = _("Scope Mappings")
 
 
-class OAuth2Provider(WebfingerProvider, Provider):
+class OAuth2Provider(GeneratedSecretsMixin, WebfingerProvider, Provider):
     """OAuth2 Provider for generic OAuth and OpenID Connect Applications."""
+
+    generated_secrets = {"client_secret_ref": ("client secret", generate_client_secret)}
 
     client_type = models.CharField(
         max_length=30,
@@ -238,11 +241,19 @@ class OAuth2Provider(WebfingerProvider, Provider):
         verbose_name=_("Client ID"),
         default=generate_id,
     )
+    # Legacy column, kept for downgrades. Remove in 2027.2.
     client_secret = models.CharField(
         max_length=255,
         blank=True,
         verbose_name=_("Client Secret"),
         default=generate_client_secret,
+    )
+    client_secret_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Client Secret"),
+        on_delete=models.PROTECT,
+        blank=True,
+        related_name="oauth2_providers",
     )
     _redirect_uris = models.JSONField(
         default=list,
@@ -359,7 +370,7 @@ class OAuth2Provider(WebfingerProvider, Provider):
         """Get either the configured certificate or the client secret"""
         if not self.signing_key:
             # No Certificate at all, assume HS256
-            return self.client_secret, JWTAlgorithms.HS256
+            return self.client_secret_ref.secret_value, JWTAlgorithms.HS256
         key: CertificateKeyPair = self.signing_key
         private_key = key.private_key
         return private_key, JWTAlgorithms.from_private_key(private_key)
