@@ -204,15 +204,27 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
 
             <ak-form-group open label="${msg("Protocol settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("SSO URL")} required name="ssoUrl">
+                    <ak-text-input
+                        name="metadataUrl"
+                        label=${msg("Metadata URL")}
+                        placeholder=${msg("https://...")}
+                        input-hint="code"
+                        inputmode="url"
+                        value="${ifDefined(this.instance?.metadataUrl)}"
+                        help=${msg(
+                            "Optional URL of the Identity Provider's metadata. When set, the SSO URL, SLO URL, binding and verification certificate are filled in from it and periodically updated.",
+                        )}
+                    ></ak-text-input>
+                    <ak-form-element-horizontal label=${msg("SSO URL")} name="ssoUrl">
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.ssoUrl)}"
                             class="pf-c-form-control"
-                            required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${msg("URL that the initial Login request is sent to.")}
+                            ${msg(
+                                "URL that the initial Login request is sent to. Required unless a metadata URL is set.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("SLO URL")} name="sloUrl">

@@ -26015,6 +26015,10 @@ paths:
         name: managed
         schema:
           type: string
+      - in: query
+        name: metadata_url
+        schema:
+          type: string
       - $ref: '#/components/parameters/QueryName'
       - in: query
         name: name_id_policy
@@ -53007,7 +53011,9 @@ components:
           minLength: 1
     PatchedSAMLSourceRequest:
       type: object
-      description: SAMLSource Serializer
+      description: |-
+        SAMLSource Serializer. When a metadata URL is given, the IdP settings are filled in
+        from the metadata and the SSO URL does not have to be provided.
       properties:
         name:
           type: string
@@ -53068,9 +53074,13 @@ components:
         issuer_override:
           type: string
           description: Also known as Entity ID. Defaults to the Metadata URL.
+        metadata_url:
+          type: string
+          description: URL of the Identity Provider's metadata. When set, the source's
+            settings are periodically updated from this metadata.
+          format: uri
         sso_url:
           type: string
-          minLength: 1
           description: URL that the initial Login request is sent to.
           format: uri
         slo_url:
@@ -57128,7 +57138,9 @@ components:
       - name
     SAMLSource:
       type: object
-      description: SAMLSource Serializer
+      description: |-
+        SAMLSource Serializer. When a metadata URL is given, the IdP settings are filled in
+        from the metadata and the SSO URL does not have to be provided.
       properties:
         pk:
           type: string
@@ -57229,6 +57241,11 @@ components:
           description: Get the resolved Issuer, falling back to the metadata URL when
             unset
           readOnly: true
+        metadata_url:
+          type: string
+          description: URL of the Identity Provider's metadata. When set, the source's
+            settings are periodically updated from this metadata.
+          format: uri
         sso_url:
           type: string
           description: URL that the initial Login request is sent to.
@@ -57299,7 +57316,6 @@ components:
       - pk
       - pre_authentication_flow
       - slug
-      - sso_url
       - url_issuer
       - verbose_name
       - verbose_name_plural
@@ -57372,7 +57388,9 @@ components:
       - name
     SAMLSourceRequest:
       type: object
-      description: SAMLSource Serializer
+      description: |-
+        SAMLSource Serializer. When a metadata URL is given, the IdP settings are filled in
+        from the metadata and the SSO URL does not have to be provided.
       properties:
         name:
           type: string
@@ -57433,9 +57451,13 @@ components:
         issuer_override:
           type: string
           description: Also known as Entity ID. Defaults to the Metadata URL.
+        metadata_url:
+          type: string
+          description: URL of the Identity Provider's metadata. When set, the source's
+            settings are periodically updated from this metadata.
+          format: uri
         sso_url:
           type: string
-          minLength: 1
           description: URL that the initial Login request is sent to.
           format: uri
         slo_url:
@@ -57499,7 +57521,6 @@ components:
       - name
       - pre_authentication_flow
       - slug
-      - sso_url
     SCIMAuthenticationModeEnum:
       enum:
       - token
