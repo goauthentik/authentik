@@ -23,9 +23,6 @@ class CaptchaStageSerializer(StageSerializer):
             "score_max_threshold",
             "error_on_invalid_score",
         ]
-        extra_kwargs = {
-            "private_key_ref": {"required": True, "allow_null": False},
-        }
 
 
 class CaptchaStageViewSet(UsedByMixin, ModelViewSet):

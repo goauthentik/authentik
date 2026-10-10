@@ -2,7 +2,33 @@
 
 from json import JSONDecodeError, dumps, loads
 
+from django.db import migrations
 from yaml import safe_load
+
+from authentik.crypto.secrets.migrations._permissions import preserve_permissions
+
+
+def move_credentials(
+    app_label, model_name, fields, *, include_empty=False, value_permission=None
+) -> migrations.RunPython:
+    """Move credential columns into secrets, and back when migrating backwards.
+
+    See migrate_credentials for `fields` and `include_empty`, and preserve_permissions for
+    `value_permission`.
+    """
+
+    def forwards(apps, schema_editor):
+        migrate_credentials(
+            apps, schema_editor, app_label, model_name, fields, include_empty=include_empty
+        )
+        preserve_permissions(
+            apps, schema_editor, app_label, model_name.lower(), value_permission=value_permission
+        )
+
+    def backwards(apps, schema_editor):
+        restore_credentials(apps, schema_editor, app_label, model_name, fields)
+
+    return migrations.RunPython(forwards, backwards)
 
 
 def migrate_credentials(apps, schema_editor, app_label, model_name, fields, *, include_empty=False):

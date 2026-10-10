@@ -3,31 +3,12 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-from authentik.crypto.secrets.migrations._credential_values import (
-    migrate_credentials,
-    restore_credentials,
-)
-from authentik.crypto.secrets.migrations._permissions import preserve_permissions
+from authentik.crypto.secrets.migrations._credential_values import move_credentials
 
 FIELDS = [
     ("token", "token_ref", "text", "SCIM token"),
     ("auth_basic_password", "auth_basic_password_ref", "text", "SCIM password"),
 ]
-
-
-def forwards(apps, schema_editor):
-    migrate_credentials(
-        apps,
-        schema_editor,
-        "authentik_providers_scim",
-        "SCIMProvider",
-        FIELDS,
-    )
-    preserve_permissions(apps, schema_editor, "authentik_providers_scim", "scimprovider")
-
-
-def backwards(apps, schema_editor):
-    restore_credentials(apps, schema_editor, "authentik_providers_scim", "SCIMProvider", FIELDS)
 
 
 class Migration(migrations.Migration):
@@ -68,5 +49,5 @@ class Migration(migrations.Migration):
                 verbose_name="Token",
             ),
         ),
-        migrations.RunPython(forwards, backwards),
+        move_credentials("authentik_providers_scim", "SCIMProvider", FIELDS),
     ]

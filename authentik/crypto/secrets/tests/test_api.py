@@ -85,18 +85,6 @@ class TestSecretsAPI(APITestCase):
         self.assertEqual(response.json(), {"value": self.secret.secret_value})
         self.assertTrue(Event.objects.filter(action=EventAction.SECRET_VIEW).exists())
 
-    def test_rotate_permission_and_disclosure(self):
-        self.user.assign_perms_to_managed_role("authentik_crypto_secrets.view_secret", self.secret)
-        self.user.assign_perms_to_managed_role(
-            "authentik_crypto_secrets.rotate_secret", self.secret
-        )
-        self.client.force_login(self.user)
-        response = self.client.post(
-            reverse("authentik_api:secret-rotate", kwargs={"pk": self.secret.pk})
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertIsNone(response.json()["value"])
-
     def test_rotation_requires_permission_and_returns_value_only_when_allowed(self):
         self.user.assign_perms_to_managed_role("authentik_crypto_secrets.view_secret", self.secret)
         self.user.assign_perms_to_managed_role(

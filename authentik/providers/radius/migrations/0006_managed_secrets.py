@@ -3,35 +3,9 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-from authentik.crypto.secrets.migrations._credential_values import (
-    migrate_credentials,
-    restore_credentials,
-)
-from authentik.crypto.secrets.migrations._permissions import preserve_permissions
+from authentik.crypto.secrets.migrations._credential_values import move_credentials
 
 FIELDS = [("shared_secret", "shared_secret_ref", "text", "shared secret")]
-
-
-def forwards(apps, schema_editor):
-    migrate_credentials(
-        apps,
-        schema_editor,
-        "authentik_providers_radius",
-        "RadiusProvider",
-        FIELDS,
-        include_empty=True,
-    )
-    preserve_permissions(
-        apps,
-        schema_editor,
-        "authentik_providers_radius",
-        "radiusprovider",
-        value_permission="change",
-    )
-
-
-def backwards(apps, schema_editor):
-    restore_credentials(apps, schema_editor, "authentik_providers_radius", "RadiusProvider", FIELDS)
 
 
 class Migration(migrations.Migration):
@@ -57,7 +31,13 @@ class Migration(migrations.Migration):
                 verbose_name="Shared Secret",
             ),
         ),
-        migrations.RunPython(forwards, backwards),
+        move_credentials(
+            "authentik_providers_radius",
+            "RadiusProvider",
+            FIELDS,
+            include_empty=True,
+            value_permission="change",
+        ),
         migrations.AlterField(
             model_name="radiusprovider",
             name="shared_secret_ref",

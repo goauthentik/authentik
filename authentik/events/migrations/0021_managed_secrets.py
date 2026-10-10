@@ -3,30 +3,9 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-from authentik.crypto.secrets.migrations._credential_values import (
-    migrate_credentials,
-    restore_credentials,
-)
-from authentik.crypto.secrets.migrations._permissions import preserve_permissions
+from authentik.crypto.secrets.migrations._credential_values import move_credentials
 
 FIELDS = [("webhook_url", "webhook_url_ref", "text", "webhook URL")]
-
-
-def forwards(apps, schema_editor):
-    migrate_credentials(
-        apps,
-        schema_editor,
-        "authentik_events",
-        "NotificationTransport",
-        FIELDS,
-    )
-    preserve_permissions(
-        apps, schema_editor, "authentik_events", "notificationtransport", value_permission="view"
-    )
-
-
-def backwards(apps, schema_editor):
-    restore_credentials(apps, schema_editor, "authentik_events", "NotificationTransport", FIELDS)
 
 
 class Migration(migrations.Migration):
@@ -52,5 +31,7 @@ class Migration(migrations.Migration):
                 verbose_name="Webhook URL",
             ),
         ),
-        migrations.RunPython(forwards, backwards),
+        move_credentials(
+            "authentik_events", "NotificationTransport", FIELDS, value_permission="view"
+        ),
     ]
