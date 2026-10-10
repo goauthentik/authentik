@@ -1,7 +1,7 @@
 from django.urls import reverse
 from drf_spectacular.utils import extend_schema
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField
+from rest_framework.fields import CharField, ListField
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -39,6 +39,7 @@ class RegisterDeviceView(APIView):
         jwks_endpoint = CharField()
         audience = CharField()
         nonce_endpoint = CharField()
+        biometric_policies = ListField(child=CharField(), required=False)
         authorization_endpoint = CharField()
 
     permission_classes = [IsAuthenticated]
@@ -78,6 +79,7 @@ class RegisterDeviceView(APIView):
                 "nonce_endpoint": request.build_absolute_uri(
                     reverse("authentik_enterprise_endpoints_connectors_agent:psso-nonce")
                 ),
+                "biometric_policies": conn.connector.agentconnector.apple_psso_biometric_policies,
                 "authorization_endpoint": request.build_absolute_uri(
                     reverse(
                         "authentik_enterprise_endpoints_connectors_agent:psso-preauthenticate",
@@ -94,8 +96,9 @@ class RegisterUserView(APIView):
         """Register Apple device user via Platform SSO"""
 
         user_auth = CharField()
-        user_secure_enclave_key = CharField()
-        enclave_key_id = CharField()
+        # Blank for the password method, which has no Secure Enclave key
+        user_secure_enclave_key = CharField(required=False, allow_blank=True, default="")
+        enclave_key_id = CharField(required=False, allow_blank=True, default="")
 
     permission_classes = [IsAuthenticated]
     pagination_class = None
@@ -121,6 +124,7 @@ class RegisterUserView(APIView):
             raise ValidationError("Invalid user authentication")
         # These fields must be set on create as well as update; update_or_create() returns
         # immediately when it creates, so anything only in `defaults` is never applied.
+        # Blank values clear a previously stored key
         enclave_keys = {
             "apple_secure_enclave_key": body.validated_data["user_secure_enclave_key"],
             "apple_enclave_key_id": body.validated_data["enclave_key_id"],

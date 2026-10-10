@@ -1,5 +1,5 @@
 from plistlib import PlistFormat, dumps
-from uuid import uuid4
+from uuid import uuid5
 from xml.etree.ElementTree import Element, SubElement, tostring  # nosec
 
 from django.http import HttpRequest
@@ -7,7 +7,12 @@ from django.urls import reverse
 from rest_framework.fields import CharField
 
 from authentik.core.api.utils import PassiveSerializer
-from authentik.endpoints.connectors.agent.models import AgentConnector, EnrollmentToken
+from authentik.endpoints.connectors.agent.models import (
+    AgentConnector,
+    ApplePSSOAuthenticationMethod,
+    ApplePSSOAuthenticationPolicy,
+    EnrollmentToken,
+)
 from authentik.endpoints.controller import BaseController, Capabilities
 from authentik.endpoints.facts import OSFamily
 
@@ -88,6 +93,64 @@ class AgentConnectorController(BaseController[AgentConnector]):
             }
         )
 
+    def _psso_authentication_method(self) -> str:
+        return {
+            ApplePSSOAuthenticationMethod.PASSWORD: "Password",
+            ApplePSSOAuthenticationMethod.USER_SECURE_ENCLAVE_KEY: "UserSecureEnclaveKey",
+            ApplePSSOAuthenticationMethod.OPENID: "OpenID",
+        }[self.connector.apple_psso_config.authentication_method]
+
+    def _psso_method_speficif(self, request: HttpRequest) -> dict:
+        """Login, unlock and FileVault policies of the Platform SSO payload, which Apple only
+        applies to the password method"""
+        config = self.connector.apple_psso_config
+        if config.authentication_method == ApplePSSOAuthenticationMethod.OPENID:
+            return {
+                "WebLoginURLAllowList": [
+                    request.build_absolute_uri(reverse("authentik_core:root-redirect"))
+                ]
+            }
+        if config.authentication_method != ApplePSSOAuthenticationMethod.PASSWORD:
+            return {}
+        mapping = {
+            ApplePSSOAuthenticationPolicy.ATTEMPT: "AttemptAuthentication",
+            ApplePSSOAuthenticationPolicy.REQUIRE: "RequireAuthentication",
+        }
+        modifiers = []
+        if config.authentication_grace_period:
+            modifiers.append("AllowAuthenticationGracePeriod")
+        if config.offline_grace_period:
+            modifiers.append("AllowOfflineGracePeriod")
+        policies = {}
+        for policy, payload_key in (
+            (config.login_policy, "LoginPolicy"),
+            (config.unlock_policy, "UnlockPolicy"),
+            (config.filevault_policy, "FileVaultPolicy"),
+        ):
+            value = mapping.get(policy)
+            if value:
+                policies[payload_key] = [value, *modifiers]
+                if (
+                    payload_key == "UnlockPolicy"
+                    and value == "RequireAuthentication"
+                    and config.unlock_allow_touch_id_or_watch
+                ):
+                    policies[payload_key].append("AllowTouchIDOrWatchForUnlock")
+        if policies:
+            if config.authentication_grace_period:
+                policies["AuthenticationGracePeriod"] = config.authentication_grace_period
+            if config.offline_grace_period:
+                policies["OfflineGracePeriod"] = config.offline_grace_period
+        if config.non_platform_sso_accounts:
+            policies["NonPlatformSSOAccounts"] = config.non_platform_sso_accounts
+        if config.enable_create_user_at_login:
+            policies["EnableCreateUserAtLogin"] = True
+        return policies
+
+    def _payload_uuid(self, token: EnrollmentToken, payload_type: str) -> str:
+        """Stable PayloadUUID, as macOS deregisters Platform SSO when it changes"""
+        return str(uuid5(self.connector.pk, f"{token.pk}:{payload_type}"))
+
     def _generate_mdm_config_macos(
         self, request: HttpRequest, token: EnrollmentToken
     ) -> MDMConfigResponseSerializer:
@@ -100,7 +163,7 @@ class AgentConnectorController(BaseController[AgentConnector]):
                         "PayloadDisplayName": "authentik Platform",
                         "PayloadIdentifier": f"io.goauthentik.platform.{token_uuid}",
                         "PayloadType": "io.goauthentik.platform",
-                        "PayloadUUID": str(uuid4()),
+                        "PayloadUUID": self._payload_uuid(token, "io.goauthentik.platform"),
                         "PayloadVersion": 1,
                         "RegistrationToken": token.key,
                         "URL": request.build_absolute_uri(reverse("authentik_core:root-redirect")),
@@ -110,7 +173,7 @@ class AgentConnectorController(BaseController[AgentConnector]):
                         "PayloadDisplayName": "Associated Domains",
                         "PayloadIdentifier": f"com.apple.associated-domains.{token_uuid}",
                         "PayloadType": "com.apple.associated-domains",
-                        "PayloadUUID": str(uuid4()),
+                        "PayloadUUID": self._payload_uuid(token, "com.apple.associated-domains"),
                         "PayloadVersion": 1,
                         "Configuration": [
                             {
@@ -125,7 +188,7 @@ class AgentConnectorController(BaseController[AgentConnector]):
                         "PayloadDisplayName": "Platform Single Sign-On",
                         "PayloadIdentifier": f"com.apple.extensiblesso.{token_uuid}",
                         "PayloadType": "com.apple.extensiblesso",
-                        "PayloadUUID": str(uuid4()),
+                        "PayloadUUID": self._payload_uuid(token, "com.apple.extensiblesso"),
                         "PayloadVersion": 1,
                         "ExtensionIdentifier": "io.goauthentik.platform.psso",
                         "TeamIdentifier": "232G855Y8N",
@@ -136,9 +199,11 @@ class AgentConnectorController(BaseController[AgentConnector]):
                         "PlatformSSO": {
                             "AccountDisplayName": "authentik",
                             "AllowDeviceIdentifiersInAttestation": True,
-                            "AuthenticationMethod": "UserSecureEnclaveKey",
+                            "AuthenticationMethod": self._psso_authentication_method(),
                             "EnableAuthorization": True,
                             "UseSharedDeviceKeys": True,
+                            "LoginFrequency": self.connector.apple_psso_config.login_frequency,
+                            **self._psso_method_speficif(),
                         },
                     },
                 ],

@@ -11,7 +11,7 @@ from cryptography.hazmat.primitives.asymmetric.ec import (
     generate_private_key,
 )
 from cryptography.x509.oid import NameOID
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
@@ -26,6 +26,7 @@ from authentik.core.models import AuthenticatedSession, Session, User
 from authentik.core.sessions import SessionStore
 from authentik.crypto.apps import MANAGED_KEY
 from authentik.crypto.models import CertificateKeyPair
+from authentik.endpoints.connectors.agent.auth import agent_auth_issue_token
 from authentik.endpoints.connectors.agent.models import (
     AgentConnector,
     AgentDeviceConnection,
@@ -39,13 +40,29 @@ from authentik.endpoints.connectors.agent.models import (
 from authentik.enterprise.endpoints.connectors.agent.http import JWEResponse
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import SESSION_LOGIN_EVENT
-from authentik.flows.planner import PLAN_CONTEXT_DEVICE
+from authentik.flows.exceptions import FlowNonApplicableException
+from authentik.flows.models import Flow
+from authentik.flows.planner import (
+    PLAN_CONTEXT_DEVICE,
+    PLAN_CONTEXT_PENDING_USER,
+    FlowPlanner,
+)
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import JWTAlgorithms
 from authentik.root.middleware import SessionMiddleware
+from authentik.stages.password.models import PasswordStage
+from authentik.stages.password.stage import authenticate
 
 LOGGER = get_logger()
+# Seeded by blueprints/default/flow-endpoints-agent-psso-password.yaml
+PSSO_PASSWORD_FLOW_SLUG = "endpoints-agent-psso-password"
+LOGIN_REQUEST_TYPE = "platformsso-login-request+jwt"
+KEY_REQUEST_TYPE = "platformsso-key-request+jwt"
+
+
+class InvalidCredentials(Exception):
+    """Wrong credentials, returned as a 401 so that macOS re-prompts for the password"""
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -58,6 +75,9 @@ class TokenView(View):
         # ValidationError raised below would surface as a 500 instead of a 400.
         try:
             return super().dispatch(request, *args, **kwargs)
+        except InvalidCredentials:
+            # macOS treats a 401 as a wrong password
+            return JsonResponse({"error": "invalid_grant"}, status=401)
         except ValidationError as exc:
             LOGGER.warning("Invalid Platform SSO token request", exc=exc)
             return HttpResponse(status=400)
@@ -75,7 +95,8 @@ class TokenView(View):
         if self.jwt_request is None:
             return HttpResponse(status=400)
         version = request.POST.get("platform_sso_version")
-        grant_type = request.POST.get("grant_type")
+        # macOS posts every login as jwt-bearer, the actual grant type is a claim of the request
+        grant_type = self.jwt_request.get("grant_type") or request.POST.get("grant_type")
         handler_func = (
             f"handle_v{version}_{grant_type}".replace("-", "_")
             .replace("+", "_")
@@ -84,16 +105,54 @@ class TokenView(View):
         )
         handler = getattr(self, handler_func, None)
         if not handler:
-            LOGGER.debug("Handler not found", handler=handler_func)
+            # Only log claim names, never values
+            LOGGER.warning(
+                "No handler for Platform SSO grant",
+                handler=handler_func,
+                version=version,
+                grant_type=grant_type,
+                request_claims=sorted(self.jwt_request.keys()),
+            )
             return HttpResponse(status=400)
-        LOGGER.debug("sending to handler", handler=handler_func)
+        LOGGER.debug(
+            "sending to handler",
+            handler=handler_func,
+            request_claims=sorted(self.jwt_request.keys()),
+            request_grant_type=self.jwt_request.get("grant_type"),
+            request_amr=self.jwt_request.get("amr"),
+        )
         return handler()
+
+    def log_unhandled_request_type(self, assertion: str, header: dict[str, Any]) -> None:
+        """Log the claim names of a request type that isn't implemented"""
+        typ = header.get("typ")
+        if typ in (LOGIN_REQUEST_TYPE, KEY_REQUEST_TYPE):
+            return
+        try:
+            decoded = decode(
+                assertion,
+                self.device_connection.apple_signing_key,
+                algorithms=["ES256"],
+                issuer=str(self.connector.pk),
+                options={"verify_aud": False, "verify_exp": False},
+            )
+        except PyJWTError as exc:
+            LOGGER.warning("Unhandled Platform SSO request type, undecodable", typ=typ, exc=exc)
+            return
+        LOGGER.warning(
+            "Unhandled Platform SSO request type",
+            typ=typ,
+            request_claims=sorted(decoded.keys()),
+        )
 
     def validate_request_token(self, assertion: str) -> dict[str, Any] | None:
         # Decode without validation to get header
         header = get_unverified_header(assertion)
-        expected_kid = header["kid"]
-        LOGGER.debug("token header", typ=header.get("typ"), kid=expected_kid)
+        LOGGER.debug("token header", header=header)
+        expected_kid = header.get("kid")
+        if not expected_kid:
+            LOGGER.warning("Request token carries no key ID", header=header)
+            return None
 
         self.device_connection = (
             AgentDeviceConnection.objects.filter(apple_sign_key_id=expected_kid)
@@ -107,21 +166,33 @@ class TokenView(View):
         if not self.device_connection.apple_signing_key:
             LOGGER.warning("Failed to issue token for device, no apple_signing_key")
             raise ValidationError("Invalid request")
-
-        kwargs = {"issuer": str(self.connector.pk)}
-        # Only login requests carry an audience claim, key requests/exchanges don't
-        if header["typ"] == "platformsso-login-request+jwt":
-            kwargs["audience"] = self.request.build_absolute_uri(
-                reverse("authentik_enterprise_endpoints_connectors_agent:psso-token")
-            )
+        self.log_unhandled_request_type(assertion, header)
+        # Key requests don't carry an audience
+        audience_options = (
+            {"options": {"verify_aud": False}}
+            if header.get("typ") == KEY_REQUEST_TYPE
+            else {
+                "audience": self.request.build_absolute_uri(
+                    reverse("authentik_enterprise_endpoints_connectors_agent:psso-token")
+                )
+            }
+        )
         # Properly decode the JWT with the key from the device
         decoded = decode(
-            assertion, self.device_connection.apple_signing_key, algorithms=["ES256"], **kwargs
+            assertion,
+            self.device_connection.apple_signing_key,
+            algorithms=["ES256"],
+            issuer=str(self.connector.pk),
+            **audience_options,
         )
         self.remote_nonce = decoded.get("nonce")
 
         # Check that the nonce hasn't been used before
-        nonce = AppleNonce.objects.filter(nonce=decoded["request_nonce"]).first()
+        request_nonce = decoded.get("request_nonce")
+        if not request_nonce:
+            LOGGER.warning("Request token carries no request_nonce", claims=sorted(decoded.keys()))
+            raise ValidationError("Invalid request")
+        nonce = AppleNonce.objects.filter(nonce=request_nonce).first()
         if not nonce:
             raise ValidationError("Invalid nonce")
         self.nonce = nonce
@@ -221,15 +292,32 @@ class TokenView(View):
             algorithm=JWTAlgorithms.from_private_key(kp.private_key),
         )
 
-    def login_response(self, user: User) -> JWEResponse:
-        """Build the shared login response for both the jwt-bearer and authorization_code
-        grants, optionally including the ECDH key material for lock-screen unlock."""
+    def issue_refresh_token(self, user: User) -> DeviceAuthenticationToken:
+        """Create the refresh token of a login, which macOS sends back on key requests"""
         auth_token = DeviceAuthenticationToken.objects.create(
             device=self.device_connection.device,
             connector=self.connector,
             user=user,
             device_token=self.nonce.device_token,
         )
+        token, expires = agent_auth_issue_token(
+            self.device_connection.device,
+            self.connector,
+            user,
+            jti=str(auth_token.identifier),
+        )
+        if not token or not expires:
+            LOGGER.warning("Failed to issue Platform SSO refresh token")
+            raise ValidationError("Invalid request")
+        auth_token.token = token
+        auth_token.expires = expires
+        auth_token.expiring = True
+        auth_token.save()
+        return auth_token
+
+    def login_response(self, user: User) -> JWEResponse:
+        """Login response shared by all grants, with the unlock key when requested"""
+        auth_token = self.issue_refresh_token(user)
         body = {
             "refresh_token": auth_token.token,
             "refresh_token_expires_in": int((auth_token.expires - self.now).total_seconds()),
@@ -263,20 +351,69 @@ class TokenView(View):
             apv=self.jwt_request["jwe_crypto"]["apv"],
         )
 
+    def handle_v1_0_password(self) -> HttpResponse:
+        """Authenticate with the credentials of the login request, using the backends of the
+        password stage in the dedicated flow"""
+        username = self.jwt_request.get("username")
+        password = self.jwt_request.get("password")
+        if not username or not password:
+            LOGGER.warning(
+                "Password login request missing credentials",
+                request_claims=sorted(self.jwt_request.keys()),
+            )
+            raise ValidationError("Invalid request")
+        flow = Flow.objects.filter(slug=PSSO_PASSWORD_FLOW_SLUG).first()
+        stage = PasswordStage.objects.filter(flow__slug=PSSO_PASSWORD_FLOW_SLUG).first()
+        if not flow or not stage:
+            LOGGER.warning(
+                "Platform SSO password flow is missing or has no password stage",
+                slug=PSSO_PASSWORD_FLOW_SLUG,
+            )
+            raise ValidationError("Invalid request")
+        user = User.objects.filter(username=username).first()
+        if not user:
+            # Same response as a wrong password, to prevent username enumeration
+            LOGGER.info("Platform SSO password login for unknown user")
+            raise InvalidCredentials
+        planner = FlowPlanner(flow)
+        planner.allow_empty_flows = True
+        try:
+            planner.plan(self.request, {PLAN_CONTEXT_PENDING_USER: user})
+        except FlowNonApplicableException:
+            LOGGER.info("Platform SSO password login denied by flow policies")
+            raise ValidationError("Invalid request") from None
+        authenticated = authenticate(
+            self.request, stage.backends, stage, username=username, password=password
+        )
+        if not authenticated:
+            LOGGER.info("Platform SSO password login failed")
+            raise InvalidCredentials
+        return self.login_response(authenticated)
+
+    def handle_v1_0_urn_ietf_params_oauth_grant_type_token_exchange(self) -> HttpResponse:
+        # Dispatched on the grant_type claim of the login request, see post()
+        device_user = AgentDeviceUserBinding.objects.filter(
+            target=self.device_connection.device, user__username=self.jwt_request["sub"]
+        ).first()
+        if not device_user:
+            LOGGER.warning("No device user binding for token exchange")
+            raise ValidationError("Invalid request")
+        return self.login_response(device_user.user)
+
     def handle_v1_0_urn_ietf_params_oauth_grant_type_jwt_bearer(self) -> HttpResponse:
-        if self.jwt_request.get("grant_type") == "urn:ietf:params:oauth:grant-type:token-exchange":
-            device_user = AgentDeviceUserBinding.objects.filter(
-                target=self.device_connection.device, user__username=self.jwt_request["sub"]
-            ).first()
-            if not device_user:
-                LOGGER.warning("No device user binding for token exchange")
-                raise ValidationError("Invalid request")
-        else:
-            try:
-                device_user, _ = self.validate_embedded_assertion(self.jwt_request["assertion"])
-            except PyJWTError as exc:
-                LOGGER.warning("failed to validate inner assertion", exc=exc)
-                raise ValidationError("Invalid request") from exc
+        embedded = self.jwt_request.get("assertion")
+        if not embedded:
+            # macOS omits the assertion when the Secure Enclave key can't be used
+            LOGGER.warning(
+                "Login request carries no embedded assertion",
+                request_claims=sorted(self.jwt_request.keys()),
+            )
+            raise ValidationError("Invalid request")
+        try:
+            device_user, _ = self.validate_embedded_assertion(embedded)
+        except PyJWTError as exc:
+            LOGGER.warning("failed to validate inner assertion", exc=exc)
+            raise ValidationError("Invalid request") from exc
         return self.login_response(device_user.user)
 
     def handle_v1_0_authorization_code(self) -> HttpResponse:
