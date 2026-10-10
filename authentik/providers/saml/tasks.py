@@ -2,14 +2,19 @@
 
 import requests
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import actor
+from lxml.etree import XMLSyntaxError  # nosec
 from structlog.stdlib import get_logger
 
+from authentik.common.saml.metadata import MetadataFetchError, fetch_metadata
 from authentik.events.models import Event, EventAction
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.processors.logout_request import LogoutRequestProcessor
 from authentik.providers.saml.processors.logout_request_parser import LogoutRequest
 from authentik.providers.saml.processors.logout_response_processor import LogoutResponseProcessor
+from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
+from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 User = get_user_model()
@@ -168,3 +173,40 @@ def send_saml_logout_response(
             message=f"Backchannel logout response failed: {str(exc)}",
         ).save()
         return False
+
+
+@actor(description=_("Update SAML providers' settings from their metadata URL."))
+def update_saml_provider_metadata(provider_pk: int | None = None):
+    """Re-fetch the Service Provider metadata of providers with a metadata URL and apply any
+    changes. Updates a single provider when `provider_pk` is given, otherwise all of them."""
+    self = CurrentTask.get_task()
+    providers = SAMLProvider.objects.exclude(metadata_url="")
+    if provider_pk is not None:
+        providers = providers.filter(pk=provider_pk)
+        if not providers.exists():
+            self.info(f"Provider {provider_pk} not found or has no metadata URL, skipping.")
+            return
+    for provider in providers:
+        _fetch_and_apply_metadata(self, provider)
+
+
+def _fetch_and_apply_metadata(task, provider: SAMLProvider):
+    """Fetch, parse and apply the metadata of a single provider"""
+    try:
+        raw_metadata = fetch_metadata(provider.metadata_url)
+        metadata = ServiceProviderMetadataParser().parse(raw_metadata)
+        changed = metadata.apply_to_provider(provider)
+    except (MetadataFetchError, ValueError, KeyError, XMLSyntaxError) as exc:
+        LOGGER.warning("Failed to update provider from metadata", provider=provider, exc=exc)
+        task.warning(f"Failed to update provider {provider.name} from metadata: {exc}")
+        Event.new(
+            EventAction.CONFIGURATION_ERROR,
+            provider=provider,
+            message=f"Failed to update SAML provider from metadata URL: {exc}",
+        ).save()
+        return
+    if not changed:
+        task.info(f"Metadata for provider {provider.name} is unchanged.")
+        return
+    provider.save()
+    task.info(f"Updated provider {provider.name} from metadata.")

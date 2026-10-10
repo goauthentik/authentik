@@ -21,8 +21,16 @@ If you have exported SAML metadata from your SP, you can optionally create the a
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click **New Provider** to create a provider.
 3. Select **SAML Provider from Metadata** as the **Provider Type**, and then click **Next**.
-4. On the **New SAML Provider from Metadata** page, provide the configuration settings along with an SP metadata file and then click **Finish** to create the provider.
+4. On the **New SAML Provider from Metadata** page, provide the configuration settings along with either an SP metadata file or a **Metadata URL**, and then click **Finish** to create the provider.
 5. (Optional) Edit the created SAML provider and configure any further settings.
+
+### Keep a SAML provider updated from a metadata URL:ak-version[2026.11]
+
+When a provider is created from a metadata URL, or when the **Metadata URL** field is set on an existing provider, authentik periodically downloads the metadata again and applies any changes to the provider. This keeps the provider working when the SP rotates its certificates or changes its endpoints.
+
+The following settings are updated from the metadata: ACS URL, Service Provider binding, audience, default NameID policy, SLS URL and binding, and the verification and encryption certificates. Certificates that were imported from the metadata are updated in place, so the certificate objects keep their names and references. Settings chosen by an administrator, such as the name, flows, signing certificate, and property mappings, are never changed.
+
+The update runs once a day as the system task `update_saml_provider_metadata`, which handles every provider that has a metadata URL. It also runs right away when a metadata URL is set or changed. You can view its status or trigger it manually under **Dashboards** > **System Tasks**. If the metadata of a provider cannot be downloaded or parsed, that provider is left unchanged and a **Configuration error** event is created.
 
 ## Export authentik SAML provider metadata
 

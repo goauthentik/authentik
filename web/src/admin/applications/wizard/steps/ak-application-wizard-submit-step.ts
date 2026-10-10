@@ -118,6 +118,7 @@ export class ApplicationWizardSubmitStep extends ApplicationWizardStep {
             // Step 1: Import SAML metadata to create the provider
             const createdProvider = await providersApi.providersSamlImportMetadataCreate({
                 file: providerData.file,
+                url: providerData.url || undefined,
                 name: providerData.name,
                 authorizationFlow: providerData.authorizationFlow || "",
                 invalidationFlow: providerData.invalidationFlow || "",

@@ -165,6 +165,11 @@ export interface SAMLProvider {
      */
     readonly urlDownloadMetadata: string;
     /**
+     * URL of the Service Provider's metadata. When set, the provider's settings are periodically
+     * updated from this metadata.
+     */
+    metadataUrl?: string;
+    /**
      * Get Issuer/EntityID URL
      */
     readonly urlIssuer: string;
@@ -444,6 +449,7 @@ export function SAMLProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
                 ? undefined
                 : SAMLNameIDPolicyEnumFromJSON(json["default_name_id_policy"]),
         urlDownloadMetadata: json["url_download_metadata"],
+        metadataUrl: json["metadata_url"] == null ? undefined : json["metadata_url"],
         urlIssuer: json["url_issuer"],
         urlUnified: json["url_unified"],
         urlUnifiedInit: json["url_unified_init"],
@@ -516,5 +522,6 @@ export function SAMLProviderToJSONTyped(
         logout_method: SAMLLogoutMethodsToJSON(value["logoutMethod"]),
         default_relay_state: value["defaultRelayState"],
         default_name_id_policy: SAMLNameIDPolicyEnumToJSON(value["defaultNameIdPolicy"]),
+        metadata_url: value["metadataUrl"],
     };
 }

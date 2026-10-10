@@ -127,6 +127,11 @@ export interface SAMLProviderRequest {
      */
     defaultRelayState?: string;
     defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
+    /**
+     * URL of the Service Provider's metadata. When set, the provider's settings are periodically
+     * updated from this metadata.
+     */
+    metadataUrl?: string;
 }
 
 /**
@@ -254,6 +259,7 @@ export function SAMLProviderRequestFromJSONTyped(
             json["default_name_id_policy"] == null
                 ? undefined
                 : SAMLNameIDPolicyEnumFromJSON(json["default_name_id_policy"]),
+        metadataUrl: json["metadata_url"] == null ? undefined : json["metadata_url"],
     };
 }
 
@@ -298,5 +304,6 @@ export function SAMLProviderRequestToJSONTyped(
         logout_method: SAMLLogoutMethodsToJSON(value["logoutMethod"]),
         default_relay_state: value["defaultRelayState"],
         default_name_id_policy: SAMLNameIDPolicyEnumToJSON(value["defaultNameIdPolicy"]),
+        metadata_url: value["metadataUrl"],
     };
 }
