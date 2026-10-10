@@ -69,7 +69,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 blank=True,
                 default=None,
-                help_text="SPNEGO keytab. A file secret with the keytab, or a text secret in the form FILE:path",
+                help_text="SPNEGO keytab. A file secret with the keytab, or a text secret in the form TYPE:residual",
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="kerberos_spnego_keytab_sources",
