@@ -29972,14 +29972,6 @@ paths:
         schema:
           type: string
       - in: query
-        name: auth
-        schema:
-          type: string
-      - in: query
-        name: auth_password
-        schema:
-          type: string
-      - in: query
         name: auth_type
         schema:
           $ref: '#/components/schemas/AuthTypeEnum'
@@ -36616,13 +36608,23 @@ components:
           type: string
         client_id:
           type: string
+        client_secret_ref:
+          type: string
+          format: uuid
+          title: Client secret
         api_hostname:
           type: string
         admin_integration_key:
           type: string
+        admin_secret_key_ref:
+          type: string
+          format: uuid
+          nullable: true
+          title: Admin secret key
       required:
       - api_hostname
       - client_id
+      - client_secret_ref
       - component
       - flow_set
       - meta_model_name
@@ -36672,22 +36674,24 @@ components:
         client_id:
           type: string
           minLength: 1
-        client_secret:
+        client_secret_ref:
           type: string
-          writeOnly: true
-          minLength: 1
+          format: uuid
+          title: Client secret
         api_hostname:
           type: string
           minLength: 1
         admin_integration_key:
           type: string
-        admin_secret_key:
+        admin_secret_key_ref:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: Admin secret key
       required:
       - api_hostname
       - client_id
-      - client_secret
+      - client_secret_ref
       - name
     AuthenticatorEmailChallenge:
       type: object
@@ -37024,6 +37028,15 @@ components:
           type: string
         account_sid:
           type: string
+        auth_ref:
+          type: string
+          format: uuid
+          title: Auth token
+        auth_password_ref:
+          type: string
+          format: uuid
+          nullable: true
+          title: Auth password
         auth_type:
           $ref: '#/components/schemas/AuthTypeEnum'
         verify_only:
@@ -37038,6 +37051,7 @@ components:
           description: Optionally modify the payload being sent to custom providers.
       required:
       - account_sid
+      - auth_ref
       - component
       - flow_set
       - from_number
@@ -37070,13 +37084,15 @@ components:
         account_sid:
           type: string
           minLength: 1
-        auth:
+        auth_ref:
           type: string
-          writeOnly: true
-          minLength: 1
-        auth_password:
+          format: uuid
+          title: Auth token
+        auth_password_ref:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: Auth password
         auth_type:
           $ref: '#/components/schemas/AuthTypeEnum'
         verify_only:
@@ -37091,7 +37107,7 @@ components:
           description: Optionally modify the payload being sent to custom providers.
       required:
       - account_sid
-      - auth
+      - auth_ref
       - from_number
       - name
       - provider
@@ -50361,18 +50377,20 @@ components:
         client_id:
           type: string
           minLength: 1
-        client_secret:
+        client_secret_ref:
           type: string
-          writeOnly: true
-          minLength: 1
+          format: uuid
+          title: Client secret
         api_hostname:
           type: string
           minLength: 1
         admin_integration_key:
           type: string
-        admin_secret_key:
+        admin_secret_key_ref:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: Admin secret key
     PatchedAuthenticatorEmailStageRequest:
       type: object
       description: AuthenticatorEmailStage Serializer
@@ -50468,13 +50486,15 @@ components:
         account_sid:
           type: string
           minLength: 1
-        auth:
+        auth_ref:
           type: string
-          writeOnly: true
-          minLength: 1
-        auth_password:
+          format: uuid
+          title: Auth token
+        auth_password_ref:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: Auth password
         auth_type:
           $ref: '#/components/schemas/AuthTypeEnum'
         verify_only:
