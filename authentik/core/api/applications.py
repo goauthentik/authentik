@@ -8,6 +8,7 @@ from django.db.models import Case, QuerySet
 from django.db.models.expressions import When
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
@@ -19,7 +20,9 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.api.ordering import NullsAwareOrderingFilter
 from authentik.api.pagination import Pagination
+from authentik.api.search.ql import QLSearch
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
@@ -33,7 +36,6 @@ from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import ListPolicyEngine, PolicyEngine
 from authentik.policies.types import CACHE_PREFIX, PolicyResult
-from authentik.rbac.filters import ObjectFilter
 from authentik.root.middleware import ClientIPMiddleware
 
 LOGGER = get_logger()
@@ -170,14 +172,6 @@ class ApplicationViewSet(
     lookup_field = "slug"
     ordering = ["name"]
 
-    def _filter_queryset_for_list(self, queryset: QuerySet) -> QuerySet:
-        """Custom filter_queryset method which ignores guardian, but still supports sorting"""
-        for backend in list(self.filter_backends):
-            if backend == ObjectFilter:
-                continue
-            queryset = backend().filter_queryset(self.request, queryset, self)
-        return queryset
-
     def _get_allowed_applications(
         self, paginated_apps: Iterator[Application], user: User | None = None
     ) -> list[Application]:
@@ -271,11 +265,6 @@ class ApplicationViewSet(
     @extend_schema(
         parameters=[
             OpenApiParameter(
-                name="superuser_full_list",
-                location=OpenApiParameter.QUERY,
-                type=OpenApiTypes.BOOL,
-            ),
-            OpenApiParameter(
                 name="for_user",
                 location=OpenApiParameter.QUERY,
                 type=OpenApiTypes.INT,
@@ -285,23 +274,28 @@ class ApplicationViewSet(
                 location=OpenApiParameter.QUERY,
                 type=OpenApiTypes.BOOL,
             ),
-        ]
+        ],
+        responses={
+            200: ApplicationSerializer(many=True),
+        },
+        operation_id="core_applications_accessible_list",
     )
-    def list(self, request: Request) -> Response:
-        """Custom list method that checks Policy based access instead of guardian"""
+    @action(
+        methods=["GET"],
+        detail=False,
+        url_path="@accessible",
+        # Access is decided by policies below, so skip the RBAC ObjectFilter
+        filter_backends=[QLSearch, DjangoFilterBackend, NullsAwareOrderingFilter],
+    )
+    def accessible(self, request: Request) -> Response:
+        """List applications the user passes policies for, regardless of RBAC permissions"""
         should_cache = request.query_params.get("search", "") == ""
-
-        superuser_full_list = (
-            str(request.query_params.get("superuser_full_list", "false")).lower() == "true"
-        )
-        if superuser_full_list and request.user.is_superuser:
-            return super().list(request)
 
         only_with_launch_url = (
             str(request.query_params.get("only_with_launch_url", "false")).lower()
         ) == "true"
 
-        queryset = self._filter_queryset_for_list(self.get_queryset())
+        queryset = self.filter_queryset(self.get_queryset())
         queryset = queryset.exclude(meta_hide=True)
         if only_with_launch_url:
             # Pre-filter at DB level to skip expensive per-app policy evaluation

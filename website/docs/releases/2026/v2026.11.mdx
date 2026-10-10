@@ -62,6 +62,12 @@ The **Base URL** [system setting](../../sys-mgmt/settings.mdx#base-url), introdu
 - **Automated installs:** Set `AUTHENTIK_WEB__BASE_URL` along with the [bootstrap environment variables](../../install-config/automated-install.mdx). Without it, the automated install fails.
 - **API:** The `base_url` field of the system settings no longer accepts an empty value.
 
+### Applications API split into RBAC and policy access
+
+`GET /core/applications/` now lists applications the way other admin API endpoints do: it only returns applications the user has the `authentik_core.view_application` permission for, and does not evaluate policies. The `superuser_full_list`, `for_user`, and `only_with_launch_url` parameters have been removed from it.
+
+To list the applications a user can access based on policy bindings, as shown on the **Application Dashboard**, use the new `GET /core/applications/@accessible/` endpoint. It accepts the `for_user` and `only_with_launch_url` parameters. Update API clients and scripts that relied on the previous behavior of `/core/applications/`.
+
 ## New features and improvements
 
 - **Display names in `ak_send_email` recipients**: The `address`, `cc`, and `bcc` parameters of `ak_send_email` now accept `(name, email)` tuples and `"Name <email>"` strings, so emails sent from expressions can include a display name in the `To` and `CC` headers, matching the Email stage. See [`ak_send_email`](../../customize/policies/types/expression/reference.mdx).
