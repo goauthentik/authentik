@@ -43056,7 +43056,7 @@ components:
         template:
           type: string
           minLength: 1
-          default: invitation
+          default: email/invitation.html
       required:
       - email_addresses
     InvitationStage:
