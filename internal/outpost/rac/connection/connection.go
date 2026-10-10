@@ -7,6 +7,8 @@ import (
 	"net"
 	"net/http"
 	"strings"
+	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -20,14 +22,20 @@ import (
 const guacAddr = "0.0.0.0:4822"
 
 type Connection struct {
-	log       *log.Entry
-	st        *guac.SimpleTunnel
-	ac        *ak.APIController
-	ws        *websocket.Conn
-	ctx       context.Context
-	ctxCancel context.CancelFunc
-	OnError   func(error)
-	closing   bool
+	log           *log.Entry
+	st            *guac.SimpleTunnel
+	ac            *ak.APIController
+	ws            *websocket.Conn
+	ctx           context.Context
+	ctxCancel     context.CancelFunc
+	OnError       func(error)
+	closing       *atomic.Bool
+	writeMu       *sync.Mutex
+	drivePath     string
+	allowUpload   bool
+	allowDownload bool
+	bulkMu        sync.Mutex
+	bulk          map[string]*driveTransfer
 }
 
 func NewConnection(ac *ak.APIController, forChannel string, cfg *guac.Config) (*Connection, error) {
@@ -38,7 +46,14 @@ func NewConnection(ac *ak.APIController, forChannel string, cfg *guac.Config) (*
 		ctx:       ctx,
 		ctxCancel: canc,
 		OnError:   func(err error) {},
-		closing:   false,
+		closing:   &atomic.Bool{},
+		writeMu:   &sync.Mutex{},
+		bulk:      make(map[string]*driveTransfer),
+	}
+	if cfg.Protocol == "rdp" && cfg.Parameters["enable-drive"] == "true" {
+		c.drivePath = cfg.Parameters["drive-path"]
+		c.allowUpload = cfg.Parameters["rac-allow-upload"] == "true"
+		c.allowDownload = cfg.Parameters["rac-allow-download"] == "true"
 	}
 	err := c.initGuac(cfg)
 	if err != nil {
@@ -110,15 +125,15 @@ func (c *Connection) initMirror() {
 }
 
 func (c *Connection) onError(err error) {
-	if c.closing {
+	if !c.closing.CompareAndSwap(false, true) {
 		return
 	}
-	c.closing = true
 	e := c.st.Close()
 	if e != nil {
 		c.log.WithError(e).Warning("failed to close guacd connection")
 	}
 	c.log.WithError(err).Info("removing connection")
 	c.ctxCancel()
+	c.cancelAllTransfers()
 	c.OnError(err)
 }

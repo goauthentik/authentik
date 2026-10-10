@@ -21642,6 +21642,109 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /rac/file_transfers/:
+    post:
+      operationId: rac_file_transfers_create
+      description: Prepare and finish file transfers through low-volume Outpost control
+        messages.
+      tags:
+      - rac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferCreateRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transfer'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /rac/file_transfers/{id}/:
+    delete:
+      operationId: rac_file_transfers_destroy
+      description: Prepare and finish file transfers through low-volume Outpost control
+        messages.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - rac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /rac/file_transfers/{id}/finish/:
+    post:
+      operationId: rac_file_transfers_finish_create
+      description: Prepare and finish file transfers through low-volume Outpost control
+        messages.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - rac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferActionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /rac/files/list/:
+    post:
+      operationId: rac_files_list_create
+      description: List only the authenticated connection's redirected RDP drive.
+      tags:
+      - rac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FileListQueryRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileListResult'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /rbac/initial_permissions/:
     get:
       operationId: rbac_initial_permissions_list
@@ -39436,6 +39539,11 @@ components:
       - '6'
       - '8'
       type: string
+    DirectionEnum:
+      enum:
+      - upload
+      - download
+      type: string
     Disk:
       type: object
       properties:
@@ -40782,6 +40890,58 @@ components:
       - mime_type
       - name
       - url
+    FileListEntry:
+      type: object
+      properties:
+        name:
+          type: string
+        path:
+          type: string
+        kind:
+          $ref: '#/components/schemas/KindEnum'
+        size:
+          type: integer
+          nullable: true
+      required:
+      - kind
+      - name
+      - path
+      - size
+    FileListQueryRequest:
+      type: object
+      description: One page of the connection's redirected RDP drive.
+      properties:
+        token:
+          type: string
+          minLength: 1
+          maxLength: 512
+        connection:
+          type: string
+          format: uuid
+        path:
+          type: string
+          minLength: 1
+          maxLength: 4096
+        cursor:
+          type: string
+          minLength: 1
+          maxLength: 4096
+      required:
+      - connection
+      - path
+      - token
+    FileListResult:
+      type: object
+      properties:
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileListEntry'
+        cursor:
+          type: string
+      required:
+      - cursor
+      - entries
     FileUploadRequest:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -43460,6 +43620,11 @@ components:
       - ed25519
       - ed448
       - rsa
+    KindEnum:
+      enum:
+      - file
+      - directory
+      type: string
     KubernetesServiceConnection:
       type: object
       description: KubernetesServiceConnection Serializer
@@ -60007,6 +60172,59 @@ components:
           description: Result if the Policy execution fails.
       required:
       - order
+    Transfer:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        filename:
+          type: string
+        size:
+          type: integer
+      required:
+      - filename
+      - id
+      - size
+    TransferActionRequest:
+      type: object
+      properties:
+        token:
+          type: string
+          minLength: 1
+          maxLength: 512
+        connection:
+          type: string
+          format: uuid
+      required:
+      - connection
+      - token
+    TransferCreateRequest:
+      type: object
+      properties:
+        token:
+          type: string
+          minLength: 1
+          maxLength: 512
+        connection:
+          type: string
+          format: uuid
+        direction:
+          $ref: '#/components/schemas/DirectionEnum'
+        path:
+          type: string
+          minLength: 1
+          maxLength: 4096
+        size:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+      required:
+      - connection
+      - direction
+      - path
+      - token
     TransportModeEnum:
       enum:
       - local

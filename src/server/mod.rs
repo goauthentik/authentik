@@ -53,6 +53,7 @@ use crate::{
 };
 
 mod core;
+mod rac_bulk;
 mod r#static;
 mod tls;
 
@@ -290,7 +291,7 @@ async fn route_core_and_outpost(
     response
 }
 
-fn build_router(server: &Arc<Server>) -> Result<Router> {
+fn build_router(server: &Arc<Server>, bulk: Arc<rac_bulk::Bulk>) -> Result<Router> {
     let core_router = core::build_router(server)?;
     let proxy_router = outpost::proxy::embedded_router();
 
@@ -309,6 +310,7 @@ fn build_router(server: &Arc<Server>) -> Result<Router> {
     Ok(router
         .fallback(any(route_core_and_outpost))
         .with_state((core_router, proxy_router, Arc::clone(&server.proxy_outpost)))
+        .merge(rac_bulk::public_router(bulk))
         .layer(from_fn(host_middleware))
         .layer(from_fn(trusted_proxy_middleware))
         .layer(make_request_body_limit_layer()))
@@ -319,13 +321,21 @@ pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
     let mut events_rx = arbiter.events_subscribe();
 
     let server = Arc::new(Server::new(temp_dir().join("authentik-gunicorn.sock"))?);
+    let (bulk, bulk_listen) =
+        rac_bulk::Bulk::new(Arc::clone(&server)).map_err(|error| eyre!(error))?;
+    ak_axum::server::start_plain(
+        tasks,
+        "rac-bulk-internal",
+        rac_bulk::internal_router(Arc::clone(&bulk)),
+        bulk_listen,
+    )?;
 
     tasks
         .build_task()
         .name(&format!("{}::watch_server", module_path!()))
         .spawn(watch_server(arbiter.clone(), Arc::clone(&server)))?;
 
-    let router = build_router(&server)?;
+    let router = build_router(&server, bulk)?;
 
     for addr in config::get().listen.http.iter().copied() {
         ak_axum::server::start_plain(tasks, "server", router.clone(), addr)?;

@@ -5,8 +5,11 @@ from django.urls import path
 from authentik.outposts.channels import TokenOutpostMiddleware
 from authentik.providers.rac.api.connection_tokens import ConnectionTokenViewSet
 from authentik.providers.rac.api.devices import RACDeviceViewSet
+from authentik.providers.rac.api.files import ConnectionFileViewSet
 from authentik.providers.rac.api.property_mappings import RACPropertyMappingViewSet
 from authentik.providers.rac.api.providers import RACProviderViewSet
+from authentik.providers.rac.api.transfers import FileTransferViewSet
+from authentik.providers.rac.bulk_auth import authorize_bulk
 from authentik.providers.rac.consumer_client import RACClientConsumer
 from authentik.providers.rac.consumer_outpost import RACOutpostConsumer
 from authentik.providers.rac.views import RACInterface, RACStartView
@@ -14,6 +17,7 @@ from authentik.root.asgi_middleware import AuthMiddlewareStack
 from authentik.root.middleware import ChannelsLoggingMiddleware
 
 urlpatterns = [
+    path("if/rac/bulk/<uuid:identifier>/authorize/", authorize_bulk, name="bulk-authorize"),
     path(
         "application/rac/<slug:app>/<uuid:device>/<str:protocol>/",
         RACStartView.as_view(),
@@ -38,6 +42,8 @@ websocket_urlpatterns = [
 ]
 
 api_urlpatterns = [
+    ("rac/files", ConnectionFileViewSet, "rac-files"),
+    ("rac/file_transfers", FileTransferViewSet, "rac-file-transfers"),
     ("providers/rac", RACProviderViewSet),
     ("propertymappings/provider/rac", RACPropertyMappingViewSet),
     ("rac/devices", RACDeviceViewSet, "rac_device"),
