@@ -4,7 +4,10 @@ from msgraph.generated.models.user import User as MSUser
 from msgraph.generated.users.users_request_builder import UsersRequestBuilder
 
 from authentik.core.models import User
-from authentik.enterprise.providers.microsoft_entra.clients.base import MicrosoftEntraSyncClient
+from authentik.enterprise.providers.microsoft_entra.clients.base import (
+    MicrosoftEntraSyncClient,
+    entity_as_dict,
+)
 from authentik.enterprise.providers.microsoft_entra.models import (
     MicrosoftEntraProvider,
     MicrosoftEntraProviderMapping,
@@ -104,7 +107,7 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
                     provider=self.provider,
                     user=user,
                     microsoft_id=ms_user.id,
-                    attributes=self.entity_as_dict(ms_user),
+                    attributes=entity_as_dict(ms_user),
                 )
             except TransientSyncException as exc:
                 raise exc
@@ -113,7 +116,7 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
                     provider=self.provider,
                     user=user,
                     microsoft_id=response.id,
-                    attributes=self.entity_as_dict(response),
+                    attributes=entity_as_dict(response),
                 )
 
     def update(self, user: User, connection: MicrosoftEntraProviderUser):
@@ -125,7 +128,7 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
             self.client.users.by_user_id(connection.microsoft_id).patch(microsoft_user)
         )
         if response:
-            always_merger.merge(connection.attributes, self.entity_as_dict(response))
+            always_merger.merge(connection.attributes, entity_as_dict(response))
             connection.save()
 
     def discover(self):
@@ -154,7 +157,7 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
             provider=self.provider,
             user=matching_authentik_user,
             microsoft_id=user.id,
-            defaults={"attributes": self.entity_as_dict(user)},
+            defaults={"attributes": entity_as_dict(user)},
         )
 
     def update_single_attribute(self, connection: MicrosoftEntraProviderUser):
@@ -166,4 +169,4 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
         data = self._request(
             self.client.users.by_user_id(connection.microsoft_id).get(request_configuration)
         )
-        connection.attributes = self.entity_as_dict(data)
+        connection.attributes = entity_as_dict(data)
