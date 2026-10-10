@@ -11,15 +11,19 @@ import { Secret, SecretsApi, SecretTypeEnum } from "@goauthentik/api";
 
 import { toByteArray } from "base64-js";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html } from "lit";
 
 export function SecretValueButton(secret: Secret, control = false) {
     const isFile = secret.type === SecretTypeEnum.File;
 
+    const tooltip = isFile
+        ? msg("Download secret", { id: "secret.value.download.tooltip" })
+        : msg("View secret", { id: "secret.value.view.tooltip" });
+
     const label = isFile
-        ? msg("Download secret", { id: "secret.value.download.label" })
-        : msg("View secret", { id: "secret.value.view.label" });
+        ? msg(str`Download ${secret.name}`, { id: "secret.value.download.label" })
+        : msg(str`View ${secret.name}`, { id: "secret.value.view.label" });
 
     const view = async (event: Event) => {
         const button = event.currentTarget as HTMLButtonElement;
@@ -43,7 +47,7 @@ export function SecretValueButton(secret: Secret, control = false) {
                     html`<ak-secret-value
                         .value=${value}
                         .label=${msg("Value", { id: "secret.value.label" })}
-                        ?multiline=${secret.type === SecretTypeEnum.Multiline}
+                        ?multiline=${value.includes("\n")}
                     ></ak-secret-value>`,
                     { headline: secret.name, invokerElement: button, size: PFSize.Medium },
                 );
@@ -61,7 +65,7 @@ export function SecretValueButton(secret: Secret, control = false) {
         aria-label=${label}
         @click=${view}
     >
-        <pf-tooltip position="top" content=${label}>
+        <pf-tooltip position="top" content=${tooltip}>
             <i class=${isFile ? "fas fa-download" : "fas fa-eye"} aria-hidden="true"></i>
         </pf-tooltip>
     </button>`;

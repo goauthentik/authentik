@@ -1,5 +1,5 @@
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
+import "#elements/forms/SearchSelect/ak-search-select";
 import HostStyles from "./ak-file-search-input.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
@@ -11,7 +11,9 @@ import { docLink } from "#common/global";
 import { AKElement } from "#elements/Base";
 import { renderModal } from "#elements/dialogs";
 import { AKFormSubmittedEvent } from "#elements/forms/events";
-import SearchSelect from "#elements/forms/SearchSelect/index";
+import type { SearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
+import type { SearchSelectChangeEvent } from "#elements/forms/SearchSelect/events";
+import type { SearchSelectSource } from "#elements/forms/SearchSelect/shared";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -29,8 +31,30 @@ import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
-const renderElement = (item: FileList) => item.name;
-const renderValue = (item?: FileList | null) => item?.name;
+const fileSources = new Map<UsageEnum, SearchSelectSource<FileList>>();
+
+/**
+ * A search select source for files with the given usage.
+ */
+export function fileSource(usage: UsageEnum): SearchSelectSource<FileList> {
+    const cached = fileSources.get(usage);
+
+    if (cached) return cached;
+
+    const source: SearchSelectSource<FileList> = {
+        fetchObjects: (query) =>
+            aki(AdminApi).adminFileList({
+                usage,
+                ...(query ? { search: query.toLocaleLowerCase() } : {}),
+            }),
+        keyOf: (file) => file.name,
+        labelOf: (file) => file.name,
+    };
+
+    fileSources.set(usage, source);
+
+    return source;
+}
 
 /**
  * File Search Input Component
@@ -73,7 +97,7 @@ export class AKFileSearchInput extends AKElement {
     @property({ type: String, reflect: false })
     public fieldID?: string = IDGenerator.elementID().toString();
 
-    protected fileSearchRef = createRef<SearchSelect>();
+    protected fileSearchRef = createRef<SearchSelect<FileList>>();
 
     protected openFileUploadModal = (invocationEvent?: Event) => {
         invocationEvent?.stopPropagation();
@@ -117,40 +141,15 @@ export class AKFileSearchInput extends AKElement {
                 }
 
                 this.value = createdFile.name ?? "";
+                fileSearch.value = this.value;
 
-                return fileSearch.updateData();
+                return fileSearch.refresh();
             },
         });
     };
 
-    #selected = (item: FileList) => {
-        return this.value === item.name;
-    };
-
-    protected changeListener = (event: CustomEvent<{ value: FileList | null }>) => {
-        this.value = event.detail.value?.name ?? "";
-    };
-
-    protected refresh = async (query?: string): Promise<FileList[]> => {
-        const results = await aki(AdminApi).adminFileList({
-            usage: this.usage,
-            ...(query ? { search: query.toLocaleLowerCase() } : {}),
-        });
-
-        // Custom URLs and Font Awesome icons are valid values, but are not returned by the files
-        // API. Include the current value on the initial load so the control can select it.
-        if (!query && this.value && !results.some((item) => item.name === this.value)) {
-            return [
-                {
-                    name: this.value,
-                    url: this.value,
-                    mimeType: "",
-                },
-                ...results,
-            ];
-        }
-
-        return results;
+    protected changeListener = (event: SearchSelectChangeEvent<FileList>) => {
+        this.value = (event.currentTarget as SearchSelect<FileList>).value;
     };
 
     protected override render(): SlottedTemplateResult {
@@ -171,14 +170,14 @@ export class AKFileSearchInput extends AKElement {
                 <ak-search-select
                     ${ref(this.fileSearchRef)}
                     class="ak-file-search-input__select"
-                    .fieldID=${this.fieldID}
-                    .fetchObjects=${this.refresh.bind(this)}
-                    .renderElement=${renderElement}
-                    .value=${renderValue}
-                    .selected=${this.#selected}
+                    id=${ifPresent(this.fieldID)}
+                    name=${ifPresent(this.name)}
+                    .source=${fileSource(this.usage)}
+                    .value=${this.value}
                     placeholder=${msg("Select a file or enter a value...", {
                         id: "file-picker.value.placeholder",
                     })}
+                    ?required=${this.required}
                     ?blankable=${this.blankable}
                     creatable
                     @ak-change=${this.changeListener}

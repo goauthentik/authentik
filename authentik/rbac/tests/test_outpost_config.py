@@ -58,8 +58,12 @@ class TestOutpostConfig(APITestCase):
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
         self.assertEqual(body["pagination"]["count"], 1)
-        self.assertEqual(body["results"][0]["client_secret"], provider.client_secret_ref.value)
-        self.assertEqual(body["results"][0]["cookie_secret"], provider.cookie_secret_ref.value)
+        self.assertEqual(
+            body["results"][0]["client_secret"], provider.client_secret_ref.secret_value
+        )
+        self.assertEqual(
+            body["results"][0]["cookie_secret"], provider.cookie_secret_ref.secret_value
+        )
 
     def test_radius_view(self):
         """Test radius outpost config (role has global view permission)"""
@@ -190,4 +194,6 @@ class TestOutpostConfig(APITestCase):
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
         self.assertEqual(body["pagination"]["count"], 1)
-        self.assertEqual(body["results"][0]["shared_secret"], provider.shared_secret_ref.value)
+        self.assertEqual(
+            body["results"][0]["shared_secret"], provider.shared_secret_ref.secret_value
+        )

@@ -16,8 +16,8 @@ class TestSecretReferenceFields(TestCase):
 
     def test_consumer_fields(self):
         user = create_test_user()
-        secret = Secret.objects.create(name="restricted", value="{}")
-        other = Secret.objects.create(name="other", value="{}")
+        secret = Secret.objects.create(name="restricted", secret_value="{}")
+        other = Secret.objects.create(name="other", secret_value="{}")
         request = APIRequestFactory().patch("/")
         request.user = user
         user.assign_perms_to_managed_role("authentik_crypto_secrets.view_secret", secret)
@@ -51,7 +51,7 @@ class TestSecretReferenceAPI(APITestCase):
     def test_provider_edit_does_not_grant_access_to_other_secrets(self):
         user = create_test_user()
         provider = OAuth2Provider.objects.create(name="provider")
-        secret = Secret.objects.create(name="restricted", value="{}")
+        secret = Secret.objects.create(name="restricted", secret_value="{}")
         user.assign_perms_to_managed_role(
             [
                 "authentik_providers_oauth2.view_oauth2provider",

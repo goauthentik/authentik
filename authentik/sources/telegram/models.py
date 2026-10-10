@@ -126,6 +126,8 @@ class TelegramSource(Source):
 class TelegramSourcePropertyMapping(PropertyMapping):
     """Map Telegram properties to User or Group object attributes"""
 
+    expression_allowed_types = [dict]
+
     @property
     def component(self) -> str:
         return "ak-property-mapping-source-telegram-form"

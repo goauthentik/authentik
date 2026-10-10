@@ -7,7 +7,6 @@ import { PFSize } from "#common/enums";
 
 import { AKElement } from "#elements/Base";
 import { ifPresent } from "#elements/utils/attributes";
-import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { Task, TaskStatus } from "@lit/task";
 import { css, html } from "lit";
@@ -62,8 +61,21 @@ const SPINNER_TIMEOUT = 1000 * 1.5;
  * `onFailure` call their `super.` equivalents.
  */
 
-export abstract class BaseTaskButton<R = unknown> extends CustomEmitterElement(AKElement) {
+export abstract class BaseTaskButton<R = unknown> extends AKElement {
     public eventPrefix = "ak-button";
+
+    /**
+     * Dispatch `${eventPrefix}-${suffix}`, bubbling and crossing shadow roots.
+     */
+    #dispatch(suffix: "click" | "success" | "failure" | "reset", detail: object = {}): void {
+        this.dispatchEvent(
+            new CustomEvent(`${this.eventPrefix}-${suffix}`, {
+                bubbles: true,
+                composed: true,
+                detail,
+            }),
+        );
+    }
 
     public static styles = [...buttonStyles];
 
@@ -95,7 +107,7 @@ export abstract class BaseTaskButton<R = unknown> extends CustomEmitterElement(A
 
     protected onComplete() {
         setTimeout(() => {
-            this.dispatchCustomEvent(`${this.eventPrefix}-reset`);
+            this.#dispatch("reset");
             // set-up for the next task...
             this.actionTask = this.buildTask();
             this.requestUpdate();
@@ -103,17 +115,13 @@ export abstract class BaseTaskButton<R = unknown> extends CustomEmitterElement(A
     }
 
     protected onSuccess(result: R): void {
-        this.dispatchCustomEvent(`${this.eventPrefix}-success`, {
-            result,
-        });
+        this.#dispatch("success", { result });
 
         this.onComplete();
     }
 
     protected onError(error: unknown) {
-        this.dispatchCustomEvent(`${this.eventPrefix}-failure`, {
-            error,
-        });
+        this.#dispatch("failure", { error });
 
         this.onComplete();
     }
@@ -124,7 +132,7 @@ export abstract class BaseTaskButton<R = unknown> extends CustomEmitterElement(A
             return;
         }
 
-        this.dispatchCustomEvent(`${this.eventPrefix}-click`);
+        this.#dispatch("click");
         this.actionTask.run();
     }
 

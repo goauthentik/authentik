@@ -75,9 +75,6 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     """Protect applications that don't support any of the other
     Protocols by using a Reverse-Proxy."""
 
-    # Remove the legacy credential columns in 2027.2.
-    cookie_secret = models.TextField(default=get_cookie_secret)
-
     internal_host = models.TextField(
         validators=[DomainlessURLValidator(schemes=("http", "https"))],
         blank=True,
@@ -141,13 +138,13 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         blank=True,
     )
 
+    # Legacy column, kept for downgrades. Remove in 2027.2.
+    cookie_secret = models.TextField(default=get_cookie_secret)
     cookie_secret_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Cookie secret"),
         on_delete=models.PROTECT,
-        null=True,
         blank=True,
-        default=None,
         related_name="proxy_providers",
     )
     cookie_domain = models.TextField(default="", blank=True)
@@ -155,7 +152,9 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     def save(self, *args, **kwargs):
         with transaction.atomic():
             if not self.cookie_secret_ref_id:
-                self.cookie_secret_ref = create_named_secret(f"{self.name} cookie secret")
+                self.cookie_secret_ref = create_named_secret(
+                    f"{self.name} cookie secret", secret_value=get_cookie_secret()
+                )
                 if (update_fields := kwargs.get("update_fields")) is not None:
                     kwargs["update_fields"] = set(update_fields) | {"cookie_secret_ref"}
             return super().save(*args, **kwargs)

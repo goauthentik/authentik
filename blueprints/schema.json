@@ -8013,7 +8013,7 @@
                     "type": "string",
                     "enum": [
                         "text",
-                        "multiline",
+                        "json",
                         "file"
                     ],
                     "title": "Type"
@@ -15390,9 +15390,8 @@
                     "minLength": 1,
                     "title": "Consumer key"
                 },
-                "consumer_secret_ref": {
+                "consumer_secret": {
                     "type": "string",
-                    "format": "uuid",
                     "title": "Consumer secret"
                 },
                 "additional_scopes": {
@@ -15709,9 +15708,9 @@
                     "title": "Allow friends",
                     "description": "Allow friends to authenticate, even if you don't share a server."
                 },
-                "plex_token_ref": {
+                "plex_token": {
                     "type": "string",
-                    "format": "uuid",
+                    "minLength": 1,
                     "title": "Plex token",
                     "description": "Plex token used to check friends"
                 }
@@ -16460,9 +16459,9 @@
                     "title": "Bot username",
                     "description": "Telegram bot username"
                 },
-                "bot_token_ref": {
+                "bot_token": {
                     "type": "string",
-                    "format": "uuid",
+                    "minLength": 1,
                     "title": "Bot token",
                     "description": "Telegram bot token"
                 },
