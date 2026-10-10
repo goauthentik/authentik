@@ -1,6 +1,6 @@
 import "#components/ak-file-search-input";
 import "#components/ak-radio-input";
-import "#components/ak-secret-textarea-input";
+import "#components/ak-secret-search-input";
 import "#components/ak-slug-input";
 import "#components/ak-text-input";
 import "#components/ak-switch-input";
@@ -15,6 +15,7 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuthSourc
 import { aki } from "#common/api/client";
 
 import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 import { ifPreviousValue } from "#elements/utils/properties";
 
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
@@ -432,15 +433,16 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                         />
                         <p class="pf-c-form__helper-text">${msg("Also known as Client ID.")}</p>
                     </ak-form-element-horizontal>
-                    <ak-secret-textarea-input
+                    <ak-secret-search-input
+                        name="consumerSecretRef"
                         label=${msg("Consumer secret")}
-                        name="consumerSecret"
-                        input-hint="code"
+                        value=${ifPresent(this.instance?.consumerSecretRef)}
+                        blankable
                         help=${msg(
                             "Also known as Client Secret. Can be left empty for public clients using PKCE.",
+                            { id: "source.oauth.form.secret.description" },
                         )}
-                        ?revealed=${!this.instance}
-                    ></ak-secret-textarea-input>
+                    ></ak-secret-search-input>
                     <ak-form-element-horizontal label=${msg("Scopes")} name="additionalScopes">
                         <input
                             type="text"

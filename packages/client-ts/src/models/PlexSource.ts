@@ -105,7 +105,7 @@ export interface PlexSource {
     /**
      * Plex token used to check friends
      */
-    plexToken: string;
+    plexTokenRef: string;
 }
 
 /**
@@ -153,10 +153,10 @@ export function instanceOfPlexSource(value: object): value is PlexSource {
     )
         return false;
     if (
-        (!("plexToken" in (value as Record<string, any>)) &&
-            !("plex_token" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["plexToken"] === undefined &&
-            (value as Record<string, any>)["plex_token"] === undefined)
+        (!("plexTokenRef" in (value as Record<string, any>)) &&
+            !("plex_token_ref" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["plexTokenRef"] === undefined &&
+            (value as Record<string, any>)["plex_token_ref"] === undefined)
     )
         return false;
     return true;
@@ -217,7 +217,7 @@ export function PlexSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         clientId: json["client_id"] == null ? undefined : json["client_id"],
         allowedServers: json["allowed_servers"] == null ? undefined : json["allowed_servers"],
         allowFriends: json["allow_friends"] == null ? undefined : json["allow_friends"],
-        plexToken: json["plex_token"],
+        plexTokenRef: json["plex_token_ref"],
     };
 }
 
@@ -260,6 +260,6 @@ export function PlexSourceToJSONTyped(
         client_id: value["clientId"],
         allowed_servers: value["allowedServers"],
         allow_friends: value["allowFriends"],
-        plex_token: value["plexToken"],
+        plex_token_ref: value["plexTokenRef"],
     };
 }

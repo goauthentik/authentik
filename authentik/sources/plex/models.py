@@ -59,7 +59,17 @@ class PlexSource(ScheduledModel, Source):
         default=True,
         help_text=_("Allow friends to authenticate, even if you don't share a server."),
     )
+    # Legacy column, kept for downgrades. Remove in 2027.2.
     plex_token = models.TextField(help_text=_("Plex token used to check friends"))
+    plex_token_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Plex token"),
+        help_text=_("Plex token used to check friends"),
+        on_delete=models.PROTECT,
+        null=True,
+        default=None,
+        related_name="plex_sources",
+    )
 
     @property
     def component(self) -> str:
