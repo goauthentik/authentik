@@ -4,13 +4,11 @@ from base64 import b64encode
 
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from pyrad.dictionary import Attribute, Dictionary
 from pyrad.packet import AuthPacket
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ListField
 from rest_framework.mixins import ListModelMixin
 from rest_framework.request import Request
@@ -23,7 +21,6 @@ from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Application
-from authentik.crypto.secrets.models import Secret
 from authentik.crypto.validators import TLS_KEY_TYPES, KeyTypeValidator
 from authentik.events.models import Event, EventAction
 from authentik.lib.expression.exceptions import ControlFlowException
@@ -45,12 +42,6 @@ class RadiusProviderSerializer(
 
     outpost_set = ListField(child=CharField(), read_only=True, source="outpost_set.all")
 
-    def validate_shared_secret_ref(self, secret: Secret | None) -> Secret | None:
-        # A new provider generates its own secret, an existing one must keep a secret.
-        if not secret and self.instance:
-            raise ValidationError(_("A shared secret is required."))
-        return secret
-
     class Meta:
         model = RadiusProvider
         fields = ProviderSerializer.Meta.fields + [
@@ -63,7 +54,6 @@ class RadiusProviderSerializer(
         extra_kwargs = {
             **ProviderSerializer.Meta.extra_write_kwargs,
             "certificate": {"validators": [KeyTypeValidator(*TLS_KEY_TYPES)]},
-            "shared_secret_ref": {"allow_null": True},
         }
 
 
