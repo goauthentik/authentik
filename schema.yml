@@ -49737,8 +49737,8 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: How many attempts a user has before the flow is canceled. To
-            lock the user out, use a reputation policy and a user_write stage.
+          description: How many attempts a user has before the flow is canceled. This
+            only cancels the flow, it does not lock the user's password.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
@@ -49774,8 +49774,8 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: How many attempts a user has before the flow is canceled. To
-            lock the user out, use a reputation policy and a user_write stage.
+          description: How many attempts a user has before the flow is canceled. This
+            only cancels the flow, it does not lock the user's password.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
@@ -52284,8 +52284,8 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: How many attempts a user has before the flow is canceled. To
-            lock the user out, use a reputation policy and a user_write stage.
+          description: How many attempts a user has before the flow is canceled. This
+            only cancels the flow, it does not lock the user's password.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password

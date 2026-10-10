@@ -1,13 +1,21 @@
 """password stage models"""
 
+from typing import Any
+
+from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.postgres.fields import ArrayField
-from django.db import models
+from django.db import models, transaction
+from django.http import HttpRequest
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 
+from authentik.core.models import User
+from authentik.core.signals import password_changed, password_hash_changed
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, Stage
+from authentik.stages.authenticator.models import Device
 from authentik.stages.password import (
     BACKEND_APP_PASSWORD,
     BACKEND_INBUILT,
@@ -49,7 +57,30 @@ class PasswordStage(ConfigurableStage, Stage):
         default=5,
         help_text=_(
             "How many attempts a user has before the flow is canceled. "
-            "To lock the user out, use a reputation policy and a user_write stage."
+            "This only cancels the flow, it does not lock the user's password."
+        ),
+    )
+    failed_attempts_before_lockout = models.PositiveIntegerField(
+        default=0,
+        help_text=_(
+            "How many consecutive failed attempts lock the user's password until an "
+            "administrator unlocks it. Set to 0 to never lock."
+        ),
+    )
+    last_attempt_warning_message = models.TextField(
+        blank=True,
+        default="",
+        help_text=_(
+            "Warning shown when the user has one password attempt remaining. "
+            "Leave blank to show no warning."
+        ),
+    )
+    lockout_message = models.TextField(
+        blank=True,
+        default="",
+        help_text=_(
+            "Message shown when the user's password has been locked. "
+            "Leave blank to show a generic authentication error."
         ),
     )
     allow_show_password = models.BooleanField(
@@ -88,3 +119,102 @@ class PasswordStage(ConfigurableStage, Stage):
     class Meta:
         verbose_name = _("Password Stage")
         verbose_name_plural = _("Password Stages")
+
+
+class PasswordDevice(Device):
+    """A user's password, excluded from MFA discovery and validation."""
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="password_device")
+    password = models.CharField(max_length=128)
+    password_change_date = models.DateTimeField(default=now)
+    failed_attempts = models.PositiveIntegerField(default=0)
+    locked_at = models.DateTimeField(default=None, null=True)
+
+    @classmethod
+    def set_password(
+        cls,
+        user: User,
+        raw_password: str | None,
+        *,
+        signal: bool = True,
+        sender: Any = None,
+        request: HttpRequest | None = None,
+    ):
+        """Hash and store a password. `None` revokes the password."""
+        if signal:
+            password_changed.send(
+                sender=sender or user, user=user, password=raw_password, request=request
+            )
+        cls._store(user, make_password(raw_password))
+
+    @classmethod
+    def set_password_from_hash(
+        cls,
+        user: User,
+        password_hash: str,
+        *,
+        signal: bool = True,
+        sender: Any = None,
+        request: HttpRequest | None = None,
+    ):
+        """Store an already validated password hash as-is.
+
+        Because no raw password is available, downstream password sync integrations
+        such as LDAP and Kerberos cannot be updated from this code path."""
+        if signal:
+            password_hash_changed.send(sender=sender or user, user=user, request=request)
+        cls._store(user, password_hash)
+
+    @classmethod
+    def set_unusable_password(cls, user: User):
+        """Refuse password authentication until a new password is set.
+
+        A user without a password device already has no usable password."""
+        with transaction.atomic():
+            device = cls.objects.select_for_update().filter(user=user).first()
+            if device is None:
+                return
+            device.password = make_password(None)
+            device.save(update_fields=["password", "last_updated"])
+            user.password_device = device
+            # Saving the user dispatches outgoing sync and invalidates cached policy results.
+            user.save(update_fields=["last_updated"])
+
+    @classmethod
+    def _store(cls, user: User, password_hash: str):
+        """Replace the password, keeping any lock on the device."""
+        defaults = {"password": password_hash, "password_change_date": now(), "failed_attempts": 0}
+        with transaction.atomic():
+            device, _ = cls.objects.update_or_create(
+                user=user, defaults=defaults, create_defaults={"name": "Password", **defaults}
+            )
+            user.password_device = device
+            # Saving the user dispatches outgoing sync and invalidates cached policy results.
+            user.save(update_fields=["last_updated"])
+
+    def check_password(self, raw_password: str) -> bool:
+        """Upgrade outdated hashes without replacing a concurrently changed password."""
+
+        def setter(raw_password):
+            password = make_password(raw_password)
+            if (
+                type(self)
+                .objects.filter(pk=self.pk, password=self.password)
+                .update(password=password)
+            ):
+                self.password = password
+
+        return check_password(raw_password, self.password, setter)
+
+    def __str__(self):
+        return str(self.name) or str(self.user_id)
+
+    class Meta(Device.Meta):
+        verbose_name = _("Password Device")
+        verbose_name_plural = _("Password Devices")
+        indexes = [models.Index(fields=["password_change_date"])]
+
+    @property
+    def locked(self) -> bool:
+        """Whether this password currently refuses authentication."""
+        return self.locked_at is not None

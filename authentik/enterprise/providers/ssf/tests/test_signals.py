@@ -20,6 +20,7 @@ from authentik.enterprise.providers.ssf.models import (
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
+from authentik.stages.password.models import PasswordDevice
 
 
 class TestSignals(APITestCase):
@@ -57,8 +58,7 @@ class TestSignals(APITestCase):
     def _assert_password_credential_change(self, user, change_type: str):
         stream = Stream.objects.filter(provider=self.provider).first()
         self.assertIsNotNone(stream)
-        event = StreamEvent.objects.filter(stream=stream).first()
-        self.assertIsNotNone(event)
+        event = StreamEvent.objects.get(stream=stream, type=EventTypes.CAEP_CREDENTIAL_CHANGE)
         self.assertEqual(event.status, SSFEventStatus.PENDING_FAILED)
         event_payload = event.payload["events"][
             "https://schemas.openid.net/secevent/caep/event-type/credential-change"
@@ -95,8 +95,8 @@ class TestSignals(APITestCase):
         """Test user password change"""
         user = create_test_user()
         self.client.force_login(user)
-        user.set_password(generate_id())
-        user.save()
+        StreamEvent.objects.all().delete()
+        PasswordDevice.set_password(user, generate_id())
 
         self._assert_password_credential_change(user, "update")
 
@@ -104,8 +104,8 @@ class TestSignals(APITestCase):
         """Test user password change from a pre-hashed password."""
         user = create_test_user()
         self.client.force_login(user)
-        user.set_password_from_hash(make_password(generate_id()))
-        user.save()
+        StreamEvent.objects.all().delete()
+        PasswordDevice.set_password_from_hash(user, make_password(generate_id()))
 
         self._assert_password_credential_change(user, "update")
 
@@ -113,8 +113,8 @@ class TestSignals(APITestCase):
         """Test explicit password revoke."""
         user = create_test_user()
         self.client.force_login(user)
-        user.set_password(None)
-        user.save()
+        StreamEvent.objects.all().delete()
+        PasswordDevice.set_password(user, None)
 
         self._assert_password_credential_change(user, "revoke")
 
@@ -182,8 +182,8 @@ class TestSignals(APITestCase):
         )
         user = create_test_user()
         self.client.force_login(user)
-        user.set_password(generate_id())
-        user.save()
+        StreamEvent.objects.all().delete()
+        PasswordDevice.set_password(user, generate_id())
 
         stream = Stream.objects.filter(provider=self.provider).first()
         self.assertIsNotNone(stream)
