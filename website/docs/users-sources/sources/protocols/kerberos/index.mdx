@@ -53,15 +53,13 @@ $ kadmin
 > add_principal authentik/admin@REALM.COMPANY
 > ktadd -k /tmp/authentik.keytab authentik/admin@REALM.COMPANY
 > exit
-$ cat /tmp/authentik.keytab | base64
-$ rm /tmp/authentik.keytab
 ```
 
 In authentik, configure these extra options:
 
 - Sync users: enable it
 - Sync principal: `authentik/admin@REALM.COMPANY`
-- Sync keytab: create or select a **Multi-line text** secret containing the base64-encoded keytab created above, or upload the keytab as a **File** secret.
+- Sync keytab: create or select a **File** [secret](../../../../sys-mgmt/secrets/index.mdx), upload `/tmp/authentik.keytab` to it, and then delete the file.
 
 If you do not wish to use a keytab, you can also configure authentik to authenticate using a password or an existing credentials cache.
 
@@ -74,13 +72,11 @@ $ kadmin
 > add_principal HTTP/authentik.company@REALM.COMPANY
 > ktadd -k /tmp/authentik.keytab HTTP/authentik.company@REALM.COMPANY
 > exit
-$ cat /tmp/authentik.keytab | base64
-$ rm /tmp/authentik.keytab
 ```
 
 In authentik, configure these extra options:
 
-- SPNEGO keytab: create or select a **Multi-line text** secret containing the base64-encoded keytab created above, or upload the keytab as a **File** secret.
+- SPNEGO keytab: create or select a **File** secret, upload `/tmp/authentik.keytab` to it, and then delete the file.
 
 If you do not wish to use a keytab, you can also configure authentik to use an existing credentials cache.
 

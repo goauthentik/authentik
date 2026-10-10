@@ -16,7 +16,7 @@ Currently, only authentication requests are supported.
 
 ### Shared secret
 
-The shared secret is a [Secret](../../../sys-mgmt/secrets/index.mdx) object. Leave the field empty on create and authentik creates one with a generated value. When the secret is [rotated](../../../sys-mgmt/secrets/rotation.mdx), the outpost picks up the new value within a few seconds, and RADIUS clients still using the old one are rejected until you update them.
+The shared secret is stored as a [secret](../../../sys-mgmt/secrets/index.mdx). If you don't select one when you create the provider, authentik creates a secret with a generated value. When you [rotate the secret](../../../sys-mgmt/secrets/manage-secrets.mdx#rotate-a-secret), the outpost receives the new value automatically, and RADIUS clients that still use the old value are rejected until you update them.
 
 ### Authentication flow
 
