@@ -7,4 +7,3 @@ from django.dispatch import Signal
 secret_value_validating = Signal()
 # Sent with `secret` after its value changed, inside the transaction.
 secret_value_changed = Signal()
-secret_value_validating = Signal()
