@@ -97,9 +97,11 @@ class SecretSerializer(ManagedSerializer, ModelSerializer):
         secret_type = attrs.get("type", instance.type if instance else SecretType.TEXT)
         if not instance and secret_type != SecretType.TEXT and not attrs.get("secret_value"):
             raise ValidationError({"value": _("A value is required for this type.")})
-        if "length" in attrs and (
-            instance or secret_type != SecretType.TEXT or attrs.get("secret_value")
-        ):
+        if instance:
+            # Re-applying a blueprint passes the length again, but it only applies when
+            # the secret is created.
+            attrs.pop("length", None)
+        elif "length" in attrs and (secret_type != SecretType.TEXT or attrs.get("secret_value")):
             raise ValidationError(
                 {"length": _("Length only applies when generating a new text secret.")}
             )
