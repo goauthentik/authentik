@@ -3197,7 +3197,8 @@ paths:
   /core/applications/@accessible/:
     get:
       operationId: core_applications_accessible_list
-      description: Get applications accessible for user
+      description: List applications the user passes policies for, regardless of RBAC
+        permissions
       parameters:
       - in: query
         name: for_user

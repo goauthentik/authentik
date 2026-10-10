@@ -1590,7 +1590,7 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get applications accessible for user
+     * List applications the user passes policies for, regardless of RBAC permissions
      */
     async coreApplicationsAccessibleListRaw(
         requestParameters: CoreApplicationsAccessibleListRequest,
@@ -1606,7 +1606,7 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get applications accessible for user
+     * List applications the user passes policies for, regardless of RBAC permissions
      */
     async coreApplicationsAccessibleList(
         requestParameters: CoreApplicationsAccessibleListRequest = {},
