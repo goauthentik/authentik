@@ -14,10 +14,9 @@ if TYPE_CHECKING:
 class FleetConnector(Connector):
     """Ingest device data and policy compliance from a Fleet instance."""
 
-    # Remove the legacy credential columns in 2027.2.
-    token = models.TextField()
-
     url = models.URLField()
+    # Legacy column, kept for downgrades. Remove in 2027.2.
+    token = models.TextField()
     token_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Fleet API Token"),

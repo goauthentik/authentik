@@ -18,9 +18,8 @@ from authentik.stages.authenticator.models import Device
 class AuthenticatorEndpointGDTCStage(DeprecatedMixin, ConfigurableStage, FriendlyNamedStage, Stage):
     """Verify Google Chrome Device Trust connection for the user's browser."""
 
-    # Remove the legacy credential columns in 2027.2.
+    # Legacy column, kept for downgrades. Remove in 2027.2.
     credentials = models.JSONField(default=dict)
-
     credentials_ref = models.ForeignKey(
         "authentik_crypto_secrets.Secret",
         verbose_name=_("Google credentials"),
