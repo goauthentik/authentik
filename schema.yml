@@ -43547,11 +43547,15 @@ components:
           format: uuid
           nullable: true
           title: Sync keytab
+          description: Keytab to authenticate to kadmin for sync. A file secret with
+            the keytab, or a text secret in the form TYPE:residual
         sync_ccache_ref:
           type: string
           format: uuid
           nullable: true
-          title: Sync ccache
+          title: Sync credentials cache
+          description: Credentials cache to authenticate to kadmin for sync. A text
+            secret in the form TYPE:residual, or a file secret with the cache
         connectivity:
           type: object
           additionalProperties:
@@ -43567,12 +43571,16 @@ components:
           type: string
           format: uuid
           nullable: true
-          title: Spnego keytab
+          title: SPNEGO keytab
+          description: SPNEGO keytab. A file secret with the keytab, or a text secret
+            in the form FILE:path
         spnego_ccache_ref:
           type: string
           format: uuid
           nullable: true
-          title: Spnego ccache
+          title: SPNEGO credentials cache
+          description: Credentials cache to use for SPNEGO. A text secret in the form
+            TYPE:residual, or a file secret with the cache
         password_login_update_internal_password:
           type: boolean
           description: If enabled, the authentik-stored password will be updated upon
@@ -43748,11 +43756,15 @@ components:
           format: uuid
           nullable: true
           title: Sync keytab
+          description: Keytab to authenticate to kadmin for sync. A file secret with
+            the keytab, or a text secret in the form TYPE:residual
         sync_ccache_ref:
           type: string
           format: uuid
           nullable: true
-          title: Sync ccache
+          title: Sync credentials cache
+          description: Credentials cache to authenticate to kadmin for sync. A text
+            secret in the form TYPE:residual, or a file secret with the cache
         spnego_server_name:
           type: string
           description: Force the use of a specific server name for SPNEGO. Must be
@@ -43761,12 +43773,16 @@ components:
           type: string
           format: uuid
           nullable: true
-          title: Spnego keytab
+          title: SPNEGO keytab
+          description: SPNEGO keytab. A file secret with the keytab, or a text secret
+            in the form FILE:path
         spnego_ccache_ref:
           type: string
           format: uuid
           nullable: true
-          title: Spnego ccache
+          title: SPNEGO credentials cache
+          description: Credentials cache to use for SPNEGO. A text secret in the form
+            TYPE:residual, or a file secret with the cache
         password_login_update_internal_password:
           type: boolean
           description: If enabled, the authentik-stored password will be updated upon
@@ -51704,11 +51720,15 @@ components:
           format: uuid
           nullable: true
           title: Sync keytab
+          description: Keytab to authenticate to kadmin for sync. A file secret with
+            the keytab, or a text secret in the form TYPE:residual
         sync_ccache_ref:
           type: string
           format: uuid
           nullable: true
-          title: Sync ccache
+          title: Sync credentials cache
+          description: Credentials cache to authenticate to kadmin for sync. A text
+            secret in the form TYPE:residual, or a file secret with the cache
         spnego_server_name:
           type: string
           description: Force the use of a specific server name for SPNEGO. Must be
@@ -51717,12 +51737,16 @@ components:
           type: string
           format: uuid
           nullable: true
-          title: Spnego keytab
+          title: SPNEGO keytab
+          description: SPNEGO keytab. A file secret with the keytab, or a text secret
+            in the form FILE:path
         spnego_ccache_ref:
           type: string
           format: uuid
           nullable: true
-          title: Spnego ccache
+          title: SPNEGO credentials cache
+          description: Credentials cache to use for SPNEGO. A text secret in the form
+            TYPE:residual, or a file secret with the cache
         password_login_update_internal_password:
           type: boolean
           description: If enabled, the authentik-stored password will be updated upon

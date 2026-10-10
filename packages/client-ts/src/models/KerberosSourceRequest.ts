@@ -97,13 +97,28 @@ export interface KerberosSourceRequest {
      * Password to authenticate to kadmin for sync
      */
     syncPasswordRef?: string | null;
+    /**
+     * Keytab to authenticate to kadmin for sync. A file secret with the keytab, or a text secret in
+     * the form TYPE:residual
+     */
     syncKeytabRef?: string | null;
+    /**
+     * Credentials cache to authenticate to kadmin for sync. A text secret in the form
+     * TYPE:residual, or a file secret with the cache
+     */
     syncCcacheRef?: string | null;
     /**
      * Force the use of a specific server name for SPNEGO. Must be in the form HTTP@hostname
      */
     spnegoServerName?: string;
+    /**
+     * SPNEGO keytab. A file secret with the keytab, or a text secret in the form FILE:path
+     */
     spnegoKeytabRef?: string | null;
+    /**
+     * Credentials cache to use for SPNEGO. A text secret in the form TYPE:residual, or a file
+     * secret with the cache
+     */
     spnegoCcacheRef?: string | null;
     /**
      * If enabled, the authentik-stored password will be updated upon login with the Kerberos
