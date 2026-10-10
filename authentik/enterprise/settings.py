@@ -24,5 +24,5 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "authentik.enterprise.middleware.EnterpriseMiddleware",
-    "authentik.enterprise.next_actions.middleware.PendingNextActionsMiddleware",
+    "authentik.enterprise.required_actions.middleware.RequiredActionsMiddleware",
 ]

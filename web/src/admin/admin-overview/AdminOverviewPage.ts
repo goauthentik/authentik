@@ -22,8 +22,7 @@ import type { QuickAction } from "#elements/cards/QuickActionsCard";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
 import { toAdminInterface } from "#elements/router/core/interfaces";
-
-import { setPageDetails } from "#components/ak-page-navbar";
+import { setPageDetails } from "#elements/router/meta";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
