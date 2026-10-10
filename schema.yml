@@ -2067,6 +2067,50 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /authenticators/password/{id}/lock/:
+    post:
+      operationId: authenticators_password_lock_create
+      description: Prevent a password authenticator from authenticating.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Password Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully locked authenticator
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /authenticators/password/{id}/unlock/:
+    post:
+      operationId: authenticators_password_unlock_create
+      description: Allow a locked password authenticator to authenticate again.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Password Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully unlocked authenticator
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /authenticators/sms/:
     get:
       operationId: authenticators_sms_list
@@ -32956,6 +33000,10 @@ paths:
         name: failed_attempts_before_cancel
         schema:
           type: integer
+      - in: query
+        name: failed_attempts_before_lockout
+        schema:
+          type: integer
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -40376,6 +40424,8 @@ components:
       - user_offboarded
       - suspicious_request
       - password_set
+      - authenticator_locked
+      - authenticator_unlocked
       - secret_view
       - secret_rotate
       - invitation_used
@@ -49739,6 +49789,20 @@ components:
           minimum: -2147483648
           description: How many attempts a user has before the flow is canceled. This
             only cancels the flow, it does not lock the user's password.
+        failed_attempts_before_lockout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many consecutive failed attempts lock the user's password
+            until an administrator unlocks it. Set to 0 to never lock.
+        last_attempt_warning_message:
+          type: string
+          description: Warning shown when the user has one password attempt remaining.
+            Leave blank to show no warning.
+        lockout_message:
+          type: string
+          description: Message shown when the user's password has been locked. Leave
+            blank to show a generic authentication error.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
@@ -49776,6 +49840,20 @@ components:
           minimum: -2147483648
           description: How many attempts a user has before the flow is canceled. This
             only cancels the flow, it does not lock the user's password.
+        failed_attempts_before_lockout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many consecutive failed attempts lock the user's password
+            until an administrator unlocks it. Set to 0 to never lock.
+        last_attempt_warning_message:
+          type: string
+          description: Warning shown when the user has one password attempt remaining.
+            Leave blank to show no warning.
+        lockout_message:
+          type: string
+          description: Message shown when the user's password has been locked. Leave
+            blank to show a generic authentication error.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
@@ -52286,6 +52364,20 @@ components:
           minimum: -2147483648
           description: How many attempts a user has before the flow is canceled. This
             only cancels the flow, it does not lock the user's password.
+        failed_attempts_before_lockout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many consecutive failed attempts lock the user's password
+            until an administrator unlocks it. Set to 0 to never lock.
+        last_attempt_warning_message:
+          type: string
+          description: Warning shown when the user has one password attempt remaining.
+            Leave blank to show no warning.
+        lockout_message:
+          type: string
+          description: Message shown when the user's password has been locked. Leave
+            blank to show a generic authentication error.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
@@ -60241,6 +60333,14 @@ components:
           type: string
           format: date-time
           readOnly: true
+        password_locked:
+          type: boolean
+          description: Whether the user's password currently refuses authentication.
+          readOnly: true
+        password_device:
+          type: integer
+          readOnly: true
+          nullable: true
         last_updated:
           type: string
           format: date-time
@@ -60253,6 +60353,8 @@ components:
       - last_updated
       - name
       - password_change_date
+      - password_device
+      - password_locked
       - pk
       - roles_obj
       - uid

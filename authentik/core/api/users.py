@@ -162,6 +162,13 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         validators=[UniqueValidator(queryset=User.objects.all().order_by("username"))],
     )
     password_change_date = DateTimeField(read_only=True)
+    password_locked = SerializerMethodField()
+    password_device = IntegerField(source="password_device.pk", read_only=True, allow_null=True)
+
+    def get_password_locked(self, user: User) -> bool:
+        """Whether the user's password currently refuses authentication."""
+        device = getattr(user, "password_device", None)
+        return device is not None and device.locked
 
     @property
     def _should_include_groups(self) -> bool:
@@ -345,6 +352,8 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             "type",
             "uuid",
             "password_change_date",
+            "password_locked",
+            "password_device",
             "last_updated",
         ]
         extra_kwargs = {
