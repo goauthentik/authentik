@@ -9,6 +9,7 @@ from rest_framework.test import APITestCase
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.crypto.secrets.models import SecretType
 from authentik.crypto.secrets.tests.utils import create_test_secret
+from authentik.outposts.controllers.kubernetes import KubernetesClient
 from authentik.outposts.models import KubernetesServiceConnection
 
 KUBECONFIG = """apiVersion: v1
@@ -69,6 +70,22 @@ class TestKubeconfigSecret(APITestCase):
                 )
                 self.assertEqual(response.status_code, 400, response.content)
                 self.assertIn("kubeconfig_ref", response.json())
+
+    def test_client_reads_kubeconfig(self):
+        with KubernetesClient(self.connection) as client:
+            self.assertEqual(client.configuration.host, "https://cluster.example.com")
+            self.assertEqual(client.configuration.api_key["BearerToken"], "Bearer cluster-token")
+
+    def test_local_connection_needs_no_secret(self):
+        connection = KubernetesServiceConnection.objects.create(name="local", local=True)
+        url = reverse(
+            "authentik_api:kubernetesserviceconnection-detail", kwargs={"pk": connection.pk}
+        )
+        response = self.client.patch(url, {"name": "renamed"})
+        self.assertEqual(response.status_code, 200, response.content)
+        response = self.client.patch(url, {"local": False})
+        self.assertEqual(response.status_code, 400, response.content)
+        self.assertIn("kubeconfig_ref", response.json())
 
     def test_unrelated_update_skips_validation(self):
         """A stored kubeconfig is only checked when the connection's credentials change."""
