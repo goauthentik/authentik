@@ -229,6 +229,7 @@
         //#endregion
         //#region Docusaurus
         "*.api.mdx", // Generated API docs
+        "./website/docs/releases/**/_v*-{changelog,api-changes}.mdx", // Generated release changelogs and API diffs
         ".docusaurus/**", // Cache
         "./{docs,website}/build", // Topic docs build output
         "./{docs,website}/**/build", // Workspaces output
