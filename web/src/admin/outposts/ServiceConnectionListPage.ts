@@ -26,6 +26,7 @@ import { taskCard } from "#components/tasks/taskCard";
 import { AKServiceConnectionWizard } from "#admin/outposts/ak-service-connection-wizard";
 
 import {
+    CoreApi,
     ModelEnum,
     OutpostsApi,
     ServiceConnection,
@@ -126,8 +127,9 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
             object-label=${msg("Outpost integration(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: ServiceConnection) => {
-                return aki(OutpostsApi).outpostsServiceConnectionsAllUsedByList({
-                    uuid: item.pk,
+                return aki(CoreApi).coreUsedByList({
+                    model: item.metaModelName,
+                    pk: item.pk,
                 });
             }}
             .delete=${(item: ServiceConnection) => {

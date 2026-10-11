@@ -31,6 +31,7 @@ import Styles from "#admin/users/UserInfoCard.css";
 import {
     CoreApi,
     LifecycleApi,
+    ModelEnum,
     OffboardingActionEnum,
     OffboardingStatusEnum,
     User,
@@ -170,7 +171,11 @@ export class UserInfoCard extends AKElement {
                     { key: msg("ID"), value: item.pk.toString() },
                     { key: msg("UID"), value: item.uid },
                 ]}
-                .usedBy=${(item: User) => this.#api.coreUsersUsedByList({ id: item.pk })}
+                .usedBy=${(item: User) =>
+                    this.#api.coreUsedByList({
+                        model: ModelEnum.AuthentikCoreUser,
+                        pk: item.pk.toString(),
+                    })}
                 .delete=${this.deleteUser}
                 @ak-refresh=${this.handleUserDeleted}
             >

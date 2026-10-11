@@ -17,7 +17,7 @@ import { ifPresent } from "#elements/utils/attributes";
 import { OutpostForm } from "#admin/outposts/OutpostForm";
 import { embeddedOutpostManaged, outpostTypeToLabel } from "#admin/outposts/utils";
 
-import { Outpost, OutpostHealth, OutpostsApi } from "@goauthentik/api";
+import { CoreApi, ModelEnum, Outpost, OutpostHealth, OutpostsApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -126,8 +126,9 @@ export class OutpostListPage extends TablePage<Outpost> {
             object-label=${msg("Outpost(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Outpost) => {
-                return aki(OutpostsApi).outpostsInstancesUsedByList({
-                    uuid: item.pk,
+                return aki(CoreApi).coreUsedByList({
+                    model: ModelEnum.AuthentikOutpostsOutpost,
+                    pk: item.pk,
                 });
             }}
             .delete=${(item: Outpost) => {

@@ -12,7 +12,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { DeviceAccessGroupForm } from "#admin/endpoints/DeviceAccessGroupForm";
 
-import { DeviceAccessGroup, EndpointsApi } from "@goauthentik/api";
+import { CoreApi, DeviceAccessGroup, EndpointsApi, ModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -70,8 +70,9 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
                 return [{ key: msg("Name"), value: item.name }];
             }}
             .usedBy=${(item: DeviceAccessGroup) => {
-                return aki(EndpointsApi).endpointsDeviceAccessGroupsUsedByList({
-                    pbmUuid: item.pbmUuid,
+                return aki(CoreApi).coreUsedByList({
+                    model: ModelEnum.AuthentikEndpointsDeviceaccessgroup,
+                    pk: item.pbmUuid,
                 });
             }}
             .delete=${(item: DeviceAccessGroup) => {

@@ -15,7 +15,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { EndpointDeviceForm } from "#admin/endpoints/devices/DeviceForm";
 import { getPolicyUserGroupRow } from "#admin/policies/BoundPoliciesList";
 
-import { DeviceSummary, EndpointDevice, EndpointsApi } from "@goauthentik/api";
+import { CoreApi, DeviceSummary, EndpointDevice, EndpointsApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
@@ -175,8 +175,9 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
                 return [{ key: msg("Name"), value: item.name }];
             }}
             .usedBy=${(item: EndpointDevice) => {
-                return aki(EndpointsApi).endpointsDevicesUsedByList({
-                    deviceUuid: item.deviceUuid!,
+                return aki(CoreApi).coreUsedByList({
+                    model: "authentik_endpoints.device",
+                    pk: item.deviceUuid!,
                 });
             }}
             .delete=${(item: EndpointDevice) => {

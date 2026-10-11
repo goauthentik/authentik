@@ -4,7 +4,7 @@ import { aki } from "#common/api/client";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { PoliciesApi, Reputation } from "@goauthentik/api";
+import { CoreApi, PoliciesApi, Reputation } from "@goauthentik/api";
 
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
@@ -58,13 +58,14 @@ export class UserReputationList extends Table<Reputation> {
             object-label=${msg("Reputation score(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Reputation) => {
-                return aki(PoliciesApi).policiesReputationScoresUsedByList({
-                    reputationUuid: item.pk || "",
+                return aki(CoreApi).coreUsedByList({
+                    model: "authentik_policies_reputation.reputation",
+                    pk: item.pk!,
                 });
             }}
             .delete=${(item: Reputation) => {
                 return aki(PoliciesApi).policiesReputationScoresDestroy({
-                    reputationUuid: item.pk || "",
+                    reputationUuid: item.pk!,
                 });
             }}
         >

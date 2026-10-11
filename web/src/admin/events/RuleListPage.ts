@@ -23,7 +23,7 @@ import { taskCard } from "#components/tasks/taskCard";
 
 import { RuleForm } from "#admin/events/RuleForm";
 
-import { EventsApi, ModelEnum, NotificationRule } from "@goauthentik/api";
+import { CoreApi, EventsApi, ModelEnum, NotificationRule } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -69,8 +69,9 @@ export class RuleListPage extends TablePage<NotificationRule> {
             object-label=${msg("Notification rule(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: NotificationRule) => {
-                return aki(EventsApi).eventsRulesUsedByList({
-                    pbmUuid: item.pk,
+                return aki(CoreApi).coreUsedByList({
+                    model: ModelEnum.AuthentikEventsNotificationrule,
+                    pk: item.pk,
                 });
             }}
             .delete=${(item: NotificationRule) => {

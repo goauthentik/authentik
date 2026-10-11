@@ -13,7 +13,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { InitialPermissionsForm } from "#admin/rbac/ak-initial-permissions-form";
 
-import { InitialPermissions, RbacApi } from "@goauthentik/api";
+import { CoreApi, InitialPermissions, ModelEnum, RbacApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, PropertyValues } from "lit";
@@ -51,8 +51,9 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
             object-label=${msg("Initial Permissions")}
             .objects=${this.selectedElements}
             .usedBy=${(item: InitialPermissions) => {
-                return aki(RbacApi).rbacInitialPermissionsUsedByList({
-                    id: item.pk,
+                return aki(CoreApi).coreUsedByList({
+                    model: ModelEnum.AuthentikRbacInitialpermissions,
+                    pk: item.pk.toString(),
                 });
             }}
             .delete=${(item: InitialPermissions) => {

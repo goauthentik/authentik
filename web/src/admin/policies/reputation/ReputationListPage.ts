@@ -9,7 +9,7 @@ import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { ModelEnum, PoliciesApi, Reputation } from "@goauthentik/api";
+import { CoreApi, ModelEnum, PoliciesApi, Reputation } from "@goauthentik/api";
 
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
@@ -56,13 +56,14 @@ export class ReputationListPage extends TablePage<Reputation> {
             object-label=${msg("Reputation")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Reputation) => {
-                return aki(PoliciesApi).policiesReputationScoresUsedByList({
-                    reputationUuid: item.pk || "",
+                return aki(CoreApi).coreUsedByList({
+                    model: "authentik_policies_reputation.reputation",
+                    pk: item.pk!,
                 });
             }}
             .delete=${(item: Reputation) => {
                 return aki(PoliciesApi).policiesReputationScoresDestroy({
-                    reputationUuid: item.pk || "",
+                    reputationUuid: item.pk!,
                 });
             }}
         >

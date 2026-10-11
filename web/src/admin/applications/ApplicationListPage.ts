@@ -24,7 +24,7 @@ import { ApplicationForm } from "#admin/applications/ApplicationForm";
 import Styles from "#admin/applications/ApplicationListPage.css";
 import { AKApplicationWizard } from "#admin/applications/wizard/ak-application-wizard";
 
-import { Application, CoreApi, PoliciesApi } from "@goauthentik/api";
+import { Application, CoreApi, ModelEnum, PoliciesApi } from "@goauthentik/api";
 
 import MDApplication from "~docs/add-secure-apps/applications/index.mdx";
 
@@ -107,8 +107,9 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
             object-label=${msg("Application(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Application) => {
-                return aki(CoreApi).coreApplicationsUsedByList({
-                    slug: item.slug,
+                return aki(CoreApi).coreUsedByList({
+                    model: ModelEnum.AuthentikCoreApplication,
+                    pk: item.pk,
                 });
             }}
             .delete=${(item: Application) => {

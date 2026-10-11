@@ -42,7 +42,7 @@ import { ToggleUserActivationButton } from "#admin/users/UserActiveForm";
 import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 
-import { CoreApi, CoreUsersExportCreateRequest, User, UserPath } from "@goauthentik/api";
+import { CoreApi, CoreUsersExportCreateRequest, ModelEnum, User, UserPath } from "@goauthentik/api";
 
 import { guard } from "lit-html/directives/guard.js";
 
@@ -231,8 +231,9 @@ export class UserListPage extends WithLicenseSummary(
                     ];
                 }}
                 .usedBy=${(item: User) => {
-                    return this.#api.coreUsersUsedByList({
-                        id: item.pk,
+                    return this.#api.coreUsedByList({
+                        model: ModelEnum.AuthentikCoreUser,
+                        pk: item.pk.toString(),
                     });
                 }}
                 .delete=${(item: User) => {

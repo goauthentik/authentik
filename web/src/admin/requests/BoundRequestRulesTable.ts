@@ -14,7 +14,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { AKRequestRuleWizard } from "#admin/requests/ak-request-rule-wizard";
 import { RequestRuleBindingForm } from "#admin/requests/RequestRuleBindingForm";
 
-import { RequestRuleBinding, RequestsApi } from "@goauthentik/api";
+import { CoreApi, ModelEnum, RequestRuleBinding, RequestsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -55,13 +55,14 @@ export class BoundRequestRulesTable extends Table<RequestRuleBinding> {
                 return [{ key: msg("Rule"), value: item.ruleObj?.name ?? "-" }];
             }}
             .usedBy=${(item: RequestRuleBinding) => {
-                return aki(RequestsApi).requestsRuleBindingsUsedByList({
-                    uuid: item.uuid || "",
+                return aki(CoreApi).coreUsedByList({
+                    model: ModelEnum.AuthentikRequestsRequestrulebinding,
+                    pk: item.uuid!,
                 });
             }}
             .delete=${(item: RequestRuleBinding) => {
                 return aki(RequestsApi).requestsRuleBindingsDestroy({
-                    uuid: item.uuid || "",
+                    uuid: item.uuid!,
                 });
             }}
         >

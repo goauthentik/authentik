@@ -52,13 +52,14 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
             object-label=${msg("Application entitlement(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: ApplicationEntitlement) => {
-                return aki(CoreApi).coreApplicationEntitlementsUsedByList({
-                    pbmUuid: item.pbmUuid || "",
+                return aki(CoreApi).coreUsedByList({
+                    model: ModelEnum.AuthentikCoreApplicationentitlement,
+                    pk: item.pbmUuid,
                 });
             }}
             .delete=${(item: ApplicationEntitlement) => {
                 return aki(CoreApi).coreApplicationEntitlementsDestroy({
-                    pbmUuid: item.pbmUuid || "",
+                    pbmUuid: item.pbmUuid,
                 });
             }}
         >

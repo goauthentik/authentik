@@ -33,7 +33,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { AKPropertyMappingWizard } from "#admin/property-mappings/ak-property-mapping-wizard";
 import { PropertyMappingTestForm } from "#admin/property-mappings/PropertyMappingTestForm";
 
-import { ModelEnum, PropertyMapping, PropertymappingsApi } from "@goauthentik/api";
+import { CoreApi, ModelEnum, PropertyMapping, PropertymappingsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -77,8 +77,9 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
             object-label=${msg("Property Mapping(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: PropertyMapping) => {
-                return aki(PropertymappingsApi).propertymappingsAllUsedByList({
-                    pmUuid: item.pk,
+                return aki(CoreApi).coreUsedByList({
+                    model: item.metaModelName,
+                    pk: item.pk,
                 });
             }}
             .delete=${(item: PropertyMapping) => {

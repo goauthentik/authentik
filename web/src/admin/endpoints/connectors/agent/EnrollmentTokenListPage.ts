@@ -15,7 +15,13 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { EnrollmentTokenForm } from "#admin/endpoints/connectors/agent/EnrollmentTokenForm";
 
-import { AgentConnector, EndpointsApi, EnrollmentToken, ModelEnum } from "@goauthentik/api";
+import {
+    AgentConnector,
+    CoreApi,
+    EndpointsApi,
+    EnrollmentToken,
+    ModelEnum,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -69,8 +75,9 @@ export class EnrollmentTokenListPage extends Table<EnrollmentToken> {
                 ];
             }}
             .usedBy=${(item: EnrollmentToken) => {
-                return this.#api.endpointsAgentsEnrollmentTokensUsedByList({
-                    tokenUuid: item.tokenUuid,
+                return aki(CoreApi).coreUsedByList({
+                    model: ModelEnum.AuthentikEndpointsConnectorsAgentEnrollmenttoken,
+                    pk: item.tokenUuid,
                 });
             }}
             .delete=${(item: EnrollmentToken) => {

@@ -12,7 +12,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { RequestRuleForm } from "#admin/requests/RequestRuleForm";
 
-import { ModelEnum, RequestRule, RequestsApi } from "@goauthentik/api";
+import { CoreApi, ModelEnum, RequestRule, RequestsApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { html } from "lit";
@@ -51,13 +51,14 @@ export class RequestRuleListPage extends TablePage<RequestRule> {
             object-label=${msg("Request rule(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: RequestRule) => {
-                return aki(RequestsApi).requestsRulesUsedByList({
-                    uuid: item.uuid || "",
+                return aki(CoreApi).coreUsedByList({
+                    model: ModelEnum.AuthentikRequestsRequestrule,
+                    pk: item.uuid!,
                 });
             }}
             .delete=${(item: RequestRule) => {
                 return aki(RequestsApi).requestsRulesDestroy({
-                    uuid: item.uuid || "",
+                    uuid: item.uuid!,
                 });
             }}
         >

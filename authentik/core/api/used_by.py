@@ -4,9 +4,11 @@ from enum import Enum
 from inspect import getmembers
 
 from django.apps import apps
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db.models.base import Model
 from django.db.models.deletion import SET_DEFAULT, SET_NULL
 from django.db.models.manager import Manager
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
 from guardian.shortcuts import get_objects_for_user
@@ -58,7 +60,7 @@ class UsedByParameters(PassiveSerializer):
     """Parameters to look up which objects use a given object"""
 
     model = CharField(help_text="Fully qualified model name, in the form `<app_label>.<model>`")
-    pk = CharField()
+    pk = CharField(help_text="The object's primary key, or other unique identifier it exposes")
 
 
 class UsedByView(APIView):
@@ -80,7 +82,14 @@ class UsedByView(APIView):
         # mirroring the `owner_field` that viewsets use for the same purpose.
         self.owner_field = getattr(model._meta, "authentik_used_by_owner_field", None)
         queryset = ObjectFilter().filter_queryset(request, model.objects.all(), self)
-        return get_object_or_404(queryset, pk=params["pk"])
+        # Models can declare `authentik_used_by_lookup_field` in their Meta when their
+        # primary key isn't safe to expose through the API (for example a session key)
+        lookup_field = getattr(model._meta, "authentik_used_by_lookup_field", "pk")
+        try:
+            return get_object_or_404(queryset, **{lookup_field: params["pk"]})
+        except DjangoValidationError:
+            # The pk doesn't even have the right shape (e.g. not a UUID) for this model
+            raise Http404 from None
 
     @extend_schema(
         parameters=[UsedByParameters],

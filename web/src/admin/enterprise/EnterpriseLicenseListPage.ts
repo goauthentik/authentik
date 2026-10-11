@@ -26,6 +26,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { EnterpriseLicenseForm } from "#admin/enterprise/EnterpriseLicenseForm";
 
 import {
+    CoreApi,
     EnterpriseApi,
     License,
     LicenseSummary,
@@ -184,8 +185,9 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 ];
             }}
             .usedBy=${(item: License) => {
-                return aki(EnterpriseApi).enterpriseLicenseUsedByList({
-                    licenseUuid: item.licenseUuid,
+                return aki(CoreApi).coreUsedByList({
+                    model: ModelEnum.AuthentikEnterpriseLicense,
+                    pk: item.licenseUuid,
                 });
             }}
             .delete=${(item: License) => {
