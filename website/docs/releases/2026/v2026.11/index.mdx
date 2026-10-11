@@ -4,6 +4,9 @@ slug: "/releases/2026.11"
 draft: true
 ---
 
+import Changelog from "./_changelog.mdx";
+import APIChanges from "./_api-changes.mdx";
+
 ## Highlights
 
 {/* @dominic-r TODO: drop the managed secrets highlight if #25415 misses 2026.11. */}
@@ -21,7 +24,7 @@ draft: true
 
 ### RAC endpoints are now devices
 
-RAC providers now use [devices](../../endpoint-devices/index.mdx) instead of maintaining separate endpoints. This allows machines enrolled through connectors, such as the authentik Agent, to be accessed directly through RAC without configuring them again.
+RAC providers now use [devices](../../../endpoint-devices/index.mdx) instead of maintaining separate endpoints. This allows machines enrolled through connectors, such as the authentik Agent, to be accessed directly through RAC without configuring them again.
 
 For enrolled devices, authentik uses their reported hostname or IP address and determines available connection protocols from their reported facts. These facts, including the operating system and security information, can also be evaluated by policies bound to the device to control access.
 
@@ -33,7 +36,7 @@ Existing RAC endpoints are automatically converted into devices during the upgra
 
 - **Connection configuration**: Each endpoint's host and protocol are preserved as a connection override, and its policy bindings are transferred to the new device.
 - **Device names**: Device names must be unique across the instance. If an endpoint's name conflicts with an existing device, its provider's name is appended, with an additional suffix if necessary.
-- **Property mappings**: Per-endpoint connection settings and property mappings are not migrated. Move these settings to provider-level property mappings, which now receive the `device` being accessed, or to the [credentials prompt](../../add-secure-apps/providers/rac/rac_credentials_prompt.mdx).
+- **Property mappings**: Per-endpoint connection settings and property mappings are not migrated. Move these settings to provider-level property mappings, which now receive the `device` being accessed, or to the [credentials prompt](../../../add-secure-apps/providers/rac/rac_credentials_prompt.mdx).
 - **Connection limits**: The per-endpoint connection limit is replaced by a provider-level setting that applies separately to each device.
 - **Launch URLs**: Existing endpoint identifiers are preserved, but launch URLs now include the connection protocol (`/application/rac/<app>/<device>/<protocol>/`) to support devices with multiple protocols. Update any manually configured launch URLs.
 - **Active connections**: Existing connection authorizations are deleted during the upgrade. Users with active RAC connections must launch the application again.
@@ -68,10 +71,10 @@ The following are removed or changed:
 
 ### Base URL is required
 
-The **Base URL** [system setting](../../sys-mgmt/settings.mdx#base-url), introduced in [2026.8](./v2026.8.mdx#base-url-system-setting), is now required. After the initial setup, authentik does not start until a base URL is configured.
+The **Base URL** [system setting](../../../sys-mgmt/settings.mdx#base-url), introduced in [2026.8](../v2026.8/index.mdx#base-url-system-setting), is now required. After the initial setup, authentik does not start until a base URL is configured.
 
-- **Existing instances**: Before you upgrade, open the Admin interface, navigate to **System** > **Settings**, and verify that **Base URL** is set. If the setting is empty during the upgrade, authentik fills it from [`AUTHENTIK_WEB__BASE_URL`](../../install-config/configuration/configuration.mdx#authentik_web__base_url) or from the host configured on the embedded outpost. If neither is available, authentik does not start until you set `AUTHENTIK_WEB__BASE_URL`.
-- **Automated installs**: Set `AUTHENTIK_WEB__BASE_URL` along with the [bootstrap environment variables](../../install-config/automated-install.mdx). Without it, the automated install fails.
+- **Existing instances**: Before you upgrade, open the Admin interface, navigate to **System** > **Settings**, and verify that **Base URL** is set. If the setting is empty during the upgrade, authentik fills it from [`AUTHENTIK_WEB__BASE_URL`](../../../install-config/configuration/configuration.mdx#authentik_web__base_url) or from the host configured on the embedded outpost. If neither is available, authentik does not start until you set `AUTHENTIK_WEB__BASE_URL`.
+- **Automated installs**: Set `AUTHENTIK_WEB__BASE_URL` along with the [bootstrap environment variables](../../../install-config/automated-install.mdx). Without it, the automated install fails.
 - **API**: The `base_url` field of the system settings no longer accepts an empty value.
 
 ### The read-only role can open the Admin interface
@@ -84,7 +87,7 @@ When the managed blueprint is applied during the upgrade, every existing member 
 
 SAML sources now reject assertions whose audience restriction does not include the source's entity ID, which is the **Issuer** override if one is set, or the source's metadata URL otherwise. Previously, the audience was not checked, so an assertion issued for another service provider could be accepted.
 
-Before upgrading, verify that each upstream identity provider sends the source's entity ID as the audience. Logins from a misconfigured identity provider fail with a mismatched audience error after the upgrade. For more details, refer to the [SAML source documentation](../../users-sources/sources/protocols/saml/index.mdx).
+Before upgrading, verify that each upstream identity provider sends the source's entity ID as the audience. Logins from a misconfigured identity provider fail with a mismatched audience error after the upgrade. For more details, refer to the [SAML source documentation](../../../users-sources/sources/protocols/saml/index.mdx).
 
 ### Property mappings must return a dictionary
 
@@ -106,7 +109,7 @@ The `sub` claim in tokens issued for Apple Platform SSO now contains the user's 
 
 authentik now checks that a certificate's key algorithm is supported wherever the certificate is used. For example, OAuth2 encryption keys must use RSA, and SAML signing keys must use RSA, EC, or DSA. Certificates whose key type cannot be detected are rejected.
 
-Saving a provider, brand, or other object that references an unsupported certificate now fails, including through the API and blueprints. Existing objects keep working until they are edited. For the full list, refer to the [certificates documentation](../../sys-mgmt/certificates.mdx).
+Saving a provider, brand, or other object that references an unsupported certificate now fails, including through the API and blueprints. Existing objects keep working until they are edited. For the full list, refer to the [certificates documentation](../../../sys-mgmt/certificates.mdx).
 
 ### Flow messages are no longer sent over websockets
 
@@ -122,9 +125,9 @@ To list the applications that a user can access through policy bindings, as the 
 
 ### Imported password hashes must match the import settings
 
-Password hashes imported with `AUTHENTIK_BOOTSTRAP_PASSWORD_HASH` or the `set_password_hash` API endpoint must now use a supported hasher and match the parameters of this authentik version, as described in [password hash import settings](../../core/password-hashes.mdx#password-hash-import-settings). Stored hashes and blueprint imports are unaffected.
+Password hashes imported with `AUTHENTIK_BOOTSTRAP_PASSWORD_HASH` or the `set_password_hash` API endpoint must now use a supported hasher and match the parameters of this authentik version, as described in [password hash import settings](../../../core/password-hashes.mdx#password-hash-import-settings). Stored hashes and blueprint imports are unaffected.
 
-If a hash is rejected, [generate a new one](../../core/password-hashes.mdx#generate-a-password-hash) with the target authentik version. API clients can set `override=true` to import any other hash that authentik can decode; bootstrap imports have no override.
+If a hash is rejected, [generate a new one](../../../core/password-hashes.mdx#generate-a-password-hash) with the target authentik version. API clients can set `override=true` to import any other hash that authentik can decode; bootstrap imports have no override.
 
 ### SAML providers verify logout signatures
 
@@ -136,7 +139,7 @@ Password hashes are now stored on password devices belonging to users. Existing 
 
 Expressions can still read `user.password` and `user.password_change_date`. Expressions that change a password must use `PasswordDevice.set_password(user, password)` or `PasswordDevice.set_unusable_password(user)` from `authentik.stages.password.models`; `user.set_password()` and `user.set_unusable_password()` now raise an error.
 
-Password devices are excluded from MFA discovery and validation. Their lock state can be managed through the [password authenticator API](../../add-secure-apps/flows-stages/stages/password/index.mdx#manage-locks-through-the-api).
+Password devices are excluded from MFA discovery and validation. Their lock state can be managed through the [password authenticator API](../../../add-secure-apps/flows-stages/stages/password/index.mdx#manage-locks-through-the-api).
 
 ### Credentials move to managed secrets
 
@@ -148,7 +151,7 @@ In dark mode, authentik used to invert the colors of every source icon on the lo
 
 The built-in source and provider icons have been refreshed, and each now has a light and a dark version in its own folder, such as `/static/authentik/sources/github/%(theme)s.svg`. The previous files, such as `/static/authentik/sources/github.svg`, have been removed. Icons, logos, and backgrounds that pointed at them are updated to the new paths during the upgrade.
 
-If you set a custom source icon that relied on the inversion, such as a black logo, it will be hard to see in dark mode. Upload a version for each theme and use `%(theme)s` in the source's **Icon** field. For more details, refer to [Source icons in light and dark themes](../../customize/file-picker.mdx#source-icons-in-light-and-dark-themes).
+If you set a custom source icon that relied on the inversion, such as a black logo, it will be hard to see in dark mode. Upload a version for each theme and use `%(theme)s` in the source's **Icon** field. For more details, refer to [Source icons in light and dark themes](../../../customize/file-picker.mdx#source-icons-in-light-and-dark-themes).
 
 ### API changes
 
@@ -172,7 +175,7 @@ Credentials for providers, sources, and stages can be stored as managed secrets 
 
 ### Password lockout :ak-enterprise
 
-The [Password stage](../../add-secure-apps/flows-stages/stages/password/index.mdx#password-lockout) can lock password login after a configured number of consecutive failed attempts. Lockout is disabled by default and also works when password validation is embedded in an Identification stage.
+The [Password stage](../../../add-secure-apps/flows-stages/stages/password/index.mdx#password-lockout) can lock password login after a configured number of consecutive failed attempts. Lockout is disabled by default and also works when password validation is embedded in an Identification stage.
 
 Administrators with permission to view a user and reset their password can use **Lock password login** or **Unlock password login** on the user's details page. Changing the password preserves the lock. Existing sessions and passwordless authentication are unaffected. App passwords submitted through password stages also obey the lock. Optional warning and lockout messages help users understand failed attempts, and lock transitions appear in the audit log.
 
@@ -180,15 +183,15 @@ An Enterprise license is required to create new locks. Existing locks remain enf
 
 ### Required actions :ak-enterprise
 
-Administrators can require users to complete one or more flows, such as changing their password or setting up an authenticator, before they can continue. Actions apply on the user's next request, including in sessions that are already logged in, and are cleared as the user completes them. For more details, refer to the [required actions documentation](../../users-sources/user/required_actions.mdx).
+Administrators can require users to complete one or more flows, such as changing their password or setting up an authenticator, before they can continue. Actions apply on the user's next request, including in sessions that are already logged in, and are cleared as the user completes them. For more details, refer to the [required actions documentation](../../../users-sources/user/required_actions.mdx).
 
 ### Single sign-on into devices managed by the authentik Agent
 
-A RAC provider can sign the user who launched a connection in to a device that is enrolled through the authentik Agent, without any credentials configured for the device. authentik issues a token for the device, the RAC outpost turns it into an SSH certificate, and the agent validates the token before accepting the login. For more details, refer to the [RAC provider documentation](../../add-secure-apps/providers/rac/index.mdx#signing-in-with-the-authentik-agent).
+A RAC provider can sign the user who launched a connection in to a device that is enrolled through the authentik Agent, without any credentials configured for the device. authentik issues a token for the device, the RAC outpost turns it into an SSH certificate, and the agent validates the token before accepting the login. For more details, refer to the [RAC provider documentation](../../../add-secure-apps/providers/rac/index.mdx#signing-in-with-the-authentik-agent).
 
 ### macOS 27 Platform SSO :ak-enterprise
 
-The authentik Agent supports Apple Platform SSO on macOS 27. Users sign in to their Mac through an authentik flow in the browser, and authentik provides the keys used to unlock the lock screen. For more details, refer to the [macOS deployment documentation](../../endpoint-devices/authentik-agent/agent-deployment/macos.mdx).
+The authentik Agent supports Apple Platform SSO on macOS 27. Users sign in to their Mac through an authentik flow in the browser, and authentik provides the keys used to unlock the lock screen. For more details, refer to the [macOS deployment documentation](../../../endpoint-devices/authentik-agent/agent-deployment/macos.mdx).
 
 ### Dry-run policy bindings
 
@@ -200,15 +203,15 @@ Policies in a dry-run binding still run in full, so any side effects of an expre
 
 ### Blueprints
 
-Blueprint and flow exports now reference related objects with `!KeyOf` and identify objects by stable fields, such as slugs and names, instead of primary keys. Exported blueprints can now be imported into a different authentik instance. Shared prompts are also exported only once. For more details, refer to the [blueprint export documentation](../../customize/blueprints/export.mdx).
+Blueprint and flow exports now reference related objects with `!KeyOf` and identify objects by stable fields, such as slugs and names, instead of primary keys. Exported blueprints can now be imported into a different authentik instance. Shared prompts are also exported only once. For more details, refer to the [blueprint export documentation](../../../customize/blueprints/export.mdx).
 
-Blueprints can be checked without applying them by using the new `/managed/blueprints/validate/` endpoint. The `!Context` tag supports dot notation for nested values, such as `!Context network.dns.0`. For more details, refer to the [blueprint tags documentation](../../customize/blueprints/v1/tags.mdx).
+Blueprints can be checked without applying them by using the new `/managed/blueprints/validate/` endpoint. The `!Context` tag supports dot notation for nested values, such as `!Context network.dns.0`. For more details, refer to the [blueprint tags documentation](../../../customize/blueprints/v1/tags.mdx).
 
 When a file that a blueprint references with `!File` changes, such as a rotated Kubernetes secret, the blueprint is now applied again at the next blueprint discovery, which runs hourly.
 
 ### Post-quantum cryptography
 
-authentik can generate certificates that use ML-DSA, a post-quantum signature algorithm, in the ML-DSA-44, ML-DSA-65, and ML-DSA-87 parameter sets. Browsers and public certificate authorities do not support ML-DSA yet, so these certificates are limited to TLS between components that you control, such as outposts and mutual TLS with a private certificate authority. Outposts must run authentik 2026.11 or newer to verify them, and key generation is unavailable when FIPS mode is enabled. For more details, refer to [Supported key algorithms](../../sys-mgmt/certificates.mdx#supported-key-algorithms).
+authentik can generate certificates that use ML-DSA, a post-quantum signature algorithm, in the ML-DSA-44, ML-DSA-65, and ML-DSA-87 parameter sets. Browsers and public certificate authorities do not support ML-DSA yet, so these certificates are limited to TLS between components that you control, such as outposts and mutual TLS with a private certificate authority. Outposts must run authentik 2026.11 or newer to verify them, and key generation is unavailable when FIPS mode is enabled. For more details, refer to [Supported key algorithms](../../../sys-mgmt/certificates.mdx#supported-key-algorithms).
 
 Go outposts support the post-quantum hybrid key exchange `X25519MLKEM768` for TLS. The WebAuthn authenticator setup stage accepts ML-DSA credentials; because no authenticators support ML-DSA yet, it is offered last and only used by an authenticator that supports nothing else.
 
@@ -230,11 +233,11 @@ Each stage and policy in a flow diagram now has buttons to edit it and to manage
 
 ### Reliable OpenID Connect logout
 
-authentik now records every OpenID Connect application that a user signs in to during a session. When the user logs out, front-channel and back-channel logout notify all of those applications, including ones whose access tokens have already expired. For more details, refer to the [logout documentation](../../add-secure-apps/providers/oauth2/frontchannel_and_backchannel_logout.mdx).
+authentik now records every OpenID Connect application that a user signs in to during a session. When the user logs out, front-channel and back-channel logout notify all of those applications, including ones whose access tokens have already expired. For more details, refer to the [logout documentation](../../../add-secure-apps/providers/oauth2/frontchannel_and_backchannel_logout.mdx).
 
 ### Certificate authentication for LDAP sources
 
-LDAP sources can authenticate to the directory with a TLS client certificate using SASL EXTERNAL instead of a bind DN and password. Set the source's **Service bind method** to use it for synchronization and password writeback. For more details, refer to the [LDAP source documentation](../../users-sources/sources/protocols/ldap/index.mdx).
+LDAP sources can authenticate to the directory with a TLS client certificate using SASL EXTERNAL instead of a bind DN and password. Set the source's **Service bind method** to use it for synchronization and password writeback. For more details, refer to the [LDAP source documentation](../../../users-sources/sources/protocols/ldap/index.mdx).
 
 ### Performance
 
@@ -248,7 +251,7 @@ A fix to the audit middleware prevents workers from stalling under load, which c
 
 authentik now disables PostgreSQL's just-in-time (JIT) compilation for its own database user when it starts. In load tests, disabling JIT resolved a slowdown that built up over several hours. PostgreSQL 19 makes the same change to its default.
 
-authentik only changes `jit` while it has PostgreSQL's built-in default, and only for the user that authentik connects as, in the authentik database. If you have set `jit` explicitly, authentik leaves it unchanged. The `/admin/system/` API endpoint reports the PostgreSQL version, the effective `jit` value and where it was set, and the connection's TLS version and cipher. For more details, including how to keep JIT enabled, refer to [authentik disables JIT compilation](../../troubleshooting/postgres/slow-queries.mdx#authentik-disables-jit-compilation).
+authentik only changes `jit` while it has PostgreSQL's built-in default, and only for the user that authentik connects as, in the authentik database. If you have set `jit` explicitly, authentik leaves it unchanged. The `/admin/system/` API endpoint reports the PostgreSQL version, the effective `jit` value and where it was set, and the connection's TLS version and cipher. For more details, including how to keep JIT enabled, refer to [authentik disables JIT compilation](../../../troubleshooting/postgres/slow-queries.mdx#authentik-disables-jit-compilation).
 
 ### Distroless server image
 
@@ -256,33 +259,33 @@ The server image is now also published as a distroless variant, with the same na
 
 ### Custom permissions and permission checks :ak-preview
 
-Define your own permissions on authentik's models and assign them to roles like built-in permissions. A permission check is Python code that you bind to API endpoints. It has the final say on access: it can deny or grant requests, narrow or widen lists, hide fields or make them read-only, and change responses. Permission checks are disabled by default; enable them with the **Custom permissions** [setting](../../sys-mgmt/settings.mdx#custom-permissions). For details, refer to [Custom permissions and permission checks](../../users-sources/access-control/custom_permissions.mdx).
+Define your own permissions on authentik's models and assign them to roles like built-in permissions. A permission check is Python code that you bind to API endpoints. It has the final say on access: it can deny or grant requests, narrow or widen lists, hide fields or make them read-only, and change responses. Permission checks are disabled by default; enable them with the **Custom permissions** [setting](../../../sys-mgmt/settings.mdx#custom-permissions). For details, refer to [Custom permissions and permission checks](../../../users-sources/access-control/custom_permissions.mdx).
 
 **Initial Permissions** has moved from **Directory** to **Customization** in the Admin interface, next to **Custom Permissions** and **Permission Checks**.
 
 ### Small general improvements
 
-- **SCIM provider**: Providers can authenticate with HTTP Basic authentication. Discovery only links remote users and groups to authentik users and groups that are within the provider's synchronization scope, so cleanup no longer deletes remote accounts that authentik should not manage. For more details, refer to the [SCIM provider documentation](../../add-secure-apps/providers/scim/index.mdx).
-- **RADIUS provider**: Property mappings can return a dictionary of attributes, and the new `vendor_attribute()` helper defines vendor-specific attributes. A failing mapping is skipped instead of discarding every attribute. For more details, refer to the [RADIUS provider documentation](../../add-secure-apps/providers/radius/index.mdx).
+- **SCIM provider**: Providers can authenticate with HTTP Basic authentication. Discovery only links remote users and groups to authentik users and groups that are within the provider's synchronization scope, so cleanup no longer deletes remote accounts that authentik should not manage. For more details, refer to the [SCIM provider documentation](../../../add-secure-apps/providers/scim/index.mdx).
+- **RADIUS provider**: Property mappings can return a dictionary of attributes, and the new `vendor_attribute()` helper defines vendor-specific attributes. A failing mapping is skipped instead of discarding every attribute. For more details, refer to the [RADIUS provider documentation](../../../add-secure-apps/providers/radius/index.mdx).
 - **OAuth2 provider**: CORS checks apply regular-expression redirect URIs to the request's origin, so browser-based applications that use them can call the token endpoint. Authorization errors honor the requested `response_mode`, preserve existing callback query parameters, and correctly encode `state` values that contain special characters.
 - **Token exchange**: An OAuth2 provider's JWT can be exchanged for a SAML response from a SAML provider that lists it under **Federated OAuth2/OpenID Providers**, for example to call AWS `AssumeRoleWithSAML`. Exchanged tokens keep the subject token's chain of `act` claims, up to 10 levels deep.
-- **SAML and WS-Federation providers**: Assertions can be encrypted with AES128-CBC, AES256-CBC, AES128-GCM, or AES256-GCM. New providers default to AES256-GCM, and existing providers keep AES128-CBC. Importing SP metadata selects the first algorithm in the SP's order of preference that authentik supports. For more details, including how to update existing providers, refer to [Encryption algorithm](../../add-secure-apps/providers/saml/index.mdx#encryption-algorithm).
+- **SAML and WS-Federation providers**: Assertions can be encrypted with AES128-CBC, AES256-CBC, AES128-GCM, or AES256-GCM. New providers default to AES256-GCM, and existing providers keep AES128-CBC. Importing SP metadata selects the first algorithm in the SP's order of preference that authentik supports. For more details, including how to update existing providers, refer to [Encryption algorithm](../../../add-secure-apps/providers/saml/index.mdx#encryption-algorithm).
 - **OpenID Connect sources**: Sources can be configured as public clients without a client secret when PKCE is enabled.
-- **Entra ID source**: Sources in national clouds, such as GCC High, DoD, and China, use the matching Microsoft Graph endpoint for scopes and group memberships, based on the **Profile URL**. For more details, refer to [Configure a source for a national cloud](../../users-sources/sources/social-logins/entra-id/oauth/index.mdx#configure-a-source-for-a-national-cloud).
+- **Entra ID source**: Sources in national clouds, such as GCC High, DoD, and China, use the matching Microsoft Graph endpoint for scopes and group memberships, based on the **Profile URL**. For more details, refer to [Configure a source for a national cloud](../../../users-sources/sources/social-logins/entra-id/oauth/index.mdx#configure-a-source-for-a-national-cloud).
 - **LDAP source**: Synchronization deactivates users whose Active Directory `accountExpires` date has passed and ends their sessions.
 - **SAML source**: When an encryption keypair is configured, the source's metadata lists the supported encryption algorithms in `<EncryptionMethod>` elements, with AES256-GCM first.
-- **WebAuthn authenticator setup stage**: The stage sends the user's enrolled credentials in the `excludeCredentials` registration parameter, so an authenticator refuses to enroll the same security key twice on one account. This replaces the **Prevent duplicate devices** option that was removed in 2026.8. For more details, refer to the [WebAuthn authenticator setup stage documentation](../../add-secure-apps/flows-stages/stages/authenticator_webauthn/index.mdx).
+- **WebAuthn authenticator setup stage**: The stage sends the user's enrolled credentials in the `excludeCredentials` registration parameter, so an authenticator refuses to enroll the same security key twice on one account. This replaces the **Prevent duplicate devices** option that was removed in 2026.8. For more details, refer to the [WebAuthn authenticator setup stage documentation](../../../add-secure-apps/flows-stages/stages/authenticator_webauthn/index.mdx).
 - **Authenticator validation stage**: Codes are only checked against the device types that the stage allows, and email and SMS codes only against the device that received them. Previously, a TOTP code could pass a stage that allowed only email codes.
 - **Email stage**: The rate limit also applies when the user restarts the flow, not only to the **Resend Email** button.
-- **Mutual TLS stage**: :ak-enterprise The client certificate's Subject Alternative Names are available in the flow context. For more details, refer to the [flow context documentation](../../add-secure-apps/flows-stages/flow/context/index.mdx).
+- **Mutual TLS stage**: :ak-enterprise The client certificate's Subject Alternative Names are available in the flow context. For more details, refer to the [flow context documentation](../../../add-secure-apps/flows-stages/flow/context/index.mdx).
 - **CAPTCHA stage**: CAPTCHA widgets render directly in the page instead of in an iframe, which fixes flows that use more than one CAPTCHA stage and reCAPTCHA Enterprise loading the wrong script.
 - **Reputation policy**: A successful login resets a negative reputation score to zero.
-- **Email from expressions**: The `address`, `cc`, and `bcc` parameters of [`ak_send_email`](../../customize/policies/types/expression/reference.mdx) accept `(name, email)` tuples and `"Name <email>"` strings to include a display name.
-- **Application cache**: The new [`AUTHENTIK_CACHE__TIMEOUT_APPLICATION_POLICIES`](../../install-config/configuration/configuration.mdx#authentik_cache__timeout_application_policies) setting controls how long each user's list of applications is cached.
+- **Email from expressions**: The `address`, `cc`, and `bcc` parameters of [`ak_send_email`](../../../customize/policies/types/expression/reference.mdx) accept `(name, email)` tuples and `"Name <email>"` strings to include a display name.
+- **Application cache**: The new [`AUTHENTIK_CACHE__TIMEOUT_APPLICATION_POLICIES`](../../../install-config/configuration/configuration.mdx#authentik_cache__timeout_application_policies) setting controls how long each user's list of applications is cached.
 - **Default brand**: Set `AUTHENTIK_DEFAULT_BRAND_ENABLED=false` to prevent the default brand blueprint from marking its brand as the default.
 - **Forms**: Search fields in Admin interface forms have been rebuilt for keyboard and screen reader use, and the current selection stays visible.
 - **Update banner**: The Admin interface shows a banner when a newer version is available. For a security release, the banner is red and labels the release as a security release.
-- **DB-IP GeoIP databases**: The server image now bundles the free [DB-IP](https://db-ip.com) Lite City and ASN databases instead of the MaxMind GeoLite2 databases. The default paths are now `/geoip/dbip-city-lite.mmdb` and `/geoip/dbip-asn-lite.mmdb`. If you mount your own MaxMind databases to `/geoip`, they keep working: when the DB-IP file is missing, authentik falls back to the previous `GeoLite2-City.mmdb` and `GeoLite2-ASN.mmdb` filenames and logs a warning. For more details, refer to the [GeoIP documentation](../../sys-mgmt/ops/geoip.mdx).
+- **DB-IP GeoIP databases**: The server image now bundles the free [DB-IP](https://db-ip.com) Lite City and ASN databases instead of the MaxMind GeoLite2 databases. The default paths are now `/geoip/dbip-city-lite.mmdb` and `/geoip/dbip-asn-lite.mmdb`. If you mount your own MaxMind databases to `/geoip`, they keep working: when the DB-IP file is missing, authentik falls back to the previous `GeoLite2-City.mmdb` and `GeoLite2-ASN.mmdb` filenames and logs a warning. For more details, refer to the [GeoIP documentation](../../../sys-mgmt/ops/geoip.mdx).
 - **Content Security Policy**: Rendered documentation in the Admin interface no longer requires `'unsafe-eval'`.
 
 ## New integration guides
@@ -306,17 +309,17 @@ An integration is how authentik connects to third-party applications, directorie
 
 The following source guides were recently added. A big thanks to our contributors!
 
-- [Auth0](../../users-sources/sources/social-logins/auth0/index.mdx)
-- [JumpCloud directory sync](../../users-sources/sources/directory-sync/jumpcloud/index.mdx)
-- [Okta (SAML)](../../users-sources/sources/social-logins/okta/index.mdx)
-- [PingOne](../../users-sources/sources/social-logins/pingone/index.mdx)
+- [Auth0](../../../users-sources/sources/social-logins/auth0/index.mdx)
+- [JumpCloud directory sync](../../../users-sources/sources/directory-sync/jumpcloud/index.mdx)
+- [Okta (SAML)](../../../users-sources/sources/social-logins/okta/index.mdx)
+- [PingOne](../../../users-sources/sources/social-logins/pingone/index.mdx)
 
 ## Upgrading
 
-This release requires a configured base URL and stops upgrading instances that have additional tenants. Review the [breaking changes](#breaking-changes) before upgrading, in particular [Base URL is required](#base-url-is-required) and [Multi-tenancy has been removed](#multi-tenancy-has-been-removed). For more detailed information about upgrading authentik, refer to our [Upgrade documentation](../../install-config/upgrade.mdx).
+This release requires a configured base URL and stops upgrading instances that have additional tenants. Review the [breaking changes](#breaking-changes) before upgrading, in particular [Base URL is required](#base-url-is-required) and [Multi-tenancy has been removed](#multi-tenancy-has-been-removed). For more detailed information about upgrading authentik, refer to our [Upgrade documentation](../../../install-config/upgrade.mdx).
 
 :::warning Upgrade in order and upgrade all components
-Upgrades MUST be performed sequentially by major version. If you are two or more major releases behind, you must first upgrade to each intermediate major release before upgrading to this one. Refer to our [Upgrade documentation](../../install-config/upgrade.mdx) for more information on upgrade sequence.
+Upgrades MUST be performed sequentially by major version. If you are two or more major releases behind, you must first upgrade to each intermediate major release before upgrading to this one. Refer to our [Upgrade documentation](../../../install-config/upgrade.mdx) for more information on upgrade sequence.
 
 The version of the authentik instance and of any outposts must be the same. We recommend that you always upgrade any outposts at the same time you upgrade your authentik instance.
 :::
@@ -345,7 +348,7 @@ helm upgrade authentik authentik/authentik -f values.yaml --version ^2026.11
 
 ### Non-`UTF8` database server encoding is deprecated
 
-authentik has required the PostgreSQL database to use the `UTF8` encoding [since 2025.8](../2025/v2025.8.mdx#database-encoding-requirements). Support for other encodings is deprecated and will be removed in an upcoming version, at which point authentik will no longer start against such a database.
+authentik has required the PostgreSQL database to use the `UTF8` encoding [since 2025.8](../../2025/v2025.8.mdx#database-encoding-requirements). Support for other encodings is deprecated and will be removed in an upcoming version, at which point authentik will no longer start against such a database.
 
 Run `SHOW server_encoding;` to check. Converting an existing database means dumping it, re-creating it with `ENCODING 'UTF8'`, and restoring the dump.
 
@@ -353,12 +356,12 @@ Run `SHOW server_encoding;` to check. Converting an existing database means dump
 
 {/* @rissson TODO: the 2026.5 notes said these settings would be removed in the next version, but they still exist in authentik/lib/config.py. Remove them in 2026.11 (and move this to Breaking changes), or confirm the new removal version. */}
 
-The `AUTHENTIK_POSTGRESQL__CONN_OPTIONS` setting and its read replica and direct connection equivalents were [deprecated in 2026.5](./v2026.5.mdx#postgresql-custom-connection-options-are-deprecated) and will be removed in an upcoming version. If you rely on a specific connection option, open an issue to discuss alternatives.
+The `AUTHENTIK_POSTGRESQL__CONN_OPTIONS` setting and its read replica and direct connection equivalents were [deprecated in 2026.5](../v2026.5/index.mdx#postgresql-custom-connection-options-are-deprecated) and will be removed in an upcoming version. If you rely on a specific connection option, open an issue to discuss alternatives.
 
 ## Minor changes/fixes
 
-<!-- _Insert the output of `make gen-changelog` here_ -->
+<Changelog />
 
 ## API Changes
 
-<!-- _Insert output of `make gen-diff` here_ -->
+<APIChanges />
