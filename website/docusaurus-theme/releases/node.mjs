@@ -8,7 +8,7 @@
  */
 
 import { readFileSync } from "node:fs";
-import { extname, join } from "node:path";
+import { join } from "node:path";
 
 import { parseFileContentFrontMatter } from "@docusaurus/utils/lib/markdownUtils.js";
 import FastGlob from "fast-glob";
@@ -35,12 +35,7 @@ function parseRelease(releasesParentDirectory, release, index) {
         return release;
     }
 
-    const extension = extname(release.dirent.name);
-
-    const fileContent = readFileSync(
-        join(releasesParentDirectory, `${release.path}${extension}`),
-        "utf-8",
-    );
+    const fileContent = readFileSync(join(releasesParentDirectory, release.filePath), "utf-8");
 
     const { frontMatter } = parseFileContentFrontMatter(fileContent);
 
@@ -55,7 +50,8 @@ function parseRelease(releasesParentDirectory, release, index) {
 }
 
 /**
- * Collect all Markdown files from the releases directory.
+ * Collect release pages: `releases/<year>/v<version>/index.mdx`, or a flat
+ * `releases/<year>/v<version>.mdx` for older years.
  *
  * @param {string} releasesParentDirectory
  *
@@ -65,16 +61,27 @@ export function collectReleaseFiles(releasesParentDirectory) {
     /**
      * @type {AKReleaseFileEntry[]}
      */
-    const releaseFiles = FastGlob.sync("releases/**/v*.{md,mdx}", {
-        cwd: releasesParentDirectory,
-        onlyFiles: true,
-        objectMode: true,
-    })
+    const releaseFiles = FastGlob.sync(
+        ["releases/**/v*.{md,mdx}", "releases/**/v*/index.{md,mdx}"],
+        {
+            cwd: releasesParentDirectory,
+            onlyFiles: true,
+            objectMode: true,
+        },
+    )
         .map((fileEntry) => {
+            const path = fileEntry.path.replace(/\.mdx?$/, "");
+            const versionSegment =
+                path
+                    .replace(/\/index$/, "")
+                    .split("/")
+                    .pop() ?? "";
+
             return {
                 ...fileEntry,
-                path: fileEntry.path.replace(/\.mdx?$/, ""),
-                name: fileEntry.name.replace(/^v/, "").replace(/\.mdx?$/, ""),
+                filePath: fileEntry.path,
+                path,
+                name: versionSegment.replace(/^v/, ""),
             };
         })
         .sort((a, b) => {
