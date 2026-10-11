@@ -4,6 +4,9 @@ slug: "/releases/xxxx.x"
 draft: true
 ---
 
+import Changelog from "./_vxxxx.x-changelog.mdx";
+import APIChanges from "./_vxxxx.x-api-changes.mdx";
+
 ## Highlights
 
 <!-- ## Breaking changes -->
@@ -42,8 +45,8 @@ helm upgrade authentik authentik/authentik -f values.yaml --version ^xxxx.x
 
 ## Minor changes/fixes
 
-<!-- _Insert the output of `make gen-changelog` here_ -->
+<Changelog />
 
 ## API Changes
 
-<!-- _Insert output of `make gen-diff` here_ -->
+<APIChanges />
