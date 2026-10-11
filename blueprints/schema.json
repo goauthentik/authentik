@@ -5405,6 +5405,11 @@
                     "format": "uuid",
                     "title": "Flow user switch"
                 },
+                "flow_provider_authorization": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Flow provider authorization"
+                },
                 "flow_invalidation": {
                     "type": "string",
                     "format": "uuid",

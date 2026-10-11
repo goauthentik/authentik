@@ -386,6 +386,7 @@ export interface CoreBrandsListRequest {
     flowDeviceCode?: string;
     flowInvalidation?: string;
     flowLockdown?: string;
+    flowProviderAuthorization?: string;
     flowRecovery?: string;
     flowRequest?: string;
     flowUnenrollment?: string;
@@ -2732,6 +2733,11 @@ export class CoreApi extends runtime.BaseAPI {
 
         if (requestParameters["flowLockdown"] != null) {
             queryParameters["flow_lockdown"] = requestParameters["flowLockdown"];
+        }
+
+        if (requestParameters["flowProviderAuthorization"] != null) {
+            queryParameters["flow_provider_authorization"] =
+                requestParameters["flowProviderAuthorization"];
         }
 
         if (requestParameters["flowRecovery"] != null) {

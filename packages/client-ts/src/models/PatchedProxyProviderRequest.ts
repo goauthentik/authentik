@@ -29,7 +29,7 @@ export interface PatchedProxyProviderRequest {
     /**
      * Flow used when authorizing this provider.
      */
-    authorizationFlow?: string;
+    authorizationFlow?: string | null;
     /**
      * Flow used ending the session from a provider.
      */
@@ -112,7 +112,11 @@ export function PatchedProxyProviderRequestFromJSONTyped(
                   ? null
                   : json["authentication_flow"],
         authorizationFlow:
-            json["authorization_flow"] == null ? undefined : json["authorization_flow"],
+            json["authorization_flow"] === undefined
+                ? undefined
+                : json["authorization_flow"] === null
+                  ? null
+                  : json["authorization_flow"],
         invalidationFlow: json["invalidation_flow"] == null ? undefined : json["invalidation_flow"],
         propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
         internalHost: json["internal_host"] == null ? undefined : json["internal_host"],
