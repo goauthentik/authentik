@@ -43,6 +43,7 @@ from authentik.stages.authenticator_validate.challenge import (
     validate_challenge_webauthn,
 )
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
+from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
 from authentik.stages.captcha.stage import (
     PLAN_CONTEXT_CAPTCHA_PRIVATE_KEY,
     PLAN_CONTEXT_CAPTCHA_SITE_KEY,
@@ -428,6 +429,9 @@ class IdentificationStageView(ChallengeStageView):
         return challenge
 
     def challenge_valid(self, response: IdentificationChallengeResponse) -> HttpResponse:
+        # The conditional-UI challenge was answered or is no longer needed. Don't carry it into
+        # a later authenticator validation stage that uses the same plan context key.
+        self.executor.plan.context.pop(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, None)
         self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = response.pre_user
         current_stage: IdentificationStage = self.executor.current_stage
 

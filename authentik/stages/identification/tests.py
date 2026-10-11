@@ -6,18 +6,22 @@ from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowDesignation, FlowStageBinding
+from authentik.flows.planner import FlowPlan
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.tests import FlowTestCase
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
+from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
 from authentik.stages.captcha.models import CaptchaStage
 from authentik.stages.captcha.stage import (
     PLAN_CONTEXT_CAPTCHA_PRIVATE_KEY,
     PLAN_CONTEXT_CAPTCHA_SITE_KEY,
 )
 from authentik.stages.captcha.tests import RECAPTCHA_PRIVATE_KEY, RECAPTCHA_PUBLIC_KEY
+from authentik.stages.dummy.models import DummyStage
 from authentik.stages.identification.api import IdentificationStageSerializer
 from authentik.stages.identification.models import IdentificationStage, UserFields
 from authentik.stages.password import BACKEND_INBUILT
@@ -70,6 +74,30 @@ class TestIdentificationStagePasskey(FlowTestCase):
         # Verify device last_used was updated
         self.device.refresh_from_db()
         self.assertIsNotNone(self.device.last_used)
+
+    def test_passkey_auth_removes_challenge(self):
+        """Test that identification doesn't carry its passkey challenge into a later stage"""
+        from unittest.mock import patch
+
+        FlowStageBinding.objects.create(
+            target=self.flow, stage=DummyStage.objects.create(name=generate_id()), order=1
+        )
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        self.client.get(url)
+        plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+        self.assertIn(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, plan.context)
+
+        with patch(
+            "authentik.stages.identification.stage.validate_challenge_webauthn",
+            return_value=self.device,
+        ):
+            response = self.client.post(
+                url, {"passkey": {"id": "test"}}, content_type="application/json"
+            )
+
+        self.assertEqual(response.status_code, 302)
+        plan = self.client.session[SESSION_KEY_PLAN]
+        self.assertNotIn(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, plan.context)
 
     def test_passkey_challenge_disabled(self):
         """Test that passkey challenge is not included when webauthn_stage is not set"""
