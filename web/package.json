@@ -262,7 +262,7 @@
         "vitest": "catalog:",
         "webcomponent-qr-code": "^2.0.0",
         "wireit": "^0.14.13",
-        "yaml": "^2.9.0"
+        "yaml": "^2.9.1"
     },
     "optionalDependencies": {
         "@esbuild/darwin-arm64": "^0.28.1",
