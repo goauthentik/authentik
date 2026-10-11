@@ -1,16 +1,25 @@
 """RBAC models"""
 
+from typing import TYPE_CHECKING, Any
 from uuid import uuid4
 
 from django.contrib.auth.models import Permission
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.db.transaction import atomic
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
+from guardian.backends import object_grants_cache
 from guardian.shortcuts import assign_perm, remove_perm
 from rest_framework.serializers import BaseSerializer
 
 from authentik.blueprints.models import ManagedModel
 from authentik.lib.models import SerializerModel, SimpleThroughModel
+
+if TYPE_CHECKING:
+    from authentik.core.models import User
+
+GRANTS_ATTRIBUTE = "object_grants"
 
 
 class Role(SerializerModel, ManagedModel):
@@ -156,3 +165,41 @@ class CustomPermission(SerializerModel, Permission):
         proxy = True
         verbose_name = _("Custom permission")
         verbose_name_plural = _("Custom permissions")
+
+
+class PermissionCheck(SerializerModel):
+    """Python snippet with the final say on access to the API endpoints it is bound to"""
+
+    check_uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    name = models.TextField(unique=True)
+    expression = models.TextField()
+    endpoints = ArrayField(models.TextField())
+
+    @property
+    def serializer(self) -> type[BaseSerializer]:
+        from authentik.rbac.api.permission_checks import PermissionCheckSerializer
+
+        return PermissionCheckSerializer
+
+    def __str__(self) -> str:
+        return f"Permission check {self.name}"
+
+    @staticmethod
+    def skipped_for(user: User) -> bool:
+        """Superusers automatically pass every check"""
+        return user.is_superuser
+
+    def defines(self, function: str) -> bool:
+        from authentik.rbac.evaluator import PermissionCheckEvaluator
+
+        return function in PermissionCheckEvaluator.defined_functions(self.expression)
+
+    def run(self, function: str, request: HttpRequest, endpoint: str | None, *args) -> Any:
+        from authentik.rbac.evaluator import PermissionCheckEvaluator
+
+        with object_grants_cache(request.__dict__.setdefault(GRANTS_ATTRIBUTE, {})):
+            return PermissionCheckEvaluator(self, request, endpoint).run(function, *args)
+
+    class Meta:
+        verbose_name = _("Permission check")
+        verbose_name_plural = _("Permission checks")

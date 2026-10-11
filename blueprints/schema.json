@@ -3024,6 +3024,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_rbac.permissioncheck"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/definitions/model_authentik_rbac.permissioncheck_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/definitions/model_authentik_rbac.permissioncheck"
+                        },
+                        "identifiers": {
+                            "$ref": "#/definitions/model_authentik_rbac.permissioncheck"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_rbac.role"
                         },
                         "id": {
@@ -9413,6 +9453,7 @@
                         "authentik_rbac.role",
                         "authentik_rbac.initialpermissions",
                         "authentik_rbac.custompermission",
+                        "authentik_rbac.permissioncheck",
                         "authentik_sources_kerberos.kerberossource",
                         "authentik_sources_kerberos.kerberossourcepropertymapping",
                         "authentik_sources_kerberos.userkerberossourceconnection",
@@ -11743,6 +11784,57 @@
                             "change_initialpermissions",
                             "delete_initialpermissions",
                             "view_initialpermissions"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_rbac.permissioncheck": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "expression": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Expression"
+                },
+                "endpoints": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Endpoints"
+                    },
+                    "title": "Endpoints"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_rbac.permissioncheck_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_permissioncheck",
+                            "change_permissioncheck",
+                            "delete_permissioncheck",
+                            "view_permissioncheck"
                         ]
                     },
                     "user": {
