@@ -2,7 +2,6 @@
 
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.authenticator_webauthn.api.device_types import WebAuthnDeviceTypeSerializer
 from authentik.stages.authenticator_webauthn.models import AuthenticatorWebAuthnStage
@@ -30,7 +29,7 @@ class AuthenticatorWebAuthnStageSerializer(StageSerializer):
         ]
 
 
-class AuthenticatorWebAuthnStageViewSet(UsedByMixin, ModelViewSet):
+class AuthenticatorWebAuthnStageViewSet(ModelViewSet):
     """AuthenticatorWebAuthnStage Viewset"""
 
     queryset = AuthenticatorWebAuthnStage.objects.all()

@@ -143,7 +143,6 @@ import {
     type UniquePasswordPolicyRequest,
     UniquePasswordPolicyRequestToJSON,
 } from "../models/UniquePasswordPolicyRequest";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface PoliciesAllDestroyRequest {
@@ -187,13 +186,6 @@ export interface PoliciesAllTestCreateRequest {
      */
     policyUuid: string;
     policyTestRequest: PolicyTestRequest;
-}
-
-export interface PoliciesAllUsedByListRequest {
-    /**
-     * A UUID string identifying this Policy.
-     */
-    policyUuid: string;
 }
 
 export interface PoliciesBindingsCreateRequest {
@@ -256,13 +248,6 @@ export interface PoliciesBindingsUpdateRequest {
     policyBindingRequest: PolicyBindingRequest;
 }
 
-export interface PoliciesBindingsUsedByListRequest {
-    /**
-     * A UUID string identifying this Policy Binding.
-     */
-    policyBindingUuid: string;
-}
-
 export interface PoliciesDummyCreateRequest {
     dummyPolicyRequest: DummyPolicyRequest;
 }
@@ -322,13 +307,6 @@ export interface PoliciesDummyUpdateRequest {
      */
     policyUuid: string;
     dummyPolicyRequest: DummyPolicyRequest;
-}
-
-export interface PoliciesDummyUsedByListRequest {
-    /**
-     * A UUID string identifying this Dummy Policy.
-     */
-    policyUuid: string;
 }
 
 export interface PoliciesEventMatcherCreateRequest {
@@ -394,13 +372,6 @@ export interface PoliciesEventMatcherUpdateRequest {
     eventMatcherPolicyRequest: EventMatcherPolicyRequest;
 }
 
-export interface PoliciesEventMatcherUsedByListRequest {
-    /**
-     * A UUID string identifying this Event Matcher Policy.
-     */
-    policyUuid: string;
-}
-
 export interface PoliciesExpressionCreateRequest {
     expressionPolicyRequest: ExpressionPolicyRequest;
 }
@@ -460,13 +431,6 @@ export interface PoliciesExpressionUpdateRequest {
     expressionPolicyRequest: ExpressionPolicyRequest;
 }
 
-export interface PoliciesExpressionUsedByListRequest {
-    /**
-     * A UUID string identifying this Expression Policy.
-     */
-    policyUuid: string;
-}
-
 export interface PoliciesGeoipCreateRequest {
     geoIPPolicyRequest: GeoIPPolicyRequest;
 }
@@ -519,13 +483,6 @@ export interface PoliciesGeoipUpdateRequest {
      */
     policyUuid: string;
     geoIPPolicyRequest: GeoIPPolicyRequest;
-}
-
-export interface PoliciesGeoipUsedByListRequest {
-    /**
-     * A UUID string identifying this GeoIP Policy.
-     */
-    policyUuid: string;
 }
 
 export interface PoliciesPasswordCreateRequest {
@@ -599,13 +556,6 @@ export interface PoliciesPasswordExpiryUpdateRequest {
     passwordExpiryPolicyRequest: PasswordExpiryPolicyRequest;
 }
 
-export interface PoliciesPasswordExpiryUsedByListRequest {
-    /**
-     * A UUID string identifying this Password Expiry Policy.
-     */
-    policyUuid: string;
-}
-
 export interface PoliciesPasswordListRequest {
     amountDigits?: number;
     amountLowercase?: number;
@@ -664,13 +614,6 @@ export interface PoliciesPasswordUpdateRequest {
      */
     policyUuid: string;
     passwordPolicyRequest: PasswordPolicyRequest;
-}
-
-export interface PoliciesPasswordUsedByListRequest {
-    /**
-     * A UUID string identifying this Password Policy.
-     */
-    policyUuid: string;
 }
 
 export interface PoliciesReputationCreateRequest {
@@ -766,26 +709,12 @@ export interface PoliciesReputationScoresRetrieveRequest {
     reputationUuid: string;
 }
 
-export interface PoliciesReputationScoresUsedByListRequest {
-    /**
-     * A UUID string identifying this Reputation Score.
-     */
-    reputationUuid: string;
-}
-
 export interface PoliciesReputationUpdateRequest {
     /**
      * A UUID string identifying this Reputation Policy.
      */
     policyUuid: string;
     reputationPolicyRequest: ReputationPolicyRequest;
-}
-
-export interface PoliciesReputationUsedByListRequest {
-    /**
-     * A UUID string identifying this Reputation Policy.
-     */
-    policyUuid: string;
 }
 
 export interface PoliciesUniquePasswordCreateRequest {
@@ -846,13 +775,6 @@ export interface PoliciesUniquePasswordUpdateRequest {
      */
     policyUuid: string;
     uniquePasswordPolicyRequest: UniquePasswordPolicyRequest;
-}
-
-export interface PoliciesUniquePasswordUsedByListRequest {
-    /**
-     * A UUID string identifying this Password Uniqueness Policy.
-     */
-    policyUuid: string;
 }
 
 export class PoliciesApi extends runtime.BaseAPI {
@@ -1283,70 +1205,6 @@ export class PoliciesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Array<TypeCreate>> {
         const response = await this.policiesAllTypesListRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for policiesAllUsedByList without sending the request
-     */
-    async policiesAllUsedByListRequestOpts(
-        requestParameters: PoliciesAllUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["policyUuid"] == null) {
-            throw new runtime.RequiredError(
-                "policyUuid",
-                'Required parameter "policyUuid" was null or undefined when calling policiesAllUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/policies/all/{policy_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{policy_uuid}",
-            encodeURIComponent(String(requestParameters["policyUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async policiesAllUsedByListRaw(
-        requestParameters: PoliciesAllUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.policiesAllUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async policiesAllUsedByList(
-        requestParameters: PoliciesAllUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.policiesAllUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1795,70 +1653,6 @@ export class PoliciesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for policiesBindingsUsedByList without sending the request
-     */
-    async policiesBindingsUsedByListRequestOpts(
-        requestParameters: PoliciesBindingsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["policyBindingUuid"] == null) {
-            throw new runtime.RequiredError(
-                "policyBindingUuid",
-                'Required parameter "policyBindingUuid" was null or undefined when calling policiesBindingsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/policies/bindings/{policy_binding_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{policy_binding_uuid}",
-            encodeURIComponent(String(requestParameters["policyBindingUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async policiesBindingsUsedByListRaw(
-        requestParameters: PoliciesBindingsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.policiesBindingsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async policiesBindingsUsedByList(
-        requestParameters: PoliciesBindingsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.policiesBindingsUsedByListRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Creates request options for policiesDummyCreate without sending the request
      */
     async policiesDummyCreateRequestOpts(
@@ -2293,70 +2087,6 @@ export class PoliciesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<DummyPolicy> {
         const response = await this.policiesDummyUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for policiesDummyUsedByList without sending the request
-     */
-    async policiesDummyUsedByListRequestOpts(
-        requestParameters: PoliciesDummyUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["policyUuid"] == null) {
-            throw new runtime.RequiredError(
-                "policyUuid",
-                'Required parameter "policyUuid" was null or undefined when calling policiesDummyUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/policies/dummy/{policy_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{policy_uuid}",
-            encodeURIComponent(String(requestParameters["policyUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async policiesDummyUsedByListRaw(
-        requestParameters: PoliciesDummyUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.policiesDummyUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async policiesDummyUsedByList(
-        requestParameters: PoliciesDummyUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.policiesDummyUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2825,74 +2555,6 @@ export class PoliciesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for policiesEventMatcherUsedByList without sending the request
-     */
-    async policiesEventMatcherUsedByListRequestOpts(
-        requestParameters: PoliciesEventMatcherUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["policyUuid"] == null) {
-            throw new runtime.RequiredError(
-                "policyUuid",
-                'Required parameter "policyUuid" was null or undefined when calling policiesEventMatcherUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/policies/event_matcher/{policy_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{policy_uuid}",
-            encodeURIComponent(String(requestParameters["policyUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async policiesEventMatcherUsedByListRaw(
-        requestParameters: PoliciesEventMatcherUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.policiesEventMatcherUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async policiesEventMatcherUsedByList(
-        requestParameters: PoliciesEventMatcherUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.policiesEventMatcherUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for policiesExpressionCreate without sending the request
      */
     async policiesExpressionCreateRequestOpts(
@@ -3333,74 +2995,6 @@ export class PoliciesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<ExpressionPolicy> {
         const response = await this.policiesExpressionUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for policiesExpressionUsedByList without sending the request
-     */
-    async policiesExpressionUsedByListRequestOpts(
-        requestParameters: PoliciesExpressionUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["policyUuid"] == null) {
-            throw new runtime.RequiredError(
-                "policyUuid",
-                'Required parameter "policyUuid" was null or undefined when calling policiesExpressionUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/policies/expression/{policy_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{policy_uuid}",
-            encodeURIComponent(String(requestParameters["policyUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async policiesExpressionUsedByListRaw(
-        requestParameters: PoliciesExpressionUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.policiesExpressionUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async policiesExpressionUsedByList(
-        requestParameters: PoliciesExpressionUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.policiesExpressionUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
         return await response.value();
     }
 
@@ -3858,70 +3452,6 @@ export class PoliciesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<GeoIPPolicy> {
         const response = await this.policiesGeoipUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for policiesGeoipUsedByList without sending the request
-     */
-    async policiesGeoipUsedByListRequestOpts(
-        requestParameters: PoliciesGeoipUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["policyUuid"] == null) {
-            throw new runtime.RequiredError(
-                "policyUuid",
-                'Required parameter "policyUuid" was null or undefined when calling policiesGeoipUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/policies/geoip/{policy_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{policy_uuid}",
-            encodeURIComponent(String(requestParameters["policyUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async policiesGeoipUsedByListRaw(
-        requestParameters: PoliciesGeoipUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.policiesGeoipUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async policiesGeoipUsedByList(
-        requestParameters: PoliciesGeoipUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.policiesGeoipUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -4519,74 +4049,6 @@ export class PoliciesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for policiesPasswordExpiryUsedByList without sending the request
-     */
-    async policiesPasswordExpiryUsedByListRequestOpts(
-        requestParameters: PoliciesPasswordExpiryUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["policyUuid"] == null) {
-            throw new runtime.RequiredError(
-                "policyUuid",
-                'Required parameter "policyUuid" was null or undefined when calling policiesPasswordExpiryUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/policies/password_expiry/{policy_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{policy_uuid}",
-            encodeURIComponent(String(requestParameters["policyUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async policiesPasswordExpiryUsedByListRaw(
-        requestParameters: PoliciesPasswordExpiryUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.policiesPasswordExpiryUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async policiesPasswordExpiryUsedByList(
-        requestParameters: PoliciesPasswordExpiryUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.policiesPasswordExpiryUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for policiesPasswordList without sending the request
      */
     async policiesPasswordListRequestOpts(
@@ -4947,70 +4409,6 @@ export class PoliciesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<PasswordPolicy> {
         const response = await this.policiesPasswordUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for policiesPasswordUsedByList without sending the request
-     */
-    async policiesPasswordUsedByListRequestOpts(
-        requestParameters: PoliciesPasswordUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["policyUuid"] == null) {
-            throw new runtime.RequiredError(
-                "policyUuid",
-                'Required parameter "policyUuid" was null or undefined when calling policiesPasswordUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/policies/password/{policy_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{policy_uuid}",
-            encodeURIComponent(String(requestParameters["policyUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async policiesPasswordUsedByListRaw(
-        requestParameters: PoliciesPasswordUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.policiesPasswordUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async policiesPasswordUsedByList(
-        requestParameters: PoliciesPasswordUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.policiesPasswordUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -5616,74 +5014,6 @@ export class PoliciesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for policiesReputationScoresUsedByList without sending the request
-     */
-    async policiesReputationScoresUsedByListRequestOpts(
-        requestParameters: PoliciesReputationScoresUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["reputationUuid"] == null) {
-            throw new runtime.RequiredError(
-                "reputationUuid",
-                'Required parameter "reputationUuid" was null or undefined when calling policiesReputationScoresUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/policies/reputation/scores/{reputation_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{reputation_uuid}",
-            encodeURIComponent(String(requestParameters["reputationUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async policiesReputationScoresUsedByListRaw(
-        requestParameters: PoliciesReputationScoresUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.policiesReputationScoresUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async policiesReputationScoresUsedByList(
-        requestParameters: PoliciesReputationScoresUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.policiesReputationScoresUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for policiesReputationUpdate without sending the request
      */
     async policiesReputationUpdateRequestOpts(
@@ -5756,74 +5086,6 @@ export class PoliciesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<ReputationPolicy> {
         const response = await this.policiesReputationUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for policiesReputationUsedByList without sending the request
-     */
-    async policiesReputationUsedByListRequestOpts(
-        requestParameters: PoliciesReputationUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["policyUuid"] == null) {
-            throw new runtime.RequiredError(
-                "policyUuid",
-                'Required parameter "policyUuid" was null or undefined when calling policiesReputationUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/policies/reputation/{policy_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{policy_uuid}",
-            encodeURIComponent(String(requestParameters["policyUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async policiesReputationUsedByListRaw(
-        requestParameters: PoliciesReputationUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.policiesReputationUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async policiesReputationUsedByList(
-        requestParameters: PoliciesReputationUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.policiesReputationUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
         return await response.value();
     }
 
@@ -6287,74 +5549,6 @@ export class PoliciesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<UniquePasswordPolicy> {
         const response = await this.policiesUniquePasswordUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for policiesUniquePasswordUsedByList without sending the request
-     */
-    async policiesUniquePasswordUsedByListRequestOpts(
-        requestParameters: PoliciesUniquePasswordUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["policyUuid"] == null) {
-            throw new runtime.RequiredError(
-                "policyUuid",
-                'Required parameter "policyUuid" was null or undefined when calling policiesUniquePasswordUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/policies/unique_password/{policy_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{policy_uuid}",
-            encodeURIComponent(String(requestParameters["policyUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async policiesUniquePasswordUsedByListRaw(
-        requestParameters: PoliciesUniquePasswordUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.policiesUniquePasswordUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async policiesUniquePasswordUsedByList(
-        requestParameters: PoliciesUniquePasswordUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.policiesUniquePasswordUsedByListRaw(
             requestParameters,
             initOverrides,
         );

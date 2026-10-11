@@ -347,10 +347,8 @@ class TestCrypto(APITestCase):
             signing_key=keypair,
         )
         response = self.client.get(
-            reverse(
-                "authentik_api:certificatekeypair-used-by",
-                kwargs={"pk": keypair.pk},
-            )
+            reverse("authentik_api:core-used-by"),
+            data={"model": "authentik_crypto.certificatekeypair", "pk": str(keypair.pk)},
         )
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
@@ -379,10 +377,8 @@ class TestCrypto(APITestCase):
             signing_key=keypair,
         )
         response = self.client.get(
-            reverse(
-                "authentik_api:certificatekeypair-used-by",
-                kwargs={"pk": keypair.pk},
-            )
+            reverse("authentik_api:core-used-by"),
+            data={"model": "authentik_crypto.certificatekeypair", "pk": str(keypair.pk)},
         )
         self.assertEqual(403, response.status_code)
 

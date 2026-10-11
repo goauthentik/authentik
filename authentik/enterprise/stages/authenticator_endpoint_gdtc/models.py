@@ -89,6 +89,7 @@ class EndpointDevice(InternallyManagedMixin, SerializerModel, Device):
     class Meta:
         verbose_name = _("Endpoint Device")
         verbose_name_plural = _("Endpoint Devices")
+        authentik_used_by_owner_field = "user"
 
 
 class EndpointDeviceConnection(InternallyManagedMixin, models.Model):

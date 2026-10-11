@@ -3,7 +3,6 @@
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.property_mappings import PropertyMappingFilterSet, PropertyMappingSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.providers.scim.models import SCIMMapping
 
 
@@ -22,7 +21,7 @@ class SCIMMappingFilter(PropertyMappingFilterSet):
         model = SCIMMapping
 
 
-class SCIMMappingViewSet(UsedByMixin, ModelViewSet):
+class SCIMMappingViewSet(ModelViewSet):
     """SCIMMapping Viewset"""
 
     queryset = SCIMMapping.objects.all()

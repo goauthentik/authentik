@@ -101,6 +101,7 @@ class StaticDevice(SerializerModel, ThrottlingMixin, Device):
     class Meta(Device.Meta):
         verbose_name = _("Static Device")
         verbose_name_plural = _("Static Devices")
+        authentik_used_by_owner_field = "user"
 
 
 class StaticToken(models.Model):

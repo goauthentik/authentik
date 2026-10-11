@@ -16,7 +16,6 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
@@ -60,7 +59,7 @@ class RadiusProviderSerializer(
         }
 
 
-class RadiusProviderViewSet(UsedByMixin, ModelViewSet):
+class RadiusProviderViewSet(ModelViewSet):
     """RadiusProvider Viewset"""
 
     queryset = RadiusProvider.objects.all()

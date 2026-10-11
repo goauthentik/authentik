@@ -21,7 +21,6 @@ from rest_framework.viewsets import GenericViewSet
 from ua_parser import user_agent_parser
 
 from authentik.api.validation import validate
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import AuthenticatedSession
 from authentik.core.signals import admin_authenticated_session_deleted
@@ -125,7 +124,6 @@ class AuthenticatedSessionSerializer(ModelSerializer):
 class AuthenticatedSessionViewSet(
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
-    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

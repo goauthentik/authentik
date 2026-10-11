@@ -2,7 +2,6 @@
 
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.dummy.models import DummyStage
 
@@ -15,7 +14,7 @@ class DummyStageSerializer(StageSerializer):
         fields = StageSerializer.Meta.fields + ["throw_error"]
 
 
-class DummyStageViewSet(UsedByMixin, ModelViewSet):
+class DummyStageViewSet(ModelViewSet):
     """DummyStage Viewset"""
 
     queryset = DummyStage.objects.all()

@@ -101,3 +101,4 @@ class DuoDevice(SerializerModel, Device):
     class Meta:
         verbose_name = _("Duo Device")
         verbose_name_plural = _("Duo Devices")
+        authentik_used_by_owner_field = "user"

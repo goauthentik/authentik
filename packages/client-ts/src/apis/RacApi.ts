@@ -27,7 +27,6 @@ import {
     type PatchedConnectionTokenRequest,
     PatchedConnectionTokenRequestToJSON,
 } from "../models/PatchedConnectionTokenRequest";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface RacConnectionTokensDestroyRequest {
@@ -80,13 +79,6 @@ export interface RacConnectionTokensUpdateRequest {
      */
     connectionTokenUuid: string;
     connectionTokenRequest: ConnectionTokenRequest;
-}
-
-export interface RacConnectionTokensUsedByListRequest {
-    /**
-     * A UUID string identifying this RAC Connection token.
-     */
-    connectionTokenUuid: string;
 }
 
 export interface RacDevicesListRequest {
@@ -474,74 +466,6 @@ export class RacApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<ConnectionToken> {
         const response = await this.racConnectionTokensUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for racConnectionTokensUsedByList without sending the request
-     */
-    async racConnectionTokensUsedByListRequestOpts(
-        requestParameters: RacConnectionTokensUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["connectionTokenUuid"] == null) {
-            throw new runtime.RequiredError(
-                "connectionTokenUuid",
-                'Required parameter "connectionTokenUuid" was null or undefined when calling racConnectionTokensUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/rac/connection_tokens/{connection_token_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{connection_token_uuid}",
-            encodeURIComponent(String(requestParameters["connectionTokenUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async racConnectionTokensUsedByListRaw(
-        requestParameters: RacConnectionTokensUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.racConnectionTokensUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async racConnectionTokensUsedByList(
-        requestParameters: RacConnectionTokensUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.racConnectionTokensUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
         return await response.value();
     }
 

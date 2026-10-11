@@ -27,7 +27,6 @@ from authentik.blueprints.v1.common import Blueprint, EntryInvalidError
 from authentik.blueprints.v1.importer import Importer
 from authentik.blueprints.v1.oci import OCI_PREFIX
 from authentik.blueprints.v1.tasks import apply_blueprint, blueprints_find_dict
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
 from authentik.core.models import User
 from authentik.events.logs import LogEventSerializer
@@ -161,7 +160,7 @@ def check_blueprint_perms(blueprint: Blueprint, user: User, explicit_action: str
                 )
 
 
-class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
+class BlueprintInstanceViewSet(ModelViewSet):
     """Blueprint instances"""
 
     serializer_class = BlueprintInstanceSerializer

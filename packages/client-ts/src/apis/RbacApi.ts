@@ -52,7 +52,6 @@ import {
 } from "../models/PermissionAssignResult";
 import { type Role, RoleFromJSON } from "../models/Role";
 import { type RoleRequest, RoleRequestToJSON } from "../models/RoleRequest";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import {
     type UserAccountSerializerForRoleRequest,
     UserAccountSerializerForRoleRequestToJSON,
@@ -111,13 +110,6 @@ export interface RbacInitialPermissionsUpdateRequest {
      */
     id: number;
     initialPermissionsRequest: InitialPermissionsRequest;
-}
-
-export interface RbacInitialPermissionsUsedByListRequest {
-    /**
-     * A unique integer value identifying this Initial Permissions.
-     */
-    id: number;
 }
 
 export interface RbacPermissionsAssignedByRolesAssignRequest {
@@ -283,13 +275,6 @@ export interface RbacRolesUpdateRequest {
      */
     uuid: string;
     roleRequest: RoleRequest;
-}
-
-export interface RbacRolesUsedByListRequest {
-    /**
-     * A UUID string identifying this Role.
-     */
-    uuid: string;
 }
 
 export class RbacApi extends runtime.BaseAPI {
@@ -708,71 +693,6 @@ export class RbacApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<InitialPermissions> {
         const response = await this.rbacInitialPermissionsUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for rbacInitialPermissionsUsedByList without sending the request
-     */
-    async rbacInitialPermissionsUsedByListRequestOpts(
-        requestParameters: RbacInitialPermissionsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling rbacInitialPermissionsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/rbac/initial_permissions/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async rbacInitialPermissionsUsedByListRaw(
-        requestParameters: RbacInitialPermissionsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.rbacInitialPermissionsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async rbacInitialPermissionsUsedByList(
-        requestParameters: RbacInitialPermissionsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.rbacInitialPermissionsUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -1800,67 +1720,6 @@ export class RbacApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Role> {
         const response = await this.rbacRolesUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for rbacRolesUsedByList without sending the request
-     */
-    async rbacRolesUsedByListRequestOpts(
-        requestParameters: RbacRolesUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
-            throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling rbacRolesUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/rbac/roles/{uuid}/used_by/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async rbacRolesUsedByListRaw(
-        requestParameters: RbacRolesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.rbacRolesUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async rbacRolesUsedByList(
-        requestParameters: RbacRolesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.rbacRolesUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 }

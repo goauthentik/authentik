@@ -6,7 +6,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.flows.api.stages import StageSerializer
@@ -30,7 +29,7 @@ class PromptStageSerializer(StageSerializer):
         ]
 
 
-class PromptStageViewSet(UsedByMixin, ModelViewSet):
+class PromptStageViewSet(ModelViewSet):
     """PromptStage Viewset"""
 
     queryset = PromptStage.objects.prefetch_related(
@@ -70,7 +69,7 @@ class PromptSerializer(ModelSerializer):
         ]
 
 
-class PromptViewSet(UsedByMixin, ModelViewSet):
+class PromptViewSet(ModelViewSet):
     """Prompt Viewset"""
 
     queryset = Prompt.objects.all().prefetch_related(

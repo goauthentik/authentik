@@ -2,7 +2,6 @@
 
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.user_logout.models import UserLogoutStage
 
@@ -15,7 +14,7 @@ class UserLogoutStageSerializer(StageSerializer):
         fields = StageSerializer.Meta.fields
 
 
-class UserLogoutStageViewSet(UsedByMixin, ModelViewSet):
+class UserLogoutStageViewSet(ModelViewSet):
     """UserLogoutStage Viewset"""
 
     queryset = UserLogoutStage.objects.all()

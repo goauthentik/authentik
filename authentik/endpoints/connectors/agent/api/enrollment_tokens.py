@@ -7,7 +7,6 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.tokens import TokenViewSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.endpoints.api.device_access_group import DeviceAccessGroupSerializer
 from authentik.endpoints.connectors.agent.models import EnrollmentToken
@@ -42,7 +41,7 @@ class EnrollmentTokenSerializer(ModelSerializer):
         ]
 
 
-class EnrollmentTokenViewSet(UsedByMixin, ModelViewSet):
+class EnrollmentTokenViewSet(ModelViewSet):
 
     queryset = EnrollmentToken.objects.all().prefetch_related("device_group")
     serializer_class = EnrollmentTokenSerializer

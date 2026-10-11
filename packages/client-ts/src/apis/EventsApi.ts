@@ -65,7 +65,6 @@ import {
 import { type SeverityEnum } from "../models/SeverityEnum";
 import { type TransportModeEnum } from "../models/TransportModeEnum";
 import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface EventsEventsCreateRequest {
@@ -381,13 +380,6 @@ export interface EventsNotificationsUpdateRequest {
     notificationRequest?: NotificationRequest;
 }
 
-export interface EventsNotificationsUsedByListRequest {
-    /**
-     * A UUID string identifying this Notification.
-     */
-    uuid: string;
-}
-
 export interface EventsRulesCreateRequest {
     notificationRuleRequest: NotificationRuleRequest;
 }
@@ -442,13 +434,6 @@ export interface EventsRulesUpdateRequest {
      */
     pbmUuid: string;
     notificationRuleRequest: NotificationRuleRequest;
-}
-
-export interface EventsRulesUsedByListRequest {
-    /**
-     * A UUID string identifying this Notification Rule.
-     */
-    pbmUuid: string;
 }
 
 export interface EventsTransportsCreateRequest {
@@ -513,13 +498,6 @@ export interface EventsTransportsUpdateRequest {
      */
     uuid: string;
     notificationTransportRequest: NotificationTransportRequest;
-}
-
-export interface EventsTransportsUsedByListRequest {
-    /**
-     * A UUID string identifying this Notification Transport.
-     */
-    uuid: string;
 }
 
 export class EventsApi extends runtime.BaseAPI {
@@ -1857,71 +1835,6 @@ export class EventsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for eventsNotificationsUsedByList without sending the request
-     */
-    async eventsNotificationsUsedByListRequestOpts(
-        requestParameters: EventsNotificationsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
-            throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling eventsNotificationsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/events/notifications/{uuid}/used_by/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async eventsNotificationsUsedByListRaw(
-        requestParameters: EventsNotificationsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.eventsNotificationsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async eventsNotificationsUsedByList(
-        requestParameters: EventsNotificationsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.eventsNotificationsUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for eventsRulesCreate without sending the request
      */
     async eventsRulesCreateRequestOpts(
@@ -2342,70 +2255,6 @@ export class EventsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<NotificationRule> {
         const response = await this.eventsRulesUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for eventsRulesUsedByList without sending the request
-     */
-    async eventsRulesUsedByListRequestOpts(
-        requestParameters: EventsRulesUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pbmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pbmUuid",
-                'Required parameter "pbmUuid" was null or undefined when calling eventsRulesUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/events/rules/{pbm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pbm_uuid}",
-            encodeURIComponent(String(requestParameters["pbmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async eventsRulesUsedByListRaw(
-        requestParameters: EventsRulesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.eventsRulesUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async eventsRulesUsedByList(
-        requestParameters: EventsRulesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.eventsRulesUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2893,67 +2742,6 @@ export class EventsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<NotificationTransport> {
         const response = await this.eventsTransportsUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for eventsTransportsUsedByList without sending the request
-     */
-    async eventsTransportsUsedByListRequestOpts(
-        requestParameters: EventsTransportsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
-            throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling eventsTransportsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/events/transports/{uuid}/used_by/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async eventsTransportsUsedByListRaw(
-        requestParameters: EventsTransportsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.eventsTransportsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async eventsTransportsUsedByList(
-        requestParameters: EventsTransportsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.eventsTransportsUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 }

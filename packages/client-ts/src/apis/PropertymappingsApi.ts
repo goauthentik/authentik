@@ -249,7 +249,6 @@ import {
     TelegramSourcePropertyMappingRequestToJSON,
 } from "../models/TelegramSourcePropertyMappingRequest";
 import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface PropertymappingsAllDestroyRequest {
@@ -295,13 +294,6 @@ export interface PropertymappingsAllTestCreateRequest {
     pmUuid: string;
     formatResult?: boolean;
     propertyMappingTestRequest?: PropertyMappingTestRequest;
-}
-
-export interface PropertymappingsAllUsedByListRequest {
-    /**
-     * A UUID string identifying this Property Mapping.
-     */
-    pmUuid: string;
 }
 
 export interface PropertymappingsNotificationCreateRequest {
@@ -356,13 +348,6 @@ export interface PropertymappingsNotificationUpdateRequest {
      */
     pmUuid: string;
     notificationWebhookMappingRequest: NotificationWebhookMappingRequest;
-}
-
-export interface PropertymappingsNotificationUsedByListRequest {
-    /**
-     * A UUID string identifying this Webhook Mapping.
-     */
-    pmUuid: string;
 }
 
 export interface PropertymappingsProviderGoogleWorkspaceCreateRequest {
@@ -422,13 +407,6 @@ export interface PropertymappingsProviderGoogleWorkspaceUpdateRequest {
     googleWorkspaceProviderMappingRequest: GoogleWorkspaceProviderMappingRequest;
 }
 
-export interface PropertymappingsProviderGoogleWorkspaceUsedByListRequest {
-    /**
-     * A UUID string identifying this Google Workspace Provider Mapping.
-     */
-    pmUuid: string;
-}
-
 export interface PropertymappingsProviderMicrosoftEntraCreateRequest {
     microsoftEntraProviderMappingRequest: MicrosoftEntraProviderMappingRequest;
 }
@@ -486,13 +464,6 @@ export interface PropertymappingsProviderMicrosoftEntraUpdateRequest {
     microsoftEntraProviderMappingRequest: MicrosoftEntraProviderMappingRequest;
 }
 
-export interface PropertymappingsProviderMicrosoftEntraUsedByListRequest {
-    /**
-     * A UUID string identifying this Microsoft Entra Provider Mapping.
-     */
-    pmUuid: string;
-}
-
 export interface PropertymappingsProviderRacCreateRequest {
     rACPropertyMappingRequest: RACPropertyMappingRequest;
 }
@@ -546,13 +517,6 @@ export interface PropertymappingsProviderRacUpdateRequest {
      */
     pmUuid: string;
     rACPropertyMappingRequest: RACPropertyMappingRequest;
-}
-
-export interface PropertymappingsProviderRacUsedByListRequest {
-    /**
-     * A UUID string identifying this RAC Provider Property Mapping.
-     */
-    pmUuid: string;
 }
 
 export interface PropertymappingsProviderRadiusCreateRequest {
@@ -609,13 +573,6 @@ export interface PropertymappingsProviderRadiusUpdateRequest {
      */
     pmUuid: string;
     radiusProviderPropertyMappingRequest: RadiusProviderPropertyMappingRequest;
-}
-
-export interface PropertymappingsProviderRadiusUsedByListRequest {
-    /**
-     * A UUID string identifying this Radius Provider Property Mapping.
-     */
-    pmUuid: string;
 }
 
 export interface PropertymappingsProviderSamlCreateRequest {
@@ -676,13 +633,6 @@ export interface PropertymappingsProviderSamlUpdateRequest {
     sAMLPropertyMappingRequest: SAMLPropertyMappingRequest;
 }
 
-export interface PropertymappingsProviderSamlUsedByListRequest {
-    /**
-     * A UUID string identifying this SAML Provider Property Mapping.
-     */
-    pmUuid: string;
-}
-
 export interface PropertymappingsProviderScimCreateRequest {
     sCIMMappingRequest: SCIMMappingRequest;
 }
@@ -737,13 +687,6 @@ export interface PropertymappingsProviderScimUpdateRequest {
      */
     pmUuid: string;
     sCIMMappingRequest: SCIMMappingRequest;
-}
-
-export interface PropertymappingsProviderScimUsedByListRequest {
-    /**
-     * A UUID string identifying this SCIM Provider Mapping.
-     */
-    pmUuid: string;
 }
 
 export interface PropertymappingsProviderScopeCreateRequest {
@@ -803,13 +746,6 @@ export interface PropertymappingsProviderScopeUpdateRequest {
     scopeMappingRequest: ScopeMappingRequest;
 }
 
-export interface PropertymappingsProviderScopeUsedByListRequest {
-    /**
-     * A UUID string identifying this Scope Mapping.
-     */
-    pmUuid: string;
-}
-
 export interface PropertymappingsSourceKerberosCreateRequest {
     kerberosSourcePropertyMappingRequest: KerberosSourcePropertyMappingRequest;
 }
@@ -864,13 +800,6 @@ export interface PropertymappingsSourceKerberosUpdateRequest {
      */
     pmUuid: string;
     kerberosSourcePropertyMappingRequest: KerberosSourcePropertyMappingRequest;
-}
-
-export interface PropertymappingsSourceKerberosUsedByListRequest {
-    /**
-     * A UUID string identifying this Kerberos Source Property Mapping.
-     */
-    pmUuid: string;
 }
 
 export interface PropertymappingsSourceLdapCreateRequest {
@@ -929,13 +858,6 @@ export interface PropertymappingsSourceLdapUpdateRequest {
     lDAPSourcePropertyMappingRequest: LDAPSourcePropertyMappingRequest;
 }
 
-export interface PropertymappingsSourceLdapUsedByListRequest {
-    /**
-     * A UUID string identifying this LDAP Source Property Mapping.
-     */
-    pmUuid: string;
-}
-
 export interface PropertymappingsSourceOauthCreateRequest {
     oAuthSourcePropertyMappingRequest: OAuthSourcePropertyMappingRequest;
 }
@@ -990,13 +912,6 @@ export interface PropertymappingsSourceOauthUpdateRequest {
      */
     pmUuid: string;
     oAuthSourcePropertyMappingRequest: OAuthSourcePropertyMappingRequest;
-}
-
-export interface PropertymappingsSourceOauthUsedByListRequest {
-    /**
-     * A UUID string identifying this OAuth Source Property Mapping.
-     */
-    pmUuid: string;
 }
 
 export interface PropertymappingsSourcePlexCreateRequest {
@@ -1055,13 +970,6 @@ export interface PropertymappingsSourcePlexUpdateRequest {
     plexSourcePropertyMappingRequest: PlexSourcePropertyMappingRequest;
 }
 
-export interface PropertymappingsSourcePlexUsedByListRequest {
-    /**
-     * A UUID string identifying this Plex Source Property Mapping.
-     */
-    pmUuid: string;
-}
-
 export interface PropertymappingsSourceSamlCreateRequest {
     sAMLSourcePropertyMappingRequest: SAMLSourcePropertyMappingRequest;
 }
@@ -1116,13 +1024,6 @@ export interface PropertymappingsSourceSamlUpdateRequest {
      */
     pmUuid: string;
     sAMLSourcePropertyMappingRequest: SAMLSourcePropertyMappingRequest;
-}
-
-export interface PropertymappingsSourceSamlUsedByListRequest {
-    /**
-     * A UUID string identifying this SAML Source Property Mapping.
-     */
-    pmUuid: string;
 }
 
 export interface PropertymappingsSourceScimCreateRequest {
@@ -1181,13 +1082,6 @@ export interface PropertymappingsSourceScimUpdateRequest {
     sCIMSourcePropertyMappingRequest: SCIMSourcePropertyMappingRequest;
 }
 
-export interface PropertymappingsSourceScimUsedByListRequest {
-    /**
-     * A UUID string identifying this SCIM Source Property Mapping.
-     */
-    pmUuid: string;
-}
-
 export interface PropertymappingsSourceTelegramCreateRequest {
     telegramSourcePropertyMappingRequest: TelegramSourcePropertyMappingRequest;
 }
@@ -1242,13 +1136,6 @@ export interface PropertymappingsSourceTelegramUpdateRequest {
      */
     pmUuid: string;
     telegramSourcePropertyMappingRequest: TelegramSourcePropertyMappingRequest;
-}
-
-export interface PropertymappingsSourceTelegramUsedByListRequest {
-    /**
-     * A UUID string identifying this Telegram Source Property Mapping.
-     */
-    pmUuid: string;
 }
 
 export class PropertymappingsApi extends runtime.BaseAPI {
@@ -1592,74 +1479,6 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Array<TypeCreate>> {
         const response = await this.propertymappingsAllTypesListRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for propertymappingsAllUsedByList without sending the request
-     */
-    async propertymappingsAllUsedByListRequestOpts(
-        requestParameters: PropertymappingsAllUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsAllUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/propertymappings/all/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsAllUsedByListRaw(
-        requestParameters: PropertymappingsAllUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsAllUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsAllUsedByList(
-        requestParameters: PropertymappingsAllUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsAllUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
         return await response.value();
     }
 
@@ -2099,75 +1918,6 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<NotificationWebhookMapping> {
         const response = await this.propertymappingsNotificationUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for propertymappingsNotificationUsedByList without sending the
-     * request
-     */
-    async propertymappingsNotificationUsedByListRequestOpts(
-        requestParameters: PropertymappingsNotificationUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsNotificationUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/propertymappings/notification/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsNotificationUsedByListRaw(
-        requestParameters: PropertymappingsNotificationUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsNotificationUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsNotificationUsedByList(
-        requestParameters: PropertymappingsNotificationUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsNotificationUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -2641,77 +2391,6 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderGoogleWorkspaceUsedByList without sending
-     * the request
-     */
-    async propertymappingsProviderGoogleWorkspaceUsedByListRequestOpts(
-        requestParameters: PropertymappingsProviderGoogleWorkspaceUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderGoogleWorkspaceUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/propertymappings/provider/google_workspace/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsProviderGoogleWorkspaceUsedByListRaw(
-        requestParameters: PropertymappingsProviderGoogleWorkspaceUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsProviderGoogleWorkspaceUsedByListRequestOpts(
-                requestParameters,
-            );
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsProviderGoogleWorkspaceUsedByList(
-        requestParameters: PropertymappingsProviderGoogleWorkspaceUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsProviderGoogleWorkspaceUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for propertymappingsProviderMicrosoftEntraCreate without sending the
      * request
      */
@@ -3176,77 +2855,6 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderMicrosoftEntraUsedByList without sending
-     * the request
-     */
-    async propertymappingsProviderMicrosoftEntraUsedByListRequestOpts(
-        requestParameters: PropertymappingsProviderMicrosoftEntraUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderMicrosoftEntraUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/propertymappings/provider/microsoft_entra/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsProviderMicrosoftEntraUsedByListRaw(
-        requestParameters: PropertymappingsProviderMicrosoftEntraUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsProviderMicrosoftEntraUsedByListRequestOpts(
-                requestParameters,
-            );
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsProviderMicrosoftEntraUsedByList(
-        requestParameters: PropertymappingsProviderMicrosoftEntraUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsProviderMicrosoftEntraUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for propertymappingsProviderRacCreate without sending the request
      */
     async propertymappingsProviderRacCreateRequestOpts(
@@ -3682,74 +3290,6 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<RACPropertyMapping> {
         const response = await this.propertymappingsProviderRacUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for propertymappingsProviderRacUsedByList without sending the request
-     */
-    async propertymappingsProviderRacUsedByListRequestOpts(
-        requestParameters: PropertymappingsProviderRacUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderRacUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/propertymappings/provider/rac/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsProviderRacUsedByListRaw(
-        requestParameters: PropertymappingsProviderRacUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsProviderRacUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsProviderRacUsedByList(
-        requestParameters: PropertymappingsProviderRacUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsProviderRacUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -4201,75 +3741,6 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<RadiusProviderPropertyMapping> {
         const response = await this.propertymappingsProviderRadiusUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for propertymappingsProviderRadiusUsedByList without sending the
-     * request
-     */
-    async propertymappingsProviderRadiusUsedByListRequestOpts(
-        requestParameters: PropertymappingsProviderRadiusUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderRadiusUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/propertymappings/provider/radius/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsProviderRadiusUsedByListRaw(
-        requestParameters: PropertymappingsProviderRadiusUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsProviderRadiusUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsProviderRadiusUsedByList(
-        requestParameters: PropertymappingsProviderRadiusUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsProviderRadiusUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -4731,75 +4202,6 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderSamlUsedByList without sending the
-     * request
-     */
-    async propertymappingsProviderSamlUsedByListRequestOpts(
-        requestParameters: PropertymappingsProviderSamlUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderSamlUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/propertymappings/provider/saml/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsProviderSamlUsedByListRaw(
-        requestParameters: PropertymappingsProviderSamlUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsProviderSamlUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsProviderSamlUsedByList(
-        requestParameters: PropertymappingsProviderSamlUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsProviderSamlUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for propertymappingsProviderScimCreate without sending the request
      */
     async propertymappingsProviderScimCreateRequestOpts(
@@ -5229,75 +4631,6 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<SCIMMapping> {
         const response = await this.propertymappingsProviderScimUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for propertymappingsProviderScimUsedByList without sending the
-     * request
-     */
-    async propertymappingsProviderScimUsedByListRequestOpts(
-        requestParameters: PropertymappingsProviderScimUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderScimUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/propertymappings/provider/scim/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsProviderScimUsedByListRaw(
-        requestParameters: PropertymappingsProviderScimUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsProviderScimUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsProviderScimUsedByList(
-        requestParameters: PropertymappingsProviderScimUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsProviderScimUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -5746,75 +5079,6 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<ScopeMapping> {
         const response = await this.propertymappingsProviderScopeUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for propertymappingsProviderScopeUsedByList without sending the
-     * request
-     */
-    async propertymappingsProviderScopeUsedByListRequestOpts(
-        requestParameters: PropertymappingsProviderScopeUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsProviderScopeUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/propertymappings/provider/scope/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsProviderScopeUsedByListRaw(
-        requestParameters: PropertymappingsProviderScopeUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsProviderScopeUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsProviderScopeUsedByList(
-        requestParameters: PropertymappingsProviderScopeUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsProviderScopeUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -6273,75 +5537,6 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsSourceKerberosUsedByList without sending the
-     * request
-     */
-    async propertymappingsSourceKerberosUsedByListRequestOpts(
-        requestParameters: PropertymappingsSourceKerberosUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceKerberosUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/propertymappings/source/kerberos/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsSourceKerberosUsedByListRaw(
-        requestParameters: PropertymappingsSourceKerberosUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsSourceKerberosUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsSourceKerberosUsedByList(
-        requestParameters: PropertymappingsSourceKerberosUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsSourceKerberosUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for propertymappingsSourceLdapCreate without sending the request
      */
     async propertymappingsSourceLdapCreateRequestOpts(
@@ -6785,74 +5980,6 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<LDAPSourcePropertyMapping> {
         const response = await this.propertymappingsSourceLdapUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for propertymappingsSourceLdapUsedByList without sending the request
-     */
-    async propertymappingsSourceLdapUsedByListRequestOpts(
-        requestParameters: PropertymappingsSourceLdapUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceLdapUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/propertymappings/source/ldap/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsSourceLdapUsedByListRaw(
-        requestParameters: PropertymappingsSourceLdapUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsSourceLdapUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsSourceLdapUsedByList(
-        requestParameters: PropertymappingsSourceLdapUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsSourceLdapUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -7310,74 +6437,6 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsSourceOauthUsedByList without sending the request
-     */
-    async propertymappingsSourceOauthUsedByListRequestOpts(
-        requestParameters: PropertymappingsSourceOauthUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceOauthUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/propertymappings/source/oauth/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsSourceOauthUsedByListRaw(
-        requestParameters: PropertymappingsSourceOauthUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsSourceOauthUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsSourceOauthUsedByList(
-        requestParameters: PropertymappingsSourceOauthUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsSourceOauthUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for propertymappingsSourcePlexCreate without sending the request
      */
     async propertymappingsSourcePlexCreateRequestOpts(
@@ -7821,74 +6880,6 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<PlexSourcePropertyMapping> {
         const response = await this.propertymappingsSourcePlexUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for propertymappingsSourcePlexUsedByList without sending the request
-     */
-    async propertymappingsSourcePlexUsedByListRequestOpts(
-        requestParameters: PropertymappingsSourcePlexUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourcePlexUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/propertymappings/source/plex/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsSourcePlexUsedByListRaw(
-        requestParameters: PropertymappingsSourcePlexUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsSourcePlexUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsSourcePlexUsedByList(
-        requestParameters: PropertymappingsSourcePlexUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsSourcePlexUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -8346,74 +7337,6 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsSourceSamlUsedByList without sending the request
-     */
-    async propertymappingsSourceSamlUsedByListRequestOpts(
-        requestParameters: PropertymappingsSourceSamlUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceSamlUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/propertymappings/source/saml/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsSourceSamlUsedByListRaw(
-        requestParameters: PropertymappingsSourceSamlUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsSourceSamlUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsSourceSamlUsedByList(
-        requestParameters: PropertymappingsSourceSamlUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsSourceSamlUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for propertymappingsSourceScimCreate without sending the request
      */
     async propertymappingsSourceScimCreateRequestOpts(
@@ -8857,74 +7780,6 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<SCIMSourcePropertyMapping> {
         const response = await this.propertymappingsSourceScimUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for propertymappingsSourceScimUsedByList without sending the request
-     */
-    async propertymappingsSourceScimUsedByListRequestOpts(
-        requestParameters: PropertymappingsSourceScimUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceScimUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/propertymappings/source/scim/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsSourceScimUsedByListRaw(
-        requestParameters: PropertymappingsSourceScimUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsSourceScimUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsSourceScimUsedByList(
-        requestParameters: PropertymappingsSourceScimUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsSourceScimUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -9376,75 +8231,6 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<TelegramSourcePropertyMapping> {
         const response = await this.propertymappingsSourceTelegramUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for propertymappingsSourceTelegramUsedByList without sending the
-     * request
-     */
-    async propertymappingsSourceTelegramUsedByListRequestOpts(
-        requestParameters: PropertymappingsSourceTelegramUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pmUuid",
-                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceTelegramUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/propertymappings/source/telegram/{pm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pm_uuid}",
-            encodeURIComponent(String(requestParameters["pmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsSourceTelegramUsedByListRaw(
-        requestParameters: PropertymappingsSourceTelegramUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.propertymappingsSourceTelegramUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async propertymappingsSourceTelegramUsedByList(
-        requestParameters: PropertymappingsSourceTelegramUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.propertymappingsSourceTelegramUsedByListRaw(
             requestParameters,
             initOverrides,
         );

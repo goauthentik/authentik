@@ -40,7 +40,6 @@ import {
     PatchedFlowStageBindingRequestToJSON,
 } from "../models/PatchedFlowStageBindingRequest";
 import { type PolicyEngineMode } from "../models/PolicyEngineMode";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface FlowsBindingsCreateRequest {
@@ -104,13 +103,6 @@ export interface FlowsBindingsUpdateRequest {
      */
     fsbUuid: string;
     flowStageBindingRequest: FlowStageBindingRequest;
-}
-
-export interface FlowsBindingsUsedByListRequest {
-    /**
-     * A UUID string identifying this Flow Stage Binding.
-     */
-    fsbUuid: string;
 }
 
 export interface FlowsExecutorGetRequest {
@@ -190,10 +182,6 @@ export interface FlowsInstancesRetrieveRequest {
 export interface FlowsInstancesUpdateRequest {
     slug: string;
     flowRequest: FlowRequest;
-}
-
-export interface FlowsInstancesUsedByListRequest {
-    slug: string;
 }
 
 export class FlowsApi extends runtime.BaseAPI {
@@ -646,70 +634,6 @@ export class FlowsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<FlowStageBinding> {
         const response = await this.flowsBindingsUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for flowsBindingsUsedByList without sending the request
-     */
-    async flowsBindingsUsedByListRequestOpts(
-        requestParameters: FlowsBindingsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["fsbUuid"] == null) {
-            throw new runtime.RequiredError(
-                "fsbUuid",
-                'Required parameter "fsbUuid" was null or undefined when calling flowsBindingsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/flows/bindings/{fsb_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{fsb_uuid}",
-            encodeURIComponent(String(requestParameters["fsbUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async flowsBindingsUsedByListRaw(
-        requestParameters: FlowsBindingsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.flowsBindingsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async flowsBindingsUsedByList(
-        requestParameters: FlowsBindingsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.flowsBindingsUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1640,67 +1564,6 @@ export class FlowsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Flow> {
         const response = await this.flowsInstancesUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for flowsInstancesUsedByList without sending the request
-     */
-    async flowsInstancesUsedByListRequestOpts(
-        requestParameters: FlowsInstancesUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["slug"] == null) {
-            throw new runtime.RequiredError(
-                "slug",
-                'Required parameter "slug" was null or undefined when calling flowsInstancesUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/flows/instances/{slug}/used_by/`;
-        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async flowsInstancesUsedByListRaw(
-        requestParameters: FlowsInstancesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.flowsInstancesUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async flowsInstancesUsedByList(
-        requestParameters: FlowsInstancesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.flowsInstancesUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 }

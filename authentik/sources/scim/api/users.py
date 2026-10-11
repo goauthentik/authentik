@@ -4,7 +4,6 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.sources import SourceSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.sources.scim.models import SCIMSourceUser
 
 
@@ -26,7 +25,7 @@ class SCIMSourceUserSerializer(SourceSerializer):
         ]
 
 
-class SCIMSourceUserViewSet(UsedByMixin, ModelViewSet):
+class SCIMSourceUserViewSet(ModelViewSet):
     """SCIMSourceUser Viewset"""
 
     queryset = SCIMSourceUser.objects.all().select_related("user")

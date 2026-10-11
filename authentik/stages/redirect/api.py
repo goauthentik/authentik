@@ -4,7 +4,6 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.redirect.models import RedirectMode, RedirectStage
 
@@ -32,7 +31,7 @@ class RedirectStageSerializer(StageSerializer):
         ]
 
 
-class RedirectStageViewSet(UsedByMixin, ModelViewSet):
+class RedirectStageViewSet(ModelViewSet):
     """RedirectStage Viewset"""
 
     queryset = RedirectStage.objects.all()

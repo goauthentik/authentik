@@ -230,13 +230,6 @@ export interface CoreApplicationEntitlementsUpdateRequest {
     applicationEntitlementRequest: ApplicationEntitlementRequest;
 }
 
-export interface CoreApplicationEntitlementsUsedByListRequest {
-    /**
-     * A UUID string identifying this Application Entitlement.
-     */
-    pbmUuid: string;
-}
-
 export interface CoreApplicationsCheckAccessRetrieveRequest {
     slug: string;
     forUser?: number;
@@ -317,10 +310,6 @@ export interface CoreApplicationsUpdateRequest {
     applicationRequest: ApplicationRequest;
 }
 
-export interface CoreApplicationsUsedByListRequest {
-    slug: string;
-}
-
 export interface CoreAuthenticatedSessionsBulkDeleteDestroyRequest {
     /**
      * List of user IDs to revoke all sessions for
@@ -355,10 +344,6 @@ export interface CoreAuthenticatedSessionsListRequest {
 }
 
 export interface CoreAuthenticatedSessionsRetrieveRequest {
-    uuid: string;
-}
-
-export interface CoreAuthenticatedSessionsUsedByListRequest {
     uuid: string;
 }
 
@@ -431,13 +416,6 @@ export interface CoreBrandsUpdateRequest {
      */
     brandUuid: string;
     brandRequest: BrandRequest;
-}
-
-export interface CoreBrandsUsedByListRequest {
-    /**
-     * A UUID string identifying this Brand.
-     */
-    brandUuid: string;
 }
 
 export interface CoreGroupsAddUserCreateRequest {
@@ -522,13 +500,6 @@ export interface CoreGroupsUpdateRequest {
      */
     groupUuid: string;
     groupRequest: GroupRequest;
-}
-
-export interface CoreGroupsUsedByListRequest {
-    /**
-     * A UUID string identifying this Group.
-     */
-    groupUuid: string;
 }
 
 export interface CoreObjectAttributesCreateRequest {
@@ -640,16 +611,20 @@ export interface CoreTokensUpdateRequest {
     tokenRequest: TokenRequest;
 }
 
-export interface CoreTokensUsedByListRequest {
-    identifier: string;
-}
-
 export interface CoreTokensViewKeyRetrieveRequest {
     identifier: string;
 }
 
 export interface CoreTransactionalApplicationsUpdateRequest {
     transactionApplicationRequest: TransactionApplicationRequest;
+}
+
+export interface CoreUsedByListRequest {
+    /**
+     * Fully qualified model name, in the form `<app_label>.<model>`
+     */
+    model: string;
+    pk: string;
 }
 
 export interface CoreUserConsentDestroyRequest {
@@ -681,13 +656,6 @@ export interface CoreUserConsentListRequest {
 }
 
 export interface CoreUserConsentRetrieveRequest {
-    /**
-     * A unique integer value identifying this User Consent.
-     */
-    id: number;
-}
-
-export interface CoreUserConsentUsedByListRequest {
     /**
      * A unique integer value identifying this User Consent.
      */
@@ -864,13 +832,6 @@ export interface CoreUsersUpdateRequest {
      */
     id: number;
     userRequest: UserRequest;
-}
-
-export interface CoreUsersUsedByListRequest {
-    /**
-     * A unique integer value identifying this User.
-     */
-    id: number;
 }
 
 export class CoreApi extends runtime.BaseAPI {
@@ -1414,74 +1375,6 @@ export class CoreApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<ApplicationEntitlement> {
         const response = await this.coreApplicationEntitlementsUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for coreApplicationEntitlementsUsedByList without sending the request
-     */
-    async coreApplicationEntitlementsUsedByListRequestOpts(
-        requestParameters: CoreApplicationEntitlementsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["pbmUuid"] == null) {
-            throw new runtime.RequiredError(
-                "pbmUuid",
-                'Required parameter "pbmUuid" was null or undefined when calling coreApplicationEntitlementsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/core/application_entitlements/{pbm_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{pbm_uuid}",
-            encodeURIComponent(String(requestParameters["pbmUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async coreApplicationEntitlementsUsedByListRaw(
-        requestParameters: CoreApplicationEntitlementsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.coreApplicationEntitlementsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async coreApplicationEntitlementsUsedByList(
-        requestParameters: CoreApplicationEntitlementsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.coreApplicationEntitlementsUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -2089,67 +1982,6 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for coreApplicationsUsedByList without sending the request
-     */
-    async coreApplicationsUsedByListRequestOpts(
-        requestParameters: CoreApplicationsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["slug"] == null) {
-            throw new runtime.RequiredError(
-                "slug",
-                'Required parameter "slug" was null or undefined when calling coreApplicationsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/core/applications/{slug}/used_by/`;
-        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async coreApplicationsUsedByListRaw(
-        requestParameters: CoreApplicationsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.coreApplicationsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async coreApplicationsUsedByList(
-        requestParameters: CoreApplicationsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.coreApplicationsUsedByListRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Creates request options for coreAuthenticatedSessionsBulkDeleteDestroy without sending the
      * request
      */
@@ -2429,71 +2261,6 @@ export class CoreApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<AuthenticatedSession> {
         const response = await this.coreAuthenticatedSessionsRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for coreAuthenticatedSessionsUsedByList without sending the request
-     */
-    async coreAuthenticatedSessionsUsedByListRequestOpts(
-        requestParameters: CoreAuthenticatedSessionsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["uuid"] == null) {
-            throw new runtime.RequiredError(
-                "uuid",
-                'Required parameter "uuid" was null or undefined when calling coreAuthenticatedSessionsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/core/authenticated_sessions/{uuid}/used_by/`;
-        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async coreAuthenticatedSessionsUsedByListRaw(
-        requestParameters: CoreAuthenticatedSessionsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.coreAuthenticatedSessionsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async coreAuthenticatedSessionsUsedByList(
-        requestParameters: CoreAuthenticatedSessionsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.coreAuthenticatedSessionsUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -3023,70 +2790,6 @@ export class CoreApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Brand> {
         const response = await this.coreBrandsUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for coreBrandsUsedByList without sending the request
-     */
-    async coreBrandsUsedByListRequestOpts(
-        requestParameters: CoreBrandsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["brandUuid"] == null) {
-            throw new runtime.RequiredError(
-                "brandUuid",
-                'Required parameter "brandUuid" was null or undefined when calling coreBrandsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/core/brands/{brand_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{brand_uuid}",
-            encodeURIComponent(String(requestParameters["brandUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async coreBrandsUsedByListRaw(
-        requestParameters: CoreBrandsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.coreBrandsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async coreBrandsUsedByList(
-        requestParameters: CoreBrandsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.coreBrandsUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -3683,70 +3386,6 @@ export class CoreApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Group> {
         const response = await this.coreGroupsUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for coreGroupsUsedByList without sending the request
-     */
-    async coreGroupsUsedByListRequestOpts(
-        requestParameters: CoreGroupsUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["groupUuid"] == null) {
-            throw new runtime.RequiredError(
-                "groupUuid",
-                'Required parameter "groupUuid" was null or undefined when calling coreGroupsUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/core/groups/{group_uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            "{group_uuid}",
-            encodeURIComponent(String(requestParameters["groupUuid"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async coreGroupsUsedByListRaw(
-        requestParameters: CoreGroupsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.coreGroupsUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async coreGroupsUsedByList(
-        requestParameters: CoreGroupsUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.coreGroupsUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -4654,70 +4293,6 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for coreTokensUsedByList without sending the request
-     */
-    async coreTokensUsedByListRequestOpts(
-        requestParameters: CoreTokensUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["identifier"] == null) {
-            throw new runtime.RequiredError(
-                "identifier",
-                'Required parameter "identifier" was null or undefined when calling coreTokensUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/core/tokens/{identifier}/used_by/`;
-        urlPath = urlPath.replace(
-            "{identifier}",
-            encodeURIComponent(String(requestParameters["identifier"])),
-        );
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async coreTokensUsedByListRaw(
-        requestParameters: CoreTokensUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.coreTokensUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async coreTokensUsedByList(
-        requestParameters: CoreTokensUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.coreTokensUsedByListRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Creates request options for coreTokensViewKeyRetrieve without sending the request
      */
     async coreTokensViewKeyRetrieveRequestOpts(
@@ -4849,6 +4424,81 @@ export class CoreApi extends runtime.BaseAPI {
             requestParameters,
             initOverrides,
         );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for coreUsedByList without sending the request
+     */
+    async coreUsedByListRequestOpts(
+        requestParameters: CoreUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["model"] == null) {
+            throw new runtime.RequiredError(
+                "model",
+                'Required parameter "model" was null or undefined when calling coreUsedByList().',
+            );
+        }
+
+        if (requestParameters["pk"] == null) {
+            throw new runtime.RequiredError(
+                "pk",
+                'Required parameter "pk" was null or undefined when calling coreUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters["model"] != null) {
+            queryParameters["model"] = requestParameters["model"];
+        }
+
+        if (requestParameters["pk"] != null) {
+            queryParameters["pk"] = requestParameters["pk"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/core/used_by/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async coreUsedByListRaw(
+        requestParameters: CoreUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.coreUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async coreUsedByList(
+        requestParameters: CoreUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.coreUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -5049,67 +4699,6 @@ export class CoreApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<UserConsent> {
         const response = await this.coreUserConsentRetrieveRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for coreUserConsentUsedByList without sending the request
-     */
-    async coreUserConsentUsedByListRequestOpts(
-        requestParameters: CoreUserConsentUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling coreUserConsentUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/core/user_consent/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async coreUserConsentUsedByListRaw(
-        requestParameters: CoreUserConsentUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.coreUserConsentUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async coreUserConsentUsedByList(
-        requestParameters: CoreUserConsentUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.coreUserConsentUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -6492,67 +6081,6 @@ export class CoreApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<User> {
         const response = await this.coreUsersUpdateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for coreUsersUsedByList without sending the request
-     */
-    async coreUsersUsedByListRequestOpts(
-        requestParameters: CoreUsersUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling coreUsersUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/core/users/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async coreUsersUsedByListRaw(
-        requestParameters: CoreUsersUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.coreUsersUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async coreUsersUsedByList(
-        requestParameters: CoreUsersUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.coreUsersUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 }

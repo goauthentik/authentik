@@ -2,7 +2,6 @@ from django.db.models import Prefetch
 from rest_framework.fields import CharField
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, ModelSerializer, PassiveSerializer
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.requests.api.request_rules import RequestRuleSerializer
@@ -38,7 +37,7 @@ class RequestRuleBindingSerializer(EnterpriseRequiredMixin, ModelSerializer):
         ]
 
 
-class RequestRuleBindingViewSet(UsedByMixin, ModelViewSet):
+class RequestRuleBindingViewSet(ModelViewSet):
 
     queryset = RequestRuleBinding.objects.all().prefetch_related(
         Prefetch("related", PolicyBindingModel.objects.select_subclasses())

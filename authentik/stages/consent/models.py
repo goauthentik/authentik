@@ -72,3 +72,4 @@ class UserConsent(InternallyManagedMixin, SerializerModel, ExpiringModel):
         verbose_name = _("User Consent")
         verbose_name_plural = _("User Consents")
         indexes = ExpiringModel.Meta.indexes
+        authentik_used_by_owner_field = "user"

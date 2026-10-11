@@ -4,7 +4,6 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.identification.models import IdentificationStage
 
@@ -41,7 +40,7 @@ class IdentificationStageSerializer(StageSerializer):
         ]
 
 
-class IdentificationStageViewSet(UsedByMixin, ModelViewSet):
+class IdentificationStageViewSet(ModelViewSet):
     """IdentificationStage Viewset"""
 
     queryset = IdentificationStage.objects.all()

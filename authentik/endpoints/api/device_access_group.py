@@ -1,7 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.object_attributes import AttributesMixinSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.endpoints.models import DeviceAccessGroup
 
@@ -17,7 +16,7 @@ class DeviceAccessGroupSerializer(AttributesMixinSerializer, ModelSerializer):
         ]
 
 
-class DeviceAccessGroupViewSet(UsedByMixin, ModelViewSet):
+class DeviceAccessGroupViewSet(ModelViewSet):
     """DeviceAccessGroup Viewset"""
 
     queryset = DeviceAccessGroup.objects.all()

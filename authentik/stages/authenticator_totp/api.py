@@ -5,7 +5,6 @@ from rest_framework.fields import ChoiceField
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.core.api.groups import PartialUserSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.authenticator_totp.models import (
@@ -25,7 +24,7 @@ class AuthenticatorTOTPStageSerializer(StageSerializer):
         fields = StageSerializer.Meta.fields + ["configure_flow", "friendly_name", "digits"]
 
 
-class AuthenticatorTOTPStageViewSet(UsedByMixin, ModelViewSet):
+class AuthenticatorTOTPStageViewSet(ModelViewSet):
     """AuthenticatorTOTPStage Viewset"""
 
     queryset = AuthenticatorTOTPStage.objects.all()
@@ -54,7 +53,6 @@ class TOTPDeviceViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
-    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

@@ -9,7 +9,6 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.object_attributes import AttributesMixinSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import (
     Application,
@@ -75,7 +74,6 @@ class ApplicationEntitlementViewSet(
     ConditionalInheritance(
         "authentik.enterprise.requests.api.apps.ApplicationEntitlementsRequestableMixin"
     ),
-    UsedByMixin,
     ModelViewSet,
 ):
     """ApplicationEntitlement Viewset"""

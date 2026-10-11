@@ -14,7 +14,6 @@ from structlog.stdlib import get_logger
 
 from authentik.api.validation import validate
 from authentik.core.api.object_types import TypesMixin
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
     CacheSerializer,
     MetaNameSerializer,
@@ -81,7 +80,6 @@ class PolicyViewSet(
     TypesMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
-    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

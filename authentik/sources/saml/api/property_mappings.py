@@ -3,7 +3,6 @@
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.property_mappings import PropertyMappingFilterSet, PropertyMappingSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.sources.saml.models import SAMLSourcePropertyMapping
 
 
@@ -21,7 +20,7 @@ class SAMLSourcePropertyMappingFilter(PropertyMappingFilterSet):
         model = SAMLSourcePropertyMapping
 
 
-class SAMLSourcePropertyMappingViewSet(UsedByMixin, ModelViewSet):
+class SAMLSourcePropertyMappingViewSet(ModelViewSet):
     """SAMLSourcePropertyMapping Viewset"""
 
     queryset = SAMLSourcePropertyMapping.objects.all()

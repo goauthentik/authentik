@@ -2,7 +2,6 @@
 
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.used_by import UsedByMixin
 from authentik.endpoints.api.connectors import ConnectorSerializer
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.endpoints.connectors.fleet.models import FleetConnector
@@ -25,7 +24,7 @@ class FleetConnectorSerializer(EnterpriseRequiredMixin, ConnectorSerializer):
         }
 
 
-class FleetConnectorViewSet(UsedByMixin, ModelViewSet):
+class FleetConnectorViewSet(ModelViewSet):
     """FleetConnector Viewset"""
 
     queryset = FleetConnector.objects.all()

@@ -8,7 +8,6 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.sources import SourceSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.sources.telegram.api.source_connection import UserTelegramSourceConnectionSerializer
 from authentik.sources.telegram.models import TelegramSource, UserTelegramSourceConnection
 from authentik.sources.telegram.telegram import TelegramAuth
@@ -38,7 +37,7 @@ class TelegramAuthSerializer(TelegramAuth):
         return self._bot_token
 
 
-class TelegramSourceViewSet(UsedByMixin, ModelViewSet):
+class TelegramSourceViewSet(ModelViewSet):
     queryset = TelegramSource.objects.all()
     serializer_class = TelegramSourceSerializer
     lookup_field = "slug"

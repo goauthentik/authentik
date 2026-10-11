@@ -7,7 +7,6 @@ from drf_spectacular.utils import extend_schema_field
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.property_mappings import PropertyMappingSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.enterprise.providers.google_workspace.models import GoogleWorkspaceProviderMapping
 
 
@@ -29,7 +28,7 @@ class GoogleWorkspaceProviderMappingFilter(FilterSet):
         fields = "__all__"
 
 
-class GoogleWorkspaceProviderMappingViewSet(UsedByMixin, ModelViewSet):
+class GoogleWorkspaceProviderMappingViewSet(ModelViewSet):
     """GoogleWorkspaceProviderMapping Viewset"""
 
     queryset = GoogleWorkspaceProviderMapping.objects.all()

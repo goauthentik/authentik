@@ -2,7 +2,6 @@
 
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.captcha.models import CaptchaStage
 
@@ -26,7 +25,7 @@ class CaptchaStageSerializer(StageSerializer):
         extra_kwargs = {"private_key": {"write_only": True}}
 
 
-class CaptchaStageViewSet(UsedByMixin, ModelViewSet):
+class CaptchaStageViewSet(ModelViewSet):
     """CaptchaStage Viewset"""
 
     queryset = CaptchaStage.objects.all()

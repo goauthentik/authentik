@@ -15,7 +15,6 @@ from structlog.stdlib import get_logger
 
 from authentik.api.validation import validate
 from authentik.core.api.sources import SourceSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.flows.challenge import RedirectChallenge
 from authentik.flows.views.executor import to_stage_response
@@ -47,7 +46,7 @@ class PlexTokenRedeemSerializer(PassiveSerializer):
     plex_token = CharField()
 
 
-class PlexSourceViewSet(UsedByMixin, ModelViewSet):
+class PlexSourceViewSet(ModelViewSet):
     """Plex source Viewset"""
 
     queryset = PlexSource.objects.all()

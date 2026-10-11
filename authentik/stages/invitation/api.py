@@ -21,7 +21,6 @@ from structlog.stdlib import get_logger
 
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.groups import PartialUserSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer
 from authentik.core.models import User
 from authentik.flows.api.flows import FlowSerializer
@@ -53,7 +52,7 @@ class InvitationStageFilter(FilterSet):
         fields = ["name", "no_flows", "continue_flow_without_invitation", "stage_uuid"]
 
 
-class InvitationStageViewSet(UsedByMixin, ModelViewSet):
+class InvitationStageViewSet(ModelViewSet):
     """InvitationStage Viewset"""
 
     queryset = InvitationStage.objects.all()
@@ -103,7 +102,7 @@ class InvitationSendEmailSerializer(Serializer):
     template = CharField(required=False, default="invitation")
 
 
-class InvitationViewSet(UsedByMixin, ModelViewSet):
+class InvitationViewSet(ModelViewSet):
     """Invitation Viewset"""
 
     queryset = Invitation.objects.including_expired().all()

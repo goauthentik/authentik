@@ -8,7 +8,6 @@ from rest_framework.fields import CharField
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.property_mappings import PropertyMappingSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField
 from authentik.providers.rac.models import RACPropertyMapping
 
@@ -40,7 +39,7 @@ class RACPropertyMappingFilter(FilterSet):
         fields = ["name", "managed"]
 
 
-class RACPropertyMappingViewSet(UsedByMixin, ModelViewSet):
+class RACPropertyMappingViewSet(ModelViewSet):
     """RACPropertyMapping Viewset"""
 
     queryset = RACPropertyMapping.objects.all()

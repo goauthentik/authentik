@@ -2,7 +2,6 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.used_by import UsedByMixin
 from authentik.endpoints.api.connectors import ConnectorSerializer
 from authentik.endpoints.controller import Capabilities
 from authentik.endpoints.models import Connector, EndpointStage
@@ -30,7 +29,7 @@ class EndpointStageSerializer(StageSerializer):
         ]
 
 
-class EndpointStageViewSet(UsedByMixin, ModelViewSet):
+class EndpointStageViewSet(ModelViewSet):
     """EndpointStage Viewset"""
 
     queryset = EndpointStage.objects.all()

@@ -1,7 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.property_mappings import PropertyMappingFilterSet, PropertyMappingSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.sources.ldap.models import (
     LDAPSourcePropertyMapping,
 )
@@ -22,7 +21,7 @@ class LDAPSourcePropertyMappingFilter(PropertyMappingFilterSet):
         model = LDAPSourcePropertyMapping
 
 
-class LDAPSourcePropertyMappingViewSet(UsedByMixin, ModelViewSet):
+class LDAPSourcePropertyMappingViewSet(ModelViewSet):
     """LDAP PropertyMapping Viewset"""
 
     queryset = LDAPSourcePropertyMapping.objects.all()

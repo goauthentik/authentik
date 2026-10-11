@@ -4,7 +4,6 @@ from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.core.api.groups import PartialUserSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.authenticator_sms.models import AuthenticatorSMSStage, SMSDevice
@@ -33,7 +32,7 @@ class AuthenticatorSMSStageSerializer(StageSerializer):
         }
 
 
-class AuthenticatorSMSStageViewSet(UsedByMixin, ModelViewSet):
+class AuthenticatorSMSStageViewSet(ModelViewSet):
     """AuthenticatorSMSStage Viewset"""
 
     queryset = AuthenticatorSMSStage.objects.all()
@@ -61,7 +60,6 @@ class SMSDeviceViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
-    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

@@ -3,7 +3,6 @@
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.property_mappings import PropertyMappingFilterSet, PropertyMappingSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.providers.radius.models import RadiusProviderPropertyMapping
 
 
@@ -22,7 +21,7 @@ class RadiusProviderPropertyMappingFilter(PropertyMappingFilterSet):
         model = RadiusProviderPropertyMapping
 
 
-class RadiusProviderPropertyMappingViewSet(UsedByMixin, ModelViewSet):
+class RadiusProviderPropertyMappingViewSet(ModelViewSet):
     """RadiusProviderPropertyMapping Viewset"""
 
     queryset = RadiusProviderPropertyMapping.objects.all()

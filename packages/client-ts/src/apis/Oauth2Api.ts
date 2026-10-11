@@ -23,7 +23,6 @@ import {
     PaginatedTokenModelListFromJSON,
 } from "../models/PaginatedTokenModelList";
 import { type TokenModel, TokenModelFromJSON } from "../models/TokenModel";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface Oauth2AccessTokensDestroyRequest {
@@ -55,13 +54,6 @@ export interface Oauth2AccessTokensListRequest {
 }
 
 export interface Oauth2AccessTokensRetrieveRequest {
-    /**
-     * A unique integer value identifying this OAuth2 Access Token.
-     */
-    id: number;
-}
-
-export interface Oauth2AccessTokensUsedByListRequest {
     /**
      * A unique integer value identifying this OAuth2 Access Token.
      */
@@ -103,13 +95,6 @@ export interface Oauth2AuthorizationCodesRetrieveRequest {
     id: number;
 }
 
-export interface Oauth2AuthorizationCodesUsedByListRequest {
-    /**
-     * A unique integer value identifying this Authorization Code.
-     */
-    id: number;
-}
-
 export interface Oauth2RefreshTokensDestroyRequest {
     /**
      * A unique integer value identifying this OAuth2 Refresh Token.
@@ -139,13 +124,6 @@ export interface Oauth2RefreshTokensListRequest {
 }
 
 export interface Oauth2RefreshTokensRetrieveRequest {
-    /**
-     * A unique integer value identifying this OAuth2 Refresh Token.
-     */
-    id: number;
-}
-
-export interface Oauth2RefreshTokensUsedByListRequest {
     /**
      * A unique integer value identifying this OAuth2 Refresh Token.
      */
@@ -350,71 +328,6 @@ export class Oauth2Api extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<TokenModel> {
         const response = await this.oauth2AccessTokensRetrieveRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for oauth2AccessTokensUsedByList without sending the request
-     */
-    async oauth2AccessTokensUsedByListRequestOpts(
-        requestParameters: Oauth2AccessTokensUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling oauth2AccessTokensUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/oauth2/access_tokens/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async oauth2AccessTokensUsedByListRaw(
-        requestParameters: Oauth2AccessTokensUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.oauth2AccessTokensUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async oauth2AccessTokensUsedByList(
-        requestParameters: Oauth2AccessTokensUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.oauth2AccessTokensUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
         return await response.value();
     }
 
@@ -630,71 +543,6 @@ export class Oauth2Api extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for oauth2AuthorizationCodesUsedByList without sending the request
-     */
-    async oauth2AuthorizationCodesUsedByListRequestOpts(
-        requestParameters: Oauth2AuthorizationCodesUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling oauth2AuthorizationCodesUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/oauth2/authorization_codes/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async oauth2AuthorizationCodesUsedByListRaw(
-        requestParameters: Oauth2AuthorizationCodesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.oauth2AuthorizationCodesUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async oauth2AuthorizationCodesUsedByList(
-        requestParameters: Oauth2AuthorizationCodesUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.oauth2AuthorizationCodesUsedByListRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for oauth2RefreshTokensDestroy without sending the request
      */
     async oauth2RefreshTokensDestroyRequestOpts(
@@ -891,71 +739,6 @@ export class Oauth2Api extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<TokenModel> {
         const response = await this.oauth2RefreshTokensRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for oauth2RefreshTokensUsedByList without sending the request
-     */
-    async oauth2RefreshTokensUsedByListRequestOpts(
-        requestParameters: Oauth2RefreshTokensUsedByListRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling oauth2RefreshTokensUsedByList().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/oauth2/refresh_tokens/{id}/used_by/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "GET",
-            headers: headerParameters,
-            query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async oauth2RefreshTokensUsedByListRaw(
-        requestParameters: Oauth2RefreshTokensUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions =
-            await this.oauth2RefreshTokensUsedByListRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
-    }
-
-    /**
-     * Get a list of all objects that use this object
-     */
-    async oauth2RefreshTokensUsedByList(
-        requestParameters: Oauth2RefreshTokensUsedByListRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<UsedBy>> {
-        const response = await this.oauth2RefreshTokensUsedByListRaw(
             requestParameters,
             initOverrides,
         );

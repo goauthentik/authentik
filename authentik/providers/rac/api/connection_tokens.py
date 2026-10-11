@@ -5,7 +5,6 @@ from rest_framework.fields import CharField
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.groups import PartialUserSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.providers.rac.api.providers import RACProviderSerializer
 from authentik.providers.rac.models import ConnectionToken
@@ -36,7 +35,6 @@ class ConnectionTokenViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
-    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):

@@ -31,7 +31,6 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.validation import validate
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import UserTypes
 from authentik.crypto.apps import MANAGED_KEY
@@ -185,7 +184,7 @@ class CertificateKeyPairFilter(FilterSet):
         fields = ["name", "managed"]
 
 
-class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
+class CertificateKeyPairViewSet(ModelViewSet):
     """CertificateKeyPair Viewset"""
 
     queryset = CertificateKeyPair.objects.exclude(managed=MANAGED_KEY)
