@@ -54570,12 +54570,20 @@ components:
           items:
             type: string
           readOnly: true
+        unknown_fields:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          readOnly: true
       required:
       - endpoints
       - expression
       - name
       - pk
       - unknown_endpoints
+      - unknown_fields
     PermissionCheckRequest:
       type: object
       description: Permission check

@@ -207,7 +207,8 @@ class TestValidation(PermissionCheckTestCase):
         response = self.client.get(reverse("authentik_api:endpoints-list"))
         endpoints = {endpoint["id"]: endpoint["functions"] for endpoint in response.json()}
         self.assertEqual(
-            endpoints["core/groups:list"], ["has_permission", "narrow_list", "widen_list"]
+            endpoints["core/groups:list"],
+            ["has_permission", "narrow_list", "widen_list", "hidden_fields"],
         )
         self.assertEqual(
             endpoints["core/groups:add_user"], ["has_permission", "has_object_permission"]

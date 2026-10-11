@@ -1,7 +1,8 @@
+from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema, extend_schema_field
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, ListField, SerializerMethodField
+from rest_framework.fields import CharField, DictField, ListField, SerializerMethodField
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -9,6 +10,7 @@ from rest_framework.viewsets import ModelViewSet, ViewSet
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
+from authentik.rbac.endpoint_checks import EndpointChecks
 from authentik.rbac.endpoints import FUNCTIONS, Endpoints
 from authentik.rbac.evaluator import PermissionCheckEvaluator
 from authentik.rbac.models import PermissionCheck
@@ -56,15 +58,24 @@ class PermissionCheckSerializer(ModelSerializer):
         return attrs
 
     unknown_endpoints = SerializerMethodField()
+    unknown_fields = SerializerMethodField()
 
     @extend_schema_field(ListField(child=CharField()))
     def get_unknown_endpoints(self, check: PermissionCheck) -> list[str]:
         """Bound endpoints that no longer exist, for example after an upgrade renamed them"""
         return [endpoint for endpoint in check.endpoints if endpoint not in Endpoints.hookable()]
 
+    @extend_schema_field(DictField(child=ListField(child=CharField())))
+    def get_unknown_fields(self, check: PermissionCheck) -> dict[str, list[str]]:
+        keys = {
+            EndpointChecks.unknown_fields_key(check, endpoint): endpoint
+            for endpoint in check.endpoints
+        }
+        return {keys[key]: fields for key, fields in cache.get_many(list(keys)).items()}
+
     class Meta:
         model = PermissionCheck
-        fields = ["pk", "name", "expression", "endpoints", "unknown_endpoints"]
+        fields = ["pk", "name", "expression", "endpoints", "unknown_endpoints", "unknown_fields"]
 
 
 class EndpointSerializer(PassiveSerializer):

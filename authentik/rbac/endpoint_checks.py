@@ -1,9 +1,13 @@
 """Permission checks: admin-written Python that has the final say on API access"""
 
 from functools import cached_property
+from hashlib import sha256
+from typing import Any
 
+from django.core.cache import cache
 from django.db.models import Model, Q, QuerySet
-from rest_framework.exceptions import PermissionDenied
+from django.utils.translation import gettext_lazy as _
+from rest_framework.exceptions import APIException, PermissionDenied
 from rest_framework.request import Request
 from structlog.stdlib import BoundLogger, get_logger
 
@@ -11,18 +15,27 @@ from authentik.rbac.apps import EnableCustomPermissions
 from authentik.rbac.endpoints import (
     HAS_OBJECT_PERMISSION,
     HAS_PERMISSION,
+    HIDDEN_FIELDS,
     NARROW_LIST,
+    READONLY_FIELDS,
     WIDEN_LIST,
     Endpoints,
 )
+from authentik.rbac.field_rules import FieldRules
 from authentik.rbac.models import PermissionCheck
 
 LOGGER = get_logger()
 REQUEST_ATTRIBUTE = "endpoint_checks"
+UNKNOWN_FIELDS_KEY = "goauthentik.io/rbac/permission_checks/{check}/{expression}/{endpoint}"
+UNKNOWN_FIELDS_TIMEOUT = 60 * 60 * 24
 
 
 class PermissionCheckSkipException(Exception):
     """Raised by has_permission or has_object_permission to immediately grant access"""
+
+
+class PermissionCheckFailed(APIException):
+    default_detail = _("A permission check failed.")
 
 
 class EndpointChecks:
@@ -31,6 +44,8 @@ class EndpointChecks:
     def __init__(self, request: Request, endpoint: str | None):
         self.request = request
         self.endpoint = endpoint
+        self.field_rules_by_object: dict[Any, FieldRules] = {}
+        self.reported_fields: set[str] = set()
 
     @classmethod
     def for_request(cls, request: Request, action: str | None = None) -> EndpointChecks:
@@ -121,6 +136,57 @@ class EndpointChecks:
             self.logger(function).warning("Permission check did not return a queryset of the model")
             raise PermissionDenied()
         return result
+
+    def field_rules(self, obj: Model | None = None) -> FieldRules:
+        """What hidden_fields and readonly_fields protect on one object, or with `obj=None` on
+        any object of the endpoint"""
+        if not self.defines(HIDDEN_FIELDS, READONLY_FIELDS):
+            return FieldRules()
+        key = None if obj is None else obj.pk
+        if key not in self.field_rules_by_object:
+            rules = FieldRules(
+                self.field_paths(HIDDEN_FIELDS, obj), self.field_paths(READONLY_FIELDS, obj)
+            )
+            if key is not None:
+                hidden = FieldRules.without_selectors(rules.hidden)
+                if not hidden <= FieldRules.without_selectors(self.field_rules().hidden):
+                    self.logger(HIDDEN_FIELDS).warning("hidden_fields hides more on one object")
+                    raise PermissionCheckFailed()
+            self.field_rules_by_object[key] = rules
+        return self.field_rules_by_object[key]
+
+    def report_unknown_fields(self, fields: set[str]):
+        """Log fields that paths start with but the endpoint lacks, likely typos, and note them
+        for the check's form"""
+        new = fields - self.reported_fields
+        if not new or self.bound_check is None:
+            return
+        self.reported_fields |= new
+        self.logger(HIDDEN_FIELDS).warning("Field rules name fields the endpoint lacks", fields=new)
+        key = self.unknown_fields_key(self.bound_check, self.endpoint)
+        cache.set(key, sorted(set(cache.get(key, [])) | new), UNKNOWN_FIELDS_TIMEOUT)
+
+    @staticmethod
+    def unknown_fields_key(check: PermissionCheck, endpoint: str) -> str:
+        expression = sha256(check.expression.encode()).hexdigest()[:16]
+        return UNKNOWN_FIELDS_KEY.format(check=check.pk, expression=expression, endpoint=endpoint)
+
+    def field_paths(self, function: str, obj: Model | None) -> set[str]:
+        if not self.defines(function):
+            return set()
+        try:
+            paths = self.bound_check.run(function, self.request, self.endpoint, self.request, obj)
+        except PermissionDenied:
+            raise
+        except Exception as exc:  # noqa: BLE001
+            self.logger(function).warning("Permission check failed", exc=exc)
+            raise PermissionCheckFailed() from None
+        if not isinstance(paths, set | list | tuple) or not all(
+            isinstance(path, str) for path in paths
+        ):
+            self.logger(function).warning("Permission check did not return a set of paths")
+            raise PermissionCheckFailed()
+        return set(paths)
 
     def logger(self, function: str) -> BoundLogger:
         return LOGGER.bind(

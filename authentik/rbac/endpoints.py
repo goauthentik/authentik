@@ -15,14 +15,20 @@ HAS_PERMISSION = "has_permission"
 HAS_OBJECT_PERMISSION = "has_object_permission"
 NARROW_LIST = "narrow_list"
 WIDEN_LIST = "widen_list"
+HIDDEN_FIELDS = "hidden_fields"
+READONLY_FIELDS = "readonly_fields"
 FUNCTIONS = (
     HAS_PERMISSION,
     HAS_OBJECT_PERMISSION,
     NARROW_LIST,
     WIDEN_LIST,
+    HIDDEN_FIELDS,
+    READONLY_FIELDS,
 )
 
 API_PREFIX = "api/v3/"
+FIELD_ACTIONS = {"list", "retrieve", "create", "update", "partial_update"}
+WRITE_ACTIONS = {"create", "update", "partial_update"}
 
 
 @dataclass
@@ -93,6 +99,10 @@ class Endpoints:
                 issubclass(backend, cls.list_filters()) for backend in backends
             ):
                 functions += [NARROW_LIST, WIDEN_LIST]
+            if action in FIELD_ACTIONS and getattr(viewset, "queryset", None) is not None:
+                functions.append(HIDDEN_FIELDS)
+                if action in WRITE_ACTIONS:
+                    functions.append(READONLY_FIELDS)
             yield Endpoint(f"{prefix}:{action}", tuple(functions))
 
     @classmethod

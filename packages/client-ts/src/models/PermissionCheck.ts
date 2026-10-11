@@ -22,6 +22,7 @@ export interface PermissionCheck {
     expression: string;
     endpoints: Array<string>;
     readonly unknownEndpoints: Array<string>;
+    readonly unknownFields: { [key: string]: Array<string> };
 }
 
 /**
@@ -37,6 +38,13 @@ export function instanceOfPermissionCheck(value: object): value is PermissionChe
             !("unknown_endpoints" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["unknownEndpoints"] === undefined &&
             (value as Record<string, any>)["unknown_endpoints"] === undefined)
+    )
+        return false;
+    if (
+        (!("unknownFields" in (value as Record<string, any>)) &&
+            !("unknown_fields" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["unknownFields"] === undefined &&
+            (value as Record<string, any>)["unknown_fields"] === undefined)
     )
         return false;
     return true;
@@ -59,6 +67,7 @@ export function PermissionCheckFromJSONTyped(
         expression: json["expression"],
         endpoints: json["endpoints"],
         unknownEndpoints: json["unknown_endpoints"],
+        unknownFields: json["unknown_fields"],
     };
 }
 
@@ -67,7 +76,7 @@ export function PermissionCheckToJSON(json: any): PermissionCheck {
 }
 
 export function PermissionCheckToJSONTyped(
-    value?: Omit<PermissionCheck, "pk" | "unknownEndpoints"> | null,
+    value?: Omit<PermissionCheck, "pk" | "unknownEndpoints" | "unknownFields"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
