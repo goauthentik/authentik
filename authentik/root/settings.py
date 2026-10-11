@@ -305,6 +305,7 @@ MIDDLEWARE = [
     "authentik.core.middleware.ImpersonateMiddleware",
     "authentik.core.middleware.LocaleOverrideMiddleware",
     "authentik.rbac.middleware.InitialPermissionsMiddleware",
+    "authentik.rbac.middleware.AlterResponseMiddleware",
 ]
 MIDDLEWARE_LAST = [
     "django_prometheus.middleware.PrometheusAfterMiddleware",

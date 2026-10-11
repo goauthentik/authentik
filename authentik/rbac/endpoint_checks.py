@@ -2,6 +2,7 @@
 
 from functools import cached_property
 from hashlib import sha256
+from json import dumps
 from typing import Any
 
 from django.core.cache import cache
@@ -9,10 +10,12 @@ from django.db.models import Model, Q, QuerySet
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import APIException, PermissionDenied
 from rest_framework.request import Request
+from rest_framework.utils.encoders import JSONEncoder
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.rbac.apps import EnableCustomPermissions
 from authentik.rbac.endpoints import (
+    ALTER_RESPONSE,
     HAS_OBJECT_PERMISSION,
     HAS_PERMISSION,
     HIDDEN_FIELDS,
@@ -187,6 +190,21 @@ class EndpointChecks:
             self.logger(function).warning("Permission check did not return a set of paths")
             raise PermissionCheckFailed()
         return set(paths)
+
+    def alter_response(self, data: Any) -> Any:
+        if not self.defines(ALTER_RESPONSE):
+            return data
+        try:
+            result = self.bound_check.run(
+                ALTER_RESPONSE, self.request, self.endpoint, self.request, data
+            )
+            dumps(result, cls=JSONEncoder)
+        except PermissionDenied:
+            raise
+        except Exception as exc:  # noqa: BLE001
+            self.logger(ALTER_RESPONSE).warning("Permission check failed", exc=exc)
+            raise PermissionCheckFailed() from None
+        return result
 
     def logger(self, function: str) -> BoundLogger:
         return LOGGER.bind(

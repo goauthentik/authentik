@@ -12,11 +12,12 @@ from authentik.rbac.models import PermissionCheck, Role
 
 DENY = "def has_permission(request):\n    return False"
 FAIL_LIST = "def narrow_list(request, queryset):\n    raise ValueError"
+FAIL_ALTER = "def alter_response(request, data):\n    raise ValueError"
 
 
 class TestPermissionCheckCoverage(APITestCase):
     """Probe every list endpoint: a denying has_permission and a failing narrow_list
-    must both turn a visible list into a 403."""
+    must turn a visible list into a 403, and a failing alter_response into a 500."""
 
     def setUp(self):
         EnableCustomPermissions.set(True)
@@ -42,11 +43,14 @@ class TestPermissionCheckCoverage(APITestCase):
             if self.client.get(url).status_code != HTTP_200_OK:
                 unreachable.append(endpoint.id)
                 continue
-            probes = [DENY] + ([FAIL_LIST] if NARROW_LIST in endpoint.functions else [])
-            for expression in probes:
+            probes = {DENY: 403, FAIL_ALTER: 500}
+            if NARROW_LIST in endpoint.functions:
+                probes[FAIL_LIST] = 403
+            for expression, status in probes.items():
                 check.expression = expression
                 check.endpoints = [endpoint.id]
                 check.save()
-                self.assertEqual(self.client.get(url).status_code, 403, (endpoint.id, expression))
+                response = self.client.get(url)
+                self.assertEqual(response.status_code, status, (endpoint.id, expression))
             probed.append(endpoint.id)
         self.assertGreater(len(probed), 100, unreachable)

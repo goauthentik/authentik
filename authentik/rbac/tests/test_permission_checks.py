@@ -7,7 +7,7 @@ from authentik.core.models import Group, User, UserTypes
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.lib.generators import generate_id
 from authentik.rbac.apps import EnableCustomPermissions
-from authentik.rbac.models import CustomPermission, PermissionCheck, Role
+from authentik.rbac.models import CustomPermission, PermissionCheck, Role, SystemPermission
 
 DENY = """
 def has_permission(request):
@@ -208,12 +208,16 @@ class TestValidation(PermissionCheckTestCase):
         endpoints = {endpoint["id"]: endpoint["functions"] for endpoint in response.json()}
         self.assertEqual(
             endpoints["core/groups:list"],
-            ["has_permission", "narrow_list", "widen_list", "hidden_fields"],
+            ["has_permission", "narrow_list", "widen_list", "hidden_fields", "alter_response"],
         )
         self.assertEqual(
-            endpoints["core/groups:add_user"], ["has_permission", "has_object_permission"]
+            endpoints["core/groups:add_user"],
+            ["has_permission", "has_object_permission", "alter_response"],
         )
-        self.assertEqual(endpoints["admin/system:get"], ["has_permission"])
+        self.assertEqual(endpoints["admin/system:get"], ["has_permission", "alter_response"])
+        self.assertEqual(
+            endpoints["sources/plex:redeem_token"], ["has_permission", "alter_response"]
+        )
         self.assertIn("rbac/roles:add_user", endpoints)
 
 
@@ -297,3 +301,37 @@ def has_object_permission(request, obj):
         self.assertEqual(add(opted_in, report), 204)
         self.assertEqual(add(other, report), 403)
         self.assertEqual(add(opted_in, stranger), 403)
+
+
+class TestAlterResponse(PermissionCheckTestCase):
+    """alter_response changes what an endpoint responds with"""
+
+    def setUp(self):
+        super().setUp()
+        self.role.assign_perms("authentik_rbac.view_system_info")
+        self.url = reverse("authentik_api:admin_system")
+
+    def test_trimming_system_information(self):
+        create_custom_permission("custom_view_runtime_details", SystemPermission)
+        self.bind(
+            """
+def alter_response(request, data):
+    if request.user.has_perm("authentik_rbac.custom_view_runtime_details"):
+        return data
+    return {key: value for key, value in data.items() if key not in {"http_headers", "runtime"}}
+""",
+            "admin/system:get",
+        )
+        body = self.client.get(self.url).json()
+        self.assertNotIn("runtime", body)
+        self.assertIn("server_time", body)
+        self.role.assign_perms("authentik_rbac.custom_view_runtime_details")
+        self.assertIn("runtime", self.client.get(self.url).json())
+
+    def test_exception_fails_closed(self):
+        self.bind("def alter_response(request, data):\n    raise ValueError", "admin/system:get")
+        self.assertEqual(self.client.get(self.url).status_code, 500)
+
+    def test_unserializable_fails_closed(self):
+        self.bind("def alter_response(request, data):\n    return object()", "admin/system:get")
+        self.assertEqual(self.client.get(self.url).status_code, 500)

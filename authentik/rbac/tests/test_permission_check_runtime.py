@@ -99,3 +99,9 @@ class TestRuntime(APITestCase):
             reverse("authentik_api:permissioncheck-detail", kwargs={"pk": check.pk})
         )
         self.assertEqual(response.json()["unknown_endpoints"], ["core/users:renamed"])
+
+    def test_reason_in_alter_response(self):
+        self.bind('def alter_response(request, data):\n    raise PermissionDenied("Not today")')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.json()["detail"], "Not today")

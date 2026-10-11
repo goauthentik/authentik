@@ -15,6 +15,7 @@ HAS_PERMISSION = "has_permission"
 HAS_OBJECT_PERMISSION = "has_object_permission"
 NARROW_LIST = "narrow_list"
 WIDEN_LIST = "widen_list"
+ALTER_RESPONSE = "alter_response"
 HIDDEN_FIELDS = "hidden_fields"
 READONLY_FIELDS = "readonly_fields"
 FUNCTIONS = (
@@ -22,6 +23,7 @@ FUNCTIONS = (
     HAS_OBJECT_PERMISSION,
     NARROW_LIST,
     WIDEN_LIST,
+    ALTER_RESPONSE,
     HIDDEN_FIELDS,
     READONLY_FIELDS,
 )
@@ -103,6 +105,7 @@ class Endpoints:
                 functions.append(HIDDEN_FIELDS)
                 if action in WRITE_ACTIONS:
                     functions.append(READONLY_FIELDS)
+            functions.append(ALTER_RESPONSE)
             yield Endpoint(f"{prefix}:{action}", tuple(functions))
 
     @classmethod
@@ -112,7 +115,7 @@ class Endpoints:
         if view is None or not cls.is_hookable(view.permission_classes, None):
             return
         path = str(pattern.pattern).strip("/")
-        functions = (HAS_PERMISSION,)
+        functions = (HAS_PERMISSION, ALTER_RESPONSE)
         for method in view.http_method_names:
             if method != "options" and hasattr(view, method):
                 yield Endpoint(f"{path}:{method}", functions)
