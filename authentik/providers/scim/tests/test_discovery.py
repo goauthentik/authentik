@@ -4,6 +4,7 @@ from django.core.cache import cache
 from django.test import TestCase
 from requests_mock import Mocker
 
+from authentik.admin.models import SystemSettings
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User, UserTypes
 from authentik.lib.generators import generate_id
@@ -16,7 +17,6 @@ from authentik.providers.scim.models import (
     SCIMProviderUser,
 )
 from authentik.providers.scim.tasks import scim_sync
-from authentik.tenants.models import Tenant
 
 
 class SCIMDiscoveryTests(TestCase):
@@ -25,7 +25,7 @@ class SCIMDiscoveryTests(TestCase):
     @apply_blueprint("system/providers-scim.yaml")
     def setUp(self):
         cache.clear()
-        Tenant.objects.update(avatars="none")
+        SystemSettings.objects.update(avatars="none")
         User.objects.all().exclude_anonymous().delete()
         Group.objects.all().delete()
         self.provider = SCIMProvider.objects.create(
