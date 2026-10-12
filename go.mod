@@ -26,7 +26,7 @@ require (
 	github.com/stretchr/testify v1.12.1
 	github.com/wwt/guac v1.3.2
 	golang.org/x/crypto v0.57.0
-	golang.org/x/sync v0.23.0
+	golang.org/x/sync v0.24.0
 	gopkg.in/yaml.v2 v2.4.0
 	layeh.com/radius v0.0.0-20231213012653-1006025d24f8
 )
