@@ -7,6 +7,7 @@ from django.core import mail
 from django.core.mail.backends.locmem import EmailBackend
 from django.urls import reverse
 
+from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
 from authentik.events.models import Event, EventAction
@@ -22,6 +23,7 @@ from authentik.stages.email.models import EmailStage, EmailTemplate
 class TestEmailStageSending(FlowTestCase):
     """Email tests"""
 
+    @apply_blueprint("system/email-templates.yaml")
     def setUp(self):
         super().setUp()
         self.user = create_test_admin_user()

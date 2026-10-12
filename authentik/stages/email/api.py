@@ -2,11 +2,12 @@
 
 from django.template import TemplateSyntaxError
 from rest_framework.fields import CharField, ReadOnlyField
-from rest_framework.serializers import ModelSerializer, ValidationError
+from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.admin.files.validation import validate_upload_file_name
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.utils import ModelSerializer
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.email.loaders import compile_email_template
 from authentik.stages.email.models import EmailStage, EmailTemplate

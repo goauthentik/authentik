@@ -12,6 +12,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils.timezone import now
 
+from authentik.blueprints.tests import apply_blueprint
 from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import StageInvalidException
@@ -33,6 +34,7 @@ from authentik.stages.email.utils import TemplateEmailMessage
 class TestAuthenticatorEmailStage(FlowTestCase):
     """Test Email Authenticator stage"""
 
+    @apply_blueprint("system/email-templates.yaml")
     def setUp(self):
         super().setUp()
         self.flow = create_test_flow()

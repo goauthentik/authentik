@@ -10,6 +10,7 @@ from django.urls.base import reverse
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
+from authentik.blueprints.tests import apply_blueprint
 from authentik.brands.models import Brand
 from authentik.core.models import (
     USER_ATTRIBUTE_TOKEN_EXPIRING,
@@ -358,6 +359,7 @@ class TestUsersAPI(APITestCase):
         expected_expires = now() + timedelta(days=66)
         self.assertTrue(timedelta(minutes=-1) < expected_expires - expires < timedelta(minutes=1))
 
+    @apply_blueprint("system/email-templates.yaml")
     def test_recovery_email_no_flow(self):
         """Test user recovery link (no recovery flow set)"""
         self.client.force_login(self.admin)
@@ -401,6 +403,7 @@ class TestUsersAPI(APITestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(response.content, {"email_stage": ["This field is required."]})
 
+    @apply_blueprint("system/email-templates.yaml")
     def test_recovery_email(self):
         """Test user recovery link"""
         self.user.email = "foo@bar.baz"

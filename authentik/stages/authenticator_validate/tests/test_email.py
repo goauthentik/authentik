@@ -4,6 +4,7 @@ from django.test.client import RequestFactory
 from django.urls.base import reverse
 from freezegun import freeze_time
 
+from authentik.blueprints.tests import apply_blueprint
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowStageBinding, NotConfiguredAction
 from authentik.flows.tests import FlowTestCase
@@ -20,6 +21,7 @@ from authentik.stages.identification.models import IdentificationStage, UserFiel
 class AuthenticatorValidateStageEmailTests(FlowTestCase):
     """Test validator stage for Email devices"""
 
+    @apply_blueprint("system/email-templates.yaml")
     def setUp(self) -> None:
         self.user = create_test_admin_user()
         self.request_factory = RequestFactory()

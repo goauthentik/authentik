@@ -10,6 +10,7 @@ from django.core.mail.backends.smtp import EmailBackend as SMTPEmailBackend
 from django.urls import reverse
 from django.utils.http import urlencode
 
+from authentik.blueprints.tests import apply_blueprint
 from authentik.brands.models import Brand
 from authentik.core.models import User
 from authentik.core.tests.utils import RequestFactory, create_test_admin_user, create_test_flow
@@ -28,6 +29,7 @@ from authentik.stages.email.stage import PLAN_CONTEXT_EMAIL_OVERRIDE, EmailStage
 class TestEmailStage(FlowTestCase):
     """Email tests"""
 
+    @apply_blueprint("system/email-templates.yaml")
     def setUp(self):
         super().setUp()
         self.factory = RequestFactory()

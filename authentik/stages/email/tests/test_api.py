@@ -3,6 +3,7 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
+from authentik.blueprints.tests import apply_blueprint
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
 from authentik.stages.email.api import EmailStageSerializer
@@ -17,6 +18,7 @@ class TestEmailStageAPI(APITestCase):
         self.user = create_test_admin_user()
         self.client.force_login(self.user)
 
+    @apply_blueprint("system/email-templates.yaml")
     def test_validate(self):
         """Test EmailStage's validation"""
 
@@ -68,6 +70,7 @@ class TestEmailTemplateAPI(APITestCase):
                 self.assertEqual(response.status_code, 400)
                 self.assertIn(field, response.json())
 
+    @apply_blueprint("system/email-templates.yaml")
     def test_path_unique_per_scope(self):
         """Test a custom template can share a built-in's path, but not another custom's"""
         builtin = EmailTemplate.objects.get(managed="goauthentik.io/email/password-reset")
