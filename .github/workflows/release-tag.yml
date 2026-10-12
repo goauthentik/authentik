@@ -230,7 +230,7 @@ jobs:
       - build-container
     steps:
       - name: Fetch container images
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v5
         with:
           name: container-build-server-amd64
       - name: Load container images
@@ -287,12 +287,12 @@ jobs:
         run: |
           echo '{"version": "${{ needs.check-inputs.outputs.version }}", "version_family": "${{ needs.check-inputs.outputs.version-family }}", "release_reason": "${{ inputs.release_reason }}", "changelog_url": "${{ needs.check-inputs.outputs.changelog-url }}"}' > metadata.json
       - name: Fetch container images
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v5
         with:
           pattern: container-build-*
           merge-multiple: true
       - name: Fetch binaries
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v5
         with:
           pattern: binaries-build-*
           merge-multiple: true
