@@ -32,7 +32,7 @@ catalog:
   "@playwright/test": "^1.62.1"
   oxfmt: "0.70.0"
   oxlint: "^1.85.0"
-  "@types/node": "^26.1.2"
+  "@types/node": "^26.6.3"
   "@vitest/browser": "^4.1.10"
   "@vitest/browser-playwright": "^4.1.10"
   esbuild: "^0.28.1"
