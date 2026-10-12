@@ -21665,10 +21665,6 @@ paths:
           type: integer
         required: true
       - $ref: '#/components/parameters/QuerySearch'
-      - in: query
-        name: superuser_full_list
-        schema:
-          type: boolean
       tags:
       - rac
       security:
