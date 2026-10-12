@@ -6,9 +6,9 @@ use ak_axum::{
 };
 use ak_common::db;
 use axum::{Router, extract::State, http::StatusCode, routing::any};
-use tracing::{instrument, warn};
+use tracing::{debug, instrument, warn};
 
-use super::Workers;
+use super::{Workers, is_connect_not_found};
 
 #[instrument(skip_all)]
 async fn health_ready(State(workers): State<Arc<Workers>>) -> Result<StatusCode> {
@@ -51,7 +51,11 @@ async fn health_live(State(workers): State<Arc<Workers>>) -> Result<StatusCode> 
             return Ok(StatusCode::SERVICE_UNAVAILABLE);
         }
         Err(err) => {
-            warn!(?err, "failed to check workers health liveness");
+            if is_connect_not_found(err.as_ref()) {
+                debug!(?err, "worker socket not yet ready (health live)");
+            } else {
+                warn!(?err, "failed to check workers health liveness");
+            }
             return Ok(StatusCode::SERVICE_UNAVAILABLE);
         }
     }
