@@ -301,6 +301,15 @@ class WeChatOAuthSource(CreatableType, OAuthSource):
         verbose_name_plural = _("WeChat OAuth Sources")
 
 
+class WeChatServiceAccountOAuthSource(CreatableType, OAuthSource):
+    """Social Login using a WeChat Service Account."""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("WeChat Service Account OAuth Source")
+        verbose_name_plural = _("WeChat Service Account OAuth Sources")
+
+
 class OAuthSourcePropertyMapping(PropertyMapping):
     """Map OAuth properties to User or Group object attributes"""
 

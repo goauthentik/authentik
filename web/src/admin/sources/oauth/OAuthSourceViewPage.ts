@@ -66,6 +66,8 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
             return "Twitch";
         case ProviderTypeEnum.Wechat:
             return "WeChat";
+        case ProviderTypeEnum.Wechatserviceaccount:
+            return "WeChat Service Account";
         case ProviderTypeEnum.UnknownDefaultOpenApi:
             return msg("Unknown provider type");
     }
