@@ -12346,6 +12346,15 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sa81413e2e309b882">
   <source>No results found.</source>
 </trans-unit>
+<trans-unit id="webauthn.additional-origins.label">
+  <source>Additional accepted origins</source>
+</trans-unit>
+<trans-unit id="webauthn.additional-origins.entry.label">
+  <source>Origin</source>
+</trans-unit>
+<trans-unit id="webauthn.additional-origins.description">
+  <source>Additional trusted HTTPS or android:apk-key-hash origins, matched exactly. The current request origin is always accepted. Android apps also require externally hosted Digital Asset Links on the relying-party domain.</source>
+</trans-unit>
 </body>
 </file>
 </xliff>

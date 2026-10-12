@@ -25,6 +25,7 @@ This stage is used during authentication after a user has already enrolled one o
 - **Configuration stages**: stages that can be injected when **Not configured action** is set to **Configure**.
 - **Device Classes**: which enrolled authenticator types can be used at this step.
 - **Last validation threshold**: skip validation if the user has successfully used a compatible device within the configured time window.
+- **Additional accepted origins**: additional trusted origins for WebAuthn authentication, matched exactly. The current request origin is always accepted.
 - **WebAuthn User verification**: user-verification requirement for WebAuthn authentication.
 - **WebAuthn Hints**: browser hints that influence which WebAuthn authenticator is preferred.
 - **WebAuthn Device type restrictions**: optionally limit which WebAuthn device types are allowed.
@@ -109,6 +110,14 @@ To build a dedicated passwordless flow:
 If you want users to choose a passkey directly from the browser's autofill UI on the identification screen, configure **Passkey autofill** in the [Identification stage](../identification/index.mdx#passkey-autofill-webauthn-conditional-ui). This requires a discoverable credential, also known as a resident key.
 
 Users can either access the passwordless flow directly or reach it through an Identification stage's **Passwordless flow** link.
+
+### Additional accepted origins
+
+Add trusted HTTPS origins or `android:apk-key-hash:<certificate-hash>` origins to **Additional accepted origins** under **WebAuthn-specific settings**. Leave the list empty to accept only the current request origin. Origins are matched exactly; wildcards are not supported. HTTPS origins must not include a path, trailing slash, query, fragment, or credentials.
+
+This setting applies to WebAuthn authentication, including passwordless flows and passkey login through an Identification stage that references this validation stage. It does not change the RP ID or the origin configuration of an enrollment stage. Every flow using this stage shares its origin configuration.
+
+For native Android registration and login, see [Additional accepted origins](../authenticator_webauthn/index.mdx#additional-accepted-origins) on the WebAuthn setup stage. Android apps also require an externally hosted `assetlinks.json` on the RP-ID domain; authentik does not manage that document.
 
 ### WebAuthn hints
 

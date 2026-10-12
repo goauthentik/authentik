@@ -38,7 +38,7 @@ from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnDevice
 from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
-from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
+from authentik.stages.authenticator_webauthn.utils import get_expected_origins, get_rp_id
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD_ARGS
 
 LOGGER = get_logger()
@@ -231,7 +231,9 @@ def validate_challenge_webauthn(
             credential=credential,
             expected_challenge=challenge,
             expected_rp_id=get_rp_id(request),
-            expected_origin=get_origin(request),
+            expected_origin=get_expected_origins(
+                request, stage.webauthn_additional_accepted_origins
+            ),
             credential_public_key=base64url_to_bytes(device.public_key),
             credential_current_sign_count=device.sign_count,
             require_user_verification=stage.webauthn_user_verification == UserVerification.REQUIRED,

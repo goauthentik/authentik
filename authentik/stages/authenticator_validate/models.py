@@ -10,6 +10,7 @@ from authentik.flows.models import NotConfiguredAction, Stage
 from authentik.lib.models import SimpleThroughModel
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnHint
+from authentik.stages.authenticator_webauthn.utils import validate_webauthn_origin
 
 
 class DeviceClasses(models.TextChoices):
@@ -85,6 +86,12 @@ class AuthenticatorValidateStage(Stage):
         models.TextField(choices=WebAuthnHint.choices),
         default=list,
         blank=True,
+    )
+    webauthn_additional_accepted_origins = ArrayField(
+        models.TextField(validators=[validate_webauthn_origin]),
+        default=list,
+        blank=True,
+        help_text=_("Additional trusted origins for WebAuthn authentication. Matched exactly."),
     )
     webauthn_allowed_device_types = models.ManyToManyField(
         "authentik_stages_authenticator_webauthn.WebAuthnDeviceType",

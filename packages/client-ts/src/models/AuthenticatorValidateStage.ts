@@ -71,6 +71,10 @@ export interface AuthenticatorValidateStage {
      */
     webauthnUserVerification?: UserVerificationEnum;
     webauthnHints?: Array<WebAuthnHintEnum>;
+    /**
+     * Additional trusted origins for WebAuthn authentication. Matched exactly.
+     */
+    webauthnAdditionalAcceptedOrigins?: Array<string>;
     webauthnAllowedDeviceTypes?: Array<string>;
     readonly webauthnAllowedDeviceTypesObj: Array<WebAuthnDeviceType>;
     emailOtpThrottlingFactor?: number;
@@ -165,6 +169,10 @@ export function AuthenticatorValidateStageFromJSONTyped(
             json["webauthn_hints"] == null
                 ? undefined
                 : (json["webauthn_hints"] as Array<any>).map(WebAuthnHintEnumFromJSON),
+        webauthnAdditionalAcceptedOrigins:
+            json["webauthn_additional_accepted_origins"] == null
+                ? undefined
+                : json["webauthn_additional_accepted_origins"],
         webauthnAllowedDeviceTypes:
             json["webauthn_allowed_device_types"] == null
                 ? undefined
@@ -226,6 +234,7 @@ export function AuthenticatorValidateStageToJSONTyped(
             value["webauthnHints"] == null
                 ? undefined
                 : (value["webauthnHints"] as Array<any>).map(WebAuthnHintEnumToJSON),
+        webauthn_additional_accepted_origins: value["webauthnAdditionalAcceptedOrigins"],
         webauthn_allowed_device_types: value["webauthnAllowedDeviceTypes"],
         email_otp_throttling_factor: value["emailOtpThrottlingFactor"],
         sms_otp_throttling_factor: value["smsOtpThrottlingFactor"],

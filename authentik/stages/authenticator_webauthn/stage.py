@@ -45,7 +45,7 @@ from authentik.stages.authenticator_webauthn.models import (
     WebAuthnDevice,
     WebAuthnDeviceType,
 )
-from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
+from authentik.stages.authenticator_webauthn.utils import get_expected_origins, get_rp_id
 
 PLAN_CONTEXT_WEBAUTHN_CHALLENGE = "goauthentik.io/stages/authenticator_webauthn/challenge"
 PLAN_CONTEXT_WEBAUTHN_ATTEMPT = "goauthentik.io/stages/authenticator_webauthn/attempt"
@@ -77,13 +77,16 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
     def validate_response(self, response: dict) -> VerifiedRegistrationData:
         """Validate webauthn challenge response"""
         challenge = self.stage.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE]
+        stage: AuthenticatorWebAuthnStage = self.stage.executor.current_stage
 
         try:
             registration: VerifiedRegistration = verify_registration_response(
                 credential=response,
                 expected_challenge=challenge,
                 expected_rp_id=get_rp_id(self.request),
-                expected_origin=get_origin(self.request),
+                expected_origin=get_expected_origins(
+                    self.request, stage.additional_accepted_origins
+                ),
             )
         except WebAuthnException as exc:
             self.stage.logger.warning("registration failed", exc=exc)
@@ -92,7 +95,6 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
             ) from None
 
         registration_data = VerifiedRegistrationData(registration)
-        stage: AuthenticatorWebAuthnStage = self.stage.executor.current_stage
 
         att_obj = parse_attestation_object(registration.attestation_object)
         if (
