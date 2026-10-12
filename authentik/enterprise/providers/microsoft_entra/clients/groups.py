@@ -5,7 +5,10 @@ from msgraph.generated.models.group import Group as MSGroup
 from msgraph.generated.models.reference_create import ReferenceCreate
 
 from authentik.core.models import Group
-from authentik.enterprise.providers.microsoft_entra.clients.base import MicrosoftEntraSyncClient
+from authentik.enterprise.providers.microsoft_entra.clients.base import (
+    MicrosoftEntraSyncClient,
+    entity_as_dict,
+)
 from authentik.enterprise.providers.microsoft_entra.models import (
     MicrosoftEntraProvider,
     MicrosoftEntraProviderGroup,
@@ -85,14 +88,14 @@ class MicrosoftEntraGroupClient(
                     provider=self.provider,
                     group=group,
                     microsoft_id=ms_group.id,
-                    attributes=self.entity_as_dict(ms_group),
+                    attributes=entity_as_dict(ms_group),
                 )
             else:
                 return MicrosoftEntraProviderGroup.objects.create(
                     provider=self.provider,
                     group=group,
                     microsoft_id=response.id,
-                    attributes=self.entity_as_dict(response),
+                    attributes=entity_as_dict(response),
                 )
 
     def update(self, group: Group, connection: MicrosoftEntraProviderGroup):
@@ -104,7 +107,7 @@ class MicrosoftEntraGroupClient(
                 self.client.groups.by_group_id(connection.microsoft_id).patch(microsoft_group)
             )
             if response:
-                always_merger.merge(connection.attributes, self.entity_as_dict(response))
+                always_merger.merge(connection.attributes, entity_as_dict(response))
                 connection.save()
         except NotFoundSyncException:
             # Resource missing is handled by self.write, which will re-create the group
@@ -219,9 +222,9 @@ class MicrosoftEntraGroupClient(
             provider=self.provider,
             group=matching_authentik_group,
             microsoft_id=group.id,
-            defaults={"attributes": self.entity_as_dict(group)},
+            defaults={"attributes": entity_as_dict(group)},
         )
 
     def update_single_attribute(self, connection: MicrosoftEntraProviderGroup):
         data = self._request(self.client.groups.by_group_id(connection.microsoft_id).get())
-        connection.attributes = self.entity_as_dict(data)
+        connection.attributes = entity_as_dict(data)
