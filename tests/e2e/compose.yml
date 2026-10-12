@@ -1,6 +1,6 @@
 services:
   chromium:
-    image: ghcr.io/goauthentik/selenium:152.0-ak-0.70.0@sha256:dd1fb915a9b5bd1624101a1644c7fa78014f87b4470952e4b92f772367c7eb65
+    image: ghcr.io/goauthentik/selenium:152.0-ak-0.71.0@sha256:0e6c06b0cd76a1a5de55588463e17098d03a67cd42ac529307abce031fd93bb5
     shm_size: 2g
     network_mode: host
     restart: always
