@@ -1255,6 +1255,9 @@ class PropertyMapping(SerializerModel, ManagedModel):
 
     objects = InheritanceManager()
 
+    # Types the expression may return (besides None); empty allows any type
+    expression_allowed_types: list[type] = []
+
     @property
     def component(self) -> str:
         """Return component used to edit this object"""
@@ -1276,6 +1279,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         from authentik.core.expression.evaluator import PropertyMappingEvaluator
 
         evaluator = PropertyMappingEvaluator(self, user, request, **kwargs)
+        evaluator.allowed_types = self.expression_allowed_types
         if globals:
             evaluator._globals.update(globals)
         try:
