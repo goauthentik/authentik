@@ -16,7 +16,7 @@ dependencies = [
   "django-channels-postgres",
   "django-countries==9.1.0",
   "django-dramatiq-postgres",
-  "django-filter==26.1",
+  "django-filter==26.2",
   "django-model-utils==5.0.0",
   "django-pglock==1.8.0",
   "django-pgtrigger==4.17.0",
@@ -89,7 +89,7 @@ dependencies = [
 dev = [
   "aws-cdk-lib==2.272.0",
   "bandit==1.9.4",
-  "black==26.5.1",
+  "black==26.10.0",
   "bpython==0.26",
   "colorama==0.4.6",
   "constructs==10.8.1",
