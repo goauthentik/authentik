@@ -22,9 +22,9 @@ class PatreonOAuthRedirect(OAuthRedirect):
 class PatreonOAuthCallback(OAuthCallback):
     """Patreon OAuth2 Callback"""
 
-    client_class: UserprofileHeaderAuthClient
+    client_class = UserprofileHeaderAuthClient
 
-    def get_user_id(self, info: dict[str, str]) -> str:
+    def get_user_id(self, info: dict[str, Any]) -> str | None:
         return info.get("data", {}).get("id")
 
 
@@ -39,13 +39,14 @@ class PatreonType(SourceType):
 
     authorization_url = "https://www.patreon.com/oauth2/authorize"
     access_token_url = "https://www.patreon.com/api/oauth2/token"  # nosec
-    profile_url = "https://www.patreon.com/api/oauth2/api/current_user"
+    profile_url = "https://www.patreon.com/api/oauth2/v2/identity?fields%5Buser%5D=vanity,email,full_name"
 
     authorization_code_auth_method = AuthorizationCodeAuthMethod.POST_BODY
 
     def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
         return {
-            "username": info.get("data", {}).get("attributes", {}).get("vanity"),
+            "username": info.get("data", {}).get("attributes", {}).get("vanity")
+            or info.get("data", {}).get("id"),
             "email": info.get("data", {}).get("attributes", {}).get("email"),
             "name": info.get("data", {}).get("attributes", {}).get("full_name"),
         }
