@@ -27,6 +27,7 @@ export const ProviderTypeEnum = {
     Patreon: "patreon",
     Reddit: "reddit",
     Slack: "slack",
+    Tiktok: "tiktok",
     Twitch: "twitch",
     Twitter: "twitter",
     Wechat: "wechat",
