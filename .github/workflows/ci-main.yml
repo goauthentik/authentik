@@ -321,7 +321,7 @@ jobs:
             glob: tests/e2e/test_endpoints_*
             profiles: selenium
     steps:
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v5
         with:
           pattern: container-build-*-amd64
           merge-multiple: true
@@ -496,7 +496,7 @@ jobs:
         uses: ./.github/actions/setup
         with:
           dependencies: node
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v5
         with:
           name: container-build-server-amd64
       - name: Push the built server image to the local registry
@@ -645,7 +645,7 @@ jobs:
           registry: ghcr.io
           username: "${{ github.actor }}"
           password: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v5
         with:
           name: "container-build-${{ matrix.name }}"
       - id: publish
