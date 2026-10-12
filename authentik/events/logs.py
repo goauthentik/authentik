@@ -1,3 +1,4 @@
+import threading
 from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass, field
@@ -50,11 +51,15 @@ class LogEventSerializer(PassiveSerializer):
     attributes = DictField()
 
 
+_capture_logs_lock = threading.RLock()
+
+
 @contextmanager
 def capture_logs(log_default_output=True) -> Generator[list[LogEvent]]:
     """Capture log entries created"""
     logs = []
     cap = LogCapture()
+    _capture_logs_lock.acquire()
     # Modify `_Configuration.default_processors` set via `configure` but always
     # keep the list instance intact to not break references held by bound
     # loggers.
@@ -66,11 +71,14 @@ def capture_logs(log_default_output=True) -> Generator[list[LogEvent]]:
             processors.remove(ProcessorFormatter.wrap_for_formatter)
         processors.append(cap)
         configure(processors=processors)
-        yield logs
-        for raw_log in cap.entries:
-            logs.append(LogEvent.from_event_dict(raw_log))
+        try:
+            yield logs
+            for raw_log in cap.entries:
+                logs.append(LogEvent.from_event_dict(raw_log))
+        finally:
+            # remove LogCapture and restore original processors
+            processors.clear()
+            processors.extend(old_processors)
+            configure(processors=processors)
     finally:
-        # remove LogCapture and restore original processors
-        processors.clear()
-        processors.extend(old_processors)
-        configure(processors=processors)
+        _capture_logs_lock.release()
