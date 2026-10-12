@@ -46,6 +46,23 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
             params["login_hint"] = identifier
         return params
 
+    def _get_forwarded_query_parameters(self, source: OAuthSource) -> dict[str, str]:
+        """Extract query parameters from the current request that match
+        the source's forward_query_parameters configuration."""
+        params = {}
+        if not source.forward_query_parameters:
+            return params
+        forward_keys = [
+            key.strip()
+            for key in source.forward_query_parameters.split(",")
+            if key.strip()
+        ]
+        for key in forward_keys:
+            value = self.request.GET.get(key)
+            if value is not None:
+                params[key] = value
+        return params
+
     def get_redirect_url(self, **kwargs) -> str:
         "Build redirect url for a given source."
         slug = kwargs.get("source_slug", "")
@@ -64,4 +81,5 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
             else:
                 params["scope"] += source.additional_scopes.split(" ")
         params.update(self._try_login_hint_extract())
+        params.update(self._get_forwarded_query_parameters(source))
         return client.get_redirect_url(params)
