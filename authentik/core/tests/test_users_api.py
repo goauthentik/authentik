@@ -417,6 +417,60 @@ class TestUsersAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 204)
 
+    def test_username_case_insensitive_unique_api(self):
+        """Test that usernames differing only in case cannot be created via API"""
+        self.client.force_login(self.admin)
+        existing = create_test_user("test-user")
+        response = self.client.post(
+            reverse("authentik_api:user-list"),
+            data={
+                "username": "TEST-USER",
+                "name": "Case variant",
+            },
+        )
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertFalse(User.objects.filter(username="TEST-USER").exists())
+        # exact same name still rejected
+        response = self.client.post(
+            reverse("authentik_api:user-list"),
+            data={
+                "username": "test-user",
+                "name": "Exact duplicate",
+            },
+        )
+        self.assertEqual(response.status_code, 400, response.data)
+        # unrelated case-compatible name is accepted
+        response = self.client.post(
+            reverse("authentik_api:user-list"),
+            data={
+                "username": "test-user-2",
+                "name": "Different user",
+            },
+        )
+        self.assertEqual(response.status_code, 201, response.data)
+        self.assertTrue(existing.pk)
+        self.assertTrue(User.objects.filter(username="test-user-2").exists())
+
+    def test_username_case_insensitive_unique_service_account(self):
+        """Test that service account names differing only in case are rejected"""
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={"name": "test-sa"},
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={"name": "Test-SA"},
+        )
+        self.assertEqual(response.status_code, 400, response.data)
+        # The rejection must come from the case-insensitive name uniqueness check
+        # itself, not from a downstream token identifier or group collision
+        # (slugify() lowercases "Test-SA" to "test-sa", which would collide
+        # with the first service account's token identifier either way)
+        self.assertIn("name", response.data, response.data)
+        self.assertFalse(User.objects.filter(username="Test-SA").exists())
+
     def test_service_account(self):
         """Service account creation"""
         self.client.force_login(self.admin)

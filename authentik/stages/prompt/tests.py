@@ -286,6 +286,20 @@ class TestPromptStage(FlowTestCase):
             {"non_field_errors": [ErrorDetail(string="Passwords don't match.", code="invalid")]},
         )
 
+    def test_invalid_username_case_insensitive(self):
+        """Test that usernames differing only in case are rejected"""
+        create_test_admin_user("case-admin")
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        self.prompt_data["username_prompt"] = "CASE-ADMIN"
+        challenge_response = PromptChallengeResponse(
+            None, stage_instance=self.stage, plan=plan, data=self.prompt_data, stage=self.stage_view
+        )
+        self.assertEqual(challenge_response.is_valid(), False)
+        self.assertEqual(
+            challenge_response.errors,
+            {"username_prompt": [ErrorDetail(string="Username is already taken.", code="invalid")]},
+        )
+
     def test_invalid_username(self):
         """Test challenge_response validation"""
         user = create_test_admin_user()

@@ -173,7 +173,7 @@ def username_field_validator_factory() -> Callable[[PromptChallengeResponse, str
         query = User.objects.all()
         if pending_user.pk:
             query = query.exclude(username=pending_user.username)
-        if query.filter(username=value).exists():
+        if query.filter(username__iexact=value).exists():
             raise ValidationError("Username is already taken.")
         return value
 

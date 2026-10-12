@@ -158,7 +158,9 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
     uid = CharField(read_only=True)
     username = CharField(
         max_length=USERNAME_MAX_LENGTH,
-        validators=[UniqueValidator(queryset=User.objects.all().order_by("username"))],
+        validators=[
+            UniqueValidator(queryset=User.objects.all().order_by("username"), lookup="iexact"),
+        ],
     )
 
     @property
@@ -508,7 +510,9 @@ class UserServiceAccountSerializer(PassiveSerializer):
 
     name = CharField(
         required=True,
-        validators=[UniqueValidator(queryset=User.objects.all().order_by("username"))],
+        validators=[
+            UniqueValidator(queryset=User.objects.all().order_by("username"), lookup="iexact"),
+        ],
     )
     create_group = BooleanField(default=False)
     expiring = BooleanField(default=True)
