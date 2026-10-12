@@ -113,7 +113,9 @@ export class RacInterface extends WithBrandConfig(Interface) {
     @state()
     clipboardWatcherTimer = 0;
 
-    _previousClipboardValue: unknown;
+    _previousClipboardValue?: string;
+    private clipboardRevision = 0;
+    private clipboardRead?: Promise<string>;
 
     // Set to `true` if we've successfully connected once
     hasConnected = false;
@@ -131,19 +133,14 @@ export class RacInterface extends WithBrandConfig(Interface) {
         };
     }
 
-    constructor() {
-        super();
-        this.checkClipboard();
+    connectedCallback(): void {
+        super.connectedCallback();
+        window.addEventListener("focus", this.focusHandler);
 
         this.clipboardWatcherTimer = setInterval(
             this.checkClipboard.bind(this),
             500,
         ) as unknown as number;
-    }
-
-    connectedCallback(): void {
-        super.connectedCallback();
-        window.addEventListener("focus", this.focusHandler);
     }
 
     disconnectedCallback(): void {
@@ -153,6 +150,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         this.keyboard?.reset();
         this.fileBrowser?.dispose();
         clearInterval(this.clipboardWatcherTimer);
+        this.resetClipboard();
         clearTimeout(this.reconnectTimer);
         this.fileTransfers?.dispose();
 
@@ -169,6 +167,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
     }
 
     async firstUpdated(): Promise<void> {
+        this.resetClipboard();
         this.synchronizeTitle();
         this.fileBrowser?.dispose();
         this.fileTransfers?.dispose();
@@ -268,6 +267,8 @@ export class RacInterface extends WithBrandConfig(Interface) {
                         return;
                     }
 
+                    // Invalidate local reads which started before this remote update.
+                    this.clipboardRevision += 1;
                     this._previousClipboardValue = trimmed;
                     writeToClipboard(trimmed);
                 };
@@ -354,6 +355,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         this.initMouse(this.container);
         this.resizeDesktop();
         this.focusDesktop();
+        this.checkClipboard();
 
         if (this.showFiles) this.fileBrowser?.start();
     }
@@ -415,8 +417,55 @@ export class RacInterface extends WithBrandConfig(Interface) {
     }
 
     initKeyboard(viewport: HTMLElement): void {
+        // Guacamole normally cancels keydown, which prevents the browser from
+        // providing clipboardData. Let native paste shortcuts reach the browser
+        // and send the remote shortcut only after the paste event supplies text.
+        const pasteKeys = new Set<string>();
+
+        viewport.addEventListener(
+            "keydown",
+            (event) => {
+                const nativePaste =
+                    (!event.altKey &&
+                        (event.ctrlKey || event.metaKey) &&
+                        event.key.toLowerCase() === "v") ||
+                    (!event.altKey &&
+                        !event.ctrlKey &&
+                        !event.metaKey &&
+                        event.shiftKey &&
+                        event.key === "Insert");
+
+                if (!nativePaste) return;
+                pasteKeys.add(event.code || event.key);
+                event.stopImmediatePropagation();
+            },
+            true,
+        );
+
+        viewport.addEventListener(
+            "keypress",
+            (event) => {
+                if (pasteKeys.has(event.code || event.key)) event.stopImmediatePropagation();
+            },
+            true,
+        );
+
+        viewport.addEventListener(
+            "keyup",
+            (event) => {
+                if (pasteKeys.delete(event.code || event.key)) event.stopImmediatePropagation();
+            },
+            true,
+        );
+
+        viewport.addEventListener("paste", (event) => this.pasteClipboard(event));
+        viewport.addEventListener("focus", () => this.checkClipboard());
         const keyboard = (this.keyboard = new Guacamole.Keyboard(viewport));
-        viewport.addEventListener("blur", () => keyboard.reset());
+
+        viewport.addEventListener("blur", () => {
+            pasteKeys.clear();
+            keyboard.reset();
+        });
 
         keyboard.onkeydown = (keysym) => {
             this.client?.sendKeyEvent(1, keysym);
@@ -463,43 +512,90 @@ export class RacInterface extends WithBrandConfig(Interface) {
     }
 
     async checkClipboard(): Promise<void> {
+        const client = this.client;
+
+        if (
+            !client ||
+            !this.isConnected ||
+            this.clientState !== GuacClientState.CONNECTED ||
+            !document.hasFocus() ||
+            !navigator.clipboard?.readText ||
+            this.clipboardRead
+        )
+            return;
+
+        const revision = this.clipboardRevision;
+        let read: Promise<string> | undefined;
+
         try {
-            if (!this._previousClipboardValue) {
-                this._previousClipboardValue = await navigator.clipboard.readText();
+            read = this.clipboardRead = navigator.clipboard.readText();
+            const newValue = await read;
 
-                return;
-            }
-
-            const newValue = await navigator.clipboard.readText();
-
-            if (newValue !== this._previousClipboardValue) {
-                console.debug(`authentik/rac: new clipboard value: ${newValue}`);
-
-                this._previousClipboardValue = newValue;
+            if (
+                revision === this.clipboardRevision &&
+                client === this.client &&
+                this.isConnected &&
+                document.hasFocus() &&
+                newValue !== this._previousClipboardValue
+            ) {
                 this.writeClipboard(newValue);
             }
         } catch (ex) {
-            // The error is most likely caused by the document not being in focus
-            // in which case we can ignore it and just retry
+            // Native paste remains available when background clipboard reading
+            // is denied or requires user activation.
             if (ex instanceof DOMException) {
                 return;
             }
 
             console.warn("authentik/rac: error reading clipboard", ex);
+        } finally {
+            if (this.clipboardRead === read) this.clipboardRead = undefined;
         }
     }
 
-    private writeClipboard(value: string) {
-        if (!this.client) {
-            return;
-        }
+    private resetClipboard(): void {
+        this.clipboardRevision += 1;
+        this.clipboardRead = undefined;
+        this._previousClipboardValue = undefined;
+    }
+
+    private pasteClipboard(event: ClipboardEvent): void {
+        if (!event.clipboardData?.types.includes("text/plain")) return;
+        event.preventDefault();
+
+        if (this.clientState !== GuacClientState.CONNECTED) return;
+
+        // Release physical modifiers before synthesizing exactly one remote paste.
+        const terminal = this.protocol === "ssh";
+        const pasteKeysym = terminal ? 0x0056 : 0x0076;
+        this.keyboard?.reset();
+
+        if (!this.writeClipboard(event.clipboardData.getData("text/plain"))) return;
+        this.client?.sendKeyEvent(1, 0xffe3);
+
+        if (terminal) this.client?.sendKeyEvent(1, 0xffe1);
+        this.client?.sendKeyEvent(1, pasteKeysym);
+        this.client?.sendKeyEvent(0, pasteKeysym);
+
+        if (terminal) this.client?.sendKeyEvent(0, 0xffe1);
+        this.client?.sendKeyEvent(0, 0xffe3);
+    }
+
+    private writeClipboard(value: string): boolean {
+        if (!this.client || this.clientState !== GuacClientState.CONNECTED) return false;
 
         const stream = this.client.createClipboardStream("text/plain");
-        const writer = new Guacamole.StringWriter(stream);
-        writer.sendText(value);
+        // Guacamole 1.5's StringWriter encodes surrogate halves separately.
+        // Use standard UTF-8 while retaining Guacamole's bounded blob sizes.
+        const writer = new Guacamole.ArrayBufferWriter(stream);
+        writer.sendData(new TextEncoder().encode(value).buffer);
         writer.sendEnd();
+        this.clipboardRevision += 1;
+        this._previousClipboardValue = value;
 
         console.debug("authentik/rac: Sent clipboard");
+
+        return true;
     }
 
     private updateTransfer(status: TransferStatus): void {

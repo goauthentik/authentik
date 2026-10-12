@@ -37,6 +37,7 @@ from authentik.providers.rac.protocol import (
 )
 
 TRANSFER_ID_LENGTH = 36
+PUT_STREAM_INDEX = 2
 
 
 def build_rac_client_group() -> str:
@@ -248,10 +249,23 @@ class RACClientConsumer(AsyncWebsocketConsumer):
                 if not opcode:
                     continue
                 stream = elements[1] if len(elements) > 1 else ""
-                if opcode in {"file", "put", "get"}:
-                    if stream:
-                        self.blocked_file_streams.add(stream)
+                if opcode == "get":
+                    # get identifies an object, not a browser output stream.
                     continue
+                if opcode in {"file", "put"}:
+                    # put(object, stream, mimetype, name) differs from
+                    # file(stream, mimetype, name). Never block the object ID.
+                    file_stream = stream
+                    if opcode == "put":
+                        file_stream = (
+                            elements[PUT_STREAM_INDEX] if len(elements) > PUT_STREAM_INDEX else ""
+                        )
+                    if file_stream:
+                        self.blocked_file_streams.add(file_stream)
+                    continue
+                if opcode in {"clipboard", "audio", "pipe", "argv"}:
+                    # Guacamole can reuse a failed file stream's index.
+                    self.blocked_file_streams.discard(stream)
                 if opcode in {"blob", "ack", "end"} and stream in self.blocked_file_streams:
                     if opcode == "end":
                         self.blocked_file_streams.discard(stream)

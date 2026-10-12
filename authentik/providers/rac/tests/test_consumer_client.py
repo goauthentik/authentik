@@ -1,5 +1,6 @@
 """Tests for the browser-facing RAC WebSocket consumer."""
 
+from base64 import b64encode
 from unittest.mock import AsyncMock, MagicMock
 
 from django.test import SimpleTestCase
@@ -151,6 +152,36 @@ class TestRACClientConsumer(SimpleTestCase):
         self.channel_send.assert_not_awaited()
         self.disconnect.assert_not_awaited()
 
+    async def test_clipboard_text_is_forwarded_before_paste_keys(self):
+        text = "  中文 text\r\nnext line\t "
+        wire = (
+            instruction("clipboard", "0", "text/plain")
+            + instruction("blob", "0", b64encode(text.encode()).decode())
+            + instruction("end", "0")
+            + KEY
+        )
+
+        await self.consumer.receive(text_data=wire)
+
+        self.channel_send.assert_awaited_once_with(
+            "outpost-channel", {"type": "event.send", "text_data": wire}
+        )
+        self.disconnect.assert_not_awaited()
+
+    async def test_full_sized_clipboard_blob_passes_the_new_tunnel_parser(self):
+        wire = (
+            instruction("clipboard", "0", "text/plain")
+            + instruction("blob", "0", b64encode(b"x" * 6048).decode())
+            + instruction("end", "0")
+        )
+
+        await self.consumer.receive(text_data=wire)
+
+        self.channel_send.assert_awaited_once_with(
+            "outpost-channel", {"type": "event.send", "text_data": wire}
+        )
+        self.disconnect.assert_not_awaited()
+
 
 class TestRACFileIsolation(SimpleTestCase):
     """Legacy Guacamole file openers never enter the tunnel."""
@@ -177,13 +208,55 @@ class TestRACFileIsolation(SimpleTestCase):
     async def test_browser_file_bytes_and_ack_are_blocked(self):
         wire = (
             instruction("put", "0", "1", "text/plain", "/file")
-            + instruction("blob", "0", "ZmlsZSBieXRlcw==")
-            + instruction("ack", "0", "OK", "0")
-            + instruction("end", "0")
+            + instruction("blob", "1", "ZmlsZSBieXRlcw==")
+            + instruction("ack", "1", "OK", "0")
+            + instruction("end", "1")
             + KEY
         )
         await self.consumer.receive(text_data=wire)
         self.consumer.stream_to_outpost.assert_awaited_once_with(KEY)
+
+    async def test_browser_clipboard_is_not_blocked_by_a_legacy_put_object_index(self):
+        clipboard = (
+            instruction("clipboard", "0", "text/plain")
+            + instruction("blob", "0", "Y2xpcGJvYXJk")
+            + instruction("end", "0")
+        )
+        wire = (
+            instruction("put", "0", "1", "text/plain", "/file")
+            + instruction("blob", "1", "ZmlsZSBieXRlcw==")
+            + instruction("end", "1")
+            + clipboard
+        )
+
+        await self.consumer.receive(text_data=wire)
+
+        self.consumer.stream_to_outpost.assert_awaited_once_with(clipboard)
+
+    async def test_browser_clipboard_is_not_blocked_by_a_legacy_get_object_index(self):
+        clipboard = (
+            instruction("clipboard", "0", "text/plain")
+            + instruction("blob", "0", "Y2xpcGJvYXJk")
+            + instruction("end", "0")
+        )
+
+        await self.consumer.receive(text_data=instruction("get", "0", "/file") + clipboard)
+
+        self.consumer.stream_to_outpost.assert_awaited_once_with(clipboard)
+
+    async def test_browser_clipboard_reuses_a_failed_legacy_file_stream(self):
+        clipboard = (
+            instruction("clipboard", "1", "text/plain")
+            + instruction("blob", "1", "Y2xpcGJvYXJk")
+            + instruction("end", "1")
+        )
+
+        await self.consumer.receive(
+            text_data=instruction("file", "1", "text/plain", "rejected.txt") + clipboard
+        )
+
+        self.consumer.stream_to_outpost.assert_awaited_once_with(clipboard)
+        self.assertEqual(self.consumer.blocked_file_streams, set())
 
     async def test_remote_filesystem_openers_are_blocked(self):
         wire = (
