@@ -111,9 +111,38 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                         # Switch the action to update the attributes
                         action = Action.AUTH
                     else:
-                        group = Group.objects.create(**defaults)
-                        created = True
-                        connection.group = group
+                        try:
+                            group = Group.objects.create(**defaults)
+                            created = True
+                            connection.group = group
+                        except IntegrityError:
+                            # The group already exists with this name (e.g. the upstream
+                            # LDAP identifier changed, but the underlying group still maps
+                            # to the same group). Fall back to an idempotent update keyed on
+                            # name + source instead of failing the entire sync.
+                            group, created = Group.objects.update_or_create(
+                                name=defaults["name"],
+                                defaults={
+                                    k: v
+                                    for k, v in defaults.items()
+                                    if k != "name"
+                                },
+                            )
+                            # Rebind the LDAPSourceConnection to the existing group with the
+                            # new LDAP identifier so subsequent syncs find it directly.
+                            existing = GroupLDAPSourceConnection.objects.filter(
+                                source=self._source,
+                                group=group,
+                            ).first()
+                            if existing is not None:
+                                existing.identifier = uniq
+                                connection = existing
+                            else:
+                                connection = GroupLDAPSourceConnection(
+                                    source=self._source,
+                                    group=group,
+                                    identifier=uniq,
+                                )
                     connection.save()
 
                 if action in (Action.AUTH, Action.LINK):
