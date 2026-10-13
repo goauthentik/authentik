@@ -49,20 +49,44 @@ export class SourceSettingsPlex extends BaseUserSettings {
     }
 
     protected async authenticateWithPlex(): Promise<void> {
-        const authInfo = await PlexAPIClient.getPin(this.configureURL || "");
-        const authWindow = await popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
+        // Opened before awaiting the pin: the click's user activation is gone by
+        // the time the pin request resolves, and the popup would be blocked.
+        const authWindow = popupCenterScreen("about:blank", "plex auth", 550, 700);
+        const clientId = this.configureURL || "";
 
-        PlexAPIClient.pinPoll(this.configureURL || "", authInfo.pin.id).then((token) => {
+        try {
+            const authInfo = await PlexAPIClient.getPin(clientId);
+
+            if (authWindow && !authWindow.closed) {
+                authWindow.location.replace(authInfo.authUrl);
+            }
+
+            // Rejects when the pin expires unauthorized, which is where an
+            // unopened popup ends up too.
+            const token = await PlexAPIClient.pinPoll(clientId, authInfo.pin.id);
+
             authWindow?.close();
 
-            aki(SourcesApi).sourcesPlexRedeemTokenAuthenticatedCreate({
+            await aki(SourcesApi).sourcesPlexRedeemTokenAuthenticatedCreate({
                 plexTokenRedeemRequest: {
                     plexToken: token,
                 },
                 slug: this.objectId,
             });
-        });
+        } catch (error: unknown) {
+            authWindow?.close();
+            const parsedError = await parseAPIResponseError(error);
 
+            showMessage({
+                level: MessageLevel.error,
+                message: msg(str`Failed to connect source: ${pluckErrorDetail(parsedError)}`),
+            });
+
+            return;
+        }
+
+        // Only once the connection is saved: refreshing any earlier re-renders
+        // the source list before the server knows the source is connected.
         this.dispatchEvent(
             new CustomEvent(EVENT_REFRESH, {
                 bubbles: true,

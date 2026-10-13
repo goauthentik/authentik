@@ -57,6 +57,9 @@ declare module "process" {
                  * give it a better name.
                  */
                 readonly AK_API_BASE_PATH?: string;
+
+                readonly AK_TEST_PLEX_EMAIL?: string;
+                readonly AK_TEST_PLEX_PASSWORD?: string;
             }
         }
     }
