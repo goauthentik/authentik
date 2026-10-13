@@ -1,12 +1,9 @@
-import "#admin/common/ak-crypto-certificate-search";
-import "#admin/common/ak-flow-search/ak-flow-search";
 import "#elements/CodeMirror";
 import "#elements/Alert";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#components/ak-file-search-input";
@@ -14,11 +11,16 @@ import { aki } from "#common/api/client";
 import { DefaultBrand } from "#common/ui/config";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import type { SearchSelectChangeEvent } from "#elements/forms/SearchSelect/events";
+import { SearchSelectSource, withQuery } from "#elements/forms/SearchSelect/shared";
 import { DefaultFlowBackground } from "#elements/utils/images";
 
 import { AKLabel } from "#components/ak-label";
+import { AKSearchSelect } from "#components/ak-search-select-field";
 
 import { certificateSelector, tlsCertificateProvider } from "#admin/brands/Certificates";
+import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
+import { AKCertificateSearch } from "#admin/common/AKCertificateSearch";
 import { TLSKeyTypes } from "#admin/common/certificate-key-types";
 
 import {
@@ -26,7 +28,6 @@ import {
     AuthenticationEnum,
     Brand,
     CoreApi,
-    CoreApplicationsListRequest,
     Flow,
     FlowDesignationEnum,
     FlowsApi,
@@ -38,6 +39,16 @@ import YAML from "yaml";
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
+
+const applicationSource: SearchSelectSource<Application> = {
+    fetchObjects: (query) =>
+        aki(CoreApi)
+            .coreApplicationsList(withQuery(query, { ordering: "name", superuserFullList: true }))
+            .then(({ results }) => results),
+    keyOf: (application) => application.pk,
+    labelOf: (application) => application.name,
+    describe: (application) => html`${application.slug}`,
+};
 
 @customElement("ak-brand-form")
 export class BrandForm extends ModelForm<Brand, string> {
@@ -68,12 +79,8 @@ export class BrandForm extends ModelForm<Brand, string> {
         });
     }
 
-    protected lockdownFlowInputListener = (event: Event): void => {
-        const target = event.currentTarget as HTMLElement & {
-            selectedFlow?: Flow | null;
-        };
-
-        this.lockdownFlowAuthentication = target.selectedFlow?.authentication ?? null;
+    protected lockdownFlowInputListener = ({ detail }: SearchSelectChangeEvent<Flow>): void => {
+        this.lockdownFlowAuthentication = detail.value?.authentication ?? null;
     };
 
     protected get lockdownWarningVisible(): boolean {
@@ -222,31 +229,13 @@ export class BrandForm extends ModelForm<Brand, string> {
                         label=${msg("Default application")}
                         name="defaultApplication"
                     >
-                        <ak-search-select
-                            placeholder=${msg("Select an application...")}
-                            blankable
-                            .fetchObjects=${async (query?: string): Promise<Application[]> => {
-                                const args: CoreApplicationsListRequest = {
-                                    ordering: "name",
-                                    superuserFullList: true,
-                                };
-
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-
-                                const users = await aki(CoreApi).coreApplicationsList(args);
-
-                                return users.results;
-                            }}
-                            .renderElement=${(item: Application) => item.name}
-                            .renderDescription=${(item: Application) => html`${item.slug}`}
-                            .value=${(item: Application | null) => item?.pk}
-                            .selected=${(item: Application): boolean => {
-                                return item.pk === this.instance?.defaultApplication;
-                            }}
-                        >
-                        </ak-search-select>
+                        ${AKSearchSelect({
+                            name: "defaultApplication",
+                            source: applicationSource,
+                            placeholder: msg("Select an application..."),
+                            value: this.instance?.defaultApplication,
+                            blankable: true,
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When configured, external users will automatically be redirected to this application when not attempting to access a different application",
@@ -262,11 +251,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         label=${msg("Authentication Flow")}
                         name="flowAuthentication"
                     >
-                        <ak-flow-search
-                            placeholder=${msg("Select an authentication flow...")}
-                            flowType=${FlowDesignationEnum.Authentication}
-                            .currentFlow=${this.instance?.flowAuthentication}
-                        ></ak-flow-search>
+                        ${AKFlowSearch({ name: "flowAuthentication", placeholder: msg("Select an authentication flow..."), flowType: FlowDesignationEnum.Authentication, value: this.instance?.flowAuthentication })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Flow used to authenticate users. If left empty, the first applicable flow sorted by the slug is used.",
@@ -279,13 +264,14 @@ export class BrandForm extends ModelForm<Brand, string> {
                         })}
                         name="flowUserSwitch"
                     >
-                        <ak-flow-search
-                            placeholder=${msg("Select a user switch flow...", {
+                        ${AKFlowSearch({
+                            name: "flowUserSwitch",
+                            placeholder: msg("Select a user switch flow...", {
                                 id: "brand.form.flow-user-switch.placeholder",
-                            })}
-                            flowType=${FlowDesignationEnum.Authentication}
-                            .currentFlow=${this.instance?.flowUserSwitch}
-                        ></ak-flow-search>
+                            }),
+                            flowType: FlowDesignationEnum.Authentication,
+                            value: this.instance?.flowUserSwitch,
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Authentication flow used when switching between users signed in on the same browser. If left empty, user switching is disabled.",
@@ -297,11 +283,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         label=${msg("Invalidation Flow")}
                         name="flowInvalidation"
                     >
-                        <ak-flow-search
-                            placeholder=${msg("Select an invalidation flow...")}
-                            flowType=${FlowDesignationEnum.Invalidation}
-                            .currentFlow=${this.instance?.flowInvalidation}
-                        ></ak-flow-search>
+                        ${AKFlowSearch({ name: "flowInvalidation", placeholder: msg("Select an invalidation flow..."), flowType: FlowDesignationEnum.Invalidation, value: this.instance?.flowInvalidation })}
 
                         <p class="pf-c-form__helper-text">
                             ${msg(
@@ -310,21 +292,13 @@ export class BrandForm extends ModelForm<Brand, string> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Recovery flow")} name="flowRecovery">
-                        <ak-flow-search
-                            placeholder=${msg("Select a recovery flow...")}
-                            flowType=${FlowDesignationEnum.Recovery}
-                            .currentFlow=${this.instance?.flowRecovery}
-                        ></ak-flow-search>
+                        ${AKFlowSearch({ name: "flowRecovery", placeholder: msg("Select a recovery flow..."), flowType: FlowDesignationEnum.Recovery, value: this.instance?.flowRecovery })}
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Unenrollment flow")}
                         name="flowUnenrollment"
                     >
-                        <ak-flow-search
-                            placeholder=${msg("Select an unenrollment flow...")}
-                            flowType=${FlowDesignationEnum.Unenrollment}
-                            .currentFlow=${this.instance?.flowUnenrollment}
-                        ></ak-flow-search>
+                        ${AKFlowSearch({ name: "flowUnenrollment", placeholder: msg("Select an unenrollment flow..."), flowType: FlowDesignationEnum.Unenrollment, value: this.instance?.flowUnenrollment })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "If set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown.",
@@ -335,11 +309,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         label=${msg("User settings flow")}
                         name="flowUserSettings"
                     >
-                        <ak-flow-search
-                            placeholder=${msg("Select a user settings flow...")}
-                            flowType=${FlowDesignationEnum.StageConfiguration}
-                            .currentFlow=${this.instance?.flowUserSettings}
-                        ></ak-flow-search>
+                        ${AKFlowSearch({ name: "flowUserSettings", placeholder: msg("Select a user settings flow..."), flowType: FlowDesignationEnum.StageConfiguration, value: this.instance?.flowUserSettings })}
                         <p class="pf-c-form__helper-text">
                             ${msg("If set, users are able to configure details of their profile.")}
                         </p>
@@ -348,11 +318,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         label=${msg("Device code flow")}
                         name="flowDeviceCode"
                     >
-                        <ak-flow-search
-                            placeholder=${msg("Select a device code flow...")}
-                            flowType=${FlowDesignationEnum.StageConfiguration}
-                            .currentFlow=${this.instance?.flowDeviceCode}
-                        ></ak-flow-search>
+                        ${AKFlowSearch({ name: "flowDeviceCode", placeholder: msg("Select a device code flow..."), flowType: FlowDesignationEnum.StageConfiguration, value: this.instance?.flowDeviceCode })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "If set, the OAuth Device Code profile can be used, and the selected flow will be used to enter the code.",
@@ -363,12 +329,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         label=${msg("Account lockdown flow")}
                         name="flowLockdown"
                     >
-                        <ak-flow-search
-                            placeholder=${msg("Select an account lockdown flow...")}
-                            flowType=${FlowDesignationEnum.StageConfiguration}
-                            .currentFlow=${this.instance?.flowLockdown}
-                            @input=${this.lockdownFlowInputListener}
-                        ></ak-flow-search>
+                        ${AKFlowSearch({ name: "flowLockdown", placeholder: msg("Select an account lockdown flow..."), flowType: FlowDesignationEnum.StageConfiguration, value: this.instance?.flowLockdown, onChange: this.lockdownFlowInputListener })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Flow used when a user triggers account lockdown (e.g. in case of compromise). Should contain an Account Lockdown stage.",
@@ -385,11 +346,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         }
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Request flow")} name="flowRequest">
-                        <ak-flow-search
-                            placeholder=${msg("Select a request flow...")}
-                            flowType=${FlowDesignationEnum.StageConfiguration}
-                            .currentFlow=${this.instance?.flowRequest}
-                        ></ak-flow-search>
+                        ${AKFlowSearch({ name: "flowRequest", placeholder: msg("Select a request flow..."), flowType: FlowDesignationEnum.StageConfiguration, value: this.instance?.flowRequest })}
                         <p class="pf-c-form__helper-text">
                             ${msg("Default flow used by users requesting access.")}
                         </p>
@@ -402,10 +359,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         label=${msg("Web Certificate")}
                         name="webCertificate"
                     >
-                        <ak-crypto-certificate-search
-                            .certificate=${this.instance?.webCertificate}
-                            .allowedKeyTypes=${TLSKeyTypes}
-                        ></ak-crypto-certificate-search>
+                        ${AKCertificateSearch({ name: "webCertificate", value: this.instance?.webCertificate, allowedKeyTypes: TLSKeyTypes })}
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Client Certificates")}

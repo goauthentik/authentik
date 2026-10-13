@@ -9,6 +9,7 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
+import type { NamedEntityElement } from "#common/api/entities";
 import { EVENT_REFRESH } from "#common/constants";
 import { PFSize } from "#common/enums";
 import {
@@ -29,7 +30,6 @@ import {
 } from "#elements/dialogs";
 import {
     isTransclusionParentElement,
-    NamedEntityElement,
     TransclusionChildElement,
     TransclusionChildSymbol,
 } from "#elements/dialogs/shared";
@@ -40,6 +40,7 @@ import { reportValidityDeep } from "#elements/forms/FormGroup";
 import { PreventFormSubmit } from "#elements/forms/helpers";
 import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
 import { serializeForm } from "#elements/forms/serialization";
+import { settleFormFields } from "#elements/forms/settle-form-fields";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { createFileMap } from "#elements/utils/inputs";
@@ -546,8 +547,12 @@ export class Form<T = Record<string, unknown>, D = T>
      * @returns A promise that resolves to the response from `send()`, or `false` if the form is
      *   invalid.
      */
-    public submit = <T = unknown>(submitEvent: SubmitEvent): Promise<T | false> => {
+    public submit = async <T = unknown>(submitEvent: SubmitEvent): Promise<T | false> => {
         submitEvent.preventDefault();
+
+        if (this.form) {
+            await settleFormFields(this.form);
+        }
 
         if (!this.reportValidity()) {
             return Promise.resolve(false);

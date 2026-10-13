@@ -57,6 +57,7 @@ from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.admin.utils import get_system_settings
 from authentik.api.authentication import TokenAuthentication
 from authentik.api.search.fields import (
     ChoiceSearchField,
@@ -657,13 +658,19 @@ class UserViewSet(
             base_qs = base_qs.prefetch_related(
                 Prefetch("roles", queryset=Role.objects.all().only("uuid"))
             )
-        # Annotate is_superuser to avoid N+1 query per user
+        # Annotate is_superuser to avoid N+1 query per user.
+        # Use two EXISTS subqueries (direct membership, membership through a descendant group)
+        # instead of one EXISTS with an OR across both join paths. PostgreSQL can't hash a
+        # subquery whose OR mixes two correlated conditions, so that form runs once per user row,
+        # including rows skipped by OFFSET, and a poor plan for the group ancestry join is paid
+        # for every row. Each separate EXISTS can run once per query as a hashed subplan.
         base_qs = base_qs.annotate(
             _annotated_is_superuser=Exists(
+                Group.objects.filter(is_superuser=True, users=OuterRef("pk"))
+            )
+            | Exists(
                 Group.objects.filter(
-                    is_superuser=True,
-                ).filter(
-                    Q(users=OuterRef("pk")) | Q(descendant_nodes__descendant__users=OuterRef("pk"))
+                    is_superuser=True, descendant_nodes__descendant__users=OuterRef("pk")
                 )
             )
         )
@@ -1019,7 +1026,7 @@ class UserViewSet(
     @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
     def impersonate(self, request: Request, pk: int) -> Response:
         """Impersonate a user"""
-        if not request.tenant.impersonation:
+        if not get_system_settings().impersonation:
             LOGGER.debug("User attempted to impersonate", user=request.user)
             return Response(status=401)
         user_to_be = self.get_object()
@@ -1036,7 +1043,7 @@ class UserViewSet(
         if user_to_be.pk == self.request.user.pk:
             LOGGER.debug("User attempted to impersonate themselves", user=request.user)
             return Response(status=401)
-        if not reason and request.tenant.impersonation_require_reason:
+        if not reason and get_system_settings().impersonation_require_reason:
             LOGGER.debug(
                 "User attempted to impersonate without providing a reason",
                 user=request.user,

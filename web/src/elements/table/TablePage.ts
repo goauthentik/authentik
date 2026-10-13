@@ -3,11 +3,10 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFSidebar from "@patternfly/patternfly/components/Sidebar/sidebar.css";
 
+import { setPageDetails } from "#elements/router/meta";
 import { Table } from "#elements/table/Table";
 import Styles from "#elements/table/TablePage.css";
 import { SlottedTemplateResult } from "#elements/types";
-
-import { setPageDetails } from "#components/ak-page-navbar";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";

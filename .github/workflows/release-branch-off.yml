@@ -17,7 +17,7 @@ env:
 jobs:
   check-inputs:
     name: Check inputs validity
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - run: |
           echo "${{ inputs.next_version }}" | grep -E "^[0-9]{4}\.[0-9]{1,2}$"
@@ -25,7 +25,7 @@ jobs:
     name: Branch-off
     needs:
       - check-inputs
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - id: app-token
         name: Generate app token
@@ -54,7 +54,7 @@ jobs:
     name: Open version bump PR
     needs:
       - branch-off
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - id: generate_token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v2

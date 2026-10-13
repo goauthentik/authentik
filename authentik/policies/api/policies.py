@@ -13,7 +13,6 @@ from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.validation import validate
-from authentik.core.api.applications import user_app_cache_key
 from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
@@ -22,7 +21,10 @@ from authentik.core.api.utils import (
     ModelSerializer,
 )
 from authentik.events.logs import LogEventSerializer, capture_logs
-from authentik.policies.api.exec import PolicyTestResultSerializer, PolicyTestSerializer
+from authentik.policies.api.exec import (
+    PolicyTestResultSerializer,
+    PolicyTestSerializer,
+)
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.policies.process import PolicyProcess
 from authentik.policies.types import CACHE_PREFIX, PolicyRequest
@@ -118,9 +120,6 @@ class PolicyViewSet(
         keys = cache.keys(f"{CACHE_PREFIX}*")
         cache.delete_many(keys)
         LOGGER.debug("Cleared Policy cache", keys=len(keys))
-        # Also delete user application cache
-        keys = cache.keys(user_app_cache_key("*"))
-        cache.delete_many(keys)
         return Response(status=204)
 
     @permission_required("authentik_policies.view_policy")
