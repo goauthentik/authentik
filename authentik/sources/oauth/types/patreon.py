@@ -1,6 +1,7 @@
 """Patreon OAuth Views"""
 
 from typing import Any
+from urllib.parse import urlencode
 
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
 from authentik.sources.oauth.models import AuthorizationCodeAuthMethod, OAuthSource
@@ -39,7 +40,9 @@ class PatreonType(SourceType):
 
     authorization_url = "https://www.patreon.com/oauth2/authorize"
     access_token_url = "https://www.patreon.com/api/oauth2/token"  # nosec
-    profile_url = "https://www.patreon.com/api/oauth2/v2/identity?fields%5Buser%5D=vanity,email,full_name"
+    profile_url = f"https://www.patreon.com/api/oauth2/v2/identity?{urlencode({
+        "fields[user]": ",".join("vanity","email","full_name")
+    })}"
 
     authorization_code_auth_method = AuthorizationCodeAuthMethod.POST_BODY
 
