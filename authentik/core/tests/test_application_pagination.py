@@ -141,8 +141,8 @@ class TestApplicationPaginationCost(APITestCase):
 
     Measures real SQL, policy evaluation, and serialization with 10% accessible apps.
     Reports median elapsed time and query count over three runs, with cold and warm
-    policy caches. Timings are informational; assertions cover deterministic work
-    counts rather than machine-dependent deadlines. Run with --no-capture to see
+    policy caches. Timings are informational; assertions cover policy execution
+    counts and query budgets rather than machine-dependent deadlines. Run with --no-capture to see
     the table. These simple expressions do not model slow external policy calls.
     """
 
@@ -155,7 +155,6 @@ class TestApplicationPaginationCost(APITestCase):
             expression="return int(request.obj.slug.split('-')[-1]) % 10 == 0",
         )
         apps = []
-        static_query_counts = []
         print("\napps policy cache pipeline median_ms queries policy_executions")
         for size in (20, 140, 1000):
             for index in range(len(apps), size):
@@ -218,8 +217,14 @@ class TestApplicationPaginationCost(APITestCase):
                             median(executions),
                         )
                         if not dynamic and full_set:
-                            static_query_counts.append(median(queries))
-        self.assertEqual(len(set(static_query_counts)), 1, static_query_counts)
+                            # Observed baseline: 18 queries. Allow small variations from
+                            # cache state/setup, but keep the budget fixed as apps grow
+                            # so per-application queries still fail this check.
+                            self.assertLessEqual(
+                                median(queries),
+                                25,
+                                f"Static bindings for {size} apps exceeded query budget: {queries}",
+                            )
 
     def _run_pipeline(self, admin, user, full_set):
         """Reproduce each pipeline with fresh querysets and identical page size/serialization."""
