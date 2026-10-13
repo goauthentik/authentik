@@ -46,8 +46,10 @@ export interface AuthenticatorDuoStage {
     configureFlow?: string | null;
     friendlyName?: string;
     clientId: string;
+    clientSecretRef: string;
     apiHostname: string;
     adminIntegrationKey?: string;
+    adminSecretKeyRef?: string | null;
 }
 
 /**
@@ -93,6 +95,13 @@ export function instanceOfAuthenticatorDuoStage(value: object): value is Authent
     )
         return false;
     if (
+        (!("clientSecretRef" in (value as Record<string, any>)) &&
+            !("client_secret_ref" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["clientSecretRef"] === undefined &&
+            (value as Record<string, any>)["client_secret_ref"] === undefined)
+    )
+        return false;
+    if (
         (!("apiHostname" in (value as Record<string, any>)) &&
             !("api_hostname" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["apiHostname"] === undefined &&
@@ -129,9 +138,16 @@ export function AuthenticatorDuoStageFromJSONTyped(
                   : json["configure_flow"],
         friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
         clientId: json["client_id"],
+        clientSecretRef: json["client_secret_ref"],
         apiHostname: json["api_hostname"],
         adminIntegrationKey:
             json["admin_integration_key"] == null ? undefined : json["admin_integration_key"],
+        adminSecretKeyRef:
+            json["admin_secret_key_ref"] === undefined
+                ? undefined
+                : json["admin_secret_key_ref"] === null
+                  ? null
+                  : json["admin_secret_key_ref"],
     };
 }
 
@@ -155,7 +171,9 @@ export function AuthenticatorDuoStageToJSONTyped(
         configure_flow: value["configureFlow"],
         friendly_name: value["friendlyName"],
         client_id: value["clientId"],
+        client_secret_ref: value["clientSecretRef"],
         api_hostname: value["apiHostname"],
         admin_integration_key: value["adminIntegrationKey"],
+        admin_secret_key_ref: value["adminSecretKeyRef"],
     };
 }

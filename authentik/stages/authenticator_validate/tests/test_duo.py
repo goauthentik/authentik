@@ -8,6 +8,7 @@ from rest_framework.exceptions import ValidationError
 from authentik.brands.utils import get_brand_for_request
 from authentik.core.middleware import RESPONSE_HEADER_ID
 from authentik.core.tests.utils import RequestFactory, create_test_admin_user, create_test_flow
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
@@ -37,7 +38,7 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
         stage = AuthenticatorDuoStage.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            client_secret=generate_key(),
+            client_secret_ref=create_test_secret(generate_key()),
             api_hostname="",
         )
         duo_device = DuoDevice.objects.create(
@@ -118,7 +119,7 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
         duo_stage = AuthenticatorDuoStage.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            client_secret=generate_key(),
+            client_secret_ref=create_test_secret(generate_key()),
             api_hostname="",
         )
         duo_device = DuoDevice.objects.create(
