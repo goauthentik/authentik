@@ -17,6 +17,7 @@ from authentik.common.oauth.constants import (
 )
 from authentik.core.models import USERNAME_MAX_LENGTH, Application, Group, User
 from authentik.core.tests.utils import create_test_cert, create_test_flow
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import (
@@ -53,7 +54,7 @@ class TestTokenClientCredentialsJWTSource(OAuthTestCase):
             slug=generate_id(),
             provider_type="openidconnect",
             consumer_key=generate_id(),
-            consumer_secret=generate_id(),
+            consumer_secret_ref=create_test_secret(generate_id()),
             authorization_url="http://foo",
             access_token_url=f"http://{generate_id()}",
             profile_url="http://foo",
@@ -254,7 +255,7 @@ class TestTokenClientCredentialsJWTSource(OAuthTestCase):
             slug=generate_id(),
             provider_type="openidconnect",
             consumer_key=generate_id(),
-            consumer_secret=generate_id(),
+            consumer_secret_ref=create_test_secret(generate_id()),
             authorization_url="http://foo",
             access_token_url=f"http://{generate_id()}",
             profile_url="http://foo",

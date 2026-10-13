@@ -139,10 +139,10 @@ class OAuthSourceSerializer(SourceSerializer):
                     raise ValidationError(
                         f"{url} is required for provider {source_type.verbose_name}"
                     )
-        consumer_secret = self._get_value(attrs, "consumer_secret")
+        consumer_secret = self._get_value(attrs, "consumer_secret_ref")
         pkce = self._get_value(attrs, "pkce", PKCEMethod.NONE)
         if source_type.requires_client_secret and not consumer_secret:
-            raise ValidationError({"consumer_secret": "Consumer secret is required."})
+            raise ValidationError({"consumer_secret_ref": "Consumer secret is required."})
         if not consumer_secret and pkce == PKCEMethod.NONE:
             raise ValidationError({"pkce": "PKCE is required when no consumer secret is used."})
         return attrs
@@ -158,7 +158,7 @@ class OAuthSourceSerializer(SourceSerializer):
             "profile_url",
             "pkce",
             "consumer_key",
-            "consumer_secret",
+            "consumer_secret_ref",
             "callback_url",
             "additional_scopes",
             "type",
@@ -168,7 +168,6 @@ class OAuthSourceSerializer(SourceSerializer):
             "authorization_code_auth_method",
         ]
         extra_kwargs = {
-            "consumer_secret": {"write_only": True, "allow_blank": True, "required": False},
             "request_token_url": {"allow_blank": True},
             "authorization_url": {"allow_blank": True},
             "access_token_url": {"allow_blank": True},

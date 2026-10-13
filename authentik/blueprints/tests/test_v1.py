@@ -299,6 +299,8 @@ class TestBlueprintsV1(TransactionTestCase):
             OAuthSource.objects.filter(
                 slug="test",
                 consumer_key=environ["foo"],
+                consumer_secret_ref__name="bar",
+                consumer_secret_ref__secret_value=environ.get("bar", "baz"),
             )
         )
         unlink(file_name)

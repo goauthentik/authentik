@@ -6,6 +6,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.enterprise.models import License
 from authentik.enterprise.tests import enterprise_test
 from authentik.lib.generators import generate_id
@@ -21,7 +22,7 @@ class TestSCIMOAuthAPI(APITestCase):
             slug=generate_id(),
             access_token_url="http://localhost/token",  # nosec
             consumer_key=generate_id(),
-            consumer_secret=generate_id(),
+            consumer_secret_ref=create_test_secret(generate_id()),
             provider_type="openidconnect",
         )
 

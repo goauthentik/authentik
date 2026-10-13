@@ -1,6 +1,7 @@
 from django.test import RequestFactory, TestCase
 from guardian.shortcuts import get_anonymous_user
 
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.clients.oauth2 import OAuth2Client
 from authentik.sources.oauth.models import AuthorizationCodeAuthMethod, OAuthSource
@@ -18,7 +19,7 @@ class TestOAuthClient(TestCase):
             authorization_url="",
             profile_url="",
             consumer_key=generate_id(),
-            consumer_secret=generate_id(),
+            consumer_secret_ref=create_test_secret(generate_id()),
         )
         self.factory = RequestFactory()
 
@@ -51,7 +52,7 @@ class TestOAuthClient(TestCase):
     def test_client_post_body_public(self):
         """Test public client post body without secret"""
         self.source.provider_type = "github"
-        self.source.consumer_secret = ""
+        self.source.consumer_secret_ref = None
         self.source.save()
         request = self.factory.get("/")
         request.session = {}
@@ -65,7 +66,7 @@ class TestOAuthClient(TestCase):
     def test_client_basic_auth_public(self):
         """Test public client with a basic auth source type"""
         self.source.provider_type = "reddit"
-        self.source.consumer_secret = ""
+        self.source.consumer_secret_ref = None
         self.source.save()
         request = self.factory.get("/")
         request.session = {}
@@ -99,7 +100,7 @@ class TestOAuthClient(TestCase):
 
     def test_client_openid_public(self):
         """Test public client OIDC without secret"""
-        self.source.consumer_secret = ""
+        self.source.consumer_secret_ref = None
         self.source.authorization_code_auth_method = AuthorizationCodeAuthMethod.POST_BODY
         self.source.save()
         request = self.factory.get("/")
