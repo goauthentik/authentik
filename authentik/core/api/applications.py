@@ -309,7 +309,6 @@ class ApplicationViewSet(
             # and no provider, so no possible launch URL).
             queryset = queryset.exclude(meta_launch_url="", provider__isnull=True)
         paginator: Pagination = self.paginator
-        paginated_apps = paginator.paginate_queryset(queryset, request)
 
         if "for_user" in request.query_params:
             try:
@@ -323,11 +322,15 @@ class ApplicationViewSet(
                     raise ValidationError({"for_user": "User not found"})
             except ValueError as exc:
                 raise ValidationError from exc
-            allowed_applications = self._get_allowed_applications(paginated_apps, user=for_user)
+            # Evaluate the full candidate set so counts and page boundaries reflect
+            # applications this user can access, rather than all applications.
+            allowed_applications = self._get_allowed_applications(queryset, user=for_user)
+            paginated_apps = paginator.paginate_queryset(allowed_applications, request)
 
-            serializer = self.get_serializer(allowed_applications, many=True)
+            serializer = self.get_serializer(paginated_apps, many=True)
             return self.get_paginated_response(serializer.data)
 
+        paginated_apps = paginator.paginate_queryset(queryset, request)
         allowed_applications = []
         if not should_cache:
             allowed_applications = self._get_allowed_applications(paginated_apps)
