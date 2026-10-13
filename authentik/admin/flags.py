@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, Literal
 from django.db import DatabaseError, InternalError, ProgrammingError
 from django.db.models import F, Func, JSONField, Value
 
-from authentik.admin.signals import flag_set
 from authentik.lib.utils.reflection import all_subclasses
 
 if TYPE_CHECKING:
@@ -47,6 +46,7 @@ class Flag[T]:
     @classmethod
     def set(cls, value: T, settings: SystemSettings | None = None) -> T | None:
         from authentik.admin.models import SystemSettings
+        from authentik.admin.signals import flag_set
         from authentik.admin.utils import clear_system_settings_cache, get_system_settings
 
         if not settings:
