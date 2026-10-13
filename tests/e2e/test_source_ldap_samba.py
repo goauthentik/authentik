@@ -5,6 +5,7 @@ from ldap3.core.exceptions import LDAPSessionTerminatedByServerError
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Group, User
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.lib.generators import generate_id, generate_key
 from authentik.sources.ldap.auth import LDAPBackend
 from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
@@ -46,7 +47,7 @@ class TestSourceLDAPSamba(E2ETestCase):
             slug=generate_id(),
             server_uri="ldap://localhost",
             bind_cn="administrator@test.goauthentik.io",
-            bind_password=self.admin_password,
+            bind_password_ref=create_test_secret(self.admin_password),
             base_dn="dc=test,dc=goauthentik,dc=io",
             additional_user_dn="ou=users",
             additional_group_dn="ou=groups",
@@ -79,7 +80,7 @@ class TestSourceLDAPSamba(E2ETestCase):
             slug=generate_id(),
             server_uri="ldap://localhost",
             bind_cn="administrator@test.goauthentik.io",
-            bind_password=self.admin_password,
+            bind_password_ref=create_test_secret(self.admin_password),
             base_dn="dc=test,dc=goauthentik,dc=io",
             additional_user_dn="ou=users",
             additional_group_dn="ou=groups",
@@ -124,7 +125,7 @@ class TestSourceLDAPSamba(E2ETestCase):
             slug=generate_id(),
             server_uri="ldap://localhost",
             bind_cn="administrator@test.goauthentik.io",
-            bind_password=self.admin_password,
+            bind_password_ref=create_test_secret(self.admin_password),
             base_dn="dc=test,dc=goauthentik,dc=io",
             additional_user_dn="ou=users",
             additional_group_dn="ou=groups",

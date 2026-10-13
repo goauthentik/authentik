@@ -100,6 +100,7 @@ export interface LDAPSource {
      */
     clientCertificate?: string | null;
     bindCn?: string;
+    bindPasswordRef?: string | null;
     /**
      * Authentication method used for LDAP synchronization and writeback.
      */
@@ -295,6 +296,12 @@ export function LDAPSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
                   ? null
                   : json["client_certificate"],
         bindCn: json["bind_cn"] == null ? undefined : json["bind_cn"],
+        bindPasswordRef:
+            json["bind_password_ref"] === undefined
+                ? undefined
+                : json["bind_password_ref"] === null
+                  ? null
+                  : json["bind_password_ref"],
         serviceBindMethod:
             json["service_bind_method"] == null
                 ? undefined
@@ -386,6 +393,7 @@ export function LDAPSourceToJSONTyped(
         peer_certificate: value["peerCertificate"],
         client_certificate: value["clientCertificate"],
         bind_cn: value["bindCn"],
+        bind_password_ref: value["bindPasswordRef"],
         service_bind_method: ServiceBindMethodEnumToJSON(value["serviceBindMethod"]),
         start_tls: value["startTls"],
         sni: value["sni"],
