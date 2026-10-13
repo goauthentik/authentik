@@ -136,6 +136,10 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileListItem>
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
+        if (!this.can(CapabilitiesEnum.CanSaveMedia)) {
+            return null;
+        }
+
         return ModalInvokerButton(FileUploadForm);
     }
 }

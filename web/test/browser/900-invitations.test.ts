@@ -134,14 +134,80 @@ test.describe("Invitation form", () => {
         });
 
         await test.step("The newly created flow is selected", async () => {
-            // Scoped to the view rather than the placeholder: `ak-flow-search` composes
-            // three elements deep and each level carries a real input with the same
-            // placeholder — the host, `ak-search-select`'s hidden value input holding the
-            // flow UUID, and the view's display input. Only the last shows the label.
             await expect(
-                $dialog.locator("ak-search-select-view").getByRole("textbox"),
+                $dialog.getByRole("combobox", { name: "Flow" }),
                 "Flow search adopts the newly created flow",
             ).toHaveValue(new RegExp(seed));
+        });
+
+        await test.step("Create the invitation", async () => {
+            await fill("Invitation Name", name, $dialog);
+
+            await click("Create Invitation", "button", $dialog);
+
+            await expect($successDialog, "Success modal opens").toBeVisible();
+
+            await $successDialog.getByRole("button", { name: "Close", exact: true }).click();
+        });
+    });
+
+    test("Create enrollment flow from the flow select after a search", async ({
+        page,
+        form,
+        pointer,
+    }, testInfo) => {
+        test.setTimeout(90_000);
+
+        const name = invitationNames.get(testInfo.testId)!;
+        const seed = name.replace("invite-", "");
+        const { fill } = form;
+        const { click } = pointer;
+
+        const $dialog = page.getByRole("dialog", { name: "New Invitation" });
+        const $flowDialog = page.getByRole("dialog", { name: "New Enrollment Flow" });
+        const $successDialog = page.getByRole("dialog", { name: "Invitation Details" });
+        const $flowSearch = $dialog.locator('ak-search-select[name="flow"]');
+        const $flowInput = $flowSearch.getByRole("combobox");
+
+        await test.step("Open the invitation form", async () => {
+            await click("New Invitation", "button");
+
+            await expect($dialog, "Form opens").toBeVisible();
+        });
+
+        await test.step("Search for a flow that does not exist", async () => {
+            await $flowInput.click();
+            await $flowInput.fill(`no-such-flow-${seed}`);
+        });
+
+        await test.step("Open the stacked enrollment flow form from the action", async () => {
+            await $flowSearch.getByRole("option", { name: /Create a new enrollment flow/ }).click();
+
+            await expect($flowDialog, "Enrollment flow form opens on top").toBeVisible();
+        });
+
+        await test.step("Create the enrollment flow and invitation stage", async () => {
+            await fill("Flow Name", `Invite Flow ${seed}`, $flowDialog);
+            await fill("Flow Slug", `invite-flow-${seed}`, $flowDialog);
+            await fill("Invitation Stage Name", `invite-stage-${seed}`, $flowDialog);
+
+            await click("Create Enrollment Flow", "button", $flowDialog);
+
+            await expect($flowDialog, "Flow form closes after creation").toBeHidden({
+                timeout: 20_000,
+            });
+        });
+
+        await test.step("The newly created flow is selected by name", async () => {
+            await expect(
+                $flowInput,
+                "Flow search shows the new flow's label, not the stale search text or a UUID",
+            ).toHaveValue(new RegExp(seed));
+
+            await expect(
+                $flowInput,
+                "Flow search does not show the stale search text",
+            ).not.toHaveValue(/no-such-flow/);
         });
 
         await test.step("Create the invitation", async () => {

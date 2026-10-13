@@ -39,8 +39,6 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
 
     def disconnect(self, request: HttpRequest):
         super().disconnect(request)
-        if not self.enabled:
-            return
         if not hasattr(request, "request_id"):
             return
         post_init.disconnect(dispatch_uid=request.request_id)
@@ -83,6 +81,8 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
 
     def post_init_handler(self, request: HttpRequest, sender, instance: Model, **_):
         """post_init django model handler"""
+        if not self.is_current_request(request):
+            return
         if not should_log_model(instance):
             return
         if hasattr(instance, "_previous_state"):
@@ -103,6 +103,8 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
         update_fields: list[str] | None = None,
         **_,
     ):
+        if not self.is_current_request(request):
+            return
         if not self.enabled:
             return super().post_save_handler(request, sender, instance, created, thread_kwargs, **_)
         if not should_log_model(instance):
@@ -128,6 +130,8 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
         thread_kwargs: dict | None = None,
         **_,
     ):
+        if not self.is_current_request(request):
+            return
         thread_kwargs = {}
         m2m_field = None
         if not self.enabled:

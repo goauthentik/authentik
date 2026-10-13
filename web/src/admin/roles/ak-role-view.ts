@@ -19,8 +19,8 @@ import { EVENT_REFRESH } from "#common/constants";
 import { AKElement } from "#elements/Base";
 import { modalInvoker } from "#elements/dialogs";
 import { WithLicenseSummary } from "#elements/mixins/license";
+import { setPageDetails } from "#elements/router/meta";
 
-import { setPageDetails } from "#components/ak-page-navbar";
 import { renderDescriptionList } from "#components/DescriptionList";
 
 import { RoleForm } from "#admin/roles/ak-role-form";

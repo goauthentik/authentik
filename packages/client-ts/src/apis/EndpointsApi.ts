@@ -552,6 +552,10 @@ export interface EndpointsDeviceBindingsUsedByListRequest {
     policyBindingUuid: string;
 }
 
+export interface EndpointsDevicesCreateRequest {
+    endpointDeviceRequest: EndpointDeviceRequest;
+}
+
 export interface EndpointsDevicesDestroyRequest {
     /**
      * A UUID string identifying this Device.
@@ -4149,6 +4153,71 @@ export class EndpointsApi extends runtime.BaseAPI {
             requestParameters,
             initOverrides,
         );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for endpointsDevicesCreate without sending the request
+     */
+    async endpointsDevicesCreateRequestOpts(
+        requestParameters: EndpointsDevicesCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["endpointDeviceRequest"] == null) {
+            throw new runtime.RequiredError(
+                "endpointDeviceRequest",
+                'Required parameter "endpointDeviceRequest" was null or undefined when calling endpointsDevicesCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/endpoints/devices/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: EndpointDeviceRequestToJSON(requestParameters["endpointDeviceRequest"]),
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async endpointsDevicesCreateRaw(
+        requestParameters: EndpointsDevicesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<EndpointDevice>> {
+        const requestOptions = await this.endpointsDevicesCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            EndpointDeviceFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async endpointsDevicesCreate(
+        requestParameters: EndpointsDevicesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<EndpointDevice> {
+        const response = await this.endpointsDevicesCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

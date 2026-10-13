@@ -11,6 +11,7 @@ import xmlsec
 from django.core.cache import cache
 from django.core.exceptions import SuspiciousOperation
 from django.http import HttpRequest
+from django.urls import reverse
 from django.utils.timezone import now
 from lxml import etree  # nosec
 from lxml.etree import _Element  # nosec
@@ -44,6 +45,7 @@ from authentik.sources.saml.exceptions import (
     InvalidEncryption,
     InvalidSignature,
     InvalidTime,
+    MismatchedAudience,
     MismatchedBinding,
     MismatchedRequestID,
     MissingSAMLResponse,
@@ -158,6 +160,24 @@ class ResponseProcessor:
         if on_or_after:
             if datetime.fromisoformat(on_or_after).replace(tzinfo=UTC) < _now:
                 raise InvalidTime()
+        self._verify_audience(conditions)
+
+    def _verify_audience(self, conditions: _Element):
+        """Verify that our entity ID is listed as an audience of the assertion. Each
+        AudienceRestriction is evaluated independently and must contain a matching Audience."""
+        entity_id = self._source.get_issuer(self._http_request)
+        for restriction in conditions.findall(f"{{{NS_SAML_ASSERTION}}}AudienceRestriction"):
+            audiences = [
+                get_element_text(audience).strip()
+                for audience in restriction.findall(f"{{{NS_SAML_ASSERTION}}}Audience")
+            ]
+            if entity_id not in audiences:
+                LOGGER.warning(
+                    "Assertion audience does not match source entity ID",
+                    entity_id=entity_id,
+                    audiences=audiences,
+                )
+                raise MismatchedAudience()
 
     def _verify_signature(self, signature_node: _Element, target: _Element):
         """Verify a single signature node against the given target element."""
@@ -256,7 +276,9 @@ class ResponseProcessor:
         destination = self._root.attrib.get("Destination")
         if not destination:
             return
-        acs_url = self._source.build_full_url(self._http_request)
+        acs_url = self._http_request.build_absolute_uri(
+            reverse("authentik_sources_saml:acs", kwargs={"source_slug": self._source.slug})
+        )
         if destination.lower() != acs_url.lower():
             LOGGER.warning(
                 "Destination of Response does not match ACS URL",
@@ -286,7 +308,9 @@ class ResponseProcessor:
         """Check one SubjectConfirmationData"""
         recipient = data.attrib.get("Recipient")
         if recipient:
-            acs_url = self._source.build_full_url(self._http_request)
+            acs_url = self._http_request.build_absolute_uri(
+                reverse("authentik_sources_saml:acs", kwargs={"source_slug": self._source.slug})
+            )
             if recipient.lower() != acs_url.lower():
                 LOGGER.warning(
                     "Recipient of assertion does not match ACS URL",

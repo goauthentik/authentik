@@ -108,6 +108,7 @@ make lint-fix          # Auto-fix: black + ruff (Python) and rustfmt (Rust)
 make lint              # Check: bandit, mypy --strict, golangci-lint, cargo deny/machete
 make lint-spellcheck   # cspell across the repo (typo-only mode: reports known misspellings and forbidden British spellings, not unknown words)
 make lint-catalogs     # pnpm catalog pins in sync across the root/web/website workspaces
+make lint-locales      # translation files + generated locale lists match locales.yaml (`make gen-locales` regenerates)
 ```
 
 CI mirrors these as `ci-lint-*` / `ci-test` targets. Run the matching `make lint` / `make test` (plus `make web` / `make docs` for those subtrees) before pushing — CI runs the same checks.

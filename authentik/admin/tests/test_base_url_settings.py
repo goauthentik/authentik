@@ -60,17 +60,18 @@ class TestBaseURLSettings(APITestCase):
         self.assertEqual(self.settings.avatars, "initials")
         self.assertEqual(self.settings.base_url, "https://auth.svr001")
 
-    def test_settings_accepts_empty(self):
-        """The field can be cleared, which means no base URL is configured"""
+    def test_settings_rejects_empty(self):
+        """The field cannot be cleared, a base URL is required"""
         self.settings.base_url = "https://auth.svr001"
         self.settings.save()
         response = self.client.patch(
             reverse("authentik_api:system_settings"),
             data={"base_url": ""},
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(response.content, {"base_url": ["This field may not be blank."]})
         self.settings.refresh_from_db()
-        self.assertEqual(self.settings.base_url, "")
+        self.assertEqual(self.settings.base_url, "https://auth.svr001")
 
     def test_settings_normalizes_trailing_slash(self):
         """A trailing slash is stripped when saving through the settings API"""

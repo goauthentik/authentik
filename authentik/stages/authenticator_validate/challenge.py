@@ -145,7 +145,10 @@ def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Dev
     """Validate code-based challenges. We test against every device, on purpose, as
     the user mustn't choose between totp and static devices."""
 
-    with transaction.atomic():
+    # audit_ignore decorator to prevent them being logged during authentication,
+    # and to send them via SSF
+
+    with transaction.atomic(), audit_ignore():
         for device in devices_for_user(user, for_verify=True):
             if isinstance(device, ThrottlingMixin):
                 throttling_factor = stage_view.executor.current_stage.get_throttling_factor(
