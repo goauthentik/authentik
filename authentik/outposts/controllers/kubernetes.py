@@ -36,8 +36,12 @@ class KubernetesClient(ApiClient, BaseClient):
         try:
             if connection.local:
                 load_incluster_config(client_configuration=config)
+            elif not connection.kubeconfig_ref:
+                raise ServiceConnectionInvalid("No kubeconfig configured")
             else:
-                load_kube_config_from_dict(connection.kubeconfig, client_configuration=config)
+                load_kube_config_from_dict(
+                    connection.kubeconfig_ref.get_json(), client_configuration=config
+                )
             config.verify_ssl = connection.verify_ssl
             super().__init__(config)
         except ConfigException as exc:
