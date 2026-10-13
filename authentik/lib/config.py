@@ -158,7 +158,10 @@ class ConfigLoader:
         """Recursively update dictionary"""
         for key, raw_value in updatee.items():
             if isinstance(raw_value, Mapping):
-                root[key] = self.update(root.get(key, {}), raw_value)
+                existing = root.get(key, {})
+                if isinstance(existing, Attr) and isinstance(existing.value, dict):
+                    existing = existing.value
+                root[key] = self.update(existing, raw_value)
             else:
                 if isinstance(raw_value, str):
                     value = self.parse_uri(raw_value)
@@ -173,7 +176,9 @@ class ConfigLoader:
 
     def refresh(self, key: str, default=None, sep=".") -> Any:
         """Update a single value"""
-        attr: Attr = get_path_from_dict(self.raw, key, sep=sep, default=Attr(default))
+        attr = get_path_from_dict(self.raw, key, sep=sep, default=Attr(default))
+        if not isinstance(attr, Attr):
+            return attr
         if attr.source_type != Attr.Source.URI:
             return attr.value
         attr.value = self.parse_uri(attr.source).value
@@ -258,8 +263,10 @@ class ConfigLoader:
         # Walk sub_dicts before parsing path
         root = self.raw
         # Walk each component of the path
-        attr: Attr = get_path_from_dict(root, path, sep=sep, default=Attr(default))
-        return attr.value
+        attr = get_path_from_dict(root, path, sep=sep, default=Attr(default))
+        if isinstance(attr, Attr):
+            return attr.value
+        return attr
 
     def get_int(self, path: str, default=0) -> int:
         """Wrapper for get that converts value into int"""
@@ -292,8 +299,12 @@ class ConfigLoader:
     def get_keys(self, path: str, sep=".") -> list[str]:
         """List attribute keys by using yaml path"""
         root = self.raw
-        attr: Attr = get_path_from_dict(root, path, sep=sep, default=Attr({}))
-        return attr.keys()
+        attr = get_path_from_dict(root, path, sep=sep, default=Attr({}))
+        if isinstance(attr, Attr) and isinstance(attr.value, dict):
+            return list(attr.value.keys())
+        if isinstance(attr, dict):
+            return list(attr.keys())
+        return []
 
     def get_dict_from_b64_json(self, path: str, default=None) -> dict:
         """Wrapper for get that converts value from Base64 encoded string into dictionary"""
