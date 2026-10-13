@@ -328,7 +328,7 @@ class Prompt(SerializerModel):
                         value = choice.get("value", "")
                     kwargs["choices"].append((value, label))
 
-        if default:
+        if default is not None:
             kwargs["default"] = default
         # May not set both `required` and `default`
         if "default" in kwargs:
