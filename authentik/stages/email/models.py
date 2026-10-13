@@ -79,7 +79,17 @@ class EmailStage(Stage):
     host = models.TextField(default="localhost")
     port = models.IntegerField(default=25)
     username = models.TextField(default="", blank=True)
+    # Legacy column, kept for downgrades. Remove in 2027.2.
     password = models.TextField(default="", blank=True)
+    password_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("SMTP password"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="email_stages",
+    )
     use_tls = models.BooleanField(default=False)
     use_ssl = models.BooleanField(default=False)
     timeout = models.IntegerField(default=10)
@@ -147,7 +157,7 @@ class EmailStage(Stage):
             host=self.host,
             port=self.port,
             username=self.username,
-            password=self.password,
+            password=self.password_ref.secret_value if self.password_ref else "",
             use_tls=self.use_tls,
             use_ssl=self.use_ssl,
             timeout=self.timeout,
