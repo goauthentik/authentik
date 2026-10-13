@@ -9062,10 +9062,10 @@
                     "minLength": 1,
                     "title": "Delegated subject"
                 },
-                "credentials": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "Credentials"
+                "credentials_ref": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Google credentials"
                 },
                 "scopes": {
                     "type": "string",
@@ -9238,10 +9238,10 @@
                     "minLength": 1,
                     "title": "Client id"
                 },
-                "client_secret": {
+                "client_secret_ref": {
                     "type": "string",
-                    "minLength": 1,
-                    "title": "Client secret"
+                    "format": "uuid",
+                    "title": "Client Secret"
                 },
                 "tenant_id": {
                     "type": "string",

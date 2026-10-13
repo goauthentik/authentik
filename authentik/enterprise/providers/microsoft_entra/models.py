@@ -79,7 +79,16 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
     """Sync users from authentik into Microsoft Entra."""
 
     client_id = models.TextField()
+    # Legacy column, kept for downgrades. Remove in 2027.2.
     client_secret = models.TextField()
+    client_secret_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Client Secret"),
+        on_delete=models.PROTECT,
+        null=True,
+        default=None,
+        related_name="microsoft_entra_providers",
+    )
     tenant_id = models.TextField()
 
     exclude_users_service_account = models.BooleanField(default=False)
@@ -157,7 +166,7 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
     def microsoft_credentials(self):
         return {
             "credentials": ClientSecretCredential(
-                self.tenant_id, self.client_id, self.client_secret
+                self.tenant_id, self.client_id, self.client_secret_ref.secret_value
             )
         }
 

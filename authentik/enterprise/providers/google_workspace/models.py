@@ -88,7 +88,16 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
     """Sync users from authentik into Google Workspace."""
 
     delegated_subject = models.EmailField()
-    credentials = models.JSONField()
+    # Legacy column, kept for downgrades. Remove in 2027.2.
+    credentials = models.JSONField(default=dict)
+    credentials_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Google credentials"),
+        on_delete=models.PROTECT,
+        null=True,
+        default=None,
+        related_name="google_workspace_providers",
+    )
     scopes = models.TextField(default=",".join(default_scopes()))
 
     default_group_email_domain = models.TextField()
@@ -168,7 +177,7 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
     def google_credentials(self):
         return {
             "credentials": Credentials.from_service_account_info(
-                self.credentials, scopes=self.scopes.split(",")
+                self.credentials_ref.get_json(), scopes=self.scopes.split(",")
             ).with_subject(self.delegated_subject),
         }
 
