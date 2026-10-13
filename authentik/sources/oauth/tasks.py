@@ -1,15 +1,15 @@
 """OAuth Source tasks"""
 
-from json import dumps
+lazy from json import dumps
 
-from django.utils.translation import gettext_lazy as _
-from dramatiq.actor import actor
-from requests import RequestException
-from structlog.stdlib import get_logger
+lazy from django.utils.translation import gettext_lazy as _
+lazy from dramatiq.actor import actor
+lazy from requests import RequestException
+lazy from structlog.stdlib import get_logger
 
-from authentik.lib.utils.http import get_http_session
-from authentik.sources.oauth.models import OAuthSource
-from authentik.tasks.middleware import CurrentTask
+lazy from authentik.lib.utils.http import get_http_session
+lazy from authentik.sources.oauth.models import OAuthSource
+lazy from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 

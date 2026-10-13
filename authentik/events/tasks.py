@@ -1,24 +1,24 @@
 """Event notification tasks"""
 
-from uuid import UUID
+lazy from uuid import UUID
 
-from django.db.models.query_utils import Q
-from django.utils.translation import gettext_lazy as _
-from dramatiq.actor import actor
-from guardian.shortcuts import get_anonymous_user
-from structlog.stdlib import get_logger
+lazy from django.db.models.query_utils import Q
+lazy from django.utils.translation import gettext_lazy as _
+lazy from dramatiq.actor import actor
+lazy from guardian.shortcuts import get_anonymous_user
+lazy from structlog.stdlib import get_logger
 
-from authentik.core.models import User
-from authentik.events.models import (
+lazy from authentik.core.models import User
+lazy from authentik.events.models import (
     Event,
     Notification,
     NotificationRule,
     NotificationTransport,
 )
-from authentik.lib.utils.db import chunked_queryset
-from authentik.policies.engine import PolicyEngine
-from authentik.policies.models import PolicyBinding, PolicyEngineMode
-from authentik.tasks.middleware import CurrentTask
+lazy from authentik.lib.utils.db import chunked_queryset
+lazy from authentik.policies.engine import PolicyEngine
+lazy from authentik.policies.models import PolicyBinding, PolicyEngineMode
+lazy from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 

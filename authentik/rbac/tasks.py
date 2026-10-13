@@ -1,10 +1,10 @@
 """authentik RBAC tasks"""
 
-from django.utils.translation import gettext_lazy as _
-from dramatiq import actor
-from guardian.utils import clean_orphan_obj_perms
+lazy from django.utils.translation import gettext_lazy as _
+lazy from dramatiq import actor
+lazy from guardian.utils import clean_orphan_obj_perms
 
-from authentik.tasks.middleware import CurrentTask
+lazy from authentik.tasks.middleware import CurrentTask
 
 ORPHANED_PERMISSIONS_BATCH_SIZE = 1000
 ORPHANED_PERMISSIONS_MAX_DURATION = 60 * 30

@@ -1,13 +1,13 @@
-from django.db.models.aggregates import Count
-from django.utils.translation import gettext_lazy as _
-from dramatiq.actor import actor
-from structlog import get_logger
+lazy from django.db.models.aggregates import Count
+lazy from django.utils.translation import gettext_lazy as _
+lazy from dramatiq.actor import actor
+lazy from structlog import get_logger
 
-from authentik.enterprise.policies.unique_password.models import (
+lazy from authentik.enterprise.policies.unique_password.models import (
     UniquePasswordPolicy,
     UserPasswordHistory,
 )
-from authentik.tasks.middleware import CurrentTask
+lazy from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 

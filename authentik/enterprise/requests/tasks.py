@@ -1,12 +1,17 @@
 """PAM access-request notification tasks"""
 
-from uuid import UUID
+lazy from uuid import UUID
 
-from django.utils.translation import gettext_lazy as _
-from dramatiq.actor import actor
+lazy from django.utils.translation import gettext_lazy as _
+lazy from dramatiq.actor import actor
 
-from authentik.core.models import User
-from authentik.events.models import Event, Notification, NotificationSeverity, NotificationTransport
+lazy from authentik.core.models import User
+lazy from authentik.events.models import (
+    Event,
+    Notification,
+    NotificationSeverity,
+    NotificationTransport,
+)
 
 
 @actor(description=_("Send access-request review notification."))

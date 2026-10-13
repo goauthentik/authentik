@@ -1,33 +1,33 @@
 """LDAP Sync tasks"""
 
-from uuid import uuid4
+lazy from uuid import uuid4
 
-from django.core.cache import cache
-from django.utils.translation import gettext_lazy as _
-from dramatiq.actor import actor
-from dramatiq.composition import group
-from dramatiq.message import Message
-from ldap3.core.exceptions import LDAPException
-from structlog.stdlib import get_logger
+lazy from django.core.cache import cache
+lazy from django.utils.translation import gettext_lazy as _
+lazy from dramatiq.actor import actor
+lazy from dramatiq.composition import group
+lazy from dramatiq.message import Message
+lazy from ldap3.core.exceptions import LDAPException
+lazy from structlog.stdlib import get_logger
 
-from authentik.lib.config import CONFIG
-from authentik.lib.sync.incoming.models import SyncOutgoingTriggerMode
-from authentik.lib.sync.outgoing.exceptions import StopSync
-from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
-from authentik.lib.sync.outgoing.signals import sync_outgoing_inhibit_dispatch
-from authentik.lib.utils.reflection import all_subclasses, class_to_path, path_to_class
-from authentik.sources.ldap.models import LDAPSource
-from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
-from authentik.sources.ldap.sync.forward_delete_groups import GroupLDAPForwardDeletion
-from authentik.sources.ldap.sync.forward_delete_users import UserLDAPForwardDeletion
-from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
-from authentik.sources.ldap.sync.membership import (
+lazy from authentik.lib.config import CONFIG
+lazy from authentik.lib.sync.incoming.models import SyncOutgoingTriggerMode
+lazy from authentik.lib.sync.outgoing.exceptions import StopSync
+lazy from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
+lazy from authentik.lib.sync.outgoing.signals import sync_outgoing_inhibit_dispatch
+lazy from authentik.lib.utils.reflection import all_subclasses, class_to_path, path_to_class
+lazy from authentik.sources.ldap.models import LDAPSource
+lazy from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
+lazy from authentik.sources.ldap.sync.forward_delete_groups import GroupLDAPForwardDeletion
+lazy from authentik.sources.ldap.sync.forward_delete_users import UserLDAPForwardDeletion
+lazy from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
+lazy from authentik.sources.ldap.sync.membership import (
     GroupHierarchyLDAPSynchronizer,
     MembershipLDAPSynchronizer,
 )
-from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
-from authentik.tasks.middleware import CurrentTask
-from authentik.tasks.models import Task
+lazy from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
+lazy from authentik.tasks.middleware import CurrentTask
+lazy from authentik.tasks.models import Task
 
 LOGGER = get_logger()
 SYNC_CLASSES: list[type[BaseLDAPSynchronizer]] = [

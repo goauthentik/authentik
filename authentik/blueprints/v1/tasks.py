@@ -1,45 +1,49 @@
 """v1 blueprints tasks"""
 
-from dataclasses import asdict, dataclass, field
-from hashlib import sha512
-from pathlib import Path
-from sys import platform
-from uuid import UUID
+lazy from dataclasses import asdict, dataclass, field
+lazy from hashlib import sha512
+lazy from pathlib import Path
+lazy from sys import platform
+lazy from uuid import UUID
 
-from dacite.core import from_dict
-from django.conf import settings
-from django.db import DatabaseError, InternalError, ProgrammingError
-from django.utils.text import slugify
-from django.utils.timezone import now
-from django.utils.translation import gettext_lazy as _
-from dramatiq.actor import actor
-from dramatiq.middleware import Middleware
-from structlog.stdlib import get_logger
-from watchdog.events import (
+lazy from dacite.core import from_dict
+lazy from django.conf import settings
+lazy from django.db import DatabaseError, InternalError, ProgrammingError
+lazy from django.utils.text import slugify
+lazy from django.utils.timezone import now
+lazy from django.utils.translation import gettext_lazy as _
+lazy from dramatiq.actor import actor
+lazy from dramatiq.middleware import Middleware
+lazy from structlog.stdlib import get_logger
+lazy from watchdog.events import (
     FileCreatedEvent,
     FileModifiedEvent,
     FileSystemEvent,
     FileSystemEventHandler,
 )
-from watchdog.observers import Observer
-from yaml import load
-from yaml.error import YAMLError
+lazy from watchdog.observers import Observer
+lazy from yaml import load
+lazy from yaml.error import YAMLError
 
-from authentik.blueprints.models import (
+lazy from authentik.blueprints.models import (
     BlueprintInstance,
     BlueprintInstanceStatus,
     BlueprintRetrievalFailed,
 )
-from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata, EntryInvalidError
-from authentik.blueprints.v1.importer import Importer
-from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_INSTANTIATE
-from authentik.blueprints.v1.oci import OCI_PREFIX
-from authentik.events.logs import capture_logs
-from authentik.events.utils import sanitize_dict
-from authentik.lib.config import CONFIG
-from authentik.tasks.apps import PRIORITY_HIGH
-from authentik.tasks.middleware import CurrentTask
-from authentik.tasks.schedules.models import Schedule
+lazy from authentik.blueprints.v1.common import (
+    BlueprintLoader,
+    BlueprintMetadata,
+    EntryInvalidError,
+)
+lazy from authentik.blueprints.v1.importer import Importer
+lazy from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_INSTANTIATE
+lazy from authentik.blueprints.v1.oci import OCI_PREFIX
+lazy from authentik.events.logs import capture_logs
+lazy from authentik.events.utils import sanitize_dict
+lazy from authentik.lib.config import CONFIG
+lazy from authentik.tasks.apps import PRIORITY_HIGH
+lazy from authentik.tasks.middleware import CurrentTask
+lazy from authentik.tasks.schedules.models import Schedule
 
 LOGGER = get_logger()
 

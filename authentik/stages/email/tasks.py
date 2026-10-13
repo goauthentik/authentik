@@ -1,22 +1,22 @@
 """email stage tasks"""
 
-from email.utils import make_msgid
-from typing import Any
+lazy from email.utils import make_msgid
+lazy from typing import Any
 
-from django.core.mail import EmailMultiAlternatives
-from django.core.mail.utils import DNS_NAME
-from django.utils.text import slugify
-from django.utils.translation import gettext_lazy as _
-from dramatiq.actor import actor
-from dramatiq.composition import group
-from structlog.stdlib import get_logger
+lazy from django.core.mail import EmailMultiAlternatives
+lazy from django.core.mail.utils import DNS_NAME
+lazy from django.utils.text import slugify
+lazy from django.utils.translation import gettext_lazy as _
+lazy from dramatiq.actor import actor
+lazy from dramatiq.composition import group
+lazy from structlog.stdlib import get_logger
 
-from authentik.events.models import Event, EventAction
-from authentik.lib.utils.reflection import class_to_path, path_to_class
-from authentik.stages.authenticator_email.models import AuthenticatorEmailStage
-from authentik.stages.email.models import EmailStage
-from authentik.stages.email.utils import logo_data
-from authentik.tasks.middleware import CurrentTask
+lazy from authentik.events.models import Event, EventAction
+lazy from authentik.lib.utils.reflection import class_to_path, path_to_class
+lazy from authentik.stages.authenticator_email.models import AuthenticatorEmailStage
+lazy from authentik.stages.email.models import EmailStage
+lazy from authentik.stages.email.utils import logo_data
+lazy from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 

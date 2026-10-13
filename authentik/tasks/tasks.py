@@ -1,8 +1,8 @@
-from django.utils.timezone import now, timedelta
-from django.utils.translation import gettext_lazy as _
-from dramatiq import actor
+lazy from django.utils.timezone import now, timedelta
+lazy from django.utils.translation import gettext_lazy as _
+lazy from dramatiq import actor
 
-from authentik.tasks.models import WorkerStatus
+lazy from authentik.tasks.models import WorkerStatus
 
 
 @actor(description=_("Remove old worker statuses."))

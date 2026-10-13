@@ -1,20 +1,20 @@
 """MDS Helpers"""
 
-from functools import lru_cache
-from json import loads
-from pathlib import Path
+lazy from functools import lru_cache
+lazy from json import loads
+lazy from pathlib import Path
 
-from django.core.cache import cache
-from django.db.transaction import atomic
-from django.utils.translation import gettext_lazy as _
-from dramatiq.actor import actor
-from fido2.mds3 import filter_revoked, parse_blob
+lazy from django.core.cache import cache
+lazy from django.db.transaction import atomic
+lazy from django.utils.translation import gettext_lazy as _
+lazy from dramatiq.actor import actor
+lazy from fido2.mds3 import filter_revoked, parse_blob
 
-from authentik.stages.authenticator_webauthn.models import (
+lazy from authentik.stages.authenticator_webauthn.models import (
     UNKNOWN_DEVICE_TYPE_AAGUID,
     WebAuthnDeviceType,
 )
-from authentik.tasks.middleware import CurrentTask
+lazy from authentik.tasks.middleware import CurrentTask
 
 CACHE_KEY_MDS_NO = "goauthentik.io/stages/authenticator_webauthn/mds_no"
 AAGUID_BLOB_PATH = Path(__file__).parent / "mds" / "aaguid.json"

@@ -1,16 +1,16 @@
-from django.core.paginator import Paginator
-from django.db.models import Model, QuerySet
-from django.db.models.query import Q
-from dramatiq.actor import Actor
-from dramatiq.composition import group
-from dramatiq.errors import Retry
-from structlog.stdlib import BoundLogger, get_logger
+lazy from django.core.paginator import Paginator
+lazy from django.db.models import Model, QuerySet
+lazy from django.db.models.query import Q
+lazy from dramatiq.actor import Actor
+lazy from dramatiq.composition import group
+lazy from dramatiq.errors import Retry
+lazy from structlog.stdlib import BoundLogger, get_logger
 
-from authentik.core.expression.exceptions import SkipObjectException
-from authentik.core.models import Group, User
-from authentik.events.utils import sanitize_item
-from authentik.lib.sync.outgoing.base import Direction
-from authentik.lib.sync.outgoing.exceptions import (
+lazy from authentik.core.expression.exceptions import SkipObjectException
+lazy from authentik.core.models import Group, User
+lazy from authentik.events.utils import sanitize_item
+lazy from authentik.lib.sync.outgoing.base import Direction
+lazy from authentik.lib.sync.outgoing.exceptions import (
     BadRequestSyncException,
     DryRunRejected,
     NotFoundSyncException,
@@ -18,12 +18,12 @@ from authentik.lib.sync.outgoing.exceptions import (
     StopSync,
     TransientSyncException,
 )
-from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
-from authentik.lib.utils.errors import exception_to_dict
-from authentik.lib.utils.reflection import class_to_path, path_to_class
-from authentik.lib.utils.time import timedelta_from_string
-from authentik.tasks.middleware import CurrentTask
-from authentik.tasks.models import Task
+lazy from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
+lazy from authentik.lib.utils.errors import exception_to_dict
+lazy from authentik.lib.utils.reflection import class_to_path, path_to_class
+lazy from authentik.lib.utils.time import timedelta_from_string
+lazy from authentik.tasks.middleware import CurrentTask
+lazy from authentik.tasks.models import Task
 
 
 class SyncTasks:

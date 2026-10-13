@@ -1,16 +1,16 @@
-from typing import Any
-from uuid import UUID
+lazy from typing import Any
+lazy from uuid import UUID
 
-from django.http import HttpRequest
-from django.utils.timezone import now
-from django.utils.translation import gettext_lazy as _
-from dramatiq.actor import actor
-from requests.exceptions import RequestException
-from structlog.stdlib import get_logger
+lazy from django.http import HttpRequest
+lazy from django.utils.timezone import now
+lazy from django.utils.translation import gettext_lazy as _
+lazy from dramatiq.actor import actor
+lazy from requests.exceptions import RequestException
+lazy from structlog.stdlib import get_logger
 
-from authentik.core.apps import AppAccessWithoutBindings
-from authentik.core.models import User
-from authentik.enterprise.providers.ssf.models import (
+lazy from authentik.core.apps import AppAccessWithoutBindings
+lazy from authentik.core.models import User
+lazy from authentik.enterprise.providers.ssf.models import (
     DeliveryMethods,
     EventTypes,
     SSFEventStatus,
@@ -18,10 +18,10 @@ from authentik.enterprise.providers.ssf.models import (
     StreamEvent,
     StreamStatus,
 )
-from authentik.lib.utils.http import get_http_session
-from authentik.lib.utils.time import timedelta_from_string
-from authentik.policies.engine import PolicyEngine
-from authentik.tasks.middleware import CurrentTask
+lazy from authentik.lib.utils.http import get_http_session
+lazy from authentik.lib.utils.time import timedelta_from_string
+lazy from authentik.policies.engine import PolicyEngine
+lazy from authentik.tasks.middleware import CurrentTask
 
 session = get_http_session()
 LOGGER = get_logger()
