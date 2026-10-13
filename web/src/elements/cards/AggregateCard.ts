@@ -76,7 +76,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
      * @attr
      */
     @property({ type: String, reflect: true })
-    public tone: StatusTone = "neutral";
+    public tone: StatusTone = "";
 
     public static styles: CSSResult[] = [
         PFCard,

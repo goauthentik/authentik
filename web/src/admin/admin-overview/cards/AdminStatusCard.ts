@@ -38,6 +38,8 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
     abstract getPrimaryValue(): Promise<T>;
     abstract getStatus(value: T): Promise<AdminStatus>;
 
+    override tone: StatusTone = "neutral";
+
     constructor() {
         super();
         // Proper binding for event handler
@@ -64,7 +66,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
             })
             .catch(async (error: unknown) => {
                 this.status = undefined;
-                this.tone = "";
+                this.tone = "danger";
                 this.error = await parseAPIResponseError(error);
             });
     }
@@ -87,7 +89,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
                 })
                 .catch(async (error: unknown) => {
                     this.status = undefined;
-                    this.tone = "";
+                    this.tone = "danger";
                     this.error = await parseAPIResponseError(error);
                 });
 
