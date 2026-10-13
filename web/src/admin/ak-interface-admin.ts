@@ -1,4 +1,3 @@
-import "#elements/banner/BaseURLBanner";
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
 import "#elements/sidebar/Sidebar";
@@ -8,9 +7,11 @@ import "#elements/commands/ak-command-palette";
 import "#elements/commands/ak-command-palette-user-modal";
 import "#components/notifications/APIDrawer";
 import "#components/notifications/NotificationDrawer";
+import "#components/ak-page-navbar";
 import {
     createAdminSidebarEnterpriseEntries,
     createAdminSidebarEntries,
+    findSidebarSectionByRoute,
     renderSidebarItems,
     SidebarEntry,
 } from "./navigation/sidebar.js";
@@ -38,10 +39,12 @@ import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithNotifications } from "#elements/mixins/notifications";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
 import {
+    currentInterfacePath,
     formatInterfacePrefix,
     toAdminInterface,
     toUserInterface,
 } from "#elements/router/core/interfaces";
+import { matchRoute } from "#elements/router/core/matcher";
 import { navigate, RouterNavigateEvent } from "#elements/router/core/navigation";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -63,6 +66,18 @@ import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { guard } from "lit/directives/guard.js";
+
+let lastRoutePath: string | null = null;
+let lastRouteName: string | null = null;
+
+function routeNameForPath(path: string): string | null {
+    if (path !== lastRoutePath) {
+        lastRoutePath = path;
+        lastRouteName = matchRoute(path, ROUTES)?.route.name ?? null;
+    }
+
+    return lastRouteName;
+}
 
 @customElement("ak-interface-admin")
 export class AdminInterface extends WithLicenseSummary(
@@ -124,7 +139,17 @@ export class AdminInterface extends WithLicenseSummary(
     // `popstate` (back/forward) rather than the legacy `ak-route-change` event.
     #routeChangeListener = () => {
         this.sidebarOpen = this.#sidebarMatcher.matches;
+        this.pathname = window.location.pathname;
     };
+
+    /**
+     * The current `location.pathname`, tracked so the navbar's section follows
+     * the route. Kept raw rather than interface-relative: this element upgrades
+     * before the entrypoint calls `initRouter`, so the prefix is only stripped at
+     * render time.
+     */
+    @state()
+    protected pathname = window.location.pathname;
 
     @state()
     protected drawer: DrawerState = readDrawerParams();
@@ -284,7 +309,12 @@ export class AdminInterface extends WithLicenseSummary(
         };
 
         return html`<div class="pf-c-page">
-                <ak-page-navbar>
+                <ak-page-navbar
+                    .section=${findSidebarSectionByRoute(
+                        this.navigationEntries,
+                        routeNameForPath(currentInterfacePath(this.pathname)),
+                    )}
+                >
                     <button
                         slot="toggle"
                         aria-controls="global-nav"
@@ -300,12 +330,11 @@ export class AdminInterface extends WithLicenseSummary(
 
                     ${this.renderCommandPaletteButton()}
                     <ak-version-banner></ak-version-banner>
-                    <ak-base-url-banner></ak-base-url-banner>
                     <ak-enterprise-status interface="admin"></ak-enterprise-status>
                 </ak-page-navbar>
 
                 <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}"
-                    >${renderSidebarItems(this.navigationEntries)}
+                    >${renderSidebarItems(this.navigationEntries, routeNameForPath)}
                 </ak-sidebar>
 
                 <div class="pf-c-page__drawer">

@@ -23,7 +23,7 @@ def timedelta_string_validator(value: str):
     """Validator for Django that checks if value can be parsed with `timedelta_from_string`"""
     try:
         timedelta_from_string(value)
-    except ValueError as exc:
+    except (ValueError, OverflowError) as exc:
         raise ValidationError(
             _("%(value)s is not in the correct format of 'hours=3;minutes=1'."),
             params={"value": value},

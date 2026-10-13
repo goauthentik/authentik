@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     env:
       NODE_ENV: production
     strategy:
@@ -33,7 +33,7 @@ jobs:
         run: |
           echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
           echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v4
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v4
         with:
           node-version-file: package.json
           cache: pnpm
@@ -47,7 +47,7 @@ jobs:
       - name: Lint
         run: pnpm --dir website run ${{ matrix.command }}
   build-docs:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     env:
       NODE_ENV: production
     steps:
@@ -57,7 +57,7 @@ jobs:
         run: |
           echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
           echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v4
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v4
         name: Setup Node.js
         with:
           node-version-file: package.json
@@ -72,7 +72,7 @@ jobs:
       - name: Build Documentation via Docusaurus
         run: pnpm --dir website run build
   build-integrations:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     env:
       NODE_ENV: production
     steps:
@@ -82,7 +82,7 @@ jobs:
         run: |
           echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
           echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v4
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v4
         with:
           node-version-file: package.json
           cache: pnpm
@@ -96,7 +96,7 @@ jobs:
       - name: Build Integrations via Docusaurus
         run: pnpm --dir website run build:integrations
   build-container:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       # Needed to upload container images to ghcr.io
       packages: write
@@ -141,7 +141,7 @@ jobs:
       - build-docs
       - build-integrations
       - build-container
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35 # release/v1
         with:

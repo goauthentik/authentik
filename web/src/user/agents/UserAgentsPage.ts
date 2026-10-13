@@ -6,6 +6,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
+import { setPageDetails } from "#elements/router/meta";
 import { SlottedTemplateResult } from "#elements/types";
 
 import Styles from "#user/user-settings/styles.css";
@@ -17,6 +18,12 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-user-agents-page")
 export class UserAgentsPage extends AKElement {
     static styles: CSSResult[] = [PFPage, PFContent, PFCard, Styles];
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+
+        setPageDetails({ header: msg("Agents", { id: "agent.verbose-name-plural.label" }) });
+    }
 
     protected override render(): SlottedTemplateResult {
         return html`<div class="pf-c-page">

@@ -42,7 +42,10 @@ test.describe("Applications", () => {
         await test.step("Create OAuth2 provider", async () => {
             await expect(providerDialog, "Provider dialog is initially closed").toBeHidden();
 
-            await page.getByRole("button", { name: "New Provider" }).click();
+            await page
+                .locator('[part="toolbar-secondary"]')
+                .getByRole("button", { name: "New Provider" })
+                .click();
 
             await expect(providerDialog, "Provider dialog opens").toBeVisible();
 
@@ -164,6 +167,11 @@ test.describe("Applications", () => {
         });
 
         await test.step("Step 4: Configure Bindings (skip)", async () => {
+            await expect(
+                wizardDialog.getByRole("heading", { name: /Configure Policy/ }),
+                "The bindings step is showing",
+            ).toBeVisible();
+
             await click("Next", "button", wizardDialog);
         });
 
@@ -183,6 +191,138 @@ test.describe("Applications", () => {
             const $app = await search(appName);
 
             await expect($app, "Application is visible in the table").toBeVisible();
+        });
+    });
+
+    test("Create application with a group binding via wizard", async ({
+        session,
+        form,
+        pointer,
+        page,
+    }, testInfo) => {
+        const providerName = providerNames.get(testInfo.testId)!;
+        const appName = `${providerName} App`;
+
+        const { fill, search, selectSearchValue } = form;
+        const { click } = pointer;
+
+        const wizardDialog = page.getByRole("dialog", { name: "New Application Wizard" });
+
+        await test.step("Authenticate", async () => {
+            await session.login({ to: "/if/admin/core/applications" });
+        });
+
+        await test.step("Configure the application and provider", async () => {
+            await click("New Application", "button");
+            await expect(wizardDialog, "Wizard opens").toBeVisible();
+
+            await fill(/^Application Name/, appName, wizardDialog);
+            await click("Next", "button", wizardDialog);
+
+            await click("OAuth2/OpenID Provider", "option", wizardDialog);
+            await click("Next", "button", wizardDialog);
+
+            await selectSearchValue(
+                "Authorization Flow",
+                /default-provider-authorization-explicit-consent/,
+                wizardDialog,
+            );
+
+            await click("Next", "button", wizardDialog);
+        });
+
+        await test.step("Bind a group", async () => {
+            await click("Bind policy/group/user", "button", wizardDialog);
+
+            await wizardDialog.getByRole("button", { name: "Group", exact: true }).click();
+
+            await selectSearchValue("Group", "authentik Admins", wizardDialog);
+
+            await click("Save Binding", "button", wizardDialog);
+
+            await expect(
+                wizardDialog.getByRole("row", { name: /authentik Admins/ }),
+                "The binding lists the chosen group",
+            ).toBeVisible();
+
+            await click("Next", "button", wizardDialog);
+        });
+
+        await test.step("Create the application", async () => {
+            await click("Create Application", "button", wizardDialog);
+
+            await expect(
+                wizardDialog.getByRole("heading", { name: "Your application has been saved" }),
+            ).toBeVisible();
+
+            await click("Finish", "button", wizardDialog);
+        });
+
+        await test.step("Verify application creation", async () => {
+            await expect(wizardDialog, "Wizard closes after submission").toBeHidden();
+
+            const $app = await search(appName);
+
+            await expect($app, "Application is visible in the table").toBeVisible();
+        });
+    });
+
+    test("Advance past the provider step while a default flow is still loading", async ({
+        session,
+        form,
+        pointer,
+        page,
+    }, testInfo) => {
+        const appName = `${providerNames.get(testInfo.testId)!} App`;
+
+        const { fill, selectSearchValue } = form;
+        const { click } = pointer;
+
+        const wizardDialog = page.getByRole("dialog", { name: "New Application Wizard" });
+
+        // Hold back the invalidation flows, so the required field's default is preselected
+        // only after Next is clicked. Validating before the field settles rejects the step.
+        let releaseInvalidationFlows!: () => void;
+
+        const invalidationFlowsHeld = new Promise<void>((resolve) => {
+            releaseInvalidationFlows = resolve;
+        });
+
+        await page.route(/\/flows\/instances\/\?.*designation=invalidation/, async (route) => {
+            await invalidationFlowsHeld;
+            await route.continue();
+        });
+
+        await test.step("Authenticate", async () => {
+            await session.login({ to: "/if/admin/core/applications" });
+        });
+
+        await test.step("Reach the provider step", async () => {
+            await click("New Application", "button");
+            await expect(wizardDialog, "Wizard opens").toBeVisible();
+
+            await fill(/^Application Name/, appName, wizardDialog);
+            await click("Next", "button", wizardDialog);
+
+            await click("OAuth2/OpenID Provider", "option", wizardDialog);
+            await click("Next", "button", wizardDialog);
+
+            await selectSearchValue(
+                "Authorization Flow",
+                /default-provider-authorization-explicit-consent/,
+                wizardDialog,
+            );
+        });
+
+        await test.step("Click Next before the invalidation flow has loaded", async () => {
+            await click("Next", "button", wizardDialog);
+
+            releaseInvalidationFlows();
+
+            await expect(
+                wizardDialog.getByRole("button", { name: "Bind policy/group/user" }),
+                "The wizard advances once the default invalidation flow is preselected",
+            ).toBeVisible();
         });
     });
 });

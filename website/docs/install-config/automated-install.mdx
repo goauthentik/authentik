@@ -9,6 +9,10 @@ To install authentik automatically (skipping the Out-of-box experience), you can
 These can't be defined using the file-based syntax (`file://`), so you can't pass them in as secrets in a Docker Compose installation.
 :::
 
+### `AUTHENTIK_WEB__BASE_URL`
+
+Configure the base URL under which authentik is reachable, for example `https://authentik.company`. This option is required for an automated install. Without it, the automated install fails. For details, see [`AUTHENTIK_WEB__BASE_URL`](./configuration/configuration.mdx#authentik_web__base_url).
+
 ### `AUTHENTIK_BOOTSTRAP_PASSWORD_HASH`
 
 Configure the default password for the `akadmin` user using a pre-hashed Django password value. Only read on the first startup.
@@ -82,10 +86,12 @@ Set the email address for the default `akadmin` user.
 
 ## Kubernetes
 
-In the Helm values, set the `akadmin` user password hash and token:
+In the Helm values, set the base URL and the `akadmin` user password hash and token:
 
 ```yaml
 authentik:
+    web:
+        base_url: "https://authentik.company"
     bootstrap_password_hash: "pbkdf2_sha256$1000000$xKKFuYtJEE27km09BD49x2$4+Z6j3utmouPF5mik0Z21L2P0og5IlmMmIJ46Tj3zCM="
     bootstrap_token: "your-token-here"
     bootstrap_email: "admin@authentik.company"
