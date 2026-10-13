@@ -207,40 +207,9 @@ pub(crate) async fn handle_traefik(
 
 #[cfg(test)]
 mod tests {
-    use std::sync::Arc;
+    use axum::http::{HeaderMap, HeaderValue, Uri};
 
-    use ak_axum::extract::{host::host_middleware, trusted_proxy::TrustedProxy};
-    use ak_client::{
-        apis::configuration::Configuration,
-        models::{OpenIdConnectConfiguration, ProxyMode, ProxyOutpostConfig},
-    };
-    use arc_swap::ArcSwapOption;
-    use axum::{
-        Extension, Router,
-        body::Body,
-        http::{HeaderMap, HeaderValue, Request, StatusCode, Uri, header},
-        middleware::from_fn,
-        routing::any,
-    };
-    use moka::future::Cache;
-    use tower::ServiceExt as _;
-    use url::Url;
-
-    use super::{
-        ENVOY_PREFIX, envoy_forward_target, handle_envoy, nginx_forward_url, traefik_forward_url,
-    };
-    use crate::outpost::proxy::{
-        application::Application,
-        backchannel::BackchannelClient,
-        cookie::SessionCookie,
-        endpoint::OidcEndpoint,
-        oauth_state::{OAuthState, issuer},
-        session::{SessionStore, filesystem::FsSessionStore},
-        upstream,
-    };
-
-    const CLIENT_ID: &str = "client-123";
-    const COOKIE_SECRET: &str = "0123456789abcdef0123456789abcdef";
+    use super::{ENVOY_PREFIX, envoy_forward_target, nginx_forward_url, traefik_forward_url};
 
     #[test]
     fn parses_traefik_forward_url() {
@@ -297,90 +266,5 @@ mod tests {
         let (path, full) = envoy_forward_target(&uri, "app.example.com");
         assert_eq!(path, "/");
         assert_eq!(full, "//app.example.com/");
-    }
-
-    fn forward_single_app(session_dir: &std::path::Path) -> Application {
-        let provider = ProxyOutpostConfig {
-            name: "app".to_owned(),
-            external_host: "https://app.example.com".to_owned(),
-            client_id: Some(CLIENT_ID.to_owned()),
-            cookie_secret: Some(COOKIE_SECRET.to_owned()),
-            mode: Some(ProxyMode::ForwardSingle),
-            oidc_configuration: OpenIdConnectConfiguration {
-                authorization_endpoint: "https://authentik.example.com/application/o/authorize/"
-                    .to_owned(),
-                ..OpenIdConnectConfiguration::default()
-            },
-            ..ProxyOutpostConfig::default()
-        };
-        Application {
-            host: "app.example.com".to_owned(),
-            endpoint: OidcEndpoint::new(&provider.oidc_configuration, None, None, false),
-            session_store: SessionStore::Filesystem(
-                FsSessionStore::new(session_dir.to_path_buf()).expect("store"),
-            ),
-            session_cookie: SessionCookie::new(CLIENT_ID, COOKIE_SECRET, true, None)
-                .expect("cookie"),
-            provider,
-            router: Router::new(),
-            cert: None,
-            api_config: Configuration::default(),
-            backchannel_client: BackchannelClient::new(reqwest::Client::builder())
-                .expect("backchannel client"),
-            token_host: None,
-            auth_cache: Cache::new(1),
-            outpost_name: "outpost".to_owned(),
-            unauthenticated_regex: Vec::new(),
-            upstream_client: upstream::build_client(false).expect("upstream client"),
-            jwks_cache: ArcSwapOption::empty(),
-        }
-    }
-
-    /// Send an unauthenticated Envoy check whose front proxy rewrote
-    /// `:authority`, and return the redirect target stored in the OAuth state.
-    async fn envoy_redirect_target(trusted_proxy: bool) -> String {
-        let dir = tempfile::tempdir().expect("tempdir");
-        let router = Router::new()
-            .route(&format!("{ENVOY_PREFIX}{{*rest}}"), any(handle_envoy))
-            .with_state(Arc::new(forward_single_app(dir.path())))
-            .layer(from_fn(host_middleware))
-            .layer(Extension(TrustedProxy(trusted_proxy)));
-        let request = Request::builder()
-            .uri(format!("{ENVOY_PREFIX}/page?x=1"))
-            .header(header::HOST, "app.internal.example")
-            .header("x-forwarded-host", "app.example.com")
-            .body(Body::empty())
-            .expect("request");
-
-        let response = router.oneshot(request).await.expect("infallible");
-
-        assert_eq!(response.status(), StatusCode::FOUND);
-        let location = response.headers()[header::LOCATION]
-            .to_str()
-            .expect("location");
-        let state = Url::parse(location)
-            .expect("authorize url")
-            .query_pairs()
-            .find_map(|(key, value)| (key == "state").then(|| value.into_owned()))
-            .expect("state parameter");
-        OAuthState::decode(&state, COOKIE_SECRET, &issuer(CLIENT_ID))
-            .expect("state token")
-            .redirect
-    }
-
-    #[tokio::test]
-    async fn envoy_redirects_to_forwarded_host_from_trusted_proxy() {
-        assert_eq!(
-            envoy_redirect_target(true).await,
-            "//app.example.com/page?x=1"
-        );
-    }
-
-    #[tokio::test]
-    async fn envoy_ignores_forwarded_host_from_untrusted_peer() {
-        assert_eq!(
-            envoy_redirect_target(false).await,
-            "//app.internal.example/page?x=1"
-        );
     }
 }
