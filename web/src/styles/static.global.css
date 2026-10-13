@@ -21,6 +21,7 @@
 @import "@patternfly/patternfly/components/Form/form.css" layer(vendor);
 @import "@patternfly/patternfly/components/Drawer/drawer.css" layer(vendor);
 @import "@patternfly/patternfly/components/List/list.css" layer(vendor);
+@import "@patternfly/patternfly/components/Divider/divider.css" layer(vendor);
 @import "@patternfly/patternfly/components/Login/login.css" layer(vendor);
 @import "@patternfly/patternfly/components/Title/title.css" layer(vendor);
 @import "@patternfly/patternfly/components/Avatar/avatar.css" layer(vendor);

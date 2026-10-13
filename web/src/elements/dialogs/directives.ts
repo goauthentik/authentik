@@ -1,8 +1,9 @@
+import type { NamedEntityElementConstructor } from "#common/api/entities";
 import { checkObjectShallowEquality } from "#common/collections";
 
 import { AKElement } from "#elements/Base";
 import { asInvoker, type ModalTemplate } from "#elements/dialogs/invokers";
-import type { DialogInit, NamedEntityElementConstructor } from "#elements/dialogs/shared";
+import type { DialogInit } from "#elements/dialogs/shared";
 import { ElementConstructorBoundary } from "#elements/errors/boundaries";
 import type { LitPropertyRecord } from "#elements/types";
 import { isAKElementConstructor, StrictUnsafe } from "#elements/utils/unsafe";

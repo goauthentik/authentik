@@ -23,9 +23,9 @@ import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 
 import { AKElement } from "#elements/Base";
+import { setPageDetails } from "#elements/router/meta";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList from "#components/DescriptionList";
 import { scheduleCard } from "#components/tasks/scheduleCard";
 import { taskCard } from "#components/tasks/taskCard";

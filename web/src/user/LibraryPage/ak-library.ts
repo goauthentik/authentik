@@ -5,6 +5,7 @@ import { APIResult } from "#common/api/responses";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
+import { setPageDetails } from "#elements/router/meta";
 
 import { Application, CoreApi } from "@goauthentik/api";
 
@@ -46,6 +47,8 @@ export class LibraryPage extends AKElement {
 
     public override connectedCallback(): void {
         super.connectedCallback();
+
+        setPageDetails({ header: msg("Applications") });
 
         this.fetchApplications()
             .then((apps) => {
