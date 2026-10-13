@@ -13,7 +13,7 @@ import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#comm
 import { IconEditButton, IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
 import { toAdminInterface } from "#elements/router/core/interfaces";
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { StrictUnsafe } from "#elements/utils/unsafe";
 
@@ -112,6 +112,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         [msg("Order"), "order"],
         [this.allowedTypesLabel],
         [msg("Enabled"), "enabled"],
+        [msg("Expiring"), "expires"],
         [msg("Timeout"), "timeout"],
         [msg("Actions"), null, msg("Row Actions")],
     ];
@@ -201,6 +202,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             html`<pre>${item.order}</pre>`,
             html`${getPolicyUserGroupRow(item)}`,
             html`<ak-status-label type="warning" ?good=${item.enabled}></ak-status-label>`,
+            item.expiring ? Timestamp(item.expires) : "-",
             html`${item.timeout}`,
             html`<div class="ak-c-table__actions">
                 ${this.getObjectEditButton(item)}

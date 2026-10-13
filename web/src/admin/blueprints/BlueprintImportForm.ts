@@ -13,11 +13,11 @@ import { PreventFormSubmit } from "#elements/forms/helpers";
 import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
 import { AKLabel } from "#components/ak-label";
+import { AKSearchSelect } from "#components/ak-search-select-field";
 
-import { BlueprintSource } from "#admin/blueprints/BlueprintForm";
+import { BlueprintSource, blueprintFileSource } from "#admin/blueprints/BlueprintForm";
 
 import {
-    BlueprintFile,
     BlueprintImportResult,
     ManagedApi,
     ManagedBlueprintsImportCreateRequest,
@@ -161,31 +161,13 @@ export class BlueprintImportForm extends Form<ManagedBlueprintsImportCreateReque
             ${
                 this.source === BlueprintSource.File
                     ? html`<ak-form-element-horizontal label=${msg("Path")} name="path">
-                          <ak-search-select
-                              placeholder=${msg("Select a blueprint...")}
-                              .fetchObjects=${async (query?: string): Promise<BlueprintFile[]> => {
-                                  const items =
-                                      await aki(ManagedApi).managedBlueprintsAvailableList();
-
-                                  return items.filter((item) =>
-                                      query ? item.path.includes(query) : true,
-                                  );
-                              }}
-                              .renderElement=${(item: BlueprintFile): string => {
-                                  const name = item.path;
-
-                                  if (item.meta && item.meta.name) {
-                                      return `${name} (${item.meta.name})`;
-                                  }
-
-                                  return name;
-                              }}
-                              .value=${(item: BlueprintFile | null) => {
-                                  return item?.path;
-                              }}
-                              blankable
-                          >
-                          </ak-search-select>
+                          ${AKSearchSelect({
+                              name: "path",
+                              emptyValue: "",
+                              source: blueprintFileSource,
+                              placeholder: msg("Select a blueprint..."),
+                              blankable: true,
+                          })}
                       </ak-form-element-horizontal>`
                     : nothing
             }

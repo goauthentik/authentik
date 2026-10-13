@@ -25,6 +25,10 @@ export interface TransactionPolicyBindingRequest {
      */
     negate?: boolean;
     enabled?: boolean;
+    /**
+     * Execute the policy but ignore its result.
+     */
+    dryRun?: boolean;
     order: number;
     /**
      * Timeout after which Policy execution is terminated.
@@ -71,6 +75,7 @@ export function TransactionPolicyBindingRequestFromJSONTyped(
         user: json["user"] === undefined ? undefined : json["user"] === null ? null : json["user"],
         negate: json["negate"] == null ? undefined : json["negate"],
         enabled: json["enabled"] == null ? undefined : json["enabled"],
+        dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
         order: json["order"],
         timeout: json["timeout"] == null ? undefined : json["timeout"],
         failureResult: json["failure_result"] == null ? undefined : json["failure_result"],
@@ -95,6 +100,7 @@ export function TransactionPolicyBindingRequestToJSONTyped(
         user: value["user"],
         negate: value["negate"],
         enabled: value["enabled"],
+        dry_run: value["dryRun"],
         order: value["order"],
         timeout: value["timeout"],
         failure_result: value["failureResult"],
