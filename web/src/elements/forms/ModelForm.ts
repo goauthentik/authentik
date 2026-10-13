@@ -13,7 +13,7 @@ import AKFadeIn from "#styles/authentik/components/Modifiers/fade-in.css";
 
 import { msg, str } from "@lit/localize";
 import type { CSSResult } from "lit";
-import { html } from "lit-html";
+import { html, noChange } from "lit-html";
 import { property, state } from "lit/decorators.js";
 
 /*
@@ -308,7 +308,7 @@ export abstract class ModelForm<
 
     protected override render(): SlottedTemplateResult {
         if (!this.visible) {
-            return null;
+            return noChange;
         }
 
         if (!this.#loadedAt) {

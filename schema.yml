@@ -46173,9 +46173,11 @@ components:
         client_id:
           type: string
           maxLength: 255
-        client_secret:
+        client_secret_ref:
           type: string
-          maxLength: 255
+          format: uuid
+          nullable: true
+          title: Client Secret
         access_code_validity:
           type: string
           description: 'Access codes not valid on or after current time + this value
@@ -46299,9 +46301,11 @@ components:
           type: string
           minLength: 1
           maxLength: 255
-        client_secret:
+        client_secret_ref:
           type: string
-          maxLength: 255
+          format: uuid
+          nullable: true
+          title: Client Secret
         access_code_validity:
           type: string
           minLength: 1
@@ -52248,9 +52252,11 @@ components:
           type: string
           minLength: 1
           maxLength: 255
-        client_secret:
+        client_secret_ref:
           type: string
-          maxLength: 255
+          format: uuid
+          nullable: true
+          title: Client Secret
         access_code_validity:
           type: string
           minLength: 1
@@ -55344,13 +55350,14 @@ components:
           maxLength: 255
         client_secret:
           type: string
-          maxLength: 255
+          readOnly: true
         oidc_configuration:
           allOf:
           - $ref: '#/components/schemas/OpenIDConnectConfiguration'
           readOnly: true
         cookie_secret:
           type: string
+          readOnly: true
         certificate:
           type: string
           format: uuid
@@ -55411,6 +55418,8 @@ components:
       - access_token_validity
       - assigned_application_name
       - assigned_application_slug
+      - client_secret
+      - cookie_secret
       - external_host
       - name
       - oidc_configuration

@@ -9,10 +9,13 @@ from hmac import compare_digest
 from typing import Any
 from urllib.parse import parse_qs, unquote, urlencode, urlparse, urlunparse
 
+from django.core.exceptions import ValidationError
+from django.core.validators import MaxLengthValidator
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.http.response import HttpResponseRedirect
 from django.utils.cache import patch_vary_headers
 from django.utils.timezone import now
+from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import get_logger
 
 from authentik.core.middleware import CTX_AUTH_VIA, KEY_USER
@@ -245,7 +248,7 @@ def authenticate_provider(request: HttpRequest) -> OAuth2Provider | None:
     if not provider:
         return None
     if not compare_digest(client_id, provider.client_id) or not compare_digest(
-        client_secret, provider.client_secret
+        client_secret, provider.client_secret_ref.secret_value
     ):
         LOGGER.debug("(basic) Provider for basic auth does not exist")
         return None
@@ -333,6 +336,13 @@ def build_frontchannel_logout_url(
 
 VSCHAR_START = 0x20
 VSCHAR_END = 0x7E
+
+
+def validate_client_secret(value: str) -> None:
+    """Keep credentials compatible with OAuth and the retained rollback column."""
+    if not is_all_vschar(value):
+        raise ValidationError(_("Client secret must consist of only ASCII characters."))
+    MaxLengthValidator(255)(value)
 
 
 def is_all_vschar(s: str) -> bool:

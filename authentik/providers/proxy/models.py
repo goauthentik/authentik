@@ -74,6 +74,11 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     """Protect applications that don't support any of the other
     Protocols by using a Reverse-Proxy."""
 
+    generated_secrets = {
+        **OAuth2Provider.generated_secrets,
+        "cookie_secret_ref": ("cookie secret", get_cookie_secret),
+    }
+
     internal_host = models.TextField(
         validators=[DomainlessURLValidator(schemes=("http", "https"))],
         blank=True,
@@ -137,7 +142,15 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         blank=True,
     )
 
+    # Legacy column, kept for downgrades. Remove in 2027.2.
     cookie_secret = models.TextField(default=get_cookie_secret)
+    cookie_secret_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Cookie secret"),
+        on_delete=models.PROTECT,
+        blank=True,
+        related_name="proxy_providers",
+    )
     cookie_domain = models.TextField(default="", blank=True)
 
     @property
