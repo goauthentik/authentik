@@ -38,7 +38,7 @@ from authentik.events.logs import capture_logs
 from authentik.events.utils import sanitize_dict
 from authentik.lib.config import CONFIG
 from authentik.tasks.apps import PRIORITY_HIGH
-from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.middleware import CurrentTask, with_database_connection
 from authentik.tasks.schedules.models import Schedule
 
 LOGGER = get_logger()
@@ -88,11 +88,13 @@ class BlueprintEventHandler(FileSystemEventHandler):
             return None
         return super().dispatch(event)
 
+    @with_database_connection
     def on_created(self, event: FileSystemEvent):
         """Process file creation"""
         LOGGER.debug("new blueprint file created, starting discovery")
         Schedule.dispatch_by_actor(blueprints_discovery)
 
+    @with_database_connection
     def on_modified(self, event: FileSystemEvent):
         """Process file modification"""
         path = Path(event.src_path)
