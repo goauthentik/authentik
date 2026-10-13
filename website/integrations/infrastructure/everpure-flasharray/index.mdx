@@ -8,7 +8,7 @@ import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
 
 ## What is Everpure FlashArray?
 
-> Everpure FlashArray is an all-flash storage platform designed to deliver unified block, file, and object data services, powered by the Purity operating system.
+> FlashArray unifies high-performance block, file, and object storage.
 >
 > -- https://www.everpuredata.com/products/block-file-object-storage.html
 
@@ -16,105 +16,115 @@ import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
 
 The following placeholders are used in this guide:
 
-- `flasharray.company` is the FQDN of the Everpure FlashArray.
+- `flasharray.company` is the FQDN of the FlashArray web interface.
+- `authentik.company` is the FQDN of the authentik installation.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-This guide was tested with Purity OS 6.12 and authentik 2026.8.1.
+This guide was tested with Purity//FA 6.12 and authentik 2026.8.1.
 
 ## authentik configuration
 
-To support the integration of FlashArray with authentik, you need to create an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) in authentik.
+To support the integration of FlashArray with authentik, you need to create a SAML [property mapping](/docs/add-secure-apps/providers/property-mappings/), an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair), and [application entitlements](/docs/add-secure-apps/applications/manage_apps/#application-entitlements) for the FlashArray roles.
 
 ### Create a role property mapping
 
-During the login process, the FlashArray needs to be told what role should be assigned to the user.  It determines the role by examining the SAML attributes for an attribute named `purity_roles`.  We need to create a SAML property mapping that sends this application's entitlements to the FlashArray.
+FlashArray assigns a role to each user from the `purity_roles` SAML attribute. This mapping sends the names of the user's FlashArray application entitlements in that attribute.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **New Property Mapping**.
-3. Select **SAML Provider Property Mapping** as the type and click **Next**.
-4. Create a property mapping with the following values:
-    - **Mapping Name**: `everpure-purity_roles`
+3. Select **SAML Provider Property Mapping** and click **Next**.
+4. Configure the following settings:
+    - **Name**: `FlashArray roles`
     - **SAML Attribute Name**: `purity_roles`
     - **Expression**:
 
         ```python
-        return ["array_admin"]
+        return [
+            entitlement.name
+            for entitlement in request.user.app_entitlements(provider.application)
+        ]
         ```
 
-:::info
-It's possible to send roles more flexibly using advanced syntax, like this:
-```python
-return ["array_admin"] if ak_is_group_member(request.user, name="Storage Admins") else ["readonly"]
-```
-:::
-
-:::info
-The `array_admin` and `readonly` roles exists in the FlashArray by default.
-:::
-
-5. Click **Finish** to save the property mapping.
+5. Click **Finish**.
 
 ### Create an application and provider
 
 <SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **New Application** > **with New Provider** to open the application wizard.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-    - Expand **UI settings** and set the **Launch URL** to `https://flasharray.company/fa_saml2sso_login`. Click **Next**.
-    - **Choose a Provider**: select **SAML Provider** as the provider type, and click **Next**.
-    - **Configure Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations:
-        - Set the **ACS URL** to something temporary, like `https://flasharray.company`. We will come back and update this later.
+        - Under **UI settings**, set the **Launch URL** to `https://flasharray.company/fa_saml2sso_login`.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations:
+        - Set the **ACS URL** to `https://temp.temp`. You will replace it after you configure FlashArray.
         - Under **Advanced protocol settings**:
-            - Set the **Signing Certificate** to the certificate authentik should use to sign SAML responses.
-            - **Property Mappings**: Select the `everpure-purity_roles` mapping we created earlier and click the **greater than sign** (`>`) to move it to the right side.
-            - Set the **NameID Property Mapping** to `authentik default SAML Mapping: Username`.
-        - Click **Next**.
+            - Select an available **Signing Certificate**.
+            - Add `FlashArray roles` to the selected **Property mappings**.
+            - Set **NameID Property Mapping** to `authentik default SAML Mapping: Username`.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
-    - **Review and Submit Application**: Click **Create Application** to save the new application and provider, then click **Finish**.
 
-### Download the signing certificate, and copy the URLs
+3. Click **Create Application**.
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click on the name of your new FlashArray provider.
-3. Click **Download** under **Download signing certificate**. We will import this certificate into the FlashArray.
-4. Copy the **EntityID/Issuer** URL. We will paste this into the FlashArray.
-5. Copy the **SAML Endpoint** URL. We will paste this into the FlashArray.
+### Create application entitlements
+
+Each entitlement name must match a built-in FlashArray role: `array_admin`, `storage_admin`, `ops_admin`, or `readonly`. Create an entitlement for each role that you want to assign.
+
+1. Navigate to **Applications** > **Applications** and click the FlashArray application.
+2. Open the **Application entitlements** tab and click **Create entitlement**.
+3. Set the **Name** to a FlashArray role, such as `array_admin`, and click **Create**.
+4. Expand the entitlement and bind the users or groups that should receive the role.
+
+Assign each FlashArray user one of these entitlements.
+
+### Copy the identity provider settings
+
+1. Navigate to **Applications** > **Providers** and click the provider that you created.
+2. Under **Related objects**, click **Download signing certificate**.
+3. Under **SAML Configuration**, copy the **EntityID/Issuer** and **SAML Endpoint** values.
 
 ## Everpure FlashArray configuration
 
-:::info
-Note: Users do not have access to the trusted certificate store in a FlashArray without opening a support case.  This means using authentik's metadata URL will not be trusted by the FlashArray unless authentik's certificate is signed by a public, external CA (not your private internal CA).  To work around this, we will supply the URLs and the signing certificate to the FlashArray without using authentik's metadata URL.
+:::info IdP metadata URL
+FlashArray can fetch the authentik metadata URL only when it trusts the TLS certificate that authentik serves. This guide enters the identity provider settings manually, which works with a certificate from a private CA.
 :::
 
 1. Log in to the FlashArray web interface as an administrator.
-2. In the left-hand navigation, click **Settings**, then click **Users and Policies** (found below **Access**).
-3. Scroll down to the **SAML2 SSO** section and click the **plus sign** (`+`).
-    - Provide a name and provide the URL you use to access the array, such as `https://flasharray.company`.
-    - Do **not** toggle **Enabled** to on.  We are leaving it disabled.
-    - In the **IdP Entity ID** field, paste the URL you copied above that was labeled **EntityID/Issuer**.
-    - In the **URL** field, paste the URL you copied above that was labeled **SAML Endpoint**.
-    - Leave **IdP Metadata URL** blank.
-    - At the bottom, next to **Verification Certificate**, click **Edit**.  Open in a text editor the certificate file you saved above from authentik.  Copy and paste the certificate text into the FlashArray's text box.  Click **Save**.
-    - Click **Save** on the **Edit SAML2 SSO Configuration** page.
-4. In the **SAML2 SSO** section, copy the URL labeled **Assertion Consumer URL**. We will paste this into the authentik interface.
+2. Click **Settings**, then click **Users and Policies** under **Access**.
+3. In the **SAML2 SSO** section, click **+** and configure the following settings:
+    - **Name**: provide a descriptive name.
+    - **Array URL**: `https://flasharray.company`, the same URL that you use to open the FlashArray web interface.
+    - **IdP Entity ID**: the **EntityID/Issuer** value from authentik.
+    - **URL**: the **SAML Endpoint** value from authentik.
+    - **Verification Certificate**: click **Edit**, paste the contents of the signing certificate that you downloaded from authentik, and click **Save**.
 
-## Apply the ACS URL to the authentik Provider
-1. Open the authentik Admin interface.
-2. On the **Applications** > **Providers** page, click on the pencil edit icon of your new FlashArray provider.
-3. In the **ACS URL** field, replace the existing text by pasting the URL you copied from the FlashArray above labeled **Assertion Consumer URL**.
+    Leave **Enabled** off until the test in [Test and enable SAML2 SSO](#test-and-enable-saml2-sso) succeeds.
+
+4. Click **Save**.
+5. In the **SAML2 SSO** section, copy the **Assertion Consumer URL**.
+
+### Update the authentik provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click the edit icon next to the FlashArray provider.
+3. Set the **ACS URL** to the **Assertion Consumer URL** that you copied from FlashArray.
 4. Click **Save Changes**.
 
-## Verify and Enable SAML in FlashArray
+### Test and enable SAML2 SSO
 
-1. Log in to the FlashArray web interface.
-2. In the **SAML2 SSO** section, there should now be a new **Test** button.  Click **Test**.
-3. Click **E2E Test**.  A new browser tab should open.
-4. You may need to complete the authentik sign-in flow.
-5. When you are redirected back to the FlashArray, you should see a blank grey page.  Close the browser tab to return to the previous FlashArray's management browser tab.
-6. click the **Check E2E Test Results** button to update the results.  The result should show **Success*.  Click **Close**.
-7. In the **SAML2 SSO** section, click the pencil edit icon to edit the SAML configuration. (Or, click the **three dots**, and click **Edit**.)
-8. Toggle **Enabled** to on.  Click **Save**.  Click **Proceed to Save**.
+1. In the FlashArray web interface, open **Settings** > **Users and Policies** and find your configuration in the **SAML2 SSO** section.
+2. Click **Test**, then click **E2E Test**. A new browser tab opens the authentik login.
+3. Log in to authentik as a user who has a FlashArray entitlement. FlashArray then shows a blank page, which you can close.
+4. Back in the original tab, click **Check E2E Test Results**. The result should be **Success**. Click **Close**.
+5. Edit the SAML2 SSO configuration, turn on **Enabled**, and click **Save**. When FlashArray asks you to confirm, click **Proceed to Save**.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with FlashArray, log out of FlashArray and open the FlashArray application from the authentik Application Dashboard. After you log in to authentik, FlashArray should sign you in with the role from your entitlement.
+
+## Resources
+
+- [Microsoft Learn - Configure Pure Storage for single sign-on with Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/saas-apps/pure-storage-sso-tutorial)
