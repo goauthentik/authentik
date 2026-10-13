@@ -9,6 +9,7 @@ from pyrad.packet import AccessAccept, AccessReject, AccessRequest
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, User
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
@@ -39,7 +40,7 @@ class TestProviderRadius(E2ETestCase):
         radius: RadiusProvider = RadiusProvider.objects.create(
             name=generate_id(),
             authorization_flow=Flow.objects.get(slug="default-authentication-flow"),
-            shared_secret=self.shared_secret,
+            shared_secret_ref=create_test_secret(self.shared_secret),
         )
         # we need to create an application to actually access radius
         Application.objects.create(name=generate_id(), slug=generate_id(), provider=radius)

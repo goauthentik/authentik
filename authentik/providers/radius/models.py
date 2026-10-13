@@ -9,16 +9,28 @@ from rest_framework.serializers import Serializer
 
 from authentik.core.models import PropertyMapping, Provider
 from authentik.crypto.models import CertificateKeyPair
+from authentik.crypto.secrets.models import GeneratedSecretsMixin
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import OutpostModel
 
 
-class RadiusProvider(OutpostModel, Provider):
+class RadiusProvider(GeneratedSecretsMixin, OutpostModel, Provider):
     """Allow applications to authenticate against authentik's users using Radius."""
 
+    generated_secrets = {"shared_secret_ref": ("shared secret", generate_id)}
+
+    # Legacy column, kept for downgrades. Remove in 2027.2.
     shared_secret = models.TextField(
         default=generate_id,
         help_text=_("Shared secret between clients and server to hash packets."),
+    )
+    shared_secret_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Shared Secret"),
+        help_text=_("Shared secret between clients and server to hash packets."),
+        on_delete=models.PROTECT,
+        blank=True,
+        related_name="radius_providers",
     )
 
     client_networks = models.TextField(

@@ -6,6 +6,7 @@ from django.core.cache import cache
 from django.test import TestCase
 from requests_mock import Mocker
 
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.models import SCIMAuthenticationMode, SCIMProvider
@@ -30,7 +31,7 @@ class SCIMAuthTests(TestCase):
             name=generate_id(),
             url="https://localhost",
             auth_mode=SCIMAuthenticationMode.TOKEN,
-            token=token,
+            token_ref=create_test_secret(token),
         )
         self.assertEqual(self.request_authorization_header(provider), f"Bearer {token}")
 
@@ -43,7 +44,7 @@ class SCIMAuthTests(TestCase):
             url="https://localhost",
             auth_mode=SCIMAuthenticationMode.BASIC,
             auth_basic_user=user,
-            auth_basic_password=password,
+            auth_basic_password_ref=create_test_secret(password),
         )
         credentials = b64encode(f"{user}:{password}".encode()).decode()
         self.assertEqual(self.request_authorization_header(provider), f"Basic {credentials}")
@@ -55,7 +56,7 @@ class SCIMAuthTests(TestCase):
             url="https://localhost",
             auth_mode=SCIMAuthenticationMode.BASIC,
             auth_basic_user="ünity",
-            auth_basic_password="pässwörd",
+            auth_basic_password_ref=create_test_secret("pässwörd"),
         )
         credentials = b64encode("ünity:pässwörd".encode()).decode()
         self.assertEqual(self.request_authorization_header(provider), f"Basic {credentials}")

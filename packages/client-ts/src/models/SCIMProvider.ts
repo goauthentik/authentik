@@ -65,11 +65,19 @@ export interface SCIMProvider {
      */
     url: string;
     verifyCertificates?: boolean;
+    /**
+     * Authentication token
+     */
+    tokenRef?: string | null;
     authMode?: SCIMAuthenticationModeEnum;
     /**
      * Username used for Basic authentication
      */
     authBasicUser?: string;
+    /**
+     * Password used for Basic authentication
+     */
+    authBasicPasswordRef?: string | null;
     /**
      * OAuth Source used for authentication
      */
@@ -210,11 +218,23 @@ export function SCIMProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
         url: json["url"],
         verifyCertificates:
             json["verify_certificates"] == null ? undefined : json["verify_certificates"],
+        tokenRef:
+            json["token_ref"] === undefined
+                ? undefined
+                : json["token_ref"] === null
+                  ? null
+                  : json["token_ref"],
         authMode:
             json["auth_mode"] == null
                 ? undefined
                 : SCIMAuthenticationModeEnumFromJSON(json["auth_mode"]),
         authBasicUser: json["auth_basic_user"] == null ? undefined : json["auth_basic_user"],
+        authBasicPasswordRef:
+            json["auth_basic_password_ref"] === undefined
+                ? undefined
+                : json["auth_basic_password_ref"] === null
+                  ? null
+                  : json["auth_basic_password_ref"],
         authOauth:
             json["auth_oauth"] === undefined
                 ? undefined
@@ -283,8 +303,10 @@ export function SCIMProviderToJSONTyped(
         property_mappings_group: value["propertyMappingsGroup"],
         url: value["url"],
         verify_certificates: value["verifyCertificates"],
+        token_ref: value["tokenRef"],
         auth_mode: SCIMAuthenticationModeEnumToJSON(value["authMode"]),
         auth_basic_user: value["authBasicUser"],
+        auth_basic_password_ref: value["authBasicPasswordRef"],
         auth_oauth: value["authOauth"],
         auth_oauth_params: value["authOauthParams"],
         compatibility_mode: CompatibilityModeEnumToJSON(value["compatibilityMode"]),
