@@ -2,7 +2,7 @@
 
 from uuid import UUID
 
-from django.db.models.query_utils import Q
+from django.db.models import Prefetch, Q, QuerySet
 from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import actor
 from guardian.shortcuts import get_anonymous_user
@@ -25,8 +25,8 @@ LOGGER = get_logger()
 
 @actor(description=_("Dispatch new event notifications."))
 def event_trigger_dispatch(event_uuid: UUID):
-    for trigger in NotificationRule.objects.all():
-        event_trigger_handler.send_with_options(args=(event_uuid, trigger.name), rel_obj=trigger)
+    """Check all NotificationRules against an event in one pass"""
+    _evaluate_rules(event_uuid, NotificationRule.objects.all())
 
 
 @actor(
@@ -37,15 +37,16 @@ def event_trigger_dispatch(event_uuid: UUID):
 )
 def event_trigger_handler(event_uuid: UUID, trigger_name: str):
     """Check if policies attached to NotificationRule match event"""
+    # only kept for messages enqueued before upgrading, remove in a later release
+    _evaluate_rules(event_uuid, NotificationRule.objects.filter(name=trigger_name))
+
+
+def _evaluate_rules(event_uuid: UUID, rules: QuerySet[NotificationRule]):
     self = CurrentTask.get_task()
 
     event: Event = Event.objects.filter(event_uuid=event_uuid).first()
     if not event:
         self.warning("event doesn't exist yet or anymore", event_uuid=event_uuid)
-        return
-
-    trigger: NotificationRule | None = NotificationRule.objects.filter(name=trigger_name).first()
-    if not trigger:
         return
 
     if "policy_uuid" in event.context:
@@ -57,43 +58,56 @@ def event_trigger_handler(event_uuid: UUID, trigger_name: str):
             # If policy that caused this event to be created is attached
             # to *any* NotificationRule, we return early.
             # This is the most effective way to prevent infinite loops.
-            LOGGER.debug("e(trigger): attempting to prevent infinite loop", trigger=trigger)
+            LOGGER.debug("e(trigger): attempting to prevent infinite loop", event=event)
             return
 
-    LOGGER.debug("e(trigger): checking if trigger applies", trigger=trigger)
-    try:
-        user = User.objects.filter(pk=event.user.get("pk")).first() or get_anonymous_user()
-    except User.DoesNotExist:
-        LOGGER.warning("e(trigger): failed to get user", trigger=trigger)
-        return
-    policy_engine = PolicyEngine(trigger, user)
-    policy_engine.mode = PolicyEngineMode.MODE_ANY
-    policy_engine.empty_result = False
-    policy_engine.use_cache = False
-    policy_engine.request.obj = event
-    policy_engine.request.context["event"] = event
-    policy_engine.build()
-    result = policy_engine.result
-    if not result.passing:
+    rules = rules.prefetch_related(
+        Prefetch(
+            "bindings",
+            queryset=PolicyBinding.objects.filter(enabled=True)
+            .select_related("user", "group")
+            .order_by("order"),
+            to_attr="enabled_bindings",
+        ),
+        # Resolves policy subclasses for all bindings in one query
+        "enabled_bindings__policy",
+        "transports",
+    )
+    # Rules without bindings never match (empty_result is False below)
+    rules = [rule for rule in rules if rule.enabled_bindings]
+    if not rules:
         return
 
-    LOGGER.debug("e(trigger): event trigger matched", trigger=trigger)
-    # Create the notification objects
+    user = User.objects.filter(pk=event.user.get("pk")).first() or get_anonymous_user()
     count = 0
-    for transport in trigger.transports.all():
-        for user in trigger.destination_users(event):
-            notification_transport.send_with_options(
-                args=(
-                    transport.pk,
-                    event.pk,
-                    user.pk,
-                    trigger.pk,
-                ),
-                rel_obj=transport,
-            )
-            count += 1
-            if transport.send_once:
-                break
+    for trigger in rules:
+        LOGGER.debug("e(trigger): checking if trigger applies", trigger=trigger)
+        policy_engine = PolicyEngine(trigger, user, bindings=trigger.enabled_bindings)
+        policy_engine.mode = PolicyEngineMode.MODE_ANY
+        policy_engine.empty_result = False
+        policy_engine.use_cache = False
+        policy_engine.request.obj = event
+        policy_engine.request.context["event"] = event
+        policy_engine.build()
+        if not policy_engine.result.passing:
+            continue
+
+        LOGGER.debug("e(trigger): event trigger matched", trigger=trigger)
+        # Create the notification objects
+        for transport in trigger.transports.all():
+            for destination in trigger.destination_users(event):
+                notification_transport.send_with_options(
+                    args=(
+                        transport.pk,
+                        event.pk,
+                        destination.pk,
+                        trigger.pk,
+                    ),
+                    rel_obj=transport,
+                )
+                count += 1
+                if transport.send_once:
+                    break
     self.info(f"Created {count} notification tasks")
 
 
