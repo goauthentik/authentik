@@ -41,7 +41,7 @@ class PatreonType(SourceType):
     authorization_url = "https://www.patreon.com/oauth2/authorize"
     access_token_url = "https://www.patreon.com/api/oauth2/token"  # nosec
     profile_url = f"https://www.patreon.com/api/oauth2/v2/identity?{urlencode({
-        "fields[user]": ",".join("vanity","email","full_name")
+        "fields[user]": ",".join(["vanity","email","full_name"])
     })}"
 
     authorization_code_auth_method = AuthorizationCodeAuthMethod.POST_BODY
