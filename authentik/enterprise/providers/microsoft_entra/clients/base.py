@@ -100,14 +100,6 @@ class MicrosoftEntraSyncClient[TModel: Model, TConnection: Model, TSchema: dict]
         except ClientAuthenticationError as exc:
             raise StopSync(exc, None, None) from exc
         except ODataError as exc:
-            # Graph answers 400 rather than 409 when adding a group member that is
-            # already in the group
-            if (
-                exc.response_status_code == HttpResponseBadRequest.status_code
-                and exc.error
-                and "added object references already exist" in (exc.error.message or "")
-            ):
-                raise ObjectExistsSyncException(exc) from exc
             raise StopSync(exc, None, None) from exc
         except (ServiceRequestError, ServiceResponseError) as exc:
             raise TransientSyncException("Failed to sent request") from exc

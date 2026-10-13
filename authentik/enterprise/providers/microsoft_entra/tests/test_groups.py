@@ -4,10 +4,12 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 from azure.identity.aio import ClientSecretCredential
 from django.test import TestCase
+from msgraph.generated.models.directory_object import DirectoryObject
+from msgraph.generated.models.directory_object_collection_response import (
+    DirectoryObjectCollectionResponse,
+)
 from msgraph.generated.models.group import Group as MSGroup
 from msgraph.generated.models.group_collection_response import GroupCollectionResponse
-from msgraph.generated.models.o_data_errors.main_error import MainError
-from msgraph.generated.models.o_data_errors.o_data_error import ODataError
 from msgraph.generated.models.organization import Organization
 from msgraph.generated.models.organization_collection_response import OrganizationCollectionResponse
 from msgraph.generated.models.user import User as MSUser
@@ -264,19 +266,9 @@ class MicrosoftEntraGroupTests(TestCase):
             )
 
     def test_sync_member_already_exists(self):
-        """Test full sync continues when members already exist in Entra"""
+        """Test full sync only adds members missing from Entra"""
         self.provider.discovery_enabled = False
         self.provider.save()
-        member_exists = ODataError(
-            response_status_code=400,
-            error=MainError(
-                code="Request_BadRequest",
-                message=(
-                    "One or more added object references already exist for the following "
-                    "modified properties: 'members'."
-                ),
-            ),
-        )
         with (
             patch(
                 "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
@@ -312,17 +304,36 @@ class MicrosoftEntraGroupTests(TestCase):
                 "msgraph.generated.groups.item.members.ref.ref_request_builder.RefRequestBuilder.post",
                 AsyncMock(),
             ) as member_add,
+            patch(
+                "msgraph.generated.groups.item.members.members_request_builder.MembersRequestBuilder.get",
+                AsyncMock(),
+            ) as member_list,
         ):
-            users = [create_test_user(), create_test_user()]
+            users = [create_test_user() for _ in range(3)]
             for _ in range(2):
                 Group.objects.create(name=generate_id()).users.add(*users)
+            existing, other_existing, missing = (
+                MicrosoftEntraProviderUser.objects.get(
+                    provider=self.provider, user=user
+                ).microsoft_id
+                for user in users
+            )
+            # Each group already has two of the three members in Entra, over two pages
+            member_list.side_effect = [
+                DirectoryObjectCollectionResponse(
+                    value=[DirectoryObject(id=existing)],
+                    odata_next_link="https://graph.microsoft.com/v1.0/next",
+                ),
+                DirectoryObjectCollectionResponse(value=[DirectoryObject(id=other_existing)]),
+            ] * 2
             member_add.reset_mock()
-            member_add.side_effect = member_exists
 
             microsoft_entra_sync.send(self.provider.pk).get_result()
-            # Every group is updated and every member is attempted
             self.assertEqual(group_patch.call_count, 2)
-            self.assertEqual(member_add.call_count, 4)
+            self.assertEqual(
+                [call.args[0].odata_id for call in member_add.call_args_list],
+                [f"https://graph.microsoft.com/v1.0/directoryObjects/{missing}"] * 2,
+            )
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
 
     def test_group_create_member_remove(self):
