@@ -40,13 +40,22 @@ from authentik.stages.identification.stage import (
 ANDROID_ORIGIN = "android:apk-key-hash:" + bytes_to_base64url(sha256(b"app certificate").digest())
 OTHER_ANDROID_ORIGIN = "android:apk-key-hash:" + bytes_to_base64url(sha256(b"other app").digest())
 WEB_ORIGIN = "https://login.example.com"
+NATIVE_ORIGIN = "custom-app:opaque-identifier"
 
 
 class TestOriginValidation(SimpleTestCase):
     """Validate configuration through both model validators and the API fields."""
 
     def test_valid_origins(self):
-        for origin in [ANDROID_ORIGIN, WEB_ORIGIN, "https://login.example.com:9443"]:
+        for origin in [
+            ANDROID_ORIGIN,
+            WEB_ORIGIN,
+            "https://login.example.com:9443",
+            "http://localhost:8000",
+            "custom-app:opaque-identifier",
+            ANDROID_ORIGIN + "=",
+            OTHER_ANDROID_ORIGIN[:-1],
+        ]:
             with self.subTest(origin=origin):
                 validate_webauthn_origin(origin)
 
@@ -56,19 +65,13 @@ class TestOriginValidation(SimpleTestCase):
             "null",
             "*",
             "https://*.example.com",
-            "http://example.com",
-            "https://example.com:99999",
-            "https://example.com:",
-            "https://example.com/",
-            "https://example.com/path",
-            "https://example.com?",
-            "https://example.com#",
-            "https://user:password@example.com",
+            " ",
+            " https://example.com",
+            "https://exam ple.com",
+            "custom-app:opaque\tidentifier",
+            "custom-app:opaque\u00a0identifier",
             "https://example.com\n",
             "android:apk-key-hash:*",
-            ANDROID_ORIGIN + "=",
-            "android:apk-key-hash:" + "A" * 42 + "B",
-            OTHER_ANDROID_ORIGIN[:-1],
         ]:
             with self.subTest(origin=origin), self.assertRaises(ModelValidationError):
                 validate_webauthn_origin(origin)
@@ -84,7 +87,14 @@ class TestOriginValidation(SimpleTestCase):
                 self.assertEqual(
                     field.run_validation([ANDROID_ORIGIN, WEB_ORIGIN]), [ANDROID_ORIGIN, WEB_ORIGIN]
                 )
-                for value in [["*"], [""], ["http://example.com"], None, ANDROID_ORIGIN]:
+                for value in [
+                    ["*"],
+                    [""],
+                    ["null"],
+                    ["custom-app:opaque identifier"],
+                    None,
+                    ANDROID_ORIGIN,
+                ]:
                     with self.subTest(value=value), self.assertRaises(ValidationError):
                         field.run_validation(value)
 
@@ -201,7 +211,7 @@ class TestWebAuthnOrigins(TestCase):
         ]:
             with self.subTest(field=field_name):
                 self.assertEqual(serializer_class(stage).data[field_name], [])
-                for origins in [[ANDROID_ORIGIN, WEB_ORIGIN], []]:
+                for origins in [[ANDROID_ORIGIN, WEB_ORIGIN, NATIVE_ORIGIN], []]:
                     serializer = serializer_class(stage, data={field_name: origins}, partial=True)
                     self.assertTrue(serializer.is_valid(), serializer.errors)
                     serializer.save()
@@ -209,13 +219,15 @@ class TestWebAuthnOrigins(TestCase):
                     self.assertEqual(serializer_class(stage).data[field_name], origins)
 
     def test_registration_origins(self):
-        for allowed in [[], [WEB_ORIGIN, ANDROID_ORIGIN, OTHER_ANDROID_ORIGIN]]:
+        for allowed in [[], [WEB_ORIGIN, ANDROID_ORIGIN, OTHER_ANDROID_ORIGIN, NATIVE_ORIGIN]]:
             self.registration_stage.additional_accepted_origins = allowed
             for origin in [
                 "https://testserver",
                 ANDROID_ORIGIN,
                 OTHER_ANDROID_ORIGIN,
                 WEB_ORIGIN,
+                NATIVE_ORIGIN,
+                NATIVE_ORIGIN.upper(),
                 "https://untrusted.example.com",
                 ANDROID_ORIGIN.lower(),
             ]:
@@ -236,13 +248,15 @@ class TestWebAuthnOrigins(TestCase):
 
     def test_authentication_origins(self):
         device = self.create_device()
-        for allowed in [[], [WEB_ORIGIN, ANDROID_ORIGIN, OTHER_ANDROID_ORIGIN]]:
+        for allowed in [[], [WEB_ORIGIN, ANDROID_ORIGIN, OTHER_ANDROID_ORIGIN, NATIVE_ORIGIN]]:
             self.validation_stage.webauthn_additional_accepted_origins = allowed
             for origin in [
                 "https://testserver",
                 ANDROID_ORIGIN,
                 OTHER_ANDROID_ORIGIN,
                 WEB_ORIGIN,
+                NATIVE_ORIGIN,
+                NATIVE_ORIGIN.upper(),
                 "https://untrusted.example.com",
                 ANDROID_ORIGIN.lower(),
             ]:

@@ -113,7 +113,7 @@ Users can either access the passwordless flow directly or reach it through an Id
 
 ### Additional accepted origins
 
-Add trusted HTTPS origins or `android:apk-key-hash:<certificate-hash>` origins to **Additional accepted origins** under **WebAuthn-specific settings**. Leave the list empty to accept only the current request origin. Origins are matched exactly; wildcards are not supported. HTTPS origins must not include a path, trailing slash, query, fragment, or credentials.
+Add trusted origins to **Additional accepted origins** under **WebAuthn-specific settings**. Examples include HTTPS origins and native Android `android:apk-key-hash:<certificate-hash>` origins. Leave the list empty to accept only the current request origin. Origins are matched exactly. Empty values, whitespace, wildcards, and `null` are not allowed. Platform-specific formats are not validated, so enter the exact origin produced by the client. For browser HTTPS origins, omit paths, trailing slashes, queries, fragments, and credentials.
 
 This setting applies to WebAuthn authentication, including passwordless flows and passkey login through an Identification stage that references this validation stage. It does not change the RP ID or the origin configuration of an enrollment stage. Every flow using this stage shares its origin configuration.
 

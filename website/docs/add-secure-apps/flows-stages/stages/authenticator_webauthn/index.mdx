@@ -39,7 +39,9 @@ If you want passkey autofill on the login form itself, configure the [Identifica
 
 ### Additional accepted origins
 
-By default, authentik accepts only the origin derived from the current request, such as `https://authentik.company`. To register credentials from another trusted origin, add it to **Additional accepted origins**. Supported values are HTTPS origins without a path, trailing slash, query, fragment, or credentials, and Android app origins in the form `android:apk-key-hash:<certificate-hash>`. Wildcards are not supported.
+By default, authentik accepts only the origin derived from the current request, such as `https://authentik.company`. To register credentials from another trusted origin, add it to **Additional accepted origins**. Values are matched exactly against the origin in the WebAuthn response. Examples include HTTPS origins such as `https://authentik.company` and native Android origins in the form `android:apk-key-hash:<certificate-hash>`; other native origin formats can also be configured. Empty values, whitespace, wildcards, and `null` are not allowed.
+
+authentik does not validate platform-specific origin formats. Enter the exact origin produced by the client; for a browser HTTPS origin, omit paths, trailing slashes, queries, fragments, and credentials. A mistyped origin will not match.
 
 This setting applies to registration in this stage. Configure **Additional accepted origins** separately on the [Authenticator Validation stage](../authenticator_validate/index.mdx#additional-accepted-origins) to permit authentication from the same app. Every flow using a stage shares its origin configuration.
 

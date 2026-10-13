@@ -29,7 +29,7 @@ export function additionalAcceptedOriginsField(name: string, origins: string[] =
         ></ak-array-input>
         <p class="pf-c-form__helper-text">
             ${msg(
-                "Additional trusted HTTPS or android:apk-key-hash origins, matched exactly. The current request origin is always accepted. Android apps also require externally hosted Digital Asset Links on the relying-party domain.",
+                "Additional trusted origins, matched exactly, such as HTTPS or android:apk-key-hash origins. The current request origin is always accepted. Android apps also require externally hosted Digital Asset Links on the relying-party domain.",
                 { id: "webauthn.additional-origins.description" },
             )}
         </p>
