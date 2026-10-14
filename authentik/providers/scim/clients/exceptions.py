@@ -25,10 +25,10 @@ class SCIMRequestException(TransientSyncException):
             return self._message
         try:
             error = SCIMError.model_validate_json(self._response.text)
-            return error.detail
+            return error.detail or self._message
         except ValidationError:
             pass
-        return self._response.text
+        return self._response.text or self._message
 
     def __str__(self):
         return self.detail()
