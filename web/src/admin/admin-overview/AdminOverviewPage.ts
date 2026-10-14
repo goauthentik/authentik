@@ -45,7 +45,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
                    .pf-c-page__main, not an ancestor), so it's hardcoded to match
                    its --ak-c-page-navbar--Height default. Falls short only below
                    the ~768px breakpoint, where the navbar grows to fit wrapped
-                   content; the bottom-row min-height floor keeps it from breaking. */
+                   content; the rows then just grow past it to fit theirs. */
                 min-height: calc(
                     100dvh - 7.5rem - var(--pf-c-page__main-section--PaddingTop) -
                         var(--pf-c-page__main-section--PaddingBottom)
@@ -61,7 +61,11 @@ export class AdminOverviewPage extends AdminOverviewBase {
             }
             .chart-column ak-charts-admin-login-authorization {
                 flex: 1;
-                min-height: 30rem;
+            }
+            /* Split the viewport 70/30 between the rows; a row whose content
+               needs more still grows to fit it. */
+            .top-row {
+                flex: 7 1 0;
             }
             @media (min-width: 1200px) {
                 /* Size the row from the chart column only, so the events list
@@ -72,9 +76,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
                 }
             }
             .bottom-row {
-                flex: 1;
-                min-height: 25em;
-                align-content: stretch;
+                flex: 3 1 0;
             }
             .card-container {
                 max-height: 10rem;
@@ -104,7 +106,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
         return html` <main class="pf-c-page__main-section" aria-label=${msg("Overview")}>
             <div class="page-rows">
                 <!-- row 1: status cards over the login chart / recent events -->
-                <div class="pf-l-grid pf-m-gutter">
+                <div class="pf-l-grid pf-m-gutter top-row">
                     <div class="pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl chart-column">
                         <div class="pf-l-grid pf-m-gutter">${this.renderCards()}</div>
                         <ak-charts-admin-login-authorization></ak-charts-admin-login-authorization>
