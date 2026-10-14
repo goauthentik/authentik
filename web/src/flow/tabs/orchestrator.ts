@@ -97,7 +97,18 @@ function waitForTabExit(tabID: string, resumeID: string): Promise<void> {
             return;
         }
 
-        const tabs = await Broadcast.shared.discoverTabs();
+        let tabs: Set<string>;
+
+        try {
+            tabs = await Broadcast.shared.discoverTabs();
+        } catch (error: unknown) {
+            // Nothing awaits this timer callback, so an error here would never resolve the wait
+            // and would leave the leader stuck before its own redirect.
+            logger.warn("Failed to check whether tab is still active, moving on", tabID, error);
+            cleanup();
+
+            return;
+        }
 
         if (!tabs.has(tabID)) {
             logger.warn("Timed out waiting for tab exit event, tab is gone", tabID);
@@ -138,18 +149,21 @@ export async function multiTabOrchestrateResume() {
     logger.debug("Locking tabs");
     localStorage.setItem(lockKey, TabID.shared.current);
 
-    for (const tab of tabs) {
-        const resumeID = randomString(32, ascii_letters + digits);
-        const done = waitForTabExit(tab, resumeID);
+    try {
+        for (const tab of tabs) {
+            const resumeID = randomString(32, ascii_letters + digits);
+            const done = waitForTabExit(tab, resumeID);
 
-        logger.debug("Telling tab to continue", tab);
-        Broadcast.shared.resumeTab(tab, resumeID);
+            logger.debug("Telling tab to continue", tab);
+            Broadcast.shared.resumeTab(tab, resumeID);
 
-        await done;
+            await done;
 
-        logger.debug("Tab done, continuing", tab);
+            logger.debug("Tab done, continuing", tab);
+        }
+
+        logger.debug("All tabs done.");
+    } finally {
+        localStorage.removeItem(lockKey);
     }
-
-    logger.debug("All tabs done.");
-    localStorage.removeItem(lockKey);
 }
