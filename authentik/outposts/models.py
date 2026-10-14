@@ -12,6 +12,7 @@ from django.core.cache import cache
 from django.db import IntegrityError, models, transaction
 from django.db.models.base import Model
 from django.utils.translation import gettext_lazy as _
+from guardian.models import RoleModelPermission, RoleObjectPermission
 from model_utils.managers import InheritanceManager
 from packaging.version import parse
 from rest_framework.serializers import Serializer
@@ -332,22 +333,33 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
 
     def build_user_permissions(self, user: User):
         """Create per-object and global permissions for outpost service-account"""
-        # To ensure the user only has the correct permissions, we delete all of them and re-add
-        # the ones the user needs
+        # Only write the difference, so saving a provider whose required objects didn't change
+        # doesn't rewrite every permission row of the outpost. Concurrent transactions (such as
+        # parallel blueprint applies) would otherwise lock the same rows and deadlock.
+        permissions: dict[str, Permission] = {}
+        model_perms: dict[int, Permission] = {}
+        obj_perms: dict[tuple[int, str], Permission] = {}
+        code_name = model_or_perm = None
         try:
-            with transaction.atomic():
-                user.remove_all_perms_from_managed_role()
-                for model_or_perm in self.get_required_objects():
-                    if isinstance(model_or_perm, models.Model):
-                        code_name = (
-                            f"{model_or_perm._meta.app_label}.view_{model_or_perm._meta.model_name}"
-                        )
-                        user.assign_perms_to_managed_role(code_name, model_or_perm)
-                    elif isinstance(model_or_perm, tuple):
-                        perm, obj = model_or_perm
-                        user.assign_perms_to_managed_role(perm, obj)
-                    else:
-                        user.assign_perms_to_managed_role(model_or_perm)
+            for model_or_perm in self.get_required_objects():
+                obj = None
+                if isinstance(model_or_perm, models.Model):
+                    obj = model_or_perm
+                    code_name = f"{obj._meta.app_label}.view_{obj._meta.model_name}"
+                elif isinstance(model_or_perm, tuple):
+                    code_name, obj = model_or_perm
+                else:
+                    code_name = model_or_perm
+                if code_name not in permissions:
+                    app_label, codename = code_name.split(".", 1)
+                    permissions[code_name] = Permission.objects.get(
+                        content_type__app_label=app_label, codename=codename
+                    )
+                permission = permissions[code_name]
+                if obj is None:
+                    model_perms[permission.pk] = permission
+                else:
+                    obj_perms[(permission.pk, str(obj.pk))] = permission
         except (Permission.DoesNotExist, AttributeError) as exc:
             LOGGER.warning(
                 "permission doesn't exist",
@@ -363,6 +375,48 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
                     "https://docs.goauthentik.io/troubleshooting/missing_permission"
                 ),
             ).with_exception(exc).set_user(user).save()
+            return
+        with transaction.atomic():
+            role = user.get_managed_role(create=True)
+            existing_model = set(
+                RoleModelPermission.objects.filter(role=role).values_list(
+                    "permission_id", flat=True
+                )
+            )
+            existing_obj = {
+                (perm_id, object_pk): pk
+                for pk, perm_id, object_pk in RoleObjectPermission.objects.filter(
+                    role=role
+                ).values_list("pk", "permission_id", "object_pk")
+            }
+            if stale := existing_model - model_perms.keys():
+                RoleModelPermission.objects.filter(role=role, permission_id__in=stale).delete()
+            if stale := [pk for key, pk in existing_obj.items() if key not in obj_perms]:
+                RoleObjectPermission.objects.filter(pk__in=stale).delete()
+            # Sorted, so concurrent rebuilds insert shared rows in the same order
+            RoleModelPermission.objects.bulk_create(
+                [
+                    RoleModelPermission(
+                        role=role,
+                        permission=model_perms[perm_id],
+                        content_type_id=model_perms[perm_id].content_type_id,
+                    )
+                    for perm_id in sorted(model_perms.keys() - existing_model)
+                ],
+                ignore_conflicts=True,
+            )
+            RoleObjectPermission.objects.bulk_create(
+                [
+                    RoleObjectPermission(
+                        role=role,
+                        permission=obj_perms[key],
+                        content_type_id=obj_perms[key].content_type_id,
+                        object_pk=key[1],
+                    )
+                    for key in sorted(obj_perms.keys() - existing_obj.keys())
+                ],
+                ignore_conflicts=True,
+            )
         LOGGER.debug(
             "Updated service account's permissions",
             obj_perms=user.get_all_obj_perms_on_managed_role(),
