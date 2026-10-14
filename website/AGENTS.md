@@ -113,6 +113,10 @@ The one rule the linters and spell checker cannot enforce, and the one most ofte
 3. **Do not edit the integrations sidebar** — it is auto-generated from `categories.mjs`.
 4. Run `make integrations` before pushing.
 
+### Release notes
+
+Each release page (`docs/releases/<year>/v<version>.mdx`) holds only hand-written content. Its "Minor changes/fixes" and "API Changes" sections import generated partials (`_v<version>-changelog.mdx` and `_v<version>-api-changes.mdx`), which `make gen-changelog version=<x.y.z>` and `make gen-diff version=<x.y.z>` write. Don't edit the partials by hand; the spell checker skips them. Patch releases add their `## Fixed in <x.y.z>` section to the same changelog partial.
+
 ### Adding a glossary term
 
 Create `docs/core/glossary/terms/<term>.mdx` with `sidebar_custom_props` frontmatter (`termName`, `tags`, optional `authentikSpecific`, `shortDescription`, optional `longDescription`). See `writing-documentation.mdx` for the field reference.

@@ -4,6 +4,9 @@ slug: "/releases/2026.11"
 draft: true
 ---
 
+import Changelog from "./_v2026.11-changelog.mdx";
+import APIChanges from "./_v2026.11-api-changes.mdx";
+
 ## Highlights
 
 - **Path-based URLs**: The Admin and User interfaces now use regular URL paths instead of `#/` fragments, and existing bookmarks are redirected automatically.
@@ -262,8 +265,8 @@ The `AUTHENTIK_POSTGRESQL__CONN_OPTIONS` setting and its read replica and direct
 
 ## Minor changes/fixes
 
-<!-- _Insert the output of `make gen-changelog` here_ -->
+<Changelog />
 
 ## API Changes
 
-<!-- _Insert output of `make gen-diff` here_ -->
+<APIChanges />
