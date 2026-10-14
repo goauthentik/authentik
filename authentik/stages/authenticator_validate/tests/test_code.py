@@ -6,7 +6,6 @@ from freezegun import freeze_time
 from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.flows.planner import FlowPlan
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.generators import generate_id
@@ -17,7 +16,6 @@ from authentik.stages.authenticator_static.models import StaticDevice, StaticTok
 from authentik.stages.authenticator_totp.models import TOTPDevice
 from authentik.stages.authenticator_validate.challenge import validate_challenge_code
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
-from authentik.stages.authenticator_validate.stage import PLAN_CONTEXT_DEVICE_CHALLENGES
 
 
 @freeze_time("2026-10-08 12:00:00")
@@ -44,13 +42,12 @@ class ValidateChallengeCodeTests(TestCase):
             static_token.token,
         ]
 
-    def _view(self, classes, challenges):
+    def _view(self, classes):
         stage = AuthenticatorValidateStage.objects.create(
             name=generate_id(), device_classes=classes
         )
-        plan = FlowPlan(flow_pk=generate_id(), context={PLAN_CONTEXT_DEVICE_CHALLENGES: challenges})
         return StageView(
-            FlowExecutorView(current_stage=stage, plan=plan),
+            FlowExecutorView(current_stage=stage),
             request=RequestFactory().get("/"),
         )
 
@@ -59,12 +56,10 @@ class ValidateChallengeCodeTests(TestCase):
         for device, token in zip(self.devices, self.tokens, strict=True):
             device_class = DeviceClasses.from_model_label(device.model_label())
             with self.subTest(device_class=device_class):
-                view = self._view(
-                    [DeviceClasses.WEBAUTHN],
-                    [{"device_class": device_class, "device_uid": str(device.pk)}],
-                )
+                view = self._view([DeviceClasses.WEBAUTHN])
+                challenges = [{"device_class": device_class, "device_uid": str(device.pk)}]
                 with self.assertRaises(ValidationError):
-                    validate_challenge_code(token, view, self.user)
+                    validate_challenge_code(token, view, self.user, challenges)
                 device.refresh_from_db()
                 self.assertEqual(device.throttling_failure_count, 0)
                 # Rejection must not consume or otherwise invalidate the token.
@@ -76,7 +71,7 @@ class ValidateChallengeCodeTests(TestCase):
             device_class = DeviceClasses.from_model_label(device.model_label())
             with self.subTest(device_class=device_class):
                 with self.assertRaises(ValidationError):
-                    validate_challenge_code(token, self._view([device_class], []), self.user)
+                    validate_challenge_code(token, self._view([device_class]), self.user, [])
                 device.refresh_from_db()
                 self.assertEqual(device.throttling_failure_count, 0)
                 self.assertTrue(device.verify_token(token))
@@ -86,18 +81,16 @@ class ValidateChallengeCodeTests(TestCase):
         for device, token in zip(self.devices[:2], self.tokens[:2], strict=True):
             device_class = DeviceClasses.from_model_label(device.model_label())
             with self.subTest(device_class=device_class):
-                view = self._view(
-                    [device_class],
-                    [{"device_class": device_class, "device_uid": str(device.pk + 1)}],
-                )
+                view = self._view([device_class])
+                challenges = [{"device_class": device_class, "device_uid": str(device.pk + 1)}]
                 with self.assertRaises(ValidationError):
-                    validate_challenge_code(token, view, self.user)
+                    validate_challenge_code(token, view, self.user, challenges)
                 device.refresh_from_db()
                 self.assertEqual(device.throttling_failure_count, 0)
-                view.executor.plan.context[PLAN_CONTEXT_DEVICE_CHALLENGES][0]["device_uid"] = str(
-                    device.pk
+                challenges[0]["device_uid"] = str(device.pk)
+                self.assertEqual(
+                    validate_challenge_code(token, view, self.user, challenges), device
                 )
-                self.assertEqual(validate_challenge_code(token, view, self.user), device)
 
     def test_totp_static_challenges_are_class_wide(self):
         """A single challenge permits all enrolled devices of an allowed TOTP/static class."""
@@ -105,8 +98,8 @@ class ValidateChallengeCodeTests(TestCase):
             device_class = DeviceClasses.from_model_label(device.model_label())
             with self.subTest(device_class=device_class):
                 other = type(device).objects.create(user=self.user)
-                view = self._view(
-                    [DeviceClasses.TOTP, DeviceClasses.STATIC],
-                    [{"device_class": device_class, "device_uid": str(other.pk)}],
+                view = self._view([DeviceClasses.TOTP, DeviceClasses.STATIC])
+                challenges = [{"device_class": device_class, "device_uid": str(other.pk)}]
+                self.assertEqual(
+                    validate_challenge_code(token, view, self.user, challenges), device
                 )
-                self.assertEqual(validate_challenge_code(token, view, self.user), device)

@@ -141,16 +141,15 @@ def select_challenge_email(request: HttpRequest, device: EmailDevice):
     device.stage.send(device)
 
 
-def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Device:
+def validate_challenge_code(
+    code: str, stage_view: StageView, user: User, challenges: list[dict]
+) -> Device:
     """Validate code-based challenges against eligible devices.
 
     TOTP and static challenges represent all of the user's devices of that class,
     while email and SMS challenges are bound to a specific device.
     """
-    from authentik.stages.authenticator_validate.stage import PLAN_CONTEXT_DEVICE_CHALLENGES
-
     stage = stage_view.executor.current_stage
-    challenges = stage_view.executor.plan.context.get(PLAN_CONTEXT_DEVICE_CHALLENGES, [])
     class_wide_challenges = {
         challenge["device_class"]
         for challenge in challenges

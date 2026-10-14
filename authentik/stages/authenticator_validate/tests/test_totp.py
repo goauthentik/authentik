@@ -11,7 +11,6 @@ from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowDesignation, FlowStageBinding, NotConfiguredAction
-from authentik.flows.planner import FlowPlan
 from authentik.flows.stage import StageView
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import FlowExecutorView
@@ -24,10 +23,7 @@ from authentik.stages.authenticator_validate.challenge import (
     validate_challenge_code,
 )
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
-from authentik.stages.authenticator_validate.stage import (
-    COOKIE_NAME_MFA,
-    PLAN_CONTEXT_DEVICE_CHALLENGES,
-)
+from authentik.stages.authenticator_validate.stage import COOKIE_NAME_MFA
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
 
@@ -300,13 +296,10 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
             device_classes=[DeviceClasses.TOTP],
         )
         self.assertEqual(get_challenge_for_device(request, stage, totp_device), {})
-        plan = FlowPlan(
-            flow_pk=str(self.flow.pk),
-            context={PLAN_CONTEXT_DEVICE_CHALLENGES: [{"device_class": DeviceClasses.TOTP}]},
-        )
         with self.assertRaises(ValidationError):
             validate_challenge_code(
                 "1234",
-                StageView(FlowExecutorView(current_stage=stage, plan=plan), request=request),
+                StageView(FlowExecutorView(current_stage=stage), request=request),
                 self.user,
+                [{"device_class": DeviceClasses.TOTP}],
             )

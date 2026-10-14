@@ -6,7 +6,6 @@ from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowStageBinding
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import StageView
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import FlowExecutorView
@@ -21,10 +20,6 @@ from authentik.stages.authenticator_validate.challenge import validate_challenge
 from authentik.stages.authenticator_validate.models import (
     AuthenticatorValidateStage,
     DeviceClasses,
-)
-from authentik.stages.authenticator_validate.stage import (
-    PLAN_CONTEXT_DEVICE_CHALLENGES,
-    AuthenticatorValidateStageView,
 )
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
@@ -101,12 +96,7 @@ class ValidateChallengeCodeThrottlingTests(FlowTestCase):
 
     def _stage_view(self, validate_stage: AuthenticatorValidateStage) -> StageView:
         request = self.request_factory.get("/")
-        plan = FlowPlan(flow_pk=generate_id(), context={PLAN_CONTEXT_PENDING_USER: self.user})
-        view = AuthenticatorValidateStageView(
-            FlowExecutorView(current_stage=validate_stage, plan=plan), request=request
-        )
-        plan.context[PLAN_CONTEXT_DEVICE_CHALLENGES] = view.get_device_challenges()
-        return view
+        return StageView(FlowExecutorView(current_stage=validate_stage), request=request)
 
     def _email_device(self, email: str = "throttle@authentik.local") -> EmailDevice:
         return EmailDevice.objects.create(
@@ -129,8 +119,9 @@ class ValidateChallengeCodeThrottlingTests(FlowTestCase):
         stage = self._validate_stage(email_otp_throttling_factor=3)
         device = self._email_device()
         device.generate_token()
+        challenges = [{"device_class": DeviceClasses.EMAIL, "device_uid": str(device.pk)}]
         with self.assertRaises(ValidationError):
-            validate_challenge_code("000000", self._stage_view(stage), self.user)
+            validate_challenge_code("000000", self._stage_view(stage), self.user, challenges)
         device.refresh_from_db()
         self.assertEqual(device.throttling_failure_count, 1)
         # verify_is_allowed must compute the delay using factor=3 (3 * 2^0 = 3s).
@@ -146,10 +137,11 @@ class ValidateChallengeCodeThrottlingTests(FlowTestCase):
         device = self._email_device()
         device.generate_token()
         token = device.token
+        challenges = [{"device_class": DeviceClasses.EMAIL, "device_uid": str(device.pk)}]
         for _ in range(10):
             with self.assertRaises(ValidationError):
-                validate_challenge_code("000000", self._stage_view(stage), self.user)
-        matched = validate_challenge_code(token, self._stage_view(stage), self.user)
+                validate_challenge_code("000000", self._stage_view(stage), self.user, challenges)
+        matched = validate_challenge_code(token, self._stage_view(stage), self.user, challenges)
         self.assertEqual(matched.pk, device.pk)
 
     def test_lockout_persists_across_calls(self):
@@ -161,11 +153,12 @@ class ValidateChallengeCodeThrottlingTests(FlowTestCase):
         device.generate_token()
         token = device.token
         invalid_token = "000000" if token != "000000" else "111111"  # nosec
+        challenges = [{"device_class": DeviceClasses.EMAIL, "device_uid": str(device.pk)}]
         with self.assertRaises(ValidationError):
-            validate_challenge_code(invalid_token, self._stage_view(stage), self.user)
+            validate_challenge_code(invalid_token, self._stage_view(stage), self.user, challenges)
         # Immediately try with the correct token: lockout still active, attempt must be rejected.
         with self.assertRaises(ValidationError):
-            validate_challenge_code(token, self._stage_view(stage), self.user)
+            validate_challenge_code(token, self._stage_view(stage), self.user, challenges)
         device.refresh_from_db()
         # Token wasn't consumed (verification never ran), and counter didn't get incremented.
         self.assertEqual(device.token, token)
