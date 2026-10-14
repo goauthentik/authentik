@@ -61,7 +61,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
             }
             .chart-column ak-charts-admin-login-authorization {
                 flex: 1;
-                min-height: 37em;
+                min-height: 30rem;
             }
             @media (min-width: 1200px) {
                 /* Size the row from the chart column only, so the events list
@@ -73,11 +73,11 @@ export class AdminOverviewPage extends AdminOverviewBase {
             }
             .bottom-row {
                 flex: 1;
-                min-height: 15em;
+                min-height: 25em;
                 align-content: stretch;
             }
             .card-container {
-                max-height: 10em;
+                max-height: 10rem;
             }
             .ak-external-link {
                 display: inline-block;
