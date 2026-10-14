@@ -1,13 +1,13 @@
 """Endpoint tasks"""
 
-from typing import Any
+lazy from typing import Any
 
-from django.utils.translation import gettext_lazy as _
-from dramatiq.actor import actor
-from structlog.stdlib import get_logger
+lazy from django.utils.translation import gettext_lazy as _
+lazy from dramatiq.actor import actor
+lazy from structlog.stdlib import get_logger
 
-from authentik.endpoints.controller import Capabilities
-from authentik.endpoints.models import Connector
+lazy from authentik.endpoints.controller import Capabilities
+lazy from authentik.endpoints.models import Connector
 
 LOGGER = get_logger()
 

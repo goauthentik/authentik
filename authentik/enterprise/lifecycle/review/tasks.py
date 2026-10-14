@@ -1,10 +1,10 @@
-from django.utils.translation import gettext_lazy as _
-from dramatiq import actor
+lazy from django.utils.translation import gettext_lazy as _
+lazy from dramatiq import actor
 
-from authentik.core.models import User
-from authentik.enterprise.lifecycle.review.models import LifecycleRule
-from authentik.events.models import Event, Notification, NotificationTransport
-from authentik.tasks.middleware import CurrentTask
+lazy from authentik.core.models import User
+lazy from authentik.enterprise.lifecycle.review.models import LifecycleRule
+lazy from authentik.events.models import Event, Notification, NotificationTransport
+lazy from authentik.tasks.middleware import CurrentTask
 
 
 @actor(description=_("Dispatch tasks to apply lifecycle rules."))

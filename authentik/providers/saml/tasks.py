@@ -1,15 +1,17 @@
 """SAML Provider tasks"""
 
-import requests
-from django.contrib.auth import get_user_model
-from dramatiq.actor import actor
-from structlog.stdlib import get_logger
+lazy import requests
+lazy from django.contrib.auth import get_user_model
+lazy from dramatiq.actor import actor
+lazy from structlog.stdlib import get_logger
 
-from authentik.events.models import Event, EventAction
-from authentik.providers.saml.models import SAMLProvider
-from authentik.providers.saml.processors.logout_request import LogoutRequestProcessor
-from authentik.providers.saml.processors.logout_request_parser import LogoutRequest
-from authentik.providers.saml.processors.logout_response_processor import LogoutResponseProcessor
+lazy from authentik.events.models import Event, EventAction
+lazy from authentik.providers.saml.models import SAMLProvider
+lazy from authentik.providers.saml.processors.logout_request import LogoutRequestProcessor
+lazy from authentik.providers.saml.processors.logout_request_parser import LogoutRequest
+lazy from authentik.providers.saml.processors.logout_response_processor import (
+    LogoutResponseProcessor,
+)
 
 LOGGER = get_logger()
 User = get_user_model()

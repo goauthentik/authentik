@@ -1,13 +1,13 @@
 """OAuth2 Provider Tasks"""
 
-from django.utils.translation import gettext_lazy as _
-from dramatiq.actor import actor
-from structlog.stdlib import get_logger
+lazy from django.utils.translation import gettext_lazy as _
+lazy from dramatiq.actor import actor
+lazy from structlog.stdlib import get_logger
 
-from authentik.lib.utils.http import get_http_session
-from authentik.providers.oauth2.models import OAuth2LogoutMethod, OAuth2Provider
-from authentik.providers.oauth2.utils import create_logout_token
-from authentik.tasks.middleware import CurrentTask
+lazy from authentik.lib.utils.http import get_http_session
+lazy from authentik.providers.oauth2.models import OAuth2LogoutMethod, OAuth2Provider
+lazy from authentik.providers.oauth2.utils import create_logout_token
+lazy from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 

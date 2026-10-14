@@ -1,31 +1,31 @@
 """Crypto tasks"""
 
-from glob import glob
-from pathlib import Path
-from sys import platform
+lazy from glob import glob
+lazy from pathlib import Path
+lazy from sys import platform
 
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.serialization import load_pem_private_key
-from cryptography.x509.base import load_pem_x509_certificate
-from django.conf import settings
-from django.utils.translation import gettext_lazy as _
-from django_dramatiq_postgres.models import TaskState
-from dramatiq.actor import actor
-from dramatiq.middleware import Middleware
-from structlog.stdlib import get_logger
-from watchdog.events import (
+lazy from cryptography.hazmat.backends import default_backend
+lazy from cryptography.hazmat.primitives.serialization import load_pem_private_key
+lazy from cryptography.x509.base import load_pem_x509_certificate
+lazy from django.conf import settings
+lazy from django.utils.translation import gettext_lazy as _
+lazy from django_dramatiq_postgres.models import TaskState
+lazy from dramatiq.actor import actor
+lazy from dramatiq.middleware import Middleware
+lazy from structlog.stdlib import get_logger
+lazy from watchdog.events import (
     FileCreatedEvent,
     FileModifiedEvent,
     FileSystemEvent,
     FileSystemEventHandler,
 )
-from watchdog.observers import Observer
+lazy from watchdog.observers import Observer
 
-from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.config import CONFIG
-from authentik.tasks.middleware import CurrentTask
-from authentik.tasks.models import Task
-from authentik.tasks.schedules.models import Schedule
+lazy from authentik.crypto.models import CertificateKeyPair
+lazy from authentik.lib.config import CONFIG
+lazy from authentik.tasks.middleware import CurrentTask
+lazy from authentik.tasks.models import Task
+lazy from authentik.tasks.schedules.models import Schedule
 
 LOGGER = get_logger()
 

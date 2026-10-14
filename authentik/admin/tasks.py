@@ -1,18 +1,18 @@
 """authentik admin tasks"""
 
-from django.core.cache import cache
-from django.utils.translation import gettext_lazy as _
-from dramatiq import actor
-from packaging.version import parse
-from requests import RequestException
-from structlog.stdlib import get_logger
+lazy from django.core.cache import cache
+lazy from django.utils.translation import gettext_lazy as _
+lazy from dramatiq import actor
+lazy from packaging.version import parse
+lazy from requests import RequestException
+lazy from structlog.stdlib import get_logger
 
-from authentik import authentik_build_hash, authentik_version
-from authentik.admin.apps import PROM_INFO
-from authentik.events.models import Event, EventAction
-from authentik.lib.config import CONFIG
-from authentik.lib.utils.http import get_http_session
-from authentik.tasks.middleware import CurrentTask
+lazy from authentik import authentik_build_hash, authentik_version
+lazy from authentik.admin.apps import PROM_INFO
+lazy from authentik.events.models import Event, EventAction
+lazy from authentik.lib.config import CONFIG
+lazy from authentik.lib.utils.http import get_http_session
+lazy from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 VERSION_NULL = "0.0.0"

@@ -1,19 +1,19 @@
 """Kerberos Sync tasks"""
 
-from django.core.cache import cache
-from django.utils.translation import gettext_lazy as _
-from dramatiq.actor import actor
-from structlog.stdlib import get_logger
+lazy from django.core.cache import cache
+lazy from django.utils.translation import gettext_lazy as _
+lazy from dramatiq.actor import actor
+lazy from structlog.stdlib import get_logger
 
-from authentik.lib.config import CONFIG
-from authentik.lib.sync.incoming.models import SyncOutgoingTriggerMode
-from authentik.lib.sync.outgoing.exceptions import StopSync
-from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
-from authentik.lib.sync.outgoing.signals import sync_outgoing_inhibit_dispatch
-from authentik.lib.utils.reflection import all_subclasses
-from authentik.sources.kerberos.models import KerberosSource
-from authentik.sources.kerberos.sync import KerberosSync
-from authentik.tasks.middleware import CurrentTask
+lazy from authentik.lib.config import CONFIG
+lazy from authentik.lib.sync.incoming.models import SyncOutgoingTriggerMode
+lazy from authentik.lib.sync.outgoing.exceptions import StopSync
+lazy from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
+lazy from authentik.lib.sync.outgoing.signals import sync_outgoing_inhibit_dispatch
+lazy from authentik.lib.utils.reflection import all_subclasses
+lazy from authentik.sources.kerberos.models import KerberosSource
+lazy from authentik.sources.kerberos.sync import KerberosSync
+lazy from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 CACHE_KEY_STATUS = "goauthentik.io/sources/kerberos/status/"

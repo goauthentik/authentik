@@ -1,11 +1,14 @@
-from django.db import transaction
-from django.db.models import F
-from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
-from dramatiq import actor
+lazy from django.db import transaction
+lazy from django.db.models import F
+lazy from django.utils import timezone
+lazy from django.utils.translation import gettext_lazy as _
+lazy from dramatiq import actor
 
-from authentik.enterprise.lifecycle.offboarding.models import OffboardingStatus, UserOffboarding
-from authentik.tasks.middleware import CurrentTask
+lazy from authentik.enterprise.lifecycle.offboarding.models import (
+    OffboardingStatus,
+    UserOffboarding,
+)
+lazy from authentik.tasks.middleware import CurrentTask
 
 # Retry budget: a due offboarding is retried by dramatiq and the sweeper this
 # many times before it is marked FAILED.

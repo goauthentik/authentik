@@ -1,23 +1,23 @@
 """authentik core tasks"""
 
-from datetime import datetime, timedelta
+lazy from datetime import datetime, timedelta
 
-from django.utils.timezone import now
-from django.utils.translation import gettext_lazy as _
-from django_channels_postgres.models import GroupChannel, Message
-from django_postgres_cache.tasks import clear_expired_cache
-from dramatiq.actor import actor
-from structlog.stdlib import get_logger
+lazy from django.utils.timezone import now
+lazy from django.utils.translation import gettext_lazy as _
+lazy from django_channels_postgres.models import GroupChannel, Message
+lazy from django_postgres_cache.tasks import clear_expired_cache
+lazy from dramatiq.actor import actor
+lazy from structlog.stdlib import get_logger
 
-from authentik.core.models import (
+lazy from authentik.core.models import (
     USER_ATTRIBUTE_EXPIRES,
     USER_ATTRIBUTE_GENERATED,
     User,
 )
-from authentik.lib.models import ExpiringModel
-from authentik.lib.sync.models import Sync
-from authentik.lib.utils.db import chunked_queryset
-from authentik.tasks.middleware import CurrentTask
+lazy from authentik.lib.models import ExpiringModel
+lazy from authentik.lib.sync.models import Sync
+lazy from authentik.lib.utils.db import chunked_queryset
+lazy from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 

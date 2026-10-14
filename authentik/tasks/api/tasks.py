@@ -1,37 +1,42 @@
-from typing import cast
+lazy from typing import cast
 
-from django.db.models import Count
-from django_dramatiq_postgres.models import TaskState
-from django_filters.filters import BaseInFilter, BooleanFilter, MultipleChoiceFilter, UUIDFilter
-from django_filters.filterset import FilterSet
-from dramatiq.actor import Actor
-from dramatiq.broker import get_broker
-from dramatiq.errors import ActorNotFound
-from dramatiq.message import Message
-from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import (
+lazy from django.db.models import Count
+lazy from django_dramatiq_postgres.models import TaskState
+lazy from django_filters.filters import (
+    BaseInFilter,
+    BooleanFilter,
+    MultipleChoiceFilter,
+    UUIDFilter,
+)
+lazy from django_filters.filterset import FilterSet
+lazy from dramatiq.actor import Actor
+lazy from dramatiq.broker import get_broker
+lazy from dramatiq.errors import ActorNotFound
+lazy from dramatiq.message import Message
+lazy from drf_spectacular.types import OpenApiTypes
+lazy from drf_spectacular.utils import (
     OpenApiResponse,
     extend_schema,
     extend_schema_field,
     inline_serializer,
 )
-from rest_framework.decorators import action
-from rest_framework.fields import IntegerField, ReadOnlyField, SerializerMethodField
-from rest_framework.mixins import (
+lazy from rest_framework.decorators import action
+lazy from rest_framework.fields import IntegerField, ReadOnlyField, SerializerMethodField
+lazy from rest_framework.mixins import (
     ListModelMixin,
     RetrieveModelMixin,
 )
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.request import Request
-from rest_framework.response import Response
-from rest_framework.utils.serializer_helpers import ReturnList
-from rest_framework.viewsets import GenericViewSet
-from structlog.stdlib import get_logger
+lazy from rest_framework.permissions import IsAuthenticated
+lazy from rest_framework.request import Request
+lazy from rest_framework.response import Response
+lazy from rest_framework.utils.serializer_helpers import ReturnList
+lazy from rest_framework.viewsets import GenericViewSet
+lazy from structlog.stdlib import get_logger
 
-from authentik.core.api.utils import ModelSerializer
-from authentik.events.logs import LogEventSerializer
-from authentik.rbac.decorators import permission_required
-from authentik.tasks.models import Task, TaskStatus
+lazy from authentik.core.api.utils import ModelSerializer
+lazy from authentik.events.logs import LogEventSerializer
+lazy from authentik.rbac.decorators import permission_required
+lazy from authentik.tasks.models import Task, TaskStatus
 
 LOGGER = get_logger()
 
