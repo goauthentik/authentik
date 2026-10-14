@@ -1,5 +1,7 @@
 from django.http import Http404, HttpResponse
 from django.test import TestCase
+from django.urls import reverse
+from django.utils.http import urlencode
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, Provider
@@ -10,6 +12,7 @@ from authentik.core.tests.utils import (
 )
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.lib.generators import generate_id
+from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.models import PolicyBinding
 from authentik.policies.views import (
     PolicyAccessView,
@@ -114,3 +117,19 @@ class TestPolicyViews(TestCase):
         res = TestView.as_view()(req)
         self.assertEqual(res.status_code, 302)
         self.assertEqual(res.url, "/if/flow/default-authentication-flow/?next=%2F")
+
+
+class TestAccessDeniedResponse(TestCase):
+    """Test AccessDeniedResponse"""
+
+    def test_cancel_preserves_next(self):
+        """Not you? restarts authentication and returns to the denied request"""
+        path = "/application/o/authorize/?client_id=foo&state=bar"
+        req = RequestFactory().get(path)
+        req.user = create_test_user()
+        req.brand = create_test_brand()
+        context = AccessDeniedResponse(req).resolve_context({})
+        self.assertEqual(
+            context["cancel"],
+            reverse("authentik_flows:default-authentication") + "?" + urlencode({"next": path}),
+        )
