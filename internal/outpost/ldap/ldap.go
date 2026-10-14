@@ -42,6 +42,7 @@ func NewServer(ac *ak.APIController) ak.Outpost {
 
 	tlsConfig := utils.GetTLSConfig()
 	tlsConfig.GetCertificate = ls.getCertificates
+	tlsConfig.ClientAuth = tls.RequestClientCert
 	s.StartTLS = tlsConfig
 
 	ls.s = s

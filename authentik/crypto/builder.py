@@ -104,7 +104,10 @@ class CertificateBuilder:
         )
         if alt_names:
             self.__builder = self.__builder.add_extension(
-                x509.SubjectAlternativeName(alt_names), critical=True
+                # Not marked as critical as we always set a full subject name
+                # https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.6
+                x509.SubjectAlternativeName(alt_names),
+                critical=False,
             )
         algo = hashes.SHA256()
         # EdDSA doesn't take a hash algorithm
