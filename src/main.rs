@@ -70,17 +70,17 @@ fn main() -> Result<()> {
     match &cli.command {
         #[cfg(feature = "core")]
         Command::AllInOne(_) => {
-            boot::boot()?;
+            boot::bootstrap()?;
             Mode::set(Mode::AllInOne)?;
         }
         #[cfg(feature = "core")]
         Command::Server(_) => {
-            boot::boot()?;
+            boot::bootstrap()?;
             Mode::set(Mode::Server)?;
         }
         #[cfg(feature = "core")]
         Command::Worker(_) => {
-            boot::boot()?;
+            boot::bootstrap()?;
             Mode::set(Mode::Worker)?;
         }
         #[cfg(feature = "proxy")]
