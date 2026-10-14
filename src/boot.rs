@@ -247,8 +247,14 @@ fn wait_for_db() -> Result<()> {
     Ok(())
 }
 
+fn run_migrations() -> Result<()> {
+    run(Command::new("python").args(["-m", "lifecycle.migrate"]))?;
+    info!("migrations completed");
+    Ok(())
+}
+
 /// Get the process ready to run the server or the worker.
-pub(crate) fn boot() -> Result<()> {
+pub(crate) fn bootstrap() -> Result<()> {
     let prometheus_dir = prometheus_dir()?;
     let mut env = Vec::new();
     if std::env::var_os(PROMETHEUS_MULTIPROC_DIR).as_deref() != Some(prometheus_dir.as_os_str()) {
@@ -267,7 +273,8 @@ pub(crate) fn boot() -> Result<()> {
         cmd.args(std::env::args_os().skip(1)).envs(env);
         return exec(cmd);
     }
-    wait_for_db()
+    wait_for_db()?;
+    run_migrations()
 }
 
 pub(crate) fn manage(args: &Manage) -> Result<()> {
