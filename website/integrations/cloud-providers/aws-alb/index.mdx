@@ -8,9 +8,9 @@ import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
 
 ## What is an AWS Application Load Balancer?
 
-> An Application Load Balancer distributes incoming application traffic across multiple targets, such as EC2 instances, in multiple Availability Zones. Listener rules can authenticate users through an identity provider that is compliant with OpenID Connect (OIDC) before requests are forwarded to the targets.
+> Application Load Balancer operates at the request level (layer 7), routing traffic to targets (EC2 instances, containers, IP addresses, and Lambda functions) based on the content of the request. Ideal for advanced load balancing of HTTP and HTTPS traffic, Application Load Balancer provides advanced request routing targeted at delivery of modern application architectures, including microservices and container-based applications.
 >
-> -- https://docs.aws.amazon.com/elasticloadbalancing/latest/application/
+> -- https://aws.amazon.com/elasticloadbalancing/application-load-balancer/
 
 ## Preparation
 
@@ -51,11 +51,10 @@ To support the integration of the Application Load Balancer with authentik, you 
         - Optionally set the **Launch URL** to `https://app.company`.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Set **Client type** to `Confidential`.
         - Note the **Client ID** and **Client Secret** values because they are required later.
         - Add a **Redirect URI** of type `Strict` `Authorization` as `https://app.company/oauth2/idpresponse`.
         - Select an available RSA **Signing Key**.
-        - Under **Advanced protocol settings** > **Scopes**, make sure that the `openid`, `email`, and `profile` scope mappings are in **Selected Scopes**. These are selected by default.
+        - Under **Advanced protocol settings**, clear **Include claims in id_token**. The Application Load Balancer reads user claims from the user info endpoint, and leaving this setting enabled repeats the claims in the access token, which counts toward the load balancer's size limit.
     - **Configure Bindings**: bind the groups whose members should be allowed to access the application. authentik denies the authorization request for users who do not match a binding, so they cannot start a new session on the Application Load Balancer. Existing sessions are not immediately invalidated, so set a shorter `SessionTimeout` on the listener rule if access changes need to take effect sooner.
 3. Click **Submit** to save the new application and provider.
 
@@ -83,7 +82,7 @@ You can confirm these values in the authentik Admin interface under **Applicatio
 4. On the **Rules** tab, click **Add rule**. To protect an existing rule instead, select it and edit it.
 5. Add the conditions that should match requests for your application, for example a **Host header** condition with the value `app.company`.
 6. For **Pre-routing action**, select **Authenticate user**, choose OIDC as the identity provider, and enter the values from the table above.
-7. In the advanced authentication settings, set the action on unauthenticated requests to `authenticate`, and set the scope to `openid email profile`. The default scope is `openid` only.
+7. In the advanced authentication settings, set the scope to `openid email profile`. The default scope is `openid` only.
 8. For **Routing action**, select **Forward to target groups** and choose the target group of your application.
 9. Click **Next**, enter a **Priority**, and click **Next** again.
 10. On the **Review and create** page, click **Create**.
@@ -119,13 +118,16 @@ Resources:
                       ClientId: <client_id>
                       ClientSecret: !Ref AuthentikClientSecret
                       Scope: openid email profile
-                      OnUnauthenticatedRequest: authenticate
                 - Type: forward
                   Order: 2
                   TargetGroupArn: !Ref AppTargetGroup
 ```
 
 `HttpsListener` and `AppTargetGroup` refer to an existing HTTPS listener and target group in the same template. Optionally, set `SessionCookieName` and `SessionTimeout`. The default session timeout is 604800 seconds (7 days). If several applications share one load balancer, give each listener rule with an authenticate action a unique `SessionCookieName`.
+
+:::warning User claims size limit
+If the user claims and the access token from authentik are larger than 11 KB in total, the Application Load Balancer returns an HTTP 500 error and increments the `ELBAuthUserClaimsSizeExceeded` metric. The `profile` scope includes the name of every group that the user is a member of, so users who are members of many groups can exceed this limit, even with **Include claims in id_token** cleared. In that case, create a custom [scope mapping](/docs/add-secure-apps/providers/oauth2/#scope-mappings) with the scope name `profile` that returns fewer claims, and select it on the provider instead of `authentik default OAuth Mapping: OpenID 'profile'`.
+:::
 
 ## Information passed to your application
 
@@ -147,7 +149,7 @@ The Application Load Balancer places the `signer`, `iss`, `client`, and `exp` fi
 6. Confirm that the `client` field matches the authentik **Client ID**. This matters when several applications share one load balancer.
 7. Identify the user with the `sub` claim from the verified payload.
 
-AWS provides the [aws-jwt-verify](https://github.com/awslabs/aws-jwt-verify) library, which verifies the signature and checks the `signer` and `client` header fields. It checks `iss` and `exp` in the JWT payload rather than the header, so validate the header `iss` and `exp` fields yourself, for example in the library's `customJwtCheck` function, which receives the decoded header.
+For JavaScript and TypeScript applications, the `AlbJwtVerifier` class from the [aws-jwt-verify](https://github.com/awslabs/aws-jwt-verify) library performs these checks. Set `albArn` to the ARN of your Application Load Balancer, `issuer` to `https://authentik.company/application/o/<application_slug>/`, and `clientId` to the authentik **Client ID**.
 
 AWS also recommends that you configure your targets' security group to only accept traffic from the load balancer's security group, so that clients cannot send these headers directly to your targets.
 
