@@ -11,7 +11,8 @@ import { aki } from "#common/api/client";
 import { formatIntentLabel } from "#common/labels";
 
 import { IconTokenCopyButton } from "#elements/buttons/IconTokenCopyButton";
-import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
+import { IconTokenEditButton } from "#elements/buttons/IconTokenEditButton";
+import { ModalInvokerButton } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -96,16 +97,7 @@ export class TokenListPage extends TablePage<Token> {
             Timestamp(item.expires && item.expiring ? item.expires : null),
             html`${formatIntentLabel(item.intent ?? IntentEnum.Api)}`,
             html`<div class="ak-c-table__actions">
-                ${!item.managed
-                    ? IconEditButton(TokenForm, item.identifier, item.identifier)
-                    : html`<button class="pf-c-button pf-m-plain" disabled type="button">
-                          <pf-tooltip
-                              position="top"
-                              content=${msg("Editing is disabled for managed tokens")}
-                          >
-                              <i class="fas fa-edit" aria-hidden="true"></i>
-                          </pf-tooltip>
-                      </button>`}
+                ${IconTokenEditButton(item)}
                 ${IconPermissionButton(item.identifier, {
                     model: ModelEnum.AuthentikCoreToken,
                     objectPk: item.pk,
