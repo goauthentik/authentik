@@ -42,7 +42,10 @@ class EmailTemplate(SerializerModel, ManagedModel):
 
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     path = models.TextField(
-        help_text=_("Path used to reference this template, similar to file paths on disk.")
+        # sorts byte-by-byte, not defined by language. not having this can cause paths
+        # with similar names to be ordered incorrectly
+        db_collation="C",
+        help_text=_("Path used to reference this template, similar to file paths on disk."),
     )
     description = models.TextField(blank=True, default="")
     body = models.TextField(blank=True, default="")

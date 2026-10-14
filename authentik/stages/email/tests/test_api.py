@@ -79,6 +79,36 @@ class TestEmailTemplateAPI(APITestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.json()["path"], "custom/template.html")
 
+    def test_path_ordering(self):
+        """Test templates are ordered by pseudo folder"""
+        prefix = generate_id()
+        for path in (
+            f"{prefix}/template-1",
+            f"{prefix}/template_2",
+            f"{prefix}/template/3",
+            f"{prefix}/template-4",
+            f"{prefix}/template_5",
+            f"{prefix}/template/6",
+        ):
+            EmailTemplate.objects.create(path=path, body="")
+
+        response = self.client.get(
+            reverse("authentik_api:emailtemplate-list"),
+            data={"search": prefix, "ordering": "path"},
+        )
+
+        self.assertEqual(
+            [template["path"] for template in response.json()["results"]],
+            [
+                f"{prefix}/template-1",
+                f"{prefix}/template-4",
+                f"{prefix}/template/3",
+                f"{prefix}/template/6",
+                f"{prefix}/template_2",
+                f"{prefix}/template_5",
+            ],
+        )
+
     @apply_blueprint("system/email-templates.yaml")
     def test_path_unique_per_scope(self):
         """Test a custom template can share a built-in's path, but not another custom's"""

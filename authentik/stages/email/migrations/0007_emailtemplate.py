@@ -148,6 +148,7 @@ class Migration(migrations.Migration):
                     "path",
                     models.TextField(
                         help_text="Path used to reference this template, similar to file paths on disk.",
+                        db_collation="C",
                     ),
                 ),
                 ("description", models.TextField(blank=True, default="")),
