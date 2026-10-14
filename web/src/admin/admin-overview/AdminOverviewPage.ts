@@ -132,8 +132,9 @@ export class AdminOverviewPage extends AdminOverviewBase {
             "card-container": true,
             "pf-l-grid__item": true,
             "pf-m-6-col": true,
-            "pf-m-3-col-on-md": true,
-            "pf-m-3-col-on-xl": true,
+            // 4 cards with FIPS, 3 without; either way fill the row
+            "pf-m-3-col-on-md": isEnterprise,
+            "pf-m-4-col-on-md": !isEnterprise,
         };
 
         return html`<div class=${classMap(classes)}>
