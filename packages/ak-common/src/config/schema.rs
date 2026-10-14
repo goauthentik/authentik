@@ -151,6 +151,8 @@ pub struct Config {
 
     #[serde(deserialize_with = "deserialize_str_or_bool")]
     pub debug: bool,
+    #[serde(deserialize_with = "deserialize_str_or_bool")]
+    pub debugger: bool,
     #[serde(default)]
     pub secret_key: String,
 

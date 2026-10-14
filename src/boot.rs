@@ -7,10 +7,11 @@ use std::{
         process::CommandExt as _,
     },
     path::{Path, PathBuf},
-    process::{Command, Stdio},
+    process::Command,
     time::Duration,
 };
 
+use ak_common::config;
 use argh::FromArgs;
 use eyre::{Result, WrapErr as _, eyre};
 use nix::{
@@ -110,15 +111,6 @@ fn run(cmd: &mut Command) -> Result<()> {
         ));
     }
     Ok(())
-}
-
-/// Whether `AUTHENTIK_DEBUGGER` is on.
-fn debugger_enabled() -> bool {
-    Command::new("python")
-        .args(["-m", "authentik.lib.config", "debugger"])
-        .stderr(Stdio::null())
-        .output()
-        .is_ok_and(|output| output.stdout.trim_ascii() == b"True")
 }
 
 /// Install what `test-all` and `AUTHENTIK_DEBUGGER` need.
@@ -260,7 +252,8 @@ pub(crate) fn boot() -> Result<()> {
         env.push((PROMETHEUS_MULTIPROC_DIR, prometheus_dir.clone()));
     }
     if getuid().is_root() {
-        if debugger_enabled() {
+        config::init()?;
+        if config::get().debugger {
             prepare_debug()?;
         }
         env.push(("HOME", become_authentik(&prometheus_dir)?));
