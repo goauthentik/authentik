@@ -14,7 +14,6 @@ import {
 } from "./navigation/sidebar.js";
 
 import { isAPIResultReady } from "#common/api/responses";
-import { configureSentry } from "#common/sentry/index";
 import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
 
@@ -129,8 +128,6 @@ export class AdminInterface extends WithCapabilitiesConfig(
     //#region Lifecycle
 
     constructor() {
-        configureSentry();
-
         super();
 
         WebsocketClient.connect();
