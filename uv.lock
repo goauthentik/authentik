@@ -492,7 +492,7 @@ dev = [
     { name = "daphne", specifier = "==4.2.3" },
     { name = "debugpy", specifier = "==1.8.22" },
     { name = "django-stubs", extras = ["compatible-mypy"], specifier = "==6.1.2" },
-    { name = "djangorestframework-stubs", extras = ["compatible-mypy"], specifier = "==3.17.1" },
+    { name = "djangorestframework-stubs", extras = ["compatible-mypy"], specifier = "==3.18.1" },
     { name = "drf-jsonschema-serializer", specifier = "==3.0.0" },
     { name = "freezegun", specifier = "==1.5.5" },
     { name = "importlib-metadata", specifier = "==9.0.1" },
@@ -1457,16 +1457,16 @@ wheels = [
 
 [[package]]
 name = "djangorestframework-stubs"
-version = "3.17.1"
+version = "3.18.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django-stubs" },
     { name = "types-pyyaml" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8a/4b/1bee065c6c87ee04b905732deb53acdfc43d0e5673f43a5f75ec4deb7f6f/djangorestframework_stubs-3.17.1.tar.gz", hash = "sha256:5b67655090e2976b778bad572840b732a87ab2911402530d0dca2fbf72f891c5", size = 33470, upload-time = "2026-07-28T21:27:52.071Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6b/71/a7727b07e0433da02fb1ea22994f492ecb437a1fe7be5bf952dbb545a0f5/djangorestframework_stubs-3.18.1.tar.gz", hash = "sha256:65ed4a9ea094616759a2cba4fe0ad85efe25b471b28281b790bfefb46704c64a", size = 32439, upload-time = "2026-08-25T22:49:27.506Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/86/38/6a04ffca56e24220bf37494fe9f75ce9abe8115776a90c924732bb37823a/djangorestframework_stubs-3.17.1-py3-none-any.whl", hash = "sha256:40f1f22ec1965d1caff17c66794b87799eb8f42e0628ea46b501dcd565d8a803", size = 57562, upload-time = "2026-07-28T21:27:50.58Z" },
+    { url = "https://files.pythonhosted.org/packages/f7/1c/e266828fe2b78484651667976f8539e47b4e511a266424b890f613c6b7ad/djangorestframework_stubs-3.18.1-py3-none-any.whl", hash = "sha256:a2021f45f7759b493504c2a721f112ec4fd677753590c1ba346f4ebfb49a7f03", size = 55685, upload-time = "2026-08-25T22:49:26.178Z" },
 ]
 
 [package.optional-dependencies]
