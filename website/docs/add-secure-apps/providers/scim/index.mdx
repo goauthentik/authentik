@@ -158,7 +158,7 @@ The `ServiceProviderConfig` is cached for 1 hour after it is fetched. The cache 
 
 - Patch updates
 
-    If the service provider supports [PATCH updates](https://datatracker.ietf.org/doc/html/rfc7644#section-3.5.2), authentik will use patch requests to add/remove members of groups. For all other updates, such as user updates and other group updates, PUT requests are used.
+    If the service provider supports [PATCH updates](https://datatracker.ietf.org/doc/html/rfc7644#section-3.5.2), authentik uses PATCH requests to update users and groups, and to add/remove members of groups. For users, authentik only replaces the attributes that have changed, and sets `externalId` only when it creates the user. Otherwise, authentik uses PUT requests.
 
 ### Using in conjunction with other providers
 

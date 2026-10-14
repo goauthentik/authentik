@@ -218,16 +218,6 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         )
         self._record_written_state(connection, payload, response)
 
-    def _record_written_state(
-        self, connection: SCIMProviderGroup, payload: dict[str, Any], response: dict[str, Any]
-    ):
-        """Remember what we wrote to the remote system, so that writes which would not change
-        anything can be skipped. The response takes precedence over the sent payload, but cannot
-        be recorded alone: servers may answer 204 No Content or omit attributes such as the
-        member list."""
-        connection.attributes = payload | response
-        connection.save()
-
     def _update_put(self, group: Group, payload: dict[str, Any], connection: SCIMProviderGroup):
         """Update a group via PUT request"""
         try:
