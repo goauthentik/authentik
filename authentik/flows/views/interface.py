@@ -43,7 +43,8 @@ class FlowInterfaceView(InterfaceView):
             try:
                 flow_title = (flow_title % defaultdict(str)).strip()
             except TypeError, ValueError:
-                pass
+                # If title formatting is invalid, keep the original title unchanged.
+                flow_title = flow.title
         kwargs["flow"] = flow_title
         kwargs["flow_background_url"] = flow.background_url(self.request)
         kwargs["inspector"] = "inspector" in self.request.GET
