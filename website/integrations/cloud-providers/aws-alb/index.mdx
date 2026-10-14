@@ -1,0 +1,166 @@
+---
+title: Integrate with Amazon Web Services (Application Load Balancer)
+sidebar_label: Amazon Web Services (Application Load Balancer)
+support_level: community
+---
+
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+
+## What is an AWS Application Load Balancer?
+
+> An Application Load Balancer distributes incoming application traffic across multiple targets, such as EC2 instances, in multiple Availability Zones. Listener rules can authenticate users through an identity provider that is compliant with OpenID Connect (OIDC) before requests are forwarded to the targets.
+>
+> -- https://docs.aws.amazon.com/elasticloadbalancing/latest/application/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+- `app.company` is the FQDN that users use to reach the application behind the Application Load Balancer.
+
+You need an Application Load Balancer with an HTTPS listener and a target group for your application. The `authenticate-oidc` action is only supported on HTTPS listeners.
+
+:::info Proxy provider alternative
+The Application Load Balancer maintains its own authentication session, which can remain valid until the configured `SessionTimeout`. Logging out of authentik or removing a user from a bound group does not immediately end that session. If you need logging out of authentik to end access to the application, or your application expects individual identity headers such as `X-authentik-groups`, consider the [Proxy provider](/docs/add-secure-apps/providers/proxy/) instead.
+:::
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+### Network and certificate requirements
+
+- The Application Load Balancer must be able to reach the authentik token and user info endpoints over HTTPS. It uses IPv4 only when communicating with these endpoints. Make sure that the load balancer's security groups and your VPC network ACLs allow this traffic. If authentik is only reachable over the internet, an internal load balancer, or one with the IP address type `dualstack-without-public-ipv4`, can use a NAT gateway to reach the endpoints. A NAT gateway is not required if authentik resolves to a private IPv4 address that the load balancer can reach.
+- The DNS name of authentik must be publicly resolvable, even if it resolves to a private IP address.
+- The certificate that authentik serves should be issued by a trusted public certificate authority.
+- The certificate on the HTTPS listener must cover `app.company`. Clients that request a hostname that the certificate does not match fail the TLS handshake.
+
+## authentik configuration
+
+<RedirectURI20265Note />
+
+To support the integration of the Application Load Balancer with authentik, you need to create an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) in authentik.
+
+### Create an application and provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+        - Note the application **Slug**, because it is required later.
+        - Optionally set the **Launch URL** to `https://app.company`.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set **Client type** to `Confidential`.
+        - Note the **Client ID** and **Client Secret** values because they are required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://app.company/oauth2/idpresponse`.
+        - Select an available RSA **Signing Key**.
+        - Under **Advanced protocol settings** > **Scopes**, make sure that the `openid`, `email`, and `profile` scope mappings are in **Selected Scopes**. These are selected by default.
+    - **Configure Bindings**: bind the groups whose members should be allowed to access the application. authentik denies the authorization request for users who do not match a binding, so they cannot start a new session on the Application Load Balancer. Existing sessions are not immediately invalidated, so set a shorter `SessionTimeout` on the listener rule if access changes need to take effect sooner.
+3. Click **Submit** to save the new application and provider.
+
+## Application Load Balancer configuration
+
+Add a listener rule that authenticates users with authentik and then forwards the request to your target group. Use the following values from authentik, replacing `<application_slug>` with the slug of the application that you created:
+
+| Setting                | Value                                                         |
+| ---------------------- | ------------------------------------------------------------- |
+| Issuer                 | `https://authentik.company/application/o/<application_slug>/` |
+| Authorization endpoint | `https://authentik.company/application/o/authorize/`          |
+| Token endpoint         | `https://authentik.company/application/o/token/`              |
+| User info endpoint     | `https://authentik.company/application/o/userinfo/`           |
+| Client ID              | The **Client ID** from authentik                              |
+| Client secret          | The **Client Secret** from authentik                          |
+| Scope                  | `openid email profile`                                        |
+
+You can confirm these values in the authentik Admin interface under **Applications** > **Providers** > your provider > **Overview**, or at `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`.
+
+### Configure the listener rule in the AWS Management Console
+
+1. Open the Amazon EC2 console at [https://console.aws.amazon.com/ec2/](https://console.aws.amazon.com/ec2/).
+2. In the navigation pane, choose **Load Balancers** and select your load balancer.
+3. On the **Listeners and rules** tab, click the HTTPS listener in the **Protocol:Port** column to open its detail page.
+4. On the **Rules** tab, click **Add rule**. To protect an existing rule instead, select it and edit it.
+5. Add the conditions that should match requests for your application, for example a **Host header** condition with the value `app.company`.
+6. For **Pre-routing action**, select **Authenticate user**, choose OIDC as the identity provider, and enter the values from the table above.
+7. In the advanced authentication settings, set the action on unauthenticated requests to `authenticate`, and set the scope to `openid email profile`. The default scope is `openid` only.
+8. For **Routing action**, select **Forward to target groups** and choose the target group of your application.
+9. Click **Next**, enter a **Priority**, and click **Next** again.
+10. On the **Review and create** page, click **Create**.
+
+### Configure the listener rule with CloudFormation
+
+The following `AWS::ElasticLoadBalancingV2::ListenerRule` resource authenticates requests for `app.company` with authentik and then forwards them to the target group. The `authenticate-oidc` action must have a lower `Order` than the `forward` action.
+
+```yaml
+Parameters:
+    AuthentikClientSecret:
+        Type: String
+        NoEcho: true
+
+Resources:
+    AuthentikListenerRule:
+        Type: AWS::ElasticLoadBalancingV2::ListenerRule
+        Properties:
+            ListenerArn: !Ref HttpsListener
+            Priority: 10
+            Conditions:
+                - Field: host-header
+                  Values:
+                      - app.company
+            Actions:
+                - Type: authenticate-oidc
+                  Order: 1
+                  AuthenticateOidcConfig:
+                      Issuer: https://authentik.company/application/o/<application_slug>/
+                      AuthorizationEndpoint: https://authentik.company/application/o/authorize/
+                      TokenEndpoint: https://authentik.company/application/o/token/
+                      UserInfoEndpoint: https://authentik.company/application/o/userinfo/
+                      ClientId: <client_id>
+                      ClientSecret: !Ref AuthentikClientSecret
+                      Scope: openid email profile
+                      OnUnauthenticatedRequest: authenticate
+                - Type: forward
+                  Order: 2
+                  TargetGroupArn: !Ref AppTargetGroup
+```
+
+`HttpsListener` and `AppTargetGroup` refer to an existing HTTPS listener and target group in the same template. Optionally, set `SessionCookieName` and `SessionTimeout`. The default session timeout is 604800 seconds (7 days). If several applications share one load balancer, give each listener rule with an authenticate action a unique `SessionCookieName`.
+
+## Information passed to your application
+
+After a user authenticates, the Application Load Balancer adds the following HTTP headers to the requests that it forwards to your targets:
+
+- `x-amzn-oidc-data`: the user claims from the authentik user info endpoint, in JWT format. The Application Load Balancer signs this JWT itself with ES256. It is not the ID token that authentik issued.
+- `x-amzn-oidc-accesstoken`: the access token from the authentik token endpoint, in plain text.
+- `x-amzn-oidc-identity`: the `sub` claim from the authentik user info endpoint, in plain text.
+
+Only `x-amzn-oidc-data` is signed. The other two headers are unsigned and cannot be verified by your application, so do not use them to identify users.
+
+The Application Load Balancer places the `signer`, `iss`, `client`, and `exp` fields in the JWT header. Before your application trusts any claims in `x-amzn-oidc-data`, it must:
+
+1. Read the `kid` field from the JWT header and fetch the public key from the endpoint for the load balancer's AWS Region: `https://public-keys.auth.elb.<region>.amazonaws.com/<kid>`. AWS GovCloud (US) uses different endpoints, which are listed in the AWS documentation.
+2. Verify the JWT signature with that key.
+3. Confirm that the `signer` field in the JWT header exactly matches the ARN of your Application Load Balancer.
+4. Confirm that the token has not expired, based on the `exp` field.
+5. Confirm that the `iss` field matches the authentik issuer, `https://authentik.company/application/o/<application_slug>/`.
+6. Confirm that the `client` field matches the authentik **Client ID**. This matters when several applications share one load balancer.
+7. Identify the user with the `sub` claim from the verified payload.
+
+AWS provides the [aws-jwt-verify](https://github.com/awslabs/aws-jwt-verify) library, which verifies the signature and checks the `signer` and `client` header fields. It checks `iss` and `exp` in the JWT payload rather than the header, so validate the header `iss` and `exp` fields yourself, for example in the library's `customJwtCheck` function, which receives the decoded header.
+
+AWS also recommends that you configure your targets' security group to only accept traffic from the load balancer's security group, so that clients cannot send these headers directly to your targets.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with the Application Load Balancer, open `https://app.company` in a private browser window. You should be redirected to authentik to log in. After you log in as a user who is allowed by the application bindings, the Application Load Balancer forwards you to your application. A user who is not allowed by the bindings should be denied access by authentik.
+
+## Resources
+
+- [AWS Docs - Authenticate users using an Application Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/listener-authenticate-users.html)
+- [AWS Docs - Add a listener rule for your Application Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/add-rule.html)
+- [AWS Docs - Action types for listener rules](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/rule-action-types.html)
+- [AWS Docs - SSL certificates for your Application Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/https-listener-certificates.html)
+- [AWS Docs - AuthenticateOidcActionConfig](https://docs.aws.amazon.com/elasticloadbalancing/latest/APIReference/API_AuthenticateOidcActionConfig.html)
+- [AWS Labs - aws-jwt-verify](https://github.com/awslabs/aws-jwt-verify)
+- [AWS CloudFormation - AWS::ElasticLoadBalancingV2::ListenerRule AuthenticateOidcConfig](https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-elasticloadbalancingv2-listenerrule-authenticateoidcconfig.html)
