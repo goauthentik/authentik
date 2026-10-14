@@ -64,7 +64,7 @@ Most tasks land in one subtree and have one follow-up step. Find the row, then r
 | ------------------------------------------------------------------ | ------------------------------ | ------------------------------------------------------------------------------------ |
 | Add or change a REST endpoint, model field, or serializer          | `authentik/` (Python)          | `make gen` to refresh `schema.yml` + clients, and commit the generated migration     |
 | Change UI behavior, a flow screen, or an admin page                | `web/`                         | [`web/AGENTS.md`](web/AGENTS.md) — call the API only through `@goauthentik/api`       |
-| Write or edit docs, an integration guide, or a glossary term       | `website/`                     | [`website/AGENTS.md`](website/AGENTS.md), then `make docs` / `make integrations`      |
+| Write or edit docs or an integration guide                         | `website/`                     | [`website/AGENTS.md`](website/AGENTS.md), then `make docs` / `make integrations`      |
 | Change an outpost (LDAP, proxy, RAC, RADIUS) or the front proxy    | `cmd/` + `internal/` (Go)      | `make go-test`                                                                       |
 | Change a native server/worker component or shared crate            | `src/` + `packages/ak-*` (Rust)| `make rust-test`                                                                     |
 | Seed or reconcile a managed object (flow, stage, policy, brand)    | `blueprints/` (YAML)           | prefer a blueprint over an ad-hoc data migration                                     |
