@@ -92,7 +92,13 @@ config:
                     type: noop
 ```
 
-If the authentik certificate is not signed by a public CA, add `openid_connect_idp.pemtrustedcas_filepath` with the path of the CA certificate to the `config` block.
+If the authentik certificate is not signed by a public CA, add the following to the `config` block. OpenSearch ignores `pemtrustedcas_filepath` unless `enable_ssl` is `true`.
+
+```yaml
+openid_connect_idp:
+    enable_ssl: true
+    pemtrustedcas_filepath: <path to the CA certificate>
+```
 
 ### Map entitlements to roles
 
