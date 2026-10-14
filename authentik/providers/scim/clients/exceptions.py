@@ -20,7 +20,8 @@ class SCIMRequestException(TransientSyncException):
 
     def detail(self) -> str:
         """Get human readable details of this error"""
-        if not self._response:
+        # requests.Response is falsy for 4xx/5xx responses, so check for None explicitly
+        if self._response is None:
             return self._message
         try:
             error = SCIMError.model_validate_json(self._response.text)
