@@ -1,5 +1,6 @@
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import CardStyles from "#elements/cards/AggregateCard.css";
 import { EventChart } from "#elements/charts/EventChart";
@@ -17,6 +18,7 @@ export interface ChartCardStat {
     value: string;
     delta?: string;
     tone?: "success" | "danger" | "warning";
+    tooltip?: string;
 }
 
 /**
@@ -115,7 +117,13 @@ export abstract class ChartCardWithStats extends EventChart {
         return html`<div class="stats-row">
             ${this.stats.map(
                 (stat) => html`<div class="stat">
-                    <span class="stat-label">${stat.label}</span>
+                    ${
+                        stat.tooltip
+                            ? html`<pf-tooltip content=${stat.tooltip}>
+                                  <span class="stat-label">${stat.label}</span>
+                              </pf-tooltip>`
+                            : html`<span class="stat-label">${stat.label}</span>`
+                    }
                     <span class="stat-value">${stat.value}</span>
                     ${
                         stat.delta
