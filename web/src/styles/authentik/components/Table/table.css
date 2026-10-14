@@ -59,14 +59,6 @@ td:has(ak-timestamp) {
 
 /* #region Dark Theme */
 
-:host([theme="dark"]) .pf-c-toolbar {
-    --pf-c-toolbar--BackgroundColor: var(--ak-dark-background-light);
-}
-
-:host([theme="dark"]) .pf-c-pagination {
-    --pf-c-pagination--m-bottom--BackgroundColor: var(--ak-dark-background-light);
-}
-
 :host([theme="dark"]) .pf-c-table {
     --pf-c-table--m-striped__tr--BackgroundColor: var(--pf-global--BackgroundColor--150);
 

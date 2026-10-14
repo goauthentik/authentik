@@ -1,0 +1,130 @@
+/* #region Variables */
+
+:host {
+    --ak-c-search-select__listbox--BackgroundColor: var(--pf-global--BackgroundColor--100);
+    --ak-c-search-select__listbox--BoxShadow: var(--pf-global--BoxShadow--md);
+    --ak-c-search-select__listbox--MaxHeight: 40dvh;
+    --ak-c-search-select__listbox--PaddingBlock: var(--pf-global--spacer--sm);
+    --ak-c-search-select__listbox--ZIndex: var(--pf-global--ZIndex--sm);
+
+    --ak-c-search-select__option--PaddingBlock: var(--pf-global--spacer--sm);
+    --ak-c-search-select__option--PaddingInline: var(--pf-global--spacer--md);
+    --ak-c-search-select__option--Color: var(--pf-global--Color--100);
+    --ak-c-search-select__option--m-active--BackgroundColor: var(--pf-global--BackgroundColor--200);
+    --ak-c-search-select__option--m-selected--FontWeight: var(--pf-global--FontWeight--bold);
+    --ak-c-search-select__option--m-disabled--Color: var(--pf-global--disabled-color--100);
+
+    --ak-c-search-select__description--FontSize: var(--pf-global--FontSize--xs);
+    --ak-c-search-select__description--Color: var(--pf-global--Color--200);
+
+    --ak-c-search-select__group-title--PaddingBlock: var(--pf-global--spacer--sm);
+    --ak-c-search-select__group-title--PaddingInline: var(--pf-global--spacer--md);
+    --ak-c-search-select__group-title--FontSize: var(--pf-global--FontSize--xs);
+    --ak-c-search-select__group-title--Color: var(--pf-global--Color--200);
+
+    --ak-c-search-select__action--BorderColor: var(--pf-global--BorderColor--100);
+
+    display: block;
+}
+
+/* #endregion */
+
+/* #region Input */
+
+.ak-c-search-select__input {
+    anchor-name: --ak-c-search-select__input;
+}
+
+/* #endregion */
+
+/* #region Listbox */
+
+.ak-c-search-select__listbox {
+    position-anchor: --ak-c-search-select__input;
+    position-try-fallbacks: flip-block;
+    position-visibility: anchors-visible;
+    inset: auto;
+    top: anchor(bottom);
+    left: anchor(left);
+    width: anchor-size(width);
+    max-height: var(--ak-c-search-select__listbox--MaxHeight);
+    z-index: var(--ak-c-search-select__listbox--ZIndex);
+
+    margin: 0;
+    padding-block: var(--ak-c-search-select__listbox--PaddingBlock);
+    padding-inline: 0;
+    border: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    color: inherit;
+    background-color: var(--ak-c-search-select__listbox--BackgroundColor);
+    box-shadow: var(--ak-c-search-select__listbox--BoxShadow);
+}
+
+/* #endregion */
+
+/* #region Options */
+
+.ak-c-search-select__option {
+    display: flex;
+    flex-direction: column;
+    padding-block: var(--ak-c-search-select__option--PaddingBlock);
+    padding-inline: var(--ak-c-search-select__option--PaddingInline);
+    color: var(--ak-c-search-select__option--Color);
+    cursor: pointer;
+
+    &:hover,
+    &.ak-m-active {
+        background-color: var(--ak-c-search-select__option--m-active--BackgroundColor);
+    }
+
+    &[aria-selected="true"] .ak-c-search-select__option-label {
+        font-weight: var(--ak-c-search-select__option--m-selected--FontWeight);
+    }
+
+    &[aria-disabled="true"] {
+        --ak-c-search-select__option--Color: var(--ak-c-search-select__option--m-disabled--Color);
+        cursor: default;
+    }
+}
+
+.ak-c-search-select__option-description {
+    font-size: var(--ak-c-search-select__description--FontSize);
+    color: var(--ak-c-search-select__description--Color);
+}
+
+.ak-c-search-select__option.ak-m-action {
+    position: sticky;
+    inset-block-end: calc(-1 * var(--ak-c-search-select__listbox--PaddingBlock));
+    background-color: var(--ak-c-search-select__listbox--BackgroundColor);
+    border-block-start: 1px solid var(--ak-c-search-select__action--BorderColor);
+
+    &.ak-m-active,
+    &:hover {
+        background-color: var(--ak-c-search-select__option--m-active--BackgroundColor);
+    }
+}
+
+/* #endregion */
+
+/* #region Groups */
+
+.ak-c-search-select__group-title {
+    padding-block: var(--ak-c-search-select__group-title--PaddingBlock);
+    padding-inline: var(--ak-c-search-select__group-title--PaddingInline);
+    font-size: var(--ak-c-search-select__group-title--FontSize);
+    color: var(--ak-c-search-select__group-title--Color);
+}
+
+/* #endregion */
+
+/* #region Status */
+
+.ak-c-search-select__status {
+    padding-block: var(--ak-c-search-select__option--PaddingBlock);
+    padding-inline: var(--ak-c-search-select__option--PaddingInline);
+    color: var(--ak-c-search-select__description--Color);
+}
+
+/* #endregion */

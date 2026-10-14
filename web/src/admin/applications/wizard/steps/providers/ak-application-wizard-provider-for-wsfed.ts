@@ -1,10 +1,11 @@
 import "#elements/forms/FormGroup";
 import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
 
-import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
+import type { SearchSelectChangeEvent } from "#elements/forms/SearchSelect/events";
+
 import { renderForm } from "#admin/providers/wsfed/WSFederationProviderFormForm";
 
-import { KeyTypeEnum, type WSFederationProvider } from "@goauthentik/api";
+import { KeyTypeEnum, type WSFederationProvider, CertificateKeyPair } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { customElement, state } from "@lit/reactive-element/decorators.js";
@@ -21,12 +22,9 @@ export class ApplicationWizardProviderWSFedForm extends ApplicationWizardProvide
     protected signingKeyType: KeyTypeEnum | null = null;
 
     renderForm() {
-        const setHasSigningKp = (ev: InputEvent) => {
-            const target = ev.target as AkCryptoCertificateSearch;
-
-            if (!target) return;
-            this.hasSigningKp = !!target.selectedKeypair;
-            this.signingKeyType = target.selectedKeypair?.keyType ?? KeyTypeEnum.Rsa;
+        const setHasSigningKp = ({ detail }: SearchSelectChangeEvent<CertificateKeyPair>) => {
+            this.hasSigningKp = !!detail.value;
+            this.signingKeyType = detail.value?.keyType ?? KeyTypeEnum.Rsa;
         };
 
         return html`<h3 class="pf-c-wizard__main-title">${this.label}</h3>
