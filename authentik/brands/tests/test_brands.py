@@ -8,7 +8,6 @@ from rest_framework.test import APITestCase
 from authentik.admin.flags import Flag
 from authentik.blueprints.tests import apply_blueprint
 from authentik.brands.models import SESSION_KEY_BRAND_SAFE_MODE, Brand
-from authentik.brands.utils import get_brand_for_request
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand
 from authentik.lib.generators import generate_id
@@ -22,8 +21,6 @@ class TestBrands(APITestCase):
     def setUp(self):
         super().setUp()
         Brand.objects.all().delete()
-        # brands cached by earlier tests survive their transaction rollback
-        get_brand_for_request.cache_clear()
 
     @property
     def default_flags(self) -> dict[str, object]:

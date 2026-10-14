@@ -44,6 +44,13 @@ def pytest_report_header(*_, **__):
     ]
 
 
+def pytest_runtest_setup(item: Item):
+    """In-memory caches outlive each test's transaction rollback, so start every test empty"""
+    from authentik.brands.utils import get_brand_for_request
+
+    get_brand_for_request.cache_clear()
+
+
 def pytest_collection_modifyitems(config: Config, items: list[Item]) -> None:
     current_id = int(environ.get("CI_RUN_ID", "0")) - 1
     total_ids = int(environ.get("CI_TOTAL_RUNS", "0"))
