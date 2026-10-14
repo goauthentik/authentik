@@ -14,12 +14,12 @@ use std::{
 use ak_common::config;
 use argh::FromArgs;
 use eyre::{Result, WrapErr as _, eyre};
+#[cfg(target_os = "linux")]
+use nix::unistd::setgroups;
 use nix::{
     fcntl::{AT_FDCWD, AtFlags},
     unistd::{Gid, Group, Uid, User, getuid, setgid, setuid},
 };
-#[cfg(target_os = "linux")]
-use nix::setgroups;
 use tracing::{info, warn};
 
 /// The unprivileged user the server runs as.
