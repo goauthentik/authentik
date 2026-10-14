@@ -63,6 +63,14 @@ export class AdminOverviewPage extends AdminOverviewBase {
                 flex: 1;
                 min-height: 30em;
             }
+            @media (min-width: 1200px) {
+                /* Size the row from the chart column only, so the events list
+                   loading in can't make the row taller and push the page down. */
+                .events-column {
+                    contain: size;
+                    overflow-y: auto;
+                }
+            }
             .bottom-row {
                 flex: 1;
                 min-height: 25em;
@@ -101,7 +109,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
                         <div class="pf-l-grid pf-m-gutter">${this.renderCards()}</div>
                         <ak-charts-admin-login-authorization></ak-charts-admin-login-authorization>
                     </div>
-                    <div class="pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl">
+                    <div class="pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl events-column">
                         <ak-recent-events></ak-recent-events>
                     </div>
                 </div>

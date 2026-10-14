@@ -102,7 +102,14 @@ export abstract class ChartCardWithStats extends EventChart {
 
     renderStats(): SlottedTemplateResult {
         if (!this.stats.length) {
-            return nothing;
+            // Reserve the row's height while loading so the chart doesn't jump
+            return html`<div class="stats-row" aria-hidden="true" style="visibility: hidden">
+                <div class="stat">
+                    <span class="stat-label">&nbsp;</span>
+                    <span class="stat-value">&nbsp;</span>
+                    <span class="stat-delta">&nbsp;</span>
+                </div>
+            </div>`;
         }
 
         return html`<div class="stats-row">

@@ -154,6 +154,8 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
             <h2 class="status-heading">
                 <ak-spinner size="${PFSize.Large}"></ak-spinner>
             </h2>
+            <!-- Reserve the status message's line so the card doesn't grow once loaded -->
+            <p class="subtext" aria-hidden="true">&nbsp;</p>
         </div> `;
     }
 
