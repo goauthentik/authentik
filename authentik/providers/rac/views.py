@@ -3,6 +3,7 @@
 from typing import Any
 
 from django.http import Http404, HttpRequest, HttpResponse
+from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.timezone import now
@@ -92,10 +93,12 @@ class RACInterface(InterfaceView):
         if not token:
             return redirect("authentik_core:if-user")
         self.token = token
+        get_token(request)
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         kwargs["token"] = self.token
+        kwargs["drive_enabled"] = self.token.get_settings().get("enable-drive") == "true"
         return super().get_context_data(**kwargs)
 
 

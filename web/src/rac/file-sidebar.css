@@ -1,0 +1,147 @@
+:host {
+    display: block;
+    height: 100%;
+    min-height: 0;
+    color: var(--pf-global--Color--100);
+    background: var(--pf-global--BackgroundColor--100);
+    cursor: auto;
+}
+section {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+}
+header,
+nav,
+.transfer-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+header {
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid var(--pf-global--BorderColor--100);
+}
+h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+h3 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+nav {
+    padding: 0.25rem 0.5rem;
+    background: var(--pf-global--BackgroundColor--200);
+}
+.current-path {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.upload-action {
+    padding: 0.75rem 1rem;
+}
+input[hidden] {
+    display: none;
+}
+.file-list {
+    flex: 1;
+    overflow: auto;
+    min-height: 4rem;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.85rem;
+}
+th,
+td {
+    padding: 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid var(--pf-global--BorderColor--100);
+}
+th {
+    position: sticky;
+    top: 0;
+    background: var(--pf-global--BackgroundColor--100);
+    z-index: 1;
+}
+th:first-child,
+td:first-child {
+    padding-left: 1rem;
+}
+.entry-name {
+    max-width: 12rem;
+    overflow-wrap: anywhere;
+}
+.entry-name > i {
+    margin-right: 0.5rem;
+    color: var(--pf-global--Color--200);
+}
+.directory-link {
+    padding: 0;
+    font-size: inherit;
+    text-align: left;
+}
+.entry-size {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+.empty-state {
+    padding: 1rem;
+    color: var(--pf-global--Color--200);
+}
+.error {
+    color: var(--pf-global--danger-color--100);
+    padding: 0.5rem 1rem;
+    overflow-wrap: anywhere;
+}
+.transfers {
+    height: auto;
+    max-height: 45%;
+    flex: 0 1 auto;
+    overflow: auto;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--pf-global--BorderColor--100);
+}
+.transfers ul {
+    list-style: none;
+    padding: 0;
+}
+.transfer-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--pf-global--BorderColor--100);
+}
+.transfer-heading > span {
+    overflow-wrap: anywhere;
+    min-width: 0;
+}
+.transfer-phase,
+small,
+.queued {
+    font-size: 0.8rem;
+    color: var(--pf-global--Color--200);
+}
+.transfer-item progress {
+    width: 100%;
+    height: 0.4rem;
+    accent-color: var(--pf-global--primary-color--100);
+}
+.transfer-item .error {
+    padding: 0;
+}
+.queued ul {
+    padding-left: 0.5rem;
+    overflow-wrap: anywhere;
+}
+.transfer-item[data-phase="error"] .transfer-phase {
+    color: var(--pf-global--danger-color--100);
+}
