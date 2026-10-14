@@ -9431,7 +9431,11 @@ paths:
                 $ref: '#/components/schemas/ChallengeTypes'
           description: ''
         '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChallengeTypes'
+          description: ''
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
     post:
@@ -9468,7 +9472,11 @@ paths:
                 $ref: '#/components/schemas/ChallengeTypes'
           description: ''
         '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChallengeTypes'
+          description: ''
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /flows/inspector/{flow_slug}/:

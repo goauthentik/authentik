@@ -2,6 +2,7 @@
 
 from collections.abc import Callable, Generator
 from contextlib import contextmanager
+from http import HTTPStatus
 from json import loads
 from typing import Any
 from unittest.mock import MagicMock, patch
@@ -27,7 +28,7 @@ class FlowTestCase(APITestCase):
         **kwargs,
     ) -> dict[str, Any]:
         """Assert various attributes of a stage response"""
-        self.assertEqual(response.status_code, 200)
+        self.assertIn(response.status_code, [HTTPStatus.OK, HTTPStatus.BAD_REQUEST])
         raw_response = loads(response.content.decode())
         self.assertIsNotNone(raw_response["component"])
         if flow:

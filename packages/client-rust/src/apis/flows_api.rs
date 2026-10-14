@@ -16,7 +16,7 @@ use crate::{apis::ResponseContent, models};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum FlowsExecutorGetError {
-    Status400(models::ValidationError),
+    Status400(models::ChallengeTypes),
     Status403(models::GenericError),
     UnknownValue(serde_json::Value),
 }
@@ -25,7 +25,7 @@ pub enum FlowsExecutorGetError {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum FlowsExecutorSolveError {
-    Status400(models::ValidationError),
+    Status400(models::ChallengeTypes),
     Status403(models::GenericError),
     UnknownValue(serde_json::Value),
 }
