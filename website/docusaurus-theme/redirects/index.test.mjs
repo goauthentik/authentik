@@ -124,6 +124,15 @@ test("findAliases substitutes splats back into the source", () => {
     assert.deepEqual(index.findAliases("/add-secure-apps/providers/ldap/"), ["/providers/ldap/"]);
 });
 
+test("findAliases skips splat sources redirecting to a fixed destination", () => {
+    const index = createIndex([
+        ["/old/*", "/"],
+        ["/old", "/"],
+    ]);
+
+    assert.deepEqual(index.findAliases("/"), ["/old"]);
+});
+
 test("findAliases never includes the pathname itself", () => {
     const index = createIndex([
         ["/new/", "/new/"],

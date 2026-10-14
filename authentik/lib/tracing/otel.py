@@ -30,7 +30,6 @@ from structlog.stdlib import get_logger
 from authentik import authentik_build_hash, authentik_version
 from authentik.lib.config import CONFIG
 from authentik.lib.tracing.common import Tracer
-from authentik.lib.tracing.otel_django_middleware import trace_middleware_list
 from authentik.lib.utils.reflection import get_env
 
 LOGGER = get_logger()
@@ -64,16 +63,13 @@ class OpenTelemetryTracer(Tracer):
     error_reporting.otel_endpoint"""
 
     def setup_pre_fork(self) -> None:
-        """Wire up automatic instrumentation and per-middleware spans. Safe to call
+        """Wire up automatic instrumentation. Safe to call
         before a fork; must run after Django settings have fully loaded, since
         DjangoInstrumentor patches MIDDLEWARE.
 
         Needs opentelemetry-instrumentation-asgi installed (never imported directly
         here), or DjangoInstrumentor silently falls back to WSGI-only, which authentik
         never uses."""
-        # Must run before instrument() below, so DjangoInstrumentor's own middleware is
-        # inserted afterwards and doesn't get wrapped a second time
-        settings.MIDDLEWARE = trace_middleware_list(settings.MIDDLEWARE)
         set_global_textmap(
             CompositePropagator(
                 [TraceContextTextMapPropagator(), W3CBaggagePropagator(), B3MultiFormat()]
