@@ -9,14 +9,10 @@ import { aki } from "#common/api/client";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
+import { AKEmailTemplateField } from "#admin/common/AKEmailTemplateSearch";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
-import {
-    AuthenticatorEmailStage,
-    FlowDesignationEnum,
-    StagesApi,
-    TypeCreate,
-} from "@goauthentik/api";
+import { AuthenticatorEmailStage, FlowDesignationEnum, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
@@ -34,12 +30,6 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
 
         return stage;
     }
-
-    async load(): Promise<void> {
-        this.templates = await aki(StagesApi).stagesEmailTemplatesList();
-    }
-
-    templates?: TypeCreate[];
 
     @property({ type: Boolean })
     showConnectionSettings = false;
@@ -222,32 +212,13 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Template")} name="template">
-                        <select
-                            class="pf-c-form-control"
-                            ?disabled=${!this.templates || this.templates.length === 0}
-                        >
-                            ${
-                                this.templates && this.templates.length > 0
-                                    ? this.templates.map((template: TypeCreate) => {
-                                          return html`<option
-                                              value="${template.name}"
-                                              ?selected=${
-                                                  this.instance?.template === template.name ||
-                                                  (!this.instance?.template &&
-                                                      template.name === "email/email_otp.html")
-                                              }
-                                          >
-                                              ${template.description}
-                                          </option>`;
-                                      })
-                                    : html`<option value="">${msg("Loading templates...")}</option>`
-                            }
-                        </select>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Template used for the verification email.")}
-                        </p>
-                    </ak-form-element-horizontal>
+                    ${AKEmailTemplateField({
+                        name: "template",
+                        required: true,
+                        value: this.instance?.template,
+                        defaultTemplate: "goauthentik.io/email/email-otp",
+                        help: msg("Template used for the verification email."),
+                    })}
                 </div>
             </ak-form-group>`;
     }

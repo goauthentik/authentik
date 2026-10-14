@@ -8,9 +8,10 @@ import { aki } from "#common/api/client";
 
 import { SlottedTemplateResult } from "#elements/types";
 
+import { AKEmailTemplateField } from "#admin/common/AKEmailTemplateSearch";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
-import { EmailStage, StagesApi, TypeCreate } from "@goauthentik/api";
+import { EmailStage, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
@@ -28,12 +29,6 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
 
         return stage;
     }
-
-    async load(): Promise<void> {
-        this.templates = await aki(StagesApi).stagesEmailTemplatesList();
-    }
-
-    templates?: TypeCreate[];
 
     @property({ type: Boolean })
     showConnectionSettings = false;
@@ -186,20 +181,12 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                             required
                         />
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Template")} required name="template">
-                        <select name="users" class="pf-c-form-control">
-                            ${this.templates?.map((template) => {
-                                const selected = this.instance?.template === template.name;
-
-                                return html`<option
-                                    value=${ifDefined(template.name)}
-                                    ?selected=${selected}
-                                >
-                                    ${template.description}
-                                </option>`;
-                            })}
-                        </select>
-                    </ak-form-element-horizontal>
+                    ${AKEmailTemplateField({
+                        name: "template",
+                        required: true,
+                        value: this.instance?.template,
+                        defaultTemplate: "goauthentik.io/email/password-reset",
+                    })}
                     <ak-form-element-horizontal
                         label=${msg("Account Recovery Max Attempts")}
                         required
