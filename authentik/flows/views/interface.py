@@ -38,14 +38,13 @@ class FlowInterfaceView(InterfaceView):
         # Flow title formatted with a default dict, as we don't know the keys used
         # Only format titles with named placeholders, as a bare "% s" would
         # otherwise inline the dict's repr
-        flow_title = flow.title
-        if "%(" in flow_title:
+        if "%(" in flow.title:
             try:
-                flow_title = (flow_title % defaultdict(str)).strip()
+                flow.title = (flow.title % defaultdict(str)).strip()
             except TypeError, ValueError:
                 # If title formatting is invalid, keep the original title unchanged.
                 pass
-        kwargs["flow"] = flow_title
+        kwargs["flow"] = flow
         kwargs["flow_background_url"] = flow.background_url(self.request)
         kwargs["inspector"] = "inspector" in self.request.GET
         return super().get_context_data(**kwargs)
