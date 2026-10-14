@@ -8,9 +8,12 @@ import "#elements/forms/ModalForm";
 import { aki } from "#common/api/client";
 import { groupBy, GroupResult } from "#common/utils";
 
+import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { EmailTemplateForm } from "#admin/email/EmailTemplateForm";
 
 import { EmailTemplate, ModelEnum, StagesApi } from "@goauthentik/api";
 
@@ -47,8 +50,7 @@ export class EmailTemplateListPage extends TablePage<EmailTemplate> {
     }
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
-        const disabled =
-            this.selectedElements.length < 1 || this.selectedElements.some((item) => item.managed);
+        const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
             object-label=${msg("Email template(s)")}
@@ -75,6 +77,7 @@ export class EmailTemplateListPage extends TablePage<EmailTemplate> {
             html`<div><code>${item.path}</code></div>
                 <small>${item.managed ? item.displayName : item.description}</small>`,
             html`<div class="ak-c-table__actions">
+                ${IconEditButton(EmailTemplateForm, item.uuid, item.path)}
                 <ak-rbac-object-permission-modal
                     model=${ModelEnum.AuthentikStagesEmailEmailtemplate}
                     objectPk=${item.uuid}
@@ -82,6 +85,10 @@ export class EmailTemplateListPage extends TablePage<EmailTemplate> {
                 </ak-rbac-object-permission-modal>
             </div>`,
         ];
+    }
+
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return ModalInvokerButton(EmailTemplateForm);
     }
 }
 
