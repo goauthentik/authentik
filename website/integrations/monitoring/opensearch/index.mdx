@@ -1,0 +1,137 @@
+---
+title: Integrate with OpenSearch
+sidebar_label: OpenSearch
+support_level: community
+---
+
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+
+## What is OpenSearch?
+
+> OpenSearch is a community-driven, Apache 2.0-licensed open source search and analytics suite that makes it easy to ingest, search, visualize, and analyze data.
+>
+> -- https://opensearch.org/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `opensearch-dashboards.company` is the FQDN of the OpenSearch Dashboards installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::info Security plugin
+Single sign-on requires the OpenSearch Security plugin on OpenSearch and the Security Dashboards plugin on OpenSearch Dashboards, with TLS enabled on the OpenSearch REST layer. Both plugins are included in the default distributions.
+:::
+
+## authentik configuration
+
+To support the integration of OpenSearch with authentik, you need to create an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) and [application entitlements](/docs/add-secure-apps/applications/manage_apps/#application-entitlements) in authentik.
+
+### Create an application and provider
+
+<RedirectURI20265Note />
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it is required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they are required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://opensearch-dashboards.company/auth/openid/login`.
+        - Add a **Redirect URI** of type `Strict` `Post Logout` as `https://opensearch-dashboards.company`.
+        - Select any available **Signing Key**.
+        - Under **Advanced protocol settings** > **Selected Scopes**, add `authentik default OAuth Mapping: Application Entitlements`.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+3. Click **Submit** to save the new application and provider.
+
+### Create application entitlements
+
+OpenSearch reads the entitlement names from the `entitlements` claim as backend roles, and maps backend roles to OpenSearch roles.
+
+1. Open the application that you created in the authentik Admin interface.
+2. Click the **Application entitlements** tab.
+3. Create an entitlement for each level of access, such as `opensearch-admin`.
+4. Bind the users or groups that should receive that access to each entitlement.
+
+## OpenSearch configuration
+
+### Add an OpenID Connect authentication domain
+
+In `config.yml` of the Security plugin, add an `openid` authentication domain after the existing `basic_internal_auth_domain`. OpenSearch Dashboards still signs in to OpenSearch with its internal server user, so keep the basic authentication domain and set its `challenge` to `false`.
+
+```yaml title="config/opensearch-security/config.yml"
+config:
+    dynamic:
+        authc:
+            basic_internal_auth_domain:
+                http_enabled: true
+                transport_enabled: false
+                order: 0
+                http_authenticator:
+                    type: basic
+                    challenge: false
+                authentication_backend:
+                    type: intern
+            openid_auth_domain:
+                http_enabled: true
+                transport_enabled: false
+                order: 1
+                http_authenticator:
+                    type: openid
+                    challenge: false
+                    config:
+                        openid_connect_url: https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration
+                        required_audience: <Client ID from authentik>
+                        subject_key: preferred_username
+                        roles_key: entitlements
+                authentication_backend:
+                    type: noop
+```
+
+If the authentik certificate is not signed by a public CA, add `openid_connect_idp.pemtrustedcas_filepath` with the path of the CA certificate to the `config` block.
+
+### Map entitlements to roles
+
+In `roles_mapping.yml`, add each entitlement name as a backend role of the OpenSearch role that it grants. For example, the following mapping grants full access to users with the `opensearch-admin` entitlement:
+
+```yaml title="config/opensearch-security/roles_mapping.yml"
+all_access:
+    backend_roles:
+        - opensearch-admin
+security_rest_api_access:
+    backend_roles:
+        - opensearch-admin
+```
+
+You can also add backend roles to a role in OpenSearch Dashboards under **Security** > **Roles** > **Mapped users**.
+
+Apply the changed files with `securityadmin.sh`, as described in [Applying changes to configuration files](https://docs.opensearch.org/latest/security/configuration/security-admin/).
+
+### Configure OpenSearch Dashboards
+
+Add the following settings to `opensearch_dashboards.yml` and restart OpenSearch Dashboards:
+
+```yaml title="config/opensearch_dashboards.yml"
+opensearch_security.auth.type: openid
+opensearch_security.openid.connect_url: https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration
+opensearch_security.openid.client_id: <Client ID from authentik>
+opensearch_security.openid.client_secret: <Client Secret from authentik>
+opensearch_security.openid.scope: openid profile email entitlements
+opensearch_security.openid.base_redirect_url: https://opensearch-dashboards.company
+opensearch_security.cookie.secure: true
+```
+
+If the authentik certificate is not signed by a public CA, set `opensearch_security.openid.root_ca` to the path of the CA certificate.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with OpenSearch, open OpenSearch Dashboards. You are redirected to authentik, and after you log in, OpenSearch Dashboards opens. Click the user icon and select **View roles and identities** to confirm that your entitlements appear as backend roles.
+
+## Resources
+
+- [OpenSearch documentation - OpenID Connect](https://docs.opensearch.org/latest/security/authentication-backends/openid-connect/)
+- [OpenSearch documentation - Defining users and roles](https://docs.opensearch.org/latest/security/access-control/users-roles/)
