@@ -64,7 +64,6 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     async apiEndpoint(): Promise<PaginatedResponse<Application>> {
         return aki(CoreApi).coreApplicationsList({
             ...(await this.defaultEndpointConfig()),
-            superuserFullList: true,
         });
     }
 
