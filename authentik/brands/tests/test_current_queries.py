@@ -15,6 +15,8 @@ class TestGetBrandForRequestSelectRelated(TestCase):
 
     def setUp(self):
         Brand.objects.all().delete()
+        # brands cached by earlier tests survive their transaction rollback
+        get_brand_for_request.cache_clear()
         self.flow_auth = create_test_flow(designation=FlowDesignation.AUTHENTICATION)
         self.brand = Brand.objects.create(
             domain="select-related-test.example.com",
