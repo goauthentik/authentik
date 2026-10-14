@@ -16,8 +16,10 @@ use argh::FromArgs;
 use eyre::{Result, WrapErr as _, eyre};
 use nix::{
     fcntl::{AT_FDCWD, AtFlags},
-    unistd::{Gid, Group, Uid, User, getuid, setgid, setgroups, setuid},
+    unistd::{Gid, Group, Uid, User, getuid, setgid, setuid},
 };
+#[cfg(target_os = "linux")]
+use nix::setgroups;
 use tracing::{info, warn};
 
 /// The unprivileged user the server runs as.
@@ -228,6 +230,7 @@ fn become_authentik(prometheus_dir: &Path) -> Result<PathBuf> {
     // 'certs' deliberately gets no owner write bit
     add_mode(Path::new("/certs"), 0o550)?;
 
+    #[cfg(target_os = "linux")]
     setgroups(&groups)?;
     setgid(user.gid)?;
     setuid(user.uid)?;
