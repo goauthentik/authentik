@@ -1,91 +1,106 @@
-import "#elements/forms/ConfirmationForm";
 import { aki } from "#common/api/client";
+import { plural } from "#common/ui/locale/plurals";
 
 import { toAdminInterface } from "#elements/router/core/interfaces";
 
-import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
-import { SummarizedSyncStatus } from "#admin/admin-overview/cards/SyncStatusCard";
+import { StatusGroup, StatusRollupCard } from "#admin/admin-overview/cards/StatusRollupCard";
 
-import { P4Disposition } from "#styles/patternfly/constants";
-
-import { OutpostsApi } from "@goauthentik/api";
+import { OutpostsApi, OutpostTypeEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 
+type OutpostState = "healthy" | "outdated" | "unreachable";
+
+type OutpostCounts = Record<OutpostState, number>;
+
+const typeLabels: Partial<Record<OutpostTypeEnum, string>> = {
+    [OutpostTypeEnum.Proxy]: "Proxy",
+    [OutpostTypeEnum.Ldap]: "LDAP",
+    [OutpostTypeEnum.Radius]: "RADIUS",
+    [OutpostTypeEnum.Rac]: "RAC",
+};
+
 @customElement("ak-admin-status-card-outpost")
-export class OutpostStatusCard extends AdminStatusCard<SummarizedSyncStatus[]> {
+export class OutpostStatusCard extends StatusRollupCard<OutpostState> {
     public override icon = "pf-icon pf-icon-zone";
     public override label = msg("Outposts");
     public override headerLink = toAdminInterface("outpost/outposts");
 
-    async getPrimaryValue(): Promise<SummarizedSyncStatus[]> {
-        const api = aki(OutpostsApi);
-        const outposts = await api.outpostsInstancesList({});
-        const outpostStats: SummarizedSyncStatus[] = [];
+    protected kinds = {
+        healthy: {
+            label: msg("Healthy", { id: "admin-overview.outposts.legend.healthy" }),
+            color: "var(--pf-global--success-color--100)",
+        },
+        outdated: {
+            label: msg("Outdated", { id: "admin-overview.outposts.legend.outdated" }),
+            color: "var(--pf-global--warning-color--100)",
+        },
+        unreachable: {
+            label: msg("Unreachable", { id: "admin-overview.outposts.legend.unreachable" }),
+            color: "var(--pf-global--Color--200)",
+        },
+    };
+    protected okKinds: OutpostState[] = ["healthy"];
+    protected emptyMessage = msg("No outposts configured.");
 
-        await Promise.all(
-            outposts.results.map(async (element) => {
-                const health = await api.outpostsInstancesHealthList({
-                    uuid: element.pk || "",
-                });
-
-                const singleStats: SummarizedSyncStatus = {
-                    unsynced: 0,
-                    healthy: 0,
-                    failed: 0,
-                    total: health.length,
-                    label: element.name,
-                };
-
-                if (health.length === 0) {
-                    singleStats.unsynced += 1;
-                }
-
-                health.forEach((h) => {
-                    if (h.versionOutdated) {
-                        singleStats.failed += 1;
-                    } else {
-                        singleStats.healthy += 1;
-                    }
-                });
-
-                outpostStats.push(singleStats);
-            }),
-        );
-
-        return outpostStats;
-    }
-
-    getStatus(value: SummarizedSyncStatus[]): Promise<AdminStatus> {
-        const unhealthy = value.filter((v) => v.failed > 0 || v.unsynced > 0).length;
-
-        if (value.length < 1) {
-            return Promise.resolve<AdminStatus>({
-                icon: "fa fa-info-circle",
-                message: html`${msg("No outposts configured.")}`,
-                tone: P4Disposition.Neutral,
-            });
-        }
-
-        if (unhealthy > 0) {
-            return Promise.resolve<AdminStatus>({
-                icon: "fa fa-exclamation-triangle pf-m-warning",
-                message: html`${msg(str`${unhealthy} of ${value.length} outposts need attention.`)}`,
-                tone: P4Disposition.Warning,
-            });
-        }
-
-        return Promise.resolve<AdminStatus>({
-            icon: "fa fa-check-circle pf-m-success",
-            message: html`${msg("All outposts healthy.")}`,
-            tone: P4Disposition.Success,
+    protected summary(total: number) {
+        return plural(total, {
+            one: () =>
+                msg(str`of ${total} instance healthy`, {
+                    id: "admin-overview.outposts.summary.one",
+                }),
+            other: () =>
+                msg(str`of ${total} instances healthy`, {
+                    id: "admin-overview.outposts.summary.other",
+                }),
         });
     }
 
-    renderValue() {
-        return html`${this.value?.length}`;
+    async getPrimaryValue(): Promise<StatusGroup<OutpostState>[]> {
+        const api = aki(OutpostsApi);
+        const outposts = await api.outpostsInstancesList({});
+        const types = new Map<OutpostTypeEnum, { outposts: number; counts: OutpostCounts }>();
+
+        await Promise.all(
+            outposts.results.map(async (outpost) => {
+                const health = await api.outpostsInstancesHealthList({ uuid: outpost.pk });
+                const outdated = health.filter((h) => h.versionOutdated).length;
+
+                const entry = types.get(outpost.type) ?? {
+                    outposts: 0,
+                    counts: { healthy: 0, outdated: 0, unreachable: 0 },
+                };
+
+                entry.outposts += 1;
+                entry.counts.healthy += health.length - outdated;
+                entry.counts.outdated += outdated;
+                // Health is only reported while an instance is connected,
+                // so an outpost without any is unreachable.
+                entry.counts.unreachable += health.length ? 0 : 1;
+                types.set(outpost.type, entry);
+            }),
+        );
+
+        return Array.from(types, ([type, { outposts, counts }]) => {
+            const instances = counts.healthy + counts.outdated + counts.unreachable;
+
+            const o = plural(outposts, {
+                one: () => msg("1 outpost", { id: "admin-overview.outposts.count.one" }),
+                other: () =>
+                    msg(str`${outposts} outposts`, { id: "admin-overview.outposts.count.other" }),
+            });
+
+            const i = plural(instances, {
+                one: () => msg("1 instance", { id: "admin-overview.outposts.instances.one" }),
+                other: () =>
+                    msg(str`${instances} instances`, {
+                        id: "admin-overview.outposts.instances.other",
+                    }),
+            });
+
+            return { label: typeLabels[type] ?? type, detail: `${o} · ${i}`, counts };
+        });
     }
 }
 

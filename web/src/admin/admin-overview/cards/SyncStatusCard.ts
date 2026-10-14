@@ -1,24 +1,16 @@
 import { aki } from "#common/api/client";
+import { plural } from "#common/ui/locale/plurals";
 
 import { PaginatedResponse } from "#elements/table/Table";
 
-import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
-
-import { P4Disposition } from "#styles/patternfly/constants";
+import { StatusGroup, StatusRollupCard } from "#admin/admin-overview/cards/StatusRollupCard";
 
 import { ProvidersApi, SourcesApi, SyncStatus, TaskAggregatedStatusEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-export interface SummarizedSyncStatus {
-    healthy: number;
-    failed: number;
-    unsynced: number;
-    total: number;
-    label: string;
-}
+type SyncState = "synced" | "syncing" | "overdue" | "failed";
 
 const emptyResponse = {
     pagination: {
@@ -34,30 +26,51 @@ const emptyResponse = {
 };
 
 @customElement("ak-admin-status-card-sync")
-export class SyncStatusCard extends AdminStatusCard<SummarizedSyncStatus[]> {
+export class SyncStatusCard extends StatusRollupCard<SyncState> {
     public override icon = "fa fa-sync-alt";
     public override label = msg("Sync status");
     public override tooltip = msg("Integrations synced in the last 12 hours.");
+
+    protected kinds = {
+        synced: {
+            label: msg("Synced", { id: "admin-overview.sync.legend.synced" }),
+            color: "var(--pf-global--success-color--100)",
+        },
+        syncing: {
+            label: msg("Syncing", { id: "admin-overview.sync.legend.syncing" }),
+            color: "var(--pf-global--primary-color--100)",
+        },
+        overdue: {
+            label: msg("Overdue", { id: "admin-overview.sync.legend.overdue" }),
+            color: "var(--pf-global--warning-color--100)",
+        },
+        failed: {
+            label: msg("Failed", { id: "admin-overview.sync.legend.failed" }),
+            color: "var(--pf-global--danger-color--100)",
+        },
+    };
+    protected okKinds: SyncState[] = ["synced", "syncing"];
+    protected emptyMessage = msg("Nothing configured to sync.");
+
+    protected summary(total: number) {
+        return msg(str`of ${total} synced on schedule`, { id: "admin-overview.sync.summary" });
+    }
 
     async fetchStatus<T>(
         listObjects: () => Promise<PaginatedResponse<T>>,
         fetchSyncStatus: (element: T) => Promise<SyncStatus>,
         label: string,
-    ): Promise<SummarizedSyncStatus> {
+    ): Promise<StatusGroup<SyncState>> {
         const objects = await listObjects().catch(() => {
             return emptyResponse;
         });
 
-        const metrics: { [key: string]: number } = {
-            healthy: 0,
-            failed: 0,
-            unsynced: 0,
-        };
+        const counts: Record<SyncState, number> = { synced: 0, syncing: 0, overdue: 0, failed: 0 };
 
         await Promise.all(
             objects.results.map(async (element) => {
                 // Each source should have 3 successful tasks, so the worst task overwrites
-                let objectKey = "healthy";
+                let state: SyncState = "synced";
 
                 try {
                     const status = await fetchSyncStatus(element);
@@ -71,31 +84,37 @@ export class SyncStatusCard extends AdminStatusCard<SummarizedSyncStatus[]> {
                         status.lastSyncStatus === TaskAggregatedStatusEnum.Rejected ||
                         status.lastSyncStatus === TaskAggregatedStatusEnum.Warning
                     ) {
-                        objectKey = "failed";
+                        state = "failed";
+                    } else if (status.isRunning) {
+                        state = "syncing";
                     } else if (
                         !status.lastSuccessfulSync ||
                         now - status.lastSuccessfulSync.getTime() > maxDelta
                     ) {
-                        objectKey = "unsynced";
+                        state = "overdue";
                     }
                 } catch {
-                    objectKey = "unsynced";
+                    state = "overdue";
                 }
 
-                metrics[objectKey] += 1;
+                counts[state] += 1;
             }),
         );
 
+        const total = objects.results.length;
+
         return {
-            healthy: metrics.healthy,
-            failed: metrics.failed,
-            unsynced: objects.pagination.count === 0 ? 1 : metrics.unsynced,
-            total: objects.pagination.count,
             label,
+            detail: plural(total, {
+                one: () => msg("1 integration", { id: "admin-overview.sync.count.one" }),
+                other: () =>
+                    msg(str`${total} integrations`, { id: "admin-overview.sync.count.other" }),
+            }),
+            counts,
         };
     }
 
-    async getPrimaryValue(): Promise<SummarizedSyncStatus[]> {
+    async getPrimaryValue(): Promise<StatusGroup<SyncState>[]> {
         return [
             await this.fetchStatus(
                 () => {
@@ -153,43 +172,6 @@ export class SyncStatusCard extends AdminStatusCard<SummarizedSyncStatus[]> {
                 msg("Kerberos Source"),
             ),
         ];
-    }
-
-    getStatus(value: SummarizedSyncStatus[]): Promise<AdminStatus> {
-        const total = value.reduce((sum, v) => sum + v.total, 0);
-
-        // Categories with nothing configured report a placeholder "unsynced" entry;
-        // don't count those toward the health signal.
-        const unhealthy = value.reduce(
-            (sum, v) => sum + v.failed + (v.total > 0 ? v.unsynced : 0),
-            0,
-        );
-
-        if (total < 1) {
-            return Promise.resolve<AdminStatus>({
-                icon: "fa fa-info-circle",
-                message: html`${msg("Nothing configured to sync.")}`,
-                tone: P4Disposition.Neutral,
-            });
-        }
-
-        if (unhealthy > 0) {
-            return Promise.resolve<AdminStatus>({
-                icon: "fa fa-exclamation-triangle pf-m-warning",
-                message: html`${msg(str`${unhealthy} of ${total} syncs need attention.`)}`,
-                tone: P4Disposition.Warning,
-            });
-        }
-
-        return Promise.resolve<AdminStatus>({
-            icon: "fa fa-check-circle pf-m-success",
-            message: html`${msg("Synced.")}`,
-            tone: P4Disposition.Success,
-        });
-    }
-
-    renderValue() {
-        return html`${this.value?.reduce((sum, v) => sum + v.total, 0) ?? 0}`;
     }
 }
 

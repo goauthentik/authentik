@@ -102,9 +102,14 @@ export class AdminOverviewPage extends AdminOverviewBase {
                         <ak-recent-events></ak-recent-events>
                     </div>
                 </div>
-                <ak-divider></ak-divider>
-                <!-- row 3: recent events (50%) / apps with most usage (33%) / quick actions (17%) -->
+                <!-- row 3: outposts / sync status -->
                 <div class="pf-l-grid pf-m-gutter bottom-row">
+                    <div class="pf-l-grid__item pf-m-6-col pf-m-3-col-on-xl">
+                        <ak-admin-status-card-outpost></ak-admin-status-card-outpost>
+                    </div>
+                    <div class="pf-l-grid__item pf-m-6-col pf-m-3-col-on-xl">
+                        <ak-admin-status-card-sync></ak-admin-status-card-sync>
+                    </div>
                     <div class="pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl">
                         <ak-top-applications-table></ak-top-applications-table>
                     </div>
@@ -124,8 +129,8 @@ export class AdminOverviewPage extends AdminOverviewBase {
             "card-container": true,
             "pf-l-grid__item": true,
             "pf-m-6-col": true,
-            "pf-m-4-col-on-md": true,
-            "pf-m-2-col-on-xl": true,
+            "pf-m-3-col-on-md": true,
+            "pf-m-3-col-on-xl": true,
         };
 
         return html`<div class=${classMap(classes)}>
@@ -143,13 +148,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
                           <ak-admin-fips-status-system> </ak-admin-fips-status-system>
                       </div>`
                     : nothing
-            }
-            <div class=${classMap(classes)}>
-                <ak-admin-status-card-outpost></ak-admin-status-card-outpost>
-            </div>
-            <div class=${classMap(classes)}>
-                <ak-admin-status-card-sync></ak-admin-status-card-sync>
-            </div>`;
+            }`;
     }
 
     updated(changed: PropertyValues<this>) {
