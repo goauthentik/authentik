@@ -10,7 +10,6 @@ import "#admin/admin-overview/cards/OutpostStatusCard";
 import "#admin/admin-overview/cards/SyncStatusCard";
 import "#elements/cards/AggregateCard";
 import "#elements/cards/QuickActionsCard";
-import "#elements/Divider";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
@@ -55,7 +54,13 @@ export class AdminOverviewPage extends AdminOverviewBase {
             .pf-l-grid__item {
                 height: 100%;
             }
-            .login-chart-row {
+            .chart-column {
+                display: flex;
+                flex-direction: column;
+                gap: var(--pf-global--gutter);
+            }
+            .chart-column ak-charts-admin-login-authorization {
+                flex: 1;
                 min-height: 30em;
             }
             .bottom-row {
@@ -90,19 +95,17 @@ export class AdminOverviewPage extends AdminOverviewBase {
     render(): TemplateResult {
         return html` <main class="pf-c-page__main-section" aria-label=${msg("Overview")}>
             <div class="page-rows">
-                <!-- row 1: status cards -->
-                <div class="pf-l-grid pf-m-gutter">${this.renderCards()}</div>
-                <ak-divider></ak-divider>
-                <!-- row 2: login chart, full width -->
-                <div class="pf-l-grid pf-m-gutter login-chart-row">
-                    <div class="pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl">
+                <!-- row 1: status cards over the login chart / recent events -->
+                <div class="pf-l-grid pf-m-gutter">
+                    <div class="pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl chart-column">
+                        <div class="pf-l-grid pf-m-gutter">${this.renderCards()}</div>
                         <ak-charts-admin-login-authorization></ak-charts-admin-login-authorization>
                     </div>
                     <div class="pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl">
                         <ak-recent-events></ak-recent-events>
                     </div>
                 </div>
-                <!-- row 3: outposts / sync status -->
+                <!-- row 2: outposts / sync status / top apps / quick actions -->
                 <div class="pf-l-grid pf-m-gutter bottom-row">
                     <div class="pf-l-grid__item pf-m-6-col pf-m-3-col-on-xl">
                         <ak-admin-status-card-outpost></ak-admin-status-card-outpost>
