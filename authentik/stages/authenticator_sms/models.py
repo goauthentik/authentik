@@ -209,6 +209,10 @@ class SMSDevice(SerializerModel, ThrottlingMixin, SideChannelDevice):
 
     last_t = models.DateTimeField(auto_now=True)
 
+    def select_challenge(self, request: HttpRequest):
+        self.generate_token()
+        self.stage.send(request, self.token, self)
+
     def set_hashed_number(self):
         """Set phone_number to hashed number"""
         self.phone_number = hash_phone_number(self.phone_number)

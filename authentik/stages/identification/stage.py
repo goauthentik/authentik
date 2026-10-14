@@ -38,10 +38,6 @@ from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import reverse_with_qs
 from authentik.root.middleware import ClientIPMiddleware
-from authentik.stages.authenticator_validate.challenge import (
-    get_webauthn_challenge_without_user,
-    validate_challenge_webauthn,
-)
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.captcha.stage import (
     PLAN_CONTEXT_CAPTCHA_PRIVATE_KEY,
@@ -152,8 +148,14 @@ class IdentificationChallengeResponse(ChallengeResponse):
         current_stage: IdentificationStage = IdentificationStage.objects.get(
             pk=self.stage.executor.current_stage.pk
         )
-        return validate_challenge_webauthn(
-            passkey, self.stage, self.stage.get_pending_user(), current_stage.webauthn_stage
+        # The device is looked up from the credential in the response, so start from an
+        # unbound device here
+        return WebAuthnDevice().validate_challenge(
+            self.stage.request,
+            passkey,
+            self.stage.executor,
+            self.stage.get_pending_user(),
+            current_stage.webauthn_stage,
         )
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
@@ -300,7 +302,9 @@ class IdentificationStageView(ChallengeStageView):
         if not current_stage.webauthn_stage:
             self.logger.debug("No webauthn_stage configured")
             return None
-        challenge = get_webauthn_challenge_without_user(self, current_stage.webauthn_stage)
+        challenge = WebAuthnDevice().get_challenge_for_device(
+            self.request, self.executor, current_stage.webauthn_stage
+        )
         self.logger.debug("Generated passkey challenge", challenge=challenge)
         return challenge
 

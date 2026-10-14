@@ -9,20 +9,7 @@ from django.core.exceptions import ValidationError
 
 
 def hex_validator(length=0):
-    """
-    Returns a function to be used as a model validator for a hex-encoded
-    CharField. This is useful for secret keys of all kinds::
-
-        def key_validator(value):
-            return hex_validator(20)(value)
-
-        key = models.CharField(max_length=40,
-            validators=[key_validator], help_text='A hex-encoded 20-byte secret key')
-
-    :param int length: If greater than 0, validation will fail unless the
-        decoded value is exactly this number of bytes.
-
-    :rtype: function
+    """Validator for hex-encoded values, optionally of exactly `length` bytes
 
     >>> hex_validator()('0123456789abcdef')
     >>> hex_validator(8)(b'0123456789abcdef')
@@ -52,31 +39,12 @@ def hex_validator(length=0):
 
 
 def random_hex(length=20):
-    """
-    Returns a string of random bytes encoded as hex.
-
-    This uses :func:`os.urandom`, so it should be suitable for generating
-    cryptographic keys.
-
-    :param int length: The number of (decoded) bytes to return.
-
-    :returns: A string of hex digits.
-    :rtype: str
-
-    """
+    """Random hex string of `length` bytes, suitable for cryptographic keys"""
     return urandom(length).hex()
 
 
 def random_number_token(length=6):
-    """
-    Returns a string of random digits encoded as string.
-
-    :param int length: The number of digits to return.
-
-    :returns: A string of decimal digits.
-    :rtype: str
-
-    """
+    """Random numeric token of `length` digits"""
     rand = random.SystemRandom()
 
     if hasattr(rand, "choices"):

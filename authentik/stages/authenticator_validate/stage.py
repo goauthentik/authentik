@@ -5,6 +5,7 @@ from hashlib import sha256
 
 from django.conf import settings
 from django.http import HttpRequest, HttpResponse
+from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from jwt import PyJWTError, decode, encode
@@ -25,16 +26,12 @@ from authentik.policies.reputation.signals import update_score
 from authentik.root.install_id import get_install_id
 from authentik.stages.authenticator import devices_for_user
 from authentik.stages.authenticator.models import Device
+from authentik.stages.authenticator_duo.models import DuoDevice
 from authentik.stages.authenticator_email.models import EmailDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.challenge import (
     DeviceChallenge,
-    get_challenge_for_device,
-    get_webauthn_challenge_without_user,
-    select_challenge,
     validate_challenge_code,
-    validate_challenge_duo,
-    validate_challenge_webauthn,
 )
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
@@ -96,19 +93,24 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         """Validate webauthn response, raise error if webauthn wasn't allowed
         or response is invalid"""
         self._challenge_allowed([DeviceClasses.WEBAUTHN])
-        self.device = validate_challenge_webauthn(
-            webauthn, self.stage, self.stage.get_pending_user()
+        # The device is looked up from the credential in the response, so start from an
+        # unbound device here
+        self.device = WebAuthnDevice().validate_challenge(
+            self.stage.request, webauthn, self.stage.executor, self.stage.get_pending_user()
         )
         return webauthn
 
     def validate_duo(self, duo: int) -> int:
         """Initiate Duo authentication"""
         self._challenge_allowed([DeviceClasses.DUO])
-        self.device = validate_challenge_duo(duo, self.stage, self.stage.get_pending_user())
+        device = get_object_or_404(DuoDevice, pk=duo)
+        self.device = device.validate_challenge(
+            self.stage.request, duo, self.stage.executor, self.stage.get_pending_user()
+        )
         return duo
 
     def validate_selected_challenge(self, challenge: dict) -> dict:
-        """Check which challenge the user has selected. Actual logic only used for SMS stage."""
+        """Check which challenge the user has selected."""
         # First check if the challenge is valid
         allowed = False
         for device_challenge in self.stage.executor.plan.context.get(
@@ -126,12 +128,12 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
             devices = SMSDevice.objects.filter(pk=int(challenge.get("device_uid", "0")))
             if not devices.exists():
                 raise ValidationError("invalid challenge selected")
-            select_challenge(self.stage.request, devices.first())
+            devices.first().select_challenge(self.stage.request)
         elif device_class == "email":
             devices = EmailDevice.objects.filter(pk=int(challenge.get("device_uid", "0")))
             if not devices.exists():
                 raise ValidationError("invalid challenge selected")
-            select_challenge(self.stage.request, devices.first())
+            devices.first().select_challenge(self.stage.request)
         return challenge
 
     def validate_selected_stage(self, stage_pk: str) -> str:
@@ -225,7 +227,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 data={
                     "device_class": device_class,
                     "device_uid": device.pk,
-                    "challenge": get_challenge_for_device(self, stage, device),
+                    "challenge": device.get_challenge_for_device(self.request, self.executor),
                     "last_used": device.last_used,
                 }
             )
@@ -243,10 +245,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             data={
                 "device_class": DeviceClasses.WEBAUTHN,
                 "device_uid": -1,
-                "challenge": get_webauthn_challenge_without_user(
-                    self,
-                    self.executor.current_stage,
-                ),
+                "challenge": WebAuthnDevice().get_challenge_for_device(self.request, self.executor),
                 "last_used": None,
             }
         )

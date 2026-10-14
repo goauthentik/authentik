@@ -26,31 +26,18 @@ class TestThread(Thread):
 
 
 class ThrottlingTestMixin:
-    """
-    Generic tests for throttled devices.
-
-    Any concrete device implementation that uses throttling should define a
-    TestCase subclass that includes this as a base class. This will help verify
-    a correct integration of ThrottlingMixin.
-
-    Subclasses are responsible for populating self.device with a device to test
-    as well as implementing methods to generate tokens to test with.
-
-    """
+    """Generic tests for devices using ThrottlingMixin. Subclasses must set
+    `self.device` and implement `valid_token` and `invalid_token`."""
 
     device: Device
 
     def valid_token(self):
-        """Returns a valid token to pass to our device under test."""
+        """Return a valid token to pass to our device under test."""
         raise NotImplementedError()
 
     def invalid_token(self):
-        """Returns an invalid token to pass to our device under test."""
+        """Return an invalid token to pass to our device under test."""
         raise NotImplementedError()
-
-    #
-    # Tests
-    #
 
     def test_delay_imposed_after_fail(self):
         """Test delay imposed after fail"""
@@ -110,18 +97,14 @@ class ThrottlingTestMixin:
             self.assertEqual(data3, None)
 
     def test_set_throttle_factor_is_reflected(self):
-        """`set_throttle_factor` must drive `get_throttle_factor`."""
+        """Test set_throttle_factor"""
         self.device.set_throttle_factor(5.5)
         self.assertEqual(self.device.get_throttle_factor(), 5.5)
         self.device.set_throttle_factor(0)
         self.assertEqual(self.device.get_throttle_factor(), 0)
 
     def test_throttling_disabled_by_factor_zero(self):
-        """Setting the throttle factor to 0 must actually disable throttling.
-
-        A failed attempt followed by a successful one must succeed. The lockout
-        path must not kick in when the factor is 0.
-        """
+        """Test throttle factor 0 disables throttling"""
         self.device.set_throttle_factor(0)
         self.assertFalse(self.device.verify_token(self.invalid_token()))
         self.assertTrue(self.device.verify_token(self.valid_token()))

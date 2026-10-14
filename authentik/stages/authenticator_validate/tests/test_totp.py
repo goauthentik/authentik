@@ -19,7 +19,6 @@ from authentik.root.install_id import get_install_id
 from authentik.stages.authenticator.oath import TOTP
 from authentik.stages.authenticator_totp.models import TOTPDevice
 from authentik.stages.authenticator_validate.challenge import (
-    get_challenge_for_device,
     validate_challenge_code,
 )
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
@@ -295,7 +294,7 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
             not_configured_action=NotConfiguredAction.CONFIGURE,
             device_classes=[DeviceClasses.TOTP],
         )
-        self.assertEqual(get_challenge_for_device(request, stage, totp_device), {})
+        self.assertEqual(totp_device.get_challenge_for_device(request, None), {})
         with self.assertRaises(ValidationError):
             validate_challenge_code(
                 "1234", StageView(FlowExecutorView(current_stage=stage), request=request), self.user
