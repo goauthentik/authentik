@@ -117,6 +117,10 @@ export class AdminOverviewPage extends AdminOverviewBase {
                 </div>
                 <!-- row 2: outposts / sync status / top apps / quick actions -->
                 <div class="pf-l-grid pf-m-gutter bottom-row">
+                    <div class="pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl">
+                        <ak-quick-actions-card .actions=${this.quickActions}>
+                        </ak-quick-actions-card>
+                    </div>
                     <div class="pf-l-grid__item pf-m-6-col pf-m-3-col-on-xl">
                         <ak-admin-status-card-outpost></ak-admin-status-card-outpost>
                     </div>
@@ -125,10 +129,6 @@ export class AdminOverviewPage extends AdminOverviewBase {
                     </div>
                     <div class="pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl">
                         <ak-top-applications-table></ak-top-applications-table>
-                    </div>
-                    <div class="pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl">
-                        <ak-quick-actions-card .actions=${this.quickActions}>
-                        </ak-quick-actions-card>
                     </div>
                 </div>
             </div>
