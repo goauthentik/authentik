@@ -1,5 +1,7 @@
 """EmailStage API Views"""
 
+import posixpath
+
 from django.template import TemplateSyntaxError
 from rest_framework.fields import CharField, ReadOnlyField
 from rest_framework.serializers import ValidationError
@@ -90,7 +92,7 @@ class EmailTemplateSerializer(ModelSerializer):
 
     def validate_path(self, path: str) -> str:
         validate_upload_file_name(path, ValidationError=ValidationError)
-        return path
+        return posixpath.normpath(path)
 
     class Meta:
         model = EmailTemplate

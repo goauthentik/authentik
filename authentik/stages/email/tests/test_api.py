@@ -70,6 +70,15 @@ class TestEmailTemplateAPI(APITestCase):
                 self.assertEqual(response.status_code, 400)
                 self.assertIn(field, response.json())
 
+    def test_path_normalized(self):
+        """Test paths are stored normalized so they can be properly resolved"""
+        response = self.client.post(
+            reverse("authentik_api:emailtemplate-list"),
+            data={"path": "./custom/./template.html", "body": ""},
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.json()["path"], "custom/template.html")
+
     @apply_blueprint("system/email-templates.yaml")
     def test_path_unique_per_scope(self):
         """Test a custom template can share a built-in's path, but not another custom's"""
