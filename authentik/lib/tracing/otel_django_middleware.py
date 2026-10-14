@@ -17,18 +17,20 @@ class TracedMiddleware:
         if getattr(call, "_traced", False):
             return
 
+        @wraps(call)
         async def acall(self, request):
             with tracer.start_as_current_span(f"{type(self).__module__}.{type(self).__qualname__}"):
                 return await call(self, request)
 
         @wraps(call)
         def traced_call(self, request):
-            # Async middleware either define an async __call__, or (like MiddlewareMixin)
-            # mark the instance and return a coroutine from __call__
-            if iscoroutinefunction(call) or iscoroutinefunction(self):
+            # MiddlewareMixin marks the instance and returns a coroutine from __call__
+            if iscoroutinefunction(self):
                 return acall(self, request)
             with tracer.start_as_current_span(f"{type(self).__module__}.{type(self).__qualname__}"):
                 return call(self, request)
 
+        if iscoroutinefunction(call):
+            traced_call = acall
         traced_call._traced = True  # type: ignore[attr-defined]
         cls.__call__ = traced_call  # type: ignore[method-assign]
