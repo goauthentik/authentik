@@ -95,16 +95,16 @@ export class AdminOverviewPage extends AdminOverviewBase {
                 <ak-divider></ak-divider>
                 <!-- row 2: login chart, full width -->
                 <div class="pf-l-grid pf-m-gutter login-chart-row">
-                    <div class="pf-l-grid__item pf-m-12-col">
+                    <div class="pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl">
                         <ak-charts-admin-login-authorization></ak-charts-admin-login-authorization>
+                    </div>
+                    <div class="pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl">
+                        <ak-recent-events></ak-recent-events>
                     </div>
                 </div>
                 <ak-divider></ak-divider>
                 <!-- row 3: recent events (50%) / apps with most usage (33%) / quick actions (17%) -->
                 <div class="pf-l-grid pf-m-gutter bottom-row">
-                    <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl">
-                        <ak-recent-events></ak-recent-events>
-                    </div>
                     <div class="pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl">
                         <ak-top-applications-table></ak-top-applications-table>
                     </div>
