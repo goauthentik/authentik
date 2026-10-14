@@ -251,6 +251,52 @@ class SCIMGroupTests(TestCase):
         self.assertEqual([req.method for req in mock.request_history].count("PUT"), 1)
 
     @Mocker()
+    def test_group_update_patch_sends_schemas(self, mock: Mocker):
+        """Test that a PATCH update declares the PatchOp schema, which RFC 7644 Section 3.5.2
+        requires"""
+        scim_id = generate_id()
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={
+                "authenticationSchemes": [],
+                "patch": {"supported": True},
+                "bulk": {"supported": False},
+                "filter": {"supported": False},
+                "changePassword": {"supported": False},
+                "sort": {"supported": False},
+                "etag": {"supported": False},
+            },
+        )
+        mock.post(
+            "https://localhost/Groups",
+            json={
+                "id": scim_id,
+            },
+        )
+        group = Group.objects.create(
+            name=generate_id(),
+        )
+        remote_group = {
+            "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+            "id": scim_id,
+            "externalId": str(group.pk),
+            "displayName": group.name,
+            "members": [],
+        }
+        mock.patch(f"https://localhost/Groups/{scim_id}", json=remote_group)
+        mock.get(f"https://localhost/Groups/{scim_id}", json=remote_group)
+
+        group.name = generate_id()
+        group.save()
+
+        patch_requests = [req for req in mock.request_history if req.method == "PATCH"]
+        self.assertEqual(len(patch_requests), 1)
+        self.assertEqual(
+            loads(patch_requests[0].body)["schemas"],
+            ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+        )
+
+    @Mocker()
     def test_group_diff_nested_attribute(self, mock: Mocker):
         """Test nested attribute changes are detected without mutating cached data"""
         mock.get("https://localhost/ServiceProviderConfig", json={})

@@ -212,7 +212,6 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 ]
             ).model_dump(
                 mode="json",
-                exclude_unset=True,
                 exclude_none=True,
             ),
         )
