@@ -65,7 +65,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
             /* Split the viewport 70/30 between the rows; a row whose content
                needs more still grows to fit it. */
             .top-row {
-                flex: 7 1 0;
+                flex: 65 1 0;
             }
             @media (min-width: 1200px) {
                 /* Size the row from the chart column only, so the events list
@@ -76,7 +76,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
                 }
             }
             .bottom-row {
-                flex: 3 1 0;
+                flex: 35 1 0;
             }
             .card-container {
                 max-height: 10rem;
