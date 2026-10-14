@@ -67,6 +67,7 @@ test.describe("Continuous login", () => {
                 leader.locator(IDENTIFICATION_STAGE),
                 "Leader tab shows the identification stage",
             ).toBeVisible();
+
             await expect(
                 follower.locator(IDENTIFICATION_STAGE),
                 "Follower tab shows the identification stage",
