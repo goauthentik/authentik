@@ -13267,6 +13267,21 @@ Bindings to groups/users are checked against the user of the event.</target>
 <trans-unit id="sa81413e2e309b882">
   <source>No results found.</source>
 </trans-unit>
+<trans-unit id="s976733698fe1b0fe">
+  <source>No change vs previous week</source>
+</trans-unit>
+<trans-unit id="s7f4f31965f7198d7">
+  <source><x id="0" equiv-text="${diff &gt; 0 ? &quot;+&quot; : &quot;&quot;}${diff}"/> vs previous week</source>
+</trans-unit>
+<trans-unit id="s1c4aaab60097f5d0">
+  <source><x id="0" equiv-text="${diff &gt; 0 ? &quot;+&quot; : &quot;&quot;}${Math.round((diff / previous) * 100)}"/>% vs previous week</source>
+</trans-unit>
+<trans-unit id="sab5ab8f14efd1dbf">
+  <source>Successful logins</source>
+</trans-unit>
+<trans-unit id="sb7a30bbc1dcf6de9">
+  <source>Issues</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
