@@ -83,6 +83,9 @@ export class AggregateCard extends AKElement implements IAggregateCard {
         PFFlex,
         Styles,
         css`
+            :host([tone]) .pf-c-card__header {
+                margin-top: -3px;
+            }
             :host([tone="success"]) .pf-c-card {
                 border-top: 3px solid var(--pf-global--success-color--100);
             }
