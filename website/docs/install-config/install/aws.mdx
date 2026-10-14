@@ -57,6 +57,8 @@ This stack will create the following resources:
 - Two EFS file systems, for data and media, mounted on both ECS services
 - A CloudWatch Logs log group for each of the server and worker containers
 
+The authentik server and worker tasks connect to the RDS PostgreSQL database over TLS.
+
 The stack will output the endpoint of the ALB to which you can point your DNS records.
 
 #### PostgreSQL version

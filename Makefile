@@ -132,7 +132,7 @@ run-watch:  ## Run the authentik server and worker, with auto reloading
 	watchexec --on-busy-update=restart --stop-signal=SIGINT --exts py,rs --no-meta --notify -- $(UV) run ak allinone
 
 core-i18n-extract:
-	$(UV) run ak makemessages \
+	$(UV) run python -m manage makemessages \
 		--add-location file \
 		--no-obsolete \
 		--ignore web \
@@ -191,7 +191,7 @@ endif
 gen-build:  ## Generate schema.yml and blueprints/schema.json from Django model definitions
 	AUTHENTIK_DEBUG=true \
 		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
-		$(UV) run ak build_schema
+		$(UV) run python -m manage build_schema
 
 gen-compose:
 	$(UV) run scripts/generate_compose.py
@@ -387,7 +387,7 @@ ci-lint-bandit: ci--meta-debug
 	$(UV) run bandit -c pyproject.toml -r $(PY_SOURCES) -iii
 
 ci-lint-pending-migrations: ci--meta-debug
-	$(UV) run ak makemigrations --check
+	$(UV) run python -m manage makemigrations --check
 
 ci-lint-cargo-deny: ci--meta-debug
 	$(CARGO) deny --config "${PWD}/.cargo/deny.toml" --locked --workspace check
