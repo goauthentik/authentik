@@ -1,0 +1,19 @@
+---
+blueprints:
+  configMaps:
+    - authentik-ci-blueprint
+
+### Required values below
+
+authentik:
+  log_level: debug
+  secret_key: 5up3r53cr37K3y
+  postgresql:
+    password: au7h3n71k
+
+postgresql:
+  enabled: true
+  auth:
+    password: au7h3n71k
+  persistence:
+    enabled: false

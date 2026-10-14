@@ -1,0 +1,59 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ template "authentik-remote-cluster.fullname" . }}
+  namespace: {{ include "authauthentik-remote-cluster.namespace" . | quote }}
+  labels:
+    {{- include "authentik-remote-cluster.labels" (dict "context" .) | nindent 4 }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+      - services
+      - configmaps
+    verbs:
+      {{- include "authentik-remote-cluster.api-verbs-rw" . | nindent 6 }}
+  - apiGroups:
+      - extensions
+      - apps
+    resources:
+      - deployments
+    verbs:
+      {{- include "authentik-remote-cluster.api-verbs-rw" . | nindent 6 }}
+  - apiGroups:
+      - extensions
+      - networking.k8s.io
+    resources:
+      - ingresses
+    verbs:
+      {{- include "authentik-remote-cluster.api-verbs-rw" . | nindent 6 }}
+  - apiGroups:
+      - traefik.containo.us
+      - traefik.io
+    resources:
+      - middlewares
+    verbs:
+      {{- include "authentik-remote-cluster.api-verbs-rw" . | nindent 6 }}
+  - apiGroups:
+      - gateway.networking.k8s.io
+    resources:
+      - httproutes
+    verbs:
+      {{- include "authentik-remote-cluster.api-verbs-rw" . | nindent 6 }}
+  - apiGroups:
+      - monitoring.coreos.com
+    resources:
+      - servicemonitors
+    verbs:
+      {{- include "authentik-remote-cluster.api-verbs-rw" . | nindent 6 }}
+  - apiGroups:
+      - apiextensions.k8s.io
+    resources:
+      - customresourcedefinitions
+    verbs:
+      - list

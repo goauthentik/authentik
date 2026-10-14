@@ -1,0 +1,36 @@
+{{- if .Values.server.enabled }}
+{{- if .Values.server.metrics.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "authentik.server.fullname" . }}-metrics
+  namespace: {{ include "authentik.namespace" . | quote }}
+  labels:
+    {{- include "authentik.labels" (dict "context" . "component" (printf "%s-metrics" .Values.server.name)) | nindent 4 }}
+    {{- with .Values.server.metrics.service.labels }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- if or .Values.server.metrics.service.annotations .Values.global.addPrometheusAnnotations }}
+  annotations:
+    {{- if .Values.global.addPrometheusAnnotations }}
+    prometheus.io/port: {{ .Values.server.metrics.service.servicePort | quote }}
+    prometheus.io/scrape: "true"
+    {{- end }}
+    {{- range $key, $value := .Values.server.metrics.service.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  type: {{ .Values.server.metrics.service.type }}
+  {{- if and .Values.server.metrics.service.clusterIP (eq .Values.server.metrics.service.type "ClusterIP") }}
+  clusterIP: {{ .Values.server.metrics.service.clusterIP }}
+  {{- end }}
+  ports:
+  - name: {{ .Values.server.metrics.service.portName }}
+    protocol: TCP
+    port: {{ .Values.server.metrics.service.servicePort }}
+    targetPort: metrics
+  selector:
+    {{- include "authentik.selectorLabels" (dict "context" . "component" .Values.server.name) | nindent 4 }}
+{{- end }}
+{{- end }}

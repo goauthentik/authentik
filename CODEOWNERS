@@ -23,6 +23,7 @@ rust-toolchain.toml                     @goauthentik/backend
 .github/                                @goauthentik/infrastructure
 /lifecycle/aws/                         @goauthentik/infrastructure
 /lifecycle/container/                   @goauthentik/infrastructure
+/lifecycle/charts/                      @goauthentik/infrastructure
 .dockerignore                           @goauthentik/infrastructure
 Makefile                                @goauthentik/infrastructure
 .editorconfig                           @goauthentik/infrastructure
