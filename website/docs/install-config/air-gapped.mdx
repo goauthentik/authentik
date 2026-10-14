@@ -1,150 +1,135 @@
 ---
 title: Air-gapped environments
+description: Install, license, and upgrade authentik without internet access.
 sidebar_position: 9
 ---
 
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
-## Outbound connections
+authentik can operate without internet access, including with an air-gapped Enterprise license. License installation and validation are performed locally and do not require an internet connection.
 
-By default, authentik creates outbound connections to the following URLs:
+If you require an air-gapped authentik license, please let us know during the purchasing process.
 
-- https://version.goauthentik.io: Periodic update check
-- https://goauthentik.io: Anonymous analytics on startup
-- https://secure.gravatar.com: Avatars for users
-- https://authentik.error-reporting.a7k.io: Error reporting
+Use this guide alongside the [Docker Compose](./install/docker-compose.mdx) or [Kubernetes](./install/kubernetes.mdx) installation instructions. Prepare the resources on a connected system, transfer them into your environment, and configure authentik before starting it.
 
-The [events map](../sys-mgmt/events/index.mdx#event-map) ships with a bundled basemap and makes no outbound connections. If a custom basemap is configured under **System** > **Brands** (**Map tiles**), the browser loads tiles from the configured URL — in an air-gapped environment, point it at an internally reachable tile source or leave it empty to keep the bundled default.
+## Prepare installation resources {#required-resources}
 
-## Configuration
+Choose an authentik release and obtain its deployment files and container images on a system with internet access. Use the same authentik version for the server, worker, and outposts, and choose images that support your hosts' CPU architecture.
 
-To disable these outbound connections, adjust the following settings:
+### Container images
 
-<Tabs
-  defaultValue="docker-compose"
-  values={[
-    {label: 'Docker Compose', value: 'docker-compose'},
-    {label: 'Kubernetes', value: 'kubernetes'},
-  ]}>
-  <TabItem value="docker-compose">
+Mirror the images into an internal registry, or transfer image archives and load them onto the hosts that will run them.
 
-Add the following block to your `.env` file:
+| Component         | Image                                                           | When needed                                                                  |
+| ----------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Server and worker | `ghcr.io/goauthentik/server`                                    | Every installation; both services use the same image                         |
+| PostgreSQL        | The image specified by your Compose file or database deployment | When deploying PostgreSQL in a container                                     |
+| LDAP outpost      | `ghcr.io/goauthentik/ldap`                                      | When using an LDAP outpost                                                   |
+| Proxy outpost     | `ghcr.io/goauthentik/proxy`                                     | When using a separate proxy outpost; the embedded outpost runs in the server |
+| RAC outpost       | `ghcr.io/goauthentik/rac`                                       | When using Remote Access Control                                             |
+| RADIUS outpost    | `ghcr.io/goauthentik/radius`                                    | When using a RADIUS outpost                                                  |
+
+The authentik images are also available on Docker Hub under `authentik/`. Include any additional images used by your deployment, such as an ingress controller or a database operator.
+
+### Docker Compose file
+
+Download the target release's `compose.yml` file using the installation guide or [release notes](/releases/). Transfer it into the air-gapped environment. Check every service's `image` value, including PostgreSQL, when preparing your mirrors.
+
+### Helm chart {#helm-repositories}
+
+Download the chart from https://charts.goauthentik.io on a connected system:
 
 ```shell
+helm repo add authentik https://charts.goauthentik.io
+helm repo update
+helm pull authentik/authentik --version <chart-version>
+```
+
+Replace `<chart-version>` with the chart version for your chosen release. Transfer the resulting `authentik-<chart-version>.tgz` archive into the air-gapped environment, or publish it to an internal chart repository. Include the images required by any enabled chart dependencies, such as PostgreSQL.
+
+## Configure authentik {#configuration}
+
+Complete the secrets, database, and networking settings in your installation guide, then apply the settings below before the first startup. The examples use `registry.company` as an internal registry; replace it with your registry and replace `<authentik-version>` with the exact image tag you mirrored.
+
+<Tabs groupId="air-gapped-deployment">
+  <TabItem value="docker-compose" label="Docker Compose" default>
+
+Add these settings to `.env`:
+
+```shell
+AUTHENTIK_IMAGE=registry.company/authentik/server
+AUTHENTIK_TAG=<authentik-version>
+AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=registry.company/authentik/%(type)s:%(version)s
 AUTHENTIK_DISABLE_STARTUP_ANALYTICS=true
 AUTHENTIK_DISABLE_UPDATE_CHECK=true
 AUTHENTIK_ERROR_REPORTING__ENABLED=false
 ```
 
-Afterwards, run the upgrade commands from the latest release notes.
+`AUTHENTIK_IMAGE` changes the server and worker image. Update the PostgreSQL service's `image` in `compose.yml` to its mirrored location as well.
 
   </TabItem>
-  <TabItem value="kubernetes">
+  <TabItem value="kubernetes" label="Kubernetes">
 
-Add the following block to your `values.yml` file:
+Merge these settings into your `values.yaml` file, keeping the secrets, database, and ingress settings from the installation guide:
 
 ```yaml
+global:
+    image:
+        repository: registry.company/authentik/server
+        tag: "<authentik-version>"
+
 authentik:
+    outposts:
+        container_image_base: registry.company/authentik/%(type)s:%(version)s
+    disable_startup_analytics: true
+    disable_update_check: true
     error_reporting:
         enabled: false
-    disable_update_check: true
-    disable_startup_analytics: true
 ```
 
-Afterwards, run the upgrade commands from the latest release notes.
+Configure mirrored images for any enabled chart dependencies separately. Ensure that all cluster nodes can pull from your internal registry.
 
   </TabItem>
 </Tabs>
 
-Additionally, adjust the following [System settings](../sys-mgmt/settings.mdx):
+For managed Docker outposts, use an internal registry that the Docker host can pull from. The outpost controller pulls images when creating containers; preloading an archive alone is not sufficient. If you distribute images only as archives, [deploy the outposts manually](../add-secure-apps/outposts/manual-deploy-docker-compose.mdx).
 
-- **Avatars**: By default this setting connects to [Gravatar](https://secure.gravatar.com/). To avoid outgoing connections, set this to a combination of other options, such as `initials`.
+The `container_image_base` setting controls images for managed outposts. An outpost's own `container_image` setting overrides it. Check existing overrides, and configure manually deployed outposts to use the mirrored images too. See [outpost configuration](../add-secure-apps/outposts/index.mdx#configuration).
 
-## Required resources
+### Outbound connections
 
-### Container images
+The settings above disable update checks, startup analytics, and error reporting. Avatars require a separate change in the Admin interface after installation.
 
-authentik deployments require access to the following container images. In an air-gapped environment, this can be achieved by mirroring the images to an internal registry, or using other methods appropriate for your environment.
+| Destination                              | Purpose                                                   | How to disable                                                                                |
+| ---------------------------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| https://version.goauthentik.io           | Periodic update checks                                    | Set `disable_update_check` to `true`                                                          |
+| https://goauthentik.io                   | Anonymous startup analytics                               | Set `disable_startup_analytics` to `true`                                                     |
+| https://authentik.error-reporting.a7k.io | Error reporting, when enabled                             | Set `error_reporting.enabled` to `false`; it is opt-in, but the installation guides enable it |
+| https://www.gravatar.com                 | Avatar checks by authentik and image loads by the browser | Set **Avatars** to `initials` in [System settings](../sys-mgmt/settings.mdx)                  |
 
-#### Main image
+The [events map](../sys-mgmt/events/index.mdx#event-map) includes a bundled basemap and needs no external tile server. If you set **Map tiles** under **System** > **Brands**, use an internally reachable tile source or clear the setting to restore the bundled map.
 
-- `ghcr.io/goauthentik/server` or `authentik/server`
+Review the services and URLs used by your configuration as well. External identity providers, CAPTCHA services, notification webhooks, and remotely hosted logos or backgrounds need network access from authentik or the user's browser. Use services and assets available inside your environment.
 
-#### Outpost images
+## Start authentik
 
-- `ghcr.io/goauthentik/ldap` or `authentik/ldap`
-- `ghcr.io/goauthentik/proxy` or `authentik/proxy`
-- `ghcr.io/goauthentik/rac` or `authentik/rac`
-- `ghcr.io/goauthentik/radius` or `authentik/radius`
+<Tabs groupId="air-gapped-deployment">
+  <TabItem value="docker-compose" label="Docker Compose" default>
 
-#### Supporting services
-
-- PostgreSQL
-
-### Helm repositories
-
-For Helm deployments, ensure access to the following repository. In an air-gapped environment, this can be achieved by mirroring the chart to an internal registry, or using other methods appropriate for your environment.
-
-- https://charts.goauthentik.io
-
-## Upgrades
-
-Before upgrading an air-gapped deployment, review the [release notes](../../releases/) for the target version and mirror the required resources for that version into your internal registry or artifact repository. The air-gapped upgrade itself uses the same upgrade commands as a connected deployment, but those commands must reference the mirrored images and chart artifacts.
-
-<Tabs
-  defaultValue="docker-compose"
-  values={[
-    {label: 'Docker Compose', value: 'docker-compose'},
-    {label: 'Kubernetes', value: 'kubernetes'},
-  ]}>
-  <TabItem value="docker-compose">
-
-On a system with internet access, download the target release's `compose.yml` file, then mirror the authentik server image that is referenced by that file. If you use managed outposts, mirror the matching outpost images as well.
-
-After transferring the updated `compose.yml` into the air-gapped environment, update your `.env` file to point to the mirrored authentik image repository and target tag:
-
-```shell
-AUTHENTIK_IMAGE=registry.company/authentik/server
-AUTHENTIK_TAG=2026.2.0
-AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=registry.company/authentik/%(type)s:%(version)s
-```
-
-Replace the registry path and version with your mirrored image location and target authentik version. If the air-gapped environment can pull from an internal registry, run the normal Docker Compose upgrade commands:
+If you use an internal registry, pull the mirrored images and start the services:
 
 ```shell
 docker compose pull
 docker compose up -d
 ```
 
-If you transfer images as archives instead of using an internal registry, load the images on the Docker host first, then run `docker compose up -d`.
+If you transfer image archives, load them on the Docker host first and make sure their tags match the image references in `compose.yml`. Then run `docker compose up -d`.
 
   </TabItem>
-  <TabItem value="kubernetes">
+  <TabItem value="kubernetes" label="Kubernetes">
 
-On a system with internet access, pull the target authentik Helm chart and mirror the authentik server image and any outpost images you use.
-
-For example, `helm pull` creates the chart archive that you can transfer into the air-gapped environment:
-
-```shell
-helm repo update
-helm pull authentik/authentik --version <chart-version>
-```
-
-Transfer the resulting `authentik-<chart-version>.tgz` file into the air-gapped environment, then update your separate `values.yaml` file to point to the mirrored images:
-
-```yaml
-global:
-    image:
-        repository: registry.company/authentik/server
-        tag: 2026.2.0
-
-authentik:
-    outposts:
-        container_image_base: registry.company/authentik/%(type)s:%(version)s
-```
-
-Replace the registry path and version with your mirrored image location and target authentik version. Then upgrade from the local chart archive:
+Install from the transferred chart archive and your configured values:
 
 ```shell
 helm upgrade --install authentik ./authentik-<chart-version>.tgz -f values.yaml
@@ -153,24 +138,48 @@ helm upgrade --install authentik ./authentik-<chart-version>.tgz -f values.yaml
   </TabItem>
 </Tabs>
 
+Complete the initial setup from your installation guide. In the Admin interface, open [System settings](../sys-mgmt/settings.mdx) and set **Avatars** to `initials` to stop authentik and browsers from requesting Gravatar images.
+
+## Install an Enterprise license {#enterprise-licenses}
+
+authentik always validates Enterprise licenses locally, including in connected deployments. You do not need an online activation step, a licensing proxy, or an outbound firewall exception.
+
+1. In the air-gapped authentik Admin interface, navigate to **Enterprise** > **Licenses** and copy **Your Install ID**.
+2. On a system with internet access, [obtain a license key](../enterprise/get-started.mdx#2-obtain-a-license-key) for that Install ID from the Customer Portal or the authentik team.
+3. Transfer the license key into the air-gapped environment using your organization's file transfer process.
+4. On **Enterprise** > **Licenses**, click **Install**, paste the key into **License key**, and submit the form.
+5. Check **Current license status**, the user capacity, and the expiry date on the **Licenses** page.
+
+Only the system accessing the Customer Portal needs internet access. The authentik deployment can remain disconnected throughout the process.
+
+For renewals or capacity changes, retrieve and transfer the replacement key, then [update the installed license](../enterprise/manage-enterprise.mdx#update-a-license-key). License expiry and user capacity rules also apply offline; see [license enforcement](../enterprise/manage-enterprise.mdx#license-expiry-and-capacity-enforcement).
+
+## Upgrades
+
+Review the target version's [release notes](/releases/) and [back up your deployment](../sys-mgmt/ops/backup-restore.mdx) before upgrading. Download the updated Compose file or Helm chart on a connected system and mirror all required images for the target release, including any changed supporting-service images.
+
+Transfer the resources, update your image references and version tags, and run the commands in [Start authentik](#start-authentik). Follow the [required upgrade sequence](./upgrade.mdx#important-considerations) and any additional migration instructions in the release notes. Keep the outbound-connection settings and internal registry configuration when merging a new Compose file or chart values.
+
+With automatic update checks disabled, check the [release notes](/releases/) from a connected system to keep track of new releases and security fixes.
+
 ## Network requirements
+
+An air-gapped installation still needs connectivity between its internal services. Allow the connections used by your deployment:
 
 ### Required ports
 
-- **9000/9443**: Default authentik server ports for HTTP/HTTPS access.
-- **80/443**: For reverse proxy setups (if using a load balancer or ingress controller).
-- **SMTP ports**: Connectivity to your configured SMTP server (typically 25, 465, or 587).
-- **S3/object storage**: If configured, connectivity to your S3-compatible storage.
+- Browsers, applications, and outposts must reach the authentik server, normally on HTTPS port 443 through a reverse proxy or ingress. The server's default container ports are 9000 for HTTP and 9443 for HTTPS.
+- The server and worker must reach PostgreSQL, normally on port 5432.
+- Email delivery needs access to your configured SMTP server, commonly on port 25, 465, or 587.
+- Configured storage, directory servers, applications, and other integrations must be reachable on their respective ports.
 
 ### Outpost-specific ports
 
-Each outpost container, in order to communicate with authentik, requires access to the authentik server via whichever protocol is specified in the URL set in the `AUTHENTIK_HOST` environment variable (preferably HTTPS).
+Every outpost must reach the authentik URL configured in `AUTHENTIK_HOST`, preferably over HTTPS. Allow clients to reach the outposts and outposts to reach their upstream services:
 
-The outpost containers also need certain ports exposed:
+- LDAP outposts listen on container ports 3389 and 6636, commonly published as 389 and 636 for LDAP and LDAPS.
+- Proxy outposts listen on container ports 9000 and 9443 and need access to the applications they proxy.
+- RAC outposts need access to target devices over the configured remote access protocol. They do not require published inbound ports.
+- RADIUS outposts listen on UDP port 1812.
 
-- **LDAP Outpost**: Ports 389/636 (LDAP/LDAPS) exposed to ports 3389/6636 of the container.
-- **Proxy Outpost**: Ports 9000/9443 (HTTP/HTTPS) exposed to ports 9000/9443 of the container.
-- **RAC Outpost**: Exposed ports not required.
-- **RADIUS Outpost**: Port 1812 (RADIUS Authentication) exposed to port 1812/udp of the container.
-
-For more detailed information about outpost configuration in air-gapped environments, see the [Outposts documentation](../add-secure-apps/outposts/index.mdx).
+See the [outpost documentation](../add-secure-apps/outposts/index.mdx) for deployment and configuration details.

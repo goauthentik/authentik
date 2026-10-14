@@ -118,7 +118,7 @@ function waitForTabExit(tabID: string, resumeID: string): Promise<void> {
 }
 
 export async function multiTabOrchestrateResume() {
-    if (!globalAK().brand.flags.flowsContinuousLogin) {
+    if (!globalAK().brand.flags.flowsContinuousLogin || !localStorage) {
         return;
     }
 

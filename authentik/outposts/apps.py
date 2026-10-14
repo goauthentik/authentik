@@ -14,11 +14,13 @@ GAUGE_OUTPOSTS_CONNECTED = Gauge(
     "authentik_outposts_connected",
     "Currently connected outposts",
     ["tenant", "outpost", "uid", "expected"],
+    multiprocess_mode="livesum",
 )
 GAUGE_OUTPOSTS_LAST_UPDATE = Gauge(
     "authentik_outposts_last_update",
     "Last update from any outpost",
     ["tenant", "outpost", "uid", "version"],
+    multiprocess_mode="livemax",
 )
 MANAGED_OUTPOST = "goauthentik.io/outposts/embedded"
 MANAGED_OUTPOST_NAME = "authentik Embedded Outpost"

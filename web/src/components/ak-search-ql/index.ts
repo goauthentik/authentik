@@ -25,6 +25,17 @@ export class QL extends DjangoQL {
         this.completionEnabled = !!this.options.completionEnabled;
         return;
     }
+    generateSuggestions() {
+        try {
+            super.generateSuggestions();
+        } catch (error) {
+            // Never leave stale suggestions behind; an open menu captures Enter.
+            this.logError(`Failed to generate suggestions: ${error}`);
+            this.prefix = "";
+            this.suggestions = [];
+            this.selected = null;
+        }
+    }
     logError(message: string): void {
         console.warn(`authentik/ql: ${message}`);
     }
@@ -317,7 +328,14 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
 
         const suggestionsLength = this.#ql?.suggestions.length;
 
+        // The completion engine attaches its own keydown listener to the textarea and would
+        // handle these keys a second time, with its own notion of the selected suggestion.
+        if (["Enter", "ArrowDown", "ArrowUp", "Tab", "Escape"].includes(event.key)) {
+            event.stopImmediatePropagation();
+        }
+
         if (event.key === "Enter" && !this.open && this.form) {
+            event.preventDefault();
             this.submit();
 
             return;
@@ -365,25 +383,40 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
                 return;
 
             case "Tab":
-                if (this.selectionIndex) {
+                // -1 means no selection; 0 is a valid (falsy) index
+                if (this.selectionIndex !== -1) {
                     this.#selectCompletion(this.selectionIndex);
                     event.preventDefault();
                 }
 
                 return;
-            case "Enter":
+            case "Enter": {
                 // Technically this is a textarea, due to automatic multi-line feature,
                 // but other than that it should look and behave like a normal input.
                 // So expected behavior when pressing Enter is to submit the form,
                 // not to add a new line.
-                if (this.selectionIndex !== -1) {
-                    this.#selectCompletion(this.selectionIndex);
-                    this.selectionIndex = 0;
-                }
-
                 event.preventDefault();
 
+                const before = this.anchorRef.value?.value ?? "";
+
+                if (this.selectionIndex !== -1) {
+                    this.#selectCompletion(this.selectionIndex);
+                }
+
+                const after = this.anchorRef.value?.value ?? "";
+
+                // Nothing to complete, so Enter submits instead of trapping the user.
+                if (after === before) {
+                    this.open = false;
+                    this.submit();
+
+                    return;
+                }
+
+                this.selectionIndex = 0;
+
                 return;
+            }
             case "Escape":
                 this.open = false;
                 return;

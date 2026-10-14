@@ -11,9 +11,12 @@ from authentik.core.models import SourceUserMatchingModes, User
 from authentik.core.sources.flow_manager import Action
 from authentik.core.sources.matcher import MatchFailureReason
 from authentik.core.sources.stage import PostSourceStage
-from authentik.core.tests.utils import RequestFactory, create_test_flow
+from authentik.core.tests.utils import RequestFactory, create_test_flow, create_test_user
 from authentik.events.models import Event, EventAction
-from authentik.flows.planner import FlowPlan
+from authentik.flows.models import FlowAuthenticationRequirement
+from authentik.flows.planner import (
+    FlowPlan,
+)
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.policies.denied import AccessDeniedResponse
@@ -147,6 +150,31 @@ class TestSourceFlowManager(TestCase):
         self.assertIsNotNone(connection.pk)
         response = flow_manager.get_flow()
         self.assertEqual(response.status_code, 302)
+
+    def test_authenticated_auth_require_unauthenticated(self):
+        """Test authenticated user re-authenticating with a require_unauthenticated flow"""
+        self.authentication_flow.authentication = (
+            FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED
+        )
+        self.authentication_flow.save()
+        user = create_test_user()
+        UserOAuthSourceConnection.objects.create(
+            user=user, source=self.source, identifier=self.identifier
+        )
+        request = self.request_factory.get("/", user=user)
+        flow_manager = OAuthSourceFlowManager(
+            self.source, request, self.identifier, {"info": {}}, {}
+        )
+        response = flow_manager.get_flow()
+        self.assertEqual(response.status_code, 302)
+
+        # A different logged-in user is still refused
+        request = self.request_factory.get("/", user=create_test_user())
+        flow_manager = OAuthSourceFlowManager(
+            self.source, request, self.identifier, {"info": {}}, {}
+        )
+        response = flow_manager.get_flow()
+        self.assertIsInstance(response, AccessDeniedResponse)
 
     def test_unauthenticated_link(self):
         """Test un-authenticated user linking"""

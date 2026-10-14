@@ -1,0 +1,23 @@
+---
+title: Troubleshoot slow PostgreSQL queries
+---
+
+If authentik requests become slow, especially after a PostgreSQL upgrade or a large change to the database, PostgreSQL might be planning queries with outdated table statistics. Queries that join many tables can be especially sensitive to poor row estimates. PostgreSQL's just-in-time (JIT) compilation can add substantial latency when it spends more time compiling a query than executing it.
+
+## Refresh table statistics
+
+After restoring a database to a new PostgreSQL cluster, or after a large number of inserts, updates, or deletes, connect to the authentik database and refresh its planner statistics:
+
+```sql
+ANALYZE;
+```
+
+`ANALYZE` scans tables to collect statistics that PostgreSQL uses to choose query plans. For tables with many dead rows, run `VACUUM (ANALYZE);` instead. Run `VACUUM` outside a transaction block. Run routine maintenance on the PostgreSQL server as well, and keep [autovacuum enabled](https://www.postgresql.org/docs/current/runtime-config-autovacuum.html).
+
+## Check whether JIT compilation adds latency
+
+Run `EXPLAIN (ANALYZE, BUFFERS)` on a slow, read-only query and look for a `JIT` section. `EXPLAIN ANALYZE` executes the query, so do not use it with a query that changes data. The timing in the `JIT` section shows how long PostgreSQL spent generating, optimizing, and emitting compiled code. If JIT time accounts for most of the query time, refresh table statistics first. Better estimates can prevent PostgreSQL from choosing an expensive plan that triggers JIT unnecessarily.
+
+If JIT compilation still dominates after refreshing statistics, you can disable JIT in the PostgreSQL server configuration or managed database settings. Apply a database-level setting to the authentik database when your provider supports it. Otherwise, apply it at the server level. Restart authentik's server and worker processes so they open new database connections and use the setting. Disabling JIT can slow some complex queries, so confirm the effect with your workload. See the PostgreSQL documentation for [JIT configuration](https://www.postgresql.org/docs/current/jit-configuration.html).
+
+For PostgreSQL version upgrades, see the relevant guide for [Docker Compose](./upgrade_docker.mdx) or [Kubernetes](./upgrade_kubernetes.mdx).

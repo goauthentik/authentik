@@ -49,7 +49,24 @@ Additionally, it is possible to bind policies to _Endpoint_ objects to restrict 
 
 ## Connection management
 
-A new connection is created every time an RAC application/endpoint is selected in the [User Interface](../../../customize/interfaces/user). After the user's authentik session expires, the connection is terminated. Additionally, you can configure connection expiry in the RAC provider, which applies even if the user is still authenticated. The connection can also be terminated manually from the **Connections** tab of the RAC provider.
+Launching a RAC application/endpoint from the [User interface](../../../customize/interfaces/user) runs the provider's authorization flow and creates a connection authorization tied to the user's current authentik session. This authorization allows the browser to connect to that endpoint. You can view and delete stored connection authorizations from the **Connections** tab of the RAC provider.
+
+### Delete authorization on disconnect
+
+The RAC provider's **Delete authorization on disconnect** setting is disabled by default.
+
+- When disabled, the connection authorization remains available after a disconnect. The browser can reuse it to reconnect to the same endpoint without repeating the authorization flow, provided that the authorization and the authentik session are still valid. This allows reconnection after a temporary network failure. Launching the application/endpoint again starts a new authorization flow rather than reusing the previous authorization.
+- When enabled, the authorization cannot be reused. After a disconnect, the user must launch the application/endpoint again and complete the provider's authorization flow. This also applies when a temporary network failure interrupts the connection, so enabling the setting can cause repeated authorization prompts on unstable networks. The prompts depend on the stages configured in the authorization flow; reauthorization does not necessarily require logging in to authentik again.
+
+Although the UI describes deletion as happening on disconnect, authentik deletes the stored authorization during connection setup, after requesting a connection from the outpost. The current connection continues, but subsequent reconnect attempts cannot use that authorization. A connection attempt that fails after this deletion also requires a new authorization.
+
+### Connection and session expiry
+
+**Connection expiry** limits the authorization's lifetime, starting when authentik creates it. The default is `hours=8`. Reconnecting with the same authorization does not reset this limit. When it expires, authentik disconnects the RAC connection and requires a new authorization, even if the user is still logged in to authentik.
+
+The connection also ends when the user's authentik session expires or the user logs out. **Delete authorization on disconnect** controls authorization reuse; it does not extend or replace either expiry limit. Connection expiry still applies to the current connection when the setting is enabled.
+
+A connection authorization is separate from the login session on the remote operating system. Deleting the authorization prevents reuse through authentik; it does not itself log the user out of the remote operating system or terminate applications running there. Whether a remote session survives a disconnected RAC connection depends on the protocol and the remote machine's session policies.
 
 ## RAC Property Mappings
 

@@ -1,4 +1,10 @@
 {
     "label": "Audits and Certificates",
-    "position": 4
+    "position": 4,
+    "link": {
+        "type": "generated-index",
+        "slug": "/security/audits-and-certs",
+        "title": "Audits and certificates",
+        "description": "We regularly engage independent security firms to audit and pentest authentik. Review the reports and our responses to their findings."
+    }
 }

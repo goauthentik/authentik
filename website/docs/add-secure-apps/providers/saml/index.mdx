@@ -153,6 +153,14 @@ In authentik, it's also possible to configure the default SAML NameID policy use
 By default, users are free to change their email addresses. Therefore, it is recommended to either: avoid using a user's email address as the NameID attribute or, if possible, disallow changing email addresses.
 :::
 
+## ForceAuthn:ak-version[2026.8]
+
+An SP can set the `ForceAuthn` attribute on its `AuthnRequest` to require that the user authenticates again, even when they already have a valid authentik session.
+
+authentik honors this attribute. When an incoming `AuthnRequest` sets `ForceAuthn="true"`, the user is sent through the provider's authentication flow before the SSO flow continues. If the provider does not have an authentication flow configured, authentik uses the authentication flow configured for the associated brand. This behaves similarly to `prompt=login` for OAuth 2.0 and OpenID Connect providers. Once the user has re-authenticated, the SSO flow proceeds normally.
+
+This requires no configuration on the provider, and it applies to any SP that sets the attribute. If users of an existing application are prompted to sign in again more often after upgrading to 2026.8, check whether that SP sets `ForceAuthn`.
+
 ## AuthnContextClassRef
 
 The AuthnContextClassRef attribute appears in the SAML assertion and contains a URI that describes the assurance level, such as password, multi-factor, or smartcard authentication. SPs use this information to understand and verify how the user was authenticated by an IdP.

@@ -120,7 +120,7 @@ class TestFileAPI(FileTestFileBackendMixin, TestCase):
             reverse(
                 "authentik_api:files",
                 query={
-                    "search": "ldap.png",
+                    "search": "LDAP.PNG",
                 },
             )
         )

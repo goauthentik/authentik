@@ -2,7 +2,7 @@
 
 from django.core.cache import cache
 from django.db import connection
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from structlog.stdlib import get_logger
 
@@ -29,8 +29,9 @@ def monitoring_set_policies(sender, **kwargs):
 @receiver(post_save, sender=PolicyBindingModel)
 @receiver(post_save, sender=Group)
 @receiver(post_save, sender=User)
+@receiver(pre_delete, sender=PolicyBinding)
 def invalidate_policy_cache(sender, instance, update_fields=None, **_):
-    """Invalidate Policy cache when policy is updated.
+    """Invalidate Policy cache when a policy or binding is updated.
 
     Skips when the save touched only ``last_login`` — Django's auth flow runs
     ``user.save(update_fields=["last_login"])`` on every successful login, and
@@ -41,14 +42,15 @@ def invalidate_policy_cache(sender, instance, update_fields=None, **_):
     if sender == User and update_fields and set(update_fields) <= {"last_login"}:
         return
 
-    if sender == Policy:
+    if sender in (Policy, PolicyBinding):
+        bindings = PolicyBinding.objects.filter(policy=instance) if sender == Policy else [instance]
         total = 0
-        for binding in PolicyBinding.objects.filter(policy=instance):
-            prefix = f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}_{binding.policy.pk.hex}*"
-            keys = cache.keys(prefix)
+        for binding in bindings:
+            prefix = f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}_*"
+            keys = cache.keys(prefix) or []
             total += len(keys)
             cache.delete_many(keys)
-        LOGGER.debug("Invalidating policy cache", policy=instance, keys=total)
+        LOGGER.debug("Invalidating policy cache", instance=instance, keys=total)
     # Also delete user application cache
     keys = cache.keys(user_app_cache_key("*")) or []
     cache.delete_many(keys)

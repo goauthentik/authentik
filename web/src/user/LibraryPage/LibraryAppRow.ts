@@ -57,7 +57,6 @@ export const LibraryAppRow: LitFC<LibraryAppRowProps> = ({
     const metaParts: string[] = [];
     if (application.metaDescription) metaParts.push(application.metaDescription);
     if (application.metaPublisher) metaParts.push(application.metaPublisher);
-    if (application.slug) metaParts.push(application.slug);
 
     const linkProps = {
         "aria-label": msg(str`Open "${application.name}"`, {

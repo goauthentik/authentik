@@ -179,6 +179,7 @@ unenrollment
 unhashed
 unlayered
 unmigrate
+unreviewed
 unskippable
 unsynchronized
 uperm
@@ -193,3 +194,4 @@ zxcvbn
 ~uuid
 ~uuids
 wreply
+Infima

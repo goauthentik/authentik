@@ -92,9 +92,9 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
 
     async send(data: OAuth2Provider): Promise<OAuth2Provider> {
         if (this.instance) {
-            return aki(ProvidersApi).providersOauth2Update({
+            return aki(ProvidersApi).providersOauth2PartialUpdate({
                 id: this.instance.pk,
-                oAuth2ProviderRequest: data,
+                patchedOAuth2ProviderRequest: data,
             });
         }
         return aki(ProvidersApi).providersOauth2Create({

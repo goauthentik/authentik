@@ -98,6 +98,9 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                         <p class="pf-c-form__helper-text">
                             ${msg("Flow used for users to authorize.")}
                         </p>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Required for local device authentication.")}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-text-input
                         name="authSessionDuration"

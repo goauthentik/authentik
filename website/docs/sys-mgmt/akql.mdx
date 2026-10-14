@@ -165,6 +165,18 @@ attributes.department = "engineering"
 context.geo.country = "Germany"
 ```
 
+Values inside JSON fields can be strings, Booleans, or numbers:ak-version[2026.8], so a numeric attribute is matched by its value rather than its text form.
+
+**Examples**:
+
+```text
+attributes.seat_count > 5
+```
+
+```text
+attributes.onboarded = True
+```
+
 For related objects and JSON objects, query a nested value such as `user.username`, `brand.name`, or `context.http_request.path`. A comparison against the root object, such as `user = "bob"`, is not valid AKQL.
 
 Autocomplete suggests a known subset of nested paths. You can still query other JSON key paths that exist in the stored data.

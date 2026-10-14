@@ -306,10 +306,6 @@ ak-switch-input {
         --pf-c-form-control--disabled--BackgroundColor: var(--ak-dark-background-light) !important;
     }
 
-    .form-control-static {
-        color: var(--ak-dark-foreground);
-    }
-
     /* #endregion */
 
     /* #region Fields */

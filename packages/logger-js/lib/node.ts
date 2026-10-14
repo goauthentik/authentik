@@ -1,16 +1,13 @@
 /**
  * Application logger.
- *
- * @import { LoggerOptions, Level } from "pino"
- * @import { PrettyOptions } from "pino-pretty"
- * @import { IConsoleLogger } from "./shared.js"
  */
 
 /// <reference types="../types/node.js" />
 
-import { fixture, prefix } from "./shared.js";
+import type { Level, LoggerOptions } from "./shared.ts";
+import { fixture, type IConsoleLogger, prefix } from "./shared.ts";
 
-export * from "./shared.js";
+export * from "./shared.ts";
 
 let warnedAboutPino = false;
 
@@ -23,27 +20,34 @@ const { pino } = await import("pino").catch(() => {
         warnedAboutPino = true;
     }
 
-    return import("./shared.js").then((module) => ({ pino: module.pinoLight }));
+    return import("./shared.ts").then((module) => ({ pino: module.pinoLight }));
 });
 
 //#region Constants
 
 /**
+ * Pino spawns the transport in a worker thread and resolves this target as a
+ * path, so it has to name the file that exists alongside *this* module: the
+ * TypeScript source when Node is stripping types, the emitted JavaScript
+ * otherwise. Unlike an import specifier, nothing rewrites it on emit.
+ */
+const TRANSPORT_TARGET = import.meta.filename.endsWith(".ts") ? "./transport.ts" : "./transport.js";
+
+/**
  * Default options for creating a Pino logger.
  *
  * @category Logger
- * @satisfies {LoggerOptions<never, false>}
  */
 export const DEFAULT_PINO_LOGGER_OPTIONS = {
     enabled: true,
     level: "info",
     transport: {
-        target: "./transport.js",
-        options: /** @satisfies {PrettyOptions} */ ({
+        target: TRANSPORT_TARGET,
+        options: {
             colorize: true,
-        }),
+        },
     },
-};
+} satisfies LoggerOptions<never, false>;
 
 //#endregion
 
@@ -51,10 +55,9 @@ export const DEFAULT_PINO_LOGGER_OPTIONS = {
 
 /**
  * Read the log level from the environment.
- * @return {Level}
  */
-export function readLogLevel() {
-    return process.env.AK_LOG_LEVEL || DEFAULT_PINO_LOGGER_OPTIONS.level;
+export function readLogLevel(): Level {
+    return (process.env.AK_LOG_LEVEL || DEFAULT_PINO_LOGGER_OPTIONS.level) as Level;
 }
 
 /**
@@ -67,9 +70,8 @@ export function readLogLevel() {
  * ```
  *
  * @runtime node
- * @type {IConsoleLogger}
  */
-export const ConsoleLogger = Object.assign(
+export const ConsoleLogger: IConsoleLogger = Object.assign(
     pino({
         ...DEFAULT_PINO_LOGGER_OPTIONS,
         level: readLogLevel(),
@@ -78,4 +80,6 @@ export const ConsoleLogger = Object.assign(
         fixture,
         prefix,
     },
-);
+) as unknown as IConsoleLogger;
+
+//#endregion

@@ -8,6 +8,7 @@ Pure unit tests — ``Task.objects`` and ``get_broker`` are mocked so no DB
 connection is required.
 """
 
+from types import SimpleNamespace
 from unittest import TestCase, mock
 
 
@@ -91,3 +92,62 @@ class TestMonitoringSetQueuedTasksDoesNotScan(TestCase):
 
         mock_task.objects.filter.assert_called_once_with(state=TaskState.QUEUED)
         mock_gauge.labels.return_value.set.assert_any_call(5)
+
+
+class TestMonitoringSetWorkers(TestCase):
+    """Tests for worker-count gauge refreshes."""
+
+    def _scrape(self, signals, gauges, versions):
+        """Run the handler with ``versions`` as the currently-live workers."""
+        worker_status = mock.Mock()
+        worker_status.objects.filter.return_value = [
+            SimpleNamespace(version=version) for version in versions
+        ]
+        with (
+            mock.patch.object(signals, "authentik_full_version", return_value="2026.5.6"),
+            mock.patch.object(signals, "WorkerStatus", worker_status),
+            mock.patch.object(signals, "OLD_GAUGE_WORKERS", gauges[0]),
+            mock.patch.object(signals, "GAUGE_WORKERS", gauges[1]),
+        ):
+            signals.monitoring_set_workers(sender=self)
+        return {
+            gauge._name: {
+                (s.labels["version"], s.labels["version_matched"]): s.value
+                for metric in gauge.collect()
+                for s in metric.samples
+            }
+            for gauge in gauges
+        }
+
+    def test_obsolete_version_labels_are_reset(self):
+        """A version that no longer has any WorkerStatus row is reported as zero.
+
+        The gauges are exported through prometheus' multiprocess collector, where a labelset
+        stays in the process' mmap file until it is overwritten — so it has to be zeroed
+        explicitly, and cannot be derived from the rows still in the database.
+        """
+        from prometheus_client import Gauge
+
+        from authentik.tasks import signals
+
+        gauges = [
+            Gauge(
+                name,
+                "test",
+                ["version", "version_matched"],
+                multiprocess_mode="livemostrecent",
+                registry=None,
+            )
+            for name in ("test_admin_workers", "test_tasks_workers")
+        ]
+
+        samples = self._scrape(signals, gauges, ["2026.5.6", "2026.4.0"])
+        for series in samples.values():
+            self.assertEqual(series[("2026.5.6", "True")], 1)
+            self.assertEqual(series[("2026.4.0", "False")], 1)
+
+        # The 2026.4.0 worker is gone, and so is its WorkerStatus row
+        samples = self._scrape(signals, gauges, ["2026.5.6"])
+        for series in samples.values():
+            self.assertEqual(series[("2026.5.6", "True")], 1)
+            self.assertEqual(series[("2026.4.0", "False")], 0)

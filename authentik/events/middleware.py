@@ -254,5 +254,5 @@ class AuditMiddleware:
             request,
             user=user,
             model=model_to_dict(instance),
-            **thread_kwargs,
+            **(thread_kwargs or {}),
         ).run()

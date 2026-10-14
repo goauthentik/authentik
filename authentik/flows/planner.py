@@ -219,6 +219,8 @@ class FlowPlanner:
         if (
             self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED
             and request.user.is_authenticated
+            # Allow re-authenticating the current user (e.g. via a source for prompt=login)
+            and context.get(PLAN_CONTEXT_PENDING_USER) != request.user
         ):
             raise FlowNonApplicableException()
         if (
