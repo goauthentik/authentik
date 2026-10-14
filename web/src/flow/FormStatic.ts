@@ -8,7 +8,7 @@ import { RememberMeStorage } from "#flow/stages/identification/controllers/Remem
 import { StageChallengeLike } from "#flow/types";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, nothing } from "lit";
+import { CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 
@@ -29,7 +29,7 @@ export class AKFormStatic extends AKElement {
 
     protected override render() {
         if (!this.username) {
-            return nothing;
+            return null;
         }
 
         return html`<div class="primary-content">
@@ -45,7 +45,7 @@ export class AKFormStatic extends AKElement {
                                     id: "avatar.alt-text",
                                 })}
                       />`
-                    : nothing}
+                    : null}
                 <div class="username" aria-description=${msg("Username")}>${this.username}</div>
             </div>
             <div class="links">
@@ -60,6 +60,7 @@ export interface FlowUserDetailsProps {
 
 export const FlowUserDetails: LitFC<FlowUserDetailsProps> = ({ challenge }) => {
     const { pendingUserAvatar, pendingUser, flowInfo } = challenge || {};
+
     return guard(
         [pendingUserAvatar, pendingUser, flowInfo],
         () =>
@@ -75,7 +76,7 @@ export const FlowUserDetails: LitFC<FlowUserDetailsProps> = ({ challenge }) => {
                               >
                           </div>
                       `
-                    : nothing}
+                    : null}
             </ak-form-static>`,
     );
 };
