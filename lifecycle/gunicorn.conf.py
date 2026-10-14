@@ -65,6 +65,10 @@ timeout = 30
 graceful_timeout = 30
 dirty_graceful_timeout = 30
 
+# The Rust Unix-socket client pools idle connections for 60 seconds
+# (src/server/mod.rs). Close them there first to avoid racing a backend close.
+keepalive = 65
+
 logconfig_dict = get_logger_config()
 
 workers = CONFIG.get_int("web.workers", 2)
