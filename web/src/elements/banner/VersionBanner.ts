@@ -70,9 +70,9 @@ export class VersionBanner extends WithBrandConfig(WithVersion(AKElement)) {
                 </div>
                 <div class="pf-l-flex__item">
                     ${message}
-                    <a href=${this.version.versionLatest.changelogUrl}
-                        >${msg("Click here for the changelog.")}</a
-                    >
+                    <a href=${this.version.versionLatest.changelogUrl}>
+                        ${msg("Click here for the changelog.")}
+                    </a>
                 </div>
             </div>
         </div>`;

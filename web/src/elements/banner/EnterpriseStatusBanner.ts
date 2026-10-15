@@ -76,16 +76,16 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
         return html`<div class="pf-c-banner pf-m-sticky ${isDanger ? "pf-m-red" : "pf-m-gold"}">
             <div class="pf-l-flex pf-m-space-items-sm">
                 <div class="pf-l-flex__item">
-                    <span class="sr-only"
-                        >${isDanger ? msg("Danger banner:") : msg("Warning banner:")}</span
-                    >
+                    <span class="sr-only">
+                        ${isDanger ? msg("Danger banner:") : msg("Warning banner:")}
+                    </span>
                     <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
                 </div>
                 <div class="pf-l-flex__item">
                     ${message}
-                    <a href=${toAdminInterface("enterprise/licenses")}
-                        >${msg("Click here for more info.")}</a
-                    >
+                    <a href=${toAdminInterface("enterprise/licenses")}>
+                        ${msg("Click here for more info.")}
+                    </a>
                 </div>
             </div>
         </div>`;
