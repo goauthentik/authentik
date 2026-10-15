@@ -40,9 +40,7 @@ def update_latest_version():
         self.info("Version check disabled.")
         return
     try:
-        response = get_http_session().get(
-            "https://version.goauthentik.io/version.json",
-        )
+        response = get_http_session().get("https://version.goauthentik.io/version.json")
         response.raise_for_status()
         data = response.json()
         upstream_version = data.get("stable", {}).get("version")
