@@ -1,12 +1,12 @@
 """test admin tasks"""
 
 from django.apps import apps
-from django.core.cache import cache
 from django.test import TestCase
 from requests_mock import Mocker
 
 from authentik.admin.tasks import (
-    VERSION_CACHE_KEY,
+    VERSION_URL,
+    UpdateVersionInfo,
     update_latest_version,
 )
 from authentik.events.models import Event, EventAction
@@ -29,9 +29,9 @@ class TestAdminTasks(TestCase):
     def test_version_valid_response(self):
         """Test Update checker with valid response"""
         with Mocker() as mocker, CONFIG.patch("disable_update_check", False):
-            mocker.get("https://version.goauthentik.io/version.json", json=RESPONSE_VALID)
+            mocker.get(VERSION_URL, json=RESPONSE_VALID)
             update_latest_version.send()
-            self.assertEqual(cache.get(VERSION_CACHE_KEY), "99999999.9999999")
+            self.assertEqual(UpdateVersionInfo.get_cached().version, "99999999.9999999")
             self.assertTrue(
                 Event.objects.filter(
                     action=EventAction.UPDATE_AVAILABLE,
@@ -55,9 +55,9 @@ class TestAdminTasks(TestCase):
     def test_version_error(self):
         """Test Update checker with invalid response"""
         with Mocker() as mocker:
-            mocker.get("https://version.goauthentik.io/version.json", status_code=400)
+            mocker.get(VERSION_URL, status_code=400)
             update_latest_version.send()
-            self.assertEqual(cache.get(VERSION_CACHE_KEY), "0.0.0")
+            self.assertFalse(UpdateVersionInfo.get_cached().valid)
             self.assertFalse(
                 Event.objects.filter(
                     action=EventAction.UPDATE_AVAILABLE, context__new_version="0.0.0"
@@ -68,7 +68,7 @@ class TestAdminTasks(TestCase):
         """Test Update checker while its disabled"""
         with CONFIG.patch("disable_update_check", True):
             update_latest_version.send()
-            self.assertEqual(cache.get(VERSION_CACHE_KEY), "0.0.0")
+            self.assertFalse(UpdateVersionInfo.get_cached().valid)
 
     def test_clear_update_notifications(self):
         """Test clear of previous notification"""
