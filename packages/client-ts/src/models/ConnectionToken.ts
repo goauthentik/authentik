@@ -10,8 +10,6 @@
  * Do not edit the class manually.
  */
 
-import type { Endpoint } from "./Endpoint";
-import { EndpointFromJSON } from "./Endpoint";
 import type { PartialUser } from "./PartialUser";
 import { PartialUserFromJSON } from "./PartialUser";
 import type { RACProvider } from "./RACProvider";
@@ -27,8 +25,8 @@ export interface ConnectionToken {
     pk?: string;
     provider: number;
     readonly providerObj: RACProvider;
-    endpoint: string;
-    readonly endpointObj: Endpoint;
+    device: string;
+    readonly deviceName: string;
     readonly user: PartialUser;
 }
 
@@ -44,12 +42,12 @@ export function instanceOfConnectionToken(value: object): value is ConnectionTok
             (value as Record<string, any>)["provider_obj"] === undefined)
     )
         return false;
-    if (!("endpoint" in value) || value["endpoint"] === undefined) return false;
+    if (!("device" in value) || value["device"] === undefined) return false;
     if (
-        (!("endpointObj" in (value as Record<string, any>)) &&
-            !("endpoint_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["endpointObj"] === undefined &&
-            (value as Record<string, any>)["endpoint_obj"] === undefined)
+        (!("deviceName" in (value as Record<string, any>)) &&
+            !("device_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["deviceName"] === undefined &&
+            (value as Record<string, any>)["device_name"] === undefined)
     )
         return false;
     if (!("user" in value) || value["user"] === undefined) return false;
@@ -71,8 +69,8 @@ export function ConnectionTokenFromJSONTyped(
         pk: json["pk"] == null ? undefined : json["pk"],
         provider: json["provider"],
         providerObj: RACProviderFromJSON(json["provider_obj"]),
-        endpoint: json["endpoint"],
-        endpointObj: EndpointFromJSON(json["endpoint_obj"]),
+        device: json["device"],
+        deviceName: json["device_name"],
         user: PartialUserFromJSON(json["user"]),
     };
 }
@@ -82,7 +80,7 @@ export function ConnectionTokenToJSON(json: any): ConnectionToken {
 }
 
 export function ConnectionTokenToJSONTyped(
-    value?: Omit<ConnectionToken, "providerObj" | "endpointObj" | "user"> | null,
+    value?: Omit<ConnectionToken, "providerObj" | "deviceName" | "user"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -92,6 +90,6 @@ export function ConnectionTokenToJSONTyped(
     return {
         pk: value["pk"],
         provider: value["provider"],
-        endpoint: value["endpoint"],
+        device: value["device"],
     };
 }

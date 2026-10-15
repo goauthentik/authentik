@@ -2,9 +2,8 @@ import "rapidoc";
 import "#types/rapi-doc";
 import styles from "./index.entrypoint.css";
 
-import { CSRFHeaderName } from "#common/api/middleware";
+import { CSRFHeaderName, readCSRFToken } from "#common/api/csrf";
 import { createUIThemeEffect } from "#common/theme";
-import { getCookie } from "#common/utils";
 
 import { Interface } from "#elements/Interface";
 import { WithBrandConfig } from "#elements/mixins/branding";
@@ -53,7 +52,7 @@ export class APIBrowser extends WithBrandConfig(Interface) {
     textColor = "#000000";
 
     #appendCSRFHeader = (event: CustomEvent<BeforeTryEventDetail>) => {
-        event.detail.request.headers.append(CSRFHeaderName, getCookie("authentik_csrf"));
+        event.detail.request.headers.append(CSRFHeaderName, readCSRFToken());
     };
 
     constructor() {

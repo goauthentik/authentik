@@ -4,3 +4,4 @@ node_modules
 _media
 !.github/README.md
 public/
+styleframe/

@@ -1,7 +1,9 @@
 """Test OAuth2 Back-Channel Logout implementation"""
 
 import json
+from base64 import b64encode
 from dataclasses import asdict
+from datetime import timedelta
 from unittest.mock import Mock, patch
 
 import jwt
@@ -12,14 +14,18 @@ from dramatiq.results.errors import ResultFailure
 from requests import Response
 from requests.exceptions import HTTPError, Timeout
 
+from authentik.common.oauth.constants import GRANT_TYPE_AUTHORIZATION_CODE
 from authentik.core.models import Application, AuthenticatedSession, Session
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.id_token import IDToken, hash_session_key
 from authentik.providers.oauth2.models import (
     AccessToken,
+    AuthorizationCode,
+    GrantType,
     OAuth2LogoutMethod,
     OAuth2Provider,
+    OAuth2SessionLogin,
     RedirectURI,
     RedirectURIMatchingMode,
 )
@@ -221,14 +227,20 @@ class TestBackChannelLogout(OAuthTestCase):
             _scope="openid user profile",
             _id_token=json.dumps(asdict(IDToken(iss="http://testserver", sub=str(self.user.uid)))),
         )
+        OAuth2SessionLogin.objects.create(
+            session=auth_session,
+            provider=self.provider,
+            iss="http://testserver",
+            sub=str(self.user.uid),
+        )
 
         session.delete()
 
         mock_session.post.assert_not_called()
 
 
-class TestBackChannelLogoutUserDeactivation(OAuthTestCase):
-    """Test that deactivating a user triggers back-channel logout"""
+class BackChannelLogoutSessionTestCase(OAuthTestCase):
+    """Base for tests with a session that has logged into a back-channel logout provider"""
 
     def setUp(self) -> None:
         super().setUp()
@@ -241,6 +253,7 @@ class TestBackChannelLogoutUserDeactivation(OAuthTestCase):
                 RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver/callback"),
             ],
             signing_key=self.keypair,
+            grant_types=[GrantType.AUTHORIZATION_CODE],
             logout_uri="http://testserver/backchannel_logout",
             logout_method=OAuth2LogoutMethod.BACKCHANNEL,
         )
@@ -265,6 +278,12 @@ class TestBackChannelLogoutUserDeactivation(OAuthTestCase):
             auth_time=timezone.now(),
             _scope="openid user profile",
             _id_token=json.dumps(asdict(IDToken(iss="http://testserver", sub=str(self.user.uid)))),
+        )
+        OAuth2SessionLogin.objects.create(
+            session=self.auth_session,
+            provider=self.provider,
+            iss="http://testserver",
+            sub=str(self.user.uid),
         )
 
     def _mock_http(self, mock_get_session: Mock) -> Mock:
@@ -295,6 +314,10 @@ class TestBackChannelLogoutUserDeactivation(OAuthTestCase):
         self.assertEqual(decoded["sid"], hash_session_key(self.session_key))
         self.assertIn("http://schemas.openid.net/event/backchannel-logout", decoded["events"])
 
+
+class TestBackChannelLogoutUserDeactivation(BackChannelLogoutSessionTestCase):
+    """Test that deactivating a user triggers back-channel logout"""
+
     @patch("authentik.providers.oauth2.tasks.get_http_session")
     def test_user_deactivated_model(self, mock_get_session):
         """Deactivating a user directly sends back-channel logout"""
@@ -322,3 +345,84 @@ class TestBackChannelLogoutUserDeactivation(OAuthTestCase):
 
         self._assert_logout_token_sent(mock_session)
         self.assertFalse(Session.objects.filter(session_key=self.session_key).exists())
+
+
+class TestBackChannelLogoutSessionDeleted(BackChannelLogoutSessionTestCase):
+    """Test that deleting a session triggers back-channel logout, regardless of the
+    state of the tokens issued for it"""
+
+    @patch("authentik.providers.oauth2.tasks.get_http_session")
+    def test_session_deleted(self, mock_get_session):
+        """Deleting a session sends back-channel logout"""
+        mock_session = self._mock_http(mock_get_session)
+
+        self.session.delete()
+
+        self._assert_logout_token_sent(mock_session)
+        self.assertFalse(OAuth2SessionLogin.objects.filter(provider=self.provider).exists())
+
+    @patch("authentik.providers.oauth2.tasks.get_http_session")
+    def test_session_deleted_access_token_expired(self, mock_get_session):
+        """Deleting a session sends back-channel logout after the access token has expired"""
+        mock_session = self._mock_http(mock_get_session)
+        self.token.expires = timezone.now() - timedelta(hours=1)
+        self.token.save()
+
+        self.session.delete()
+
+        self._assert_logout_token_sent(mock_session)
+
+    @patch("authentik.providers.oauth2.tasks.get_http_session")
+    def test_session_deleted_access_token_removed(self, mock_get_session):
+        """Deleting a session sends back-channel logout after the access token was cleaned up"""
+        mock_session = self._mock_http(mock_get_session)
+        self.token.delete()
+
+        self.session.delete()
+
+        self._assert_logout_token_sent(mock_session)
+
+    def _redeem_code(self, session: AuthenticatedSession | None):
+        """Redeem an authorization code issued for `session`"""
+        header = b64encode(
+            f"{self.provider.client_id}:{self.provider.client_secret}".encode()
+        ).decode()
+        code = AuthorizationCode.objects.create(
+            code=generate_id(),
+            provider=self.provider,
+            user=self.user,
+            auth_time=timezone.now(),
+            session=session,
+        )
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            data={
+                "grant_type": GRANT_TYPE_AUTHORIZATION_CODE,
+                "code": code.code,
+                "redirect_uri": "http://testserver/callback",
+            },
+            HTTP_AUTHORIZATION=f"Basic {header}",
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_login_recorded(self):
+        """Issuing tokens for a session records a single login for the provider"""
+        self.client.force_login(self.user)
+        auth_session = self.client.session["authenticatedsession"]
+
+        self._redeem_code(auth_session)
+        self._redeem_code(auth_session)
+
+        login = OAuth2SessionLogin.objects.get(session=auth_session)
+        token = AccessToken.objects.filter(session=auth_session).first()
+        self.assertEqual(login.provider, self.provider)
+        self.assertEqual(login.iss, token.id_token.iss)
+        self.assertEqual(login.sub, token.id_token.sub)
+
+    def test_login_not_recorded_without_session(self):
+        """Issuing tokens which aren't bound to a session doesn't record a login"""
+        OAuth2SessionLogin.objects.all().delete()
+
+        self._redeem_code(None)
+
+        self.assertFalse(OAuth2SessionLogin.objects.exists())

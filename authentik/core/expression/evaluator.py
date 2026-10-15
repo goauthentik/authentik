@@ -25,6 +25,8 @@ class PropertyMappingEvaluator(BaseEvaluator):
 
     dry_run: bool
     model: Model
+    # Types the expression may return (besides None); empty allows any type
+    allowed_types: list[type]
     _compiled: CodeType | None = None
 
     def __init__(
@@ -36,6 +38,7 @@ class PropertyMappingEvaluator(BaseEvaluator):
         **kwargs,
     ):
         self.model = model
+        self.allowed_types = []
         if hasattr(model, "name"):
             _filename = model.name
         else:
@@ -84,7 +87,15 @@ class PropertyMappingEvaluator(BaseEvaluator):
 
     def evaluate(self, *args, **kwargs) -> Any:
         with PROPERTY_MAPPING_TIME.labels(mapping_name=self._filename).time():
-            return super().evaluate(*args, **kwargs)
+            value = super().evaluate(*args, **kwargs)
+        if value is None or not self.allowed_types:
+            return value
+        if not isinstance(value, tuple(self.allowed_types)):
+            allowed = ", ".join(t.__name__ for t in self.allowed_types)
+            raise TypeError(
+                f"Property mapping must return one of {allowed}, got {type(value).__name__}"
+            )
+        return value
 
     def compile(self, expression: str | None = None) -> Any:
         if not self._compiled:

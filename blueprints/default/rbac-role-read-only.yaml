@@ -16,6 +16,12 @@ entries:
               !Index 0,
           ],
       ]
+  - model: authentik_rbac.role
+    identifiers:
+      name: authentik Read-only
+    attrs:
+      permissions:
+        - authentik_rbac.access_admin_interface
   - model: authentik_core.group
     identifiers:
       name: authentik Read-only

@@ -1,6 +1,7 @@
 """SAML Service Provider Metadata Processor"""
 
 from django.http import HttpRequest
+from django.urls import reverse
 from lxml.etree import Element, SubElement, tostring  # nosec
 
 from authentik.common.saml.constants import (
@@ -9,7 +10,7 @@ from authentik.common.saml.constants import (
     NS_SIGNATURE,
     SAML_BINDING_POST,
 )
-from authentik.providers.saml.utils.encoding import strip_pem_header
+from authentik.common.saml.utils import x509_certificate_b64
 from authentik.sources.saml.models import SAMLSource
 
 
@@ -32,9 +33,7 @@ class MetadataProcessor:
             key_info = SubElement(key_descriptor, f"{{{NS_SIGNATURE}}}KeyInfo")
             x509_data = SubElement(key_info, f"{{{NS_SIGNATURE}}}X509Data")
             x509_certificate = SubElement(x509_data, f"{{{NS_SIGNATURE}}}X509Certificate")
-            x509_certificate.text = strip_pem_header(
-                self.source.signing_kp.certificate_data.replace("\r", "")
-            ).replace("\n", "")
+            x509_certificate.text = x509_certificate_b64(self.source.signing_kp.certificate)
             return key_descriptor
         return None
 
@@ -46,9 +45,7 @@ class MetadataProcessor:
             key_info = SubElement(key_descriptor, f"{{{NS_SIGNATURE}}}KeyInfo")
             x509_data = SubElement(key_info, f"{{{NS_SIGNATURE}}}X509Data")
             x509_certificate = SubElement(x509_data, f"{{{NS_SIGNATURE}}}X509Certificate")
-            x509_certificate.text = strip_pem_header(
-                self.source.encryption_kp.certificate_data.replace("\r", "")
-            ).replace("\n", "")
+            x509_certificate.text = x509_certificate_b64(self.source.encryption_kp.certificate)
             return key_descriptor
         return None
 
@@ -83,8 +80,8 @@ class MetadataProcessor:
         assertion_consumer_service.attrib["isDefault"] = "true"
         assertion_consumer_service.attrib["index"] = "0"
         assertion_consumer_service.attrib["Binding"] = SAML_BINDING_POST
-        assertion_consumer_service.attrib["Location"] = self.source.build_full_url(
-            self.http_request
+        assertion_consumer_service.attrib["Location"] = self.http_request.build_absolute_uri(
+            reverse("authentik_sources_saml:acs", kwargs={"source_slug": self.source.slug})
         )
 
         return tostring(entity_descriptor).decode()

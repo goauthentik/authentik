@@ -2,7 +2,8 @@ import { renderForm } from "./SAMLProviderFormForm.js";
 
 import { aki } from "#common/api/client";
 
-import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
+import type { SearchSelectChangeEvent } from "#elements/forms/SearchSelect/events";
+
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 
 import {
@@ -11,6 +12,7 @@ import {
     SAMLBindingsEnum,
     SAMLLogoutMethods,
     SAMLProvider,
+    CertificateKeyPair,
 } from "@goauthentik/api";
 
 import { customElement, state } from "lit/decorators.js";
@@ -76,12 +78,9 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
     }
 
     renderForm() {
-        const setHasSigningKp = (ev: InputEvent) => {
-            const target = ev.target as AkCryptoCertificateSearch;
-
-            if (!target) return;
-            this.hasSigningKp = !!target.selectedKeypair;
-            this.signingKeyType = target.selectedKeypair?.keyType ?? KeyTypeEnum.Rsa;
+        const setHasSigningKp = ({ detail }: SearchSelectChangeEvent<CertificateKeyPair>) => {
+            this.hasSigningKp = !!detail.value;
+            this.signingKeyType = detail.value?.keyType ?? KeyTypeEnum.Rsa;
         };
 
         const setHasSlsUrl = (ev: Event) => {

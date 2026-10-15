@@ -4,7 +4,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.policies.models import PolicyBindingModel
+from authentik.policies.models import PolicyBinding, PolicyBindingModel
 
 
 class TestBindingsAPI(APITestCase):
@@ -21,9 +21,16 @@ class TestBindingsAPI(APITestCase):
         """Test valid binding"""
         response = self.client.post(
             reverse("authentik_api:policybinding-list"),
-            data={"target": self.pbm.pk, "user": self.user.pk, "order": 0},
+            data={
+                "target": self.pbm.pk,
+                "user": self.user.pk,
+                "order": 0,
+                "dry_run": True,
+            },
         )
         self.assertEqual(response.status_code, 201)
+        self.assertTrue(response.json()["dry_run"])
+        self.assertTrue(PolicyBinding.objects.get(pk=response.json()["pk"]).dry_run)
 
     def test_invalid_too_much(self):
         """Test invalid binding (too much)"""

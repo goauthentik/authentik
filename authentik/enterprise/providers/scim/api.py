@@ -28,11 +28,7 @@ class SCIMProviderSerializerMixin:
 
     def get_auth_oauth_url_callback(self, instance: SCIMProvider) -> str | None:
         if (
-            instance.auth_mode
-            in [
-                SCIMAuthenticationMode.TOKEN,
-                SCIMAuthenticationMode.OAUTH_SILENT,
-            ]
+            instance.auth_mode != SCIMAuthenticationMode.OAUTH_INTERACTIVE
             or not instance.backchannel_application
         ):
             return None
@@ -46,11 +42,7 @@ class SCIMProviderSerializerMixin:
 
     def get_auth_oauth_url_start(self, instance: SCIMProvider) -> str | None:
         if (
-            instance.auth_mode
-            in [
-                SCIMAuthenticationMode.TOKEN,
-                SCIMAuthenticationMode.OAUTH_SILENT,
-            ]
+            instance.auth_mode != SCIMAuthenticationMode.OAUTH_INTERACTIVE
             or not instance.backchannel_application
         ):
             return None
