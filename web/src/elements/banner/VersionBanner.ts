@@ -36,7 +36,7 @@ export class VersionBanner extends WithBrandConfig(WithVersion(AKElement)) {
     }
 
     renderUpdate() {
-        if (!this.version?.outdated || !this.version.versionLatestValid) return nothing;
+        if (!this.version?.outdated || !this.version.versionLatest?.valid) return nothing;
 
         return html`<div class="pf-c-banner pf-m-sticky pf-m-gold">
             <div class="pf-l-flex pf-m-space-items-sm">
@@ -46,7 +46,7 @@ export class VersionBanner extends WithBrandConfig(WithVersion(AKElement)) {
                 </div>
                 <div class="pf-l-flex__item">
                     ${msg(
-                        str`Version ${this.version.versionLatest} of ${this.brandingTitle} is available.`,
+                        str`Version ${this.version.versionLatest.version} of ${this.brandingTitle} is available.`,
                     )}
                 </div>
             </div>

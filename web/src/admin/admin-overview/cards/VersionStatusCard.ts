@@ -34,7 +34,7 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
         if (value.outdated) {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
-                message: html`${msg(str`${value.versionLatest} is available!`)}`,
+                message: html`${msg(str`${value.versionLatest?.version} is available!`)}`,
                 tone: "warning",
             });
         }
@@ -48,7 +48,7 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
             });
         }
 
-        if (value.versionLatestValid) {
+        if (value.versionLatest?.valid) {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-check-circle pf-m-success",
                 message: html`${msg("Up-to-date!")}`,
