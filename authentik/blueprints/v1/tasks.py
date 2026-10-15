@@ -1,18 +1,13 @@
 """v1 blueprints tasks"""
 
-from collections.abc import Iterator
 from dataclasses import asdict, dataclass, field
-from hashlib import sha512
-from json import dumps
 from pathlib import Path
 from sys import platform
-from typing import Any
 from uuid import UUID
 
 from dacite.core import from_dict
 from django.conf import settings
 from django.db import DatabaseError, InternalError, ProgrammingError
-from django.utils.crypto import salted_hmac
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -34,14 +29,8 @@ from authentik.blueprints.models import (
     BlueprintInstanceStatus,
     BlueprintRetrievalFailed,
 )
-from authentik.blueprints.v1.common import (
-    BlueprintLoader,
-    BlueprintMetadata,
-    EntryInvalidError,
-    Env,
-    File,
-    YAMLTag,
-)
+from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata, EntryInvalidError
+from authentik.blueprints.v1.hash import blueprint_hash
 from authentik.blueprints.v1.importer import Importer
 from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_INSTANTIATE
 from authentik.blueprints.v1.oci import OCI_PREFIX
@@ -64,48 +53,6 @@ class BlueprintFile:
     hash: str
     last_m: int
     meta: BlueprintMetadata | None = field(default=None)
-
-
-def _external_values(value: Any, seen: set[int]) -> Iterator[str | None]:
-    """Find the current values of all `!Env` and `!File` tags in a parsed blueprint"""
-    if isinstance(value, dict | list | tuple | YAMLTag):
-        # YAML anchors can share or nest nodes
-        if id(value) in seen:
-            return
-        seen.add(id(value))
-    if isinstance(value, Env):
-        yield value.lookup() if isinstance(value.key, str) else None
-    elif isinstance(value, File):
-        try:
-            yield value.lookup()
-        except OSError, TypeError, ValueError:
-            yield None
-    if isinstance(value, dict):
-        for key, item in value.items():
-            yield from _external_values(key, seen)
-            yield from _external_values(item, seen)
-    elif isinstance(value, list | tuple):
-        for item in value:
-            yield from _external_values(item, seen)
-    elif isinstance(value, YAMLTag):
-        for item in vars(value).values():
-            yield from _external_values(item, seen)
-
-
-def blueprint_hash(content: bytes, raw_blueprint: Any) -> str:
-    """Hash a blueprint's content and the current values of its `!Env` and `!File` tags,
-    so a blueprint is reapplied when only those values change. The values are keyed with
-    the secret key, so the stored hash can't be used to guess them."""
-    digest = sha512(content)
-    if values := list(_external_values(raw_blueprint, set())):
-        digest.update(
-            salted_hmac(
-                "goauthentik.io/blueprints/v1/external-values",
-                dumps(values),
-                algorithm="sha512",
-            ).digest()
-        )
-    return digest.hexdigest()
 
 
 class BlueprintWatcherMiddleware(Middleware):
@@ -177,8 +124,9 @@ def blueprints_find() -> list[BlueprintFile]:
         if any(part for part in rel_path.parts if part.startswith(".")):
             continue
         with open(path, encoding="utf-8") as blueprint_file:
+            content = blueprint_file.read()
             try:
-                raw_blueprint = load(blueprint_file.read(), BlueprintLoader)
+                raw_blueprint = load(content, BlueprintLoader)
             except YAMLError as exc:
                 raw_blueprint = None
                 LOGGER.warning("failed to parse blueprint", exc=exc, path=str(rel_path))
@@ -189,7 +137,7 @@ def blueprints_find() -> list[BlueprintFile]:
             if version != 1:
                 LOGGER.warning("invalid blueprint version", version=version, path=str(rel_path))
                 continue
-        file_hash = blueprint_hash(path.read_bytes(), raw_blueprint)
+        file_hash = blueprint_hash(content)
         blueprint = BlueprintFile(str(rel_path), version, file_hash, int(path.stat().st_mtime))
         blueprint.meta = from_dict(BlueprintMetadata, metadata) if metadata else None
         blueprints.append(blueprint)
@@ -250,10 +198,8 @@ def apply_blueprint(instance_pk: UUID):
             self.info(f"Blueprint {instance.name} is disabled, skipping")
             return
         blueprint_content = instance.retrieve()
+        file_hash = blueprint_hash(blueprint_content)
         importer = Importer.from_string(blueprint_content, instance.context)
-        file_hash = blueprint_hash(
-            blueprint_content.encode(), load(blueprint_content, BlueprintLoader)
-        )
         if importer.blueprint.metadata:
             instance.metadata = asdict(importer.blueprint.metadata)
         valid, logs = importer.validate()

@@ -85,7 +85,9 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
                 expected_rp_id=get_rp_id(self.request),
                 expected_origin=get_origin(self.request),
             )
-        except WebAuthnException as exc:
+        # py_webauthn does not wrap cryptography's ValueError when an attestation certificate
+        # fails to parse, which happens with authenticators that ship non-DER certificates
+        except (WebAuthnException, ValueError) as exc:
             self.stage.logger.warning("registration failed", exc=exc)
             raise ValidationError(
                 "Registration failed. Please contact your administrator."
@@ -101,11 +103,17 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
             and att_obj.att_stmt.x5c is not None
             and len(att_obj.att_stmt.x5c) > 0
         ):
-            cert = load_der_x509_certificate(att_obj.att_stmt.x5c[0])
-            registration_data.attest_cert = cert.public_bytes(
-                encoding=Encoding.PEM,
-            ).decode("utf-8")
-            registration_data.attest_cert_fingerprint = fingerprint_sha256(cert)
+            # android-key attestation verifies with OpenSSL, which accepts certificates that
+            # cryptography rejects. The registration is valid, so only skip storing the certificate
+            try:
+                cert = load_der_x509_certificate(att_obj.att_stmt.x5c[0])
+            except ValueError as exc:
+                self.stage.logger.warning("failed to parse attestation certificate", exc=exc)
+            else:
+                registration_data.attest_cert = cert.public_bytes(
+                    encoding=Encoding.PEM,
+                ).decode("utf-8")
+                registration_data.attest_cert_fingerprint = fingerprint_sha256(cert)
 
         if WebAuthnDevice.objects.filter(
             credential_id=bytes_to_base64url(registration.credential_id)

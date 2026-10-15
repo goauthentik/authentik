@@ -438,12 +438,8 @@ class Env(YAMLTag):
             self.key = loader.construct_object(node.value[0])
             self.default = loader.construct_object(node.value[1])
 
-    def lookup(self) -> str | None:
-        """Get the environment variable's current value"""
-        return getenv(self.key)
-
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
-        if env := self.lookup():
+        if env := getenv(self.key):
             return env
         if isinstance(self.default, YAMLTag):
             return self.default.resolve(entry, blueprint)
@@ -465,14 +461,10 @@ class File(YAMLTag):
             self.path = loader.construct_object(node.value[0])
             self.default = loader.construct_object(node.value[1])
 
-    def lookup(self) -> str:
-        """Get the file's current content"""
-        with open(self.path, encoding="utf8") as _file:
-            return _file.read().strip()
-
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         try:
-            return self.lookup()
+            with open(self.path, encoding="utf8") as _file:
+                return _file.read().strip()
         except OSError as exc:
             LOGGER.warning(
                 "Failed to read file. Falling back to default value",

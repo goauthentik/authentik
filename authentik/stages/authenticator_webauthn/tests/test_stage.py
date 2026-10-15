@@ -2,8 +2,10 @@
 
 from base64 import b64decode
 from json import loads
+from unittest.mock import MagicMock, patch
 
 from django.urls import reverse
+from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
@@ -161,6 +163,74 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         self.assertTrue(WebAuthnDevice.objects.filter(user=self.user).exists())
+
+    def _register_malformed_attestation_certificate(self):
+        """Register with a packed attestation whose certificate encodes explicit NULL parameters
+        for ecdsa-with-SHA256, which OpenSSL accepts but cryptography rejects with a ValueError"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = b64decode(
+            b"03Xodi54gKsfnP5I9VFfhaGXVVE2NUyZpBBXns/JI+x6V9RY2Tw2QmxRJkhh7174EkRazUntIwjMVY9bFG60Lw=="
+        )
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            data={
+                "component": "ak-stage-authenticator-webauthn",
+                "response": loads(
+                    load_fixture("fixtures/register_malformed_attestation_certificate.json")
+                ),
+            },
+            SERVER_NAME="localhost",
+            SERVER_PORT="9000",
+        )
+        self.assertEqual(response.status_code, 200)
+        return response
+
+    def test_register_malformed_attestation_certificate(self):
+        """Test registration with an attestation certificate that fails verification"""
+        response = self._register_malformed_attestation_certificate()
+        self.assertStageResponse(
+            response,
+            flow=self.flow,
+            component="ak-stage-authenticator-webauthn",
+            response_errors={
+                "response": [
+                    {
+                        "string": "Registration failed. Please contact your administrator.",
+                        "code": "invalid",
+                    }
+                ]
+            },
+        )
+        self.assertFalse(WebAuthnDevice.objects.filter(user=self.user).exists())
+
+    def test_register_verified_malformed_attestation_certificate(self):
+        """Test registration with an attestation certificate that only OpenSSL can parse,
+        like android-key attestation which verifies with OpenSSL"""
+        attestation_object = base64url_to_bytes(
+            loads(load_fixture("fixtures/register_malformed_attestation_certificate.json"))[
+                "response"
+            ]["attestationObject"]
+        )
+        registration = MagicMock(
+            attestation_object=attestation_object,
+            credential_id=b"credential",
+            credential_public_key=b"public-key",
+            sign_count=0,
+            aaguid="00000000-0000-0000-0000-000000000000",
+        )
+        with patch(
+            "authentik.stages.authenticator_webauthn.stage.verify_registration_response",
+            return_value=registration,
+        ):
+            response = self._register_malformed_attestation_certificate()
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        device = WebAuthnDevice.objects.get(user=self.user)
+        self.assertIsNone(device.attestation_certificate_pem)
+        self.assertIsNone(device.attestation_certificate_fingerprint)
 
     def test_register_restricted_device_type_deny(self):
         """Test registration with restricted devices (fail)"""
