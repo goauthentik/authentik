@@ -22,6 +22,7 @@ export function createBundleDefinitions() {
         AK_VERSION: AuthentikVersion,
         AK_DOCS_URL: CurrentReleaseDocsURL.href,
         AK_DOCS_RELEASE_NOTES_URL: ReleaseNotesURL.href,
+        GIT_BUILD_HASH: process.env.GIT_BUILD_HASH ?? "",
         AK_DOCS_PRE_RELEASE_URL: PreReleaseDocsURL.href,
         AK_API_BASE_PATH: process.env.AK_API_BASE_PATH ?? "",
         AK_BUNDLER: JSON.stringify(process.env.AK_BUNDLER ?? "authentik"),
