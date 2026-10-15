@@ -11,7 +11,7 @@ export interface PermissionDisplay {
     name: string;
     kind: string | null;
     tag: string | null;
-    active: boolean;
+    assigned: boolean;
 }
 
 const Style = css`
@@ -19,8 +19,8 @@ const Style = css`
         --ak-c-permissions-list--ColumnWidth: repeat(auto-fit, minmax(16em, 1fr));
         --ak-c-permissions-list--ColumnGap: var(--pf-global--spacer--xl);
         --ak-c-permissions-list--RowGap: var(--pf-global--spacer--sm);
-        --ak-c-permissions-list--item--InnerGap: var(--pf-global--spacer--xs);
-        --ak-c-permissions-list--icon--Gap: calc(var(--pf-global--spacer--xs) * 0.5);
+        --ak-c-permissions-list--item--InnerGap: var(--pf-global--spacer--sm);
+        --ak-c-permissions-list--icon--Gap: var(--pf-global--spacer--xs);
     }
 
     ul {
@@ -42,10 +42,9 @@ const Style = css`
     }
 
     li i {
+        text-align: center;
         margin-top: 0.33ex;
-        width: 1.5ch;
-        padding-block-end: var(--ak-c-permissions-list--icon--Gap);
-        white-space: nowrap;
+        width: 1.75ch;
     }
 
     li pf-tooltip,
@@ -88,5 +87,11 @@ export class RbacModelPermissionsList extends AKElement {
                     </li>`,
             )}
         </ul>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-rbac-model-permissions-list": RbacModelPermissionsList;
     }
 }

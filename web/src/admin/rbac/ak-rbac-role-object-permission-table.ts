@@ -1,7 +1,7 @@
 import "#admin/rbac/ak-rbac-role-object-permission-form";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#admin/rbac/ak-rbac-model-permission-list";
+import "#admin/rbac/ak-rbac-model-permissions-list";
 import { aki } from "#common/api/client";
 import { createPaginatedResponse } from "#common/api/responses";
 
@@ -11,7 +11,7 @@ import type { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import type { PermissionDisplay } from "#admin/rbac/ak-rbac-model-permission-list";
+import type { PermissionDisplay } from "#admin/rbac/ak-rbac-model-permissions-list";
 import { RoleObjectPermissionForm } from "#admin/rbac/ak-rbac-role-object-permission-form";
 
 import {
@@ -30,10 +30,10 @@ import { customElement, property, state } from "lit/decorators.js";
 const byName = (a: PermissionDisplay, b: PermissionDisplay) =>
     a.name.localeCompare(b.name, undefined, { sensitivity: "base" });
 
-const activeFirst = (a: PermissionDisplay, b: PermissionDisplay) =>
-    Number(b.active) - Number(a.active) || byName(a, b);
+const assignedFirst = (a: PermissionDisplay, b: PermissionDisplay) =>
+    Number(b.assigned) - Number(a.assigned) || byName(a, b);
 
-const permissionSorting = ["default", "activefirst", "activeonly"] as const;
+const permissionSorting = ["default", "assignedfirst", "assignedonly"] as const;
 
 type PermissionSorting = (typeof permissionSorting)[number];
 
@@ -133,15 +133,15 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         // prettier-ignore
         const sortOptions: { label: string, value: PermissionSorting }[] = [
             { label: msg("By name", { id: "permission.sort.default" }), value: "default" },
-            { label: msg("Active first", { id: "permissions.sort.active-first" }), value: "activefirst" },
-            { label: msg("Active only", { id: "permissions.sort.active-only" }), value: "activeonly" },
+            { label: msg("Assigned first", { id: "permissions.sort.assigned-first" }), value: "assignedfirst" },
+            { label: msg("Assigned only", { id: "permissions.sort.assigned-only" }), value: "assignedonly" },
         ];
 
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
                 <ak-table-filter-select
                     .options=${sortOptions}
-                    group=${msg("Sort and filter", { id: "permissions.filter.show-active" })}
+                    group=${msg("Sort and filter", { id: "permissions.filter.show-assigned" })}
                     .value=${this.sortFilter}
                     @change=${this.onSortChange}
                 ></ak-table-filter-select>
@@ -210,13 +210,13 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
                 ])
                 .otherwise(() => [null, null]);
 
-            return { name, kind, tag, active: Boolean(kind) };
+            return { name, kind, tag, assigned: Boolean(kind) };
         });
 
         permissions = match(this.sortFilter)
             .with("default", () => permissions)
-            .with("activefirst", () => permissions.toSorted(activeFirst))
-            .with("activeonly", () => permissions.filter(({ active }) => active))
+            .with("assignedfirst", () => permissions.toSorted(assignedFirst))
+            .with("assignedonly", () => permissions.filter(({ assigned }) => assigned))
             .exhaustive();
 
         return [
@@ -225,9 +225,9 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
                 href=${toAdminInterface(`identity/roles/${item.rolePk}`)}
                 >${item.name}</a
             >`,
-            html` <ak-rbac-model-permission-list
+            html` <ak-rbac-model-permissions-list
                 .items=${permissions}
-            ></ak-rbac-model-permission-list>`,
+            ></ak-rbac-model-permissions-list>`,
         ];
     }
 }
