@@ -10,30 +10,25 @@
  * Do not edit the class manually.
  */
 
-import type { UpdateVersionReasonEnum } from "./UpdateVersionReasonEnum";
-import {
-    UpdateVersionReasonEnumFromJSON,
-    UpdateVersionReasonEnumToJSON,
-} from "./UpdateVersionReasonEnum";
+import type { UpdateVersionReason } from "./UpdateVersionReason";
+import { UpdateVersionReasonFromJSON, UpdateVersionReasonToJSON } from "./UpdateVersionReason";
 
 /**
- * Base serializer class which doesn't implement create/update methods
- *
  * @export
- * @interface UpdateVersion
+ * @interface UpdateVersionInfo
  */
-export interface UpdateVersion {
+export interface UpdateVersionInfo {
     version: string;
     changelog: string;
     changelogUrl: string;
-    reason: UpdateVersionReasonEnum;
+    reason: UpdateVersionReason;
     valid?: boolean;
 }
 
 /**
- * Check if a given object implements the UpdateVersion interface.
+ * Check if a given object implements the UpdateVersionInfo interface.
  */
-export function instanceOfUpdateVersion(value: object): value is UpdateVersion {
+export function instanceOfUpdateVersionInfo(value: object): value is UpdateVersionInfo {
     if (!("version" in value) || value["version"] === undefined) return false;
     if (!("changelog" in value) || value["changelog"] === undefined) return false;
     if (
@@ -47,11 +42,14 @@ export function instanceOfUpdateVersion(value: object): value is UpdateVersion {
     return true;
 }
 
-export function UpdateVersionFromJSON(json: any): UpdateVersion {
-    return UpdateVersionFromJSONTyped(json, false);
+export function UpdateVersionInfoFromJSON(json: any): UpdateVersionInfo {
+    return UpdateVersionInfoFromJSONTyped(json, false);
 }
 
-export function UpdateVersionFromJSONTyped(json: any, ignoreDiscriminator: boolean): UpdateVersion {
+export function UpdateVersionInfoFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): UpdateVersionInfo {
     if (json == null) {
         return json;
     }
@@ -59,17 +57,17 @@ export function UpdateVersionFromJSONTyped(json: any, ignoreDiscriminator: boole
         version: json["version"],
         changelog: json["changelog"],
         changelogUrl: json["changelog_url"],
-        reason: UpdateVersionReasonEnumFromJSON(json["reason"]),
+        reason: UpdateVersionReasonFromJSON(json["reason"]),
         valid: json["valid"] == null ? undefined : json["valid"],
     };
 }
 
-export function UpdateVersionToJSON(json: any): UpdateVersion {
-    return UpdateVersionToJSONTyped(json, false);
+export function UpdateVersionInfoToJSON(json: any): UpdateVersionInfo {
+    return UpdateVersionInfoToJSONTyped(json, false);
 }
 
-export function UpdateVersionToJSONTyped(
-    value?: UpdateVersion | null,
+export function UpdateVersionInfoToJSONTyped(
+    value?: UpdateVersionInfo | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -80,7 +78,7 @@ export function UpdateVersionToJSONTyped(
         version: value["version"],
         changelog: value["changelog"],
         changelog_url: value["changelogUrl"],
-        reason: UpdateVersionReasonEnumToJSON(value["reason"]),
+        reason: UpdateVersionReasonToJSON(value["reason"]),
         valid: value["valid"],
     };
 }

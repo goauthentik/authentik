@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { UpdateVersion } from "./UpdateVersion";
-import { UpdateVersionFromJSON } from "./UpdateVersion";
+import type { UpdateVersionInfo } from "./UpdateVersionInfo";
+import { UpdateVersionInfoFromJSON } from "./UpdateVersionInfo";
 
 /**
  * Get running and latest version.
@@ -24,7 +24,7 @@ export interface Version {
      * Get current version
      */
     readonly versionCurrent: string;
-    readonly versionLatest: UpdateVersion | null;
+    readonly versionLatest: UpdateVersionInfo | null;
     /**
      * Get build hash, if version is not latest or released
      */
@@ -85,7 +85,7 @@ export function VersionFromJSONTyped(json: any, ignoreDiscriminator: boolean): V
     }
     return {
         versionCurrent: json["version_current"],
-        versionLatest: UpdateVersionFromJSON(json["version_latest"]),
+        versionLatest: UpdateVersionInfoFromJSON(json["version_latest"]),
         buildHash: json["build_hash"],
         outdated: json["outdated"],
         outpostOutdated: json["outpost_outdated"],

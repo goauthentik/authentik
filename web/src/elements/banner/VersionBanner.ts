@@ -5,7 +5,7 @@ import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithVersion } from "#elements/mixins/version";
 
-import { UpdateVersionReasonEnum } from "@goauthentik/api";
+import { UpdateVersionReason } from "@goauthentik/api";
 
 import { match } from "ts-pattern";
 
@@ -44,7 +44,7 @@ export class VersionBanner extends WithBrandConfig(WithVersion(AKElement)) {
 
         const [level, message] = match(this.version.versionLatest)
             .when(
-                (v) => v.reason === UpdateVersionReasonEnum.Security,
+                (v) => v.reason === UpdateVersionReason.Security,
                 (v) => [
                     "pf-m-red",
                     msg(
