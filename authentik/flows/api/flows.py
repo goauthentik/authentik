@@ -4,7 +4,6 @@ from django.core.cache import cache
 from django.http import HttpResponse
 from django.urls import reverse
 from django.utils.translation import gettext as _
-from django_postgres_cache.models import CacheEntry
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
@@ -58,9 +57,7 @@ class FlowSerializer(ModelSerializer):
 
     def get_cache_count(self, flow: Flow) -> int:
         """Get count of cached flows"""
-        return CacheEntry.objects.filter(
-            cache_key__startswith=cache.make_key(cache_key(flow))
-        ).count()
+        return cache.keys_count(f"{cache_key(flow)}*")
 
     def get_export_url(self, flow: Flow) -> str:
         """Get export URL for flow"""
@@ -126,10 +123,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
     @action(detail=False, pagination_class=None, filter_backends=[])
     def cache_info(self, request: Request) -> Response:
         """Info about cached flows"""
-        count = CacheEntry.objects.filter(
-            cache_key__startswith=cache.make_key(CACHE_PREFIX)
-        ).count()
-        return Response(data={"count": count})
+        return Response(data={"count": cache.keys_count(f"{CACHE_PREFIX}*")})
 
     @permission_required(None, ["authentik_flows.clear_flow_cache"])
     @extend_schema(

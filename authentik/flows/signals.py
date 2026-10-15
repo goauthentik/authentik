@@ -22,7 +22,7 @@ def delete_cache_prefix(prefix: str) -> int:
 @receiver(monitoring_set)
 def monitoring_set_flows(sender, **kwargs):
     """set flow gauges"""
-    GAUGE_FLOWS_CACHED.set(len(cache.keys(f"{CACHE_PREFIX}*") or []))
+    GAUGE_FLOWS_CACHED.set(cache.keys_count(f"{CACHE_PREFIX}*"))
 
 
 @receiver(post_save)
