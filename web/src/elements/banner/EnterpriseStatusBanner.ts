@@ -76,7 +76,7 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
         return html`<div class="pf-c-banner pf-m-sticky ${isDanger ? "pf-m-red" : "pf-m-gold"}">
             <div class="pf-l-flex pf-m-space-items-sm">
                 <div class="pf-l-flex__item">
-                    <span class="pf-screen-reader"
+                    <span class="sr-only"
                         >${isDanger ? msg("Danger banner:") : msg("Warning banner:")}</span
                     >
                     <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
@@ -98,7 +98,7 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
                     ? html`<div class="pf-c-banner pf-m-sticky pf-m-gold">
                           <div class="pf-l-flex pf-m-space-items-sm">
                               <div class="pf-l-flex__item">
-                                  <span class="pf-screen-reader">${msg("Warning banner:")}</span>
+                                  <span class="sr-only">${msg("Warning banner:")}</span>
                                   <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
                               </div>
                               <div class="pf-l-flex__item">
@@ -113,7 +113,7 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
                     ? html`<div class="pf-c-banner pf-m-sticky pf-m-gold">
                           <div class="pf-l-flex pf-m-space-items-sm">
                               <div class="pf-l-flex__item">
-                                  <span class="pf-screen-reader">${msg("Warning banner:")}</span>
+                                  <span class="sr-only">${msg("Warning banner:")}</span>
                                   <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
                               </div>
                               <div class="pf-l-flex__item">
