@@ -1,4 +1,4 @@
-.PHONY: gen dev-reset all test web docs core-install i18n-extract install bump gen-changelog integrations
+.PHONY: gen dev-reset all test web docs core-install i18n-extract gen-locales locales-normalize install bump gen-changelog integrations
 
 SHELL := /usr/bin/env bash
 .SHELLFLAGS += ${SHELLFLAGS} -e -o pipefail
@@ -91,14 +91,17 @@ lint-spellcheck:  ## Reports spelling errors.
 lint-catalogs:  ## Reports pnpm catalog pins, and pnpm's own version pin, that drifted between workspaces.
 	node ./scripts/node/lint-catalogs.ts
 
+lint-locales:  ## Reports translation files and generated locale lists that drifted from locales.yaml.
+	$(UV) run python scripts/locales.py check
+
 lint-check-types:  ## Type-check the repository's Node.js scripts.
 	pnpm run build:types
 
 lint: ci-lint-bandit ci-lint-mypy ci-lint-cargo-deny ci-lint-cargo-machete  ## Check Python (bandit, mypy), Go (golangci) and Rust dependencies (cargo deny, machete)
 	golangci-lint run -v
 
-core-install:  ## Install python dependencies (uv)
-ifdef ($(BREW_EXISTS))
+core-install:
+ifneq ($(BREW_EXISTS),)
 # Clear cache to ensure fresh compilation
 	$(UV) cache clean
 # Force compilation from source for lxml and xmlsec with correct environment
@@ -112,6 +115,12 @@ migrate: ## Apply and check system and Django migrations
 
 i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that require translation into files to send to a translation service
 
+gen-locales:  ## Regenerate lit-localize.json, the web locale loaders, and the Transifex language mapping from locales.yaml
+	$(UV) run python scripts/locales.py gen
+
+locales-normalize:  ## Move translation files that Transifex wrote under non-canonical names to their canonical paths
+	$(UV) run python scripts/locales.py normalize
+
 aws-cfn: node-install  ## Generate the AWS Cloudformation template
 	pnpm --dir lifecycle/aws install
 	$(UV) run pnpm --dir lifecycle/aws run aws-cfn
@@ -123,7 +132,7 @@ run-watch:  ## Run the authentik server and worker, with auto reloading
 	watchexec --on-busy-update=restart --stop-signal=SIGINT --exts py,rs --no-meta --notify -- $(UV) run ak allinone
 
 core-i18n-extract:
-	$(UV) run ak makemessages \
+	$(UV) run python -m manage makemessages \
 		--add-location file \
 		--no-obsolete \
 		--ignore web \
@@ -182,7 +191,7 @@ endif
 gen-build:  ## Generate schema.yml and blueprints/schema.json from Django model definitions
 	AUTHENTIK_DEBUG=true \
 		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
-		$(UV) run ak build_schema
+		$(UV) run python -m manage build_schema
 
 gen-compose:
 	$(UV) run scripts/generate_compose.py
@@ -378,7 +387,7 @@ ci-lint-bandit: ci--meta-debug
 	$(UV) run bandit -c pyproject.toml -r $(PY_SOURCES) -iii
 
 ci-lint-pending-migrations: ci--meta-debug
-	$(UV) run ak makemigrations --check
+	$(UV) run python -m manage makemigrations --check
 
 ci-lint-cargo-deny: ci--meta-debug
 	$(CARGO) deny --config "${PWD}/.cargo/deny.toml" --locked --workspace check
@@ -394,6 +403,9 @@ ci-lint-clippy: ci--meta-debug
 
 ci-lint-catalogs: ci--meta-debug
 	node ./scripts/node/lint-catalogs.ts
+
+ci-lint-locales: ci--meta-debug
+	$(UV) run python scripts/locales.py check
 
 ci-lint-oxlint-fixtures: ci--meta-debug
 	pnpm --filter @goauthentik/oxlint-config run build

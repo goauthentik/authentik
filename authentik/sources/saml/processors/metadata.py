@@ -1,6 +1,7 @@
 """SAML Service Provider Metadata Processor"""
 
 from django.http import HttpRequest
+from django.urls import reverse
 from lxml.etree import Element, SubElement, tostring  # nosec
 
 from authentik.common.saml.constants import (
@@ -79,8 +80,8 @@ class MetadataProcessor:
         assertion_consumer_service.attrib["isDefault"] = "true"
         assertion_consumer_service.attrib["index"] = "0"
         assertion_consumer_service.attrib["Binding"] = SAML_BINDING_POST
-        assertion_consumer_service.attrib["Location"] = self.source.build_full_url(
-            self.http_request
+        assertion_consumer_service.attrib["Location"] = self.http_request.build_absolute_uri(
+            reverse("authentik_sources_saml:acs", kwargs={"source_slug": self.source.slug})
         )
 
         return tostring(entity_descriptor).decode()

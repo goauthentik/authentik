@@ -298,5 +298,8 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
         self.assertEqual(get_challenge_for_device(request, stage, totp_device), {})
         with self.assertRaises(ValidationError):
             validate_challenge_code(
-                "1234", StageView(FlowExecutorView(current_stage=stage), request=request), self.user
+                "1234",
+                StageView(FlowExecutorView(current_stage=stage), request=request),
+                self.user,
+                [{"device_class": DeviceClasses.TOTP}],
             )
