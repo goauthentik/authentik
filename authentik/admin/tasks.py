@@ -110,11 +110,9 @@ def update_latest_version():
             Event.new(
                 EventAction.UPDATE_AVAILABLE,
                 message=_(
-                    "New version {version} available!".format(
-                        version=upstream_version,
-                    )
+                    "New version {version} available!".format(version=upstream_version.version)
                 ),
-                new_version=upstream_version,
+                new_version=upstream_version.model_dump(mode="json"),
                 changelog=upstream_version.changelog_url,
             ).save()
     except (RequestException, IndexError, ValidationError) as exc:

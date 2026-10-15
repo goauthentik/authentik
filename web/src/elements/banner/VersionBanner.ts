@@ -5,6 +5,10 @@ import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithVersion } from "#elements/mixins/version";
 
+import { UpdateVersionReasonEnum } from "@goauthentik/api";
+
+import { match } from "ts-pattern";
+
 import { msg, str } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
@@ -38,16 +42,32 @@ export class VersionBanner extends WithBrandConfig(WithVersion(AKElement)) {
     renderUpdate() {
         if (!this.version?.outdated || !this.version.versionLatest?.valid) return nothing;
 
-        return html`<div class="pf-c-banner pf-m-sticky pf-m-gold">
+        const [level, message] = match(this.version.versionLatest)
+            .when(
+                (v) => v.reason === UpdateVersionReasonEnum.Security,
+                (v) => [
+                    "pf-m-red",
+                    msg(
+                        str`Security release ${v.version} of ${this.brandingTitle} is available. Update now.`,
+                    ),
+                ],
+            )
+            .otherwise((v) => [
+                "pf-m-gold",
+                msg(str`Version ${v.version} of ${this.brandingTitle} is available.`),
+            ]);
+
+        return html`<div class="pf-c-banner pf-m-sticky ${level}">
             <div class="pf-l-flex pf-m-space-items-sm">
                 <div class="pf-l-flex__item">
                     <span class="pf-screen-reader">${msg("Warning banner:")}</span>
                     <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
                 </div>
                 <div class="pf-l-flex__item">
-                    ${msg(
-                        str`Version ${this.version.versionLatest.version} of ${this.brandingTitle} is available.`,
-                    )}
+                    ${message}
+                    <a href=${this.version.versionLatest.changelogUrl}
+                        >${msg("Click here for the changelog.")}</a
+                    >
                 </div>
             </div>
         </div>`;
