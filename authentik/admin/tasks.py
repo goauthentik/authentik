@@ -3,7 +3,6 @@
 from enum import StrEnum
 
 from django.core.cache import cache
-from django.db import models
 from django.utils.translation import gettext_lazy as _
 from dramatiq import actor
 from packaging.version import parse
@@ -13,7 +12,6 @@ from structlog.stdlib import get_logger
 
 from authentik import authentik_build_hash, authentik_version
 from authentik.admin.apps import PROM_INFO
-from authentik.core.api.utils import PassiveSerializer
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import get_http_session
@@ -23,6 +21,7 @@ LOGGER = get_logger()
 VERSION_CACHE_KEY = "goauthentik.io/admin/latest_version"
 VERSION_CACHE_TIMEOUT = 8 * 60 * 60  # 8 hours
 LOCAL_VERSION = parse(authentik_version())
+VERSION_URL = "https://version.goauthentik.io/versions/authentik/latest.json"
 
 
 def _set_prom_info():
@@ -89,9 +88,7 @@ def update_latest_version():
         self.info("Version check disabled.")
         return
     try:
-        response = get_http_session().get(
-            "https://version.goauthentik.io/versions/authentik/latest.json"
-        )
+        response = get_http_session().get(VERSION_URL)
         response.raise_for_status()
         data = response.json()
         upstream_version = UpdateVersionInfo.model_validate(data.get("stable", {}))
