@@ -45,13 +45,6 @@ declare global {
          * give it a better name.
          */
         readonly AK_API_BASE_PATH: string;
-
-        /**
-         * The Git hash at build time.
-         *
-         * @format hash
-         */
-        readonly GIT_BUILD_HASH: string;
     }
 
     type ESBuildImportEnvKey = keyof ESBuildImportEnv;
