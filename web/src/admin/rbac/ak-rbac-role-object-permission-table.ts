@@ -122,7 +122,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         this.sortFilter = ev.detail.value;
     };
 
-    renderToolbarAfter() {
+    protected override renderToolbarAfter(): SlottedTemplateResult {
         // prettier-ignore
         const sortOptions: { label: string, value: PermissionSorting }[] = [
             { label: msg("By name", { id: "permission.sort.by-name" }), value: "by-name" },
