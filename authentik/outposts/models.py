@@ -331,8 +331,9 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
             ),
         ]
 
-    def build_user_permissions(self, user: User):
-        """Create per-object and global permissions for outpost service-account"""
+    def build_user_permissions(self, user: User, rebuild: bool = False):
+        """Create per-object and global permissions for outpost service-account.
+        With `rebuild`, delete all of them first and recreate them, for troubleshooting."""
         # Only write the difference, so saving a provider whose required objects didn't change
         # doesn't rewrite every permission row of the outpost. Concurrent transactions (such as
         # parallel blueprint applies) would otherwise lock the same rows and deadlock.
@@ -377,6 +378,10 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
             ).with_exception(exc).set_user(user).save()
             return
         with transaction.atomic():
+            # Only after all required permissions resolved, so a missing permission doesn't
+            # leave the outpost without any
+            if rebuild:
+                user.remove_all_perms_from_managed_role()
             role = user.get_managed_role(create=True)
             existing_model = set(
                 RoleModelPermission.objects.filter(role=role).values_list(

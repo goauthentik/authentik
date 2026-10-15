@@ -11090,6 +11090,29 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/instances/{uuid}/rebuild_permissions/:
+    post:
+      operationId: outposts_instances_rebuild_permissions_create
+      description: Delete and recreate all permissions of the outpost's service account
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Outpost.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Permissions rebuilt
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /outposts/instances/{uuid}/used_by/:
     get:
       operationId: outposts_instances_used_by_list
