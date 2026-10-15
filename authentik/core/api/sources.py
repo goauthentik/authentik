@@ -2,6 +2,7 @@
 
 from collections.abc import Iterable
 
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
@@ -36,6 +37,15 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
             return ""
         return obj.component
 
+    def validate_enrollment_only_user_properties(self, properties: list[str]) -> list[str]:
+        """Group membership is synced separately from user properties, so listing it here
+        would silently do nothing."""
+        if "groups" in properties:
+            raise ValidationError(
+                _("Group membership is synced separately and can't be enrollment-only.")
+            )
+        return properties
+
     class Meta:
         model = Source
         fields = [
@@ -48,6 +58,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
             "enrollment_flow",
             "user_property_mappings",
             "group_property_mappings",
+            "enrollment_only_user_properties",
             "component",
             "verbose_name",
             "verbose_name_plural",

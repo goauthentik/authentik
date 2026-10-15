@@ -119,7 +119,9 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
 
                 if action in (Action.AUTH, Action.LINK):
                     ak_user = connection.user
-                    ak_user.update_attributes(defaults)
+                    ak_user.update_attributes(
+                        self._source.drop_enrollment_only_user_properties(defaults)
+                    )
                     connection.save()
                 elif action == Action.DENY:
                     continue

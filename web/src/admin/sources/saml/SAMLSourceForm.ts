@@ -480,6 +480,9 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                             ${msg("Property mappings for user creation.")}
                         </p>
                     </ak-form-element-horizontal>
+                    ${this.renderEnrollmentOnlyUserPropertiesField(
+                        this.instance?.enrollmentOnlyUserProperties,
+                    )}
                     <ak-form-element-horizontal
                         label=${msg("Group Property Mappings")}
                         name="groupPropertyMappings"

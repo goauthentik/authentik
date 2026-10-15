@@ -263,6 +263,28 @@ class LDAPSyncTests(TestCase):
             UserLDAPSourceConnection.objects.filter(source=self.source, user=existing).exists()
         )
 
+    def test_sync_users_openldap_enrollment_only_user_properties(self):
+        """Test that syncing an existing user leaves its enrollment-only properties unchanged"""
+        self.source.object_uniqueness_field = "uid"
+        self.source.enrollment_only_user_properties = ["name"]
+        self.source.save()
+        self.source.user_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/openldap")
+            )
+        )
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            UserLDAPSynchronizer(self.source, Task()).sync_full()
+            user = User.objects.get(username="user0_sn")
+            self.assertEqual(user.name, "user0_sn")
+            user.name = "changed"
+            user.save()
+            UserLDAPSynchronizer(self.source, Task()).sync_full()
+        user.refresh_from_db()
+        self.assertEqual(user.name, "changed")
+
     def test_sync_users_freeipa_ish(self):
         """Test user sync (FreeIPA-ish), mainly testing vendor quirks"""
         self.source.object_uniqueness_field = "uid"

@@ -62,6 +62,17 @@ A user or group object is constructed as follows:
 3.  If the `username` field is not set for user objects, or the `name` field is not set for group objects, the process is aborted.
 4.  The object is created or updated. The `attributes` property is merged with existing data if the object already exists.
 
+### Enrollment-only user properties
+
+When a source creates a user, it sets every property that its mappings return, plus `path`, which comes from the source's **User path** setting. Whether the source later overwrites those properties on the existing user depends on how it updates users:
+
+- LDAP and Kerberos sources update existing users on every sync.
+- At login, a source updates an existing user only if a [User Write stage](../../../add-secure-apps/flows-stages/stages/user_write/index.mdx) runs after it, usually in the source's authentication flow. The default source authentication flow does not contain one.
+
+If users log in through more than one source, each source that updates users can overwrite properties that another source set, including moving the user to its own `path`. To have a source set a property only when it creates a user, add the property to the source's **Enrollment-only user properties** field as a comma-separated list, for example `username, name, email, path`. The source still writes all other properties, such as `attributes`, to existing users.
+
+The field matches top-level property names exactly. It can't contain `groups`, because authentik synchronizes group membership separately. SCIM sources don't have this field, because the SCIM client decides when a user changes.
+
 ### Group synchronization
 
 LDAP and SCIM sources have built-in mechanisms to get groups. This section does not apply to them.
