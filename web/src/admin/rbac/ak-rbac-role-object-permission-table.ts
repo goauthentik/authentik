@@ -27,15 +27,15 @@ import { msg } from "@lit/localize";
 import { css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
+const permissionSorting = ["by-name", "assignedfirst", "assignedonly"] as const;
+
+type PermissionSorting = (typeof permissionSorting)[number];
+
 const byName = (a: PermissionDisplay, b: PermissionDisplay) =>
     a.name.localeCompare(b.name, undefined, { sensitivity: "base" });
 
 const assignedFirst = (a: PermissionDisplay, b: PermissionDisplay) =>
-    Number(b.assigned) - Number(a.assigned) || byName(a, b);
-
-const permissionSorting = ["default", "assignedfirst", "assignedonly"] as const;
-
-type PermissionSorting = (typeof permissionSorting)[number];
+    Number(Boolean(b.scope)) - Number(Boolean(a.scope)) || byName(a, b);
 
 @customElement("ak-rbac-role-object-permission-table")
 export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectPermission> {
@@ -56,7 +56,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
     public objectPk: string | null = null;
 
     @property({ attribute: "sort-filter", reflect: true })
-    public sortFilter: PermissionSorting = "default";
+    public sortFilter: PermissionSorting = "by-name";
 
     @state()
     protected modelPermissions?: PaginatedPermissionList;
@@ -86,18 +86,11 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
             ordering: "name",
         });
 
-        const [permsResult, modelPermissionsResult] = await Promise.allSettled([
+        const [permsResult, modelPermissions] = await Promise.all([
             permsPromise,
             modelPermissionsPromise,
         ]);
 
-        if (permsResult.status !== "fulfilled" || modelPermissionsResult.status !== "fulfilled") {
-            this.modelPermissions = undefined;
-
-            return createPaginatedResponse([]);
-        }
-
-        const modelPermissions = modelPermissionsResult.value;
         const addModelName = `add_${modelName}`;
 
         modelPermissions.results = modelPermissions.results.filter(
@@ -106,15 +99,15 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
 
         this.modelPermissions = modelPermissions;
 
-        return permsResult.value;
+        return permsResult;
     }
 
     @state()
     protected get columns(): TableColumn[] {
         return [
-            [msg("Role", { id: "permissions.table-column.role" }), "role"],
+            [msg("Role", { id: "permissions.table-column.role" }), "name"],
             // We don't check pagination since models shouldn't need to have that many permissions?
-            [msg("Permissions", { id: "permissions.table-column.permissions" }), "permissions"],
+            [msg("Permissions", { id: "permissions.table-column.permissions" })],
         ];
     }
 
@@ -132,7 +125,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
     renderToolbarAfter() {
         // prettier-ignore
         const sortOptions: { label: string, value: PermissionSorting }[] = [
-            { label: msg("By name", { id: "permission.sort.default" }), value: "default" },
+            { label: msg("By name", { id: "permission.sort.by-name" }), value: "by-name" },
             { label: msg("Assigned first", { id: "permissions.sort.assigned-first" }), value: "assignedfirst" },
             { label: msg("Assigned only", { id: "permissions.sort.assigned-only" }), value: "assignedonly" },
         ];
@@ -195,28 +188,19 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
             const assignedToModel = modelPermissions.has(codename);
             const assignedToObject = objectPermissions.has(codename);
 
-            const [kind, tag] = match([assignedToModel, assignedToObject])
-                .with([true, true], () => [
-                    msg("Global and object permission", { id: "permissions.aria.universal" }),
-                    msg("object + global", { id: "permissions.kind.universal" }),
-                ])
-                .with([true, false], () => [
-                    msg("Global permission", { id: "permissions.aria.global" }),
-                    msg("global", { id: "permissions.kind.global" }),
-                ])
-                .with([false, true], () => [
-                    msg("Object permission", { id: "permissions.kind.object" }),
-                    msg("object", { id: "permissions.kind.object" }),
-                ])
-                .otherwise(() => [null, null]);
+            const scope = match([assignedToModel, assignedToObject])
+                .with([true, true], () => "both")
+                .with([true, false], () => "global")
+                .with([false, true], () => "object")
+                .otherwise(() => null);
 
-            return { name, kind, tag, assigned: Boolean(kind) };
+            return { name, scope };
         });
 
         permissions = match(this.sortFilter)
-            .with("default", () => permissions)
+            .with("by-name", () => permissions)
             .with("assignedfirst", () => permissions.toSorted(assignedFirst))
-            .with("assignedonly", () => permissions.filter(({ assigned }) => assigned))
+            .with("assignedonly", () => permissions.filter(({ scope }) => !!scope))
             .exhaustive();
 
         return [
