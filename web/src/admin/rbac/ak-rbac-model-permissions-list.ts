@@ -62,7 +62,7 @@ const Style = css`
 
 @customElement("ak-rbac-model-permissions-list")
 export class RbacModelPermissionsList extends AKElement {
-    static readonly styles = [Style, PFCard];
+    public static readonly styles = [Style, PFCard];
 
     @property({ type: Array })
     public items: PermissionDisplay[] = [];
