@@ -190,35 +190,15 @@ jobs:
           client-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIV_KEY }}
           repositories: version
-      - id: get-user-id
-        name: Get GitHub app user ID
-        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
-        env:
-          GH_TOKEN: "${{ steps.app-token.outputs.token }}"
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
-        with:
-          repository: "${{ github.repository_owner }}/version"
-          token: "${{ steps.app-token.outputs.token }}"
       - name: Bump version
-        run: |
-          jq \
-            --arg version "${{ needs.metadata.outputs.version }}" \
-            --arg changelog "See ${{ needs.metadata.outputs.changelog-url }}" \
-            --arg changelog_url "${{ needs.metadata.outputs.changelog-url }}" \
-            --arg reason "${{ needs.metadata.outputs.release-reason }}" \
-            '.stable.version = $version | .stable.changelog = $changelog | .stable.changelog_url = $changelog_url | .stable.reason = $reason' version.json > version.new.json
-          mv version.new.json version.json
-      - name: Create pull request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v7
+        uses: goauthentik/version@main
         with:
-          token: "${{ steps.app-token.outputs.token }}"
-          branch: bump-${{ needs.metadata.outputs.version }}
-          commit-message: "version: bump to ${{ needs.metadata.outputs.version }}"
-          title: "version: bump to ${{ needs.metadata.outputs.version }}"
-          body: "See ${{ needs.metadata.outputs.changelog-url }}"
-          delete-branch: true
-          signoff: true
-          author: "${{ steps.app-token.outputs.app-slug }}[bot] <${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>"
+          product: authentik
+          new-version: ${{ needs.metadata.outputs.version }}
+          changelog-url: ${{ needs.metadata.outputs.changelog-url }}
+          reason: ${{ needs.metadata.outputs.release-reason }}
+          token: ${{ steps.app-token.outputs.token }}
+          github-app-slug: ${{ steps.app-token.outputs.app-slug }}
   bump-helm:
     name: Bump Helm version
     needs:
