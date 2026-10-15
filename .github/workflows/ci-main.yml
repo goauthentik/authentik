@@ -378,7 +378,7 @@ jobs:
           flags: e2e
   test-container:
     name: test-container - Run ${{ matrix.run_id }}/10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     needs:
       - build
@@ -388,7 +388,7 @@ jobs:
       matrix:
         run_id: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     steps:
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v5
         with:
           name: container-build-server-amd64
       - name: Load container image
