@@ -61476,7 +61476,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/UpdateVersionInfo'
           readOnly: true
-          nullable: true
         build_hash:
           type: string
           description: Get build hash, if version is not latest or released

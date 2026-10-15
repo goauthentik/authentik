@@ -18,7 +18,7 @@ class VersionSerializer(PassiveSerializer):
     """Get running and latest version."""
 
     version_current = SerializerMethodField()
-    version_latest = SerializerMethodField(allow_null=True)
+    version_latest = SerializerMethodField()
     build_hash = SerializerMethodField()
     outdated = SerializerMethodField()
     outpost_outdated = SerializerMethodField()

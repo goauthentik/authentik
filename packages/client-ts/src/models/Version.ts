@@ -24,7 +24,7 @@ export interface Version {
      * Get current version
      */
     readonly versionCurrent: string;
-    readonly versionLatest: UpdateVersionInfo | null;
+    readonly versionLatest: UpdateVersionInfo;
     /**
      * Get build hash, if version is not latest or released
      */

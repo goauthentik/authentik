@@ -25,15 +25,15 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
     }
 
     public async getStatus(value: Version): Promise<AdminStatus> {
-        if (import.meta.env.GIT_BUILD_HASH) {
+        if (value.buildHash) {
             return {
                 icon: "fa fa-check-circle pf-m-success",
-                message: msg(str`Based on ${import.meta.env.AK_VERSION}`),
+                message: msg(str`Based on ${value.versionCurrent}`),
                 tone: "success",
             };
         }
 
-        if (!value.versionLatest?.valid) {
+        if (!value.versionLatest.valid) {
             return {
                 icon: "fa fa-question-circle",
                 message: msg("Latest version unknown"),
@@ -44,7 +44,7 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
         // TODO: This could only be true if versionLatest.valid is also true.
         // Fix type union.
         if (value.outdated) {
-            const upstreamVersion = value.versionLatest?.version;
+            const upstreamVersion = value.versionLatest.version;
 
             const message = upstreamVersion
                 ? msg(str`${upstreamVersion} is available!`)
@@ -79,9 +79,9 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
         let text = import.meta.env.AK_VERSION;
         let link = import.meta.env.AK_DOCS_RELEASE_NOTES_URL;
 
-        if (import.meta.env.GIT_BUILD_HASH) {
-            text = import.meta.env.GIT_BUILD_HASH.substring(0, 7);
-            link = `https://github.com/goauthentik/authentik/commit/${import.meta.env.GIT_BUILD_HASH}`;
+        if (this.value?.buildHash) {
+            text = this.value.buildHash?.substring(0, 7);
+            link = `https://github.com/goauthentik/authentik/commit/${this.value.buildHash}`;
         }
 
         return html`<a rel="noopener noreferrer" href=${link} target="_blank">${text}</a>`;
