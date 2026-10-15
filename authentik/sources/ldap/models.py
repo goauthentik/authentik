@@ -425,6 +425,8 @@ class LDAPSource(IncomingSyncSource):
 class LDAPSourcePropertyMapping(PropertyMapping):
     """Map LDAP Property to User or Group object attribute"""
 
+    expression_allowed_types = [dict]
+
     @property
     def component(self) -> str:
         return "ak-property-mapping-source-ldap-form"
