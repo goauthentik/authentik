@@ -24,19 +24,29 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
     }
 
     public async getStatus(value: Version): Promise<AdminStatus> {
-        if (value.buildHash) {
+        if (import.meta.env.GIT_BUILD_HASH) {
             return {
                 icon: "fa fa-check-circle pf-m-success",
-                message: msg(str`Based on ${value.versionCurrent}`),
+                message: msg(str`Based on ${import.meta.env.AK_VERSION}`),
                 tone: "success",
             };
         }
 
-        if (value.outdated) {
-            const versionLabel = value.versionLatest?.version;
+        if (!value.versionLatest?.valid) {
+            return {
+                icon: "fa fa-question-circle",
+                message: msg("Latest version unknown"),
+                tone: "neutral",
+            };
+        }
 
-            const message = versionLabel
-                ? msg(str`${versionLabel} is available!`)
+        // TODO: This could only be true if versionLatest.valid is also true.
+        // Fix type union.
+        if (value.outdated) {
+            const upstreamVersion = value.versionLatest?.version;
+
+            const message = upstreamVersion
+                ? msg(str`${upstreamVersion} is available!`)
                 : msg(str`A new version is available!`);
 
             return {
@@ -49,37 +59,28 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
         if (value.outpostOutdated) {
             return {
                 icon: "fa fa-exclamation-triangle pf-m-warning",
-                message:
-                    msg("An outpost is on an incorrect version!") +
-                    ` <a href=${toAdminInterface("outpost/outposts")}>${msg("Check outposts.")}</a>`,
+                message: html`${msg("An outpost is on an incorrect version!")}&nbsp;<a
+                        href=${toAdminInterface("outpost/outposts")}
+                        >${msg("Check outposts.")}</a
+                    >`,
                 tone: "warning",
             };
         }
 
-        if (value.versionLatest?.valid) {
-            return {
-                icon: "fa fa-check-circle pf-m-success",
-                message: msg("Up-to-date!"),
-                tone: "success",
-            };
-        }
-
         return {
-            icon: "fa fa-question-circle",
-            message: msg("Latest version unknown"),
-            tone: "",
+            icon: "fa fa-check-circle pf-m-success",
+            message: msg("Up-to-date!"),
+            tone: "success",
         };
     }
 
     protected renderValue(): SlottedTemplateResult {
-        let text = this.value?.versionCurrent;
-        const versionFamily = this.value?.versionCurrent.split(".");
-        versionFamily?.pop();
-        let link = `https://docs.goauthentik.io/releases/${versionFamily?.join(".")}`;
+        let text = import.meta.env.AK_VERSION;
+        let link = import.meta.env.AK_DOCS_RELEASE_NOTES_URL;
 
-        if (this.value?.buildHash) {
-            text = this.value.buildHash?.substring(0, 7);
-            link = `https://github.com/goauthentik/authentik/commit/${this.value.buildHash}`;
+        if (import.meta.env.GIT_BUILD_HASH) {
+            text = import.meta.env.GIT_BUILD_HASH.substring(0, 7);
+            link = `https://github.com/goauthentik/authentik/commit/${import.meta.env.GIT_BUILD_HASH}`;
         }
 
         return html`<a rel="noopener noreferrer" href=${link} target="_blank">${text}</a>`;
