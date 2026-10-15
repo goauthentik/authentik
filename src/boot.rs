@@ -20,6 +20,7 @@ use nix::{
     fcntl::{AT_FDCWD, AtFlags},
     unistd::{Gid, Group, Uid, User, getuid, setgid, setuid},
 };
+use pyo3::{exceptions::PySystemExit, prelude::*, types::PyDict};
 use tracing::{info, warn};
 
 /// The unprivileged user the server runs as.
@@ -113,6 +114,57 @@ fn run(cmd: &mut Command) -> Result<()> {
         ));
     }
     Ok(())
+}
+
+/// Run `module` in this process, like `python -m module args...` would.
+///
+/// When Python raises `SystemExit`, the process exits with its code, as `python` would.
+fn run_module(module: &str, args: &[String]) -> Result<()> {
+    crate::python::initialize()?;
+    let prometheus_dir = prometheus_dir()?;
+    let cwd = std::env::current_dir()?;
+    Python::attach(|py| {
+        let result = (|| -> PyResult<()> {
+            let sys = py.import("sys")?;
+            // `python -m` puts the working directory first, so that `authentik` can be imported
+            let path = sys.getattr("path")?;
+            if !path.contains(cwd.as_os_str())? {
+                path.call_method1("insert", (0_i32, cwd.as_os_str()))?;
+            }
+            let sys_argv: Vec<&str> = std::iter::once(module)
+                .chain(args.iter().map(String::as_str))
+                .collect();
+            sys.setattr("argv", sys_argv)?;
+            // Changing our own environment from Rust needs unsafe code, Python does it for us
+            py.import("os")?
+                .getattr("environ")?
+                .set_item(PROMETHEUS_MULTIPROC_DIR, prometheus_dir.as_os_str())?;
+            let kwargs = PyDict::new(py);
+            kwargs.set_item("run_name", "__main__")?;
+            kwargs.set_item("alter_sys", true)?;
+            py.import("runpy")?
+                .call_method("run_module", (module,), Some(&kwargs))?;
+            Ok(())
+        })();
+        // We keep running after this, so don't leave output behind in Python's buffers
+        for stream in ["stdout", "stderr"] {
+            if let Ok(stream) = py.import("sys").and_then(|sys| sys.getattr(stream)) {
+                let _ = stream.call_method0("flush");
+            }
+        }
+        result.map_err(|err| {
+            // Exits for `SystemExit`, prints the traceback otherwise
+            err.print(py);
+            eyre!("python module {module} failed")
+        })
+    })
+}
+
+/// Run `module` like [`run_module`], then exit like `python` would, running Python's exit handlers.
+fn exec_module(module: &str, args: &[String]) -> Result<()> {
+    run_module(module, args)?;
+    Python::attach(|py| PySystemExit::new_err(0_i32).print(py));
+    Err(eyre!("python did not exit after {module}"))
 }
 
 /// Install what `test-all` and `AUTHENTIK_DEBUGGER` need.
@@ -242,13 +294,13 @@ fn become_authentik(prometheus_dir: &Path) -> Result<PathBuf> {
 }
 
 fn wait_for_db() -> Result<()> {
-    run(Command::new("python").args(["-m", "lifecycle.wait_for_db"]))?;
+    run_module("lifecycle.wait_for_db", &[])?;
     info!("bootstrap completed");
     Ok(())
 }
 
 fn run_migrations() -> Result<()> {
-    run(Command::new("python").args(["-m", "lifecycle.migrate"]))?;
+    run_module("lifecycle.migrate", &[])?;
     info!("migrations completed");
     Ok(())
 }
@@ -279,32 +331,25 @@ pub(crate) fn bootstrap() -> Result<()> {
 
 pub(crate) fn manage(args: &Manage) -> Result<()> {
     // manage.py waits for the database itself
-    let mut cmd = Command::new("python");
-    cmd.args(["-m", "manage"])
-        .args(&args.args)
-        .env(PROMETHEUS_MULTIPROC_DIR, prometheus_dir()?);
-    exec(cmd)
+    exec_module("manage", &args.args)
 }
 
 pub(crate) fn test_all() -> Result<()> {
     let prometheus_dir = prometheus_dir()?;
-    // manage.py waits for the database itself
-    let mut cmd = Command::new("python");
-    cmd.args(["-m", "manage", "test", "authentik"])
-        .env(PROMETHEUS_MULTIPROC_DIR, &prometheus_dir);
     if getuid().is_root() {
         prepare_debug()?;
-        cmd.env("HOME", become_authentik(&prometheus_dir)?);
+        let home = become_authentik(&prometheus_dir)?;
+        // Changing our own environment needs unsafe code, so exec ourselves with the new one
+        let mut cmd = Command::new(std::env::current_exe()?);
+        cmd.args(std::env::args_os().skip(1)).env("HOME", home);
+        return exec(cmd);
     }
-    exec(cmd)
+    // manage.py waits for the database itself
+    exec_module("manage", &["test".to_owned(), "authentik".to_owned()])
 }
 
 pub(crate) fn dump_config(args: &DumpConfig) -> Result<()> {
-    let mut cmd = Command::new("python");
-    cmd.args(["-m", "authentik.lib.config"])
-        .args(&args.keys)
-        .env(PROMETHEUS_MULTIPROC_DIR, prometheus_dir()?);
-    exec(cmd)
+    exec_module("authentik.lib.config", &args.keys)
 }
 
 fn shell(program: &str, args: &[String]) -> Result<()> {

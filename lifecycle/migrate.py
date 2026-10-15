@@ -194,6 +194,10 @@ def run_migrations():
         if not CONFIG.get_bool("debug"):
             check_args.append("--deploy")
         execute_from_command_line(check_args)
+        # This runs inside the long-lived authentik process, don't hold on to connections
+        from django.db import connections
+
+        connections.close_all()
     finally:
         release_lock(conn, curr)
         curr.close()
