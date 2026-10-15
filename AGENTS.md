@@ -18,7 +18,7 @@ The Python core and the web UI talk through a **generated OpenAPI client** — n
 
 ```
 authentik/          # Django core — the IdP itself (see "The authentik Django package" below)
-lifecycle/          # Boot/runtime: migrations, gunicorn config, the `ak` CLI, container + AWS entrypoints
+lifecycle/          # Boot/runtime: migrations, the in-process ASGI bridge, the `ak` CLI, container + AWS entrypoints
 cmd/                # Go entrypoints: ldap/ rac/ radius/ outposts
 internal/           # Shared Go: outpost implementations, config
 src/                # Rust server/worker (ak-axum based; gated behind cargo features)

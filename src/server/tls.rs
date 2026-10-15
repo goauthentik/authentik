@@ -80,7 +80,7 @@ pub(super) async fn watch_tls_config(
 ) -> Result<()> {
     let mut events_rx = arbiter.events_subscribe();
 
-    info!("waiting for gunicorn to be ready before starting tls watcher");
+    info!("waiting for the server to be ready before starting tls watcher");
     loop {
         tokio::select! {
             event = events_rx.recv() => {

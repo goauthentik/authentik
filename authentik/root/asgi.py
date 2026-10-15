@@ -14,7 +14,7 @@ from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 
 from authentik.root.setup import setup
 
-# DJANGO_SETTINGS_MODULE is set in gunicorn.conf.py
+# DJANGO_SETTINGS_MODULE is set in lifecycle/server.py
 
 setup()
 django.setup()

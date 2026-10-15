@@ -1,13 +1,4 @@
-use std::{
-    env::temp_dir,
-    os::unix,
-    path::PathBuf,
-    process::Stdio,
-    sync::{
-        Arc,
-        atomic::{AtomicBool, Ordering},
-    },
-};
+use std::{net::Ipv6Addr, os::unix, sync::Arc};
 
 use ak_axum::{
     extract::{
@@ -23,24 +14,15 @@ use axum::{
     Router,
     body::Body,
     extract::{Request, State},
-    http::{StatusCode, header::HOST},
+    http::StatusCode,
     middleware::from_fn,
     response::Response,
     routing::any,
 };
 use eyre::{Result, eyre};
-use hyper_unix_socket::UnixSocketConnector;
-use hyper_util::{client::legacy::Client, rt::TokioExecutor};
-use nix::{
-    sys::signal::{Signal, kill},
-    unistd::Pid,
-};
 use rustls::sign::CertifiedKey;
 use tokio::{
-    net::UnixStream,
-    process::{Child, Command},
-    signal::unix::SignalKind,
-    sync::Mutex,
+    task::spawn_blocking,
     time::{Duration, Instant, interval},
 };
 use tower::ServiceExt as _;
@@ -52,6 +34,7 @@ use crate::{
     worker::Workers,
 };
 
+mod asgi;
 mod core;
 mod r#static;
 mod tls;
@@ -65,17 +48,14 @@ mod tls;
 )]
 pub(crate) struct Cli {}
 
-pub(super) static GUNICORN_READY: AtomicBool = AtomicBool::new(false);
-
-pub(crate) fn socket_path() -> PathBuf {
-    temp_dir().join("authentik.sock")
+pub(crate) fn socket_path() -> std::path::PathBuf {
+    std::env::temp_dir().join("authentik.sock")
 }
 
 #[derive(Debug)]
 pub(crate) struct Server {
-    gunicorn: Mutex<Child>,
-    socket_path: PathBuf,
-    pub(crate) client: Client<UnixSocketConnector<PathBuf>, Body>,
+    /// The Python application, once it has loaded.
+    asgi: ArcSwapOption<asgi::Asgi>,
     pub(crate) workers: ArcSwapOption<Workers>,
     proxy_outpost: Arc<ArcSwapOption<ProxyOutpost>>,
     brand_cert_resolver: ArcSwapOption<BrandCertResolver>,
@@ -83,32 +63,9 @@ pub(crate) struct Server {
 }
 
 impl Server {
-    fn new(socket_path: PathBuf) -> Result<Self> {
-        info!("starting server");
-
-        let gunicorn = Command::new("gunicorn")
-            .args([
-                "--bind",
-                &format!("unix://{}", socket_path.display()),
-                "-c",
-                "./lifecycle/gunicorn.conf.py",
-                "authentik.root.asgi:application",
-            ])
-            .kill_on_drop(true)
-            .stdin(Stdio::null())
-            .stdout(Stdio::inherit())
-            .stderr(Stdio::inherit())
-            .spawn()?;
-
-        let client = Client::builder(TokioExecutor::new())
-            .pool_idle_timeout(Duration::from_mins(1))
-            .set_host(false)
-            .build(UnixSocketConnector::new(socket_path.clone()));
-
+    fn new() -> Result<Self> {
         Ok(Self {
-            gunicorn: Mutex::new(gunicorn),
-            client,
-            socket_path,
+            asgi: ArcSwapOption::empty(),
             workers: ArcSwapOption::empty(),
             proxy_outpost: Arc::new(ArcSwapOption::empty()),
             brand_cert_resolver: ArcSwapOption::empty(),
@@ -116,98 +73,55 @@ impl Server {
         })
     }
 
-    async fn shutdown(&self, signal: Signal) -> Result<()> {
-        trace!(
-            signal = signal.as_str(),
-            "sending shutdown signal to server"
-        );
-        let mut gunicorn = self.gunicorn.lock().await;
-        if let Some(id) = gunicorn.id() {
-            kill(Pid::from_raw(id.cast_signed()), signal)?;
-        }
-        gunicorn.wait().await?;
-        drop(gunicorn);
-        Ok(())
-    }
-
-    async fn graceful_shutdown(&self) -> Result<()> {
-        info!("gracefully shutting down server");
-        self.shutdown(Signal::SIGTERM).await
-    }
-
-    async fn fast_shutdown(&self) -> Result<()> {
-        info!("immediately shutting down server");
-        self.shutdown(Signal::SIGINT).await
-    }
-
     async fn is_alive(&self) -> bool {
-        let try_wait = self.gunicorn.lock().await.try_wait();
-        match try_wait {
-            Ok(Some(code)) => {
-                warn!(?code, "server has exited");
-                false
-            }
-            Ok(None) => true,
-            Err(err) => {
-                warn!(
-                    ?err,
-                    "failed to check the status of server process, ignoring"
-                );
-                true
-            }
+        match self.asgi.load_full() {
+            Some(asgi) => asgi.is_alive().await,
+            // Still loading
+            None => true,
         }
     }
 
-    async fn is_socket_ready(&self) -> bool {
-        let result = UnixStream::connect(&self.socket_path).await;
-        trace!(?result, "checking if server socket is ready");
-        result.is_ok()
+    /// Send a request for the application to the application.
+    async fn get(&self, path: &str) -> Result<StatusCode> {
+        let asgi = self
+            .asgi
+            .load_full()
+            .ok_or_else(|| eyre!("server is not ready"))?;
+        let request = Request::builder()
+            .uri(path)
+            .header("host", "localhost")
+            .body(Body::empty())?;
+        let peer = asgi::Peer {
+            client: Ipv6Addr::LOCALHOST.into(),
+            scheme: "http".to_owned(),
+        };
+        Ok(asgi.http(request, &peer).await?.status())
     }
 
     #[instrument(skip(self))]
     pub(crate) async fn health_live(&self) -> Result<bool> {
         trace!("sending health live request to server");
-        let req = Request::builder()
-            .method("GET")
-            .uri("http://localhost:8000/-/health/live/")
-            .header(HOST, "localhost")
-            .body(Body::empty())?;
         Ok(self
-            .client
-            .request(req)
+            .get("/-/health/live/")
             .await
             .inspect_err(|err| warn!(?err, "failed to send health live request to server"))?
-            .status()
             .is_success())
     }
 
     #[instrument(skip(self))]
     pub(crate) async fn health_ready(&self) -> Result<bool> {
         trace!("sending health ready request to server");
-        let req = Request::builder()
-            .method("GET")
-            .uri("http://localhost:8000/-/health/ready/")
-            .header(HOST, "localhost")
-            .body(Body::empty())?;
         Ok(self
-            .client
-            .request(req)
+            .get("/-/health/ready/")
             .await
             .inspect_err(|err| warn!(?err, "failed to send health ready request to server"))?
-            .status()
             .is_success())
     }
 
     #[instrument(skip(self))]
     pub(crate) async fn notify_metrics(&self) -> Result<()> {
         trace!("sending metrics request to server");
-        let req = Request::builder()
-            .method("GET")
-            .uri("http://localhost:8000/-/metrics/")
-            .header(HOST, "localhost")
-            .body(Body::empty())?;
-        self.client
-            .request(req)
+        self.get("/-/metrics/")
             .await
             .inspect_err(|err| warn!(?err, "failed to send metrics request to server"))?;
         Ok(())
@@ -215,43 +129,27 @@ impl Server {
 }
 
 async fn watch_server(arbiter: Arbiter, server: Arc<Server>) -> Result<()> {
-    info!("starting server watcher");
-    let mut events_rx = arbiter.events_subscribe();
-    let mut check_interval = interval(Duration::from_secs(5));
-    let mut start_interval = interval(Duration::from_secs(1));
+    info!("starting server");
+    let asgi = tokio::select! {
+        asgi = spawn_blocking(asgi::Asgi::load) => Arc::new(asgi??),
+        () = arbiter.shutdown() => return Ok(()),
+    };
+    server.asgi.store(Some(Arc::clone(&asgi)));
+    info!("server loaded, marked ready for operation");
+    arbiter.send_event(Event::GunicornIsReady)?;
 
+    let mut check_interval = interval(Duration::from_secs(5));
     loop {
         tokio::select! {
-            event = events_rx.recv() => {
-                if let Ok(Event::Signal(signal)) = event
-                    && signal == SignalKind::user_defined1()
-                    && !GUNICORN_READY.load(Ordering::Relaxed)
-                {
-                    info!("server notified us ready, marked ready for operation");
-                    GUNICORN_READY.store(true, Ordering::Relaxed);
-                    arbiter.send_event(Event::GunicornIsReady)?;
-                }
-            },
-            _ = start_interval.tick(), if !GUNICORN_READY.load(Ordering::Relaxed) => {
-                if server.is_socket_ready().await {
-                    info!("server socket is accepting connections, marked ready for operation");
-                    GUNICORN_READY.store(true, Ordering::Relaxed);
-                    arbiter.send_event(Event::GunicornIsReady)?;
-                }
-            },
             _ = check_interval.tick() => {
-                if !server.is_alive().await {
+                if !asgi.is_alive().await {
                     arbiter.do_fast_shutdown().await;
                     return Err(eyre!("the server has exited unexpectedly"));
                 }
             },
-            () = arbiter.fast_shutdown() => {
-                server.fast_shutdown().await?;
-                return Ok(());
-            }
-            () = arbiter.graceful_shutdown() => {
-                server.graceful_shutdown().await?;
-                return Ok(());
+            () = arbiter.shutdown() => {
+                info!("shutting down server");
+                return asgi.shutdown().await;
             }
         }
     }
@@ -268,7 +166,7 @@ async fn route_core_and_outpost(
 ) -> Response {
     let start = Instant::now();
 
-    // The embedded outpost is only populated once gunicorn is ready, so this is
+    // The embedded outpost is only populated once the server is ready, so this is
     // `None` during startup and every request naturally falls through to core.
     let app = proxy_outpost
         .load_full()
@@ -318,7 +216,7 @@ pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
     let arbiter = tasks.arbiter();
     let mut events_rx = arbiter.events_subscribe();
 
-    let server = Arc::new(Server::new(temp_dir().join("authentik-gunicorn.sock"))?);
+    let server = Arc::new(Server::new()?);
 
     tasks
         .build_task()
@@ -352,7 +250,7 @@ pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
     )?;
 
     if !config::get().outposts.disable_embedded_outpost {
-        info!("waiting for gunicorn to be ready before starting embedded outpost");
+        info!("waiting for the server to be ready before starting embedded outpost");
         loop {
             tokio::select! {
                 event = events_rx.recv() => {
