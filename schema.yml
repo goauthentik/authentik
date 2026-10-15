@@ -43335,19 +43335,25 @@ components:
       properties:
         email_addresses:
           type: array
-          items: {}
+          items:
+            type: string
+            minLength: 1
         cc_addresses:
           type: array
-          items: {}
+          items:
+            type: string
+            minLength: 1
         bcc_addresses:
           type: array
-          items: {}
+          items:
+            type: string
+            minLength: 1
         template:
           type: string
-          minLength: 1
-          default: invitation
+          format: uuid
       required:
       - email_addresses
+      - template
     InvitationStage:
       type: object
       description: InvitationStage Serializer
