@@ -2,6 +2,7 @@ import "#components/ak-event-info";
 import { aki } from "#common/api/client";
 import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
+import "#elements/EmptyState";
 
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, RowType, Table, TableColumn, Timestamp } from "#elements/table/Table";

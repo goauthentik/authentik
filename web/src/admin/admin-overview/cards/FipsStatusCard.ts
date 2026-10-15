@@ -2,6 +2,8 @@ import { aki } from "#common/api/client";
 
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
 
+import { P4Disposition } from "#styles/patternfly/constants";
+
 import { AdminApi, SystemInfo } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -31,12 +33,12 @@ export class FipsStatusCard extends AdminStatusCard<SystemInfo> {
             ? this.setStatus(msg("OK"), {
                   icon: "fa fa-check-circle pf-m-success",
                   message: html`${msg("FIPS compliance: passing")}`,
-                  tone: "success",
+                  tone: P4Disposition.Success,
               })
             : this.setStatus(msg("Unverified"), {
                   icon: "fa fa-info-circle pf-m-warning",
                   message: html`${msg("FIPS compliance: unverified")}`,
-                  tone: "warning",
+                  tone: P4Disposition.Warning,
               });
     }
 
