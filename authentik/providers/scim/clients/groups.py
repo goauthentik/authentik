@@ -264,6 +264,58 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                     return self._patch_remove_users(scim_group, users_set)
             raise exc
 
+    def add_user_to_group(self, group: Group, user_pk: int):
+        """Repair one newly provisioned user's membership without reconciling other users."""
+        with self.object_lock(group):
+            # The membership may have been removed while this job was waiting for
+            # the group lock. Never replay an obsolete add.
+            if not group.users.filter(pk=user_pk).exists():
+                return
+            user_id = (
+                SCIMProviderUser.objects.filter(provider=self.provider, user_id=user_pk)
+                .values_list("scim_id", flat=True)
+                .first()
+            )
+            if user_id is None:
+                return
+            connection = SCIMProviderGroup.objects.filter(
+                provider=self.provider, group=group
+            ).first()
+            if connection is None:
+                connection = self.create(group)
+            try:
+                self._add_user(connection, user_id)
+            except NotFoundSyncException:
+                connection.delete()
+                connection = self.create(group)
+                self._add_user(connection, user_id)
+
+    def _add_user(self, connection: SCIMProviderGroup, user_id: str):
+        # AWS supports membership PATCH even though its compatibility mode disables
+        # general PATCH. Its GET response does not include existing members.
+        if (
+            self._config.patch.supported
+            or self.provider.compatibility_mode == SCIMCompatibilityMode.AWS
+        ):
+            return self._patch_chunked(connection.scim_id, self._patch_add_member(user_id))
+        # PUT replaces the member list. Preserve the remote state, including members
+        # whose local mappings are still being provisioned, and only append this user.
+        path = f"/Groups/{connection.scim_id}"
+        try:
+            payload = self._request("GET", path)
+            if user_id in self._member_ids(payload):
+                return
+            payload["members"] = [
+                *(payload.get("members") or []),
+                self._create_group_member(user_id).model_dump(mode="json", exclude_unset=True),
+            ]
+            response = self._request("PUT", path, json=payload)
+        except SCIMRequestException:
+            if self._config.is_fallback:
+                return self._patch_chunked(connection.scim_id, self._patch_add_member(user_id))
+            raise
+        self._record_written_state(connection, payload, response)
+
     def _patch_chunked(
         self,
         group_id: str,
