@@ -421,6 +421,8 @@ class SyncTasks:
                 )
             except TransientSyncException as exc:
                 raise Retry() from exc
+            except ObjectLockTimeout as exc:
+                raise Retry() from exc
             except SkipObjectException:
                 return
             except DryRunRejected as exc:
@@ -443,15 +445,22 @@ class SyncTasks:
         ).exclude(**{f"{user_client.connection_type_query}__pk__in": in_scope})
         for connection in stale:
             try:
-                user_client.delete(connection.scim_id)
-                task.info("Deleted out-of-scope user", scim_id=connection.scim_id)
+                # Serialize against writes for this user. A mapping or its access
+                # may have changed since the stale queryset was evaluated.
+                with user_client.object_lock(connection.user):
+                    if not user_client.connection_type.objects.filter(pk=connection.pk).exists():
+                        continue
+                    if provider.get_object_qs(User, pk=connection.user_id).exists():
+                        continue
+                    user_client.delete(connection.scim_id)
+                    task.info("Deleted out-of-scope user", scim_id=connection.scim_id)
             except NotFoundSyncException as exc:
                 self.logger.info(
                     "Object not found in remote provider",
                     scim_id=connection.scim_id,
                     exc=exc,
                 )
-            except TransientSyncException as exc:
+            except (TransientSyncException, ObjectLockTimeout) as exc:
                 raise Retry() from exc
             except DryRunRejected as exc:
                 self.logger.info("Rejected dry-run cleanup event", exc=exc)
