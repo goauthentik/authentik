@@ -2,8 +2,10 @@
 
 from unittest.mock import PropertyMock, patch
 
+from django.core import mail
 from django.core.mail.backends.locmem import EmailBackend
 from django.core.mail.message import sanitize_address
+from django.template import TemplateDoesNotExist
 from django.urls import reverse
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
@@ -63,6 +65,33 @@ class TestEmailStageTemplates(FlowTestCase):
             )
             self.assertEqual(event.context["template"], "invalid.html")
 
+    def test_no_template(self):
+        """Test stage without a template"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        with patch(
+            "authentik.stages.email.models.EmailStage.backend_class",
+            PropertyMock(return_value=EmailBackend),
+        ):
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, 200)
+            self.assertStageResponse(
+                response,
+                self.flow,
+                error_message="Unknown error",
+            )
+            events = Event.objects.filter(action=EventAction.CONFIGURATION_ERROR)
+            self.assertEqual(len(events), 1)
+            self.assertEqual(
+                events.first().context["message"], "Email stage has no template configured"
+            )
+            self.assertEqual(len(mail.outbox), 0)
+
     def test_template_address(self):
         """Test addresses are correctly parsed"""
         message = TemplateEmailMessage(to=[("foo@bar.baz", "foo@bar.baz")])
@@ -77,3 +106,8 @@ class TestEmailStageTemplates(FlowTestCase):
         template = EmailTemplate.objects.create(path=f"{generate_id()}.html", body="body")
         message = TemplateEmailMessage(to=[("", "foo@bar.baz")], template_name=f"./{template.path}")
         self.assertEqual(message.alternatives[0][0], "body")
+
+    def test_template_name_unknown(self):
+        """Test unknown template names raise TemplateDoesNotExist"""
+        with self.assertRaises(TemplateDoesNotExist):
+            TemplateEmailMessage(to=[("", "foo@bar.baz")], template_name=f"{generate_id()}.html")

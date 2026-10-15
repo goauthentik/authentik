@@ -117,6 +117,30 @@ class TestAuthenticatorEmailStage(FlowTestCase):
             email_required=True,
         )
 
+    def test_stage_no_template(self):
+        """Test stage email submission without a template"""
+        self.stage.template = None
+        self.stage.save()
+        self.client.force_login(self.user_noemail)
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        self.client.get(url)
+        response = self.client.post(
+            url,
+            data={"component": "ak-stage-authenticator-email", "email": "foo@authentik.local"},
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            self.user_noemail,
+            component="ak-stage-access-denied",
+            error_message="Unknown error",
+        )
+        self.assertEqual(
+            Event.objects.get(action=EventAction.CONFIGURATION_ERROR).context["message"],
+            "Email authenticator stage has no template configured",
+        )
+        self.assertEqual(len(mail.outbox), 0)
+
     @patch(
         "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
         PropertyMock(return_value=EmailBackend),
@@ -258,6 +282,18 @@ class TestAuthenticatorEmailStage(FlowTestCase):
                 action=EventAction.CONFIGURATION_ERROR, context__template="broken.html"
             ).exists()
         )
+
+    def test_no_template(self):
+        """Test sending without a template"""
+        self.stage.template = None
+        self.stage.save()
+        with self.assertRaises(StageInvalidException):
+            self.stage.send(self.device)
+        self.assertEqual(
+            Event.objects.get(action=EventAction.CONFIGURATION_ERROR).context["message"],
+            "Email authenticator stage has no template configured",
+        )
+        self.assertEqual(len(mail.outbox), 0)
 
     @patch(
         "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",

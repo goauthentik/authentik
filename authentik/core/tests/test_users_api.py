@@ -28,7 +28,7 @@ from authentik.core.tests.utils import (
     create_test_session,
     create_test_user,
 )
-from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation
+from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation, FlowToken
 from authentik.lib.generators import generate_id, generate_key
 from authentik.rbac.models import Role
 from authentik.stages.email.models import EmailStage, EmailTemplate
@@ -402,6 +402,29 @@ class TestUsersAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(response.content, {"email_stage": ["This field is required."]})
+
+    def test_recovery_email_no_template(self):
+        """Test user recovery link (email stage without a template)"""
+        self.user.email = "foo@bar.baz"
+        self.user.save()
+        flow = create_test_flow(FlowDesignation.RECOVERY)
+        brand: Brand = create_test_brand()
+        brand.flow_recovery = flow
+        brand.save()
+        stage = EmailStage.objects.create(name=generate_id())
+
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk}),
+            data={"email_stage": stage.pk},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content, {"non_field_errors": "Email stage has no template configured."}
+        )
+        self.assertFalse(
+            FlowToken.objects.filter(identifier=f"{self.user.uid}-password-reset").exists()
+        )
 
     @apply_blueprint("system/email-templates.yaml")
     def test_recovery_email(self):

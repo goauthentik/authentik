@@ -17,6 +17,7 @@ from authentik.events.models import (
     Notification,
     NotificationSeverity,
     NotificationTransport,
+    NotificationTransportError,
     NotificationWebhookMapping,
     TransportMode,
 )
@@ -210,7 +211,7 @@ class TestEventTransports(TestCase):
             name=generate_id(),
             mode=TransportMode.EMAIL,
             email_template=EmailTemplate.objects.create(
-                path=f"{generate_id}.html", body="custom: {{ body }}"
+                path=f"{generate_id()}.html", body="custom: {{ body }}"
             ),
         )
         with patch(
@@ -239,6 +240,18 @@ class TestEventTransports(TestCase):
             transport.send(self.notification)
             self.assertEqual(len(mail.outbox), 1)
             self.assertEqual(mail.outbox[0].subject, "[CUSTOM] custom_foo")
+
+    def test_transport_email_no_template(self):
+        """Test email transport without a template"""
+        transport: NotificationTransport = NotificationTransport.objects.create(
+            name=generate_id(),
+            mode=TransportMode.EMAIL,
+        )
+        with self.assertRaisesMessage(
+            NotificationTransportError, "Transport has no email template configured"
+        ):
+            transport.send(self.notification)
+        self.assertEqual(len(mail.outbox), 0)
 
     def test_transport_email_validation(self):
         """Test email transport template validation"""
