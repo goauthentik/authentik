@@ -20,6 +20,7 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
     public override label = msg("Version");
 
     public getPrimaryValue(): Promise<Version> {
+        // TODO: use WithVersion and maybe expose the promise so this all works correctly.
         return aki(AdminApi).adminVersionRetrieve();
     }
 
