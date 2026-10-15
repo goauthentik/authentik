@@ -8,6 +8,7 @@ from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.http import HttpRequest
+from django.utils import timezone
 from rest_framework.request import Request
 
 from authentik.admin.utils import get_system_settings
@@ -69,7 +70,19 @@ def get_login_event(request_or_session: HttpRequest | AuthenticatedSession | Non
         session = request_or_session.session
     if isinstance(request_or_session, AuthenticatedSession):
         SessionStore = _session_engine.SessionStore
-        session = SessionStore(request_or_session.session.session_key)
+        # Grants refer to a historical login, which may no longer be the browser's
+        # selected session. Read its metadata without authenticating that session.
+        stored_session = (
+            SessionStore.get_model_class()
+            .objects.filter(
+                pk=request_or_session.session_id,
+                expires__gt=timezone.now(),
+            )
+            .first()
+        )
+        if stored_session is None:
+            return None
+        session = SessionStore(stored_session.session_key).decode(stored_session.session_data)
     return session.get(SESSION_LOGIN_EVENT, None)
 
 

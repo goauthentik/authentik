@@ -5,11 +5,13 @@ from datetime import timedelta
 from json import dumps
 from urllib.parse import quote
 
+from django.conf import settings
 from django.test import RequestFactory
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.timezone import now
 from freezegun import freeze_time
+from jwt import decode
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.common.oauth.constants import (
@@ -18,10 +20,18 @@ from authentik.common.oauth.constants import (
     TOKEN_TYPE,
 )
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.sessions import SessionStore
+from authentik.core.tests.utils import (
+    create_test_admin_user,
+    create_test_flow,
+    create_test_session,
+    create_test_user,
+)
 from authentik.events.models import Event, EventAction
+from authentik.events.signals import SESSION_LOGIN_EVENT
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.errors import TokenError
+from authentik.providers.oauth2.id_token import hash_session_key
 from authentik.providers.oauth2.models import (
     AccessToken,
     AuthorizationCode,
@@ -35,6 +45,7 @@ from authentik.providers.oauth2.models import (
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.token.router import parse_token_request
 from authentik.providers.oauth2.utils import extract_client_auth
+from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 
 class TestToken(OAuthTestCase):
@@ -408,6 +419,62 @@ class TestToken(OAuthTestCase):
             },
         )
         self.validate_jwt(access, provider)
+
+    def test_refresh_token_preserves_amr_after_user_switch(self):
+        """Refreshing a superseded login keeps its authentication methods and subject."""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            grant_types=[GrantType.REFRESH_TOKEN],
+            signing_key=self.keypair,
+        )
+        self.app.provider = provider
+        self.app.save()
+        user = create_test_user()
+        switching_token = generate_id(32)
+        session = create_test_session(user, switching_token)
+        store = SessionStore(session.session_id)
+        store[SESSION_LOGIN_EVENT] = Event.new(
+            EventAction.LOGIN,
+            **{
+                PLAN_CONTEXT_METHOD: "password",
+                PLAN_CONTEXT_METHOD_ARGS: {"mfa_devices": []},
+            },
+        )
+        store.save()
+        token = RefreshToken.objects.create(
+            provider=provider,
+            user=user,
+            session=session,
+            token=generate_id(),
+            _id_token=dumps({}),
+            auth_time=now(),
+            _scope="openid offline_access",
+        )
+        create_test_session(create_test_user(), switching_token)
+        session.refresh_from_db()
+        self.assertFalse(session.is_current)
+        self.client.cookies[settings.SESSION_COOKIE_NAME] = session.session_id
+        self.assertEqual(self.client.get(reverse("authentik_api:user-me")).status_code, 403)
+
+        header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            data={"grant_type": GRANT_TYPE_REFRESH_TOKEN, "refresh_token": token.token},
+            HTTP_AUTHORIZATION=f"Basic {header}",
+        )
+        self.assertEqual(response.status_code, 200)
+        _, algorithm = provider.jwt_key
+        claims = decode(
+            response.json()["id_token"],
+            provider.signing_key.public_key,
+            algorithms=[algorithm],
+            audience=provider.client_id,
+        )
+        self.assertEqual(claims["sub"], user.uid)
+        self.assertEqual(claims["sid"], hash_session_key(session.session_id))
+        self.assertEqual(claims["auth_time"], int(token.auth_time.timestamp()))
+        self.assertEqual(claims.get("amr"), ["pwd", "mfa"])
 
     @apply_blueprint("system/providers-oauth2.yaml")
     def test_refresh_token_view_invalid_origin(self):
