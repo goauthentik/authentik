@@ -33,9 +33,15 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
         }
 
         if (value.outdated) {
+            const versionLabel = value.versionLatest?.version;
+
+            const message = versionLabel
+                ? msg(str`${versionLabel} is available!`)
+                : msg(str`A new version is available!`);
+
             return {
                 icon: "fa fa-exclamation-triangle pf-m-warning",
-                message: msg(str`${value.versionLatest?.version} is available!`),
+                message,
                 tone: "warning",
             };
         }
@@ -53,7 +59,7 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
         if (value.versionLatest?.valid) {
             return {
                 icon: "fa fa-check-circle pf-m-success",
-                message: html`${msg("Up-to-date!")}`,
+                message: msg("Up-to-date!"),
                 tone: "success",
             };
         }
