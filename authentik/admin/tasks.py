@@ -104,7 +104,7 @@ def update_latest_version():
             # Event has already been created, don't create duplicate
             if Event.objects.filter(
                 action=EventAction.UPDATE_AVAILABLE,
-                context__new_version=upstream_version,
+                context__new_version=upstream_version.version,
             ).exists():
                 return
             Event.new(
@@ -112,8 +112,9 @@ def update_latest_version():
                 message=_(
                     "New version {version} available!".format(version=upstream_version.version)
                 ),
-                new_version=upstream_version.model_dump(mode="json"),
+                new_version=upstream_version.version,
                 changelog=upstream_version.changelog_url,
+                reason=upstream_version.reason,
             ).save()
     except (RequestException, IndexError, ValidationError) as exc:
         UpdateVersionInfo.cache_invalid()
