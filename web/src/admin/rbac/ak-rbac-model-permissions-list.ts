@@ -65,7 +65,7 @@ export class RbacModelPermissionsList extends AKElement {
     static readonly styles = [Style, PFCard];
 
     @property({ type: Array })
-    items: PermissionDisplay[] = [];
+    public items: PermissionDisplay[] = [];
 
     scopeToLabels(scope: PermissionScope) {
         // Kept alive so that "locale" changes will be picked up automatically.
