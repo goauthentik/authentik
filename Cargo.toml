@@ -8,7 +8,7 @@ members = [
 resolver = "3"
 
 [workspace.package]
-version = "2026.8.3"
+version = "2026.8.4"
 authors = ["authentik Team <hello@goauthentik.io>"]
 description = "Making authentication simple."
 edition = "2024"
@@ -101,7 +101,7 @@ reqwest-middleware = { version = "= 0.5.2", features = [
   "query",
   "rustls",
 ] }
-rustls = { version = "= 0.23.45", features = ["fips"] }
+rustls = { version = "= 0.23.46", features = ["fips"] }
 sentry = { version = "= 0.48.5", default-features = false, features = [
   "backtrace",
   "contexts",
@@ -158,9 +158,9 @@ tracing-subscriber = { version = "= 0.3.23", features = [
 url = "= 2.5.8"
 uuid = { version = "= 1.24.0", features = ["serde", "v4"] }
 
-ak-axum = { package = "authentik-axum", version = "2026.8.3", path = "./packages/ak-axum" }
-ak-client = { package = "authentik-client", version = "2026.8.3", path = "./packages/client-rust" }
-ak-common = { package = "authentik-common", version = "2026.8.3", path = "./packages/ak-common", default-features = false }
+ak-axum = { package = "authentik-axum", version = "2026.8.4", path = "./packages/ak-axum" }
+ak-client = { package = "authentik-client", version = "2026.8.4", path = "./packages/client-rust" }
+ak-common = { package = "authentik-common", version = "2026.8.4", path = "./packages/ak-common", default-features = false }
 
 [workspace.lints.rust]
 ambiguous_negative_literals = "warn"

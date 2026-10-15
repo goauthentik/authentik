@@ -12,7 +12,7 @@ import { ConsoleLogger } from "#logger/browser";
 import AKFadeIn from "#styles/authentik/components/Modifiers/fade-in.css";
 
 import { msg, str } from "@lit/localize";
-import type { CSSResult } from "lit";
+import type { CSSResult, PropertyValues } from "lit";
 import { html } from "lit-html";
 import { property, state } from "lit/decorators.js";
 
@@ -187,12 +187,14 @@ export abstract class ModelForm<
 
     /**
      * Resets the form to its initial state, including clearing the loaded instance and any errors.
+     * The instance is then loaded again.
      */
     public override reset(): void {
         super.reset();
 
         this.instance = null;
         this.error = null;
+        this.#loadedAt = null;
     }
 
     /**
@@ -245,6 +247,16 @@ export abstract class ModelForm<
     }
 
     //#region Lifecycle
+
+    protected override willUpdate(changedProperties: PropertyValues<this>): void {
+        super.willUpdate(changedProperties);
+
+        // Tables reuse a row's form for whichever object later lands in that row.
+        if (changedProperties.has("instancePk") && this.#loadedAt) {
+            this.instance = null;
+            this.#loadedAt = null;
+        }
+    }
 
     /**
      * Loads the instance when the form is shown, handing loading and error states.
