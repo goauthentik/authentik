@@ -1,6 +1,6 @@
 """SCIM Membership tests"""
 
-from contextlib import nullcontext
+from contextlib import contextmanager, nullcontext
 from unittest.mock import ANY, patch
 
 from django.test import TestCase
@@ -13,6 +13,7 @@ from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.signals import sync_outgoing_inhibit_dispatch
 from authentik.policies.models import PolicyBinding
 from authentik.providers.scim.clients.groups import SCIMGroupClient
+from authentik.providers.scim.clients.users import SCIMUserClient
 from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
 from authentik.providers.scim.models import (
     SCIMCompatibilityMode,
@@ -294,6 +295,59 @@ class SCIMMembershipTests(TestCase):
             self.assertTrue(
                 SCIMProviderUser.objects.filter(provider=self.provider, user=user).exists()
             )
+
+    def test_policy_group_removal_rechecks_access_after_user_lock(self):
+        """A re-grant after candidate selection must prevent remote account deletion."""
+        with Mocker() as mock:
+            user, group, delete_user, _remote_members = self._provision_policy_group_user(mock)
+            with sync_outgoing_inhibit_dispatch():
+                group.users.remove(user)
+
+            @contextmanager
+            def restore_access(_client, locked_user):
+                self.assertEqual(locked_user.pk, user.pk)
+                with sync_outgoing_inhibit_dispatch():
+                    group.users.add(user)
+                yield
+
+            with patch.object(
+                SCIMUserClient, "object_lock", autospec=True, side_effect=restore_access
+            ) as user_lock:
+                scim_sync_m2m.send(
+                    group.pk, self.provider.pk, "post_remove", [user.pk]
+                ).get_result()
+
+            self._assert_no_scim_task_errors()
+            user_lock.assert_called_once_with(ANY, user)
+            self.assertTrue(self.provider.get_object_qs(User, pk=user.pk).exists())
+            self.assertEqual(delete_user.call_count, 0)
+            self.assertTrue(
+                SCIMProviderUser.objects.filter(provider=self.provider, user=user).exists()
+            )
+
+    def test_policy_group_removal_rechecks_mapping_after_user_lock(self):
+        """A replaced or removed mapping must not trigger a stale remote DELETE."""
+        with Mocker() as mock:
+            user, group, delete_user, _remote_members = self._provision_policy_group_user(mock)
+            with sync_outgoing_inhibit_dispatch():
+                group.users.remove(user)
+
+            @contextmanager
+            def remove_mapping(_client, locked_user):
+                self.assertEqual(locked_user.pk, user.pk)
+                SCIMProviderUser.objects.filter(provider=self.provider, user=user).delete()
+                yield
+
+            with patch.object(
+                SCIMUserClient, "object_lock", autospec=True, side_effect=remove_mapping
+            ) as user_lock:
+                scim_sync_m2m.send(
+                    group.pk, self.provider.pk, "post_remove", [user.pk]
+                ).get_result()
+
+            self._assert_no_scim_task_errors()
+            user_lock.assert_called_once_with(ANY, user)
+            self.assertEqual(delete_user.call_count, 0)
 
     def test_policy_group_removal_only_cleans_affected_user(self):
         """An event must not sweep unrelated out-of-scope account mappings."""
