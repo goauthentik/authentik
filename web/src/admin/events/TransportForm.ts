@@ -10,6 +10,7 @@ import { ModelForm } from "#elements/forms/ModelForm";
 import { AKSearchSelect } from "#components/ak-search-select-field";
 
 import { AKCertificateSearch } from "#admin/common/AKCertificateSearch";
+import { emailTemplateSource } from "#admin/common/AKEmailTemplateSearch";
 import { notificationMappingSource } from "#admin/common/search-sources";
 
 import {
@@ -41,11 +42,6 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 return transport;
             });
     }
-    async load(): Promise<void> {
-        this.templates = await aki(StagesApi).stagesEmailTemplatesList();
-    }
-
-    templates?: TypeCreate[];
 
     @property({ type: Boolean })
     showWebhook = false;
@@ -205,18 +201,14 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 label=${msg("Email Template")}
                 name="emailTemplate"
             >
-                <select name="users" class="pf-c-form-control">
-                    ${this.templates?.map((template) => {
-                        const selected =
-                            this.instance?.emailTemplate === template.name ||
-                            (!this.instance?.emailTemplate &&
-                                template.name === "email/event_notification.html");
-
-                        return html`<option value=${ifDefined(template.name)} ?selected=${selected}>
-                            ${template.description}
-                        </option>`;
-                    })}
-                </select>
+                ${AKSearchSelect({
+                    name: "emailTemplate",
+                    source: emailTemplateSource({
+                        defaultTemplate: "goauthentik.io/email/event-notification",
+                    }),
+                    value: this.instance?.emailTemplate,
+                    placeholder: msg("Select an email template..."),
+                })}
             </ak-form-element-horizontal> `;
     }
 }
