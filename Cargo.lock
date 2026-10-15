@@ -1919,11 +1919,10 @@ dependencies = [
 
 [[package]]
 name = "hyper-unix-socket"
-version = "0.6.1"
+version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "88978f1d73da0eb87d86555fcc40cbdd87bc86eb6525710b89db8c9278ec6a59"
+checksum = "57d9d6b7df434b566b1bbfb464633e7ae23f93fc218afb38f3b8906a95535592"
 dependencies = [
- "bytes",
  "hyper",
  "hyper-util",
  "pin-project-lite",
