@@ -1,5 +1,5 @@
 use std::{
-    collections::{HashMap, hash_map::Entry},
+    collections::{HashMap, HashSet, hash_map::Entry},
     sync::Arc,
 };
 
@@ -12,6 +12,7 @@ use rustls::{
     server::ClientHello,
     sign::CertifiedKey,
 };
+use tracing::warn;
 
 #[derive(Debug)]
 struct Brand {
@@ -41,6 +42,21 @@ impl BrandCertResolver {
 
         best
     }
+}
+
+/// Build a rustls [`CertifiedKey`] from a brand's PEM certificate chain and private key.
+///
+/// Returns an error (rather than propagating out of the reload) so a single unloadable
+/// certificate can be skipped without affecting other brands.
+fn certified_key(certificate_data: &str, key_data: &str) -> Result<Arc<CertifiedKey>> {
+    let cert_chain = CertificateDer::pem_reader_iter(certificate_data.as_bytes())
+        .collect::<Result<Vec<_>, _>>()?;
+    let key_der = PrivateKeyDer::from_pem_reader(key_data.as_bytes())?;
+    let provider = CryptoProvider::get_default().expect("no rustls provider installed");
+    Ok(Arc::new(CertifiedKey::new(
+        cert_chain,
+        provider.key_provider.load_private_key(key_der)?,
+    )))
 }
 
 pub(crate) async fn make_cert_managers() -> Result<(BrandCertResolver, RootCertStore)> {
@@ -78,6 +94,9 @@ pub(crate) async fn make_cert_managers() -> Result<(BrandCertResolver, RootCertS
     let (brands, roots) = tokio::task::spawn_blocking(|| {
         let mut brands = HashMap::new();
         let mut roots = RootCertStore::empty();
+        // Brands whose web certificate we've already tried to load, so a brand that appears in
+        // several rows (one per client-trust certificate) is only built and logged once.
+        let mut web_attempted = HashSet::new();
 
         for row in rows {
             let BrandRow {
@@ -89,33 +108,48 @@ pub(crate) async fn make_cert_managers() -> Result<(BrandCertResolver, RootCertS
                 client_cert_data,
             } = row;
 
+            // Load each brand's web certificate independently. A certificate that fails to parse
+            // or uses a key algorithm rustls can't load (e.g. Ed448) must only drop that one brand,
+            // never abort the reload for every other brand.
             if let (Some(certificate_data), Some(key_data)) = (web_cert_data, web_cert_key)
+                && web_attempted.insert(brand_uuid)
                 && let Entry::Vacant(e) = brands.entry(brand_uuid)
             {
-                let brand = Brand {
-                    domain,
-                    default,
-                    web_certificate: {
-                        let cert_chain =
-                            CertificateDer::pem_reader_iter(certificate_data.as_bytes())
-                                .collect::<Result<Vec<_>, _>>()?;
-                        let key_der = PrivateKeyDer::from_pem_reader(key_data.as_bytes())?;
-                        let provider =
-                            CryptoProvider::get_default().expect("no rustls provider installed");
-                        Arc::new(CertifiedKey::new(
-                            cert_chain,
-                            provider.key_provider.load_private_key(key_der)?,
-                        ))
-                    },
-                };
-                e.insert(brand);
+                match certified_key(&certificate_data, &key_data) {
+                    Ok(web_certificate) => {
+                        e.insert(Brand {
+                            domain,
+                            default,
+                            web_certificate,
+                        });
+                    }
+                    Err(err) => {
+                        warn!(
+                            %brand_uuid,
+                            %domain,
+                            ?err,
+                            "skipping brand web certificate that failed to load"
+                        );
+                    }
+                }
             }
 
+            // Likewise, a client-trust certificate that fails to parse is skipped rather than
+            // taking the whole trust store (and the reload) down with it.
             if let Some(certificate_data) = client_cert_data {
-                let cert_chain = CertificateDer::pem_reader_iter(certificate_data.as_bytes())
-                    .collect::<Result<Vec<_>, _>>()?;
-                for cert in cert_chain {
-                    roots.add(cert)?;
+                match CertificateDer::pem_reader_iter(certificate_data.as_bytes())
+                    .collect::<Result<Vec<_>, _>>()
+                {
+                    Ok(cert_chain) => {
+                        for cert in cert_chain {
+                            if let Err(err) = roots.add(cert) {
+                                warn!(%brand_uuid, ?err, "skipping invalid client trust certificate");
+                            }
+                        }
+                    }
+                    Err(err) => {
+                        warn!(%brand_uuid, ?err, "skipping unparseable client trust certificate");
+                    }
                 }
             }
         }
