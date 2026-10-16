@@ -1,6 +1,7 @@
 """Runs the ASGI application inside the authentik binary, which hands it connections directly."""
 
 import asyncio
+import gc
 import os
 import sys
 from collections.abc import Callable
@@ -111,6 +112,13 @@ def load() -> Server:
     start_debug_server()
     start_pyroscope("server", worker_id="1")
     application.call_startup()
+    # The free-threaded build's GC scans the whole heap every time, stopping all threads while it
+    # does, so collect less often. Freezing what startup allocated takes it out of the garbage
+    # that is considered, as nothing loaded at startup ever goes away.
+    # ponytail: fixed threshold, make it configurable if memory use matters for some deployments
+    gc.collect()
+    gc.freeze()
+    gc.set_threshold(500_000)
     # False on a free-threaded build, unless an extension module turned the GIL back on
     LOGGER.info("Loaded application", gil_enabled=sys._is_gil_enabled())
     return server
