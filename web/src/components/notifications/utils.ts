@@ -2,8 +2,6 @@
  * @file Notification drawer utilities.
  */
 
-import "#components/notifications/APIDrawer";
-import "#components/notifications/NotificationDrawer";
 import { getSearchParam, updateSearchParams } from "#elements/router/core/search-params";
 
 import { type Notification, type PaginatedNotificationList } from "@goauthentik/api";

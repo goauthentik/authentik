@@ -81,7 +81,6 @@ class SentryTracer(Tracer):
             _experiments={
                 "profiles_sample_rate": float(CONFIG.get("error_reporting.sample_rate", 0.1)),
             },
-            spotlight=settings.DEBUG,
             integrations=[
                 ArgvIntegration(),
                 DjangoIntegration(transaction_style="function_name", cache_spans=True),

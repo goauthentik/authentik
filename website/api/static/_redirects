@@ -12,3 +12,8 @@
 #region api prefix
 /api/*                                                     /:splat 301!
 #endregion
+
+#region Brand assets
+/img/icon_left_brand_colour.svg                           /img/icon_left_brand_color.svg 301!
+/img/icon_top_brand_colour.svg                            /img/icon_top_brand_color.svg 301!
+#endregion

@@ -66,7 +66,7 @@ a:visited {
     z-index: var(--ak-global--z-index--lg);
     background: var(--ak-global--color--surface);
     border-bottom: var(--ak-global--border-width--sm) solid var(--ak-global--color--border);
-    box-shadow: var(--ak-global--shadow-sm);
+    box-shadow: var(--ak-global--box-shadow--sm);
 }
 
 .masthead__inner {
@@ -177,7 +177,7 @@ section {
     border: var(--ak-global--border-width--sm) solid var(--ak-global--color--border);
     border-radius: var(--ak-global--radius--sm);
     padding: var(--ak-global--space--lg);
-    box-shadow: var(--ak-global--shadow-sm);
+    box-shadow: var(--ak-global--box-shadow--sm);
 }
 
 .section__head {
@@ -587,7 +587,7 @@ section {
     border-radius: var(--ak-global--radius--sm);
     border: var(--ak-global--border-width--sm) solid var(--ak-global--color--border--strong);
     background: var(--ak-global--color--surface);
-    box-shadow: var(--ak-global--shadow-md);
+    box-shadow: var(--ak-global--box-shadow--md);
     padding: var(--ak-global--space--sm);
     display: flex;
     flex-direction: column;

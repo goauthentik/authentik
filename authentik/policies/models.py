@@ -9,6 +9,7 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.lib.models import (
     CreatedUpdatedModel,
+    ExpiringManager,
     ExpiringModel,
     InheritanceAutoManager,
     InheritanceForeignKey,
@@ -66,6 +67,10 @@ class PolicyBinding(ExpiringModel, SerializerModel):
     policy_binding_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     enabled = models.BooleanField(default=True)
+    dry_run = models.BooleanField(
+        default=False,
+        help_text=_("Execute the policy but ignore its result."),
+    )
     # Shadow's field from ExpiringModel, as we don't want to default expire
     expiring = models.BooleanField(default=False)
 
@@ -160,6 +165,7 @@ class PolicyBinding(ExpiringModel, SerializerModel):
             return f"Binding - #{self.order} to {suffix}"
         return ""
 
+    objects = ExpiringManager()
     in_use = BoundPolicyQuerySet.as_manager()
 
     class Meta:

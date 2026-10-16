@@ -4,10 +4,11 @@ import type { Column, TableFlat, TableGroup, TableGrouped, TableRow } from "./ty
 import { convertContent } from "./utils.js";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 
+import type { NamedEntityElement } from "#common/api/entities";
+
 import { AKElement } from "#elements/Base";
 import {
     isTransclusionParentElement,
-    NamedEntityElement,
     TransclusionChildElement,
     TransclusionChildSymbol,
 } from "#elements/dialogs/shared";

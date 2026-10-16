@@ -1,7 +1,9 @@
 """flow views tests"""
 
 from django.test import RequestFactory
+from django.urls import reverse
 
+from authentik.core.tests.utils import create_test_flow
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.interface import FlowInterfaceView
 
@@ -79,6 +81,42 @@ class TestFlowInterfaceSimple(FlowTestCase):
             )
         )
 
+    def test_old_chrome(self):
+        """Unaffected browsers keep the default flow executor"""
+        self.assertTrue(
+            self.needs_sfe(
+                "Mozilla/5.0 (Linux; Android 11; sdk_gphone_x86_64) AppleWebKit/537.36 (KHTML, "
+                "like Gecko) Chrome/83.0.4103.106 Mobile Safari/537.36"
+            )
+        )
+
     def test_unknown_user_agent(self):
         """A user agent without a parseable version keeps the default flow executor"""
         self.assertFalse(self.needs_sfe(""))
+
+
+class TestFlowInterfaceTitle(FlowTestCase):
+    """Test flow title placeholders on the interface page"""
+
+    def test_title_placeholder(self):
+        """Placeholders are blanked as no plan context exists yet"""
+        flow = create_test_flow()
+        flow.title = "Welcome to %(app)s"
+        flow.save()
+        response = self.client.get(
+            reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '<meta name="ak-flow-title" content="Welcome to">')
+        flow.refresh_from_db()
+        self.assertEqual(flow.title, "Welcome to %(app)s")
+
+    def test_title_literal_percent(self):
+        """Titles with a bare percent sign are left as-is"""
+        flow = create_test_flow()
+        flow.title = "100% secure"
+        flow.save()
+        response = self.client.get(
+            reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
+        )
+        self.assertContains(response, '<meta name="ak-flow-title" content="100% secure">')
