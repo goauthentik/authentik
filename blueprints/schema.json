@@ -13141,6 +13141,11 @@
                         "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
                     ],
                     "title": "Default name id policy"
+                },
+                "metadata_url": {
+                    "type": "string",
+                    "title": "Metadata URL",
+                    "description": "URL of the Service Provider's metadata. When set, the provider's settings are periodically updated from this metadata."
                 }
             },
             "required": []

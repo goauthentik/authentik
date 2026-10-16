@@ -73,6 +73,16 @@ class SAMLLogoutMethods(models.TextChoices):
 class SAMLProvider(Provider):
     """SAML 2.0 Endpoint for applications which support SAML."""
 
+    metadata_url = models.TextField(
+        blank=True,
+        default="",
+        validators=[DomainlessURLValidator(schemes=("http", "https"))],
+        verbose_name=_("Metadata URL"),
+        help_text=_(
+            "URL of the Service Provider's metadata. When set, the provider's settings "
+            "are periodically updated from this metadata."
+        ),
+    )
     acs_url = models.TextField(
         validators=[DomainlessURLValidator(schemes=("http", "https"))], verbose_name=_("ACS URL")
     )

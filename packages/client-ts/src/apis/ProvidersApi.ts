@@ -1078,7 +1078,8 @@ export interface ProvidersSamlImportMetadataCreateRequest {
     name: string;
     authorizationFlow: string;
     invalidationFlow: string;
-    file: Blob;
+    file?: Blob;
+    url?: string;
 }
 
 export interface ProvidersSamlListRequest {
@@ -1098,6 +1099,7 @@ export interface ProvidersSamlListRequest {
     isBackchannel?: boolean;
     issuerOverride?: string;
     logoutMethod?: SAMLLogoutMethods;
+    metadataUrl?: string;
     name?: string;
     nameIdMapping?: string;
     /**
@@ -1440,6 +1442,7 @@ export interface ProvidersWsfedListRequest {
     isBackchannel?: boolean;
     issuerOverride?: string;
     logoutMethod?: SAMLLogoutMethods;
+    metadataUrl?: string;
     name?: string;
     nameIdMapping?: string;
     /**
@@ -7742,13 +7745,6 @@ export class ProvidersApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters["file"] == null) {
-            throw new runtime.RequiredError(
-                "file",
-                'Required parameter "file" was null or undefined when calling providersSamlImportMetadataCreate().',
-            );
-        }
-
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -7789,6 +7785,10 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         if (requestParameters["file"] != null) {
             formParams.append("file", requestParameters["file"] as any);
+        }
+
+        if (requestParameters["url"] != null) {
+            formParams.append("url", requestParameters["url"] as any);
         }
 
         const urlPath = `/providers/saml/import_metadata/`;
@@ -7906,6 +7906,10 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         if (requestParameters["logoutMethod"] != null) {
             queryParameters["logout_method"] = requestParameters["logoutMethod"];
+        }
+
+        if (requestParameters["metadataUrl"] != null) {
+            queryParameters["metadata_url"] = requestParameters["metadataUrl"];
         }
 
         if (requestParameters["name"] != null) {
@@ -10390,6 +10394,10 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         if (requestParameters["logoutMethod"] != null) {
             queryParameters["logout_method"] = requestParameters["logoutMethod"];
+        }
+
+        if (requestParameters["metadataUrl"] != null) {
+            queryParameters["metadata_url"] = requestParameters["metadataUrl"];
         }
 
         if (requestParameters["name"] != null) {
