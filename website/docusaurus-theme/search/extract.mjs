@@ -12,6 +12,8 @@ import { inlinePartials } from "../llms-txt/markdown.mjs";
 import { HIERARCHY_DEPTH, TABLE_ROW_LEVEL } from "./common.mjs";
 
 import { createSlugger, escapeMarkdownHeadingIds, parseMarkdownHeadingId } from "@docusaurus/utils";
+import remarkComment from "@slorber/remark-comment";
+import DOMPurify from "isomorphic-dompurify";
 import remarkDirective from "remark-directive";
 import remarkGfm from "remark-gfm";
 import remarkMdx from "remark-mdx";
@@ -42,10 +44,15 @@ const LINK_LIST_HEADINGS = new Set(["related", "see also", "next"]);
 const MAX_RECORD_HEADING_LEVEL = 4;
 
 /**
- * Docusaurus accepts HTML comments in MDX (`markdown.mdx1Compat.comments`) and renders nothing
- * for them; the MDX parser alone refuses them.
+ * The fallback reader keeps text only. A real HTML parse decides what a tag is, so a `<` inside
+ * an attribute value, an unclosed tag or a comment cannot leave markup behind the way a regex
+ * scan can.
  */
-const HTML_COMMENT = /<!--[\s\S]*?-->/g;
+const TEXT_ONLY = /** @type {import("isomorphic-dompurify").Config & { RETURN_DOM: true }} */ ({
+    ALLOWED_TAGS: [],
+    ALLOWED_ATTR: [],
+    RETURN_DOM: true,
+});
 
 /**
  * Node types whose text belongs to no record: code is not prose, and an expression, an import or
@@ -66,17 +73,24 @@ const SILENT_TYPES = new Set([
 ]);
 
 /**
- * Strip MDX syntax from a page the MDX parser refused, so it can be read as plain Markdown.
+ * Strip MDX syntax from a page the MDX parser refused, so it can be read as plain Markdown:
+ * import and export lines and expressions go, and DOMPurify removes every tag and comment while
+ * keeping their text.
  *
  * @param {string} content
  *
  * @returns {string}
  */
 function stripMDX(content) {
-    return content
+    if (!DOMPurify.isSupported) {
+        throw new Error("search: DOMPurify is unsupported in this environment");
+    }
+
+    const withoutCode = content
         .replace(/^\s*(import|export)\s.*$/gm, "")
-        .replace(/<\/?[A-Za-z][^>]*>/g, "")
         .replace(/\{[^}\n]*\}/g, "");
+
+    return DOMPurify.sanitize(withoutCode, TEXT_ONLY).textContent ?? "";
 }
 
 /**
@@ -86,7 +100,13 @@ function stripMDX(content) {
  * @returns {Root}
  */
 function parseTree(markdown, mdx) {
-    const processor = unified().use(remarkParse).use(remarkGfm).use(remarkDirective);
+    // Docusaurus accepts HTML comments in MDX (`markdown.mdx1Compat.comments`) through the same
+    // plugin, and renders nothing for them.
+    const processor = unified()
+        .use(remarkParse)
+        .use(remarkGfm)
+        .use(remarkDirective)
+        .use(remarkComment);
 
     if (mdx) {
         processor.use(remarkMdx);
@@ -183,9 +203,7 @@ function namesRow(firstCell) {
  * @returns {SearchRecord[]}
  */
 export function extractRecords(body, options) {
-    const inlined = escapeMarkdownHeadingIds(
-        inlinePartials(body, options.filePath).replace(HTML_COMMENT, ""),
-    );
+    const inlined = escapeMarkdownHeadingIds(inlinePartials(body, options.filePath));
 
     /** @type {Root} */
     let tree;

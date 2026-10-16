@@ -102,12 +102,19 @@ function collectSite(site, options) {
         // A draft is not built, and an unlisted page asks not to be indexed.
         if (frontMatter.draft || frontMatter.unlisted) continue;
 
-        const relNoExt = file
+        const relPath = file
             .slice(siteDir.length + 1)
             .split("\\")
             .join("/")
-            .replace(/\.mdx?$/, "")
-            .replace(/\/index$/, "");
+            .replace(/\.mdx?$/, "");
+
+        // A frontmatter `id` replaces the file name in the document id, and so in the URL.
+        // The generated API reference names its pages this way.
+        const relNoExt = (
+            typeof frontMatter.id === "string"
+                ? [...relPath.split("/").slice(0, -1), frontMatter.id].join("/")
+                : relPath
+        ).replace(/\/index$/, "");
 
         // Docusaurus serves `folder/folder.mdx` at the folder's URL, as it does `folder/index.mdx`.
         const path = resolveDocumentUrlFromSource(

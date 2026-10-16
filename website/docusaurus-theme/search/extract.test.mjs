@@ -129,6 +129,19 @@ test("drops HTML comments, imports and expressions", () => {
     assert.equal(records[0]?.content, "Shown.");
 });
 
+test("the fallback reader keeps the text of a tag and drops a script, a comment and an expression", () => {
+    /** @type {string[]} */
+    const fallbacks = [];
+
+    const records = extract(
+        "# A\n\nText <b title='>'>bold</b> <!-- gone --> <script>alert(1)</script> {gone} where 1 < 2.\n",
+        { onFallback: (filePath) => void fallbacks.push(filePath) },
+    );
+
+    assert.equal(fallbacks.length, 1);
+    assert.equal(records[0]?.content, "Text bold where 1 < 2.");
+});
+
 test("falls back to plain Markdown when the MDX parser refuses the page", () => {
     /** @type {string[]} */
     const fallbacks = [];

@@ -23,6 +23,7 @@ function writeSites(root) {
         ["docs/core/terminology.mdx", "# Terminology\n\nA flow is a sequence of stages.\n"],
         ["docs/core/settings/settings.mdx", "# Settings\n\nServed at the folder's URL.\n"],
         ["docs/core/moved.mdx", "---\nslug: /core/renamed/\n---\n\n# Moved\n\nSlugged.\n"],
+        ["docs/core/named.api.mdx", "---\nid: named\ntitle: Named\n---\n\nRouted by its id.\n"],
         ["docs/core/draft.mdx", "---\ndraft: true\n---\n\n# Draft\n\nNot built.\n"],
         ["docs/core/hidden.mdx", "---\nunlisted: true\n---\n\n# Hidden\n\nNot indexed.\n"],
         ["docs/core/_partial.mdx", "Partial text.\n"],
@@ -72,6 +73,7 @@ test("collectSearchRecords resolves URLs as Docusaurus routes the pages", () => 
 
         assert.deepEqual(report.currentURLs.toSorted(), [
             "/",
+            "/core/named/",
             "/core/renamed/",
             "/core/settings/",
             "/core/terminology/",
@@ -79,7 +81,7 @@ test("collectSearchRecords resolves URLs as Docusaurus routes the pages", () => 
         assert.deepEqual(
             report.sites.map((site) => [site.id, site.pages]),
             [
-                ["docs", 4],
+                ["docs", 5],
                 ["integrations", 1],
             ],
         );
