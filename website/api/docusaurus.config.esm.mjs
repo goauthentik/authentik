@@ -14,8 +14,8 @@ import { fileURLToPath } from "node:url";
 
 import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
 import {
-    createAlgoliaConfig,
     createMDXOnlyPlugin,
+    createSearchPlugin,
     FOOTER_COPYRIGHT,
 } from "@goauthentik/docusaurus-theme/config";
 import { createRedirectPlugins } from "@goauthentik/docusaurus-theme/redirects/node";
@@ -124,6 +124,7 @@ const config = createDocusaurusConfig({
     plugins: [
         // This site skips `extendConfig`, so the MDX-only check is wired up by hand.
         createMDXOnlyPlugin(),
+        createSearchPlugin({ site: "api" }),
         [
             "@goauthentik/docusaurus-theme/releases/plugin",
             /** @type {AKReleasesPluginOptions} */ ({
@@ -179,10 +180,6 @@ const config = createDocusaurusConfig({
                 target: "_self",
             },
         },
-
-        algolia: createAlgoliaConfig({
-            externalUrlRegex: /^(?:https?:\/\/)(?!api\.goauthentik.io)/.source,
-        }),
     }),
 
     //#endregion

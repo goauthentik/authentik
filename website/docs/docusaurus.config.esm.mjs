@@ -14,9 +14,9 @@ import topics from "./topics.mjs";
 import { createDocusaurusConfig, DocusaurusURL } from "@goauthentik/docusaurus-config";
 import { brandAssetsPlugin } from "@goauthentik/docusaurus-config/plugins/brand";
 import {
-    createAlgoliaConfig,
     createClassicPreset,
     createLLMSPlugin,
+    createSearchPlugin,
     extendConfig,
 } from "@goauthentik/docusaurus-theme/config";
 import { createRedirectPlugins } from "@goauthentik/docusaurus-theme/redirects/node";
@@ -161,6 +161,8 @@ export default /** @type {import("@docusaurus/types").Config} */ (
                     ],
                 }),
 
+                createSearchPlugin({ site: "docs" }),
+
                 ...redirectPlugins,
             ],
             scripts: [
@@ -178,10 +180,6 @@ export default /** @type {import("@docusaurus/types").Config} */ (
             themes: ["@goauthentik/docusaurus-theme", "@docusaurus/theme-mermaid"],
 
             themeConfig: /** @type {UserThemeConfig & UserThemeConfigExtra} */ ({
-                algolia: createAlgoliaConfig({
-                    externalUrlRegex: /^(?:https?:\/\/)(?!docs\.goauthentik.io)/.source,
-                }),
-
                 image: "img/social.png",
                 navbarReplacements: {
                     DOCS_URL: "/",
