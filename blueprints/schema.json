@@ -17137,6 +17137,16 @@
                     },
                     "title": "Webauthn hints"
                 },
+                "webauthn_additional_accepted_origins": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Webauthn additional accepted origins"
+                    },
+                    "title": "Webauthn additional accepted origins",
+                    "description": "Additional trusted origins for WebAuthn authentication. Matched exactly."
+                },
                 "webauthn_allowed_device_types": {
                     "type": "array",
                     "items": {
@@ -17250,6 +17260,16 @@
                         "title": "Hints"
                     },
                     "title": "Hints"
+                },
+                "additional_accepted_origins": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Additional accepted origins"
+                    },
+                    "title": "Additional accepted origins",
+                    "description": "Additional trusted origins for WebAuthn registration. Matched exactly."
                 },
                 "device_type_restrictions": {
                     "type": "array",

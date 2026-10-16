@@ -38,6 +38,10 @@ export interface PatchedAuthenticatorWebAuthnStageRequest {
     authenticatorAttachment?: AuthenticatorAttachmentEnum | null;
     residentKeyRequirement?: UserVerificationEnum;
     hints?: Array<WebAuthnHintEnum>;
+    /**
+     * Additional trusted origins for WebAuthn registration. Matched exactly.
+     */
+    additionalAcceptedOrigins?: Array<string>;
     deviceTypeRestrictions?: Array<string>;
     maxAttempts?: number;
 }
@@ -91,6 +95,10 @@ export function PatchedAuthenticatorWebAuthnStageRequestFromJSONTyped(
             json["hints"] == null
                 ? undefined
                 : (json["hints"] as Array<any>).map(WebAuthnHintEnumFromJSON),
+        additionalAcceptedOrigins:
+            json["additional_accepted_origins"] == null
+                ? undefined
+                : json["additional_accepted_origins"],
         deviceTypeRestrictions:
             json["device_type_restrictions"] == null ? undefined : json["device_type_restrictions"],
         maxAttempts: json["max_attempts"] == null ? undefined : json["max_attempts"],
@@ -124,6 +132,7 @@ export function PatchedAuthenticatorWebAuthnStageRequestToJSONTyped(
             value["hints"] == null
                 ? undefined
                 : (value["hints"] as Array<any>).map(WebAuthnHintEnumToJSON),
+        additional_accepted_origins: value["additionalAcceptedOrigins"],
         device_type_restrictions: value["deviceTypeRestrictions"],
         max_attempts: value["maxAttempts"],
     };
