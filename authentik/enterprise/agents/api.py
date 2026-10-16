@@ -84,7 +84,9 @@ class AgentViewSet(
 
     class AgentCreateSerializer(PassiveSerializer):
 
-        parent = PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, default=None, allow_null=True)
+        parent = PrimaryKeyRelatedField(
+            queryset=User.objects.all(), required=False, default=None, allow_null=True
+        )
         label = CharField(required=False, allow_blank=True)
         expiring = BooleanField(required=False, default=False)
         expires = DateTimeField(required=False, allow_null=True, default=None)
@@ -98,7 +100,7 @@ class AgentViewSet(
     @validate(AgentCreateSerializer)
     @enterprise_action
     def create(self, request: Request, body: AgentCreateSerializer) -> Response:
-        parent: User = body.validated_data.get("parent")
+        parent: User | None = body.validated_data.get("parent")
         self_service_perm = request.user.has_perm("authentik_agents.add_agent_self_service")
         admin_perm = request.user.has_perm("authentik_agents.add_agent")
         # Self-service = creating an agent for yourself; provisioning for another user is an

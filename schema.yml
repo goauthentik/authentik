@@ -35584,6 +35584,7 @@ components:
       properties:
         parent:
           type: integer
+          nullable: true
         label:
           type: string
         expiring:
