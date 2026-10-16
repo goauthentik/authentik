@@ -5,7 +5,6 @@ from urllib.parse import urlparse
 from prometheus_client import Gauge
 from structlog.stdlib import get_logger
 
-from authentik.admin.utils import get_system_settings
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import fqdn_rand
@@ -61,6 +60,7 @@ class AuthentikOutpostConfig(ManagedAppConfig):
     @ManagedAppConfig.reconcile
     def embedded_outpost(self):
         """Ensure embedded outpost"""
+        from authentik.admin.utils import get_system_settings
         from authentik.outposts.models import (
             DockerServiceConnection,
             KubernetesServiceConnection,
