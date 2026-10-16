@@ -145,7 +145,7 @@ Outposts are notified asynchronously, and only outposts that are connected to au
 
 ### Logout from a proxied application
 
-To log out of an application that is protected by a proxy provider, the user navigates to `/outpost.goauthentik.io/sign_out`. For the host to use in each proxy mode, see [Log out](../proxy/index.mdx#log-out).
+To log out of an application that is protected by a proxy provider, the user navigates to `<authentik FQDN>/outpost.goauthentik.io/sign_out`. For the host to use in each proxy mode, see [Log out](../proxy/index.mdx#log-out).
 
 The outpost deletes all proxy sessions for that user within the outpost, and then redirects the user to authentik, where the invalidation flow of the provider runs. By default, the user's authentik session and their sessions in other applications remain active. To also end those sessions, see [Enable full Single Logout for RP-initiated logout](#enable-full-single-logout-for-rp-initiated-logout).
 
