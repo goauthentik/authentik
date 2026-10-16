@@ -1,0 +1,25 @@
+{
+    "name": "@goauthentik/docs-search-worker",
+    "version": "0.0.0",
+    "private": true,
+    "license": "MIT",
+    "type": "module",
+    "scripts": {
+        "build:types": "tsc -p .",
+        "deploy": "wrangler deploy",
+        "dev": "wrangler dev",
+        "test": "node --test"
+    },
+    "dependencies": {
+        "@goauthentik/docusaurus-theme": "workspace:*"
+    },
+    "devDependencies": {
+        "@cloudflare/workers-types": "^5.20261014.1",
+        "@goauthentik/tsconfig": "link:../../packages/tsconfig",
+        "typescript": "catalog:",
+        "wrangler": "^4.147.0"
+    },
+    "engines": {
+        "node": ">=24"
+    }
+}

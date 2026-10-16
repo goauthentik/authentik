@@ -1,0 +1,102 @@
+---
+name: Website - Search index
+
+# Rebuilds the hosted search index whenever a merge to main changes a page or the index code,
+# and redeploys the search worker when its own code changes. The index is imported into the
+# D1 slot the worker is not serving, then the pointer flips, so readers never see a partial index.
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - website/docs/**
+      - website/integrations/**
+      - website/api/**
+      - website/docusaurus-theme/search/**
+      - website/docusaurus-theme/llms-txt/**
+      - website/search-worker/**
+      - schema.yml
+      - .github/workflows/website-search-index.yml
+  workflow_dispatch:
+
+concurrency:
+  group: website-search-index
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+jobs:
+  deploy-worker:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+        with:
+          fetch-depth: 2
+      - name: Find worker changes
+        id: changed-files
+        uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # 24d32ffd492484c1d75e0c0b894501ddb9d30d62
+        with:
+          files: |
+            website/search-worker/**
+            website/docusaurus-theme/search/common.mjs
+            website/docusaurus-theme/search/query.mjs
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        if: steps.changed-files.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v4
+        if: steps.changed-files.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
+        with:
+          node-version-file: package.json
+          cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            website/pnpm-lock.yaml
+      - name: Install dependencies
+        if: steps.changed-files.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --dir website install --frozen-lockfile
+      - name: Deploy the search worker
+        if: steps.changed-files.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: pnpm --dir website/search-worker exec wrangler deploy
+
+  rebuild-index:
+    runs-on: ubuntu-26.04
+    needs: deploy-worker
+    env:
+      NODE_ENV: production
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v4
+        with:
+          node-version-file: package.json
+          cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            website/pnpm-lock.yaml
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --dir website install --frozen-lockfile
+      - name: Generate the API reference pages
+        run: pnpm --dir website/api run generate
+      - name: Pick the slot to write
+        id: slot
+        working-directory: website/search-worker
+        run: |
+          pnpm exec wrangler d1 execute DB --remote --json --command "SELECT slot FROM search_current" > current.json || echo "[]" > current.json
+          echo "slot=$(node scripts/next-slot.mjs < current.json)" >> "$GITHUB_OUTPUT"
+      - name: Build the index script
+        working-directory: website
+        run: pnpm run build:search --d1 ${{ steps.slot.outputs.slot }}
+      - name: Import the index
+        working-directory: website/search-worker
+        run: pnpm exec wrangler d1 execute DB --remote --file ../build/search/search-index.${{ steps.slot.outputs.slot }}.sql
+      - name: Check the endpoint
+        run: pnpm --dir website/search-worker exec wrangler d1 execute DB --remote --json --command "SELECT slot FROM search_current"

@@ -79,6 +79,7 @@ website/
   docusaurus-theme/     # Shared theme/components/redirect logic for all three sites
     theme/              # Swizzled Docusaurus component overrides (shadow built-in theme)
     search/             # Self-hosted search: index builder (plugin + CLI), query code, worker
+  search-worker/        # Cloudflare Worker serving the search index from D1 (own README.md)
   scripts/              # Build/lint helper scripts (e.g. lint-runtime.ts)
   static/               # Shared static assets
   package.json          # Root workspace definition
@@ -94,6 +95,14 @@ built route. The browser fetches the index once and queries it in a worker; the 
 modal are the swizzled `theme/SearchBar/`. `pnpm run build:search` (from `website/`) builds the
 same combined index without a Docusaurus build, into `build/search/`. In `docusaurus start` the
 index is built once per process; restart the dev server to index a new page.
+
+`search-worker/` is a Cloudflare Worker that answers the same queries from a copy of the index in
+D1, so a site configured with `createSearchPlugin({ site, endpoint })` sends a few kilobytes of
+JSON per search instead of downloading the index; the browser falls back to its own copy when a
+request fails. `.github/workflows/website-search-index.yml` rebuilds that copy on every merge to
+`main` that touches a page, the index code or `schema.yml` (`pnpm run build:search --d1 <slot>`
+then `wrangler d1 execute`), and redeploys the worker when its code changes. Read
+`search-worker/README.md` before changing either.
 
 ### Author-facing guides (source of truth — keep content consistent with these)
 

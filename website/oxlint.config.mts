@@ -13,5 +13,6 @@ export default createOxlintConfig({
         "help/**",
         "static/**",
         "scripts/docsmg/target/**",
+        "**/.wrangler/**",
     ],
 });

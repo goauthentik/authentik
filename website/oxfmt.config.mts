@@ -11,6 +11,7 @@ export default createOxfmtConfig({
         "help/**",
         "static/**",
         "scripts/docsmg/target/**",
+        "**/.wrangler/**",
         "build",
         "pnpm-workspace.yaml",
         "pnpm-lock.yaml",

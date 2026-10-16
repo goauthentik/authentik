@@ -10,6 +10,8 @@
 
 # Generated files
 .docusaurus
+.wrangler
+search-worker/current.json
 .cache-loader
 cache-output.json
 

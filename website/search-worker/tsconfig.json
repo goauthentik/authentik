@@ -1,0 +1,12 @@
+{
+    "extends": "@goauthentik/tsconfig/node",
+    "compilerOptions": {
+        "lib": ["ESNext"],
+        "types": ["@cloudflare/workers-types"],
+        "allowJs": true,
+        "checkJs": true,
+        "module": "esnext",
+        "moduleResolution": "bundler"
+    },
+    "include": ["src/**/*.ts", "src/**/*.mjs"]
+}

@@ -30,7 +30,7 @@ const RECENT_KEY = "authentik.docs-search.recent";
 
 export default function SearchBar() {
     const history = useHistory();
-    const { site, indexPath, workerPath, runtimePath } = usePluginData(
+    const { site, endpoint, indexPath, workerPath, runtimePath } = usePluginData(
         PLUGIN_NAME,
     ) as SearchGlobalData;
     const [open, setOpen] = useState(false);
@@ -69,7 +69,7 @@ export default function SearchBar() {
         }
     }, [open, openDatabase]);
 
-    const runSearch = useCallback(
+    const searchLocally = useCallback(
         async (query: string, signal: AbortSignal): Promise<SearchResponse> => {
             const db = await openDatabase();
 
@@ -80,12 +80,41 @@ export default function SearchBar() {
         [openDatabase, site],
     );
 
+    const runSearch = useCallback(
+        async (query: string, signal: AbortSignal): Promise<SearchResponse> => {
+            if (endpoint === null) return searchLocally(query, signal);
+
+            const url = new URL(endpoint);
+
+            url.searchParams.set("q", query);
+            url.searchParams.set("site", site);
+
+            try {
+                const response = await fetch(url, { signal });
+
+                if (!response.ok)
+                    throw new Error(`${url.pathname} returned HTTP ${response.status}`);
+
+                return (await response.json()) as SearchResponse;
+            } catch (error) {
+                if (signal.aborted) throw error;
+
+                // The hosted index is unreachable; the browser's own copy answers instead.
+                return searchLocally(query, signal);
+            }
+        },
+        [endpoint, searchLocally, site],
+    );
+
     const navigate = useCallback(
         (href: string) => {
-            if (href.startsWith("/")) {
-                history.push(href);
+            // The hosted index stores every URL absolute. A link into this site stays in-app.
+            const target = new URL(href, globalThis.location.href);
+
+            if (target.origin === globalThis.location.origin) {
+                history.push(`${target.pathname}${target.search}${target.hash}`);
             } else {
-                globalThis.location.assign(href);
+                globalThis.location.assign(target.href);
             }
         },
         [history],

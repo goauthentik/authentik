@@ -25,6 +25,9 @@ import { assertSearchSite, loadSearchSites } from "./sites.mjs";
 /**
  * @typedef {object} AKSearchPluginOptions
  * @property {string} site The id of the site being built, as listed in `sites.mjs`.
+ * @property {string} [endpoint] The URL of the hosted search endpoint, the worker under
+ *   `website/search-worker`. Set, the browser queries it and opens its own copy of the index
+ *   only when a request fails. Unset, the browser opens its own copy for every search.
  */
 
 /**
@@ -80,6 +83,7 @@ export default function akSearchPlugin(context, options) {
             /** @type {SearchGlobalData} */
             const data = {
                 site: site.label,
+                endpoint: options.endpoint ?? null,
                 indexPath: `${base}${SEARCH_INDEX_FILENAME}`,
                 workerPath: `${base}${SEARCH_WORKER_FILENAME}`,
                 runtimePath: `${base}${sqliteRuntimeDirectory(sqliteRuntimeVersion())}/`,
