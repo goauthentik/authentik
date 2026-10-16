@@ -5,12 +5,15 @@ from contextvars import ContextVar
 
 from django.contrib.auth.signals import user_logged_in
 from django.core.cache import cache
+from django.db import DEFAULT_DB_ALIAS, DatabaseError, connections
 from django.db.models import Model
 from django.db.models.signals import post_delete, post_save, pre_save
 from django.dispatch import Signal, receiver
 from django.http.request import HttpRequest
 from structlog.stdlib import get_logger
 
+from authentik.admin.signals import flag_set
+from authentik.core.apps import Setup
 from authentik.core.models import (
     Application,
     AuthenticatedSession,
@@ -129,3 +132,15 @@ def expiring_model_pre_save(sender: type[Model], instance: Model, **_):
         return
     if instance.expiring and instance.expires is None:
         instance.expires = default_token_duration()
+
+
+@receiver(flag_set, sender=Setup)
+def analyze_after_setup(sender, value, **_):
+    if not value:
+        return
+    try:
+        LOGGER.info("Running ANALYZE on the database")
+        with connections[DEFAULT_DB_ALIAS].cursor() as cursor:
+            cursor.execute("ANALYZE")
+    except DatabaseError as exc:
+        LOGGER.warning("Unable to run ANALYZE on the database", exc=exc)
