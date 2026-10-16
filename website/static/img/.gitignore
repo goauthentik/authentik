@@ -1,7 +1,11 @@
 icon.png
 icon.svg
 icon_left_brand.svg
-icon_left_brand_colour.svg
+icon_left_brand_color.svg
 icon_top_brand.svg
-icon_top_brand_colour.svg
+icon_top_brand_color.svg
 social.png
+
+# Legacy names from before the colour -> color rename; stale copies may linger in existing checkouts.
+icon_left_brand_colour.svg
+icon_top_brand_colour.svg

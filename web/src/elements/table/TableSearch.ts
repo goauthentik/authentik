@@ -1,17 +1,17 @@
-import "#components/ak-search-ql/index";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 
 import { AKElement } from "#elements/Base";
-import { PaginatedResponse } from "#elements/table/Table";
+import type { PaginatedResponse } from "#elements/table/Table";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
+import { until } from "lit/directives/until.js";
 
 @customElement("ak-table-search")
 export class TableSearchForm extends AKElement {
@@ -70,12 +70,19 @@ export class TableSearchForm extends AKElement {
     ];
 
     #formRef = createRef<HTMLFormElement>();
+    #searchQLImport: Promise<unknown> | null = null;
 
     public reset = (): void => {
         this.#formRef.value?.reset();
 
         this.onSearch?.("");
     };
+
+    #importSearchQL(): Promise<unknown> {
+        this.#searchQLImport ??= import("#components/ak-search-ql/index");
+
+        return this.#searchQLImport;
+    }
 
     #searchListener = (event: InputEvent) => {
         const target = event.target;
@@ -108,17 +115,21 @@ export class TableSearchForm extends AKElement {
         this.onSearch(value);
     };
 
-    protected renderInput(): TemplateResult {
+    protected renderInput() {
         if (this.supportsQL) {
-            return html`<ak-search-ql
-                    label=${ifPresent(this.label)}
-                    role="presentation"
-                    name="search"
-                    placeholder=${ifPresent(this.placeholder)}
-                    value=${ifPresent(this.defaultValue)}
-                    .apiResponse=${this.apiResponse}
-                ></ak-search-ql>
-                <button type="reset" aria-label=${msg("Clear search")}>&times;</button>`;
+            const content = this.#importSearchQL().then(
+                () => html`<ak-search-ql
+                        label=${ifPresent(this.label)}
+                        role="presentation"
+                        name="search"
+                        placeholder=${ifPresent(this.placeholder)}
+                        value=${ifPresent(this.defaultValue)}
+                        .apiResponse=${this.apiResponse}
+                    ></ak-search-ql>
+                    <button type="reset" aria-label=${msg("Clear search")}>&times;</button>`,
+            );
+
+            return until(content, nothing);
         }
 
         // The ts-ignore comment is lit-analyzer's solution to "ignore semantic errors in the

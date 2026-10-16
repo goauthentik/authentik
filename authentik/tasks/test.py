@@ -2,6 +2,7 @@ from itertools import count
 from queue import PriorityQueue
 
 from django.utils.module_loading import import_string
+from django_dramatiq_postgres.broker import PostgresBroker
 from django_dramatiq_postgres.conf import Conf
 from dramatiq import set_broker
 from dramatiq.broker import Broker, MessageProxy, get_broker
@@ -9,8 +10,6 @@ from dramatiq.middleware.middleware import Middleware
 from dramatiq.middleware.retries import Retries
 from dramatiq.results.middleware import Results
 from dramatiq.worker import ConsumerThread, Worker, WorkerThread
-
-from authentik.tasks.broker import PostgresBroker
 
 TESTING_QUEUE = "testing"
 

@@ -6,12 +6,13 @@ from django.db.models.signals import post_delete, post_save, pre_delete
 from django.dispatch import receiver
 
 from authentik.core.models import AuthenticatedSession
-from authentik.providers.rac.api.endpoints import user_endpoint_cache_key
+from authentik.endpoints.models import Device, DeviceUserBinding
+from authentik.providers.rac.api.devices import user_device_cache_key
 from authentik.providers.rac.consumer_client import (
     build_rac_client_group_session,
     build_rac_client_group_token,
 )
-from authentik.providers.rac.models import ConnectionToken, Endpoint
+from authentik.providers.rac.models import ConnectionToken
 
 
 @receiver(pre_delete, sender=AuthenticatedSession)
@@ -33,8 +34,9 @@ def pre_delete_connection_token_disconnect(sender, instance: ConnectionToken, **
     )
 
 
-@receiver([post_save, post_delete], sender=Endpoint)
-def post_save_post_delete_endpoint(**_):
-    """Clear user's endpoint cache upon endpoint creation or deletion"""
-    keys = cache.keys(user_endpoint_cache_key("*", "*"))
+@receiver([post_save, post_delete], sender=Device)
+@receiver([post_save, post_delete], sender=DeviceUserBinding)
+def post_save_post_delete_device(**_):
+    """Clear the cached device list when devices or their bindings change"""
+    keys = cache.keys(user_device_cache_key("*", "*"))
     cache.delete_many(keys)

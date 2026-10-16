@@ -17,13 +17,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentik import authentik_full_version
+from authentik.admin.utils import get_system_settings
 from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.reflection import get_env
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost
 from authentik.rbac.permissions import HasPermission
-from authentik.tenants.utils import get_current_tenant
 
 
 def fips_enabled():
@@ -118,7 +118,7 @@ class SystemInfoSerializer(PassiveSerializer):
 
     def get_base_url(self, request: Request) -> str:
         """Configured external base URL. Can be empty"""
-        return get_current_tenant().base_url
+        return get_system_settings().base_url
 
 
 class SystemView(APIView):

@@ -5,8 +5,6 @@ import "#components/ak-switch-input";
 import "#components/ak-radio-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/FormGroup";
-import "#admin/common/ak-flow-search/ak-flow-search";
-import "#admin/common/ak-crypto-certificate-search";
 import "#elements/utils/TimeDeltaHelp";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/ak-array-input";
@@ -15,8 +13,9 @@ import { aki } from "#common/api/client";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { RadioChangeEventDetail, RadioOption } from "#elements/forms/Radio";
 import { WithBrandConfig } from "#elements/mixins/branding";
-import { ifPresent } from "#elements/utils/attributes";
 
+import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
+import { AKCertificateSearch } from "#admin/common/AKCertificateSearch";
 import {
     oauth2ProvidersProvider,
     oauth2ProvidersSelector,
@@ -167,13 +166,12 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                         label=${msg("Authorization Flow")}
                         name="authorizationFlow"
                     >
-                        <ak-flow-search
-                            label=${msg("Authorization Flow")}
-                            flowType=${FlowDesignationEnum.Authorization}
-                            .currentFlow=${this.instance?.authorizationFlow}
-                        ></ak-flow-search>
+                        ${AKFlowSearch({ name: "authorizationFlow", label: msg("Authorization Flow"), flowType: FlowDesignationEnum.Authorization, value: this.instance?.authorizationFlow })}
                         <p class="pf-c-form__helper-text">
                             ${msg("Flow used for users to authorize.")}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Required for local device authentication.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-text-input
@@ -220,13 +218,7 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                         label=${msg("Challenge certificate")}
                         name="challengeKey"
                     >
-                        <ak-crypto-certificate-search
-                            label=${msg("Certificate")}
-                            placeholder=${msg("Select a certificate...")}
-                            certificate=${ifPresent(this.instance?.challengeKey)}
-                            name="certificate"
-                        >
-                        </ak-crypto-certificate-search>
+                        ${AKCertificateSearch({ name: "certificate", label: msg("Certificate"), placeholder: msg("Select a certificate..."), value: this.instance?.challengeKey })}
                         <p class="pf-c-form__helper-text">
                             ${msg("Certificate used for signing device compliance challenges.")}
                         </p>

@@ -46,7 +46,7 @@ class AuthentikSourceOAuthConfig(ManagedAppConfig):
         return super().import_related()
 
     @property
-    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+    def schedule_specs(self) -> list[ScheduleSpec]:
         from authentik.sources.oauth.tasks import update_well_known_jwks
 
         return [
