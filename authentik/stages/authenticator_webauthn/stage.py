@@ -48,9 +48,9 @@ from authentik.stages.authenticator_webauthn.models import (
 )
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
 
-# Algorithms offered to authenticators during registration, in order of preference. An
-# authenticator picks the first one it supports, so the classical algorithms stay first and the
-# post-quantum ML-DSA sets (FIPS 204) are only chosen by an authenticator that offers nothing else.
+# TODO: Remove once py_webauthn adds ML-DSA to its default supported algorithms.
+# Offered in order of preference, so the post-quantum ML-DSA sets (FIPS 204) are only
+# chosen by an authenticator that supports none of the classical algorithms.
 SUPPORTED_PUB_KEY_ALGS = [
     COSEAlgorithmIdentifier.EDDSA,
     COSEAlgorithmIdentifier.ECDSA_SHA_256,
