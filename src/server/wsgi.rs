@@ -1,14 +1,16 @@
 //! Hands ordinary HTTP requests to the Django WSGI application in the embedded interpreter.
 //!
-//! Unlike the ASGI bridge, this runs every request as a single blocking Python call on
-//! whichever thread `tokio::task::spawn_blocking` hands it. On a free-threaded interpreter
-//! that means requests genuinely run in parallel across OS threads, instead of all funnelling
-//! through the one asyncio loop thread (and asgiref's single-worker thread-sensitive
-//! executor) that the ASGI path is stuck with for synchronous Django/DRF code.
+//! Unlike the ASGI bridge, this runs every request as a single blocking Python call on one of
+//! a fixed set of threads that stay attached to the interpreter. On a free-threaded
+//! interpreter that means requests genuinely run in parallel across OS threads, instead of
+//! all funnelling through the one asyncio loop thread (and asgiref's single-worker
+//! thread-sensitive executor) that the ASGI path is stuck with for synchronous Django/DRF code.
 
 use std::{
     collections::HashMap,
-    sync::{Arc, Mutex, PoisonError},
+    num::NonZeroUsize,
+    sync::{Arc, Mutex, PoisonError, mpsc},
+    thread,
 };
 
 use axum::{
@@ -21,21 +23,75 @@ use axum::{
     },
     response::Response,
 };
-use eyre::Result;
+use eyre::{Result, eyre};
 use http_body_util::BodyExt as _;
 use pyo3::{
     exceptions::PyRuntimeError,
     prelude::*,
     pybacked::{PyBackedBytes, PyBackedStr},
+    sync::PyOnceLock,
     types::{PyBytes, PyCFunction, PyDict},
 };
-use tokio::task::spawn_blocking;
+use tokio::sync::oneshot;
 
 use super::asgi::Peer;
 
+type Job = Box<dyn FnOnce(Python<'_>) + Send>;
+
+/// Threads that stay attached to the interpreter between requests.
+///
+/// Attaching a thread that has no Python thread state creates one, and detaching deletes it
+/// again, along with everything in its `threading.local`s, like Django's per-thread state.
+/// Threads from tokio's blocking pool would do that on every request, these keep theirs.
+#[derive(Debug)]
+struct Threads(mpsc::Sender<Job>);
+
+impl Threads {
+    fn new(count: NonZeroUsize) -> Result<Self> {
+        let (tx, rx) = mpsc::channel::<Job>();
+        let rx = Arc::new(Mutex::new(rx));
+        for i in 0..count.get() {
+            let rx = Arc::clone(&rx);
+            thread::Builder::new()
+                .name(format!("python-{i}"))
+                .spawn(move || {
+                    Python::attach(|py| {
+                        // Only detached while waiting, so the thread state survives
+                        while let Ok(job) =
+                            py.detach(|| rx.lock().unwrap_or_else(PoisonError::into_inner).recv())
+                        {
+                            job(py);
+                        }
+                    });
+                })?;
+        }
+        Ok(Self(tx))
+    }
+
+    async fn run<T, F>(&self, f: F) -> Result<T>
+    where
+        T: Send + 'static,
+        F: FnOnce(Python<'_>) -> T + Send + 'static,
+    {
+        let (tx, rx) = oneshot::channel();
+        self.0
+            .send(Box::new(move |py| {
+                let _ = tx.send(f(py));
+            }))
+            .map_err(|_| eyre!("the Python threads are gone"))?;
+        Ok(rx.await?)
+    }
+}
+
 /// The Django WSGI application in `authentik.root.wsgi`.
 #[derive(Debug)]
-pub(crate) struct Wsgi(Arc<Py<PyAny>>);
+pub(crate) struct Wsgi {
+    application: Arc<Py<PyAny>>,
+    threads: Threads,
+}
+
+static BYTES_IO: PyOnceLock<Py<PyAny>> = PyOnceLock::new();
+static STDERR: PyOnceLock<Py<PyAny>> = PyOnceLock::new();
 
 /// What `start_response` was called with.
 type StartResponse = Arc<Mutex<Option<(u16, HeaderMap)>>>;
@@ -44,7 +100,11 @@ fn header_env_name(name: &HeaderName) -> String {
     let mut env = String::with_capacity(5 + name.as_str().len());
     env.push_str("HTTP_");
     for ch in name.as_str().chars() {
-        env.push(if ch == '-' { '_' } else { ch.to_ascii_uppercase() });
+        env.push(if ch == '-' {
+            '_'
+        } else {
+            ch.to_ascii_uppercase()
+        });
     }
     env
 }
@@ -93,10 +153,11 @@ fn build_environ<'py>(
     environ.set_item("wsgi.url_scheme", peer.scheme.as_str())?;
     environ.set_item(
         "wsgi.input",
-        py.import("io")?
-            .call_method1("BytesIO", (PyBytes::new(py, body),))?,
+        BYTES_IO
+            .import(py, "io", "BytesIO")?
+            .call1((PyBytes::new(py, body),))?,
     )?;
-    environ.set_item("wsgi.errors", py.import("sys")?.getattr("stderr")?)?;
+    environ.set_item("wsgi.errors", STDERR.import(py, "sys", "stderr")?)?;
     environ.set_item("wsgi.multithread", true)?;
     environ.set_item("wsgi.multiprocess", false)?;
     environ.set_item("wsgi.run_once", false)?;
@@ -115,7 +176,10 @@ fn build_environ<'py>(
             // Already set from the buffered body above.
             continue;
         }
-        grouped.entry(header_env_name(name)).or_default().push(value);
+        grouped
+            .entry(header_env_name(name))
+            .or_default()
+            .push(value);
     }
     for (name, values) in grouped {
         environ.set_item(name, values.join(", "))?;
@@ -143,9 +207,10 @@ fn start_response_function(
             let item = item?;
             let name: PyBackedStr = item.get_item(0_i32)?.extract()?;
             let value: PyBackedStr = item.get_item(1_i32)?.extract()?;
-            if let (Ok(name), Ok(value)) =
-                (HeaderName::from_bytes(name.as_bytes()), HeaderValue::from_str(&value))
-            {
+            if let (Ok(name), Ok(value)) = (
+                HeaderName::from_bytes(name.as_bytes()),
+                HeaderValue::from_str(&value),
+            ) {
                 headers.append(name, value);
             }
         }
@@ -155,7 +220,7 @@ fn start_response_function(
 }
 
 /// Runs entirely in `PyResult`, so every conversion stays inside pyo3's own (`Send`-safe)
-/// error type; only the final `spawn_blocking` boundary converts it to an `eyre::Report`.
+/// error type; only the caller converts it to an `eyre::Report`.
 fn call(
     py: Python<'_>,
     application: &Py<PyAny>,
@@ -190,8 +255,11 @@ fn call(
 }
 
 impl Wsgi {
-    pub(super) fn new(application: Py<PyAny>) -> Self {
-        Self(Arc::new(application))
+    pub(super) fn new(application: Py<PyAny>, threads: NonZeroUsize) -> Result<Self> {
+        Ok(Self {
+            application: Arc::new(application),
+            threads: Threads::new(threads)?,
+        })
     }
 
     pub(super) async fn http(&self, request: Request, peer: &Peer) -> Result<Response> {
@@ -199,13 +267,13 @@ impl Wsgi {
         // ponytail: buffers the request body, which the body limit layer caps. Stream it
         // through `wsgi.input` if large uploads become a problem.
         let body = body.collect().await?.to_bytes();
-        let application = Arc::clone(&self.0);
+        let application = Arc::clone(&self.application);
         let peer = peer.clone();
 
-        let (status, headers, body) = spawn_blocking(move || {
-            Python::attach(|py| call(py, &application, &parts, &body, &peer))
-        })
-        .await??;
+        let (status, headers, body) = self
+            .threads
+            .run(move |py| call(py, &application, &parts, &body, &peer))
+            .await??;
 
         let mut response = Response::new(Body::from(body));
         *response.status_mut() = StatusCode::from_u16(status)?;
@@ -234,7 +302,7 @@ def app(environ, start_response):
 
     fn wsgi() -> Wsgi {
         crate::python::initialize().expect("failed to initialize Python");
-        Wsgi::new(Python::attach(|py| {
+        let application = Python::attach(|py| {
             let cwd = std::env::current_dir().expect("no working directory");
             py.import("sys")
                 .and_then(|sys| sys.getattr("path"))
@@ -245,7 +313,9 @@ def app(environ, start_response):
                 .and_then(|module| module.getattr("app"))
                 .expect("failed to load the test application")
                 .unbind()
-        }))
+        });
+        Wsgi::new(application, NonZeroUsize::new(4).expect("non-zero"))
+            .expect("failed to start the Python threads")
     }
 
     fn peer() -> Peer {
@@ -286,8 +356,10 @@ def app(environ, start_response):
     async fn concurrent_requests_run_on_distinct_threads() {
         let wsgi = wsgi();
         let peer = peer();
-        let responses =
-            futures::future::join_all((0..8).map(|_| wsgi.http(request("/"), &peer))).await;
+        let responses = futures::future::join_all(
+            std::iter::repeat_with(|| wsgi.http(request("/"), &peer)).take(8),
+        )
+        .await;
 
         let threads: HashSet<_> = responses
             .into_iter()

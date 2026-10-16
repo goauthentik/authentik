@@ -40,7 +40,7 @@ mod r#static;
 mod tls;
 mod wsgi;
 
-/// How many OS threads WSGI requests (see `wsgi::Wsgi::http`) may run on concurrently.
+/// How many Python threads WSGI requests (see `wsgi::Wsgi::http`) run on.
 ///
 /// Each of those threads holds one Postgres connection open for the life of its request —
 /// `postgresql.conn_max_age` defaults to `0`, so Django opens a fresh connection per request
@@ -164,7 +164,10 @@ async fn watch_server(arbiter: Arbiter, server: Arc<Server>) -> Result<()> {
     };
     let asgi = Arc::new(asgi);
     server.asgi.store(Some(Arc::clone(&asgi)));
-    server.wsgi.store(Some(Arc::new(wsgi::Wsgi::new(wsgi_application))));
+    server.wsgi.store(Some(Arc::new(wsgi::Wsgi::new(
+        wsgi_application,
+        blocking_thread_count(),
+    )?)));
     info!("server loaded, marked ready for operation");
     arbiter.send_event(Event::GunicornIsReady)?;
 
