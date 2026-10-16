@@ -294,8 +294,11 @@ mod tests {
 
     const APP: &str = r#"
 import threading
+import time
 
 def app(environ, start_response):
+    # Long enough that concurrent requests overlap
+    time.sleep(0.05)
     start_response("200 OK", [("X-Thread", str(threading.get_ident()))])
     return [environ["PATH_INFO"].encode()]
 "#;
