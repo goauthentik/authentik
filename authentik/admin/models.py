@@ -29,7 +29,6 @@ class SystemSettings(InternallyManagedMixin, SerializerModel):
     )
     base_url = models.TextField(
         default="",
-        blank=True,
         validators=[
             DomainlessURLValidator(
                 schemes=("http", "https"),

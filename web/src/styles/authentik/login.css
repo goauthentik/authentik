@@ -106,33 +106,6 @@
 
 /* #endregion */
 
-/* #region Form */
-
-/* Fallback form controls with minimal runtime expectations. */
-.form-control-static {
-    margin-top: var(--pf-global--spacer--sm);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    .avatar {
-        display: flex;
-        align-items: center;
-    }
-
-    img {
-        margin-right: var(--pf-global--spacer--xs);
-    }
-
-    a {
-        padding-top: var(--pf-global--spacer--xs);
-        padding-bottom: var(--pf-global--spacer--xs);
-        line-height: var(--pf-global--spacer--xl);
-    }
-}
-
-/* #endregion */
-
 /* #region Flow Links */
 
 [name="flow-links"] {

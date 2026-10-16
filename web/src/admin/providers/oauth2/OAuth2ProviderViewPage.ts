@@ -30,18 +30,19 @@ import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
 import { modalInvoker } from "#elements/dialogs";
+import type { SearchSelectChangeEvent } from "#elements/forms/SearchSelect/events";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { AKSearchSelect } from "#components/ak-search-select-field";
 import renderDescriptionList from "#components/DescriptionList";
 import { taskCard } from "#components/tasks/taskCard";
 
+import { userSource } from "#admin/common/search-sources";
 import { OAuth2DCRForm } from "#admin/providers/oauth2/OAuth2DCRForm";
 import { OAuth2ProviderFormPage } from "#admin/providers/oauth2/OAuth2ProviderForm";
 
 import {
     ClientTypeEnum,
-    CoreApi,
-    CoreUsersListRequest,
     ModelEnum,
     OAuth2DynamicClientRegistration,
     OAuth2Provider,
@@ -57,7 +58,7 @@ import { match, P } from "ts-pattern";
 import MDProviderOAuth2 from "~docs/add-secure-apps/providers/oauth2/index.mdx";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, nothing, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 export const TypeToLabel = (clientType?: ClientTypeEnum) =>
@@ -491,40 +492,20 @@ export class OAuth2ProviderViewPage extends AKElement {
                                     >${msg("Preview for user")}</label
                                 >`,
                                 html`
-                                    <ak-search-select
-                                        id="${IDGenerator.elementID("preview-user")}"
-                                        .fetchObjects=${async (query?: string): Promise<User[]> => {
-                                            const args: CoreUsersListRequest = {
-                                                ordering: "username",
-                                            };
-
-                                            if (query !== undefined) {
-                                                args.search = query;
-                                            }
-
-                                            const users = await aki(CoreApi).coreUsersList(args);
-
-                                            return users.results;
-                                        }}
-                                        .renderElement=${(user: User): string => {
-                                            return user.username;
-                                        }}
-                                        .renderDescription=${(user: User): TemplateResult => {
-                                            return html`${user.name}`;
-                                        }}
-                                        .value=${(user: User | undefined): number | undefined => {
-                                            return user?.pk;
-                                        }}
-                                        .selected=${(user: User): boolean => {
-                                            return user.pk === this.previewUser?.pk;
-                                        }}
-                                        blankable
-                                        @ak-change=${(ev: CustomEvent) => {
-                                            this.previewUser = ev.detail.value;
+                                    ${AKSearchSelect({
+                                        name: "previewUser",
+                                        id: IDGenerator.elementID("preview-user"),
+                                        source: userSource,
+                                        value: this.previewUser
+                                            ? String(this.previewUser.pk)
+                                            : null,
+                                        selectedObject: this.previewUser,
+                                        blankable: true,
+                                        onChange: (event: SearchSelectChangeEvent<User>) => {
+                                            this.previewUser = event.detail.value ?? undefined;
                                             this.fetchPreview();
-                                        }}
-                                    >
-                                    </ak-search-select>
+                                        },
+                                    })}
                                 `,
                             ],
                         ],

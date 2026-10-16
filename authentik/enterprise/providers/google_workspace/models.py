@@ -223,6 +223,8 @@ class GoogleWorkspaceProviderPropertyMappingsGroup(SimpleThroughModel):
 class GoogleWorkspaceProviderMapping(PropertyMapping):
     """Map authentik data to outgoing Google requests"""
 
+    expression_allowed_types = [dict]
+
     @property
     def component(self) -> str:
         return "ak-property-mapping-provider-google-workspace-form"

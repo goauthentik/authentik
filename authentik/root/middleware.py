@@ -116,7 +116,8 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         try:
             user_switching.reconcile_session(request)
             accessed = request.session.accessed
-            modified = request.session.modified
+            modified = request.session.modified or settings.SESSION_SAVE_EVERY_REQUEST
+            expiry_extended = request.session.expiry_extended
             empty = request.session.is_empty()
         except AttributeError:
             return response
@@ -136,7 +137,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         else:
             if accessed:
                 patch_vary_headers(response, ("Cookie",))
-            if (modified or settings.SESSION_SAVE_EVERY_REQUEST) and not empty:
+            if (modified or expiry_extended) and not empty:
                 if request.session.get_expire_at_browser_close():
                     max_age = None
                     expires = None
@@ -148,7 +149,10 @@ class SessionMiddleware(UpstreamSessionMiddleware):
                 # Skip session save for 500 responses, refs #3881.
                 if response.status_code != HttpResponseServerError.status_code:
                     try:
-                        request.session.save()
+                        if modified:
+                            request.session.save()
+                        else:
+                            request.session.save_expiry()
                     except UpdateError:
                         raise SessionInterrupted(
                             "The request's session was deleted before the "
@@ -336,11 +340,12 @@ class ChannelsLoggingMiddleware:
     def log(self, scope: dict, **kwargs):
         """Log request"""
         headers = dict(scope.get("headers", {}))
+        # Header values are raw bytes and aren't guaranteed to be UTF-8
         LOGGER.info(
             scope["path"],
             scheme="ws",
-            remote=headers.get(b"x-forwarded-for", b"").decode(),
-            user_agent=headers.get(b"user-agent", b"").decode(),
+            remote=headers.get(b"x-forwarded-for", b"").decode(errors="backslashreplace"),
+            user_agent=headers.get(b"user-agent", b"").decode(errors="backslashreplace"),
             **kwargs,
         )
 

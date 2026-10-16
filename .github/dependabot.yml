@@ -329,6 +329,10 @@ updates:
       - dependencies
     cooldown:
       default-days: 3
+    groups:
+      pnpm:
+        patterns:
+          - "*pnpm/pnpm"
   - package-ecosystem: docker-compose
     directories:
       - /packages/client-go
