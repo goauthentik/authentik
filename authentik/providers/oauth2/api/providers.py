@@ -99,7 +99,6 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "issuer_mode",
             "jwt_federation_sources",
             "jwt_federation_providers",
-            "id_jag_sources",
         ]
         secret_fields = ["client_secret"]
         extra_kwargs = {
@@ -131,7 +130,6 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
         "property_mappings",
         "jwt_federation_sources",
         "jwt_federation_providers",
-        "id_jag_sources",
     )
     serializer_class = OAuth2ProviderSerializer
     filterset_fields = [

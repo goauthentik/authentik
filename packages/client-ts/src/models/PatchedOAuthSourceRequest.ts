@@ -99,10 +99,6 @@ export interface PatchedOAuthSourceRequest {
      * How to perform authentication during an authorization_code token request flow
      */
     authorizationCodeAuthMethod?: AuthorizationCodeAuthMethodEnum;
-    /**
-     * Resources a client may request an ID-JAG for at this server.
-     */
-    idJagResources?: Array<string>;
 }
 
 /**
@@ -201,7 +197,6 @@ export function PatchedOAuthSourceRequestFromJSONTyped(
             json["authorization_code_auth_method"] == null
                 ? undefined
                 : AuthorizationCodeAuthMethodEnumFromJSON(json["authorization_code_auth_method"]),
-        idJagResources: json["id_jag_resources"] == null ? undefined : json["id_jag_resources"],
     };
 }
 
@@ -246,6 +241,5 @@ export function PatchedOAuthSourceRequestToJSONTyped(
         authorization_code_auth_method: AuthorizationCodeAuthMethodEnumToJSON(
             value["authorizationCodeAuthMethod"],
         ),
-        id_jag_resources: value["idJagResources"],
     };
 }

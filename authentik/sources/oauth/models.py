@@ -2,7 +2,6 @@
 
 from typing import TYPE_CHECKING
 
-from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.http.request import HttpRequest
 from django.urls import reverse
@@ -69,15 +68,6 @@ class OAuthSource(NonCreatableType, Source):
     oidc_well_known_url = models.TextField(default="", blank=True)
     oidc_jwks_url = models.TextField(default="", blank=True)
     oidc_jwks = models.JSONField(default=dict, blank=True)
-    # When an OAuth2 provider mints ID-JAGs for this source's authorization server, the
-    # resources a client may request them for. `consumer_key` is the client's ID there.
-    id_jag_resources = ArrayField(
-        models.TextField(),
-        default=list,
-        blank=True,
-        help_text=_("Resources a client may request an ID-JAG for at this server."),
-    )
-
     pkce = models.TextField(
         choices=PKCEMethod.choices, default=PKCEMethod.NONE, verbose_name=_("PKCE")
     )
@@ -115,27 +105,6 @@ class OAuthSource(NonCreatableType, Source):
 
     def get_base_group_properties(self, **kwargs):
         return self.source_type().get_base_group_properties(source=self, **kwargs)
-
-    @property
-    def issuer(self) -> str | None:
-        """The authorization server's issuer, the inverse of how OIDC Discovery and RFC 8414
-        build the well-known URL from it. Issuers with a path keep their trailing slash
-        (e.g. authentik's), a bare origin has none."""
-        url = self.oidc_well_known_url
-        if url.endswith("/.well-known/openid-configuration"):
-            issuer = url.removesuffix(".well-known/openid-configuration")
-        else:
-            # RFC 8414 §3.1 inserts the well-known segment between host and path
-            scheme, sep, rest = url.partition("://")
-            host, slash, path = rest.partition("/")
-            prefix = ".well-known/oauth-authorization-server"
-            if not (sep and slash and (path == prefix or path.startswith(prefix + "/"))):
-                return None
-            issuer = f"{scheme}://{host}{path.removeprefix(prefix) or '/'}"
-        scheme, _, rest = issuer.partition("://")
-        if "/" not in rest.removesuffix("/"):
-            return issuer.removesuffix("/")
-        return issuer
 
     @property
     def icon_url(self) -> str | None:

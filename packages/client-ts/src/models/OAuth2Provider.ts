@@ -138,11 +138,6 @@ export interface OAuth2Provider {
     issuerMode?: IssuerModeEnum;
     jwtFederationSources?: Array<string>;
     jwtFederationProviders?: Array<number>;
-    /**
-     * Authorization servers this provider may mint an ID-JAG for. Empty means ID-JAG is disabled
-     * for this provider.
-     */
-    idJagSources?: Array<string>;
 }
 
 /**
@@ -301,7 +296,6 @@ export function OAuth2ProviderFromJSONTyped(
             json["jwt_federation_sources"] == null ? undefined : json["jwt_federation_sources"],
         jwtFederationProviders:
             json["jwt_federation_providers"] == null ? undefined : json["jwt_federation_providers"],
-        idJagSources: json["id_jag_sources"] == null ? undefined : json["id_jag_sources"],
     };
 }
 
@@ -355,6 +349,5 @@ export function OAuth2ProviderToJSONTyped(
         issuer_mode: IssuerModeEnumToJSON(value["issuerMode"]),
         jwt_federation_sources: value["jwtFederationSources"],
         jwt_federation_providers: value["jwtFederationProviders"],
-        id_jag_sources: value["idJagSources"],
     };
 }
