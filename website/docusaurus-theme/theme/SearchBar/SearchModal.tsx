@@ -812,7 +812,9 @@ export function SearchModal({
     return (
         <dialog
             ref={dialogRef}
-            className="DocSearch DocSearch-Container"
+            // The stylesheet fixes the body in place at phone width while a `DocSearch-Container`
+            // is in the document, so the class is carried only while the dialog is open.
+            className={open ? "DocSearch DocSearch-Container" : "DocSearch"}
             aria-label="Search the documentation"
             onClose={onClose}
             onClick={onDialogClick}
