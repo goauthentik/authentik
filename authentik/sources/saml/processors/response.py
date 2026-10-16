@@ -389,8 +389,6 @@ class ResponseProcessor:
             path=self._source.get_user_path(),
         )
         LOGGER.debug("Created temporary user for NameID Transient", username=name_id)
-        user.set_unusable_password()
-        user.save()
         UserSAMLSourceConnection.objects.create(source=self._source, user=user, identifier=name_id)
         return SAMLSourceFlowManager(
             source=self._source,

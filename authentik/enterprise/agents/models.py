@@ -62,8 +62,6 @@ class Agent(Actor):
             expiring=expiring,
             expires=expires,
         )
-        agent.set_unusable_password()
-        agent.save()
         if policy_behavior == ActorPolicyInheritance.COPY:
             agent.copy_parent_policy_bindings()
         return agent

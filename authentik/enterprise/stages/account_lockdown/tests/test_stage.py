@@ -48,6 +48,7 @@ from authentik.providers.oauth2.models import (
     RefreshToken,
 )
 from authentik.providers.saml.models import SAMLProvider, SAMLSession
+from authentik.stages.password.models import PasswordDevice
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 patch_enterprise_enabled = patch(
@@ -410,8 +411,8 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
         self.stage.save()
 
         self.target_user.is_active = True
-        self.target_user.set_password("testpassword")
         self.target_user.save()
+        PasswordDevice.set_password(self.target_user, "testpassword")
 
         Token.objects.create(
             user=self.target_user,
@@ -433,6 +434,32 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
         # Token should still exist
         self.assertEqual(Token.objects.filter(user=self.target_user).count(), 1)
 
+    def test_lockdown_password_on_inactive_user_keeps_sessions(self):
+        """Test removing the password of an inactive user doesn't trigger deactivation cleanup"""
+        self.stage.deactivate_user = True
+        self.stage.set_unusable_password = True
+        self.stage.delete_sessions = False
+        self.stage.revoke_tokens = False
+        self.stage.save()
+
+        self.target_user.is_active = False
+        self.target_user.save()
+        PasswordDevice.set_password(self.target_user, "testpassword")
+        session = Session.objects.create(
+            session_key=generate_id(),
+            expires=timezone.now() + timezone.timedelta(hours=1),
+            last_ip="127.0.0.1",
+        )
+        AuthenticatedSession.objects.create(session=session, user=self.target_user)
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        view = self.make_stage_view(plan)
+        view._lockdown_user(self.make_request(user=self.user), self.stage, self.target_user, "")
+
+        self.target_user.refresh_from_db()
+        self.assertFalse(self.target_user.has_usable_password())
+        self.assertTrue(Session.objects.filter(pk=session.pk).exists())
+
     def test_lockdown_no_actions(self):
         """Test lockdown stage with all actions disabled"""
         self.stage.deactivate_user = False
@@ -442,8 +469,8 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
         self.stage.save()
 
         self.target_user.is_active = True
-        self.target_user.set_password("testpassword")
         self.target_user.save()
+        PasswordDevice.set_password(self.target_user, "testpassword")
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         view = self.make_stage_view(plan)
