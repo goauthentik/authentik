@@ -119,11 +119,73 @@ export const SNIPPET_LENGTH = 160;
  *
  * @typedef {object} SearchGlobalData
  * @property {string} site The label of the site being served.
+ * @property {string | null} endpoint The URL of the hosted search endpoint, or `null` when the
+ *   browser queries its own copy of the index.
  * @property {string} indexPath The site-relative path of the gzip index.
  * @property {string} workerPath The site-relative path of the worker script.
  * @property {string} runtimePath The site-relative directory of the sqlite-wasm
  *   runtime.
  */
+
+//#region Hosted index
+
+/**
+ * The hosted index keeps two copies of its tables, so a rebuild writes the slot that is not
+ * current and then flips the pointer in `search_current` with one statement. A reader never sees
+ * a half-written index.
+ */
+export const INDEX_SLOTS = /** @type {const} */ (["a", "b"]);
+
+/**
+ * @typedef {(typeof INDEX_SLOTS)[number]} IndexSlot
+ */
+
+/**
+ * The table that holds the current slot's name, in its one row.
+ */
+export const SLOT_POINTER_TABLE = "search_current";
+
+/**
+ * The tables that exist once per slot, longest name first so that a rewrite of `records_fts`
+ * is never read as a rewrite of `records`.
+ */
+export const SLOT_TABLES = /** @type {const} */ ([
+    "records_fts",
+    "terms_trigram",
+    "records",
+    "terms",
+    "build",
+]);
+
+const SLOT_TABLE_PATTERN = new RegExp(`\\b(${SLOT_TABLES.join("|")})\\b`, "g");
+
+/**
+ * The query SQL with every slot table named for `slot`: `records_fts` becomes `records_fts_a`.
+ *
+ * The rewrite renames the word wherever it stands, so it suits the query SQL, whose columns share
+ * no name with a table, and not a statement that reads the `records` column of `build`.
+ *
+ * @param {string} sql
+ * @param {IndexSlot} slot
+ *
+ * @returns {string}
+ */
+export function rewriteForSlot(sql, slot) {
+    return sql.replace(SLOT_TABLE_PATTERN, `$1_${slot}`);
+}
+
+/**
+ * The other slot, which a rebuild writes to.
+ *
+ * @param {IndexSlot} slot
+ *
+ * @returns {IndexSlot}
+ */
+export function nextSlot(slot) {
+    return slot === "a" ? "b" : "a";
+}
+
+//#endregion
 
 /**
  * The site-relative link for a hit.
