@@ -71,7 +71,7 @@ class KerberosSync:
                 principal=principal,
                 principal_obj=principal_obj,
             )
-            self._logger.debug("Writing user with attributes", **defaults)
+            self._logger.debug("Writing user with attributes", attributes=defaults)
             if "username" not in defaults:
                 raise IntegrityError("Username was not set by propertymappings")
 
@@ -103,6 +103,7 @@ class KerberosSync:
             elif action in (Action.AUTH, Action.LINK):
                 user = connection.user
                 user.update_attributes(defaults)
+                connection.save()
             else:
                 return False
 

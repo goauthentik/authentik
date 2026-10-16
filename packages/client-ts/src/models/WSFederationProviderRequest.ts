@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -26,16 +24,15 @@ import { WSFedSAMLVersionEnumFromJSON, WSFedSAMLVersionEnumToJSON } from "./WSFe
 
 /**
  * WSFederationProvider Serializer
+ *
  * @export
  * @interface WSFederationProviderRequest
  */
 export interface WSFederationProviderRequest {
-    /**
-     *
-     */
     name: string;
     /**
-     * Flow used for authentication when the associated application is accessed by an un-authenticated user.
+     * Flow used for authentication when the associated application is accessed by an
+     * un-authenticated user.
      */
     authenticationFlow?: string | null;
     /**
@@ -46,69 +43,53 @@ export interface WSFederationProviderRequest {
      * Flow used ending the session from a provider.
      */
     invalidationFlow: string;
-    /**
-     *
-     */
     propertyMappings?: Array<string>;
-    /**
-     *
-     */
     replyUrl: string;
-    /**
-     *
-     */
     wtrealm: string;
     /**
-     * Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3).
+     * Assertion valid not before current time + this value (Format:
+     * hours=-1;minutes=-2;seconds=-3).
      */
     assertionValidNotBefore?: string;
     /**
-     * Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
+     * Assertion not valid on or after current time + this value (Format:
+     * hours=1;minutes=2;seconds=3).
      */
     assertionValidNotOnOrAfter?: string;
     /**
-     * Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
+     * Session not valid on or after current time + this value (Format:
+     * hours=1;minutes=2;seconds=3).
      */
     sessionValidNotOnOrAfter?: string;
     /**
-     * Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered
+     * Configure how the NameID value will be created. When left empty, the NameIDPolicy of the
+     * incoming request will be considered
      */
     nameIdMapping?: string | null;
     /**
-     * Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.
+     * Configure how the AuthnContextClassRef value will be created. When left empty, the
+     * AuthnContextClassRef will be set based on which authentication methods the user used to
+     * authenticate.
      */
     authnContextClassRefMapping?: string | null;
     /**
-     * SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
+     * SAML assertion version to issue in the security token. Microsoft Entra ID and classic
+     * ADFS-style relying parties typically require SAML 1.1.
      */
     samlVersion?: WSFedSAMLVersionEnum;
-    /**
-     *
-     */
     digestAlgorithm?: DigestAlgorithmEnum;
-    /**
-     *
-     */
     signatureAlgorithm?: SignatureAlgorithmEnum;
     /**
      * Keypair used to sign outgoing Responses going to the Service Provider.
      */
     signingKp?: string | null;
     /**
-     * When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
+     * When selected, incoming assertions are encrypted by the IdP using the public key of the
+     * encryption keypair. The assertion is decrypted by the SP using the the private key.
      */
     encryptionKp?: string | null;
-    /**
-     *
-     */
     signAssertion?: boolean;
-    /**
-     *
-     */
     signLogoutRequest?: boolean;
-    /**
-     *
-     */
     defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
 }
 

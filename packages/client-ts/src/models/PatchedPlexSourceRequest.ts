@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -24,6 +22,7 @@ import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./User
 
 /**
  * Plex Source Serializer
+ *
  * @export
  * @interface PatchedPlexSourceRequest
  */
@@ -36,12 +35,10 @@ export interface PatchedPlexSourceRequest {
      * Internal source name, used in URLs.
      */
     slug?: string;
-    /**
-     *
-     */
     enabled?: boolean;
     /**
-     * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
+     * When enabled, this source will be displayed as a prominent button on the login page, instead
+     * of a small icon.
      */
     promoted?: boolean;
     /**
@@ -52,29 +49,14 @@ export interface PatchedPlexSourceRequest {
      * Flow to use when enrolling new users.
      */
     enrollmentFlow?: string | null;
-    /**
-     *
-     */
     userPropertyMappings?: Array<string>;
-    /**
-     *
-     */
     groupPropertyMappings?: Array<string>;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
      */
     userMatchingMode?: UserMatchingModeEnum;
-    /**
-     *
-     */
     userPathTemplate?: string;
-    /**
-     *
-     */
     icon?: string;
     /**
      * How the source determines if an existing group should be used or a new group created.
@@ -85,7 +67,8 @@ export interface PatchedPlexSourceRequest {
      */
     clientId?: string;
     /**
-     * Which servers a user has to be a member of to be granted access. Empty list allows every server.
+     * Which servers a user has to be a member of to be granted access. Empty list allows every
+     * server.
      */
     allowedServers?: Array<string>;
     /**

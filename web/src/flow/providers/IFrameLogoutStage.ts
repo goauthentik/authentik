@@ -1,4 +1,10 @@
 import "#flow/components/ak-flow-card";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { BaseStage } from "#flow/stages/base";
 
@@ -12,13 +18,6 @@ import {
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 enum LogoutStatusStatus {
     Pending = "pending",
@@ -58,9 +57,11 @@ export class IFrameLogoutStage extends BaseStage<
 
     public override disconnectedCallback(): void {
         super.disconnectedCallback();
+
         this.#iframeTimeouts.forEach((id) => {
             clearTimeout(id);
         });
+
         clearTimeout(this.#moveOnTimeout);
     }
 
@@ -111,12 +112,10 @@ export class IFrameLogoutStage extends BaseStage<
         // Initialize status tracking
         const logoutUrls = (this.challenge?.logoutUrls as LogoutURL[]) || [];
 
-        this.logoutStatuses = logoutUrls.map(
-            (url): LogoutStatus => ({
-                providerName: url.providerName || msg("Unknown Provider"),
-                status: LogoutStatusStatus.Pending,
-            }),
-        );
+        this.logoutStatuses = logoutUrls.map((url): LogoutStatus => ({
+            providerName: url.providerName || msg("Unknown Provider"),
+            status: LogoutStatusStatus.Pending,
+        }));
 
         // Start the logout process
         this.performLogouts();
@@ -151,16 +150,20 @@ export class IFrameLogoutStage extends BaseStage<
         const timeoutId = setTimeout(() => {
             this.handleLogoutComplete(index, false);
             iframe.remove();
-        }, 5000); // 5 second timeout
+        }, 5000);
+
+        // 5 second timeout
         this.#iframeTimeouts.set(index, timeoutId);
 
         // Try to detect when iframe loads (may not work for cross-origin)
         iframe.addEventListener("load", () => {
             const timeout = this.#iframeTimeouts.get(index);
+
             if (timeout) {
                 clearTimeout(timeout);
                 this.#iframeTimeouts.delete(index);
             }
+
             this.handleLogoutComplete(index, true);
             iframe.remove();
         });
@@ -215,10 +218,12 @@ export class IFrameLogoutStage extends BaseStage<
     protected handleLogoutComplete(index: number, success: boolean): void {
         // Update status
         const statuses = [...this.logoutStatuses];
+
         statuses[index] = {
             ...statuses[index],
             status: success ? LogoutStatusStatus.Success : LogoutStatusStatus.Error,
         };
+
         this.logoutStatuses = statuses;
 
         // Increment completed count
@@ -260,6 +265,7 @@ export class IFrameLogoutStage extends BaseStage<
         if (!this.challenge?.logoutUrls || !this.challenge.logoutUrls.length) {
             const submitEvent = new SubmitEvent("submit");
             this.submitForm(submitEvent);
+
             return html`<ak-flow-card .challenge=${this.challenge} loading></ak-flow-card>`;
         }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,33 +16,16 @@ import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * Challenge type to render a frame
+ *
  * @export
  * @interface FrameChallenge
  */
 export interface FrameChallenge {
-    /**
-     *
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     */
     component?: string;
-    /**
-     *
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     */
     url: string;
-    /**
-     *
-     */
     loadingOverlay?: boolean;
-    /**
-     *
-     */
     loadingText: string;
 }
 

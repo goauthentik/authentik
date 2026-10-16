@@ -12,6 +12,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#elements/ak-mdx/ak-mdx";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -34,16 +35,15 @@ import {
     ModelEnum,
 } from "@goauthentik/api";
 
+import { guard } from "lit-html/directives/guard.js";
 import { match, P } from "ts-pattern";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
-import { guard } from "lit-html/directives/guard.js";
 import { customElement } from "lit/decorators.js";
 
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-
 const Status = BlueprintInstanceStatusEnum;
+
 export const BlueprintStatus = (blueprint?: BlueprintInstance) =>
     match<BlueprintInstance | undefined, string>(blueprint)
         .with(P.nullish, () => "")
@@ -95,6 +95,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Blueprint(s)")}
             .objects=${this.selectedElements}
@@ -139,9 +140,11 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
 
         return [
             html`<div>${item.name}</div>
-                ${description
-                    ? html`<small><ak-mdx .content=${description}></ak-mdx></small>`
-                    : nothing}`,
+                ${
+                    description
+                        ? html`<small><ak-mdx .content=${description}></ak-mdx></small>`
+                        : nothing
+                }`,
             BlueprintStatus(item),
             Timestamp(item.lastApplied),
             html`<ak-status-label ?good=${item.enabled}></ak-status-label>`,

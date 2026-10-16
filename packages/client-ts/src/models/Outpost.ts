@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,52 +19,32 @@ import { ServiceConnectionFromJSON } from "./ServiceConnection";
 
 /**
  * Outpost Serializer
+ *
  * @export
  * @interface Outpost
  */
 export interface Outpost {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     type: OutpostTypeEnum;
-    /**
-     *
-     */
     providers: Array<number>;
-    /**
-     *
-     */
     readonly providersObj: Array<Provider>;
     /**
-     * Select Service-Connection authentik should use to manage this outpost. Leave empty if authentik should not handle the deployment.
+     * Select Service-Connection authentik should use to manage this outpost. Leave empty if
+     * authentik should not handle the deployment.
      */
     serviceConnection?: string | null;
-    /**
-     *
-     */
     readonly serviceConnectionObj: ServiceConnection | null;
-    /**
-     *
-     */
     readonly refreshIntervalS: number;
     /**
      * Get Token identifier
      */
     readonly tokenIdentifier: string;
-    /**
-     *
-     */
     config: { [key: string]: any };
     /**
-     * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+     * Objects that are managed by authentik. These objects are created and updated automatically.
+     * This flag only indicates that an object can be overwritten by migrations. You can still
+     * modify the objects via the API, but expect changes to be overwritten in a later update.
      */
     managed?: string | null;
 }

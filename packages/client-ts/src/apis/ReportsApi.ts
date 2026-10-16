@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -52,9 +50,6 @@ export interface ReportsExportsRetrieveRequest {
     id: string;
 }
 
-/**
- *
- */
 export class ReportsApi extends runtime.BaseAPI {
     /**
      * Creates request options for reportsExportsDestroy without sending the request
@@ -93,8 +88,6 @@ export class ReportsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async reportsExportsDestroyRaw(
         requestParameters: ReportsExportsDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -105,8 +98,6 @@ export class ReportsApi extends runtime.BaseAPI {
         return new runtime.VoidApiResponse(response);
     }
 
-    /**
-     */
     async reportsExportsDestroy(
         requestParameters: ReportsExportsDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -149,7 +140,7 @@ export class ReportsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/reports/exports/`;
+        const urlPath = `/reports/exports/`;
 
         return {
             path: urlPath,
@@ -159,8 +150,6 @@ export class ReportsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async reportsExportsListRaw(
         requestParameters: ReportsExportsListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -173,8 +162,6 @@ export class ReportsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async reportsExportsList(
         requestParameters: ReportsExportsListRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -220,8 +207,6 @@ export class ReportsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async reportsExportsRetrieveRaw(
         requestParameters: ReportsExportsRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -232,8 +217,6 @@ export class ReportsApi extends runtime.BaseAPI {
         return new runtime.JSONApiResponse(response, (jsonValue) => DataExportFromJSON(jsonValue));
     }
 
-    /**
-     */
     async reportsExportsRetrieve(
         requestParameters: ReportsExportsRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,

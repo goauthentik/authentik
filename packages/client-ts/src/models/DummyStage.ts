@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,17 +15,12 @@ import { FlowSetFromJSON } from "./FlowSet";
 
 /**
  * DummyStage Serializer
+ *
  * @export
  * @interface DummyStage
  */
 export interface DummyStage {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
@@ -45,13 +38,7 @@ export interface DummyStage {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly flowSet: Array<FlowSet>;
-    /**
-     *
-     */
     throwError?: boolean;
 }
 

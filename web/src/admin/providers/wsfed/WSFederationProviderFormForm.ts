@@ -1,19 +1,24 @@
 import "#components/ak-text-input";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";
-import "#admin/common/ak-crypto-certificate-search";
-import "#admin/common/ak-flow-search/ak-flow-search";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-import "#elements/forms/SearchSelect/ak-search-select-ez";
 import "#elements/forms/SearchSelect/index";
+import type { SearchSelectChangeEvent } from "#elements/forms/SearchSelect/events";
 
-import { aki } from "#common/api/client";
-
-import { withQuery } from "#elements/forms/SearchSelect/utils";
-
+import { AKCertificateSearch } from "#admin/common/AKCertificateSearch";
+import { XMLSigningKeyTypes } from "#admin/common/certificate-key-types";
+import {
+    AKAuthenticationFlowField,
+    AKAuthorizationFlowField,
+    AKInvalidationFlowField,
+} from "#admin/providers/components/flow-fields";
+import {
+    AKAuthnContextClassRefMappingField,
+    AKNameIDMappingField,
+} from "#admin/providers/components/saml-property-mapping-fields";
 import {
     propertyMappingsProvider,
     propertyMappingsSelector,
@@ -23,18 +28,15 @@ import {
     DEFAULT_HASH_ALGORITHM,
     digestAlgorithmOptions,
     retrieveSignatureAlgorithm,
-    SAMLSupportedKeyTypes,
 } from "#admin/providers/saml/SAMLProviderOptions";
 
 import {
-    FlowDesignationEnum,
     KeyTypeEnum,
-    PropertymappingsApi,
     SAMLNameIDPolicyEnum,
-    SAMLPropertyMapping,
     ValidationError,
     WSFederationProvider,
     WSFedSAMLVersionEnum,
+    CertificateKeyPair,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -65,7 +67,7 @@ const samlNameIDPolicyAndLabel = [
 export interface WSFederationProviderFormProps {
     provider?: Partial<WSFederationProvider>;
     errors?: ValidationError;
-    setHasSigningKp: (ev: InputEvent) => void;
+    setHasSigningKp: (event: SearchSelectChangeEvent<CertificateKeyPair>) => void;
     hasSigningKp: boolean;
     signingKeyType: KeyTypeEnum | null;
 }
@@ -78,26 +80,6 @@ export function renderForm({
     signingKeyType,
 }: WSFederationProviderFormProps) {
     const keyType = signingKeyType ?? KeyTypeEnum.Rsa;
-    const samlPropertyMappingSearch = async (query?: string) =>
-        (
-            await aki(PropertymappingsApi).propertymappingsProviderSamlList(
-                withQuery(query, { ordering: "saml_name" }),
-            )
-        ).results;
-
-    const nameIdMappingConfig = {
-        fetchObjects: samlPropertyMappingSearch,
-        renderElement: (item: SAMLPropertyMapping) => item.name,
-        value: (item: SAMLPropertyMapping | undefined) => item?.pk,
-        selected: (item: SAMLPropertyMapping) => provider.nameIdMapping === item.pk,
-    };
-
-    const authnContextClassRefMappingConfig = {
-        fetchObjects: samlPropertyMappingSearch,
-        renderElement: (item: SAMLPropertyMapping) => item.name,
-        value: (item: SAMLPropertyMapping | undefined) => item?.pk,
-        selected: (item: SAMLPropertyMapping) => provider.authnContextClassRefMapping === item.pk,
-    };
 
     return html` <ak-text-input
             name="name"
@@ -108,21 +90,10 @@ export function renderForm({
             required
             .errorMessages=${errors.name}
         ></ak-text-input>
-        <ak-form-element-horizontal
-            name="authorizationFlow"
-            label=${msg("Authorization Flow")}
-            required
-        >
-            <ak-flow-search
-                flowType=${FlowDesignationEnum.Authorization}
-                .currentFlow=${provider.authorizationFlow}
-                .errorMessages=${errors.authorizationFlow}
-                required
-            ></ak-flow-search>
-            <p class="pf-c-form__helper-text">
-                ${msg("Flow used when authorizing this provider.")}
-            </p>
-        </ak-form-element-horizontal>
+        ${AKAuthorizationFlowField({
+            value: provider.authorizationFlow,
+            errors: errors.authorizationFlow,
+        })}
 
         <ak-form-group open label="${msg("Protocol settings")}">
             <div class="pf-c-form">
@@ -149,81 +120,47 @@ export function renderForm({
 
         <ak-form-group label="${msg("Advanced flow settings")}">
             <div class="pf-c-form">
-                <ak-form-element-horizontal
-                    label=${msg("Authentication Flow")}
-                    name="authenticationFlow"
-                >
-                    <ak-flow-search
-                        flowType=${FlowDesignationEnum.Authentication}
-                        .currentFlow=${provider.authenticationFlow}
-                    ></ak-flow-search>
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "Flow used when a user access this provider and is not authenticated.",
-                        )}
-                    </p>
-                </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Invalidation Flow")}
-                    name="invalidationFlow"
-                    required
-                >
-                    <ak-flow-search
-                        flowType=${FlowDesignationEnum.Invalidation}
-                        .currentFlow=${provider.invalidationFlow}
-                        defaultFlowSlug="default-provider-invalidation-flow"
-                        required
-                    ></ak-flow-search>
-                    <p class="pf-c-form__helper-text">
-                        ${msg("Flow used when logging out of this provider.")}
-                    </p>
-                </ak-form-element-horizontal>
+                ${AKAuthenticationFlowField({ value: provider.authenticationFlow })}
+                ${AKInvalidationFlowField({ value: provider.invalidationFlow })}
             </div>
         </ak-form-group>
 
         <ak-form-group label="${msg("Advanced protocol settings")}">
             <div class="pf-c-form">
                 <ak-form-element-horizontal label=${msg("Signing Certificate")} name="signingKp">
-                    <ak-crypto-certificate-search
-                        .certificate=${provider.signingKp}
-                        @input=${setHasSigningKp}
-                        singleton
-                        .allowedKeyTypes=${SAMLSupportedKeyTypes}
-                    ></ak-crypto-certificate-search>
+                    ${AKCertificateSearch({ name: "signingKp", value: provider.signingKp, singleton: true, allowedKeyTypes: XMLSigningKeyTypes, onChange: setHasSigningKp })}
                     <p class="pf-c-form__helper-text">
                         ${msg(
                             "Certificate used to sign outgoing Responses going to the Service Provider.",
                         )}
                     </p>
                 </ak-form-element-horizontal>
-                ${hasSigningKp
-                    ? html`<ak-switch-input
-                              name="signAssertion"
-                              label=${msg("Sign assertions")}
-                              ?checked=${provider.signAssertion ?? true}
-                              help=${msg(
-                                  "When enabled, the assertion element of the SAML response will be signed.",
-                              )}
-                          >
-                          </ak-switch-input>
-                          <ak-switch-input
-                              name="signLogoutRequest"
-                              label=${msg("Sign logout requests")}
-                              ?checked=${provider.signLogoutRequest ?? false}
-                              help=${msg("When enabled, SAML logout requests will be signed.")}
-                          >
-                          </ak-switch-input>`
-                    : nothing}
+                ${
+                    hasSigningKp
+                        ? html`<ak-switch-input
+                                  name="signAssertion"
+                                  label=${msg("Sign assertions")}
+                                  ?checked=${provider.signAssertion ?? true}
+                                  help=${msg(
+                                      "When enabled, the assertion element of the SAML response will be signed.",
+                                  )}
+                              >
+                              </ak-switch-input>
+                              <ak-switch-input
+                                  name="signLogoutRequest"
+                                  label=${msg("Sign logout requests")}
+                                  ?checked=${provider.signLogoutRequest ?? false}
+                                  help=${msg("When enabled, SAML logout requests will be signed.")}
+                              >
+                              </ak-switch-input>`
+                        : nothing
+                }
 
                 <ak-form-element-horizontal
                     label=${msg("Encryption Certificate")}
                     name="encryptionKp"
                 >
-                    <ak-crypto-certificate-search
-                        .certificate=${provider.encryptionKp}
-                        nokey
-                        .allowedKeyTypes=${SAMLSupportedKeyTypes}
-                    ></ak-crypto-certificate-search>
+                    ${AKCertificateSearch({ name: "encryptionKp", value: provider.encryptionKp, noKey: true, allowedKeyTypes: XMLSigningKeyTypes })}
                     <p class="pf-c-form__helper-text">
                         ${msg("When selected, assertions will be encrypted using this keypair.")}
                     </p>
@@ -239,34 +176,8 @@ export function renderForm({
                         selected-label=${msg("Selected User Property Mappings")}
                     ></ak-dual-select-dynamic-selected>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("NameID Property Mapping")}
-                    name="nameIdMapping"
-                >
-                    <ak-search-select-ez
-                        .config=${nameIdMappingConfig}
-                        blankable
-                    ></ak-search-select-ez>
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected.",
-                        )}
-                    </p>
-                </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("AuthnContextClassRef Property Mapping")}
-                    name="authnContextClassRefMapping"
-                >
-                    <ak-search-select-ez
-                        .config=${authnContextClassRefMappingConfig}
-                        blankable
-                    ></ak-search-select-ez>
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.",
-                        )}
-                    </p>
-                </ak-form-element-horizontal>
+                ${AKNameIDMappingField({ value: provider.nameIdMapping })}
+                ${AKAuthnContextClassRefMappingField({ value: provider.authnContextClassRefMapping })}
 
                 <ak-text-input
                     name="sessionValidNotOnOrAfter"
@@ -336,8 +247,10 @@ export function renderForm({
                             (opt) => html`
                                 <option
                                     value=${opt.value}
-                                    ?selected=${provider?.digestAlgorithm === opt.value ||
-                                    (!provider?.digestAlgorithm && opt.default)}
+                                    ?selected=${
+                                        provider?.digestAlgorithm === opt.value ||
+                                        (!provider?.digestAlgorithm && opt.default)
+                                    }
                                 >
                                     ${opt.label}
                                 </option>
@@ -354,6 +267,7 @@ export function renderForm({
                     <select class="pf-c-form-control">
                         ${availableHashes.map((hash) => {
                             const algorithmValue = retrieveSignatureAlgorithm(keyType, hash);
+
                             if (!algorithmValue) return nothing;
 
                             const isCurrentAlgorithmAvailable = availableHashes.some(
@@ -365,9 +279,11 @@ export function renderForm({
                             return html`
                                 <option
                                     value=${algorithmValue}
-                                    ?selected=${provider?.signatureAlgorithm === algorithmValue ||
-                                    (!isCurrentAlgorithmAvailable &&
-                                        hash === DEFAULT_HASH_ALGORITHM)}
+                                    ?selected=${
+                                        provider?.signatureAlgorithm === algorithmValue ||
+                                        (!isCurrentAlgorithmAvailable &&
+                                            hash === DEFAULT_HASH_ALGORITHM)
+                                    }
                                 >
                                     ${hash}
                                 </option>

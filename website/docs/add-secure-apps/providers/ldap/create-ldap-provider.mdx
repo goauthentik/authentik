@@ -33,7 +33,7 @@ First, you'll need to create a Password Stage.
 
 3. Select **Password stage** as the stage type, click **Next**, and set the following required configurations:
     - Provide a **Name** for the stage (e.g. `ldap-authentication-password-stage`).
-    - For **Backends**, leave the default settings.
+    - For **Backends**, include **User database + app passwords** to allow [binding with app passwords](./index.mdx#bind-with-an-app-password). Keep **User database + standard password** selected if users should also be able to bind with their regular passwords.
 4. Click **Finish**
 
 #### Identification Stage

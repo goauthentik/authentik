@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,17 +15,12 @@ import { ConsentModeEnumFromJSON, ConsentModeEnumToJSON } from "./ConsentModeEnu
 
 /**
  * ConsentStage Serializer
+ *
  * @export
  * @interface PatchedConsentStageRequest
  */
 export interface PatchedConsentStageRequest {
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     mode?: ConsentModeEnum;
     /**
      * Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).

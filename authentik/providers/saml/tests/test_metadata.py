@@ -1,6 +1,9 @@
 """Test Service-Provider Metadata Parser"""
 
+from base64 import b64decode
+
 import xmlsec
+from cryptography.x509 import load_der_x509_certificate
 from defusedxml.lxml import fromstring
 from django.test import RequestFactory, TestCase
 from lxml import etree  # nosec
@@ -92,6 +95,43 @@ class TestServiceProviderMetadataParser(TestCase):
             len(SAMLPropertyMapping.objects.exclude(managed__isnull=True)),
         )
 
+    def test_multiple_bindings(self):
+        """Test metadata advertising endpoints with bindings authentik doesn't support"""
+        metadata = ServiceProviderMetadataParser().parse(
+            load_fixture("fixtures/multi_bindings.xml")
+        )
+        provider = metadata.to_provider("test", self.flow, self.flow)
+        self.assertEqual(provider.acs_url, "https://sp-b.example.org/Shibboleth.sso/SAML2/POST")
+        self.assertEqual(provider.sp_binding, SAMLBindings.POST)
+        self.assertEqual(provider.sls_url, "https://sp-b.example.org/Shibboleth.sso/SLO/POST")
+        self.assertEqual(provider.sls_binding, SAMLBindings.POST)
+        self.assertEqual(provider.default_name_id_policy, SAMLNameIDPolicy.EMAIL)
+
+    def test_multiple_bindings_default(self):
+        """Test that an ACS marked as isDefault takes precedence over the order they're listed in"""
+        metadata = ServiceProviderMetadataParser().parse(
+            load_fixture("fixtures/multi_bindings.xml").replace(
+                'bindings:HTTP-Artifact" '
+                'Location="https://sp-b.example.org/Shibboleth.sso/SAML2/Artifact"',
+                'bindings:HTTP-POST" '
+                'Location="https://sp-b.example.org/Shibboleth.sso/SAML2/POST-Default" '
+                'isDefault="true"',
+            )
+        )
+        self.assertEqual(
+            metadata.acs_location, "https://sp-b.example.org/Shibboleth.sso/SAML2/POST-Default"
+        )
+        self.assertEqual(metadata.acs_binding, SAMLBindings.POST)
+
+    def test_no_supported_binding(self):
+        """Test metadata with no ACS using a supported binding"""
+        with self.assertRaises(ValueError):
+            ServiceProviderMetadataParser().parse(
+                load_fixture("fixtures/multi_bindings.xml").replace(
+                    'bindings:HTTP-POST"', 'bindings:PAOS"'
+                )
+            )
+
     def test_with_signing_cert(self):
         """Test Metadata with signing cert"""
         create_test_cert()
@@ -140,6 +180,36 @@ class TestServiceProviderMetadataParser(TestCase):
         ctx.key = key
         ctx.verify(signature_node)
 
+    def test_signing_kp_chain(self):
+        """Test that only the leaf certificate of a certificate chain is included"""
+        leaf = create_test_cert()
+        intermediate = create_test_cert()
+        leaf.certificate_data += intermediate.certificate_data
+        leaf.save()
+        provider = SAMLProvider.objects.create(
+            name=generate_id(),
+            authorization_flow=self.flow,
+            signing_kp=leaf,
+        )
+        Application.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+            provider=provider,
+        )
+        request = self.factory.get("/")
+        metadata = lxml_from_string(MetadataProcessor(provider, request).build_entity_descriptor())
+
+        certs = metadata.xpath(
+            "/md:EntityDescriptor/md:IDPSSODescriptor/md:KeyDescriptor[@use='signing']"
+            "/ds:KeyInfo/ds:X509Data/ds:X509Certificate",
+            namespaces=NS_MAP,
+        )
+        self.assertEqual(len(certs), 1)
+        self.assertEqual(
+            load_der_x509_certificate(b64decode(certs[0].text, validate=True)),
+            leaf.certificate,
+        )
+
     def test_signature_ecdsa(self):
         """Test signature validation (ECDSA)"""
         provider = SAMLProvider.objects.create(
@@ -168,3 +238,13 @@ class TestServiceProviderMetadataParser(TestCase):
         )
         ctx.key = key
         ctx.verify(signature_node)
+
+    def test_doctype(self):
+        """Test that metadata with a document type declaration is refused"""
+        metadata = load_fixture("fixtures/simple.xml").replace(
+            '<?xml version="1.0"?>',
+            '<?xml version="1.0"?><!DOCTYPE md:EntityDescriptor>',
+        )
+
+        with self.assertRaisesMessage(ValueError, "XML document contains a DOCTYPE declaration"):
+            ServiceProviderMetadataParser().parse(metadata)

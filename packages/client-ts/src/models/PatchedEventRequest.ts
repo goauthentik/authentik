@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,37 +16,17 @@ import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
 
 /**
  * Event Serializer
+ *
  * @export
  * @interface PatchedEventRequest
  */
 export interface PatchedEventRequest {
-    /**
-     *
-     */
     user?: { [key: string]: any };
-    /**
-     *
-     */
     action?: EventActions;
-    /**
-     *
-     */
     app?: string;
-    /**
-     *
-     */
     context?: { [key: string]: any };
-    /**
-     *
-     */
     clientIp?: string | null;
-    /**
-     *
-     */
     expires?: Date;
-    /**
-     *
-     */
     brand?: { [key: string]: any };
 }
 

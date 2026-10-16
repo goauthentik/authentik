@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,14 +11,10 @@
  */
 
 /**
- *
  * @export
  * @interface BulkDeleteSessionResponse
  */
 export interface BulkDeleteSessionResponse {
-    /**
-     *
-     */
     deleted: number;
 }
 

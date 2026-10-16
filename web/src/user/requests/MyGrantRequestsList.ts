@@ -1,7 +1,6 @@
 import "#components/ak-status-label";
 import "#elements/EmptyState";
 import "#elements/forms/ConfirmationForm";
-
 import { aki } from "#common/api/client";
 import { PaginatedResponse } from "#common/api/responses";
 import { renderTargetSummary } from "#common/requests/utils";
@@ -49,6 +48,7 @@ export class MyGrantRequestsList extends WithSession(Table<GrantRequest>) {
         if (item.status !== RequestStatus.Created) {
             return nothing;
         }
+
         return html`<ak-forms-confirm
             successMessage=${msg("Successfully cancelled request")}
             errorMessage=${msg("Failed to cancel request")}

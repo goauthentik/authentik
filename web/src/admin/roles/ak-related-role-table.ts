@@ -6,11 +6,11 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 
 import { renderModal } from "#elements/dialogs";
 import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
@@ -46,6 +46,7 @@ export class AddRelatedRoleForm extends Form<{ roles: string[] }> {
         await Promise.all(
             data.roles.map((role) => {
                 if (!this.user) return Promise.resolve();
+
                 return this.#api.rbacRolesAddUserCreate({
                     uuid: role,
                     userAccountSerializerForRoleRequest: {
@@ -54,6 +55,7 @@ export class AddRelatedRoleForm extends Form<{ roles: string[] }> {
                 });
             }),
         );
+
         return data;
     }
 
@@ -133,6 +135,7 @@ export class RelatedRoleTable extends Table<Role> {
 
     willUpdate(changedProperties: PropertyValues<this>) {
         super.willUpdate(changedProperties);
+
         if (changedProperties.has("showInherited")) {
             // Disable checkboxes in showInherited mode (view-only)
             this.checkbox = !this.showInherited;
@@ -162,6 +165,7 @@ export class RelatedRoleTable extends Table<Role> {
         if (this.showInherited) {
             return [[msg("Name"), "name"]];
         }
+
         return [
             [msg("Name"), "name"],
             [msg("Actions"), null, msg("Row Actions")],
@@ -181,7 +185,9 @@ export class RelatedRoleTable extends Table<Role> {
         if (this.showInherited) {
             return nothing;
         }
+
         const disabled = !this.selectedElements.length;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Role(s)")}
             submit-label=${msg("Remove from Role(s)")}
@@ -192,6 +198,7 @@ export class RelatedRoleTable extends Table<Role> {
             .objects=${this.selectedElements}
             .delete=${(item: Role) => {
                 if (!this.targetUser) return;
+
                 return this.#api.rbacRolesRemoveUserCreate({
                     uuid: item.pk,
                     userAccountSerializerForRoleRequest: {
@@ -227,16 +234,23 @@ export class RelatedRoleTable extends Table<Role> {
 
     protected row(item: Role): SlottedTemplateResult[] {
         const inherited = this.showInherited && this.isInherited(item);
+
         const inheritedTooltip = this.targetGroup
             ? msg("Inherited from parent group")
             : msg("Inherited from group");
-        const nameCell = html`<a href="#/identity/roles/${item.pk}">${item.name}</a> ${inherited
-                ? html`<pf-tooltip position="top" content=${inheritedTooltip}>
-                      <span class="pf-c-label pf-m-outline pf-m-cyan">
-                          <span class="pf-c-label__content">&nbsp;${msg("Inherited")}</span>
-                      </span>
-                  </pf-tooltip>`
-                : nothing}`;
+
+        const nameCell = html`<a href=${toAdminInterface(`identity/roles/${item.pk}`)}
+                >${item.name}</a
+            >
+            ${
+                inherited
+                    ? html`<pf-tooltip position="top" content=${inheritedTooltip}>
+                          <span class="pf-c-label pf-m-outline pf-m-cyan">
+                              <span class="pf-c-label__content">&nbsp;${msg("Inherited")}</span>
+                          </span>
+                      </pf-tooltip>`
+                    : nothing
+            }`;
 
         // Hide actions in showInherited mode (view-only)
         if (this.showInherited) {

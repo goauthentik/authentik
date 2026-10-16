@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -145,7 +143,6 @@ import {
 
 /**
  * @type FlowChallengeResponseRequest
- *
  * @export
  */
 export type FlowChallengeResponseRequest =

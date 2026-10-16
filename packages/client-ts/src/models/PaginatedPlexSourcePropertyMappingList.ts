@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,22 +19,12 @@ import {
 } from "./PlexSourcePropertyMapping";
 
 /**
- *
  * @export
  * @interface PaginatedPlexSourcePropertyMappingList
  */
 export interface PaginatedPlexSourcePropertyMappingList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<PlexSourcePropertyMapping>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

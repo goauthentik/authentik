@@ -1,0 +1,17 @@
+{% with themed=brand.branding_favicon_themed_urls %}
+{% if not themed %}
+<link rel="icon" href="{{ brand.branding_favicon_url }}">
+<link rel="shortcut icon" href="{{ brand.branding_favicon_url }}">
+{% elif ui_theme == "dark" %}
+<link rel="icon" href="{{ themed.dark }}">
+<link rel="shortcut icon" href="{{ themed.dark }}">
+{% elif ui_theme == "light" %}
+<link rel="icon" href="{{ themed.light }}">
+<link rel="shortcut icon" href="{{ themed.light }}">
+{% else %}
+{# The brand expresses no theme, so the favicon follows the system color scheme and keeps contrast with the tab background. A theme picked in the URL or localStorage only applies to the page. #}
+<link rel="icon" href="{{ themed.light }}" media="(prefers-color-scheme: light)">
+<link rel="icon" href="{{ themed.dark }}" media="(prefers-color-scheme: dark)">
+<link rel="shortcut icon" href="{{ themed.light }}">
+{% endif %}
+{% endwith %}

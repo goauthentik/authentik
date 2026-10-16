@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { SMSDevice } from "./SMSDevice";
 import { SMSDeviceFromJSON, SMSDeviceToJSON } from "./SMSDevice";
 
 /**
- *
  * @export
  * @interface PaginatedSMSDeviceList
  */
 export interface PaginatedSMSDeviceList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<SMSDevice>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

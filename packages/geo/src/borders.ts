@@ -21,8 +21,10 @@ export type BorderFeature = Feature<LineString, BorderProperties>;
 
 export interface BorderAssignments {
     country: Map<string, string>;
-    /** Optional admin-1 assignment. Region-level borders only emit where both
-     *  cells carry a region code, and only where the country codes match. */
+    /**
+     * Optional admin-1 assignment. Region-level borders only emit where both
+     * cells carry a region code, and only where the country codes match.
+     */
     region?: Map<string, string>;
     /**
      * Optional full land-cell set at this resolution. When provided, every

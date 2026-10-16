@@ -113,6 +113,9 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
         }
         if self.audience_provider:
             method_args["audience"] = self.audience_provider.client_id
+        # A delegated exchange is performed by the actor, so attribute the event to it; the
+        # audit log then records it as an agent acting on behalf of the verified subject,
+        # matching how direct API calls by an actor are attributed.
         Event.new(
             action=EventAction.LOGIN,
             **{
@@ -120,7 +123,7 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
                 PLAN_CONTEXT_METHOD_ARGS: method_args,
                 PLAN_CONTEXT_APPLICATION: app,
             },
-        ).from_http(request, user=self.user)
+        ).from_http(request, user=self.actor or self.user)
 
     def post_init_token_exchange_actor(self, request: HttpRequest):
         """RFC 8693 §4.1 delegation: validate an optional `actor_token`, identifying who

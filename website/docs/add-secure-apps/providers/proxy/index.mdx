@@ -79,6 +79,8 @@ additionalHeaders:
 
 For dynamic headers, see the [custom headers](./custom_headers.mdx) documentation.
 
+If an upstream application cannot handle non-ASCII header values, use a [scope mapping to percent-encode them](./custom_headers.mdx#percent-encode-non-ascii-header-values).
+
 ## HTTPS
 
 The outpost listens on port `9000` for HTTP and port `9443` for HTTPS.
@@ -97,6 +99,8 @@ To log out, navigate to `/outpost.goauthentik.io/sign_out` on the host that serv
 - In forward auth domain-level mode, use the authentication URL configured for the provider, for example `https://auth.company/outpost.goauthentik.io/sign_out`.
 
 Logging out of a provider invalidates all sessions for that user within the respective outpost.
+
+Proxy sessions are also ended when the user's authentik session ends. For more information, see [Single Logout for proxy providers and outposts](../single-logout/index.mdx#single-logout-for-proxy-providers-and-outposts).
 
 ## Allow unauthenticated requests
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { RadiusOutpostConfig } from "./RadiusOutpostConfig";
 import { RadiusOutpostConfigFromJSON, RadiusOutpostConfigToJSON } from "./RadiusOutpostConfig";
 
 /**
- *
  * @export
  * @interface PaginatedRadiusOutpostConfigList
  */
 export interface PaginatedRadiusOutpostConfigList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<RadiusOutpostConfig>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

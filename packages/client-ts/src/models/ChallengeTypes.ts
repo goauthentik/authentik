@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -123,7 +121,6 @@ import { UserLoginChallengeFromJSONTyped, UserLoginChallengeToJSON } from "./Use
 
 /**
  * @type ChallengeTypes
- *
  * @export
  */
 export type ChallengeTypes =

@@ -74,6 +74,12 @@ When configured, the Identification stage can offer passkey login directly from 
 
 authentik automatically falls back to the normal identification flow when passkey autofill is not available.
 
+### CAPTCHA and passkey authentication
+
+When a user authenticates with a passkey through the Identification stage's WebAuthn configuration, authentik completes the stage immediately after the WebAuthn check. It does not run a CAPTCHA that is configured on the Identification stage, including an interactive CAPTCHA. This is intentional: CAPTCHA protects primarily against bots that guess, reuse, or vary credentials, while WebAuthn uses a cryptographic challenge and does not expose those attack paths. Skipping the CAPTCHA does not reduce protection against credential-guessing attacks and avoids an unnecessary challenge for passkey users.
+
+If you need to reduce the impact of requests that consume resources during authentication, use rate limiting or similar controls in your reverse proxy configuration instead of relying on a CAPTCHA after a successful WebAuthn check.
+
 #### Requirements
 
 - **HTTPS** is required except on `localhost`.

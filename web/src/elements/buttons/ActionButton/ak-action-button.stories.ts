@@ -1,6 +1,5 @@
 import "#elements/messages/MessageContainer";
 import "./ak-action-button.js";
-
 import AKActionButton from "./ak-action-button.js";
 
 import { Meta } from "@storybook/web-components";
@@ -66,6 +65,7 @@ const displayMessage = (result: any) => {
         `<li><i>Event</i>: ${"result" in result.detail ? result.detail.result : result.detail.error}</li>`,
         "text/xml",
     );
+
     const target = document.querySelector("#action-button-message-pad");
     target!.appendChild(doc.firstChild!);
 };
@@ -90,7 +90,7 @@ export const ButtonWithSuccess = () => {
 
 export const ButtonWithError = () => {
     const run = () =>
-        new Promise((resolve, reject) => {
+        new Promise((_resolve, reject) => {
             setTimeout(() => {
                 reject(new Error("This is the error message."));
             }, 3000);

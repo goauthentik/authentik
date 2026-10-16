@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { RACPropertyMapping } from "./RACPropertyMapping";
 import { RACPropertyMappingFromJSON, RACPropertyMappingToJSON } from "./RACPropertyMapping";
 
 /**
- *
  * @export
  * @interface PaginatedRACPropertyMappingList
  */
 export interface PaginatedRACPropertyMappingList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<RACPropertyMapping>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

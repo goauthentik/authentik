@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,21 +16,13 @@ import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
 
 /**
  * Count of events of action created on day for a single event action
+ *
  * @export
  * @interface EventVolume
  */
 export interface EventVolume {
-    /**
-     *
-     */
     action: EventActions;
-    /**
-     *
-     */
     time: Date;
-    /**
-     *
-     */
     count: number;
 }
 

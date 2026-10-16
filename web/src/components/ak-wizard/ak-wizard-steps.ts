@@ -18,13 +18,12 @@ const asArr = (v?: string[] | string) => {
  * @class WizardStepsManager
  * @component ak-wizard-Steps
  *
- * This class keeps *all* the steps of the wizard, and knows the identity of the "current" step.
+ * This class keeps _all_ the steps of the wizard, and knows the identity of the "current" step.
  * When a navigation event reaches it, it changes the view to show that step. Optionally, it can
  * process a "details" object from the WizardNavigationEvent that assigns enabled/disabled flags to
  * children that inherit from WizardStep. It can determine the slot names and identities dynamically
  * from the slot names of its immediate children, and will recalculate the slots if the component
  * using this class changes them.
- *
  */
 @customElement("ak-wizard-steps")
 export class WizardStepsManager extends AKElement {
@@ -134,12 +133,12 @@ export class WizardStepsManager extends AKElement {
     /**
      * This event sequence handles the following possibilities:
      *
-     * - The user on a step validated and wants to move forward. We want to make sure the *next*
-     *   step in enabled.
-     * - The user went *back* and changed a step and it is no longer valid. We want to disable all
+     * - The user on a step validated and wants to move forward. We want to make sure the _next_ step
+     *   in enabled.
+     * - The user went _back_ and changed a step and it is no longer valid. We want to disable all
      *   future steps until that is corrected. Yes, in this case the flow is "Now you have to go
      *   through the entire wizard," but since the user invalidated a prior, that shouldn't be
-     *   unexpected.  None of the data will have been lost.
+     *   unexpected. None of the data will have been lost.
      */
     protected updateStepAvailability(details: NavigationEventInit) {
         const enabled = asArr(details.enable);
@@ -150,6 +149,7 @@ export class WizardStepsManager extends AKElement {
 
         if (details.disabled) {
             const disabled = asArr(details.disabled);
+
             this.slotMap.forEach((slot) => {
                 slot.enabled = !disabled.includes(slot.slot);
             });
@@ -157,6 +157,7 @@ export class WizardStepsManager extends AKElement {
 
         if (details.hidden) {
             const hidden = asArr(details.hidden);
+
             this.slotMap.forEach((slot) => {
                 slot.hide = hidden.includes(slot.slot);
             });

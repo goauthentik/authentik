@@ -103,7 +103,7 @@ impl Application {
         let client_id = self.provider.client_id.as_deref()?;
         let client_secret = self.provider.client_secret.as_deref()?;
         backchannel::introspect_token(
-            &self.api_config.client,
+            &self.backchannel_client,
             &self.endpoint.token_introspection,
             self.token_host.as_ref(),
             client_id,
@@ -159,7 +159,7 @@ impl Application {
         }
 
         let jwks =
-            backchannel::fetch_jwks(&self.api_config.client, &self.endpoint.jwks_uri).await?;
+            backchannel::fetch_jwks(&self.backchannel_client, &self.endpoint.jwks_uri).await?;
         let claims = token::verify_rs256(token, &jwks, issuer, audience);
         self.jwks_cache.store(Some(Arc::new(jwks)));
         claims
@@ -182,7 +182,7 @@ impl Application {
         let client_id = self.provider.client_id.as_deref()?;
         let scope = self.provider.scopes_to_request.join(" ");
         let id_token = backchannel::client_credentials_token(
-            &self.api_config.client,
+            &self.backchannel_client,
             &self.endpoint.token_url,
             self.token_host.as_ref(),
             client_id,

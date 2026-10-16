@@ -228,7 +228,7 @@ This behavior does not apply to special scopes because they are not configurable
 - `email`: Includes the user's email address.
 - `entitlements`: Includes application entitlement data.
 - `offline_access`: Indicates that the application is requesting a refresh token.
-- `bound_key`: Requests an ID token bound to a client-held key using [OpenID Connect Key Binding](https://openid.github.io/connect-key-binding/main.html) and Demonstrating Proof of Possession (DPoP).
+- `bound_key`: Requests an ID token bound to a client-held key using OpenID Connect Key Binding and Demonstrating Proof of Possession (DPoP). See [OpenID Connect key binding](./key-binding.mdx) for configuration, proof requirements, and a client example.
 
 :::info `bound_key` scope
 The `bound_key` scope applies OpenID Connect Key Binding to the ID token. It does not bind the access token to the client's key.
@@ -248,25 +248,9 @@ The `bound_key` scope applies OpenID Connect Key Binding to the ID token. It doe
 
 ### Email scope verification
 
-In authentik releases before 2025.10, the email scope always set the `email_verified` claim to `True`. Because authentik does not have a single authoritative source for determining whether a user's email address is verified, asserting this claim could have security implications. Starting with authentik 2025.10, `email_verified` defaults to `False`.
+Some applications require the `email_verified` claim to be `True`. Before authentik 2025.10, the `email` scope always returned `True` for this claim, even though authentik has no single authoritative source for email verification. This could assert that an unverified address was verified. Starting with authentik 2025.10, the claim defaults to `False`.
 
-Some applications require this claim to be `True` before allowing users to authenticate. In these cases, you can create a custom email scope mapping under **Customization** > **Property Mappings** that always returns `email_verified` as `True`:
-
-```python
-return {
-    "email": request.user.email,
-    "email_verified": True,
-}
-```
-
-For greater security, verify users' email addresses and store the verification status as a user attribute, such as `email_verified` set to `True` or `False`. You can then configure the scope mapping to return this value dynamically:
-
-```python
-return {
-    "email": request.user.email,
-    "email_verified": request.user.attributes.get("email_verified", False),
-}
-```
+To configure the claim using an existing verification process or an authentik flow, see [Verify email addresses](./verify-email-address.mdx).
 
 ## Signing and encryption
 

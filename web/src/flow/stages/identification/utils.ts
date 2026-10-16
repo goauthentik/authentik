@@ -6,10 +6,15 @@ import { match } from "ts-pattern";
 
 import { msg, str } from "@lit/localize";
 
-export const OR_LIST_FORMATTERS: Intl.ListFormat = new Intl.ListFormat("default", {
-    style: "short",
-    type: "disjunction",
-});
+/**
+ * Builds an `Intl.ListFormat` for the given locale — call fresh per render, don't cache.
+ */
+export function createOrListFormatter(locale: string): Intl.ListFormat {
+    return new Intl.ListFormat(locale, {
+        style: "short",
+        type: "disjunction",
+    });
+}
 
 export const UIFieldLabels: Record<UserFieldsEnum, MessageFormatter<string>> = {
     [UserFieldsEnum.Username]: () => msg("Username"),

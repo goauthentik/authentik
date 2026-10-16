@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,45 +16,19 @@ import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
 
 /**
  * Event Serializer
+ *
  * @export
  * @interface Event
  */
 export interface Event {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     user?: { [key: string]: any };
-    /**
-     *
-     */
     action: EventActions;
-    /**
-     *
-     */
     app: string;
-    /**
-     *
-     */
     context?: { [key: string]: any };
-    /**
-     *
-     */
     clientIp?: string | null;
-    /**
-     *
-     */
     readonly created: Date;
-    /**
-     *
-     */
     expires?: Date;
-    /**
-     *
-     */
     brand?: { [key: string]: any };
 }
 

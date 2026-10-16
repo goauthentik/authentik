@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -23,57 +21,22 @@ import { RequestStatusFromJSON } from "./RequestStatus";
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface GrantRequest
  */
 export interface GrantRequest {
-    /**
-     *
-     */
     readonly created: Date;
-    /**
-     *
-     */
     readonly createdBy: PartialUser;
-    /**
-     *
-     */
     requesterData?: { [key: string]: any };
-    /**
-     *
-     */
     fulfillerData?: { [key: string]: any };
-    /**
-     *
-     */
     readonly revokedBy: PartialUser | null;
-    /**
-     *
-     */
     readonly agentOwner: PartialUser | null;
-    /**
-     *
-     */
     readonly isActive: boolean;
-    /**
-     *
-     */
     expires?: Date | null;
-    /**
-     *
-     */
     readonly status: RequestStatus;
-    /**
-     *
-     */
     readonly targets: Array<string>;
-    /**
-     *
-     */
     readonly targetObjs: Array<RequestableTarget>;
-    /**
-     *
-     */
     uuid?: string;
 }
 

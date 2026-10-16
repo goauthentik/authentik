@@ -1,11 +1,11 @@
-import "#admin/common/ak-crypto-certificate-search";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#components/ak-switch-input";
-
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+
+import { AKCertificateSearch } from "#admin/common/AKCertificateSearch";
 
 import { DockerServiceConnection, OutpostsApi } from "@goauthentik/api";
 
@@ -78,10 +78,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 label=${msg("TLS Verification Certificate")}
                 name="tlsVerification"
             >
-                <ak-crypto-certificate-search
-                    .certificate=${this.instance?.tlsVerification}
-                    nokey
-                ></ak-crypto-certificate-search>
+                ${AKCertificateSearch({ name: "tlsVerification", value: this.instance?.tlsVerification, noKey: true })}
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         "CA which the endpoint's Certificate is verified against. Can be left empty for no validation.",
@@ -92,9 +89,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 label=${msg("TLS Authentication Certificate/SSH Keypair")}
                 name="tlsAuthentication"
             >
-                <ak-crypto-certificate-search
-                    .certificate=${this.instance?.tlsAuthentication}
-                ></ak-crypto-certificate-search>
+                ${AKCertificateSearch({ name: "tlsAuthentication", value: this.instance?.tlsAuthentication })}
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         "Certificate/Key used for authentication. Can be left empty for no authentication.",

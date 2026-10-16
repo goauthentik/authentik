@@ -19,17 +19,16 @@ from authentik.common.saml.constants import (
     RSA_SHA512,
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
-from authentik.lib.xml import lxml_from_string
-from authentik.providers.saml.exceptions import CannotHandleAssertion
+from authentik.common.saml.exceptions import (
+    ERROR_CANNOT_DECODE_REQUEST,
+    ERROR_FAILED_TO_VERIFY,
+    ERROR_SIGNATURE_REQUIRED_BUT_ABSENT,
+    CannotHandleAssertion,
+)
+from authentik.lib.xml import UnsafeXML, lxml_from_string
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
 from authentik.sources.saml.models import SAMLNameIDPolicy
-
-ERROR_CANNOT_DECODE_REQUEST = "Cannot decode SAML request."
-ERROR_SIGNATURE_REQUIRED_BUT_ABSENT = (
-    "Verification Certificate configured, but request is not signed."
-)
-ERROR_FAILED_TO_VERIFY = "Failed to verify signature"
 
 
 @dataclass(slots=True)
@@ -66,12 +65,15 @@ class AuthNRequestParser:
             request_acs_url = root.attrib["AssertionConsumerServiceURL"]
 
         if self.provider.acs_url.lower() != request_acs_url.lower():
-            msg = (
+            self.logger.warning(
+                "ACS URL of request doesn't match provider ACS URL",
+                request_acs_url=request_acs_url,
+                provider_acs_url=self.provider.acs_url,
+            )
+            raise CannotHandleAssertion(
                 f"ACS URL of {request_acs_url} doesn't match Provider "
                 f"ACS URL of {self.provider.acs_url}."
             )
-            self.logger.warning(msg)
-            raise CannotHandleAssertion(msg)
 
         # `ForceAuthn` is an optional attribute. When true, the SP requires the IdP to
         # actively re-authenticate the user instead of relying on an existing session
@@ -103,7 +105,10 @@ class AuthNRequestParser:
         if not verifier:
             return self._parse_xml(decoded_xml, relay_state)
 
-        root = lxml_from_string(decoded_xml)
+        try:
+            root = lxml_from_string(decoded_xml)
+        except UnsafeXML as exc:
+            raise CannotHandleAssertion(str(exc)) from exc
         xmlsec.tree.add_ids(root, ["ID"])
         signature_nodes = root.xpath("/samlp:AuthnRequest/ds:Signature", namespaces=NS_MAP)
         # No signatures, no verifier configured -> decode xml directly

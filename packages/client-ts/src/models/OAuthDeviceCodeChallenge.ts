@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,21 +16,13 @@ import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * OAuth Device code challenge
+ *
  * @export
  * @interface OAuthDeviceCodeChallenge
  */
 export interface OAuthDeviceCodeChallenge {
-    /**
-     *
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     */
     component?: string;
-    /**
-     *
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
 }
 

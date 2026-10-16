@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -24,85 +22,29 @@ import { LoginSourceFromJSON, LoginSourceToJSON } from "./LoginSource";
 
 /**
  * Identification challenges with all UI elements
+ *
  * @export
  * @interface IdentificationChallenge
  */
 export interface IdentificationChallenge {
-    /**
-     *
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     */
     component?: string;
-    /**
-     *
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     */
     userFields: Array<string> | null;
-    /**
-     *
-     */
     pendingUserIdentifier?: string | null;
-    /**
-     *
-     */
     passwordFields: boolean;
-    /**
-     *
-     */
     allowShowPassword?: boolean;
-    /**
-     *
-     */
     applicationPre?: string;
-    /**
-     *
-     */
     applicationPreLaunch?: string;
-    /**
-     *
-     */
     flowDesignation: FlowDesignationEnum;
-    /**
-     *
-     */
     captchaStage?: CaptchaChallenge | null;
-    /**
-     *
-     */
     enrollUrl?: string;
-    /**
-     *
-     */
     recoveryUrl?: string;
-    /**
-     *
-     */
     passwordlessUrl?: string;
-    /**
-     *
-     */
     primaryAction: string;
-    /**
-     *
-     */
     sources?: Array<LoginSource>;
-    /**
-     *
-     */
     showSourceLabels: boolean;
-    /**
-     *
-     */
     enableRememberMe?: boolean;
-    /**
-     *
-     */
     passkeyChallenge?: { [key: string]: any } | null;
 }
 

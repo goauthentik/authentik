@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,29 +16,15 @@ import { PolicyBehaviorEnumFromJSON, PolicyBehaviorEnumToJSON } from "./PolicyBe
 
 /**
  * Base serializer class which doesn't implement create/update methods
+ *
  * @export
  * @interface AgentCreateRequest
  */
 export interface AgentCreateRequest {
-    /**
-     *
-     */
     parent?: number;
-    /**
-     *
-     */
     label?: string;
-    /**
-     *
-     */
     expiring?: boolean;
-    /**
-     *
-     */
     expires?: Date | null;
-    /**
-     *
-     */
     policyBehavior?: PolicyBehaviorEnum;
 }
 

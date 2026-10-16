@@ -4,25 +4,17 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#components/ak-text-input";
 import "#components/ak-radio-input";
-import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 
 import { RadioOption } from "#elements/forms/Radio";
 
 import { AKLabel } from "#components/ak-label";
+import { AKSearchSelect } from "#components/ak-search-select-field";
 
+import { groupSource } from "#admin/common/search-sources";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
-import {
-    CoreApi,
-    CoreGroupsListRequest,
-    Group,
-    StagesApi,
-    UserCreationModeEnum,
-    UserTypeEnum,
-    UserWriteStage,
-} from "@goauthentik/api";
+import { StagesApi, UserCreationModeEnum, UserTypeEnum, UserWriteStage } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -108,30 +100,32 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                         label=${msg("User type")}
                         name="userType"
                         help=${msg("User type used for newly created users.")}
-                        .options=${[
-                            {
-                                label: msg("Internal"),
-                                value: UserTypeEnum.Internal,
-                                default: true,
-                                description: html`${msg(
-                                    "Internal users might be users such as company employees, which will get access to the full Enterprise feature set.",
-                                )}`,
-                            },
-                            {
-                                label: msg("External"),
-                                value: UserTypeEnum.External,
-                                description: html`${msg(
-                                    "External users might be external consultants or B2C customers. These users don't get access to enterprise features.",
-                                )}`,
-                            },
-                            {
-                                label: msg("Service account"),
-                                value: UserTypeEnum.ServiceAccount,
-                                description: html`${msg(
-                                    "Service accounts should be used for machine-to-machine authentication or other automations.",
-                                )}`,
-                            },
-                        ] satisfies RadioOption<UserTypeEnum>[]}
+                        .options=${
+                            [
+                                {
+                                    label: msg("Internal"),
+                                    value: UserTypeEnum.Internal,
+                                    default: true,
+                                    description: html`${msg(
+                                        "Internal users might be users such as company employees, which will get access to the full Enterprise feature set.",
+                                    )}`,
+                                },
+                                {
+                                    label: msg("External"),
+                                    value: UserTypeEnum.External,
+                                    description: html`${msg(
+                                        "External users might be external consultants or B2C customers. These users don't get access to enterprise features.",
+                                    )}`,
+                                },
+                                {
+                                    label: msg("Service account"),
+                                    value: UserTypeEnum.ServiceAccount,
+                                    description: html`${msg(
+                                        "Service accounts should be used for machine-to-machine authentication or other automations.",
+                                    )}`,
+                                },
+                            ] satisfies RadioOption<UserTypeEnum>[]
+                        }
                         .value=${this.instance?.userType}
                     >
                     </ak-radio-input>
@@ -153,30 +147,12 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Group")} name="createUsersGroup">
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Group[]> => {
-                                const args: CoreGroupsListRequest = {
-                                    ordering: "name",
-                                    includeUsers: false,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const groups = await aki(CoreApi).coreGroupsList(args);
-                                return groups.results;
-                            }}
-                            .renderElement=${(group: Group): string => {
-                                return group.name;
-                            }}
-                            .value=${(group: Group | undefined): string | undefined => {
-                                return group ? group.pk : undefined;
-                            }}
-                            .selected=${(group: Group): boolean => {
-                                return group.pk === this.instance?.createUsersGroup;
-                            }}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKSearchSelect({
+                            name: "createUsersGroup",
+                            source: groupSource,
+                            value: this.instance?.createUsersGroup,
+                            blankable: true,
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Newly created users are added to this group, if a group is selected.",

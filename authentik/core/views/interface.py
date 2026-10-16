@@ -1,6 +1,5 @@
 """Interface views"""
 
-from json import dumps
 from typing import Any
 
 from django.contrib.auth.mixins import AccessMixin
@@ -15,6 +14,7 @@ from authentik.admin.tasks import LOCAL_VERSION
 from authentik.api.v3.config import ConfigView
 from authentik.brands.api import CurrentBrandSerializer
 from authentik.brands.models import Brand
+from authentik.core import user_switching
 from authentik.core.apps import Setup
 from authentik.core.models import UserTypes
 from authentik.lib.config import CONFIG
@@ -56,9 +56,10 @@ class InterfaceView(TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         brand = CurrentBrandSerializer(self.request.brand, context={"request": self.request})
-        kwargs["config_json"] = dumps(ConfigView.get_config(self.request).data)
+        # Rendered by `json_script`, which serializes and escapes on its own.
+        kwargs["config_json"] = ConfigView.get_config(self.request).data
         kwargs["ui_theme"] = brand.data["ui_theme"]
-        kwargs["brand_json"] = dumps(brand.data)
+        kwargs["brand_json"] = brand.data
         kwargs["version_family"] = f"{LOCAL_VERSION.major}.{LOCAL_VERSION.minor}"
         kwargs["version_subdomain"] = f"version-{LOCAL_VERSION.major}-{LOCAL_VERSION.minor}"
         kwargs["build"] = authentik_build_hash()
@@ -72,6 +73,8 @@ class BrandDefaultRedirectView(InterfaceView):
     """By default redirect to default app"""
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        # Returning to an interface abandons an unfinished "Add user".
+        request.session.pop(user_switching.SESSION_KEY_ADD_USER, None)
         if request.user.is_authenticated and request.user.type in (
             UserTypes.EXTERNAL,
             UserTypes.SERVICE_ACCOUNT,

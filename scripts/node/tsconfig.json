@@ -1,0 +1,9 @@
+// TypeScript Project Configuration
+{
+    "extends": "@goauthentik/tsconfig/node",
+    // Builds the logger's declarations, which the root package.json's `#logger`
+    // import points `types` at. Its `default` stays a relative path so the scripts
+    // still resolve before `pnpm install` has run.
+    "references": [{ "path": "../../packages/logger-js" }],
+    "include": ["**/*.ts"]
+}

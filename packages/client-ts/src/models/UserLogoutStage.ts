@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,17 +15,12 @@ import { FlowSetFromJSON } from "./FlowSet";
 
 /**
  * UserLogoutStage Serializer
+ *
  * @export
  * @interface UserLogoutStage
  */
 export interface UserLogoutStage {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
@@ -45,9 +38,6 @@ export interface UserLogoutStage {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly flowSet: Array<FlowSet>;
 }
 

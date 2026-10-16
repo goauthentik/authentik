@@ -1,3 +1,7 @@
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -6,10 +10,6 @@ import { UserSetting } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html } from "lit";
 import { property } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 
 export abstract class BaseUserSettings extends AKElement {
     static styles: CSSResult[] = [PFButton, PFForm, PFFormControl];

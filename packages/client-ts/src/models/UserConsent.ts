@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,33 +18,16 @@ import { UserFromJSON, UserToJSON } from "./User";
 
 /**
  * UserConsent Serializer
+ *
  * @export
  * @interface UserConsent
  */
 export interface UserConsent {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     expires?: Date | null;
-    /**
-     *
-     */
     expiring?: boolean;
-    /**
-     *
-     */
     user: User;
-    /**
-     *
-     */
     application: Application;
-    /**
-     *
-     */
     permissions?: string;
 }
 

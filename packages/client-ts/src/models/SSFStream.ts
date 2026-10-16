@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -23,49 +21,20 @@ import { SSFStreamStatusEnumFromJSON, SSFStreamStatusEnumToJSON } from "./SSFStr
 
 /**
  * SSFStream Serializer
+ *
  * @export
  * @interface SSFStream
  */
 export interface SSFStream {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     status?: SSFStreamStatusEnum;
-    /**
-     *
-     */
     provider: number;
-    /**
-     *
-     */
     readonly providerObj: SSFProvider;
-    /**
-     *
-     */
     deliveryMethod: DeliveryMethodEnum;
-    /**
-     *
-     */
     endpointUrl?: string | null;
-    /**
-     *
-     */
     eventsRequested?: Array<EventsRequestedEnum>;
-    /**
-     *
-     */
     format: string;
-    /**
-     *
-     */
     aud?: Array<string>;
-    /**
-     *
-     */
     iss: string;
 }
 

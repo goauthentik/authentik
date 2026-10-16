@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -121,12 +119,14 @@ export class BaseAPI {
     /**
      * Check if the given MIME is a JSON MIME.
      * JSON MIME examples:
-     *   application/json
-     *   application/json; charset=UTF8
-     *   APPLICATION/JSON
-     *   application/vnd.company+json
+     * application/json
+     * application/json; charset=UTF8
+     * APPLICATION/JSON
+     * application/vnd.company+json
+     *
      * @param mime - MIME (Multipurpose Internet Mail Extensions)
-     * @return True if the given MIME is JSON, false otherwise.
+     *
+     * @returns True if the given MIME is JSON, false otherwise.
      */
     protected isJsonMime(mime: string | null | undefined): boolean {
         if (!mime) {
@@ -279,7 +279,7 @@ function isFormData(value: any): value is FormData {
 }
 
 export class ResponseError extends Error {
-    override name: "ResponseError" = "ResponseError";
+    override name = "ResponseError" as const;
     constructor(
         public response: Response,
         msg?: string,
@@ -295,7 +295,7 @@ export class ResponseError extends Error {
 }
 
 export class FetchError extends Error {
-    override name: "FetchError" = "FetchError";
+    override name = "FetchError" as const;
     constructor(
         public cause: Error,
         msg?: string,
@@ -311,7 +311,7 @@ export class FetchError extends Error {
 }
 
 export class RequiredError extends Error {
-    override name: "RequiredError" = "RequiredError";
+    override name = "RequiredError" as const;
     constructor(
         public field: string,
         msg?: string,
@@ -551,12 +551,86 @@ export class VoidApiResponse {
     }
 }
 
+/**
+ * A Blob carrying the file name the server advertised, empty when it did not send one. It is a File
+ * wherever one can be built, and the bare Blob given a name otherwise. Same name and shape as the
+ * `typescript` generator's browser HttpFile.
+ */
+export type HttpFile = Blob & { readonly name: string };
+
 export class BlobApiResponse {
     constructor(public raw: Response) {}
 
-    async value(): Promise<Blob> {
-        return await this.raw.blob();
+    /**
+     * The body named after the Content-Disposition header, so that a download keeps the name the
+     * server gave it. A File is built from a native Blob; the Blob itself is named where there is
+     * no global File (Node.js before 20), where File cannot be constructed, or where the Blob is
+     * not the native one, as returned by an injected fetch implementation such as node-fetch, which
+     * a File would stringify instead of wrapping.
+     */
+    async value(): Promise<HttpFile> {
+        const blob = await this.raw.blob();
+        const name = parseContentDispositionFilename(this.raw.headers) ?? "";
+        if (typeof File !== "undefined" && blob instanceof Blob) {
+            try {
+                return new File([blob], name, { type: blob.type });
+            } catch {
+                // File cannot be constructed: name the Blob itself
+            }
+        }
+        return Object.assign(blob, { name });
     }
+}
+
+/**
+ * The file name advertised by a Content-Disposition header (RFC 6266): the RFC 5987 encoded
+ * `filename*` parameter first, falling back to the plain `filename` when it is malformed, not UTF-8
+ * or has no usable name. Any directory part is dropped; undefined when no usable name is
+ * advertised.
+ */
+export function parseContentDispositionFilename(headers: Headers): string | undefined {
+    const params = parseHeaderParameters(headers.get("Content-Disposition") ?? "");
+    return basename(decodeExtValue(params.get("filename*"))) ?? basename(params.get("filename"));
+}
+
+/**
+ * The decoded RFC 5987 ext-value, or undefined when it is not UTF-8 or its percent-encoding is
+ * malformed.
+ */
+function decodeExtValue(value: string | undefined): string | undefined {
+    const match = value === undefined ? null : /^utf-8'[^']*'(.*)$/i.exec(value);
+    try {
+        return match ? decodeURIComponent(match[1]) : undefined;
+    } catch {
+        return undefined;
+    }
+}
+
+/**
+ * The `name=value` parameters of a header value, consumed one at a time so that a quoted-string is
+ * taken whole, `;` included. Names are lower-cased, quoted-string values are unquoted with their
+ * backslash escapes resolved, and the first occurrence of a name wins.
+ */
+function parseHeaderParameters(value: string): Map<string, string> {
+    const params = new Map<string, string>();
+    const parameter = /(?:^|;)\s*([^=;]+?)\s*=\s*(?:"((?:[^"\\]|\\.)*)"?|([^;]*))/g;
+    let match: RegExpExecArray | null;
+    while ((match = parameter.exec(value)) !== null) {
+        const name = match[1].toLowerCase();
+        if (!params.has(name)) {
+            params.set(
+                name,
+                match[2] !== undefined ? match[2].replace(/\\(.)/g, "$1") : match[3].trim(),
+            );
+        }
+    }
+    return params;
+}
+
+/** The last `/` or `\` separated segment of a file name, or undefined when it is not a file name. */
+function basename(name: string | undefined): string | undefined {
+    const base = name?.split(/[\\/]/).pop();
+    return !base || base === "." || base === ".." ? undefined : base;
 }
 
 export class TextApiResponse {

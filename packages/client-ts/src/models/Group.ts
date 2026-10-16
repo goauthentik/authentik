@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,65 +19,27 @@ import { RoleFromJSON } from "./Role";
 
 /**
  * Group Serializer
+ *
  * @export
  * @interface Group
  */
 export interface Group {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     readonly numPk: number;
-    /**
-     *
-     */
     name: string;
     /**
      * Users added to this group will be superusers.
      */
     isSuperuser?: boolean;
-    /**
-     *
-     */
     parents?: Array<string>;
-    /**
-     *
-     */
     readonly parentsObj: Array<RelatedGroup> | null;
-    /**
-     *
-     */
     users?: Array<number>;
-    /**
-     *
-     */
     readonly usersObj: Array<PartialUser> | null;
-    /**
-     *
-     */
     attributes?: { [key: string]: any };
-    /**
-     *
-     */
     roles?: Array<string>;
-    /**
-     *
-     */
     readonly rolesObj: Array<Role>;
-    /**
-     *
-     */
     readonly inheritedRolesObj: Array<Role> | null;
-    /**
-     *
-     */
     readonly children: Array<string>;
-    /**
-     *
-     */
     readonly childrenObj: Array<RelatedGroup> | null;
 }
 

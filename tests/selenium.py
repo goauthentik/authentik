@@ -130,10 +130,10 @@ class SeleniumTestMixin(E2ETestMixin):
             ) from exc
 
     def if_user_url(self, path: str | None = None) -> str:
-        """same as self.url() but show URL in shell"""
+        """Build a path-based user-interface URL (the interface is path-routed)."""
         url = self.url("authentik_core:if-user")
         if path:
-            return f"{url}#{path}"
+            return f"{url}{path.lstrip('/')}"
         return url
 
     def parse_json_content(

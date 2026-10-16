@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,6 +10,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { AppEnum } from "./AppEnum";
 import { AppEnumFromJSON, AppEnumToJSON } from "./AppEnum";
 import type { EventActions } from "./EventActions";
@@ -21,20 +20,16 @@ import { ModelEnumFromJSON, ModelEnumToJSON } from "./ModelEnum";
 
 /**
  * Event Matcher Policy Serializer
+ *
  * @export
  * @interface EventMatcherPolicy
  */
 export interface EventMatcherPolicy {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
-     * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+     * When this option is enabled, all executions of this policy will be logged. By default, only
+     * execution errors are logged.
      */
     executionLogging?: boolean;
     /**
@@ -57,8 +52,11 @@ export interface EventMatcherPolicy {
      * Return objects policy is bound to
      */
     readonly boundTo: number;
+    readonly lastUpdated: Date;
+    readonly created: Date;
     /**
-     * Match created events with this action type. When left empty, all action types will be matched.
+     * Match created events with this action type. When left empty, all action types will be
+     * matched.
      */
     action?: EventActions | null;
     /**
@@ -70,12 +68,10 @@ export interface EventMatcherPolicy {
      */
     app?: AppEnum | null;
     /**
-     * Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+     * Match events created by selected model. When left empty, all models are matched. When an app
+     * is selected, all the application's models are matched.
      */
     model?: ModelEnum | null;
-    /**
-     *
-     */
     query?: string | null;
 }
 
@@ -114,6 +110,14 @@ export function instanceOfEventMatcherPolicy(value: object): value is EventMatch
             (value as Record<string, any>)["bound_to"] === undefined)
     )
         return false;
+    if (
+        (!("lastUpdated" in (value as Record<string, any>)) &&
+            !("last_updated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUpdated"] === undefined &&
+            (value as Record<string, any>)["last_updated"] === undefined)
+    )
+        return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
     return true;
 }
 
@@ -137,6 +141,11 @@ export function EventMatcherPolicyFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
         action:
             json["action"] === undefined
                 ? undefined
@@ -173,7 +182,14 @@ export function EventMatcherPolicyToJSON(json: any): EventMatcherPolicy {
 export function EventMatcherPolicyToJSONTyped(
     value?: Omit<
         EventMatcherPolicy,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "boundTo"
+        | "pk"
+        | "component"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
+        | "boundTo"
+        | "lastUpdated"
+        | "created"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

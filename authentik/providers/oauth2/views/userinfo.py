@@ -21,6 +21,7 @@ from authentik.common.oauth.constants import (
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import PermissionDict
+from authentik.lib.tracing import active_tracer
 from authentik.providers.oauth2.models import (
     BaseGrantModel,
     OAuth2Provider,
@@ -64,6 +65,7 @@ class UserInfoView(View):
                 )
         return scope_descriptions
 
+    @active_tracer().instrument()
     def get_claims(self, provider: OAuth2Provider, token: BaseGrantModel) -> dict[str, Any]:
         """Get a dictionary of claims from scopes that the token
         requires and are assigned to the provider."""
@@ -92,13 +94,6 @@ class UserInfoView(View):
                 LOGGER.warning("Failed to evaluate property mapping", exc=exc)
             if value is None:
                 continue
-            if not isinstance(value, dict):
-                LOGGER.warning(
-                    "Scope returned a non-dict value, ignoring",
-                    scope=scope,
-                    value=value,
-                )
-                continue
             always_merger.merge(final_claims, value)
             LOGGER.debug("updated scope", scope=scope)
         return final_claims
@@ -106,10 +101,7 @@ class UserInfoView(View):
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         self.token = kwargs.get("token", None)
         response = super().dispatch(request, *args, **kwargs)
-        allowed_origins = []
-        if self.token:
-            allowed_origins = [x.url for x in self.token.provider.redirect_uris]
-        cors_allow(self.request, response, *allowed_origins)
+        cors_allow(self.request, response, self.token.provider.redirect_uris if self.token else [])
         return response
 
     def options(self, request: HttpRequest) -> HttpResponse:

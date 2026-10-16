@@ -96,3 +96,14 @@ class QLTest(APITestCase):
                 content = loads(res.content)
                 self.assertEqual(content["pagination"]["count"], 1)
                 self.assertEqual(content["results"][0]["username"], self.user.username)
+
+    def test_autocomplete_json_relation(self):
+        """Test that the autocomplete schema includes the model a JSON field relates to,
+        even when no nested keys are suggested"""
+        self.client.force_login(self.user)
+        res = self.client.get(reverse("authentik_api:user-list"))
+        self.assertEqual(res.status_code, 200)
+        autocomplete = loads(res.content)["autocomplete"]
+        attributes = autocomplete["models"]["authentik_core.user"]["attributes"]
+        self.assertEqual(attributes["type"], "relation")
+        self.assertIn(attributes["relation"], autocomplete["models"])

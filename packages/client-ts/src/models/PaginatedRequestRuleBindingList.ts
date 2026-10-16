@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { RequestRuleBinding } from "./RequestRuleBinding";
 import { RequestRuleBindingFromJSON, RequestRuleBindingToJSON } from "./RequestRuleBinding";
 
 /**
- *
  * @export
  * @interface PaginatedRequestRuleBindingList
  */
 export interface PaginatedRequestRuleBindingList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<RequestRuleBinding>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

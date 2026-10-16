@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { SourceStage } from "./SourceStage";
 import { SourceStageFromJSON, SourceStageToJSON } from "./SourceStage";
 
 /**
- *
  * @export
  * @interface PaginatedSourceStageList
  */
 export interface PaginatedSourceStageList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<SourceStage>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

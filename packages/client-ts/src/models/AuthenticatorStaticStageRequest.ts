@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,29 +12,19 @@
 
 /**
  * AuthenticatorStaticStage Serializer
+ *
  * @export
  * @interface AuthenticatorStaticStageRequest
  */
 export interface AuthenticatorStaticStageRequest {
-    /**
-     *
-     */
     name: string;
     /**
-     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able
+     * to configure this stage.
      */
     configureFlow?: string | null;
-    /**
-     *
-     */
     friendlyName?: string;
-    /**
-     *
-     */
     tokenCount?: number;
-    /**
-     *
-     */
     tokenLength?: number;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,17 +19,12 @@ import { StageModeEnumFromJSON, StageModeEnumToJSON } from "./StageModeEnum";
 
 /**
  * EndpointStage Serializer
+ *
  * @export
  * @interface EndpointStage
  */
 export interface EndpointStage {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
@@ -49,21 +42,9 @@ export interface EndpointStage {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly flowSet: Array<FlowSet>;
-    /**
-     *
-     */
     connector: string;
-    /**
-     *
-     */
     readonly connectorObj: Connector;
-    /**
-     *
-     */
     mode?: StageModeEnum;
 }
 

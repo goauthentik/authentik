@@ -34,7 +34,7 @@ jobs:
     uses: ./.github/workflows/_reusable-container-build-single.yml
     secrets: inherit
     with:
-      runs-on: ubuntu-latest
+      runs-on: ubuntu-26.04
       ref: "${{ inputs.ref }}"
       image-name: "${{ inputs.image-name }}"
       image-arch: amd64
@@ -47,7 +47,7 @@ jobs:
     uses: ./.github/workflows/_reusable-container-build-single.yml
     secrets: inherit
     with:
-      runs-on: ubuntu-24.04-arm
+      runs-on: ubuntu-26.04-arm
       ref: "${{ inputs.ref }}"
       image-name: "${{ inputs.image-name }}"
       image-arch: arm64
@@ -57,13 +57,13 @@ jobs:
       cache-suffix: "${{ inputs.cache-suffix }}"
 
   merge:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs:
       - build-amd64
       - build-arm64
     steps:
-      - uses: regclient/actions/regctl-installer@ba687069a65d03e9214808f16f3f0b3933c2048b
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+      - uses: regclient/actions/regctl-installer@dd58ad94f76adb73d8ac1bf75ed25f01545d5b32
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v5
         with:
           artifact-ids: "${{ needs.build-amd64.outputs.artifact-id }},${{ needs.build-arm64.outputs.artifact-id }}"
           merge-multiple: true
@@ -229,7 +229,7 @@ jobs:
             "${target}" \
             "build/container/${image_name}.oci.tar"
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v4
         with:
           name: "container-build-${{ inputs.image-name }}"
           path: build/

@@ -103,9 +103,8 @@ export function retrieveSignatureAlgorithm(
     algorithm: HashAlgorithm,
 ): SignatureAlgorithmEnum | null {
     const familyMap = SignatureFamilyByHashAlgorithm[family];
+
     if (!familyMap) return null;
 
     return familyMap.get(algorithm) ?? null;
 }
-
-export const SAMLSupportedKeyTypes = [KeyTypeEnum.Rsa, KeyTypeEnum.Ec, KeyTypeEnum.Dsa];

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -156,9 +154,6 @@ export interface PoliciesAllDestroyRequest {
 }
 
 export interface PoliciesAllListRequest {
-    /**
-     *
-     */
     bindingsIsnull?: boolean;
     /**
      * Which field to use when ordering the results.
@@ -172,9 +167,6 @@ export interface PoliciesAllListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     promptstageIsnull?: boolean;
     /**
      * A search term.
@@ -194,9 +186,6 @@ export interface PoliciesAllTestCreateRequest {
      * A UUID string identifying this Policy.
      */
     policyUuid: string;
-    /**
-     *
-     */
     policyTestRequest: PolicyTestRequest;
 }
 
@@ -208,9 +197,6 @@ export interface PoliciesAllUsedByListRequest {
 }
 
 export interface PoliciesBindingsCreateRequest {
-    /**
-     *
-     */
     policyBindingRequest: PolicyBindingRequest;
 }
 
@@ -222,13 +208,7 @@ export interface PoliciesBindingsDestroyRequest {
 }
 
 export interface PoliciesBindingsListRequest {
-    /**
-     *
-     */
     enabled?: boolean;
-    /**
-     *
-     */
     order?: number;
     /**
      * Which field to use when ordering the results.
@@ -242,29 +222,14 @@ export interface PoliciesBindingsListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     policy?: string;
-    /**
-     *
-     */
     policyIsnull?: boolean;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     target?: string;
-    /**
-     *
-     */
     targetIn?: Array<string>;
-    /**
-     *
-     */
     timeout?: number;
 }
 
@@ -273,9 +238,6 @@ export interface PoliciesBindingsPartialUpdateRequest {
      * A UUID string identifying this Policy Binding.
      */
     policyBindingUuid: string;
-    /**
-     *
-     */
     patchedPolicyBindingRequest?: PatchedPolicyBindingRequest;
 }
 
@@ -291,9 +253,6 @@ export interface PoliciesBindingsUpdateRequest {
      * A UUID string identifying this Policy Binding.
      */
     policyBindingUuid: string;
-    /**
-     *
-     */
     policyBindingRequest: PolicyBindingRequest;
 }
 
@@ -305,9 +264,6 @@ export interface PoliciesBindingsUsedByListRequest {
 }
 
 export interface PoliciesDummyCreateRequest {
-    /**
-     *
-     */
     dummyPolicyRequest: DummyPolicyRequest;
 }
 
@@ -319,21 +275,9 @@ export interface PoliciesDummyDestroyRequest {
 }
 
 export interface PoliciesDummyListRequest {
-    /**
-     *
-     */
     created?: Date;
-    /**
-     *
-     */
     executionLogging?: boolean;
-    /**
-     *
-     */
     lastUpdated?: Date;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -347,25 +291,13 @@ export interface PoliciesDummyListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     policyUuid?: string;
-    /**
-     *
-     */
     result?: boolean;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     waitMax?: number;
-    /**
-     *
-     */
     waitMin?: number;
 }
 
@@ -374,9 +306,6 @@ export interface PoliciesDummyPartialUpdateRequest {
      * A UUID string identifying this Dummy Policy.
      */
     policyUuid: string;
-    /**
-     *
-     */
     patchedDummyPolicyRequest?: PatchedDummyPolicyRequest;
 }
 
@@ -392,9 +321,6 @@ export interface PoliciesDummyUpdateRequest {
      * A UUID string identifying this Dummy Policy.
      */
     policyUuid: string;
-    /**
-     *
-     */
     dummyPolicyRequest: DummyPolicyRequest;
 }
 
@@ -406,9 +332,6 @@ export interface PoliciesDummyUsedByListRequest {
 }
 
 export interface PoliciesEventMatcherCreateRequest {
-    /**
-     *
-     */
     eventMatcherPolicyRequest: EventMatcherPolicyRequest;
 }
 
@@ -420,37 +343,13 @@ export interface PoliciesEventMatcherDestroyRequest {
 }
 
 export interface PoliciesEventMatcherListRequest {
-    /**
-     *
-     */
     action?: EventActions | null;
-    /**
-     *
-     */
     app?: string;
-    /**
-     *
-     */
     clientIp?: string;
-    /**
-     *
-     */
     created?: Date;
-    /**
-     *
-     */
     executionLogging?: boolean;
-    /**
-     *
-     */
     lastUpdated?: Date;
-    /**
-     *
-     */
     model?: string;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -464,13 +363,7 @@ export interface PoliciesEventMatcherListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     policyUuid?: string;
-    /**
-     *
-     */
     query?: string;
     /**
      * A search term.
@@ -483,9 +376,6 @@ export interface PoliciesEventMatcherPartialUpdateRequest {
      * A UUID string identifying this Event Matcher Policy.
      */
     policyUuid: string;
-    /**
-     *
-     */
     patchedEventMatcherPolicyRequest?: PatchedEventMatcherPolicyRequest;
 }
 
@@ -501,9 +391,6 @@ export interface PoliciesEventMatcherUpdateRequest {
      * A UUID string identifying this Event Matcher Policy.
      */
     policyUuid: string;
-    /**
-     *
-     */
     eventMatcherPolicyRequest: EventMatcherPolicyRequest;
 }
 
@@ -515,9 +402,6 @@ export interface PoliciesEventMatcherUsedByListRequest {
 }
 
 export interface PoliciesExpressionCreateRequest {
-    /**
-     *
-     */
     expressionPolicyRequest: ExpressionPolicyRequest;
 }
 
@@ -529,25 +413,10 @@ export interface PoliciesExpressionDestroyRequest {
 }
 
 export interface PoliciesExpressionListRequest {
-    /**
-     *
-     */
     created?: Date;
-    /**
-     *
-     */
     executionLogging?: boolean;
-    /**
-     *
-     */
     expression?: string;
-    /**
-     *
-     */
     lastUpdated?: Date;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -561,9 +430,6 @@ export interface PoliciesExpressionListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     policyUuid?: string;
     /**
      * A search term.
@@ -576,9 +442,6 @@ export interface PoliciesExpressionPartialUpdateRequest {
      * A UUID string identifying this Expression Policy.
      */
     policyUuid: string;
-    /**
-     *
-     */
     patchedExpressionPolicyRequest?: PatchedExpressionPolicyRequest;
 }
 
@@ -594,9 +457,6 @@ export interface PoliciesExpressionUpdateRequest {
      * A UUID string identifying this Expression Policy.
      */
     policyUuid: string;
-    /**
-     *
-     */
     expressionPolicyRequest: ExpressionPolicyRequest;
 }
 
@@ -608,9 +468,6 @@ export interface PoliciesExpressionUsedByListRequest {
 }
 
 export interface PoliciesGeoipCreateRequest {
-    /**
-     *
-     */
     geoIPPolicyRequest: GeoIPPolicyRequest;
 }
 
@@ -622,9 +479,6 @@ export interface PoliciesGeoipDestroyRequest {
 }
 
 export interface PoliciesGeoipListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -649,9 +503,6 @@ export interface PoliciesGeoipPartialUpdateRequest {
      * A UUID string identifying this GeoIP Policy.
      */
     policyUuid: string;
-    /**
-     *
-     */
     patchedGeoIPPolicyRequest?: PatchedGeoIPPolicyRequest;
 }
 
@@ -667,9 +518,6 @@ export interface PoliciesGeoipUpdateRequest {
      * A UUID string identifying this GeoIP Policy.
      */
     policyUuid: string;
-    /**
-     *
-     */
     geoIPPolicyRequest: GeoIPPolicyRequest;
 }
 
@@ -681,9 +529,6 @@ export interface PoliciesGeoipUsedByListRequest {
 }
 
 export interface PoliciesPasswordCreateRequest {
-    /**
-     *
-     */
     passwordPolicyRequest: PasswordPolicyRequest;
 }
 
@@ -695,9 +540,6 @@ export interface PoliciesPasswordDestroyRequest {
 }
 
 export interface PoliciesPasswordExpiryCreateRequest {
-    /**
-     *
-     */
     passwordExpiryPolicyRequest: PasswordExpiryPolicyRequest;
 }
 
@@ -709,29 +551,11 @@ export interface PoliciesPasswordExpiryDestroyRequest {
 }
 
 export interface PoliciesPasswordExpiryListRequest {
-    /**
-     *
-     */
     created?: Date;
-    /**
-     *
-     */
     days?: number;
-    /**
-     *
-     */
     denyOnly?: boolean;
-    /**
-     *
-     */
     executionLogging?: boolean;
-    /**
-     *
-     */
     lastUpdated?: Date;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -745,9 +569,6 @@ export interface PoliciesPasswordExpiryListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     policyUuid?: string;
     /**
      * A search term.
@@ -760,9 +581,6 @@ export interface PoliciesPasswordExpiryPartialUpdateRequest {
      * A UUID string identifying this Password Expiry Policy.
      */
     policyUuid: string;
-    /**
-     *
-     */
     patchedPasswordExpiryPolicyRequest?: PatchedPasswordExpiryPolicyRequest;
 }
 
@@ -778,9 +596,6 @@ export interface PoliciesPasswordExpiryUpdateRequest {
      * A UUID string identifying this Password Expiry Policy.
      */
     policyUuid: string;
-    /**
-     *
-     */
     passwordExpiryPolicyRequest: PasswordExpiryPolicyRequest;
 }
 
@@ -792,61 +607,19 @@ export interface PoliciesPasswordExpiryUsedByListRequest {
 }
 
 export interface PoliciesPasswordListRequest {
-    /**
-     *
-     */
     amountDigits?: number;
-    /**
-     *
-     */
     amountLowercase?: number;
-    /**
-     *
-     */
     amountSymbols?: number;
-    /**
-     *
-     */
     amountUppercase?: number;
-    /**
-     *
-     */
     checkHaveIBeenPwned?: boolean;
-    /**
-     *
-     */
     checkStaticRules?: boolean;
-    /**
-     *
-     */
     checkZxcvbn?: boolean;
-    /**
-     *
-     */
     created?: Date;
-    /**
-     *
-     */
     errorMessage?: string;
-    /**
-     *
-     */
     executionLogging?: boolean;
-    /**
-     *
-     */
     hibpAllowedCount?: number;
-    /**
-     *
-     */
     lastUpdated?: Date;
-    /**
-     *
-     */
     lengthMin?: number;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -860,25 +633,13 @@ export interface PoliciesPasswordListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     passwordField?: string;
-    /**
-     *
-     */
     policyUuid?: string;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     symbolCharset?: string;
-    /**
-     *
-     */
     zxcvbnScoreThreshold?: number;
 }
 
@@ -887,9 +648,6 @@ export interface PoliciesPasswordPartialUpdateRequest {
      * A UUID string identifying this Password Policy.
      */
     policyUuid: string;
-    /**
-     *
-     */
     patchedPasswordPolicyRequest?: PatchedPasswordPolicyRequest;
 }
 
@@ -905,9 +663,6 @@ export interface PoliciesPasswordUpdateRequest {
      * A UUID string identifying this Password Policy.
      */
     policyUuid: string;
-    /**
-     *
-     */
     passwordPolicyRequest: PasswordPolicyRequest;
 }
 
@@ -919,9 +674,6 @@ export interface PoliciesPasswordUsedByListRequest {
 }
 
 export interface PoliciesReputationCreateRequest {
-    /**
-     *
-     */
     reputationPolicyRequest: ReputationPolicyRequest;
 }
 
@@ -933,29 +685,11 @@ export interface PoliciesReputationDestroyRequest {
 }
 
 export interface PoliciesReputationListRequest {
-    /**
-     *
-     */
     checkIp?: boolean;
-    /**
-     *
-     */
     checkUsername?: boolean;
-    /**
-     *
-     */
     created?: Date;
-    /**
-     *
-     */
     executionLogging?: boolean;
-    /**
-     *
-     */
     lastUpdated?: Date;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -969,17 +703,11 @@ export interface PoliciesReputationListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     policyUuid?: string;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     threshold?: number;
 }
 
@@ -988,9 +716,6 @@ export interface PoliciesReputationPartialUpdateRequest {
      * A UUID string identifying this Reputation Policy.
      */
     policyUuid: string;
-    /**
-     *
-     */
     patchedReputationPolicyRequest?: PatchedReputationPolicyRequest;
 }
 
@@ -1009,17 +734,11 @@ export interface PoliciesReputationScoresDestroyRequest {
 }
 
 export interface PoliciesReputationScoresListRequest {
-    /**
-     *
-     */
     identifier?: string;
     /**
      * Multiple values may be separated by commas.
      */
     identifierIn?: Array<string>;
-    /**
-     *
-     */
     ip?: string;
     /**
      * Which field to use when ordering the results.
@@ -1033,9 +752,6 @@ export interface PoliciesReputationScoresListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     score?: number;
     /**
      * A search term.
@@ -1062,9 +778,6 @@ export interface PoliciesReputationUpdateRequest {
      * A UUID string identifying this Reputation Policy.
      */
     policyUuid: string;
-    /**
-     *
-     */
     reputationPolicyRequest: ReputationPolicyRequest;
 }
 
@@ -1076,9 +789,6 @@ export interface PoliciesReputationUsedByListRequest {
 }
 
 export interface PoliciesUniquePasswordCreateRequest {
-    /**
-     *
-     */
     uniquePasswordPolicyRequest: UniquePasswordPolicyRequest;
 }
 
@@ -1090,25 +800,10 @@ export interface PoliciesUniquePasswordDestroyRequest {
 }
 
 export interface PoliciesUniquePasswordListRequest {
-    /**
-     *
-     */
     created?: Date;
-    /**
-     *
-     */
     executionLogging?: boolean;
-    /**
-     *
-     */
     lastUpdated?: Date;
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     numHistoricalPasswords?: number;
     /**
      * Which field to use when ordering the results.
@@ -1122,13 +817,7 @@ export interface PoliciesUniquePasswordListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     passwordField?: string;
-    /**
-     *
-     */
     policyUuid?: string;
     /**
      * A search term.
@@ -1141,9 +830,6 @@ export interface PoliciesUniquePasswordPartialUpdateRequest {
      * A UUID string identifying this Password Uniqueness Policy.
      */
     policyUuid: string;
-    /**
-     *
-     */
     patchedUniquePasswordPolicyRequest?: PatchedUniquePasswordPolicyRequest;
 }
 
@@ -1159,9 +845,6 @@ export interface PoliciesUniquePasswordUpdateRequest {
      * A UUID string identifying this Password Uniqueness Policy.
      */
     policyUuid: string;
-    /**
-     *
-     */
     uniquePasswordPolicyRequest: UniquePasswordPolicyRequest;
 }
 
@@ -1172,9 +855,6 @@ export interface PoliciesUniquePasswordUsedByListRequest {
     policyUuid: string;
 }
 
-/**
- *
- */
 export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesAllCacheClearCreate without sending the request
@@ -1193,7 +873,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/all/cache_clear/`;
+        const urlPath = `/policies/all/cache_clear/`;
 
         return {
             path: urlPath,
@@ -1241,7 +921,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/all/cache_info/`;
+        const urlPath = `/policies/all/cache_info/`;
 
         return {
             path: urlPath,
@@ -1379,7 +1059,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/all/`;
+        const urlPath = `/policies/all/`;
 
         return {
             path: urlPath,
@@ -1572,7 +1252,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/all/types/`;
+        const urlPath = `/policies/all/types/`;
 
         return {
             path: urlPath,
@@ -1698,7 +1378,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/bindings/`;
+        const urlPath = `/policies/bindings/`;
 
         return {
             path: urlPath,
@@ -1861,7 +1541,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/bindings/`;
+        const urlPath = `/policies/bindings/`;
 
         return {
             path: urlPath,
@@ -2206,7 +1886,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/dummy/`;
+        const urlPath = `/policies/dummy/`;
 
         return {
             path: urlPath,
@@ -2375,7 +2055,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/dummy/`;
+        const urlPath = `/policies/dummy/`;
 
         return {
             path: urlPath,
@@ -2708,7 +2388,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/event_matcher/`;
+        const urlPath = `/policies/event_matcher/`;
 
         return {
             path: urlPath,
@@ -2887,7 +2567,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/event_matcher/`;
+        const urlPath = `/policies/event_matcher/`;
 
         return {
             path: urlPath,
@@ -3240,7 +2920,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/expression/`;
+        const urlPath = `/policies/expression/`;
 
         return {
             path: urlPath,
@@ -3403,7 +3083,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/expression/`;
+        const urlPath = `/policies/expression/`;
 
         return {
             path: urlPath,
@@ -3752,7 +3432,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/geoip/`;
+        const urlPath = `/policies/geoip/`;
 
         return {
             path: urlPath,
@@ -3867,7 +3547,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/geoip_iso3166/`;
+        const urlPath = `/policies/geoip_iso3166/`;
 
         return {
             path: urlPath,
@@ -3940,7 +3620,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/geoip/`;
+        const urlPath = `/policies/geoip/`;
 
         return {
             path: urlPath,
@@ -4273,7 +3953,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/password/`;
+        const urlPath = `/policies/password/`;
 
         return {
             path: urlPath,
@@ -4401,7 +4081,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/password_expiry/`;
+        const urlPath = `/policies/password_expiry/`;
 
         return {
             path: urlPath,
@@ -4575,7 +4255,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/password_expiry/`;
+        const urlPath = `/policies/password_expiry/`;
 
         return {
             path: urlPath,
@@ -5017,7 +4697,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/password/`;
+        const urlPath = `/policies/password/`;
 
         return {
             path: urlPath,
@@ -5362,7 +5042,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/reputation/`;
+        const urlPath = `/policies/reputation/`;
 
         return {
             path: urlPath,
@@ -5533,7 +5213,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/reputation/`;
+        const urlPath = `/policies/reputation/`;
 
         return {
             path: urlPath,
@@ -5827,7 +5507,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/reputation/scores/`;
+        const urlPath = `/policies/reputation/scores/`;
 
         return {
             path: urlPath,
@@ -6175,7 +5855,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/unique_password/`;
+        const urlPath = `/policies/unique_password/`;
 
         return {
             path: urlPath,
@@ -6350,7 +6030,7 @@ export class PoliciesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/policies/unique_password/`;
+        const urlPath = `/policies/unique_password/`;
 
         return {
             path: urlPath,

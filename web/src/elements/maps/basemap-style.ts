@@ -52,6 +52,7 @@ export function buildSky(theme: BasemapTheme): SkySpecification {
         theme === "dark"
             ? { sky: "#000", horizon: "#3d5878", fog: "#161b22" }
             : { sky: "#a9c6db", horizon: "#e9f2f7", fog: "#dfe7ec" };
+
     return {
         "sky-color": colors.sky,
         "horizon-color": colors.horizon,
@@ -65,16 +66,20 @@ export function buildSky(theme: BasemapTheme): SkySpecification {
 
 function resolveFlavor(options: BuildStyleOptions): Flavor {
     const { flavor } = options;
+
     if (!flavor) return flavorForTheme(options.theme ?? "light");
+
     return typeof flavor === "string" ? namedFlavor(flavor) : flavor;
 }
 
 /** Resolve a possibly-relative URL against the current document origin. */
 export function resolveTileURL(template: string): string {
     if (/^https?:\/\//i.test(template)) return template;
+
     if (typeof window !== "undefined" && window.location) {
         return new URL(template, window.location.href).toString();
     }
+
     return template;
 }
 

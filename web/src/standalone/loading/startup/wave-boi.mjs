@@ -65,6 +65,7 @@ export class WavesCanvas {
     /**
      * Flat array storing particle data:
      * [baseX, baseZ, baseY, r, g, b, a, size, perspectiveSize, halfSize, perspectiveDepthAlpha]
+     *
      * @type {Float32Array}
      */
     #particleData = new Float32Array(0);
@@ -112,7 +113,16 @@ export class WavesCanvas {
 
     /**
      * The method to use to draw the waves.
-     * @type {(x: number, y: number, halfSize: number, r: number, g: number, b: number, a: number) => void}
+     *
+     * @type {(
+     *     x: number,
+     *     y: number,
+     *     halfSize: number,
+     *     r: number,
+     *     g: number,
+     *     b: number,
+     *     a: number,
+     * ) => void}
      */
     #drawShape;
 
@@ -229,9 +239,11 @@ export class WavesCanvas {
 
     /**
      * Test if a 3D point is within the view frustum
+     *
      * @param {number} x - World X coordinate
      * @param {number} y - World Y coordinate
      * @param {number} z - World Z coordinate
+     *
      * @returns {boolean}
      */
     #isInFrustum(x, y, z) {
@@ -296,25 +308,31 @@ export class WavesCanvas {
                 this.#particleData[offset + ParticleOffsets.BASE_X] = baseX;
                 this.#particleData[offset + ParticleOffsets.BASE_Z] = baseZ;
                 this.#particleData[offset + ParticleOffsets.BASE_Y] = this.cameraZ * -0.4;
+
                 this.#particleData[offset + ParticleOffsets.R] = Math.min(
                     Math.floor(253 / (depthFactor * horizonFactor)),
                     255,
                 );
+
                 this.#particleData[offset + ParticleOffsets.G] = Math.min(
                     Math.floor(75 / horizonFactor),
                     255,
                 );
+
                 this.#particleData[offset + ParticleOffsets.B] = Math.min(
                     Math.floor(45 / (depthFactor * horizonFactor * 2)),
                     255,
                 );
+
                 this.#particleData[offset + ParticleOffsets.A] = alpha;
                 this.#particleData[offset + ParticleOffsets.SIZE] = baseSize;
                 this.#particleData[offset + ParticleOffsets.PERSPECTIVE_SIZE] = perspectiveSize;
+
                 this.#particleData[offset + ParticleOffsets.HALF_SIZE] = Math.max(
                     1,
                     Math.round(perspectiveSize / 1.5),
                 );
+
                 this.#particleData[offset + ParticleOffsets.PERSPECTIVE_DEPTH_ALPHA] =
                     depthAlpha ** 2;
 
@@ -331,7 +349,8 @@ export class WavesCanvas {
      * @param {number} x
      * @param {number} y
      * @param {number} z
-     * @returns {{x: number, y: number, z: number} | null}
+     *
+     * @returns {{ x: number; y: number; z: number } | null}
      */
     project3DTo2D(x, y, z) {
         const projectedX = (x * this.f) / this.aspectRatio;
@@ -344,6 +363,7 @@ export class WavesCanvas {
         // top of canvas is horizon (y=0), bottom is near
 
         const screenX = ((projectedX / projectedZ) * this.width) / 2 + this.width / 2;
+
         const screenY =
             this.height / 2 - ((projectedY / projectedZ) * this.height) / 2 - this.cameraZ * 2;
 
@@ -358,6 +378,7 @@ export class WavesCanvas {
      * @param {number} x
      * @param {number} z
      * @param {number} time
+     *
      * @returns {number}
      */
     calculateWaveY(x, z, time) {
@@ -370,6 +391,7 @@ export class WavesCanvas {
 
     /**
      * Draw a simple point particle (for distant objects)
+     *
      * @param {number} x
      * @param {number} y
      * @param {number} r
@@ -399,6 +421,7 @@ export class WavesCanvas {
 
     /**
      * Draw a hollow circle particle
+     *
      * @param {number} x
      * @param {number} y
      * @param {number} halfSize
@@ -446,6 +469,7 @@ export class WavesCanvas {
 
     /**
      * Draw an isosceles triangle particle
+     *
      * @param {number} x
      * @param {number} y
      * @param {number} halfSize

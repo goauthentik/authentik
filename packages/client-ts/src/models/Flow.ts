@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -27,21 +25,13 @@ import { ThemedUrlsFromJSON } from "./ThemedUrls";
 
 /**
  * Flow Serializer
+ *
  * @export
  * @interface Flow
  */
 export interface Flow {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     readonly policybindingmodelPtrId: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Visible in the URL.
@@ -52,7 +42,8 @@ export interface Flow {
      */
     title: string;
     /**
-     * Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
+     * Decides what this Flow is used for. For example, the Authentication flow is redirect to when
+     * an un-authenticated user visits authentik.
      */
     designation: FlowDesignationEnum;
     /**
@@ -63,25 +54,13 @@ export interface Flow {
      * Get the URL to the background image
      */
     readonly backgroundUrl: string;
-    /**
-     *
-     */
     readonly backgroundThemedUrls: ThemedUrls | null;
-    /**
-     *
-     */
     readonly stages: Array<string>;
-    /**
-     *
-     */
     readonly policies: Array<string>;
     /**
      * Get count of cached flows
      */
     readonly cacheCount: number;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
     /**
      * Enable compatibility mode, increases compatibility with password managers on mobile devices.
@@ -91,9 +70,6 @@ export interface Flow {
      * Get export URL for flow
      */
     readonly exportUrl: string;
-    /**
-     *
-     */
     layout?: FlowLayoutEnum;
     /**
      * Configure what should happen when a flow denies access to a user.

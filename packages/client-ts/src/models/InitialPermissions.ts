@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,29 +15,15 @@ import { PermissionFromJSON } from "./Permission";
 
 /**
  * InitialPermissions serializer
+ *
  * @export
  * @interface InitialPermissions
  */
 export interface InitialPermissions {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     role: string;
-    /**
-     *
-     */
     permissions?: Array<number>;
-    /**
-     *
-     */
     readonly permissionsObj: Array<Permission>;
 }
 

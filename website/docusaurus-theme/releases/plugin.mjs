@@ -1,9 +1,14 @@
 /* eslint-disable no-console */
 /**
+ * @import {
+ *   LoadContext,
+ *   Plugin
+ * } from "@docusaurus/types"
+ * @import {
+ *   AKReleasesPluginData,
+ *   AKReleasesPluginOptions
+ * } from "./common.mjs"
  * @file Docusaurus releases plugin.
- *
- * @import { LoadContext, Plugin } from "@docusaurus/types"
- * @import { AKReleasesPluginOptions, AKReleasesPluginData } from "./common.mjs"
  */
 
 import * as fs from "node:fs/promises";
@@ -17,6 +22,7 @@ const RELEASES_FILENAME = "releases.gen.json";
 /**
  * @param {LoadContext} loadContext
  * @param {AKReleasesPluginOptions} options
+ *
  * @returns {Promise<Plugin<AKReleasesPluginData>>}
  */
 async function akReleasesPlugin(loadContext, options) {

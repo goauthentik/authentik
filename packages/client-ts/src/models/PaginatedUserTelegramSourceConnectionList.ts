@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,22 +19,12 @@ import {
 } from "./UserTelegramSourceConnection";
 
 /**
- *
  * @export
  * @interface PaginatedUserTelegramSourceConnectionList
  */
 export interface PaginatedUserTelegramSourceConnectionList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<UserTelegramSourceConnection>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

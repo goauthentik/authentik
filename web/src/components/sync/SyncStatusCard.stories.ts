@@ -1,5 +1,4 @@
 import "./SyncStatusCard.js";
-
 import { SyncStatus, TaskAggregatedStatusEnum } from "@goauthentik/api";
 
 import type { Meta, StoryObj } from "@storybook/web-components";

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -35,9 +33,6 @@ import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface CryptoCertificatekeypairsCreateRequest {
-    /**
-     *
-     */
     certificateKeyPairRequest: CertificateKeyPairRequest;
 }
 
@@ -49,9 +44,6 @@ export interface CryptoCertificatekeypairsDestroyRequest {
 }
 
 export interface CryptoCertificatekeypairsGenerateCreateRequest {
-    /**
-     *
-     */
     certificateGenerationRequest: CertificateGenerationRequest;
 }
 
@@ -60,17 +52,8 @@ export interface CryptoCertificatekeypairsListRequest {
      * Only return certificate-key pairs with keys
      */
     hasKey?: boolean;
-    /**
-     *
-     */
     keyType?: Array<KeyTypeEnum>;
-    /**
-     *
-     */
     managed?: string;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -95,9 +78,6 @@ export interface CryptoCertificatekeypairsPartialUpdateRequest {
      * A UUID string identifying this Certificate-Key Pair.
      */
     kpUuid: string;
-    /**
-     *
-     */
     patchedCertificateKeyPairRequest?: PatchedCertificateKeyPairRequest;
 }
 
@@ -113,9 +93,6 @@ export interface CryptoCertificatekeypairsUpdateRequest {
      * A UUID string identifying this Certificate-Key Pair.
      */
     kpUuid: string;
-    /**
-     *
-     */
     certificateKeyPairRequest: CertificateKeyPairRequest;
 }
 
@@ -131,9 +108,6 @@ export interface CryptoCertificatekeypairsViewCertificateRetrieveRequest {
      * A UUID string identifying this Certificate-Key Pair.
      */
     kpUuid: string;
-    /**
-     *
-     */
     download?: boolean;
 }
 
@@ -142,15 +116,9 @@ export interface CryptoCertificatekeypairsViewPrivateKeyRetrieveRequest {
      * A UUID string identifying this Certificate-Key Pair.
      */
     kpUuid: string;
-    /**
-     *
-     */
     download?: boolean;
 }
 
-/**
- *
- */
 export class CryptoApi extends runtime.BaseAPI {
     /**
      * Creates request options for cryptoCertificatekeypairsCreate without sending the request
@@ -180,7 +148,7 @@ export class CryptoApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/crypto/certificatekeypairs/`;
+        const urlPath = `/crypto/certificatekeypairs/`;
 
         return {
             path: urlPath,
@@ -286,7 +254,8 @@ export class CryptoApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for cryptoCertificatekeypairsGenerateCreate without sending the request
+     * Creates request options for cryptoCertificatekeypairsGenerateCreate without sending the
+     * request
      */
     async cryptoCertificatekeypairsGenerateCreateRequestOpts(
         requestParameters: CryptoCertificatekeypairsGenerateCreateRequest,
@@ -313,7 +282,7 @@ export class CryptoApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/crypto/certificatekeypairs/generate/`;
+        const urlPath = `/crypto/certificatekeypairs/generate/`;
 
         return {
             path: urlPath,
@@ -407,7 +376,7 @@ export class CryptoApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/crypto/certificatekeypairs/`;
+        const urlPath = `/crypto/certificatekeypairs/`;
 
         return {
             path: urlPath,
@@ -448,7 +417,8 @@ export class CryptoApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for cryptoCertificatekeypairsPartialUpdate without sending the request
+     * Creates request options for cryptoCertificatekeypairsPartialUpdate without sending the
+     * request
      */
     async cryptoCertificatekeypairsPartialUpdateRequestOpts(
         requestParameters: CryptoCertificatekeypairsPartialUpdateRequest,
@@ -741,7 +711,8 @@ export class CryptoApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for cryptoCertificatekeypairsViewCertificateRetrieve without sending the request
+     * Creates request options for cryptoCertificatekeypairsViewCertificateRetrieve without sending
+     * the request
      */
     async cryptoCertificatekeypairsViewCertificateRetrieveRequestOpts(
         requestParameters: CryptoCertificatekeypairsViewCertificateRetrieveRequest,
@@ -817,7 +788,8 @@ export class CryptoApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for cryptoCertificatekeypairsViewPrivateKeyRetrieve without sending the request
+     * Creates request options for cryptoCertificatekeypairsViewPrivateKeyRetrieve without sending
+     * the request
      */
     async cryptoCertificatekeypairsViewPrivateKeyRetrieveRequestOpts(
         requestParameters: CryptoCertificatekeypairsViewPrivateKeyRetrieveRequest,

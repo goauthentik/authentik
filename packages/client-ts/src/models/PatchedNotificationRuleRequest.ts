@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,16 +15,15 @@ import { SeverityEnumFromJSON, SeverityEnumToJSON } from "./SeverityEnum";
 
 /**
  * NotificationRule Serializer
+ *
  * @export
  * @interface PatchedNotificationRuleRequest
  */
 export interface PatchedNotificationRuleRequest {
-    /**
-     *
-     */
     name?: string;
     /**
-     * Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.
+     * Select which transports should be used to notify the user. If none are selected, the
+     * notification will only be shown in the authentik UI.
      */
     transports?: Array<string>;
     /**
@@ -34,11 +31,13 @@ export interface PatchedNotificationRuleRequest {
      */
     severity?: SeverityEnum;
     /**
-     * Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
+     * Define which group of users this notification should be sent and shown to. If left empty,
+     * Notification won't ben sent.
      */
     destinationGroup?: string | null;
     /**
-     * When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
+     * When enabled, notification will be sent to user the user that triggered the event.When
+     * destination_group is configured, notification is sent to both.
      */
     destinationEventUser?: boolean;
 }

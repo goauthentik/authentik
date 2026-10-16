@@ -1,3 +1,8 @@
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
+import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
+
 import { EVENT_REFRESH } from "#common/constants";
 
 import { WizardAction } from "#elements/wizard/Wizard";
@@ -8,11 +13,6 @@ import { ResponseError } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 
 export enum ActionState {
     pending = "pending",
@@ -41,7 +41,7 @@ export class ActionWizardPage extends WizardPage {
         this.states = this.host.actions.map((act, idx) => ({
             action: act,
             state: ActionState.pending,
-            idx: idx,
+            idx,
         }));
 
         this.host.canBack = false;
@@ -64,6 +64,7 @@ export class ActionWizardPage extends WizardPage {
             this.currentStep = bundle;
             this.currentStep.state = ActionState.running;
             this.requestUpdate();
+
             try {
                 await bundle.action.run();
 
@@ -106,6 +107,7 @@ export class ActionWizardPage extends WizardPage {
                         <ol class="pf-c-progress-stepper pf-m-vertical">
                             ${this.states.map((state) => {
                                 let cls = "";
+
                                 switch (state.state) {
                                     case ActionState.pending:
                                         cls = "pf-m-pending";
@@ -120,9 +122,11 @@ export class ActionWizardPage extends WizardPage {
                                         cls = "pf-m-danger";
                                         break;
                                 }
+
                                 if (state.idx === this.currentStep?.idx) {
                                     cls += " pf-m-current";
                                 }
+
                                 return html` <li class="pf-c-progress-stepper__step ${cls}">
                                     <div class="pf-c-progress-stepper__step-connector">
                                         <span class="pf-c-progress-stepper__step-icon">
@@ -133,13 +137,15 @@ export class ActionWizardPage extends WizardPage {
                                         <div class="pf-c-progress-stepper__step-title">
                                             ${state.action.displayName}
                                         </div>
-                                        ${state.action.subText
-                                            ? html`<div
-                                                  class="pf-c-progress-stepper__step-description"
-                                              >
-                                                  ${state.action.subText}
-                                              </div>`
-                                            : nothing}
+                                        ${
+                                            state.action.subText
+                                                ? html`<div
+                                                      class="pf-c-progress-stepper__step-description"
+                                                  >
+                                                      ${state.action.subText}
+                                                  </div>`
+                                                : nothing
+                                        }
                                     </div>
                                 </li>`;
                             })}

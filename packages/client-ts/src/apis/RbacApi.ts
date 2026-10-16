@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -62,9 +60,6 @@ import {
 import * as runtime from "../runtime";
 
 export interface RbacInitialPermissionsCreateRequest {
-    /**
-     *
-     */
     initialPermissionsRequest: InitialPermissionsRequest;
 }
 
@@ -76,9 +71,6 @@ export interface RbacInitialPermissionsDestroyRequest {
 }
 
 export interface RbacInitialPermissionsListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -103,9 +95,6 @@ export interface RbacInitialPermissionsPartialUpdateRequest {
      * A unique integer value identifying this Initial Permissions.
      */
     id: number;
-    /**
-     *
-     */
     patchedInitialPermissionsRequest?: PatchedInitialPermissionsRequest;
 }
 
@@ -121,9 +110,6 @@ export interface RbacInitialPermissionsUpdateRequest {
      * A unique integer value identifying this Initial Permissions.
      */
     id: number;
-    /**
-     *
-     */
     initialPermissionsRequest: InitialPermissionsRequest;
 }
 
@@ -139,20 +125,11 @@ export interface RbacPermissionsAssignedByRolesAssignRequest {
      * A UUID string identifying this Role.
      */
     uuid: string;
-    /**
-     *
-     */
     permissionAssignRequest: PermissionAssignRequest;
 }
 
 export interface RbacPermissionsAssignedByRolesListRequest {
-    /**
-     *
-     */
     model: string;
-    /**
-     *
-     */
     objectPk?: string;
     /**
      * Which field to use when ordering the results.
@@ -177,24 +154,12 @@ export interface RbacPermissionsAssignedByRolesUnassignPartialUpdateRequest {
      * A UUID string identifying this Role.
      */
     uuid: string;
-    /**
-     *
-     */
     patchedPermissionAssignRequest?: PatchedPermissionAssignRequest;
 }
 
 export interface RbacPermissionsListRequest {
-    /**
-     *
-     */
     codename?: string;
-    /**
-     *
-     */
     contentTypeAppLabel?: string;
-    /**
-     *
-     */
     contentTypeModel?: string;
     /**
      * Which field to use when ordering the results.
@@ -208,9 +173,6 @@ export interface RbacPermissionsListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     role?: string;
     /**
      * A search term.
@@ -242,9 +204,6 @@ export interface RbacPermissionsRolesListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     uuid?: string;
 }
 
@@ -253,16 +212,10 @@ export interface RbacRolesAddUserCreateRequest {
      * A UUID string identifying this Role.
      */
     uuid: string;
-    /**
-     *
-     */
     userAccountSerializerForRoleRequest: UserAccountSerializerForRoleRequest;
 }
 
 export interface RbacRolesCreateRequest {
-    /**
-     *
-     */
     roleRequest: RoleRequest;
 }
 
@@ -274,25 +227,13 @@ export interface RbacRolesDestroyRequest {
 }
 
 export interface RbacRolesListRequest {
-    /**
-     *
-     */
     groups?: string;
     /**
      * Include inherited roles (requires users or groups filter)
      */
     inherited?: boolean;
-    /**
-     *
-     */
     managed?: Array<string>;
-    /**
-     *
-     */
     managedIsnull?: boolean;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -310,9 +251,6 @@ export interface RbacRolesListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     users?: number;
 }
 
@@ -321,9 +259,6 @@ export interface RbacRolesPartialUpdateRequest {
      * A UUID string identifying this Role.
      */
     uuid: string;
-    /**
-     *
-     */
     patchedRoleRequest?: PatchedRoleRequest;
 }
 
@@ -332,9 +267,6 @@ export interface RbacRolesRemoveUserCreateRequest {
      * A UUID string identifying this Role.
      */
     uuid: string;
-    /**
-     *
-     */
     userAccountSerializerForRoleRequest: UserAccountSerializerForRoleRequest;
 }
 
@@ -350,9 +282,6 @@ export interface RbacRolesUpdateRequest {
      * A UUID string identifying this Role.
      */
     uuid: string;
-    /**
-     *
-     */
     roleRequest: RoleRequest;
 }
 
@@ -363,9 +292,6 @@ export interface RbacRolesUsedByListRequest {
     uuid: string;
 }
 
-/**
- *
- */
 export class RbacApi extends runtime.BaseAPI {
     /**
      * Creates request options for rbacInitialPermissionsCreate without sending the request
@@ -395,7 +321,7 @@ export class RbacApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/rbac/initial_permissions/`;
+        const urlPath = `/rbac/initial_permissions/`;
 
         return {
             path: urlPath,
@@ -536,7 +462,7 @@ export class RbacApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/rbac/initial_permissions/`;
+        const urlPath = `/rbac/initial_permissions/`;
 
         return {
             path: urlPath,
@@ -901,7 +827,8 @@ export class RbacApi extends runtime.BaseAPI {
     }
 
     /**
-     * Assign permission(s) to role. When `object_pk` is set, the permissions are only assigned to the specific object, otherwise they are assigned globally.
+     * Assign permission(s) to role. When `object_pk` is set, the permissions are only assigned to
+     * the specific object, otherwise they are assigned globally.
      */
     async rbacPermissionsAssignedByRolesAssignRaw(
         requestParameters: RbacPermissionsAssignedByRolesAssignRequest,
@@ -917,7 +844,8 @@ export class RbacApi extends runtime.BaseAPI {
     }
 
     /**
-     * Assign permission(s) to role. When `object_pk` is set, the permissions are only assigned to the specific object, otherwise they are assigned globally.
+     * Assign permission(s) to role. When `object_pk` is set, the permissions are only assigned to
+     * the specific object, otherwise they are assigned globally.
      */
     async rbacPermissionsAssignedByRolesAssign(
         requestParameters: RbacPermissionsAssignedByRolesAssignRequest,
@@ -980,7 +908,7 @@ export class RbacApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/rbac/permissions/assigned_by_roles/`;
+        const urlPath = `/rbac/permissions/assigned_by_roles/`;
 
         return {
             path: urlPath,
@@ -1021,7 +949,8 @@ export class RbacApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for rbacPermissionsAssignedByRolesUnassignPartialUpdate without sending the request
+     * Creates request options for rbacPermissionsAssignedByRolesUnassignPartialUpdate without
+     * sending the request
      */
     async rbacPermissionsAssignedByRolesUnassignPartialUpdateRequestOpts(
         requestParameters: RbacPermissionsAssignedByRolesUnassignPartialUpdateRequest,
@@ -1063,7 +992,8 @@ export class RbacApi extends runtime.BaseAPI {
     }
 
     /**
-     * Unassign permission(s) to role. When `object_pk` is set, the permissions are only assigned to the specific object, otherwise they are assigned globally.
+     * Unassign permission(s) to role. When `object_pk` is set, the permissions are only assigned to
+     * the specific object, otherwise they are assigned globally.
      */
     async rbacPermissionsAssignedByRolesUnassignPartialUpdateRaw(
         requestParameters: RbacPermissionsAssignedByRolesUnassignPartialUpdateRequest,
@@ -1079,7 +1009,8 @@ export class RbacApi extends runtime.BaseAPI {
     }
 
     /**
-     * Unassign permission(s) to role. When `object_pk` is set, the permissions are only assigned to the specific object, otherwise they are assigned globally.
+     * Unassign permission(s) to role. When `object_pk` is set, the permissions are only assigned to
+     * the specific object, otherwise they are assigned globally.
      */
     async rbacPermissionsAssignedByRolesUnassignPartialUpdate(
         requestParameters: RbacPermissionsAssignedByRolesUnassignPartialUpdateRequest,
@@ -1142,7 +1073,7 @@ export class RbacApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/rbac/permissions/`;
+        const urlPath = `/rbac/permissions/`;
 
         return {
             path: urlPath,
@@ -1278,7 +1209,7 @@ export class RbacApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/rbac/permissions/roles/`;
+        const urlPath = `/rbac/permissions/roles/`;
 
         return {
             path: urlPath,
@@ -1289,7 +1220,7 @@ export class RbacApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get a role\'s assigned object permissions
+     * Get a role's assigned object permissions
      */
     async rbacPermissionsRolesListRaw(
         requestParameters: RbacPermissionsRolesListRequest,
@@ -1304,7 +1235,7 @@ export class RbacApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get a role\'s assigned object permissions
+     * Get a role's assigned object permissions
      */
     async rbacPermissionsRolesList(
         requestParameters: RbacPermissionsRolesListRequest = {},
@@ -1414,7 +1345,7 @@ export class RbacApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/rbac/roles/`;
+        const urlPath = `/rbac/roles/`;
 
         return {
             path: urlPath,
@@ -1568,7 +1499,7 @@ export class RbacApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/rbac/roles/`;
+        const urlPath = `/rbac/roles/`;
 
         return {
             path: urlPath,

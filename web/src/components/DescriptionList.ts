@@ -8,6 +8,7 @@ export type DescriptionPair = [
     term: SlottedTemplateResult,
     desc: SlottedTemplateResult | undefined,
 ];
+
 export type DescriptionRecord = { term: string; desc: SlottedTemplateResult | undefined };
 
 interface DescriptionConfig {
@@ -39,11 +40,12 @@ function alignTermType(terms: DescriptionRecord[] | DescriptionPair[] = []) {
     if (isDescriptionRecordCollection(terms)) {
         return terms.map(recordToPair);
     }
+
     return terms ?? [];
 }
 
 /**
- * renderDescriptionList
+ * RenderDescriptionList
  *
  * This function renders the most common form of the PatternFly description list used in our code.
  * It expects either an array of term/description pairs or an array of `{ term: string, description:
@@ -51,7 +53,7 @@ function alignTermType(terms: DescriptionRecord[] | DescriptionPair[] = []) {
  *
  * An optional dictionary of configuration options is available. These enable the Patternfly
  * "horizontal," "compact", "2 column on large," or "3 column on large" layouts that are (so far)
- * the layouts used in Authentik's (and Gravity's, for that matter) code.
+ * the layouts used in authentik's (and Gravity's, for that matter) code.
  *
  * This is not a web component and it does not bring its own styling ; calling code will still have
  * to provide the styling necessary. It is only a function to replace the repetitious boilerplate of
@@ -81,6 +83,7 @@ export function renderDescriptionList(
     config: DescriptionConfig = defaultConfig,
 ) {
     const checkedTerms = alignTermType(terms);
+
     const classes = classMap({
         "pf-m-horizontal": config.horizontal ?? false,
         "pf-m-compact": config.compact ?? false,

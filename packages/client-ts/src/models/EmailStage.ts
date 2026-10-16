@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,17 +15,12 @@ import { FlowSetFromJSON } from "./FlowSet";
 
 /**
  * EmailStage Serializer
+ *
  * @export
  * @interface EmailStage
  */
 export interface EmailStage {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
@@ -45,64 +38,34 @@ export interface EmailStage {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly flowSet: Array<FlowSet>;
     /**
-     * When enabled, global Email connection settings will be used and connection settings below will be ignored.
+     * When enabled, global Email connection settings will be used and connection settings below
+     * will be ignored.
      */
     useGlobalSettings?: boolean;
-    /**
-     *
-     */
     host?: string;
-    /**
-     *
-     */
     port?: number;
-    /**
-     *
-     */
     username?: string;
-    /**
-     *
-     */
     useTls?: boolean;
-    /**
-     *
-     */
     useSsl?: boolean;
-    /**
-     *
-     */
     timeout?: number;
-    /**
-     *
-     */
     fromAddress?: string;
     /**
      * Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).
      */
     tokenExpiry?: string;
-    /**
-     *
-     */
     subject?: string;
-    /**
-     *
-     */
     template?: string;
     /**
      * Activate users upon completion of stage.
      */
     activateUserOnSuccess?: boolean;
-    /**
-     *
-     */
     recoveryMaxAttempts?: number;
     /**
-     * The time window used to count recent account recovery attempts. If the number of attempts exceed recovery_max_attempts within this period, further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).
+     * The time window used to count recent account recovery attempts. If the number of attempts
+     * exceed recovery_max_attempts within this period, further attempts will be rate-limited.
+     * (Format: hours=1;minutes=2;seconds=3).
      */
     recoveryCacheTimeout?: string;
 }

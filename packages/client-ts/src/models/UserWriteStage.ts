@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -21,17 +19,12 @@ import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
 
 /**
  * UserWriteStage Serializer
+ *
  * @export
  * @interface UserWriteStage
  */
 export interface UserWriteStage {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
@@ -49,13 +42,7 @@ export interface UserWriteStage {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly flowSet: Array<FlowSet>;
-    /**
-     *
-     */
     userCreationMode?: UserCreationModeEnum;
     /**
      * When set, newly created users are inactive and cannot login.
@@ -65,13 +52,7 @@ export interface UserWriteStage {
      * Optionally add newly created users to this group.
      */
     createUsersGroup?: string | null;
-    /**
-     *
-     */
     userType?: UserTypeEnum;
-    /**
-     *
-     */
     userPathTemplate?: string;
 }
 

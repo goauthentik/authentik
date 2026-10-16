@@ -1,11 +1,11 @@
-import "#admin/common/ak-flow-search/ak-flow-search-no-default";
 import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
-
 import {
-    FlowDesignationEnum,
-    type ProvidersSamlImportMetadataCreateRequest,
-} from "@goauthentik/api";
+    AKAuthorizationFlowField,
+    AKInvalidationFlowField,
+} from "#admin/providers/components/flow-fields";
+
+import { type ProvidersSamlImportMetadataCreateRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -21,33 +21,7 @@ export function renderForm(provider: Partial<ProvidersSamlImportMetadataCreateRe
             required
         ></ak-text-input>
 
-        <ak-form-element-horizontal
-            label=${msg("Authorization Flow")}
-            required
-            name="authorizationFlow"
-        >
-            <ak-flow-search-no-default
-                flowType=${FlowDesignationEnum.Authorization}
-                required
-            ></ak-flow-search-no-default>
-            <p class="pf-c-form__helper-text">
-                ${msg("Flow used when authorizing this provider.")}
-            </p>
-        </ak-form-element-horizontal>
-
-        <ak-form-element-horizontal
-            label=${msg("Invalidation Flow")}
-            required
-            name="invalidationFlow"
-        >
-            <ak-flow-search-no-default
-                flowType=${FlowDesignationEnum.Invalidation}
-                required
-            ></ak-flow-search-no-default>
-            <p class="pf-c-form__helper-text">
-                ${msg("Flow used when logging out of this provider.")}
-            </p>
-        </ak-form-element-horizontal>
+        ${AKAuthorizationFlowField({})} ${AKInvalidationFlowField({ defaultFlowSlug: null })}
 
         <ak-form-element-horizontal label=${msg("Metadata")} name="file" required>
             <input type="file" value="" class="pf-c-form-control" required accept=".xml" />

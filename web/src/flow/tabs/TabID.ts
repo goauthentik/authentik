@@ -12,6 +12,7 @@ export class TabID {
 
         if (id) {
             this.#id = id;
+
             return;
         }
 

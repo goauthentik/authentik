@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,17 +12,12 @@
 
 /**
  * Serialize Application info
+ *
  * @export
  * @interface App
  */
 export interface App {
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     label: string;
 }
 

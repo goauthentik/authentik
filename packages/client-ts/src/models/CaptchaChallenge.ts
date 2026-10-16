@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,41 +16,18 @@ import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * Site public key
+ *
  * @export
  * @interface CaptchaChallenge
  */
 export interface CaptchaChallenge {
-    /**
-     *
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     */
     component?: string;
-    /**
-     *
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     */
     pendingUser: string;
-    /**
-     *
-     */
     pendingUserAvatar: string;
-    /**
-     *
-     */
     siteKey: string;
-    /**
-     *
-     */
     jsUrl: string;
-    /**
-     *
-     */
     interactive: boolean;
 }
 

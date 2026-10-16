@@ -1,7 +1,9 @@
+import PFCheck from "@patternfly/patternfly/components/Check/check.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+
 import Styles from "#elements/ak-checkbox-group/ak-checkbox-group.css";
 import { AKControlElement } from "#elements/ControlElement";
 import { SlottedTemplateResult } from "#elements/types";
-import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
 import { PropertyValues } from "@lit/reactive-element";
@@ -9,10 +11,8 @@ import { html, TemplateResult } from "lit";
 import { customElement, property, queryAll, state } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
-import PFCheck from "@patternfly/patternfly/components/Check/check.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-
 export type CheckboxItem<T extends string = string> = { name: T; label: string | TemplateResult };
+
 export type CheckboxPair<T extends string = string> = [name: T, label: string | TemplateResult];
 
 export type CheckboxItemInit<T extends string = string> = CheckboxItem<T> | CheckboxPair<T>;
@@ -23,16 +23,12 @@ function* generateCheckboxKeyValuePairs(items: Iterable<CheckboxItemInit>): Iter
     }
 }
 
-const AkElementWithCustomEvents = CustomEmitterElement(AKControlElement);
-
 /**
- * @element ak-checkbox-group
- *
- * @class CheckboxGroup
- *
- * @description
  * CheckboxGroup renders a collection of checkboxes in a linear list. Multiple
  * checkboxes may be picked.
+ *
+ * @class CheckboxGroup
+ * @element ak-checkbox-group
  *
  * @attr {options} - An array of either `[string, string | TemplateResult]` or
  *     `{ name: string, label: string | TemplateResult }`. The first value or
@@ -74,10 +70,9 @@ const AkElementWithCustomEvents = CustomEmitterElement(AKControlElement);
  * form of `name=value1&name=value2` format, and must be unpacked into an array
  * correctly on the server side according to the CGI (common gateway interface)
  * protocol.
- *
  */
 @customElement("ak-checkbox-group")
-export class CheckboxGroup extends AkElementWithCustomEvents {
+export class CheckboxGroup extends AKControlElement<string[]> {
     static styles = [PFForm, PFCheck, Styles];
 
     static get formAssociated() {
@@ -113,9 +108,11 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
         if (typeof this.name !== "string") {
             throw new Error("This cannot be called without having the name set.");
         }
+
         const name = this.name;
         const entries = new FormData();
         this.values.forEach((v) => entries.append(name, v));
+
         return entries;
     }
 
@@ -126,11 +123,15 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
             .filter((checkbox) => checkbox.checked)
             .map((checkbox) => checkbox.name);
 
-        this.dispatchCustomEvent("change", this.values);
-        this.dispatchCustomEvent("input", this.values);
+        for (const type of ["change", "input"]) {
+            this.dispatchEvent(
+                new CustomEvent(type, { bubbles: true, composed: true, detail: this.values }),
+            );
+        }
 
         if (this.internals) {
             this.internals.setValidity({});
+
             if (this.required && this.values.length === 0) {
                 this.internals.setValidity(
                     {
@@ -140,6 +141,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
                     this,
                 );
             }
+
             this.internals.setFormValue(this.formValue);
         }
 
@@ -158,17 +160,21 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
     public override connectedCallback() {
         super.connectedCallback();
         this.dataset.akControl = "true";
+
         if (this.name && !this.internals) {
             this.internals = this.attachInternals();
         }
+
         if (this.internals && this.name) {
             this.internals.ariaRequired = this.required ? "true" : "false";
         }
+
         if (this.required && !this.internals) {
             console.warn(
                 "Setting `required` on ak-checkbox-group has no effect when the `name` attribute is unset",
             );
         }
+
         // These are necessary to prevent the input components' own events from
         // leaking out. This helps maintain the illusion that this component
         // behaves similarly to the multiple selection behavior of, well,
@@ -176,6 +182,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
         this.addEventListener("input", (ev) => {
             ev.stopPropagation();
         });
+
         this.addEventListener("change", (ev) => {
             ev.stopPropagation();
         });
@@ -183,6 +190,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
 
     protected renderCheckbox = ([name, label]: CheckboxPair): SlottedTemplateResult => {
         const selected = this.values.includes(name);
+
         const blockFwd = (e: Event) => {
             e.stopImmediatePropagation();
         };

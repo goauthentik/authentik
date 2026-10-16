@@ -1,27 +1,27 @@
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
 import "#components/ak-switch-input";
-
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { SearchSelectSource } from "#elements/forms/SearchSelect/shared";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    AdminApi,
-    AdminModelsListRequest,
-    App,
-    CoreApi,
-    ObjectAttribute,
-    ObjectAttributeTypeEnum,
-} from "@goauthentik/api";
+import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { AdminApi, App, CoreApi, ObjectAttribute, ObjectAttributeTypeEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
+
+const attributeModelSource: SearchSelectSource<App> = {
+    fetchObjects: () => aki(AdminApi).adminModelsList({ filterHasAttributes: true }),
+    keyOf: (app) => app.name,
+    labelOf: (app) => app.label,
+};
 
 @customElement("ak-object-attribute-form")
 export class ObjectAttributeForm extends ModelForm<ObjectAttribute, string> {
@@ -115,21 +115,13 @@ export class ObjectAttributeForm extends ModelForm<ObjectAttribute, string> {
                 </ak-radio>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Object type")} name="objectType" required>
-                <ak-search-select
-                    .fetchObjects=${(): Promise<App[]> => {
-                        const args: AdminModelsListRequest = {
-                            filterHasAttributes: true,
-                        };
-
-                        return aki(AdminApi).adminModelsList(args);
-                    }}
-                    .renderElement=${(app: App): string => app.label}
-                    .value=${(app?: App) => app?.name}
-                    .selected=${(app: App): boolean => {
-                        return app.name === this.instance?.objectTypeObj.fullyQualifiedModel;
-                    }}
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "objectType",
+                    source: attributeModelSource,
+                    value: this.instance?.objectTypeObj.fullyQualifiedModel,
+                    required: true,
+                    blankable: false,
+                })}
             </ak-form-element-horizontal>
 
             <ak-form-group label=${msg("Validation")} open>

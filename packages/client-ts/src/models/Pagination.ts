@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,38 +11,16 @@
  */
 
 /**
- *
  * @export
  * @interface Pagination
  */
 export interface Pagination {
-    /**
-     *
-     */
     next: number;
-    /**
-     *
-     */
     previous: number;
-    /**
-     *
-     */
     count: number;
-    /**
-     *
-     */
     current: number;
-    /**
-     *
-     */
     totalPages: number;
-    /**
-     *
-     */
     startIndex: number;
-    /**
-     *
-     */
     endIndex: number;
 }
 

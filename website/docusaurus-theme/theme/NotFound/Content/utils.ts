@@ -19,7 +19,8 @@ export function useRedirectEntries(): RedirectEntry[] | null {
 }
 
 /**
- * Given a URL-like object, return the pathname (i.e. suffix), and the combination query string, hash, etc (i.e. prefix).
+ * Given a URL-like object, return the pathname (i.e. suffix), and the combination query string,
+ * hash, etc (i.e. prefix).
  */
 export function pluckPathnameAffixes(
     url: Pick<URL, "pathname" | "href" | "origin">,

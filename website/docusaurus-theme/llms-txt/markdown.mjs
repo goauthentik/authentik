@@ -1,6 +1,6 @@
 /**
  * @file Convert authentik MDX into clean Markdown for the .md payload:
- * inline partial imports, strip custom directives and JSX/imports.
+ *   inline partial imports, strip custom directives and JSX/imports.
  */
 
 import { readFileSync } from "node:fs";
@@ -21,6 +21,7 @@ import { SKIP, visit } from "unist-util-visit";
  * inner prose. Code-block-aware: never alters lines inside fenced code.
  *
  * @param {string} md
+ *
  * @returns {string}
  */
 function stripAdmonitionFences(md) {
@@ -59,6 +60,7 @@ function stripAdmonitionFences(md) {
  * Regex fallback used when MDX parsing throws (malformed/complex JSX).
  *
  * @param {string} content
+ *
  * @returns {string}
  */
 function regexClean(content) {
@@ -76,6 +78,7 @@ function regexClean(content) {
  *
  * @param {string} partialPath
  * @param {Set<string>} chain Guards against a partial importing its importer.
+ *
  * @returns {string}
  */
 function loadPartial(partialPath, chain) {
@@ -91,6 +94,7 @@ function loadPartial(partialPath, chain) {
  *
  * @param {string} content
  * @param {string} filePath
+ *
  * @returns {string}
  */
 function inlinePartials(content, filePath) {
@@ -164,6 +168,7 @@ function stripNodesPlugin() {
  * @param {string} filePath Absolute path (for resolving partials).
  * @param {(filePath: string, err: unknown) => void} [onFallback] Called when strict
  *   MDX parsing fails and the regex fallback is used (for caller-side summary logging).
+ *
  * @returns {Promise<string>}
  */
 export async function cleanMdxToMarkdown(content, filePath, onFallback) {

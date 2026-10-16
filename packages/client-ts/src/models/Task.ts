@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -24,14 +22,10 @@ import type { TaskStatusEnum } from "./TaskStatusEnum";
 import { TaskStatusEnumFromJSON, TaskStatusEnumToJSON } from "./TaskStatusEnum";
 
 /**
- *
  * @export
  * @interface Task
  */
 export interface Task {
-    /**
-     *
-     */
     messageId?: string;
     /**
      * Queue name
@@ -57,37 +51,13 @@ export interface Task {
      * Planned execution time
      */
     eta?: Date | null;
-    /**
-     *
-     */
     readonly relObjAppLabel: string;
-    /**
-     *
-     */
     readonly relObjModel: string;
-    /**
-     *
-     */
     relObjId?: string | null;
-    /**
-     *
-     */
     readonly uid: string;
-    /**
-     *
-     */
     readonly logs: Array<LogEvent>;
-    /**
-     *
-     */
     readonly previousLogs: Array<LogEvent>;
-    /**
-     *
-     */
     aggregatedStatus: TaskAggregatedStatusEnum;
-    /**
-     *
-     */
     readonly description: string | null;
 }
 

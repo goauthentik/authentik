@@ -19,9 +19,9 @@ Single Logout behavior depends on where the user initiates logout:
 
 - **Logout from authentik**: When a user logs out directly from authentik, the `default-invalidation-flow` runs. This flow includes a [User Logout stage](../../flows-stages/stages/user_logout/index.mdx) that ends the user's authentik session and triggers Single Logout for all connected applications.
 
-- **Logout from an application**: When a user logs out from an OIDC or SAML application, the `default-provider-invalidation-flow` runs. By default, this flow does **not** include a User Logout stage, so only that application's session is ended while the user's authentik session and other application sessions remain active.
+- **Logout from an application**: When a user logs out from an OIDC or SAML application, the invalidation flow that is selected on the provider runs. By default, this is the `default-provider-invalidation-flow`, which does **not** include a User Logout stage, so only that application's session is ended while the user's authentik session and other application sessions remain active.
 
-For instructions on how to enable full Single Logout when a user logs out from an application, see [Enable full Single Logout for RP-initiated logout](#enable-full-single-logout-for-rp-initiated-logout) below.
+For instructions on how to enable full Single Logout when a user logs out from an application, see [Choose the logout behavior for a provider](#choose-the-logout-behavior-for-a-provider) below.
 
 ## How Single Logout works in authentik
 
@@ -76,31 +76,28 @@ Back-channel logout sends logout requests directly from the authentik server to 
 **For SAML**: Requires POST SLS binding.
 **For OIDC**: Requires a `logout_uri` configured for back-channel that accepts logout tokens.
 
-## Enable full Single Logout for RP-initiated Logout
+## Choose the logout behavior for a provider
 
-By default, when a user logs out from an application (RP-initiated logout), only that application's session is ended. To enable full Single Logout that also ends the user's authentik session and logs them out of all applications, add a User Logout stage to the `default-provider-invalidation-flow`:
+When a user logs out from an application, authentik runs the flow that is selected in the **Invalidation Flow** field of that application's provider. The flow that you select determines whether only the application session ends, or whether the user is also logged out of authentik and all other applications.
+
+authentik includes two default invalidation flows that you can select for each provider:
+
+| Invalidation flow                    | Behavior when the user logs out from the application                                                                                                                                         |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `default-provider-invalidation-flow` | Only the session of that application ends. The user's authentik session and their sessions in other applications remain active. This flow is selected by default for new providers.          |
+| `default-invalidation-flow`          | Full Single Logout. The flow includes a [User Logout stage](../../flows-stages/stages/user_logout/index.mdx), which ends the user's authentik session and logs them out of all applications. |
+
+To choose the logout behavior for a provider, follow these steps:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows and Stages** > **Flows**.
-3. Click `default-provider-invalidation-flow` to open the flow.
-4. Click the **Stage Bindings** tab.
-5. Click **Create or bind...** and select **Existing Stage**.
-6. In the **Stage** field, select `default-invalidation-logout` from the drop-down list.
-7. Configure any other settings, and then click **Create**.
+2. Navigate to **Applications** > **Providers**.
+3. Click the **Edit** icon of the provider that you want to configure.
+4. Under **Advanced flow settings**, select a flow in the **Invalidation Flow** field:
+    - To only end the application session, select `default-provider-invalidation-flow`.
+    - To enable full Single Logout, select `default-invalidation-flow`.
+5. Click **Update**.
 
-After this change, when users log out from any application, they will be logged out of authentik and all other connected applications.
-
-## Configure per-provider logout behavior
-
-If you need different logout behaviors for different applications, you can create custom invalidation flows and assign them to specific providers:
-
-1. Create a new flow with the **Invalidation** designation.
-2. Add stages as needed:
-    - Include a [User Logout stage](../../flows-stages/stages/user_logout/index.mdx) if you want full Single Logout.
-    - Omit the User Logout stage if you only want to end the specific application session.
-3. When configuring a provider, select your custom flow in the **Invalidation Flow** field.
-
-This allows you to configure full Single Logout only for sensitive applications while keeping the default behavior for others.
+Because the flow is selected per provider, you can enable full Single Logout only for sensitive applications and keep the default behavior for others.
 
 ## Enable Single Logout
 
@@ -122,6 +119,53 @@ See the [OIDC Front-channel and Back-channel logout documentation](../oauth2/fro
 1. Configure the **Logout URI** - the provider's logout endpoint
 2. Enable the desired **Logout Method**; front-channel or back-channel
 3. Optionally configure logout token signing for back-channel requests
+
+## Single Logout for proxy providers and outposts
+
+[Proxy providers](../proxy/index.mdx) support Single Logout without any additional configuration. A proxy provider has no **Logout URI** or **Logout Method** setting, because the application's session is managed by the [outpost](../../outposts/index.mdx) and authentik notifies the outpost directly.
+
+[LDAP](#ldap-providers) and [RAC](#rac-providers) outposts also receive a notification when an authentik session ends. RADIUS outposts do not act on it.
+
+### Logout from authentik
+
+When a user's authentik session ends, authentik notifies all connected outposts. Each proxy outpost then deletes the proxy sessions that were created from that authentik session. The next time that the user accesses the application, the outpost redirects them to authentik to log in again.
+
+Outposts are notified when the authentik session ends for any of the following reasons:
+
+- The user logs out via a logout flow.
+- An administrator deletes the session or deactivates the user.
+- The session expires.
+
+Only proxy sessions that were created from the ended authentik session are deleted. Proxy sessions that the same user created from another browser or device remain active.
+
+:::info
+Outposts are notified asynchronously, and only outposts that are connected to authentik receive the notification. If an outpost is not connected to the authentik server when the authentik session ends, its proxy sessions remain valid until they expire. The lifetime of a proxy session is defined by the **Token validity** setting of the proxy provider.
+:::
+
+### Logout from a proxied application
+
+To log out of an application that is protected by a proxy provider, the user navigates to `<authentik FQDN>/outpost.goauthentik.io/sign_out`. For the host to use in each proxy mode, see [Log out](../proxy/index.mdx#log-out).
+
+The outpost deletes all proxy sessions for that user within the outpost, and then redirects the user to authentik, where the invalidation flow of the provider runs. By default, the user's authentik session and their sessions in other applications remain active. To also end those sessions, see [Choose the logout behavior for a provider](#choose-the-logout-behavior-for-a-provider).
+
+### LDAP providers
+
+LDAP outposts receive the same notification when an authentik session ends. Each LDAP bind that runs the bind flow creates its own authentik session for the user, which is listed on the user's **Sessions** tab. When that session ends, the outpost closes the LDAP connection that the bind created, and the client must reconnect and bind again.
+
+The session of an LDAP bind ends for the following reasons:
+
+- An administrator deletes the session or deactivates the user.
+- The session expires.
+
+Logging out of authentik in a browser does not affect LDAP connections, because the browser session is separate from the session that the bind created.
+
+:::info
+Connections are only closed in the **Direct** [bind mode](../ldap/index.mdx#bind-modes). In the **Cached** bind mode, binds that are served from the cache of the outpost do not create an authentik session and are not reliably closed when a session ends.
+:::
+
+### RAC providers
+
+Connections to a [RAC provider](../rac/index.mdx) also end when the user's authentik session ends. For more information, see [Connection and session expiry](../rac/index.mdx#connection-and-session-expiry).
 
 ## Session tracking
 
@@ -145,6 +189,7 @@ These requests are processed asynchronously to avoid blocking administrative ope
 
 - [SAML Single Logout](../saml/saml_single_logout.mdx)
 - [OIDC Front-channel and Back-channel Logout](../oauth2/frontchannel_and_backchannel_logout.mdx)
+- [Proxy provider logout](../proxy/index.mdx#log-out)
 - [User Logout Stage](../../flows-stages/stages/user_logout/index.mdx)
 - [SAML Profiles 2.0 Specification](https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf)
 - [OpenID Connect Front-Channel Logout 1.0](https://openid.net/specs/openid-connect-frontchannel-1_0.html)

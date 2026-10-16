@@ -34,7 +34,7 @@ class TestProviderSAML(SeleniumTestCase):
         if force_post:
             metadata_url += f"&force_binding={SAML_BINDING_POST}"
         self.run_container(
-            image="ghcr.io/beryju/saml-test-sp:1.1",
+            image=self.pinned_image("saml-test-sp", "e2e/compose.yml"),
             ports={
                 "9009": "9009",
             },

@@ -3,6 +3,10 @@ import "#elements/EmptyState";
 import "#elements/buttons/ActionButton/index";
 import "#elements/events/LogViewer";
 import "#components/tasks/TaskStatus";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 
 import { formatElapsedTime } from "#common/temporal";
 
@@ -13,11 +17,6 @@ import { SyncStatus } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 
 @customElement("ak-sync-status-card")
 export class SyncStatusCard extends AKElement {
@@ -40,6 +39,7 @@ export class SyncStatusCard extends AKElement {
 
     firstUpdated() {
         this.loading = true;
+
         this.fetch().then((status) => {
             this.syncState = status;
             this.loading = false;
@@ -50,6 +50,7 @@ export class SyncStatusCard extends AKElement {
         if (this.loading) {
             return html`<ak-empty-state loading></ak-empty-state>`;
         }
+
         return html`
             <dl class="pf-c-description-list">
                 <div class="pf-c-description-list__group">
@@ -58,9 +59,11 @@ export class SyncStatusCard extends AKElement {
                     </dt>
                     <dd class="pf-c-description-list__description">
                         <div class="pf-c-description-list__text">
-                            ${this.syncState?.isRunning
-                                ? html`${msg("Sync is currently running.")}`
-                                : html`${msg("Sync is not currently running.")}`}
+                            ${
+                                this.syncState?.isRunning
+                                    ? html`${msg("Sync is currently running.")}`
+                                    : html`${msg("Sync is not currently running.")}`
+                            }
                         </div>
                     </dd>
                 </div>
@@ -72,9 +75,11 @@ export class SyncStatusCard extends AKElement {
                     </dt>
                     <dd class="pf-c-description-list__description">
                         <div class="pf-c-description-list__text">
-                            ${this.syncState?.lastSuccessfulSync
-                                ? html`${formatElapsedTime(this.syncState?.lastSuccessfulSync)}`
-                                : html`${msg("No successful sync found.")}`}
+                            ${
+                                this.syncState?.lastSuccessfulSync
+                                    ? html`${formatElapsedTime(this.syncState?.lastSuccessfulSync)}`
+                                    : html`${msg("No successful sync found.")}`
+                            }
                         </div>
                     </dd>
                 </div>

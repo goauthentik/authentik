@@ -33,6 +33,7 @@ from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
     OAuth2Provider,
+    OAuth2SessionLogin,
     RefreshToken,
 )
 from authentik.providers.oauth2.token.base import TokenRequest
@@ -56,10 +57,7 @@ class TokenView(View):
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         response = super().dispatch(request, *args, **kwargs)
-        allowed_origins = []
-        if self.provider:
-            allowed_origins = [x.url for x in self.provider.redirect_uris]
-        cors_allow(self.request, response, *allowed_origins)
+        cors_allow(self.request, response, self.provider.redirect_uris if self.provider else [])
         return response
 
     def options(self, request: HttpRequest) -> HttpResponse:
@@ -136,6 +134,7 @@ class TokenView(View):
         self._add_cnf_to_id_token(access_id_token)
         access_token.id_token = access_id_token
         access_token.save()
+        OAuth2SessionLogin.record(access_token, access_id_token)
 
         id_token_jwt_type = self._get_id_token_jwt_type()
         response = {
@@ -201,6 +200,7 @@ class TokenView(View):
         self._add_cnf_to_id_token(access_id_token)
         access_token.id_token = access_id_token
         access_token.save()
+        OAuth2SessionLogin.record(access_token, access_id_token)
 
         id_token_jwt_type = self._get_id_token_jwt_type()
         response = {
@@ -296,6 +296,7 @@ class TokenView(View):
         self._add_cnf_to_id_token(access_id_token)
         access_token.id_token = access_id_token
         access_token.save()
+        OAuth2SessionLogin.record(access_token, access_id_token)
 
         id_token_jwt_type = self._get_id_token_jwt_type()
         response = {

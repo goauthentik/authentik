@@ -38,6 +38,7 @@ export class ApplicationWizardProviderSamlMetadataForm extends ApplicationWizard
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("SAML Metadata Provider Step received uninitialized wizard context.");
         }
+
         return this.renderForm();
     }
 }

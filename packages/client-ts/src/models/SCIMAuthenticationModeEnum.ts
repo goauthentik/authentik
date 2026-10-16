@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,11 +11,11 @@
  */
 
 /**
- *
  * @export
  */
 export const SCIMAuthenticationModeEnum = {
     Token: "token",
+    Basic: "basic",
     Oauth: "oauth",
     OauthInteractive: "oauth_interactive",
     UnknownDefaultOpenApi: "11184809",

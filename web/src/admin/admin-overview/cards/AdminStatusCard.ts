@@ -1,10 +1,9 @@
 import "#elements/Spinner";
-
 import { EVENT_REFRESH } from "#common/constants";
 import { PFSize } from "#common/enums";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
-import { AggregateCard } from "#elements/cards/AggregateCard";
+import { AggregateCard, StatusTone } from "#elements/cards/AggregateCard";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { msg } from "@lit/localize";
@@ -14,6 +13,7 @@ import { state } from "lit/decorators.js";
 export interface AdminStatus {
     icon: string;
     message?: SlottedTemplateResult;
+    tone: StatusTone;
 }
 
 /**
@@ -37,6 +37,8 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
     // Abstract methods to be implemented by subclasses
     abstract getPrimaryValue(): Promise<T>;
     abstract getStatus(value: T): Promise<AdminStatus>;
+
+    override tone: StatusTone = "neutral";
 
     constructor() {
         super();
@@ -64,6 +66,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
             })
             .catch(async (error: unknown) => {
                 this.status = undefined;
+                this.tone = "danger";
                 this.error = await parseAPIResponseError(error);
             });
     }
@@ -72,7 +75,8 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * Lit lifecycle method: Determine if component should update
      *
      * @param changed - Map of changed properties
-     * @returns boolean indicating if update should proceed
+     *
+     * @returns Boolean indicating if update should proceed
      */
     shouldUpdate(changed: PropertyValues<this>) {
         if (changed.has("value") && this.value !== undefined) {
@@ -80,16 +84,19 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
             this.getStatus(this.value)
                 .then((status) => {
                     this.status = status;
+                    this.tone = status.tone;
                     this.error = undefined;
                 })
                 .catch(async (error: unknown) => {
                     this.status = undefined;
+                    this.tone = "danger";
                     this.error = await parseAPIResponseError(error);
                 });
 
             // Prevent immediate re-render if only value changed
             if (changed.size === 1) return false;
         }
+
         return true;
     }
 
@@ -106,6 +113,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * Render status state
      *
      * @param status - AdminStatus object containing icon and message
+     *
      * @returns TemplateResult for status display
      */
     private renderStatus(status: AdminStatus): SlottedTemplateResult {
@@ -121,6 +129,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * Render error state
      *
      * @param error - Error message to display
+     *
      * @returns TemplateResult for error display
      */
     private renderError(error: string): SlottedTemplateResult {
@@ -138,7 +147,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * @returns TemplateResult for loading spinner
      */
     private renderLoading(): SlottedTemplateResult {
-        return html`<ak-spinner size="${PFSize.Large}"></ak-spinner>`;
+        return html`<ak-spinner size=${PFSize.Large}></ak-spinner>`;
     }
 
     /**

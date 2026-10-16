@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -30,25 +28,14 @@ import {
 
 /**
  * Get parsed user agent
+ *
  * @export
  * @interface AuthenticatedSessionUserAgent
  */
 export interface AuthenticatedSessionUserAgent {
-    /**
-     *
-     */
     device: AuthenticatedSessionUserAgentDevice;
-    /**
-     *
-     */
     os: AuthenticatedSessionUserAgentOs;
-    /**
-     *
-     */
     userAgent: AuthenticatedSessionUserAgentUserAgent;
-    /**
-     *
-     */
     string: string;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,29 +12,15 @@
 
 /**
  * SCIMSourceUser Serializer
+ *
  * @export
  * @interface SCIMSourceUserRequest
  */
 export interface SCIMSourceUserRequest {
-    /**
-     *
-     */
     id?: string;
-    /**
-     *
-     */
     externalId: string;
-    /**
-     *
-     */
     user: number;
-    /**
-     *
-     */
     source: string;
-    /**
-     *
-     */
     attributes?: { [key: string]: any };
 }
 

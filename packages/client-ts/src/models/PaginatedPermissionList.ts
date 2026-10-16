@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { Permission } from "./Permission";
 import { PermissionFromJSON, PermissionToJSON } from "./Permission";
 
 /**
- *
  * @export
  * @interface PaginatedPermissionList
  */
 export interface PaginatedPermissionList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<Permission>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

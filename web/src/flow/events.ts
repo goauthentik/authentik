@@ -76,6 +76,7 @@ export class AKFlowSubmitRequest extends Event {
         options: SubmitOptions = { invisible: false },
     ) {
         super(AKFlowSubmitRequest.eventName, { bubbles: true, composed: true });
+
         this.request = {
             payload,
             options,

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -17,29 +15,15 @@ import { UsedByActionEnumFromJSON, UsedByActionEnumToJSON } from "./UsedByAction
 
 /**
  * A list of all objects referencing the queried object
+ *
  * @export
  * @interface UsedBy
  */
 export interface UsedBy {
-    /**
-     *
-     */
     app: string;
-    /**
-     *
-     */
     modelName: string;
-    /**
-     *
-     */
     pk: string;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     action: UsedByActionEnum;
 }
 

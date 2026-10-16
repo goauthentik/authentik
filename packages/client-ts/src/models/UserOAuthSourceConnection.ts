@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,41 +16,18 @@ import { SourceFromJSON } from "./Source";
 
 /**
  * User source connection
+ *
  * @export
  * @interface UserOAuthSourceConnection
  */
 export interface UserOAuthSourceConnection {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     readonly user: number;
-    /**
-     *
-     */
     source: string;
-    /**
-     *
-     */
     readonly sourceObj: Source;
-    /**
-     *
-     */
     identifier: string;
-    /**
-     *
-     */
     readonly created: Date;
-    /**
-     *
-     */
     readonly lastUpdated: Date;
-    /**
-     *
-     */
     expires?: Date;
 }
 

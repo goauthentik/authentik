@@ -17,6 +17,7 @@ const makeDeviceChallenge = (
 describe("shouldResetSelectedChallenge", () => {
     it("returns true when the previously selected challenge is no longer allowed", () => {
         const selected = makeDeviceChallenge(DeviceClassesEnum.Email, "email-1");
+
         const allowed = [
             makeDeviceChallenge(DeviceClassesEnum.Totp, "totp-1"),
             makeDeviceChallenge(DeviceClassesEnum.Webauthn, "webauthn-1"),
@@ -27,6 +28,7 @@ describe("shouldResetSelectedChallenge", () => {
 
     it("returns false when the previously selected challenge is still allowed", () => {
         const selected = makeDeviceChallenge(DeviceClassesEnum.Email, "email-1");
+
         const allowed = [
             makeDeviceChallenge(DeviceClassesEnum.Email, "email-1"),
             makeDeviceChallenge(DeviceClassesEnum.Sms, "sms-1"),

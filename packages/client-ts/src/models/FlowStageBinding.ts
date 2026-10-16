@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -24,29 +22,15 @@ import { StageFromJSON } from "./Stage";
 
 /**
  * FlowStageBinding Serializer
+ *
  * @export
  * @interface FlowStageBinding
  */
 export interface FlowStageBinding {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     readonly policybindingmodelPtrId: string;
-    /**
-     *
-     */
     target: string;
-    /**
-     *
-     */
     stage: string;
-    /**
-     *
-     */
     readonly stageObj: Stage;
     /**
      * Evaluate policies during the Flow planning process.
@@ -56,16 +40,13 @@ export interface FlowStageBinding {
      * Evaluate policies when the Stage is presented to the user.
      */
     reEvaluatePolicies?: boolean;
-    /**
-     *
-     */
     order: number;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
     /**
-     * Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.
+     * Configure how the flow executor should handle an invalid response to a challenge. RETRY
+     * returns the error message and a similar challenge to the executor. RESTART restarts the flow
+     * from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current
+     * context.
      */
     invalidResponseAction?: InvalidResponseActionEnum;
 }

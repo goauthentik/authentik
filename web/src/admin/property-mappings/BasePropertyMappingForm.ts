@@ -1,6 +1,5 @@
 import "#elements/CodeMirror/ak-codemirror";
 import "#components/ak-text-input";
-
 import { docLink } from "#common/global";
 
 import { ModelForm } from "#elements/forms/ModelForm";

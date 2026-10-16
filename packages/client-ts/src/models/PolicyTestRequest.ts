@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,17 +12,12 @@
 
 /**
  * Test policy execution for a user with context
+ *
  * @export
  * @interface PolicyTestRequest
  */
 export interface PolicyTestRequest {
-    /**
-     *
-     */
     user: number;
-    /**
-     *
-     */
     context?: { [key: string]: any };
 }
 

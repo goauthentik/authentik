@@ -1,11 +1,10 @@
 /**
- * @file Docusaurus config.
- *
  * @import { Config } from "@docusaurus/types";
  * @import { UserThemeConfig } from "@goauthentik/docusaurus-config";
  * @import { AKMDXOnlyPluginOptions } from "./mdx-only/plugin.mjs";
  * @import {Options as PresetOptions} from '@docusaurus/preset-classic';
  * @import { BuildUrlValues } from "remark-github";
+ * @file Docusaurus config.
  */
 
 import { createRequire } from "node:module";
@@ -100,6 +99,7 @@ const CommonPresetOptions = {
 
 /**
  * @param {Partial<PresetOptions>} overrides
+ *
  * @returns {[string, PresetOptions]}
  */
 export function createClassicPreset(overrides) {
@@ -107,8 +107,8 @@ export function createClassicPreset(overrides) {
 }
 
 /**
- *
  * @param {Partial<UserThemeConfig["algolia"]>} [overrides]
+ *
  * @returns {UserThemeConfig["algolia"]}
  */
 export function createAlgoliaConfig(overrides) {
@@ -125,6 +125,7 @@ export function createAlgoliaConfig(overrides) {
  * Create the llms.txt plugin tuple.
  *
  * @param {import("./llms-txt/common.mjs").LLMSPluginOptions} options
+ *
  * @returns {[string, import("./llms-txt/common.mjs").LLMSPluginOptions]}
  */
 export function createLLMSPlugin(options) {
@@ -135,6 +136,7 @@ export function createLLMSPlugin(options) {
  * Create the MDX-only plugin tuple, which fails the build on `.md` content.
  *
  * @param {AKMDXOnlyPluginOptions} [options]
+ *
  * @returns {[string, AKMDXOnlyPluginOptions]}
  */
 export function createMDXOnlyPlugin(options) {
@@ -151,6 +153,7 @@ export const FOOTER_COPYRIGHT = `Copyright © ${new Date().getFullYear()} Authen
 
 /**
  * @param {Partial<Config>} overrides
+ *
  * @returns {Partial<Config>}
  */
 export function extendConfig(overrides) {

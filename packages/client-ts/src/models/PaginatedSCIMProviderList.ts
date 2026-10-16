@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { SCIMProvider } from "./SCIMProvider";
 import { SCIMProviderFromJSON, SCIMProviderToJSON } from "./SCIMProvider";
 
 /**
- *
  * @export
  * @interface PaginatedSCIMProviderList
  */
 export interface PaginatedSCIMProviderList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<SCIMProvider>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

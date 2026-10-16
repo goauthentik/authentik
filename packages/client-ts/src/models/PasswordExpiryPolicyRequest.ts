@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,25 +12,18 @@
 
 /**
  * Password Expiry Policy Serializer
+ *
  * @export
  * @interface PasswordExpiryPolicyRequest
  */
 export interface PasswordExpiryPolicyRequest {
-    /**
-     *
-     */
     name: string;
     /**
-     * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+     * When this option is enabled, all executions of this policy will be logged. By default, only
+     * execution errors are logged.
      */
     executionLogging?: boolean;
-    /**
-     *
-     */
     days: number;
-    /**
-     *
-     */
     denyOnly?: boolean;
 }
 

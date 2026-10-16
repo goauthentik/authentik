@@ -1,11 +1,11 @@
 import "#elements/LoadingOverlay";
-
 import { aki } from "#common/api/client";
 import { isCausedByAbortError } from "#common/errors/network";
 
 import { AKCommandPaletteModal } from "#elements/commands/ak-command-palette-modal";
 import { PaletteCommandDefinition, PaletteCommandNamespace } from "#elements/commands/shared";
-import { navigate } from "#elements/router/RouterOutlet";
+import { toAdminInterface } from "#elements/router/core/interfaces";
+import { navigate } from "#elements/router/core/navigation";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { CoreApi } from "@goauthentik/api";
@@ -73,10 +73,11 @@ export class AKCommandPaletteUserModal extends AKCommandPaletteModal {
                         namespace: PaletteCommandNamespace.Action,
                         keywords: user.groups,
                         label,
-                        action: () => navigate(`/identity/users/${user.pk}`),
+                        action: () => navigate(toAdminInterface(`identity/users/${user.pk}`)),
                         group: msg("Users"),
                     };
                 });
+
                 this.setCommands(commands, [], currentValue);
             })
             .catch(this.suppressAbortError)

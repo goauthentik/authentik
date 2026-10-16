@@ -6,7 +6,9 @@ authentik can be easily monitored in multiple ways.
 
 ## Server monitoring
 
-Configure your monitoring software to send requests to `/-/health/live/`, which will return a `HTTP 200` response as long as authentik is running. You can also send HTTP requests to `/-/health/ready/`, which will return `HTTP 200` if a PostgreSQL connection can be established correctly.
+Configure your monitoring software to send requests to `/-/health/live/`, which will return a `HTTP 200` response as long as authentik is running. Requests to `/-/health/live/` short-circuit early in the middleware pipeline without querying the database, emitting Django access logs, or recording Django request metrics.
+
+You can also send HTTP requests to `/-/health/ready/`, which will return `HTTP 200` if a PostgreSQL connection can be established correctly.
 
 ## Worker monitoring
 

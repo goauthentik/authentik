@@ -2,7 +2,7 @@
 
 from urllib.parse import quote, urlparse
 
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponse
 from django.template.response import TemplateResponse
 
 from authentik.events.models import Event, EventAction
@@ -189,7 +189,15 @@ class AuthorizeError(OAuth2Error):
                 "if/oauth_form_post.html",
                 {"redirect_uri": self.redirect_uri, "attrs": attrs},
             )
-        return HttpResponseRedirect(self.create_uri())
+        # Deferred import, utils imports BearerTokenError from this module
+        from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
+
+        # Like OAuthFulfillmentStage, allow the redirect URI's own scheme so that native apps
+        # with a private-use scheme (RFC 8252) get the error instead of a bare 400.
+        # The redirect URI is already validated against the provider when this is raised.
+        return HttpResponseRedirectScheme(
+            self.create_uri(), allowed_schemes=[urlparse(self.redirect_uri).scheme]
+        )
 
     def create_uri(self) -> str:
         """Get a redirect URI with the error message"""

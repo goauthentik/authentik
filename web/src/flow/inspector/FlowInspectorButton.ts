@@ -1,3 +1,5 @@
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+
 import { AKElement } from "#elements/Base";
 import { listen } from "#elements/decorators/listen";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
@@ -7,8 +9,6 @@ import { AKFlowAdvanceEvent, AKFlowInspectorChangeEvent } from "#flow/events";
 import { msg } from "@lit/localize";
 import { html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 // Custom implementation because there are rules for when to show this.
 
@@ -57,6 +57,7 @@ export class FlowInspectorButton extends WithCapabilitiesConfig(AKElement) {
 
     public override firstUpdated(changed: PropertyValues<this>) {
         super.firstUpdated(changed);
+
         if (this.open) {
             window.dispatchEvent(new AKFlowAdvanceEvent());
         }
@@ -65,12 +66,15 @@ export class FlowInspectorButton extends WithCapabilitiesConfig(AKElement) {
     // Only load the inspector if the user requests it. It should hydrate automatically
     public override updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         if (changed.has("open") && this.open && !this.loaded) {
             import("#flow/inspector/FlowInspector").then(() => {
                 this.loaded = true;
             });
         }
+
         const drawer = document.getElementById("flow-drawer");
+
         if (changed.has("open") && drawer) {
             if (this.open) {
                 drawer.setAttribute("expanded", "");

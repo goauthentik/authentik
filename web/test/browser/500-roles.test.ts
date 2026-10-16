@@ -16,7 +16,7 @@ test.describe("Roles", () => {
 
         await test.step("Authenticate", async () => {
             await session.login({
-                to: "/if/admin/#/identity/roles",
+                to: "/if/admin/identity/roles",
             });
         });
     });

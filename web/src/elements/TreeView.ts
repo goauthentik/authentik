@@ -1,15 +1,15 @@
+import PFTreeView from "@patternfly/patternfly/components/TreeView/tree-view.css";
+
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
-import { setURLParams } from "#elements/router/RouteMatch";
+import { updateSearchParams } from "#elements/router/core/search-params";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFTreeView from "@patternfly/patternfly/components/TreeView/tree-view.css";
 
 //#region Tree View Node
 
@@ -50,6 +50,7 @@ export class TreeViewNode extends AKElement {
             if (item.id) {
                 pathItems.push(item.id);
             }
+
             item = item.parent || null;
         }
 
@@ -65,9 +66,11 @@ export class TreeViewNode extends AKElement {
         const level = this.item?.level || 0;
         // Ignore the last item as that shouldn't be expanded
         pathSegments.pop();
+
         if (pathSegments[level] === this.item?.id) {
             this.open = true;
         }
+
         if (this.activePath === this.fullPath && this.host) {
             this.host.activeNode = this;
         }
@@ -77,7 +80,9 @@ export class TreeViewNode extends AKElement {
         if (this.host) {
             this.host.activeNode = this;
         }
-        setURLParams({ path: this.fullPath });
+
+        updateSearchParams({ path: this.fullPath });
+
         this.dispatchEvent(
             new CustomEvent(EVENT_REFRESH, {
                 bubbles: true,
@@ -108,28 +113,30 @@ export class TreeViewNode extends AKElement {
                     @click=${this.#selectionListener}
                 >
                     <div class="pf-c-tree-view__node-container">
-                        ${this.openable
-                            ? html` <button
-                                  type="button"
-                                  aria-label=${ifPresent(
-                                      this.openable,
-                                      this.open
-                                          ? msg(str`Collapse "${itemLabel}"`)
-                                          : msg(str`Expand "${itemLabel}"`),
-                                  )}
-                                  class="pf-c-tree-view__node-toggle"
-                                  @click=${(e: Event) => {
-                                      if (this.openable) {
-                                          this.open = !this.open;
-                                          e.stopPropagation();
-                                      }
-                                  }}
-                              >
-                                  <span class="pf-c-tree-view__node-toggle-icon">
-                                      <i class="fas fa-angle-right" aria-hidden="true"></i>
-                                  </span>
-                              </button>`
-                            : null}
+                        ${
+                            this.openable
+                                ? html` <button
+                                      type="button"
+                                      aria-label=${ifPresent(
+                                          this.openable,
+                                          this.open
+                                              ? msg(str`Collapse "${itemLabel}"`)
+                                              : msg(str`Expand "${itemLabel}"`),
+                                      )}
+                                      class="pf-c-tree-view__node-toggle"
+                                      @click=${(e: Event) => {
+                                          if (this.openable) {
+                                              this.open = !this.open;
+                                              e.stopPropagation();
+                                          }
+                                      }}
+                                  >
+                                      <span class="pf-c-tree-view__node-toggle-icon">
+                                          <i class="fas fa-angle-right" aria-hidden="true"></i>
+                                      </span>
+                                  </button>`
+                                : null
+                        }
                         <span class="pf-c-tree-view__node-icon">
                             <i
                                 class="fas ${this.open ? "fa-folder-open" : "fa-folder"}"
@@ -197,7 +204,7 @@ export class TreeView extends AKElement {
                 id,
                 label: id || "",
                 childItems: [],
-                level: level,
+                level,
                 parent: parentItem,
             };
 
@@ -207,6 +214,7 @@ export class TreeView extends AKElement {
                 const child = this.createNode(path, item, level + 1);
                 child.parent = item;
             }
+
             return item;
         }
 

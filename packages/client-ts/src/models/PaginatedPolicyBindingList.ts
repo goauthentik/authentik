@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { PolicyBinding } from "./PolicyBinding";
 import { PolicyBindingFromJSON, PolicyBindingToJSON } from "./PolicyBinding";
 
 /**
- *
  * @export
  * @interface PaginatedPolicyBindingList
  */
 export interface PaginatedPolicyBindingList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<PolicyBinding>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

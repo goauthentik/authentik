@@ -8,6 +8,7 @@ from pathlib import Path
 from tempfile import gettempdir
 from typing import TYPE_CHECKING
 
+from prometheus_client import values
 from prometheus_client.values import MultiProcessValue
 
 from authentik import authentik_full_version
@@ -19,7 +20,6 @@ from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.reflection import get_env
 from authentik.root.install_id import get_install_id_raw
 from authentik.root.setup import setup
-from lifecycle.migrate import run_migrations
 from lifecycle.worker import DjangoUvicornWorker
 
 if TYPE_CHECKING:
@@ -32,6 +32,17 @@ if TYPE_CHECKING:
 # master process before workers are forked; tell it to defer each tracer's post-fork setup
 # to the post_fork hook below instead (see authentik.lib.tracing.setup_post_fork)
 os.environ[TRACER_DEFER_POSTFORK_ENV_VAR] = "true"
+
+# Install this *before* preload_app loads Django below, so metrics that get constructed
+# pre-fork (e.g. django-prometheus's Counters) share
+# the same MultiProcessValue class as everything else instead of being permanently bound to
+# the master's PID.
+_worker_id: dict[str, int | None] = {"value": None}
+
+
+values.ValueClass = MultiProcessValue(
+    lambda: _worker_id["value"] if _worker_id["value"] is not None else 0
+)
 
 setup()
 
@@ -78,9 +89,7 @@ def when_ready(server: "Arbiter"):  # noqa: UP037
 
 def post_fork(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
     """Tell prometheus to use worker number instead of process ID for multiprocess"""
-    from prometheus_client import values
-
-    values.ValueClass = MultiProcessValue(lambda: worker._worker_id)
+    _worker_id["value"] = worker._worker_id
 
     from authentik.lib.debug import start_pyroscope
 
@@ -175,4 +184,3 @@ if not CONFIG.get_bool("disable_startup_analytics", False):
             pass
 
 start_debug_server()
-run_migrations()

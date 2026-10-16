@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,17 +12,12 @@
 
 /**
  * Serializer for blueprint metadata
+ *
  * @export
  * @interface Metadata
  */
 export interface Metadata {
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     labels: { [key: string]: any };
 }
 

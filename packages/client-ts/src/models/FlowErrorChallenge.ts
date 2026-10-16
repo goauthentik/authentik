@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,33 +17,16 @@ import type { ErrorDetail } from "./ErrorDetail";
 /**
  * Challenge class when an unhandled error occurs during a stage. Normal users
  * are shown an error message, superusers are shown a full stacktrace.
+ *
  * @export
  * @interface FlowErrorChallenge
  */
 export interface FlowErrorChallenge {
-    /**
-     *
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     */
     component?: string;
-    /**
-     *
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     */
     requestId: string;
-    /**
-     *
-     */
     error?: string;
-    /**
-     *
-     */
     traceback?: string;
 }
 

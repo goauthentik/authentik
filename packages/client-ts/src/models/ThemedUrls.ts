@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,17 +12,12 @@
 
 /**
  * Themed URLs - maps theme names to URLs for light and dark themes
+ *
  * @export
  * @interface ThemedUrls
  */
 export interface ThemedUrls {
-    /**
-     *
-     */
     light?: string | null;
-    /**
-     *
-     */
     dark?: string | null;
 }
 

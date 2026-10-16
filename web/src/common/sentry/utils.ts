@@ -44,7 +44,7 @@ export interface SentrySetupOptions {
  *
  * The administrator's `errorReporting.enabled` setting decides, in every
  * environment — a deployment that turns error reporting on expects to receive
- * errors. `CanDebug` enables it on its own, which is what activates Spotlight.
+ * errors.
  *
  * Development additionally honors `?disable-sentry`, so a noisy local session
  * can opt out for one load without a rebuild.
@@ -82,6 +82,7 @@ export function beforeSend(
     if (hint.originalException instanceof SentryIgnoredError) {
         return null;
     }
+
     if (
         hint.originalException instanceof ResponseError ||
         hint.originalException instanceof DOMException

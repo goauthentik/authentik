@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -48,17 +46,11 @@ export interface Oauth2AccessTokensListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     provider?: number;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     user?: number;
 }
 
@@ -96,17 +88,11 @@ export interface Oauth2AuthorizationCodesListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     provider?: number;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     user?: number;
 }
 
@@ -144,17 +130,11 @@ export interface Oauth2RefreshTokensListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     provider?: number;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     user?: number;
 }
 
@@ -172,9 +152,6 @@ export interface Oauth2RefreshTokensUsedByListRequest {
     id: number;
 }
 
-/**
- *
- */
 export class Oauth2Api extends runtime.BaseAPI {
     /**
      * Creates request options for oauth2AccessTokensDestroy without sending the request
@@ -279,7 +256,7 @@ export class Oauth2Api extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/oauth2/access_tokens/`;
+        const urlPath = `/oauth2/access_tokens/`;
 
         return {
             path: urlPath,
@@ -545,7 +522,7 @@ export class Oauth2Api extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/oauth2/authorization_codes/`;
+        const urlPath = `/oauth2/authorization_codes/`;
 
         return {
             path: urlPath,
@@ -820,7 +797,7 @@ export class Oauth2Api extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/oauth2/refresh_tokens/`;
+        const urlPath = `/oauth2/refresh_tokens/`;
 
         return {
             path: urlPath,

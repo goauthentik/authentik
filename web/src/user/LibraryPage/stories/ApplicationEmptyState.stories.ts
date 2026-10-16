@@ -1,5 +1,4 @@
 import "../ak-library-application-empty-list.js";
-
 import {
     type ILibraryPageApplicationEmptyList,
     LibraryPageApplicationEmptyList,

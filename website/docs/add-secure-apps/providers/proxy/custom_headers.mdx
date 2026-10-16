@@ -39,3 +39,29 @@ return {
 After you create this scope mapping, edit the proxy provider and select the mapping under **Additional scopes**.
 
 The property mapping uses the same `additionalHeaders` structure as group and user attributes, so both methods can be combined. When both methods set the same header, the property mapping value overrides the static attribute value.
+
+## Percent-encode non-ASCII header values
+
+The proxy sends header values without encoding them. Some upstream applications cannot handle non-ASCII values, such as `Céline` in `X-authentik-name`, which can cause requests or WebSocket handshakes to fail.
+
+You can use a scope mapping to override that header with a percent-encoded value. Create a scope mapping with a name and scope of your choice and the following expression:
+
+```python
+from urllib.parse import quote
+
+return {
+    "ak_proxy": {
+        "user_attributes": {
+            "additionalHeaders": {
+                "X-authentik-name": quote(request.user.name, safe="")
+            }
+        }
+    }
+}
+```
+
+Edit the proxy provider and select the mapping under **Additional scopes**. Log out of the application and log in again to apply the mapping to an existing session. This works in proxy mode and both forward auth modes.
+
+The expression percent-encodes the UTF-8 bytes of the name, so `Céline` becomes `C%C3%A9line`. It also encodes spaces and literal `%` signs. Use the same approach for other headers that contain non-ASCII values.
+
+The upstream application must percent-decode the value once and interpret the decoded bytes as UTF-8, for example with Python's `urllib.parse.unquote`. Enable this mapping only for applications that support this decoding.

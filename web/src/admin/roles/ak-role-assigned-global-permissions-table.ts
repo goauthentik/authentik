@@ -1,7 +1,6 @@
 import "#elements/forms/DeleteBulkForm";
 import "#admin/roles/ak-role-permission-form";
 import "#elements/forms/ModalForm";
-
 import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
@@ -63,6 +62,7 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
 
     protected renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Permission(s)")}
             .objects=${this.selectedElements}

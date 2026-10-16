@@ -1,10 +1,8 @@
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#components/ak-radio-input";
 import "#components/ak-hidden-text-input";
-
 import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
 
@@ -14,16 +12,11 @@ import { RadioOption } from "#elements/forms/Radio";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { AKLabel } from "#components/ak-label";
+import { AKSearchSelect } from "#components/ak-search-select-field";
 
-import {
-    AgentCreated,
-    AgentCreateRequest,
-    AgentsApi,
-    CoreApi,
-    CoreUsersListRequest,
-    PolicyBehaviorEnum,
-    User,
-} from "@goauthentik/api";
+import { userSource } from "#admin/common/search-sources";
+
+import { AgentCreated, AgentCreateRequest, AgentsApi, PolicyBehaviorEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -105,22 +98,11 @@ export class AgentForm extends Form<AgentCreateRequest> {
 
     protected override renderForm(): SlottedTemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Parent user")} name="parent" required>
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<User[]> => {
-                        const args: CoreUsersListRequest = {
-                            ordering: "username",
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const users = await aki(CoreApi).coreUsersList(args);
-                        return users.results;
-                    }}
-                    .renderElement=${(user: User) => user.username}
-                    .renderDescription=${(user: User) => html`${user.name}`}
-                    .value=${(user: User | null) => user?.pk}
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "parent",
+                    source: userSource,
+                    blankable: false,
+                })}
                 <p class="pf-c-form__helper-text">
                     ${msg("The user this agent acts on behalf of.")}
                 </p>

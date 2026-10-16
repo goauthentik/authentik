@@ -3,6 +3,7 @@ import { createMixin } from "#elements/types";
 import { type LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
 
 import { consume, Context, createContext } from "@lit/context";
+import { property } from "lit/decorators.js";
 
 export const LicenseContext = createContext<LicenseSummary>(Symbol("authentik-license-context"));
 
@@ -37,7 +38,8 @@ export const WithLicenseSummary = createMixin<LicenseMixin>(
                 context: LicenseContext,
                 subscribe,
             })
-            public readonly licenseSummary: LicenseSummary | null = null;
+            @property({ attribute: false })
+            public licenseSummary: LicenseSummary | null = null;
 
             get hasEnterpriseLicense() {
                 return (

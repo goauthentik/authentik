@@ -47,77 +47,66 @@ For instructions on how to display the new source on the authentik login page, r
 :::
 
 :::info Embed new source in flow :ak-enterprise
-For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source/).
+For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../add-secure-apps/flows-stages/stages/source/).
 :::
 
 ## Optional additional configuration
 
 ### Check for membership of a GitHub organization
 
-:::info
-Ensure that the GitHub OAuth source in **Federation and Social login** has the additional `read:org` scope added under **Protocol settings** > **Scopes**.
-:::
+GitHub's profile response does not contain organization membership. A source property mapping can use the OAuth client and token to query the membership API. The mapping below records whether the user is an active member and synchronizes a source-linked authentik group for active members.
 
-To check if the user is a member of an organization, you can use the following policy on your flows.
+1. Edit the GitHub OAuth source under **Directory** > **Federation and Social login**. Add `read:org` under **Protocol settings** > **Scopes**, and then click **Update**.
+2. Navigate to **Customization** > **Property Mappings**. Click **Create**, select **OAuth Source Property Mapping**, and then click **Next**.
+3. Provide a name and enter this expression. Replace `your_organization` with the GitHub organization login.
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Policies**.
-3. Click **Create**, select **Expression Policy** and then **Next**.
-4. Provide a name for the policy and set the following expression:
+```python
+organization = "your_organization"
+response = client.do_request(
+    "GET",
+    f"https://api.github.com/user/memberships/orgs/{organization}",
+    token=token,
+)
+if response.status_code == 404:
+    active = False
+else:
+    response.raise_for_status()
+    active = response.json().get("state") == "active"
+
+return {
+    "attributes": {"github_org_membership": {"organization": organization, "active": active}},
+    "groups": [f"github:{organization}"] if active else [],
+}
+```
+
+4. Click **Finish**. Edit the GitHub OAuth source again and add the mapping under **OAuth Attribute mapping** > **User Property Mappings** > **Selected User Property Mappings**. Click **Update**.
+
+authentik creates the `github:<organization>` group using the source's default group matching mode. It reconciles source-linked membership after successful logins. If the GitHub API returns an error other than 404, the mapping stops the login rather than treating an API failure as a membership denial.
+
+To deny login to users outside the organization, create an **Expression Policy** with this expression and bind it to both the source's enrollment and authentication flows:
 
 ```python
 from authentik.sources.oauth.models import OAuthSource
 
-# Set this value
-accepted_org = "your_organization"
-
-# Ensure flow is only run during OAuth logins via GitHub
-if not isinstance(context['source'], OAuthSource) or context["source"].provider_type != "github":
+source = request.context.get("source")
+if not isinstance(source, OAuthSource) or source.provider_type != "github":
     return True
 
-# Get the user-source connection object from the context, and get the access token
-connection = context["goauthentik.io/sources/connection"]
-access_token = connection.access_token
-
-# We also access the user info authentik already retrieved, to get the correct username
-github_username = context["oauth_userinfo"]
-
-# GitHub does not include organizations in the userinfo endpoint, so we have to call another URL
-orgs_response = requests.get(
-    "https://api.github.com/user/orgs",
-    auth=(github_username["login"], access_token),
-    headers={
-        "accept": "application/vnd.github.v3+json"
-    }
+membership = request.context.get("prompt_data", {}).get("attributes", {}).get(
+    "github_org_membership", {}
 )
-orgs_response.raise_for_status()
-orgs = orgs_response.json()
-
-# `orgs` will be formatted like this
-# [
-#     {
-#         "login": "goauthentik",
-#         [...]
-#     }
-# ]
-user_matched = any(org['login'] == accepted_org for org in orgs)
-if not user_matched:
-    ak_message(f"User is not member of {accepted_org}.")
-return user_matched
+if not membership.get("active"):
+    ak_message("You are not an active member of the required GitHub organization.")
+    return False
+return True
 ```
 
-5. Click **Finish**. You can now bind this policy to the chosen enrollment and/or authentication flow of the GitHub OAuth source.
-6. Navigate to **Flows and Stages** > **Flows** and click the name of the flow in question.
-7. Open the **Policy/Group/User Bindings** tab and click **Bind existing policy/group/user**.
-8. Select the policy that you previously created and click **Create**.
-9. Optionally, repeat the process for any other flows that you want the policy applied to.
+The policy reads the property mapping's result from the flow's `prompt_data`. Binding it to both flows covers new and returning users. See [policy bindings and evaluation](../../../../customize/policies/bindings.mdx) for binding instructions.
 
-If a user is not a member of the chosen organization, they will see this message:
-
-![](./github_org_membership.png)
+If the policy denies a returning user, the group update stage does not run. Any group membership from an earlier successful login remains until that user logs in successfully again or you remove it separately. Use the policy result, not the synchronized group, when you need to enforce current organization membership at login.
 
 ## Source property mappings
 
-Source property mappings allow you to modify or gather extra information from sources. See the [overview](../../property-mappings/index.mdx) for more information.
+The organization example above uses an OAuth source property mapping to query GitHub. See the [source property mappings overview](../../property-mappings/index.mdx) and [OAuth expression data](../../protocols/oauth/index.mdx#expression-data) for other fields and client methods.
 
 ## Resources

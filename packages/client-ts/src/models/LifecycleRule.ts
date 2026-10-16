@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -22,65 +20,28 @@ import { PartialUserFromJSON } from "./PartialUser";
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface LifecycleRule
  */
 export interface LifecycleRule {
-    /**
-     *
-     */
     readonly id: string;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     contentType: ContentTypeEnum;
-    /**
-     *
-     */
     objectId?: string | null;
-    /**
-     *
-     */
     interval?: string;
-    /**
-     *
-     */
     gracePeriod?: string;
-    /**
-     *
-     */
     reviewerGroups?: Array<string>;
-    /**
-     *
-     */
     readonly reviewerGroupsObj: Array<PartialGroup>;
-    /**
-     *
-     */
     minReviewers?: number;
-    /**
-     *
-     */
     minReviewersIsPerGroup?: boolean;
-    /**
-     *
-     */
     reviewers: Array<string>;
-    /**
-     *
-     */
     readonly reviewersObj: Array<PartialUser>;
     /**
-     * Select which transports should be used to notify the reviewers. If none are selected, the notification will only be shown in the authentik UI.
+     * Select which transports should be used to notify the reviewers. If none are selected, the
+     * notification will only be shown in the authentik UI.
      */
     notificationTransports?: Array<string>;
-    /**
-     *
-     */
     readonly targetVerbose: string;
 }
 

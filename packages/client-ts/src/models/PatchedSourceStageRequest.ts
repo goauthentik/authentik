@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,20 +18,16 @@ import {
 
 /**
  * SourceStage Serializer
+ *
  * @export
  * @interface PatchedSourceStageRequest
  */
 export interface PatchedSourceStageRequest {
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     source?: string;
     /**
-     * Amount of time a user can take to return from the source to continue the flow (Format: hours=-1;minutes=-2;seconds=-3)
+     * Amount of time a user can take to return from the source to continue the flow (Format:
+     * hours=-1;minutes=-2;seconds=-3)
      */
     resumeTimeout?: string;
     /**

@@ -1,7 +1,7 @@
 import "#elements/Alert";
-
 import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { msg } from "@lit/localize";
@@ -34,7 +34,7 @@ export class AKLicenseNotice extends WithLicenseSummary(AKElement) {
                 <a
                     aria-label="${this.label}"
                     aria-description="${this.description}"
-                    href="#/enterprise/licenses"
+                    href=${toAdminInterface("enterprise/licenses")}
                     >${this.label}</a
                 >
             </ak-alert>

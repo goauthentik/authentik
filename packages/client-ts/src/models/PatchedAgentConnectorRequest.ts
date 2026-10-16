@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,66 +11,23 @@
  */
 
 /**
- *
  * @export
  * @interface PatchedAgentConnectorRequest
  */
 export interface PatchedAgentConnectorRequest {
-    /**
-     *
-     */
     connectorUuid?: string;
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     enabled?: boolean;
-    /**
-     *
-     */
     snapshotExpiry?: string;
-    /**
-     *
-     */
     authSessionDuration?: string;
-    /**
-     *
-     */
     authTerminateSessionOnExpiry?: boolean;
-    /**
-     *
-     */
     refreshInterval?: string;
-    /**
-     *
-     */
     authorizationFlow?: string | null;
-    /**
-     *
-     */
     nssUidOffset?: number;
-    /**
-     *
-     */
     nssGidOffset?: number;
-    /**
-     *
-     */
     challengeKey?: string | null;
-    /**
-     *
-     */
     challengeIdleTimeout?: string;
-    /**
-     *
-     */
     challengeTriggerCheckIn?: boolean;
-    /**
-     *
-     */
     jwtFederationProviders?: Array<number>;
 }
 

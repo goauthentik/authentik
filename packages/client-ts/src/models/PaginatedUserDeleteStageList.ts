@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -18,22 +16,12 @@ import type { UserDeleteStage } from "./UserDeleteStage";
 import { UserDeleteStageFromJSON, UserDeleteStageToJSON } from "./UserDeleteStage";
 
 /**
- *
  * @export
  * @interface PaginatedUserDeleteStageList
  */
 export interface PaginatedUserDeleteStageList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<UserDeleteStage>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

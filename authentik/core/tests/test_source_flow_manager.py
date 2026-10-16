@@ -7,13 +7,19 @@ from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 from guardian.shortcuts import get_anonymous_user
 
+from authentik.core import user_switching
 from authentik.core.models import SourceUserMatchingModes, User
 from authentik.core.sources.flow_manager import Action
 from authentik.core.sources.matcher import MatchFailureReason
 from authentik.core.sources.stage import PostSourceStage
-from authentik.core.tests.utils import RequestFactory, create_test_flow
+from authentik.core.tests.utils import RequestFactory, create_test_flow, create_test_user
 from authentik.events.models import Event, EventAction
-from authentik.flows.planner import FlowPlan
+from authentik.flows.models import FlowAuthenticationRequirement
+from authentik.flows.planner import (
+    PLAN_CONTEXT_PENDING_USER,
+    PLAN_CONTEXT_USER_SWITCH_ADD_USER,
+    FlowPlan,
+)
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.policies.denied import AccessDeniedResponse
@@ -86,7 +92,7 @@ class TestSourceFlowManager(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url,
-            reverse("authentik_core:if-user") + "#/settings;page-sources",
+            reverse("authentik_core:if-user") + "settings/sources",
         )
 
     def test_authenticated_auth_forwards_kwargs(self):
@@ -148,6 +154,31 @@ class TestSourceFlowManager(TestCase):
         response = flow_manager.get_flow()
         self.assertEqual(response.status_code, 302)
 
+    def test_authenticated_auth_require_unauthenticated(self):
+        """Test authenticated user re-authenticating with a require_unauthenticated flow"""
+        self.authentication_flow.authentication = (
+            FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED
+        )
+        self.authentication_flow.save()
+        user = create_test_user()
+        UserOAuthSourceConnection.objects.create(
+            user=user, source=self.source, identifier=self.identifier
+        )
+        request = self.request_factory.get("/", user=user)
+        flow_manager = OAuthSourceFlowManager(
+            self.source, request, self.identifier, {"info": {}}, {}
+        )
+        response = flow_manager.get_flow()
+        self.assertEqual(response.status_code, 302)
+
+        # A different logged-in user is still refused
+        request = self.request_factory.get("/", user=create_test_user())
+        flow_manager = OAuthSourceFlowManager(
+            self.source, request, self.identifier, {"info": {}}, {}
+        )
+        response = flow_manager.get_flow()
+        self.assertIsInstance(response, AccessDeniedResponse)
+
     def test_unauthenticated_link(self):
         """Test un-authenticated user linking"""
         flow_manager = OAuthSourceFlowManager(
@@ -161,6 +192,52 @@ class TestSourceFlowManager(TestCase):
         self.assertEqual(action, Action.LINK)
         self.assertIsNone(connection.pk)
         flow_manager.get_flow()
+
+    def _add_user_request(self, user: User):
+        """Request from a signed-in browser that started a source login from "Add user"."""
+        request = self.request_factory.get("/", user=user)
+        request.session[user_switching.SESSION_KEY_ADD_USER] = True
+        return request
+
+    def test_add_user_auth_logs_in_connected_user(self):
+        """Test "Add user" logs in the source's user instead of linking the current user"""
+        current_user = create_test_user()
+        other_user = create_test_user()
+        UserOAuthSourceConnection.objects.create(
+            user=other_user, source=self.source, identifier=self.identifier
+        )
+        request = self._add_user_request(current_user)
+        flow_manager = OAuthSourceFlowManager(
+            self.source, request, self.identifier, {"info": {}}, {}
+        )
+
+        response = flow_manager.get_flow()
+
+        self.assertEqual(response.status_code, 302)
+        flow_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
+        self.assertEqual(flow_plan.flow_pk, self.authentication_flow.pk.hex)
+        self.assertEqual(flow_plan.context[PLAN_CONTEXT_PENDING_USER], other_user)
+        self.assertTrue(flow_plan.context[PLAN_CONTEXT_USER_SWITCH_ADD_USER])
+        self.assertNotIn(user_switching.SESSION_KEY_ADD_USER, request.session)
+
+    def test_add_user_refuses_enrollment(self):
+        """Test "Add user" with a new source identity neither links nor enrolls"""
+        current_user = create_test_user()
+        users = User.objects.count()
+        request = self._add_user_request(current_user)
+        flow_manager = OAuthSourceFlowManager(
+            self.source, request, self.identifier, {"info": {}}, {}
+        )
+
+        action, _ = flow_manager.get_action()
+        response = flow_manager.get_flow()
+
+        self.assertEqual(action, Action.ENROLL)
+        self.assertIsInstance(response, AccessDeniedResponse)
+        self.assertEqual(response.error_message, "New users can't enroll while adding a user.")
+        self.assertNotIn(SESSION_KEY_PLAN, request.session)
+        self.assertEqual(User.objects.count(), users)
+        self.assertFalse(UserOAuthSourceConnection.objects.filter(user=current_user).exists())
 
     def test_unusable_group_identifier_does_not_abort(self):
         """Test a group identifier that cannot be used as a key being skipped (#25191)"""

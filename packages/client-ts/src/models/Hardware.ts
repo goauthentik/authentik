@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,34 +11,15 @@
  */
 
 /**
- *
  * @export
  * @interface Hardware
  */
 export interface Hardware {
-    /**
-     *
-     */
     model?: string;
-    /**
-     *
-     */
     manufacturer?: string;
-    /**
-     *
-     */
     serial: string;
-    /**
-     *
-     */
     cpuName?: string;
-    /**
-     *
-     */
     cpuCount?: number;
-    /**
-     *
-     */
     memoryBytes?: number;
 }
 

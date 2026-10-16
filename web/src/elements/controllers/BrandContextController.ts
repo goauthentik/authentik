@@ -18,10 +18,12 @@ export class BrandingContextController extends ReactiveContextController<Current
         super();
 
         this.host = host;
+
         this.context = new ContextProvider(this.host, {
             context: BrandingContext,
             initialValue,
         });
+
         this.host.brand = initialValue;
     }
 

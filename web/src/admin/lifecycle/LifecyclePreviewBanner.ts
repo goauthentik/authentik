@@ -1,3 +1,5 @@
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+
 import { AKElement } from "#elements/Base";
 
 import { ObjectLifecyclePage } from "#admin/lifecycle/ObjectLifecyclePage";
@@ -5,8 +7,6 @@ import { ObjectLifecyclePage } from "#admin/lifecycle/ObjectLifecyclePage";
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-lifecycle-preview-banner")
 export class LifecyclePreviewBanner extends AKElement {

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,17 +12,12 @@
 
 /**
  * Response to signed challenge
+ *
  * @export
  * @interface EndpointAgentChallengeResponseRequest
  */
 export interface EndpointAgentChallengeResponseRequest {
-    /**
-     *
-     */
     component?: string;
-    /**
-     *
-     */
     response?: string | null;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -26,25 +24,14 @@ import {
 
 /**
  * Serializer for creating a provider and an application in one transaction
+ *
  * @export
  * @interface TransactionApplicationRequest
  */
 export interface TransactionApplicationRequest {
-    /**
-     *
-     */
     app: ApplicationRequest;
-    /**
-     *
-     */
     providerModel: ProviderModelEnum;
-    /**
-     *
-     */
     provider: ModelRequest;
-    /**
-     *
-     */
     policyBindings?: Array<TransactionPolicyBindingRequest>;
 }
 

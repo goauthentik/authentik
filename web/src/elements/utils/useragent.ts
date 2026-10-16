@@ -7,6 +7,7 @@
  */
 export function isSafari(): boolean {
     const ua = navigator.userAgent.toLowerCase();
+
     return ua.includes("safari") && !ua.includes("chrome") && !ua.includes("chromium");
 }
 
@@ -15,5 +16,6 @@ export function isSafari(): boolean {
  */
 export function isFirefox(): boolean {
     const ua = navigator.userAgent.toLowerCase();
+
     return ua.includes("firefox");
 }

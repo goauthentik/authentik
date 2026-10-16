@@ -1,8 +1,8 @@
 # Tag must track the root package.json `packageManager` version. ${BUILDPLATFORM}
 # keeps the binary's arch aligned with the builder stage on cross-arch builds.
-FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:12.3.2@sha256:7382d0f7459549c4cb497c3ed3b6b884f30535ded9d630578840382703049758 AS pnpm
+FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:12.9.1@sha256:77123fd40a39db0eb8be6bddfcf0cea15e000122b9221ccce2e4415be29050f2 AS pnpm
 
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:26.8.1-trixie@sha256:f5d1cc40abc10c2843339a2134d07817cf33c405cb16bfd052b0ed790254c3a3 AS docs-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:26.11.1-trixie@sha256:32fa97f3363975684b08bf4e8a68a47c7905175cc20275b50b974bbd02aba731 AS docs-builder
 
 ENV NODE_ENV=production
 
@@ -16,20 +16,24 @@ RUN --mount=type=bind,target=/work/package.json,src=./package.json \
     --mount=type=bind,target=/work/packages/logger-js/,src=./packages/logger-js/ \
     --mount=type=bind,target=/work/website/package.json,src=./website/package.json \
     --mount=type=bind,target=/work/website/pnpm-lock.yaml,src=./website/pnpm-lock.yaml \
-    node ./scripts/node/lint-runtime.mjs ./website
+    node ./scripts/node/lint-runtime.ts ./website
 
 # Hoisted root install so `@goauthentik/docusaurus-config` resolves its own deps
-# (e.g. `deepmerge-ts`) from /work/node_modules during the docs build; its source
-# is bind-mounted read-only, so a per-package node_modules can't be written.
+# (e.g. `deepmerge-ts`) during the docs build. Its source, `@goauthentik/fonts`
+# and `@goauthentik/tsconfig` are copied rather than bind-mounted, so pnpm can
+# write the per-package node_modules it places workspace links in.
+COPY ./packages/tsconfig /work/packages/tsconfig/
+COPY ./packages/docusaurus-config /work/packages/docusaurus-config/
+COPY ./packages/fonts /work/packages/fonts/
+
 RUN --mount=type=bind,target=/work/.npmrc,src=./.npmrc \
     --mount=type=bind,target=/work/package.json,src=./package.json \
     --mount=type=bind,target=/work/pnpm-lock.yaml,src=./pnpm-lock.yaml \
     --mount=type=bind,target=/work/pnpm-workspace.yaml,src=./pnpm-workspace.yaml \
-    --mount=type=bind,target=/work/packages/docusaurus-config/package.json,src=./packages/docusaurus-config/package.json \
     --mount=type=bind,target=/work/packages/esbuild-plugin-live-reload/package.json,src=./packages/esbuild-plugin-live-reload/package.json \
-    --mount=type=bind,target=/work/packages/eslint-config/package.json,src=./packages/eslint-config/package.json \
+    --mount=type=bind,target=/work/packages/oxlint-config/package.json,src=./packages/oxlint-config/package.json \
     --mount=type=bind,target=/work/packages/logger-js/package.json,src=./packages/logger-js/package.json \
-    --mount=type=bind,target=/work/packages/prettier-config/package.json,src=./packages/prettier-config/package.json \
+    --mount=type=bind,target=/work/packages/oxfmt-config/package.json,src=./packages/oxfmt-config/package.json \
     --mount=type=bind,target=/work/packages/tsconfig/package.json,src=./packages/tsconfig/package.json \
     --mount=type=bind,target=/work/lifecycle/aws/package.json,src=./lifecycle/aws/package.json \
     --mount=type=cache,id=pnpm-root,sharing=shared,target=/root/.local/share/pnpm/store \
@@ -37,7 +41,6 @@ RUN --mount=type=bind,target=/work/.npmrc,src=./.npmrc \
     --filter "@goauthentik/docusaurus-config"
 
 RUN --mount=type=bind,target=/work/.npmrc,src=./.npmrc \
-    --mount=type=bind,target=/work/packages/docusaurus-config/,src=./packages/docusaurus-config/ \
     --mount=type=bind,target=/work/website/package.json,src=./website/package.json \
     --mount=type=bind,target=/work/website/pnpm-lock.yaml,src=./website/pnpm-lock.yaml \
     --mount=type=bind,target=/work/website/pnpm-workspace.yaml,src=./website/pnpm-workspace.yaml \
@@ -57,10 +60,9 @@ COPY ./schema.yml /work/
 COPY ./lifecycle/container/compose.yml /work/lifecycle/container/
 COPY ./SECURITY.md /work/
 
-RUN  --mount=type=bind,target=/work/packages/docusaurus-config/,src=./packages/docusaurus-config/ \
-    pnpm run build
+RUN pnpm run build
 
-FROM docker.io/library/nginx:1.31.5-trixie@sha256:05b8cb60c354a44ab824ea6e7dc69b46d50762cdbe728a347a5b656e6fb3d7c4
+FROM docker.io/library/nginx:1.31.6-trixie@sha256:60f0d4e986561e08804f75c211dcaf7fc5455699eada29f42cbe8a0a7253dd86
 LABEL org.opencontainers.image.authors="Authentik Security Inc." \
     org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
     org.opencontainers.image.description="authentik product documentation" \

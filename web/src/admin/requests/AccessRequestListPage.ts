@@ -1,11 +1,14 @@
 import "#components/ak-status-label";
 import "#elements/forms/ConfirmationForm";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 
 import { aki } from "#common/api/client";
 import { PaginatedResponse } from "#common/api/responses";
 import { renderTargetSummary } from "#common/requests/utils";
 
 import { modalInvoker } from "#elements/dialogs";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { RowType, Timestamp } from "#elements/table/Table";
 import { TableColumn } from "#elements/table/TableColumn";
 import { TablePage } from "#elements/table/TablePage";
@@ -20,9 +23,6 @@ import { GrantRequest, RequestsApi, RequestStatus } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit-html";
 import { customElement } from "lit/decorators.js";
-
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
 
 function statusLabel(status: RequestStatus): string {
     switch (status) {
@@ -94,6 +94,7 @@ export class AccessRequestListPage extends TablePage<GrantRequest> {
                 ${msg("Fulfill")}
             </button>`;
         }
+
         if (item.isActive) {
             return html`<ak-forms-confirm
                 successMessage=${msg("Successfully revoked grant")}
@@ -116,12 +117,13 @@ export class AccessRequestListPage extends TablePage<GrantRequest> {
                 </button>
             </ak-forms-confirm>`;
         }
+
         return nothing;
     }
 
     protected row(item: GrantRequest): RowType[] {
         return [
-            html`<a href="#/identity/users/${item.createdBy.pk}">
+            html`<a href=${toAdminInterface(`identity/users/${item.createdBy.pk}`)}>
                 <div>${item.createdBy.username}</div>
                 <small>${item.createdBy.name}</small>
             </a>`,

@@ -13,18 +13,20 @@
 // instance, instead of throwing it away?
 
 export function bound(
-    target: unknown,
+    _target: unknown,
     key: string,
     descriptor: PropertyDescriptor,
 ): PropertyDescriptor {
     if (typeof descriptor?.value !== "function") {
         throw new Error("Only methods can be @bound.");
     }
+
     return {
         configurable: true,
         get() {
             const method = descriptor.value.bind(this);
             Object.defineProperty(this, key, { value: method, configurable: true, writable: true });
+
             return method;
         },
     };

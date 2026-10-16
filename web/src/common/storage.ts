@@ -5,7 +5,8 @@
 import { ConsoleLogger } from "#logger/browser";
 
 /**
- * A utility class for safely accessing web storage (localStorage or sessionStorage) with error handling.
+ * A utility class for safely accessing web storage (localStorage or sessionStorage) with error
+ * handling.
  */
 export class StorageAccessor {
     constructor(
@@ -44,7 +45,8 @@ export class StorageAccessor {
     /**
      * Read the value from storage.
      *
-     * @param fallback An optional value to return if the key does not exist or an error occurs. Defaults to `null`.
+     * @param fallback An optional value to return if the key does not exist or an error occurs.
+     *   Defaults to `null`.
      *
      * @returns The stored value, or `null` if the key does not exist or an error occurs.
      */
@@ -53,6 +55,7 @@ export class StorageAccessor {
     public read<T extends string>(fallback?: T): T | null {
         try {
             const value = this.storage.getItem(this.key);
+
             return value !== null ? (value as T) : (fallback ?? null);
         } catch (_error: unknown) {
             return fallback ?? null;
@@ -77,6 +80,7 @@ export class StorageAccessor {
 
         try {
             this.storage.setItem(this.key, value);
+
             return true;
         } catch (_error: unknown) {
             return false;
@@ -86,9 +90,11 @@ export class StorageAccessor {
     /**
      * Read the value from storage and parse it as JSON.
      *
-     * @param fallback An optional value to return if the key does not exist, the value is not valid JSON, or an error occurs. Defaults to `null`.
+     * @param fallback An optional value to return if the key does not exist, the value is not valid
+     *   JSON, or an error occurs. Defaults to `null`.
      *
-     * @returns The parsed value, or `null` if the key does not exist, the value is not valid JSON, or an error occurs.
+     * @returns The parsed value, or `null` if the key does not exist, the value is not valid JSON,
+     *   or an error occurs.
      */
     public readJSON<T>(fallback?: T): T | null {
         const value = this.read<string>();
@@ -114,6 +120,7 @@ export class StorageAccessor {
     public writeJSON(value: unknown): boolean {
         try {
             const stringified = JSON.stringify(value);
+
             return this.write(stringified);
         } catch (error: unknown) {
             this.logger.error("Failed to write JSON value to storage", error);
@@ -132,6 +139,7 @@ export class StorageAccessor {
 
         try {
             this.storage.removeItem(this.key);
+
             return true;
         } catch (error: unknown) {
             this.logger.error("Failed to delete value from storage", error);

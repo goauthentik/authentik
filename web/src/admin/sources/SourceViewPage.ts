@@ -7,12 +7,10 @@ import "#admin/sources/scim/SCIMSourceViewPage";
 import "#admin/sources/telegram/TelegramSourceViewPage";
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
-
 import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
-
-import { setPageDetails } from "#components/ak-page-navbar";
+import { setPageDetails } from "#elements/router/meta";
 
 import { Source, SourcesApi } from "@goauthentik/api";
 
@@ -25,7 +23,7 @@ export class SourceViewPage extends AKElement {
     set sourceSlug(slug: string) {
         aki(SourcesApi)
             .sourcesAllRetrieve({
-                slug: slug,
+                slug,
             })
             .then((source) => {
                 this.source = source;
@@ -39,6 +37,7 @@ export class SourceViewPage extends AKElement {
         if (!this.source) {
             return html`<ak-empty-state loading full-height></ak-empty-state>`;
         }
+
         switch (this.source?.component) {
             case "ak-source-kerberos-form":
                 return html`<ak-source-kerberos-view
@@ -75,6 +74,7 @@ export class SourceViewPage extends AKElement {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             icon: "pf-icon pf-icon-middleware",
             header: this.source?.name,

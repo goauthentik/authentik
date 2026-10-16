@@ -100,6 +100,7 @@ export const BAND_FADE_WINDOW = 0.9;
  */
 export function bandFadeOpacity(base: number): ExpressionSpecification {
     const [coarse, mid, detail] = HEX_BANDS;
+
     const opacity = (r3: number, r4: number, r5: number): ExpressionSpecification => [
         "match",
         ["get", "res"],
@@ -133,6 +134,7 @@ const FONT = ["Noto Sans Regular"];
 
 export function buildHexworldStyle(options: HexworldStyleOptions): StyleSpecification {
     const palette = PALETTES[options.theme ?? "light"];
+
     const eventPaint: ExpressionSpecification = [
         "interpolate",
         ["linear"],

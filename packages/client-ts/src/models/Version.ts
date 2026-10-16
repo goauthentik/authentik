@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,8 +10,12 @@
  * Do not edit the class manually.
  */
 
+import type { UpdateVersionInfo } from "./UpdateVersionInfo";
+import { UpdateVersionInfoFromJSON } from "./UpdateVersionInfo";
+
 /**
  * Get running and latest version.
+ *
  * @export
  * @interface Version
  */
@@ -22,14 +24,7 @@ export interface Version {
      * Get current version
      */
     readonly versionCurrent: string;
-    /**
-     * Get latest version from cache
-     */
-    readonly versionLatest: string;
-    /**
-     * Check if latest version is valid
-     */
-    readonly versionLatestValid: boolean;
+    readonly versionLatest: UpdateVersionInfo;
     /**
      * Get build hash, if version is not latest or released
      */
@@ -63,13 +58,6 @@ export function instanceOfVersion(value: object): value is Version {
     )
         return false;
     if (
-        (!("versionLatestValid" in (value as Record<string, any>)) &&
-            !("version_latest_valid" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["versionLatestValid"] === undefined &&
-            (value as Record<string, any>)["version_latest_valid"] === undefined)
-    )
-        return false;
-    if (
         (!("buildHash" in (value as Record<string, any>)) &&
             !("build_hash" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["buildHash"] === undefined &&
@@ -97,8 +85,7 @@ export function VersionFromJSONTyped(json: any, ignoreDiscriminator: boolean): V
     }
     return {
         versionCurrent: json["version_current"],
-        versionLatest: json["version_latest"],
-        versionLatestValid: json["version_latest_valid"],
+        versionLatest: UpdateVersionInfoFromJSON(json["version_latest"]),
         buildHash: json["build_hash"],
         outdated: json["outdated"],
         outpostOutdated: json["outpost_outdated"],
@@ -112,12 +99,7 @@ export function VersionToJSON(json: any): Version {
 export function VersionToJSONTyped(
     value?: Omit<
         Version,
-        | "versionCurrent"
-        | "versionLatest"
-        | "versionLatestValid"
-        | "buildHash"
-        | "outdated"
-        | "outpostOutdated"
+        "versionCurrent" | "versionLatest" | "buildHash" | "outdated" | "outpostOutdated"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

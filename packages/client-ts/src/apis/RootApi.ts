@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -15,9 +13,6 @@
 import { type Config, ConfigFromJSON } from "../models/Config";
 import * as runtime from "../runtime";
 
-/**
- *
- */
 export class RootApi extends runtime.BaseAPI {
     /**
      * Creates request options for rootConfigRetrieve without sending the request
@@ -36,7 +31,7 @@ export class RootApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/root/config/`;
+        const urlPath = `/root/config/`;
 
         return {
             path: urlPath,

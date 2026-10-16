@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -19,20 +17,16 @@ import { RedirectURIFromJSON } from "./RedirectURI";
 
 /**
  * ProxyProvider Serializer
+ *
  * @export
  * @interface ProxyProvider
  */
 export interface ProxyProvider {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     name: string;
     /**
-     * Flow used for authentication when the associated application is accessed by an un-authenticated user.
+     * Flow used for authentication when the associated application is accessed by an
+     * un-authenticated user.
      */
     authenticationFlow?: string | null;
     /**
@@ -43,9 +37,6 @@ export interface ProxyProvider {
      * Flow used ending the session from a provider.
      */
     invalidationFlow: string;
-    /**
-     *
-     */
     propertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
@@ -79,28 +70,17 @@ export interface ProxyProvider {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly clientId: string;
-    /**
-     *
-     */
     internalHost?: string;
-    /**
-     *
-     */
     externalHost: string;
     /**
      * Validate SSL Certificates of upstream servers
      */
     internalHostSslValidation?: boolean;
-    /**
-     *
-     */
     certificate?: string | null;
     /**
-     * Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression.
+     * Regular expressions for which authentication is not required. Each new line is interpreted as
+     * a new Regular Expression.
      */
     skipPathRegex?: string;
     /**
@@ -112,32 +92,23 @@ export interface ProxyProvider {
      */
     basicAuthPasswordAttribute?: string;
     /**
-     * User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.
+     * User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's
+     * Email address is used.
      */
     basicAuthUserAttribute?: string;
     /**
-     * Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.
+     * Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with
+     * internal_host.
      */
     mode?: ProxyMode;
     /**
-     * When enabled, this provider will intercept the authorization header and authenticate requests based on its value.
+     * When enabled, this provider will intercept the authorization header and authenticate requests
+     * based on its value.
      */
     interceptHeaderAuth?: boolean;
-    /**
-     *
-     */
     readonly redirectUris: Array<RedirectURI>;
-    /**
-     *
-     */
     cookieDomain?: string;
-    /**
-     *
-     */
     jwtFederationSources?: Array<string>;
-    /**
-     *
-     */
     jwtFederationProviders?: Array<number>;
     /**
      * Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
@@ -147,9 +118,6 @@ export interface ProxyProvider {
      * Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
      */
     refreshTokenValidity?: string;
-    /**
-     *
-     */
     readonly outpostSet: Array<string>;
 }
 

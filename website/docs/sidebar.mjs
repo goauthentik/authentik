@@ -1,7 +1,6 @@
 /**
+ * @import {SidebarItemConfig} from "@docusaurus/plugin-content-docs/src/sidebars/types.js"
  * @file Sidebar configuration for documentation entries.
- *
- * @import { SidebarItemConfig } from "@docusaurus/plugin-content-docs/src/sidebars/types.js"
  */
 
 import * as fs from "node:fs";

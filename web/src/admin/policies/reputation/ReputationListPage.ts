@@ -3,7 +3,6 @@ import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-
 import { aki } from "#common/api/client";
 
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
@@ -52,6 +51,7 @@ export class ReputationListPage extends TablePage<Reputation> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Reputation")}
             .objects=${this.selectedElements}
@@ -75,9 +75,11 @@ export class ReputationListPage extends TablePage<Reputation> {
     protected override row(item: Reputation): SlottedTemplateResult[] {
         return [
             item.identifier,
-            html`${item.ipGeoData?.country
-                ? html` ${getUnicodeFlagIcon(item.ipGeoData.country)} `
-                : nothing}
+            html`${
+                item.ipGeoData?.country
+                    ? html` ${getUnicodeFlagIcon(item.ipGeoData.country)} `
+                    : nothing
+            }
             ${item.ip}`,
             html`${item.score}`,
             Timestamp(item.updated),

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,22 +12,14 @@
 
 /**
  * ConnectionToken Serializer
+ *
  * @export
  * @interface ConnectionTokenRequest
  */
 export interface ConnectionTokenRequest {
-    /**
-     *
-     */
     pk?: string;
-    /**
-     *
-     */
     provider: number;
-    /**
-     *
-     */
-    endpoint: string;
+    device: string;
 }
 
 /**
@@ -37,7 +27,7 @@ export interface ConnectionTokenRequest {
  */
 export function instanceOfConnectionTokenRequest(value: object): value is ConnectionTokenRequest {
     if (!("provider" in value) || value["provider"] === undefined) return false;
-    if (!("endpoint" in value) || value["endpoint"] === undefined) return false;
+    if (!("device" in value) || value["device"] === undefined) return false;
     return true;
 }
 
@@ -55,7 +45,7 @@ export function ConnectionTokenRequestFromJSONTyped(
     return {
         pk: json["pk"] == null ? undefined : json["pk"],
         provider: json["provider"],
-        endpoint: json["endpoint"],
+        device: json["device"],
     };
 }
 
@@ -74,6 +64,6 @@ export function ConnectionTokenRequestToJSONTyped(
     return {
         pk: value["pk"],
         provider: value["provider"],
-        endpoint: value["endpoint"],
+        device: value["device"],
     };
 }

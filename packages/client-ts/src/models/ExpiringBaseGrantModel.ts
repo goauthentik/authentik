@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -20,33 +18,19 @@ import { UserFromJSON, UserToJSON } from "./User";
 
 /**
  * Serializer for BaseGrantModel and ExpiringBaseGrant
+ *
  * @export
  * @interface ExpiringBaseGrantModel
  */
 export interface ExpiringBaseGrantModel {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     provider: Provider;
-    /**
-     *
-     */
     user: User;
     /**
      * Check if token is expired yet.
      */
     readonly isExpired: boolean;
-    /**
-     *
-     */
     expires?: Date | null;
-    /**
-     *
-     */
     scope: Array<string>;
 }
 
