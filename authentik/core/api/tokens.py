@@ -14,8 +14,8 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.api.validation import validate
 from authentik.blueprints.api import ManagedSerializer
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
+from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import (
     USER_ATTRIBUTE_TOKEN_EXPIRING,
@@ -34,7 +34,7 @@ from authentik.rbac.decorators import permission_required
 class TokenSerializer(ManagedSerializer, ModelSerializer):
     """Token Serializer"""
 
-    user_obj = UserSerializer(required=False, source="user", read_only=True)
+    user_obj = PartialUserSerializer(required=False, source="user", read_only=True)
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -124,7 +124,7 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
     """Token Viewset"""
 
     lookup_field = "identifier"
-    queryset = Token.objects.including_expired().prefetch_related("user__groups", "user__roles")
+    queryset = Token.objects.including_expired().select_related("user")
     serializer_class = TokenSerializer
     search_fields = [
         "identifier",

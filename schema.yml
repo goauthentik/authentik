@@ -59884,7 +59884,7 @@ components:
           type: integer
         user_obj:
           allOf:
-          - $ref: '#/components/schemas/User'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
         description:
           type: string

@@ -7,17 +7,15 @@ from django.urls.base import reverse
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.test import APITestCase
 
-from authentik.core.api.tokens import TokenSerializer
+from authentik.core.api.tokens import TokenSerializer, TokenViewSet
 from authentik.core.models import (
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME,
-    Group,
     Token,
     TokenIntents,
 )
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.lib.generators import generate_id
-from authentik.rbac.models import Role
 
 
 class TestTokenAPI(APITestCase):
@@ -201,32 +199,21 @@ class TestTokenAPI(APITestCase):
         self.assertEqual(body["results"][0]["identifier"], token_should.identifier)
         self.assertEqual(body["results"][1]["identifier"], token_should_not.identifier)
 
-    def test_list_owner_details_refresh(self):
-        """Owner details include current memberships, including for expired tokens."""
-        group = Group.objects.create(name=generate_id())
-        role = Role.objects.create(name=generate_id())
-        self.user.groups.add(group)
-        self.user.roles.add(role)
-        token = Token.objects.create(
-            identifier=generate_id(),
-            user=self.user,
-            expires=datetime.now() - timedelta(days=1),
+    def test_list_owner_queries(self):
+        """Serializing tokens and their owners takes one query, however many owners there are"""
+        tokens = [
+            Token.objects.create(identifier=generate_id(), user=create_test_user())
+            for _ in range(3)
+        ]
+        with self.assertNumQueries(1):
+            data = TokenSerializer(
+                TokenViewSet.queryset.filter(pk__in=[token.pk for token in tokens]),
+                many=True,
+            ).data
+        self.assertCountEqual(
+            [token["user_obj"]["username"] for token in data],
+            [token.user.username for token in tokens],
         )
-        url = reverse("authentik_api:token-list")
-        for member in (True, False):
-            with self.subTest(member=member):
-                response = self.client.get(url, {"identifier": token.identifier})
-                self.assertEqual(response.status_code, 200)
-                self.assertEqual(len(response.data["results"]), 1)
-                owner = response.data["results"][0]["user_obj"]
-                self.assertEqual(owner["pk"], self.user.pk)
-                self.assertEqual(owner["groups"], [group.pk] if member else [])
-                self.assertEqual(owner["roles"], [role.pk] if member else [])
-                self.assertEqual(len(owner["groups_obj"]), int(member))
-                self.assertEqual(len(owner["roles_obj"]), int(member))
-                self.assertFalse(owner["is_superuser"])
-            self.user.groups.remove(group)
-            self.user.roles.remove(role)
 
     def test_serializer_no_request(self):
         """Test serializer without request"""
