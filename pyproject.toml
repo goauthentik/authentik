@@ -26,7 +26,7 @@ dependencies = [
   "django-storages[s3]==1.14.6",
   "django==5.2.17",
   "djangoql==0.19.1",
-  "djangorestframework==3.18.1",
+  "djangorestframework==3.18.3",
   "docker==7.2.0",
   "drf-spectacular==0.29.0",
   "dumb-init==1.2.5.post1",
