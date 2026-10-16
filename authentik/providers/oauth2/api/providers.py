@@ -99,6 +99,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "issuer_mode",
             "jwt_federation_sources",
             "jwt_federation_providers",
+            "id_jag_sources",
         ]
         secret_fields = ["client_secret"]
         extra_kwargs = {
@@ -126,7 +127,12 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
 
     queryset = OAuth2Provider.objects.select_related(
         "application", "backchannel_application"
-    ).prefetch_related("property_mappings", "jwt_federation_sources", "jwt_federation_providers")
+    ).prefetch_related(
+        "property_mappings",
+        "jwt_federation_sources",
+        "jwt_federation_providers",
+        "id_jag_sources",
+    )
     serializer_class = OAuth2ProviderSerializer
     filterset_fields = [
         "name",

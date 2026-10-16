@@ -45989,6 +45989,14 @@ components:
           type: array
           items:
             type: integer
+        id_jag_sources:
+          type: array
+          items:
+            type: string
+            format: uuid
+            title: ID-JAG sources
+          description: Authorization servers this provider may mint an ID-JAG for.
+            Empty means ID-JAG is disabled for this provider.
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -46119,6 +46127,14 @@ components:
           type: array
           items:
             type: integer
+        id_jag_sources:
+          type: array
+          items:
+            type: string
+            format: uuid
+            title: ID-JAG sources
+          description: Authorization servers this provider may mint an ID-JAG for.
+            Empty means ID-JAG is disabled for this provider.
       required:
       - authorization_flow
       - invalidation_flow
@@ -46350,6 +46366,11 @@ components:
           - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
           description: How to perform authentication during an authorization_code
             token request flow
+        id_jag_resources:
+          type: array
+          items:
+            type: string
+          description: Resources a client may request an ID-JAG for at this server.
       required:
       - callback_url
       - component
@@ -46529,6 +46550,12 @@ components:
           - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
           description: How to perform authentication during an authorization_code
             token request flow
+        id_jag_resources:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: Resources a client may request an ID-JAG for at this server.
       required:
       - consumer_key
       - name
@@ -52053,6 +52080,14 @@ components:
           type: array
           items:
             type: integer
+        id_jag_sources:
+          type: array
+          items:
+            type: string
+            format: uuid
+            title: ID-JAG sources
+          description: Authorization servers this provider may mint an ID-JAG for.
+            Empty means ID-JAG is disabled for this provider.
     PatchedOAuthSourcePropertyMappingRequest:
       type: object
       description: OAuthSourcePropertyMapping Serializer
@@ -52169,6 +52204,12 @@ components:
           - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
           description: How to perform authentication during an authorization_code
             token request flow
+        id_jag_resources:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: Resources a client may request an ID-JAG for at this server.
     PatchedObjectAttributeRequest:
       type: object
       properties:

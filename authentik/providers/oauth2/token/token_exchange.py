@@ -1,6 +1,7 @@
 from uuid import UUID
 
 from django.http import HttpRequest
+from jwt import PyJWTError, decode
 
 from authentik.common.oauth.constants import (
     ACTOR_TOKEN_TYPES,
@@ -14,8 +15,8 @@ from authentik.core.models import Actor, Application, Token, TokenIntents
 from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.providers.oauth2.errors import TokenExchangeError
-from authentik.providers.oauth2.models import OAuth2Provider
-from authentik.providers.oauth2.token.base_fed import FederatedTokenRequest
+from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
+from authentik.providers.oauth2.token.base_fed import FederatedParty, FederatedTokenRequest
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 
@@ -26,28 +27,66 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
         return self.requested_token_type == TOKEN_TYPE_URI_ID_JAG
 
     def resolve_id_jag_audience(self, request: HttpRequest) -> None:
-        """Requesting an ID-JAG is *entirely about* targeting an external audience, so
-        exactly one `audience` is required, and it must be explicitly allow-listed on the
-        provider rather than resolved to another authentik provider."""
+        """Requesting an ID-JAG is *entirely about* targeting an external authorization
+        server, so exactly one `audience` is required, and it must be explicitly
+        allow-listed on the provider rather than resolved to another authentik provider.
+        An optional `resource` must be allow-listed for that audience."""
         audiences = request.POST.getlist("audience")
         if len(audiences) != 1:
             self.logger.warning("ID-JAG request requires exactly one audience")
             raise TokenExchangeError("invalid_target").with_cause("audience_required")
-        if audiences[0] not in self.provider.id_jag_audiences:
+        target = next(
+            (s for s in self.provider.id_jag_sources.all() if s.issuer == audiences[0]), None
+        )
+        if not target:
             self.logger.warning("ID-JAG audience not allow-listed", audience=audiences[0])
             raise TokenExchangeError("invalid_target").with_cause("audience_not_allowed")
+        resources = request.POST.getlist("resource")
+        if len(resources) > 1:
+            self.logger.warning("Multiple resources are not supported")
+            raise TokenExchangeError("invalid_target").with_cause("multiple_resources")
+        if resources and resources[0] not in target.id_jag_resources:
+            self.logger.warning("ID-JAG resource not allow-listed", resource=resources[0])
+            raise TokenExchangeError("invalid_target").with_cause("resource_not_allowed")
         self.id_jag_audience = audiences[0]
+        self.id_jag_source = target
+        self.id_jag_resource = resources[0] if resources else None
+
+    def validate_id_token(self, id_token: str) -> FederatedParty | None:
+        """An ID token as subject_token (ID-JAG only) must have been issued by this
+        provider to this client, and its session must still be valid."""
+        key, alg = self.provider.jwt_key
+        try:
+            claims = decode(
+                id_token,
+                key if isinstance(key, str) else key.public_key(),
+                algorithms=[alg],
+                audience=self.provider.client_id,
+            )
+        except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
+            self.logger.warning("failed to verify ID token", exc=exc)
+            return None
+        jti = claims.get("jti")
+        if not jti:
+            return None
+        # The ID token's jti is stored with the access token it was issued alongside;
+        # ExpiringManager drops expired/revoked ones.
+        # ponytail: unindexed text scan of this provider's tokens, index jti if it gets hot
+        for token in AccessToken.objects.filter(provider=self.provider, _id_token__contains=jti):
+            if token.id_token.jti == jti:
+                return FederatedParty(parsed_token=claims, party=self.provider, user=token.user)
+        return None
 
     def resolve_audience(self, request: HttpRequest) -> None:
         """RFC 8693 §2.1 `audience`: the provider the issued token is for, named by its
         `client_id` or by its application's `pbm_uuid`. Targets that cannot be honored are
         refused with invalid_target (§2.2.2) rather than ignored."""
-        # RFC 8707 resource indicators are not implemented.
+        if self.is_id_jag_request:
+            return self.resolve_id_jag_audience(request)
+        # RFC 8707 resource indicators are not implemented for ordinary token exchange.
         if request.POST.getlist("resource"):
             self.logger.warning("Resource indicators are not supported")
             raise TokenExchangeError("invalid_target").with_cause("target_unsupported")
-        if self.is_id_jag_request:
-            return self.resolve_id_jag_audience(request)
         audiences = request.POST.getlist("audience")
         if not audiences:
             return
@@ -101,7 +140,10 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
                 "unsupported_requested_token_type"
             )
 
-        federated_party = self.validate_jwt(subject_token)
+        if subject_token_type == TOKEN_TYPE_URI_ID_TOKEN:
+            federated_party = self.validate_id_token(subject_token)
+        else:
+            federated_party = self.validate_jwt(subject_token)
 
         if not federated_party:
             # Expiry is enforced by PyJWT during signature verification, so an expired

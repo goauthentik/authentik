@@ -166,6 +166,7 @@ class OAuthSourceSerializer(SourceSerializer):
             "oidc_jwks_url",
             "oidc_jwks",
             "authorization_code_auth_method",
+            "id_jag_resources",
         ]
         extra_kwargs = {
             "consumer_secret": {"write_only": True, "allow_blank": True, "required": False},

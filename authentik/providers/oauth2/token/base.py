@@ -31,6 +31,7 @@ from authentik.providers.oauth2.models import (
     ScopeMapping,
 )
 from authentik.providers.oauth2.utils import is_all_vschar, pkce_s256_challenge
+from authentik.sources.oauth.models import OAuthSource
 
 
 class TokenRequest:
@@ -50,6 +51,9 @@ class TokenRequest:
     # Set when requested_token_type=id-jag: the (allow-listed) external audience the
     # minted assertion is for. See TokenView.create_id_jag_response.
     id_jag_audience: str | None = None
+    id_jag_source: OAuthSource | None = None
+    # Set when requested_token_type=id-jag: the (allow-listed) `resource` it is for
+    id_jag_resource: str | None = None
     logger: BoundLogger
 
     def __init__(self, provider: OAuth2Provider, client_id: str, client_secret: str):

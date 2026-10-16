@@ -388,7 +388,10 @@ class TokenView(View):
         id_jag.jti = generate_id()
         id_jag.iat = int(now.timestamp())
         id_jag.exp = int((now + validity).timestamp())
-        id_jag.claims["client_id"] = self.provider.client_id
+        # The client's identifier at the target authorization server, not ours
+        id_jag.claims["client_id"] = self.params.id_jag_source.consumer_key
+        if self.params.id_jag_resource:
+            id_jag.claims["resource"] = self.params.id_jag_resource
         if self.params.scope:
             id_jag.claims["scope"] = " ".join(self.params.scope)
         # RFC 8693 §4.1 delegation, same mechanism as create_token_exchange_response:
