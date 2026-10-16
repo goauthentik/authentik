@@ -68,6 +68,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg("Embedded outpost is not configured correctly.")}
                     <a href=${toAdminInterface("outpost/outposts")}>${msg("Check outposts.")}</a>`,
+                tone: "warning",
             });
         }
 
@@ -77,6 +78,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg("HTTPS is not detected correctly")}`,
+                tone: "warning",
             });
         }
 
@@ -88,6 +90,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg("Server and client are further than 5 seconds apart.")}`,
+                tone: "warning",
             });
         }
 
@@ -96,6 +99,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
         return Promise.resolve<AdminStatus>({
             icon: "fa fa-check-circle pf-m-success",
             message: html`${msg("Everything is ok.")}`,
+            tone: "success",
         });
     }
 
