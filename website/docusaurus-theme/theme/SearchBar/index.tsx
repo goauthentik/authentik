@@ -63,11 +63,12 @@ export default function SearchBar() {
     }, [indexPath, workerPath, runtimePath]);
 
     // The index download starts when the modal opens, so the first query need not wait for it.
+    // With a hosted endpoint the index is fetched only if a request to the endpoint fails.
     useEffect(() => {
-        if (open) {
+        if (open && endpoint === null) {
             openDatabase().catch(() => {});
         }
-    }, [open, openDatabase]);
+    }, [open, endpoint, openDatabase]);
 
     const searchLocally = useCallback(
         async (query: string, signal: AbortSignal): Promise<SearchResponse> => {
@@ -84,7 +85,9 @@ export default function SearchBar() {
         async (query: string, signal: AbortSignal): Promise<SearchResponse> => {
             if (endpoint === null) return searchLocally(query, signal);
 
-            const url = new URL(endpoint);
+            // A relative endpoint, such as a path a Netlify rewrite proxies, resolves against
+            // the page.
+            const url = new URL(endpoint, globalThis.location.href);
 
             url.searchParams.set("q", query);
             url.searchParams.set("site", site);

@@ -13,6 +13,7 @@ import {
     SLOT_POINTER_TABLE,
 } from "@goauthentik/docusaurus-theme/search/common";
 import {
+    DEFAULT_LIMIT,
     search,
     type SearchDatabase,
     type SQLValue,
@@ -21,11 +22,6 @@ import {
 export interface Env {
     DB: D1Database;
 }
-
-/**
- * The most hits a caller may request.
- */
-const MAX_LIMIT = 20;
 
 /**
  * How long an edge cache and a browser may keep a response. A rebuild lands within this many
@@ -96,7 +92,8 @@ async function handleSearch(url: URL, env: Env): Promise<Response> {
     if (q === "") return json({ error: "q is required" }, 400);
 
     const site = url.searchParams.get("site") ?? "";
-    const limit = Math.min(Number(url.searchParams.get("limit") ?? 8) || 8, MAX_LIMIT);
+    // `search` bounds the limit to its own range.
+    const limit = Number(url.searchParams.get("limit")) || DEFAULT_LIMIT;
     const slot = await currentSlot(env.DB);
 
     if (slot === null) return json({ error: "the index has not been imported" }, 503);
