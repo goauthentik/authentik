@@ -623,6 +623,20 @@ export interface AuthenticatorsEndpointUsedByListRequest {
     uuid: string;
 }
 
+export interface AuthenticatorsPasswordLockCreateRequest {
+    /**
+     * A unique integer value identifying this Password Device.
+     */
+    id: number;
+}
+
+export interface AuthenticatorsPasswordUnlockCreateRequest {
+    /**
+     * A unique integer value identifying this Password Device.
+     */
+    id: number;
+}
+
 export interface AuthenticatorsSmsDestroyRequest {
     /**
      * A unique integer value identifying this SMS Device.
@@ -4896,6 +4910,128 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             initOverrides,
         );
         return await response.value();
+    }
+
+    /**
+     * Creates request options for authenticatorsPasswordLockCreate without sending the request
+     */
+    async authenticatorsPasswordLockCreateRequestOpts(
+        requestParameters: AuthenticatorsPasswordLockCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling authenticatorsPasswordLockCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/authenticators/password/{id}/lock/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Prevent a password authenticator from authenticating.
+     */
+    async authenticatorsPasswordLockCreateRaw(
+        requestParameters: AuthenticatorsPasswordLockCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.authenticatorsPasswordLockCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Prevent a password authenticator from authenticating.
+     */
+    async authenticatorsPasswordLockCreate(
+        requestParameters: AuthenticatorsPasswordLockCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.authenticatorsPasswordLockCreateRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for authenticatorsPasswordUnlockCreate without sending the request
+     */
+    async authenticatorsPasswordUnlockCreateRequestOpts(
+        requestParameters: AuthenticatorsPasswordUnlockCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling authenticatorsPasswordUnlockCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/authenticators/password/{id}/unlock/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Allow a locked password authenticator to authenticate again.
+     */
+    async authenticatorsPasswordUnlockCreateRaw(
+        requestParameters: AuthenticatorsPasswordUnlockCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.authenticatorsPasswordUnlockCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Allow a locked password authenticator to authenticate again.
+     */
+    async authenticatorsPasswordUnlockCreate(
+        requestParameters: AuthenticatorsPasswordUnlockCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.authenticatorsPasswordUnlockCreateRaw(requestParameters, initOverrides);
     }
 
     /**
