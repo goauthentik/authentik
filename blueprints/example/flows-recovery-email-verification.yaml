@@ -4,6 +4,11 @@ metadata:
     blueprints.goauthentik.io/instantiate: "false"
   name: Example - Recovery with email verification
 entries:
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        path: system/email-templates.yaml
+      required: false
   - identifiers:
       slug: default-recovery-flow
     id: flow

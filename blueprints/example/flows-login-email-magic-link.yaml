@@ -4,6 +4,11 @@ metadata:
     blueprints.goauthentik.io/instantiate: "false"
   name: Example - Login with email magic link
 entries:
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        path: system/email-templates.yaml
+      required: false
   - identifiers:
       slug: default-authentication-flow
     model: authentik_flows.flow

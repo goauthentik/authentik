@@ -8,6 +8,11 @@ entries:
     identifiers:
       path: system/bootstrap.yaml
     required: false
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      path: system/email-templates.yaml
+    required: false
 - model: authentik_events.notificationtransport
   id: default-email-transport
   attrs:
