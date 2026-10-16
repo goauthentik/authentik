@@ -10,8 +10,7 @@ import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
-
-import { setPageDetails } from "#components/ak-page-navbar";
+import { setPageDetails } from "#elements/router/meta";
 
 import { Source, SourcesApi } from "@goauthentik/api";
 

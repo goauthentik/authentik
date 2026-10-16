@@ -1,18 +1,14 @@
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
-import {
-    CoreApi,
-    CoreGroupsListRequest,
-    Group,
-    GroupLDAPSourceConnection,
-    LDAPSource,
-    SourcesApi,
-} from "@goauthentik/api";
+import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { groupSource } from "#admin/common/search-sources";
+
+import { GroupLDAPSourceConnection, LDAPSource, SourcesApi } from "@goauthentik/api";
 
 import { ifDefined } from "lit-html/directives/if-defined.js";
 
@@ -45,28 +41,11 @@ export class LDAPSourceGroupForm extends ModelForm<GroupLDAPSourceConnection, nu
 
     renderForm() {
         return html`<ak-form-element-horizontal label=${msg("Group")} name="group">
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Group[]> => {
-                        const args: CoreGroupsListRequest = {
-                            ordering: "name",
-                        };
-
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-
-                        const groups = await aki(CoreApi).coreGroupsList(args);
-
-                        return groups.results;
-                    }}
-                    .renderElement=${(group: Group): string => {
-                        return group.name;
-                    }}
-                    .value=${(group: Group | undefined): string | undefined => {
-                        return group?.pk;
-                    }}
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "group",
+                    source: groupSource,
+                    blankable: false,
+                })}
             </ak-form-element-horizontal>
             <ak-text-input
                 name="identifier"

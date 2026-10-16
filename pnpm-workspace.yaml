@@ -1,6 +1,7 @@
 packages:
   - "packages/oxlint-config"
   - "packages/oxfmt-config"
+  - "packages/client-ts"
   - "packages/docusaurus-config"
   - "packages/esbuild-plugin-live-reload"
   - "packages/fonts"

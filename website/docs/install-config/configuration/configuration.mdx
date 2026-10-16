@@ -41,6 +41,12 @@ import Tabs from "@theme/Tabs";
 
 </Tabs>
 
+## Configure the server and worker containers
+
+Give the server and worker containers the same `AUTHENTIK_` environment variables. Each container ignores the settings it does not use.
+
+The exception is when the server and worker share a network, for example with host networking or in the same pod. Both containers listen on `AUTHENTIK_LISTEN__HTTP` and `AUTHENTIK_LISTEN__METRICS`, so set different ports for each container. Otherwise, the container that starts second exits with an error such as `failed to listen on [::]:9000 for server`.
+
 ## Verify your configuration settings
 
 To check if your config has been applied correctly, you can run the following command to output the full config:
@@ -861,7 +867,9 @@ Defaults to `/`.
 
 The base URL under which this authentik instance is reachable, for example `https://authentik.company`.
 
-This option is a bootstrap value. On first start, authentik copies it into the **Base URL** [system setting](../../sys-mgmt/settings.mdx) when that setting has not been configured yet. It never overwrites a Base URL that was already set through the Admin interface or API, and when it is empty authentik falls back to the host configured on the embedded outpost. Once the system setting holds a value, this option is no longer consulted, so it does not need to remain in your environment configuration.
+This option is a bootstrap value. On startup, authentik copies it into the **Base URL** [system setting](../../sys-mgmt/settings.mdx) when that setting has not been configured yet. It never overwrites a Base URL that was already set through the Admin interface or API, and when it is empty authentik falls back to the host configured on the embedded outpost. Once the system setting holds a value, this option is no longer consulted, so it does not need to remain in your environment configuration.
+
+The Base URL system setting is required. Set this option for an [automated install](../automated-install.mdx), or when an existing instance has no Base URL configured. After the initial setup, authentik does not start until a base URL is configured.
 
 Any trailing slash is removed, so `https://authentik.company` and `https://authentik.company/` are equivalent.
 
@@ -870,8 +878,6 @@ Set this to the scheme and host only, without a path. All of authentik is served
 :::
 
 Defaults to an empty string.
-
-This setting is currently unused until it can be marked as required, starting from authentik version 2026.11.
 
 ### `AUTHENTIK_WEB__TIMEOUT_HTTP`
 

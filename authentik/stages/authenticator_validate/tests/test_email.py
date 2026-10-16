@@ -2,13 +2,16 @@
 
 from django.test.client import RequestFactory
 from django.urls.base import reverse
+from freezegun import freeze_time
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowStageBinding, NotConfiguredAction
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.email import mask_email
+from authentik.stages.authenticator.oath import TOTP
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage, EmailDevice
+from authentik.stages.authenticator_totp.models import TOTPDevice
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
@@ -137,6 +140,37 @@ class AuthenticatorValidateStageEmailTests(FlowTestCase):
             response_data["response_errors"],
             {"non_field_errors": [{"code": "invalid", "string": "Empty response"}]},
         )
+
+    @freeze_time("2026-10-08 12:00:00")
+    def test_email_only_rejects_totp(self):
+        """An enrolled TOTP device cannot satisfy an email-only stage."""
+        device = EmailDevice.objects.create(
+            user=self.user, stage=self.stage, email="test@authentik.local"
+        )
+        totp_device = TOTPDevice.objects.create(user=self.user)
+        totp_code = str(TOTP(totp_device.bin_key).token()).zfill(totp_device.digits)
+        self.validate_stage.email_otp_throttling_factor = 0
+        self.validate_stage.save()
+
+        self._identify_user()
+        self._send_challenge(device)
+        device.refresh_from_db()
+        # Ensure the email and TOTP codes cannot coincidentally match.
+        device.token = "111111" if totp_code != "111111" else "222222"
+        device.save()
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        response = self.client.post(url, {"code": totp_code})
+        data = self.assertStageResponse(
+            response, flow=self.flow, component="ak-stage-authenticator-validate"
+        )
+        self.assertIn("code", data["response_errors"])
+        totp_device.refresh_from_db()
+        self.assertEqual(totp_device.last_t, -1)
+        self.assertEqual(totp_device.throttling_failure_count, 0)
+        self.assertIsNone(totp_device.last_used)
+
+        response = self.client.post(url, {"code": device.token})
+        self.assertStageRedirects(response, "/")
 
     def test_invalid_code(self):
         """Test validator stage with invalid code"""

@@ -1,20 +1,12 @@
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
-import "#elements/forms/SearchSelect/ak-search-select";
 import "#elements/forms/HorizontalFormElement";
 import { aki } from "#common/api/client";
 
-import { RenderFlowOption } from "#admin/flows/utils";
+import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
-import {
-    Flow,
-    FlowsApi,
-    FlowsInstancesListRequest,
-    RedirectStage,
-    RedirectStageModeEnum,
-    StagesApi,
-} from "@goauthentik/api";
+import { RedirectStage, RedirectStageModeEnum, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -115,28 +107,11 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
                         name="targetFlow"
                         required
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                };
-
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-
-                                const flows = await aki(FlowsApi).flowsInstancesList(args);
-
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => RenderFlowOption(flow)}
-                            .renderDescription=${(flow: Flow): TemplateResult => html`${flow.name}`}
-                            .value=${(flow: Flow | undefined): string | undefined => flow?.pk}
-                            .selected=${(flow: Flow): boolean =>
-                                this.instance?.targetFlow === flow.pk}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKFlowSearch({
+                            name: "targetFlow",
+                            value: this.instance?.targetFlow,
+                            blankable: true,
+                        })}
                         <p class="pf-c-form__helper-text">${msg("Redirect the user to a Flow.")}</p>
                     </ak-form-element-horizontal>
                     <ak-switch-input
