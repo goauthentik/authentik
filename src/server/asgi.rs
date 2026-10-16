@@ -296,14 +296,17 @@ pub(crate) struct Asgi(Arc<Py<PyAny>>);
 
 impl Asgi {
     /// Load authentik's application. Blocks for as long as Django takes to start.
-    pub(super) fn load() -> Result<Self> {
-        Ok(Self::new(Python::attach(|py| {
-            Ok::<_, PyErr>(
-                py.import("lifecycle.server")?
-                    .call_method0("load")?
-                    .unbind(),
-            )
-        })?))
+    ///
+    /// Returns the ASGI app, used for websockets, alongside the WSGI app `lifecycle.server`
+    /// also builds, which handles ordinary HTTP requests (see `super::wsgi`). Both come out
+    /// of this single call so Django's startup sequence only runs once.
+    pub(super) fn load() -> Result<(Self, Py<PyAny>)> {
+        Python::attach(|py| {
+            let server = py.import("lifecycle.server")?.call_method0("load")?;
+            let wsgi_application = server.getattr("wsgi_application")?.unbind();
+            Ok::<_, PyErr>((Self::new(server.unbind()), wsgi_application))
+        })
+        .map_err(Into::into)
     }
 
     fn new(server: Py<PyAny>) -> Self {

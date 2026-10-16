@@ -1,4 +1,4 @@
-use std::{net::Ipv6Addr, os::unix, sync::Arc};
+use std::{net::Ipv6Addr, num::NonZeroUsize, os::unix, sync::Arc};
 
 use ak_axum::{
     extract::{
@@ -38,6 +38,30 @@ mod asgi;
 mod core;
 mod r#static;
 mod tls;
+mod wsgi;
+
+/// How many OS threads WSGI requests (see `wsgi::Wsgi::http`) may run on concurrently.
+///
+/// Each of those threads holds one Postgres connection open for the life of its request —
+/// `postgresql.conn_max_age` defaults to `0`, so Django opens a fresh connection per request
+/// rather than reusing one — so this number also caps how many connections the core server
+/// opens at once. A default Postgres install caps `max_connections` at 100 total, shared with
+/// the worker process, migrations, `psql` sessions, and everything else talking to the same
+/// database, so this deliberately stays well under that instead of scaling unbounded with core
+/// count the way tokio's default blocking pool (up to 512 threads) would.
+///
+/// `web.max_blocking_threads` overrides this for deployments with a larger Postgres instance
+/// (e.g. pooled through pgbouncer, or with `max_connections` raised) in front of them.
+pub(crate) fn blocking_thread_count() -> NonZeroUsize {
+    if let Some(configured) = config::get().web.max_blocking_threads {
+        return configured;
+    }
+    let cores = std::thread::available_parallelism().map_or(1, NonZeroUsize::get);
+    // 4 threads/core covers the gaps while one request waits on the database or an upstream
+    // IdP, without being able to open more connections than a default Postgres comfortably
+    // tolerates alongside everything else using it.
+    NonZeroUsize::new((cores * 4).clamp(8, 32)).expect("clamped to at least 8, so non-zero")
+}
 
 #[derive(Debug, Default, FromArgs, PartialEq, Eq)]
 /// Run the authentik server.
@@ -54,8 +78,11 @@ pub(crate) fn socket_path() -> std::path::PathBuf {
 
 #[derive(Debug)]
 pub(crate) struct Server {
-    /// The Python application, once it has loaded.
+    /// The ASGI application, once it has loaded. Only used for websockets now; ordinary
+    /// HTTP requests go through `wsgi` instead, see `super::wsgi`.
     asgi: ArcSwapOption<asgi::Asgi>,
+    /// The WSGI application, once it has loaded.
+    wsgi: ArcSwapOption<wsgi::Wsgi>,
     pub(crate) workers: ArcSwapOption<Workers>,
     proxy_outpost: Arc<ArcSwapOption<ProxyOutpost>>,
     brand_cert_resolver: ArcSwapOption<BrandCertResolver>,
@@ -66,6 +93,7 @@ impl Server {
     fn new() -> Result<Self> {
         Ok(Self {
             asgi: ArcSwapOption::empty(),
+            wsgi: ArcSwapOption::empty(),
             workers: ArcSwapOption::empty(),
             proxy_outpost: Arc::new(ArcSwapOption::empty()),
             brand_cert_resolver: ArcSwapOption::empty(),
@@ -130,11 +158,13 @@ impl Server {
 
 async fn watch_server(arbiter: Arbiter, server: Arc<Server>) -> Result<()> {
     info!("starting server");
-    let asgi = tokio::select! {
-        asgi = spawn_blocking(asgi::Asgi::load) => Arc::new(asgi??),
+    let (asgi, wsgi_application) = tokio::select! {
+        loaded = spawn_blocking(asgi::Asgi::load) => loaded??,
         () = arbiter.shutdown() => return Ok(()),
     };
+    let asgi = Arc::new(asgi);
     server.asgi.store(Some(Arc::clone(&asgi)));
+    server.wsgi.store(Some(Arc::new(wsgi::Wsgi::new(wsgi_application))));
     info!("server loaded, marked ready for operation");
     arbiter.send_event(Event::GunicornIsReady)?;
 

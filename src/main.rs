@@ -122,13 +122,21 @@ fn main() -> Result<()> {
     let log_filter_handle = ak_tracing::install()?;
     drop(tracing_crude);
 
-    tokio::runtime::Builder::new_multi_thread()
+    let mut runtime = tokio::runtime::Builder::new_multi_thread();
+    runtime
         .thread_name_fn(|| {
             static ATOMIC_ID: AtomicUsize = AtomicUsize::new(0);
             let id = ATOMIC_ID.fetch_add(1, Ordering::SeqCst);
             format!("tokio-{id}")
         })
-        .enable_all()
+        .enable_all();
+    #[cfg(feature = "core")]
+    if Mode::is_core() {
+        // Only the core server's WSGI bridge leans on spawn_blocking enough for the pool size
+        // to matter; other modes keep tokio's default.
+        runtime.max_blocking_threads(server::blocking_thread_count().get());
+    }
+    runtime
         .build()?
         .block_on(async {
             let mut tasks = Tasks::new()?;

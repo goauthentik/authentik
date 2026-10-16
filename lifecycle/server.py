@@ -54,6 +54,10 @@ class Server:
     def __init__(self, application, loop: asyncio.AbstractEventLoop):
         self.application = application
         self.loop = loop
+        # Set by `load()`, once `authentik.root.wsgi` is importable. Ordinary HTTP
+        # requests are dispatched to this directly, from whichever thread the
+        # embedding binary calls it on, instead of through the ASGI app above.
+        self.wsgi_application = None
         Thread(target=self.loop.run_forever, name="asgi", daemon=True).start()
 
     def is_alive(self) -> bool:
@@ -99,8 +103,10 @@ def load() -> Server:
 
     from authentik.lib.debug import start_debug_server, start_pyroscope
     from authentik.root.asgi import application
+    from authentik.root.wsgi import application as wsgi_application
 
     server = Server(application, uvloop.new_event_loop())
+    server.wsgi_application = wsgi_application
     send_startup_analytics()
     start_debug_server()
     start_pyroscope("server", worker_id="1")

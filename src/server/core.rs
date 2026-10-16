@@ -114,7 +114,7 @@ async fn forward_request(
         .map(|v| v.to_str().unwrap_or_default().to_owned())
         .unwrap_or_default();
 
-    let Some(asgi) = server.asgi.load_full() else {
+    let (Some(asgi), Some(wsgi)) = (server.asgi.load_full(), server.wsgi.load_full()) else {
         return Ok(startup_response(&accept_header));
     };
     if !is_django_http_method(request.method()) {
@@ -170,7 +170,7 @@ async fn forward_request(
     if is_websocket_upgrade(request.headers()) {
         return Ok(asgi.websocket(request, &peer).await?);
     }
-    Ok(asgi.http(request, &peer).await?)
+    Ok(wsgi.http(request, &peer).await?)
 }
 
 fn is_websocket_upgrade(headers: &HeaderMap<HeaderValue>) -> bool {
