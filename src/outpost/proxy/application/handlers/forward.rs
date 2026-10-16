@@ -1,6 +1,9 @@
 use std::{net::IpAddr, sync::Arc};
 
-use ak_axum::{error::Result, extract::client_ip::ClientIp};
+use ak_axum::{
+    error::Result,
+    extract::{client_ip::ClientIp, host::Host},
+};
 use axum::{
     extract::{Request, State},
     http::{HeaderMap, StatusCode, Uri, header},
@@ -35,21 +38,19 @@ pub(super) fn nginx_forward_url(headers: &HeaderMap) -> EyreResult<Url> {
 const ENVOY_PREFIX: &str = "/outpost.goauthentik.io/auth/envoy";
 
 /// Reconstruct the original request target from an Envoy ext-authz request:
-/// strip the envoy prefix from the path and take the host from the `Host`
-/// header. Returns the request path and the scheme-less full target
-/// (`//host/path?query`), which
-/// leaves the envoy request's scheme empty.
-pub(super) fn envoy_forward_target(uri: &Uri, headers: &HeaderMap) -> Option<(String, String)> {
+/// strip the envoy prefix from the path and prepend the request host. Returns
+/// the request path and the scheme-less full target (`//host/path?query`),
+/// which leaves the envoy request's scheme empty.
+pub(super) fn envoy_forward_target(uri: &Uri, host: &str) -> (String, String) {
     let path = uri
         .path()
         .strip_prefix(ENVOY_PREFIX)
         .filter(|path| !path.is_empty())
         .unwrap_or("/");
-    let host = header_str(headers, "host")?;
     let query = uri
         .query()
         .map_or_else(String::new, |query| format!("?{query}"));
-    Some((path.to_owned(), format!("//{host}{path}{query}")))
+    (path.to_owned(), format!("//{host}{path}{query}"))
 }
 
 /// 200 response carrying the authenticated user's headers for the reverse proxy.
@@ -133,11 +134,13 @@ pub(crate) async fn handle_caddy(
 #[instrument(skip_all, fields(user = tracing::field::Empty))]
 pub(crate) async fn handle_envoy(
     State(app): State<Arc<Application>>,
+    Host(host): Host,
     request: Request,
 ) -> Result<Response> {
-    let Some((path, fwd)) = envoy_forward_target(request.uri(), request.headers()) else {
-        return Ok((StatusCode::BAD_REQUEST, "invalid envoy request").into_response());
-    };
+    // `Host` honors `X-Forwarded-Host` from trusted proxies, matching how the
+    // outpost picked this application. A front proxy may rewrite `:authority`
+    // to an internal name before the request reaches Envoy.
+    let (path, fwd) = envoy_forward_target(request.uri(), &host);
 
     if let Some(authed) = app.check_auth(request.headers()).await {
         return Ok(forward_authenticated_response(
@@ -249,10 +252,8 @@ mod tests {
         let uri: Uri = "/outpost.goauthentik.io/auth/envoy/app/page?x=1"
             .parse()
             .expect("uri");
-        let mut headers = HeaderMap::new();
-        headers.insert("host", HeaderValue::from_static("app.example.com"));
 
-        let (path, full) = envoy_forward_target(&uri, &headers).expect("forward target");
+        let (path, full) = envoy_forward_target(&uri, "app.example.com");
         assert_eq!(path, "/app/page");
         // Scheme-less for envoy.
         assert_eq!(full, "//app.example.com/app/page?x=1");
@@ -261,10 +262,8 @@ mod tests {
     #[test]
     fn envoy_bare_prefix_maps_to_root() {
         let uri: Uri = ENVOY_PREFIX.parse().expect("uri");
-        let mut headers = HeaderMap::new();
-        headers.insert("host", HeaderValue::from_static("app.example.com"));
 
-        let (path, full) = envoy_forward_target(&uri, &headers).expect("forward target");
+        let (path, full) = envoy_forward_target(&uri, "app.example.com");
         assert_eq!(path, "/");
         assert_eq!(full, "//app.example.com/");
     }
