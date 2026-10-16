@@ -1,5 +1,6 @@
 """SCIM User tests"""
 
+from copy import deepcopy
 from json import loads
 from unittest.mock import patch
 
@@ -16,7 +17,7 @@ from authentik.lib.sync.outgoing.exceptions import TransientSyncException
 from authentik.providers.scim.clients.users import SCIMUserClient
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderUser
 from authentik.providers.scim.tasks import scim_sync, scim_sync_objects, sync_tasks
-from authentik.tasks.models import Task
+from authentik.tasks.models import Task, TaskLog, TaskStatus
 
 
 @patch("authentik.providers.scim.clients.base.SCIMClient.can_discover", False)
@@ -47,6 +48,96 @@ class SCIMUserTests(TestCase):
         self.provider.property_mappings_group.add(
             SCIMMapping.objects.get(managed="goauthentik.io/providers/scim/group")
         )
+
+    def _unchanged_sync_writes(self, mock: Mocker, echo_attributes: bool):
+        """Count writes after two unchanged syncs with only HTTP mocked."""
+        scim_id = generate_id()
+        mock.get("https://localhost/ServiceProviderConfig", json={})
+
+        def response(request, _context):
+            return (request.json() if echo_attributes else {}) | {"id": scim_id}
+
+        create_user = mock.post("https://localhost/Users", json=response)
+        update_user = mock.put(f"https://localhost/Users/{scim_id}", json=response)
+        uid = generate_id()
+        user = User.objects.create(username=uid, name=uid, email=f"{uid}@example.test")
+        self.assertEqual(create_user.call_count, 1)
+        self.assertTrue(
+            SCIMProviderUser.objects.filter(
+                provider=self.provider, user=user, scim_id=scim_id
+            ).exists()
+        )
+        scim_sync.send(self.provider.pk).get_result()
+        scim_sync.send(self.provider.pk).get_result()
+        self.assertFalse(TaskLog.objects.filter(log_level=TaskStatus.ERROR).exists())
+        self.assertEqual(create_user.call_count, 1)
+        return update_user.call_count
+
+    @Mocker()
+    def test_unchanged_sync_partial_response(self, mock: Mocker):
+        """An omitted attribute must not trigger writes on identical syncs."""
+        self.assertEqual(self._unchanged_sync_writes(mock, False), 0)
+
+    @Mocker()
+    def test_unchanged_sync_full_response(self, mock: Mocker):
+        """Control: echoing the sent attributes produces no repeated writes."""
+        self.assertEqual(self._unchanged_sync_writes(mock, True), 0)
+
+    @Mocker()
+    def test_partial_nested_response_and_changed_user(self, mock: Mocker):
+        """Preserve omitted nested fields while still writing a later real change."""
+        scim_id = generate_id()
+        mock.get("https://localhost/ServiceProviderConfig", json={})
+
+        def response(request, _context):
+            return {
+                "id": scim_id,
+                "name": {"givenName": request.json()["name"]["givenName"]},
+                "meta": {"version": "server-version"},
+            }
+
+        mock.post("https://localhost/Users", json=response)
+        update_user = mock.put(f"https://localhost/Users/{scim_id}", json=response)
+        uid = generate_id()
+        user = User.objects.create(username=uid, name="First Last", email=f"{uid}@example.test")
+        scim_sync.send(self.provider.pk).get_result()
+        self.assertEqual(update_user.call_count, 0)
+
+        User.objects.filter(pk=user.pk).update(name="First Changed")
+        scim_sync.send(self.provider.pk).get_result()
+        self.assertEqual(update_user.call_count, 1)
+        self.assertEqual(update_user.last_request.json()["name"]["familyName"], "Changed")
+        scim_sync.send(self.provider.pk).get_result()
+        self.assertEqual(update_user.call_count, 1)
+        connection = SCIMProviderUser.objects.get(provider=self.provider, user=user)
+        self.assertEqual(connection.attributes["name"]["familyName"], "Changed")
+        self.assertEqual(connection.attributes["meta"]["version"], "server-version")
+        self.assertFalse(TaskLog.objects.filter(log_level=TaskStatus.ERROR).exists())
+
+    @Mocker()
+    def test_failed_partial_update_retains_previous_attributes(self, mock: Mocker):
+        """A failed write must not cache the attempted change as synchronized."""
+        scim_id = generate_id()
+        mock.get("https://localhost/ServiceProviderConfig", json={})
+        mock.post("https://localhost/Users", json={"id": scim_id})
+        uid = generate_id()
+        user = User.objects.create(username=uid, name="Before", email=f"{uid}@example.test")
+        connection = SCIMProviderUser.objects.get(provider=self.provider, user=user)
+        original = deepcopy(connection.attributes)
+        user.name = "After"
+        client = SCIMUserClient(self.provider)
+        mock.put(f"https://localhost/Users/{scim_id}", status_code=503)
+        with self.assertRaises(TransientSyncException):
+            client.update(user, connection)
+        connection.refresh_from_db()
+        self.assertEqual(connection.attributes, original)
+
+        update_user = mock.put(f"https://localhost/Users/{scim_id}", json={"id": scim_id})
+        client.update(user, connection)
+        client.update(user, connection)
+        self.assertEqual(update_user.call_count, 1)
+        connection.refresh_from_db()
+        self.assertEqual(connection.attributes["displayName"], "After")
 
     @Mocker()
     def test_user_create(self, mock: Mocker):
@@ -416,10 +507,9 @@ class SCIMUserTests(TestCase):
 
         scim_sync.send(self.provider.pk)
 
-        self.assertEqual(mock.call_count, 3)
+        self.assertEqual(mock.call_count, 2)
         self.assertEqual(mock.request_history[0].method, "GET")
         self.assertEqual(mock.request_history[1].method, "POST")
-        self.assertEqual(mock.request_history[2].method, "PUT")
         self.assertJSONEqual(
             mock.request_history[1].body,
             {
