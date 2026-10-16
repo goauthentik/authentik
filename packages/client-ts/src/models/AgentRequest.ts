@@ -37,6 +37,22 @@ export interface AgentRequest {
     attributes?: { [key: string]: any };
     expiring?: boolean;
     expires?: Date | null;
+    /**
+     * Applications that may use this agent.
+     */
+    applications?: Array<string>;
+    /**
+     * Issuer of the authorization server ID-JAGs are minted for.
+     */
+    idJagAudience?: string;
+    /**
+     * Identifier of the client at that authorization server.
+     */
+    idJagClientId?: string;
+    /**
+     * Resources an ID-JAG may be requested for at that server.
+     */
+    idJagResources?: Array<string>;
 }
 
 /**
@@ -75,6 +91,10 @@ export function AgentRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
                 : json["expires"] === null
                   ? null
                   : parseDateTime(json["expires"]),
+        applications: json["applications"] == null ? undefined : json["applications"],
+        idJagAudience: json["id_jag_audience"] == null ? undefined : json["id_jag_audience"],
+        idJagClientId: json["id_jag_client_id"] == null ? undefined : json["id_jag_client_id"],
+        idJagResources: json["id_jag_resources"] == null ? undefined : json["id_jag_resources"],
     };
 }
 
@@ -100,5 +120,9 @@ export function AgentRequestToJSONTyped(
         attributes: value["attributes"],
         expiring: value["expiring"],
         expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
+        applications: value["applications"],
+        id_jag_audience: value["idJagAudience"],
+        id_jag_client_id: value["idJagClientId"],
+        id_jag_resources: value["idJagResources"],
     };
 }

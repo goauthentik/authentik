@@ -8426,6 +8426,36 @@
                     ],
                     "format": "date-time",
                     "title": "Expires"
+                },
+                "applications": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Applications that may use this agent."
+                    },
+                    "title": "Applications",
+                    "description": "Applications that may use this agent."
+                },
+                "id_jag_audience": {
+                    "type": "string",
+                    "title": "ID-JAG audience",
+                    "description": "Issuer of the authorization server ID-JAGs are minted for."
+                },
+                "id_jag_client_id": {
+                    "type": "string",
+                    "title": "ID-JAG client ID",
+                    "description": "Identifier of the client at that authorization server."
+                },
+                "id_jag_resources": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Id jag resources"
+                    },
+                    "title": "ID-JAG resources",
+                    "description": "Resources an ID-JAG may be requested for at that server."
                 }
             },
             "required": []

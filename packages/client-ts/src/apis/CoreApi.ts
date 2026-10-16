@@ -257,6 +257,7 @@ export interface CoreApplicationsAccessibleListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
+    pbmUuid?: string;
     /**
      * A search term.
      */
@@ -295,6 +296,7 @@ export interface CoreApplicationsListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
+    pbmUuid?: string;
     /**
      * A search term.
      */
@@ -325,6 +327,7 @@ export interface CoreApplicationsRequestableListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
+    pbmUuid?: string;
     /**
      * A search term.
      */
@@ -1560,6 +1563,10 @@ export class CoreApi extends runtime.BaseAPI {
             queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
+        if (requestParameters["pbmUuid"] != null) {
+            queryParameters["pbm_uuid"] = requestParameters["pbmUuid"];
+        }
+
         if (requestParameters["search"] != null) {
             queryParameters["search"] = requestParameters["search"];
         }
@@ -1853,6 +1860,10 @@ export class CoreApi extends runtime.BaseAPI {
             queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
+        if (requestParameters["pbmUuid"] != null) {
+            queryParameters["pbm_uuid"] = requestParameters["pbmUuid"];
+        }
+
         if (requestParameters["search"] != null) {
             queryParameters["search"] = requestParameters["search"];
         }
@@ -2014,6 +2025,10 @@ export class CoreApi extends runtime.BaseAPI {
 
         if (requestParameters["pageSize"] != null) {
             queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["pbmUuid"] != null) {
+            queryParameters["pbm_uuid"] = requestParameters["pbmUuid"];
         }
 
         if (requestParameters["search"] != null) {

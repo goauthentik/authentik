@@ -1,6 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.fields import (
     BooleanField,
     CharField,
@@ -33,6 +33,8 @@ from authentik.core.models import (
 from authentik.enterprise.agents.models import Agent
 from authentik.enterprise.api import EnterpriseRequiredMixin, enterprise_action
 
+ID_JAG_FIELDS = ["id_jag_audience", "id_jag_client_id", "id_jag_resources"]
+
 
 class AgentSerializer(EnterpriseRequiredMixin, PartialUserSerializer):
 
@@ -46,6 +48,14 @@ class AgentSerializer(EnterpriseRequiredMixin, PartialUserSerializer):
         token = Token.objects.filter(user=agent, intent=TokenIntents.INTENT_API).first()
         return token.identifier if token else None
 
+    def validate(self, attrs: dict) -> dict:
+        # ID-JAG is for system agents only. An owned agent's owner can edit it, and must
+        # not be able to make authentik mint assertions for an audience of their choosing.
+        parent = self.instance.parent_id if self.instance else None
+        if parent and any(attrs.get(f) for f in ID_JAG_FIELDS):
+            raise ValidationError(_("ID-JAG can only be configured on system agents."))
+        return super().validate(attrs)
+
     class Meta:
         model = Agent
         fields = PartialUserSerializer.Meta.fields + [
@@ -55,6 +65,8 @@ class AgentSerializer(EnterpriseRequiredMixin, PartialUserSerializer):
             "parent",
             "policy_behavior",
             "token_identifier",
+            "applications",
+            *ID_JAG_FIELDS,
         ]
 
 
@@ -84,7 +96,11 @@ class AgentViewSet(
 
     class AgentCreateSerializer(PassiveSerializer):
 
-        parent = PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, default=None)
+        # Omitted: an agent for the requesting user (self-service). Explicitly null: a
+        # system agent, which needs the admin permission.
+        parent = PrimaryKeyRelatedField(
+            queryset=User.objects.all(), required=False, allow_null=True
+        )
         label = CharField(required=False, allow_blank=True)
         expiring = BooleanField(required=False, default=False)
         expires = DateTimeField(required=False, allow_null=True, default=None)
@@ -98,7 +114,7 @@ class AgentViewSet(
     @validate(AgentCreateSerializer)
     @enterprise_action
     def create(self, request: Request, body: AgentCreateSerializer) -> Response:
-        parent: User = body.validated_data.get("parent") or request.user
+        parent: User | None = body.validated_data.get("parent", request.user)
         self_service_perm = request.user.has_perm("authentik_agents.add_agent_self_service")
         admin_perm = request.user.has_perm("authentik_agents.add_agent")
         # Self-service = creating an agent for yourself; provisioning for another user is an
@@ -141,16 +157,17 @@ class AgentViewSet(
             expiring=True,
             expires=default_token_duration(),
         )
-        parent.assign_perms_to_managed_role(
-            [
-                "authentik_agents.view_agent",
-                "authentik_agents.change_agent",
-                "authentik_agents.delete_agent",
-            ],
-            agent,
-        )
-        # Grant the owner access to the token key so it stays retrievable after creation.
-        parent.assign_perms_to_managed_role("authentik_core.view_token_key", token)
+        if self_service:
+            parent.assign_perms_to_managed_role(
+                [
+                    "authentik_agents.view_agent",
+                    "authentik_agents.change_agent",
+                    "authentik_agents.delete_agent",
+                ],
+                agent,
+            )
+            # Grant the owner access to the token key so it stays retrievable after creation.
+            parent.assign_perms_to_managed_role("authentik_core.view_token_key", token)
         return Response(
             AgentCreatedSerializer({"agent": agent, "token": token.key}).data, status=201
         )

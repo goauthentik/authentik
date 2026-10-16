@@ -1,29 +1,96 @@
 from uuid import UUID
 
 from django.http import HttpRequest
+from jwt import PyJWTError, decode
 
 from authentik.common.oauth.constants import (
     ACTOR_TOKEN_TYPES,
     TOKEN_EXCHANGE_TOKEN_TYPES,
     TOKEN_TYPE_URI_ACCESS_TOKEN,
     TOKEN_TYPE_URI_AUTHENTIK_TOKEN,
+    TOKEN_TYPE_URI_ID_JAG,
+    TOKEN_TYPE_URI_ID_TOKEN,
 )
 from authentik.core.models import Actor, Application, Token, TokenIntents
 from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.providers.oauth2.errors import TokenExchangeError
-from authentik.providers.oauth2.models import OAuth2Provider
-from authentik.providers.oauth2.token.base_fed import FederatedTokenRequest
+from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
+from authentik.providers.oauth2.token.base_fed import FederatedParty, FederatedTokenRequest
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 
 class TokenExchangeTokenRequest(FederatedTokenRequest):
 
+    @property
+    def is_id_jag_request(self) -> bool:
+        return self.requested_token_type == TOKEN_TYPE_URI_ID_JAG
+
+    def resolve_id_jag_audience(self, request: HttpRequest) -> None:
+        """Requesting an ID-JAG is *entirely about* targeting an external authorization
+        server, so exactly one `audience` is required. It must be configured on a system
+        agent that this provider's application may use, rather than resolved to another
+        authentik provider. An optional `resource` must be allow-listed on that agent."""
+        audiences = request.POST.getlist("audience")
+        if len(audiences) != 1:
+            self.logger.warning("ID-JAG request requires exactly one audience")
+            raise TokenExchangeError("invalid_target").with_cause("audience_required")
+        try:
+            from authentik.enterprise.agents.models import Agent
+        except ImportError:
+            self.logger.warning("ID-JAG requires the enterprise agents module")
+            raise TokenExchangeError("invalid_target").with_cause("audience_not_allowed") from None
+        target = Agent.objects.filter(
+            parent__isnull=True,
+            applications__provider=self.provider,
+            id_jag_audience=audiences[0],
+        ).first()
+        if not target:
+            self.logger.warning("No system agent for ID-JAG audience", audience=audiences[0])
+            raise TokenExchangeError("invalid_target").with_cause("audience_not_allowed")
+        resources = request.POST.getlist("resource")
+        if len(resources) > 1:
+            self.logger.warning("Multiple resources are not supported")
+            raise TokenExchangeError("invalid_target").with_cause("multiple_resources")
+        if resources and resources[0] not in target.id_jag_resources:
+            self.logger.warning("ID-JAG resource not allow-listed", resource=resources[0])
+            raise TokenExchangeError("invalid_target").with_cause("resource_not_allowed")
+        self.id_jag_audience = audiences[0]
+        self.id_jag_agent = target
+        self.id_jag_resource = resources[0] if resources else None
+
+    def validate_id_token(self, id_token: str) -> FederatedParty | None:
+        """An ID token as subject_token (ID-JAG only) must have been issued by this
+        provider to this client, and its session must still be valid."""
+        key, alg = self.provider.jwt_key
+        try:
+            claims = decode(
+                id_token,
+                key if isinstance(key, str) else key.public_key(),
+                algorithms=[alg],
+                audience=self.provider.client_id,
+            )
+        except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
+            self.logger.warning("failed to verify ID token", exc=exc)
+            return None
+        jti = claims.get("jti")
+        if not jti:
+            return None
+        # The ID token's jti is stored with the access token it was issued alongside;
+        # ExpiringManager drops expired/revoked ones.
+        # ponytail: unindexed text scan of this provider's tokens, index jti if it gets hot
+        for token in AccessToken.objects.filter(provider=self.provider, _id_token__contains=jti):
+            if token.id_token.jti == jti:
+                return FederatedParty(parsed_token=claims, party=self.provider, user=token.user)
+        return None
+
     def resolve_audience(self, request: HttpRequest) -> None:
         """RFC 8693 §2.1 `audience`: the provider the issued token is for, named by its
         `client_id` or by its application's `pbm_uuid`. Targets that cannot be honored are
         refused with invalid_target (§2.2.2) rather than ignored."""
-        # RFC 8707 resource indicators are not implemented.
+        if self.is_id_jag_request:
+            return self.resolve_id_jag_audience(request)
+        # RFC 8707 resource indicators are not implemented for ordinary token exchange.
         if request.POST.getlist("resource"):
             self.logger.warning("Resource indicators are not supported")
             raise TokenExchangeError("invalid_target").with_cause("target_unsupported")
@@ -63,12 +130,16 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
         if not subject_token or not subject_token_type:
             self.logger.warning("Missing subject_token or subject_token_type")
             raise TokenExchangeError("invalid_request").with_cause("missing_subject_token")
-        if subject_token_type not in TOKEN_EXCHANGE_TOKEN_TYPES:
+        # Spec's subject_token is normally an ID Token, accepted only when requesting an id-jag
+        allowed_subject_token_types = TOKEN_EXCHANGE_TOKEN_TYPES | (
+            {TOKEN_TYPE_URI_ID_TOKEN} if self.is_id_jag_request else set()
+        )
+        if subject_token_type not in allowed_subject_token_types:
             self.logger.warning("Unsupported subject token type", token_type=subject_token_type)
             raise TokenExchangeError("invalid_request").with_cause("unsupported_subject_token_type")
         if self.requested_token_type is None:
             self.requested_token_type = TOKEN_TYPE_URI_ACCESS_TOKEN
-        if self.requested_token_type not in TOKEN_EXCHANGE_TOKEN_TYPES:
+        if self.requested_token_type not in TOKEN_EXCHANGE_TOKEN_TYPES | {TOKEN_TYPE_URI_ID_JAG}:
             self.logger.warning(
                 "Unsupported requested token type", token_type=self.requested_token_type
             )
@@ -76,7 +147,10 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
                 "unsupported_requested_token_type"
             )
 
-        federated_party = self.validate_jwt(subject_token)
+        if subject_token_type == TOKEN_TYPE_URI_ID_TOKEN:
+            federated_party = self.validate_id_token(subject_token)
+        else:
+            federated_party = self.validate_jwt(subject_token)
 
         if not federated_party:
             # Expiry is enforced by PyJWT during signature verification, so an expired
@@ -104,6 +178,12 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
             self.check_policy_access(target_app, request, oauth_jwt=federated_party.parsed_token)
 
         self.post_init_token_exchange_actor(request)
+        if self.is_id_jag_request:
+            # ID-JAGs are minted for system agents only, found through the audience above
+            if self.actor:
+                self.logger.warning("actor_token is not supported for ID-JAG requests")
+                raise TokenExchangeError("invalid_request").with_cause("actor_token_unsupported")
+            self.actor = self.id_jag_agent
 
         method_args = {
             "jwt": federated_party.parsed_token,
@@ -113,6 +193,8 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
         }
         if self.audience_provider:
             method_args["audience"] = self.audience_provider.client_id
+        if self.id_jag_audience:
+            method_args["audience"] = self.id_jag_audience
         # A delegated exchange is performed by the actor, so attribute the event to it; the
         # audit log then records it as an agent acting on behalf of the verified subject,
         # matching how direct API calls by an actor are attributed.
