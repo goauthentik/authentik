@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"strconv"
 	"sync"
 	"testing"
 	"time"
@@ -151,7 +152,7 @@ func memGroup(pk string, numPk int32, name string, users []api.PartialUser) api.
 	}
 }
 
-func memNewAPIClient(t *testing.T, dir *memDirectory) (*api.APIClient, func()) {
+func memNewAPIClient(t testing.TB, dir *memDirectory) (*api.APIClient, func()) {
 	t.Helper()
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/v3/core/users/", func(w http.ResponseWriter, r *http.Request) {
@@ -402,4 +403,165 @@ func TestMemorySearcherFirstFetchError(t *testing.T) {
 		Name:   "memberOf",
 		Values: []string{pi.GetGroupDN("x")},
 	})
+}
+
+// memUser is a plain user with no groups, for directories of more than one.
+func memUser(pk int32, username string) api.User {
+	ts := time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC)
+	isActive := true
+	email := username + "@goauthentik.io"
+	return api.User{
+		Pk:                 pk,
+		Username:           username,
+		Name:               username,
+		IsActive:           &isActive,
+		DateJoined:         ts,
+		IsSuperuser:        false,
+		Groups:             []string{},
+		GroupsObj:          []api.PartialGroup{},
+		RolesObj:           []api.Role{},
+		Email:              &email,
+		Avatar:             "",
+		Uid:                username + "-uid",
+		Uuid:               "00000000-0000-0000-0000-000000000000",
+		PasswordChangeDate: ts,
+		LastUpdated:        ts,
+	}
+}
+
+// memSearchAs runs one base-object search as the given bind DN and returns
+// the entries, so a test can look up an entry other than the binder's own.
+func memSearchAs(tb testing.TB, searcher *memory.MemorySearcher, bindDN, baseDN, filter string) []*ldap.Entry {
+	tb.Helper()
+	client, server := net.Pipe()
+	defer func() {
+		_ = client.Close()
+		_ = server.Close()
+	}()
+	req, span := search.NewRequest(bindDN, ldap.SearchRequest{
+		BaseDN: baseDN,
+		Scope:  ldap.ScopeBaseObject,
+		Filter: filter,
+	}, client)
+	defer span.Finish()
+	res, err := searcher.Search(req)
+	if err != nil {
+		tb.Fatalf("search failed: %v", err)
+	}
+	return res.Entries
+}
+
+// memSearchDirectory is alice, bob and carol, with bob in group x and an
+// empty group y.
+func memSearchDirectory() ([]api.User, []api.Group) {
+	groupX := memPartialGroup(memTestGroupXPk, 10, "x")
+	bob := memUser(2, "bob")
+	bob.Groups = []string{groupX.Pk}
+	bob.GroupsObj = []api.PartialGroup{groupX}
+	bobPartial := api.PartialUser{Pk: 2, Username: "bob", Name: "bob", IsActive: bob.IsActive, Uid: bob.Uid}
+	return []api.User{memAliceUser([]api.PartialGroup{}), bob, memUser(3, "carol")},
+		[]api.Group{
+			memGroup(memTestGroupXPk, 10, "x", []api.PartialUser{bobPartial}),
+			memGroup(memTestGroupYPk, 11, "y", []api.PartialUser{}),
+		}
+}
+
+// TestMemorySearcherSearchPermissionLooksUpOneUserByDN pins that a binder with
+// search permission asking for one user by DN gets exactly that user's entry,
+// whatever the DN's case, and nothing for a DN that is not in the directory.
+// The searcher used to build an entry for every cached user on such a request
+// and keep the one whose DN matched, which on a large directory was the whole
+// cost of every lookup.
+func TestMemorySearcherSearchPermissionLooksUpOneUserByDN(t *testing.T) {
+	dir := &memDirectory{}
+	dir.set(memSearchDirectory())
+
+	client, closeServer := memNewAPIClient(t, dir)
+	defer closeServer()
+
+	pi := memProviderInstance(client)
+	pi.SetFlags(memTestAliceDN, &flags.UserFlags{UserPk: 1, CanSearch: true})
+
+	searcher := memory.NewMemorySearcher(pi, nil)
+
+	bobDN := pi.GetUserDN("bob")
+
+	entries := memSearchAs(t, searcher, memTestAliceDN, bobDN, "(objectClass=*)")
+	if assert.Len(t, entries, 1) {
+		assert.Equal(t, bobDN, entries[0].DN)
+		memAssertAttribute(t, entries[0].Attributes, &ldap.EntryAttribute{
+			Name:   "memberOf",
+			Values: []string{pi.GetGroupDN("x")},
+		})
+	}
+
+	entries = memSearchAs(t, searcher, memTestAliceDN, "CN=Bob,"+memTestUserDN, "(objectClass=*)")
+	if assert.Len(t, entries, 1) {
+		assert.Equal(t, bobDN, entries[0].DN)
+	}
+
+	assert.Empty(t, memSearchAs(t, searcher, memTestAliceDN, pi.GetUserDN("nobody"), "(objectClass=*)"))
+
+	// A binder without search permission still only ever sees their own entry.
+	pi.SetFlags(memTestAliceDN, &flags.UserFlags{UserPk: 1, CanSearch: false})
+	assert.Empty(t, memSearchAs(t, searcher, memTestAliceDN, bobDN, "(objectClass=*)"))
+	assert.Equal(t, memTestAliceDN, memSelfSearch(t, searcher).DN)
+}
+
+// TestMemorySearcherSearchPermissionLooksUpOneGroupByDN pins the same for a
+// group asked for by DN: one entry, with its members, and nothing for an
+// unknown group.
+func TestMemorySearcherSearchPermissionLooksUpOneGroupByDN(t *testing.T) {
+	dir := &memDirectory{}
+	dir.set(memSearchDirectory())
+
+	client, closeServer := memNewAPIClient(t, dir)
+	defer closeServer()
+
+	pi := memProviderInstance(client)
+	pi.SetFlags(memTestAliceDN, &flags.UserFlags{UserPk: 1, CanSearch: true})
+
+	searcher := memory.NewMemorySearcher(pi, nil)
+
+	groupXDN := pi.GetGroupDN("x")
+
+	entries := memSearchAs(t, searcher, memTestAliceDN, groupXDN, "(objectClass=group)")
+	if assert.Len(t, entries, 1) {
+		assert.Equal(t, groupXDN, entries[0].DN)
+		memAssertAttribute(t, entries[0].Attributes, &ldap.EntryAttribute{
+			Name:   "member",
+			Values: []string{pi.GetUserDN("bob")},
+		})
+	}
+
+	assert.Empty(t, memSearchAs(t, searcher, memTestAliceDN, pi.GetGroupDN("nothing"), "(objectClass=group)"))
+}
+
+// BenchmarkMemorySearcherSearchPermissionUserLookup measures one base-object
+// lookup of one user by a binder with search permission against a directory
+// of five thousand users: the shape a TAK server's per-connection poll takes.
+func BenchmarkMemorySearcherSearchPermissionUserLookup(b *testing.B) {
+	users := make([]api.User, 0, 5000)
+	for i := int32(1); i <= 5000; i++ {
+		users = append(users, memUser(i, "user"+strconv.Itoa(int(i))))
+	}
+	dir := &memDirectory{}
+	dir.set(users, []api.Group{})
+
+	client, closeServer := memNewAPIClient(b, dir)
+	defer closeServer()
+
+	pi := memProviderInstance(client)
+	binderDN := pi.GetUserDN("user1")
+	pi.SetFlags(binderDN, &flags.UserFlags{UserPk: 1, CanSearch: true})
+
+	searcher := memory.NewMemorySearcher(pi, nil)
+	targetDN := pi.GetUserDN("user2500")
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		if entries := memSearchAs(b, searcher, binderDN, targetDN, "(objectClass=*)"); len(entries) != 1 {
+			b.Fatalf("expected 1 entry, got %d", len(entries))
+		}
+	}
 }
