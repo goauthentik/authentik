@@ -100,7 +100,7 @@ class AgentConnectorController(BaseController[AgentConnector]):
             ApplePSSOAuthenticationMethod.OPENID: "OpenID",
         }[self.connector.apple_psso_config.authentication_method]
 
-    def _psso_method_speficif(self, request: HttpRequest) -> dict:
+    def _psso_method_specific(self, request: HttpRequest) -> dict:
         """Login, unlock and FileVault policies of the Platform SSO payload, which Apple only
         applies to the password method"""
         config = self.connector.apple_psso_config
@@ -203,7 +203,7 @@ class AgentConnectorController(BaseController[AgentConnector]):
                             "EnableAuthorization": True,
                             "UseSharedDeviceKeys": True,
                             "LoginFrequency": self.connector.apple_psso_config.login_frequency,
-                            **self._psso_method_speficif(),
+                            **self._psso_method_specific(request),
                         },
                     },
                 ],
