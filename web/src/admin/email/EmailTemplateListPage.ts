@@ -55,6 +55,7 @@ export class EmailTemplateListPage extends TablePage<EmailTemplate> {
         return html`<ak-forms-delete-bulk
             object-label=${msg("Email template(s)")}
             .objects=${this.selectedElements}
+            .metadata=${(item: EmailTemplate) => [{ key: msg("Path"), value: item.path }]}
             .usedBy=${(item: EmailTemplate) => {
                 return aki(StagesApi).stagesEmailTemplatesUsedByList({
                     uuid: item.uuid,
