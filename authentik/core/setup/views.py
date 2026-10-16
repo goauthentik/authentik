@@ -11,7 +11,6 @@ from structlog.stdlib import get_logger
 
 from authentik.admin.models import SystemSettings
 from authentik.admin.utils import (
-    clear_system_settings_cache,
     get_system_settings,
     normalize_base_url,
 )
@@ -80,7 +79,7 @@ class PostSetupStageView(StageView):
             )
             if base_url:
                 SystemSettings.objects.filter(pk=get_system_settings().pk).update(base_url=base_url)
-                clear_system_settings_cache()
+                get_system_settings.cache_clear()
             # Remember we're setup
             Setup.set(True)
             # Disable OOBE Blueprints

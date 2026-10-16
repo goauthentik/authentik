@@ -46,7 +46,7 @@ class Flag[T]:
     @classmethod
     def set(cls, value: T, settings: SystemSettings | None = None) -> T | None:
         from authentik.admin.models import SystemSettings
-        from authentik.admin.utils import clear_system_settings_cache, get_system_settings
+        from authentik.admin.utils import get_system_settings
 
         if not settings:
             settings = get_system_settings()
@@ -59,7 +59,7 @@ class Flag[T]:
                 function="jsonb_set",
             )
         )
-        clear_system_settings_cache()
+        get_system_settings.cache_clear()
 
     def get_default(self) -> T | None:
         return self.default

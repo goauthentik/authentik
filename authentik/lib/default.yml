@@ -67,6 +67,7 @@ cache:
   # Duration a user's application list, as determined by policies, will be cached.
   timeout_application_policies: 86400
   timeout_brand: 120
+  timeout_system_settings: 120
 
 # channel:
 #   url: ""
