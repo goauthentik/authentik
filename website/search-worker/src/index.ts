@@ -34,6 +34,8 @@ export interface Env {
  */
 const CACHE_SECONDS = 300;
 
+const CACHE_CONTROL = `public, max-age=${CACHE_SECONDS}, s-maxage=${CACHE_SECONDS}`;
+
 /**
  * The edge cache that holds search responses, keyed by URL.
  */
@@ -125,11 +127,8 @@ app.get("/search", async (c) => {
 
     if (slot === null) return c.json({ error: "the index has not been imported" }, 503);
 
-    const response = Response.json(await search(slotDatabase(c.env.DB, slot), q, limit, site), {
-        headers: {
-            "Cache-Control": `public, max-age=${CACHE_SECONDS}, s-maxage=${CACHE_SECONDS}`,
-        },
-    });
+    const results = await search(slotDatabase(c.env.DB, slot), q, limit, site);
+    const response = Response.json(results, { headers: { "Cache-Control": CACHE_CONTROL } });
 
     c.executionCtx.waitUntil(cache.put(key, response.clone()));
 
