@@ -13,13 +13,7 @@ import { AKCertificateSearch } from "#admin/common/AKCertificateSearch";
 import { emailTemplateSource } from "#admin/common/AKEmailTemplateSearch";
 import { notificationMappingSource } from "#admin/common/search-sources";
 
-import {
-    EventsApi,
-    NotificationTransport,
-    StagesApi,
-    TransportModeEnum,
-    TypeCreate,
-} from "@goauthentik/api";
+import { EventsApi, NotificationTransport, TransportModeEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
