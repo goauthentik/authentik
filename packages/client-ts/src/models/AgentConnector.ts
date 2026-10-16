@@ -10,6 +10,9 @@
  * Do not edit the class manually.
  */
 
+import type { ApplePSSO } from "./ApplePSSO";
+import { ApplePSSOFromJSON, ApplePSSOToJSON } from "./ApplePSSO";
+
 /**
  * @export
  * @interface AgentConnector
@@ -45,6 +48,7 @@ export interface AgentConnector {
     challengeIdleTimeout?: string;
     challengeTriggerCheckIn?: boolean;
     jwtFederationProviders?: Array<number>;
+    applePsso?: ApplePSSO;
 }
 
 /**
@@ -126,6 +130,7 @@ export function AgentConnectorFromJSONTyped(
                 : json["challenge_trigger_check_in"],
         jwtFederationProviders:
             json["jwt_federation_providers"] == null ? undefined : json["jwt_federation_providers"],
+        applePsso: json["apple_psso"] == null ? undefined : ApplePSSOFromJSON(json["apple_psso"]),
     };
 }
 
@@ -159,5 +164,6 @@ export function AgentConnectorToJSONTyped(
         challenge_idle_timeout: value["challengeIdleTimeout"],
         challenge_trigger_check_in: value["challengeTriggerCheckIn"],
         jwt_federation_providers: value["jwtFederationProviders"],
+        apple_psso: ApplePSSOToJSON(value["applePsso"]),
     };
 }

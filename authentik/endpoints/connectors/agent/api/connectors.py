@@ -1,4 +1,5 @@
-from typing import cast
+from dataclasses import asdict
+from typing import Any, cast
 
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -6,7 +7,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.fields import ChoiceField
+from rest_framework.fields import BooleanField, CharField, ChoiceField, IntegerField, ListField
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
@@ -32,6 +33,10 @@ from authentik.endpoints.connectors.agent.controller import MDMConfigResponseSer
 from authentik.endpoints.connectors.agent.models import (
     AgentConnector,
     AgentDeviceConnection,
+    ApplePSSOAuthenticationMethod,
+    ApplePSSOAuthenticationPolicy,
+    ApplePSSOBiometricRequirement,
+    ApplePSSOConfig,
     DeviceToken,
     EnrollmentToken,
 )
@@ -42,8 +47,69 @@ from authentik.flows.planner import PLAN_CONTEXT_DEVICE
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
+APPLE_PSSO_DEFAULTS = asdict(ApplePSSOConfig())
+
+
+class ApplePSSOSerializer(PassiveSerializer):
+    """Apple Platform SSO settings, see ApplePSSOConfig"""
+
+    authentication_method = ChoiceField(
+        choices=ApplePSSOAuthenticationMethod.choices,
+        default=APPLE_PSSO_DEFAULTS["authentication_method"],
+    )
+    login_policy = ChoiceField(
+        choices=ApplePSSOAuthenticationPolicy.choices,
+        default=APPLE_PSSO_DEFAULTS["login_policy"],
+    )
+    unlock_policy = ChoiceField(
+        choices=ApplePSSOAuthenticationPolicy.choices,
+        default=APPLE_PSSO_DEFAULTS["unlock_policy"],
+    )
+    filevault_policy = ChoiceField(
+        choices=ApplePSSOAuthenticationPolicy.choices,
+        default=APPLE_PSSO_DEFAULTS["filevault_policy"],
+    )
+    unlock_allow_touch_id_or_watch = BooleanField(
+        default=APPLE_PSSO_DEFAULTS["unlock_allow_touch_id_or_watch"]
+    )
+    login_frequency = IntegerField(min_value=0, default=APPLE_PSSO_DEFAULTS["login_frequency"])
+    authentication_grace_period = IntegerField(
+        min_value=0, default=APPLE_PSSO_DEFAULTS["authentication_grace_period"]
+    )
+    offline_grace_period = IntegerField(
+        min_value=0, default=APPLE_PSSO_DEFAULTS["offline_grace_period"]
+    )
+    non_platform_sso_accounts = ListField(child=CharField(), default=list)
+    enable_create_user_at_login = BooleanField(
+        default=APPLE_PSSO_DEFAULTS["enable_create_user_at_login"]
+    )
+    biometric_requirement = ChoiceField(
+        choices=ApplePSSOBiometricRequirement.choices,
+        default=APPLE_PSSO_DEFAULTS["biometric_requirement"],
+    )
+    biometric_password_fallback = BooleanField(
+        default=APPLE_PSSO_DEFAULTS["biometric_password_fallback"]
+    )
+    biometric_reuse_during_unlock = BooleanField(
+        default=APPLE_PSSO_DEFAULTS["biometric_reuse_during_unlock"]
+    )
+
 
 class AgentConnectorSerializer(ConnectorSerializer):
+    # Read from the property so unset keys are returned with their defaults
+    apple_psso = ApplePSSOSerializer(source="apple_psso_config", required=False)
+
+    def create(self, validated_data: dict[str, Any]) -> AgentConnector:
+        apple_psso = validated_data.pop("apple_psso_config", {})
+        return super().create({**validated_data, "apple_psso": dict(apple_psso)})
+
+    def update(self, instance: AgentConnector, validated_data: dict[str, Any]) -> AgentConnector:
+        apple_psso = validated_data.pop("apple_psso_config", None)
+        if apple_psso is not None:
+            # Keep the keys that weren't sent
+            validated_data["apple_psso"] = {**instance.apple_psso, **apple_psso}
+        return super().update(instance, validated_data)
+
     class Meta(ConnectorSerializer.Meta):
         model = AgentConnector
         fields = ConnectorSerializer.Meta.fields + [
@@ -58,6 +124,7 @@ class AgentConnectorSerializer(ConnectorSerializer):
             "challenge_idle_timeout",
             "challenge_trigger_check_in",
             "jwt_federation_providers",
+            "apple_psso",
         ]
 
 
