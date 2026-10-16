@@ -5,7 +5,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
 
-import { AdminApi, OutpostsApi, SystemInfo } from "@goauthentik/api";
+import { AdminApi, SystemInfo } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
@@ -23,6 +23,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
 
     async getPrimaryValue(): Promise<SystemInfo> {
         this.now = new Date();
+
         return await aki(AdminApi).adminSystemRetrieve();
     }
 
