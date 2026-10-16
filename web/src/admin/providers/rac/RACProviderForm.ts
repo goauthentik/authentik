@@ -1,10 +1,6 @@
-import "#admin/common/ak-flow-search/ak-flow-search";
-import "#admin/common/ak-crypto-certificate-search";
-import "#admin/common/ak-flow-search/ak-branded-flow-search";
 import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#components/ak-number-input";
-import "#admin/endpoints/ak-endpoints-device-group-search";
 import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
@@ -18,9 +14,12 @@ import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
-import { AKLabel } from "#components/ak-label";
+import { AKSearchSelect } from "#components/ak-search-select-field";
 
-import { FlowDesignationEnum, ProvidersApi, RACProvider } from "@goauthentik/api";
+import { deviceAccessGroupSource } from "#admin/common/search-sources";
+import { AKAuthorizationFlowField } from "#admin/providers/components/flow-fields";
+
+import { ProvidersApi, RACProvider } from "@goauthentik/api";
 
 import YAML from "yaml";
 
@@ -59,27 +58,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                 ?autofocus=${!this.instance}
             ></ak-text-input>
 
-            <ak-form-element-horizontal name="authorizationFlow" required>
-                ${AKLabel(
-                    {
-                        className: "pf-c-form__group-label",
-                        slot: "label",
-                        htmlFor: "authorizationFlow",
-                        required: true,
-                    },
-                    msg("Authorization Flow"),
-                )}
-                <ak-flow-search
-                    id="authorizationFlow"
-                    label=${msg("Authorization Flow")}
-                    flowType=${FlowDesignationEnum.Authorization}
-                    .currentFlow=${this.instance?.authorizationFlow}
-                    required
-                ></ak-flow-search>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Flow used when authorizing this provider.")}
-                </p>
-            </ak-form-element-horizontal>
+            ${AKAuthorizationFlowField({ value: this.instance?.authorizationFlow })}
             <ak-form-element-horizontal
                 label=${msg("Connection expiry")}
                 required
@@ -111,9 +90,12 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
             </ak-switch-input>
 
             <ak-form-element-horizontal label=${msg("Device access group")} name="accessGroup">
-                <ak-endpoints-device-group-search
-                    .group=${this.instance?.accessGroup}
-                ></ak-endpoints-device-group-search>
+                ${AKSearchSelect({
+                    name: "accessGroup",
+                    source: deviceAccessGroupSource,
+                    value: this.instance?.accessGroup,
+                    placeholder: msg("Select a device access group..."),
+                })}
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         "Only devices in this access group can be accessed through this provider. Leave empty to allow every device the user has access to.",

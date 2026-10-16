@@ -8083,6 +8083,11 @@
                     "type": "boolean",
                     "title": "Enabled"
                 },
+                "dry_run": {
+                    "type": "boolean",
+                    "title": "Dry run",
+                    "description": "Execute the policy but ignore its result."
+                },
                 "order": {
                     "type": "integer",
                     "minimum": -2147483648,
@@ -8267,6 +8272,11 @@
                 "enabled": {
                     "type": "boolean",
                     "title": "Enabled"
+                },
+                "dry_run": {
+                    "type": "boolean",
+                    "title": "Dry run",
+                    "description": "Execute the policy but ignore its result."
                 },
                 "order": {
                     "type": "integer",
@@ -11723,6 +11733,11 @@
                 "enabled": {
                     "type": "boolean",
                     "title": "Enabled"
+                },
+                "dry_run": {
+                    "type": "boolean",
+                    "title": "Dry run",
+                    "description": "Execute the policy but ignore its result."
                 },
                 "order": {
                     "type": "integer",
@@ -15263,7 +15278,6 @@
                 },
                 "consumer_secret": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Consumer secret"
                 },
                 "additional_scopes": {

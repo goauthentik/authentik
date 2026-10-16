@@ -9,12 +9,11 @@ import { aki } from "#common/api/client";
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { getSearchParam, updateSearchParams } from "#elements/router/core/search-params";
+import { setPageDetails } from "#elements/router/meta";
 import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
-
-import { setPageDetails } from "#components/ak-page-navbar";
 
 import { RoleForm } from "#admin/roles/ak-role-form";
 

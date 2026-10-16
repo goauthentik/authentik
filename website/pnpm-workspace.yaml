@@ -15,8 +15,8 @@ nodeLinker: hoisted
 # these via `catalog:`, and overrides pin transitive deps to the same versions.
 # `scripts/node/lint-catalogs.ts` keeps them in sync with the other workspace roots.
 catalog:
-    oxfmt: "0.68.0"
-    oxlint: "^1.82.0"
+    oxfmt: "0.70.0"
+    oxlint: "^1.85.0"
     # The Docusaurus packages ship as one lockstep release and several are declared
     # by three or four workspace members, so a group bump that reaches some
     # manifests and misses others leaves two copies of a package in the tree. When

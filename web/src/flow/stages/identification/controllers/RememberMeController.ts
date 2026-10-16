@@ -1,5 +1,5 @@
+import { readCSRFToken } from "#common/api/csrf";
 import { StorageAccessor } from "#common/storage";
-import { getCookie } from "#common/utils";
 
 import { ReactiveElementHost } from "#elements/types";
 import { findEmptyFocusCandidate } from "#elements/utils/focus";
@@ -23,7 +23,7 @@ export class RememberMeStorage {
 }
 
 function readSessionID() {
-    return (getCookie("authentik_csrf") ?? "").substring(0, 8);
+    return readCSRFToken().substring(0, 8);
 }
 
 export interface RememberMeControllerInit {
