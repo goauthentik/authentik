@@ -36,6 +36,7 @@ const WORKSPACES: Array<[name: string, filePath: string]> = [
     ["root", "pnpm-workspace.yaml"],
     ["web", "web/pnpm-workspace.yaml"],
     ["website", "website/pnpm-workspace.yaml"],
+    ["website/search-worker", "website/search-worker/pnpm-workspace.yaml"],
 ] as const;
 
 /**
@@ -158,6 +159,7 @@ const PACKAGE_MANAGER_MANIFESTS = [
     "package.json",
     "web/package.json",
     "website/package.json",
+    "website/search-worker/package.json",
     "lifecycle/aws/package.json",
     "packages/client-ts/package.json",
 ] as const;

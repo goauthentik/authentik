@@ -1,0 +1,16 @@
+# The search worker is its own pnpm workspace. The website workspace does not list it, so a
+# website install, which every documentation build and every contributor runs, does not download
+# wrangler and the workerd runtime. `scripts/node/lint-catalogs.ts` keeps the pins below in sync
+# with the other workspace roots.
+
+catalog:
+    "@types/node": "^26.1.2"
+    typescript: "^6.0.3"
+
+# wrangler's local runtime: its install script downloads the workerd binary for the platform.
+onlyBuiltDependencies:
+    - workerd
+
+allowBuilds:
+    esbuild: false
+    workerd: true

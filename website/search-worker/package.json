@@ -2,24 +2,30 @@
     "name": "@goauthentik/docs-search-worker",
     "version": "0.0.0",
     "private": true,
+    "description": "A Cloudflare Worker that answers the documentation sites' search queries from a copy of the search index in D1.",
     "license": "MIT",
     "type": "module",
     "scripts": {
-        "build:types": "tsc -p .",
+        "build:types": "tsc -p tsconfig.json && tsc -p tsconfig.node.json",
+        "check": "pnpm run build:types && pnpm run test",
         "deploy": "wrangler deploy",
         "dev": "wrangler dev",
-        "test": "node --test"
+        "slot": "node scripts/next-slot.ts",
+        "test": "node --test \"test/**/*.test.ts\""
     },
     "dependencies": {
-        "@goauthentik/docusaurus-theme": "workspace:*"
+        "@goauthentik/docusaurus-theme": "link:../docusaurus-theme",
+        "hono": "^4.13.13"
     },
     "devDependencies": {
         "@cloudflare/workers-types": "^5.20261014.1",
         "@goauthentik/tsconfig": "link:../../packages/tsconfig",
+        "@types/node": "catalog:",
         "typescript": "catalog:",
         "wrangler": "^4.147.0"
     },
     "engines": {
         "node": ">=24"
-    }
+    },
+    "packageManager": "pnpm@12.9.1+sha512.06b055fff5cd20dc12781de173ced3310ce0951bf2ec620211a16045d5444d5c93a663210764ef29a653a610459ba0368f0e74f84d80c54723cf95aae7bc0d6d"
 }

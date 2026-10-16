@@ -53,17 +53,16 @@ jobs:
         with:
           node-version-file: package.json
           cache: pnpm
-          cache-dependency-path: |
-            pnpm-lock.yaml
-            website/pnpm-lock.yaml
-      - name: Install dependencies
+          cache-dependency-path: website/search-worker/pnpm-lock.yaml
+      - name: Install the worker's dependencies
         if: steps.changed-files.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
-        run: |
-          pnpm install --frozen-lockfile
-          pnpm --dir website install --frozen-lockfile
+        run: pnpm --dir website/search-worker install --frozen-lockfile
+      - name: Check the worker
+        if: steps.changed-files.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: pnpm --dir website/search-worker run check
       - name: Deploy the search worker
         if: steps.changed-files.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
-        run: pnpm --dir website/search-worker exec wrangler deploy
+        run: pnpm --dir website/search-worker run deploy
 
   rebuild-index:
     runs-on: ubuntu-26.04
@@ -80,23 +79,22 @@ jobs:
           cache-dependency-path: |
             pnpm-lock.yaml
             website/pnpm-lock.yaml
+            website/search-worker/pnpm-lock.yaml
       - name: Install dependencies
         run: |
           pnpm install --frozen-lockfile
           pnpm --dir website install --frozen-lockfile
+          pnpm --dir website/search-worker install --frozen-lockfile
       - name: Generate the API reference pages
         run: pnpm --dir website/api run generate
       - name: Pick the slot to write
         id: slot
-        working-directory: website/search-worker
-        run: |
-          pnpm exec wrangler d1 execute DB --remote --json --command "SELECT slot FROM search_current" > current.json || echo "[]" > current.json
-          echo "slot=$(node scripts/next-slot.mjs < current.json)" >> "$GITHUB_OUTPUT"
+        # The slot the worker is not serving. The script fails the job when the current slot
+        # cannot be read for any reason other than the pointer table not existing yet.
+        run: echo "slot=$(pnpm --dir website/search-worker run --silent slot)" >> "$GITHUB_OUTPUT"
       - name: Build the index script
-        working-directory: website
-        run: pnpm run build:search --d1 ${{ steps.slot.outputs.slot }}
+        run: pnpm --dir website run build:search --d1 ${{ steps.slot.outputs.slot }}
       - name: Import the index
-        working-directory: website/search-worker
-        run: pnpm exec wrangler d1 execute DB --remote --file ../build/search/search-index.${{ steps.slot.outputs.slot }}.sql
-      - name: Check the endpoint
+        run: pnpm --dir website/search-worker exec wrangler d1 execute DB --remote --file ../build/search/search-index.${{ steps.slot.outputs.slot }}.sql
+      - name: Check the pointer
         run: pnpm --dir website/search-worker exec wrangler d1 execute DB --remote --json --command "SELECT slot FROM search_current"

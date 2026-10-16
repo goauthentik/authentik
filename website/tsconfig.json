@@ -22,9 +22,6 @@
         },
         {
             "path": "./docs"
-        },
-        {
-            "path": "./search-worker"
         }
     ]
 }

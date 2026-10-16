@@ -6,6 +6,8 @@
  *   per request and never sees a half-written index.
  */
 
+import { allowedOrigin } from "./origins.ts";
+
 import {
     INDEX_SLOTS,
     type IndexSlot,
@@ -19,6 +21,9 @@ import {
     type SQLValue,
 } from "@goauthentik/docusaurus-theme/search/query";
 
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+
 export interface Env {
     DB: D1Database;
 }
@@ -29,23 +34,10 @@ export interface Env {
  */
 const CACHE_SECONDS = 300;
 
-const CORS_HEADERS = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Max-Age": "86400",
-};
-
-function json(body: unknown, status = 200, headers: Record<string, string> = {}): Response {
-    return new Response(JSON.stringify(body), {
-        status,
-        headers: {
-            "Content-Type": "application/json; charset=utf-8",
-            ...CORS_HEADERS,
-            ...headers,
-        },
-    });
-}
+/**
+ * The edge cache that holds search responses, keyed by URL.
+ */
+const SEARCH_CACHE = "docs-search";
 
 function isSlot(value: unknown): value is IndexSlot {
     return typeof value === "string" && (INDEX_SLOTS as readonly string[]).includes(value);
@@ -86,68 +78,64 @@ function slotDatabase(db: D1Database, slot: IndexSlot): SearchDatabase {
     };
 }
 
-async function handleSearch(url: URL, env: Env): Promise<Response> {
-    const q = url.searchParams.get("q")?.trim() ?? "";
+const app = new Hono<{ Bindings: Env }>();
 
-    if (q === "") return json({ error: "q is required" }, 400);
+app.use(
+    cors({
+        origin: (origin) => allowedOrigin(origin),
+        allowMethods: ["GET", "OPTIONS"],
+        maxAge: 86400,
+    }),
+);
 
-    const site = url.searchParams.get("site") ?? "";
-    // `search` bounds the limit to its own range.
-    const limit = Number(url.searchParams.get("limit")) || DEFAULT_LIMIT;
-    const slot = await currentSlot(env.DB);
+app.get("/health", async (c) => {
+    const slot = await currentSlot(c.env.DB);
 
-    if (slot === null) return json({ error: "the index has not been imported" }, 503);
-
-    const response = await search(slotDatabase(env.DB, slot), q, limit, site);
-
-    return json(response, 200, {
-        "Cache-Control": `public, max-age=${CACHE_SECONDS}, s-maxage=${CACHE_SECONDS}`,
-    });
-}
-
-async function handleHealth(env: Env): Promise<Response> {
-    const slot = await currentSlot(env.DB);
-
-    if (slot === null) return json({ slot: null }, 503);
+    if (slot === null) return c.json({ slot: null }, 503);
 
     // Written out rather than rewritten: `records` is a column here, and the rewrite renames the
     // word wherever it stands.
-    const build = await env.DB.prepare(`SELECT commit_sha, records FROM build_${slot}`).first<{
+    const build = await c.env.DB.prepare(`SELECT commit_sha, records FROM build_${slot}`).first<{
         commit_sha: string;
         records: number;
     }>();
 
-    return json({ slot, commit: build?.commit_sha ?? "", records: build?.records ?? 0 });
-}
+    return c.json({ slot, commit: build?.commit_sha ?? "", records: build?.records ?? 0 });
+});
 
-export default {
-    async fetch(request: Request, env: Env, context: ExecutionContext): Promise<Response> {
-        if (request.method === "OPTIONS") {
-            return new Response(null, { status: 204, headers: CORS_HEADERS });
-        }
+app.get("/search", async (c) => {
+    const q = c.req.query("q")?.trim() ?? "";
 
-        if (request.method !== "GET") {
-            return json({ error: "method not allowed" }, 405, { Allow: "GET, OPTIONS" });
-        }
+    if (q === "") return c.json({ error: "q is required" }, 400);
 
-        const url = new URL(request.url);
+    // Responses are cached at the edge by URL, so a repeated query costs no D1 read. The cached
+    // copy is built here without the CORS headers: `cors` set them on the context before this
+    // handler ran, and Hono adds them to whatever the handler returns, so a cached response
+    // names the requesting origin rather than the one that filled the cache.
+    const cache = await caches.open(SEARCH_CACHE);
+    const key = new Request(c.req.url, { method: "GET" });
+    const cached = await cache.match(key);
 
-        if (url.pathname === "/health") return handleHealth(env);
+    if (cached) return new Response(cached.body, cached);
 
-        if (url.pathname !== "/search") return json({ error: "not found" }, 404);
+    const site = c.req.query("site") ?? "";
+    // `search` bounds the limit to its own range.
+    const limit = Number(c.req.query("limit")) || DEFAULT_LIMIT;
+    const slot = await currentSlot(c.env.DB);
 
-        // Responses are cached at the edge by URL, so a repeated query costs no D1 read.
-        const cache = caches.default;
-        const cached = await cache.match(request);
+    if (slot === null) return c.json({ error: "the index has not been imported" }, 503);
 
-        if (cached) return cached;
+    const response = Response.json(await search(slotDatabase(c.env.DB, slot), q, limit, site), {
+        headers: {
+            "Cache-Control": `public, max-age=${CACHE_SECONDS}, s-maxage=${CACHE_SECONDS}`,
+        },
+    });
 
-        const response = await handleSearch(url, env);
+    c.executionCtx.waitUntil(cache.put(key, response.clone()));
 
-        if (response.ok) {
-            context.waitUntil(cache.put(request, response.clone()));
-        }
+    return response;
+});
 
-        return response;
-    },
-} satisfies ExportedHandler<Env>;
+app.notFound((c) => c.json({ error: "not found" }, 404));
+
+export default app;

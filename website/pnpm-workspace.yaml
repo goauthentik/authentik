@@ -4,7 +4,6 @@ packages:
     - "api"
     - "integrations"
     - "docs"
-    - "search-worker"
 
 # Docusaurus and several first-party plugins rely on phantom deps
 # (notably `@docusaurus/utils`) that npm hoisted. Until each is added as an
@@ -64,8 +63,6 @@ overrides:
 onlyBuiltDependencies:
     - "@parcel/watcher"
     - "@swc/core"
-    # wrangler's local runtime: its install script downloads the workerd binary for the platform.
-    - workerd
 
 # Explicit approval map for pnpm 11+. `true` = allowed (mirror
 # onlyBuiltDependencies); `false` = explicitly declined to silence the
@@ -74,9 +71,7 @@ allowBuilds:
     "@parcel/watcher": true
     "@swc/core": true
     core-js: false
-    esbuild: false
     postman-code-generators: false
-    workerd: true
 
 minimumReleaseAgeExclude:
     - js-yaml@4.1.1

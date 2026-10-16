@@ -103,8 +103,9 @@ downloading the index, and the browser falls back to its own copy when a request
 without the variable, such as the docs container image or an air-gapped checkout, searches
 entirely in the browser. `.github/workflows/website-search-index.yml` rebuilds that copy on every merge to
 `main` that touches a page, the index code or `schema.yml` (`pnpm run build:search --d1 <slot>`
-then `wrangler d1 execute`), and redeploys the worker when its code changes. Read
-`search-worker/README.md` before changing either.
+then `wrangler d1 execute`), and redeploys the worker when its code changes. The worker is its
+own pnpm workspace (`pnpm --dir website/search-worker install`), so a website install does not
+download wrangler. Read `search-worker/README.md` before changing either.
 
 ### Author-facing guides (source of truth — keep content consistent with these)
 
