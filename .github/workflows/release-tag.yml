@@ -118,6 +118,9 @@ jobs:
         include:
           - name: server
             dockerfile: Dockerfile
+          - name: server-debug
+            dockerfile: Dockerfile
+            target: debug-image
           - name: proxy
             dockerfile: proxy.Dockerfile
           - name: ldap
@@ -132,6 +135,7 @@ jobs:
       ref: "${{ needs.bump-version.outputs.release-commit }}"
       image-name: "${{ matrix.name }}"
       image-dockerfile: "lifecycle/container/${{ matrix.dockerfile }}"
+      image-target: "${{ matrix.target || '' }}"
       image-build-args: |
         VERSION=${{ needs.check-inputs.outputs.version }}
   build-go-binaries:
@@ -301,6 +305,7 @@ jobs:
           subject-path: |
             metadata.json
             container/server.oci.tar
+            container/server-debug.oci.tar
             container/proxy.oci.tar
             container/ldap.oci.tar
             container/radius.oci.tar
@@ -320,6 +325,7 @@ jobs:
           files: |
             metadata.json
             container/server.oci.tar
+            container/server-debug.oci.tar
             container/proxy.oci.tar
             container/ldap.oci.tar
             container/radius.oci.tar
