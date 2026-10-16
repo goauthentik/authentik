@@ -3,11 +3,13 @@
 from datetime import datetime, timedelta
 from json import loads
 
+from django.db import connection
+from django.test.utils import CaptureQueriesContext
 from django.urls.base import reverse
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.test import APITestCase
 
-from authentik.core.api.tokens import TokenSerializer, TokenViewSet
+from authentik.core.api.tokens import TokenSerializer
 from authentik.core.models import (
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME,
@@ -200,19 +202,34 @@ class TestTokenAPI(APITestCase):
         self.assertEqual(body["results"][1]["identifier"], token_should_not.identifier)
 
     def test_list_owner_queries(self):
-        """Serializing tokens and their owners takes one query, however many owners there are"""
-        tokens = [
-            Token.objects.create(identifier=generate_id(), user=create_test_user())
-            for _ in range(3)
-        ]
-        with self.assertNumQueries(1):
-            data = TokenSerializer(
-                TokenViewSet.queryset.filter(pk__in=[token.pk for token in tokens]),
-                many=True,
-            ).data
-        self.assertCountEqual(
-            [token["user_obj"]["username"] for token in data],
-            [token.user.username for token in tokens],
+        """Listing tokens does not query each token's owner separately"""
+        self.client.force_login(self.admin)
+        url = reverse("authentik_api:token-list")
+
+        def add_tokens(count: int):
+            for _ in range(count):
+                Token.objects.create(identifier=generate_id(), user=create_test_user())
+
+        add_tokens(2)
+        self.client.get(url)  # warm any per-process/session caches
+        with CaptureQueriesContext(connection) as ctx_small:
+            res = self.client.get(url)
+        small = len(loads(res.content)["results"])
+        baseline = len(ctx_small.captured_queries)
+
+        add_tokens(10)
+        self.client.get(url)
+        with CaptureQueriesContext(connection) as ctx_large:
+            res = self.client.get(url)
+        self.assertEqual(len(loads(res.content)["results"]), small + 10)
+
+        self.assertLessEqual(
+            len(ctx_large.captured_queries),
+            baseline + 2,
+            (
+                f"Query count grew from {baseline} to {len(ctx_large.captured_queries)} "
+                "after adding 10 tokens with distinct owners. Owners are fetched per token."
+            ),
         )
 
     def test_serializer_no_request(self):
