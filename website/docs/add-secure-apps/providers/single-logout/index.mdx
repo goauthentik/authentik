@@ -124,9 +124,11 @@ See the [OIDC Front-channel and Back-channel logout documentation](../oauth2/fro
 
 [Proxy providers](../proxy/index.mdx) support Single Logout without any additional configuration. A proxy provider has no **Logout URI** or **Logout Method** setting, because the application's session is managed by the [outpost](../../outposts/index.mdx) and authentik notifies the outpost directly.
 
+[LDAP](#ldap-providers) and [RAC](#rac-providers) outposts also receive a notification when an authentik session ends. RADIUS outposts do not act on it.
+
 ### Logout from authentik
 
-When a user's authentik session ends, authentik notifies all connected outposts. Each outpost then deletes the proxy sessions that were created from that authentik session. The next time that the user accesses the application, the outpost redirects them to authentik to log in again.
+When a user's authentik session ends, authentik notifies all connected outposts. Each proxy outpost then deletes the proxy sessions that were created from that authentik session. The next time that the user accesses the application, the outpost redirects them to authentik to log in again.
 
 Outposts are notified when the authentik session ends for any of the following reasons:
 
@@ -144,7 +146,22 @@ Outposts are notified asynchronously, and only outposts that are connected to au
 
 To log out of an application that is protected by a proxy provider, the user navigates to `<authentik FQDN>/outpost.goauthentik.io/sign_out`. For the host to use in each proxy mode, see [Log out](../proxy/index.mdx#log-out).
 
-The outpost deletes all proxy sessions for that user within the outpost, and then redirects the user to authentik, where the invalidation flow of the provider runs. By default, the user's authentik session and their sessions in other applications remain active. To also end those sessions, see [Enable full Single Logout for RP-initiated logout](#enable-full-single-logout-for-rp-initiated-logout).
+The outpost deletes all proxy sessions for that user within the outpost, and then redirects the user to authentik, where the invalidation flow of the provider runs. By default, the user's authentik session and their sessions in other applications remain active. To also end those sessions, see [Choose the logout behavior for a provider](#choose-the-logout-behavior-for-a-provider).
+
+### LDAP providers
+
+LDAP outposts receive the same notification when an authentik session ends. Each LDAP bind that runs the bind flow creates its own authentik session for the user, which is listed on the user's **Sessions** tab. When that session ends, the outpost closes the LDAP connection that the bind created, and the client must reconnect and bind again.
+
+The session of an LDAP bind ends for the following reasons:
+
+- An administrator deletes the session or deactivates the user.
+- The session expires.
+
+Logging out of authentik in a browser does not affect LDAP connections, because the browser session is separate from the session that the bind created.
+
+:::info
+Connections are only closed in the **Direct** [bind mode](../ldap/index.mdx#bind-modes). In the **Cached** bind mode, binds that are served from the cache of the outpost do not create an authentik session and are not reliably closed when a session ends.
+:::
 
 ### RAC providers
 
