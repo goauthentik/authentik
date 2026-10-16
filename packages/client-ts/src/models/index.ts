@@ -861,6 +861,8 @@ export * from "./TypeCreate";
 export * from "./UiThemeEnum";
 export * from "./UniquePasswordPolicy";
 export * from "./UniquePasswordPolicyRequest";
+export * from "./UpdateVersionInfo";
+export * from "./UpdateVersionReason";
 export * from "./UsageEnum";
 export * from "./UsedBy";
 export * from "./UsedByActionEnum";
