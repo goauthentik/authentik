@@ -505,6 +505,9 @@ importers:
       '@goauthentik/docusaurus-config':
         specifier: link:../../packages/docusaurus-config
         version: link:../../packages/docusaurus-config
+      '@sqlite.org/sqlite-wasm':
+        specifier: 3.53.4-build2
+        version: 3.53.4-build2
       '@types/semver':
         specifier: ^7.8.0
         version: 7.8.0
@@ -514,6 +517,9 @@ importers:
       fast-glob:
         specifier: ^3.3.3
         version: 3.3.3
+      mdast-util-to-string:
+        specifier: ^4.0.0
+        version: 4.0.0
       remark-directive:
         specifier: ^4.0.0
         version: 4.0.0(supports-color@8.1.1)
@@ -2599,6 +2605,10 @@ packages:
 
   '@slorber/remark-comment@1.0.0':
     resolution: {integrity: sha512-RCE24n7jsOj1M0UPvIQCHTe7fI0sFL4S2nwKVWwHyVr/wI/H8GosgsJGyhnsZoGFnD/P2hLf1mSbrrgSLN93NA==}
+
+  '@sqlite.org/sqlite-wasm@3.53.4-build2':
+    resolution: {integrity: sha512-kQVArGJA4z7s56Dm8t+eTBXad4LiohuVj9pfgDNOcxa+Ic5xMrWlLPTq6cT0hw5S4MIvtpsraW+B0wD+IPvC7A==}
+    engines: {node: '>=22'}
 
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
@@ -10925,6 +10935,8 @@ snapshots:
       micromark-factory-space: 1.1.0
       micromark-util-character: 1.2.0
       micromark-util-symbol: 1.1.0
+
+  '@sqlite.org/sqlite-wasm@3.53.4-build2': {}
 
   '@standard-schema/spec@1.1.0': {}
 

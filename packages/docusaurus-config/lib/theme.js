@@ -1,6 +1,5 @@
 /**
  * @import { UserThemeConfig as UserThemeConfigCommon } from "@docusaurus/theme-common";
- * @import { UserThemeConfig as UserThemeConfigAlgolia } from "@docusaurus/theme-search-algolia";
  *
  * @import {NavbarItemOverrides} from "./navbar.js"
  * @file Docusaurus theme configuration for the authentik website.
@@ -19,9 +18,9 @@ import { themes as prismThemes } from "prism-react-renderer";
  */
 
 /**
- * Combined theme configuration for Docusaurus, Algolia, and our own configuration.
+ * Theme configuration for Docusaurus.
  *
- * @typedef {UserThemeConfigCommon & UserThemeConfigAlgolia} UserThemeConfig
+ * @typedef {UserThemeConfigCommon} UserThemeConfig
  */
 
 //#endregion
@@ -86,12 +85,6 @@ export function createThemeConfig({ prism, navbarReplacements, ...overrides } = 
         },
         colorMode: {
             respectPrefersColorScheme: true,
-        },
-        algolia: {
-            indexName: "goauthentik",
-            appId: "36ROD0O0FV",
-            apiKey: "727db511300ca9aec5425645bbbddfb5",
-            contextualSearch: true,
         },
         footer: {
             copyright: `Copyright © ${new Date().getFullYear()} Authentik Security Inc. Built with Docusaurus.`,

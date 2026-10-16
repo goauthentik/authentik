@@ -2,6 +2,7 @@
  * @import { Config } from "@docusaurus/types";
  * @import { UserThemeConfig } from "@goauthentik/docusaurus-config";
  * @import { AKMDXOnlyPluginOptions } from "./mdx-only/plugin.mjs";
+ * @import { AKSearchPluginOptions } from "./search/plugin.mjs";
  * @import {Options as PresetOptions} from '@docusaurus/preset-classic';
  * @import { BuildUrlValues } from "remark-github";
  * @file Docusaurus config.
@@ -52,10 +53,7 @@ const CommonPresetOptions = {
           }
         : {}),
     theme: {
-        customCss: [
-            require.resolve("@goauthentik/docusaurus-config/css/index.css"),
-            require.resolve("./custom.css"),
-        ],
+        customCss: [require.resolve("@goauthentik/docusaurus-config/css/index.css")],
     },
 
     docs: {
@@ -107,18 +105,15 @@ export function createClassicPreset(overrides) {
 }
 
 /**
- * @param {Partial<UserThemeConfig["algolia"]>} [overrides]
+ * Create the search plugin tuple. The plugin builds the self-hosted search index of every site
+ * into this site's `static/search/` directory; `options.site` names the site being built.
  *
- * @returns {UserThemeConfig["algolia"]}
+ * @param {AKSearchPluginOptions} options
+ *
+ * @returns {[string, AKSearchPluginOptions]}
  */
-export function createAlgoliaConfig(overrides) {
-    return {
-        appId: "36ROD0O0FV",
-        apiKey: "727db511300ca9aec5425645bbbddfb5",
-        indexName: "goauthentik",
-        externalUrlRegex: /.*/.source,
-        ...overrides,
-    };
+export function createSearchPlugin(options) {
+    return ["@goauthentik/docusaurus-theme/search/plugin", options];
 }
 
 /**

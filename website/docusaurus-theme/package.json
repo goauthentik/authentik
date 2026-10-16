@@ -9,12 +9,12 @@
         "#remark/*": "./remark/*",
         "#components/*": "./components/*",
         "#hooks/*": "./hooks/*",
+        "#search/*": "./search/*",
         "#theme/*": "./theme/*"
     },
     "exports": {
         "./package.json": "./package.json",
         ".": "./index.js",
-        "./custom.css": "./custom.css",
         "./config": "./config.js",
         "./remark": "./remark/index.mjs",
         "./components/*": "./components/*",
@@ -28,16 +28,23 @@
         "./llms-txt/plugin": "./llms-txt/plugin.mjs",
         "./llms-txt/node": "./llms-txt/node.mjs",
         "./llms-txt/common": "./llms-txt/common.mjs",
-        "./mdx-only/plugin": "./mdx-only/plugin.mjs"
+        "./mdx-only/plugin": "./mdx-only/plugin.mjs",
+        "./search/plugin": "./search/plugin.mjs",
+        "./search/node": "./search/node.mjs",
+        "./search/common": "./search/common.mjs",
+        "./search/query": "./search/query.mjs",
+        "./search/client": "./search/client.mjs"
     },
     "dependencies": {
         "@docusaurus/preset-classic": "catalog:",
         "@docusaurus/theme-common": "catalog:",
         "@docusaurus/utils": "catalog:",
         "@goauthentik/docusaurus-config": "link:../../packages/docusaurus-config",
+        "@sqlite.org/sqlite-wasm": "3.53.4-build2",
         "@types/semver": "^7.8.0",
         "clsx": "^2.1.1",
         "fast-glob": "^3.3.3",
+        "mdast-util-to-string": "^4.0.0",
         "remark-directive": "^4.0.0",
         "remark-gfm": "^4.0.1",
         "remark-github": "^12.0.0",

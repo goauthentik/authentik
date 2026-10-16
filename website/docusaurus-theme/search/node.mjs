@@ -1,0 +1,297 @@
+/**
+ * @file Node-side orchestration: reads every site's pages into records, writes the index, and
+ *   stages the browser runtime. The Docusaurus plugin and the CLI both call `buildSearchIndex`.
+ */
+
+import { copyFileSync, existsSync, mkdirSync, readFileSync, statSync } from "node:fs";
+import { createRequire } from "node:module";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+import {
+    collapseMatchingTrailingSegment,
+    collectDocFiles,
+    groupLabel,
+    resolveDocumentUrlFromSource,
+} from "../llms-txt/node.mjs";
+import { SEARCH_INDEX_FILENAME, SEARCH_WORKER_FILENAME, SQLITE_RUNTIME_FILES } from "./common.mjs";
+import { extractRecords } from "./extract.mjs";
+import { writeSearchIndex } from "./index.mjs";
+
+import { parseFileContentFrontMatter } from "@docusaurus/utils/lib/markdownUtils.js";
+
+/**
+ * @import { SearchRecord, SearchSite } from "./common.mjs";
+ * @import { WriteReport } from "./index.mjs";
+ */
+
+const require = createRequire(import.meta.url);
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+
+/**
+ * Source files that are not pages, in every site.
+ */
+const COMMON_IGNORE = ["**/build/**", "**/out/**", "**/.docusaurus/**", "**/__fixtures__/**"];
+
+/**
+ * @typedef {object} SiteReport
+ * @property {string} id
+ * @property {number} pages
+ * @property {number} records
+ * @property {number} fallbacks Pages the MDX parser refused and that were read as plain Markdown.
+ */
+
+/**
+ * @typedef {object} CollectReport
+ * @property {SearchRecord[]} records
+ * @property {SiteReport[]} sites
+ * @property {string[]} currentURLs The URLs of the current site's pages, for the route check
+ *   after the build.
+ */
+
+/**
+ * @typedef {object} CollectOptions
+ * @property {string} websiteDir The absolute path of `website/`.
+ * @property {readonly SearchSite[]} sites
+ * @property {string} [currentSite] The id of the site being built. Its URLs are stored relative;
+ *   every other site's are absolute.
+ * @property {(filePath: string, error: unknown) => void} [onFallback]
+ */
+
+/**
+ * The title Docusaurus shows for a page whose body holds no `h1`.
+ *
+ * @param {Record<string, unknown>} frontMatter
+ * @param {string} relNoExt
+ *
+ * @returns {string}
+ */
+function pageTitle(frontMatter, relNoExt) {
+    if (typeof frontMatter.title === "string" && frontMatter.title.trim()) {
+        return frontMatter.title.trim();
+    }
+
+    const segments = relNoExt.split("/");
+
+    return groupLabel(segments[segments.length - 1] || relNoExt, {});
+}
+
+/**
+ * Read one site's pages into records.
+ *
+ * @param {SearchSite} site
+ * @param {CollectOptions} options
+ *
+ * @returns {{ records: SearchRecord[]; report: SiteReport; urls: string[] }}
+ */
+function collectSite(site, options) {
+    const siteDir = resolve(options.websiteDir, site.directory);
+    const current = site.id === options.currentSite;
+
+    /** @type {SearchRecord[]} */
+    const records = [];
+
+    /** @type {string[]} */
+    const urls = [];
+    let pages = 0;
+    let fallbacks = 0;
+
+    for (const file of collectDocFiles(siteDir, [...COMMON_IGNORE, ...(site.ignoreFiles ?? [])])) {
+        const { frontMatter, content } = parseFileContentFrontMatter(readFileSync(file, "utf-8"));
+
+        // A draft is not built, and an unlisted page asks not to be indexed.
+        if (frontMatter.draft || frontMatter.unlisted) continue;
+
+        const relNoExt = file
+            .slice(siteDir.length + 1)
+            .split("\\")
+            .join("/")
+            .replace(/\.mdx?$/, "")
+            .replace(/\/index$/, "");
+
+        // Docusaurus serves `folder/folder.mdx` at the folder's URL, as it does `folder/index.mdx`.
+        const path = resolveDocumentUrlFromSource(
+            {
+                title: "",
+                path: collapseMatchingTrailingSegment(relNoExt),
+                url: "",
+                description: "",
+                content,
+                slug: typeof frontMatter.slug === "string" ? frontMatter.slug : undefined,
+            },
+            site.routeBasePath,
+        );
+
+        const url = current ? path : new URL(path, site.url).href;
+        const category = site.category ?? groupLabel(relNoExt.split("/")[0] || "", site);
+
+        records.push(
+            ...extractRecords(content, {
+                site: site.label,
+                url,
+                category,
+                title: pageTitle(frontMatter, relNoExt),
+                filePath: file,
+                onFallback(/** @type {string} */ filePath, /** @type {unknown} */ error) {
+                    fallbacks++;
+                    options.onFallback?.(filePath, error);
+                },
+            }),
+        );
+
+        urls.push(path);
+        pages++;
+    }
+
+    return {
+        records,
+        urls,
+        report: { id: site.id, pages, records: records.length, fallbacks },
+    };
+}
+
+/**
+ * Read every site's pages into records.
+ *
+ * @param {CollectOptions} options
+ *
+ * @returns {CollectReport}
+ */
+export function collectSearchRecords(options) {
+    /** @type {SearchRecord[]} */
+    const records = [];
+
+    /** @type {SiteReport[]} */
+    const sites = [];
+
+    /** @type {string[]} */
+    let currentURLs = [];
+
+    for (const site of options.sites) {
+        const collected = collectSite(site, options);
+
+        records.push(...collected.records);
+        sites.push(collected.report);
+
+        if (site.id === options.currentSite) {
+            currentURLs = collected.urls;
+        }
+    }
+
+    return { records, sites, currentURLs };
+}
+
+/**
+ * Copy a file unless the destination already has its size. The dev server watches `static/`, and
+ * a rewrite of identical bytes would still reload the page.
+ *
+ * @param {string} source
+ * @param {string} destination
+ *
+ * @returns {boolean} Whether the file was copied.
+ */
+function syncFile(source, destination) {
+    if (existsSync(destination) && statSync(destination).size === statSync(source).size) {
+        return false;
+    }
+
+    copyFileSync(source, destination);
+
+    return true;
+}
+
+/**
+ * Stage the worker and the sqlite-wasm runtime into `destDir`.
+ *
+ * The page starts the worker by URL and the worker imports the runtime by URL, so no bundler
+ * processes either file.
+ *
+ * @param {string} destDir
+ *
+ * @returns {number} The number of files copied.
+ */
+export function stageSearchRuntime(destDir) {
+    const runtimeDir = resolve(
+        dirname(require.resolve("@sqlite.org/sqlite-wasm/package.json")),
+        "dist",
+    );
+
+    mkdirSync(destDir, { recursive: true });
+
+    let copied = 0;
+
+    for (const file of SQLITE_RUNTIME_FILES) {
+        if (syncFile(resolve(runtimeDir, file), resolve(destDir, file))) copied++;
+    }
+
+    if (
+        syncFile(
+            resolve(__dirname, SEARCH_WORKER_FILENAME),
+            resolve(destDir, SEARCH_WORKER_FILENAME),
+        )
+    ) {
+        copied++;
+    }
+
+    return copied;
+}
+
+/**
+ * @typedef {object} BuildOptions
+ * @property {string} websiteDir
+ * @property {readonly SearchSite[]} sites
+ * @property {string} [currentSite]
+ * @property {string} outputDir The directory that receives the index, the worker and the runtime.
+ * @property {string} [commit]
+ * @property {(filePath: string, error: unknown) => void} [onFallback]
+ */
+
+/**
+ * @typedef {CollectReport & WriteReport & { indexPath: string; staged: number }} BuildReport
+ */
+
+/**
+ * The commit a Netlify or GitHub Actions build runs from, or the empty string.
+ *
+ * @returns {string}
+ */
+export function buildCommit() {
+    return process.env.COMMIT_REF || process.env.GITHUB_SHA || "";
+}
+
+/**
+ * Collect every site's records, write the index, and stage the browser runtime beside it.
+ *
+ * @param {BuildOptions} options
+ *
+ * @returns {BuildReport}
+ */
+export function buildSearchIndex(options) {
+    const collected = collectSearchRecords(options);
+    const indexPath = resolve(options.outputDir, SEARCH_INDEX_FILENAME);
+
+    const written = writeSearchIndex(collected.records, indexPath, {
+        commit: options.commit ?? buildCommit(),
+    });
+
+    const staged = stageSearchRuntime(options.outputDir);
+
+    return { ...collected, ...written, indexPath, staged };
+}
+
+/**
+ * A one-line summary of a build for the console.
+ *
+ * @param {BuildReport} report
+ *
+ * @returns {string}
+ */
+export function describeBuild(report) {
+    const perSite = report.sites
+        .map((site) => `${site.id} ${site.records} records from ${site.pages} pages`)
+        .join(", ");
+
+    const kib = (/** @type {number} */ bytes) => `${(bytes / 1024).toFixed(0)} KiB`;
+
+    return `${report.records.length} records (${perSite}); ${kib(report.bytes)} raw, ${kib(report.gzipBytes)} gzip`;
+}

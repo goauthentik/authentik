@@ -78,10 +78,22 @@ website/
   api/                  # API site (@goauthentik/api-docs) — generated from ../schema.yml
   docusaurus-theme/     # Shared theme/components/redirect logic for all three sites
     theme/              # Swizzled Docusaurus component overrides (shadow built-in theme)
+    search/             # Self-hosted search: index builder (plugin + CLI), query code, worker
   scripts/              # Build/lint helper scripts (e.g. lint-runtime.ts)
   static/               # Shared static assets
   package.json          # Root workspace definition
 ```
+
+### Search
+
+Search is self-hosted: no third-party service, no cookie. Each site's build runs the
+`ak-search-plugin` (`docusaurus-theme/search/plugin.mjs`), which reads the MDX sources of **all
+three sites**, writes one gzip-compressed SQLite FTS5 index plus the sqlite-wasm runtime into that
+site's `static/search/` (gitignored), and fails the build if an indexed URL of the site matches no
+built route. The browser fetches the index once and queries it in a worker; the navbar control and
+modal are the swizzled `theme/SearchBar/`. `pnpm run build:search` (from `website/`) builds the
+same combined index without a Docusaurus build, into `build/search/`. In `docusaurus start` the
+index is built once per process; restart the dev server to index a new page.
 
 ### Author-facing guides (source of truth — keep content consistent with these)
 

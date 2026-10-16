@@ -1,0 +1,335 @@
+/*
+ * The navbar search button and the search modal.
+ *
+ * Colors, type and radii read Infima's variables, so the modal follows the site's light and dark
+ * palettes. The native <dialog> has zero padding, so the only click whose target is the dialog
+ * element itself is a click on the backdrop; the padding sits on the form, the body and the
+ * footer instead. The selected option is marked by an inset accent bar as well as a fill, so the
+ * selection holds 3:1 against the panel without depending on the fill alone.
+ */
+
+/* ---------------------------------------------------------------------------
+ * Navbar button
+ * --------------------------------------------------------------------------- */
+
+.ak-search-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: var(--ifm-navbar-item-padding-vertical) var(--ifm-navbar-item-padding-horizontal);
+    padding-inline-end: calc(var(--ifm-navbar-item-padding-horizontal) * 1.25);
+    color: var(--ifm-navbar-link-color);
+    font-family: var(--ifm-heading-font-family);
+    font-weight: 600;
+    font-size: 1.1rem;
+    line-height: inherit;
+    background: transparent;
+    border: 0;
+    border-radius: 1rem;
+    cursor: pointer;
+}
+
+.ak-search-button:hover,
+.ak-search-button:focus-visible {
+    background: var(--ifm-hover-overlay);
+}
+
+.ak-search-button__icon {
+    flex: 0 0 auto;
+    width: 1.25em;
+    height: 1.25em;
+}
+
+.ak-search-button__keys {
+    display: none;
+}
+
+@media (min-width: 998px) and (max-width: 1119px) {
+    .ak-search-button__label {
+        display: none;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+ * Modal
+ * --------------------------------------------------------------------------- */
+
+.ak-search {
+    width: min(40rem, 92vw);
+    max-height: 70vh;
+    margin: 12vh auto 0;
+    padding: 0;
+    overflow: hidden;
+    color: var(--ifm-font-color-base);
+    font-family: var(--ifm-font-family-base);
+    font-size: 0.9375rem;
+    line-height: var(--ifm-line-height-base);
+    background: var(--ifm-background-surface-color);
+    border: 1px solid var(--ifm-color-emphasis-300);
+    border-radius: var(--ifm-global-radius);
+    box-shadow: var(--ifm-global-shadow-tl);
+}
+
+.ak-search[open] {
+    display: flex;
+    flex-direction: column;
+}
+
+.ak-search::backdrop {
+    background: rgb(0 0 0 / 50%);
+}
+
+.ak-search__form {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.ak-search__field {
+    display: flex;
+    flex: 1 1 auto;
+    gap: 0.75rem;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 1rem;
+    background: var(--ifm-background-color);
+    border: 1px solid var(--ifm-color-emphasis-300);
+    border-radius: var(--ifm-global-radius);
+}
+
+.ak-search__field:focus-within {
+    outline: 2px solid var(--ifm-color-primary);
+    outline-offset: 1px;
+}
+
+.ak-search__icon {
+    flex: 0 0 auto;
+    width: 20px;
+    height: 20px;
+    color: var(--ifm-color-primary);
+}
+
+.ak-search__icon--spinning {
+    animation: ak-search-spin 0.8s linear infinite;
+}
+
+.ak-search__input {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0.75rem 0;
+    color: inherit;
+    font: inherit;
+    font-size: 1rem;
+    background: transparent;
+    border: 0;
+    outline: 0;
+}
+
+.ak-search__input::-webkit-search-cancel-button {
+    appearance: none;
+}
+
+.ak-search__cancel {
+    display: none;
+    padding: 0.5rem 0.75rem;
+    color: var(--ifm-color-primary);
+    font: inherit;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+}
+
+.ak-search__corrected {
+    margin: 0;
+    padding: 0.75rem 1.25rem 0;
+    color: var(--ifm-color-emphasis-700);
+    font-size: 0.8125rem;
+}
+
+.ak-search__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 0.75rem 1rem;
+    overflow-y: auto;
+}
+
+.ak-search__category {
+    padding: 1rem 1rem 0.5rem;
+    color: var(--ifm-color-emphasis-700);
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+
+.ak-search__recent-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ak-search__recent-item {
+    display: flex;
+    align-items: center;
+    border-radius: var(--ifm-global-radius);
+}
+
+.ak-search__recent-item:hover {
+    background: var(--ifm-hover-overlay);
+}
+
+.ak-search__recent-query {
+    flex: 1 1 auto;
+    padding: 0.75rem 1rem;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+}
+
+.ak-search__recent-remove {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    color: var(--ifm-color-emphasis-700);
+    font: inherit;
+    font-size: 1rem;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+}
+
+.ak-search__recent-remove:hover,
+.ak-search__recent-remove:focus-visible {
+    color: var(--ifm-font-color-base);
+}
+
+.ak-search__empty {
+    margin: 0;
+    padding: 1.25rem 1rem;
+    color: var(--ifm-color-emphasis-700);
+    text-align: center;
+}
+
+.ak-search__option {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.75rem 1rem;
+    color: inherit;
+    text-decoration: none;
+    border-radius: var(--ifm-global-radius);
+}
+
+.ak-search__option:hover {
+    color: inherit;
+    text-decoration: none;
+}
+
+.ak-search__option--section {
+    padding-left: 2.25rem;
+}
+
+.ak-search__option[aria-selected="true"] {
+    background: var(--ifm-hover-overlay);
+    box-shadow: inset 3px 0 0 var(--ifm-color-primary);
+}
+
+.ak-search__path {
+    color: var(--ifm-color-emphasis-700);
+    font-size: 0.8125rem;
+}
+
+.ak-search__title {
+    font-weight: 600;
+}
+
+.ak-search__snippet {
+    color: var(--ifm-color-emphasis-700);
+    font-size: 0.8125rem;
+}
+
+.ak-search mark {
+    padding: 0;
+    color: inherit;
+    font-weight: 600;
+    background: var(--ifm-color-primary-contrast-background);
+    border-radius: 2px;
+}
+
+.ak-search__footer {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.25rem;
+    color: var(--ifm-color-emphasis-700);
+    font-size: 0.8125rem;
+    border-top: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.ak-search__status {
+    margin: 0;
+}
+
+.ak-search__hints {
+    display: flex;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ak-search__hints kbd {
+    display: inline-block;
+    min-width: 1.5em;
+    margin-right: 0.25rem;
+    padding: 0 0.25rem;
+    font: inherit;
+    text-align: center;
+    background: var(--ifm-background-color);
+    border: 1px solid var(--ifm-color-emphasis-300);
+    border-radius: 2px;
+    box-shadow: none;
+}
+
+@media (width <= 640px) {
+    .ak-search {
+        width: 100vw;
+        max-width: none;
+        height: 100dvh;
+        max-height: none;
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+    }
+
+    .ak-search__cancel {
+        display: inline-block;
+    }
+
+    .ak-search__hints {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .ak-search[open] {
+        animation: ak-search-open 0.2s ease-out;
+    }
+}
+
+@keyframes ak-search-open {
+    from {
+        opacity: 0;
+        transform: translateY(-1rem);
+    }
+}
+
+@keyframes ak-search-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
