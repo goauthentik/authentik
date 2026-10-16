@@ -12,6 +12,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
+from structlog.stdlib import get_logger
 
 from authentik.common.saml.metadata import MetadataFetchError, fetch_metadata
 from authentik.core.api.sources import SourceSerializer
@@ -23,6 +24,8 @@ from authentik.sources.saml.processors.metadata_parser import (
     IdentityProviderMetadata,
     IdentityProviderMetadataParser,
 )
+
+LOGGER = get_logger()
 
 
 class SAMLSourceSerializer(SourceSerializer):
@@ -43,7 +46,8 @@ class SAMLSourceSerializer(SourceSerializer):
         try:
             raw_metadata = fetch_metadata(url)
         except MetadataFetchError as exc:
-            raise ValidationError({"metadata_url": str(exc)}) from None
+            LOGGER.warning("Failed to download SAML metadata", url=url, exc=exc)
+            raise ValidationError({"metadata_url": _("Failed to download metadata.")}) from None
         try:
             fromstring(raw_metadata)
         except ParseError:
@@ -51,9 +55,8 @@ class SAMLSourceSerializer(SourceSerializer):
         try:
             return IdentityProviderMetadataParser().parse(raw_metadata)
         except (ValueError, KeyError) as exc:
-            raise ValidationError(
-                {"metadata_url": _("Failed to parse metadata: {message}").format(message=str(exc))}
-            ) from None
+            LOGGER.warning("Failed to parse SAML metadata", url=url, exc=exc)
+            raise ValidationError({"metadata_url": _("Failed to parse metadata.")}) from None
 
     def validate(self, attrs: dict):
         if attrs.get("verification_kp"):
