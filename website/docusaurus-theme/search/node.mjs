@@ -14,7 +14,12 @@ import {
     groupLabel,
     resolveDocumentUrlFromSource,
 } from "../llms-txt/node.mjs";
-import { SEARCH_INDEX_FILENAME, SEARCH_WORKER_FILENAME, SQLITE_RUNTIME_FILES } from "./common.mjs";
+import {
+    SEARCH_INDEX_FILENAME,
+    SEARCH_WORKER_FILENAME,
+    SQLITE_RUNTIME_FILES,
+    sqliteRuntimeDirectory,
+} from "./common.mjs";
 import { extractRecords } from "./extract.mjs";
 import { writeSearchIndex } from "./index.mjs";
 
@@ -291,7 +296,21 @@ function syncFile(source, destination) {
 }
 
 /**
- * Stage the worker and the sqlite-wasm runtime into `destDir`.
+ * The version of the `@sqlite.org/sqlite-wasm` package the runtime is staged from.
+ *
+ * @returns {string}
+ */
+export function sqliteRuntimeVersion() {
+    const manifest = /** @type {{ version: string }} */ (
+        JSON.parse(readFileSync(require.resolve("@sqlite.org/sqlite-wasm/package.json"), "utf-8"))
+    );
+
+    return manifest.version;
+}
+
+/**
+ * Stage the worker and the sqlite-wasm runtime into `destDir`, the runtime under a directory
+ * named for its version.
  *
  * The page starts the worker by URL and the worker imports the runtime by URL, so no bundler
  * processes either file.
@@ -301,17 +320,16 @@ function syncFile(source, destination) {
  * @returns {number} The number of files copied.
  */
 export function stageSearchRuntime(destDir) {
-    const runtimeDir = resolve(
-        dirname(require.resolve("@sqlite.org/sqlite-wasm/package.json")),
-        "dist",
-    );
+    const manifest = require.resolve("@sqlite.org/sqlite-wasm/package.json");
+    const runtimeDir = resolve(dirname(manifest), "dist");
+    const versioned = resolve(destDir, sqliteRuntimeDirectory(sqliteRuntimeVersion()));
 
-    mkdirSync(destDir, { recursive: true });
+    mkdirSync(versioned, { recursive: true });
 
     let copied = 0;
 
     for (const file of SQLITE_RUNTIME_FILES) {
-        if (syncFile(resolve(runtimeDir, file), resolve(destDir, file))) copied++;
+        if (syncFile(resolve(runtimeDir, file), resolve(versioned, file))) copied++;
     }
 
     if (

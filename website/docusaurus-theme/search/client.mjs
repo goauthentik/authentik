@@ -3,7 +3,7 @@
  *   and resolves once the index is open; the handle it returns runs statements in the worker.
  */
 
-import { SEARCH_WORKER_FILENAME, SQLITE_RUNTIME_MODULE_FILENAME } from "./common.mjs";
+import { SQLITE_RUNTIME_MODULE_FILENAME } from "./common.mjs";
 
 /**
  * @import { SearchDatabase, SQLValue } from "./query.mjs";
@@ -92,17 +92,16 @@ function runtimeBase(runtimeBaseURL) {
 }
 
 /**
- * Opens the index at `databaseURL` in a worker that loads the sqlite-wasm runtime from
- * `runtimeBaseURL`, the same-origin directory the build staged it into.
+ * Opens the index at `databaseURL` in the worker at `workerURL`, which loads the sqlite-wasm
+ * runtime from `runtimeBaseURL`, the same-origin directory the build staged it into.
  *
- * @param {string} databaseURL
- * @param {string} runtimeBaseURL
+ * @param {{ databaseURL: string; workerURL: string; runtimeBaseURL: string }} locations
  *
  * @returns {Promise<SearchWorkerClient>}
  */
-export async function openSearchDatabase(databaseURL, runtimeBaseURL) {
+export async function openSearchDatabase({ databaseURL, workerURL, runtimeBaseURL }) {
     const base = runtimeBase(runtimeBaseURL);
-    const worker = startWorker(new URL(SEARCH_WORKER_FILENAME, base).href);
+    const worker = startWorker(new URL(workerURL, globalThis.location.href).href);
 
     try {
         await worker.call({

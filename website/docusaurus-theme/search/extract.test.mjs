@@ -101,6 +101,12 @@ test("resets deeper hierarchy entries when a shallower heading follows", () => {
     assert.deepEqual(records.at(-1)?.hierarchy, ["Reference", "A", "D", null, null, null, null]);
 });
 
+test("keeps at most 4,000 characters of a section's text", () => {
+    const records = extract(`# A\n\n${"word ".repeat(2000)}\n`);
+
+    assert.equal(records[0]?.content.length, 4000);
+});
+
 test("folds a heading deeper than h4 into the section above it", () => {
     const records = extract("# A\n\n## Changes\n\n##### GET /outposts/\n\nReturns outposts.\n");
 

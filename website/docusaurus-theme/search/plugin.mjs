@@ -12,8 +12,14 @@
 import { resolve } from "node:path";
 
 import { trimTrailingSlashes } from "../llms-txt/common.mjs";
-import { PLUGIN_NAME, SEARCH_DIRECTORY, SEARCH_INDEX_FILENAME } from "./common.mjs";
-import { buildSearchIndex, describeBuild } from "./node.mjs";
+import {
+    PLUGIN_NAME,
+    SEARCH_DIRECTORY,
+    SEARCH_INDEX_FILENAME,
+    SEARCH_WORKER_FILENAME,
+    sqliteRuntimeDirectory,
+} from "./common.mjs";
+import { buildSearchIndex, describeBuild, sqliteRuntimeVersion } from "./node.mjs";
 import { assertSearchSite, loadSearchSites } from "./sites.mjs";
 
 /**
@@ -69,11 +75,14 @@ export default function akSearchPlugin(context, options) {
         },
 
         contentLoaded({ actions }) {
+            const base = `${context.baseUrl}${SEARCH_DIRECTORY}/`;
+
             /** @type {SearchGlobalData} */
             const data = {
                 site: site.label,
-                indexPath: `${context.baseUrl}${SEARCH_DIRECTORY}/${SEARCH_INDEX_FILENAME}`,
-                runtimePath: `${context.baseUrl}${SEARCH_DIRECTORY}/`,
+                indexPath: `${base}${SEARCH_INDEX_FILENAME}`,
+                workerPath: `${base}${SEARCH_WORKER_FILENAME}`,
+                runtimePath: `${base}${sqliteRuntimeDirectory(sqliteRuntimeVersion())}/`,
             };
 
             actions.setGlobalData(data);

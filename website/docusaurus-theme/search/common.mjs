@@ -27,6 +27,18 @@ export const SEARCH_WORKER_FILENAME = "worker.mjs";
  * the OPFS proxy on a cross-origin-isolated page even though this index never opens OPFS.
  */
 export const SQLITE_RUNTIME_MODULE_FILENAME = "index.mjs";
+
+/**
+ * The runtime is staged under a directory named for its version, so a `_headers` rule can mark
+ * those files immutable while the index and the worker at the directory above are revalidated.
+ *
+ * @param {string} version The `@sqlite.org/sqlite-wasm` package version.
+ *
+ * @returns {string}
+ */
+export function sqliteRuntimeDirectory(version) {
+    return `sqlite-wasm-${version}`;
+}
 export const SQLITE_RUNTIME_FILES = [
     SQLITE_RUNTIME_MODULE_FILENAME,
     "sqlite3.wasm",
@@ -61,8 +73,9 @@ export const TABLE_ROW_LEVEL = 5;
 
 /**
  * @typedef {object} SearchRecord
- * @property {string} id The first 32 hex characters of a SHA-256 over the site, URL, anchor and
- *   position.
+ * @property {string} id At build time, the first 32 hex characters of a SHA-256 over the site,
+ *   URL, anchor and position, which the writer checks for duplicates; in a query result, the
+ *   record's rowid.
  * @property {string} site The label of the site the record belongs to.
  * @property {string} url The page's path, relative for the site being built and absolute for the
  *   other sites.
@@ -107,7 +120,8 @@ export const SNIPPET_LENGTH = 160;
  * @typedef {object} SearchGlobalData
  * @property {string} site The label of the site being served.
  * @property {string} indexPath The site-relative path of the gzip index.
- * @property {string} runtimePath The site-relative directory of the worker and the sqlite-wasm
+ * @property {string} workerPath The site-relative path of the worker script.
+ * @property {string} runtimePath The site-relative directory of the sqlite-wasm
  *   runtime.
  */
 

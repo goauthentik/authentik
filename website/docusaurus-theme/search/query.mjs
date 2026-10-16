@@ -73,7 +73,7 @@ const TABLE_ROW_SCORE_FACTOR = 0.5;
  */
 const OTHER_SITE_SCORE_FACTOR = 0.85;
 
-const LEXICAL_SQL = `SELECT r.id, r.site, r.url, r.anchor, r.hierarchy, r.content, r.level, r.position
+const LEXICAL_SQL = `SELECT r.rowid AS id, r.site, r.url, r.anchor, r.hierarchy, r.content, r.level, r.position
  FROM records_fts JOIN records r ON r.rowid = records_fts.rowid
  WHERE records_fts MATCH ?
  ORDER BY bm25(records_fts, ${HEADINGS_WEIGHT}, ${CONTENT_WEIGHT})
@@ -91,15 +91,17 @@ export function quoteTerm(text) {
 }
 
 /**
- * The whitespace-separated parts of the text that the tokenizer can index: those with a letter
- * or a digit.
+ * The parts of the text that the tokenizer can index: its runs of letters and digits.
  *
  * @param {string} text
  *
  * @returns {string[]}
  */
 export function queryTokens(text) {
-    return text.split(/\s+/).filter((token) => /[\p{L}\p{N}]/u.test(token));
+    // The index drops term positions, so a quoted string must hold one token: the text is split
+    // where the `unicode61` tokenizer splits it, at any character that is neither a letter nor
+    // a digit.
+    return text.split(/[^\p{L}\p{N}]+/u).filter((token) => token !== "");
 }
 
 /**
@@ -139,7 +141,7 @@ export async function lexicalRows(db, tokens, site = "") {
             /** @type {unknown} */ (row)
         );
 
-        return { ...record, hierarchy: JSON.parse(record.hierarchy) };
+        return { ...record, id: String(record.id), hierarchy: JSON.parse(record.hierarchy) };
     });
 }
 

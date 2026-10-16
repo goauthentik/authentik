@@ -30,7 +30,9 @@ const RECENT_KEY = "authentik.docs-search.recent";
 
 export default function SearchBar() {
     const history = useHistory();
-    const { site, indexPath, runtimePath } = usePluginData(PLUGIN_NAME) as SearchGlobalData;
+    const { site, indexPath, workerPath, runtimePath } = usePluginData(
+        PLUGIN_NAME,
+    ) as SearchGlobalData;
     const [open, setOpen] = useState(false);
 
     // The server render shows the Control key; the browser reads the platform after hydration.
@@ -46,7 +48,11 @@ export default function SearchBar() {
         // A failed open clears the memo so the next open retries.
         const opening =
             database.current ??
-            openSearchDatabase(indexPath, runtimePath).catch((error: unknown) => {
+            openSearchDatabase({
+                databaseURL: indexPath,
+                workerURL: workerPath,
+                runtimeBaseURL: runtimePath,
+            }).catch((error: unknown) => {
                 database.current = null;
                 throw error;
             });
@@ -54,7 +60,7 @@ export default function SearchBar() {
         database.current = opening;
 
         return opening;
-    }, [indexPath, runtimePath]);
+    }, [indexPath, workerPath, runtimePath]);
 
     // The index download starts when the modal opens, so the first query need not wait for it.
     useEffect(() => {

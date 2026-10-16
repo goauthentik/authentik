@@ -35,8 +35,14 @@ const db = {
 
 //#region Lexical
 
-test("queryTokens keeps tokens that contain a letter or a digit", () => {
-    assert.deepEqual(queryTokens('  tier-1  "regression" -- *** '), ["tier-1", '"regression"']);
+test("queryTokens splits the text where the tokenizer does", () => {
+    assert.deepEqual(queryTokens('  tier-1  "regression" -- *** 2025.8 '), [
+        "tier",
+        "1",
+        "regression",
+        "2025",
+        "8",
+    ]);
 });
 
 test("matchExpression quotes every token and marks the last one as a prefix", () => {
@@ -45,29 +51,40 @@ test("matchExpression quotes every token and marks the last one as a prefix", ()
     assert.equal(matchExpression([]), null);
 });
 
+/**
+ * A query result identifies a record by its rowid, which is the fixture's position plus one.
+ *
+ * @param {string} fixtureID
+ */
+function rowID(fixtureID) {
+    return String(FIXTURE_RECORDS.findIndex((record) => record.id === fixtureID) + 1);
+}
+
 test("lexicalRows ranks a heading match above a content match", async () => {
     const rows = await lexicalRows(db, ["proxy"]);
 
     assert.deepEqual(
         rows.map((row) => row.id),
-        ["proxy-top", "proxy-section"],
+        ["proxy-top", "proxy-section"].map(rowID),
     );
 });
 
 test("lexicalRows ranks a page whose heading matches above a table row whose name matches", async () => {
     assert.deepEqual(
         (await lexicalRows(db, ["grafana"])).map((row) => row.id),
-        ["grafana-docs", "grafana-page", "row"],
+        ["grafana-docs", "grafana-page", "row"].map(rowID),
     );
 });
 
 test("lexicalRows matches the last token as a prefix and a singular against a plural", async () => {
     assert.ok(
-        (await lexicalRows(db, ["forward", "au"])).map((row) => row.id).includes("proxy-section"),
+        (await lexicalRows(db, ["forward", "au"]))
+            .map((row) => row.id)
+            .includes(rowID("proxy-section")),
     );
     assert.deepEqual(
         (await lexicalRows(db, ["outpost"])).map((row) => row.id),
-        ["outposts"],
+        [rowID("outposts")],
     );
 });
 

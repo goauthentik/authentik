@@ -44,6 +44,15 @@ const LINK_LIST_HEADINGS = new Set(["related", "see also", "next"]);
 const MAX_RECORD_HEADING_LEVEL = 4;
 
 /**
+ * The most characters of body text a record keeps.
+ *
+ * A hand-written section stays well under this. The generated API changelog of a release page
+ * runs to a quarter of a million characters, and the eight largest such sections held 1.2 MB of
+ * the 4.8 MB of text in the index.
+ */
+const MAX_RECORD_CONTENT = 4000;
+
+/**
  * The fallback reader keeps text only. A real HTML parse decides what a tag is, so a `<` inside
  * an attribute value, an unclosed tag or a comment cannot leave markup behind the way a regex
  * scan can.
@@ -371,7 +380,7 @@ export function extractRecords(body, options) {
         url: options.url,
         anchor: draft.anchor,
         hierarchy: draft.hierarchy,
-        content: draft.parts.join(" "),
+        content: draft.parts.join(" ").slice(0, MAX_RECORD_CONTENT),
         level: draft.level,
         position,
     }));
