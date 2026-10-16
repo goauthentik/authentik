@@ -1,5 +1,6 @@
 from uuid import uuid4
 
+from django.apps import apps
 from django.db import models, transaction
 from django.db.models import Q
 from django.http import HttpRequest
@@ -55,6 +56,14 @@ class UserOffboarding(SerializerModel):
     attempts = models.PositiveSmallIntegerField(
         default=0, help_text=_("Number of times execution has been attempted and failed.")
     )
+    # Set when a user expiration rule generated this row; `created_by` stays null.
+    rule = models.ForeignKey(
+        "authentik_lifecycle.UserExpirationRule",
+        on_delete=models.SET_NULL,
+        null=True,
+        default=None,
+        related_name="offboardings",
+    )
 
     class Meta:
         verbose_name = _("User Offboarding")
@@ -74,7 +83,13 @@ class UserOffboarding(SerializerModel):
                 fields=["scheduled_at"],
                 condition=Q(status=OffboardingStatus.PENDING),
                 name="pending_offboarding_idx",
-            )
+            ),
+            # The expiration sweeper looks up the latest generated row per user.
+            models.Index(
+                fields=["user", "executed_at"],
+                condition=Q(rule__isnull=False),
+                name="generated_offboarding_idx",
+            ),
         ]
 
     @property
@@ -114,8 +129,34 @@ class UserOffboarding(SerializerModel):
         transaction, so a mid-way failure rolls back completely: the user is
         left untouched and the row stays `PENDING` for retry.
         """
+        from authentik.enterprise.lifecycle.expiration.models import UserExpirationRule
         from authentik.enterprise.lifecycle.offboarding.actions import offboard_user
+        from authentik.events.activity import load_activity
 
+        context = {}
+        if self.rule_id is not None:
+            # Rule-generated rows stay pending without a license. Re-check the rule
+            # before acting, since it or the user may have changed.
+            if not apps.get_app_config("authentik_enterprise").enabled():
+                return
+            # Load activity once for the owner and any competing rule. The row lock
+            # doesn't stop new activity from committing after this read.
+            load_activity(self.user)
+            kept, rewarn = self.rule.reconcile_offboarding(self)
+            if not kept:
+                return
+            if UserExpirationRule.resolve_winner(self):
+                rewarn = True
+            # The deadline may have moved later since this task was queued.
+            if self.scheduled_at > timezone.now():
+                if rewarn:
+                    # Execution holds this row lock. Queue the warning only after
+                    # the transaction commits and the lock has been released.
+                    transaction.on_commit(
+                        lambda rule=self.rule, user=self.user, row=self: rule._warn(user, row)
+                    )
+                return
+            context["rule"] = self.rule
         # `delete` removes this row via cascade, so capture the action first.
         is_delete = self.action == OffboardingAction.DELETE
         with transaction.atomic():
@@ -126,6 +167,7 @@ class UserOffboarding(SerializerModel):
                 revoke_tokens=self.revoke_tokens,
                 request=request,
                 initiator=self.created_by,
+                **context,
             )
             if is_delete:
                 return
