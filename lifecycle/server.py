@@ -2,6 +2,7 @@
 
 import asyncio
 import os
+import sys
 from collections.abc import Callable
 from hashlib import sha512
 from threading import Thread
@@ -104,4 +105,6 @@ def load() -> Server:
     start_debug_server()
     start_pyroscope("server", worker_id="1")
     application.call_startup()
+    # False on a free-threaded build, unless an extension module turned the GIL back on
+    LOGGER.info("Loaded application", gil_enabled=sys._is_gil_enabled())
     return server

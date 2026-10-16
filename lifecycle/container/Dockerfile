@@ -82,14 +82,23 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
 # Stage: Download uv
 FROM ghcr.io/astral-sh/uv:0.13.1@sha256:4a1f3666816dafadd20ceb71eac9a7d56d7ef30279f7d64048519ab901ada336 AS uv
 # Stage: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.14.8-slim-trixie-fips@sha256:19b6198b9e05ca1e86a15ffca22d0a0d12cbe06f88e7c0e95c7aa3dd03c9abae AS python-base
+# Free-threaded Python, so that the server can use more than one core in a single process
+# TODO: pin the digest once an image built with --disable-gil is published, the current
+# one isn't (see goauthentik/fips python-fips/Dockerfile)
+FROM ghcr.io/goauthentik/fips:3.14.8t-slim-trixie-fips AS python-base
+
+# Set to "0" to keep the GIL disabled although xmlsec doesn't declare support for that.
+# Only on a free-threaded build, Python refuses to start with it otherwise.
+ARG PYTHON_GIL=""
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
     UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
     UV_NATIVE_TLS=1 \
-    UV_PYTHON_DOWNLOADS=0
+    UV_PYTHON_DOWNLOADS=0 \
+    # Python ignores it when empty
+    PYTHON_GIL="${PYTHON_GIL}"
 
 WORKDIR /ak-root/
 
