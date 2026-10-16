@@ -115,6 +115,18 @@ export class SAMLSourceViewPage extends AKElement {
                                     <div class="pf-c-description-list__group">
                                         <dt class="pf-c-description-list__term">
                                             <span class="pf-c-description-list__text"
+                                                >${msg("Metadata URL")}</span
+                                            >
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                ${this.source.metadataUrl || "-"}
+                                            </div>
+                                        </dd>
+                                    </div>
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text"
                                                 >${msg("Issuer")}</span
                                             >
                                         </dt>
