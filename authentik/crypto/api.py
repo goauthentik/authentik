@@ -110,6 +110,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
                 LOGGER.warning("Failed to load private key", exc=exc)
                 raise ValidationError("Unable to load private key (possibly encrypted?).") from None
             except (InternalError, UnsupportedAlgorithm) as exc:
+                # TODO: Remove when OpenSSL/FIPS is updated
                 # OpenSSL has no implementation for this key type in the current configuration,
                 # for example an ML-DSA key with a FIPS provider that predates ML-DSA
                 LOGGER.warning("Private key algorithm not available", exc=exc)
@@ -255,9 +256,9 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
                 validity_days=int(body.validated_data["validity_days"]),
             )
         except KeyAlgorithmUnavailableError as exc:
+            # TODO: Remove when OpenSSL/FIPS is updated
             # Raised when the selected algorithm cannot be generated in the current OpenSSL
-            # configuration, for example ML-DSA under the validated FIPS provider. We hopefully
-            # can delete this once we have proper support with python and OpenSSL with FIPS enabled.
+            # configuration, for example ML-DSA under the validated FIPS provider.
             LOGGER.warning("Failed to generate certificate keypair", error=str(exc))
             raise ValidationError(
                 {
