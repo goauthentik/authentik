@@ -50,7 +50,7 @@ def pytest_runtest_setup(item: Item):
     from authentik.brands.utils import get_brand_for_request
 
     get_brand_for_request.cache_clear()
-    get_system_settings.cache_clear()()
+    get_system_settings.cache_clear()
 
 
 def pytest_collection_modifyitems(config: Config, items: list[Item]) -> None:

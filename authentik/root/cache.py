@@ -3,7 +3,7 @@ from concurrent.futures import ThreadPoolExecutor
 from functools import wraps
 from threading import Lock
 from time import monotonic
-from typing import Any
+from typing import Any, Protocol, cast
 
 from django.db import connection
 
@@ -14,6 +14,12 @@ def make_key(key: str, key_prefix: str, version: int) -> str:
 
 def reverse_key(key: str) -> str:
     return key.split(":", 3)[3]
+
+
+class CachedFunction[**P, R](Protocol):
+    def __call__(self, *args: P.args, **kwargs: P.kwargs) -> R: ...
+
+    def cache_clear(self) -> None: ...
 
 
 class in_memory_cache:
@@ -31,15 +37,15 @@ class in_memory_cache:
         self._lock = Lock()
         self._executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="in_memory_cache")
 
-    def _store(self, key: Hashable, value: Any):
+    def _store(self, key: Hashable, value: Any) -> None:
         # drop everything when full instead of LRU; keys can come from
         # client input (e.g. Host header), so this only needs to bound memory
         if key not in self._values and len(self._values) >= self.maxsize:
             self._values.clear()
         self._values[key] = (monotonic(), value)
 
-    def __call__(self, func: Callable) -> Callable:
-        def refresh(key: Hashable, args: tuple, kwargs: dict):
+    def __call__[**P, R](self, func: Callable[P, R]) -> CachedFunction[P, R]:
+        def refresh(key: Hashable, args: tuple[Any, ...], kwargs: dict[str, Any]) -> None:
             # Another thread is already refreshing; the next stale read will retry
             if not self._lock.acquire(blocking=False):
                 return
@@ -54,7 +60,7 @@ class in_memory_cache:
                 connection.close()
 
         @wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
             key = self.key(*args, **kwargs)
             cached = self._values.get(key)
             if cached is None:
@@ -64,7 +70,7 @@ class in_memory_cache:
             stored_at, value = cached
             if monotonic() - stored_at > self.timeout and not self._lock.locked():
                 self._executor.submit(refresh, key, args, kwargs)
-            return value
+            return cast(R, value)
 
         wrapper.cache_clear = self._values.clear  # type: ignore[attr-defined]
-        return wrapper
+        return cast(CachedFunction[P, R], wrapper)
