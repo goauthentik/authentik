@@ -85,7 +85,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "aws-cdk-lib==2.272.0",
+  "aws-cdk-lib==2.273.0",
   "bandit==1.9.4",
   "black==26.10.1",
   "bpython==0.26",
@@ -113,6 +113,7 @@ dev = [
   "ruff==0.17.0",
   "selenium==4.50.0",
   "types-channels==4.3.0.20260518",
+  "types-defusedxml==0.7.0.20260504",
   "types-docker==7.2.0.20261006",
   "types-jwcrypto==1.6.1.20260928",
   "types-ldap3==2.9.13.20260827",

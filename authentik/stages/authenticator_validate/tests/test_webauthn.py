@@ -32,6 +32,7 @@ from authentik.stages.authenticator_webauthn.models import (
 )
 from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
 from authentik.stages.authenticator_webauthn.tasks import webauthn_mds_import
+from authentik.stages.authenticator_webauthn.tests.mldsa import MLDSACredential
 from authentik.stages.identification.models import IdentificationStage, UserFields
 from authentik.stages.user_login.models import UserLoginStage
 
@@ -649,3 +650,51 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
                 stage_view,
                 self.user,
             )
+
+    def test_validate_challenge_mldsa(self):
+        """Test webauthn authentication with an ML-DSA-44 (FIPS 204) credential"""
+        credential = MLDSACredential(rp_id="localhost", origin="http://localhost:9000")
+        device = WebAuthnDevice.objects.create(
+            user=self.user,
+            public_key=bytes_to_base64url(credential.cose_public_key),
+            credential_id=bytes_to_base64url(credential.credential_id),
+            sign_count=0,
+            rp_id="localhost",
+        )
+        flow = create_test_flow()
+        stage = AuthenticatorValidateStage.objects.create(
+            name=generate_id(),
+            not_configured_action=NotConfiguredAction.CONFIGURE,
+            device_classes=[DeviceClasses.WEBAUTHN],
+        )
+        challenge = b"\x02" * 64
+        session = self.client.session
+        plan = FlowPlan(flow_pk=flow.pk.hex)
+        plan.append_stage(stage)
+        plan.append_stage(UserLoginStage.objects.create(name=generate_id()))
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        plan.context[PLAN_CONTEXT_DEVICE_CHALLENGES] = [
+            {
+                "device_class": device.__class__.__name__.lower().replace("device", ""),
+                "device_uid": device.pk,
+                "challenge": {},
+                "last_used": None,
+            }
+        ]
+        plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = challenge
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            data={"webauthn": credential.assertion_response(challenge)},
+            SERVER_NAME="localhost",
+            SERVER_PORT="9000",
+        )
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        device.refresh_from_db()
+        self.assertEqual(device.sign_count, 1)
