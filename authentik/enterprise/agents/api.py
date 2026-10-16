@@ -84,7 +84,7 @@ class AgentViewSet(
 
     class AgentCreateSerializer(PassiveSerializer):
 
-        parent = PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, default=None)
+        parent = PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, default=None, allow_null=True)
         label = CharField(required=False, allow_blank=True)
         expiring = BooleanField(required=False, default=False)
         expires = DateTimeField(required=False, allow_null=True, default=None)
@@ -98,7 +98,7 @@ class AgentViewSet(
     @validate(AgentCreateSerializer)
     @enterprise_action
     def create(self, request: Request, body: AgentCreateSerializer) -> Response:
-        parent: User = body.validated_data.get("parent") or request.user
+        parent: User = body.validated_data.get("parent")
         self_service_perm = request.user.has_perm("authentik_agents.add_agent_self_service")
         admin_perm = request.user.has_perm("authentik_agents.add_agent")
         # Self-service = creating an agent for yourself; provisioning for another user is an
@@ -141,16 +141,17 @@ class AgentViewSet(
             expiring=True,
             expires=default_token_duration(),
         )
-        parent.assign_perms_to_managed_role(
-            [
-                "authentik_agents.view_agent",
-                "authentik_agents.change_agent",
-                "authentik_agents.delete_agent",
-            ],
-            agent,
-        )
-        # Grant the owner access to the token key so it stays retrievable after creation.
-        parent.assign_perms_to_managed_role("authentik_core.view_token_key", token)
+        if self_service:
+            parent.assign_perms_to_managed_role(
+                [
+                    "authentik_agents.view_agent",
+                    "authentik_agents.change_agent",
+                    "authentik_agents.delete_agent",
+                ],
+                agent,
+            )
+            # Grant the owner access to the token key so it stays retrievable after creation.
+            parent.assign_perms_to_managed_role("authentik_core.view_token_key", token)
         return Response(
             AgentCreatedSerializer({"agent": agent, "token": token.key}).data, status=201
         )

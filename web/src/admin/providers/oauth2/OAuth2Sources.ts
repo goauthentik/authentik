@@ -11,14 +11,10 @@ const sourceToSelect = (source: OAuthSource): DualSelectPair<OAuthSource> => [
     source,
 ];
 
-export async function oauth2SourcesProvider(
-    page = 1,
-    search = "",
-    hasJwks: boolean | undefined = true,
-) {
+export async function oauth2SourcesProvider(page = 1, search = "") {
     const oauthSources = await aki(SourcesApi).sourcesOauthList({
         ordering: "name",
-        hasJwks,
+        hasJwks: true,
         pageSize: 20,
         search: search.trim(),
         page,
@@ -29,10 +25,6 @@ export async function oauth2SourcesProvider(
         options: oauthSources.results.map(sourceToSelect),
     };
 }
-
-/** Any OAuth source, an ID-JAG's audience needn't publish a JWKS */
-export const idJagSourcesProvider = (page = 1, search = "") =>
-    oauth2SourcesProvider(page, search, undefined);
 
 export function oauth2SourcesSelector(instanceMappings?: string[]): DualSelectPairSource {
     if (!instanceMappings) {

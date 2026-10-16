@@ -15,11 +15,7 @@ import "#admin/providers/oauth2/OAuth2ProviderRedirectURI";
 import "#elements/ak-checkbox-group/ak-checkbox-group";
 import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuth2ProviderFormHelpers.js";
 import { oauth2ProvidersProvider, oauth2ProvidersSelector } from "./OAuth2ProvidersProvider.js";
-import {
-    idJagSourcesProvider,
-    oauth2SourcesProvider,
-    oauth2SourcesSelector,
-} from "./OAuth2Sources.js";
+import { oauth2SourcesProvider, oauth2SourcesSelector } from "./OAuth2Sources.js";
 
 import { ascii_letters, digits, randomString } from "#common/utils";
 
@@ -481,30 +477,6 @@ export function renderForm({
                     <p class="pf-c-form__helper-text">
                         ${msg(
                             "Selected providers can authenticate to this provider with their JWTs, request its tokens via token exchange, and introspect or revoke them.",
-                        )}
-                    </p>
-                </ak-form-element-horizontal>
-            </div>
-        </ak-form-group>
-
-        <ak-form-group
-            label="${msg("Identity Assertion Authorization Grant (ID-JAG)", { id: "id-jag.group.label" })}"
-        >
-            <div class="pf-c-form">
-                <ak-form-element-horizontal
-                    label=${msg("ID-JAG sources", { id: "provider.oauth2.id-jag.sources.label" })}
-                    name="idJagSources"
-                >
-                    <ak-dual-select-dynamic-selected
-                        .provider=${idJagSourcesProvider}
-                        .selector=${oauth2SourcesSelector(provider.idJagSources)}
-                        available-label=${msg("Available Sources")}
-                        selected-label=${msg("Selected Sources")}
-                    ></ak-dual-select-dynamic-selected>
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "Authorization servers of the selected sources can be the audience of an ID-JAG minted by this provider via token exchange. The source's consumer key is the client's ID at that server.",
-                            { id: "provider.oauth2.id-jag.sources.description" },
                         )}
                     </p>
                 </ak-form-element-horizontal>

@@ -5,13 +5,11 @@ import "#components/ak-slug-input";
 import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#elements/CodeMirror";
-import "#elements/ak-array-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
-import "#admin/sources/oauth/OAuthSourceIDJAGResource";
 import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuthSourceFormHelpers.js";
 
 import { aki } from "#common/api/client";
@@ -42,7 +40,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, html, nothing, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -76,15 +74,6 @@ const pkceMethodOptions = [
 
 @customElement("ak-source-oauth-form")
 export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
-    static styles = [
-        ...super.styles,
-        css`
-            ak-array-input {
-                width: 100%;
-            }
-        `,
-    ];
-
     @property({ attribute: false, useDefault: true, hasChanged: ifPreviousValue })
     public providerType: SourceType | null = null;
 
@@ -463,33 +452,6 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Additional scopes to be passed to the OAuth Provider, separated by space. To replace existing scopes, prefix with *.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                </div>
-            </ak-form-group>
-            <ak-form-group
-                label="${msg("Identity Assertion Authorization Grant (ID-JAG)", { id: "id-jag.group.label" })}"
-            >
-                <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("ID-JAG resources", { id: "source.oauth.id-jag.resources.label" })}
-                        name="idJagResources"
-                    >
-                        <ak-array-input
-                            .items=${this.instance?.idJagResources ?? []}
-                            .newItem=${() => ""}
-                            .row=${(resource: string) =>
-                                html`<ak-source-oauth-id-jag-resource
-                                    name="id-jag-resource"
-                                    style="width: 100%"
-                                    .resource=${resource}
-                                ></ak-source-oauth-id-jag-resource>`}
-                        ></ak-array-input>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "When an OAuth2 provider mints ID-JAGs for this source's authorization server, the resources a client may request them for. The consumer key above is the client's ID at that server.",
-                                { id: "source.oauth.id-jag.resources.description" },
                             )}
                         </p>
                     </ak-form-element-horizontal>
