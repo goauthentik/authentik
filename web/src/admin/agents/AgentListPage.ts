@@ -3,18 +3,19 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import { aki } from "#common/api/client";
 
-import { ModalInvokerButton } from "#elements/dialogs";
+import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { AgentForm } from "#admin/agents/AgentForm";
+import { AgentIDJAGForm } from "#admin/agents/AgentIDJAGForm";
 
 import { Agent, AgentsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html } from "lit";
+import { html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-agent-list")
@@ -40,6 +41,7 @@ export class AgentListPage extends TablePage<Agent> {
         [msg("Name"), "username"],
         [msg("Parent")],
         [msg("Expires"), "expires"],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
@@ -71,6 +73,8 @@ export class AgentListPage extends TablePage<Agent> {
                   </a>`
                 : html`<span class="pf-u-color-200">${msg("-")}</span>`,
             item.expiring && item.expires ? Timestamp(item.expires) : msg("Never"),
+            // Applications and ID-JAG are configured on system agents only
+            item.parent ? nothing : IconEditButton(AgentIDJAGForm, item.pk, item.username),
         ];
     }
 

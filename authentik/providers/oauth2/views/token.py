@@ -389,14 +389,14 @@ class TokenView(View):
         id_jag.iat = int(now.timestamp())
         id_jag.exp = int((now + validity).timestamp())
         # The client's identifier at the target authorization server, not ours
-        id_jag.claims["client_id"] = self.params.id_jag_source.consumer_key
+        id_jag.claims["client_id"] = self.params.id_jag_agent.id_jag_client_id
         if self.params.id_jag_resource:
             id_jag.claims["resource"] = self.params.id_jag_resource
         if self.params.scope:
             id_jag.claims["scope"] = " ".join(self.params.scope)
         # RFC 8693 §4.1 delegation, same mechanism as create_token_exchange_response:
         # `sub` above stays the human subject; `act` records the Actor actually
-        # exercising the assertion (always present, see check_id_jag_actor).
+        # exercising the assertion (the system agent the audience belongs to).
         id_jag.act = {"sub": id_jag._resolve_sub(self.provider, self.params.actor)}
 
         return {

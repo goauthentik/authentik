@@ -2984,6 +2984,11 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
       - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: slug
@@ -3228,6 +3233,11 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
       - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: slug
@@ -3273,6 +3283,11 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
       - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: slug

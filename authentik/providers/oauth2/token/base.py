@@ -1,6 +1,7 @@
 from hmac import compare_digest
 from re import error as RegexError
 from re import fullmatch
+from typing import TYPE_CHECKING
 from urllib.parse import urlparse
 
 from django.http import HttpRequest
@@ -31,7 +32,9 @@ from authentik.providers.oauth2.models import (
     ScopeMapping,
 )
 from authentik.providers.oauth2.utils import is_all_vschar, pkce_s256_challenge
-from authentik.sources.oauth.models import OAuthSource
+
+if TYPE_CHECKING:
+    from authentik.enterprise.agents.models import Agent
 
 
 class TokenRequest:
@@ -51,7 +54,7 @@ class TokenRequest:
     # Set when requested_token_type=id-jag: the (allow-listed) external audience the
     # minted assertion is for. See TokenView.create_id_jag_response.
     id_jag_audience: str | None = None
-    id_jag_source: OAuthSource | None = None
+    id_jag_agent: Agent | None = None
     # Set when requested_token_type=id-jag: the (allow-listed) `resource` it is for
     id_jag_resource: str | None = None
     logger: BoundLogger

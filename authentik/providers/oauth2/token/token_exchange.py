@@ -28,18 +28,25 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
 
     def resolve_id_jag_audience(self, request: HttpRequest) -> None:
         """Requesting an ID-JAG is *entirely about* targeting an external authorization
-        server, so exactly one `audience` is required, and it must be explicitly
-        allow-listed on the provider rather than resolved to another authentik provider.
-        An optional `resource` must be allow-listed for that audience."""
+        server, so exactly one `audience` is required. It must be configured on a system
+        agent that this provider's application may use, rather than resolved to another
+        authentik provider. An optional `resource` must be allow-listed on that agent."""
         audiences = request.POST.getlist("audience")
         if len(audiences) != 1:
             self.logger.warning("ID-JAG request requires exactly one audience")
             raise TokenExchangeError("invalid_target").with_cause("audience_required")
-        target = next(
-            (s for s in self.provider.id_jag_sources.all() if s.issuer == audiences[0]), None
-        )
+        try:
+            from authentik.enterprise.agents.models import Agent
+        except ImportError:
+            self.logger.warning("ID-JAG requires the enterprise agents module")
+            raise TokenExchangeError("invalid_target").with_cause("audience_not_allowed") from None
+        target = Agent.objects.filter(
+            parent__isnull=True,
+            applications__provider=self.provider,
+            id_jag_audience=audiences[0],
+        ).first()
         if not target:
-            self.logger.warning("ID-JAG audience not allow-listed", audience=audiences[0])
+            self.logger.warning("No system agent for ID-JAG audience", audience=audiences[0])
             raise TokenExchangeError("invalid_target").with_cause("audience_not_allowed")
         resources = request.POST.getlist("resource")
         if len(resources) > 1:
@@ -49,7 +56,7 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
             self.logger.warning("ID-JAG resource not allow-listed", resource=resources[0])
             raise TokenExchangeError("invalid_target").with_cause("resource_not_allowed")
         self.id_jag_audience = audiences[0]
-        self.id_jag_source = target
+        self.id_jag_agent = target
         self.id_jag_resource = resources[0] if resources else None
 
     def validate_id_token(self, id_token: str) -> FederatedParty | None:
@@ -171,9 +178,12 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
             self.check_policy_access(target_app, request, oauth_jwt=federated_party.parsed_token)
 
         self.post_init_token_exchange_actor(request)
-        if self.is_id_jag_request and not self.actor:
-            self.logger.warning("ID-JAG requires an actor_token")
-            raise TokenExchangeError("invalid_request").with_cause("actor_required")
+        if self.is_id_jag_request:
+            # ID-JAGs are minted for system agents only, found through the audience above
+            if self.actor:
+                self.logger.warning("actor_token is not supported for ID-JAG requests")
+                raise TokenExchangeError("invalid_request").with_cause("actor_token_unsupported")
+            self.actor = self.id_jag_agent
 
         method_args = {
             "jwt": federated_party.parsed_token,

@@ -322,3 +322,28 @@ class AgentTests(APITestCase):
         user.delete()
         agent.refresh_from_db()
         self.assertIsNone(agent.parent)
+
+    def test_id_jag_system_agent_only(self):
+        """ID-JAG can be configured on system agents, but not on agents with an owner,
+        whose owner could otherwise point it at any audience"""
+        admin = create_test_admin_user()
+        self.client.force_login(admin)
+        data = {
+            "id_jag_audience": "https://as.example.com",
+            "id_jag_client_id": generate_id(),
+            "id_jag_resources": ["https://as.example.com/mcp"],
+        }
+
+        system = Agent.create_for_user(None)
+        res = self.client.patch(
+            reverse("authentik_api:agent-detail", kwargs={"pk": system.pk}), data, format="json"
+        )
+        self.assertEqual(res.status_code, 200, res.content)
+        system.refresh_from_db()
+        self.assertEqual(system.id_jag_audience, "https://as.example.com")
+
+        owned = Agent.create_for_user(create_test_user())
+        res = self.client.patch(
+            reverse("authentik_api:agent-detail", kwargs={"pk": owned.pk}), data, format="json"
+        )
+        self.assertEqual(res.status_code, 400, res.content)

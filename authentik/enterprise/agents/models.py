@@ -1,5 +1,7 @@
 from typing import Self
 
+from django.contrib.postgres.fields import ArrayField
+from django.db import models
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 
@@ -8,6 +10,7 @@ from authentik.core.models import (
     USERNAME_MAX_LENGTH,
     Actor,
     ActorPolicyInheritance,
+    Application,
     User,
     UserTypes,
 )
@@ -29,6 +32,39 @@ class AgentUserQuerySet(QuerySet):
 
 
 class Agent(Actor):
+
+    # Applications that may use this agent
+    applications = models.ManyToManyField(
+        Application,
+        blank=True,
+        related_name="agents",
+        verbose_name=_("Applications"),
+        help_text=_("Applications that may use this agent."),
+    )
+
+    # ID-JAG (draft-ietf-oauth-identity-assertion-authz-grant), system agents only: the
+    # external authorization server the applications above may get ID-JAGs for via token
+    # exchange. Admin-controlled, as minting a signed assertion for an arbitrary audience
+    # would be a confused-deputy risk.
+    id_jag_audience = models.TextField(
+        blank=True,
+        default="",
+        verbose_name=_("ID-JAG audience"),
+        help_text=_("Issuer of the authorization server ID-JAGs are minted for."),
+    )
+    id_jag_client_id = models.TextField(
+        blank=True,
+        default="",
+        verbose_name=_("ID-JAG client ID"),
+        help_text=_("Identifier of the client at that authorization server."),
+    )
+    id_jag_resources = ArrayField(
+        models.TextField(),
+        default=list,
+        blank=True,
+        verbose_name=_("ID-JAG resources"),
+        help_text=_("Resources an ID-JAG may be requested for at that server."),
+    )
 
     class Meta(Actor.Meta):
         verbose_name = _("Agent")
