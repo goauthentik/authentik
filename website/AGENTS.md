@@ -97,9 +97,11 @@ same combined index without a Docusaurus build, into `build/search/`. In `docusa
 index is built once per process; restart the dev server to index a new page.
 
 `search-worker/` is a Cloudflare Worker that answers the same queries from a copy of the index in
-D1, so a site configured with `createSearchPlugin({ site, endpoint })` sends a few kilobytes of
-JSON per search instead of downloading the index; the browser falls back to its own copy when a
-request fails. `.github/workflows/website-search-index.yml` rebuilds that copy on every merge to
+D1. A site built with the environment variable `AK_DOCS_SEARCH_ENDPOINT` set (or with
+`createSearchPlugin({ site, endpoint })`) sends a few kilobytes of JSON per search instead of
+downloading the index, and the browser falls back to its own copy when a request fails. A build
+without the variable, such as the docs container image or an air-gapped checkout, searches
+entirely in the browser. `.github/workflows/website-search-index.yml` rebuilds that copy on every merge to
 `main` that touches a page, the index code or `schema.yml` (`pnpm run build:search --d1 <slot>`
 then `wrangler d1 execute`), and redeploys the worker when its code changes. Read
 `search-worker/README.md` before changing either.

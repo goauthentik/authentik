@@ -22,7 +22,7 @@ Responses carry `Access-Control-Allow-Origin: *` and are cached at the edge for 
 1. Create the database: `pnpm exec wrangler d1 create authentik-docs-search`, and put the id it prints into `database_id` in `wrangler.jsonc`.
 2. Add the repository secrets `CLOUDFLARE_API_TOKEN` (a token with Workers Scripts and D1 edit permissions) and `CLOUDFLARE_ACCOUNT_ID`.
 3. Run the workflow once from the Actions tab (`workflow_dispatch`) to deploy the worker and import the first index.
-4. Point the sites at the worker: pass `endpoint: "https://<worker-host>/search"` to `createSearchPlugin` in each site's `docusaurus.config.esm.mjs`.
+4. Point the sites at the worker: set the build environment variable `AK_DOCS_SEARCH_ENDPOINT` to `https://<worker-host>/search` in each Netlify site's settings. A build without the variable, such as the `website/Dockerfile` image or a checkout with no network, ships the browser-side index and searches without a server.
 
 ## Local development
 

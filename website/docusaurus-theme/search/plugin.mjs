@@ -27,8 +27,15 @@ import { assertSearchSite, loadSearchSites } from "./sites.mjs";
  * @property {string} site The id of the site being built, as listed in `sites.mjs`.
  * @property {string} [endpoint] The URL of the hosted search endpoint, the worker under
  *   `website/search-worker`. Set, the browser queries it and opens its own copy of the index
- *   only when a request fails. Unset, the browser opens its own copy for every search.
+ *   only when a request fails. Unset, the build reads {@link SEARCH_ENDPOINT_VARIABLE}, and
+ *   without that too the browser opens its own copy for every search, so a build with no
+ *   network, such as the docs container image, searches on its own.
  */
+
+/**
+ * The build environment variable that names the hosted search endpoint.
+ */
+export const SEARCH_ENDPOINT_VARIABLE = "AK_DOCS_SEARCH_ENDPOINT";
 
 /**
  * The dev server reloads content on every source change. The index is built once per process
@@ -83,7 +90,7 @@ export default function akSearchPlugin(context, options) {
             /** @type {SearchGlobalData} */
             const data = {
                 site: site.label,
-                endpoint: options.endpoint ?? null,
+                endpoint: options.endpoint ?? process.env[SEARCH_ENDPOINT_VARIABLE] ?? null,
                 indexPath: `${base}${SEARCH_INDEX_FILENAME}`,
                 workerPath: `${base}${SEARCH_WORKER_FILENAME}`,
                 runtimePath: `${base}${sqliteRuntimeDirectory(sqliteRuntimeVersion())}/`,
