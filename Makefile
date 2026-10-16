@@ -98,7 +98,7 @@ lint-check-types:  ## Type-check the repository's Node.js scripts.
 	pnpm run build:types
 
 lint: ci-lint-bandit ci-lint-mypy ci-lint-cargo-deny ci-lint-cargo-machete  ## Check Python (bandit, mypy), Go (golangci) and Rust dependencies (cargo deny, machete)
-	golangci-lint run -v
+	golangci-lint run -v --config .github/golangci.yml
 
 core-install:
 ifneq ($(BREW_EXISTS),)
