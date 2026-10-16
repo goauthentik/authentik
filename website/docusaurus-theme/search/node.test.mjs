@@ -22,6 +22,7 @@ function writeSites(root) {
         ["docs/index.mdx", "---\ntitle: Welcome\n---\n\nThe front page.\n"],
         ["docs/core/terminology.mdx", "# Terminology\n\nA flow is a sequence of stages.\n"],
         ["docs/core/settings/settings.mdx", "# Settings\n\nServed at the folder's URL.\n"],
+        ["docs/core/settings/_category_.json", '{ "label": "Instance settings", "position": 2 }\n'],
         ["docs/core/moved.mdx", "---\nslug: /core/renamed/\n---\n\n# Moved\n\nSlugged.\n"],
         ["docs/core/named.api.mdx", "---\nid: named\ntitle: Named\n---\n\nRouted by its id.\n"],
         ["docs/core/draft.mdx", "---\ndraft: true\n---\n\n# Draft\n\nNot built.\n"],
@@ -109,6 +110,14 @@ test("collectSearchRecords stores the current site's URLs relative and the other
         assert.deepEqual(grafana?.hierarchy.slice(0, 2), ["Monitoring", "Grafana"]);
         assert.deepEqual(welcome?.hierarchy.slice(0, 2), ["Overview", "Welcome"]);
         assert.equal(welcome?.content, "The front page.");
+
+        // The nearest `_category_.json` names the group, and a directory without one falls back
+        // to the site's top-level labels.
+        const settings = records.find((record) => record.url === "/core/settings/");
+        const terminology = records.find((record) => record.url === "/core/terminology/");
+
+        assert.equal(settings?.hierarchy[0], "Instance settings");
+        assert.equal(terminology?.hierarchy[0], "Core Concepts");
 
         const everyAbsolute = collectSearchRecords({ websiteDir: root, sites: SITES }).records;
 

@@ -1,0 +1,8 @@
+:root {
+    --docsearch-search-button-background: transparent !important;
+    --docsearch-search-button-text-color: var(--ifm-navbar-link-color) !important;
+}
+
+.DocSearch-Button:hover {
+    --docsearch-search-button-background: var(--ifm-hover-overlay);
+}

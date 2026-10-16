@@ -15,6 +15,7 @@
     "exports": {
         "./package.json": "./package.json",
         ".": "./index.js",
+        "./custom.css": "./custom.css",
         "./config": "./config.js",
         "./remark": "./remark/index.mjs",
         "./components/*": "./components/*",
@@ -36,6 +37,7 @@
         "./search/client": "./search/client.mjs"
     },
     "dependencies": {
+        "@docsearch/css": "4.6.3",
         "@docusaurus/preset-classic": "catalog:",
         "@docusaurus/theme-common": "catalog:",
         "@docusaurus/utils": "catalog:",

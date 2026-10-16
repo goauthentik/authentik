@@ -53,7 +53,10 @@ const CommonPresetOptions = {
           }
         : {}),
     theme: {
-        customCss: [require.resolve("@goauthentik/docusaurus-config/css/index.css")],
+        customCss: [
+            require.resolve("@goauthentik/docusaurus-config/css/index.css"),
+            require.resolve("./custom.css"),
+        ],
     },
 
     docs: {
