@@ -9,12 +9,14 @@ from rest_framework.exceptions import ValidationError
 
 from authentik.admin.flags import patch_flag
 from authentik.admin.utils import get_system_settings
-from authentik.blueprints.tests import apply_blueprint
+from authentik.blueprints.tests import apply_blueprint, reconcile_app
 from authentik.core.apps import Setup
 from authentik.core.models import Token, TokenIntents, User
 from authentik.flows.models import Flow
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
+from authentik.outposts.apps import MANAGED_OUTPOST
+from authentik.outposts.models import Outpost, OutpostConfig
 from authentik.root.signals import post_startup, pre_startup
 
 
@@ -80,9 +82,13 @@ class TestSetup(FlowTestCase):
 
     @apply_blueprint("default/flow-oobe.yaml")
     @apply_blueprint("system/bootstrap.yaml")
+    @reconcile_app("authentik_outposts")
     def test_setup_flow_full(self):
         """Test full setup flow"""
         Setup.set(False)
+        outpost = Outpost.objects.get(managed=MANAGED_OUTPOST)
+        outpost.config = OutpostConfig(authentik_host="")
+        outpost.save()
 
         res = self.client.get(reverse("authentik_core:setup"))
         self.assertEqual(res.status_code, HTTPStatus.FOUND)
@@ -131,6 +137,8 @@ class TestSetup(FlowTestCase):
         self.assertTrue(user.check_password(pw))
 
         self.assertEqual(get_system_settings().base_url, "https://authentik.company")
+        outpost.refresh_from_db()
+        self.assertEqual(outpost.config.authentik_host, "https://authentik.company")
 
     @patch_flag(Setup, False)
     @apply_blueprint("default/flow-oobe.yaml")
