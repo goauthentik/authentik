@@ -4,10 +4,12 @@ from dacite.core import from_dict
 from dacite.exceptions import DaciteError
 from django_filters.filters import ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, CharField, DateTimeField, SerializerMethodField
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -33,6 +35,7 @@ from authentik.providers.ldap.models import LDAPProvider
 from authentik.providers.proxy.models import ProxyProvider
 from authentik.providers.rac.models import RACProvider
 from authentik.providers.radius.models import RadiusProvider
+from authentik.rbac.decorators import permission_required
 
 
 class OutpostSerializer(ModelSerializer):
@@ -201,6 +204,24 @@ class OutpostViewSet(UsedByMixin, ModelViewSet):
                 }
             )
         return Response(OutpostHealthSerializer(states, many=True).data)
+
+    @permission_required("authentik_outposts.change_outpost")
+    @extend_schema(
+        request=OpenApiTypes.NONE,
+        responses={204: OpenApiResponse(description="Permissions rebuilt")},
+    )
+    @action(
+        detail=True,
+        methods=["POST"],
+        pagination_class=None,
+        filter_backends=[],
+        permission_classes=[IsAuthenticated],
+    )
+    def rebuild_permissions(self, request: Request, pk: str) -> Response:
+        """Delete and recreate all permissions of the outpost's service account"""
+        outpost: Outpost = self.get_object()
+        outpost.build_user_permissions(outpost.user, rebuild=True)
+        return Response(status=204)
 
     @extend_schema(responses={200: OutpostDefaultConfigSerializer(many=False)})
     @action(detail=False, methods=["GET"])

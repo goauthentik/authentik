@@ -5,7 +5,11 @@ from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import reconcile_app
 from authentik.core.models import PropertyMapping
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import (
+    create_test_admin_user,
+    create_test_flow,
+    create_test_user,
+)
 from authentik.lib.generators import generate_id
 from authentik.outposts.api.outposts import OutpostSerializer
 from authentik.outposts.apps import MANAGED_OUTPOST
@@ -110,3 +114,39 @@ class TestOutpostServiceConnectionsAPI(APITestCase):
             }
         )
         self.assertTrue(valid.is_valid())
+
+    def test_rebuild_permissions(self):
+        """Test rebuilding the outpost service account's permissions"""
+        outpost = Outpost.objects.create(name=generate_id(), type=OutpostType.PROXY)
+        outpost.providers.add(
+            ProxyProvider.objects.create(name=generate_id(), authorization_flow=create_test_flow())
+        )
+        sa = outpost.user
+        sa.assign_perms_to_managed_role("authentik_core.view_user", sa)
+        rows = set(sa.get_all_obj_perms_on_managed_role().values_list("pk", flat=True))
+        response = self.client.post(
+            reverse("authentik_api:outpost-rebuild-permissions", kwargs={"pk": outpost.pk}),
+        )
+        self.assertEqual(response.status_code, 204)
+        perms = sa.get_all_obj_perms_on_managed_role()
+        # The extra permission is removed and the needed ones are recreated
+        self.assertEqual(
+            {(perm.permission.codename, perm.object_pk) for perm in perms},
+            {
+                ("view_outpost", str(outpost.pk)),
+                ("view_proxyprovider", str(outpost.providers.first().pk)),
+            },
+        )
+        self.assertFalse(rows & set(perms.values_list("pk", flat=True)))
+
+    def test_rebuild_permissions_denied(self):
+        """Test that rebuilding requires permission to change the outpost"""
+        outpost = Outpost.objects.create(name=generate_id(), type=OutpostType.PROXY)
+        user = create_test_user()
+        self.client.force_login(user)
+        url = reverse("authentik_api:outpost-rebuild-permissions", kwargs={"pk": outpost.pk})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 403)
+        user.assign_perms_to_managed_role("authentik_outposts.change_outpost", outpost)
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 204)
