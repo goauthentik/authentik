@@ -23,6 +23,8 @@ function writeSites(root) {
         ["docs/core/terminology.mdx", "# Terminology\n\nA flow is a sequence of stages.\n"],
         ["docs/core/settings/settings.mdx", "# Settings\n\nServed at the folder's URL.\n"],
         ["docs/core/settings/_category_.json", '{ "label": "Instance settings", "position": 2 }\n'],
+        ["docs/core/flows/index.mdx", "---\ntitle: Flows and stages\n---\n\nA flow runs stages.\n"],
+        ["docs/core/flows/stages.mdx", "# Stages\n\nEach stage asks one thing.\n"],
         ["docs/core/moved.mdx", "---\nslug: /core/renamed/\n---\n\n# Moved\n\nSlugged.\n"],
         ["docs/core/named.api.mdx", "---\nid: named\ntitle: Named\n---\n\nRouted by its id.\n"],
         ["docs/core/draft.mdx", "---\ndraft: true\n---\n\n# Draft\n\nNot built.\n"],
@@ -74,6 +76,8 @@ test("collectSearchRecords resolves URLs as Docusaurus routes the pages", () => 
 
         assert.deepEqual(report.currentURLs.toSorted(), [
             "/",
+            "/core/flows/",
+            "/core/flows/stages/",
             "/core/named/",
             "/core/renamed/",
             "/core/settings/",
@@ -82,7 +86,7 @@ test("collectSearchRecords resolves URLs as Docusaurus routes the pages", () => 
         assert.deepEqual(
             report.sites.map((site) => [site.id, site.pages]),
             [
-                ["docs", 5],
+                ["docs", 7],
                 ["integrations", 1],
             ],
         );
@@ -118,6 +122,14 @@ test("collectSearchRecords stores the current site's URLs relative and the other
 
         assert.equal(settings?.hierarchy[0], "Instance settings");
         assert.equal(terminology?.hierarchy[0], "Core Concepts");
+
+        // A directory with an index page is a category named after that page, for the page
+        // itself and for its siblings.
+        const stages = records.find((record) => record.url === "/core/flows/stages/");
+        const flows = records.find((record) => record.url === "/core/flows/");
+
+        assert.equal(stages?.hierarchy[0], "Flows and stages");
+        assert.equal(flows?.hierarchy[0], "Flows and stages");
 
         const everyAbsolute = collectSearchRecords({ websiteDir: root, sites: SITES }).records;
 

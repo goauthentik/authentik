@@ -57,7 +57,7 @@ test("lexicalRows ranks a heading match above a content match", async () => {
 test("lexicalRows ranks a page whose heading matches above a table row whose name matches", async () => {
     assert.deepEqual(
         (await lexicalRows(db, ["grafana"])).map((row) => row.id),
-        ["grafana-page", "row"],
+        ["grafana-docs", "grafana-page", "row"],
     );
 });
 
@@ -159,8 +159,17 @@ test("search corrects a misspelled token and reports the corrected text as a wor
     assert.equal(response.hits[0]?.url, "/customize/blueprints/");
 });
 
+test("search ranks the served site's records above another site's equal matches", async () => {
+    // Without a site, the documentation page's shorter body ranks first.
+    assert.equal((await search(db, "grafana")).hits[0]?.url, "/install-config/grafana/");
+    assert.equal(
+        (await search(db, "grafana", undefined, "Integrations")).hits[0]?.url,
+        "https://integrations.goauthentik.io/monitoring/grafana/",
+    );
+});
+
 test("search keeps a hit's site so the modal can label another site's page", async () => {
-    const response = await search(db, "grafana");
+    const response = await search(db, "grafana", undefined, "Integrations");
 
     assert.equal(response.hits[0]?.site, "Integrations");
     assert.equal(response.hits[0]?.url, "https://integrations.goauthentik.io/monitoring/grafana/");

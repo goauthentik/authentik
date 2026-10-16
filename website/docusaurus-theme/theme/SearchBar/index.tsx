@@ -69,9 +69,9 @@ export default function SearchBar() {
 
             if (signal.aborted) throw new DOMException("aborted", "AbortError");
 
-            return search(db, query);
+            return search(db, query, undefined, site);
         },
-        [openDatabase],
+        [openDatabase, site],
     );
 
     const navigate = useCallback(

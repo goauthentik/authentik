@@ -65,11 +65,20 @@ const CONTENT_WEIGHT = 1;
  */
 const TABLE_ROW_SCORE_FACTOR = 0.5;
 
+/**
+ * The share of its `bm25` score a record on another site keeps.
+ *
+ * A reader searching the documentation site wants its pages first; an integration guide or an
+ * API operation with the same words still lists, below them.
+ */
+const OTHER_SITE_SCORE_FACTOR = 0.85;
+
 const LEXICAL_SQL = `SELECT r.id, r.site, r.url, r.anchor, r.hierarchy, r.content, r.level, r.position
  FROM records_fts JOIN records r ON r.rowid = records_fts.rowid
  WHERE records_fts MATCH ?
  ORDER BY bm25(records_fts, ${HEADINGS_WEIGHT}, ${CONTENT_WEIGHT})
-   * (CASE WHEN r.level = ${TABLE_ROW_LEVEL} THEN ${TABLE_ROW_SCORE_FACTOR} ELSE 1 END), r.level, r.position
+   * (CASE WHEN r.level = ${TABLE_ROW_LEVEL} THEN ${TABLE_ROW_SCORE_FACTOR} ELSE 1 END)
+   * (CASE WHEN r.site = ? THEN 1 ELSE ${OTHER_SITE_SCORE_FACTOR} END), r.level, r.position
  LIMIT ${LEXICAL_ROWS}`;
 
 /**
@@ -113,15 +122,17 @@ export function matchExpression(tokens) {
 /**
  * @param {SearchDatabase} db
  * @param {readonly string[]} tokens
+ * @param {string} [site] The label of the site being served. A record on another site keeps
+ *   {@link OTHER_SITE_SCORE_FACTOR} of its score. The empty string ranks every site alike.
  *
  * @returns {Promise<SearchRecord[]>}
  */
-export async function lexicalRows(db, tokens) {
+export async function lexicalRows(db, tokens, site = "") {
     const expression = matchExpression(tokens);
 
     if (!expression) return [];
 
-    const rows = await db.query(LEXICAL_SQL, [expression]);
+    const rows = await db.query(LEXICAL_SQL, [expression, site]);
 
     return rows.map((row) => {
         const record = /** @type {Omit<SearchRecord, "hierarchy"> & { hierarchy: string }} */ (
@@ -421,17 +432,18 @@ export function surfaceWord(stem, rows) {
  * @param {SearchDatabase} db
  * @param {string} text
  * @param {number} [limit]
+ * @param {string} [site] The label of the site being served, whose records rank first.
  *
  * @returns {Promise<SearchResponse>}
  */
-export async function search(db, text, limit = DEFAULT_LIMIT) {
+export async function search(db, text, limit = DEFAULT_LIMIT, site = "") {
     const bounded = Math.min(Math.max(1, Math.trunc(limit)), MAX_LIMIT);
     const typed = queryTokens(text);
     let tokens = typed;
 
     if (!tokens.length) return { query: text, corrected: null, hits: [] };
 
-    let rows = await lexicalRows(db, tokens);
+    let rows = await lexicalRows(db, tokens, site);
 
     /** @type {string[] | null} */
     let replacement = null;
@@ -441,7 +453,7 @@ export async function search(db, text, limit = DEFAULT_LIMIT) {
 
         if (replacement) {
             tokens = replacement;
-            rows = await lexicalRows(db, tokens);
+            rows = await lexicalRows(db, tokens, site);
         }
     }
 

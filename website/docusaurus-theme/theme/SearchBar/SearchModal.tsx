@@ -500,7 +500,8 @@ export function SearchModal({
 
         for (const hit of hits) {
             const category = hit.hierarchy[0] ?? site;
-            const group = hit.site === site ? category : `${hit.site} › ${category}`;
+            const group =
+                hit.site === site || hit.site === category ? category : `${hit.site} › ${category}`;
 
             byGroup.set(group, [...(byGroup.get(group) ?? []), hit]);
         }
@@ -635,11 +636,6 @@ export function SearchModal({
         go(hit);
     }
 
-    function clear() {
-        setQuery("");
-        inputRef.current?.focus();
-    }
-
     function renderHit(hit: SearchHit, order: number) {
         const path = headings(hit);
         const title = path.at(-1) ?? hit.url;
@@ -766,13 +762,8 @@ export function SearchModal({
         }
 
         if (showRecent) {
-            if (!recent.length) {
-                return (
-                    <div className="DocSearch-StartScreen">
-                        <p className="DocSearch-Help">No recent searches</p>
-                    </div>
-                );
-            }
+            // Without recent hits the dropdown collapses, as DocSearch's does.
+            if (!recent.length) return null;
 
             return (
                 <section className="DocSearch-Hits">
@@ -816,6 +807,8 @@ export function SearchModal({
         );
     }
 
+    const screen = renderScreen();
+
     return (
         <dialog
             ref={dialogRef}
@@ -830,10 +823,6 @@ export function SearchModal({
                         className="DocSearch-Form"
                         role="search"
                         onSubmit={(event) => event.preventDefault()}
-                        onReset={(event) => {
-                            event.preventDefault();
-                            clear();
-                        }}
                     >
                         {loading ? (
                             <div className="DocSearch-LoadingIndicator">
@@ -874,18 +863,6 @@ export function SearchModal({
                             onKeyDown={onKeyDown}
                         />
                         <div className="DocSearch-Actions">
-                            {query !== "" && (
-                                <>
-                                    <button
-                                        type="reset"
-                                        className="DocSearch-Clear"
-                                        aria-label="Clear the query"
-                                    >
-                                        Clear the query
-                                    </button>
-                                    <div className="DocSearch-Divider" />
-                                </>
-                            )}
                             <button
                                 type="button"
                                 title="Cancel"
@@ -897,23 +874,22 @@ export function SearchModal({
                             </button>
                         </div>
                     </form>
-                    <button
-                        type="button"
-                        className="DocSearch-Cancel"
-                        onClick={() => dialogRef.current?.close()}
-                    >
-                        Cancel
-                    </button>
                 </header>
 
-                <div className="DocSearch-Dropdown">
-                    <div className="DocSearch-Dropdown-Container">{renderScreen()}</div>
-                </div>
+                {screen !== null && (
+                    <div className="DocSearch-Dropdown">
+                        <div className="DocSearch-Dropdown-Container">{screen}</div>
+                    </div>
+                )}
 
                 <footer className="DocSearch-Footer">
-                    <p aria-live="polite" className="DocSearch-Status">
-                        {statusText(announced)}
-                    </p>
+                    {/* The footer lays its children out right to left; the first takes the
+                        place of the logo so the commands sit at the left edge. */}
+                    <div className="DocSearch-Logo">
+                        <p aria-live="polite" className="DocSearch-Status">
+                            {statusText(announced)}
+                        </p>
+                    </div>
                     <ul className="DocSearch-Commands">
                         <li>
                             <kbd className="DocSearch-Commands-Key">

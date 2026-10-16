@@ -65,6 +65,16 @@ export const FIXTURE_RECORDS = [
         position: 0,
     },
     {
+        id: "grafana-docs",
+        site: "Documentation",
+        url: "/install-config/grafana/",
+        anchor: "",
+        hierarchy: ["Installation and Configuration", "Grafana", N, N, N, N, N],
+        content: "Monitor authentik with Grafana.",
+        level: 1,
+        position: 0,
+    },
+    {
         id: "row",
         site: "Documentation",
         url: "/install-config/configuration/",

@@ -38,6 +38,13 @@ dialog.DocSearch-Container::backdrop {
     background: transparent;
 }
 
+/* The search input's own clear control stands in for DocSearch's "Clear the query" button. */
+.DocSearch-Input::-webkit-search-cancel-button {
+    display: block;
+    appearance: auto;
+    cursor: pointer;
+}
+
 /* The live region announces results without taking the place of the logo in the footer. */
 .DocSearch-Status {
     position: absolute;
