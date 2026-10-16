@@ -29,7 +29,17 @@ SSO is a CH-UI Pro feature and requires a Pro license.
 
 ## authentik configuration
 
-To support the integration of CH-UI with authentik, you need to create an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) and [application entitlements](/docs/add-secure-apps/applications/manage_apps/#application-entitlements) in authentik.
+To support the integration of CH-UI with authentik, you need to create an email [scope mapping](/docs/add-secure-apps/providers/oauth2/#scope-mappings), an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) and [application entitlements](/docs/add-secure-apps/applications/manage_apps/#application-entitlements) in authentik.
+
+### Create an email scope mapping
+
+CH-UI identifies each user by their email address and refuses SSO logins when the `email_verified` claim is `False`, which the default authentik email scope mapping always returns. Create a custom email scope mapping as described in [Email scope verification](/docs/add-secure-apps/providers/oauth2/#email-scope-verification).
+
+If authentik cannot vouch for your users' email addresses, use this expression, which omits the claim, and set `OIDC_ACCEPT_UNVERIFIED_EMAIL=true` when you [configure SSO](#configure-sso) in CH-UI:
+
+```python
+return {"email": request.user.email}
+```
 
 ### Create an application and provider
 
@@ -43,7 +53,9 @@ To support the integration of CH-UI with authentik, you need to create an [appli
         - Note the **Client ID** and **Client Secret** values because they are required later.
         - Set a `Strict` `Authorization` redirect URI to `https://ch-ui.company/api/auth/oidc/callback`.
         - Select any available signing key.
-        - Under **Advanced protocol settings**, add `authentik default OAuth Mapping: Application Entitlements` to **Selected Scopes**.
+        - **Advanced protocol settings** > **Scopes**:
+            - Add the email scope mapping that you created and `authentik default OAuth Mapping: Application Entitlements` to **Selected Scopes**.
+            - Remove `authentik default OAuth Mapping: OpenID 'email'` from **Selected Scopes**.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
@@ -75,6 +87,8 @@ OIDC_GROUPS_CLAIM=entitlements
 OIDC_ADMIN_GROUPS=ch-ui-admin
 OIDC_ANALYST_GROUPS=ch-ui-analyst
 ```
+
+If your email scope mapping omits `email_verified`, also set `OIDC_ACCEPT_UNVERIFIED_EMAIL=true`.
 
 Keep the trailing slash on `OIDC_ISSUER_URL`. CH-UI checks that the issuer it discovers matches this value exactly, and logs `OIDC SSO disabled — provider discovery failed` at startup if it does not.
 
