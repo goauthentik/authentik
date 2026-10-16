@@ -8,6 +8,7 @@
  */
 
 import { hitHref, type SearchHit, type SearchResponse } from "#search/common.mjs";
+import { queryTokens } from "#search/query.mjs";
 
 import React, {
     type KeyboardEvent,
@@ -95,16 +96,14 @@ function statusText(status: Status): string {
 
 /**
  * The ranges of `text` that match a query token, case-insensitively, for emphasis in a title.
+ * The tokens are the ones the index matched on, so `ldap-outpost` emphasizes both words.
  */
 function tokenRanges(text: string, query: string): [number, number][] {
     const lower = text.toLowerCase();
     const ranges: [number, number][] = [];
 
     for (const token of new Set(
-        query
-            .toLowerCase()
-            .split(/\s+/)
-            .filter((part) => part.length >= 2),
+        queryTokens(query.toLowerCase()).filter((part) => part.length >= 2),
     )) {
         for (
             let index = lower.indexOf(token);
@@ -816,7 +815,12 @@ export function SearchModal({
             // is in the document, so the class is carried only while the dialog is open.
             className={open ? "DocSearch DocSearch-Container" : "DocSearch"}
             aria-label="Search the documentation"
-            onClose={onClose}
+            onClose={() => {
+                // The next open starts empty, on the recent hits, as DocSearch's does.
+                setQuery("");
+                setSelected(0);
+                onClose();
+            }}
             onClick={onDialogClick}
         >
             <div className="DocSearch-Modal">
@@ -851,7 +855,7 @@ export function SearchModal({
                             aria-labelledby={labelID}
                             aria-autocomplete="list"
                             aria-expanded={ordered.length > 0}
-                            aria-controls={listboxIDs.join(" ")}
+                            aria-controls={ordered.length ? listboxIDs.join(" ") : undefined}
                             aria-activedescendant={ordered.length ? optionID(selected) : undefined}
                             autoComplete="off"
                             autoCorrect="off"

@@ -277,8 +277,8 @@ export function collectSearchRecords(options) {
 }
 
 /**
- * Copy a file unless the destination already has its size. The dev server watches `static/`, and
- * a rewrite of identical bytes would still reload the page.
+ * Copy a file unless the destination already holds its bytes. The dev server watches `static/`,
+ * and a rewrite of identical bytes would still reload the page.
  *
  * @param {string} source
  * @param {string} destination
@@ -286,8 +286,13 @@ export function collectSearchRecords(options) {
  * @returns {boolean} Whether the file was copied.
  */
 function syncFile(source, destination) {
-    if (existsSync(destination) && statSync(destination).size === statSync(source).size) {
-        return false;
+    if (existsSync(destination)) {
+        const current = readFileSync(destination);
+
+        // An edit that keeps the file's length still changes it, so the bytes are compared.
+        if (current.byteLength === statSync(source).size && current.equals(readFileSync(source))) {
+            return false;
+        }
     }
 
     copyFileSync(source, destination);
