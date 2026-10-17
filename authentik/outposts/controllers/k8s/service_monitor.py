@@ -127,7 +127,8 @@ class PrometheusServiceMonitorReconciler(KubernetesObjectReconciler[PrometheusSe
         )
 
     def create(self, reference: PrometheusServiceMonitor):
-        return self.api.create_namespaced_custom_object(
+        return self.k8s_api_call(
+            self.api.create_namespaced_custom_object_with_http_info,
             group=CRD_GROUP,
             version=CRD_VERSION,
             plural=CRD_PLURAL,
@@ -137,7 +138,8 @@ class PrometheusServiceMonitorReconciler(KubernetesObjectReconciler[PrometheusSe
         )
 
     def delete(self, reference: PrometheusServiceMonitor):
-        return self.api.delete_namespaced_custom_object(
+        return self.k8s_api_call(
+            self.api.delete_namespaced_custom_object_with_http_info,
             group=CRD_GROUP,
             version=CRD_VERSION,
             namespace=self.namespace,
@@ -148,7 +150,8 @@ class PrometheusServiceMonitorReconciler(KubernetesObjectReconciler[PrometheusSe
     def retrieve(self) -> PrometheusServiceMonitor:
         return from_dict(
             PrometheusServiceMonitor,
-            self.api.get_namespaced_custom_object(
+            self.k8s_api_call(
+                self.api.get_namespaced_custom_object_with_http_info,
                 group=CRD_GROUP,
                 version=CRD_VERSION,
                 namespace=self.namespace,
@@ -158,7 +161,8 @@ class PrometheusServiceMonitorReconciler(KubernetesObjectReconciler[PrometheusSe
         )
 
     def update(self, current: PrometheusServiceMonitor, reference: PrometheusServiceMonitor):
-        return self.api.patch_namespaced_custom_object(
+        return self.k8s_api_call(
+            self.api.patch_namespaced_custom_object_with_http_info,
             group=CRD_GROUP,
             version=CRD_VERSION,
             namespace=self.namespace,

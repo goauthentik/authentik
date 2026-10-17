@@ -67,18 +67,30 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
         )
 
     def create(self, reference: V1Service):
-        return self.api.create_namespaced_service(
-            self.namespace, reference, field_manager=FIELD_MANAGER
+        return self.k8s_api_call(
+            self.api.create_namespaced_service_with_http_info,
+            self.namespace,
+            reference,
+            field_manager=FIELD_MANAGER,
         )
 
     def delete(self, reference: V1Service):
-        return self.api.delete_namespaced_service(reference.metadata.name, self.namespace)
+        return self.k8s_api_call(
+            self.api.delete_namespaced_service_with_http_info,
+            reference.metadata.name,
+            self.namespace,
+        )
 
     def retrieve(self) -> V1Service:
-        return self.api.read_namespaced_service(self.name, self.namespace)
+        return self.k8s_api_call(
+            self.api.read_namespaced_service_with_http_info,
+            self.name,
+            self.namespace,
+        )
 
     def update(self, current: V1Service, reference: V1Service):
-        return self.api.patch_namespaced_service(
+        return self.k8s_api_call(
+            self.api.patch_namespaced_service_with_http_info,
             current.metadata.name,
             self.namespace,
             reference,

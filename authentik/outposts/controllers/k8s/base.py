@@ -1,9 +1,10 @@
 """Base Kubernetes Reconciler"""
 
+import inspect
 import re
 import ssl
 from dataclasses import asdict
-from json import dumps
+from json import JSONDecodeError, dumps, loads
 from typing import TYPE_CHECKING, TypeVar
 
 import urllib3
@@ -28,6 +29,8 @@ if TYPE_CHECKING:
     from authentik.outposts.controllers.kubernetes import KubernetesController
 
 T = TypeVar("T", V1Pod, V1Deployment)
+
+K8S_RESPONSE_LEN = 3
 
 
 def get_version() -> str:
@@ -200,6 +203,28 @@ class KubernetesObjectReconciler[T]:
                     raise NeedsUpdate()
             except (JsonPatchException, JsonPatchConflict, JsonPatchTestFailed) as exc:
                 raise ControllerException(f"JSON Patch failed: {exc}") from exc
+
+    def k8s_api_call(self, func, *args, **kwargs):
+        """Wrapper for K8s API calls to handle response headers and log warnings."""
+        if "field_validation" in inspect.signature(func).parameters:
+            kwargs.setdefault("field_validation", "Warn")
+        try:
+            result = func(*args, **kwargs)
+            if isinstance(result, tuple) and len(result) >= K8S_RESPONSE_LEN:
+                data, _, headers, *_ = result
+                if raw_warning := (headers or {}).get("Warning"):
+                    clean_msg = raw_warning.replace('\\"', '"')
+                    self.logger.warning(f"Kubernetes API Warning: {clean_msg}")
+                return data
+            self.logger.error()
+            return result
+        except ApiException as exc:
+            try:
+                body_json = loads(exc.body)
+                error_msg = body_json.get("message", exc.reason)
+            except JSONDecodeError, TypeError, AttributeError:
+                error_msg = exc.reason
+            raise ApiException(status=exc.status, reason=error_msg) from None
 
     def create(self, reference: T):
         """API Wrapper to create object"""

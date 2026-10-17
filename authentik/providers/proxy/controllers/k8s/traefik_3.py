@@ -148,7 +148,8 @@ class Traefik3MiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware]
         )
 
     def create(self, reference: TraefikMiddleware):
-        return self.api.create_namespaced_custom_object(
+        self.k8s_api_call(
+            self.api.create_namespaced_custom_object_with_http_info,
             group=self.crd_group,
             version=self.crd_version,
             plural=self.crd_plural,
@@ -158,7 +159,8 @@ class Traefik3MiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware]
         )
 
     def delete(self, reference: TraefikMiddleware):
-        return self.api.delete_namespaced_custom_object(
+        self.k8s_api_call(
+            self.api.delete_namespaced_custom_object_with_http_info,
             group=self.crd_group,
             version=self.crd_version,
             plural=self.crd_plural,
@@ -179,7 +181,8 @@ class Traefik3MiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware]
         )
 
     def update(self, current: TraefikMiddleware, reference: TraefikMiddleware):
-        return self.api.patch_namespaced_custom_object(
+        self.k8s_api_call(
+            self.api.patch_namespaced_custom_object_with_http_info,
             group=self.crd_group,
             version=self.crd_version,
             plural=self.crd_plural,
