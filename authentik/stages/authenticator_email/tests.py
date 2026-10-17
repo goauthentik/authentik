@@ -295,6 +295,81 @@ class TestAuthenticatorEmailStage(FlowTestCase):
         "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
         PropertyMock(return_value=EmailBackend),
     )
+    def test_wrong_code_allows_reenrollment(self):
+        """A wrong code during enrollment must not persist the device and block re-enrollment"""
+        self.device.delete()
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            self.user,
+            component="ak-stage-authenticator-email",
+            email_required=False,
+        )
+
+        # Submit a wrong code
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            data={"component": "ak-stage-authenticator-email", "code": "000000"},
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            response_errors={
+                "non_field_errors": [{"code": "invalid", "string": "Code does not match"}]
+            },
+        )
+        # The unconfirmed device must not have been persisted
+        self.assertFalse(EmailDevice.objects.filter(user=self.user, stage=self.stage).exists())
+
+        # Restarting the enrollment must not report an already-registered device
+        self.client.logout()
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            self.user,
+            component="ak-stage-authenticator-email",
+            email_required=False,
+        )
+
+    @patch(
+        "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
+        PropertyMock(return_value=EmailBackend),
+    )
+    def test_unconfirmed_device_does_not_block_enrollment(self):
+        """An unconfirmed device left over from a previous attempt must not block enrollment"""
+        self.device.delete()
+        EmailDevice.objects.create(
+            user=self.user,
+            stage=self.stage,
+            email=self.user.email,
+            confirmed=False,
+        )
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            self.user,
+            component="ak-stage-authenticator-email",
+            email_required=False,
+        )
+        # The stale unconfirmed device was removed when enrollment re-started
+        self.assertFalse(
+            EmailDevice.objects.filter(user=self.user, stage=self.stage, confirmed=False).exists()
+        )
+
+    @patch(
+        "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
+        PropertyMock(return_value=EmailBackend),
+    )
     def test_challenge_generation(self):
         """Test challenge generation"""
         # Test with masked email

@@ -138,7 +138,10 @@ class EmailDevice(SerializerModel, ThrottlingMixin, SideChannelDevice):
             if verified:
                 self.throttle_reset()
             else:
-                self.throttle_increment()
+                # Whilst the device is not persisted yet (during enrollment),
+                # don't save it here as saving an unconfirmed device would
+                # block the user from re-starting the enrollment
+                self.throttle_increment(commit=self.pk is not None)
         else:
             verified = False
 
