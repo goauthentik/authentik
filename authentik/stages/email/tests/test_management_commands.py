@@ -7,6 +7,7 @@ from django.core.mail.backends.locmem import EmailBackend
 from django.core.management import call_command
 from django.test import TestCase
 
+from authentik.blueprints.tests import apply_blueprint
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.stages.email.models import EmailStage
 
@@ -17,6 +18,7 @@ class TestEmailManagementCommands(TestCase):
     def setUp(self):
         self.user = create_test_admin_user()
 
+    @apply_blueprint("system/email-templates.yaml")
     def test_test_email_command_with_stage(self):
         """Test test_email command with specified stage"""
         EmailStage.objects.create(
@@ -33,6 +35,7 @@ class TestEmailManagementCommands(TestCase):
             self.assertEqual(mail.outbox[0].subject, "authentik Test-Email")
             self.assertEqual(mail.outbox[0].to, ["test@example.com"])
 
+    @apply_blueprint("system/email-templates.yaml")
     def test_test_email_command_with_global_settings(self):
         """Test test_email command with global settings"""
         # Mock the backend to use Django's locmem backend
@@ -49,6 +52,7 @@ class TestEmailManagementCommands(TestCase):
 
         self.assertEqual(len(mail.outbox), 0)
 
+    @apply_blueprint("system/email-templates.yaml")
     def test_test_email_command_uses_stage_settings(self):
         """Test test_email command uses the stage's settings, not the global ones"""
         EmailStage.objects.create(

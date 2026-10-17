@@ -29299,6 +29299,7 @@ paths:
         name: template
         schema:
           type: string
+          format: uuid
       - in: query
         name: timeout
         schema:
@@ -31678,6 +31679,7 @@ paths:
         name: template
         schema:
           type: string
+          format: uuid
       - in: query
         name: timeout
         schema:
@@ -31885,7 +31887,183 @@ paths:
   /stages/email/templates/:
     get:
       operationId: stages_email_templates_list
-      description: Get all available templates, including custom templates
+      description: EmailTemplate Viewset
+      parameters:
+      - in: query
+        name: managed
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: path
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEmailTemplateList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: stages_email_templates_create
+      description: EmailTemplate Viewset
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailTemplateRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailTemplate'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /stages/email/templates/{uuid}/:
+    get:
+      operationId: stages_email_templates_retrieve
+      description: EmailTemplate Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Email Template.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailTemplate'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: stages_email_templates_update
+      description: EmailTemplate Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Email Template.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailTemplateRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailTemplate'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: stages_email_templates_partial_update
+      description: EmailTemplate Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Email Template.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEmailTemplateRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailTemplate'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: stages_email_templates_destroy
+      description: EmailTemplate Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Email Template.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /stages/email/templates/{uuid}/used_by/:
+    get:
+      operationId: stages_email_templates_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Email Template.
+        required: true
       tags:
       - stages
       security:
@@ -31897,7 +32075,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/TypeCreate'
+                  $ref: '#/components/schemas/UsedBy'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -36545,12 +36723,14 @@ components:
           description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
         template:
           type: string
+          format: uuid
       required:
       - component
       - flow_set
       - meta_model_name
       - name
       - pk
+      - template
       - verbose_name
       - verbose_name_plural
     AuthenticatorEmailStageRequest:
@@ -36606,9 +36786,10 @@ components:
           description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
         template:
           type: string
-          minLength: 1
+          format: uuid
       required:
       - name
+      - template
     AuthenticatorEndpointGDTCStage:
       type: object
       description: AuthenticatorEndpointGDTCStage Serializer
@@ -39945,6 +40126,8 @@ components:
           type: string
         template:
           type: string
+          format: uuid
+          description: Email template to use
         activate_user_on_success:
           type: boolean
           description: Activate users upon completion of stage.
@@ -39963,6 +40146,7 @@ components:
       - meta_model_name
       - name
       - pk
+      - template
       - verbose_name
       - verbose_name_plural
     EmailStageRequest:
@@ -40010,7 +40194,8 @@ components:
           minLength: 1
         template:
           type: string
-          minLength: 1
+          format: uuid
+          description: Email template to use
         activate_user_on_success:
           type: boolean
           description: Activate users upon completion of stage.
@@ -40026,6 +40211,66 @@ components:
             further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - name
+      - template
+    EmailTemplate:
+      type: object
+      description: EmailTemplate Serializer
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        path:
+          type: string
+        display_name:
+          type: string
+          readOnly: true
+        description:
+          type: string
+        body:
+          type: string
+        body_plaintext:
+          type: string
+          description: Plain text version of the email. If left empty, emails are
+            sent as HTML only.
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+      required:
+      - display_name
+      - path
+      - uuid
+    EmailTemplateRequest:
+      type: object
+      description: EmailTemplate Serializer
+      properties:
+        path:
+          type: string
+          minLength: 1
+        description:
+          type: string
+        body:
+          type: string
+        body_plaintext:
+          type: string
+          description: Plain text version of the email. If left empty, emails are
+            sent as HTML only.
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+      required:
+      - path
     EndpointAgentChallenge:
       type: object
       description: Signed challenge for authentik agent to respond to
@@ -43090,19 +43335,25 @@ components:
       properties:
         email_addresses:
           type: array
-          items: {}
+          items:
+            type: string
+            minLength: 1
         cc_addresses:
           type: array
-          items: {}
+          items:
+            type: string
+            minLength: 1
         bcc_addresses:
           type: array
-          items: {}
+          items:
+            type: string
+            minLength: 1
         template:
           type: string
-          minLength: 1
-          default: invitation
+          format: uuid
       required:
       - email_addresses
+      - template
     InvitationStage:
       type: object
       description: InvitationStage Serializer
@@ -45241,6 +45492,7 @@ components:
       - authentik_stages_consent.consentstage
       - authentik_stages_deny.denystage
       - authentik_stages_dummy.dummystage
+      - authentik_stages_email.emailtemplate
       - authentik_stages_email.emailstage
       - authentik_stages_identification.identificationstage
       - authentik_stages_invitation.invitationstage
@@ -45666,6 +45918,8 @@ components:
           type: string
         email_template:
           type: string
+          format: uuid
+          nullable: true
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -45708,7 +45962,8 @@ components:
           type: string
         email_template:
           type: string
-          minLength: 1
+          format: uuid
+          nullable: true
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -47396,6 +47651,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EmailStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedEmailTemplateList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailTemplate'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -50096,7 +50366,7 @@ components:
           description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
         template:
           type: string
-          minLength: 1
+          format: uuid
     PatchedAuthenticatorEndpointGDTCStageRequest:
       type: object
       description: AuthenticatorEndpointGDTCStage Serializer
@@ -50652,7 +50922,8 @@ components:
           minLength: 1
         template:
           type: string
-          minLength: 1
+          format: uuid
+          description: Email template to use
         activate_user_on_success:
           type: boolean
           description: Activate users upon completion of stage.
@@ -50666,6 +50937,30 @@ components:
           description: 'The time window used to count recent account recovery attempts.
             If the number of attempts exceed recovery_max_attempts within this period,
             further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
+    PatchedEmailTemplateRequest:
+      type: object
+      description: EmailTemplate Serializer
+      properties:
+        path:
+          type: string
+          minLength: 1
+        description:
+          type: string
+        body:
+          type: string
+        body_plaintext:
+          type: string
+          description: Plain text version of the email. If left empty, emails are
+            sent as HTML only.
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
     PatchedEndpointDeviceRequest:
       type: object
       properties:
@@ -51886,7 +52181,8 @@ components:
           type: string
         email_template:
           type: string
-          minLength: 1
+          format: uuid
+          nullable: true
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook

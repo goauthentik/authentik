@@ -5,10 +5,10 @@ from unittest.mock import PropertyMock, patch
 from django.core import mail
 from django.core.mail.backends.locmem import EmailBackend
 from django.test import TestCase
-from django.urls import reverse
 from requests_mock import Mocker
 
 from authentik import authentik_full_version
+from authentik.blueprints.tests import apply_blueprint
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.api.notification_transports import NotificationTransportSerializer
@@ -17,11 +17,12 @@ from authentik.events.models import (
     Notification,
     NotificationSeverity,
     NotificationTransport,
+    NotificationTransportError,
     NotificationWebhookMapping,
     TransportMode,
 )
 from authentik.lib.generators import generate_id
-from authentik.stages.email.models import get_template_choices
+from authentik.stages.email.models import EmailTemplate
 
 
 class TestEventTransports(TestCase):
@@ -185,11 +186,15 @@ class TestEventTransports(TestCase):
                 },
             )
 
+    @apply_blueprint("system/email-templates.yaml")
     def test_transport_email(self):
         """Test email transport"""
         transport: NotificationTransport = NotificationTransport.objects.create(
             name=generate_id(),
             mode=TransportMode.EMAIL,
+            email_template=EmailTemplate.objects.get(
+                managed="goauthentik.io/email/event-notification",
+            ),
         )
         with patch(
             "authentik.stages.email.models.EmailStage.backend_class",
@@ -205,7 +210,9 @@ class TestEventTransports(TestCase):
         transport: NotificationTransport = NotificationTransport.objects.create(
             name=generate_id(),
             mode=TransportMode.EMAIL,
-            email_template="email/event_notification.html",
+            email_template=EmailTemplate.objects.create(
+                path=f"{generate_id()}.html", body="custom: {{ body }}"
+            ),
         )
         with patch(
             "authentik.stages.email.models.EmailStage.backend_class",
@@ -215,12 +222,16 @@ class TestEventTransports(TestCase):
             self.assertEqual(len(mail.outbox), 1)
             self.assertIn(self.notification.body, mail.outbox[0].alternatives[0][0])
 
+    @apply_blueprint("system/email-templates.yaml")
     def test_transport_email_custom_subject_prefix(self):
         """Test email transport with custom subject prefix"""
         transport: NotificationTransport = NotificationTransport.objects.create(
             name=generate_id(),
             mode=TransportMode.EMAIL,
             email_subject_prefix="[CUSTOM] ",
+            email_template=EmailTemplate.objects.get(
+                managed="goauthentik.io/email/event-notification",
+            ),
         )
         with patch(
             "authentik.stages.email.models.EmailStage.backend_class",
@@ -230,15 +241,32 @@ class TestEventTransports(TestCase):
             self.assertEqual(len(mail.outbox), 1)
             self.assertEqual(mail.outbox[0].subject, "[CUSTOM] custom_foo")
 
+    def test_transport_email_no_template(self):
+        """Test email transport without a template"""
+        transport: NotificationTransport = NotificationTransport.objects.create(
+            name=generate_id(),
+            mode=TransportMode.EMAIL,
+        )
+        with self.assertRaisesMessage(
+            NotificationTransportError, "Transport has no email template configured"
+        ):
+            transport.send(self.notification)
+        self.assertEqual(len(mail.outbox), 0)
+
     def test_transport_email_validation(self):
         """Test email transport template validation"""
+
+        template = EmailTemplate.objects.create(
+            path=f"{generate_id()}.html",
+            body="",
+        )
 
         # Test valid template
         serializer = NotificationTransportSerializer(
             data={
                 "name": generate_id(),
                 "mode": TransportMode.EMAIL,
-                "email_template": "email/event_notification.html",
+                "email_template": template.pk,
             }
         )
         self.assertTrue(serializer.is_valid())
@@ -248,27 +276,8 @@ class TestEventTransports(TestCase):
             data={
                 "name": generate_id(),
                 "mode": TransportMode.EMAIL,
-                "email_template": "invalid/template.html",
+                "email_template": None,
             }
         )
         self.assertFalse(serializer.is_valid())
         self.assertIn("email_template", serializer.errors)
-
-    def test_templates_api_endpoint(self):
-        """Test templates API endpoint returns valid templates"""
-        self.client.force_login(self.user)
-        response = self.client.get(reverse("authentik_api:emailstage-templates"))
-        self.assertEqual(response.status_code, 200)
-
-        data = response.json()
-        self.assertIsInstance(data, list)
-
-        # Check that we have at least the default templates
-        template_names = [item["name"] for item in data]
-        self.assertIn("email/event_notification.html", template_names)
-
-        # Verify all templates are valid choices
-        valid_choices = dict(get_template_choices())
-        for template in data:
-            self.assertIn(template["name"], valid_choices)
-            self.assertEqual(template["description"], valid_choices[template["name"]])

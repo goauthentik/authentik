@@ -1,68 +1,109 @@
 """email stage models"""
 
-from os import R_OK, access
-from pathlib import Path
+import posixpath
+from uuid import uuid4
 
-from django.conf import settings
 from django.core.mail.backends.base import BaseEmailBackend
 from django.core.mail.backends.smtp import EmailBackend
 from django.db import models
+from django.db.models import F, Q
+from django.template import TemplateDoesNotExist
 from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
+from authentik.blueprints.models import ManagedModel
 from authentik.flows.models import Stage
 from authentik.lib.config import CONFIG
+from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
+from authentik.stages.email.loaders import render_email_template
 
 EMAIL_RECOVERY_MAX_ATTEMPTS = 5
 
 LOGGER = get_logger()
 
 
-class EmailTemplates(models.TextChoices):
-    """Templates used for rendering the Email"""
+BUILTIN_TEMPLATE_DISPLAY_NAMES = {
+    "goauthentik.io/email/base": gettext_lazy("Base Layout"),
+    "goauthentik.io/email/password-reset": gettext_lazy("Password Reset"),
+    "goauthentik.io/email/account-confirmation": gettext_lazy("Account Confirmation"),
+    "goauthentik.io/email/email-otp": gettext_lazy("Email OTP"),
+    "goauthentik.io/email/event-notification": gettext_lazy("Event Notification"),
+    "goauthentik.io/email/invitation": gettext_lazy("Invitation"),
+    "goauthentik.io/email/setup": gettext_lazy("Test Email"),
+}
 
-    PASSWORD_RESET = (
-        "email/password_reset.html",
-        _("Password Reset"),
-    )  # nosec
-    ACCOUNT_CONFIRM = (
-        "email/account_confirmation.html",
-        _("Account Confirmation"),
+
+class EmailTemplate(SerializerModel, ManagedModel):
+    """A single email template"""
+
+    uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+    path = models.TextField(
+        # sorts byte-by-byte, not defined by language. not having this can cause paths
+        # with similar names to be ordered incorrectly
+        db_collation="C",
+        help_text=_("Path used to reference this template, similar to file paths on disk."),
     )
-    EMAIL_OTP = (
-        "email/email_otp.html",
-        _("Email OTP"),
-    )  # nosec
-    EVENT_NOTIFICATION = (
-        "email/event_notification.html",
-        _("Event Notification"),
-    )
-    INVITATION = (
-        "email/invitation.html",
-        _("Invitation"),
+    description = models.TextField(blank=True, default="")
+    body = models.TextField(blank=True, default="")
+    body_plaintext = models.TextField(
+        blank=True,
+        default="",
+        help_text=_(
+            "Plain text version of the email. If left empty, emails are sent as HTML only."
+        ),
     )
 
+    @property
+    def display_name(self) -> str:
+        return str(BUILTIN_TEMPLATE_DISPLAY_NAMES.get(self.managed, self.path))
 
-def get_template_choices():
-    """Get all available Email templates, including dynamically mounted ones.
-    Directories are taken from TEMPLATES.DIR setting"""
-    static_choices = EmailTemplates.choices
+    def render(self, context: dict) -> str:
+        return render_email_template(self.body, self.path, context, self.managed is not None)
 
-    dirs = [Path(x) for x in settings.TEMPLATES[0]["DIRS"]]
-    for template_dir in dirs:
-        if not template_dir.exists() or not template_dir.is_dir():
-            continue
-        for template in template_dir.glob("**/*.html"):
-            path = str(template)
-            if not access(path, R_OK):
-                LOGGER.warning("Custom template file is not readable, check permissions", path=path)
-                continue
-            rel_path = template.relative_to(template_dir)
-            static_choices.append((str(rel_path), f"Custom Template: {rel_path}"))
-    return static_choices
+    def render_plaintext(self, context: dict) -> str:
+        return render_email_template(
+            self.body_plaintext, self.path, context, self.managed is not None
+        )
+
+    @classmethod
+    def resolve(cls, path: str) -> EmailTemplate:
+        path = posixpath.normpath(path)
+        template = (
+            cls.objects.filter(path=path).order_by(F("managed").asc(nulls_first=True)).first()
+        )
+        if not template:
+            raise TemplateDoesNotExist(path)
+        return template
+
+    @property
+    def serializer(self) -> type[BaseSerializer]:
+        from authentik.stages.email.api import EmailTemplateSerializer
+
+        return EmailTemplateSerializer
+
+    def __str__(self) -> str:
+        return f"Email Template {self.path}"
+
+    class Meta:
+        verbose_name = _("Email Template")
+        verbose_name_plural = _("Email Templates")
+        ordering = ("path",)
+        constraints = [
+            models.UniqueConstraint(
+                fields=["path"],
+                condition=Q(managed__isnull=True),
+                name="unique_custom_email_template_path",
+            ),
+            models.UniqueConstraint(
+                fields=["path"],
+                condition=Q(managed__isnull=False),
+                name="unique_managed_email_template_path",
+            ),
+        ]
 
 
 class EmailStage(Stage):
@@ -106,7 +147,14 @@ class EmailStage(Stage):
         help_text=_("Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."),
     )
     subject = models.TextField(default="authentik")
-    template = models.TextField(default=EmailTemplates.PASSWORD_RESET)
+    template = models.ForeignKey(
+        "EmailTemplate",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        default=None,
+        help_text=_("Email template to use"),
+    )
 
     @property
     def serializer(self) -> type[BaseSerializer]:

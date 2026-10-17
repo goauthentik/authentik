@@ -26,7 +26,10 @@ from authentik.core.api.utils import JSONDictField, ModelSerializer
 from authentik.core.models import User
 from authentik.flows.api.flows import FlowSerializer
 from authentik.flows.api.stages import StageSerializer
-from authentik.lib.expression.evaluator import BaseEvaluator
+from authentik.lib.utils.email import normalize_addresses
+from authentik.stages.email.models import EmailTemplate
+from authentik.stages.email.tasks import send_mails
+from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.stages.invitation.models import Invitation, InvitationStage
 from authentik.stages.invitation.stage import QS_INVITATION_TOKEN_KEY
 
@@ -97,10 +100,10 @@ class InvitationSerializer(ModelSerializer):
 class InvitationSendEmailSerializer(Serializer):
     """Serializer for sending invitation emails"""
 
-    email_addresses = ListField(required=True)
-    cc_addresses = ListField(required=False)
-    bcc_addresses = ListField(required=False)
-    template = CharField(required=False, default="invitation")
+    email_addresses = ListField(child=CharField(), required=True)
+    cc_addresses = ListField(child=CharField(), required=False)
+    bcc_addresses = ListField(child=CharField(), required=False)
+    template = PrimaryKeyRelatedField(queryset=EmailTemplate.objects.all())
 
 
 class InvitationViewSet(UsedByMixin, ModelViewSet):
@@ -130,10 +133,12 @@ class InvitationViewSet(UsedByMixin, ModelViewSet):
     def send_email(self, request: Request, pk: str) -> Response:
         """Send invitation link via email to one or more addresses"""
         invitation = self.get_object()
-        email_addresses = request.data.get("email_addresses", [])
-        cc_addresses = request.data.get("cc_addresses", [])
-        bcc_addresses = request.data.get("bcc_addresses", [])
-        template = request.data.get("template", "email/invitation.html")
+        serializer = InvitationSendEmailSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email_addresses = serializer.validated_data["email_addresses"]
+        cc_addresses = serializer.validated_data.get("cc_addresses")
+        bcc_addresses = serializer.validated_data.get("bcc_addresses")
+        template: EmailTemplate = serializer.validated_data["template"]
 
         if not email_addresses:
             return Response({"error": "No email addresses provided"}, status=400)
@@ -160,18 +165,18 @@ class InvitationViewSet(UsedByMixin, ModelViewSet):
         # Prepare email content
         subject = f"You have been invited to {host}"
 
-        # Queue emails for sending via async ak_send_email
-        evaluator = BaseEvaluator()
-
-        for email in email_addresses:
-            evaluator.expr_send_email(
-                address=email,
+        # Send emails
+        messages = [
+            TemplateEmailMessage(
                 subject=subject,
+                to=normalize_addresses(email),
+                cc=normalize_addresses(cc_addresses) if cc_addresses else None,
+                bcc=normalize_addresses(bcc_addresses) if bcc_addresses else None,
                 template=template,
-                context=context,
-                stage=None,
-                cc=cc_addresses if cc_addresses else None,
-                bcc=bcc_addresses if bcc_addresses else None,
+                template_context=context,
             )
+            for email in email_addresses
+        ]
+        send_mails(None, *messages)
 
         return Response(status=204)

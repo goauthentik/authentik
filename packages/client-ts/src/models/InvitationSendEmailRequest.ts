@@ -17,10 +17,10 @@
  * @interface InvitationSendEmailRequest
  */
 export interface InvitationSendEmailRequest {
-    emailAddresses: Array<any>;
-    ccAddresses?: Array<any>;
-    bccAddresses?: Array<any>;
-    template?: string;
+    emailAddresses: Array<string>;
+    ccAddresses?: Array<string>;
+    bccAddresses?: Array<string>;
+    template: string;
 }
 
 /**
@@ -36,6 +36,7 @@ export function instanceOfInvitationSendEmailRequest(
             (value as Record<string, any>)["email_addresses"] === undefined)
     )
         return false;
+    if (!("template" in value) || value["template"] === undefined) return false;
     return true;
 }
 
@@ -54,7 +55,7 @@ export function InvitationSendEmailRequestFromJSONTyped(
         emailAddresses: json["email_addresses"],
         ccAddresses: json["cc_addresses"] == null ? undefined : json["cc_addresses"],
         bccAddresses: json["bcc_addresses"] == null ? undefined : json["bcc_addresses"],
-        template: json["template"] == null ? undefined : json["template"],
+        template: json["template"],
     };
 }
 

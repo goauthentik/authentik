@@ -10,6 +10,7 @@ from django.urls.base import reverse
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
+from authentik.blueprints.tests import apply_blueprint
 from authentik.brands.models import Brand
 from authentik.core.models import (
     USER_ATTRIBUTE_TOKEN_EXPIRING,
@@ -27,10 +28,10 @@ from authentik.core.tests.utils import (
     create_test_session,
     create_test_user,
 )
-from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation
+from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation, FlowToken
 from authentik.lib.generators import generate_id, generate_key
 from authentik.rbac.models import Role
-from authentik.stages.email.models import EmailStage
+from authentik.stages.email.models import EmailStage, EmailTemplate
 
 INVALID_PASSWORD_HASH = "not-a-valid-hash"
 INVALID_PASSWORD_HASH_ERROR = "Invalid password hash format. Must be a valid Django password hash."
@@ -358,12 +359,18 @@ class TestUsersAPI(APITestCase):
         expected_expires = now() + timedelta(days=66)
         self.assertTrue(timedelta(minutes=-1) < expected_expires - expires < timedelta(minutes=1))
 
+    @apply_blueprint("system/email-templates.yaml")
     def test_recovery_email_no_flow(self):
         """Test user recovery link (no recovery flow set)"""
         self.client.force_login(self.admin)
         self.user.email = ""
         self.user.save()
-        stage = EmailStage.objects.create(name="email")
+        stage = EmailStage.objects.create(
+            name="email",
+            template=EmailTemplate.objects.get(
+                managed="goauthentik.io/email/password-reset",
+            ),
+        )
         response = self.client.post(
             reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk}),
             data={"email_stage": stage.pk},
@@ -396,6 +403,30 @@ class TestUsersAPI(APITestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(response.content, {"email_stage": ["This field is required."]})
 
+    def test_recovery_email_no_template(self):
+        """Test user recovery link (email stage without a template)"""
+        self.user.email = "foo@bar.baz"
+        self.user.save()
+        flow = create_test_flow(FlowDesignation.RECOVERY)
+        brand: Brand = create_test_brand()
+        brand.flow_recovery = flow
+        brand.save()
+        stage = EmailStage.objects.create(name=generate_id())
+
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk}),
+            data={"email_stage": stage.pk},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content, {"non_field_errors": "Email stage has no template configured."}
+        )
+        self.assertFalse(
+            FlowToken.objects.filter(identifier=f"{self.user.uid}-password-reset").exists()
+        )
+
+    @apply_blueprint("system/email-templates.yaml")
     def test_recovery_email(self):
         """Test user recovery link"""
         self.user.email = "foo@bar.baz"
@@ -405,7 +436,12 @@ class TestUsersAPI(APITestCase):
         brand.flow_recovery = flow
         brand.save()
 
-        stage = EmailStage.objects.create(name="email")
+        stage = EmailStage.objects.create(
+            name="email",
+            template=EmailTemplate.objects.get(
+                managed="goauthentik.io/email/password-reset",
+            ),
+        )
 
         self.client.force_login(self.admin)
         response = self.client.post(

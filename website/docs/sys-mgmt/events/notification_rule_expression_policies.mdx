@@ -82,7 +82,7 @@ This pattern does not require a destination group or transport on the rule. As n
 
 Matching on `model_created` ensures that the email is only sent when the account is first created. Other changes to the user, such as a password reset, are recorded as `model_updated` and do not trigger this policy.
 
-To send a richer, branded message instead of plain text, replace the `body` argument with a `template` argument pointing to a [custom email template](../../add-secure-apps/flows-stages/stages/email/index.mdx#custom-templates), and pass any values the template needs through the `context` argument. See the [`ak_send_email` reference](../../customize/policies/types/expression/reference.mdx) for all available parameters.
+To send a richer, branded message instead of plain text, replace the `body` argument with a `template` argument pointing to a [custom email template](../../customize/email-templates.mdx), and pass any values the template needs through the `context` argument. See the [`ak_send_email` reference](../../customize/policies/types/expression/reference.mdx) for all available parameters.
 
 :::info
 To let the new user set their own password, point `login_url` at your recovery flow, for example `https://authentik.company/if/flow/default-recovery-flow/`. Replace `default-recovery-flow` with the slug of the flow you want to use. The user can then enter their email address and receive a password setup link. The flow must exist for the URL to work.

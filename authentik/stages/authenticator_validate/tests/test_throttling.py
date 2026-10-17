@@ -4,6 +4,7 @@ from django.urls.base import reverse
 from freezegun import freeze_time
 from rest_framework.exceptions import ValidationError
 
+from authentik.blueprints.tests import apply_blueprint
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.stage import StageView
@@ -21,6 +22,7 @@ from authentik.stages.authenticator_validate.models import (
     AuthenticatorValidateStage,
     DeviceClasses,
 )
+from authentik.stages.email.models import EmailTemplate
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
 
@@ -66,6 +68,7 @@ class AuthenticatorValidateStageFactorTests(TestCase):
 class ValidateChallengeCodeThrottlingTests(FlowTestCase):
     """Tests for validate_challenge_code throttling behavior."""
 
+    @apply_blueprint("system/email-templates.yaml")
     def setUp(self) -> None:
         super().setUp()
         self.user = create_test_admin_user()
@@ -75,6 +78,7 @@ class ValidateChallengeCodeThrottlingTests(FlowTestCase):
             use_global_settings=True,
             from_address="test@authentik.local",
             token_expiry="minutes=30",
+            template=EmailTemplate.objects.get(managed="goauthentik.io/email/email-otp"),
         )  # nosec
         self.sms_stage = AuthenticatorSMSStage.objects.create(
             name="sms-stage-validate-throttle",
@@ -168,6 +172,7 @@ class ValidateChallengeCodeThrottlingTests(FlowTestCase):
 class ValidateStageThrottlingFlowTests(FlowTestCase):
     """End-to-end lockout behavior through the flow executor HTTP API."""
 
+    @apply_blueprint("system/email-templates.yaml")
     def setUp(self) -> None:
         super().setUp()
         self.user = create_test_admin_user()
@@ -176,6 +181,7 @@ class ValidateStageThrottlingFlowTests(FlowTestCase):
             use_global_settings=True,
             from_address="test@authentik.local",
             token_expiry="minutes=30",
+            template=EmailTemplate.objects.get(managed="goauthentik.io/email/email-otp"),
         )  # nosec
         self.ident_stage = IdentificationStage.objects.create(
             name=generate_id(),

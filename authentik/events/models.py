@@ -53,7 +53,6 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.outposts.docker_tls import DockerInlineTLS
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
-from authentik.stages.email.models import EmailTemplates
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tasks.models import TasksModel
 
@@ -368,7 +367,13 @@ class NotificationTransport(TasksModel, SerializerModel):
     )
 
     email_subject_prefix = models.TextField(default="authentik Notification: ", blank=True)
-    email_template = models.TextField(default=EmailTemplates.EVENT_NOTIFICATION)
+    email_template = models.ForeignKey(
+        "authentik_stages_email.EmailTemplate",
+        null=True,
+        blank=True,
+        default=None,
+        on_delete=models.SET_NULL,
+    )
 
     webhook_url = models.TextField(blank=True, validators=[DomainlessURLValidator()])
     webhook_ca = models.ForeignKey(
@@ -572,6 +577,9 @@ class NotificationTransport(TasksModel, SerializerModel):
         """Send notification via global email configuration"""
         from authentik.stages.email.tasks import send_mail
 
+        if not self.email_template:
+            raise NotificationTransportError("Transport has no email template configured")
+
         if notification.user.email.strip() == "":
             LOGGER.info(
                 "Discarding notification as user has no email address",
@@ -614,7 +622,7 @@ class NotificationTransport(TasksModel, SerializerModel):
             subject=self.email_subject_prefix + context["title"],
             to=[(notification.user.name, notification.user.email)],
             language=notification.user.locale(),
-            template_name=self.email_template,
+            template=self.email_template,
             template_context=context,
         )
         send_mail.send_with_options(args=(mail.__dict__,), rel_obj=self)

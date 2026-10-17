@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.mail.backends.base import BaseEmailBackend
 from django.core.mail.backends.smtp import EmailBackend
 from django.db import models
-from django.template import TemplateSyntaxError
+from django.template import TemplateDoesNotExist, TemplateSyntaxError
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
@@ -15,7 +15,6 @@ from authentik.lib.config import CONFIG
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.stages.authenticator.models import SideChannelDevice, ThrottlingMixin
-from authentik.stages.email.models import EmailTemplates
 from authentik.stages.email.utils import TemplateEmailMessage
 
 
@@ -45,7 +44,13 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
         help_text=_("Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."),
     )
     subject = models.TextField(default="authentik Sign-in code")
-    template = models.TextField(default=EmailTemplates.EMAIL_OTP)
+    template = models.ForeignKey(
+        "authentik_stages_email.EmailTemplate",
+        null=True,
+        blank=True,
+        default=None,
+        on_delete=models.SET_NULL,
+    )
 
     @property
     def serializer(self) -> type[BaseSerializer]:
@@ -145,6 +150,14 @@ class EmailDevice(SerializerModel, ThrottlingMixin, SideChannelDevice):
         return verified
 
     def _compose_email(self) -> TemplateEmailMessage:
+        if not self.stage.template:
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message=_("Email authenticator stage has no template configured"),
+                stage=self.stage,
+            ).save()
+            raise StageInvalidException
+
         try:
             pending_user = self.user
             stage = self.stage
@@ -153,7 +166,7 @@ class EmailDevice(SerializerModel, ThrottlingMixin, SideChannelDevice):
             message = TemplateEmailMessage(
                 subject=_(stage.subject),
                 to=[(pending_user.name, email)],
-                template_name=stage.template,
+                template=stage.template,
                 template_context={
                     "user": pending_user,
                     "expires": self.valid_until,
@@ -161,12 +174,12 @@ class EmailDevice(SerializerModel, ThrottlingMixin, SideChannelDevice):
                 },
             )
             return message
-        except TemplateSyntaxError as exc:
+        except (TemplateSyntaxError, TemplateDoesNotExist) as exc:
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
                 message=_("Exception occurred while rendering E-mail template"),
-                template=stage.template,
-            ).with_exception(exc).from_http(self.request)
+                template=stage.template.path,
+            ).with_exception(exc).save()
             raise StageInvalidException from exc
 
     def __str__(self):

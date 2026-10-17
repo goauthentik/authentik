@@ -158,6 +158,7 @@ class TestEvaluator(TestCase):
         self.assertEqual(message.to, ["John Doe <john@example.com>", "Jane Doe <jane@example.com>"])
         self.assertEqual(message.cc, ["Manager <manager@example.com>"])
 
+    @apply_blueprint("system/email-templates.yaml")
     @patch("authentik.stages.email.tasks.send_mails")
     def test_expr_send_email_with_template(self, mock_send_mails):
         """Test ak_send_email with template parameter"""
@@ -220,6 +221,7 @@ class TestEvaluator(TestCase):
         self.assertEqual(stage, custom_stage)
         self.assertFalse(stage.use_global_settings)
 
+    @apply_blueprint("system/email-templates.yaml")
     @patch("authentik.stages.email.tasks.send_mails")
     def test_expr_send_email_with_context(self, mock_send_mails):
         """Test ak_send_email with custom context parameter"""

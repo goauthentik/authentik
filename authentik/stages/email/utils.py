@@ -3,13 +3,15 @@
 from email.mime.image import MIMEImage
 from functools import lru_cache
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.core.mail.message import sanitize_address
-from django.template.exceptions import TemplateDoesNotExist
-from django.template.loader import render_to_string
 from django.utils import translation
+
+if TYPE_CHECKING:
+    from authentik.stages.email.models import EmailTemplate
 
 
 @lru_cache
@@ -45,7 +47,8 @@ class TemplateEmailMessage(EmailMultiAlternatives):
         to: list[tuple[str, str]],
         cc: list[tuple[str, str]] | None = None,
         bcc: list[tuple[str, str]] | None = None,
-        template_name=None,
+        template: EmailTemplate | None = None,
+        template_name: str | None = None,
         template_context=None,
         language="",
         **kwargs,
@@ -54,16 +57,17 @@ class TemplateEmailMessage(EmailMultiAlternatives):
         sanitized_cc = _sanitize_recipients(cc) if cc else None
         sanitized_bcc = _sanitize_recipients(bcc) if bcc else None
         super().__init__(to=sanitized_to, cc=sanitized_cc, bcc=sanitized_bcc, **kwargs)
-        if not template_name:
+        if not template_name and not template:
             return
+
+        if not template:
+            from authentik.stages.email.models import EmailTemplate
+
+            template = EmailTemplate.resolve(template_name)
+
         with translation.override(language):
-            html_content = render_to_string(template_name, template_context)
-            try:
-                text_content = render_to_string(
-                    template_name.replace("html", "txt"), template_context
-                )
-                self.body = text_content
-            except TemplateDoesNotExist:
-                pass
+            html_content = template.render(template_context)
+            if template.body_plaintext:
+                self.body = template.render_plaintext(template_context)
         self.mixed_subtype = "related"
         self.attach_alternative(html_content, "text/html")

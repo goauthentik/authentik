@@ -1,32 +1,22 @@
 """EmailStage API Views"""
 
-from drf_spectacular.utils import extend_schema
-from rest_framework.decorators import action
-from rest_framework.request import Request
-from rest_framework.response import Response
+import posixpath
+
+from django.template import TemplateSyntaxError
+from rest_framework.fields import CharField, ReadOnlyField
 from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.object_types import TypeCreateSerializer
+from authentik.admin.files.validation import validate_upload_file_name
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.utils import ModelSerializer
 from authentik.flows.api.stages import StageSerializer
-from authentik.stages.email.models import EmailStage, get_template_choices
+from authentik.stages.email.loaders import compile_email_template
+from authentik.stages.email.models import EmailStage, EmailTemplate
 
 
 class EmailStageSerializer(StageSerializer):
     """EmailStage Serializer"""
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["template"].choices = get_template_choices()
-
-    def validate_template(self, value: str) -> str:
-        """Check validity of template"""
-        choices = get_template_choices()
-        for path, _ in choices:
-            if path == value:
-                return value
-        raise ValidationError(f"Invalid template '{value}' specified.")
 
     class Meta:
         model = EmailStage
@@ -47,7 +37,10 @@ class EmailStageSerializer(StageSerializer):
             "recovery_max_attempts",
             "recovery_cache_timeout",
         ]
-        extra_kwargs = {"password": {"write_only": True}}
+        extra_kwargs = {
+            "password": {"write_only": True},
+            "template": {"required": True, "allow_null": False},
+        }
 
 
 class EmailStageViewSet(UsedByMixin, ModelViewSet):
@@ -73,18 +66,52 @@ class EmailStageViewSet(UsedByMixin, ModelViewSet):
     search_fields = ["name"]
     ordering = ["name"]
 
-    @extend_schema(responses={200: TypeCreateSerializer(many=True)})
-    @action(detail=False, pagination_class=None, filter_backends=[])
-    def templates(self, request: Request) -> Response:
-        """Get all available templates, including custom templates"""
-        choices = []
-        for value, label in get_template_choices():
-            choices.append(
-                {
-                    "name": value,
-                    "description": label,
-                    "component": "",
-                    "model_name": "",
-                }
-            )
-        return Response(TypeCreateSerializer(choices, many=True).data)
+
+class EmailTemplateSerializer(ModelSerializer):
+    """EmailTemplate Serializer"""
+
+    path = CharField()
+    display_name = ReadOnlyField()
+
+    def validate(self, attrs: dict) -> dict:
+        path = attrs.get("path", getattr(self.instance, "path", None))
+        managed = attrs.get("managed", getattr(self.instance, "managed", None))
+        conflicts = EmailTemplate.objects.filter(path=path, managed__isnull=managed is None)
+        if self.instance:
+            conflicts = conflicts.exclude(pk=self.instance.pk)
+        if conflicts.exists():
+            raise ValidationError({"path": "A template with this path already exists."})
+        for field in ("body", "body_plaintext"):
+            if field not in attrs:
+                continue
+            try:
+                compile_email_template(attrs[field], path, managed is not None)
+            except TemplateSyntaxError as exc:
+                raise ValidationError({field: str(exc)}) from exc
+        return super().validate(attrs)
+
+    def validate_path(self, path: str) -> str:
+        validate_upload_file_name(path, ValidationError=ValidationError)
+        return posixpath.normpath(path)
+
+    class Meta:
+        model = EmailTemplate
+        fields = [
+            "uuid",
+            "path",
+            "display_name",
+            "description",
+            "body",
+            "body_plaintext",
+            "managed",
+        ]
+
+
+class EmailTemplateViewSet(UsedByMixin, ModelViewSet):
+    """EmailTemplate Viewset"""
+
+    queryset = EmailTemplate.objects.all()
+    serializer_class = EmailTemplateSerializer
+    filterset_fields = ["path", "managed"]
+    search_fields = ["path", "description"]
+    ordering = ["path"]

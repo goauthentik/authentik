@@ -10,6 +10,7 @@ from django.core.mail.backends.smtp import EmailBackend as SMTPEmailBackend
 from django.urls import reverse
 from django.utils.http import urlencode
 
+from authentik.blueprints.tests import apply_blueprint
 from authentik.brands.models import Brand
 from authentik.core.models import User
 from authentik.core.tests.utils import RequestFactory, create_test_admin_user, create_test_flow
@@ -21,13 +22,14 @@ from authentik.flows.views.executor import QS_KEY_TOKEN, SESSION_KEY_PLAN, FlowE
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 from authentik.stages.consent.stage import PLAN_CONTEXT_CONSENT_TOKEN
-from authentik.stages.email.models import EmailStage
+from authentik.stages.email.models import EmailStage, EmailTemplate
 from authentik.stages.email.stage import PLAN_CONTEXT_EMAIL_OVERRIDE, EmailStageView
 
 
 class TestEmailStage(FlowTestCase):
     """Email tests"""
 
+    @apply_blueprint("system/email-templates.yaml")
     def setUp(self):
         super().setUp()
         self.factory = RequestFactory()
@@ -36,6 +38,7 @@ class TestEmailStage(FlowTestCase):
         self.stage = EmailStage.objects.create(
             name="email",
             activate_user_on_success=True,
+            template=EmailTemplate.objects.get(managed="goauthentik.io/email/password-reset"),
         )
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 

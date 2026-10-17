@@ -42,7 +42,7 @@ export interface AuthenticatorEmailStageRequest {
      * Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).
      */
     tokenExpiry?: string;
-    template?: string;
+    template: string;
 }
 
 /**
@@ -52,6 +52,7 @@ export function instanceOfAuthenticatorEmailStageRequest(
     value: object,
 ): value is AuthenticatorEmailStageRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("template" in value) || value["template"] === undefined) return false;
     return true;
 }
 
@@ -87,7 +88,7 @@ export function AuthenticatorEmailStageRequestFromJSONTyped(
         fromAddress: json["from_address"] == null ? undefined : json["from_address"],
         subject: json["subject"] == null ? undefined : json["subject"],
         tokenExpiry: json["token_expiry"] == null ? undefined : json["token_expiry"],
-        template: json["template"] == null ? undefined : json["template"],
+        template: json["template"],
     };
 }
 

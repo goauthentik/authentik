@@ -113,6 +113,7 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
         ["/core/property-mappings", msg("Property Mappings")],
         ["/blueprints/instances", msg("Blueprints")],
         ["/files", msg("Files")],
+        ["/email/templates", msg("Email Templates")],
         ["/policy/reputation", msg("Reputation scores")]],
     ],
     [null, msg("Flows and Stages"), { key: "flows-stages" }, [

@@ -23,25 +23,12 @@ from authentik.events.models import (
 )
 from authentik.events.utils import get_user
 from authentik.rbac.decorators import permission_required
-from authentik.stages.email.models import get_template_choices
 
 
 class NotificationTransportSerializer(ModelSerializer):
     """NotificationTransport Serializer"""
 
     mode_verbose = SerializerMethodField()
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["email_template"].choices = get_template_choices()
-
-    def validate_email_template(self, value: str) -> str:
-        """Check validity of email template"""
-        choices = get_template_choices()
-        for path, _ in choices:
-            if path == value:
-                return value
-        raise ValidationError(f"Invalid template '{value}' specified.")
 
     def get_mode_verbose(self, instance: NotificationTransport) -> str:
         """Return selected mode with a UI Label"""
@@ -53,6 +40,10 @@ class NotificationTransportSerializer(ModelSerializer):
         if mode in [TransportMode.WEBHOOK, TransportMode.WEBHOOK_SLACK]:
             if "webhook_url" not in attrs or attrs.get("webhook_url", "") == "":
                 raise ValidationError({"webhook_url": "Webhook URL may not be empty."})
+        elif mode == TransportMode.EMAIL:
+            template = attrs.get("email_template", getattr(self.instance, "email_template", None))
+            if not template:
+                raise ValidationError({"email_template": "Email template may not be empty."})
         return attrs
 
     class Meta:

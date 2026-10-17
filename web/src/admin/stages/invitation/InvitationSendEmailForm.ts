@@ -10,17 +10,19 @@ import { showMessage } from "#elements/messages/MessageContainer";
 
 import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
 
-import { Invitation, StagesApi, TypeCreate } from "@goauthentik/api";
+import { AKEmailTemplateField } from "#admin/common/AKEmailTemplateSearch";
+
+import { Invitation, StagesApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 interface InvitationSendEmailRequestWithTemplate {
     emailAddresses: string;
     ccAddresses?: string;
     bccAddresses?: string;
-    template?: string;
+    template: string;
 }
 
 @customElement("ak-invitation-send-email-form")
@@ -31,30 +33,6 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
 
     @property({ attribute: false })
     invitation?: Invitation;
-
-    @state()
-    availableTemplates: TypeCreate[] = [];
-
-    @state()
-    selectedTemplate = "email/invitation.html";
-
-    fetchAvailableTemplates = async (): Promise<void> => {
-        try {
-            this.availableTemplates = await aki(StagesApi).stagesEmailTemplatesList();
-        } catch (error) {
-            console.error("Failed to fetch email templates:", error);
-        }
-    };
-
-    connectedCallback(): void {
-        super.connectedCallback();
-        this.addEventListener("ak-modal-show", this.fetchAvailableTemplates);
-    }
-
-    public disconnectedCallback(): void {
-        super.disconnectedCallback();
-        this.removeEventListener("ak-modal-show", this.fetchAvailableTemplates);
-    }
 
     parseEmailAddresses(addresses: string): string[] {
         return addresses
@@ -140,21 +118,12 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
                 )}
             >
             </ak-textarea-input>
-            <ak-form-element-horizontal label=${msg("Template")} required name="template">
-                <select class="pf-c-form-control">
-                    ${this.availableTemplates?.map((template) => {
-                        return html`<option
-                            value=${template.name}
-                            ?selected=${template.name === this.selectedTemplate}
-                        >
-                            ${template.description}
-                        </option>`;
-                    })}
-                </select>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Select the email template to use for sending invitations.")}
-                </p>
-            </ak-form-element-horizontal>`;
+            ${AKEmailTemplateField({
+                name: "template",
+                required: true,
+                defaultTemplate: "goauthentik.io/email/invitation",
+                help: msg("Select the email template to use for sending invitations."),
+            })}`;
     }
 }
 

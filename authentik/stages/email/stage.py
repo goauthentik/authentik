@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.core.cache import cache
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
-from django.template.exceptions import TemplateSyntaxError
+from django.template.exceptions import TemplateDoesNotExist, TemplateSyntaxError
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.timezone import now
@@ -113,7 +113,16 @@ class EmailStageView(ChallengeStageView):
         email = self.executor.plan.context.get(PLAN_CONTEXT_EMAIL_OVERRIDE, None)
         if not email:
             email = pending_user.email
+
         current_stage: EmailStage = self.executor.current_stage
+        if not current_stage.template:
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message=_("Email stage has no template configured"),
+                stage=current_stage,
+            ).from_http(self.request)
+            raise StageInvalidException
+
         token = self.get_token()
         # Send mail to user
         try:
@@ -121,7 +130,7 @@ class EmailStageView(ChallengeStageView):
                 subject=_(current_stage.subject),
                 to=[(pending_user.name, email)],
                 language=pending_user.locale(self.request),
-                template_name=current_stage.template,
+                template=current_stage.template,
                 template_context={
                     "url": self.get_full_url(**{QS_KEY_TOKEN: token.key}),
                     "user": pending_user,
@@ -130,11 +139,11 @@ class EmailStageView(ChallengeStageView):
                 },
             )
             send_mails(current_stage, message)
-        except TemplateSyntaxError as exc:
+        except (TemplateSyntaxError, TemplateDoesNotExist) as exc:
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
                 message=_("Exception occurred while rendering E-mail template"),
-                template=current_stage.template,
+                template=current_stage.template.path,
             ).with_exception(exc).from_http(self.request)
             raise StageInvalidException from exc
 

@@ -489,6 +489,15 @@ export const ROUTES: RouteLike[] = [
         "files",
     ),
     new Route(
+        "/email/templates",
+        async () => {
+            await import("#admin/email/EmailTemplateListPage");
+
+            return html`<ak-email-template-list></ak-email-template-list>`;
+        },
+        "email-templates",
+    ),
+    new Route(
         "/blueprints/instances",
         async () => {
             await import("#admin/blueprints/BlueprintListPage");

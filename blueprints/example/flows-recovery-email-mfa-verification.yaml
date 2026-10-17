@@ -4,6 +4,11 @@ metadata:
     blueprints.goauthentik.io/instantiate: "false"
   name: Example - Recovery with email and MFA verification
 entries:
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        path: system/email-templates.yaml
+      required: false
   - identifiers:
       slug: default-recovery-flow
     id: flow
@@ -59,7 +64,7 @@ entries:
       from_address: system@authentik.local
       token_expiry: minutes=30
       subject: authentik
-      template: email/password_reset.html
+      template: !Find [authentik_stages_email.emailtemplate, [managed, goauthentik.io/email/password-reset]]
       activate_user_on_success: true
       recovery_max_attempts: 5
       recovery_cache_timeout: minutes=5
