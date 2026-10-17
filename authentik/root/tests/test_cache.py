@@ -1,10 +1,10 @@
 """in_memory_cache tests"""
 
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from django.test import TestCase
 
-from authentik.root.cache import in_memory_cache
+from authentik.root.cache import INVALIDATION_GROUP, in_memory_cache
 
 
 class TestInMemoryCache(TestCase):
@@ -31,3 +31,26 @@ class TestInMemoryCache(TestCase):
             self.assertEqual(len(calls), 2)
         counter.cache_clear()
         self.assertEqual(counter(1), 3)
+
+    def test_invalidate(self):
+        """invalidate clears locally and notifies other processes after commit"""
+        calls = []
+
+        @in_memory_cache(key=lambda: None)
+        def counter():
+            calls.append(None)
+            return len(calls)
+
+        layer = MagicMock()
+        counter()
+        with (
+            patch("authentik.root.cache.get_channel_layer", return_value=layer),
+            self.captureOnCommitCallbacks(execute=True),
+        ):
+            counter.invalidate()
+            layer.group_send_blocking.assert_not_called()
+        layer.group_send_blocking.assert_called_once_with(
+            INVALIDATION_GROUP,
+            {"type": "cache.invalidate", "name": f"{__name__}.{counter.__qualname__}"},
+        )
+        self.assertEqual(counter(), 2)
