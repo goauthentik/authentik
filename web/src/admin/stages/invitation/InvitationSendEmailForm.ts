@@ -122,7 +122,7 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
                 name: "template",
                 required: true,
                 defaultTemplate: "goauthentik.io/email/invitation",
-                help: msg("Select the email tempalte to use for sending invitations."),
+                help: msg("Select the email template to use for sending invitations."),
             })}`;
     }
 }
