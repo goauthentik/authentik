@@ -12,7 +12,7 @@ from rest_framework.exceptions import ValidationError
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowDesignation, FlowStageBinding, NotConfiguredAction
 from authentik.flows.stage import StageView
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.generators import generate_id
 from authentik.root.install_id import get_install_id
@@ -27,7 +27,7 @@ from authentik.stages.authenticator_validate.stage import COOKIE_NAME_MFA
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
 
-class AuthenticatorValidateStageTOTPTests(FlowTestCase):
+class AuthenticatorValidateStageTOTPTests(APIFlowTestCase):
     """Test validator stage"""
 
     def setUp(self) -> None:

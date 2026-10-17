@@ -18,7 +18,7 @@ from authentik.events.utils import get_user
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
@@ -33,7 +33,7 @@ from authentik.stages.user_login.middleware import (
 from authentik.stages.user_login.models import GeoIPBinding, NetworkBinding, UserLoginStage
 
 
-class TestUserLoginStage(FlowTestCase):
+class TestUserLoginStage(APIFlowTestCase):
     """Login tests"""
 
     def setUp(self):

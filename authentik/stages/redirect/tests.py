@@ -7,7 +7,7 @@ from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_flow
 from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation, FlowStageBinding
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
@@ -19,7 +19,7 @@ URL = "https://url.test/"
 URL_OVERRIDE = "https://urloverride.test/"
 
 
-class TestRedirectStage(FlowTestCase):
+class TestRedirectStage(APIFlowTestCase):
     """Test Redirect stage API"""
 
     def setUp(self):
