@@ -44,6 +44,10 @@ When distance checks are enabled, authentik evaluates the current login against 
 - **Check impossible travel**: enables an additional check based on travel speed between recent login events.
 - **Impossible travel tolerance**: an additional tolerance, in kilometers, added to the built-in impossible-travel allowance.
 
+The impossible-travel allowance is 1,000 kilometers for the first hour after a historical login. For longer intervals, authentik multiplies 1,000 kilometers by the precise number of elapsed hours, including fractional hours, and then adds the impossible travel tolerance.
+
+Distance checks require valid coordinates for both the current request and a historical login. authentik skips historical events without valid coordinates. If the current coordinates are unavailable, or none of the configured number of recent login events have valid coordinates, the distance checks pass because travel cannot be evaluated.
+
 ## Create a GeoIP policy
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
