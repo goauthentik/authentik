@@ -56,6 +56,34 @@ where
     }
 }
 
+fn deserialize_optional_nonzero_usize<'de, D>(
+    deserializer: D,
+) -> Result<Option<NonZeroUsize>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    // The value comes as a number from config files but as a string from env vars.
+    #[derive(Deserialize)]
+    #[serde(untagged)]
+    enum NumOrStr {
+        Num(NonZeroUsize),
+        Str(String),
+    }
+
+    match Option::<NumOrStr>::deserialize(deserializer)? {
+        None => Ok(None),
+        Some(NumOrStr::Num(n)) => Ok(Some(n)),
+        Some(NumOrStr::Str(s)) => {
+            let s = s.trim();
+            if s.is_empty() || s.eq_ignore_ascii_case("none") || s.eq_ignore_ascii_case("null") {
+                Ok(None)
+            } else {
+                s.parse().map(Some).map_err(D::Error::custom)
+            }
+        }
+    }
+}
+
 mod sealed {
     use std::{fmt::Display, str::FromStr};
 
@@ -251,6 +279,11 @@ pub struct WebConfig {
     pub timeout_http_read: String,
     pub timeout_http_write: String,
     pub timeout_http_idle: String,
+    /// Caps how many OS threads run WSGI requests concurrently. `None` (the default, and what
+    /// an absent or blank value means) computes it from the CPU count at startup instead; see
+    /// `server::blocking_thread_count` in the `authentik` crate for the reasoning.
+    #[serde(default, deserialize_with = "deserialize_optional_nonzero_usize")]
+    pub max_blocking_threads: Option<NonZeroUsize>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

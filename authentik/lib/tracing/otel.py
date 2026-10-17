@@ -1,7 +1,6 @@
 """authentik OpenTelemetry integration"""
 
 from contextlib import contextmanager
-from os import environ
 from platform import machine
 from socket import gethostname
 from typing import Any
@@ -115,10 +114,10 @@ class OpenTelemetryTracer(Tracer):
             if endpoint
             else OTLPSpanExporter()
         )
-        if environ.get("AUTHENTIK_PYROSCOPE_HOST"):
-            from pyroscope.otel import PyroscopeSpanProcessor
+        # if environ.get("AUTHENTIK_PYROSCOPE_HOST"):
+        #     from pyroscope.otel import PyroscopeSpanProcessor
 
-            provider.add_span_processor(PyroscopeSpanProcessor())
+        #     provider.add_span_processor(PyroscopeSpanProcessor())
         provider.add_span_processor(SimpleSpanProcessor(exporter))
         trace.set_tracer_provider(provider)
         LOGGER.info("Enabled Open Telemetry tracing")

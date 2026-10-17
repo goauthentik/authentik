@@ -255,7 +255,7 @@ impl Arbiter {
     /// Shutdown the application gracefully.
     pub async fn do_graceful_shutdown(&self) {
         info!("arbiter has been told to shutdown gracefully");
-        // Match the value in lifecycle/gunicorn.conf.py for graceful shutdown
+        // How long in-flight requests get to finish on graceful shutdown
         let timeout = Some(Duration::from_secs(30 + 5));
         self.unix_handles
             .lock()
@@ -296,7 +296,7 @@ pub enum Event {
     /// The configuration has been reloaded from sources.
     ConfigChanged,
     #[cfg(feature = "core")]
-    /// The Gunicorn server has been marked as ready.
+    /// The Python application has loaded and is ready.
     GunicornIsReady,
 }
 

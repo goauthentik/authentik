@@ -615,7 +615,6 @@ jobs:
     needs:
       - build-compute-tags
       - build
-      - ci-core-mark
     permissions:
       # Needed to upload container images to ghcr.io
       packages: write

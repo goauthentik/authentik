@@ -16,6 +16,8 @@ mod metrics;
 #[cfg(feature = "proxy")]
 pub(crate) mod outpost;
 #[cfg(feature = "core")]
+mod python;
+#[cfg(feature = "core")]
 mod server;
 #[cfg(feature = "core")]
 mod worker;
@@ -109,7 +111,7 @@ fn main() -> Result<()> {
     #[cfg(feature = "core")]
     if Mode::is_core() {
         trace!("initializing Python");
-        pyo3::Python::initialize();
+        python::initialize()?;
         trace!("Python initialized");
     }
 
