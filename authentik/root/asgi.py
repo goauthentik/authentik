@@ -21,6 +21,7 @@ django.setup()
 
 
 from authentik.root import websocket  # noqa
+from authentik.root.cache import start_invalidation_listener  # noqa: E402
 
 
 class LifespanApp:
@@ -61,6 +62,17 @@ class RouteNotFoundMiddleware:
                 raise exc
 
 
+class CacheInvalidationMiddleware:
+    """Start the in-memory cache invalidation listener on the server's event loop"""
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        start_invalidation_listener()
+        return await self.app(scope, receive, send)
+
+
 class AuthentikAsgi(SentryAsgiMiddleware):
     """Root ASGI App wrapper"""
 
@@ -73,11 +85,13 @@ class AuthentikAsgi(SentryAsgiMiddleware):
 
 
 application = AuthentikAsgi(
-    ProtocolTypeRouter(
-        {
-            "http": get_asgi_application(),
-            "websocket": RouteNotFoundMiddleware(URLRouter(websocket.websocket_urlpatterns)),
-            "lifespan": LifespanApp,
-        }
+    CacheInvalidationMiddleware(
+        ProtocolTypeRouter(
+            {
+                "http": get_asgi_application(),
+                "websocket": RouteNotFoundMiddleware(URLRouter(websocket.websocket_urlpatterns)),
+                "lifespan": LifespanApp,
+            }
+        )
     )
 )
