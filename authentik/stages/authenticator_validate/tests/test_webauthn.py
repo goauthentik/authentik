@@ -12,7 +12,7 @@ from authentik.flows.models import FlowStageBinding, NotConfiguredAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import StageView
 from authentik.flows.tests import APIFlowTestCase
-from authentik.flows.views.executor import SESSION_KEY_PLAN, FlowExecutorView
+from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.generators import generate_id
 from authentik.stages.authenticator_validate.challenge import (
     get_challenge_for_device,
@@ -159,13 +159,11 @@ class AuthenticatorValidateStageWebAuthnTests(APIFlowTestCase):
         stage.webauthn_allowed_device_types.set(
             WebAuthnDeviceType.objects.filter(description="YubiKey 5 Series")
         )
-        session = self.client.session
         plan = FlowPlan(flow_pk=flow.pk.hex)
         plan.append_stage(stage)
         plan.append_stage(UserLoginStage.objects.create(name=generate_id()))
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
@@ -378,7 +376,6 @@ class AuthenticatorValidateStageWebAuthnTests(APIFlowTestCase):
             not_configured_action=NotConfiguredAction.CONFIGURE,
             device_classes=[DeviceClasses.WEBAUTHN],
         )
-        session = self.client.session
         plan = FlowPlan(flow_pk=flow.pk.hex)
         plan.append_stage(stage)
         plan.append_stage(UserLoginStage.objects.create(name=generate_id()))
@@ -394,8 +391,7 @@ class AuthenticatorValidateStageWebAuthnTests(APIFlowTestCase):
         plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = base64url_to_bytes(
             "aCC6ak_DP45xMH1qyxzUM5iC2xc4QthQb09v7m4qDBmY8FvWvhxFzSuFlDYQmclrh5fWS5q0TPxgJGF4vimcFQ"
         )
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
@@ -455,7 +451,6 @@ class AuthenticatorValidateStageWebAuthnTests(APIFlowTestCase):
         stage.webauthn_allowed_device_types.set(
             WebAuthnDeviceType.objects.filter(description="YubiKey 5 Series")
         )
-        session = self.client.session
         plan = FlowPlan(flow_pk=flow.pk.hex)
         plan.append_stage(stage)
         plan.append_stage(UserLoginStage.objects.create(name=generate_id()))
@@ -471,8 +466,7 @@ class AuthenticatorValidateStageWebAuthnTests(APIFlowTestCase):
         plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = base64url_to_bytes(
             "aCC6ak_DP45xMH1qyxzUM5iC2xc4QthQb09v7m4qDBmY8FvWvhxFzSuFlDYQmclrh5fWS5q0TPxgJGF4vimcFQ"
         )
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
@@ -537,7 +531,6 @@ class AuthenticatorValidateStageWebAuthnTests(APIFlowTestCase):
             not_configured_action=NotConfiguredAction.CONFIGURE,
             device_classes=[DeviceClasses.WEBAUTHN],
         )
-        session = self.client.session
         plan = FlowPlan(flow_pk=flow.pk.hex)
         plan.append_stage(stage)
         plan.append_stage(UserLoginStage.objects.create(name=generate_id()))
@@ -552,8 +545,7 @@ class AuthenticatorValidateStageWebAuthnTests(APIFlowTestCase):
         plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = base64url_to_bytes(
             "g98I51mQvZXo5lxLfhrD2zfolhZbLRyCgqkkYap1jwSaJ13BguoJWCF9_Lg3AgO4Wh-Bqa556JE20oKsYbl6RA"
         )
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
@@ -668,7 +660,6 @@ class AuthenticatorValidateStageWebAuthnTests(APIFlowTestCase):
             device_classes=[DeviceClasses.WEBAUTHN],
         )
         challenge = b"\x02" * 64
-        session = self.client.session
         plan = FlowPlan(flow_pk=flow.pk.hex)
         plan.append_stage(stage)
         plan.append_stage(UserLoginStage.objects.create(name=generate_id()))
@@ -682,8 +673,7 @@ class AuthenticatorValidateStageWebAuthnTests(APIFlowTestCase):
             }
         ]
         plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = challenge
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),

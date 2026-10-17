@@ -45,7 +45,6 @@ from authentik.flows.planner import (
 )
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.tests import APIFlowTestCase
-from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.policies.models import PolicyBinding
 from authentik.policies.types import PolicyRequest
 from authentik.stages.user_login.models import UserLoginStage
@@ -74,31 +73,6 @@ def _assert_switch_redirect(response: Response, flow: Flow) -> None:
         )
 
 
-def _login_through_flow(
-    client: APIClient,
-    flow: Flow,
-    login_binding: FlowStageBinding,
-    user: User,
-) -> str:
-    """Log the test client in through the flow executor."""
-    plan = FlowPlan(
-        flow_pk=flow.pk.hex,
-        bindings=[login_binding],
-        markers=[StageMarker()],
-    )
-    plan.context[PLAN_CONTEXT_PENDING_USER] = user
-    session = client.session
-    session[SESSION_KEY_PLAN] = plan
-    session.save()
-    response = client.get(reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}))
-    if response.status_code != status.HTTP_200_OK:
-        raise AssertionError(f"Expected status 200, got {response.status_code}")
-    session_key = client.session.session_key
-    if session_key is None:
-        raise AssertionError("Expected the logged-in client to have a session key")
-    return session_key
-
-
 def _get_switching_token(client: APIClient) -> str:
     """Return the user-switching token from the test client."""
     token = user_switching.decode_cookie(client.cookies[settings.USER_SWITCHING_COOKIE_NAME].value)
@@ -122,10 +96,27 @@ class TestUserSwitch(APIFlowTestCase):
         )
         self.brand = create_test_brand(flow_authentication=self.flow, flow_user_switch=self.flow)
 
+    def _login_through_flow(self, user: User) -> str:
+        """Log the test client in through the flow executor."""
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex,
+            bindings=[self.login_binding],
+            markers=[StageMarker()],
+        )
+        plan.context[PLAN_CONTEXT_PENDING_USER] = user
+        self.set_flow_plan(plan)
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        session_key = self.client.session.session_key
+        self.assertIsNotNone(session_key)
+        return session_key
+
     def test_disabled_brand_rejects_switch_and_add(self):
         self.brand.flow_user_switch = None
         self.brand.save()
-        _login_through_flow(self.client, self.flow, self.login_binding, self.user)
+        self._login_through_flow(self.user)
         create_test_session(self.other_user, _get_switching_token(self.client), is_current=False)
 
         for data in ({"user_pk": self.other_user.pk}, {"action": "add"}):
@@ -138,7 +129,7 @@ class TestUserSwitch(APIFlowTestCase):
     def test_low_permission_user_can_switch_verified_browser_target(self):
         self.assertFalse(self.user.is_superuser)
         self.assertEqual(self.user.get_all_permissions(), set())
-        _login_through_flow(self.client, self.flow, self.login_binding, self.user)
+        self._login_through_flow(self.user)
         target = create_test_session(
             self.other_user, _get_switching_token(self.client), is_current=False
         )
@@ -146,24 +137,20 @@ class TestUserSwitch(APIFlowTestCase):
         response = _post_user_switch(self.client, {"user_pk": self.other_user.pk})
 
         _assert_switch_redirect(response, self.flow)
-        context = self.client.session[SESSION_KEY_PLAN].context
+        context = self.get_flow_plan().context
         self.assertEqual(context[PLAN_CONTEXT_PENDING_USER], self.other_user)
         self.assertEqual(context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER], self.other_user.username)
         self.assertEqual(context[PLAN_CONTEXT_USER_SWITCH_FROM_USER], self.user)
         self.assertEqual(context[PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION], target.session_id)
 
     def test_add_user_preserves_existing_login(self):
-        first_session_key = _login_through_flow(
-            self.client, self.flow, self.login_binding, self.user
-        )
+        first_session_key = self._login_through_flow(self.user)
         response = _post_user_switch(self.client, {"action": "add"})
         _assert_switch_redirect(response, self.flow)
-        plan = self.client.session[SESSION_KEY_PLAN]
+        plan = self.get_flow_plan()
         self.assertTrue(plan.context[PLAN_CONTEXT_USER_SWITCH_ADD_USER])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.other_user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -173,9 +160,7 @@ class TestUserSwitch(APIFlowTestCase):
         self.assertTrue(Session.objects.filter(session_key=first_session_key).exists())
 
     def test_add_user_rejects_unauthenticated_only_flow(self):
-        first_session_key = _login_through_flow(
-            self.client, self.flow, self.login_binding, self.user
-        )
+        first_session_key = self._login_through_flow(self.user)
         self.flow.authentication = FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED
         self.flow.save()
 
@@ -186,7 +171,7 @@ class TestUserSwitch(APIFlowTestCase):
         self.assertNotIn(user_switching.SESSION_KEY_ADD_USER, self.client.session)
 
     def test_interface_abandons_add_user(self):
-        _login_through_flow(self.client, self.flow, self.login_binding, self.user)
+        self._login_through_flow(self.user)
         _assert_switch_redirect(_post_user_switch(self.client, {"action": "add"}), self.flow)
         self.assertTrue(self.client.session[user_switching.SESSION_KEY_ADD_USER])
 
@@ -195,17 +180,13 @@ class TestUserSwitch(APIFlowTestCase):
         self.assertNotIn(user_switching.SESSION_KEY_ADD_USER, self.client.session)
 
     def test_add_user_refuses_non_internal_user(self):
-        first_session_key = _login_through_flow(
-            self.client, self.flow, self.login_binding, self.user
-        )
+        first_session_key = self._login_through_flow(self.user)
         self.other_user.type = UserTypes.EXTERNAL
         self.other_user.save()
         _assert_switch_redirect(_post_user_switch(self.client, {"action": "add"}), self.flow)
-        plan = self.client.session[SESSION_KEY_PLAN]
+        plan = self.get_flow_plan()
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.other_user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -224,7 +205,7 @@ class TestUserSwitch(APIFlowTestCase):
         )
 
     def test_non_internal_sessions_are_not_switch_targets(self):
-        _login_through_flow(self.client, self.flow, self.login_binding, self.user)
+        self._login_through_flow(self.user)
         self.other_user.type = UserTypes.EXTERNAL
         self.other_user.save()
         create_test_session(self.other_user, _get_switching_token(self.client), is_current=False)
@@ -235,9 +216,7 @@ class TestUserSwitch(APIFlowTestCase):
 
     def test_add_user_survives_concurrent_user_me(self):
         """Adding a user keeps the first login when `users/me` overlaps the switch request"""
-        first_session_key = _login_through_flow(
-            self.client, self.flow, self.login_binding, self.user
-        )
+        first_session_key = self._login_through_flow(self.user)
         user_me = UserViewSet.user_me
 
         def add_user_during_user_me(viewset: UserViewSet, request: Request) -> Response:
@@ -251,12 +230,10 @@ class TestUserSwitch(APIFlowTestCase):
             response = self.client.get(reverse("authentik_api:user-me"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        session = self.client.session
-        plan = session[SESSION_KEY_PLAN]
+        plan = self.get_flow_plan()
         self.assertIn(PLAN_CONTEXT_USER_SWITCH_ADD_USER, plan.context)
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.other_user
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
         self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
@@ -271,18 +248,14 @@ class TestUserSwitch(APIFlowTestCase):
 
     def test_plain_login_replaces_session_with_switching_enabled(self):
         """Logging in as someone else without "Add another user" replaces the first login"""
-        first_session_key = _login_through_flow(
-            self.client, self.flow, self.login_binding, self.user
-        )
+        first_session_key = self._login_through_flow(self.user)
 
-        _login_through_flow(self.client, self.flow, self.login_binding, self.other_user)
+        self._login_through_flow(self.other_user)
 
         self.assertFalse(Session.objects.filter(session_key=first_session_key).exists())
 
     def test_target_is_revalidated_before_login(self):
-        first_session_key = _login_through_flow(
-            self.client, self.flow, self.login_binding, self.user
-        )
+        first_session_key = self._login_through_flow(self.user)
         target = create_test_session(
             self.other_user, _get_switching_token(self.client), is_current=False
         )
@@ -307,7 +280,7 @@ class TestUserSwitch(APIFlowTestCase):
         self.assertEqual(switching_session.current_session_id, first_session_key)
 
     def test_switch_flow_policy_applies_to_source_user(self):
-        _login_through_flow(self.client, self.flow, self.login_binding, self.user)
+        self._login_through_flow(self.user)
         create_test_session(self.other_user, _get_switching_token(self.client), is_current=False)
         PolicyBinding.objects.create(target=self.flow, user=self.other_user, order=0)
 
@@ -316,7 +289,7 @@ class TestUserSwitch(APIFlowTestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_switch_requires_target_from_same_browser(self):
-        _login_through_flow(self.client, self.flow, self.login_binding, self.user)
+        self._login_through_flow(self.user)
         create_test_session(self.other_user, "A" * user_switching.TOKEN_LENGTH)
 
         response = _post_user_switch(self.client, {"user_pk": self.other_user.pk})
@@ -324,7 +297,7 @@ class TestUserSwitch(APIFlowTestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_user_me_lists_live_browser_sessions(self):
-        _login_through_flow(self.client, self.flow, self.login_binding, self.user)
+        self._login_through_flow(self.user)
         token = _get_switching_token(self.client)
         create_test_session(self.other_user, token, is_current=False)
         expired = create_test_session(create_test_user(), token, is_current=False)
@@ -341,7 +314,7 @@ class TestUserSwitch(APIFlowTestCase):
         )
 
     def test_recent_user_switch_target(self):
-        _login_through_flow(self.client, self.flow, self.login_binding, self.user)
+        self._login_through_flow(self.user)
         target = create_test_session(
             self.other_user, _get_switching_token(self.client), is_current=False
         )
@@ -366,9 +339,7 @@ class TestUserSwitch(APIFlowTestCase):
         )
 
     def test_full_switch_replaces_target_and_supersedes_source(self):
-        source_session_key = _login_through_flow(
-            self.client, self.flow, self.login_binding, self.user
-        )
+        source_session_key = self._login_through_flow(self.user)
         target = create_test_session(
             self.other_user, _get_switching_token(self.client), is_current=False
         )

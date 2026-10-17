@@ -13,7 +13,6 @@ from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlan
 from authentik.flows.tests import APIFlowTestCase
-from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.stages.consent.models import ConsentMode, ConsentStage, UserConsent
 from authentik.stages.consent.stage import (
@@ -41,15 +40,12 @@ class TestConsentStage(APIFlowTestCase):
         binding = FlowStageBinding.objects.create(target=flow, stage=stage, order=2)
 
         plan = FlowPlan(flow_pk=flow.pk.hex, bindings=[binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         self.assertEqual(response.status_code, 200)
 
-        session = self.client.session
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             {
@@ -75,9 +71,7 @@ class TestConsentStage(APIFlowTestCase):
         binding = FlowStageBinding.objects.create(target=flow, stage=stage, order=2)
 
         plan = FlowPlan(flow_pk=flow.pk.hex, bindings=[binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
@@ -109,15 +103,12 @@ class TestConsentStage(APIFlowTestCase):
                 PLAN_CONTEXT_APPLICATION: self.application,
             },
         )
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         self.assertEqual(response.status_code, 200)
 
-        session = self.client.session
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             {
@@ -145,9 +136,7 @@ class TestConsentStage(APIFlowTestCase):
             markers=[StageMarker()],
             context={PLAN_CONTEXT_APPLICATION: self.application},
         )
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             {},
@@ -198,9 +187,7 @@ class TestConsentStage(APIFlowTestCase):
                     PLAN_CONTEXT_CONSENT_PERMISSIONS: permissions,
                 },
             )
-            session = self.client.session
-            session[SESSION_KEY_PLAN] = plan
-            session.save()
+            self.set_flow_plan(plan)
             response = self.client.get(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             )
@@ -256,9 +243,7 @@ class TestConsentStage(APIFlowTestCase):
                 PLAN_CONTEXT_CONSENT_HEADER: "test header",
             },
         )
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         # First, consent with a single permission
         response = self.client.get(
@@ -302,9 +287,7 @@ class TestConsentStage(APIFlowTestCase):
                 ],
             },
         )
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
@@ -351,9 +334,7 @@ class TestConsentStage(APIFlowTestCase):
                 PLAN_CONTEXT_APPLICATION: self.application,
             },
         )
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         # First, consent with a single permission
         response = self.client.get(
@@ -392,9 +373,7 @@ class TestConsentStage(APIFlowTestCase):
                 PLAN_CONTEXT_CONSENT_PERMISSIONS: [],
             },
         )
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),

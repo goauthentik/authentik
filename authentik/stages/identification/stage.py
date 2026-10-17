@@ -32,7 +32,7 @@ from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
 )
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, ChallengeStageView
-from authentik.flows.views.executor import SESSION_KEY_GET
+from authentik.flows.storage import FlowExecution
 from authentik.lib.avatars import DEFAULT_AVATAR
 from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
@@ -383,7 +383,7 @@ class IdentificationStageView(ChallengeStageView):
             challenge.initial_data["application_pre"] = self.executor.plan.context.get(
                 PLAN_CONTEXT_DEVICE, Device()
             ).name
-        get_qs = self.request.session.get(SESSION_KEY_GET, self.request.GET)
+        get_qs = FlowExecution(self.request).query or self.request.GET
         # Check for related enrollment and recovery flow, add URL to view
         if current_stage.enrollment_flow:
             challenge.initial_data["enroll_url"] = reverse_with_qs(

@@ -20,7 +20,6 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_brand
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
-from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.errors import AuthorizeError, ClientIdError, RedirectUriError
@@ -845,7 +844,7 @@ class TestAuthorize(OAuthTestCase):
             },
         )
         self.assertEqual(response.status_code, 302)
-        plan = self.client.session.get(SESSION_KEY_PLAN)
+        plan = self.get_flow_plan()
         self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER], "foo")
 
     @apply_blueprint("system/providers-oauth2.yaml")

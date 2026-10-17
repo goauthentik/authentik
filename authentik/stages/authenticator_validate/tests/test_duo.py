@@ -13,7 +13,7 @@ from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import StageView
 from authentik.flows.tests import APIFlowTestCase
-from authentik.flows.views.executor import SESSION_KEY_PLAN, FlowExecutorView
+from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.generators import generate_id, generate_key
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_validate.challenge import validate_challenge_duo
@@ -140,9 +140,7 @@ class AuthenticatorValidateStageDuoTests(APIFlowTestCase):
             )
         )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),

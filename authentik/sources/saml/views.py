@@ -5,7 +5,7 @@ from urllib.parse import parse_qsl, urlparse, urlunparse
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import SuspiciousOperation
-from django.http import Http404, HttpRequest, HttpResponse
+from django.http import Http404, HttpRequest, HttpResponse, QueryDict
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
@@ -30,11 +30,11 @@ from authentik.flows.planner import (
     PLAN_CONTEXT_REDIRECT,
     PLAN_CONTEXT_SOURCE,
     PLAN_CONTEXT_SSO,
-    FlowPlan,
     FlowPlanner,
 )
 from authentik.flows.stage import ChallengeStageView
-from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
+from authentik.flows.storage import FlowExecution
+from authentik.flows.views.executor import NEXT_ARG_NAME
 from authentik.lib.views import bad_request_message
 from authentik.providers.saml.utils.encoding import nice64
 from authentik.sources.saml.exceptions import SAMLException, UnsupportedNameIDFormat
@@ -72,7 +72,7 @@ class InitiateView(View):
         """Prepare Authentication Plan, redirect user FlowExecutor"""
         # Ensure redirect is carried through when user was trying to
         # authorize application
-        final_redirect = self.request.session.get(SESSION_KEY_GET, {}).get(
+        final_redirect = FlowExecution(self.request).query.get(
             NEXT_ARG_NAME, "authentik_core:if-user"
         )
         kwargs.update(
@@ -162,11 +162,12 @@ class ACSView(View):
             return bad_request_message(request, str(exc))
 
         try:
-            if SESSION_KEY_PLAN in request.session:
-                plan: FlowPlan = self.request.session[SESSION_KEY_PLAN]
+            execution = FlowExecution(request)
+            if plan := execution.plan:
                 plan_redirect = plan.context.get(PLAN_CONTEXT_REDIRECT)
                 if plan_redirect:
-                    self.request.session[SESSION_KEY_GET] = {NEXT_ARG_NAME: plan_redirect}
+                    execution.query = QueryDict.fromkeys([NEXT_ARG_NAME], plan_redirect)
+                    execution.save()
             return processor.prepare_flow_manager().get_flow()
         except (UnsupportedNameIDFormat, ValueError) as exc:
             return bad_request_message(request, str(exc))

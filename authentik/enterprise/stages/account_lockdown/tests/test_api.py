@@ -5,7 +5,6 @@ from unittest.mock import MagicMock, patch
 from urllib.parse import urlparse
 
 from django.urls import reverse
-from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import (
     create_test_brand,
@@ -15,7 +14,7 @@ from authentik.core.tests.utils import (
 from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
-from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 
 # Patch for enterprise license check
@@ -26,7 +25,7 @@ patch_license = patch(
 
 
 @patch_license
-class AccountLockdownAPITestCase(APITestCase):
+class AccountLockdownAPITestCase(APIFlowTestCase):
     """Shared helpers for account lockdown API tests."""
 
     def setUp(self) -> None:
@@ -54,7 +53,7 @@ class AccountLockdownAPITestCase(APITestCase):
         body = loads(response.content)
         self.assertIn(self.lockdown_flow.slug, body["link"])
         self.assertEqual(urlparse(body["link"]).query, "")
-        plan = self.client.session[SESSION_KEY_PLAN]
+        plan = self.get_flow_plan()
         self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER].pk, user.pk)
 
     def assert_no_flow_configured(self, response):

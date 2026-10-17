@@ -5,6 +5,7 @@ import hmac
 from datetime import datetime, timedelta
 from unittest.mock import Mock
 
+from django.http import QueryDict
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework.exceptions import ValidationError
@@ -13,7 +14,7 @@ from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_REDIRECT, FlowPlan
 from authentik.flows.tests import APIFlowTestCase
-from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
+from authentik.flows.views.executor import NEXT_ARG_NAME
 from authentik.lib.generators import generate_id
 from authentik.sources.telegram.models import UserTelegramSourceConnection
 from authentik.sources.telegram.stage import TelegramChallengeResponse
@@ -192,27 +193,28 @@ class TestTelegramViews(MockTelegramResponseMixin, APIFlowTestCase):
         """Regression test for #18450: completing Telegram auth must preserve the OIDC
         redirect_uri so the user returns to the application instead of /if/user/.
 
-        Root cause: the pre_authentication_flow executor overwrites SESSION_KEY_GET with
+        Root cause: the pre_authentication_flow executor overwrites the stored GET params with
         an empty dict (its redirect URL has no query string), losing the original next=
         parameter. The fix reads PLAN_CONTEXT_REDIRECT from the executor plan context —
-        where TelegramStartView saved it before the overwrite — and restores SESSION_KEY_GET.
+        where TelegramStartView saved it before the overwrite — and restores the stored GET params.
         """
         initial_redirect = f"http://{generate_id()}"
 
         self._make_initial_request()
 
-        # Simulate SESSION_KEY_GET as set by the flow executor when the user arrives
+        # Simulate the GET params stored by the flow executor when the user arrives
         # from an OIDC authorization request (e.g. next=/application/o/authorize/?...).
-        session = self.client.session
-        session[SESSION_KEY_GET] = {NEXT_ARG_NAME: initial_redirect}
-        session.save()
+        execution = self.get_flow_execution()
+        execution.query = QueryDict.fromkeys([NEXT_ARG_NAME], initial_redirect)
+        execution.save()
+        execution.request.session.save()
 
-        # TelegramStartView reads SESSION_KEY_GET and saves it as PLAN_CONTEXT_REDIRECT
+        # TelegramStartView reads the stored GET params and saves it as PLAN_CONTEXT_REDIRECT
         # in the pre_authentication_flow plan, then redirects to that flow.
         self._make_start_request()
 
         # GET the pre_auth_flow executor. This runs FlowExecutorView.dispatch() which
-        # unconditionally overwrites SESSION_KEY_GET with an empty dict (the redirect URL
+        # unconditionally overwrites the stored GET params with an empty dict (the redirect URL
         # from TelegramStartView carries no query string). PLAN_CONTEXT_REDIRECT in the
         # plan is still intact at this point.
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.pre_auth_flow.slug})
@@ -231,7 +233,7 @@ class TestTelegramViews(MockTelegramResponseMixin, APIFlowTestCase):
 
         # The enrollment plan must carry PLAN_CONTEXT_REDIRECT so the user eventually
         # reaches the application's callback URL rather than the default /if/user/.
-        plan: FlowPlan = self.client.session.get(SESSION_KEY_PLAN)
+        plan: FlowPlan = self.get_flow_plan()
         self.assertIsNotNone(plan)
         self.assertEqual(plan.context.get(PLAN_CONTEXT_REDIRECT), initial_redirect)
 

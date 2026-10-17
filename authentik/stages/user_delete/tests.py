@@ -11,7 +11,6 @@ from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
-from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.user_delete.models import UserDeleteStage
 
 
@@ -33,9 +32,7 @@ class TestUserDeleteStage(APIFlowTestCase):
     def test_no_user(self):
         """Test without user set"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -46,9 +43,7 @@ class TestUserDeleteStage(APIFlowTestCase):
         """Test Form render"""
         self.client.force_login(self.user)
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -62,9 +57,7 @@ class TestUserDeleteStage(APIFlowTestCase):
         """Test Form render"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})

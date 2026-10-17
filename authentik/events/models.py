@@ -233,7 +233,7 @@ class Event(SerializerModel, ExpiringModel):
         if user:
             self.user = get_user(user)
         if hasattr(request, "session"):
-            from authentik.flows.views.executor import SESSION_KEY_PLAN
+            from authentik.flows.storage import FlowExecution
 
             # Check if we're currently impersonating, and add that user
             if SESSION_KEY_IMPERSONATE_ORIGINAL_USER in request.session:
@@ -241,10 +241,9 @@ class Event(SerializerModel, ExpiringModel):
                 self.user["on_behalf_of"] = get_user(request.session[SESSION_KEY_IMPERSONATE_USER])
             # Special case for events that happen during a flow, the user might not be authenticated
             # yet but is a pending user instead
-            if SESSION_KEY_PLAN in request.session:
-                from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+            if plan := FlowExecution(request).plan:
+                from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 
-                plan: FlowPlan = request.session[SESSION_KEY_PLAN]
                 pending_user = plan.context.get(PLAN_CONTEXT_PENDING_USER, None)
                 # Only save `authenticated_as` if there's a different pending user in the flow
                 # than the user that is authenticated

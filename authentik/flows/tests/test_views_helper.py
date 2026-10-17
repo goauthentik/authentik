@@ -8,7 +8,7 @@ from authentik.core.tests.utils import create_test_flow
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.flows.planner import FlowPlan
 from authentik.flows.tests import APIFlowTestCase
-from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_PLAN
+from authentik.flows.views.executor import NEXT_ARG_NAME
 
 
 class TestHelperView(APIFlowTestCase):
@@ -30,9 +30,7 @@ class TestHelperView(APIFlowTestCase):
         Flow.objects.filter(designation=FlowDesignation.INVALIDATION).delete()
         flow = create_test_flow(FlowDesignation.INVALIDATION)
         plan = FlowPlan(flow_pk=flow.pk.hex + "aa")
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.get(
             reverse("authentik_flows:default-invalidation"),

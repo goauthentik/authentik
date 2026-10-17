@@ -14,7 +14,6 @@ from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import APIFlowTestCase
-from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.stages.email.models import EmailStage
 
@@ -36,9 +35,7 @@ class TestEmailStageSending(APIFlowTestCase):
         """Test with pending user"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
         Event.objects.filter(action=EventAction.EMAIL_SENT).delete()
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -74,9 +71,7 @@ class TestEmailStageSending(APIFlowTestCase):
         long_user.name = "Test User\r\n Many Words\r\n"
         long_user.save()
         plan.context[PLAN_CONTEXT_PENDING_USER] = long_user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
         Event.objects.filter(action=EventAction.EMAIL_SENT).delete()
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -105,9 +100,7 @@ class TestEmailStageSending(APIFlowTestCase):
         utf8_user.email = "cyrillic@authentik.local"
         utf8_user.save()
         plan.context[PLAN_CONTEXT_PENDING_USER] = utf8_user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
         Event.objects.filter(action=EventAction.EMAIL_SENT).delete()
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -134,9 +127,7 @@ class TestEmailStageSending(APIFlowTestCase):
         self.flow.save()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = User(username=generate_id())
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         with patch(
@@ -158,9 +149,7 @@ class TestEmailStageSending(APIFlowTestCase):
         """Test error during sending (sending will be retried)"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         with patch(

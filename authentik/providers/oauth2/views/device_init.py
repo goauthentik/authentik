@@ -15,7 +15,6 @@ from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
 from authentik.flows.stage import ChallengeStageView
-from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.policies.views import PolicyAccessView
 from authentik.providers.oauth2.models import DeviceToken
 from authentik.providers.oauth2.views.device_finish import (
@@ -102,7 +101,6 @@ class DeviceEntryView(PolicyAccessView):
             return HttpResponse(status=404)
         plan.append_stage(in_memory_stage(OAuthDeviceCodeStage))
 
-        self.request.session[SESSION_KEY_PLAN] = plan
         return plan.to_redirect(self.request, device_flow)
 
 

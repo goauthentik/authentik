@@ -8,7 +8,6 @@ from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import FlowPlan
 from authentik.flows.tests import APIFlowTestCase
-from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.stages.captcha.models import CaptchaRequestContentType, CaptchaStage
 from authentik.stages.captcha.stage import (
@@ -47,9 +46,7 @@ class TestCaptchaStage(APIFlowTestCase):
             },
         )
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             {"token": "PASSED"},
@@ -75,9 +72,7 @@ class TestCaptchaStage(APIFlowTestCase):
             },
         )
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             {"token": "PASSED"},
@@ -109,9 +104,7 @@ class TestCaptchaStage(APIFlowTestCase):
             PLAN_CONTEXT_CAPTCHA_SITE_KEY: site_key,
             PLAN_CONTEXT_CAPTCHA_PRIVATE_KEY: private_key,
         }
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
         )
@@ -135,9 +128,7 @@ class TestCaptchaStage(APIFlowTestCase):
             },
         )
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             {"token": "PASSED"},
@@ -160,9 +151,7 @@ class TestCaptchaStage(APIFlowTestCase):
             },
         )
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             {"token": "PASSED"},
@@ -187,9 +176,7 @@ class TestCaptchaStage(APIFlowTestCase):
             },
         )
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             {"token": "PASSED"},
@@ -203,9 +190,7 @@ class TestCaptchaStage(APIFlowTestCase):
         self.stage.api_url = "https://test.goauthentik.io/test"
         self.stage.save()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
         )

@@ -20,9 +20,8 @@ from authentik.flows.planner import (
     PLAN_CONTEXT_OUTPOST,
     PLAN_CONTEXT_SOURCE,
     PLAN_CONTEXT_USER_SWITCH_FROM_USER,
-    FlowPlan,
 )
-from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.flows.storage import FlowExecution
 from authentik.stages.invitation.models import Invitation
 from authentik.stages.invitation.signals import invitation_used
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
@@ -36,8 +35,7 @@ _session_engine = import_module(settings.SESSION_ENGINE)
 def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
     """Log successful login"""
     kwargs = {}
-    if SESSION_KEY_PLAN in request.session:
-        flow_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
+    if flow_plan := FlowExecution(request).plan:
         if PLAN_CONTEXT_SOURCE in flow_plan.context:
             # Login request came from an external source, save it in the context
             kwargs[PLAN_CONTEXT_SOURCE] = flow_plan.context[PLAN_CONTEXT_SOURCE]

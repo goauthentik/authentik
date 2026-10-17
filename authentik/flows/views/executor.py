@@ -1,6 +1,5 @@
 """authentik multi-stage authentication engine"""
 
-from copy import deepcopy
 from urllib.parse import urlencode, urlsplit, urlunsplit
 
 from django.conf import settings
@@ -54,6 +53,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import AccessDeniedStage, StageView
+from authentik.flows.storage import FlowExecution
 from authentik.lib.tracing import (
     active_tracer,
     record_exception,
@@ -67,10 +67,6 @@ LOGGER = get_logger()
 # Argument used to redirect user after login
 NEXT_ARG_NAME = "next"
 
-SESSION_KEY_PLAN = "authentik/flows/plan"
-SESSION_KEY_GET = "authentik/flows/get"
-SESSION_KEY_POST = "authentik/flows/post"
-SESSION_KEY_HISTORY = "authentik/flows/history"
 QS_KEY_TOKEN = "flow_token"  # nosec
 QS_QUERY = "query"
 
@@ -119,6 +115,7 @@ class FlowExecutorView(APIView):
         if not self.flow:
             self.flow = get_object_or_404(Flow.objects.select_related(), slug=flow_slug)
         self._logger = get_logger().bind(flow_slug=flow_slug)
+        self.execution = FlowExecution(request)
         active_tracer().set_tag("authentik.flow", self.flow.slug)
 
     def handle_invalid_flow(self, exc: FlowNonApplicableException) -> HttpResponse:
@@ -152,7 +149,7 @@ class FlowExecutorView(APIView):
                 token.delete()
         if not isinstance(plan, FlowPlan):
             return None
-        if existing_plan := self.request.session.get(SESSION_KEY_PLAN):
+        if existing_plan := self.execution.plan:
             plan.context.update(existing_plan.context)
         plan.context[PLAN_CONTEXT_IS_RESTORED] = token
         self._logger.debug("f(exec): restored flow plan from token", plan=plan)
@@ -175,10 +172,10 @@ class FlowExecutorView(APIView):
             if QS_KEY_TOKEN in get_params:
                 plan = self._check_flow_token(get_params[QS_KEY_TOKEN])
                 if plan:
-                    self.request.session[SESSION_KEY_PLAN] = plan
+                    self.execution.replace(plan)
             # Early check if there's an active Plan for the current session
-            if SESSION_KEY_PLAN in self.request.session:
-                self.plan: FlowPlan = self.request.session[SESSION_KEY_PLAN]
+            if plan := self.execution.plan:
+                self.plan = plan
                 if self.plan.flow_pk != self.flow.pk.hex:
                     self._logger.warning(
                         "f(exec): Found existing plan for other flow, deleting plan",
@@ -191,10 +188,10 @@ class FlowExecutorView(APIView):
                     self._logger.debug("f(exec): Continuing existing plan")
 
             # Initial flow request, check if we have an upstream query string passed in
-            request.session[SESSION_KEY_GET] = get_params
+            self.execution.query = get_params
+            self.execution.save()
             # Don't check session again as we've either already loaded the plan or we need to plan
             if not self.plan:
-                request.session[SESSION_KEY_HISTORY] = []
                 self._logger.debug("f(exec): No active Plan found, initiating planner")
                 try:
                     self.plan = self._initiate_plan()
@@ -367,7 +364,7 @@ class FlowExecutorView(APIView):
     def _initiate_plan(self) -> FlowPlan:
         planner = FlowPlanner(self.flow)
         plan = planner.plan(self.request)
-        self.request.session[SESSION_KEY_PLAN] = plan
+        self.execution = FlowExecution.start(self.request, plan)
         try:
             # Call the has_stages getter to check that
             # there are no issues with the class we might've gotten
@@ -391,7 +388,7 @@ class FlowExecutorView(APIView):
         except FlowNonApplicableException as exc:
             self._logger.warning("f(exec): Flow restart not applicable to current user", exc=exc)
             return self.handle_invalid_flow(exc)
-        self.request.session[SESSION_KEY_PLAN] = plan
+        self.execution.replace(plan)
         kwargs = self.kwargs
         kwargs.update({"flow_slug": self.flow.slug})
         return redirect_with_qs("authentik_api:flow-executor", self.request.GET, **kwargs)
@@ -410,9 +407,7 @@ class FlowExecutorView(APIView):
                 redirect(self.plan.context.get(PLAN_CONTEXT_REDIRECT)),
                 final_redirect=True,
             )
-        next_param = self.request.session.get(SESSION_KEY_GET, {}).get(
-            NEXT_ARG_NAME, "authentik_core:root-redirect"
-        )
+        next_param = self.execution.query.get(NEXT_ARG_NAME, "authentik_core:root-redirect")
         self.cancel()
         if next_param and not is_url_absolute(next_param):
             return to_stage_response(
@@ -431,9 +426,9 @@ class FlowExecutorView(APIView):
         )
         if isinstance(self.current_stage_view, StageView):
             self.current_stage_view.cleanup()
-        self.request.session.get(SESSION_KEY_HISTORY, []).append(deepcopy(self.plan))
-        self.plan.pop()
-        self.request.session[SESSION_KEY_PLAN] = self.plan
+        # The executor's plan is authoritative, as stages work on it
+        self.execution.plan = self.plan
+        self.execution.advance()
         if self.plan.bindings:
             self._logger.debug(
                 "f(exec): Continuing with next stage",
@@ -476,20 +471,8 @@ class FlowExecutorView(APIView):
 
     def cancel(self):
         """Cancel current flow execution"""
-        keys_to_delete = [
-            SESSION_KEY_PLAN,
-            SESSION_KEY_GET,
-            # We might need the initial POST payloads for later requests
-            # SESSION_KEY_POST,
-            # We don't delete the history on purpose, as a user might
-            # still be inspecting it.
-            # It's only deleted on a fresh executions
-            # SESSION_KEY_HISTORY,
-        ]
         self._logger.debug("f(exec): cleaning up")
-        for key in keys_to_delete:
-            if key in self.request.session:
-                del self.request.session[key]
+        self.execution.cancel()
 
 
 class CancelView(View):
@@ -508,9 +491,7 @@ class CancelView(View):
 
     def get(self, request: HttpRequest) -> HttpResponse:
         """View which canels the currently active plan"""
-        if SESSION_KEY_PLAN in request.session:
-            del request.session[SESSION_KEY_PLAN]
-            LOGGER.debug("Canceled current plan")
+        FlowExecution(request).clear()
         next_url = self.request.GET.get(NEXT_ARG_NAME)
         if next_url and not is_url_absolute(next_url):
             # Ensure that we get rid of any user identifiers from the URL
@@ -559,15 +540,15 @@ class ToDefaultFlow(View):
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
         flow = ToDefaultFlow.get_flow(request, self.designation)
+        execution = FlowExecution(request)
         # If user already has a pending plan, clear it so we don't have to later.
-        if SESSION_KEY_PLAN in self.request.session:
-            plan: FlowPlan = self.request.session[SESSION_KEY_PLAN]
+        if plan := execution.plan:
             if plan.flow_pk != flow.pk.hex:
                 LOGGER.warning(
                     "f(def): Found existing plan for other flow, deleting plan",
                     flow_slug=flow.slug,
                 )
-                del self.request.session[SESSION_KEY_PLAN]
+                execution.clear()
         return redirect_with_qs("authentik_core:if-flow", request.GET, flow_slug=flow.slug)
 
 

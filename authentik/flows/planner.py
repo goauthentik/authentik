@@ -152,13 +152,10 @@ class FlowPlan:
         allowed_silent_types: list[StageView] | None = None,
     ) -> HttpResponse:
         """Redirect to the flow executor for this flow plan"""
-        from authentik.flows.views.executor import (
-            NEXT_ARG_NAME,
-            SESSION_KEY_PLAN,
-            FlowExecutorView,
-        )
+        from authentik.flows.storage import FlowExecution
+        from authentik.flows.views.executor import NEXT_ARG_NAME, FlowExecutorView
 
-        request.session[SESSION_KEY_PLAN] = self
+        FlowExecution(request).replace(self)
         requires_flow_executor = self.requires_flow_executor(allowed_silent_types)
 
         if not requires_flow_executor:

@@ -12,9 +12,9 @@ from authentik.common.saml.parsers.logout_request import LogoutRequestParser
 from authentik.core.models import Application, AuthenticatedSession
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow, in_memory_stage
-from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlan, FlowPlanner
+from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlanner
 from authentik.flows.stage import SessionEndStage
-from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.flows.storage import FlowExecution
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView
 from authentik.providers.iframe_logout import IframeLogoutStageView
@@ -45,8 +45,7 @@ def _get_redirect_url(request: HttpRequest, relay_state: str = "") -> str:
     """Get the safe redirect URL from the plan context, logging a warning if the
     incoming relay_state doesn't match the stored value."""
     stored_relay_state = ""
-    if SESSION_KEY_PLAN in request.session:
-        plan: FlowPlan = request.session[SESSION_KEY_PLAN]
+    if plan := FlowExecution(request).plan:
         stored_relay_state = plan.context.get(PLAN_CONTEXT_SAML_RELAY_STATE, "")
 
     if relay_state and relay_state != stored_relay_state:

@@ -31,7 +31,7 @@ from authentik.flows.api.flows_diagram import FlowDiagram, FlowDiagramSerializer
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow
 from authentik.flows.planner import CACHE_PREFIX, PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
-from authentik.flows.views.executor import SESSION_KEY_HISTORY, SESSION_KEY_PLAN
+from authentik.flows.storage import FlowExecution
 from authentik.lib.views import bad_request_message
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.filters import ObjectFilter
@@ -182,15 +182,13 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
     @action(detail=True, pagination_class=None, filter_backends=[ObjectFilter])
     def execute(self, request: Request, slug: str):
         """Execute flow for current user"""
-        # Because we pre-plan the flow here, and not in the planner, we need to manually clear
-        # the history of the inspector
-        request.session[SESSION_KEY_HISTORY] = []
         flow: Flow = self.get_object()
         planner = FlowPlanner(flow)
         planner.use_cache = False
         try:
             plan = planner.plan(self.request, {PLAN_CONTEXT_PENDING_USER: request.user})
-            self.request.session[SESSION_KEY_PLAN] = plan
+            # Pre-planned here and not in the executor, so start a fresh execution
+            FlowExecution.start(request, plan)
         except FlowNonApplicableException as exc:
             return bad_request_message(
                 request,

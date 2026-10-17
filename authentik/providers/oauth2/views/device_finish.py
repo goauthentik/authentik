@@ -7,7 +7,7 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlan
 from authentik.flows.stage import ChallengeStageView
-from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.flows.storage import FlowExecution
 from authentik.providers.oauth2.models import DeviceToken
 
 PLAN_CONTEXT_DEVICE = "goauthentik.io/providers/oauth2/device"
@@ -31,7 +31,7 @@ class OAuthDeviceCodeFinishStage(ChallengeStageView):
     response_class = OAuthDeviceCodeFinishChallengeResponse
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
-        plan: FlowPlan = self.request.session[SESSION_KEY_PLAN]
+        plan: FlowPlan = FlowExecution(self.request).plan
         token: DeviceToken = plan.context[PLAN_CONTEXT_DEVICE]
         # As we're required to be authenticated by now, we can rely on
         # request.user

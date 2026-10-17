@@ -11,7 +11,6 @@ from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
-from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordStage
@@ -37,9 +36,7 @@ class TestPasswordStage(APIFlowTestCase):
     def test_without_user(self):
         """Test without user"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
@@ -62,9 +59,7 @@ class TestPasswordStage(APIFlowTestCase):
         brand.save()
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
@@ -76,9 +71,7 @@ class TestPasswordStage(APIFlowTestCase):
         """Test with a valid pending user and valid password"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
@@ -95,9 +88,7 @@ class TestPasswordStage(APIFlowTestCase):
         self.user.save()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
@@ -116,9 +107,7 @@ class TestPasswordStage(APIFlowTestCase):
         """Test with a valid pending user and invalid password"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
@@ -131,9 +120,7 @@ class TestPasswordStage(APIFlowTestCase):
         """Test with a valid pending user and invalid password (trigger logout counter)"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         res = self.client.get(
             reverse(
@@ -164,8 +151,8 @@ class TestPasswordStage(APIFlowTestCase):
             {"password": self.user.username + "test"},
         )
         self.assertEqual(response.status_code, 200)
-        # To ensure the plan has been cancelled, check SESSION_KEY_PLAN
-        self.assertNotIn(SESSION_KEY_PLAN, self.client.session)
+        # To ensure the plan has been cancelled, check there's no plan
+        self.assertIsNone(self.get_flow_plan())
         self.assertStageResponse(response, flow=self.flow, error_message="Invalid password")
 
     @patch(
@@ -181,9 +168,7 @@ class TestPasswordStage(APIFlowTestCase):
         Backend is patched to return PermissionError"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),

@@ -20,7 +20,8 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import ChallengeStageView
-from authentik.flows.views.executor import SESSION_KEY_GET, SESSION_KEY_PLAN, InvalidStageError
+from authentik.flows.storage import FlowExecution
+from authentik.flows.views.executor import InvalidStageError
 from authentik.lib.utils.urls import reverse_with_qs
 from authentik.stages.redirect.models import RedirectMode, RedirectStage
 
@@ -69,12 +70,11 @@ class RedirectStageView(ChallengeStageView):
             plan = planner.plan(self.request, default_context)
         except FlowNonApplicableException as exc:
             raise InvalidStageError() from exc
-        self.request.session[SESSION_KEY_PLAN] = plan
+        execution = FlowExecution(self.request)
+        execution.replace(plan)
         kwargs = self.executor.kwargs
         kwargs.update({"flow_slug": flow.slug})
-        return reverse_with_qs(
-            "authentik_core:if-flow", self.request.session[SESSION_KEY_GET], kwargs=kwargs
-        )
+        return reverse_with_qs("authentik_core:if-flow", execution.query, kwargs=kwargs)
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         """Get the redirect target. Prioritize `redirect_stage_target` if present."""
