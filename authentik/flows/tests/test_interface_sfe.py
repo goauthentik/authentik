@@ -4,11 +4,11 @@ from django.test import RequestFactory
 from django.urls import reverse
 
 from authentik.core.tests.utils import create_test_flow
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.interface import FlowInterfaceView
 
 
-class TestFlowInterfaceSimple(FlowTestCase):
+class TestFlowInterfaceSimple(APIFlowTestCase):
     """Test which flow executor is selected for a given user agent"""
 
     def needs_sfe(self, user_agent: str) -> bool:
@@ -95,7 +95,7 @@ class TestFlowInterfaceSimple(FlowTestCase):
         self.assertFalse(self.needs_sfe(""))
 
 
-class TestFlowInterfaceTitle(FlowTestCase):
+class TestFlowInterfaceTitle(APIFlowTestCase):
     """Test flow title placeholders on the interface page"""
 
     def test_title_placeholder(self):

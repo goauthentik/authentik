@@ -34,7 +34,7 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.reflection import class_to_path
 from authentik.providers.oauth2.id_token import IDToken
@@ -116,7 +116,7 @@ class AccountLockdownStageTestMixin:
         ).first()
 
 
-class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
+class TestAccountLockdownStage(AccountLockdownStageTestMixin, APIFlowTestCase):
     """Account lockdown stage tests"""
 
     def test_lockdown_no_target(self):

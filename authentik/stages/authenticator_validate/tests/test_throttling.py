@@ -7,7 +7,7 @@ from rest_framework.exceptions import ValidationError
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.stage import StageView
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.generators import generate_id
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage, EmailDevice
@@ -63,7 +63,7 @@ class AuthenticatorValidateStageFactorTests(TestCase):
         self.assertIsNone(stage.get_throttling_factor(DeviceClasses.DUO))
 
 
-class ValidateChallengeCodeThrottlingTests(FlowTestCase):
+class ValidateChallengeCodeThrottlingTests(APIFlowTestCase):
     """Tests for validate_challenge_code throttling behavior."""
 
     def setUp(self) -> None:
@@ -165,7 +165,7 @@ class ValidateChallengeCodeThrottlingTests(FlowTestCase):
         self.assertEqual(device.throttling_failure_count, 1)
 
 
-class ValidateStageThrottlingFlowTests(FlowTestCase):
+class ValidateStageThrottlingFlowTests(APIFlowTestCase):
     """End-to-end lockout behavior through the flow executor HTTP API."""
 
     def setUp(self) -> None:

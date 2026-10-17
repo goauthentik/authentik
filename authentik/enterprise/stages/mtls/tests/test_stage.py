@@ -22,7 +22,7 @@ from authentik.enterprise.stages.mtls.models import (
 from authentik.enterprise.stages.mtls.stage import PLAN_CONTEXT_CERTIFICATE
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 from authentik.outposts.models import Outpost, OutpostType
@@ -30,7 +30,7 @@ from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 
 @freeze_time("2026-05-10 12:38:46")
-class MTLSStageTests(FlowTestCase):
+class MTLSStageTests(APIFlowTestCase):
 
     def setUp(self):
         super().setUp()
