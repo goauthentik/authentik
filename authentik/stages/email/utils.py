@@ -1,9 +1,11 @@
 """email utils"""
 
+from email.message import MIMEPart
 from email.mime.image import MIMEImage
 from functools import lru_cache
 from pathlib import Path
 
+from django import VERSION as DJANGO_VERSION
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.core.mail.message import sanitize_address
@@ -13,14 +15,32 @@ from django.utils import translation
 
 
 @lru_cache
-def logo_data() -> MIMEImage:
-    """Get logo as MIME Image for emails"""
+def _logo_bytes() -> bytes:
+    """Read the logo used in emails"""
     path = Path("web/dist/assets/icons/icon_left_brand.png")
     # When running tests, assets might not exist, so fallback to a different icon
     if settings.TEST:
         path = Path("web/authentik/sources/saml.png")
     with open(path, "rb") as _logo_file:
-        logo = MIMEImage(_logo_file.read())
+        return _logo_file.read()
+
+
+def logo_data() -> MIMEImage | MIMEPart:
+    """Get logo as inline MIME part for emails"""
+    if DJANGO_VERSION >= (6, 0):
+        # Django 6.0+ builds messages with the modern email API and accepts
+        # MIMEPart attachments; MIMEBase ones are deprecated
+        logo = MIMEPart()
+        logo.set_content(
+            _logo_bytes(),
+            maintype="image",
+            subtype="png",
+            disposition="inline",
+            filename="logo.png",
+            cid="<logo>",
+        )
+        return logo
+    logo = MIMEImage(_logo_bytes())
     logo.add_header("Content-ID", "<logo>")
     logo.add_header("Content-Disposition", "inline", filename="logo.png")
     return logo
@@ -65,5 +85,7 @@ class TemplateEmailMessage(EmailMultiAlternatives):
                 self.body = text_content
             except TemplateDoesNotExist:
                 pass
-        self.mixed_subtype = "related"
+        if DJANGO_VERSION < (6, 0):
+            # Removed in Django 6.0, which raises on this undocumented attribute
+            self.mixed_subtype = "related"
         self.attach_alternative(html_content, "text/html")
