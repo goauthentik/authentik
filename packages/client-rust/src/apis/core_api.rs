@@ -72,6 +72,7 @@ pub async fn core_brands_list(
     flow_device_code: Option<&str>,
     flow_invalidation: Option<&str>,
     flow_lockdown: Option<&str>,
+    flow_provider_authorization: Option<&str>,
     flow_recovery: Option<&str>,
     flow_request: Option<&str>,
     flow_unenrollment: Option<&str>,
@@ -96,6 +97,7 @@ pub async fn core_brands_list(
     let p_query_flow_device_code = flow_device_code;
     let p_query_flow_invalidation = flow_invalidation;
     let p_query_flow_lockdown = flow_lockdown;
+    let p_query_flow_provider_authorization = flow_provider_authorization;
     let p_query_flow_recovery = flow_recovery;
     let p_query_flow_request = flow_request;
     let p_query_flow_unenrollment = flow_unenrollment;
@@ -162,6 +164,10 @@ pub async fn core_brands_list(
     }
     if let Some(ref param_value) = p_query_flow_lockdown {
         req_builder = req_builder.query(&[("flow_lockdown", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_flow_provider_authorization {
+        req_builder =
+            req_builder.query(&[("flow_provider_authorization", &param_value.to_string())]);
     }
     if let Some(ref param_value) = p_query_flow_recovery {
         req_builder = req_builder.query(&[("flow_recovery", &param_value.to_string())]);

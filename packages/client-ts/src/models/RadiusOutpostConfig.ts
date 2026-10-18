@@ -20,7 +20,7 @@ export interface RadiusOutpostConfig {
     readonly pk: number;
     name: string;
     applicationSlug: string;
-    authFlowSlug: string;
+    readonly authFlowSlug: string;
     /**
      * List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will
      * match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
@@ -96,7 +96,7 @@ export function RadiusOutpostConfigToJSON(json: any): RadiusOutpostConfig {
 }
 
 export function RadiusOutpostConfigToJSONTyped(
-    value?: Omit<RadiusOutpostConfig, "pk"> | null,
+    value?: Omit<RadiusOutpostConfig, "pk" | "authFlowSlug"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -106,7 +106,6 @@ export function RadiusOutpostConfigToJSONTyped(
     return {
         name: value["name"],
         application_slug: value["applicationSlug"],
-        auth_flow_slug: value["authFlowSlug"],
         client_networks: value["clientNetworks"],
         shared_secret: value["sharedSecret"],
         mfa_support: value["mfaSupport"],
