@@ -8,6 +8,9 @@ from django.core.validators import validate_email
 from pydantic import AnyUrl, BaseModel, ConfigDict, Field, model_validator
 from pydanticscim.group import Group as BaseGroup
 from pydanticscim.group import GroupMember as BaseGroupMember
+from pydanticscim.resource_type import ResourceType as BaseResourceType
+from pydanticscim.resource_type import SchemaExtension
+from pydanticscim.responses import ListResponse as BaseListResponse
 from pydanticscim.responses import PatchOperation as BasePatchOperation
 from pydanticscim.responses import PatchRequest as BasePatchRequest
 from pydanticscim.responses import SCIMError as BaseSCIMError
@@ -21,6 +24,25 @@ from pydanticscim.user import User as BaseUser
 
 SCIM_USER_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:User"
 SCIM_GROUP_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:Group"
+SCIM_LIST_RESPONSE_SCHEMA = "urn:ietf:params:scim:api:messages:2.0:ListResponse"
+
+
+class ResourceType(BaseResourceType):
+    """Resource type allowing omitted schema extensions (RFC 7643 section 6)."""
+
+    name: str = Field(min_length=1)
+    endpoint: str = Field(min_length=1)
+    schemaExtensions: list[SchemaExtension] = Field(default_factory=list)
+
+
+class ResourceTypeListResponse(BaseListResponse):
+    """Typed discovery response; pagination metadata is optional for complete listings."""
+
+    schemas: list[str]
+    totalResults: int = Field(ge=0)
+    startIndex: int | None = Field(default=None, ge=1)
+    itemsPerPage: int | None = Field(default=None, ge=0)
+    Resources: list[ResourceType] = Field(default_factory=list)
 
 
 class Address(BaseModel):
