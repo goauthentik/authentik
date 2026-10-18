@@ -22,5 +22,15 @@ export const JWEEncryptionKeyTypes = [KeyTypeEnum.Rsa];
 /** Signing XML. Bounded by the signature transforms libxmlsec1 provides. */
 export const XMLSigningKeyTypes = [KeyTypeEnum.Rsa, KeyTypeEnum.Ec, KeyTypeEnum.Dsa];
 
-/** Serving TLS. Bounded by what Go's `crypto/tls` can build a certificate from. */
-export const TLSKeyTypes = [KeyTypeEnum.Rsa, KeyTypeEnum.Ec, KeyTypeEnum.Ed25519];
+/**
+ * Serving TLS. Bounded by what rustls and Go's `crypto/tls` can build a certificate from.
+ * ML-DSA is TLS-only until SAML and JOSE gain post-quantum signature support.
+ */
+export const TLSKeyTypes = [
+    KeyTypeEnum.Rsa,
+    KeyTypeEnum.Ec,
+    KeyTypeEnum.Ed25519,
+    KeyTypeEnum.Mldsa44,
+    KeyTypeEnum.Mldsa65,
+    KeyTypeEnum.Mldsa87,
+];

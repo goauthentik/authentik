@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from django.core.cache import cache
 from django.db import models, transaction
-from django.db.models import OuterRef, Q, Subquery
+from django.db.models import Case, OuterRef, Q, Subquery, When
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
@@ -49,10 +49,21 @@ class Device(InternallyManagedMixin, ExpiringModel, AttributesMixin, PolicyBindi
     @transaction.atomic
     def get_or_create(identifier: str, name: str, defaults: dict[str, Any] | None = None) -> Device:
         defaults = defaults or {}
-        try:
-            return Device.objects.get(Q(identifier=identifier) | Q(name=name))
-        except Device.DoesNotExist:
-            return Device.objects.create(name=name, identifier=identifier, **defaults)
+        query = Q()
+        if identifier:
+            query |= Q(identifier=identifier)
+        if name:
+            query |= Q(name=name)
+        if query:
+            # Identifier and name can match different devices; the identifier match wins
+            device = (
+                Device.objects.filter(query)
+                .order_by(Case(When(identifier=identifier, then=0), default=1))
+                .first()
+            )
+            if device:
+                return device
+        return Device.objects.create(name=name, identifier=identifier, **defaults)
 
     @property
     def cache_key_facts(self):

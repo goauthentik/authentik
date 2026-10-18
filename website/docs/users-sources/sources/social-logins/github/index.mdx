@@ -101,7 +101,9 @@ if not membership.get("active"):
 return True
 ```
 
-The policy reads the property mapping's result from the flow's `prompt_data`. Binding it to both flows covers new and returning users. See [policy bindings and evaluation](../../../../customize/policies/bindings.mdx) for binding instructions.
+The policy reads the property mapping's result from the flow's `prompt_data`. Binding it to both flows covers new and returning users. For binding steps, see [Bind a policy to a flow](../../../../customize/policies/working_with_policies.mdx#bind-a-policy-to-a-flow).
+
+Flows use the **ANY** policy engine mode by default, so a flow passes when any one of its bound policies passes. The default source flows, `default-source-enrollment` and `default-source-authentication`, already bind a policy that passes on every source login, so in **ANY** mode the organization policy never denies a user. Edit each flow, and under **Behavior settings**, set **Policy engine mode** to **ALL**. See [policy bindings and evaluation](../../../../customize/policies/bindings.mdx#policy-engine-mode) for details.
 
 If the policy denies a returning user, the group update stage does not run. Any group membership from an earlier successful login remains until that user logs in successfully again or you remove it separately. Use the policy result, not the synchronized group, when you need to enforce current organization membership at login.
 
