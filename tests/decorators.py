@@ -39,8 +39,11 @@ def get_loader():
     return MigrationLoader(connection)
 
 
-def retry(max_retires=RETRIES, exceptions=None):
-    """Retry test multiple times. Default to catching Selenium Timeout Exception"""
+def retry(max_retires=RETRIES, exceptions=None, is_test_case=True):
+    """Retry test multiple times. Default to catching Selenium Timeout Exception
+
+    Attempts ``RETRIES`` times by default, only once when not running in CI.
+    `is_test_case` should be set to `false` if this is used on a helper function"""
 
     if not exceptions:
         exceptions = [WebDriverException, TimeoutException, NoSuchElementException]
@@ -66,10 +69,11 @@ def retry(max_retires=RETRIES, exceptions=None):
 
                     raise exc
                 logger.debug("Retrying on error", exc=exc, test=self)
-                self.tearDown()
-                self._post_teardown()
-                self._pre_setup()
-                self.setUp()
+                if is_test_case:
+                    self.tearDown()
+                    self._post_teardown()
+                    self._pre_setup()
+                    self.setUp()
                 return wrapper(self, *args, **kwargs)
 
         return wrapper
