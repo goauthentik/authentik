@@ -121,7 +121,6 @@ export interface RacDevicesListRequest {
      * A search term.
      */
     search?: string;
-    superuserFullList?: boolean;
 }
 
 export interface RacFileTransfersCreateRequest {
@@ -609,10 +608,6 @@ export class RacApi extends runtime.BaseAPI {
 
         if (requestParameters["search"] != null) {
             queryParameters["search"] = requestParameters["search"];
-        }
-
-        if (requestParameters["superuserFullList"] != null) {
-            queryParameters["superuser_full_list"] = requestParameters["superuserFullList"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

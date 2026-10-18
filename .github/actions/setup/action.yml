@@ -42,7 +42,7 @@ runs:
         sudo rsync -a --delete /tmp/empty/ /usr/local/lib/android/
     - name: Install uv
       if: ${{ contains(inputs.dependencies, 'python') }}
-      uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v5
+      uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v5
       with:
         enable-cache: true
     - name: Setup python
@@ -69,7 +69,7 @@ runs:
         rustflags: ""
     - name: Setup rust dependencies
       if: ${{ contains(inputs.dependencies, 'rust') }}
-      uses: taiki-e/install-action@f7e5d7c961414b23f5b25b2da9294395d08513ad # v2
+      uses: taiki-e/install-action@1168f6810a3cb30a3514bf5756a3b7f0422c6df8 # v2
       with:
         tool: cargo-deny cargo-machete cargo-llvm-cov nextest
     - name: Setup pnpm
@@ -85,7 +85,7 @@ runs:
         echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
     - name: Setup node (root, web)
       if: ${{ contains(inputs.dependencies, 'node') }}
-      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v4
+      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v4
       with:
         node-version-file: ${{ inputs.working-directory }}package.json
         cache: pnpm
@@ -107,6 +107,9 @@ runs:
         cache-dependency-path: "${{ inputs.working-directory }}go.mod"
     - name: Setup docker cache
       if: ${{ contains(inputs.dependencies, 'runtime') }}
+      # The post step `docker save`s every new image, but digest-pinned images (e2e,
+      # kind) list without a tag and fail. Jobs share the key, so another job saves it.
+      continue-on-error: true
       uses: AndreKurait/docker-cache@7a3887908bdb97935395833df69b060cfcca0f7f
       with:
         key: docker-images-${{ runner.os }}-${{ hashFiles('.github/actions/setup/compose.yml', 'Makefile') }}-${{ inputs.postgresql_version }}

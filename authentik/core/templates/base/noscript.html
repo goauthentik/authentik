@@ -1,0 +1,37 @@
+{% load i18n %}
+
+<noscript>
+    <style>
+        .ak-c-placeholder {
+            display: none;
+        }
+    </style>
+
+    <div class="pf-c-alert pf-m-inline pf-m-warning">
+        <div class="pf-c-alert__icon">
+            <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+        </div>
+        <h4 class="pf-c-alert__title">
+            <p>{% trans "Cannot load this page without JavaScript" %}</p>
+        </h4>
+
+        <div class="pf-c-alert__description" id="message-description">
+            <p>
+                {%blocktrans%}This application requires JavaScript to function. JavaScript may be
+                disabled in your browser settings or blocked by a browser
+                extension.{%endblocktrans%}
+            </p>
+        </div>
+
+        <div class="pf-c-alert__action-group">
+            <a
+                class="pf-c-button pf-m-link pf-m-inline"
+                href="https://support.mozilla.org/en-US/kb/javascript-settings-for-interactive-web-pages"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                {% trans "Learn more &rsaquo;" %}
+            </a>
+        </div>
+    </div>
+</noscript>

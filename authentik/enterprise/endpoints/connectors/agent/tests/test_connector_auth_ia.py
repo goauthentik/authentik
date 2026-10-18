@@ -13,12 +13,12 @@ from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceTo
 from authentik.endpoints.models import Device, DeviceAccessGroup
 from authentik.enterprise.endpoints.connectors.agent.views.auth_interactive import QS_AGENT_IA_TOKEN
 from authentik.enterprise.tests import enterprise_test
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
 
 
-class TestConnectorAuthIA(FlowTestCase):
+class TestConnectorAuthIA(APIFlowTestCase):
 
     def setUp(self):
         self.connector = AgentConnector.objects.create(
