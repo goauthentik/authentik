@@ -2,7 +2,11 @@ import { ModelForm } from "#elements/forms/ModelForm";
 
 import { msg } from "@lit/localize";
 
-export abstract class BaseSourceForm<T extends object = object> extends ModelForm<T, string> {
+export abstract class BaseSourceForm<T extends object = object, D = T> extends ModelForm<
+    T,
+    string,
+    D
+> {
     public static override verboseName = msg("Source");
     public static override verboseNamePlural = msg("Sources");
     getSuccessMessage(): string {
