@@ -25,7 +25,7 @@ def apply_lifecycle_rule(rule_id: str):
 
 
 @actor(description=_("Send lifecycle rule notification."))
-def send_notification(transport_pk: int, event_pk: str, user_pk: int, severity: str):
+def send_notification(transport_pk: int | None, event_pk: str, user_pk: int, severity: str):
     event = Event.objects.filter(pk=event_pk).first()
     if not event:
         return
@@ -41,6 +41,9 @@ def send_notification(transport_pk: int, event_pk: str, user_pk: int, severity: 
         hyperlink=event.hyperlink,
         hyperlink_label=event.hyperlink_label,
     )
+    if transport_pk is None:
+        NotificationTransport().send_local(notification)
+        return
     transport = NotificationTransport.objects.filter(pk=transport_pk).first()
     if not transport:
         return
