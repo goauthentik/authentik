@@ -2,6 +2,7 @@ import "#admin/endpoints/connectors/ConnectorWizard";
 import "#admin/endpoints/connectors/agent/AgentConnectorForm";
 import "#admin/endpoints/connectors/fleet/FleetConnectorForm";
 import "#admin/endpoints/connectors/gdtc/GoogleChromeConnectorForm";
+import "#admin/endpoints/connectors/microsoft_intune/MicrosoftIntuneConnectorForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import { aki } from "#common/api/client";
