@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any
 
 from django.db.models import Model, Q
@@ -73,7 +74,9 @@ class AgentAuth(BaseAuthentication):
         return (DeviceUser(), device_token)
 
 
-def agent_auth_issue_token(device: Device, connector: AgentConnector, user: User, **kwargs):
+def agent_auth_issue_token(
+    device: Device, connector: AgentConnector, user: User, **kwargs
+) -> tuple[str | None, datetime | None]:
     kp = CertificateKeyPair.objects.filter(managed=MANAGED_KEY).first()
     if not kp:
         return None, None

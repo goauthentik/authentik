@@ -64,6 +64,8 @@ cache:
   timeout: 300
   timeout_flows: 300
   timeout_policies: 300
+  # Duration a user's application list, as determined by policies, will be cached.
+  timeout_application_policies: 86400
 
 # channel:
 #   url: ""
@@ -153,10 +155,6 @@ compliance:
     enabled: false
 
 cert_discovery_dir: /certs
-
-tenants:
-  enabled: false
-  api_key: ""
 
 blueprints_dir: /blueprints
 

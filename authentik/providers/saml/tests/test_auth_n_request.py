@@ -11,6 +11,7 @@ from django.urls import reverse
 from guardian.utils import get_anonymous_user
 from lxml import etree  # nosec
 
+from authentik.admin.flags import patch_flag
 from authentik.blueprints.tests import apply_blueprint
 from authentik.common.saml.constants import (
     NS_MAP,
@@ -18,6 +19,7 @@ from authentik.common.saml.constants import (
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
+from authentik.common.saml.exceptions import CannotHandleAssertion
 from authentik.core.models import Application
 from authentik.core.tests.utils import (
     RequestFactory,
@@ -31,7 +33,6 @@ from authentik.flows.apps import ContinuousLogin
 from authentik.flows.models import FlowStageBinding
 from authentik.lib.generators import generate_id
 from authentik.lib.xml import lxml_from_string
-from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
@@ -40,7 +41,6 @@ from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID, RequestProcessor
 from authentik.sources.saml.processors.response import ResponseProcessor
 from authentik.stages.dummy.models import DummyStage
-from authentik.tenants.flags import patch_flag
 
 POST_REQUEST = (
     "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c2FtbDJwOkF1dGhuUmVxdWVzdCB4bWxuczpzYW1sMn"

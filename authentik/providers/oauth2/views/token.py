@@ -33,6 +33,7 @@ from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
     OAuth2Provider,
+    OAuth2SessionLogin,
     RefreshToken,
 )
 from authentik.providers.oauth2.token.base import TokenRequest
@@ -133,6 +134,7 @@ class TokenView(View):
         self._add_cnf_to_id_token(access_id_token)
         access_token.id_token = access_id_token
         access_token.save()
+        OAuth2SessionLogin.record(access_token, access_id_token)
 
         id_token_jwt_type = self._get_id_token_jwt_type()
         response = {
@@ -198,6 +200,7 @@ class TokenView(View):
         self._add_cnf_to_id_token(access_id_token)
         access_token.id_token = access_id_token
         access_token.save()
+        OAuth2SessionLogin.record(access_token, access_id_token)
 
         id_token_jwt_type = self._get_id_token_jwt_type()
         response = {
@@ -293,6 +296,7 @@ class TokenView(View):
         self._add_cnf_to_id_token(access_id_token)
         access_token.id_token = access_id_token
         access_token.save()
+        OAuth2SessionLogin.record(access_token, access_id_token)
 
         id_token_jwt_type = self._get_id_token_jwt_type()
         response = {

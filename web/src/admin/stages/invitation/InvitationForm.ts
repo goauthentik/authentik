@@ -1,10 +1,8 @@
-import "#admin/common/ak-flow-search/ak-flow-search";
 import "#admin/stages/invitation/InvitationListLink";
 import "#components/ak-switch-input";
 import "#components/ak-slug-input";
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 import { dateTimeLocal } from "#common/temporal";
@@ -12,8 +10,9 @@ import { dateTimeLocal } from "#common/temporal";
 import { renderDialog, renderModal } from "#elements/dialogs";
 import { AKFormSubmittedEvent } from "#elements/forms/events";
 import { ModelForm } from "#elements/forms/ModelForm";
+import type { SearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
 
-import type { AkFlowSearch } from "#admin/common/ak-flow-search/ak-flow-search";
+import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
 import { InvitationEnrollmentFlowForm } from "#admin/stages/invitation/InvitationEnrollmentFlowForm";
 
 import { Flow, FlowDesignationEnum, Invitation, StagesApi } from "@goauthentik/api";
@@ -23,14 +22,11 @@ import YAML from "yaml";
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-import { createRef, ref } from "lit/directives/ref.js";
 
 @customElement("ak-invitation-form")
 export class InvitationForm extends ModelForm<Invitation, string> {
     public static override verboseName = msg("Invitation");
     public static override verboseNamePlural = msg("Invitations");
-
-    protected flowSearchRef = createRef<AkFlowSearch<Flow>>();
 
     protected endpoints = {
         load: (inviteUuid: string) =>
@@ -45,30 +41,6 @@ export class InvitationForm extends ModelForm<Invitation, string> {
         return this.instance
             ? msg("Successfully updated invitation.")
             : msg("Successfully created invitation.");
-    }
-
-    /**
-     * The native `required` attribute inside the flow search cannot participate in the
-     * outer form's validity across the shadow boundary, and the API accepts a null
-     * flow — so enforce the selection here. An invitation without a flow produces a
-     * link that cannot be used.
-     */
-    public override reportValidity(): boolean {
-        const valid = super.reportValidity();
-
-        const flowSearch = this.renderRoot.querySelector("ak-flow-search");
-
-        if (!flowSearch) return valid;
-
-        if (!flowSearch.value) {
-            flowSearch.errorMessages = [msg("Select an enrollment flow.")];
-
-            return false;
-        }
-
-        flowSearch.errorMessages = [];
-
-        return valid;
     }
 
     /**
@@ -99,7 +71,9 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                     return;
                 }
 
-                const flowSearch = this.flowSearchRef.value;
+                const flowSearch = this.renderRoot.querySelector<SearchSelect<Flow>>(
+                    'ak-search-select[name="flow"]',
+                );
 
                 if (!flowSearch) {
                     this.logger.error(
@@ -118,8 +92,8 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                     return;
                 }
 
-                flowSearch.errorMessages = [];
-                flowSearch.refresh(createdFlow);
+                flowSearch.select(createdFlow);
+                flowSearch.refresh();
             },
         });
     };
@@ -185,14 +159,15 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Flow")} required name="flow">
-                <ak-flow-search
-                    ${ref(this.flowSearchRef)}
-                    required
-                    flowType=${FlowDesignationEnum.Enrollment}
-                    .currentFlow=${this.instance?.flow}
-                    action-label=${msg("Create a new enrollment flow with invitation stage...")}
-                    @ak-search-select-action=${this.openNewEnrollmentFlowModal}
-                ></ak-flow-search>
+                ${AKFlowSearch({
+                    name: "flow",
+                    label: msg("Flow"),
+                    flowType: FlowDesignationEnum.Enrollment,
+                    value: this.instance?.flow,
+                    required: true,
+                    actionLabel: msg("Create a new enrollment flow with invitation stage..."),
+                    onAction: this.openNewEnrollmentFlowModal,
+                })}
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         "The enrollment flow the invitation link will use. The flow should have an invitation stage bound to it for the invitation to be accepted.",

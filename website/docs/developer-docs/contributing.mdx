@@ -89,8 +89,7 @@ authentik
 │   ├── user_login - Login the currently pending user
 │   ├── user_logout - Logout the currently pending user
 │   └── user_write - Write any currently pending data to the user.
-├── tasks - Background tasks
-└── tenants - Soft tenancy, configure defaults and branding per domain
+└── tasks - Background tasks
 ```
 
 This Django project is running in gunicorn, which spawns multiple workers and threads. Gunicorn is run from a lightweight Go application that reverse-proxies the application and handles static files.

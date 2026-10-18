@@ -1,0 +1,86 @@
+---
+title: Integrate with Palo Alto Networks Next-Generation Firewall
+sidebar_label: Palo Alto Networks NGFW
+support_level: community
+---
+
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+
+## What is Palo Alto Networks Next-Generation Firewall?
+
+> Palo Alto Networks Next-Generation Firewall runs PAN-OS and provides network security controls and a web interface for firewall administration.
+>
+> -- https://www.paloaltonetworks.com/network-security/next-generation-firewall
+
+## Preparation
+
+This guide configures SAML sign-in to the PAN-OS firewall management web interface. For GlobalProtect portals and gateways, see the [GlobalProtect integration guide](../globalprotect/).
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+
+You need administrative access to authentik and PAN-OS, an HTTPS management interface, a certificate in authentik for signing SAML responses, and a certificate in PAN-OS for signing SAML requests. Keep a local PAN-OS administrator account available while testing SAML sign-in.
+
+## authentik configuration
+
+Create an application and SAML provider in authentik. PAN-OS exports its service provider metadata only after you configure an authentication profile, so you will replace the temporary ACS URL after importing the authentik metadata into PAN-OS.
+
+### Create an application and provider
+
+<SAMLProvider20265Warning />
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application**.
+    - **Application**: provide a descriptive name. Note the **Slug** value.
+    - **Choose a Provider type**: select **SAML Provider**.
+    - **Configure the Provider**: provide a name and select an authorization flow. Set **ACS URL** to `https://temp.temp` for now. Under **Advanced protocol settings**, select a **Signing Certificate**, enable **Sign responses**, and add **authentik default SAML Mapping: Username** to **Selected User Property Mappings**.
+    - **Configure Bindings** _(optional)_: bind users, groups, or policies to control access to the application.
+3. Click **Submit**.
+
+### Download the identity provider metadata
+
+1. Navigate to **Applications** > **Providers** and open the provider that you created.
+2. Under **Metadata**, click **Download**. You will import this file into PAN-OS.
+
+## Palo Alto Networks Next-Generation Firewall configuration
+
+### Import the SAML identity provider
+
+1. Log in to the PAN-OS management web interface.
+2. Navigate to **Device** > **Server Profiles** > **SAML Identity Provider** and click **Import**.
+3. Enter a **Profile Name**, such as `authentik`, and select the downloaded file for **Identity Provider Metadata**.
+4. If a certificate authority issued the authentik signing certificate, keep **Validate Identity Provider Certificate** selected and configure a PAN-OS certificate profile that trusts that authority. If the signing certificate is self-signed, clear this option. PAN-OS still checks SAML message signatures against the certificate in the imported metadata.
+5. Click **OK**.
+
+### Create and assign an authentication profile
+
+1. Navigate to **Device** > **Authentication Profile** and click **Add**.
+2. Enter a **Name**, set **Type** to **SAML**, and select the authentik profile for **IdP Server Profile**.
+3. Select a **Certificate for Signing Requests**. If you enabled **Validate Identity Provider Certificate**, select the certificate profile that trusts the authentik signing certificate for **Certificate Profile**.
+4. Set **Username Attribute** to `http://schemas.goauthentik.io/2021/02/saml/username`.
+5. On the **Advanced** tab, add the administrators who can use this profile to the **Allow List**, then click **OK**.
+6. Navigate to **Device** > **Administrators**. Open each administrator account that will use SAML, select the new **Authentication Profile**, and confirm that its **Name** matches the authentik username sent in the SAML assertion.
+7. Commit the changes.
+
+### Export the PAN-OS service provider metadata
+
+1. Navigate to **Device** > **Authentication Profile** and click **Metadata** in the authentication profile's **Authentication** column.
+2. Set **Service** to `management` and select the interface used for management access under **Management Choice**.
+3. Click **OK** and save the metadata XML file. You will use its `entityID` and `AssertionConsumerService` `Location` values in authentik.
+
+### Update the authentik provider
+
+1. In the authentik Admin interface, navigate to **Applications** > **Providers** and edit the provider that you created.
+2. Set **ACS URL** to the `Location` value of the PAN-OS metadata's `AssertionConsumerService` element that uses the HTTP-POST binding.
+3. Set **Audience** to the `entityID` value of the PAN-OS metadata's `EntityDescriptor` element.
+4. Set **Service Provider Binding** to **Post** and save the provider.
+
+## Configuration verification
+
+Open the PAN-OS management web interface, click **Use Single Sign-On**, and enter the username of an administrator assigned to the SAML authentication profile. Complete the authentik sign-in flow. PAN-OS should return to the management web interface with that administrator's permissions.
+
+## Resources
+
+- [Palo Alto Networks - Configure SAML Authentication](https://docs.paloaltonetworks.com/ngfw/administration/authentication/configure-saml-authentication)
+- [Palo Alto Networks - Configure a Firewall Administrator Account](https://docs.paloaltonetworks.com/ngfw/administration/firewall-administration/manage-firewall-administrators/configure-administrative-accounts-and-authentication/configure-a-firewall-administrator-account)

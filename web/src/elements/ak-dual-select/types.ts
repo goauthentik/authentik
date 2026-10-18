@@ -14,7 +14,6 @@ export const DualSelectEventType = {
     Move: "ak-dual-select-move",
     MoveChanged: "ak-dual-select-available-move-changed",
     Change: "ak-dual-select-change",
-    NavigateTo: "ak-pagination-nav-to",
 } as const satisfies Record<string, string>;
 
 export type DualSelectEventType = (typeof DualSelectEventType)[keyof typeof DualSelectEventType];
@@ -46,11 +45,6 @@ export type DualSelectPair<T = unknown> = [
 export type DualSelectPairSource<T = unknown> = (
     sourceInit: DualSelectPair<T>[],
 ) => Promise<DualSelectPair<T>[]>;
-
-export type BasePagination = Pick<
-    Pagination,
-    "startIndex" | "endIndex" | "count" | "previous" | "next"
->;
 
 export interface DataProvision<T = unknown> {
     pagination?: Pagination;

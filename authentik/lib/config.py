@@ -529,7 +529,7 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
 
     # Optional direct endpoint for LISTEN/NOTIFY and advisory-lock connections.
     # Only added when operator sets ``postgresql.direct.*``; excluded from
-    # replica routing and migrations by ``authentik.tenants.db.FailoverRouter``.
+    # replica routing and migrations by ``authentik.root.db.router.FailoverRouter``.
     if postgresql_direct_db_enabled(config):
         db[DIRECT_DB_ALIAS] = _build_direct_db_alias(db["default"], config)
 

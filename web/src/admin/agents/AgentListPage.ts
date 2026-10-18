@@ -40,7 +40,6 @@ export class AgentListPage extends TablePage<Agent> {
         [msg("Name"), "username"],
         [msg("Parent")],
         [msg("Expires"), "expires"],
-        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
@@ -72,19 +71,6 @@ export class AgentListPage extends TablePage<Agent> {
                   </a>`
                 : html`<span class="pf-u-color-200">${msg("-")}</span>`,
             item.expiring && item.expires ? Timestamp(item.expires) : msg("Never"),
-            html`<ak-forms-delete-bulk
-                object-label=${msg("Agent")}
-                .objects=${[item]}
-                .delete=${(agent: Agent) => {
-                    return aki(AgentsApi).agentsAgentsDestroy({
-                        id: agent.pk,
-                    });
-                }}
-            >
-                <button slot="trigger" class="pf-c-button pf-m-danger pf-m-small">
-                    ${msg("Delete")}
-                </button>
-            </ak-forms-delete-bulk>`,
         ];
     }
 

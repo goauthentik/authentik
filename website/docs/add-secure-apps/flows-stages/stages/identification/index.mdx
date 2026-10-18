@@ -18,7 +18,7 @@ This stage lets the user identify themselves by username, email address, UPN, or
 - **Password stage**: optional [Password stage](../password/index.mdx) to render inline instead of as a separate step.
 - **Captcha stage**: optional [Captcha stage](../captcha/index.mdx) to run as part of identification.
 - **WebAuthn Authenticator Validation Stage**: optional [Authenticator Validation stage](../authenticator_validate/index.mdx) used for passkey autofill.
-- **Case-insensitive matching**: match identifiers regardless of case.
+- **Case-insensitive matching**: match identifiers regardless of case. If two users have usernames that differ only by case, only one of them is matched. To prevent such usernames, see [Ensure unique usernames regardless of case](../../../../customize/policies/types/expression/unique_username.mdx).
 - **Show matched user**: display the matched user's username and avatar after a valid identifier is entered.
 - **Pretend user exists**: continue even when the entered identifier does not match a real user.
 - **Enable remember me on this device**: allow the browser to remember the entered username and jump directly to password entry later.

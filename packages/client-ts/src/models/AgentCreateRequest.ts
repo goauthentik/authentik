@@ -21,7 +21,7 @@ import { PolicyBehaviorEnumFromJSON, PolicyBehaviorEnumToJSON } from "./PolicyBe
  * @interface AgentCreateRequest
  */
 export interface AgentCreateRequest {
-    parent?: number;
+    parent?: number | null;
     label?: string;
     expiring?: boolean;
     expires?: Date | null;
@@ -47,7 +47,12 @@ export function AgentCreateRequestFromJSONTyped(
         return json;
     }
     return {
-        parent: json["parent"] == null ? undefined : json["parent"],
+        parent:
+            json["parent"] === undefined
+                ? undefined
+                : json["parent"] === null
+                  ? null
+                  : json["parent"],
         label: json["label"] == null ? undefined : json["label"],
         expiring: json["expiring"] == null ? undefined : json["expiring"],
         expires:

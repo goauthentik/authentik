@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/oxlint-config",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "authentik's Oxlint config",
     "license": "MIT",
     "repository": {

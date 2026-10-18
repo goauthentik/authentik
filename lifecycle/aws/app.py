@@ -48,7 +48,7 @@ class AuthentikStack(Stack):
             description="RDS PostgreSQL instance type (without the leading db.)",
         )
         db_version = CfnParameter(
-            self, "DBVersion", type="String", default="17.1", description="RDS PostgreSQL version"
+            self, "DBVersion", type="String", default="17", description="RDS PostgreSQL version"
         )
         db_storage = CfnParameter(
             self,
@@ -245,6 +245,7 @@ class AuthentikStack(Stack):
         environment = {
             "AUTHENTIK_POSTGRESQL__HOST": database.instance_endpoint.hostname,
             "AUTHENTIK_POSTGRESQL__USER": "authentik",
+            "AUTHENTIK_POSTGRESQL__SSLMODE": "require",
         }
 
         secrets = {

@@ -2,6 +2,7 @@
 
 from django.test import RequestFactory, TestCase
 
+from authentik.admin.models import DEFAULT_REPUTATION_LOWER_LIMIT, DEFAULT_REPUTATION_UPPER_LIMIT
 from authentik.core.models import User
 from authentik.lib.generators import generate_id
 from authentik.policies.reputation.api import ReputationPolicySerializer
@@ -14,7 +15,6 @@ from authentik.policies.reputation.signals import (
 from authentik.policies.types import PolicyRequest
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import authenticate
-from authentik.tenants.models import DEFAULT_REPUTATION_LOWER_LIMIT, DEFAULT_REPUTATION_UPPER_LIMIT
 
 
 class TestReputationPolicy(TestCase):

@@ -11,13 +11,14 @@ from django.utils.timezone import now
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core import user_switching
 from authentik.core.models import AuthenticatedSession, Session, User, UserSwitchingSession
+from authentik.core.sessions import SessionStore
 from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import get_user
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
@@ -32,7 +33,7 @@ from authentik.stages.user_login.middleware import (
 from authentik.stages.user_login.models import GeoIPBinding, NetworkBinding, UserLoginStage
 
 
-class TestUserLoginStage(FlowTestCase):
+class TestUserLoginStage(APIFlowTestCase):
     """Login tests"""
 
     def setUp(self):
@@ -429,3 +430,23 @@ class TestUserLoginStage(FlowTestCase):
         )
         event = Event.objects.filter(action=EventAction.LOGOUT).first()
         self.assertEqual(event.user, get_user(self.user))
+
+    def test_session_binding_ip_change_keeps_concurrent_data(self):
+        """Updating the last IP doesn't write back session data a concurrent request changed"""
+        self.client.force_login(self.user)
+        session = self.client.session
+        session[Session.Keys.LAST_IP] = "192.0.2.1"
+        session[SESSION_KEY_BINDING_NET] = NetworkBinding.BIND_ASN
+        session.save()
+
+        def concurrent_save(*args):
+            concurrent = SessionStore(session.session_key)
+            concurrent["concurrent"] = True
+            concurrent.save()
+
+        with patch.object(BoundSessionMiddleware, "recheck_session_net", concurrent_save):
+            self.client.get(reverse("authentik_api:user-list"))
+
+        stored = Session.objects.get(session_key=session.session_key)
+        self.assertEqual(stored.last_ip, "127.0.0.1")
+        self.assertTrue(SessionStore(session.session_key)["concurrent"])
