@@ -1,5 +1,7 @@
 """authentik outposts app config"""
 
+from urllib.parse import urlparse
+
 from prometheus_client import Gauge
 from structlog.stdlib import get_logger
 
@@ -26,6 +28,27 @@ MANAGED_OUTPOST = "goauthentik.io/outposts/embedded"
 MANAGED_OUTPOST_NAME = "authentik Embedded Outpost"
 
 
+def set_outpost_host(base_url: str):
+    """Set the outpost's authentik_host from base_url"""
+    from authentik.outposts.models import Outpost
+
+    if not base_url:
+        return
+
+    outpost = Outpost.objects.filter(managed=MANAGED_OUTPOST).first()
+    if not outpost:
+        return
+
+    config = outpost.config
+    if urlparse(config.authentik_host).scheme in ["http", "https"]:
+        return
+
+    config.authentik_host = base_url
+    outpost.config = config
+    outpost.save()
+    LOGGER.info("Set outpost host", authentik_host=base_url)
+
+
 class AuthentikOutpostConfig(ManagedAppConfig):
     """authentik outposts app config"""
 
@@ -37,6 +60,7 @@ class AuthentikOutpostConfig(ManagedAppConfig):
     @ManagedAppConfig.reconcile
     def embedded_outpost(self):
         """Ensure embedded outpost"""
+        from authentik.admin.utils import get_system_settings
         from authentik.outposts.models import (
             DockerServiceConnection,
             KubernetesServiceConnection,
@@ -62,6 +86,10 @@ class AuthentikOutpostConfig(ManagedAppConfig):
                 elif DockerServiceConnection.objects.exists():
                     outpost.service_connection = DockerServiceConnection.objects.first()
                 outpost.save()
+            # Note: Because this needs a setting from `authentik.admin`, this only works if
+            # `authentik.outposts` comes *after* `authentik.admin` in INSTALLED_APPS. It's unclear
+            # if (or how) that can be enforced.
+            set_outpost_host(get_system_settings().base_url)
         else:
             Outpost.objects.filter(managed=MANAGED_OUTPOST).delete()
 

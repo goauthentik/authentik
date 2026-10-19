@@ -15,7 +15,7 @@ from authentik.common.saml.constants import (
 )
 from authentik.core.tests.utils import create_test_flow
 from authentik.flows.planner import FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.providers.iframe_logout import (
     IframeLogoutChallenge,
@@ -353,7 +353,7 @@ class TestIframeLogoutStageView(TestCase):
         self.assertEqual(request.session, {})
 
 
-class TestIdPLogoutIntegration(FlowTestCase):
+class TestIdPLogoutIntegration(APIFlowTestCase):
     """Integration tests for IdP logout flow"""
 
     def setUp(self):

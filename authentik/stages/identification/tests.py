@@ -8,7 +8,7 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.enterprise.tests import enterprise_test
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
@@ -25,7 +25,7 @@ from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordDevice, PasswordStage
 
 
-class TestIdentificationStagePasskey(FlowTestCase):
+class TestIdentificationStagePasskey(APIFlowTestCase):
     """Passkey authentication tests"""
 
     def setUp(self):
@@ -135,7 +135,7 @@ class TestIdentificationStagePasskey(FlowTestCase):
         self.assertNotIn("uid_field", errors)
 
 
-class TestIdentificationStage(FlowTestCase):
+class TestIdentificationStage(APIFlowTestCase):
     """Identification tests"""
 
     def setUp(self):
