@@ -15,6 +15,8 @@ import {
     renderSidebarItems,
     SidebarEntry,
 } from "./navigation/sidebar.js";
+import "#admin/navigation/SidebarVersion";
+
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
@@ -335,6 +337,7 @@ export class AdminInterface extends WithLicenseSummary(
 
                 <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}"
                     >${renderSidebarItems(this.navigationEntries, routeNameForPath)}
+                    <ak-sidebar-version slot="footer"></ak-sidebar-version>
                 </ak-sidebar>
 
                 <div class="pf-c-page__drawer">
