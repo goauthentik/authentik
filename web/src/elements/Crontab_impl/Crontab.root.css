@@ -1,0 +1,19 @@
+/**
+ * @file * @file Document-level CSS Custom Properties for Crontab components.
+ */
+
+:root {
+    --ak-crontab--crontab--Color: var(--pf-global--Color--100);
+    --ak-crontab--crontab--FontSize: var(--pf-global--FontSize--xs);
+    --ak-crontab--crontab--FontStyle: normal;
+
+    --ak-crontab--natural--Color: var(--pf-global--Color--200);
+    --ak-crontab--natural--FontSize: var(--pf-global--FontSize--xs);
+    --ak-crontab--natural--FontStyle: italic;
+    --ak-crontab--natural--MaxWidth: 24ch;
+
+    --ak-crontab--BackgroundColor: transparent;
+    --ak-crontab--WordBreak: normal;
+    --ak-crontab--Direction: column;
+    --ak-crontab--Gap: var(--pf-global--spacing--sm);
+}
