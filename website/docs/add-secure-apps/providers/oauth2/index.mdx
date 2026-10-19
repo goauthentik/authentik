@@ -119,6 +119,18 @@ Setting the issuer mode to **Same identifier is used for all providers** (referr
 Global issuer mode still serves the discovery document at `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`, not at the root issuer URL.
 :::
 
+## Re-authentication with `prompt=login`
+
+A client can add `prompt=login` to its authorization request to require that the user authenticates again, even when they already have a valid authentik session.
+
+By default, authentik honors this parameter. When an authorization request includes `prompt=login`, the user is sent through the provider's authentication flow before the authorization flow continues. If the provider does not have an authentication flow configured, authentik uses the authentication flow configured for the associated brand. This behaves similarly to `ForceAuthn` for SAML providers.
+
+### Ignoring `prompt=login`:ak-version[2026.11]
+
+Some clients send `prompt=login` on every request and offer no way to turn it off. To use the existing authentik session for such a client, disable the **Honor prompt=login** option under **Advanced protocol settings** on the OAuth 2.0 provider. When disabled, authentik treats an authorization request with `prompt=login` the same as one without it, and the user is not asked to re-authenticate if they already have a valid session.
+
+The setting applies only to the provider it is set on; other clients that send `prompt=login` continue to trigger re-authentication. It does not affect the `max_age` parameter, which authentik continues to enforce. The `auth_time` claim in the ID token always reflects when the user actually authenticated, so a client that inspects it can detect that the request was not honored.
+
 ## OAuth 2.0 flows and grant types
 
 authentik supports the following general OAuth 2.0 and OpenID Connect flows:
