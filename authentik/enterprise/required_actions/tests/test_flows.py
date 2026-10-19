@@ -26,7 +26,7 @@ from authentik.flows.models import (
     in_memory_stage,
 )
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN, SESSION_KEY_POST
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
@@ -56,7 +56,7 @@ def executor_url(flow: Flow) -> str:
     return reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
 
 
-class RequiredActionsTestCase(FlowTestCase):
+class RequiredActionsTestCase(APIFlowTestCase):
     def setUp(self):
         super().setUp()
         cache.delete(CACHE_KEY_ENTERPRISE_LICENSE)

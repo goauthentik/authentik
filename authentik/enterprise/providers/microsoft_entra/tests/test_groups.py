@@ -4,6 +4,10 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 from azure.identity.aio import ClientSecretCredential
 from django.test import TestCase
+from msgraph.generated.models.directory_object import DirectoryObject
+from msgraph.generated.models.directory_object_collection_response import (
+    DirectoryObjectCollectionResponse,
+)
 from msgraph.generated.models.group import Group as MSGroup
 from msgraph.generated.models.group_collection_response import GroupCollectionResponse
 from msgraph.generated.models.organization import Organization
@@ -260,6 +264,77 @@ class MicrosoftEntraGroupTests(TestCase):
                     .microsoft_id
                 }",
             )
+
+    def test_sync_member_already_exists(self):
+        """Test full sync only adds members missing from Entra"""
+        self.provider.discovery_enabled = False
+        self.provider.save()
+        with (
+            patch(
+                "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
+                MagicMock(return_value={"credentials": self.creds}),
+            ),
+            patch(
+                "msgraph.generated.organization.organization_request_builder.OrganizationRequestBuilder.get",
+                AsyncMock(
+                    return_value=OrganizationCollectionResponse(
+                        value=[
+                            Organization(verified_domains=[VerifiedDomain(name="goauthentik.io")])
+                        ]
+                    )
+                ),
+            ),
+            patch(
+                "msgraph.generated.users.users_request_builder.UsersRequestBuilder.post",
+                AsyncMock(side_effect=lambda *_: MSUser(id=generate_id())),
+            ),
+            patch(
+                "msgraph.generated.users.item.user_item_request_builder.UserItemRequestBuilder.patch",
+                AsyncMock(return_value=MSUser(id=generate_id())),
+            ),
+            patch(
+                "msgraph.generated.groups.groups_request_builder.GroupsRequestBuilder.post",
+                AsyncMock(side_effect=lambda *_: MSGroup(id=generate_id())),
+            ),
+            patch(
+                "msgraph.generated.groups.item.group_item_request_builder.GroupItemRequestBuilder.patch",
+                AsyncMock(return_value=None),
+            ) as group_patch,
+            patch(
+                "msgraph.generated.groups.item.members.ref.ref_request_builder.RefRequestBuilder.post",
+                AsyncMock(),
+            ) as member_add,
+            patch(
+                "msgraph.generated.groups.item.members.members_request_builder.MembersRequestBuilder.get",
+                AsyncMock(),
+            ) as member_list,
+        ):
+            users = [create_test_user() for _ in range(3)]
+            for _ in range(2):
+                Group.objects.create(name=generate_id()).users.add(*users)
+            existing, other_existing, missing = (
+                MicrosoftEntraProviderUser.objects.get(
+                    provider=self.provider, user=user
+                ).microsoft_id
+                for user in users
+            )
+            # Each group already has two of the three members in Entra, over two pages
+            member_list.side_effect = [
+                DirectoryObjectCollectionResponse(
+                    value=[DirectoryObject(id=existing)],
+                    odata_next_link="https://graph.microsoft.com/v1.0/next",
+                ),
+                DirectoryObjectCollectionResponse(value=[DirectoryObject(id=other_existing)]),
+            ] * 2
+            member_add.reset_mock()
+
+            microsoft_entra_sync.send(self.provider.pk).get_result()
+            self.assertEqual(group_patch.call_count, 2)
+            self.assertEqual(
+                [call.args[0].odata_id for call in member_add.call_args_list],
+                [f"https://graph.microsoft.com/v1.0/directoryObjects/{missing}"] * 2,
+            )
+            self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
 
     def test_group_create_member_remove(self):
         """Test group creation"""

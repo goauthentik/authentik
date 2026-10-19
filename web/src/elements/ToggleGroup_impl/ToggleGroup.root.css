@@ -56,6 +56,5 @@ html[data-theme="dark"] {
     --pf-c-toggle-group__button--disabled--BackgroundColor: var(--pf-global--palette--black-600);
     --pf-c-toggle-group__button--disabled--Color: var(--pf-global--palette--black-100);
     --pf-c-toggle-group__button--Color: var(--ak-dark-foreground);
-    --pf-c-toggle-group__button--BackgroundColor: var(--ak-dark-background-light);
     --pf-c-toggle-group__button--m-selected--BackgroundColor: var(--pf-global--primary-color--100);
 }
