@@ -7,11 +7,11 @@ from django.urls import reverse
 from authentik.core.tests.utils import create_test_flow
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.flows.planner import FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_PLAN
 
 
-class TestHelperView(FlowTestCase):
+class TestHelperView(APIFlowTestCase):
     """Test helper views logic"""
 
     def test_default_view(self):

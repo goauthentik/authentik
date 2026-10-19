@@ -651,7 +651,7 @@
   <target>Based on <x id="0" equiv-text="${value.versionCurrent}"/></target>
 </trans-unit>
 <trans-unit id="s68a50b1ee6efee7b">
-  <source><x id="0" equiv-text="${value.versionLatest}"/> is available!</source>
+  <source><x id="0" equiv-text="${upstreamVersion}"/> is available!</source>
   <target><x id="0" equiv-text="${value.versionLatest}"/> is available!</target>
 </trans-unit>
 <trans-unit id="s08272eeeddfd244e">
@@ -13281,6 +13281,24 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="sb7a30bbc1dcf6de9">
   <source>Issues</source>
+</trans-unit>
+<trans-unit id="s07463520e4c6f064">
+  <source>A new version is available!</source>
+</trans-unit>
+<trans-unit id="s809b66661523bd3e">
+  <source>Danger banner:</source>
+</trans-unit>
+<trans-unit id="se9caa2b970300b67">
+  <source>Warning banner:</source>
+</trans-unit>
+<trans-unit id="sfd32828882e09561">
+  <source>Security release <x id="0" equiv-text="${v.version}"/> of <x id="1" equiv-text="${this.brandingTitle}"/> is available. Update now.</source>
+</trans-unit>
+<trans-unit id="s6bce0c6466a2cf53">
+  <source>Version <x id="0" equiv-text="${v.version}"/> of <x id="1" equiv-text="${this.brandingTitle}"/> is available.</source>
+</trans-unit>
+<trans-unit id="sbf0ff47d8bff9545">
+  <source>Click here for the changelog.</source>
 </trans-unit>
 </body>
 </file>
