@@ -59,7 +59,7 @@ class Flag[T]:
                 function="jsonb_set",
             )
         )
-        get_system_settings.invalidate()
+        get_system_settings.cache_clear()
 
     def get_default(self) -> T | None:
         return self.default
