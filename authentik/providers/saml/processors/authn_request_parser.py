@@ -19,17 +19,16 @@ from authentik.common.saml.constants import (
     RSA_SHA512,
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
+from authentik.common.saml.exceptions import (
+    ERROR_CANNOT_DECODE_REQUEST,
+    ERROR_FAILED_TO_VERIFY,
+    ERROR_SIGNATURE_REQUIRED_BUT_ABSENT,
+    CannotHandleAssertion,
+)
 from authentik.lib.xml import UnsafeXML, lxml_from_string
-from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
 from authentik.sources.saml.models import SAMLNameIDPolicy
-
-ERROR_CANNOT_DECODE_REQUEST = "Cannot decode SAML request."
-ERROR_SIGNATURE_REQUIRED_BUT_ABSENT = (
-    "Verification Certificate configured, but request is not signed."
-)
-ERROR_FAILED_TO_VERIFY = "Failed to verify signature"
 
 
 @dataclass(slots=True)

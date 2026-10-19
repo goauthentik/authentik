@@ -35584,6 +35584,7 @@ components:
       properties:
         parent:
           type: integer
+          nullable: true
         label:
           type: string
         expiring:
@@ -35766,6 +35767,9 @@ components:
       - ecdsa
       - ed25519
       - ed448
+      - mldsa44
+      - mldsa65
+      - mldsa87
       type: string
     App:
       type: object
@@ -38059,6 +38063,9 @@ components:
       - dsa
       - ed25519
       - ed448
+      - mldsa44
+      - mldsa65
+      - mldsa87
       type: string
     CertificateKeyPairRequest:
       type: object
@@ -43497,6 +43504,9 @@ components:
       - ec
       - ed25519
       - ed448
+      - mldsa44
+      - mldsa65
+      - mldsa87
       - rsa
     KubernetesServiceConnection:
       type: object
@@ -59875,7 +59885,7 @@ components:
           type: integer
         user_obj:
           allOf:
-          - $ref: '#/components/schemas/User'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
         description:
           type: string
@@ -60168,6 +60178,42 @@ components:
           description: Number of passwords to check against.
       required:
       - name
+    UpdateVersionInfo:
+      properties:
+        version:
+          title: Version
+          type: string
+        changelog:
+          title: Changelog
+          type: string
+        changelog_url:
+          format: uri
+          maxLength: 2083
+          minLength: 1
+          title: Changelog Url
+          type: string
+        reason:
+          $ref: '#/components/schemas/UpdateVersionReason'
+        valid:
+          default: true
+          title: Valid
+          type: boolean
+      required:
+      - version
+      - changelog
+      - changelog_url
+      - reason
+      title: UpdateVersionInfo
+      type: object
+    UpdateVersionReason:
+      description: Reason why an authentik update was released
+      enum:
+      - bugfix
+      - feature
+      - security
+      - other
+      title: UpdateVersionReason
+      type: string
     UsageEnum:
       enum:
       - media
@@ -61437,12 +61483,8 @@ components:
           description: Get current version
           readOnly: true
         version_latest:
-          type: string
-          description: Get latest version from cache
-          readOnly: true
-        version_latest_valid:
-          type: boolean
-          description: Check if latest version is valid
+          allOf:
+          - $ref: '#/components/schemas/UpdateVersionInfo'
           readOnly: true
         build_hash:
           type: string
@@ -61462,7 +61504,6 @@ components:
       - outpost_outdated
       - version_current
       - version_latest
-      - version_latest_valid
     VersionHistory:
       type: object
       description: VersionHistory Serializer
