@@ -13,7 +13,7 @@ class LocalAnonRateThrottle(AnonRateThrottle):
     protective layer amplifies DB load under flood.
 
     Points the throttle's cache at the ``throttle`` LocMemCache alias instead.
-    Counters are per-process (per gunicorn worker)
+    Counters are per-process (per server worker)
     """
 
     cache = caches["throttle"]

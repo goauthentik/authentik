@@ -122,15 +122,9 @@ fn run(cmd: &mut Command) -> Result<()> {
 fn run_module(module: &str, args: &[String]) -> Result<()> {
     crate::python::initialize()?;
     let prometheus_dir = prometheus_dir()?;
-    let cwd = std::env::current_dir()?;
     Python::attach(|py| {
         let result = (|| -> PyResult<()> {
             let sys = py.import("sys")?;
-            // `python -m` puts the working directory first, so that `authentik` can be imported
-            let path = sys.getattr("path")?;
-            if !path.contains(cwd.as_os_str())? {
-                path.call_method1("insert", (0_i32, cwd.as_os_str()))?;
-            }
             let sys_argv: Vec<&str> = std::iter::once(module)
                 .chain(args.iter().map(String::as_str))
                 .collect();

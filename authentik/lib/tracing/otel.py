@@ -88,8 +88,8 @@ class OpenTelemetryTracer(Tracer):
         """Create and set the real OpenTelemetry TracerProvider and span exporter.
 
         Must run after any fork: BatchSpanProcessor's background export thread doesn't
-        survive fork() safely. Under gunicorn's preload_app, call this from a post_fork
-        hook, after setup_pre_fork() has run pre-fork."""
+        survive fork() safely. When the app is preloaded before forking, call this after the fork,
+        after setup_pre_fork() has run pre-fork."""
         sample_rate = 1 if settings.DEBUG else float(CONFIG.get("error_reporting.sample_rate", 0.1))
         provider = TracerProvider(
             resource=Resource.create(

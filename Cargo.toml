@@ -71,6 +71,7 @@ moka = { version = "= 0.12.16", default-features = false, features = [
 nix = { version = "= 0.31.3", features = [
   "fs",
   "hostname",
+  "process",
   "signal",
   "user",
 ] }

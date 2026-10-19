@@ -1,6 +1,6 @@
 //! Hands connections to the ASGI application running in the embedded Python interpreter.
 
-use std::{convert::Infallible, net::IpAddr, sync::Arc};
+use std::{net::IpAddr, sync::Arc};
 
 use axum::{
     body::{Body, Bytes},
@@ -15,7 +15,6 @@ use axum::{
 };
 use eyre::{Result, eyre};
 use futures::{SinkExt as _, StreamExt as _};
-use http_body_util::BodyExt as _;
 use hyper::upgrade::OnUpgrade;
 use hyper_util::rt::TokioIo;
 use pyo3::{
@@ -35,19 +34,11 @@ use tokio_tungstenite::{
         protocol::{CloseFrame, Role},
     },
 };
-use tracing::{trace, warn};
+use tracing::warn;
 
 /// A message the application sent.
 #[derive(Debug)]
 enum Sent {
-    ResponseStart {
-        status: u16,
-        headers: HeaderMap,
-    },
-    ResponseBody {
-        body: Bytes,
-        more_body: bool,
-    },
     WebsocketAccept {
         subprotocol: Option<String>,
         headers: HeaderMap,
@@ -61,11 +52,9 @@ enum Sent {
 /// A message for the application to receive.
 #[derive(Debug)]
 enum Received {
-    HttpRequest(Bytes),
-    HttpDisconnect,
-    WebsocketConnect,
-    WebsocketReceive(Message),
-    WebsocketDisconnect(u16),
+    Connect,
+    Receive(Message),
+    Disconnect(u16),
 }
 
 fn extract_headers(message: &Bound<'_, PyDict>) -> PyResult<HeaderMap> {
@@ -110,14 +99,6 @@ impl Sent {
             return Ok(None);
         };
         Ok(match &*kind.extract::<PyBackedStr>()? {
-            "http.response.start" => Some(Self::ResponseStart {
-                status: get(message, "status")?.map_or(Ok(200), |v| v.extract())?,
-                headers: extract_headers(message)?,
-            }),
-            "http.response.body" => Some(Self::ResponseBody {
-                body: extract_bytes(message, "body")?.unwrap_or_default(),
-                more_body: get(message, "more_body")?.map_or(Ok(false), |v| v.is_truthy())?,
-            }),
             "websocket.accept" => Some(Self::WebsocketAccept {
                 subprotocol: get(message, "subprotocol")?
                     .map(|v| v.extract())
@@ -148,21 +129,15 @@ impl Received {
     fn into_dict(self, py: Python<'_>) -> PyResult<Bound<'_, PyDict>> {
         let dict = PyDict::new(py);
         match self {
-            Self::HttpRequest(body) => {
-                dict.set_item("type", "http.request")?;
-                dict.set_item("body", PyBytes::new(py, &body))?;
-                dict.set_item("more_body", false)?;
-            }
-            Self::HttpDisconnect => dict.set_item("type", "http.disconnect")?,
-            Self::WebsocketConnect => dict.set_item("type", "websocket.connect")?,
-            Self::WebsocketReceive(message) => {
+            Self::Connect => dict.set_item("type", "websocket.connect")?,
+            Self::Receive(message) => {
                 dict.set_item("type", "websocket.receive")?;
                 match message {
                     Message::Text(text) => dict.set_item("text", text.as_str())?,
                     message => dict.set_item("bytes", PyBytes::new(py, &message.into_data()))?,
                 }
             }
-            Self::WebsocketDisconnect(code) => {
+            Self::Disconnect(code) => {
                 dict.set_item("type", "websocket.disconnect")?;
                 dict.set_item("code", code)?;
             }
@@ -179,12 +154,7 @@ pub(super) struct Peer {
     pub(super) scheme: String,
 }
 
-fn build_scope<'py>(
-    py: Python<'py>,
-    request: &Head,
-    peer: &Peer,
-    websocket: bool,
-) -> PyResult<Bound<'py, PyDict>> {
+fn build_scope<'py>(py: Python<'py>, request: &Head, peer: &Peer) -> PyResult<Bound<'py, PyDict>> {
     let scope = PyDict::new(py);
     let asgi = PyDict::new(py);
     asgi.set_item("version", "3.0")?;
@@ -222,25 +192,19 @@ fn build_scope<'py>(
         .collect::<PyResult<Vec<_>>>()?;
     scope.set_item("headers", headers)?;
     scope.set_item("client", (peer.client.to_string(), 0_u16))?;
-    if websocket {
-        scope.set_item("type", "websocket")?;
-        let scheme = if peer.scheme == "https" { "wss" } else { "ws" };
-        scope.set_item("scheme", scheme)?;
-        let subprotocols: Vec<&str> = request
-            .headers()
-            .get_all(SEC_WEBSOCKET_PROTOCOL)
-            .iter()
-            .filter_map(|value| value.to_str().ok())
-            .flat_map(|value| value.split(','))
-            .map(str::trim)
-            .filter(|value| !value.is_empty())
-            .collect();
-        scope.set_item("subprotocols", subprotocols)?;
-    } else {
-        scope.set_item("type", "http")?;
-        scope.set_item("scheme", &peer.scheme)?;
-        scope.set_item("method", request.method().as_str())?;
-    }
+    scope.set_item("type", "websocket")?;
+    let scheme = if peer.scheme == "https" { "wss" } else { "ws" };
+    scope.set_item("scheme", scheme)?;
+    let subprotocols: Vec<&str> = request
+        .headers()
+        .get_all(SEC_WEBSOCKET_PROTOCOL)
+        .iter()
+        .filter_map(|value| value.to_str().ok())
+        .flat_map(|value| value.split(','))
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .collect();
+    scope.set_item("subprotocols", subprotocols)?;
     Ok(scope)
 }
 
@@ -274,35 +238,20 @@ impl Receiver {
     }
 }
 
-/// Tells the application the client is gone, once the response body is dropped.
-struct DisconnectOnDrop(Receiver);
-
-impl Drop for DisconnectOnDrop {
-    fn drop(&mut self) {
-        let receiver = self.0.clone();
-        if let Ok(handle) = tokio::runtime::Handle::try_current() {
-            handle.spawn(async move {
-                if let Err(err) = receiver.push(Received::HttpDisconnect).await {
-                    trace!(?err, "failed to notify the application of the disconnect");
-                }
-            });
-        }
-    }
-}
-
 /// The ASGI application in `lifecycle/server.py`.
 #[derive(Debug)]
 pub(crate) struct Asgi(Arc<Py<PyAny>>);
 
 impl Asgi {
-    /// Load authentik's application. Blocks for as long as Django takes to start.
+    /// Start authentik's application in a process forked after `lifecycle.server.preload`.
     ///
-    /// Returns the ASGI app, used for websockets, alongside the WSGI app `lifecycle.server`
-    /// also builds, which handles ordinary HTTP requests (see `super::wsgi`). Both come out
-    /// of this single call so Django's startup sequence only runs once.
-    pub(super) fn load() -> Result<(Self, Py<PyAny>)> {
+    /// Returns the ASGI app, used for websockets, alongside the WSGI app, which handles
+    /// ordinary HTTP requests (see `super::wsgi`).
+    pub(super) fn start_worker(worker_id: usize) -> Result<(Self, Py<PyAny>)> {
         Python::attach(|py| {
-            let server = py.import("lifecycle.server")?.call_method0("load")?;
+            let server = py
+                .import("lifecycle.server")?
+                .call_method1("post_fork", (worker_id,))?;
             let wsgi_application = server.getattr("wsgi_application")?.unbind();
             Ok::<_, PyErr>((Self::new(server.unbind()), wsgi_application))
         })
@@ -333,68 +282,19 @@ impl Asgi {
     }
 
     /// Start the application on a connection.
-    async fn start(
-        &self,
-        head: Head,
-        peer: &Peer,
-        websocket: bool,
-    ) -> Result<(Receiver, UnboundedReceiver<Sent>)> {
+    async fn start(&self, head: Head, peer: &Peer) -> Result<(Receiver, UnboundedReceiver<Sent>)> {
         let (tx, rx) = unbounded_channel::<Sent>();
         let server = Arc::clone(&self.0);
         let peer = peer.clone();
         let receive = spawn_blocking(move || {
             Python::attach(|py| {
-                let scope = build_scope(py, &head, &peer, websocket)?;
+                let scope = build_scope(py, &head, &peer)?;
                 let send = send_function(py, tx)?;
                 server.call_method1(py, "handle", (scope, send))
             })
         })
         .await??;
         Ok((Receiver(Arc::new(receive)), rx))
-    }
-
-    pub(super) async fn http(&self, request: Request, peer: &Peer) -> Result<Response> {
-        let (receiver, mut rx) = self.start(head(&request), peer, false).await?;
-        // ponytail: buffers the request body, which the body limit layer caps. Stream it to the
-        // application if large uploads become a problem.
-        let body = request.into_body().collect().await?.to_bytes();
-        receiver.push(Received::HttpRequest(body)).await?;
-        let guard = DisconnectOnDrop(receiver);
-
-        let (status, headers) = loop {
-            match rx.recv().await {
-                Some(Sent::ResponseStart { status, headers }) => break (status, headers),
-                Some(Sent::Done) | None => {
-                    return Ok(StatusCode::INTERNAL_SERVER_ERROR.into_response());
-                }
-                Some(_) => {}
-            }
-        };
-
-        // ponytail: the channel is unbounded, so a slow client makes a large streamed response
-        // pile up in memory. Bound it once that matters.
-        let body = futures::stream::unfold(Some((rx, guard)), async |state| {
-            let (mut rx, guard) = state?;
-            loop {
-                match rx.recv().await {
-                    Some(Sent::ResponseBody {
-                        body,
-                        more_body: true,
-                    }) => return Some((Ok::<_, Infallible>(body), Some((rx, guard)))),
-                    Some(Sent::ResponseBody {
-                        body,
-                        more_body: false,
-                    }) => return Some((Ok(body), None)),
-                    Some(Sent::Done) | None => return None,
-                    Some(_) => {}
-                }
-            }
-        });
-
-        let mut response = Response::new(Body::from_stream(body));
-        *response.status_mut() = StatusCode::from_u16(status)?;
-        *response.headers_mut() = headers;
-        Ok(response)
     }
 
     pub(super) async fn websocket(&self, mut request: Request, peer: &Peer) -> Result<Response> {
@@ -407,8 +307,8 @@ impl Asgi {
         };
         let client_upgrade = hyper::upgrade::on(&mut request);
 
-        let (receiver, mut rx) = self.start(head(&request), peer, true).await?;
-        receiver.push(Received::WebsocketConnect).await?;
+        let (receiver, mut rx) = self.start(head(&request), peer).await?;
+        receiver.push(Received::Connect).await?;
 
         let (subprotocol, headers) = loop {
             match rx.recv().await {
@@ -482,7 +382,7 @@ async fn relay_websocket(
                     break Ok(());
                 }
                 Some(Ok(message @ (Message::Text(_) | Message::Binary(_)))) => {
-                    if let Err(err) = receiver.push(Received::WebsocketReceive(message)).await {
+                    if let Err(err) = receiver.push(Received::Receive(message)).await {
                         break Err(err);
                     }
                 }
@@ -508,7 +408,7 @@ async fn relay_websocket(
             },
         }
     };
-    receiver.push(Received::WebsocketDisconnect(code)).await?;
+    receiver.push(Received::Disconnect(code)).await?;
     result.map_err(|err: eyre::Report| eyre!("websocket relay failed: {err}"))
 }
 
@@ -532,14 +432,6 @@ async def app(scope, receive, send):
             return
         await send({"type": "websocket.accept", "subprotocol": (scope["subprotocols"] or [None])[0]})
         return
-    message = await receive()
-    await send({
-        "type": "http.response.start",
-        "status": 201,
-        "headers": [(b"x-method", scope["method"].encode()), (b"x-client", scope["client"][0].encode())],
-    })
-    await send({"type": "http.response.body", "body": scope["path"].encode() + b"|", "more_body": True})
-    await send({"type": "http.response.body", "body": message["body"]})
 
 server = Server(app, asyncio.new_event_loop())
 "#;
@@ -547,11 +439,6 @@ server = Server(app, asyncio.new_event_loop())
     fn asgi() -> Asgi {
         crate::python::initialize().expect("failed to initialize Python");
         Asgi::new(Python::attach(|py| {
-            let cwd = std::env::current_dir().expect("no working directory");
-            py.import("sys")
-                .and_then(|sys| sys.getattr("path"))
-                .and_then(|path| path.call_method1("insert", (0_i32, cwd.as_os_str())))
-                .expect("failed to set sys.path");
             let code = CString::new(APP).expect("invalid code");
             PyModule::from_code(py, &code, c"test_app.py", c"test_app")
                 .and_then(|module| module.getattr("server"))
@@ -581,28 +468,6 @@ server = Server(app, asyncio.new_event_loop())
         builder
             .body(Body::empty())
             .expect("failed to build request")
-    }
-
-    #[tokio::test]
-    async fn http_request_round_trips() {
-        let request = Request::builder()
-            .method("POST")
-            .uri("/api/v3/caf%C3%A9/?a=b")
-            .body(Body::from("hello"))
-            .expect("failed to build request");
-
-        let response = asgi().http(request, &peer()).await.expect("request failed");
-
-        assert_eq!(response.status(), StatusCode::CREATED);
-        assert_eq!(response.headers()["x-method"], "POST");
-        assert_eq!(response.headers()["x-client"], "192.0.2.1");
-        let body = response
-            .into_body()
-            .collect()
-            .await
-            .expect("failed to read body")
-            .to_bytes();
-        assert_eq!(body, "/api/v3/café/|hello");
     }
 
     /// RAC is the only consumer that negotiates a subprotocol, and browsers

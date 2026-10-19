@@ -1,9 +1,10 @@
-"""Runs the ASGI application inside the authentik binary, which hands it connections directly."""
+"""Runs authentik's applications in the processes the authentik binary forks for them, which
+hands them connections directly."""
 
 import asyncio
-import gc
 import os
-import sys
+import platform
+import signal
 from collections.abc import Callable
 from hashlib import sha512
 from threading import Thread
@@ -55,7 +56,7 @@ class Server:
     def __init__(self, application, loop: asyncio.AbstractEventLoop):
         self.application = application
         self.loop = loop
-        # Set by `load()`, once `authentik.root.wsgi` is importable. Ordinary HTTP
+        # Set by `post_fork()`, once `authentik.root.wsgi` is importable. Ordinary HTTP
         # requests are dispatched to this directly, from whichever thread the
         # embedding binary calls it on, instead of through the ASGI app above.
         self.wsgi_application = None
@@ -97,28 +98,56 @@ class Server:
         multiprocess.mark_process_dead(os.getpid())
 
 
-def load() -> Server:
-    """Load authentik's ASGI application"""
+def preload():
+    """Load authentik's applications once, before the server forks the processes that run them"""
+    from authentik.lib.tracing.common import TRACER_DEFER_POSTFORK_ENV_VAR
+
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
+    # Tracing backends start threads, which don't survive the fork, so they are set up in
+    # `post_fork` instead
+    os.environ[TRACER_DEFER_POSTFORK_ENV_VAR] = "true"
+    # libpq can try Kerberos/GSS on macOS, and urllib can consult the system's proxy settings,
+    # neither of which is fork-safe
+    if platform.system() == "Darwin":
+        os.environ.setdefault("PGGSSENCMODE", "disable")
+        os.environ.setdefault("NO_PROXY", "*")
+        os.environ.setdefault("no_proxy", "*")
+
+    # The server waits for its forked processes to exit with `sigwait`, which never sees SIGCHLD
+    # on macOS while it is ignored, as it is by default
+    signal.signal(signal.SIGCHLD, lambda *_: None)
+
+    from django.db import connections
+
+    import authentik.root.asgi  # noqa: F401
+    import authentik.root.wsgi  # noqa: F401
+
+    send_startup_analytics()
+    # Forked processes must open their own
+    connections.close_all()
+
+
+def post_fork(worker_id: int) -> Server:
+    """Start serving in a process forked after `preload`"""
     import uvloop
 
+    from authentik.lib.config import CONFIG
     from authentik.lib.debug import start_debug_server, start_pyroscope
     from authentik.root.asgi import application
     from authentik.root.wsgi import application as wsgi_application
 
+    signal.signal(signal.SIGCHLD, signal.SIG_DFL)
+    if CONFIG.get_bool("error_reporting.enabled", False):
+        from authentik.lib.tracing import setup_post_fork
+
+        setup_post_fork()
+    start_pyroscope("server", worker_id=str(worker_id))
+
     server = Server(application, uvloop.new_event_loop())
     server.wsgi_application = wsgi_application
-    send_startup_analytics()
-    start_debug_server()
-    start_pyroscope("server", worker_id="1")
-    application.call_startup()
-    # The free-threaded build's GC scans the whole heap every time, stopping all threads while it
-    # does, so collect less often. Freezing what startup allocated takes it out of the garbage
-    # that is considered, as nothing loaded at startup ever goes away.
-    # ponytail: fixed threshold, make it configurable if memory use matters for some deployments
-    gc.collect()
-    gc.freeze()
-    gc.set_threshold(500_000)
-    # False on a free-threaded build, unless an extension module turned the GIL back on
-    LOGGER.info("Loaded application", gil_enabled=sys._is_gil_enabled())
+    # Only once, startup code needed in every process doesn't use this signal
+    if worker_id == 1:
+        start_debug_server()
+        application.call_startup()
+    LOGGER.info("Started server process", worker_id=worker_id)
     return server

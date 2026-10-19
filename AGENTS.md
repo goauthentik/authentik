@@ -18,7 +18,7 @@ The Python core and the web UI talk through a **generated OpenAPI client** — n
 
 ```
 authentik/          # Django core — the IdP itself (see "The authentik Django package" below)
-lifecycle/          # Boot/runtime: migrations, the in-process ASGI bridge, the `ak` CLI, container + AWS entrypoints
+lifecycle/          # Boot/runtime: migrations, the prefork Python server, the `ak` CLI, container + AWS entrypoints
 cmd/                # Go entrypoints: ldap/ rac/ radius/ outposts
 internal/           # Shared Go: outpost implementations, config
 src/                # Rust server/worker (ak-axum based; gated behind cargo features)
@@ -153,7 +153,7 @@ Authoritative contributor docs live under `website/docs/developer-docs/` and are
 
 | Concern         | Tooling                                                                  |
 | --------------- | ------------------------------------------------------------------------ |
-| Core server     | Python 3.15, Django 5.2 + Django REST Framework, Channels (ASGI)         |
+| Core server     | Python 3.14, Django 5.2 + Django REST Framework, Channels (ASGI)         |
 | Background work | Dramatiq (Postgres broker)                                               |
 | Datastore       | PostgreSQL                                                               |
 | Outposts        | Go 1.26 (`goauthentik.io` module) — LDAP, proxy, RAC, RADIUS             |

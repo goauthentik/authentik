@@ -251,6 +251,12 @@ pub struct WebConfig {
     pub timeout_http_read: String,
     pub timeout_http_write: String,
     pub timeout_http_idle: String,
+    /// How many processes the server forks to run Python in.
+    #[serde(deserialize_with = "deserialize_str_or_num")]
+    pub workers: NonZeroUsize,
+    /// How many threads each of those processes runs requests on.
+    #[serde(deserialize_with = "deserialize_str_or_num")]
+    pub threads: NonZeroUsize,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

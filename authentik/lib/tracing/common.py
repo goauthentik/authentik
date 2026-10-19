@@ -5,8 +5,8 @@ from contextlib import contextmanager
 from functools import wraps
 from typing import Any, Protocol
 
-# Set by lifecycle/gunicorn.conf.py before the app is preloaded, to tell
-# AuthentikCoreConfig.ready() to defer setup_post_fork() to gunicorn's post_fork hook
+# Set by lifecycle/server.py before the app is preloaded, to tell
+# AuthentikCoreConfig.ready() to defer setup_post_fork() to its post_fork
 TRACER_DEFER_POSTFORK_ENV_VAR = "AUTHENTIK_TRACER_DEFER_POSTFORK"
 
 

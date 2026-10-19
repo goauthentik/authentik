@@ -52,9 +52,12 @@ use crate::{
     worker::Workers,
 };
 
+mod asgi;
 mod core;
+pub(crate) mod prefork;
 mod r#static;
 mod tls;
+mod wsgi;
 
 #[derive(Debug, Default, FromArgs, PartialEq, Eq)]
 /// Run the authentik server.
@@ -73,7 +76,7 @@ pub(crate) fn socket_path() -> PathBuf {
 
 #[derive(Debug)]
 pub(crate) struct Server {
-    gunicorn: Mutex<Child>,
+    prefork: Mutex<Child>,
     socket_path: PathBuf,
     pub(crate) client: Client<UnixSocketConnector<PathBuf>, Body>,
     pub(crate) workers: ArcSwapOption<Workers>,
@@ -86,14 +89,9 @@ impl Server {
     fn new(socket_path: PathBuf) -> Result<Self> {
         info!("starting server");
 
-        let gunicorn = Command::new("gunicorn")
-            .args([
-                "--bind",
-                &format!("unix://{}", socket_path.display()),
-                "-c",
-                "./lifecycle/gunicorn.conf.py",
-                "authentik.root.asgi:application",
-            ])
+        let prefork = Command::new(std::env::current_exe()?)
+            .arg("server-prefork")
+            .arg(&socket_path)
             .kill_on_drop(true)
             .stdin(Stdio::null())
             .stdout(Stdio::inherit())
@@ -106,7 +104,7 @@ impl Server {
             .build(UnixSocketConnector::new(socket_path.clone()));
 
         Ok(Self {
-            gunicorn: Mutex::new(gunicorn),
+            prefork: Mutex::new(prefork),
             client,
             socket_path,
             workers: ArcSwapOption::empty(),
@@ -121,12 +119,12 @@ impl Server {
             signal = signal.as_str(),
             "sending shutdown signal to server"
         );
-        let mut gunicorn = self.gunicorn.lock().await;
-        if let Some(id) = gunicorn.id() {
+        let mut prefork = self.prefork.lock().await;
+        if let Some(id) = prefork.id() {
             kill(Pid::from_raw(id.cast_signed()), signal)?;
         }
-        gunicorn.wait().await?;
-        drop(gunicorn);
+        prefork.wait().await?;
+        drop(prefork);
         Ok(())
     }
 
@@ -141,7 +139,7 @@ impl Server {
     }
 
     async fn is_alive(&self) -> bool {
-        let try_wait = self.gunicorn.lock().await.try_wait();
+        let try_wait = self.prefork.lock().await.try_wait();
         match try_wait {
             Ok(Some(code)) => {
                 warn!(?code, "server has exited");
@@ -268,7 +266,7 @@ async fn route_core_and_outpost(
 ) -> Response {
     let start = Instant::now();
 
-    // The embedded outpost is only populated once gunicorn is ready, so this is
+    // The embedded outpost is only populated once the server is ready, so this is
     // `None` during startup and every request naturally falls through to core.
     let app = proxy_outpost
         .load_full()
@@ -318,7 +316,7 @@ pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
     let arbiter = tasks.arbiter();
     let mut events_rx = arbiter.events_subscribe();
 
-    let server = Arc::new(Server::new(temp_dir().join("authentik-gunicorn.sock"))?);
+    let server = Arc::new(Server::new(temp_dir().join("authentik-core.sock"))?);
 
     tasks
         .build_task()
@@ -352,7 +350,7 @@ pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
     )?;
 
     if !config::get().outposts.disable_embedded_outpost {
-        info!("waiting for gunicorn to be ready before starting embedded outpost");
+        info!("waiting for the server to be ready before starting embedded outpost");
         loop {
             tokio::select! {
                 event = events_rx.recv() => {

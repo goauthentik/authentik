@@ -1,10 +1,10 @@
 //! Hands ordinary HTTP requests to the Django WSGI application in the embedded interpreter.
 //!
 //! Unlike the ASGI bridge, this runs every request as a single blocking Python call on one of
-//! a fixed set of threads that stay attached to the interpreter. On a free-threaded
-//! interpreter that means requests genuinely run in parallel across OS threads, instead of
-//! all funnelling through the one asyncio loop thread (and asgiref's single-worker
-//! thread-sensitive executor) that the ASGI path is stuck with for synchronous Django/DRF code.
+//! a fixed set of threads that stay attached to the interpreter, instead of funnelling them all
+//! through the one asyncio loop thread (and asgiref's single-worker thread-sensitive executor)
+//! that the ASGI path is stuck with for synchronous Django/DRF code. Requests overlap while
+//! they wait on I/O, the server forks processes to run them in parallel (see `super::prefork`).
 
 use std::{
     collections::HashMap,
@@ -159,7 +159,7 @@ fn build_environ<'py>(
     )?;
     environ.set_item("wsgi.errors", STDERR.import(py, "sys", "stderr")?)?;
     environ.set_item("wsgi.multithread", true)?;
-    environ.set_item("wsgi.multiprocess", false)?;
+    environ.set_item("wsgi.multiprocess", true)?;
     environ.set_item("wsgi.run_once", false)?;
 
     // Headers repeated on the wire become one comma-joined HTTP_* value, per the WSGI spec.
@@ -306,11 +306,6 @@ def app(environ, start_response):
     fn wsgi() -> Wsgi {
         crate::python::initialize().expect("failed to initialize Python");
         let application = Python::attach(|py| {
-            let cwd = std::env::current_dir().expect("no working directory");
-            py.import("sys")
-                .and_then(|sys| sys.getattr("path"))
-                .and_then(|path| path.call_method1("insert", (0_i32, cwd.as_os_str())))
-                .expect("failed to set sys.path");
             let code = CString::new(APP).expect("invalid code");
             PyModule::from_code(py, &code, c"test_wsgi_app.py", c"test_wsgi_app")
                 .and_then(|module| module.getattr("app"))
@@ -354,7 +349,7 @@ def app(environ, start_response):
     }
 
     /// The whole point of moving HTTP off the single ASGI event-loop thread: requests must
-    /// actually land on more than one OS thread, or a free-threaded interpreter buys nothing.
+    /// actually land on more than one OS thread.
     #[tokio::test]
     async fn concurrent_requests_run_on_distinct_threads() {
         let wsgi = wsgi();

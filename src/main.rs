@@ -37,6 +37,8 @@ enum Command {
     #[cfg(feature = "core")]
     Server(server::Cli),
     #[cfg(feature = "core")]
+    ServerPrefork(server::prefork::Cli),
+    #[cfg(feature = "core")]
     Worker(worker::Cli),
     #[cfg(feature = "proxy")]
     Proxy(outpost::proxy::Cli),
@@ -80,6 +82,8 @@ fn main() -> Result<()> {
             boot::bootstrap()?;
             Mode::set(Mode::Server)?;
         }
+        #[cfg(feature = "core")]
+        Command::ServerPrefork(args) => return server::prefork::run(args, tracing_crude),
         #[cfg(feature = "core")]
         Command::Worker(_) => {
             boot::bootstrap()?;
@@ -172,6 +176,7 @@ fn main() -> Result<()> {
                 // We're checking for these before starting anything else
                 #[cfg(feature = "core")]
                 Command::Manage(_)
+                | Command::ServerPrefork(_)
                 | Command::TestAll(_)
                 | Command::DumpConfig(_)
                 | Command::Bash(_)
