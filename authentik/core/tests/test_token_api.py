@@ -3,6 +3,8 @@
 from datetime import datetime, timedelta
 from json import loads
 
+from django.db import connection
+from django.test.utils import CaptureQueriesContext
 from django.urls.base import reverse
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.test import APITestCase
@@ -198,6 +200,37 @@ class TestTokenAPI(APITestCase):
         self.assertEqual(len(body["results"]), 2)
         self.assertEqual(body["results"][0]["identifier"], token_should.identifier)
         self.assertEqual(body["results"][1]["identifier"], token_should_not.identifier)
+
+    def test_list_owner_queries(self):
+        """Listing tokens does not query each token's owner separately"""
+        self.client.force_login(self.admin)
+        url = reverse("authentik_api:token-list")
+
+        def add_tokens(count: int):
+            for _ in range(count):
+                Token.objects.create(identifier=generate_id(), user=create_test_user())
+
+        add_tokens(2)
+        self.client.get(url)  # warm any per-process/session caches
+        with CaptureQueriesContext(connection) as ctx_small:
+            res = self.client.get(url)
+        small = len(loads(res.content)["results"])
+        baseline = len(ctx_small.captured_queries)
+
+        add_tokens(10)
+        self.client.get(url)
+        with CaptureQueriesContext(connection) as ctx_large:
+            res = self.client.get(url)
+        self.assertEqual(len(loads(res.content)["results"]), small + 10)
+
+        self.assertLessEqual(
+            len(ctx_large.captured_queries),
+            baseline + 2,
+            (
+                f"Query count grew from {baseline} to {len(ctx_large.captured_queries)} "
+                "after adding 10 tokens with distinct owners. Owners are fetched per token."
+            ),
+        )
 
     def test_serializer_no_request(self):
         """Test serializer without request"""

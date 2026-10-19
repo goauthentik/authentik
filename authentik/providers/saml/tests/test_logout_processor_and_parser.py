@@ -8,10 +8,10 @@ from authentik.common.saml.constants import (
     RSA_SHA256,
     SAML_NAME_ID_FORMAT_EMAIL,
 )
+from authentik.common.saml.parsers.logout_request import LogoutRequestParser
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.processors.logout_request import LogoutRequestProcessor
-from authentik.providers.saml.processors.logout_request_parser import LogoutRequestParser
 
 
 class TestLogoutIntegration(TestCase):
@@ -46,7 +46,7 @@ class TestLogoutIntegration(TestCase):
         )
 
         # Create parser for validation
-        self.parser = LogoutRequestParser(self.provider)
+        self.parser = LogoutRequestParser()
 
     def test_post_binding_roundtrip(self):
         """Test that a POST-encoded request can be parsed correctly"""
@@ -100,7 +100,7 @@ class TestLogoutIntegration(TestCase):
         encoded = processor.encode_post()
 
         # Create parser with verification enabled
-        parser = LogoutRequestParser(self.provider)
+        parser = LogoutRequestParser()
 
         # Parse it - this would validate signature if verification is enabled
         parsed = parser.parse(encoded)
