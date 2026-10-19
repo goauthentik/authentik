@@ -11,7 +11,7 @@
  */
 
 /**
- * PostgreSQL version and JIT setting of this request's database connection
+ * PostgreSQL information for this request's database connection
  *
  * @export
  * @interface SystemInfoPostgresql
@@ -20,6 +20,9 @@ export interface SystemInfoPostgresql {
     version: string;
     jit: string;
     jitSource: string;
+    ssl: boolean;
+    sslVersion: string | null;
+    sslCipher: string | null;
 }
 
 /**
@@ -33,6 +36,21 @@ export function instanceOfSystemInfoPostgresql(value: object): value is SystemIn
             !("jit_source" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["jitSource"] === undefined &&
             (value as Record<string, any>)["jit_source"] === undefined)
+    )
+        return false;
+    if (!("ssl" in value) || value["ssl"] === undefined) return false;
+    if (
+        (!("sslVersion" in (value as Record<string, any>)) &&
+            !("ssl_version" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["sslVersion"] === undefined &&
+            (value as Record<string, any>)["ssl_version"] === undefined)
+    )
+        return false;
+    if (
+        (!("sslCipher" in (value as Record<string, any>)) &&
+            !("ssl_cipher" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["sslCipher"] === undefined &&
+            (value as Record<string, any>)["ssl_cipher"] === undefined)
     )
         return false;
     return true;
@@ -53,6 +71,9 @@ export function SystemInfoPostgresqlFromJSONTyped(
         version: json["version"],
         jit: json["jit"],
         jitSource: json["jit_source"],
+        ssl: json["ssl"],
+        sslVersion: json["ssl_version"],
+        sslCipher: json["ssl_cipher"],
     };
 }
 
@@ -72,5 +93,8 @@ export function SystemInfoPostgresqlToJSONTyped(
         version: value["version"],
         jit: value["jit"],
         jit_source: value["jitSource"],
+        ssl: value["ssl"],
+        ssl_version: value["sslVersion"],
+        ssl_cipher: value["sslCipher"],
     };
 }

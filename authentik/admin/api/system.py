@@ -55,6 +55,9 @@ class PostgreSQLDict(TypedDict):
     version: str
     jit: str
     jit_source: str
+    ssl: bool
+    ssl_version: str | None
+    ssl_cipher: str | None
 
 
 class SystemInfoSerializer(PassiveSerializer):
@@ -131,14 +134,21 @@ class SystemInfoSerializer(PassiveSerializer):
         return get_system_settings().base_url
 
     def get_postgresql(self, request: Request) -> PostgreSQLDict:
-        """PostgreSQL version and JIT setting of this request's database connection"""
+        """PostgreSQL information for this request's database connection"""
         with connection.cursor() as cursor:
             cursor.execute(
-                "SELECT current_setting('server_version'), setting, source"
-                " FROM pg_settings WHERE name = 'jit'"
+                "SELECT current_setting('server_version'), setting, source, ssl, version, cipher"
+                " FROM pg_settings, pg_stat_ssl WHERE name = 'jit' AND pid = pg_backend_pid()"
             )
-            version, jit, jit_source = cursor.fetchone()
-        return {"version": version, "jit": jit, "jit_source": jit_source}
+            version, jit, jit_source, ssl, ssl_version, ssl_cipher = cursor.fetchone()
+        return {
+            "version": version,
+            "jit": jit,
+            "jit_source": jit_source,
+            "ssl": ssl,
+            "ssl_version": ssl_version,
+            "ssl_cipher": ssl_cipher,
+        }
 
 
 class SystemView(APIView):

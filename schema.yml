@@ -59375,8 +59375,7 @@ components:
           readOnly: true
         postgresql:
           type: object
-          description: PostgreSQL version and JIT setting of this request's database
-            connection
+          description: PostgreSQL information for this request's database connection
           properties:
             version:
               type: string
@@ -59384,9 +59383,20 @@ components:
               type: string
             jit_source:
               type: string
+            ssl:
+              type: boolean
+            ssl_version:
+              type: string
+              nullable: true
+            ssl_cipher:
+              type: string
+              nullable: true
           required:
           - jit
           - jit_source
+          - ssl
+          - ssl_cipher
+          - ssl_version
           - version
           readOnly: true
       required:

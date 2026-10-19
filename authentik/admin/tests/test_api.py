@@ -47,7 +47,7 @@ class TestAdminAPI(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_system_postgresql(self):
-        """Test system API reports the JIT setting of the database connection"""
+        """Test system API reports the JIT setting and TLS status of the database connection"""
         with connection.cursor() as cursor:
             cursor.execute("SET jit = off")
         response = self.client.get(reverse("authentik_api:admin_system"))
@@ -56,3 +56,5 @@ class TestAdminAPI(TestCase):
         self.assertEqual(postgresql["jit"], "off")
         self.assertEqual(postgresql["jit_source"], "session")
         self.assertTrue(postgresql["version"])
+        self.assertEqual(postgresql["ssl"], connection.connection.pgconn.ssl_in_use)
+        self.assertEqual(postgresql["ssl_version"] is not None, postgresql["ssl"])
