@@ -1,0 +1,70 @@
+---
+title: Highly available PostgreSQL with CloudNativePG
+description: Understand how CloudNativePG can manage a highly available PostgreSQL database for authentik on Kubernetes.
+sidebar_position: 8.1
+---
+
+[CloudNativePG (CNPG)](https://cloudnative-pg.io/) is an open-source Kubernetes operator that automates PostgreSQL replication, failover, and other database operations. It simplifies database high availability for authentik, but you still need resilient Kubernetes infrastructure, storage, and multiple server and worker instances. See [High availability](./high-availability.mdx) for the application architecture.
+
+This page explains design and operational considerations. For installation instructions, see the [CNPG installation documentation](https://cloudnative-pg.io/docs/current/installation_upgrade) and select your operator version.
+
+## How CNPG provides high availability
+
+CNPG manages a PostgreSQL cluster through a Kubernetes `Cluster` resource. A cluster contains a primary instance and one ore more standby replicas. The primary accepts reads and writes. Standby replicas maintain copies of the primary's data through PostgreSQL streaming replication and can be promoted to primary if it fails. Each instance has its own persistent storage.
+
+CNPG monitors instances and automatically promotes an eligible standby if the primary fails. It updates the read-write Kubernetes Service, giving authentik a stable endpoint rather than individual pod addresses.
+
+Failover still interrupts service: connections can close, and in-flight operations can fail. The stable endpoint lets clients reconnect without changing hostnames, but it does not preserve connections or replay transactions. See [CNPG automated failover](https://cloudnative-pg.io/docs/current/failover).
+
+## Resilient infrastructure and replica placement
+
+Distribute instances across nodes to tolerate node failures and, where available, across availability zones to tolerate zone outages. CNPG's default scheduling preference does not guarantee separation. Required anti-affinity enforces it, but pods remain pending without enough eligible nodes or zones. See [CNPG scheduling](https://cloudnative-pg.io/docs/current/scheduling).
+
+Recovery also depends on storage, networking, the Kubernetes control plane, and the CNPG operator. Ensure that surviving infrastructure has enough capacity. Replicas in one Kubernetes cluster do not protect against losing the entire cluster or region.
+
+## Replication and data durability
+
+Choose replication behavior based on your acceptable data loss and downtime:
+
+- Asynchronous replication, CNPG's default, acknowledges writes without waiting for standbys. Failover can lose recent transactions that have not reached the promoted replica.
+- Synchronous replication waits for a configured number of standbys to confirm commits. It improves durability but adds write latency, especially across zones. Strict durability pauses writes if the required standbys are unavailable.
+
+This choice affects authentik's application data, configuration, sessions, and background task coordination. Align replication and failover policies: synchronous replication alone does not guarantee against data loss in every failure scenario. See [CNPG replication](https://cloudnative-pg.io/docs/current/replication) and [failover quorum](https://cloudnative-pg.io/docs/current/failover#failover-quorum-quorum-based-failover).
+
+## How authentik connects to CNPG
+
+CNPG manages PostgreSQL separately from the authentik Helm release. Keep the chart's bundled database disabled through `postgresql.enabled`; see [PostgreSQL production setup](./install/kubernetes.mdx#postgresql-production-setup).
+
+Choose a PostgreSQL version supported by both CNPG and authentik. See the [authentik PostgreSQL configuration reference](./configuration/configuration.mdx#postgresql-settings) for requirements and connection settings.
+
+### Primary endpoint
+
+Connect both server and worker instances to the same application database through CNPG's read-write Service, `<cluster_name>-rw`. Use namespace-qualified DNS across namespaces. Avoid individual pod addresses and the `-r` or `-ro` Services, which can route to instances that cannot accept writes. See [CNPG Service management](https://cloudnative-pg.io/docs/current/service_management).
+
+Standbys provide failover capacity without authentik read replica configuration. Query offloading is separate and optional; see [read replica configuration](./configuration/configuration.mdx#read-replicas) and account for replication lag.
+
+### Database identity and credentials
+
+Use a dedicated database and owner role for authentik, which CNPG can create during [cluster bootstrap](https://cloudnative-pg.io/docs/current/bootstrap). The role needs permission to create and modify objects for authentik's startup and upgrade migrations.
+
+Supply the database name, username, and password to authentik. CNPG can generate or use a credentials Secret, but authentik does not discover or map it automatically. Configure Secrets to provide credentials to both server and worker pods.
+
+### Encrypted connections
+
+CNPG supports operator-managed or user-provided [TLS certificates](https://cloudnative-pg.io/docs/current/certificates). Provide authentik with the server's public certificate authority (CA) certificate, not the CA's private key. Configure verification through the [PostgreSQL TLS settings](./configuration/configuration.mdx#tlsssl-settings). For hostname verification, ensure that the server certificate covers the Service hostname.
+
+## Capacity and connection pooling
+
+Allow storage for database growth and write-ahead log (WAL) retention. Scaling authentik increases database load. Size connection capacity for all server and worker instances, including upgrade overlap.
+
+Connection pooling is optional. authentik can connect directly to CNPG's read-write Service and still benefit from automatic failover. If you need pooling, CNPG can manage PgBouncer.
+
+Some authentik operations need to keep using the same PostgreSQL connection, but transaction pooling can switch connections between transactions. Disabling server-side cursors alone does not address this requirement. Follow authentik's [connection pooler guidance](./configuration/configuration.mdx#using-a-postgresql-connection-pooler) for the additional configuration.
+
+## Backups and ongoing operations
+
+Replication also copies accidental deletions and unwanted changes; it is not a backup. Configure [scheduled base backups and WAL archiving](https://cloudnative-pg.io/docs/current/backup) for point-in-time recovery. Keep backups outside the database cluster's failure domain and test restoration regularly.
+
+Database backups do not cover every Kubernetes Secret or authentik file. Include credentials, deployment configuration, and external files in your [authentik recovery plan](../sys-mgmt/ops/backup-restore.mdx).
+
+Monitor replication lag, storage usage, connection counts, and backup health. Before production, test failover and planned switchovers with authentik. Verify that authentication and background processing recover within your downtime target, and plan PostgreSQL and operator maintenance.
