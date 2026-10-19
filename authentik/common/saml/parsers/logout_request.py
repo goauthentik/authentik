@@ -6,9 +6,7 @@ from dataclasses import dataclass
 from defusedxml import ElementTree
 
 from authentik.common.saml.constants import NS_SAML_ASSERTION, NS_SAML_PROTOCOL
-from authentik.providers.saml.exceptions import CannotHandleAssertion
-from authentik.providers.saml.models import SAMLProvider
-from authentik.providers.saml.processors.authn_request_parser import ERROR_CANNOT_DECODE_REQUEST
+from authentik.common.saml.exceptions import ERROR_CANNOT_DECODE_REQUEST, CannotHandleAssertion
 from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
 
 
@@ -31,11 +29,6 @@ class LogoutRequest:
 
 class LogoutRequestParser:
     """LogoutRequest Parser"""
-
-    provider: SAMLProvider
-
-    def __init__(self, provider: SAMLProvider):
-        self.provider = provider
 
     def _parse_xml(self, decoded_xml: str | bytes, relay_state: str | None = None) -> LogoutRequest:
         root = ElementTree.fromstring(decoded_xml)
