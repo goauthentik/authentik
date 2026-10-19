@@ -126,6 +126,20 @@ Contributions to the technical documentation are greatly appreciated. Open a PR 
 
 Please be sure to refer to our [Style Guide](../developer-docs/docs/style-guide.mdx) for the docs, and use a [template](./docs/templates/index.mdx) to make it easier for you. The style guidelines are also used for any Integrations documentation, and we have a template for Integrations as well, in our [GitHub repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.mdx`.
 
+#### Adding your company or product
+
+We don't accept pull requests in which a company adds its own product or service to the authentik documentation or README, unless authentik users have already asked us to document it. This includes:
+
+- Hosting, managed-service, or one-click "deploy with" options, including deploy buttons and templates.
+- Entries in lists of compatible services, such as [S3-compatible storage providers](../sys-mgmt/ops/storage-s3/providers.mdx).
+- Partner, referral, or affiliate links.
+
+If you think authentik users need your service documented, [open an issue](https://github.com/goauthentik/authentik/issues/new/choose) that describes the use case instead of a pull request. We decide which services to document based on what users ask for.
+
+Integration guides are different. If your application supports single sign-on with authentik, you're welcome to contribute a guide for it using the [integration template](https://github.com/goauthentik/authentik/blob/main/website/integrations/template/service.mdx). Set `support_level: vendor` in its frontmatter if you maintain the guide on your company's behalf.
+
+If you work for or are paid by the company whose product your pull request mentions, say so in the pull request description.
+
 ### Pull requests
 
 The process described here has several goals:
