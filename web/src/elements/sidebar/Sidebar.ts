@@ -1,9 +1,10 @@
-import "#elements/sidebar/SidebarVersion";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { AKElement } from "#elements/Base";
 import Styles from "#elements/sidebar/Sidebar.css";
+
+import { SlotController } from "@patternfly/pfe-core/controllers/slot-controller.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
@@ -21,6 +22,10 @@ export class Sidebar extends AKElement {
     @property({ type: Boolean })
     hidden = false;
 
+    protected slots = new SlotController(this, {
+        slots: [null, "footer"],
+    });
+
     render(): TemplateResult {
         return html`<div part="nav" class="pf-c-nav" role="presentation">
             <ul
@@ -33,9 +38,9 @@ export class Sidebar extends AKElement {
             >
                 <slot></slot>
             </ul>
-            <ak-sidebar-version
-                exportparts="trigger:about-dialog-trigger, button-content:about-dialog-button-content, product-name, product-version"
-            ></ak-sidebar-version>
+            <div ?hidden=${!this.slots.hasSlotted("footer")} part="footer">
+                <slot name="footer"></slot>
+            </div>
         </div>`;
     }
 }
