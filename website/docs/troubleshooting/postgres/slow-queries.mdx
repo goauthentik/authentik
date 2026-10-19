@@ -14,10 +14,36 @@ ANALYZE;
 
 `ANALYZE` scans tables to collect statistics that PostgreSQL uses to choose query plans. For tables with many dead rows, run `VACUUM (ANALYZE);` instead. Run `VACUUM` outside a transaction block. Run routine maintenance on the PostgreSQL server as well, and keep [autovacuum enabled](https://www.postgresql.org/docs/current/runtime-config-autovacuum.html).
 
+## authentik disables JIT compilation:ak-version[2026.11]
+
+When authentik starts, it disables JIT for the database user that it connects as, in the authentik database only. Other users and databases keep their settings. authentik runs this statement:
+
+```sql
+ALTER ROLE <authentik_user> IN DATABASE <authentik_database> SET jit = off;
+```
+
+authentik only runs it while `jit` has PostgreSQL's built-in default. If `jit` is set explicitly, for example in the PostgreSQL server configuration, in your managed database settings, or with `ALTER DATABASE` or `ALTER ROLE`, authentik leaves it unchanged.
+
+The setting applies to new database connections. If you use a connection pooler such as PgBouncer, its existing server connections keep JIT enabled until the pooler replaces them. If some of authentik's connections reach PostgreSQL as a different user, for example through a connection pooler that logs in with its own user, run the statement for that user as well.
+
+If authentik cannot change the setting, it logs a warning that includes the statement and continues to start. Run the statement as a user that is allowed to change the setting, or set `jit` explicitly to stop the warning.
+
+### Keep JIT compilation enabled
+
+To keep JIT enabled for authentik, set `jit` explicitly. authentik's database user can run this statement itself:
+
+```sql
+ALTER ROLE <authentik_user> IN DATABASE <authentik_database> SET jit = on;
+```
+
+`RESET jit` does not keep JIT enabled. It restores PostgreSQL's built-in default, so authentik disables JIT again the next time it starts.
+
 ## Check whether JIT compilation adds latency
+
+Connect to the authentik database as the user that authentik uses, because authentik changes `jit` only for that user. Run `SHOW jit;` to see whether JIT is enabled for authentik.
 
 Run `EXPLAIN (ANALYZE, BUFFERS)` on a slow, read-only query and look for a `JIT` section. `EXPLAIN ANALYZE` executes the query, so do not use it with a query that changes data. The timing in the `JIT` section shows how long PostgreSQL spent generating, optimizing, and emitting compiled code. If JIT time accounts for most of the query time, refresh table statistics first. Better estimates can prevent PostgreSQL from choosing an expensive plan that triggers JIT unnecessarily.
 
-If JIT compilation still dominates after refreshing statistics, you can disable JIT in the PostgreSQL server configuration or managed database settings. Apply a database-level setting to the authentik database when your provider supports it. Otherwise, apply it at the server level. Restart authentik's server and worker processes so they open new database connections and use the setting. Disabling JIT can slow some complex queries, so confirm the effect with your workload. See the PostgreSQL documentation for [JIT configuration](https://www.postgresql.org/docs/current/jit-configuration.html).
+If JIT compilation still dominates after refreshing statistics, disable JIT for authentik's database user with the `ALTER ROLE` statement from [authentik disables JIT compilation](#authentik-disables-jit-compilation). That setting takes precedence over server-wide and database-wide settings. Restart authentik's server and worker processes so they open new database connections and use the setting. Disabling JIT can slow some complex queries, so confirm the effect with your workload. See the PostgreSQL documentation for [JIT configuration](https://www.postgresql.org/docs/current/jit-configuration.html).
 
 For PostgreSQL version upgrades, see the relevant guide for [Docker Compose](./upgrade_docker.mdx) or [Kubernetes](./upgrade_kubernetes.mdx).

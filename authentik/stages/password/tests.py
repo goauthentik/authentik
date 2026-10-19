@@ -30,7 +30,7 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
@@ -54,7 +54,7 @@ from authentik.stages.password.models import PasswordDevice, PasswordStage
 MOCK_BACKEND_AUTHENTICATE = MagicMock(side_effect=PermissionDenied("test"))
 
 
-class TestPasswordStage(FlowTestCase):
+class TestPasswordStage(APIFlowTestCase):
     """Password tests"""
 
     def setUp(self):
@@ -359,7 +359,7 @@ class TestPasswordDevice(TestCase):
         self.assertTrue(PasswordDevice.objects.get(user=user).check_password("changed"))
 
 
-class TestPasswordLockout(FlowTestCase):
+class TestPasswordLockout(APIFlowTestCase):
     """Password lockout tests"""
 
     def setUp(self):

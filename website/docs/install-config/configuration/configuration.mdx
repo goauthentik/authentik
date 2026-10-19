@@ -41,6 +41,12 @@ import Tabs from "@theme/Tabs";
 
 </Tabs>
 
+## Configure the server and worker containers
+
+Give the server and worker containers the same `AUTHENTIK_` environment variables. Each container ignores the settings it does not use.
+
+The exception is when the server and worker share a network, for example with host networking or in the same pod. Both containers listen on `AUTHENTIK_LISTEN__HTTP` and `AUTHENTIK_LISTEN__METRICS`, so set different ports for each container. Otherwise, the container that starts second exits with an error such as `failed to listen on [::]:9000 for server`.
+
 ## Verify your configuration settings
 
 To check if your config has been applied correctly, you can run the following command to output the full config:
