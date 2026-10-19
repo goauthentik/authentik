@@ -249,7 +249,7 @@ class SAMLProvider(Provider):
             (AES128_GCM, _("AES128-GCM")),
             (AES256_GCM, _("AES256-GCM")),
         ),
-        default=AES128_CBC,
+        default=AES256_GCM,
         help_text=_("Block cipher used to encrypt the assertion."),
     )
 

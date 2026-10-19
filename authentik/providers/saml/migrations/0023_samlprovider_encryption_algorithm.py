@@ -10,6 +10,8 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        # Existing providers keep AES128-CBC, the only cipher authentik used before this
+        # field existed, so their behaviour does not change on upgrade.
         migrations.AddField(
             model_name="samlprovider",
             name="encryption_algorithm",
@@ -21,6 +23,21 @@ class Migration(migrations.Migration):
                     ("http://www.w3.org/2009/xmlenc11#aes256-gcm", "AES256-GCM"),
                 ],
                 default="http://www.w3.org/2001/04/xmlenc#aes128-cbc",
+                help_text="Block cipher used to encrypt the assertion.",
+            ),
+        ),
+        # New providers default to AES256-GCM.
+        migrations.AlterField(
+            model_name="samlprovider",
+            name="encryption_algorithm",
+            field=models.TextField(
+                choices=[
+                    ("http://www.w3.org/2001/04/xmlenc#aes128-cbc", "AES128-CBC"),
+                    ("http://www.w3.org/2001/04/xmlenc#aes256-cbc", "AES256-CBC"),
+                    ("http://www.w3.org/2009/xmlenc11#aes128-gcm", "AES128-GCM"),
+                    ("http://www.w3.org/2009/xmlenc11#aes256-gcm", "AES256-GCM"),
+                ],
+                default="http://www.w3.org/2009/xmlenc11#aes256-gcm",
                 help_text="Block cipher used to encrypt the assertion.",
             ),
         ),

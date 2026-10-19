@@ -71,7 +71,7 @@ To list the applications a user can access based on policy bindings, as shown on
 ## New features and improvements
 
 - **Display names in `ak_send_email` recipients**: The `address`, `cc`, and `bcc` parameters of `ak_send_email` now accept `(name, email)` tuples and `"Name <email>"` strings, so emails sent from expressions can include a display name in the `To` and `CC` headers, matching the Email stage. See [`ak_send_email`](../../customize/policies/types/expression/reference.mdx).
-- **Configurable SAML assertion encryption algorithm**: SAML providers can now encrypt assertions with AES128-CBC, AES256-CBC, AES128-GCM, or AES256-GCM. Existing providers keep AES128-CBC. Importing SP metadata selects the algorithm the SP advertises in its `<EncryptionMethod>` elements. See [Encryption algorithm](../../add-secure-apps/providers/saml/index.mdx#encryption-algorithm).
+- **Configurable SAML assertion encryption algorithm**: SAML providers can now encrypt assertions with AES128-CBC, AES256-CBC, AES128-GCM, or AES256-GCM. New providers default to AES256-GCM. Existing providers keep AES128-CBC, which authentik used until now. Importing SP metadata selects the algorithm the SP advertises in its `<EncryptionMethod>` elements. See [Encryption algorithm](../../add-secure-apps/providers/saml/index.mdx#encryption-algorithm).
 
 ### Single sign-on into devices managed by the authentik agent
 

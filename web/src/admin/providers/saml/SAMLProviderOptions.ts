@@ -64,10 +64,10 @@ export const digestAlgorithmOptions = toOptions([
 ]);
 
 export const encryptionAlgorithmOptions = toOptions([
-    ["AES128-CBC", EncryptionAlgorithmEnum.HttpWwwW3Org200104Xmlencaes128Cbc, true],
+    ["AES128-CBC", EncryptionAlgorithmEnum.HttpWwwW3Org200104Xmlencaes128Cbc],
     ["AES256-CBC", EncryptionAlgorithmEnum.HttpWwwW3Org200104Xmlencaes256Cbc],
     ["AES128-GCM", EncryptionAlgorithmEnum.HttpWwwW3Org2009Xmlenc11aes128Gcm],
-    ["AES256-GCM", EncryptionAlgorithmEnum.HttpWwwW3Org2009Xmlenc11aes256Gcm],
+    ["AES256-GCM", EncryptionAlgorithmEnum.HttpWwwW3Org2009Xmlenc11aes256Gcm, true],
 ]);
 
 export const signatureAlgorithmOptions = toOptions([
