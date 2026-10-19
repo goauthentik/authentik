@@ -19,6 +19,7 @@ from authentik.core.apps import Setup
 from authentik.flows.models import Flow, FlowAuthenticationRequirement, in_memory_stage
 from authentik.flows.planner import FlowPlanner
 from authentik.flows.stage import StageView
+from authentik.outposts.apps import set_outpost_host
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 LOGGER = get_logger()
@@ -79,6 +80,7 @@ class PostSetupStageView(StageView):
             )
             if base_url:
                 SystemSettings.objects.filter(pk=get_system_settings().pk).update(base_url=base_url)
+                set_outpost_host(base_url)
             # Remember we're setup
             Setup.set(True)
             # Disable OOBE Blueprints
