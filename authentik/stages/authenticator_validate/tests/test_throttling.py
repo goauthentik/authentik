@@ -119,8 +119,9 @@ class ValidateChallengeCodeThrottlingTests(FlowTestCase):
         stage = self._validate_stage(email_otp_throttling_factor=3)
         device = self._email_device()
         device.generate_token()
+        challenges = [{"device_class": DeviceClasses.EMAIL, "device_uid": str(device.pk)}]
         with self.assertRaises(ValidationError):
-            validate_challenge_code("000000", self._stage_view(stage), self.user)
+            validate_challenge_code("000000", self._stage_view(stage), self.user, challenges)
         device.refresh_from_db()
         self.assertEqual(device.throttling_failure_count, 1)
         # verify_is_allowed must compute the delay using factor=3 (3 * 2^0 = 3s).
@@ -136,10 +137,11 @@ class ValidateChallengeCodeThrottlingTests(FlowTestCase):
         device = self._email_device()
         device.generate_token()
         token = device.token
+        challenges = [{"device_class": DeviceClasses.EMAIL, "device_uid": str(device.pk)}]
         for _ in range(10):
             with self.assertRaises(ValidationError):
-                validate_challenge_code("000000", self._stage_view(stage), self.user)
-        matched = validate_challenge_code(token, self._stage_view(stage), self.user)
+                validate_challenge_code("000000", self._stage_view(stage), self.user, challenges)
+        matched = validate_challenge_code(token, self._stage_view(stage), self.user, challenges)
         self.assertEqual(matched.pk, device.pk)
 
     def test_lockout_persists_across_calls(self):
@@ -151,11 +153,12 @@ class ValidateChallengeCodeThrottlingTests(FlowTestCase):
         device.generate_token()
         token = device.token
         invalid_token = "000000" if token != "000000" else "111111"  # nosec
+        challenges = [{"device_class": DeviceClasses.EMAIL, "device_uid": str(device.pk)}]
         with self.assertRaises(ValidationError):
-            validate_challenge_code(invalid_token, self._stage_view(stage), self.user)
+            validate_challenge_code(invalid_token, self._stage_view(stage), self.user, challenges)
         # Immediately try with the correct token: lockout still active, attempt must be rejected.
         with self.assertRaises(ValidationError):
-            validate_challenge_code(token, self._stage_view(stage), self.user)
+            validate_challenge_code(token, self._stage_view(stage), self.user, challenges)
         device.refresh_from_db()
         # Token wasn't consumed (verification never ran), and counter didn't get incremented.
         self.assertEqual(device.token, token)

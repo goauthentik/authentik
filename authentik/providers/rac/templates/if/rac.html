@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block body %}
-<ak-rac token="{{ url_kwargs.token }}" endpointName="{{ token.endpoint.name }}">
+<ak-rac token="{{ url_kwargs.token }}" device-name="{{ token.device.name }}">
     {% include "base/placeholder.html" %}
 </ak-rac>
 {% endblock %}

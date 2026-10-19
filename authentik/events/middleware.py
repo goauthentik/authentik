@@ -153,14 +153,20 @@ class AuditMiddleware:
         m2m_changed.disconnect(dispatch_uid=request.request_id)
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
-        _CTX_REQUEST.set(request)
-        self.connect(request)
+        token = _CTX_REQUEST.set(request)
+        try:
+            self.connect(request)
+            return self.get_response(request)
+        finally:
+            try:
+                self.disconnect(request)
+            finally:
+                _CTX_REQUEST.reset(token)
 
-        response = self.get_response(request)
-
-        self.disconnect(request)
-        _CTX_REQUEST.set(None)
-        return response
+    def is_current_request(self, request: HttpRequest) -> bool:
+        """Signals are shared across requests; only handle the current request's receiver."""
+        current_request = _CTX_REQUEST.get()
+        return current_request is not None and request.request_id == current_request.request_id
 
     def process_exception(self, request: HttpRequest, exception: Exception):
         """Disconnect handlers in case of exception"""
@@ -200,8 +206,7 @@ class AuditMiddleware:
             return
         if _CTX_IGNORE.get():
             return
-        current_request = _CTX_REQUEST.get()
-        if current_request is None or request.request_id != current_request.request_id:
+        if not self.is_current_request(request):
             return
         user = self.get_user(request)
 
@@ -216,8 +221,7 @@ class AuditMiddleware:
             return
         if _CTX_IGNORE.get():
             return
-        current_request = _CTX_REQUEST.get()
-        if current_request is None or request.request_id != current_request.request_id:
+        if not self.is_current_request(request):
             return
         user = self.get_user(request)
 
@@ -244,8 +248,7 @@ class AuditMiddleware:
             return
         if _CTX_IGNORE.get():
             return
-        current_request = _CTX_REQUEST.get()
-        if current_request is None or request.request_id != current_request.request_id:
+        if not self.is_current_request(request):
             return
         user = self.get_user(request)
 
@@ -254,5 +257,5 @@ class AuditMiddleware:
             request,
             user=user,
             model=model_to_dict(instance),
-            **thread_kwargs,
+            **(thread_kwargs or {}),
         ).run()

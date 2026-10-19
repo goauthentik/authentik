@@ -16,6 +16,11 @@ import {
     DeviceAccessGroupRequestFromJSON,
     DeviceAccessGroupRequestToJSON,
 } from "./DeviceAccessGroupRequest";
+import type { RACConnectionOverrideRequest } from "./RACConnectionOverrideRequest";
+import {
+    RACConnectionOverrideRequestFromJSON,
+    RACConnectionOverrideRequestToJSON,
+} from "./RACConnectionOverrideRequest";
 
 /**
  * @export
@@ -29,6 +34,7 @@ export interface EndpointDeviceRequest {
     expiring?: boolean;
     expires?: Date | null;
     attributes?: { [key: string]: any };
+    rac: RACConnectionOverrideRequest | null;
 }
 
 /**
@@ -36,6 +42,7 @@ export interface EndpointDeviceRequest {
  */
 export function instanceOfEndpointDeviceRequest(value: object): value is EndpointDeviceRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("rac" in value) || value["rac"] === undefined) return false;
     return true;
 }
 
@@ -71,6 +78,7 @@ export function EndpointDeviceRequestFromJSONTyped(
                   ? null
                   : parseDateTime(json["expires"]),
         attributes: json["attributes"] == null ? undefined : json["attributes"],
+        rac: RACConnectionOverrideRequestFromJSON(json["rac"]),
     };
 }
 
@@ -94,5 +102,6 @@ export function EndpointDeviceRequestToJSONTyped(
         expiring: value["expiring"],
         expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         attributes: value["attributes"],
+        rac: RACConnectionOverrideRequestToJSON(value["rac"]),
     };
 }

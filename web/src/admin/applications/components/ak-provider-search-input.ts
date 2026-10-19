@@ -1,9 +1,10 @@
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
+import "#elements/forms/SearchSelect/ak-search-select";
 import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
+import { SearchSelectSource } from "#elements/forms/SearchSelect/shared";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { AKLabel } from "#components/ak-label";
@@ -16,10 +17,6 @@ import { msg } from "@lit/localize/init/install";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-const renderElement = (item: Provider) => item.name;
-const renderValue = (item: Provider | null) => item?.pk ?? "";
-const doGroupBy = (items: Provider[]) => groupBy(items, (item) => item.verboseName);
 
 @customElement("ak-provider-search-input")
 export class AkProviderInput extends AKElement {
@@ -67,10 +64,6 @@ export class AkProviderInput extends AKElement {
 
     //#endregion
 
-    #selected = (item: Provider) => {
-        return typeof this.value === "number" && this.value === item.pk;
-    };
-
     #fetch = async (query?: string) => {
         const args: ProvidersAllListRequest = {
             ordering: "name",
@@ -95,6 +88,14 @@ export class AkProviderInput extends AKElement {
         return [single, ...results];
     };
 
+    #source: SearchSelectSource<Provider> = {
+        fetchObjects: this.#fetch,
+        keyOf: (provider) => String(provider.pk),
+        parseKey: Number,
+        labelOf: (provider) => provider.name,
+        groupBy: (providers) => groupBy(providers, (provider) => provider.verboseName),
+    };
+
     render() {
         const readOnlyValue = this.readOnly && typeof this.value === "number";
 
@@ -114,19 +115,16 @@ export class AkProviderInput extends AKElement {
                     : nothing
             }
             <ak-search-select
+                id=${ifPresent(this.fieldID)}
                 label=${ifPresent(this.label)}
-                .fieldID=${this.fieldID}
-                .selected=${this.#selected}
-                .fetchObjects=${this.#fetch}
-                .renderElement=${renderElement}
-                .value=${renderValue}
-                .groupBy=${doGroupBy}
+                .source=${this.#source}
+                .value=${typeof this.value === "number" ? String(this.value) : ""}
                 ?blankable=${readOnlyValue ? false : !!this.blankable}
                 ?readonly=${this.readOnly}
+                ?required=${this.required}
                 name=${ifDefined(readOnlyValue ? undefined : this.name)}
                 placeholder=${msg("Search for a provider...")}
-            >
-            </ak-search-select>
+            ></ak-search-select>
             ${this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing}
         </ak-form-element-horizontal>`;
     }

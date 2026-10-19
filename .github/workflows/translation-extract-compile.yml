@@ -17,7 +17,7 @@ env:
 
 jobs:
   compile:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - id: generate_token
         if: ${{ github.event_name != 'pull_request' }}
@@ -38,7 +38,7 @@ jobs:
           uv run make i18n-extract
       - name: run compile
         run: |
-          uv run ak compilemessages
+          uv run python -m manage compilemessages
           make web-check-compile
       - name: Create Pull Request
         if: ${{ github.event_name != 'pull_request' }}

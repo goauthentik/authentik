@@ -90,7 +90,7 @@ export interface OAuthSourceRequest {
     profileUrl?: string | null;
     pkce?: PKCEMethodEnum;
     consumerKey: string;
-    consumerSecret: string;
+    consumerSecret?: string;
     additionalScopes?: string;
     oidcWellKnownUrl?: string;
     oidcJwksUrl?: string;
@@ -119,13 +119,6 @@ export function instanceOfOAuthSourceRequest(value: object): value is OAuthSourc
             !("consumer_key" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["consumerKey"] === undefined &&
             (value as Record<string, any>)["consumer_key"] === undefined)
-    )
-        return false;
-    if (
-        (!("consumerSecret" in (value as Record<string, any>)) &&
-            !("consumer_secret" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["consumerSecret"] === undefined &&
-            (value as Record<string, any>)["consumer_secret"] === undefined)
     )
         return false;
     return true;
@@ -205,7 +198,7 @@ export function OAuthSourceRequestFromJSONTyped(
                   : json["profile_url"],
         pkce: json["pkce"] == null ? undefined : PKCEMethodEnumFromJSON(json["pkce"]),
         consumerKey: json["consumer_key"],
-        consumerSecret: json["consumer_secret"],
+        consumerSecret: json["consumer_secret"] == null ? undefined : json["consumer_secret"],
         additionalScopes: json["additional_scopes"] == null ? undefined : json["additional_scopes"],
         oidcWellKnownUrl:
             json["oidc_well_known_url"] == null ? undefined : json["oidc_well_known_url"],

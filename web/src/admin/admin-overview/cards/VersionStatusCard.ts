@@ -27,6 +27,7 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-check-circle pf-m-success",
                 message: html`${msg(str`Based on ${value.versionCurrent}`)}`,
+                tone: "success",
             });
         }
 
@@ -34,6 +35,7 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg(str`${value.versionLatest} is available!`)}`,
+                tone: "warning",
             });
         }
 
@@ -42,6 +44,7 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg("An outpost is on an incorrect version!")}
                     <a href=${toAdminInterface("outpost/outposts")}>${msg("Check outposts.")}</a>`,
+                tone: "warning",
             });
         }
 
@@ -49,12 +52,14 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-check-circle pf-m-success",
                 message: html`${msg("Up-to-date!")}`,
+                tone: "success",
             });
         }
 
         return Promise.resolve<AdminStatus>({
             icon: "fa fa-question-circle",
             message: html`${msg("Latest version unknown")}`,
+            tone: "",
         });
     }
 

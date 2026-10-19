@@ -4,11 +4,11 @@ import os
 
 from django.utils.translation import gettext_lazy as _
 
+from authentik.admin.flags import Flag
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.config import CONFIG
 from authentik.lib.tracing import TRACER_DEFER_POSTFORK_ENV_VAR, setup_post_fork, setup_pre_fork
 from authentik.tasks.schedules.common import ScheduleSpec
-from authentik.tenants.flags import Flag
 
 
 class Setup(Flag[bool], key="setup"):
@@ -46,7 +46,7 @@ class AuthentikCoreConfig(ManagedAppConfig):
         super().import_related()
         self.import_module("authentik.core.setup.signals")
 
-    @ManagedAppConfig.reconcile_tenant
+    @ManagedAppConfig.reconcile
     def source_inbuilt(self):
         """Reconcile inbuilt source"""
         from authentik.core.models import Source
@@ -60,7 +60,7 @@ class AuthentikCoreConfig(ManagedAppConfig):
         )
 
     @property
-    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+    def schedule_specs(self) -> list[ScheduleSpec]:
         from authentik.core.tasks import clean_expired_models, clean_temporary_users
 
         return [

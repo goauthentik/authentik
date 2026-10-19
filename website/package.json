@@ -36,15 +36,15 @@
         "typescript": "catalog:"
     },
     "optionalDependencies": {
-        "@rspack/binding-darwin-arm64": "2.2.6",
-        "@rspack/binding-linux-arm64-gnu": "2.2.6",
-        "@rspack/binding-linux-x64-gnu": "2.2.6",
-        "@swc/core-darwin-arm64": "1.16.2",
-        "@swc/core-linux-arm64-gnu": "1.16.2",
-        "@swc/core-linux-x64-gnu": "1.16.2",
-        "@swc/html-darwin-arm64": "1.16.2",
-        "@swc/html-linux-arm64-gnu": "1.16.2",
-        "@swc/html-linux-x64-gnu": "1.16.2",
+        "@rspack/binding-darwin-arm64": "2.2.8",
+        "@rspack/binding-linux-arm64-gnu": "2.2.8",
+        "@rspack/binding-linux-x64-gnu": "2.2.8",
+        "@swc/core-darwin-arm64": "1.16.13",
+        "@swc/core-linux-arm64-gnu": "1.16.13",
+        "@swc/core-linux-x64-gnu": "1.16.13",
+        "@swc/html-darwin-arm64": "1.16.13",
+        "@swc/html-linux-arm64-gnu": "1.16.13",
+        "@swc/html-linux-x64-gnu": "1.16.13",
         "lightningcss-darwin-arm64": "1.33.0",
         "lightningcss-linux-arm64-gnu": "1.33.0",
         "lightningcss-linux-x64-gnu": "1.33.0"
@@ -60,5 +60,5 @@
         "node": ">=24",
         "pnpm": ">=12.4.0"
     },
-    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c"
+    "packageManager": "pnpm@12.9.1+sha512.06b055fff5cd20dc12781de173ced3310ce0951bf2ec620211a16045d5444d5c93a663210764ef29a653a610459ba0368f0e74f84d80c54723cf95aae7bc0d6d"
 }

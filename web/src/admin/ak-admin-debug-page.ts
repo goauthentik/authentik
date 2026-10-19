@@ -9,8 +9,7 @@ import { MessageLevel } from "#common/messages";
 
 import { AKElement } from "#elements/Base";
 import { showMessage } from "#elements/messages/MessageContainer";
-
-import { setPageDetails } from "#components/ak-page-navbar";
+import { setPageDetails } from "#elements/router/meta";
 
 import { AdminApi } from "@goauthentik/api";
 

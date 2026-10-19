@@ -18,7 +18,7 @@ from authentik.sources.ldap.models import LDAPSource
 LOGGER = get_logger()
 
 NON_ALPHA = r"~!@#$%^&*_-+=`|\(){}[]:;\"'<>,.?/"
-RE_DISPLAYNAME_SEPARATORS = r",\.–—_\s#\t"
+RE_DISPLAYNAME_SEPARATORS = r"[,._ #\t-]+"
 MIN_TOKEN_SIZE = 3
 
 
@@ -118,9 +118,9 @@ class LDAPPasswordChanger:
         if len(users) != 1:
             raise AssertionError()
         user_attributes = users[0]["attributes"]
-        # If sAMAccountName is longer than 3 chars, check if its contained in password
+        # If sAMAccountName is at least 3 chars, check if it is contained in the password
         if len(user_attributes["sAMAccountName"]) >= MIN_TOKEN_SIZE:
-            if password.lower() in user_attributes["sAMAccountName"].lower():
+            if user_attributes["sAMAccountName"].lower() in password.lower():
                 return False
         # No display name set, can't check any further
         if len(user_attributes["displayName"]) < 1:

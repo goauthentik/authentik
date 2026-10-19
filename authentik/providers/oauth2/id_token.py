@@ -18,6 +18,7 @@ from authentik.common.oauth.constants import (
 from authentik.core.models import User, default_token_duration
 from authentik.events.signals import get_login_event
 from authentik.lib.generators import generate_id
+from authentik.lib.tracing import active_tracer
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 if TYPE_CHECKING:
@@ -80,6 +81,7 @@ class IDToken:
     claims: dict[str, Any] = field(default_factory=dict)
 
     @staticmethod
+    @active_tracer().instrument()
     def new(
         provider: OAuth2Provider, token: BaseGrantModel, request: HttpRequest, **kwargs
     ) -> IDToken:

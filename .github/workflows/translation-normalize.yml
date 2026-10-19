@@ -1,0 +1,54 @@
+---
+name: Translation - Normalize locale paths
+
+# Moves catalogs in Transifex pull requests to the paths listed in locales.yaml,
+# then pushes the result back to the pull request.
+# `make ci-lint-locales` in ci-main checks the outcome.
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "locale/**"
+      - "web/xliff/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  normalize:
+    if: ${{ github.event.pull_request.user.login == 'transifex-integration[bot]' && github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-26.04
+    steps:
+      - id: generate_token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v2
+        with:
+          client-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIV_KEY }}
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ steps.generate_token.outputs.token }}
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+        with:
+          dependencies: python
+      - name: Normalize
+        run: make locales-normalize gen-locales
+      - name: Push corrections
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "Nothing to normalize."
+            exit 0
+          fi
+          git config user.name "authentik-automation[bot]"
+          # ID from https://api.github.com/users/authentik-automation[bot]
+          git config user.email "135050075+authentik-automation[bot]@users.noreply.github.com"
+          git add -A locale web/xliff web/lit-localize.json web/src/common/ui/locale/definitions.ts .github/transifex.yml
+          git commit --signoff -m "translate: normalize locale paths"
+          git push

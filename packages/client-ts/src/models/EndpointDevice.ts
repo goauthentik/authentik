@@ -17,6 +17,11 @@ import type { DeviceFactSnapshot } from "./DeviceFactSnapshot";
 import { DeviceFactSnapshotFromJSON } from "./DeviceFactSnapshot";
 import type { DeviceUserBinding } from "./DeviceUserBinding";
 import { DeviceUserBindingFromJSON } from "./DeviceUserBinding";
+import type { RACConnectionOverride } from "./RACConnectionOverride";
+import {
+    RACConnectionOverrideFromJSON,
+    RACConnectionOverrideToJSON,
+} from "./RACConnectionOverride";
 
 /**
  * @export
@@ -33,6 +38,7 @@ export interface EndpointDevice {
     readonly facts: DeviceFactSnapshot | null;
     attributes?: { [key: string]: any };
     readonly primaryBindingObj: DeviceUserBinding | null;
+    rac: RACConnectionOverride | null;
 }
 
 /**
@@ -55,6 +61,7 @@ export function instanceOfEndpointDevice(value: object): value is EndpointDevice
             (value as Record<string, any>)["primary_binding_obj"] === undefined)
     )
         return false;
+    if (!("rac" in value) || value["rac"] === undefined) return false;
     return true;
 }
 
@@ -93,6 +100,7 @@ export function EndpointDeviceFromJSONTyped(
         facts: DeviceFactSnapshotFromJSON(json["facts"]),
         attributes: json["attributes"] == null ? undefined : json["attributes"],
         primaryBindingObj: DeviceUserBindingFromJSON(json["primary_binding_obj"]),
+        rac: RACConnectionOverrideFromJSON(json["rac"]),
     };
 }
 
@@ -116,5 +124,6 @@ export function EndpointDeviceToJSONTyped(
         expiring: value["expiring"],
         expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         attributes: value["attributes"],
+        rac: RACConnectionOverrideToJSON(value["rac"]),
     };
 }

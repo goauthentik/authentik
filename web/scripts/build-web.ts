@@ -8,6 +8,7 @@ import * as path from "node:path";
 
 import { copyAssets } from "./build-assets.ts";
 
+import { localeManifestPlugin } from "#bundler/locale-manifest-plugin/node";
 import { mdxPlugin } from "#bundler/mdx-plugin/node";
 import { styleLoaderPlugin } from "#bundler/style-loader-plugin/node";
 import { createBundleDefinitions } from "#bundler/utils/node";
@@ -190,6 +191,7 @@ async function doWatch(): Promise<() => Promise<void>> {
     const buildOptions = createESBuildOptions(entryPoints, [
         ...developmentPlugins,
         styleLoaderPlugin({ logger, watch: true }),
+        localeManifestPlugin({ logger }),
     ]);
 
     const buildContext = await esbuild.context(buildOptions);
@@ -220,7 +222,10 @@ async function doWatch(): Promise<() => Promise<void>> {
 async function doBuild() {
     logger.info(`🤖 Building entry points:\n\t${entryPointsDescription}`);
 
-    const buildOptions = createESBuildOptions(entryPoints, [styleLoaderPlugin({ logger })]);
+    const buildOptions = createESBuildOptions(entryPoints, [
+        styleLoaderPlugin({ logger }),
+        localeManifestPlugin({ logger }),
+    ]);
 
     await esbuild.build(buildOptions);
 

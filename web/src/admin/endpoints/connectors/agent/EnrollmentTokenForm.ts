@@ -3,7 +3,6 @@ import "#elements/forms/FormGroup";
 import "#components/ak-text-input";
 import "#components/ak-number-input";
 import "#components/ak-switch-input";
-import "#admin/endpoints/ak-endpoints-device-group-search";
 import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
 
@@ -11,6 +10,9 @@ import { ModelForm } from "#elements/forms/ModelForm";
 import { WithBrandConfig } from "#elements/mixins/branding";
 
 import { AKLabel } from "#components/ak-label";
+import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { deviceAccessGroupSource } from "#admin/common/search-sources";
 
 import { EndpointsApi, EnrollmentToken, EnrollmentTokenRequest } from "@goauthentik/api";
 
@@ -120,9 +122,12 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
                 ?autofocus=${!this.instance}
             ></ak-text-input>
             <ak-form-element-horizontal label=${msg("Device Access Group")} name="deviceGroup">
-                <ak-endpoints-device-group-search
-                    .group=${this.instance?.deviceGroup}
-                ></ak-endpoints-device-group-search>
+                ${AKSearchSelect({
+                    name: "deviceGroup",
+                    source: deviceAccessGroupSource,
+                    value: this.instance?.deviceGroup,
+                    placeholder: msg("Select a device access group..."),
+                })}
                 <p class="pf-c-form__helper-text">
                     ${msg("Select a device access group to be added to upon enrollment.")}
                 </p>

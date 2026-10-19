@@ -24,7 +24,7 @@ import { createRef, ref } from "lit/directives/ref.js";
 export interface SidebarItemProperties {
     path?: string | null;
     key?: string | null;
-    activeWhen?: string[];
+    activeWhen?: (path: string) => boolean;
     expanded?: boolean | null;
     enterprise?: boolean;
 }
@@ -57,8 +57,6 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
     @property({ type: String })
     public key: string | null = null;
 
-    activeMatchers: RegExp[] = [];
-
     @property({ type: Boolean, useDefault: false })
     public expanded = false;
 
@@ -89,15 +87,7 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
     }
 
     @property({ attribute: false })
-    public set activeWhen(regexp: string[]) {
-        regexp.forEach((r) => {
-            this.activeMatchers.push(new RegExp(r));
-        });
-    }
-
-    public get activeWhen(): RegExp[] {
-        return this.activeMatchers;
-    }
+    public activeWhen: ((path: string) => boolean) | null = null;
 
     /**
      * @returns Key this item or `null` when it should not be remembered.
@@ -206,10 +196,7 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
             return false;
         }
 
-        const pathIsWholePath = this.path === path;
-        const pathIsAnActivePath = this.activeMatchers.some((v) => v.test(path));
-
-        return pathIsWholePath || pathIsAnActivePath;
+        return this.path === path || !!this.activeWhen?.(path);
     }
 
     expandParentRecursive(activePath: string, item: SidebarItem): void {
