@@ -1331,7 +1331,7 @@ export class FlowsApi extends runtime.BaseAPI {
     async flowsInstancesExportRetrieveRaw(
         requestParameters: FlowsInstancesExportRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Blob>> {
+    ): Promise<runtime.ApiResponse<runtime.HttpFile>> {
         const requestOptions =
             await this.flowsInstancesExportRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
@@ -1345,7 +1345,7 @@ export class FlowsApi extends runtime.BaseAPI {
     async flowsInstancesExportRetrieve(
         requestParameters: FlowsInstancesExportRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Blob> {
+    ): Promise<runtime.HttpFile> {
         const response = await this.flowsInstancesExportRetrieveRaw(
             requestParameters,
             initOverrides,
