@@ -334,6 +334,63 @@ class TestSCIMUsers(APITestCase):
             {"manager": {"value": "86b2ed3e-30cd-4881-bb58-c4e910821339"}},
         )
 
+    def test_user_update_patch_nested_existing(self):
+        """Test user update (patch) on an existing nested attribute
+
+        Regression test for #26896: patching only a nested attribute
+        (name.givenName) returned HTTP 200 -- the response is rendered from
+        the in-memory attributes, so it always showed the new value -- but
+        nothing was persisted: the patch processor mutated the stored
+        attributes in place, so the view's change detection could no longer
+        see a difference and skipped the update entirely.
+        """
+        user = create_test_user()
+        existing = SCIMSourceUser.objects.create(
+            source=self.source,
+            user=user,
+            external_id=uuid4(),
+            attributes={
+                "userName": generate_id(),
+                "name": {
+                    "formatted": "Simon Boydens",
+                    "givenName": "Simon",
+                    "familyName": "Boydens",
+                },
+            },
+        )
+        response = self.client.patch(
+            reverse(
+                "authentik_sources_scim:v2-users",
+                kwargs={
+                    "source_slug": self.source.slug,
+                    "user_id": str(user.uuid),
+                },
+            ),
+            data=dumps(
+                {
+                    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+                    "Operations": [
+                        {
+                            "op": "Replace",
+                            "path": "name.givenName",
+                            "value": "Simons",
+                        }
+                    ],
+                }
+            ),
+            content_type=SCIM_CONTENT_TYPE,
+            HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
+        )
+        self.assertEqual(response.status_code, 200)
+        # the response is rendered from the patched attributes, so this always
+        # held true; persistence is what was broken
+        self.assertEqual(loads(response.content)["name"]["givenName"], "Simons")
+        existing.refresh_from_db()
+        self.assertEqual(
+            existing.attributes["name"]["givenName"],
+            "Simons",
+        )
+
     def test_user_delete(self):
         """Test user delete"""
         user = create_test_user()
