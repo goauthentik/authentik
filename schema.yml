@@ -19965,7 +19965,7 @@ paths:
           allOf:
           - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
           description: |+
-            Block cipher used to encrypt the assertion when an encryption keypair is set. AES256-GCM is recommended; AES128-CBC is the most widely interoperable.
+            Block cipher used to encrypt the assertion.
 
       - in: query
         name: encryption_kp
@@ -21132,7 +21132,7 @@ paths:
           allOf:
           - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
           description: |+
-            Block cipher used to encrypt the assertion when an encryption keypair is set. AES256-GCM is recommended; AES128-CBC is the most widely interoperable.
+            Block cipher used to encrypt the assertion.
 
       - in: query
         name: encryption_kp
@@ -53018,9 +53018,7 @@ components:
         encryption_algorithm:
           allOf:
           - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
-          description: Block cipher used to encrypt the assertion when an encryption
-            keypair is set. AES256-GCM is recommended; AES128-CBC is the most widely
-            interoperable.
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_response:
@@ -54000,9 +53998,7 @@ components:
         encryption_algorithm:
           allOf:
           - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
-          description: Block cipher used to encrypt the assertion when an encryption
-            keypair is set. AES256-GCM is recommended; AES128-CBC is the most widely
-            interoperable.
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_logout_request:
@@ -56954,9 +56950,7 @@ components:
         encryption_algorithm:
           allOf:
           - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
-          description: Block cipher used to encrypt the assertion when an encryption
-            keypair is set. AES256-GCM is recommended; AES128-CBC is the most widely
-            interoperable.
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_response:
@@ -57171,9 +57165,7 @@ components:
         encryption_algorithm:
           allOf:
           - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
-          description: Block cipher used to encrypt the assertion when an encryption
-            keypair is set. AES256-GCM is recommended; AES128-CBC is the most widely
-            interoperable.
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_response:
@@ -61659,9 +61651,7 @@ components:
         encryption_algorithm:
           allOf:
           - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
-          description: Block cipher used to encrypt the assertion when an encryption
-            keypair is set. AES256-GCM is recommended; AES128-CBC is the most widely
-            interoperable.
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_logout_request:
@@ -61789,9 +61779,7 @@ components:
         encryption_algorithm:
           allOf:
           - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
-          description: Block cipher used to encrypt the assertion when an encryption
-            keypair is set. AES256-GCM is recommended; AES128-CBC is the most widely
-            interoperable.
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_logout_request:

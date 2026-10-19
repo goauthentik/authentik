@@ -94,8 +94,7 @@ export interface PatchedWSFederationProviderRequest {
      */
     encryptionKp?: string | null;
     /**
-     * Block cipher used to encrypt the assertion when an encryption keypair is set. AES256-GCM is
-     * recommended; AES128-CBC is the most widely interoperable.
+     * Block cipher used to encrypt the assertion.
      */
     encryptionAlgorithm?: EncryptionAlgorithmEnum;
     signAssertion?: boolean;

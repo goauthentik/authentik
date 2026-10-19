@@ -250,10 +250,7 @@ class SAMLProvider(Provider):
             (AES256_GCM, _("AES256-GCM")),
         ),
         default=AES128_CBC,
-        help_text=_(
-            "Block cipher used to encrypt the assertion when an encryption keypair is set. "
-            "AES256-GCM is recommended; AES128-CBC is the most widely interoperable."
-        ),
+        help_text=_("Block cipher used to encrypt the assertion."),
     )
 
     default_relay_state = models.TextField(

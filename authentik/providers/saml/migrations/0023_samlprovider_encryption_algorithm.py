@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                     ("http://www.w3.org/2009/xmlenc11#aes256-gcm", "AES256-GCM"),
                 ],
                 default="http://www.w3.org/2001/04/xmlenc#aes128-cbc",
-                help_text="Block cipher used to encrypt the assertion when an encryption keypair is set. AES256-GCM is recommended; AES128-CBC is the most widely interoperable.",
+                help_text="Block cipher used to encrypt the assertion.",
             ),
         ),
     ]

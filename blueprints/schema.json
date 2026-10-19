@@ -9457,7 +9457,7 @@
                         "http://www.w3.org/2009/xmlenc11#aes256-gcm"
                     ],
                     "title": "Encryption algorithm",
-                    "description": "Block cipher used to encrypt the assertion when an encryption keypair is set. AES256-GCM is recommended; AES128-CBC is the most widely interoperable."
+                    "description": "Block cipher used to encrypt the assertion."
                 },
                 "sign_assertion": {
                     "type": "boolean",
@@ -13101,7 +13101,7 @@
                         "http://www.w3.org/2009/xmlenc11#aes256-gcm"
                     ],
                     "title": "Encryption algorithm",
-                    "description": "Block cipher used to encrypt the assertion when an encryption keypair is set. AES256-GCM is recommended; AES128-CBC is the most widely interoperable."
+                    "description": "Block cipher used to encrypt the assertion."
                 },
                 "sign_assertion": {
                     "type": "boolean",

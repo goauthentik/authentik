@@ -67,7 +67,7 @@ export const encryptionAlgorithmOptions = toOptions([
     ["AES128-CBC", EncryptionAlgorithmEnum.HttpWwwW3Org200104Xmlencaes128Cbc, true],
     ["AES256-CBC", EncryptionAlgorithmEnum.HttpWwwW3Org200104Xmlencaes256Cbc],
     ["AES128-GCM", EncryptionAlgorithmEnum.HttpWwwW3Org2009Xmlenc11aes128Gcm],
-    [msg("AES256-GCM (recommended)"), EncryptionAlgorithmEnum.HttpWwwW3Org2009Xmlenc11aes256Gcm],
+    ["AES256-GCM", EncryptionAlgorithmEnum.HttpWwwW3Org2009Xmlenc11aes256Gcm],
 ]);
 
 export const signatureAlgorithmOptions = toOptions([
