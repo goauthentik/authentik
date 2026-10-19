@@ -14,6 +14,8 @@ ak-flow-inspector-button {
     z-index: 100;
 }
 
+/* #region Locale Select */
+
 [part="locale-select"],
 [part="locale-select"].style-scope {
     --pf-global--Color--100: var(--pf-global--Color--light-100) !important;
@@ -71,12 +73,12 @@ ak-flow-inspector-button {
     }
 
     /* Card is fully masked to mobile background. */
-    @media (width <= 35rem) {
+    @media (width <= 36.25rem) {
         grid-row: header;
     }
 }
 
-@media (min-width: 70rem) and (min-height: 17.5rem) {
+@media (width >= 70rem) and (height > 27.5rem) {
     :host([data-layout^="sidebar"]),
     [data-layout^="sidebar"] /* Compatibility mode */ {
         --ak-global--BackgroundContrastFilter: none !important;
@@ -86,3 +88,5 @@ ak-flow-inspector-button {
         }
     }
 }
+
+/* #endregion */
