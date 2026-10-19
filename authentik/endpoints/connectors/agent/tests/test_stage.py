@@ -20,11 +20,11 @@ from authentik.endpoints.connectors.agent.stage import (
 from authentik.endpoints.models import Device, EndpointStage, StageMode
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_DEVICE
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 
 
-class TestEndpointStage(FlowTestCase):
+class TestEndpointStage(APIFlowTestCase):
 
     def setUp(self):
         cert = create_test_cert()
