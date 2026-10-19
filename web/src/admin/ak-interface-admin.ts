@@ -8,14 +8,13 @@ import "#elements/commands/ak-command-palette-user-modal";
 import "#components/notifications/APIDrawer";
 import "#components/notifications/NotificationDrawer";
 import "#components/ak-page-navbar";
+import "#admin/navigation/VersionDetails";
 import {
     createAdminSidebarEntries,
     findSidebarSectionByRoute,
     renderSidebarItems,
     SidebarEntry,
 } from "./navigation/sidebar.js";
-import "#admin/navigation/SidebarVersion";
-
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
@@ -324,9 +323,12 @@ export class AdminInterface extends WithLicenseSummary(
                     <ak-enterprise-status interface="admin"></ak-enterprise-status>
                 </ak-page-navbar>
 
-                <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}"
+                <ak-sidebar
+                    id="global-nav"
+                    ?hidden=${!this.sidebarOpen}
+                    class="${classMap(sidebarClasses)}"
                     >${renderSidebarItems(this.navigationEntries, routeNameForPath)}
-                    <ak-sidebar-version slot="footer"></ak-sidebar-version>
+                    <ak-version-details slot="footer"></ak-version-details>
                 </ak-sidebar>
 
                 <div class="pf-c-page__drawer">
