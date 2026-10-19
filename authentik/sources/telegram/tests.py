@@ -13,7 +13,7 @@ from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_REDIRECT, FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.sources.telegram.models import UserTelegramSourceConnection
@@ -116,7 +116,7 @@ class TestTelegramSource(MockTelegramResponseMixin, TestCase):
             self.assertEqual(properties, {"name": group_id})
 
 
-class TestTelegramViews(MockTelegramResponseMixin, FlowTestCase):
+class TestTelegramViews(MockTelegramResponseMixin, APIFlowTestCase):
     """Test Telegram source views"""
 
     def setUp(self):

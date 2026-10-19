@@ -151,9 +151,4 @@ if __name__ == "__main__":
     start_debug_server(port_offset=worker_id - INITIAL_WORKER_ID + 1)
     start_pyroscope("worker", worker_id=str(worker_id))
 
-    if worker_id == INITIAL_WORKER_ID:
-        from lifecycle.migrate import run_migrations
-
-        run_migrations()
-
     main(worker_id, socket_path)
