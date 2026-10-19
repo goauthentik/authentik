@@ -776,6 +776,17 @@ class TestAuthNRequest(TestCase):
         self.assertEqual(str(ctx.exception), str(ERROR_CANNOT_DECODE_REQUEST))
         self.assertIn("XML document contains a DOCTYPE declaration", ctx.exception.detail)
 
+    def test_invalid_base64(self):
+        """Test that a SAMLRequest that is not valid base64 is rejected, not a server error"""
+        for parse in (
+            lambda: AuthNRequestParser(self.provider).parse("%%%not-base64%%%"),
+            lambda: AuthNRequestParser(self.provider).parse_detached("%%%not-base64%%%", None),
+        ):
+            with self.assertRaises(CannotHandleAssertion) as ctx:
+                parse()
+            self.assertEqual(str(ctx.exception), str(ERROR_CANNOT_DECODE_REQUEST))
+            self.assertIn("base64", ctx.exception.detail)
+
     def test_acs_url_mismatch(self):
         """Test that a mismatched ACS URL is rejected without echoing either URL to the user"""
         # Unsigned request, so the ACS check is reached instead of the signature check

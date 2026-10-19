@@ -102,8 +102,9 @@ class AuthNRequestParser:
         """Validate and parse raw request with enveloped signautre."""
         try:
             decoded_xml = b64decode(saml_request.encode())
-        except UnicodeDecodeError:
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from None
+        except ValueError as exc:
+            # covers binascii.Error (invalid base64) and UnicodeDecodeError (not UTF-8)
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST, detail=str(exc)) from None
 
         verifier = self.provider.verification_kp
         if not verifier:
@@ -146,8 +147,9 @@ class AuthNRequestParser:
         """Validate and parse raw request with detached signature"""
         try:
             decoded_xml = decode_base64_and_inflate(saml_request)
-        except UnicodeDecodeError:
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from None
+        except ValueError as exc:
+            # covers binascii.Error (invalid base64) and UnicodeDecodeError (not UTF-8)
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST, detail=str(exc)) from None
 
         verifier = self.provider.verification_kp
         if not verifier:
