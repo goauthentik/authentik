@@ -17,7 +17,7 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.email.models import EmailStage, get_template_choices
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -30,7 +30,7 @@ def get_templates_setting(temp_dir: str) -> dict[str, Any]:
     return templates_setting
 
 
-class TestEmailStageTemplates(FlowTestCase):
+class TestEmailStageTemplates(APIFlowTestCase):
     """Email tests"""
 
     def setUp(self) -> None:
