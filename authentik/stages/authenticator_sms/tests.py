@@ -12,7 +12,7 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.stages.authenticator.tests import ThrottlingTestMixin
@@ -26,7 +26,7 @@ from authentik.stages.authenticator_sms.stage import PLAN_CONTEXT_PHONE, PLAN_CO
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 
-class AuthenticatorSMSStageTests(FlowTestCase):
+class AuthenticatorSMSStageTests(APIFlowTestCase):
     """Test SMS API"""
 
     def setUp(self) -> None:

@@ -25,7 +25,7 @@ class TestUserApplicationPagination(APITestCase):
         self.admin = create_test_admin_user()
         self.user = create_test_user()
         self.client.force_login(self.admin)
-        self.url = reverse("authentik_api:application-list")
+        self.url = reverse("authentik_api:application-accessible")
         self.apps = []
         # Denied applications before, between, and after allowed applications.
         for index in range(7):
@@ -230,11 +230,11 @@ class TestApplicationPaginationCost(APITestCase):
         """Reproduce each pipeline with fresh querysets and identical page size/serialization."""
         raw_request = APIRequestFactory().get("/", {"page_size": 20, "for_user": user.pk})
         force_authenticate(raw_request, user=admin)
-        view = ApplicationViewSet()
-        view.action_map = {"get": "list"}
+        view = ApplicationViewSet(action="accessible", **ApplicationViewSet.accessible.kwargs)
+        view.action_map = {"get": "accessible"}
         view.request = view.initialize_request(raw_request)
         view.format_kwarg = None
-        queryset = view._filter_queryset_for_list(view.get_queryset()).exclude(meta_hide=True)
+        queryset = view.filter_queryset(view.get_queryset()).exclude(meta_hide=True)
         if full_set:
             allowed = view._get_allowed_applications(queryset, user=user)
             page = view.paginator.paginate_queryset(allowed, view.request)
