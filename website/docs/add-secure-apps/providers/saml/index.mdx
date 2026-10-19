@@ -84,14 +84,16 @@ When an encryption certificate is set, authentik signs the assertion, encrypts i
 
 The **Encryption algorithm** field (under **Advanced protocol settings** on a SAML provider) selects the block cipher that authentik uses to encrypt the assertion. It is only used when an encryption certificate is set.
 
-| Encryption algorithm | XML Encryption identifier                     | Notes                                                                                      |
-| -------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| AES128-CBC           | `http://www.w3.org/2001/04/xmlenc#aes128-cbc` | Supported by almost every SP. CBC mode has known weaknesses when used with XML Encryption. |
-| AES256-CBC           | `http://www.w3.org/2001/04/xmlenc#aes256-cbc` | Same compatibility and weaknesses as AES128-CBC, with a longer key.                        |
-| AES128-GCM           | `http://www.w3.org/2009/xmlenc11#aes128-gcm`  | Required by XML Encryption 1.1 and the SAML V2.0 interoperability deployment profile.      |
-| AES256-GCM (default) | `http://www.w3.org/2009/xmlenc11#aes256-gcm`  | Default for new providers.                                                                 |
+| Encryption algorithm | XML Encryption identifier                     |
+| -------------------- | --------------------------------------------- |
+| AES128-CBC           | `http://www.w3.org/2001/04/xmlenc#aes128-cbc` |
+| AES256-CBC           | `http://www.w3.org/2001/04/xmlenc#aes256-cbc` |
+| AES128-GCM           | `http://www.w3.org/2009/xmlenc11#aes128-gcm`  |
+| AES256-GCM (default) | `http://www.w3.org/2009/xmlenc11#aes256-gcm`  |
 
-The SAML 2.0 specification allows any algorithm defined for XML Encryption, so the choice depends on what the SP can decrypt. New providers default to AES256-GCM, because the XML Encryption 1.1 specification recommends GCM over CBC. Switch to AES128-CBC if the SP rejects GCM-encrypted assertions. Providers created before this setting existed keep AES128-CBC, which is what authentik used until then.
+AES256-GCM is recommended and is the default for new providers. The other algorithms exist for older SPs that do not support AES256-GCM yet.
+
+Providers created before this setting existed keep AES128-CBC, which is what authentik used until then. For those providers, try switching to AES256-GCM and signing in to the SP. If the login succeeds, keep AES256-GCM. If the SP rejects the assertion, switch back to AES128-CBC.
 
 The symmetric key that encrypts the assertion is always transported with RSA-OAEP (`http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p`), encrypted with the public key of the encryption certificate.
 

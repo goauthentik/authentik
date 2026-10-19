@@ -10,8 +10,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        # Existing providers keep AES128-CBC, the only cipher authentik used before this
-        # field existed, so their behaviour does not change on upgrade.
+        # Existing providers keep AES128-CBC.
         migrations.AddField(
             model_name="samlprovider",
             name="encryption_algorithm",
