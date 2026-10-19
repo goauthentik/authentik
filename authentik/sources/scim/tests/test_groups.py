@@ -433,6 +433,49 @@ class TestSCIMGroups(APITestCase):
             },
         )
 
+    def test_group_patch_member_remove_filtered(self):
+        """Test group patch (filtered member removal)"""
+        user = create_test_user()
+        other_user = create_test_user()
+
+        group = Group.objects.create(name=generate_id())
+        group.users.add(user, other_user)
+        connection = SCIMSourceGroup.objects.create(
+            source=self.source,
+            group=group,
+            external_id=uuid4(),
+            attributes={"displayName": group.name, "members": []},
+        )
+        response = self.client.patch(
+            reverse(
+                "authentik_sources_scim:v2-groups",
+                kwargs={"source_slug": self.source.slug, "group_id": group.pk},
+            ),
+            data=dumps(
+                {
+                    "Operations": [
+                        {
+                            "op": "remove",
+                            "path": f'members[value eq "{user.uuid}"]',
+                        }
+                    ]
+                }
+            ),
+            content_type=SCIM_CONTENT_TYPE,
+            HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertFalse(group.users.filter(pk=user.pk).exists())
+        self.assertTrue(group.users.filter(pk=other_user.pk).exists())
+        connection.refresh_from_db()
+        self.assertEqual(
+            connection.attributes,
+            {
+                "displayName": group.name,
+                "members": [{"value": str(other_user.uuid)}],
+            },
+        )
+
     def test_group_delete(self):
         """Test group delete"""
         group = Group.objects.create(name=generate_id())
