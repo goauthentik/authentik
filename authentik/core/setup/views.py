@@ -79,7 +79,7 @@ class PostSetupStageView(StageView):
             )
             if base_url:
                 SystemSettings.objects.filter(pk=get_system_settings().pk).update(base_url=base_url)
-                get_system_settings.cache_clear()
+                get_system_settings.invalidate()
             # Remember we're setup
             Setup.set(True)
             # Disable OOBE Blueprints

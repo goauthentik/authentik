@@ -14,4 +14,4 @@ def post_startup_admin_metrics(sender, **_):
 
 @receiver(post_save, sender=SystemSettings)
 def system_settings_saved(**_):
-    get_system_settings.cache_clear()
+    get_system_settings.invalidate()

@@ -18,4 +18,4 @@ from authentik.flows.models import Flow
 @receiver(post_delete, sender=Application)
 def brand_cache_clear(**_):
     """Drop cached brand lookups when a brand or an object it caches changes"""
-    get_brand_for_request.cache_clear()
+    get_brand_for_request.invalidate()
