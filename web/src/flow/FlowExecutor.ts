@@ -16,7 +16,7 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
-import { globalAK } from "#common/global";
+import { FlowMeta, globalAK } from "#common/global";
 import { applyBackgroundImageProperty, resolveThemedUrl } from "#common/theme";
 
 import { Interface } from "#elements/Interface";
@@ -61,6 +61,14 @@ import { html as staticHTML, unsafeStatic } from "lit/static-html.js";
 
 /// <reference types="../../types/lit.d.ts" />
 
+const { flow } = globalAK();
+
+const DefaultFlowMeta: FlowMeta = {
+    ...flow,
+    layout: flow?.layout || FlowLayoutEnum.Stacked,
+    title: flow?.title ?? "",
+};
+
 /**
  * An executor for authentik flows.
  *
@@ -80,8 +88,7 @@ import { html as staticHTML, unsafeStatic } from "lit/static-html.js";
  */
 @customElement("ak-flow-executor")
 export class FlowExecutor extends WithBrandConfig(Interface) implements StageHost {
-    public static readonly DefaultLayout: FlowLayoutEnum =
-        globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
+    public static readonly DefaultLayout: FlowLayoutEnum = DefaultFlowMeta.layout;
 
     //#region Styles
 
@@ -392,7 +399,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     protected renderLoading(): SlottedTemplateResult {
         return html`<ak-flow-card loading>
-            <span slot="title"> ${globalAK().flow?.title} </span>
+            <span slot="title">${DefaultFlowMeta.title}</span>
         </ak-flow-card>`;
     }
 
