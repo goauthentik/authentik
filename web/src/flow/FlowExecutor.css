@@ -1,5 +1,5 @@
-@import "#styles/authentik/components/Login/login-layout.css";
-@import "#styles/authentik/login.css";
+@import "#styles/if/flow/layout.css";
+@import "#styles/if/flow/login.css";
 
 :host {
     display: flex;
