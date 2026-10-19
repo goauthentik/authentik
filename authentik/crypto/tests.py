@@ -6,6 +6,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
+from cryptography.exceptions import InternalError
 from cryptography.hazmat.primitives.serialization import (
     load_pem_private_key as cryptography_load_pem_private_key,
 )
@@ -16,6 +17,7 @@ from cryptography.x509.extensions import SubjectAlternativeName
 from cryptography.x509.general_name import DNSName
 from django.urls import reverse
 from django.utils.timezone import now
+from rest_framework.exceptions import ValidationError
 from rest_framework.test import APITestCase
 
 from authentik.core.api.used_by import DeleteAction
@@ -26,15 +28,17 @@ from authentik.core.tests.utils import (
     create_test_user,
 )
 from authentik.crypto.api import CertificateKeyPairSerializer
-from authentik.crypto.builder import CertificateBuilder
+from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
 from authentik.crypto.models import (
     CertificateKeyPair,
+    KeyType,
     _load_certificate,
     _load_private_key,
     generate_key_id,
     generate_key_id_legacy,
 )
 from authentik.crypto.tasks import MANAGED_DISCOVERED, certificate_discovery
+from authentik.crypto.validators import TLS_KEY_TYPES, XML_SIGNING_KEY_TYPES, KeyTypeValidator
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id, generate_key
 from authentik.providers.oauth2.models import OAuth2Provider, RedirectURI, RedirectURIMatchingMode
@@ -190,6 +194,85 @@ class TestCrypto(APITestCase):
             data={},
         )
         self.assertEqual(response.status_code, 400)
+
+    def test_builder_mldsa(self):
+        """Test Builder with the ML-DSA (FIPS 204) parameter sets"""
+        for alg, key_type in (
+            (PrivateKeyAlg.MLDSA44, KeyType.MLDSA44),
+            (PrivateKeyAlg.MLDSA65, KeyType.MLDSA65),
+            (PrivateKeyAlg.MLDSA87, KeyType.MLDSA87),
+        ):
+            with self.subTest(alg=alg):
+                builder = CertificateBuilder(generate_id())
+                builder.alg = alg
+                builder.build(subject_alt_names=["pq.example"], validity_days=3)
+                instance = builder.save()
+                # ML-DSA certificates are self-signed with the ML-DSA scheme itself
+                self.assertEqual(instance.certificate.signature_algorithm_oid._name, key_type.label)
+                # The key type is detected from the certificate, which gates where it can be used
+                self.assertEqual(instance.key_type, key_type)
+                # The PKCS#8 private key round-trips through the model
+                self.assertIsNotNone(instance.private_key)
+                self.assertEqual(
+                    instance.private_key.public_key().public_bytes_raw(),
+                    instance.certificate.public_key().public_bytes_raw(),
+                )
+
+    def test_builder_api_mldsa(self):
+        """Test Builder (via API) with ML-DSA"""
+        self.client.force_login(create_test_admin_user())
+        name = generate_id()
+        response = self.client.post(
+            reverse("authentik_api:certificatekeypair-generate"),
+            data={"common_name": name, "validity_days": 3, "alg": PrivateKeyAlg.MLDSA65},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(loads(response.content)["key_type"], KeyType.MLDSA65)
+
+    def test_builder_api_mldsa_unavailable(self):
+        """ML-DSA generation failing at the OpenSSL level (FIPS provider without ML-DSA) is
+        reported as a validation error instead of a server error"""
+        self.client.force_login(create_test_admin_user())
+        with patch(
+            "authentik.crypto.builder.MLDSA65PrivateKey.generate",
+            side_effect=InternalError("Unknown OpenSSL error.", []),
+        ):
+            response = self.client.post(
+                reverse("authentik_api:certificatekeypair-generate"),
+                data={"common_name": generate_id(), "validity_days": 3, "alg": "mldsa65"},
+            )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("alg", loads(response.content))
+
+    def test_import_key_unavailable(self):
+        """Importing a key whose algorithm OpenSSL cannot load (ML-DSA under a FIPS provider
+        without it) is a validation error, not a server error"""
+        self.client.force_login(create_test_admin_user())
+        cert = create_test_cert()
+        with patch(
+            "authentik.crypto.api.load_pem_private_key",
+            side_effect=InternalError("Unknown OpenSSL error.", []),
+        ):
+            response = self.client.post(
+                reverse("authentik_api:certificatekeypair-list"),
+                data={
+                    "name": generate_id(),
+                    "certificate_data": cert.certificate_data,
+                    "key_data": cert.key_data,
+                },
+            )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("key_data", loads(response.content))
+
+    def test_mldsa_key_type_validation(self):
+        """ML-DSA keypairs are accepted for TLS, and rejected where nothing can sign with them"""
+        builder = CertificateBuilder(generate_id())
+        builder.alg = PrivateKeyAlg.MLDSA65
+        builder.build(validity_days=3)
+        keypair = builder.save()
+        KeyTypeValidator(*TLS_KEY_TYPES)(keypair)
+        with self.assertRaises(ValidationError):
+            KeyTypeValidator(*XML_SIGNING_KEY_TYPES)(keypair)
 
     def test_list(self):
         """Test API List"""

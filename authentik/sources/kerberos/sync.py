@@ -103,6 +103,7 @@ class KerberosSync:
             elif action in (Action.AUTH, Action.LINK):
                 user = connection.user
                 user.update_attributes(defaults)
+                connection.save()
             else:
                 return False
 

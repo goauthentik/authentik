@@ -31,10 +31,16 @@ from authentik.providers.oauth2.models import (
     JWTAlgorithms,
     OAuth2LogoutMethod,
     OAuth2Provider,
+    OAuth2SessionLogin,
     RedirectURIMatchingMode,
 )
 from authentik.providers.oauth2.tasks import send_backchannel_logout_request
 from authentik.providers.oauth2.utils import build_frontchannel_logout_url
+
+
+def is_iframe_request(request: HttpRequest) -> bool:
+    """Treat requests without Fetch Metadata as possible iframe callbacks."""
+    return request.headers.get("Sec-Fetch-Dest") in (None, "iframe", "frame")
 
 
 class EndSessionView(PolicyAccessView):
@@ -118,15 +124,16 @@ class EndSessionView(PolicyAccessView):
             )
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        """Return early when a flow plan is already executing in this session.
-
-        Front-channel logout iframes navigate to this endpoint while the invalidation flow
-        is still running, and `UserLogoutStage` has already made the request anonymous.
-        Falling through to `PolicyAccessView` would plan an authentication flow and store it
-        in `SESSION_KEY_PLAN`, replacing the invalidation plan and discarding every stage
-        queued after the iframe logout stage.
-        """
-        if SESSION_KEY_PLAN in request.session:
+        """Preserve the running logout plan when a front-channel iframe calls back."""
+        plan = request.session.get(SESSION_KEY_PLAN)
+        # A top-level navigation starts a new logout, even if an iframe stage was abandoned.
+        # Without Fetch Metadata, only the current iframe stage identifies a callback.
+        if (
+            is_iframe_request(request)
+            and plan
+            and plan.bindings
+            and plan.bindings[0].stage.view == IframeLogoutStageView
+        ):
             return HttpResponse(status=200)
         return super().dispatch(request, *args, **kwargs)
 
@@ -166,25 +173,25 @@ class EndSessionView(PolicyAccessView):
                     self.provider, request, session_key
                 )
 
+            login = OAuth2SessionLogin.objects.filter(
+                session=auth_session,
+                provider=self.provider,
+            ).first()
             if (
-                self.provider.logout_method == OAuth2LogoutMethod.BACKCHANNEL
+                login
+                and self.provider.logout_method == OAuth2LogoutMethod.BACKCHANNEL
                 and self.provider.logout_uri
             ):
-                access_token = AccessToken.objects.filter(
-                    user=request.user,
-                    provider=self.provider,
-                    session=auth_session,
-                ).first()
-                if access_token and access_token.id_token:
-                    send_backchannel_logout_request.send(
-                        self.provider.pk,
-                        access_token.id_token.iss,
-                        access_token.id_token.sub,
-                        session_key,
-                    )
-                    # Delete the token to prevent duplicate backchannel logout
-                    # when UserLogoutStage triggers the session deletion signal
-                    access_token.delete()
+                send_backchannel_logout_request.send(
+                    self.provider.pk,
+                    login.iss,
+                    login.sub,
+                    session_key,
+                )
+            if login:
+                # The RP is logged out of this session now. This also prevents a duplicate
+                # logout when UserLogoutStage triggers the logout and session deletion signals
+                login.delete()
 
             if frontchannel_logout_url:
                 context[PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS] = [

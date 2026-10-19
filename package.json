@@ -31,12 +31,12 @@
         "@goauthentik/oxlint-config": "workspace:*",
         "@goauthentik/tsconfig": "workspace:*",
         "@types/node": "catalog:",
-        "cspell": "^10.3.0",
+        "cspell": "^10.3.6",
         "npm-run-all": "^4.1.5",
         "pino": "^10.3.1",
         "pino-pretty": "^13.1.3",
         "typescript": "catalog:",
-        "yaml": "^2.9.0"
+        "yaml": "^2.9.1"
     },
     "devDependencies": {
         "oxfmt": "catalog:",
@@ -53,5 +53,5 @@
         "node": ">=24",
         "pnpm": ">=12.4.0"
     },
-    "packageManager": "pnpm@12.4.0+sha512.37536c26ed40ab4134b6511e09f6b27f3ebb45687468f2406ca3805279a4e5ca158c1931350ad9774d6ab2108d71b3dbaeb39943159294375e4d053e8e05685c"
+    "packageManager": "pnpm@12.9.1+sha512.06b055fff5cd20dc12781de173ced3310ce0951bf2ec620211a16045d5444d5c93a663210764ef29a653a610459ba0368f0e74f84d80c54723cf95aae7bc0d6d"
 }

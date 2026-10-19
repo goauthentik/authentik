@@ -4,7 +4,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import Styles from "#elements/ak-checkbox-group/ak-checkbox-group.css";
 import { AKControlElement } from "#elements/ControlElement";
 import { SlottedTemplateResult } from "#elements/types";
-import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
 import { PropertyValues } from "@lit/reactive-element";
@@ -23,8 +22,6 @@ function* generateCheckboxKeyValuePairs(items: Iterable<CheckboxItemInit>): Iter
         yield Array.isArray(item) ? item : [item.name, item.label];
     }
 }
-
-const AkElementWithCustomEvents = CustomEmitterElement(AKControlElement);
 
 /**
  * CheckboxGroup renders a collection of checkboxes in a linear list. Multiple
@@ -75,7 +72,7 @@ const AkElementWithCustomEvents = CustomEmitterElement(AKControlElement);
  * protocol.
  */
 @customElement("ak-checkbox-group")
-export class CheckboxGroup extends AkElementWithCustomEvents {
+export class CheckboxGroup extends AKControlElement<string[]> {
     static styles = [PFForm, PFCheck, Styles];
 
     static get formAssociated() {
@@ -126,8 +123,11 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
             .filter((checkbox) => checkbox.checked)
             .map((checkbox) => checkbox.name);
 
-        this.dispatchCustomEvent("change", this.values);
-        this.dispatchCustomEvent("input", this.values);
+        for (const type of ["change", "input"]) {
+            this.dispatchEvent(
+                new CustomEvent(type, { bubbles: true, composed: true, detail: this.values }),
+            );
+        }
 
         if (this.internals) {
             this.internals.setValidity({});

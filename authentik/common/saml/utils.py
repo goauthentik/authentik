@@ -1,8 +1,11 @@
 """Shared SAML XML helpers"""
 
+import base64
 from collections.abc import Iterator
 from typing import cast
 
+from cryptography.hazmat.primitives.serialization import Encoding
+from cryptography.x509 import Certificate
 from lxml.etree import _Element
 
 
@@ -17,3 +20,10 @@ def get_element_text(element: _Element) -> str:
     Reading the text via ``itertext()`` keeps the value equal to what was signed.
     """
     return "".join(cast(Iterator[str], element.itertext()))
+
+
+def x509_certificate_b64(cert: Certificate) -> str:
+    """Encode a single certificate as base64 DER, the format used by ds:X509Certificate.
+
+    Encodes the parsed certificate, so a keypair holding a chain only yields the leaf."""
+    return base64.b64encode(cert.public_bytes(Encoding.DER)).decode()

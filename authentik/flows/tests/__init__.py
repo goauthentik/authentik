@@ -7,6 +7,7 @@ from typing import Any
 from unittest.mock import MagicMock, patch
 
 from django.http.response import HttpResponse
+from django.test import TestCase
 from django.urls.base import reverse
 from rest_framework.test import APITestCase
 
@@ -16,7 +17,7 @@ from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 
 
-class FlowTestCase(APITestCase):
+class _FlowTestCase:
     """Helpers for testing flows and stages."""
 
     def assertStageResponse(
@@ -68,3 +69,11 @@ class FlowTestCase(APITestCase):
                 yield lambda: self.client.session.get(SESSION_KEY_PLAN)
         finally:
             pass
+
+
+class FlowTestCase(_FlowTestCase, TestCase):
+    """Flow test case with a standard Django client"""
+
+
+class APIFlowTestCase(_FlowTestCase, APITestCase):
+    """Flow test case with a DRF client"""

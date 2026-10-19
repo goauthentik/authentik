@@ -13,7 +13,7 @@ env:
 
 jobs:
   publish-source-docs:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
@@ -22,7 +22,7 @@ jobs:
       - name: generate docs
         run: |
           uv run make migrate
-          uv run ak build_source_docs
+          uv run python -m manage build_source_docs
       - uses: nwtgck/actions-netlify@d22a32a27c918fe470bbc562e984f80ec48c2668 # v4.0.0
         id: netlify
         with:

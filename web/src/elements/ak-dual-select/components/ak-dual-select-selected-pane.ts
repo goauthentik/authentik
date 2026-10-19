@@ -1,10 +1,10 @@
+import { DualSelectEvent } from "../events.js";
 import { DualSelectEventType, DualSelectPair } from "../types.js";
 import { listStyles, selectedPaneStyles } from "./styles.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDualListSelector from "@patternfly/patternfly/components/DualListSelector/dual-list-selector.css";
 
 import { AKElement } from "#elements/Base";
-import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
@@ -31,7 +31,7 @@ const hostAttributes = [
  * a list of the selected options, and maintains an internal list of objects selected to move.
  */
 @customElement("ak-dual-select-selected-pane")
-export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEventType>(AKElement) {
+export class AkDualSelectSelectedPane extends AKElement {
     static styles = [PFButton, PFDualListSelector, listStyles, selectedPaneStyles];
 
     //#region Properties
@@ -91,12 +91,14 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
             this.toMove.add(key);
         }
 
-        this.dispatchCustomEvent(
-            DualSelectEventType.MoveChanged,
-            Array.from(this.toMove.values()).sort(),
+        this.dispatchEvent(
+            new DualSelectEvent(
+                DualSelectEventType.MoveChanged,
+                Array.from(this.toMove.values()).sort(),
+            ),
         );
 
-        this.dispatchCustomEvent("ak-dual-select-move");
+        this.dispatchEvent(new DualSelectEvent(DualSelectEventType.Move));
         // Necessary because updating a map won't trigger a state change
         this.requestUpdate();
     };
@@ -104,7 +106,7 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
     #moveListener = (key: string | number): void => {
         this.toMove.delete(key);
 
-        this.dispatchCustomEvent(DualSelectEventType.RemoveOne, key);
+        this.dispatchEvent(new DualSelectEvent(DualSelectEventType.RemoveOne, key));
         this.requestUpdate();
     };
 

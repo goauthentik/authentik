@@ -60,11 +60,10 @@ export function intersectionObserver({
     return <T extends LitElementWithDisplayBox, K extends keyof T>(target: T, key: K) => {
         //#region Prepare observer
 
-        let useAncestorBox = initialUseAncestorBox;
-
         property({ attribute: false, useDefault: false })(target, key);
 
         const boxTargets = new WeakMap<T, Element>();
+        const useAncestorBox = new WeakMap<T, boolean>();
 
         function findAndCacheBoxTarget(instance: T): Element {
             let boxTarget = boxTargets.get(instance);
@@ -82,7 +81,7 @@ export function intersectionObserver({
                 const currentTarget = entry.target as T;
                 let intersecting = entry.isIntersecting;
 
-                if (!intersecting && useAncestorBox) {
+                if (!intersecting && Boolean(useAncestorBox.get(currentTarget))) {
                     const boxTarget = findAndCacheBoxTarget(currentTarget);
                     intersecting = isInViewport(boxTarget);
                 }
@@ -93,8 +92,6 @@ export function intersectionObserver({
                     Object.assign(currentTarget, {
                         [key]: intersecting,
                     });
-
-                    currentTarget.requestUpdate(key, cachedIntersecting);
                 }
             }
         };
@@ -110,8 +107,8 @@ export function intersectionObserver({
             ...init,
         });
 
-        const synchronizeUseAncestorBox = (nextDisplayBox?: "contents" | "block") => {
-            useAncestorBox = nextDisplayBox === "contents" || initialUseAncestorBox;
+        const synchronizeUseAncestorBox = (instance: T, nextDisplayBox?: "contents" | "block") => {
+            useAncestorBox.set(instance, nextDisplayBox === "contents" || initialUseAncestorBox);
         };
 
         /**
@@ -124,7 +121,7 @@ export function intersectionObserver({
             this.connectedCallback = function connectedCallbackWrapper(this: T) {
                 connectedCallback?.call(this);
 
-                synchronizeUseAncestorBox(this.displayBox);
+                synchronizeUseAncestorBox(this, this.displayBox);
 
                 if (this.hasUpdated) {
                     observer.observe(this);
@@ -141,7 +138,9 @@ export function intersectionObserver({
                 disconnectedCallback?.call(this);
 
                 if (observer) {
-                    observer.disconnect();
+                    // Stop observing only the one object that just disconnected, not every object
+                    // in the class family.
+                    observer.unobserve(this);
                 }
             };
 
@@ -149,7 +148,7 @@ export function intersectionObserver({
                 updated?.call(this, changedProperties);
 
                 if (changedProperties.has("displayBox")) {
-                    synchronizeUseAncestorBox(this.displayBox);
+                    synchronizeUseAncestorBox(this, this.displayBox);
                 }
             };
         }

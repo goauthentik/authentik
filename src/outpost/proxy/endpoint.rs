@@ -30,12 +30,15 @@ impl OidcEndpoint {
     /// Build the endpoints from the provider OIDC configuration.
     ///
     /// Browser-facing URLs (authorize, end-session) are rewritten to the
-    /// browser host; backchannel URLs (token, introspection) always keep the
-    /// API-provided host. For embedded outposts the browser host is
-    /// `authentik_host` and the issuer/JWKS are rewritten to it too (the
-    /// backchannel transport overrides the `Host` header). For other outposts,
-    /// rewriting only happens when `AUTHENTIK_HOST_BROWSER` is set, and only the
-    /// issuer follows the browser host.
+    /// browser host, as is the issuer, so the tokens the browser sees carry the
+    /// public host. Backchannel URLs (token, introspection and JWKS) always keep
+    /// the API-provided host: the embedded outpost reaches the core over a unix
+    /// socket with plain HTTP, so rewriting one of them to the `https://` browser
+    /// host would make that socket client attempt a TLS handshake on a plain
+    /// socket and fail. For embedded outposts the browser host is
+    /// `authentik_host`; for other outposts, rewriting only happens when
+    /// `AUTHENTIK_HOST_BROWSER` is set, and only the issuer follows the browser
+    /// host.
     pub(crate) fn new(
         oidc: &OpenIdConnectConfiguration,
         authentik_host: Option<&Url>,
@@ -66,9 +69,6 @@ impl OidcEndpoint {
         ep.auth_url = update_url(&ep.auth_url, browser_host);
         ep.end_session_endpoint = update_url(&ep.end_session_endpoint, browser_host);
         ep.issuer = update_url(&ep.issuer, browser_host);
-        if embedded {
-            ep.jwks_uri = update_url(&ep.jwks_uri, browser_host);
-        }
 
         ep
     }
@@ -176,13 +176,16 @@ mod tests {
             ep.issuer,
             "https://authentik-host.test.goauthentik.io/application/o/test-app/"
         );
+        // Token, introspection and JWKS are backchannel URLs and keep the API-provided host:
+        // the embedded outpost fetches them over the unix socket as plain HTTP, so rewriting
+        // the JWKS URL to the `https://` browser host would make that socket client attempt TLS.
         assert_eq!(
             ep.token_url,
             "https://test.goauthentik.io/application/o/token/"
         );
         assert_eq!(
             ep.jwks_uri,
-            "https://authentik-host.test.goauthentik.io/application/o/test-app/jwks/"
+            "https://test.goauthentik.io/application/o/test-app/jwks/"
         );
         assert_eq!(
             ep.end_session_endpoint,

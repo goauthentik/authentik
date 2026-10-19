@@ -67,6 +67,29 @@ class TestAuthorize(OAuthTestCase):
             OAuthAuthorizationParams.from_request(request)
         self.assertEqual(cm.exception.error, "invalid_request")
 
+    def test_error_custom_scheme(self):
+        """Test error is returned to a redirect URI with a private-use scheme"""
+        OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            grant_types=[],
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "app.invalid:/callback")],
+        )
+        request = self.factory.get(
+            "/",
+            data={
+                "response_type": "code",
+                "client_id": "test",
+                "redirect_uri": "app.invalid:/callback",
+            },
+        )
+        with self.assertRaises(AuthorizeError) as cm:
+            OAuthAuthorizationParams.from_request(request)
+        response = cm.exception.get_response(request)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith("app.invalid:/callback?error=invalid_request&"))
+
     def test_invalid_grant_type(self):
         """Test with invalid grant type"""
         OAuth2Provider.objects.create(

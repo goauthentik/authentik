@@ -1,5 +1,3 @@
-import "#admin/common/ak-crypto-certificate-search";
-import "#admin/common/ak-flow-search/ak-flow-search";
 import { renderForm, SetMode, SetShowHttpBasic } from "./ProxyProviderFormForm.js";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
@@ -45,7 +43,11 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
     async send(data: ProxyProvider): Promise<ProxyProvider> {
         data.mode = this.mode;
 
-        if (this.mode !== ProxyMode.ForwardDomain) {
+        // Clear the cookieDomain if the user switched away from ForwardDomain
+        if (
+            this.mode !== ProxyMode.ForwardDomain &&
+            this.instance?.mode === ProxyMode.ForwardDomain
+        ) {
             data.cookieDomain = "";
         }
 

@@ -1,7 +1,9 @@
 """Application Roles API Viewset"""
 
+from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
+from django_filters import FilterSet, ModelChoiceFilter
 from rest_framework.exceptions import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
@@ -12,6 +14,7 @@ from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import (
     Application,
     ApplicationEntitlement,
+    User,
 )
 from authentik.lib.utils.reflection import ConditionalInheritance
 
@@ -41,6 +44,33 @@ class ApplicationEntitlementSerializer(AttributesMixinSerializer, ModelSerialize
         ]
 
 
+class ApplicationEntitlementFilter(FilterSet):
+    """Filter for application entitlements"""
+
+    for_user = ModelChoiceFilter(
+        queryset=User.objects.all(),
+        method="filter_for_user",
+        label=_(
+            "Entitlements assigned to this user, directly or through a group, "
+            "regardless of the user's access to the application."
+        ),
+    )
+
+    def filter_for_user(
+        self, queryset: QuerySet[ApplicationEntitlement], name, value: User
+    ) -> QuerySet[ApplicationEntitlement]:
+        return queryset.filter(pk__in=value.all_app_entitlements().values("pk"))
+
+    class Meta:
+        model = ApplicationEntitlement
+        fields = [
+            "pbm_uuid",
+            "name",
+            "app",
+            "for_user",
+        ]
+
+
 class ApplicationEntitlementViewSet(
     ConditionalInheritance(
         "authentik.enterprise.requests.api.apps.ApplicationEntitlementsRequestableMixin"
@@ -59,9 +89,5 @@ class ApplicationEntitlementViewSet(
         "app__slug",
         "attributes",
     ]
-    filterset_fields = [
-        "pbm_uuid",
-        "name",
-        "app",
-    ]
+    filterset_class = ApplicationEntitlementFilter
     ordering = ["name"]

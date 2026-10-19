@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/core",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "private": true,
     "description": "Core functionality for the authentik monorepo",
     "license": "MIT",
@@ -23,7 +23,7 @@
         "build": "tsc -p ."
     },
     "dependencies": {
-        "@goauthentik/tsconfig": "^2.0.0",
+        "@goauthentik/tsconfig": "link:../../../packages/tsconfig",
         "@types/node": "catalog:",
         "@types/semver": "^7.7.1",
         "semver": "^7.8.5",

@@ -22,7 +22,9 @@ pub(super) fn build_client(insecure: bool) -> Result<UpstreamClient> {
         builder.with_native_roots()?
     }
     .https_or_http()
-    .enable_all_versions()
+    // No HTTP2 and above as that breaks forwarding a Host header,
+    // as it would conflict with `:authority`.
+    .enable_http1()
     .build();
     // Forward the request's own `Host` upstream instead of deriving it from the
     // (internal) upstream URI authority. The proxy sets `Host` explicitly.

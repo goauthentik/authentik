@@ -26,7 +26,7 @@ This guide uses VCF Single Sign-On with a Generic OIDC identity provider, which 
 
 ## authentik configuration
 
-To support the integration of VMware Cloud Foundation with authentik, you need to create a scope mapping and an application/provider pair in authentik. VCF requires a `domain` claim that identifies the domain users log in with, which authentik does not send by default.
+To support the integration of VMware Cloud Foundation with authentik, you need to create a [scope mapping](/docs/add-secure-apps/providers/oauth2/#scope-mappings) and an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) in authentik. VCF requires a `domain` claim that identifies the domain users log in with, which authentik does not send by default.
 
 ### Create a domain scope mapping
 
