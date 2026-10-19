@@ -27,13 +27,13 @@ export class VersionDetails extends WithLicenseSummary(WithVersion(AKElement)) {
                 justify-content: space-between;
                 padding: 1rem;
             }
-            .ak-version-detail {
+            [part~="product-info"] {
                 display: block;
                 text-align: center;
                 width: 100%;
                 font-size: var(--pf-global--FontSize--xs);
             }
-            .pf-c-button {
+            [part~="trigger"] {
                 --pf-c-button--m-plain--hover--Color: var(--pf-c-nav__link--Color);
             }
         `,
@@ -58,8 +58,8 @@ export class VersionDetails extends WithLicenseSummary(WithVersion(AKElement)) {
                 class="pf-c-button pf-m-plain"
                 @click=${AboutModal.open}
             >
-                <span class="ak-version-detail" part="product-info product-name"> ${product} </span>
-                <span class="ak-version-detail" part="product-version product-version">
+                <span part="product-info product-name"> ${product} </span>
+                <span part="product-info product-version">
                     ${msg(str`Version ${this.version?.versionCurrent}`)}
                 </span>
             </button>
