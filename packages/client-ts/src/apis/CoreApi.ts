@@ -237,20 +237,7 @@ export interface CoreApplicationEntitlementsUsedByListRequest {
     pbmUuid: string;
 }
 
-export interface CoreApplicationsCheckAccessRetrieveRequest {
-    slug: string;
-    forUser?: number;
-}
-
-export interface CoreApplicationsCreateRequest {
-    applicationRequest: ApplicationRequest;
-}
-
-export interface CoreApplicationsDestroyRequest {
-    slug: string;
-}
-
-export interface CoreApplicationsListRequest {
+export interface CoreApplicationsAccessibleListRequest {
     forUser?: number;
     group?: string;
     metaDescription?: string;
@@ -275,7 +262,44 @@ export interface CoreApplicationsListRequest {
      */
     search?: string;
     slug?: string;
-    superuserFullList?: boolean;
+}
+
+export interface CoreApplicationsCheckAccessRetrieveRequest {
+    slug: string;
+    forUser?: number;
+}
+
+export interface CoreApplicationsCreateRequest {
+    applicationRequest: ApplicationRequest;
+}
+
+export interface CoreApplicationsDestroyRequest {
+    slug: string;
+}
+
+export interface CoreApplicationsListRequest {
+    group?: string;
+    metaDescription?: string;
+    metaLaunchUrl?: string;
+    metaPublisher?: string;
+    name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
+    ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    pageSize?: number;
+    /**
+     * A search term.
+     */
+    search?: string;
+    slug?: string;
 }
 
 export interface CoreApplicationsPartialUpdateRequest {
@@ -1489,6 +1513,113 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
+     * Creates request options for coreApplicationsAccessibleList without sending the request
+     */
+    async coreApplicationsAccessibleListRequestOpts(
+        requestParameters: CoreApplicationsAccessibleListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["forUser"] != null) {
+            queryParameters["for_user"] = requestParameters["forUser"];
+        }
+
+        if (requestParameters["group"] != null) {
+            queryParameters["group"] = requestParameters["group"];
+        }
+
+        if (requestParameters["metaDescription"] != null) {
+            queryParameters["meta_description"] = requestParameters["metaDescription"];
+        }
+
+        if (requestParameters["metaLaunchUrl"] != null) {
+            queryParameters["meta_launch_url"] = requestParameters["metaLaunchUrl"];
+        }
+
+        if (requestParameters["metaPublisher"] != null) {
+            queryParameters["meta_publisher"] = requestParameters["metaPublisher"];
+        }
+
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
+        if (requestParameters["onlyWithLaunchUrl"] != null) {
+            queryParameters["only_with_launch_url"] = requestParameters["onlyWithLaunchUrl"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        if (requestParameters["slug"] != null) {
+            queryParameters["slug"] = requestParameters["slug"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/core/applications/@accessible/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * List applications the user passes policies for, regardless of RBAC permissions
+     */
+    async coreApplicationsAccessibleListRaw(
+        requestParameters: CoreApplicationsAccessibleListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedApplicationList>> {
+        const requestOptions =
+            await this.coreApplicationsAccessibleListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedApplicationListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * List applications the user passes policies for, regardless of RBAC permissions
+     */
+    async coreApplicationsAccessibleList(
+        requestParameters: CoreApplicationsAccessibleListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedApplicationList> {
+        const response = await this.coreApplicationsAccessibleListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
      * Creates request options for coreApplicationsCheckAccessRetrieve without sending the request
      */
     async coreApplicationsCheckAccessRetrieveRequestOpts(
@@ -1690,10 +1821,6 @@ export class CoreApi extends runtime.BaseAPI {
     ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["forUser"] != null) {
-            queryParameters["for_user"] = requestParameters["forUser"];
-        }
-
         if (requestParameters["group"] != null) {
             queryParameters["group"] = requestParameters["group"];
         }
@@ -1714,10 +1841,6 @@ export class CoreApi extends runtime.BaseAPI {
             queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters["onlyWithLaunchUrl"] != null) {
-            queryParameters["only_with_launch_url"] = requestParameters["onlyWithLaunchUrl"];
-        }
-
         if (requestParameters["ordering"] != null) {
             queryParameters["ordering"] = requestParameters["ordering"];
         }
@@ -1736,10 +1859,6 @@ export class CoreApi extends runtime.BaseAPI {
 
         if (requestParameters["slug"] != null) {
             queryParameters["slug"] = requestParameters["slug"];
-        }
-
-        if (requestParameters["superuserFullList"] != null) {
-            queryParameters["superuser_full_list"] = requestParameters["superuserFullList"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1764,7 +1883,7 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Custom list method that checks Policy based access instead of guardian
+     * Application Viewset
      */
     async coreApplicationsListRaw(
         requestParameters: CoreApplicationsListRequest,
@@ -1779,7 +1898,7 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Custom list method that checks Policy based access instead of guardian
+     * Application Viewset
      */
     async coreApplicationsList(
         requestParameters: CoreApplicationsListRequest = {},

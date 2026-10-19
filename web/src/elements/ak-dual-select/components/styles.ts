@@ -198,7 +198,7 @@ export const listStyles = css`
     }
 
     :host([theme="dark"]) {
-        --pf-c-text-input-group--BackgroundColor: var(--ak-dark-background-light);
+        --pf-c-text-input-group--BackgroundColor: var(--pf-global--BackgroundColor--100);
     }
 `;
 

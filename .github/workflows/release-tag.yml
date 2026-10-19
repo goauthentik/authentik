@@ -69,7 +69,7 @@ jobs:
     steps:
       - id: app-token
         name: Generate app token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v2
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v2
         with:
           client-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIV_KEY }}
@@ -165,7 +165,7 @@ jobs:
           export GOARCH=${{ matrix.goarch }}
           export CGO_ENABLED=0
           go build -tags=outpost_static_embed -v -o ./build/binaries/authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }} ./cmd/${{ matrix.type }}
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v4
         with:
           name: "binaries-build-${{ matrix.type }}-${{ matrix.goos }}-${{ matrix.goarch }}"
           path: build/
@@ -214,7 +214,7 @@ jobs:
           mkdir -p build/binaries/
           cargo build --package authentik --no-default-features --features "${{ matrix.type }}" --locked --release --target "${{ matrix.target.triple }}"
           cp "./target/${{ matrix.target.triple }}/release/authentik" "build/binaries/authentik-outpost-${{ matrix.type }}-${{ matrix.target.triple }}"
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v4
         with:
           name: "binaries-build-${{ matrix.type }}-${{ matrix.target.triple }}"
           path: build/
@@ -230,7 +230,7 @@ jobs:
       - build-container
     steps:
       - name: Fetch container images
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v5
         with:
           name: container-build-server-amd64
       - name: Load container images
@@ -263,7 +263,7 @@ jobs:
     steps:
       - id: app-token
         name: Generate app token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v2
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v2
         with:
           client-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIV_KEY }}
@@ -287,12 +287,12 @@ jobs:
         run: |
           echo '{"version": "${{ needs.check-inputs.outputs.version }}", "version_family": "${{ needs.check-inputs.outputs.version-family }}", "release_reason": "${{ inputs.release_reason }}", "changelog_url": "${{ needs.check-inputs.outputs.changelog-url }}"}' > metadata.json
       - name: Fetch container images
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v5
         with:
           pattern: container-build-*
           merge-multiple: true
       - name: Fetch binaries
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v5
         with:
           pattern: binaries-build-*
           merge-multiple: true
