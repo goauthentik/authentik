@@ -1,5 +1,6 @@
 """Common SAML Exceptions"""
 
+from django.utils.functional import Promise
 from django.utils.translation import gettext_lazy as _
 
 from authentik.lib.tracing.exceptions import TracingIgnoredException
@@ -20,6 +21,6 @@ class CannotHandleAssertion(TracingIgnoredException):
     `message` is shown to the user and must not contain request contents or internals.
     `detail` is only logged and recorded in events for administrators."""
 
-    def __init__(self, message: str, detail: str | None = None):
+    def __init__(self, message: str | Promise, detail: str | None = None):
         super().__init__(message)
         self.detail = detail
