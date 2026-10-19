@@ -77,6 +77,26 @@ Use the HMAC access ID as `AUTHENTIK_STORAGE__S3__ACCESS_KEY` and the HMAC secre
 
 For details about creating and managing keys, see the [Google Cloud Storage HMAC key documentation](https://cloud.google.com/storage/docs/authentication/managing-hmackeys).
 
+## Neon
+
+Use Neon Object Storage as an S3 storage backend for authentik by connecting to its S3-compatible API.
+
+Neon buckets belong to a database branch, so create the bucket and the credential on the same branch. Keep the bucket's access level set to `private`, because authentik serves files through presigned URLs.
+
+Set the branch's storage endpoint and region, and use path-style addressing, because Neon does not support virtual-hosted-style requests:
+
+```env
+AUTHENTIK_STORAGE__S3__ENDPOINT=<neon_storage_endpoint>
+AUTHENTIK_STORAGE__S3__REGION=<region>
+AUTHENTIK_STORAGE__S3__ADDRESSING_STYLE=path
+```
+
+In the Neon Console, the **Storage** tab of the **Connect** dialog shows the endpoint as `AWS_ENDPOINT_URL_S3` and the region as `AWS_REGION`. The endpoint has the form `https://<branch_id>.storage.<neon_host>`.
+
+Create a Neon credential with the `storage:read` and `storage:write` scopes. Use the credential's `token_id` as `AUTHENTIK_STORAGE__S3__ACCESS_KEY` and its `s3_secret_access_key` as `AUTHENTIK_STORAGE__S3__SECRET_KEY`. Neon supports signature version 4, which is the authentik default.
+
+For details about creating buckets and credentials, see the [Neon Object Storage documentation](https://neon.com/docs/storage/get-started) and [Neon Object Storage authentication](https://neon.com/docs/storage/authentication).
+
 ## Garage
 
 Use Garage as a self-hosted S3 storage backend for authentik by connecting to its S3-compatible API.
