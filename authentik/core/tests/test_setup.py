@@ -13,12 +13,12 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.core.apps import Setup
 from authentik.core.models import Token, TokenIntents, User
 from authentik.flows.models import Flow
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.root.signals import post_startup, pre_startup
 
 
-class TestSetup(FlowTestCase):
+class TestSetup(APIFlowTestCase):
     def tearDown(self):
         environ.pop("AUTHENTIK_BOOTSTRAP_PASSWORD", None)
         environ.pop("AUTHENTIK_BOOTSTRAP_PASSWORD_HASH", None)

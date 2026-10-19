@@ -12,7 +12,7 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_flow,
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
@@ -31,7 +31,7 @@ from authentik.stages.authenticator_webauthn.tasks import webauthn_mds_import
 from authentik.stages.authenticator_webauthn.tests.mldsa import MLDSACredential
 
 
-class TestAuthenticatorWebAuthnStage(FlowTestCase):
+class TestAuthenticatorWebAuthnStage(APIFlowTestCase):
     """Test WebAuthn API"""
 
     def setUp(self) -> None:
