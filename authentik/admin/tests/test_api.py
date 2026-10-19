@@ -2,6 +2,7 @@
 
 from json import loads
 
+from django.db import connection
 from django.test import TestCase
 from django.urls import reverse
 
@@ -44,3 +45,14 @@ class TestAdminAPI(TestCase):
         """Test system API"""
         response = self.client.get(reverse("authentik_api:admin_system"))
         self.assertEqual(response.status_code, 200)
+
+    def test_system_postgresql(self):
+        """Test system API reports the JIT setting of the database connection"""
+        with connection.cursor() as cursor:
+            cursor.execute("SET jit = off")
+        response = self.client.get(reverse("authentik_api:admin_system"))
+        self.assertEqual(response.status_code, 200)
+        postgresql = loads(response.content)["postgresql"]
+        self.assertEqual(postgresql["jit"], "off")
+        self.assertEqual(postgresql["jit_source"], "session")
+        self.assertTrue(postgresql["version"])

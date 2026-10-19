@@ -59373,6 +59373,22 @@ components:
           type: string
           description: Configured external base URL. Can be empty
           readOnly: true
+        postgresql:
+          type: object
+          description: PostgreSQL version and JIT setting of this request's database
+            connection
+          properties:
+            version:
+              type: string
+            jit:
+              type: string
+            jit_source:
+              type: string
+          required:
+          - jit
+          - jit_source
+          - version
+          readOnly: true
       required:
       - base_url
       - brand
@@ -59381,6 +59397,7 @@ components:
       - http_headers
       - http_host
       - http_is_secure
+      - postgresql
       - runtime
       - server_time
     TOTPDevice:

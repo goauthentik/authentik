@@ -11,6 +11,8 @@
  */
 
 import { parseDateTime } from "../runtime";
+import type { SystemInfoPostgresql } from "./SystemInfoPostgresql";
+import { SystemInfoPostgresqlFromJSON, SystemInfoPostgresqlToJSON } from "./SystemInfoPostgresql";
 import type { SystemInfoRuntime } from "./SystemInfoRuntime";
 import { SystemInfoRuntimeFromJSON, SystemInfoRuntimeToJSON } from "./SystemInfoRuntime";
 
@@ -54,6 +56,7 @@ export interface SystemInfo {
      * Configured external base URL. Can be empty
      */
     readonly baseUrl: string;
+    postgresql: SystemInfoPostgresql;
 }
 
 /**
@@ -111,6 +114,7 @@ export function instanceOfSystemInfo(value: object): value is SystemInfo {
             (value as Record<string, any>)["base_url"] === undefined)
     )
         return false;
+    if (!("postgresql" in value) || value["postgresql"] === undefined) return false;
     return true;
 }
 
@@ -133,6 +137,7 @@ export function SystemInfoFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         embeddedOutpostDisabled: json["embedded_outpost_disabled"],
         embeddedOutpostHost: json["embedded_outpost_host"],
         baseUrl: json["base_url"],
+        postgresql: SystemInfoPostgresqlFromJSON(json["postgresql"]),
     };
 }
 
@@ -160,5 +165,6 @@ export function SystemInfoToJSONTyped(
 
     return {
         runtime: SystemInfoRuntimeToJSON(value["runtime"]),
+        postgresql: SystemInfoPostgresqlToJSON(value["postgresql"]),
     };
 }
