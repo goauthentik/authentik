@@ -36,13 +36,6 @@
             "default": "./dist/index.js"
         },
         "./index.css": "./dist/index.css",
-        "./color.css": "./dist/color.css",
-        "./typography.css": "./dist/typography.css",
-        "./spacing.css": "./dist/spacing.css",
-        "./shape.css": "./dist/shape.css",
-        "./shadow.css": "./dist/shadow.css",
-        "./motion.css": "./dist/motion.css",
-        "./z-index.css": "./dist/z-index.css",
         "./tokens.dtcg.json": "./dist/dtcg/tokens.json",
         "./tokens.dtcg.resolver.json": "./dist/dtcg/tokens.resolver.json",
         "./tokens": {
@@ -76,13 +69,6 @@
                 "import": "./dist/index.js"
             },
             "./index.css": "./dist/index.css",
-            "./color.css": "./dist/color.css",
-            "./typography.css": "./dist/typography.css",
-            "./spacing.css": "./dist/spacing.css",
-            "./shape.css": "./dist/shape.css",
-            "./shadow.css": "./dist/shadow.css",
-            "./motion.css": "./dist/motion.css",
-            "./z-index.css": "./dist/z-index.css",
             "./tokens.dtcg.json": "./dist/dtcg/tokens.json",
             "./tokens.dtcg.resolver.json": "./dist/dtcg/tokens.resolver.json",
             "./tokens": {
