@@ -113,7 +113,7 @@ dev = [
   "pytest==9.1.1",
   "requests-mock==1.12.1",
   "ruff==0.16.10",
-  "selenium==4.50.0",
+  "selenium==4.51.0",
   "types-channels==4.3.0.20260518",
   "types-defusedxml==0.7.0.20260504",
   "types-docker==7.2.0.20261006",
