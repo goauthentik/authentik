@@ -3006,12 +3006,8 @@ paths:
   /core/applications/:
     get:
       operationId: core_applications_list
-      description: Custom list method that checks Policy based access instead of guardian
+      description: Application Viewset
       parameters:
-      - in: query
-        name: for_user
-        schema:
-          type: integer
       - in: query
         name: group
         schema:
@@ -3029,10 +3025,6 @@ paths:
         schema:
           type: string
       - $ref: '#/components/parameters/QueryName'
-      - in: query
-        name: only_with_launch_url
-        schema:
-          type: boolean
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -3041,10 +3033,6 @@ paths:
         name: slug
         schema:
           type: string
-      - in: query
-        name: superuser_full_list
-        schema:
-          type: boolean
       tags:
       - core
       security:
@@ -3245,6 +3233,60 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /core/applications/@accessible/:
+    get:
+      operationId: core_applications_accessible_list
+      description: List applications the user passes policies for, regardless of RBAC
+        permissions
+      parameters:
+      - in: query
+        name: for_user
+        schema:
+          type: integer
+      - in: query
+        name: group
+        schema:
+          type: string
+      - in: query
+        name: meta_description
+        schema:
+          type: string
+      - in: query
+        name: meta_launch_url
+        schema:
+          type: string
+      - in: query
+        name: meta_publisher
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryName'
+      - in: query
+        name: only_with_launch_url
+        schema:
+          type: boolean
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: slug
+        schema:
+          type: string
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedApplicationList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -21667,10 +21709,6 @@ paths:
           type: integer
         required: true
       - $ref: '#/components/parameters/QuerySearch'
-      - in: query
-        name: superuser_full_list
-        schema:
-          type: boolean
       tags:
       - rac
       security:
@@ -35594,6 +35632,7 @@ components:
       properties:
         parent:
           type: integer
+          nullable: true
         label:
           type: string
         expiring:
@@ -35776,6 +35815,9 @@ components:
       - ecdsa
       - ed25519
       - ed448
+      - mldsa44
+      - mldsa65
+      - mldsa87
       type: string
     App:
       type: object
@@ -38069,6 +38111,9 @@ components:
       - dsa
       - ed25519
       - ed448
+      - mldsa44
+      - mldsa65
+      - mldsa87
       type: string
     CertificateKeyPairRequest:
       type: object
@@ -43509,6 +43554,9 @@ components:
       - ec
       - ed25519
       - ed448
+      - mldsa44
+      - mldsa65
+      - mldsa87
       - rsa
     KubernetesServiceConnection:
       type: object
@@ -59929,7 +59977,7 @@ components:
           type: integer
         user_obj:
           allOf:
-          - $ref: '#/components/schemas/User'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
         description:
           type: string
@@ -60222,6 +60270,42 @@ components:
           description: Number of passwords to check against.
       required:
       - name
+    UpdateVersionInfo:
+      properties:
+        version:
+          title: Version
+          type: string
+        changelog:
+          title: Changelog
+          type: string
+        changelog_url:
+          format: uri
+          maxLength: 2083
+          minLength: 1
+          title: Changelog Url
+          type: string
+        reason:
+          $ref: '#/components/schemas/UpdateVersionReason'
+        valid:
+          default: true
+          title: Valid
+          type: boolean
+      required:
+      - version
+      - changelog
+      - changelog_url
+      - reason
+      title: UpdateVersionInfo
+      type: object
+    UpdateVersionReason:
+      description: Reason why an authentik update was released
+      enum:
+      - bugfix
+      - feature
+      - security
+      - other
+      title: UpdateVersionReason
+      type: string
     UsageEnum:
       enum:
       - media
@@ -61501,12 +61585,8 @@ components:
           description: Get current version
           readOnly: true
         version_latest:
-          type: string
-          description: Get latest version from cache
-          readOnly: true
-        version_latest_valid:
-          type: boolean
-          description: Check if latest version is valid
+          allOf:
+          - $ref: '#/components/schemas/UpdateVersionInfo'
           readOnly: true
         build_hash:
           type: string
@@ -61526,7 +61606,6 @@ components:
       - outpost_outdated
       - version_current
       - version_latest
-      - version_latest_valid
     VersionHistory:
       type: object
       description: VersionHistory Serializer

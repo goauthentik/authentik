@@ -168,20 +168,8 @@ test("resolveDocumentUrlFromSource honors frontmatter slug overrides", () => {
     );
 });
 
-test("assignGroup always returns the first path segment (slug) for topic grouping", () => {
-    const doc = { path: "topic-a/page-one" };
-    assert.equal(assignGroup(doc, { groupBy: "topic" }), "topic-a");
-});
-
-test("assignGroup always returns the first path segment (slug) for category grouping", () => {
-    const doc = { path: "cloud-providers/aws" };
-    assert.equal(
-        assignGroup(doc, {
-            groupBy: "category",
-            categories: [["cloud-providers", "Cloud Providers"]],
-        }),
-        "cloud-providers",
-    );
+test("assignGroup returns the first path segment (slug)", () => {
+    assert.equal(assignGroup({ path: "topic-a/page-one" }), "topic-a");
 });
 
 test("groupLabel returns the category display label for a known slug", () => {
@@ -216,28 +204,4 @@ test("groupLabel uses a category label for topic grouping too", () => {
 
 test("groupLabel title-cases an unmapped topic slug", () => {
     assert.equal(groupLabel("topic-a", { groupBy: "topic" }), "Topic A");
-});
-
-test("assignGroup routes a regrouped subtree to its own slug", () => {
-    assert.equal(
-        assignGroup(
-            { path: "core/glossary" },
-            { groupBy: "topic", regroup: [["core/glossary", "glossary"]] },
-        ),
-        "glossary",
-    );
-    assert.equal(
-        assignGroup(
-            { path: "core/glossary/terms/jwt" },
-            { groupBy: "topic", regroup: [["core/glossary", "glossary"]] },
-        ),
-        "glossary",
-    );
-    assert.equal(
-        assignGroup(
-            { path: "core/architecture" },
-            { groupBy: "topic", regroup: [["core/glossary", "glossary"]] },
-        ),
-        "core",
-    );
 });

@@ -29,7 +29,7 @@ This guide focuses on ownCloud Server deployments using Docker and the official 
 
 <RedirectURI20265Note />
 
-To support the integration of ownCloud with authentik, you need to create an application/provider pair for each ownCloud client type that should use OIDC: Web UI, Desktop, Android, and iOS.
+To support the integration of ownCloud with authentik, you need to create an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) for each ownCloud client type that should use OIDC: Web UI, Desktop, Android, and iOS.
 
 ownCloud Server stores one OIDC provider URL in its configuration, but the ownCloud desktop and mobile clients use their own predefined client IDs, secrets, and redirect URIs. Use the values from this table when creating the authentik providers.
 
