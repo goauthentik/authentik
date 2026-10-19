@@ -113,7 +113,7 @@ export async function buildLLMSOutputs(ctx) {
             }
 
             parsed.url = new URL(route, ctx.siteUrl).toString();
-            parsed.group = assignGroup(parsed, options);
+            parsed.group = assignGroup(parsed);
             parsed.groupLabel = groupLabel(parsed.group, options);
             parsed.content = await cleanMdxToMarkdown(parsed.content, file, countMdxFallback);
             docs.push(parsed);

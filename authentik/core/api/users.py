@@ -884,7 +884,7 @@ class UserViewSet(
                 instance=request._request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER],
                 context={"request": request},
             ).data
-        self.request.session.modified = True
+        self.request.session.extend_expiry()
         return Response(serializer.initial_data)
 
     def _update_session_hash_after_password_change(self, request: Request, user: User):
