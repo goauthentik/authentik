@@ -13097,6 +13097,11 @@
                     "type": "boolean",
                     "title": "Sign logout response"
                 },
+                "honor_force_authn": {
+                    "type": "boolean",
+                    "title": "Honor force authn",
+                    "description": "When enabled, a ForceAuthn attribute set by the Service Provider on an AuthnRequest requires the user to re-authenticate. When disabled, the attribute is ignored and an existing session is used."
+                },
                 "sp_binding": {
                     "type": "string",
                     "enum": [

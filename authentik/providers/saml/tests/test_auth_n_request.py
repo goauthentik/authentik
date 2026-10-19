@@ -36,6 +36,7 @@ from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
+from authentik.providers.saml.views.sso import SESSION_KEY_LAST_LOGIN_UID
 from authentik.sources.saml.exceptions import MismatchedRequestID
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID, RequestProcessor
@@ -755,6 +756,49 @@ class TestAuthNRequest(TestCase):
             b64encode(request.encode()).decode(), "test_state"
         )
         self.assertTrue(parsed_request.force_authn)
+
+    def _sso_redirect_with_force_authn(self):
+        """Send an SP-initiated Redirect binding AuthnRequest with ForceAuthn="true" from a
+        logged-in session and return the response."""
+        self.source.force_authn = True
+        self.source.save()
+        self.provider.authentication_flow = create_test_flow()
+        self.provider.save()
+        for flow in (self.provider.authorization_flow, self.provider.authentication_flow):
+            FlowStageBinding.objects.create(
+                target=flow,
+                stage=DummyStage.objects.create(name=generate_id()),
+                order=0,
+            )
+        http_request = self.request_factory.get("/")
+        params = RequestProcessor(self.source, http_request, "test_state").build_auth_n_detached()
+        self.client.force_login(create_test_admin_user())
+        return self.client.get(
+            reverse(
+                "authentik_providers_saml:sso-redirect",
+                kwargs={"application_slug": "test-app"},
+            ),
+            params,
+        )
+
+    def test_force_authn_honored(self):
+        """Test that ForceAuthn triggers re-authentication by default"""
+        response = self._sso_redirect_with_force_authn()
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(self.provider.authentication_flow.slug, response["Location"])
+        self.assertIn(SESSION_KEY_LAST_LOGIN_UID, self.client.session)
+
+    def test_force_authn_ignored(self):
+        """Test that ForceAuthn is ignored when the provider is configured to do so"""
+        self.provider.honor_force_authn = False
+        self.provider.save()
+        response = self._sso_redirect_with_force_authn()
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(self.provider.authorization_flow.slug, response["Location"])
+        self.assertNotIn(self.provider.authentication_flow.slug, response["Location"])
+        self.assertNotIn(SESSION_KEY_LAST_LOGIN_UID, self.client.session)
 
     def test_doctype(self):
         """Test that a request with a document type declaration is refused"""

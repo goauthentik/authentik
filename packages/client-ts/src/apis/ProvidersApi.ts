@@ -1094,6 +1094,7 @@ export interface ProvidersSamlListRequest {
     defaultRelayState?: string;
     digestAlgorithm?: DigestAlgorithmEnum;
     encryptionKp?: string;
+    honorForceAuthn?: boolean;
     invalidationFlow?: string;
     isBackchannel?: boolean;
     issuerOverride?: string;
@@ -1436,6 +1437,7 @@ export interface ProvidersWsfedListRequest {
     defaultRelayState?: string;
     digestAlgorithm?: DigestAlgorithmEnum;
     encryptionKp?: string;
+    honorForceAuthn?: boolean;
     invalidationFlow?: string;
     isBackchannel?: boolean;
     issuerOverride?: string;
@@ -7892,6 +7894,10 @@ export class ProvidersApi extends runtime.BaseAPI {
             queryParameters["encryption_kp"] = requestParameters["encryptionKp"];
         }
 
+        if (requestParameters["honorForceAuthn"] != null) {
+            queryParameters["honor_force_authn"] = requestParameters["honorForceAuthn"];
+        }
+
         if (requestParameters["invalidationFlow"] != null) {
             queryParameters["invalidation_flow"] = requestParameters["invalidationFlow"];
         }
@@ -10374,6 +10380,10 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         if (requestParameters["encryptionKp"] != null) {
             queryParameters["encryption_kp"] = requestParameters["encryptionKp"];
+        }
+
+        if (requestParameters["honorForceAuthn"] != null) {
+            queryParameters["honor_force_authn"] = requestParameters["honorForceAuthn"];
         }
 
         if (requestParameters["invalidationFlow"] != null) {

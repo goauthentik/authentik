@@ -316,6 +316,14 @@ export function renderForm({
                         "Determines how authentik sends the response back to the Service Provider.",
                     )}
                 ></ak-radio-input>
+                <ak-switch-input
+                    name="honorForceAuthn"
+                    label=${msg("Honor ForceAuthn")}
+                    ?checked=${provider.honorForceAuthn ?? true}
+                    help=${msg(
+                        "When enabled, a ForceAuthn attribute set by the Service Provider requires the user to re-authenticate. When disabled, the attribute is ignored and an existing session is used.",
+                    )}
+                ></ak-switch-input>
                 <ak-form-element-horizontal
                     label=${msg("Default NameID Policy")}
                     required
