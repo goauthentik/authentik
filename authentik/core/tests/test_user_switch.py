@@ -44,7 +44,7 @@ from authentik.flows.planner import (
     FlowPlan,
 )
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.policies.models import PolicyBinding
 from authentik.policies.types import PolicyRequest
@@ -107,7 +107,7 @@ def _get_switching_token(client: APIClient) -> str:
     return token
 
 
-class TestUserSwitch(FlowTestCase):
+class TestUserSwitch(APIFlowTestCase):
     """Test starting and completing the brand's user switch flow."""
 
     def setUp(self):

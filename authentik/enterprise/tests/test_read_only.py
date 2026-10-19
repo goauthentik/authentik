@@ -18,7 +18,7 @@ from authentik.flows.models import (
     FlowDesignation,
     FlowStageBinding,
 )
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.stages.identification.models import IdentificationStage, UserFields
 from authentik.stages.password import BACKEND_INBUILT
@@ -26,7 +26,7 @@ from authentik.stages.password.models import PasswordStage
 from authentik.stages.user_login.models import UserLoginStage
 
 
-class TestReadOnly(FlowTestCase):
+class TestReadOnly(APIFlowTestCase):
     """Test read_only"""
 
     @enterprise_test()
