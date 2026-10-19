@@ -19,7 +19,11 @@ from authentik.common.saml.constants import (
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
-from authentik.common.saml.exceptions import CannotHandleAssertion
+from authentik.common.saml.exceptions import (
+    ERROR_ACS_URL_MISMATCH,
+    ERROR_CANNOT_DECODE_REQUEST,
+    CannotHandleAssertion,
+)
 from authentik.core.models import Application
 from authentik.core.tests.utils import (
     RequestFactory,
@@ -766,7 +770,26 @@ class TestAuthNRequest(TestCase):
             'AssertionConsumerServiceURL="http://testserver/source/saml/provider/acs/"/>'
         )
 
-        with self.assertRaisesMessage(
-            CannotHandleAssertion, "XML document contains a DOCTYPE declaration"
-        ):
+        with self.assertRaises(CannotHandleAssertion) as ctx:
             AuthNRequestParser(self.provider).parse(b64encode(request.encode()).decode())
+        # The user-facing message is generic; the parser's reason only goes to the detail
+        self.assertEqual(str(ctx.exception), str(ERROR_CANNOT_DECODE_REQUEST))
+        self.assertIn("XML document contains a DOCTYPE declaration", ctx.exception.detail)
+
+    def test_acs_url_mismatch(self):
+        """Test that a mismatched ACS URL is rejected without echoing either URL to the user"""
+        # Unsigned request, so the ACS check is reached instead of the signature check
+        self.provider.verification_kp = None
+        self.provider.save()
+        request = (
+            '<samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" '
+            'ID="_1" Version="2.0" IssueInstant="2026-05-19T01:01:53.461Z" '
+            'AssertionConsumerServiceURL="https://evil.example.com/acs"/>'
+        )
+
+        with self.assertRaises(CannotHandleAssertion) as ctx:
+            AuthNRequestParser(self.provider).parse(b64encode(request.encode()).decode())
+        self.assertEqual(str(ctx.exception), str(ERROR_ACS_URL_MISMATCH))
+        self.assertNotIn("evil.example.com", str(ctx.exception))
+        self.assertIn("https://evil.example.com/acs", ctx.exception.detail)
+        self.assertIn(self.provider.acs_url, ctx.exception.detail)

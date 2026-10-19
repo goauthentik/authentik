@@ -60,6 +60,22 @@ class SAMLSSOView(PolicyAccessView):
         """Handler to verify the SAML Request. Must be implemented by a subclass"""
         raise NotImplementedError
 
+    def saml_request_error(self, exc: CannotHandleAssertion) -> HttpResponse:
+        """Record the full error for administrators and show the user only the safe message"""
+        message = str(exc)
+        Event.new(
+            EventAction.CONFIGURATION_ERROR,
+            provider=self.provider,
+            message=f"{message} {exc.detail}" if exc.detail else message,
+        ).save()
+        LOGGER.info(
+            "Failed to process SAML request",
+            provider=self.provider.name,
+            message=message,
+            detail=exc.detail,
+        )
+        return bad_request_message(self.request, message)
+
     def get_resume_url(self) -> str | None:
         """URL to re-enter this SAML request after another tab authenticated."""
         return None
@@ -143,7 +159,7 @@ class SAMLSSOBindingRedirectView(SAMLSSOView):
         """Handle REDIRECT bindings"""
         if REQUEST_KEY_SAML_REQUEST not in self.request.GET:
             LOGGER.info("SAML payload missing")
-            return bad_request_message(self.request, "The SAML request payload is missing.")
+            return bad_request_message(self.request, _("The SAML request payload is missing."))
 
         try:
             auth_n_request = AuthNRequestParser(self.provider).parse_detached(
@@ -154,13 +170,7 @@ class SAMLSSOBindingRedirectView(SAMLSSOView):
             )
             self.plan_context[PLAN_CONTEXT_SAML_AUTH_N_REQUEST] = auth_n_request
         except CannotHandleAssertion as exc:
-            Event.new(
-                EventAction.CONFIGURATION_ERROR,
-                provider=self.provider,
-                message=str(exc),
-            ).save()
-            LOGGER.info(str(exc))
-            return bad_request_message(self.request, str(exc))
+            return self.saml_request_error(exc)
         return None
 
 
@@ -179,7 +189,7 @@ class SAMLSSOBindingPOSTView(SAMLSSOView):
             payload = self.request.session.pop(SESSION_KEY_POST)
         if REQUEST_KEY_SAML_REQUEST not in payload:
             LOGGER.info("SAML payload missing")
-            return bad_request_message(self.request, "The SAML request payload is missing.")
+            return bad_request_message(self.request, _("The SAML request payload is missing."))
 
         try:
             auth_n_request = AuthNRequestParser(self.provider).parse(
@@ -188,8 +198,7 @@ class SAMLSSOBindingPOSTView(SAMLSSOView):
             )
             self.plan_context[PLAN_CONTEXT_SAML_AUTH_N_REQUEST] = auth_n_request
         except CannotHandleAssertion as exc:
-            LOGGER.info(str(exc))
-            return bad_request_message(self.request, str(exc))
+            return self.saml_request_error(exc)
         return None
 
 

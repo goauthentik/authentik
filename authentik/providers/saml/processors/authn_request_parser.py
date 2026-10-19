@@ -20,6 +20,7 @@ from authentik.common.saml.constants import (
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
 from authentik.common.saml.exceptions import (
+    ERROR_ACS_URL_MISMATCH,
     ERROR_CANNOT_DECODE_REQUEST,
     ERROR_FAILED_TO_VERIFY,
     ERROR_SIGNATURE_REQUIRED_BUT_ABSENT,
@@ -71,8 +72,11 @@ class AuthNRequestParser:
                 provider_acs_url=self.provider.acs_url,
             )
             raise CannotHandleAssertion(
-                f"ACS URL of {request_acs_url} doesn't match Provider "
-                f"ACS URL of {self.provider.acs_url}."
+                ERROR_ACS_URL_MISMATCH,
+                detail=(
+                    f"ACS URL of {request_acs_url} doesn't match Provider "
+                    f"ACS URL of {self.provider.acs_url}."
+                ),
             )
 
         # `ForceAuthn` is an optional attribute. When true, the SP requires the IdP to
@@ -108,7 +112,7 @@ class AuthNRequestParser:
         try:
             root = lxml_from_string(decoded_xml)
         except UnsafeXML as exc:
-            raise CannotHandleAssertion(str(exc)) from exc
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST, detail=str(exc)) from exc
         xmlsec.tree.add_ids(root, ["ID"])
         signature_nodes = root.xpath("/samlp:AuthnRequest/ds:Signature", namespaces=NS_MAP)
         # No signatures, no verifier configured -> decode xml directly
@@ -128,7 +132,7 @@ class AuthNRequestParser:
                 ctx.key = key
                 ctx.verify(signature_node)
             except xmlsec.Error as exc:
-                raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
+                raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY, detail=str(exc)) from exc
 
         return self._parse_xml(decoded_xml, relay_state)
 
@@ -182,11 +186,11 @@ class AuthNRequestParser:
                     b64decode(signature),
                 )
             except xmlsec.Error as exc:
-                raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
+                raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY, detail=str(exc)) from exc
         try:
             return self._parse_xml(decoded_xml, relay_state)
         except ParseError as exc:
-            raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
+            raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY, detail=str(exc)) from exc
 
     def idp_initiated(self) -> AuthNRequest:
         """Create IdP Initiated AuthNRequest"""

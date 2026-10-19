@@ -3,6 +3,7 @@
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
@@ -80,6 +81,22 @@ class SPInitiatedSLOView(PolicyAccessView):
     def check_saml_request(self) -> HttpRequest | None:
         """Handler to verify the SAML Request. Must be implemented by a subclass"""
         raise NotImplementedError
+
+    def saml_request_error(self, exc: CannotHandleAssertion) -> HttpResponse:
+        """Record the full error for administrators and show the user only the safe message"""
+        message = str(exc)
+        Event.new(
+            EventAction.CONFIGURATION_ERROR,
+            provider=self.provider,
+            message=f"{message} {exc.detail}" if exc.detail else message,
+        ).save()
+        LOGGER.info(
+            "Failed to process SAML logout request",
+            provider=self.provider.name,
+            message=message,
+            detail=exc.detail,
+        )
+        return bad_request_message(self.request, message)
 
     def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """Verify the SAML Request, and if valid initiate the FlowPlanner for the application"""
@@ -248,7 +265,7 @@ class SPInitiatedSLOBindingRedirectView(SPInitiatedSLOView):
         # Logout responses are now handled in dispatch()
         if REQUEST_KEY_SAML_REQUEST not in self.request.GET:
             LOGGER.info("check_saml_request: SAML payload missing")
-            return bad_request_message(self.request, "The SAML request payload is missing.")
+            return bad_request_message(self.request, _("The SAML request payload is missing."))
 
         try:
             logout_request = LogoutRequestParser().parse_detached(
@@ -257,13 +274,7 @@ class SPInitiatedSLOBindingRedirectView(SPInitiatedSLOView):
             )
             self.plan_context[PLAN_CONTEXT_SAML_LOGOUT_REQUEST] = logout_request
         except CannotHandleAssertion as exc:
-            Event.new(
-                EventAction.CONFIGURATION_ERROR,
-                provider=self.provider,
-                message=str(exc),
-            ).save()
-            LOGGER.info(str(exc))
-            return bad_request_message(self.request, str(exc))
+            return self.saml_request_error(exc)
         return None
 
 
@@ -292,7 +303,7 @@ class SPInitiatedSLOBindingPOSTView(SPInitiatedSLOView):
         # Logout responses are now handled in dispatch()
         if REQUEST_KEY_SAML_REQUEST not in payload:
             LOGGER.info("check_saml_request: SAML payload missing")
-            return bad_request_message(self.request, "The SAML request payload is missing.")
+            return bad_request_message(self.request, _("The SAML request payload is missing."))
 
         try:
             logout_request = LogoutRequestParser().parse(
@@ -301,6 +312,5 @@ class SPInitiatedSLOBindingPOSTView(SPInitiatedSLOView):
             )
             self.plan_context[PLAN_CONTEXT_SAML_LOGOUT_REQUEST] = logout_request
         except CannotHandleAssertion as exc:
-            LOGGER.info(str(exc))
-            return bad_request_message(self.request, str(exc))
+            return self.saml_request_error(exc)
         return None
