@@ -93,7 +93,7 @@ The **Encryption algorithm** field (under **Advanced protocol settings** on a SA
 
 AES256-GCM is recommended and is the default for new providers. The other algorithms exist for older SPs that do not support AES256-GCM yet.
 
-Providers created before this setting existed keep AES128-CBC, which is what authentik used until then. For those providers, try switching to AES256-GCM and signing in to the SP. If the login succeeds, keep AES256-GCM. If the SP rejects the assertion, switch back to AES128-CBC.
+Providers created before this setting existed keep AES128-CBC, which is what authentik used until then. For those providers, try switching to AES256-GCM and signing in to the SP.
 
 The symmetric key that encrypts the assertion is always transported with RSA-OAEP (`http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p`), encrypted with the public key of the encryption certificate.
 
