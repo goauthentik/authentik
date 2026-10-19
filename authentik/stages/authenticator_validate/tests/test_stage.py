@@ -10,7 +10,7 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.flows.models import FlowDesignation, FlowStageBinding, NotConfiguredAction
 from authentik.flows.planner import FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id, generate_key
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
@@ -22,7 +22,7 @@ from authentik.stages.authenticator_validate.stage import PLAN_CONTEXT_DEVICE_CH
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
 
-class AuthenticatorValidateStageTests(FlowTestCase):
+class AuthenticatorValidateStageTests(APIFlowTestCase):
     """Test validator stage"""
 
     def setUp(self) -> None:
