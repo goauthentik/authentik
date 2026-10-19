@@ -40,3 +40,4 @@
 @import "#styles/if/flow/login.css" layer(components);
 @import "#styles/if/flow/tokens.css" layer(components);
 @import "#styles/if/flow/pre-registration.css" layer(components);
+@import "#styles/if/flow/overlay.css" layer(components);
