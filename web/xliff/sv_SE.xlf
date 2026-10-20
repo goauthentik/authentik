@@ -652,7 +652,7 @@
 </trans-unit>
 <trans-unit id="s68a50b1ee6efee7b">
   <source><x id="0" equiv-text="${upstreamVersion}"/> is available!</source>
-  <target><x id="0" equiv-text="${upstreamVersion}"/> är tillgänglig!</target>
+  <target><x id="0" equiv-text="${upstreamVersion}"/> finns tillgänglig!</target>
 </trans-unit>
 <trans-unit id="s08272eeeddfd244e">
   <source>An outpost is on an incorrect version!</source>
