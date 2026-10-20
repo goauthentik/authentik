@@ -578,6 +578,16 @@ export abstract class Table<T extends object, D = T>
     }
 
     /**
+     * The fetch currently in flight, if any.
+     */
+    #inFlightFetch: Promise<void> | null = null;
+
+    /**
+     * A fetch requested while another was in flight, run once that one settles.
+     */
+    #queuedFetch: Promise<void> | null = null;
+
+    /**
      * Fetch data from the API endpoint.
      *
      * @see {@linkcode apiEndpoint}
@@ -597,13 +607,20 @@ export abstract class Table<T extends object, D = T>
             return Promise.resolve();
         }
 
-        if (this.loading) {
-            return Promise.resolve();
+        if (this.#inFlightFetch) {
+            // Rerun with the latest parameters, e.g. a search typed during the first load.
+            this.#queuedFetch ??= this.#inFlightFetch.then(() => {
+                this.#queuedFetch = null;
+
+                return this.fetch();
+            });
+
+            return this.#queuedFetch;
         }
 
         this.loading = true;
 
-        return this.apiEndpoint()
+        this.#inFlightFetch = this.apiEndpoint()
             .then((data) => {
                 this.data = data;
                 this.error = null;
@@ -643,11 +660,14 @@ export abstract class Table<T extends object, D = T>
                 this.error = await parseAPIResponseError(error);
             })
             .finally(() => {
+                this.#inFlightFetch = null;
                 this.loading = false;
                 this.lastRefreshedAt = new Date();
                 this.#deferredRefreshRequestAt = null;
                 this.requestUpdate();
             });
+
+        return this.#inFlightFetch;
     }
 
     //#region Render
