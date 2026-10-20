@@ -144,28 +144,9 @@ class TestServiceProviderMetadataParser(TestCase):
 
     def test_encryption_algorithm_to_provider(self):
         """Test that a metadata-advertised encryption algorithm is applied to the provider"""
-        cert_body = "".join(
-            line
-            for line in load_fixture("fixtures/cert.pem").splitlines()
-            if "CERTIFICATE" not in line
+        parsed = ServiceProviderMetadataParser().parse(
+            load_fixture("fixtures/encryption_method.xml")
         )
-        metadata = (
-            '<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" '
-            'xmlns:ds="http://www.w3.org/2000/09/xmldsig#" '
-            'entityID="http://localhost:8080/saml/metadata">'
-            "<md:SPSSODescriptor protocolSupportEnumeration="
-            '"urn:oasis:names:tc:SAML:2.0:protocol">'
-            '<md:KeyDescriptor use="encryption">'
-            f'<md:EncryptionMethod Algorithm="{AES256_GCM}"/>'
-            f"<ds:KeyInfo><ds:X509Data><ds:X509Certificate>{cert_body}"
-            "</ds:X509Certificate></ds:X509Data></ds:KeyInfo>"
-            "</md:KeyDescriptor>"
-            "<md:AssertionConsumerService "
-            'Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" '
-            'Location="http://localhost:8080/saml/acs" index="1"/>'
-            "</md:SPSSODescriptor></md:EntityDescriptor>"
-        )
-        parsed = ServiceProviderMetadataParser().parse(metadata)
         self.assertEqual(parsed.encryption_algorithm, AES256_GCM)
         provider = parsed.to_provider("test", self.flow, self.flow)
         self.assertIsNotNone(provider.encryption_kp)

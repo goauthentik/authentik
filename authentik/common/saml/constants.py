@@ -80,8 +80,8 @@ AES128_GCM = "http://www.w3.org/2009/xmlenc11#aes128-gcm"
 AES256_GCM = "http://www.w3.org/2009/xmlenc11#aes256-gcm"
 
 ENCRYPTION_ALGORITHM_TRANSLATION_MAP = {
-    AES128_CBC: (xmlsec.Transform.AES128, 128),
-    AES256_CBC: (xmlsec.Transform.AES256, 256),
-    AES128_GCM: (xmlsec.Transform.AES128_GCM, 128),
-    AES256_GCM: (xmlsec.Transform.AES256_GCM, 256),
+    AES128_CBC: (xmlsec.constants.TransformAes128Cbc, 128),
+    AES256_CBC: (xmlsec.constants.TransformAes256Cbc, 256),
+    AES128_GCM: (xmlsec.constants.TransformAes128Gcm, 128),
+    AES256_GCM: (xmlsec.constants.TransformAes256Gcm, 256),
 }
