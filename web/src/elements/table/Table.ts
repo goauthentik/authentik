@@ -747,7 +747,8 @@ export abstract class Table<T extends object, D = T>
             return this.renderEmpty(this.renderError());
         }
 
-        if (this.loading && this.data === null) {
+        // No response yet, including while the first fetch is deferred until the table is visible.
+        if (this.data === null) {
             return this.renderLoading();
         }
 
