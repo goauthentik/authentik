@@ -1,5 +1,4 @@
 import { StorageAccessor } from "#common/storage/accessor";
-import type { PersistenceKey } from "#common/storage/shared";
 
 import { ReactiveElementHost } from "#elements/types";
 import { findEmptyFocusCandidate } from "#elements/utils/focus";
@@ -13,26 +12,10 @@ import { createRef, Ref } from "lit-html/directives/ref.js";
 import { msg } from "@lit/localize";
 import { css, html, ReactiveController } from "lit";
 
-// TODO: Remove in 2027.2 or later. See #27036
-const LEGACY_USER_KEY = "authentik-remember-me-user" as PersistenceKey;
-const LEGACY_SESSION_KEY = "authentik-remember-me-session" as PersistenceKey;
-
 export class RememberMeStorage {
     static readonly user = StorageAccessor.local("ak:remember_me:user");
     static reset = () => {
         this.user.delete();
-    };
-
-    /**
-     * Carry over state written by earlier versions. The username moves to its current key, and
-     * the CSRF-derived session ID that was used to invalidate it is discarded: Django rotates the
-     * CSRF token on every successful login, so that value can never match on a subsequent visit.
-     *
-     * TODO: Remove in 2027.2 or later. See #27036
-     */
-    static migrate = () => {
-        this.user.migrateFrom(LEGACY_USER_KEY);
-        StorageAccessor.local(LEGACY_SESSION_KEY).delete();
     };
 }
 
@@ -95,8 +78,6 @@ export class RememberMeController implements ReactiveController {
         this.identificationFieldRef = identificationFieldRef;
         this.passwordFieldRef = passwordFieldRef || null;
         this.identificationFieldID = identificationFieldID;
-
-        RememberMeStorage.migrate();
 
         const persistedUserIdentifier = RememberMeStorage.user.read();
 

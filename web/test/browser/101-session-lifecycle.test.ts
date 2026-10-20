@@ -7,10 +7,6 @@ import type { Page } from "@playwright/test";
 
 const REMEMBER_ME_USER_KEY = "ak:remember_me:user" satisfies PersistenceKey;
 
-// Keys written by earlier versions, which the controller migrates on load.
-// TODO: Remove in 2027.2 or later. See #27036
-const LEGACY_REMEMBER_ME_KEYS = ["authentik-remember-me-user", "authentik-remember-me-session"];
-
 const readStoredUserIdentifier = (page: Page) =>
     page.evaluate((k) => localStorage.getItem(k), REMEMBER_ME_USER_KEY);
 
@@ -18,12 +14,7 @@ test.describe("Session Lifecycle", () => {
     test.beforeEach(async ({ session, page }) => {
         await session.toLoginPage();
 
-        await page.evaluate(
-            (keys) => {
-                for (const key of keys) localStorage.removeItem(key);
-            },
-            [REMEMBER_ME_USER_KEY, ...LEGACY_REMEMBER_ME_KEYS],
-        );
+        await page.evaluate((key) => localStorage.removeItem(key), REMEMBER_ME_USER_KEY);
 
         await page.reload();
         await session.$identificationStage.waitFor({ state: "visible" });

@@ -141,27 +141,6 @@ export class StorageAccessor<K extends PersistenceKey = PersistenceKey> {
     }
 
     /**
-     * Move a value stored under a key from an earlier version to this accessor's key, unless a
-     * value is already stored here. The legacy key is removed either way.
-     *
-     * @param legacyKey The key used by earlier versions.
-     *
-     * @returns This accessor, for chaining.
-     */
-    public migrateFrom(legacyKey: PersistenceKey): this {
-        const legacy = new StorageAccessor(legacyKey, this.storage, this.logger);
-        const value = legacy.read();
-
-        if (value !== null && this.read() === null) {
-            this.write(value);
-        }
-
-        legacy.delete();
-
-        return this;
-    }
-
-    /**
      * Delete the value from storage.
      *
      * @returns `true` if the value was successfully deleted, or `false` if an error occurred.
