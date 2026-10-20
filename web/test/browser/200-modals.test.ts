@@ -8,9 +8,7 @@ test.describe("Modals", () => {
     });
 
     test("About authentik modal", async ({ page }) => {
-        const aboutButton = page
-            .getByRole("contentinfo", { name: "authentik information" })
-            .getByRole("button", { name: "Open about dialog" });
+        const aboutButton = page.locator('[data-ouia-id="version-details"]');
 
         await expect(aboutButton, "About button is visible").toBeVisible();
 
