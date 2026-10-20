@@ -11,8 +11,6 @@
  */
 
 /**
- * Custom permission
- *
  * @export
  * @interface CustomPermission
  */
@@ -21,9 +19,6 @@ export interface CustomPermission {
     codename: string;
     name: string;
     model: string;
-    /**
-     * The string to check with has_perm()
-     */
     readonly permission: string;
 }
 

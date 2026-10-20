@@ -11,7 +11,7 @@
  */
 
 /**
- * API endpoint a permission check can be bound to
+ * Base serializer class which doesn't implement create/update methods
  *
  * @export
  * @interface Endpoint

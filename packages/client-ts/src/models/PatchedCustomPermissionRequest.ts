@@ -11,8 +11,6 @@
  */
 
 /**
- * Custom permission
- *
  * @export
  * @interface PatchedCustomPermissionRequest
  */

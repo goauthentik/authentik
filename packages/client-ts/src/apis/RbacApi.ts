@@ -881,9 +881,6 @@ export class RbacApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     * Endpoints permission checks can be bound to
-     */
     async rbacEndpointsListRaw(
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<runtime.ApiResponse<Array<Endpoint>>> {
@@ -895,9 +892,6 @@ export class RbacApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     * Endpoints permission checks can be bound to
-     */
     async rbacEndpointsList(
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Array<Endpoint>> {
@@ -1431,7 +1425,7 @@ export class RbacApi extends runtime.BaseAPI {
     }
 
     /**
-     * Permission checks
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
     async rbacPermissionChecksCreateRaw(
         requestParameters: RbacPermissionChecksCreateRequest,
@@ -1446,7 +1440,7 @@ export class RbacApi extends runtime.BaseAPI {
     }
 
     /**
-     * Permission checks
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
     async rbacPermissionChecksCreate(
         requestParameters: RbacPermissionChecksCreateRequest,
@@ -1497,7 +1491,7 @@ export class RbacApi extends runtime.BaseAPI {
     }
 
     /**
-     * Permission checks
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
     async rbacPermissionChecksDestroyRaw(
         requestParameters: RbacPermissionChecksDestroyRequest,
@@ -1510,7 +1504,7 @@ export class RbacApi extends runtime.BaseAPI {
     }
 
     /**
-     * Permission checks
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
     async rbacPermissionChecksDestroy(
         requestParameters: RbacPermissionChecksDestroyRequest,
@@ -1569,7 +1563,7 @@ export class RbacApi extends runtime.BaseAPI {
     }
 
     /**
-     * Permission checks
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
     async rbacPermissionChecksListRaw(
         requestParameters: RbacPermissionChecksListRequest,
@@ -1584,7 +1578,7 @@ export class RbacApi extends runtime.BaseAPI {
     }
 
     /**
-     * Permission checks
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
     async rbacPermissionChecksList(
         requestParameters: RbacPermissionChecksListRequest = {},
@@ -1640,7 +1634,7 @@ export class RbacApi extends runtime.BaseAPI {
     }
 
     /**
-     * Permission checks
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
     async rbacPermissionChecksPartialUpdateRaw(
         requestParameters: RbacPermissionChecksPartialUpdateRequest,
@@ -1656,7 +1650,7 @@ export class RbacApi extends runtime.BaseAPI {
     }
 
     /**
-     * Permission checks
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
     async rbacPermissionChecksPartialUpdate(
         requestParameters: RbacPermissionChecksPartialUpdateRequest,
@@ -1710,7 +1704,7 @@ export class RbacApi extends runtime.BaseAPI {
     }
 
     /**
-     * Permission checks
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
     async rbacPermissionChecksRetrieveRaw(
         requestParameters: RbacPermissionChecksRetrieveRequest,
@@ -1726,7 +1720,7 @@ export class RbacApi extends runtime.BaseAPI {
     }
 
     /**
-     * Permission checks
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
     async rbacPermissionChecksRetrieve(
         requestParameters: RbacPermissionChecksRetrieveRequest,
@@ -1790,7 +1784,7 @@ export class RbacApi extends runtime.BaseAPI {
     }
 
     /**
-     * Permission checks
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
     async rbacPermissionChecksUpdateRaw(
         requestParameters: RbacPermissionChecksUpdateRequest,
@@ -1805,7 +1799,7 @@ export class RbacApi extends runtime.BaseAPI {
     }
 
     /**
-     * Permission checks
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
     async rbacPermissionChecksUpdate(
         requestParameters: RbacPermissionChecksUpdateRequest,

@@ -11,8 +11,6 @@
  */
 
 /**
- * Permission check
- *
  * @export
  * @interface PermissionCheck
  */

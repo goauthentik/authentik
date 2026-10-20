@@ -21843,7 +21843,6 @@ paths:
   /rbac/endpoints/:
     get:
       operationId: rbac_endpoints_list
-      description: Endpoints permission checks can be bound to
       tags:
       - rbac
       security:
@@ -22049,7 +22048,8 @@ paths:
   /rbac/permission_checks/:
     get:
       operationId: rbac_permission_checks_list
-      description: Permission checks
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
       parameters:
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
@@ -22073,7 +22073,8 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     post:
       operationId: rbac_permission_checks_create
-      description: Permission checks
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
       tags:
       - rbac
       requestBody:
@@ -22098,7 +22099,8 @@ paths:
   /rbac/permission_checks/{check_uuid}/:
     get:
       operationId: rbac_permission_checks_retrieve
-      description: Permission checks
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
       parameters:
       - in: path
         name: check_uuid
@@ -22124,7 +22126,8 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     put:
       operationId: rbac_permission_checks_update
-      description: Permission checks
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
       parameters:
       - in: path
         name: check_uuid
@@ -22156,7 +22159,8 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     patch:
       operationId: rbac_permission_checks_partial_update
-      description: Permission checks
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
       parameters:
       - in: path
         name: check_uuid
@@ -22187,7 +22191,8 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     delete:
       operationId: rbac_permission_checks_destroy
-      description: Permission checks
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
       parameters:
       - in: path
         name: check_uuid
@@ -39164,7 +39169,6 @@ components:
       - ui_theme
     CustomPermission:
       type: object
-      description: Custom permission
       properties:
         pk:
           type: integer
@@ -39180,7 +39184,6 @@ components:
           type: string
         permission:
           type: string
-          description: The string to check with has_perm()
           readOnly: true
       required:
       - codename
@@ -39190,7 +39193,6 @@ components:
       - pk
     CustomPermissionRequest:
       type: object
-      description: Custom permission
       properties:
         codename:
           type: string
@@ -40445,7 +40447,7 @@ components:
       - name
     Endpoint:
       type: object
-      description: API endpoint a permission check can be bound to
+      description: Base serializer class which doesn't implement create/update methods
       properties:
         id:
           type: string
@@ -50936,7 +50938,6 @@ components:
           description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
     PatchedCustomPermissionRequest:
       type: object
-      description: Custom permission
       properties:
         codename:
           type: string
@@ -52830,7 +52831,6 @@ components:
           minLength: 1
     PatchedPermissionCheckRequest:
       type: object
-      description: Permission check
       properties:
         name:
           type: string
@@ -54550,7 +54550,6 @@ components:
       - id
     PermissionCheck:
       type: object
-      description: Permission check
       properties:
         pk:
           type: string
@@ -54586,7 +54585,6 @@ components:
       - unknown_fields
     PermissionCheckRequest:
       type: object
-      description: Permission check
       properties:
         name:
           type: string
