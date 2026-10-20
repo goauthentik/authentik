@@ -50,4 +50,6 @@ exact = true
 ignore = [
   # https://github.com/askama-rs/askama/issues/594
   { id = "RUSTSEC-2026-0374", reason = "basic-toml is a build-time only dependency of the askama template engine, not shipped in the app or daemon; remove when askama drops basic-toml" },
+  # https://github.com/rustls/webpki-roots/releases/tag/v%2F0.26.11
+  { id = "RUSTSEC-2026-0381", reason = "webpki-roots 0.26.11 (via tokio-tungstenite) is a shim re-exporting webpki-roots 1.0.10, which is patched; remove when tokio-tungstenite depends on webpki-roots 1.x" },
 ]
