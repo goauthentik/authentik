@@ -41,6 +41,11 @@ function flushFrames() {
     for (const callback of callbacks) callback(0);
 }
 
+// Toggling on picks a field to focus by inspecting the document, which unit tests don't have.
+vi.mock("#elements/utils/focus", () => ({
+    findEmptyFocusCandidate: () => null,
+}));
+
 // Imported lazily so that the storage stubs above are in place when the module's
 // `StorageAccessor` instances are created.
 const { RememberMeController, RememberMeStorage } =
@@ -254,6 +259,34 @@ describe("RememberMeController", () => {
         flushFrames();
 
         expect(localStorage.getItem(USER_KEY)).toBeNull();
+    });
+
+    it("does not auto-submit once a returning user switches the toggle off", () => {
+        localStorage.setItem(USER_KEY, "alice@example.com");
+
+        const { controller, usernameField } = createController({ enableRememberMe: true });
+
+        usernameField.value = "alice@example.com";
+
+        expect(controller.canAutoSubmit()).toBe(true);
+
+        controller.toggleChangeListener({
+            target: { checked: false },
+        } as unknown as Event);
+
+        expect(controller.canAutoSubmit()).toBe(false);
+    });
+
+    it("does not auto-submit a first-time visitor who switches the toggle on", () => {
+        const { controller, usernameField } = createController({ enableRememberMe: true });
+
+        usernameField.value = "bob@example.com";
+
+        controller.toggleChangeListener({
+            target: { checked: true },
+        } as unknown as Event);
+
+        expect(controller.canAutoSubmit()).toBe(false);
     });
 
     it("does not record keystrokes for a first-time visitor", () => {

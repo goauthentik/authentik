@@ -241,7 +241,7 @@ export class RememberMeController implements ReactiveController {
      * Determines if the "remember me" feature can be automatically submitted, which requires:
      *
      * - An active challenge.
-     * - A stored username from a previous session.
+     * - A stored username from a previous session, with the feature not since switched off.
      * - The identifier input field to be present in the DOM.
      * - No password fields or passwordless URL, indicating we can skip directly to the next step.
      */
@@ -256,7 +256,7 @@ export class RememberMeController implements ReactiveController {
 
         if (challenge.passwordlessUrl) return false;
 
-        if (!this.defaultChecked) return false;
+        if (!this.defaultChecked || !this.rememberMeEnabled) return false;
 
         return !!this.usernameField?.value;
     }
