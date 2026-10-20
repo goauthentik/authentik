@@ -19973,6 +19973,10 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: honor_force_authn
+        schema:
+          type: boolean
+      - in: query
         name: invalidation_flow
         schema:
           type: string
@@ -21139,6 +21143,10 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: honor_force_authn
+        schema:
+          type: boolean
       - in: query
         name: invalidation_flow
         schema:
@@ -53037,6 +53045,11 @@ components:
           type: boolean
         sign_logout_response:
           type: boolean
+        honor_force_authn:
+          type: boolean
+          description: When enabled, a ForceAuthn attribute set by the Service Provider
+            on an AuthnRequest requires the user to re-authenticate. When disabled,
+            the attribute is ignored and an existing session is used.
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SAMLBindingsEnum'
@@ -56969,6 +56982,11 @@ components:
           type: boolean
         sign_logout_response:
           type: boolean
+        honor_force_authn:
+          type: boolean
+          description: When enabled, a ForceAuthn attribute set by the Service Provider
+            on an AuthnRequest requires the user to re-authenticate. When disabled,
+            the attribute is ignored and an existing session is used.
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SAMLBindingsEnum'
@@ -57184,6 +57202,11 @@ components:
           type: boolean
         sign_logout_response:
           type: boolean
+        honor_force_authn:
+          type: boolean
+          description: When enabled, a ForceAuthn attribute set by the Service Provider
+            on an AuthnRequest requires the user to re-authenticate. When disabled,
+            the attribute is ignored and an existing session is used.
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SAMLBindingsEnum'

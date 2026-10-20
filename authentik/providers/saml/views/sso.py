@@ -73,10 +73,12 @@ class SAMLSSOView(PolicyAccessView):
             return method_response
         # If the SP requested ForceAuthn, we must re-authenticate the user regardless of
         # any existing session, mirroring the OIDC provider's prompt=login handling.
+        # The provider can be configured to ignore the attribute, in which case the
+        # existing session is used as if ForceAuthn had not been set.
         auth_n_request: AuthNRequest | None = self.plan_context.get(
             PLAN_CONTEXT_SAML_AUTH_N_REQUEST
         )
-        if auth_n_request and auth_n_request.force_authn:
+        if auth_n_request and auth_n_request.force_authn and self.provider.honor_force_authn:
             reauth_response = self.check_force_authn(request)
             if reauth_response:
                 return reauth_response

@@ -265,6 +265,15 @@ class SAMLProvider(Provider):
     sign_logout_request = models.BooleanField(default=False)
     sign_logout_response = models.BooleanField(default=False)
 
+    honor_force_authn = models.BooleanField(
+        default=True,
+        help_text=_(
+            "When enabled, a ForceAuthn attribute set by the Service Provider on an "
+            "AuthnRequest requires the user to re-authenticate. When disabled, the "
+            "attribute is ignored and an existing session is used."
+        ),
+    )
+
     @property
     def launch_url(self) -> str | None:
         """Use IDP-Initiated SAML flow as launch URL"""

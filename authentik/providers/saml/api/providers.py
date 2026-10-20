@@ -261,6 +261,7 @@ class SAMLProviderSerializer(ProviderSerializer):
             "sign_response",
             "sign_logout_request",
             "sign_logout_response",
+            "honor_force_authn",
             "sp_binding",
             "sls_binding",
             "logout_method",
