@@ -121,15 +121,13 @@ Global issuer mode still serves the discovery document at `https://authentik.com
 
 ## Re-authentication with `prompt=login`
 
-A client can add `prompt=login` to its authorization request to require that the user authenticates again, even when they already have a valid authentik session.
+By default, a client adding `prompt=login` to an authorization request makes authentik require re-authentication, even with a valid session, similarly to SAML's [`ForceAuthn`](../saml/index.mdx#forceauthn). authentik runs the provider's authentication flow, or the associated brand's authentication flow if none is configured, before continuing the authorization flow.
 
-By default, authentik honors this parameter. When an authorization request includes `prompt=login`, the user is sent through the provider's authentication flow before the authorization flow continues. If the provider does not have an authentication flow configured, authentik uses the authentication flow configured for the associated brand. This behaves similarly to `ForceAuthn` for SAML providers.
+### Ignoring `prompt=login` :ak-version[2026.11]
 
-### Ignoring `prompt=login`:ak-version[2026.11]
+Some clients always send `prompt=login` and provide no way to disable it. To ignore it and allow reuse of a valid authentik session, disable **Honor prompt=login** under the OAuth 2.0 provider's **Advanced protocol settings**. Requests are then handled as if `prompt=login` were absent.
 
-Some clients send `prompt=login` on every request and offer no way to turn it off. To use the existing authentik session for such a client, disable the **Honor prompt=login** option under **Advanced protocol settings** on the OAuth 2.0 provider. When disabled, authentik treats an authorization request with `prompt=login` the same as one without it, and the user is not asked to re-authenticate if they already have a valid session.
-
-The setting applies only to the provider it is set on; other clients that send `prompt=login` continue to trigger re-authentication. It does not affect the `max_age` parameter, which authentik continues to enforce. The `auth_time` claim in the ID token always reflects when the user actually authenticated, so a client that inspects it can detect that the request was not honored.
+This setting affects only that provider and does not change `max_age` handling, which can still require re-authentication. The ID token's `auth_time` claim still records the actual authentication time, allowing clients to detect that re-authentication did not occur.
 
 ## OAuth 2.0 flows and grant types
 
