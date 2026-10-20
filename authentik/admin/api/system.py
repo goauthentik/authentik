@@ -8,7 +8,7 @@ from typing import TypedDict
 
 from cryptography.hazmat.backends.openssl.backend import backend
 from django.conf import settings
-from django.db import connection, Error
+from django.db import Error, connection
 from django.utils.timezone import now
 from django.views.debug import SafeExceptionReporterFilter
 from drf_spectacular.utils import extend_schema
