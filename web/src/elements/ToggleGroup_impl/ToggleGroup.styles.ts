@@ -23,6 +23,10 @@ export const styles = css`
         );
     }
 
+    :host([form-input]) [part="toggle-group"] {
+        justify-content: initial;
+    }
+
     [part="toggle-group"] {
         justify-content: center;
         display: flex;
