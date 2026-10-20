@@ -1,7 +1,11 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build
+<<<<<<< HEAD
 FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.5-trixie@sha256:4ee9ffa999b4583ce281939cdff828763083610292f252279a0cee77473bd9a7 AS builder
+=======
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.27-trixie@sha256:1896654cfc5c2b5ad74c07f29cb36f5d2d1cbed42e3054070fbfe444e521e83c AS builder
+>>>>>>> d53447b6b (root: bump cert-related deps due to emudhra (#27068))
 
 ARG TARGETOS
 ARG TARGETARCH
