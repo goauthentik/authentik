@@ -419,7 +419,7 @@ requires-dist = [
     { name = "django-pglock", specifier = "==1.8.0" },
     { name = "django-pgtrigger", specifier = "==4.17.0" },
     { name = "django-postgres-cache", editable = "packages/django-postgres-cache" },
-    { name = "django-postgres-extra", specifier = "==3.0.0" },
+    { name = "django-postgres-extra", specifier = "==3.0.1" },
     { name = "django-prometheus", specifier = "==2.5.0" },
     { name = "django-storages", extras = ["s3"], specifier = "==1.14.6" },
     { name = "djangoql", specifier = "==0.19.1" },
@@ -1360,15 +1360,15 @@ requires-dist = [
 
 [[package]]
 name = "django-postgres-extra"
-version = "3.0.0"
+version = "3.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
     { name = "python-dateutil" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3b/07/e8f475ee5a4dc510b2cab98912c3181989af913060dee484c2a8f8b18f6e/django_postgres_extra-3.0.0.tar.gz", hash = "sha256:f73902d2e172d73056bfe075683ccc951fa9150ce89e99128d339cf7a2a8105a", size = 106827, upload-time = "2026-10-02T19:51:17.528Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1d/02/1231bf077a17a14f22d72d6157e57d9154ebbd8fea1744b2e2aec628e82f/django_postgres_extra-3.0.1.tar.gz", hash = "sha256:7c6b435b101852365005fc756ad034345e5d483047bb7b8a40f1911fca34f012", size = 108616, upload-time = "2026-10-05T19:07:29.869Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/34/7a/bb0f30ca75196246ef1ff96f5268e8daeae3c1983a0cbe9b52fac1c5508f/django_postgres_extra-3.0.0-py3-none-any.whl", hash = "sha256:8b5b76d1f7492b3f2dee8f4cca90fbd66e028d3fca65ed821718d41a69a17a0f", size = 102208, upload-time = "2026-10-02T19:51:16.308Z" },
+    { url = "https://files.pythonhosted.org/packages/09/51/b2ff225c7e9b5691347b023731f0c972c77f76f52941ac092cb51dcf6cd8/django_postgres_extra-3.0.1-py3-none-any.whl", hash = "sha256:57e3e0ecd1144ba4afc515bb21facae2cf764fb0d61a2d347cf8b0b0d39e5e6c", size = 103201, upload-time = "2026-10-05T19:07:28.523Z" },
 ]
 
 [[package]]
