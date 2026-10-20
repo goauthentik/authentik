@@ -59373,6 +59373,33 @@ components:
           type: string
           description: Configured external base URL. Can be empty
           readOnly: true
+        postgresql:
+          type: object
+          description: PostgreSQL information for this request's database connection
+          properties:
+            version:
+              type: string
+            jit:
+              type: string
+            jit_source:
+              type: string
+            ssl:
+              type: boolean
+            ssl_version:
+              type: string
+              nullable: true
+            ssl_cipher:
+              type: string
+              nullable: true
+          required:
+          - jit
+          - jit_source
+          - ssl
+          - ssl_cipher
+          - ssl_version
+          - version
+          readOnly: true
+          nullable: true
       required:
       - base_url
       - brand
@@ -59381,6 +59408,7 @@ components:
       - http_headers
       - http_host
       - http_is_secure
+      - postgresql
       - runtime
       - server_time
     TOTPDevice:
