@@ -4,7 +4,7 @@ from urllib.parse import urlencode
 
 from django.contrib.auth.hashers import make_password
 from django.contrib.contenttypes.models import ContentType
-from django.test import RequestFactory, TestCase
+from django.test import RequestFactory
 from django.views.debug import SafeExceptionReporterFilter
 from guardian.shortcuts import get_anonymous_user
 
@@ -13,12 +13,13 @@ from authentik.core.models import Group, User
 from authentik.core.tests.utils import create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from authentik.flows.views.executor import QS_QUERY, SESSION_KEY_PLAN
+from authentik.flows.tests import FlowTestCase
+from authentik.flows.views.executor import QS_QUERY
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 
 
-class TestEvents(TestCase):
+class TestEvents(FlowTestCase):
     """Test Event"""
 
     def setUp(self) -> None:
@@ -124,14 +125,12 @@ class TestEvents(TestCase):
         """Test request from flow request with a pending user"""
         user = create_test_user()
 
-        session = self.client.session
         plan = FlowPlan(generate_id())
         plan.context[PLAN_CONTEXT_PENDING_USER] = user
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         request = self.factory.get("/")
-        request.session = session
+        request.session = self.client.session
         request.user = user
 
         event = Event.new("unittest").from_http(request)
@@ -149,14 +148,12 @@ class TestEvents(TestCase):
         user = create_test_user()
         anon = get_anonymous_user()
 
-        session = self.client.session
         plan = FlowPlan(generate_id())
         plan.context[PLAN_CONTEXT_PENDING_USER] = user
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         request = self.factory.get("/")
-        request.session = session
+        request.session = self.client.session
         request.user = anon
 
         event = Event.new("unittest").from_http(request)
@@ -183,14 +180,12 @@ class TestEvents(TestCase):
         )
         anon = get_anonymous_user()
 
-        session = self.client.session
         plan = FlowPlan(generate_id())
         plan.context[PLAN_CONTEXT_PENDING_USER] = user
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         request = self.factory.get("/")
-        request.session = session
+        request.session = self.client.session
         request.user = anon
 
         event = Event.new("unittest").from_http(request)

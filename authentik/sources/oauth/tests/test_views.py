@@ -4,13 +4,12 @@ from urllib.parse import parse_qs
 
 from django.urls import reverse
 from requests_mock import Mocker
-from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
-from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.utils import pkce_s256_challenge
 from authentik.sources.oauth.api.source import OAuthSourceSerializer
@@ -18,7 +17,7 @@ from authentik.sources.oauth.clients.oauth2 import SESSION_KEY_OAUTH_PKCE
 from authentik.sources.oauth.models import OAuthSource, PKCEMethod
 
 
-class TestOAuthSource(APITestCase):
+class TestOAuthSource(APIFlowTestCase):
     """OAuth Source tests"""
 
     def setUp(self):
@@ -138,11 +137,9 @@ class TestOAuthSource(APITestCase):
     def test_source_redirect_login_hint_user(self):
         """test redirect view with login hint"""
         user = User(email="foo@authentik.company")
-        session = self.client.session
         plan = FlowPlan(generate_id())
         plan.context[PLAN_CONTEXT_PENDING_USER] = user
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         res = self.client.get(
             reverse(
@@ -156,11 +153,9 @@ class TestOAuthSource(APITestCase):
 
     def test_source_redirect_login_hint_user_identifier(self):
         """test redirect view with login hint"""
-        session = self.client.session
         plan = FlowPlan(generate_id())
         plan.context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = "foo@authentik.company"
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         res = self.client.get(
             reverse(

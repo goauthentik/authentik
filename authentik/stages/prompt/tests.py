@@ -11,7 +11,7 @@ from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import FlowPlan
 from authentik.flows.tests import APIFlowTestCase
-from authentik.flows.views.executor import SESSION_KEY_PLAN, FlowExecutorView
+from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.generators import generate_id
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.stages.prompt.models import FieldTypes, InlineFileField, Prompt, PromptStage
@@ -178,9 +178,7 @@ class TestPromptStage(APIFlowTestCase):
     def test_render(self):
         """Test render of form, check if all prompts are rendered correctly"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -237,9 +235,7 @@ class TestPromptStage(APIFlowTestCase):
     def test_valid_challenge_request(self):
         """Test a request with valid challenge_response data"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         expr = (
@@ -266,8 +262,7 @@ class TestPromptStage(APIFlowTestCase):
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
         # Check that valid data has been saved
-        session = self.client.session
-        plan: FlowPlan = session[SESSION_KEY_PLAN]
+        plan = self.get_flow_plan()
         data = plan.context[PLAN_CONTEXT_PROMPT]
         for prompt in self.stage.fields.all():
             prompt: Prompt

@@ -18,10 +18,8 @@ from authentik.flows.planner import (
     PLAN_CONTEXT_POST,
     FlowPlanner,
 )
-from authentik.flows.views.executor import (
-    SESSION_KEY_POST,
-    ToDefaultFlow,
-)
+from authentik.flows.storage import FlowExecution
+from authentik.flows.views.executor import ToDefaultFlow
 from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.engine import PolicyEngine
@@ -96,7 +94,9 @@ class PolicyAccessView(AccessMixin, View):
         # Because this view might get hit with a POST request, we need to preserve that data
         # since later views might need it (mostly SAML)
         if self.request.method.lower() == "post":
-            self.request.session[SESSION_KEY_POST] = self.request.POST
+            execution = FlowExecution(self.request)
+            execution.post = self.request.POST
+            execution.save()
             flow_context[PLAN_CONTEXT_POST] = self.request.POST
 
         if not authn_flow:

@@ -7,9 +7,9 @@ from django.urls import reverse
 from django.views.generic import RedirectView
 from structlog.stdlib import get_logger
 
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
-from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.flows.storage import FlowExecution
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.views.base import OAuthClientMixin
 
@@ -37,7 +37,7 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
         """Check if we're running in a flow and if we have a pending user, use that
         as login_hint"""
         params = {}
-        plan: FlowPlan = self.request.session.get(SESSION_KEY_PLAN, None)
+        plan = FlowExecution(self.request).plan
         if not plan:
             return params
         if user := plan.context.get(PLAN_CONTEXT_PENDING_USER):

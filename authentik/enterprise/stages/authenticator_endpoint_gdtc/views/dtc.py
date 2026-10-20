@@ -20,7 +20,7 @@ from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
     EndpointDeviceConnection,
 )
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.flows.storage import FlowExecution
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 from authentik.stages.user_login.stage import PLAN_CONTEXT_METHOD_ARGS_KNOWN_DEVICE
 
@@ -32,7 +32,7 @@ class GoogleChromeDeviceTrustConnector(View):
     """Google Chrome Device-trust connector based endpoint authenticator"""
 
     def get_flow_plan(self) -> FlowPlan:
-        flow_plan: FlowPlan = self.request.session[SESSION_KEY_PLAN]
+        flow_plan: FlowPlan = FlowExecution(self.request).plan
         return flow_plan
 
     def setup(self, request: HttpRequest, *args: Any, **kwargs: Any) -> None:
@@ -89,5 +89,5 @@ class GoogleChromeDeviceTrustConnector(View):
             flow_plan.context[PLAN_CONTEXT_METHOD_ARGS].setdefault(
                 PLAN_CONTEXT_METHOD_ARGS_KNOWN_DEVICE, True
             )
-            request.session[SESSION_KEY_PLAN] = flow_plan
+            FlowExecution(request).replace(flow_plan)
         return TemplateResponse(request, "flows/frame-submit.html")

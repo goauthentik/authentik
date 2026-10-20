@@ -9,7 +9,7 @@ from authentik.core.auth import TokenBackend
 from authentik.core.models import Token, TokenIntents, User
 from authentik.core.tests.utils import RequestFactory
 from authentik.flows.planner import FlowPlan
-from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.flows.storage import FlowExecution
 
 
 class TestTokenAuth(TestCase):
@@ -23,7 +23,7 @@ class TestTokenAuth(TestCase):
         self.request_factory = RequestFactory()
         # To test with session we need to create a request and pass it through all middlewares
         self.request = self.request_factory.get("/")
-        self.request.session[SESSION_KEY_PLAN] = FlowPlan("test")
+        FlowExecution(self.request).replace(FlowPlan("test"))
 
     def test_token_auth(self):
         """Test auth with token"""

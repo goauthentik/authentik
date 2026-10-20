@@ -21,7 +21,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import SessionEndStage
-from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.flows.storage import FlowExecution
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView
 from authentik.providers.iframe_logout import IframeLogoutStageView
@@ -125,7 +125,7 @@ class EndSessionView(PolicyAccessView):
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Preserve the running logout plan when a front-channel iframe calls back."""
-        plan = request.session.get(SESSION_KEY_PLAN)
+        plan = FlowExecution(request).plan
         # A top-level navigation starts a new logout, even if an iframe stage was abandoned.
         # Without Fetch Metadata, only the current iframe stage identifies a callback.
         if (

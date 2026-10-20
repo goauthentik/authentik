@@ -13,7 +13,7 @@ from authentik.common.saml.parsers.logout_request import LogoutRequest
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_brand, create_test_cert, create_test_flow
 from authentik.flows.planner import FlowPlan
-from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.flows.storage import FlowExecution
 from authentik.providers.saml.models import SAMLBindings, SAMLLogoutMethods, SAMLProvider
 from authentik.providers.saml.processors.logout_request import LogoutRequestProcessor
 from authentik.providers.saml.processors.logout_response_processor import LogoutResponseProcessor
@@ -118,7 +118,8 @@ class TestSPInitiatedSLOViews(TestCase):
         )
         plan = FlowPlan(flow_pk="test-flow")
         plan.context[PLAN_CONTEXT_SAML_RELAY_STATE] = plan_relay_state
-        request.session = {SESSION_KEY_PLAN: plan}
+        request.session = {}
+        FlowExecution(request).replace(plan)
         request.brand = self.brand
 
         view = SPInitiatedSLOBindingRedirectView()
@@ -166,7 +167,8 @@ class TestSPInitiatedSLOViews(TestCase):
         # Create a flow plan with the return URL
         plan = FlowPlan(flow_pk="test-flow")
         plan.context[PLAN_CONTEXT_SAML_RELAY_STATE] = relay_state
-        request.session = {SESSION_KEY_PLAN: plan}
+        request.session = {}
+        FlowExecution(request).replace(plan)
         request.brand = self.brand
 
         view = SPInitiatedSLOBindingRedirectView()
@@ -257,7 +259,8 @@ class TestSPInitiatedSLOViews(TestCase):
         )
         plan = FlowPlan(flow_pk="test-flow")
         plan.context[PLAN_CONTEXT_SAML_RELAY_STATE] = plan_relay_state
-        request.session = {SESSION_KEY_PLAN: plan}
+        request.session = {}
+        FlowExecution(request).replace(plan)
         request.brand = self.brand
 
         view = SPInitiatedSLOBindingPOSTView()
@@ -282,7 +285,8 @@ class TestSPInitiatedSLOViews(TestCase):
         # Create a flow plan with the return URL
         plan = FlowPlan(flow_pk="test-flow")
         plan.context[PLAN_CONTEXT_SAML_RELAY_STATE] = relay_state
-        request.session = {SESSION_KEY_PLAN: plan}
+        request.session = {}
+        FlowExecution(request).replace(plan)
         request.brand = self.brand
 
         view = SPInitiatedSLOBindingPOSTView()
@@ -486,7 +490,8 @@ class TestSPInitiatedSLOViews(TestCase):
         )
         plan = FlowPlan(flow_pk="test-flow")
         plan.context[PLAN_CONTEXT_SAML_RELAY_STATE] = plan_relay_state
-        request.session = {SESSION_KEY_PLAN: plan}
+        request.session = {}
+        FlowExecution(request).replace(plan)
         request.brand = self.brand
 
         view = SPInitiatedSLOBindingRedirectView()

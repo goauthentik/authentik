@@ -26,13 +26,7 @@ from authentik.flows.models import (
 from authentik.flows.planner import FlowPlan, FlowPlanner
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageView
 from authentik.flows.tests import APIFlowTestCase
-from authentik.flows.views.executor import (
-    NEXT_ARG_NAME,
-    QS_KEY_TOKEN,
-    QS_QUERY,
-    SESSION_KEY_PLAN,
-    FlowExecutorView,
-)
+from authentik.flows.views.executor import NEXT_ARG_NAME, QS_KEY_TOKEN, QS_QUERY, FlowExecutorView
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
@@ -83,9 +77,7 @@ class TestFlowExecutor(APIFlowTestCase):
         stage = DummyStage.objects.create(name=generate_id())
         binding = FlowStageBinding(target=flow, stage=stage, order=0)
         plan = FlowPlan(flow_pk=flow.pk.hex + "a", bindings=[binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         cancel_mock = MagicMock()
         with patch("authentik.flows.views.executor.FlowExecutorView.cancel", cancel_mock):
@@ -281,8 +273,7 @@ class TestFlowExecutor(APIFlowTestCase):
         response = self.client.get(exec_url)
         self.assertEqual(response.status_code, 200)
         # Check that two stages are in plan
-        session = self.client.session
-        plan: FlowPlan = session[SESSION_KEY_PLAN]
+        plan = self.get_flow_plan()
         self.assertEqual(len(plan.bindings), 2)
         # Second request, submit form, one stage left
         response = self.client.post(exec_url)
@@ -290,8 +281,7 @@ class TestFlowExecutor(APIFlowTestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, exec_url)
         # Check that two stages are in plan
-        session = self.client.session
-        plan: FlowPlan = session[SESSION_KEY_PLAN]
+        plan = self.get_flow_plan()
         self.assertEqual(len(plan.bindings), 1)
 
     @patch(
@@ -330,7 +320,7 @@ class TestFlowExecutor(APIFlowTestCase):
             response = self.client.get(exec_url)
             self.assertEqual(response.status_code, 200)
 
-            plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+            plan: FlowPlan = self.get_flow_plan()
 
             self.assertEqual(plan.bindings[0], binding)
             self.assertEqual(plan.bindings[1], binding2)
@@ -387,7 +377,7 @@ class TestFlowExecutor(APIFlowTestCase):
             response = self.client.get(exec_url)
 
             self.assertEqual(response.status_code, 200)
-            plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+            plan: FlowPlan = self.get_flow_plan()
 
             self.assertEqual(plan.bindings[0], binding)
             self.assertEqual(plan.bindings[1], binding2)
@@ -401,7 +391,7 @@ class TestFlowExecutor(APIFlowTestCase):
             response = self.client.post(exec_url)
             self.assertEqual(response.status_code, 302)
 
-            plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+            plan: FlowPlan = self.get_flow_plan()
 
             self.assertEqual(plan.bindings[0], binding2)
             self.assertEqual(plan.bindings[1], binding3)
@@ -454,7 +444,7 @@ class TestFlowExecutor(APIFlowTestCase):
             response = self.client.get(exec_url)
 
             self.assertEqual(response.status_code, 200)
-            plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+            plan: FlowPlan = self.get_flow_plan()
 
             self.assertEqual(plan.bindings[0], binding)
             self.assertEqual(plan.bindings[1], binding2)
@@ -468,7 +458,7 @@ class TestFlowExecutor(APIFlowTestCase):
             response = self.client.post(exec_url)
             self.assertEqual(response.status_code, 302)
 
-            plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+            plan: FlowPlan = self.get_flow_plan()
 
             self.assertEqual(plan.bindings[0], binding2)
             self.assertEqual(plan.bindings[1], binding3)
@@ -480,7 +470,7 @@ class TestFlowExecutor(APIFlowTestCase):
             response = self.client.post(exec_url)
             self.assertEqual(response.status_code, 302)
 
-            plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+            plan: FlowPlan = self.get_flow_plan()
 
             self.assertEqual(plan.bindings[0], binding3)
 
@@ -539,7 +529,7 @@ class TestFlowExecutor(APIFlowTestCase):
             self.assertEqual(response.status_code, 200)
             self.assertStageResponse(response, flow, component="ak-stage-dummy")
 
-            plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+            plan: FlowPlan = self.get_flow_plan()
 
             self.assertEqual(plan.bindings[0], binding)
             self.assertEqual(plan.bindings[1], binding2)

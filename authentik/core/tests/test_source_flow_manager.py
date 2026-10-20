@@ -20,7 +20,7 @@ from authentik.flows.planner import (
     PLAN_CONTEXT_USER_SWITCH_ADD_USER,
     FlowPlan,
 )
-from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.flows.storage import FlowExecution
 from authentik.lib.generators import generate_id
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.expression.models import ExpressionPolicy
@@ -59,7 +59,7 @@ class TestSourceFlowManager(TestCase):
         self.assertEqual(action, Action.ENROLL)
         response = flow_manager.get_flow()
         self.assertEqual(response.status_code, 302)
-        flow_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
+        flow_plan: FlowPlan = FlowExecution(request).plan
         self.assertEqual(flow_plan.bindings[0].stage.view, PostSourceStage)
 
     def test_unauthenticated_auth(self):
@@ -75,7 +75,7 @@ class TestSourceFlowManager(TestCase):
         self.assertEqual(action, Action.AUTH)
         response = flow_manager.get_flow()
         self.assertEqual(response.status_code, 302)
-        flow_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
+        flow_plan: FlowPlan = FlowExecution(request).plan
         self.assertEqual(flow_plan.bindings[0].stage.view, PostSourceStage)
 
     def test_authenticated_link(self):
@@ -214,7 +214,7 @@ class TestSourceFlowManager(TestCase):
         response = flow_manager.get_flow()
 
         self.assertEqual(response.status_code, 302)
-        flow_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
+        flow_plan: FlowPlan = FlowExecution(request).plan
         self.assertEqual(flow_plan.flow_pk, self.authentication_flow.pk.hex)
         self.assertEqual(flow_plan.context[PLAN_CONTEXT_PENDING_USER], other_user)
         self.assertTrue(flow_plan.context[PLAN_CONTEXT_USER_SWITCH_ADD_USER])
@@ -235,7 +235,7 @@ class TestSourceFlowManager(TestCase):
         self.assertEqual(action, Action.ENROLL)
         self.assertIsInstance(response, AccessDeniedResponse)
         self.assertEqual(response.error_message, "New users can't enroll while adding a user.")
-        self.assertNotIn(SESSION_KEY_PLAN, request.session)
+        self.assertIsNone(FlowExecution(request).plan)
         self.assertEqual(User.objects.count(), users)
         self.assertFalse(UserOAuthSourceConnection.objects.filter(user=current_user).exists())
 

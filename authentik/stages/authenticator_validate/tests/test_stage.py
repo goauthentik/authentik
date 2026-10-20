@@ -10,7 +10,6 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowDesignation, FlowStageBinding, NotConfiguredAction
 from authentik.flows.planner import FlowPlan
 from authentik.flows.tests import APIFlowTestCase
-from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id, generate_key
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_static.models import AuthenticatorStaticStage
@@ -148,7 +147,6 @@ class AuthenticatorValidateStageTests(APIFlowTestCase):
             device_classes=[DeviceClasses.STATIC, DeviceClasses.TOTP],
         )
 
-        session = self.client.session
         plan = FlowPlan(flow_pk=flow.pk.hex)
         plan.append_stage(stage)
         plan.context[PLAN_CONTEXT_DEVICE_CHALLENGES] = [
@@ -165,8 +163,7 @@ class AuthenticatorValidateStageTests(APIFlowTestCase):
                 "last_used": now(),
             },
         ]
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
@@ -242,9 +239,7 @@ class AuthenticatorValidateStageTests(APIFlowTestCase):
 
         plan = FlowPlan(flow_pk=flow.pk.hex)
         plan.append(FlowStageBinding.objects.create(target=flow, stage=stage, order=2))
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),

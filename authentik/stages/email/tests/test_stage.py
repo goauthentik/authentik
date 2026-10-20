@@ -17,7 +17,7 @@ from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding, FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import APIFlowTestCase
-from authentik.flows.views.executor import QS_KEY_TOKEN, SESSION_KEY_PLAN, FlowExecutorView
+from authentik.flows.views.executor import QS_KEY_TOKEN, FlowExecutorView
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 from authentik.stages.consent.stage import PLAN_CONTEXT_CONSENT_TOKEN
@@ -47,9 +47,7 @@ class TestEmailStage(APIFlowTestCase):
         """Test with pending user"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.get(url)
@@ -64,9 +62,7 @@ class TestEmailStage(APIFlowTestCase):
         self.user.attributes = {"settings": {"locale": "de"}}
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.get(url)
@@ -78,9 +74,7 @@ class TestEmailStage(APIFlowTestCase):
     def test_without_user(self):
         """Test without pending user"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.get(url)
@@ -94,9 +88,7 @@ class TestEmailStage(APIFlowTestCase):
         """Test with pending user"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.post(url)
@@ -127,9 +119,7 @@ class TestEmailStage(APIFlowTestCase):
                 )
                 plan.context[PLAN_CONTEXT_PENDING_USER] = pending_user
 
-                session = self.client.session
-                session[SESSION_KEY_PLAN] = plan
-                session.save()
+                self.set_flow_plan(plan)
 
                 response = self.client.get(url)
 
@@ -147,9 +137,7 @@ class TestEmailStage(APIFlowTestCase):
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         plan.context[PLAN_CONTEXT_EMAIL_OVERRIDE] = "foo@bar.baz"
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.post(url)
@@ -175,9 +163,7 @@ class TestEmailStage(APIFlowTestCase):
         self.user.is_active = False
         self.user.save()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
         token: FlowToken = FlowToken.objects.get(user=self.user)
 
         with patch("authentik.flows.views.executor.FlowExecutorView.cancel", MagicMock()):
@@ -216,8 +202,7 @@ class TestEmailStage(APIFlowTestCase):
             self.assertEqual(response.status_code, 200)
             self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
-            session = self.client.session
-            plan: FlowPlan = session[SESSION_KEY_PLAN]
+            plan = self.get_flow_plan()
             self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER], self.user)
             self.assertTrue(plan.context[PLAN_CONTEXT_PENDING_USER].is_active)
 
@@ -228,9 +213,7 @@ class TestEmailStage(APIFlowTestCase):
         self.user.is_active = False
         self.user.save()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
         # Set flow token user to a different user
         token: FlowToken = FlowToken.objects.get(user=self.user)
         token.user = create_test_admin_user()
@@ -266,9 +249,7 @@ class TestEmailStage(APIFlowTestCase):
         """Test generation of the URL in the EMail"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         request = self.factory.get(url)
@@ -285,9 +266,7 @@ class TestEmailStage(APIFlowTestCase):
         """Test that all of our parameters are passed to the URL correctly"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         request = self.factory.get(url)
@@ -308,9 +287,7 @@ class TestEmailStage(APIFlowTestCase):
         """Test to ensure that URL params are preserved in the URL being sent"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         url += "?query=" + urlencode({"foo": "bar"})
@@ -332,14 +309,12 @@ class TestEmailStage(APIFlowTestCase):
         """Test to ensure that the correct cache key is returned."""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         request = self.factory.post(url)
         request.user = self.user
-        request.session = session
+        request.session = self.client.session
 
         executor = FlowExecutorView(request=request, flow=self.flow)
         executor.plan = plan
@@ -361,14 +336,12 @@ class TestEmailStage(APIFlowTestCase):
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         request = self.factory.post(url)
         request.user = self.user
-        request.session = session
+        request.session = self.client.session
 
         executor = FlowExecutorView(request=request, flow=self.flow)
         executor.current_stage = self.stage
@@ -384,14 +357,12 @@ class TestEmailStage(APIFlowTestCase):
         should be rate limited."""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         request = self.factory.post(url)
         request.user = self.user
-        request.session = session
+        request.session = self.client.session
 
         executor = FlowExecutorView(request=request, flow=self.flow)
         executor.current_stage = self.stage
@@ -437,13 +408,11 @@ class TestEmailStage(APIFlowTestCase):
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         request = self.factory.get(url, user=self.user)
-        request.session = session
+        request.session = self.client.session
 
         request.brand = Brand.objects.create(domain="foo-domain.com", default=True)
 

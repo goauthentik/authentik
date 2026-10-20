@@ -1,4 +1,4 @@
-from django.http import Http404, HttpRequest, HttpResponse
+from django.http import Http404, HttpRequest, HttpResponse, QueryDict
 from django.shortcuts import get_object_or_404
 from django.views import View
 
@@ -13,7 +13,8 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import ChallengeStageView
-from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET
+from authentik.flows.storage import FlowExecution
+from authentik.flows.views.executor import NEXT_ARG_NAME
 from authentik.sources.telegram.models import (
     GroupTelegramSourceConnection,
     TelegramSource,
@@ -29,7 +30,7 @@ class TelegramStartView(View):
         """Prepare Authentication Plan, redirect user FlowExecutor"""
         # Ensure redirect is carried through when user was trying to
         # authorize application
-        final_redirect = self.request.session.get(SESSION_KEY_GET, {}).get(
+        final_redirect = FlowExecution(self.request).query.get(
             NEXT_ARG_NAME, "authentik_core:if-user"
         )
         kwargs.update(
@@ -86,12 +87,14 @@ class TelegramLoginView(ChallengeStageView):
         raw_info.pop("hash")
         raw_info.pop("auth_date")
         source = self.source
-        # The pre_authentication_flow executor overwrites SESSION_KEY_GET with an empty
+        # The pre_authentication_flow executor overwrites the stored GET params with an empty
         # dict (its redirect URL carries no query string), losing the original next= param.
         # Restore it from PLAN_CONTEXT_REDIRECT, which TelegramStartView saved before that
         # overwrite. Mirrors the same fix in the SAML source's ACSView.
         if plan_redirect := self.executor.plan.context.get(PLAN_CONTEXT_REDIRECT):
-            self.request.session[SESSION_KEY_GET] = {NEXT_ARG_NAME: plan_redirect}
+            execution = FlowExecution(self.request)
+            execution.query = QueryDict.fromkeys([NEXT_ARG_NAME], plan_redirect)
+            execution.save()
         sfm = TelegramSourceFlowManager(
             source=source,
             request=self.request,

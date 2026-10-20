@@ -170,9 +170,10 @@ class ChallengeStageView(StageView):
 
     @property
     def cancel_url(self) -> str:
-        from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET
+        from authentik.flows.storage import FlowExecution
+        from authentik.flows.views.executor import NEXT_ARG_NAME
 
-        next_param = self.request.session.get(SESSION_KEY_GET, {}).get(NEXT_ARG_NAME)
+        next_param = FlowExecution(self.request).query.get(NEXT_ARG_NAME)
         url = reverse("authentik_flows:cancel")
         if next_param:
             return f"{url}?{urlencode({NEXT_ARG_NAME: next_param})}"

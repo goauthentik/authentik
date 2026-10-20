@@ -6,7 +6,7 @@ from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext_lazy as _
 
 from authentik.flows.stage import StageView
-from authentik.flows.views.executor import SESSION_KEY_GET
+from authentik.flows.storage import FlowExecution
 from authentik.stages.invitation.models import Invitation, InvitationStage
 from authentik.stages.invitation.signals import invitation_used
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
@@ -23,10 +23,11 @@ class InvitationStageView(StageView):
     def get_token(self) -> str | None:
         """Get token from saved get-arguments or prompt_data"""
         # Check for ?token= and ?itoken=
-        if QS_INVITATION_TOKEN_KEY in self.request.session.get(SESSION_KEY_GET, {}):
-            return self.request.session[SESSION_KEY_GET][QS_INVITATION_TOKEN_KEY]
-        if PLAN_CONTEXT_INVITATION_TOKEN in self.request.session.get(SESSION_KEY_GET, {}):
-            return self.request.session[SESSION_KEY_GET][PLAN_CONTEXT_INVITATION_TOKEN]
+        get_params = FlowExecution(self.request).query
+        if QS_INVITATION_TOKEN_KEY in get_params:
+            return get_params[QS_INVITATION_TOKEN_KEY]
+        if PLAN_CONTEXT_INVITATION_TOKEN in get_params:
+            return get_params[PLAN_CONTEXT_INVITATION_TOKEN]
         # Check for {'token': ''} in the context
         if PLAN_CONTEXT_INVITATION_TOKEN in self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {}):
             return self.executor.plan.context[PLAN_CONTEXT_PROMPT][PLAN_CONTEXT_INVITATION_TOKEN]

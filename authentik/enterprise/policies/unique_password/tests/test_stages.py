@@ -10,7 +10,6 @@ from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import APIFlowTestCase
-from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_key
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
@@ -53,9 +52,7 @@ class TestUserWriteStage(APIFlowTestCase):
             "username": test_user.username,
             "password": new_password,
         }
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
         # Password history should be recorded
         user_password_history_qs = UserPasswordHistory.objects.filter(user=test_user)
         self.assertTrue(user_password_history_qs.exists(), "Password history should be recorded")

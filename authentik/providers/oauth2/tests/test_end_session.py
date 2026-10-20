@@ -11,7 +11,6 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_brand
 from authentik.flows.models import FlowDesignation, FlowStageBinding, in_memory_stage
 from authentik.flows.planner import FlowPlan
 from authentik.flows.stage import SessionEndStage
-from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.providers.iframe_logout import IframeLogoutStageView
 from authentik.providers.oauth2.models import (
@@ -244,9 +243,7 @@ class TestEndSessionView(OAuthTestCase):
         """Only the iframe callback should preserve an active iframe logout plan."""
         plan = FlowPlan(flow_pk=self.invalidation_flow.pk.hex)
         plan.append_stage(in_memory_stage(IframeLogoutStageView))
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
         endpoint = reverse(
             "authentik_providers_oauth2:end-session",
             kwargs={"application_slug": self.app.slug},
@@ -255,13 +252,11 @@ class TestEndSessionView(OAuthTestCase):
         response = self.client.get(endpoint, headers={"Sec-Fetch-Dest": "iframe"})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, b"")
-        self.assertEqual(self.client.session[SESSION_KEY_PLAN], plan)
+        self.assertEqual(self.get_flow_plan(), plan)
 
         response = self.client.get(endpoint, headers={"Sec-Fetch-Dest": "document"})
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(
-            self.client.session[SESSION_KEY_PLAN].bindings[0].stage.view, SessionEndStage
-        )
+        self.assertEqual(self.get_flow_plan().bindings[0].stage.view, SessionEndStage)
 
     def test_consecutive_logouts(self):
         """A terminal plan from another app using the same flow must be replaced."""
@@ -294,7 +289,7 @@ class TestEndSessionView(OAuthTestCase):
 
         Regression test: the hidden logout iframe navigates to end-session after
         UserLogoutStage has already logged the user out, so the request is anonymous.
-        Planning another flow there replaces SESSION_KEY_PLAN. Stages injected by
+        Planning another flow there replaces the stored plan. Stages injected by
         `flow_pre_user_logout` receivers exist only in memory, so they are lost.
         """
         self._brand_authentication_flow()
@@ -345,7 +340,7 @@ class TestEndSessionView(OAuthTestCase):
             ),
         )
         self.assertEqual(
-            self.client.session[SESSION_KEY_PLAN].flow_pk,
+            self.get_flow_plan().flow_pk,
             logout_flow.pk.hex,
             "end-session replaced the in-flight invalidation plan",
         )

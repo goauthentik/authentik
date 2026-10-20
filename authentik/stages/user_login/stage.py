@@ -22,7 +22,6 @@ from authentik.flows.planner import (
     PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION,
 )
 from authentik.flows.stage import ChallengeStageView
-from authentik.flows.views.executor import SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.install_id import get_install_id
 from authentik.root.middleware import ClientIPMiddleware
@@ -148,18 +147,17 @@ class UserLoginStageView(ChallengeStageView):
     def _start_new_session(self) -> None:
         """Move the flow to a new session while preserving the current login."""
         old_session = self.request.session
-        flow_query_params = old_session.get(SESSION_KEY_GET)
+        execution = self.executor.execution
         # Move the active plan so audit events keep context and old logins cannot resume it.
-        old_session.pop(SESSION_KEY_PLAN, None)
+        execution.clear()
         old_session.save()
         session_keys = old_session.model.Keys
         self.request.session = SessionStore(
             last_ip=old_session.get(session_keys.LAST_IP),
             last_user_agent=old_session.get(session_keys.LAST_USER_AGENT, ""),
         )
-        self.request.session[SESSION_KEY_PLAN] = self.executor.plan
-        if flow_query_params is not None:
-            self.request.session[SESSION_KEY_GET] = flow_query_params
+        # The execution writes to the request's current session, which is now the new one
+        execution.replace(self.executor.plan)
 
     def do_login(self, request: HttpRequest, remember: bool | None = None) -> HttpResponse:
         """Attach the currently pending user to the current session.

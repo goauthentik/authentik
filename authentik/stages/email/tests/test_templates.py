@@ -18,7 +18,6 @@ from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import APIFlowTestCase
-from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.email.models import EmailStage, get_template_choices
 from authentik.stages.email.utils import TemplateEmailMessage
 
@@ -68,9 +67,7 @@ class TestEmailStageTemplates(APIFlowTestCase):
                 flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
             )
             plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-            session = self.client.session
-            session[SESSION_KEY_PLAN] = plan
-            session.save()
+            self.set_flow_plan(plan)
 
             url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
             with patch(

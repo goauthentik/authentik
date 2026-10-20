@@ -16,7 +16,7 @@ from authentik.flows.apps import ContinuousLogin
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
-from authentik.flows.views.executor import SESSION_KEY_POST
+from authentik.flows.storage import FlowExecution
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView
 from authentik.providers.saml.models import SAMLBindings, SAMLProvider
@@ -175,8 +175,8 @@ class SAMLSSOBindingPOSTView(SAMLSSOView):
         # Restore the post body from the session
         # This happens when using POST bindings but the user isn't logged in
         # (user gets redirected and POST body is 'lost')
-        if SESSION_KEY_POST in self.request.session:
-            payload = self.request.session.pop(SESSION_KEY_POST)
+        if (post := FlowExecution(self.request).pop_post()) is not None:
+            payload = post
         if REQUEST_KEY_SAML_REQUEST not in payload:
             LOGGER.info("SAML payload missing")
             return bad_request_message(self.request, "The SAML request payload is missing.")

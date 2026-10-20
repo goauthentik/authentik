@@ -24,7 +24,7 @@ from authentik.events.utils import sanitize_dict
 from authentik.flows.api.bindings import FlowStageBindingSerializer
 from authentik.flows.models import Flow
 from authentik.flows.planner import FlowPlan
-from authentik.flows.views.executor import SESSION_KEY_HISTORY, SESSION_KEY_PLAN
+from authentik.flows.storage import FlowExecution
 
 MIN_FLOW_LENGTH = 2
 
@@ -99,8 +99,9 @@ class FlowInspectorView(APIView):
     )
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Get current flow state and record it"""
+        execution = FlowExecution(request)
         plans = []
-        for plan in request.session.get(SESSION_KEY_HISTORY, []):
+        for plan in execution.history:
             plan: FlowPlan
             if plan.flow_pk != self.flow.pk.hex:
                 continue
@@ -109,11 +110,10 @@ class FlowInspectorView(APIView):
             )
             plans.append(plan_serializer.data)
         is_completed = False
-        if SESSION_KEY_PLAN in request.session:
-            current_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
-        else:
+        current_plan = execution.plan
+        if not current_plan:
             try:
-                current_plan = request.session.get(SESSION_KEY_HISTORY, [])[-1]
+                current_plan = execution.history[-1]
             except IndexError:
                 return Response(status=400)
             is_completed = True

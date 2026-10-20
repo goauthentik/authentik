@@ -20,7 +20,6 @@ from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
-from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_key
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from authentik.stages.user_write.models import UserCreationMode, UserWriteStage
@@ -55,9 +54,7 @@ class TestUserWriteStage(APIFlowTestCase):
         }
         plan.context[PLAN_CONTEXT_GROUPS] = [self.other_group]
         plan.context[PLAN_CONTEXT_SOURCES_CONNECTION] = UserSourceConnection(source=self.source)
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -112,9 +109,7 @@ class TestUserWriteStage(APIFlowTestCase):
             },
             "some_ignored_attribute": "bar",
         }
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -142,9 +137,7 @@ class TestUserWriteStage(APIFlowTestCase):
             "password": new_password,
             "attributes.foo": time,
         }
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -173,9 +166,7 @@ class TestUserWriteStage(APIFlowTestCase):
             "name": "Test User",
             "email": "test@goauthentik.io",
         }
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -217,9 +208,7 @@ class TestUserWriteStage(APIFlowTestCase):
             },
             "some_ignored_attribute": "bar",
         }
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -242,9 +231,7 @@ class TestUserWriteStage(APIFlowTestCase):
     def test_without_data(self):
         """Test without data results in error"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -263,14 +250,12 @@ class TestUserWriteStage(APIFlowTestCase):
     def test_blank_username(self):
         """Test with blank username results in error"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
         plan.context[PLAN_CONTEXT_PROMPT] = {
             "username": "",
             "attribute_some-custom-attribute": "test",
             "some_ignored_attribute": "bar",
         }
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -286,14 +271,12 @@ class TestUserWriteStage(APIFlowTestCase):
         """Test user in session and none in plan"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         self.client.force_login(self.user)
-        session = self.client.session
         plan.context[PLAN_CONTEXT_PROMPT] = {
             "username": "foo",
             "attribute_some-custom-attribute": "test",
             "some_ignored_attribute": "bar",
         }
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -307,14 +290,12 @@ class TestUserWriteStage(APIFlowTestCase):
         self.stage.user_creation_mode = UserCreationMode.NEVER_CREATE
         self.stage.save()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
         plan.context[PLAN_CONTEXT_PROMPT] = {
             "username": "foo",
             "attribute_some-custom-attribute": "test",
             "some_ignored_attribute": "bar",
         }
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -333,14 +314,12 @@ class TestUserWriteStage(APIFlowTestCase):
         """Test with duplicate data, should trigger error"""
         user = create_test_admin_user()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
         plan.context[PLAN_CONTEXT_PROMPT] = {
             "username": user.username,
             "attribute_some-custom-attribute": "test",
             "some_ignored_attribute": "bar",
         }
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -367,9 +346,7 @@ class TestUserWriteStage(APIFlowTestCase):
             "id": "1dda9fb491dc01bd24d2423ba2f22ae561f56ddf2376b29a11c80281d21201f9",
             "pk": "also-not-an-int",
         }
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})

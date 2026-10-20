@@ -3,13 +3,13 @@
 from base64 import b64encode
 from unittest.mock import MagicMock, patch
 
-from django.test import RequestFactory, TestCase
+from django.test import RequestFactory
 from django.urls import reverse
 from freezegun import freeze_time
 
 from authentik.core.tests.utils import create_test_flow
 from authentik.flows.planner import PLAN_CONTEXT_REDIRECT, FlowPlan
-from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 from authentik.sources.saml.models import SAMLSource
@@ -19,7 +19,7 @@ from authentik.sources.saml.models import SAMLSource
     "authentik.sources.saml.processors.response.reverse",
     MagicMock(return_value="https://127.0.0.1:9443/source/saml/google/acs/"),
 )
-class TestViews(TestCase):
+class TestViews(FlowTestCase):
     """Test SAML Views"""
 
     def setUp(self):
@@ -56,7 +56,7 @@ class TestViews(TestCase):
         self.assertRedirects(
             response, reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
         )
-        plan: FlowPlan = self.client.session.get(SESSION_KEY_PLAN)
+        plan: FlowPlan = self.get_flow_plan()
         self.assertIsNotNone(plan)
 
     @freeze_time("2022-10-14T15:00:00")
@@ -83,11 +83,9 @@ class TestViews(TestCase):
         """Enroll when attempting to access a provider"""
         initial_redirect = f"http://{generate_id()}"
 
-        session = self.client.session
         old_plan = FlowPlan(generate_id())
         old_plan.context[PLAN_CONTEXT_REDIRECT] = initial_redirect
-        session[SESSION_KEY_PLAN] = old_plan
-        session.save()
+        self.set_flow_plan(old_plan)
 
         flow = create_test_flow()
         self.source.enrollment_flow = flow
@@ -110,6 +108,6 @@ class TestViews(TestCase):
         self.assertRedirects(
             response, reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
         )
-        plan: FlowPlan = self.client.session.get(SESSION_KEY_PLAN)
+        plan: FlowPlan = self.get_flow_plan()
         self.assertIsNotNone(plan)
         self.assertEqual(plan.context.get(PLAN_CONTEXT_REDIRECT), initial_redirect)

@@ -33,8 +33,8 @@ from authentik.flows.planner import (
     PLAN_CONTEXT_IS_RESTORED,
     FlowPlan,
 )
+from authentik.flows.storage import FlowExecution
 from authentik.flows.tests import APIFlowTestCase
-from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
@@ -124,7 +124,7 @@ class TestSourceStage(APIFlowTestCase):
         self.assertEqual(response.status_code, 302)
         self.assertFalse(FlowToken.objects.filter(pk=token.pk).exists())
         self.assertFalse(UserOAuthSourceConnection.objects.filter(source=source).exists())
-        restored_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
+        restored_plan: FlowPlan = FlowExecution(request).plan
         self.assertEqual(restored_plan.context["oauth_userinfo"], userinfo)
         self.assertEqual(
             restored_plan.context[PLAN_CONTEXT_SOURCE_MATCH_FAILURE],
@@ -208,7 +208,7 @@ class TestSourceStage(APIFlowTestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertFalse(FlowToken.objects.filter(pk=token.pk).exists())
-        restored_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
+        restored_plan: FlowPlan = FlowExecution(request).plan
         self.assertEqual(restored_plan.context["saml_response"], b"<Response />")
         self.assertEqual(restored_plan.context[PLAN_CONTEXT_SOURCE_MATCH_FAILURE], failure)
 
@@ -291,13 +291,11 @@ class TestSourceStage(APIFlowTestCase):
             ),
         )
         # Hijack flow plan so we don't have to emulate the source
-        session = self.client.session
-        plan: FlowPlan = session[SESSION_KEY_PLAN]
+        plan = self.get_flow_plan()
         plan.insert_stage(in_memory_stage(SourceStageFinal), index=0)
         plan.context[PLAN_CONTEXT_IS_RESTORED] = flow_token
         plan.context["foo"] = "bar"
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         # Pretend we've just returned from the source
         with self.assertFlowFinishes() as ff:
@@ -316,11 +314,9 @@ class TestSourceStage(APIFlowTestCase):
         flow_token.expires = now() - timedelta(seconds=1)
         flow_token.save(update_fields=("expires",))
         # Hijack flow plan so we don't have to emulate the source
-        session = self.client.session
-        plan: FlowPlan = session[SESSION_KEY_PLAN]
+        plan = self.get_flow_plan()
         plan.insert_stage(in_memory_stage(SourceStageFinal), index=0)
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        self.set_flow_plan(plan)
 
         # Pretend we've just returned from the source
         response = self.client.get(
