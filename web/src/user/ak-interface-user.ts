@@ -147,6 +147,7 @@ class UserInterface extends WithLicenseSummary(
         // We can't easily check if this user actually has something they can request,
         // that is a semi-expensive request
         if (
+            this.licenseSummary &&
             this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed &&
             this.uiConfig.enabledFeatures.requests &&
             this.can(CapabilitiesEnum.CanRequest)
@@ -154,6 +155,7 @@ class UserInterface extends WithLicenseSummary(
             navItems.push({ label: msg("Discover"), link: "/requests" });
         }
         if (
+            this.licenseSummary &&
             this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed &&
             this.uiConfig.enabledFeatures.agents &&
             this.can(CapabilitiesEnum.CanAgentSelfService)
