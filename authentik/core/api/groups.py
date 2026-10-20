@@ -12,7 +12,6 @@ from drf_spectacular.utils import (
     extend_schema,
     extend_schema_field,
 )
-from guardian.shortcuts import get_objects_for_user
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -36,6 +35,7 @@ from authentik.core.models import Group, User
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
+from authentik.rbac.filters import ObjectFilter
 from authentik.rbac.models import Role
 
 
@@ -514,13 +514,9 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     def add_user(self, request: Request, body: UserAccountSerializer, pk: str) -> Response:
         """Add user to group"""
         group: Group = self.get_object()
-        user: User = (
-            get_objects_for_user(request.user, "authentik_core.view_user")
-            .filter(
-                pk=body.validated_data.get("pk"),
-            )
-            .first()
-        )
+        user = ObjectFilter.visible_in_list(
+            request, User.objects.filter(pk=body.validated_data.get("pk")), "core/users:list"
+        ).first()
         if not user:
             raise Http404
         if not group.users.filter(pk=user.pk).exists():
@@ -553,13 +549,9 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     def remove_user(self, request: Request, body: UserAccountSerializer, pk: str) -> Response:
         """Remove user from group"""
         group: Group = self.get_object()
-        user: User = (
-            get_objects_for_user(request.user, "authentik_core.view_user")
-            .filter(
-                pk=body.validated_data.get("pk"),
-            )
-            .first()
-        )
+        user = ObjectFilter.visible_in_list(
+            request, User.objects.filter(pk=body.validated_data.get("pk")), "core/users:list"
+        ).first()
         if not user:
             raise Http404
         group.users.remove(user)

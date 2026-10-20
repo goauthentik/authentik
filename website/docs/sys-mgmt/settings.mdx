@@ -28,6 +28,7 @@ Default: `gravatar,initials`
 - Any URL: If you want to use images hosted on another server, you can set any URL.
 
     Additionally, these placeholders can be used:
+
     - `%(username)s`: The user's username
     - `%(mail_hash)s`: The email address, md5 hashed
     - `%(upn)s`: The user's UPN, if set (otherwise an empty string)
@@ -87,3 +88,7 @@ Default duration for generated tokens. Defaults to `minutes=30`.
 ### Default token length
 
 Default length of generated tokens. Defaults to 60.
+
+### Custom permissions :ak-version[2026.11] :ak-preview
+
+Enable [permission checks](../users-sources/access-control/custom_permissions.mdx) on API endpoints. This option is in the **Flags** section and defaults to `false`. While disabled, custom permission checks do not run.

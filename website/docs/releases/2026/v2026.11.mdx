@@ -82,6 +82,10 @@ authentik now disables PostgreSQL's just-in-time (JIT) compilation for its own d
 
 authentik only changes `jit` while it has PostgreSQL's built-in default, and only for the user that authentik connects as, in the authentik database. If you have set `jit` explicitly, authentik leaves it unchanged. For details, including how to keep JIT enabled, see [authentik disables JIT compilation](../../troubleshooting/postgres/slow-queries.mdx#authentik-disables-jit-compilation).
 
+### Custom permissions and permission checks :ak-preview
+
+Define your own permissions on authentik's models, and assign them to roles like built-in ones. A permission check is Python bound to API endpoints that has the final say on access: it can forbid or grant requests, narrow or widen access, hide fields or make them read-only, and change responses. For details, refer to [Custom permissions and permission checks](../../users-sources/access-control/custom_permissions.mdx).
+
 ## Upgrading
 
 This release does not introduce any new requirements. You can follow the upgrade instructions below; for more detailed information about upgrading authentik, refer to our [Upgrade documentation](../../install-config/upgrade.mdx).

@@ -20,8 +20,13 @@ from rest_framework.serializers import (
     model_meta,
     raise_errors_on_nested_writes,
 )
+from structlog.stdlib import get_logger
 
 from authentik.lib.models import SimpleThroughModel
+from authentik.rbac.endpoint_checks import EndpointChecks
+from authentik.rbac.field_rules import FieldRules
+
+LOGGER = get_logger()
 
 
 def is_dict(value: Any):
@@ -47,7 +52,6 @@ class JSONExtension(OpenApiSerializerFieldExtension):
 
 
 class ModelSerializer(BaseModelSerializer):
-
     # By default, JSON fields we have are used to store dictionaries
     serializer_field_mapping = BaseModelSerializer.serializer_field_mapping.copy()
     serializer_field_mapping[models.JSONField] = JSONDictField
@@ -57,14 +61,35 @@ class ModelSerializer(BaseModelSerializer):
         # `secret_fields` are visible for users which are allowed to change the object
         secret_fields = getattr(self.Meta, "secret_fields", [])
         request = self.context.get("request")
-        if not secret_fields or not request:
-            return data
-        permission = f"{instance._meta.app_label}.change_{instance._meta.model_name}"
-        if request.user.has_perm(permission, instance):
-            return data
-        for field_name in secret_fields:
-            data.pop(field_name, None)
+        if secret_fields and request:
+            permission = f"{instance._meta.app_label}.change_{instance._meta.model_name}"
+            if not request.user.has_perm(permission, instance):
+                for field_name in secret_fields:
+                    data.pop(field_name, None)
+        if rules := self.field_rules(instance):
+            data = rules.hide(data, self.fields)
         return data
+
+    def to_internal_value(self, data):
+        # Strip updates to fields not visible to the user
+        instance = self.instance if isinstance(self.instance, Model) else None
+        if rules := self.field_rules(instance):
+            data = rules.restrict_input(data, instance, self.fields)
+        return super().to_internal_value(data)
+
+    def field_rules(self, instance: Model | None) -> FieldRules:
+        request = self.context.get("request")
+        view = self.context.get("view")
+        model = getattr(getattr(self, "Meta", None), "model", None)
+        if request is None or model is None:
+            return FieldRules()
+        if model is not getattr(getattr(view, "queryset", None), "model", None):
+            return FieldRules()
+        checks = EndpointChecks.for_request(request)
+        rules = checks.field_rules(instance)
+        if unknown := rules.unknown_fields(self.fields):
+            checks.report_unknown_fields(unknown)
+        return rules
 
     def update(self, instance: Model, validated_data):
         raise_errors_on_nested_writes("update", self, validated_data)

@@ -14,6 +14,8 @@ from rest_framework.views import APIView
 from authentik.api.authentication import validate_auth
 from authentik.core.models import UserTypes
 from authentik.lib.tracing import active_tracer
+from authentik.rbac.endpoint_checks import EndpointChecks
+from authentik.rbac.endpoints import NARROW_LIST, WIDEN_LIST, Endpoints
 
 
 # Inline fork of https://github.com/rpkilby/django-rest-framework-guardian
@@ -76,6 +78,14 @@ class ObjectFilter(ObjectPermissionsFilter):
 
     @active_tracer().instrument()
     def filter_queryset(self, request: Request, queryset: QuerySet, view: APIView) -> QuerySet:
+        checks = EndpointChecks.for_request(request, "list")
+        if checks.defines(NARROW_LIST, WIDEN_LIST):
+            return checks.filter_list(self.visible_objects(request, queryset, view), queryset)
+        return self.visible_objects(request, queryset, view, refuse_if_none=True)
+
+    def visible_objects(
+        self, request: Request, queryset: QuerySet, view: APIView, refuse_if_none: bool = False
+    ) -> QuerySet:
         permission = self.perm_format % {
             "app_label": queryset.model._meta.app_label,
             "model_name": queryset.model._meta.model_name,
@@ -86,6 +96,8 @@ class ObjectFilter(ObjectPermissionsFilter):
             return queryset
         # User does not have permissions, but we have an owner field defined, so filter by that
         if owner_field := getattr(view, "owner_field", None):
+            if not request.user.is_authenticated:
+                return queryset.none()
             return queryset.filter(**{owner_field: request.user})
         queryset = super().filter_queryset(request, queryset, view)
         # Outposts (which are the only objects using internal service accounts)
@@ -93,11 +105,17 @@ class ObjectFilter(ObjectPermissionsFilter):
         # assigned
         if getattr(request.user, "type", None) == UserTypes.INTERNAL_SERVICE_ACCOUNT:
             return queryset
-        if not queryset.exists():
+        if refuse_if_none and not queryset.exists():
             # User doesn't have direct permission to all objects
             # and also no object permissions assigned (directly or via role)
             raise PermissionDenied()
         return queryset
+
+    @classmethod
+    def visible_in_list(cls, request: Request, queryset: QuerySet, endpoint: str) -> QuerySet:
+        """The objects of `queryset` the requester sees in the list at `endpoint`"""
+        visible = cls().visible_objects(request, queryset, Endpoints.viewset_for(endpoint))
+        return EndpointChecks.for_endpoint(request, endpoint).filter_list(visible, queryset)
 
 
 class SecretKeyFilter(DjangoFilterBackend):

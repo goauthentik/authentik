@@ -21680,6 +21680,186 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /rbac/custom_permissions/:
+    get:
+      operationId: rbac_custom_permissions_list
+      description: Custom permissions
+      parameters:
+      - in: query
+        name: codename
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCustomPermissionList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: rbac_custom_permissions_create
+      description: Custom permissions
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomPermissionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomPermission'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /rbac/custom_permissions/{id}/:
+    get:
+      operationId: rbac_custom_permissions_retrieve
+      description: Custom permissions
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Custom permission.
+        required: true
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomPermission'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: rbac_custom_permissions_update
+      description: Custom permissions
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Custom permission.
+        required: true
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomPermissionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomPermission'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: rbac_custom_permissions_partial_update
+      description: Custom permissions
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Custom permission.
+        required: true
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCustomPermissionRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomPermission'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: rbac_custom_permissions_destroy
+      description: Custom permissions
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Custom permission.
+        required: true
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /rbac/endpoints/:
+    get:
+      operationId: rbac_endpoints_list
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Endpoint'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /rbac/initial_permissions/:
     get:
       operationId: rbac_initial_permissions_list
@@ -21847,6 +22027,202 @@ paths:
         schema:
           type: integer
         description: A unique integer value identifying this Initial Permissions.
+        required: true
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /rbac/permission_checks/:
+    get:
+      operationId: rbac_permission_checks_list
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPermissionCheckList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: rbac_permission_checks_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionCheckRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionCheck'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /rbac/permission_checks/{check_uuid}/:
+    get:
+      operationId: rbac_permission_checks_retrieve
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: check_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Permission check.
+        required: true
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionCheck'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: rbac_permission_checks_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: check_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Permission check.
+        required: true
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionCheckRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionCheck'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: rbac_permission_checks_partial_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: check_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Permission check.
+        required: true
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPermissionCheckRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionCheck'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: rbac_permission_checks_destroy
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: check_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Permission check.
+        required: true
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /rbac/permission_checks/{check_uuid}/used_by/:
+    get:
+      operationId: rbac_permission_checks_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: check_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Permission check.
         required: true
       tags:
       - rbac
@@ -38791,6 +39167,48 @@ components:
       - matched_domain
       - ui_footer_links
       - ui_theme
+    CustomPermission:
+      type: object
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        codename:
+          type: string
+          maxLength: 100
+        name:
+          type: string
+          maxLength: 255
+        model:
+          type: string
+        permission:
+          type: string
+          readOnly: true
+      required:
+      - codename
+      - model
+      - name
+      - permission
+      - pk
+    CustomPermissionRequest:
+      type: object
+      properties:
+        codename:
+          type: string
+          minLength: 1
+          maxLength: 100
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        model:
+          type: string
+          minLength: 1
+      required:
+      - codename
+      - model
+      - name
     DataExport:
       type: object
       description: |-
@@ -40027,6 +40445,19 @@ components:
             further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - name
+    Endpoint:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        id:
+          type: string
+        functions:
+          type: array
+          items:
+            type: string
+      required:
+      - functions
+      - id
     EndpointAgentChallenge:
       type: object
       description: Signed challenge for authentik agent to respond to
@@ -45199,6 +45630,8 @@ components:
       - authentik_providers_scim.scimmapping
       - authentik_rbac.role
       - authentik_rbac.initialpermissions
+      - authentik_rbac.custompermission
+      - authentik_rbac.permissioncheck
       - authentik_sources_kerberos.kerberossource
       - authentik_sources_kerberos.kerberossourcepropertymapping
       - authentik_sources_kerberos.userkerberossourceconnection
@@ -47253,6 +47686,21 @@ components:
       - autocomplete
       - pagination
       - results
+    PaginatedCustomPermissionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomPermission'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     PaginatedDataExportList:
       type: object
       properties:
@@ -48282,6 +48730,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PasswordStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedPermissionCheckList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PermissionCheck'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -50473,6 +50936,20 @@ components:
           minLength: 1
           title: Consent expires in
           description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
+    PatchedCustomPermissionRequest:
+      type: object
+      properties:
+        codename:
+          type: string
+          minLength: 1
+          maxLength: 100
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        model:
+          type: string
+          minLength: 1
     PatchedDenyStageRequest:
       type: object
       description: DenyStage Serializer
@@ -52352,6 +52829,20 @@ components:
         object_pk:
           type: string
           minLength: 1
+    PatchedPermissionCheckRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+        endpoints:
+          type: array
+          items:
+            type: string
+            minLength: 1
     PatchedPlexSourcePropertyMappingRequest:
       type: object
       description: PlexSourcePropertyMapping Serializer
@@ -53516,10 +54007,15 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
+            rbac_custom_permissions:
+              type: boolean
+              description: Let permission checks decide API access. While enabled,
+                every API request costs an additional database query.
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
+          - rbac_custom_permissions
     PatchedSourceStageRequest:
       type: object
       description: SourceStage Serializer
@@ -54052,6 +54548,59 @@ components:
           type: string
       required:
       - id
+    PermissionCheck:
+      type: object
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Check uuid
+        name:
+          type: string
+        expression:
+          type: string
+        endpoints:
+          type: array
+          items:
+            type: string
+        unknown_endpoints:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        unknown_fields:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          readOnly: true
+      required:
+      - endpoints
+      - expression
+      - name
+      - pk
+      - unknown_endpoints
+      - unknown_fields
+    PermissionCheckRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+        endpoints:
+          type: array
+          items:
+            type: string
+            minLength: 1
+      required:
+      - endpoints
+      - expression
+      - name
     PlexAuthenticationChallenge:
       type: object
       description: Challenge shown to the user in identification stage
@@ -58735,10 +59284,15 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
+            rbac_custom_permissions:
+              type: boolean
+              description: Let permission checks decide API access. While enabled,
+                every API request costs an additional database query.
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
+          - rbac_custom_permissions
       required:
       - flags
     SettingsRequest:
@@ -58825,10 +59379,15 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
+            rbac_custom_permissions:
+              type: boolean
+              description: Let permission checks decide API access. While enabled,
+                every API request costs an additional database query.
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
+          - rbac_custom_permissions
       required:
       - flags
     SeverityEnum:

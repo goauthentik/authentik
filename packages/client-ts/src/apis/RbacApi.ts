@@ -10,11 +10,21 @@
  * Do not edit the class manually.
  */
 
+import { type CustomPermission, CustomPermissionFromJSON } from "../models/CustomPermission";
+import {
+    type CustomPermissionRequest,
+    CustomPermissionRequestToJSON,
+} from "../models/CustomPermissionRequest";
+import { type Endpoint, EndpointFromJSON } from "../models/Endpoint";
 import { type InitialPermissions, InitialPermissionsFromJSON } from "../models/InitialPermissions";
 import {
     type InitialPermissionsRequest,
     InitialPermissionsRequestToJSON,
 } from "../models/InitialPermissionsRequest";
+import {
+    type PaginatedCustomPermissionList,
+    PaginatedCustomPermissionListFromJSON,
+} from "../models/PaginatedCustomPermissionList";
 import {
     type PaginatedExtraRoleObjectPermissionList,
     PaginatedExtraRoleObjectPermissionListFromJSON,
@@ -23,6 +33,10 @@ import {
     type PaginatedInitialPermissionsList,
     PaginatedInitialPermissionsListFromJSON,
 } from "../models/PaginatedInitialPermissionsList";
+import {
+    type PaginatedPermissionCheckList,
+    PaginatedPermissionCheckListFromJSON,
+} from "../models/PaginatedPermissionCheckList";
 import {
     type PaginatedPermissionList,
     PaginatedPermissionListFromJSON,
@@ -33,6 +47,10 @@ import {
 } from "../models/PaginatedRoleAssignedObjectPermissionList";
 import { type PaginatedRoleList, PaginatedRoleListFromJSON } from "../models/PaginatedRoleList";
 import {
+    type PatchedCustomPermissionRequest,
+    PatchedCustomPermissionRequestToJSON,
+} from "../models/PatchedCustomPermissionRequest";
+import {
     type PatchedInitialPermissionsRequest,
     PatchedInitialPermissionsRequestToJSON,
 } from "../models/PatchedInitialPermissionsRequest";
@@ -40,6 +58,10 @@ import {
     type PatchedPermissionAssignRequest,
     PatchedPermissionAssignRequestToJSON,
 } from "../models/PatchedPermissionAssignRequest";
+import {
+    type PatchedPermissionCheckRequest,
+    PatchedPermissionCheckRequestToJSON,
+} from "../models/PatchedPermissionCheckRequest";
 import { type PatchedRoleRequest, PatchedRoleRequestToJSON } from "../models/PatchedRoleRequest";
 import { type Permission, PermissionFromJSON } from "../models/Permission";
 import {
@@ -50,6 +72,11 @@ import {
     type PermissionAssignResult,
     PermissionAssignResultFromJSON,
 } from "../models/PermissionAssignResult";
+import { type PermissionCheck, PermissionCheckFromJSON } from "../models/PermissionCheck";
+import {
+    type PermissionCheckRequest,
+    PermissionCheckRequestToJSON,
+} from "../models/PermissionCheckRequest";
 import { type Role, RoleFromJSON } from "../models/Role";
 import { type RoleRequest, RoleRequestToJSON } from "../models/RoleRequest";
 import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
@@ -58,6 +85,60 @@ import {
     UserAccountSerializerForRoleRequestToJSON,
 } from "../models/UserAccountSerializerForRoleRequest";
 import * as runtime from "../runtime";
+
+export interface RbacCustomPermissionsCreateRequest {
+    customPermissionRequest: CustomPermissionRequest;
+}
+
+export interface RbacCustomPermissionsDestroyRequest {
+    /**
+     * A unique integer value identifying this Custom permission.
+     */
+    id: number;
+}
+
+export interface RbacCustomPermissionsListRequest {
+    codename?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
+    ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    pageSize?: number;
+    /**
+     * A search term.
+     */
+    search?: string;
+}
+
+export interface RbacCustomPermissionsPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this Custom permission.
+     */
+    id: number;
+    patchedCustomPermissionRequest?: PatchedCustomPermissionRequest;
+}
+
+export interface RbacCustomPermissionsRetrieveRequest {
+    /**
+     * A unique integer value identifying this Custom permission.
+     */
+    id: number;
+}
+
+export interface RbacCustomPermissionsUpdateRequest {
+    /**
+     * A unique integer value identifying this Custom permission.
+     */
+    id: number;
+    customPermissionRequest: CustomPermissionRequest;
+}
 
 export interface RbacInitialPermissionsCreateRequest {
     initialPermissionsRequest: InitialPermissionsRequest;
@@ -118,6 +199,67 @@ export interface RbacInitialPermissionsUsedByListRequest {
      * A unique integer value identifying this Initial Permissions.
      */
     id: number;
+}
+
+export interface RbacPermissionChecksCreateRequest {
+    permissionCheckRequest: PermissionCheckRequest;
+}
+
+export interface RbacPermissionChecksDestroyRequest {
+    /**
+     * A UUID string identifying this Permission check.
+     */
+    checkUuid: string;
+}
+
+export interface RbacPermissionChecksListRequest {
+    name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
+    ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    pageSize?: number;
+    /**
+     * A search term.
+     */
+    search?: string;
+}
+
+export interface RbacPermissionChecksPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Permission check.
+     */
+    checkUuid: string;
+    patchedPermissionCheckRequest?: PatchedPermissionCheckRequest;
+}
+
+export interface RbacPermissionChecksRetrieveRequest {
+    /**
+     * A UUID string identifying this Permission check.
+     */
+    checkUuid: string;
+}
+
+export interface RbacPermissionChecksUpdateRequest {
+    /**
+     * A UUID string identifying this Permission check.
+     */
+    checkUuid: string;
+    permissionCheckRequest: PermissionCheckRequest;
+}
+
+export interface RbacPermissionChecksUsedByListRequest {
+    /**
+     * A UUID string identifying this Permission check.
+     */
+    checkUuid: string;
 }
 
 export interface RbacPermissionsAssignedByRolesAssignRequest {
@@ -293,6 +435,470 @@ export interface RbacRolesUsedByListRequest {
 }
 
 export class RbacApi extends runtime.BaseAPI {
+    /**
+     * Creates request options for rbacCustomPermissionsCreate without sending the request
+     */
+    async rbacCustomPermissionsCreateRequestOpts(
+        requestParameters: RbacCustomPermissionsCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["customPermissionRequest"] == null) {
+            throw new runtime.RequiredError(
+                "customPermissionRequest",
+                'Required parameter "customPermissionRequest" was null or undefined when calling rbacCustomPermissionsCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/rbac/custom_permissions/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: CustomPermissionRequestToJSON(requestParameters["customPermissionRequest"]),
+        };
+    }
+
+    /**
+     * Custom permissions
+     */
+    async rbacCustomPermissionsCreateRaw(
+        requestParameters: RbacCustomPermissionsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<CustomPermission>> {
+        const requestOptions = await this.rbacCustomPermissionsCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            CustomPermissionFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Custom permissions
+     */
+    async rbacCustomPermissionsCreate(
+        requestParameters: RbacCustomPermissionsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<CustomPermission> {
+        const response = await this.rbacCustomPermissionsCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for rbacCustomPermissionsDestroy without sending the request
+     */
+    async rbacCustomPermissionsDestroyRequestOpts(
+        requestParameters: RbacCustomPermissionsDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling rbacCustomPermissionsDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/rbac/custom_permissions/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Custom permissions
+     */
+    async rbacCustomPermissionsDestroyRaw(
+        requestParameters: RbacCustomPermissionsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.rbacCustomPermissionsDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Custom permissions
+     */
+    async rbacCustomPermissionsDestroy(
+        requestParameters: RbacCustomPermissionsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.rbacCustomPermissionsDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for rbacCustomPermissionsList without sending the request
+     */
+    async rbacCustomPermissionsListRequestOpts(
+        requestParameters: RbacCustomPermissionsListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["codename"] != null) {
+            queryParameters["codename"] = requestParameters["codename"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/rbac/custom_permissions/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Custom permissions
+     */
+    async rbacCustomPermissionsListRaw(
+        requestParameters: RbacCustomPermissionsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedCustomPermissionList>> {
+        const requestOptions = await this.rbacCustomPermissionsListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedCustomPermissionListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Custom permissions
+     */
+    async rbacCustomPermissionsList(
+        requestParameters: RbacCustomPermissionsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedCustomPermissionList> {
+        const response = await this.rbacCustomPermissionsListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for rbacCustomPermissionsPartialUpdate without sending the request
+     */
+    async rbacCustomPermissionsPartialUpdateRequestOpts(
+        requestParameters: RbacCustomPermissionsPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling rbacCustomPermissionsPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/rbac/custom_permissions/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedCustomPermissionRequestToJSON(
+                requestParameters["patchedCustomPermissionRequest"],
+            ),
+        };
+    }
+
+    /**
+     * Custom permissions
+     */
+    async rbacCustomPermissionsPartialUpdateRaw(
+        requestParameters: RbacCustomPermissionsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<CustomPermission>> {
+        const requestOptions =
+            await this.rbacCustomPermissionsPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            CustomPermissionFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Custom permissions
+     */
+    async rbacCustomPermissionsPartialUpdate(
+        requestParameters: RbacCustomPermissionsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<CustomPermission> {
+        const response = await this.rbacCustomPermissionsPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for rbacCustomPermissionsRetrieve without sending the request
+     */
+    async rbacCustomPermissionsRetrieveRequestOpts(
+        requestParameters: RbacCustomPermissionsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling rbacCustomPermissionsRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/rbac/custom_permissions/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Custom permissions
+     */
+    async rbacCustomPermissionsRetrieveRaw(
+        requestParameters: RbacCustomPermissionsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<CustomPermission>> {
+        const requestOptions =
+            await this.rbacCustomPermissionsRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            CustomPermissionFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Custom permissions
+     */
+    async rbacCustomPermissionsRetrieve(
+        requestParameters: RbacCustomPermissionsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<CustomPermission> {
+        const response = await this.rbacCustomPermissionsRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for rbacCustomPermissionsUpdate without sending the request
+     */
+    async rbacCustomPermissionsUpdateRequestOpts(
+        requestParameters: RbacCustomPermissionsUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling rbacCustomPermissionsUpdate().',
+            );
+        }
+
+        if (requestParameters["customPermissionRequest"] == null) {
+            throw new runtime.RequiredError(
+                "customPermissionRequest",
+                'Required parameter "customPermissionRequest" was null or undefined when calling rbacCustomPermissionsUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/rbac/custom_permissions/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: CustomPermissionRequestToJSON(requestParameters["customPermissionRequest"]),
+        };
+    }
+
+    /**
+     * Custom permissions
+     */
+    async rbacCustomPermissionsUpdateRaw(
+        requestParameters: RbacCustomPermissionsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<CustomPermission>> {
+        const requestOptions = await this.rbacCustomPermissionsUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            CustomPermissionFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Custom permissions
+     */
+    async rbacCustomPermissionsUpdate(
+        requestParameters: RbacCustomPermissionsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<CustomPermission> {
+        const response = await this.rbacCustomPermissionsUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for rbacEndpointsList without sending the request
+     */
+    async rbacEndpointsListRequestOpts(): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/rbac/endpoints/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    async rbacEndpointsListRaw(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<Endpoint>>> {
+        const requestOptions = await this.rbacEndpointsListRequestOpts();
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            jsonValue.map(EndpointFromJSON),
+        );
+    }
+
+    async rbacEndpointsList(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<Endpoint>> {
+        const response = await this.rbacEndpointsListRaw(initOverrides);
+        return await response.value();
+    }
+
     /**
      * Creates request options for rbacInitialPermissionsCreate without sending the request
      */
@@ -773,6 +1379,498 @@ export class RbacApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Array<UsedBy>> {
         const response = await this.rbacInitialPermissionsUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for rbacPermissionChecksCreate without sending the request
+     */
+    async rbacPermissionChecksCreateRequestOpts(
+        requestParameters: RbacPermissionChecksCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["permissionCheckRequest"] == null) {
+            throw new runtime.RequiredError(
+                "permissionCheckRequest",
+                'Required parameter "permissionCheckRequest" was null or undefined when calling rbacPermissionChecksCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/rbac/permission_checks/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PermissionCheckRequestToJSON(requestParameters["permissionCheckRequest"]),
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async rbacPermissionChecksCreateRaw(
+        requestParameters: RbacPermissionChecksCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PermissionCheck>> {
+        const requestOptions = await this.rbacPermissionChecksCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PermissionCheckFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async rbacPermissionChecksCreate(
+        requestParameters: RbacPermissionChecksCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PermissionCheck> {
+        const response = await this.rbacPermissionChecksCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for rbacPermissionChecksDestroy without sending the request
+     */
+    async rbacPermissionChecksDestroyRequestOpts(
+        requestParameters: RbacPermissionChecksDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["checkUuid"] == null) {
+            throw new runtime.RequiredError(
+                "checkUuid",
+                'Required parameter "checkUuid" was null or undefined when calling rbacPermissionChecksDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/rbac/permission_checks/{check_uuid}/`;
+        urlPath = urlPath.replace(
+            "{check_uuid}",
+            encodeURIComponent(String(requestParameters["checkUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async rbacPermissionChecksDestroyRaw(
+        requestParameters: RbacPermissionChecksDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.rbacPermissionChecksDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async rbacPermissionChecksDestroy(
+        requestParameters: RbacPermissionChecksDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.rbacPermissionChecksDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for rbacPermissionChecksList without sending the request
+     */
+    async rbacPermissionChecksListRequestOpts(
+        requestParameters: RbacPermissionChecksListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/rbac/permission_checks/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async rbacPermissionChecksListRaw(
+        requestParameters: RbacPermissionChecksListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedPermissionCheckList>> {
+        const requestOptions = await this.rbacPermissionChecksListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedPermissionCheckListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async rbacPermissionChecksList(
+        requestParameters: RbacPermissionChecksListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedPermissionCheckList> {
+        const response = await this.rbacPermissionChecksListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for rbacPermissionChecksPartialUpdate without sending the request
+     */
+    async rbacPermissionChecksPartialUpdateRequestOpts(
+        requestParameters: RbacPermissionChecksPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["checkUuid"] == null) {
+            throw new runtime.RequiredError(
+                "checkUuid",
+                'Required parameter "checkUuid" was null or undefined when calling rbacPermissionChecksPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/rbac/permission_checks/{check_uuid}/`;
+        urlPath = urlPath.replace(
+            "{check_uuid}",
+            encodeURIComponent(String(requestParameters["checkUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedPermissionCheckRequestToJSON(
+                requestParameters["patchedPermissionCheckRequest"],
+            ),
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async rbacPermissionChecksPartialUpdateRaw(
+        requestParameters: RbacPermissionChecksPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PermissionCheck>> {
+        const requestOptions =
+            await this.rbacPermissionChecksPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PermissionCheckFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async rbacPermissionChecksPartialUpdate(
+        requestParameters: RbacPermissionChecksPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PermissionCheck> {
+        const response = await this.rbacPermissionChecksPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for rbacPermissionChecksRetrieve without sending the request
+     */
+    async rbacPermissionChecksRetrieveRequestOpts(
+        requestParameters: RbacPermissionChecksRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["checkUuid"] == null) {
+            throw new runtime.RequiredError(
+                "checkUuid",
+                'Required parameter "checkUuid" was null or undefined when calling rbacPermissionChecksRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/rbac/permission_checks/{check_uuid}/`;
+        urlPath = urlPath.replace(
+            "{check_uuid}",
+            encodeURIComponent(String(requestParameters["checkUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async rbacPermissionChecksRetrieveRaw(
+        requestParameters: RbacPermissionChecksRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PermissionCheck>> {
+        const requestOptions =
+            await this.rbacPermissionChecksRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PermissionCheckFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async rbacPermissionChecksRetrieve(
+        requestParameters: RbacPermissionChecksRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PermissionCheck> {
+        const response = await this.rbacPermissionChecksRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for rbacPermissionChecksUpdate without sending the request
+     */
+    async rbacPermissionChecksUpdateRequestOpts(
+        requestParameters: RbacPermissionChecksUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["checkUuid"] == null) {
+            throw new runtime.RequiredError(
+                "checkUuid",
+                'Required parameter "checkUuid" was null or undefined when calling rbacPermissionChecksUpdate().',
+            );
+        }
+
+        if (requestParameters["permissionCheckRequest"] == null) {
+            throw new runtime.RequiredError(
+                "permissionCheckRequest",
+                'Required parameter "permissionCheckRequest" was null or undefined when calling rbacPermissionChecksUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/rbac/permission_checks/{check_uuid}/`;
+        urlPath = urlPath.replace(
+            "{check_uuid}",
+            encodeURIComponent(String(requestParameters["checkUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PermissionCheckRequestToJSON(requestParameters["permissionCheckRequest"]),
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async rbacPermissionChecksUpdateRaw(
+        requestParameters: RbacPermissionChecksUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PermissionCheck>> {
+        const requestOptions = await this.rbacPermissionChecksUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PermissionCheckFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async rbacPermissionChecksUpdate(
+        requestParameters: RbacPermissionChecksUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PermissionCheck> {
+        const response = await this.rbacPermissionChecksUpdateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for rbacPermissionChecksUsedByList without sending the request
+     */
+    async rbacPermissionChecksUsedByListRequestOpts(
+        requestParameters: RbacPermissionChecksUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["checkUuid"] == null) {
+            throw new runtime.RequiredError(
+                "checkUuid",
+                'Required parameter "checkUuid" was null or undefined when calling rbacPermissionChecksUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/rbac/permission_checks/{check_uuid}/used_by/`;
+        urlPath = urlPath.replace(
+            "{check_uuid}",
+            encodeURIComponent(String(requestParameters["checkUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async rbacPermissionChecksUsedByListRaw(
+        requestParameters: RbacPermissionChecksUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.rbacPermissionChecksUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async rbacPermissionChecksUsedByList(
+        requestParameters: RbacPermissionChecksUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.rbacPermissionChecksUsedByListRaw(
             requestParameters,
             initOverrides,
         );

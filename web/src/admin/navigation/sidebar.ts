@@ -113,7 +113,10 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
         ["/core/property-mappings", msg("Property Mappings")],
         ["/blueprints/instances", msg("Blueprints")],
         ["/files", msg("Files")],
-        ["/policy/reputation", msg("Reputation scores")]],
+        ["/policy/reputation", msg("Reputation scores")],
+        ["/identity/initial-permissions", msg("Initial Permissions")],
+        ["/identity/custom-permissions", msg("Custom Permissions")],
+        ["/identity/permission-checks", msg("Permission Checks")]],
     ],
     [null, msg("Flows and Stages"), { key: "flows-stages" }, [
         ["/flow/flows", msg("Flows"), ["flow-view"]],
@@ -126,7 +129,6 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
         ["/identity/roles", msg("Roles"), ["role-view"]],
         ["/identity/agents", msg("Agents"), {enterprise:true}],
         ["/identity/object-attributes", msg("Object attributes")],
-        ["/identity/initial-permissions", msg("Initial Permissions")],
         ["/core/sources", msg("Federation and Social login"), ["source-view"]],
         ["/core/tokens", msg("Tokens and App passwords")],
         ["/flow/stages/invitations", msg("Invitations")]]
