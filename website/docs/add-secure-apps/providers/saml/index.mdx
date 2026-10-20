@@ -157,15 +157,15 @@ By default, users are free to change their email addresses. Therefore, it is rec
 
 An SP can set the `ForceAuthn` attribute on its `AuthnRequest` to require that the user authenticates again, even when they already have a valid authentik session.
 
-By default, authentik honors this attribute. When an incoming `AuthnRequest` sets `ForceAuthn="true"`, the user is sent through the provider's authentication flow before the SSO flow continues. If the provider does not have an authentication flow configured, authentik uses the authentication flow configured for the associated brand. This behaves similarly to `prompt=login` for OAuth 2.0 and OpenID Connect providers. Once the user has re-authenticated, the SSO flow proceeds normally.
+By default, authentik honors this attribute. When an incoming `AuthnRequest` sets `ForceAuthn="true"`, the user is sent through the provider's authentication flow before the SSO flow continues. If the provider does not have an authentication flow configured, authentik uses the authentication flow configured for the associated brand. This behaves similarly to [`prompt=login`](../oauth2/index.mdx#re-authentication-with-promptlogin) for OAuth 2.0 and OpenID Connect providers. Once the user has re-authenticated, the SSO flow proceeds normally.
 
-If users of an existing application are prompted to sign in again more often after upgrading to 2026.8, check whether that SP sets `ForceAuthn`.
+This requires no configuration on the provider, and it applies to any SP that sets the attribute. If users of an existing application are prompted to sign in again more often after upgrading to 2026.8, check whether that SP sets `ForceAuthn`.
 
 ### Ignoring ForceAuthn:ak-version[2026.11]
 
-Some SPs set `ForceAuthn` on every request and offer no way to turn it off. To use the existing authentik session for such an SP, disable the **Honor ForceAuthn** option under **Advanced protocol settings** on the SAML provider. When disabled, authentik treats an `AuthnRequest` that sets `ForceAuthn="true"` the same as one that does not, and the user is not asked to re-authenticate if they already have a valid session.
+For SPs that always set `ForceAuthn="true"` and provide no way to disable it, turn off **Honor ForceAuthn** (enabled by default) under the SAML provider's **Advanced protocol settings**. This allows reuse of a valid authentik session by handling requests as if `ForceAuthn` were absent.
 
-The setting applies only to the provider it is set on; other SPs that set `ForceAuthn` continue to trigger re-authentication. The `AuthnInstant` attribute in the assertion always reflects when the user actually authenticated, so an SP that inspects it can detect that the request was not honored.
+This setting affects only that provider. The assertion's `AuthnInstant` attribute still records the actual authentication time, allowing SPs to detect that re-authentication did not occur.
 
 ## AuthnContextClassRef
 
