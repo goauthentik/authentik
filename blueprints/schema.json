@@ -8022,6 +8022,96 @@
                         "type": "integer"
                     },
                     "title": "Jwt federation providers"
+                },
+                "apple_psso": {
+                    "type": "object",
+                    "properties": {
+                        "authentication_method": {
+                            "type": "string",
+                            "enum": [
+                                "user_secure_enclave_key",
+                                "password",
+                                "openid"
+                            ],
+                            "title": "Authentication method"
+                        },
+                        "login_policy": {
+                            "type": "string",
+                            "enum": [
+                                "none",
+                                "attempt",
+                                "require"
+                            ],
+                            "title": "Login policy"
+                        },
+                        "unlock_policy": {
+                            "type": "string",
+                            "enum": [
+                                "none",
+                                "attempt",
+                                "require"
+                            ],
+                            "title": "Unlock policy"
+                        },
+                        "filevault_policy": {
+                            "type": "string",
+                            "enum": [
+                                "none",
+                                "attempt",
+                                "require"
+                            ],
+                            "title": "Filevault policy"
+                        },
+                        "unlock_allow_touch_id_or_watch": {
+                            "type": "boolean",
+                            "title": "Unlock allow touch id or watch"
+                        },
+                        "login_frequency": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "title": "Login frequency"
+                        },
+                        "authentication_grace_period": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "title": "Authentication grace period"
+                        },
+                        "offline_grace_period": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "title": "Offline grace period"
+                        },
+                        "non_platform_sso_accounts": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "title": "Non platform sso accounts"
+                        },
+                        "enable_create_user_at_login": {
+                            "type": "boolean",
+                            "title": "Enable create user at login"
+                        },
+                        "biometric_requirement": {
+                            "type": "string",
+                            "enum": [
+                                "none",
+                                "current_set",
+                                "any"
+                            ],
+                            "title": "Biometric requirement"
+                        },
+                        "biometric_password_fallback": {
+                            "type": "boolean",
+                            "title": "Biometric password fallback"
+                        },
+                        "biometric_reuse_during_unlock": {
+                            "type": "boolean",
+                            "title": "Biometric reuse during unlock"
+                        }
+                    },
+                    "title": "Apple psso"
                 }
             },
             "required": []

@@ -60,6 +60,8 @@ class TestAppleRegister(APITestCase):
                     f"http://testserver/endpoints/agent/psso/{self.connector.pk}/preauthenticate/"
                 ),
                 "token_endpoint": "http://testserver/endpoints/agent/psso/token/",
+                # No biometric required by default
+                "biometric_policies": [],
             },
         )
 
@@ -110,3 +112,36 @@ class TestAppleRegister(APITestCase):
         binding.refresh_from_db()
         self.assertEqual(binding.apple_secure_enclave_key, new_enclave_key)
         self.assertEqual(binding.apple_enclave_key_id, new_enclave_key_id)
+
+    @enterprise_test()
+    @reconcile_app("authentik_crypto")
+    def test_register_user_without_enclave_key(self):
+        """The password method registers without a Secure Enclave key"""
+        device_auth = DeviceAuthenticationToken.objects.create(
+            device=self.device,
+            device_token=self.device_token,
+            connector=self.connector,
+            user=self.user,
+            token=generate_id(),
+        )
+        AgentDeviceUserBinding.objects.create(
+            target=self.device,
+            user=self.user,
+            connector=self.connector,
+            is_primary=True,
+            order=0,
+            apple_secure_enclave_key=generate_id(),
+            apple_enclave_key_id=generate_id(),
+        )
+
+        response = self.client.post(
+            reverse("authentik_api:psso-register-user"),
+            data={"user_auth": device_auth.token},
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(loads(response.content)["username"], self.user.username)
+        binding = AgentDeviceUserBinding.objects.get(target=self.device, user=self.user)
+        self.assertEqual(binding.apple_secure_enclave_key, "")
+        self.assertEqual(binding.apple_enclave_key_id, "")

@@ -1,6 +1,8 @@
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
+from dacite import from_dict
 from django.db import models
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
@@ -28,6 +30,63 @@ from authentik.stages.authenticator.models import Device as Authenticator
 
 if TYPE_CHECKING:
     from authentik.endpoints.connectors.agent.controller import AgentConnectorController
+
+
+class ApplePSSOAuthenticationPolicy(models.TextChoices):
+    """Platform SSO policy for the login window, screen unlock and FileVault"""
+
+    NONE = "none", _("None (silent background token only)")
+    ATTEMPT = "attempt", _("Attempt authentication (enforced only when online)")
+    REQUIRE = "require", _("Require authentication")
+
+
+class ApplePSSOAuthenticationMethod(models.TextChoices):
+    """How the user authenticates at the macOS login window"""
+
+    USER_SECURE_ENCLAVE_KEY = "user_secure_enclave_key", _("User Secure Enclave key")
+    PASSWORD = "password", _("Password")
+    OPENID = "openid", _("Web (OpenID, requires macOS 27+)")
+
+
+class ApplePSSOBiometricRequirement(models.TextChoices):
+    """Biometric required to use the user Secure Enclave key"""
+
+    NONE = "none", _("None (no biometric required)")
+    CURRENT_SET = "current_set", _("Touch ID or Apple Watch, invalidated if enrolment changes")
+    ANY = "any", _("Touch ID or Apple Watch, any enrolment")
+
+
+@dataclass
+class ApplePSSOConfig:
+    """Apple Platform SSO settings, stored as JSON on the connector"""
+
+    # Decides which settings apply: biometrics for the Secure Enclave key, policies for password
+    authentication_method: str = ApplePSSOAuthenticationMethod.USER_SECURE_ENCLAVE_KEY
+
+    # Omitted from the profile when left at "none"
+    login_policy: str = ApplePSSOAuthenticationPolicy.NONE
+    unlock_policy: str = ApplePSSOAuthenticationPolicy.NONE
+    filevault_policy: str = ApplePSSOAuthenticationPolicy.NONE
+    # Without this, an unlock policy of "require" disables Touch ID and watch unlock
+    unlock_allow_touch_id_or_watch: bool = True
+    # Seconds before a full re-authentication is required, Apple's minimum is 3600
+    login_frequency: int = 64800
+
+    # Seconds unregistered local accounts can still log in after a policy lands, 0 to disable
+    authentication_grace_period: int = 0
+    # Seconds the local password keeps working offline, 0 to disable
+    offline_grace_period: int = 0
+    # Local accounts the policies don't apply to, such as a break-glass admin
+    non_platform_sso_accounts: list[str] = field(default_factory=list)
+    # Create a local account for users signing in without one
+    enable_create_user_at_login: bool = False
+
+    # Applied by the agent's PSSO extension
+    biometric_requirement: str = ApplePSSOBiometricRequirement.NONE
+    # Without this, users on Macs without Touch ID can't log in
+    biometric_password_fallback: bool = True
+    # Reuse the Touch ID presented at unlock instead of prompting again
+    biometric_reuse_during_unlock: bool = False
 
 
 class AgentConnector(Connector):
@@ -60,6 +119,32 @@ class AgentConnector(Connector):
         validators=[timedelta_string_validator], default="seconds=5"
     )
     challenge_trigger_check_in = models.BooleanField(default=False)
+
+    # See ApplePSSOConfig, read through apple_psso_config to get defaults
+    apple_psso = models.JSONField(default=dict, blank=True)
+
+    @property
+    def apple_psso_config(self) -> ApplePSSOConfig:
+        return from_dict(ApplePSSOConfig, self.apple_psso)
+
+    @property
+    def apple_psso_biometric_policies(self) -> list[str]:
+        """Biometric policies for the agent to apply, empty when no biometric is required"""
+        config = self.apple_psso_config
+        if config.authentication_method != ApplePSSOAuthenticationMethod.USER_SECURE_ENCLAVE_KEY:
+            return []
+        requirement = {
+            ApplePSSOBiometricRequirement.CURRENT_SET: "touch_id_or_watch_current_set",
+            ApplePSSOBiometricRequirement.ANY: "touch_id_or_watch_any",
+        }.get(config.biometric_requirement)
+        if requirement is None:
+            return []
+        policies = [requirement]
+        if config.biometric_password_fallback:
+            policies.append("password_fallback")
+        if config.biometric_reuse_during_unlock:
+            policies.append("reuse_during_unlock")
+        return policies
 
     @property
     def icon_url(self):
