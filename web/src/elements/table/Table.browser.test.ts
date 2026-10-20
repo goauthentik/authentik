@@ -52,6 +52,7 @@ class ControlledTable extends StaticTable<Row> {
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<Row, object>> {
         const { search } = this;
+
         const response = createPaginatedResponse(
             this.items.filter((item) => !search || item.name.includes(search)),
         );
