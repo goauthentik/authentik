@@ -1,10 +1,11 @@
+import type { PersistenceKey } from "#common/storage/shared";
+
 import { expect, test } from "#e2e";
 import { GOOD_USERNAME } from "#e2e/fixtures/SessionFixture";
 
 import type { Page } from "@playwright/test";
 
-const REMEMBER_ME_USER_KEY = "authentik-remember-me-user";
-const REMEMBER_ME_SESSION_KEY = "authentik-remember-me-session";
+const REMEMBER_ME_USER_KEY = "ak:remember_me:user" satisfies PersistenceKey;
 
 const readStoredUserIdentifier = (page: Page) =>
     page.evaluate((k) => localStorage.getItem(k), REMEMBER_ME_USER_KEY);
@@ -13,13 +14,7 @@ test.describe("Session Lifecycle", () => {
     test.beforeEach(async ({ session, page }) => {
         await session.toLoginPage();
 
-        await page.evaluate(
-            ([userKey, sessionKey]) => {
-                localStorage.removeItem(userKey);
-                localStorage.removeItem(sessionKey);
-            },
-            [REMEMBER_ME_USER_KEY, REMEMBER_ME_SESSION_KEY],
-        );
+        await page.evaluate((key) => localStorage.removeItem(key), REMEMBER_ME_USER_KEY);
 
         await page.reload();
         await session.$identificationStage.waitFor({ state: "visible" });

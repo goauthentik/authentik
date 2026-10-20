@@ -2,18 +2,22 @@
  * @file Storage utilities.
  */
 
+import type { PersistenceKey } from "#common/storage/shared";
+
 import { ConsoleLogger } from "#logger/browser";
 
 /**
  * A utility class for safely accessing web storage (localStorage or sessionStorage) with error
  * handling.
  */
-export class StorageAccessor {
+export class StorageAccessor<K extends PersistenceKey = PersistenceKey> {
+    // #region Constructor
+
     constructor(
         /**
          * The key under which the value is stored in the storage backend.
          */
-        public readonly key: string,
+        public readonly key: K,
         /**
          * The storage backend to use, e.g. `window.localStorage` or `window.sessionStorage`.
          */
@@ -34,13 +38,20 @@ export class StorageAccessor {
      *
      * @param key The key under which the value is stored in localStorage.
      */
-    public static local = (key: string) => new StorageAccessor(key, self.localStorage);
+    public static local = <K extends PersistenceKey>(key: K) =>
+        new StorageAccessor(key, self.localStorage);
+
     /**
      * Create a {@link StorageAccessor} for session storage.
      *
      * @param key The key under which the value is stored in sessionStorage.
      */
-    public static session = (key: string) => new StorageAccessor(key, self.sessionStorage);
+    public static session = <K extends PersistenceKey>(key: K) =>
+        new StorageAccessor(key, self.sessionStorage);
+
+    // #endregion
+
+    // #region Public Methods
 
     /**
      * Read the value from storage.
@@ -147,4 +158,6 @@ export class StorageAccessor {
             return false;
         }
     }
+
+    // #endregion
 }

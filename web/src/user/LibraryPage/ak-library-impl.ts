@@ -19,7 +19,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
-import { StorageAccessor } from "#common/storage";
+import { StorageAccessor } from "#common/storage/accessor";
 import { groupBy } from "#common/utils";
 
 import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
@@ -98,7 +98,7 @@ function createViewToggleContent(
  */
 @customElement("ak-library-impl")
 export class LibraryPage extends WithSession(AKElement) {
-    static readonly ViewModeStorage = StorageAccessor.local("library-view-mode");
+    static readonly ViewModeStorage = StorageAccessor.local("ak:library:view_mode");
 
     /**
      * Maximum number of items to show in the datalist for search suggestions.
