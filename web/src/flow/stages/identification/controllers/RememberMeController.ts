@@ -1,5 +1,6 @@
 import { readCSRFToken } from "#common/api/csrf";
-import { StorageAccessor } from "#common/storage";
+import { StorageAccessor } from "#common/storage/accessor";
+import type { PersistenceKey } from "#common/storage/shared";
 
 import { ReactiveElementHost } from "#elements/types";
 import { findEmptyFocusCandidate } from "#elements/utils/focus";
@@ -13,12 +14,26 @@ import { createRef, Ref } from "lit-html/directives/ref.js";
 import { msg } from "@lit/localize";
 import { css, html, ReactiveController } from "lit";
 
+// TODO: Remove in 2027.2 or later. See #27036
+const LEGACY_USER_KEY = "authentik-remember-me-user" as PersistenceKey;
+const LEGACY_SESSION_KEY = "authentik-remember-me-session" as PersistenceKey;
+
 export class RememberMeStorage {
-    static readonly user = StorageAccessor.local("authentik-remember-me-user");
-    static readonly session = StorageAccessor.local("authentik-remember-me-session");
+    static readonly user = StorageAccessor.local("ak:remember_me:user");
+    static readonly session = StorageAccessor.local("ak:remember_me:session");
     static reset = () => {
         this.user.delete();
         this.session.delete();
+    };
+
+    /**
+     * Carry over state written by earlier versions to its current keys.
+     *
+     * TODO: Remove in 2027.2 or later. See #27036
+     */
+    static migrate = () => {
+        this.user.migrateFrom(LEGACY_USER_KEY);
+        this.session.migrateFrom(LEGACY_SESSION_KEY);
     };
 }
 
@@ -81,6 +96,8 @@ export class RememberMeController implements ReactiveController {
         this.identificationFieldRef = identificationFieldRef;
         this.passwordFieldRef = passwordFieldRef || null;
         this.identificationFieldID = identificationFieldID;
+
+        RememberMeStorage.migrate();
 
         const persistedSessionID = RememberMeStorage.session.read();
 

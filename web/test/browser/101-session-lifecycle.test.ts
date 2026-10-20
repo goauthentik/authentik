@@ -1,10 +1,16 @@
+import type { PersistenceKey } from "#common/storage/shared";
+
 import { expect, test } from "#e2e";
 import { GOOD_USERNAME } from "#e2e/fixtures/SessionFixture";
 
 import type { Page } from "@playwright/test";
 
-const REMEMBER_ME_USER_KEY = "authentik-remember-me-user";
-const REMEMBER_ME_SESSION_KEY = "authentik-remember-me-session";
+const REMEMBER_ME_USER_KEY = "ak:remember_me:user" satisfies PersistenceKey;
+const REMEMBER_ME_SESSION_KEY = "ak:remember_me:session" satisfies PersistenceKey;
+
+// Keys written by earlier versions, which the controller migrates on load.
+// TODO: Remove in 2027.2 or later. See #27036
+const LEGACY_REMEMBER_ME_KEYS = ["authentik-remember-me-user", "authentik-remember-me-session"];
 
 const readStoredUserIdentifier = (page: Page) =>
     page.evaluate((k) => localStorage.getItem(k), REMEMBER_ME_USER_KEY);
@@ -14,11 +20,10 @@ test.describe("Session Lifecycle", () => {
         await session.toLoginPage();
 
         await page.evaluate(
-            ([userKey, sessionKey]) => {
-                localStorage.removeItem(userKey);
-                localStorage.removeItem(sessionKey);
+            (keys) => {
+                for (const key of keys) localStorage.removeItem(key);
             },
-            [REMEMBER_ME_USER_KEY, REMEMBER_ME_SESSION_KEY],
+            [REMEMBER_ME_USER_KEY, REMEMBER_ME_SESSION_KEY, ...LEGACY_REMEMBER_ME_KEYS],
         );
 
         await page.reload();
