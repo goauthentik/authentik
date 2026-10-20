@@ -834,6 +834,7 @@ export * from "./SyncObjectResult";
 export * from "./SyncOutgoingTriggerModeEnum";
 export * from "./SyncStatus";
 export * from "./SystemInfo";
+export * from "./SystemInfoPostgresql";
 export * from "./SystemInfoRuntime";
 export * from "./TOTPDevice";
 export * from "./TOTPDeviceRequest";
