@@ -19960,6 +19960,14 @@ paths:
         schema:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
       - in: query
+        name: encryption_algorithm
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: |+
+            Block cipher used to encrypt the assertion.
+
+      - in: query
         name: encryption_kp
         schema:
           type: string
@@ -21118,6 +21126,14 @@ paths:
         name: digest_algorithm
         schema:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
+      - in: query
+        name: encryption_algorithm
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: |+
+            Block cipher used to encrypt the assertion.
+
       - in: query
         name: encryption_kp
         schema:
@@ -40027,6 +40043,13 @@ components:
             further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - name
+    EncryptionAlgorithmEnum:
+      enum:
+      - http://www.w3.org/2001/04/xmlenc#aes128-cbc
+      - http://www.w3.org/2001/04/xmlenc#aes256-cbc
+      - http://www.w3.org/2009/xmlenc11#aes128-gcm
+      - http://www.w3.org/2009/xmlenc11#aes256-gcm
+      type: string
     EndpointAgentChallenge:
       type: object
       description: Signed challenge for authentik agent to respond to
@@ -53002,6 +53025,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_response:
@@ -53978,6 +54005,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_logout_request:
@@ -56926,6 +56957,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_response:
@@ -57137,6 +57172,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_response:
@@ -61678,6 +61717,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_logout_request:
@@ -61802,6 +61845,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_logout_request:
