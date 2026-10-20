@@ -82,9 +82,7 @@ class SentryTracer(Tracer):
         if self.tracing:
             tracing_args = {
                 "traces_sampler": _traces_sampler,
-                "_experiments": {
-                    "profiles_sample_rate": float(CONFIG.get("error_reporting.sample_rate", 0.1)),
-                },
+                "profiles_sample_rate": float(CONFIG.get("error_reporting.sample_rate", 0.1)),
             }
         sentry_sdk.init(
             dsn=CONFIG.get("error_reporting.sentry_dsn"),
