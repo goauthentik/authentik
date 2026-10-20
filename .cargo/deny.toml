@@ -45,8 +45,6 @@ allow = [
 ]
 name = "aws-lc-rs"
 exact = true
-<<<<<<< HEAD
-=======
 
 [advisories]
 ignore = [
@@ -55,4 +53,3 @@ ignore = [
   # https://github.com/rustls/webpki-roots/releases/tag/v%2F0.26.11
   { id = "RUSTSEC-2026-0381", reason = "webpki-roots 0.26.11 (via tokio-tungstenite) is a shim re-exporting webpki-roots 1.0.10, which is patched; remove when tokio-tungstenite depends on webpki-roots 1.x" },
 ]
->>>>>>> d53447b6b (root: bump cert-related deps due to emudhra (#27068))

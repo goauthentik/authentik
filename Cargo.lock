@@ -3575,11 +3575,7 @@ dependencies = [
  "tracing",
  "url",
  "uuid",
-<<<<<<< HEAD
  "webpki-roots 0.26.11",
-=======
- "webpki-roots 1.0.10",
->>>>>>> d53447b6b (root: bump cert-related deps due to emudhra (#27068))
 ]
 
 [[package]]

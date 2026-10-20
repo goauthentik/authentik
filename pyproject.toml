@@ -7,12 +7,8 @@ requires-python = "==3.14.*"
 dependencies = [
   "ak-guardian==3.2.0",
   "argon2-cffi==25.1.0",
-<<<<<<< HEAD
   "cachetools==7.0.6",
-=======
-  "cachetools==7.2.2",
   "certifi==2026.10.19",
->>>>>>> d53447b6b (root: bump cert-related deps due to emudhra (#27068))
   "channels==4.3.2",
   "cryptography==48.0.0",
   "dacite==1.9.2",
