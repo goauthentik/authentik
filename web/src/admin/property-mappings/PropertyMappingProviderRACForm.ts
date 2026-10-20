@@ -125,6 +125,16 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                         >
                         </ak-radio>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Enable drive", { id: "rac.settings.enable-drive.label" })}
+                        name="staticSettings.enable-drive"
+                    >
+                        <ak-radio
+                            .options=${staticSettingOptions}
+                            .value=${this.instance?.staticSettings["enable-drive"]}
+                        >
+                        </ak-radio>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             <ak-form-group label="${msg("Advanced settings")}">

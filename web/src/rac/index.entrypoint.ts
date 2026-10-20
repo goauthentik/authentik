@@ -1,5 +1,9 @@
 import "#elements/LoadingOverlay";
+import "./FileSidebar";
+import { type DriveState, emptyDriveState, FileBrowser } from "./file-browser";
+import { FileTransfers, TransferStatus } from "./file-transfer";
 import Styles from "./index.entrypoint.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
@@ -50,12 +54,33 @@ export class RacInterface extends WithBrandConfig(Interface) {
         // ---
 
         PFPage,
+        PFButton,
         PFContent,
         Styles,
     ];
 
     client?: Guacamole.Client;
     tunnel?: Guacamole.Tunnel;
+    private fileTransfers?: FileTransfers;
+    private fileBrowser?: FileBrowser;
+    private keyboard?: Guacamole.Keyboard;
+    private resizeObserver?: ResizeObserver;
+    private lastSize = "";
+    private readonly focusHandler = () => {
+        this.checkClipboard();
+    };
+
+    @state() private filesOpen = false;
+    @state() private drive: DriveState = emptyDriveState();
+    private transferTimers = new Map<string, ReturnType<typeof setTimeout>>();
+    private reconnectTimer?: ReturnType<typeof setTimeout>;
+    private dragDepth = 0;
+
+    @state()
+    private draggingFiles = false;
+
+    @state()
+    private transfers: TransferStatus[] = [];
 
     @state()
     container?: HTMLElement;
@@ -75,18 +100,32 @@ export class RacInterface extends WithBrandConfig(Interface) {
     @property({ attribute: "device-name" })
     deviceName?: string;
 
+    @property()
+    protocol?: string;
+
+    @property()
+    driveEnabled?: string;
+
+    private get showFiles(): boolean {
+        return this.protocol === "rdp" && this.driveEnabled === "true";
+    }
+
     @state()
     clipboardWatcherTimer = 0;
 
-    _previousClipboardValue: unknown;
+    _previousClipboardValue?: string;
+    private clipboardRevision = 0;
+    private clipboardRead?: Promise<string>;
 
     // Set to `true` if we've successfully connected once
     hasConnected = false;
     // Keep track of current connection attempt
     connectionAttempt = 0;
 
-    static domSize(): { width: number; height: number } {
-        const size = document.body.getBoundingClientRect();
+    private domSize(): { width: number; height: number } {
+        const size = (
+            this.renderRoot.querySelector(".desktop-viewport") || document.body
+        ).getBoundingClientRect();
 
         return {
             width: size.width,
@@ -94,10 +133,9 @@ export class RacInterface extends WithBrandConfig(Interface) {
         };
     }
 
-    constructor() {
-        super();
-        this.initKeyboard();
-        this.checkClipboard();
+    connectedCallback(): void {
+        super.connectedCallback();
+        window.addEventListener("focus", this.focusHandler);
 
         this.clipboardWatcherTimer = setInterval(
             this.checkClipboard.bind(this),
@@ -105,35 +143,52 @@ export class RacInterface extends WithBrandConfig(Interface) {
         ) as unknown as number;
     }
 
-    connectedCallback(): void {
-        super.connectedCallback();
-
-        window.addEventListener(
-            "focus",
-            () => {
-                this.checkClipboard();
-            },
-            {
-                capture: false,
-            },
-        );
-
-        window.addEventListener("resize", () => {
-            this.client?.sendSize(
-                Math.floor(RacInterface.domSize().width),
-                Math.floor(RacInterface.domSize().height),
-            );
-        });
-    }
-
     disconnectedCallback(): void {
         super.disconnectedCallback();
+        window.removeEventListener("focus", this.focusHandler);
+        this.resizeObserver?.disconnect();
+        this.keyboard?.reset();
+        this.fileBrowser?.dispose();
         clearInterval(this.clipboardWatcherTimer);
+        this.resetClipboard();
+        clearTimeout(this.reconnectTimer);
+        this.fileTransfers?.dispose();
+
+        if (this.client) {
+            this.client.onerror = null;
+            this.client.onstatechange = null;
+        }
+
+        if (this.tunnel) this.tunnel.onerror = null;
+        this.client?.disconnect();
+
+        for (const timer of this.transferTimers.values()) clearTimeout(timer);
+        this.transferTimers.clear();
     }
 
     async firstUpdated(): Promise<void> {
+        this.resetClipboard();
         this.synchronizeTitle();
+        this.fileBrowser?.dispose();
+        this.fileTransfers?.dispose();
+        this.drive = emptyDriveState();
+        this.lastSize = "";
+        this.initViewport();
 
+        if (this.client) {
+            this.client.onerror = null;
+            this.client.onstatechange = null;
+        }
+
+        if (this.tunnel) this.tunnel.onerror = null;
+        this.client?.disconnect();
+
+        for (const timer of this.transferTimers.values()) clearTimeout(timer);
+        this.transferTimers.clear();
+        this.transfers = [];
+        this.dragDepth = 0;
+        this.draggingFiles = false;
+        const connectionId = crypto.randomUUID();
         const wsUrl = `${window.location.protocol.replace("http", "ws")}//${window.location.host}/ws/rac/${this.token}/`;
         this.tunnel = new Guacamole.WebSocketTunnel(wsUrl);
         this.tunnel.receiveTimeout = 10 * 1000;
@@ -146,6 +201,32 @@ export class RacInterface extends WithBrandConfig(Interface) {
         };
 
         this.client = new Guacamole.Client(this.tunnel);
+
+        this.fileTransfers = new FileTransfers(this.token!, connectionId, (status) =>
+            this.updateTransfer(status),
+        );
+
+        const handleGuacamoleInstruction = this.tunnel.oninstruction;
+
+        this.tunnel.oninstruction = (opcode, args) => {
+            if (opcode === "authentik-bulk") {
+                const [id, result] = args.map(String);
+                this.fileTransfers?.settle(id, result === "ok");
+
+                return;
+            }
+
+            handleGuacamoleInstruction?.(opcode, args);
+        };
+
+        this.fileBrowser = new FileBrowser(
+            this.fileTransfers,
+            this.token!,
+            connectionId,
+            (drive) => {
+                this.drive = drive;
+            },
+        );
 
         this.client.onerror = (err) => {
             this.clientStatus = err;
@@ -186,6 +267,8 @@ export class RacInterface extends WithBrandConfig(Interface) {
                         return;
                     }
 
+                    // Invalidate local reads which started before this remote update.
+                    this.clipboardRevision += 1;
                     this._previousClipboardValue = trimmed;
                     writeToClipboard(trimmed);
                 };
@@ -207,8 +290,9 @@ export class RacInterface extends WithBrandConfig(Interface) {
         };
 
         const params = new URLSearchParams();
-        params.set("screen_width", Math.floor(RacInterface.domSize().width).toString());
-        params.set("screen_height", Math.floor(RacInterface.domSize().height).toString());
+        params.set("connection_id", connectionId);
+        params.set("screen_width", Math.floor(this.domSize().width).toString());
+        params.set("screen_height", Math.floor(this.domSize().height).toString());
         // https://github.com/goauthentik/authentik/pull/11757
         // there are DPI issues when using SSH on HiDPi screens
         // but if we're not setting DPI at all the resolution is not respected at all
@@ -217,6 +301,9 @@ export class RacInterface extends WithBrandConfig(Interface) {
     }
 
     reconnect(): void {
+        if (this.reconnectTimer) return;
+        this.fileBrowser?.dispose();
+        this.fileTransfers?.dispose();
         this.clientState = GuacClientState.WAITING;
         this.connectionAttempt += 1;
 
@@ -245,7 +332,8 @@ export class RacInterface extends WithBrandConfig(Interface) {
             str`Re-connecting in ${Math.max(1, delay / 1000)} second(s).`,
         );
 
-        setTimeout(() => {
+        this.reconnectTimer = setTimeout(() => {
+            this.reconnectTimer = undefined;
             this.firstUpdated();
         }, delay);
     }
@@ -265,11 +353,11 @@ export class RacInterface extends WithBrandConfig(Interface) {
         this.clientStatus = undefined;
         this.container = this.client.getDisplay().getElement();
         this.initMouse(this.container);
+        this.resizeDesktop();
+        this.focusDesktop();
+        this.checkClipboard();
 
-        this.client?.sendSize(
-            Math.floor(RacInterface.domSize().width),
-            Math.floor(RacInterface.domSize().height),
-        );
+        if (this.showFiles) this.fileBrowser?.start();
     }
 
     initMouse(container: HTMLElement): void {
@@ -288,7 +376,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
         // @ts-expect-error Event type is not properly defined in guacamole-common-js
         mouse.onEach(["mouseup", "mousedown"], (ev: Guacamole.Mouse.Event) => {
-            this.container?.focus();
+            this.focusDesktop();
             handler(ev.state);
         });
 
@@ -317,8 +405,67 @@ export class RacInterface extends WithBrandConfig(Interface) {
         recorder.onclose = this.initAudioInput.bind(this);
     }
 
-    initKeyboard(): void {
-        const keyboard = new Guacamole.Keyboard(document);
+    protected initViewport(): void {
+        const viewport = this.renderRoot.querySelector<HTMLElement>(".desktop-viewport")!;
+
+        if (!this.keyboard) this.initKeyboard(viewport);
+
+        if (!this.resizeObserver) {
+            this.resizeObserver = new ResizeObserver(() => this.resizeDesktop());
+            this.resizeObserver.observe(viewport);
+        }
+    }
+
+    initKeyboard(viewport: HTMLElement): void {
+        // Guacamole normally cancels keydown, which prevents the browser from
+        // providing clipboardData. Let native paste shortcuts reach the browser
+        // and send the remote shortcut only after the paste event supplies text.
+        const pasteKeys = new Set<string>();
+
+        viewport.addEventListener(
+            "keydown",
+            (event) => {
+                const nativePaste =
+                    (!event.altKey &&
+                        (event.ctrlKey || event.metaKey) &&
+                        event.key.toLowerCase() === "v") ||
+                    (!event.altKey &&
+                        !event.ctrlKey &&
+                        !event.metaKey &&
+                        event.shiftKey &&
+                        event.key === "Insert");
+
+                if (!nativePaste) return;
+                pasteKeys.add(event.code || event.key);
+                event.stopImmediatePropagation();
+            },
+            true,
+        );
+
+        viewport.addEventListener(
+            "keypress",
+            (event) => {
+                if (pasteKeys.has(event.code || event.key)) event.stopImmediatePropagation();
+            },
+            true,
+        );
+
+        viewport.addEventListener(
+            "keyup",
+            (event) => {
+                if (pasteKeys.delete(event.code || event.key)) event.stopImmediatePropagation();
+            },
+            true,
+        );
+
+        viewport.addEventListener("paste", (event) => this.pasteClipboard(event));
+        viewport.addEventListener("focus", () => this.checkClipboard());
+        const keyboard = (this.keyboard = new Guacamole.Keyboard(viewport));
+
+        viewport.addEventListener("blur", () => {
+            pasteKeys.clear();
+            keyboard.reset();
+        });
 
         keyboard.onkeydown = (keysym) => {
             this.client?.sendKeyEvent(1, keysym);
@@ -329,44 +476,205 @@ export class RacInterface extends WithBrandConfig(Interface) {
         };
     }
 
+    private resizeDesktop(): void {
+        const { width, height } = this.domSize();
+        const size = `${Math.floor(width)}:${Math.floor(height)}`;
+
+        if (
+            width > 0 &&
+            height > 0 &&
+            size !== this.lastSize &&
+            this.clientState === GuacClientState.CONNECTED
+        ) {
+            this.lastSize = size;
+            this.client?.sendSize(Math.floor(width), Math.floor(height));
+        }
+    }
+
+    private focusDesktop(): void {
+        this.renderRoot
+            .querySelector<HTMLElement>(".desktop-viewport")
+            ?.focus({ preventScroll: true });
+    }
+
+    toggleFiles(open = !this.filesOpen): void {
+        this.keyboard?.reset();
+        this.filesOpen = open;
+
+        if (!open) this.focusDesktop();
+        else
+            this.updateComplete.then(() => {
+                this.renderRoot
+                    .querySelector("ak-rac-file-sidebar")
+                    ?.shadowRoot?.querySelector<HTMLButtonElement>("header button")
+                    ?.focus();
+            });
+    }
+
     async checkClipboard(): Promise<void> {
+        const client = this.client;
+
+        if (
+            !client ||
+            !this.isConnected ||
+            this.clientState !== GuacClientState.CONNECTED ||
+            !document.hasFocus() ||
+            !navigator.clipboard?.readText ||
+            this.clipboardRead
+        )
+            return;
+
+        const revision = this.clipboardRevision;
+        let read: Promise<string> | undefined;
+
         try {
-            if (!this._previousClipboardValue) {
-                this._previousClipboardValue = await navigator.clipboard.readText();
+            read = this.clipboardRead = navigator.clipboard.readText();
+            const newValue = await read;
 
-                return;
-            }
-
-            const newValue = await navigator.clipboard.readText();
-
-            if (newValue !== this._previousClipboardValue) {
-                console.debug(`authentik/rac: new clipboard value: ${newValue}`);
-
-                this._previousClipboardValue = newValue;
+            if (
+                revision === this.clipboardRevision &&
+                client === this.client &&
+                this.isConnected &&
+                document.hasFocus() &&
+                newValue !== this._previousClipboardValue
+            ) {
                 this.writeClipboard(newValue);
             }
         } catch (ex) {
-            // The error is most likely caused by the document not being in focus
-            // in which case we can ignore it and just retry
+            // Native paste remains available when background clipboard reading
+            // is denied or requires user activation.
             if (ex instanceof DOMException) {
                 return;
             }
 
             console.warn("authentik/rac: error reading clipboard", ex);
+        } finally {
+            if (this.clipboardRead === read) this.clipboardRead = undefined;
         }
     }
 
-    private writeClipboard(value: string) {
-        if (!this.client) {
-            return;
-        }
+    private resetClipboard(): void {
+        this.clipboardRevision += 1;
+        this.clipboardRead = undefined;
+        this._previousClipboardValue = undefined;
+    }
+
+    private pasteClipboard(event: ClipboardEvent): void {
+        if (!event.clipboardData?.types.includes("text/plain")) return;
+        event.preventDefault();
+
+        if (this.clientState !== GuacClientState.CONNECTED) return;
+
+        // Release physical modifiers before synthesizing exactly one remote paste.
+        const terminal = this.protocol === "ssh";
+        const pasteKeysym = terminal ? 0x0056 : 0x0076;
+        this.keyboard?.reset();
+
+        if (!this.writeClipboard(event.clipboardData.getData("text/plain"))) return;
+        this.client?.sendKeyEvent(1, 0xffe3);
+
+        if (terminal) this.client?.sendKeyEvent(1, 0xffe1);
+        this.client?.sendKeyEvent(1, pasteKeysym);
+        this.client?.sendKeyEvent(0, pasteKeysym);
+
+        if (terminal) this.client?.sendKeyEvent(0, 0xffe1);
+        this.client?.sendKeyEvent(0, 0xffe3);
+    }
+
+    private writeClipboard(value: string): boolean {
+        if (!this.client || this.clientState !== GuacClientState.CONNECTED) return false;
 
         const stream = this.client.createClipboardStream("text/plain");
-        const writer = new Guacamole.StringWriter(stream);
-        writer.sendText(value);
+        // Guacamole 1.5's StringWriter encodes surrogate halves separately.
+        // Use standard UTF-8 while retaining Guacamole's bounded blob sizes.
+        const writer = new Guacamole.ArrayBufferWriter(stream);
+        writer.sendData(new TextEncoder().encode(value).buffer);
         writer.sendEnd();
+        this.clipboardRevision += 1;
+        this._previousClipboardValue = value;
 
         console.debug("authentik/rac: Sent clipboard");
+
+        return true;
+    }
+
+    private updateTransfer(status: TransferStatus): void {
+        this.transfers = [...this.transfers.filter((item) => item.id !== status.id), status].slice(
+            -16,
+        );
+
+        clearTimeout(this.transferTimers.get(status.id));
+
+        if (status.phase === "complete") {
+            if (!this.drive.loading) {
+                this.fileBrowser?.navigate(this.drive.path);
+            }
+
+            this.transferTimers.set(
+                status.id,
+                setTimeout(() => this.dismissTransfer(status.id), 5000),
+            );
+        }
+    }
+
+    private dismissTransfer(id: string): void {
+        clearTimeout(this.transferTimers.get(id));
+        this.transferTimers.delete(id);
+        this.transfers = this.transfers.filter((status) => status.id !== id);
+    }
+
+    private dragEnter(event: DragEvent): void {
+        if (!event.dataTransfer?.types.includes("Files")) return;
+        event.preventDefault();
+        this.dragDepth += 1;
+        this.draggingFiles = true;
+    }
+
+    private dragOver(event: DragEvent): void {
+        if (!event.dataTransfer?.types.includes("Files")) return;
+        event.preventDefault();
+
+        event.dataTransfer.dropEffect =
+            this.clientState === GuacClientState.CONNECTED ? "copy" : "none";
+    }
+
+    private dragLeave(event: DragEvent): void {
+        if (!event.dataTransfer?.types.includes("Files")) return;
+        this.dragDepth = Math.max(0, this.dragDepth - 1);
+        this.draggingFiles = this.dragDepth > 0;
+    }
+
+    private dropFiles(event: DragEvent): void {
+        if (!event.dataTransfer?.types.includes("Files")) return;
+        event.preventDefault();
+        this.dragDepth = 0;
+        this.draggingFiles = false;
+
+        if (this.clientState === GuacClientState.CONNECTED) {
+            const items = Array.from(event.dataTransfer.items);
+
+            const files = items.length
+                ? items
+                      .filter(
+                          (item) => item.kind === "file" && !item.webkitGetAsEntry?.()?.isDirectory,
+                      )
+                      .map((item) => item.getAsFile())
+                      .filter((file): file is File => file !== null)
+                : Array.from(event.dataTransfer.files);
+
+            this.uploadFiles(files);
+        }
+    }
+
+    private uploadFiles(files: File[]): void {
+        if (
+            !this.showFiles ||
+            this.clientState !== GuacClientState.CONNECTED ||
+            !this.fileBrowser?.destination
+        )
+            return;
+
+        this.fileTransfers?.enqueue(files, this.fileBrowser.destination);
     }
 
     renderOverlay() {
@@ -402,9 +710,91 @@ export class RacInterface extends WithBrandConfig(Interface) {
     }
 
     render(): TemplateResult {
+        const active = this.transfers.filter((status) => status.phase === "active").length;
+        const errors = this.transfers.some((status) => status.phase === "error");
+
         return html`
-            ${this.renderOverlay()}
-            <div class="container">${this.container}</div>
+            <div
+                class="rac-shell"
+                @dragenter=${this.dragEnter}
+                @dragover=${this.dragOver}
+                @dragleave=${this.dragLeave}
+                @drop=${this.dropFiles}
+            >
+                <header class="rac-toolbar">
+                    <span class="endpoint-name">${this.deviceName}</span>
+                    ${
+                        this.showFiles
+                            ? html`<button
+                                  class="pf-c-button pf-m-plain files-toggle"
+                                  aria-controls="rac-files"
+                                  aria-expanded=${this.filesOpen}
+                                  @click=${() => this.toggleFiles()}
+                              >
+                                  <i class="fas fa-folder-open" aria-hidden="true"></i>
+                                  ${msg("Files", { id: "rac.files.title.label" })}
+                                  ${active ? html`<span class="transfer-count">${active}</span>` : nothing}
+                                  ${
+                                      errors
+                                          ? html`<i
+                                                class="fas fa-exclamation-circle error-indicator"
+                                                role="img"
+                                                aria-label=${msg("File transfer failed", {
+                                                    id: "rac.transfer.status.error",
+                                                })}
+                                            ></i>`
+                                          : nothing
+                                  }
+                              </button>`
+                            : nothing
+                    }
+                </header>
+                <div class="rac-layout">
+                    <div
+                        class="desktop-viewport"
+                        tabindex="0"
+                        aria-label=${msg("Remote desktop", { id: "rac.desktop.aria-label" })}
+                    >
+                        ${this.container} ${this.renderOverlay()}
+                    </div>
+                    ${
+                        this.showFiles
+                            ? html`<aside
+                                  id="rac-files"
+                                  class="files-panel"
+                                  ?hidden=${!this.filesOpen}
+                              >
+                                  <ak-rac-file-sidebar
+                                      .drive=${this.drive}
+                                      .transfers=${this.transfers}
+                                      ?disabled=${this.clientState !== GuacClientState.CONNECTED}
+                                      @rac-files-close=${() => this.toggleFiles(false)}
+                                      @rac-files-navigate=${(event: CustomEvent) =>
+                                          this.fileBrowser?.navigate(event.detail.path)}
+                                      @rac-files-download=${(event: CustomEvent) =>
+                                          this.fileBrowser?.download(event.detail.entry)}
+                                      @rac-files-upload=${(event: CustomEvent) =>
+                                          this.uploadFiles(event.detail.files)}
+                                      @rac-files-cancel=${(event: CustomEvent) =>
+                                          this.fileTransfers?.cancel(event.detail.id)}
+                                      @rac-files-dismiss=${(event: CustomEvent) =>
+                                          this.dismissTransfer(event.detail.id)}
+                                  >
+                                  </ak-rac-file-sidebar>
+                              </aside>`
+                            : nothing
+                    }
+                </div>
+                ${
+                    this.draggingFiles
+                        ? html`<div class="file-drop-overlay">
+                              ${msg(str`Upload files to ${this.drive.path}`, {
+                                  id: "rac.files.drop.description",
+                              })}
+                          </div>`
+                        : nothing
+                }
+            </div>
         `;
     }
 }

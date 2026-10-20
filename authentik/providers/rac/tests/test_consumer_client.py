@@ -1,5 +1,6 @@
 """Tests for the browser-facing RAC WebSocket consumer."""
 
+from base64 import b64encode
 from unittest.mock import AsyncMock, MagicMock
 
 from django.test import SimpleTestCase
@@ -10,6 +11,7 @@ from authentik.providers.rac.guacamole import (
     GuacamoleProtocolError,
 )
 from authentik.providers.rac.models import ConnectionToken
+from authentik.providers.rac.protocol import InstructionParser, instruction
 
 PING = "0.,4.ping,13.1700000000000;"
 MOUSE = "5.mouse,1.1,1.2,1.0;"
@@ -52,6 +54,7 @@ class TestRACClientConsumer(SimpleTestCase):
         self.logger = MagicMock()
         self.consumer.logger = self.logger
         self.consumer.guacamole_parser = GuacamoleInstructionParser()
+        self.consumer.blocked_file_streams = set()
         self.channel_send = AsyncMock()
         self.consumer.channel_layer = MagicMock()
         self.consumer.channel_layer.send = self.channel_send
@@ -148,3 +151,128 @@ class TestRACClientConsumer(SimpleTestCase):
         self.assertEqual(self.browser_send.await_count, 2)
         self.channel_send.assert_not_awaited()
         self.disconnect.assert_not_awaited()
+
+    async def test_clipboard_text_is_forwarded_before_paste_keys(self):
+        text = "  中文 text\r\nnext line\t "
+        wire = (
+            instruction("clipboard", "0", "text/plain")
+            + instruction("blob", "0", b64encode(text.encode()).decode())
+            + instruction("end", "0")
+            + KEY
+        )
+
+        await self.consumer.receive(text_data=wire)
+
+        self.channel_send.assert_awaited_once_with(
+            "outpost-channel", {"type": "event.send", "text_data": wire}
+        )
+        self.disconnect.assert_not_awaited()
+
+    async def test_full_sized_clipboard_blob_passes_the_new_tunnel_parser(self):
+        wire = (
+            instruction("clipboard", "0", "text/plain")
+            + instruction("blob", "0", b64encode(b"x" * 6048).decode())
+            + instruction("end", "0")
+        )
+
+        await self.consumer.receive(text_data=wire)
+
+        self.channel_send.assert_awaited_once_with(
+            "outpost-channel", {"type": "event.send", "text_data": wire}
+        )
+        self.disconnect.assert_not_awaited()
+
+
+class TestRACFileIsolation(SimpleTestCase):
+    """Legacy Guacamole file openers never enter the tunnel."""
+
+    def setUp(self):
+        self.consumer = RACClientConsumer()
+        self.consumer.token = MagicMock(spec=ConnectionToken)
+        self.consumer.token.is_expired = False
+        self.consumer.logger = MagicMock()
+        self.consumer.guacamole_parser = GuacamoleInstructionParser()
+        self.consumer.remote_parser = InstructionParser()
+        self.consumer.blocked_file_streams = set()
+        self.consumer.dest_channel_id = "outpost"
+        self.consumer.stream_disconnected = False
+        self.consumer.send = AsyncMock()
+        self.consumer.stream_to_outpost = AsyncMock()
+        self.consumer.event_disconnect = AsyncMock()
+
+    async def test_browser_file_openers_are_blocked(self):
+        wire = instruction("put", "0", "1", "text/plain", "/file") + KEY
+        await self.consumer.receive(text_data=wire)
+        self.consumer.stream_to_outpost.assert_awaited_once_with(KEY)
+
+    async def test_browser_file_bytes_and_ack_are_blocked(self):
+        wire = (
+            instruction("put", "0", "1", "text/plain", "/file")
+            + instruction("blob", "1", "ZmlsZSBieXRlcw==")
+            + instruction("ack", "1", "OK", "0")
+            + instruction("end", "1")
+            + KEY
+        )
+        await self.consumer.receive(text_data=wire)
+        self.consumer.stream_to_outpost.assert_awaited_once_with(KEY)
+
+    async def test_browser_clipboard_is_not_blocked_by_a_legacy_put_object_index(self):
+        clipboard = (
+            instruction("clipboard", "0", "text/plain")
+            + instruction("blob", "0", "Y2xpcGJvYXJk")
+            + instruction("end", "0")
+        )
+        wire = (
+            instruction("put", "0", "1", "text/plain", "/file")
+            + instruction("blob", "1", "ZmlsZSBieXRlcw==")
+            + instruction("end", "1")
+            + clipboard
+        )
+
+        await self.consumer.receive(text_data=wire)
+
+        self.consumer.stream_to_outpost.assert_awaited_once_with(clipboard)
+
+    async def test_browser_clipboard_is_not_blocked_by_a_legacy_get_object_index(self):
+        clipboard = (
+            instruction("clipboard", "0", "text/plain")
+            + instruction("blob", "0", "Y2xpcGJvYXJk")
+            + instruction("end", "0")
+        )
+
+        await self.consumer.receive(text_data=instruction("get", "0", "/file") + clipboard)
+
+        self.consumer.stream_to_outpost.assert_awaited_once_with(clipboard)
+
+    async def test_browser_clipboard_reuses_a_failed_legacy_file_stream(self):
+        clipboard = (
+            instruction("clipboard", "1", "text/plain")
+            + instruction("blob", "1", "Y2xpcGJvYXJk")
+            + instruction("end", "1")
+        )
+
+        await self.consumer.receive(
+            text_data=instruction("file", "1", "text/plain", "rejected.txt") + clipboard
+        )
+
+        self.consumer.stream_to_outpost.assert_awaited_once_with(clipboard)
+        self.assertEqual(self.consumer.blocked_file_streams, set())
+
+    async def test_remote_filesystem_openers_are_blocked(self):
+        wire = (
+            instruction("filesystem", "0", "Shared Drive")
+            + instruction("file", "1", "text/plain", "name")
+            + KEY
+        )
+        await self.consumer.event_send({"text_data": wire, "outpost_channel": "outpost"})
+        self.consumer.send.assert_awaited_once_with(text_data=KEY)
+
+    async def test_remote_file_blob_is_blocked(self):
+        wire = (
+            instruction("file", "1", "text/plain", "name")
+            + instruction("blob", "1", "ZmlsZSBieXRlcw==")
+            + instruction("end", "1")
+            + KEY
+        )
+        await self.consumer.event_send({"text_data": wire, "outpost_channel": "outpost"})
+        self.consumer.send.assert_awaited_once_with(text_data=KEY)

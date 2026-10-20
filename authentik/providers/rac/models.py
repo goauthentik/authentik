@@ -271,6 +271,15 @@ class ConnectionToken(InternallyManagedMixin, ExpiringModel):
 
         settings["drive-path"] = f"/tmp/connection/{self.token}"  # nosec
         settings["create-drive-path"] = "true"
+        # Preserve the administrator's policy before disabling guacd's magic
+        # Download folder and Guacamole browser file download stream.
+        settings["rac-allow-upload"] = (
+            str(settings.get("disable-upload", "false")).lower() != "true"
+        )
+        settings["rac-allow-download"] = (
+            str(settings.get("disable-download", "false")).lower() != "true"
+        )
+        settings["disable-download"] = "true"
         # Ensure all values of the settings dict are strings
         for key, value in settings.items():
             if isinstance(value, str):

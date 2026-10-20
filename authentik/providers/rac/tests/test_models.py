@@ -163,6 +163,9 @@ class TestConnectionSettings(TransactionTestCase):
             "drive-path": f"/tmp/connection/{self.token.token}",  # nosec
             "create-drive-path": "true",
             "resize-method": "display-update",
+            "disable-download": "true",
+            "rac-allow-download": "true",
+            "rac-allow-upload": "true",
         }
         settings.update(kwargs)
         return settings
@@ -221,6 +224,34 @@ class TestConnectionSettings(TransactionTestCase):
         """The RDP-only settings are not set for other protocols"""
         self.token.protocol = Protocols.SSH
         self.assertNotIn("resize-method", self.token.get_settings())
+
+    def test_drive_permissions_follow_device_mapping_and_token_overrides(self):
+        """Bulk permissions follow merged settings before guacd downloads are disabled."""
+        self.provider.settings = {"enable-drive": True, "disable-upload": True}
+        self.provider.save()
+        mapping = RACPropertyMapping.objects.create(
+            name=generate_id(),
+            expression="""return {
+                "disable-upload": device.name != "bulk-desktop",
+                "disable-download": True,
+                "drive-path": "/unsafe",
+            }""",
+        )
+        self.device.name = "bulk-desktop"
+        self.device.save()
+        self.provider.property_mappings.add(mapping)
+        settings = self.token.get_settings()
+        self.assertEqual(settings["enable-drive"], "true")
+        self.assertEqual(settings["rac-allow-upload"], "true")
+        self.assertEqual(settings["rac-allow-download"], "false")
+        self.assertEqual(settings["disable-download"], "true")
+        self.assertEqual(settings["drive-path"], f"/tmp/connection/{self.token.token}")
+
+        self.token.settings = {"disable-upload": True, "disable-download": False}
+        settings = self.token.get_settings()
+        self.assertEqual(settings["rac-allow-upload"], "false")
+        self.assertEqual(settings["rac-allow-download"], "true")
+        self.assertEqual(settings["disable-download"], "true")
 
     def test_settings_without_address(self):
         """A device without an address has no hostname to connect to"""

@@ -51,7 +51,8 @@ USER root
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get clean && \
-    rm -rf /tmp/* /var/lib/apt/lists/*
+    rm -rf /tmp/* /var/lib/apt/lists/* && \
+    install -d -m 0700 -o 1000 -g "$(id -g 1000)" /tmp/connection
 USER 1000
 
 COPY --from=builder /go/rac /

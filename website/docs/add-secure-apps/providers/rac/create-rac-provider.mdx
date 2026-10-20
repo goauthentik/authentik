@@ -106,3 +106,45 @@ The RAC provider requires the deployment of an [RAC Outpost](../../outposts/inde
 To verify your configuration and access the remote machine, go to the **User interface** of your authentik instance. On the **Application Dashboard** page, click the **Remote Access** application to start a secure session on the remote machine in your web browser.
 
 If multiple devices are available, click the device that you want to access.
+
+## Transfer files over RDP
+
+To enable the redirected drive, add the following [connection settings](./index.mdx#connection-settings) to the RAC provider or its property mappings:
+
+```json
+{
+    "enable-drive": "true",
+    "drive-name": "RDP Files",
+    "disable-upload": "false",
+    "disable-download": "false"
+}
+```
+
+The file panel only supports the RDP redirected shared drive. It does not show SFTP or other remote filesystems. Administrators can set `disable-upload` or `disable-download` to `"true"` to restrict the corresponding direction. authentik passes those original permissions to the RAC Outpost and sets `disable-download=true` for guacd to prevent the special automatic download folder. Windows must also allow RDP drive redirection. authentik always sets `drive-path` to `/tmp/connection/<token>` and enables creation of the session directory. Property mappings cannot override this path.
+
+1. Connect to the Windows device in the RAC interface and select **Files** in the toolbar. The file panel starts closed and opens as a floating window. Opening or closing it preserves the remote desktop resolution. Select **Close files**, press **Escape** within the panel, or select **Files** again to close it.
+2. Select a folder to enter it, or select **Parent directory** to return to its parent. Select **Refresh files** to see changes made in Windows. The list shows each entry's name, type, and file size. You might need to refresh Windows Explorer manually to see newly uploaded files.
+3. Select **Upload files**, or drag files onto the RAC interface, to upload to the directory currently selected in the file panel. Files upload in order. Changing directories does not change the destination of files already queued.
+4. Select the download action beside a file to start a native browser download. This leaves the source file in the redirected drive. Merely listing a directory does not download its files.
+5. Use **Cancel** to stop a transfer. Errors remain visible until you select **Dismiss**. Successful transfer notifications disappear after approximately five seconds. Transfers continue when the file panel is closed.
+
+The special **RDP Files\\Download** automatic download behavior is removed. An existing directory named **Download** remains an ordinary directory and is not deleted. Allow downloads for your authentik site if the browser blocks them.
+
+Upload progress includes the current file and queued filenames. The browser owns native downloads; check its download manager to confirm that the file was saved. Folder upload and folder download are not supported.
+
+### Configure a reverse proxy
+
+File contents use authenticated `PUT` and `GET` requests at `/if/rac/bulk/{id}/` on the same authentik origin. The RAC Outpost opens a dedicated WebSocket at `/ws/rac/bulk/{id}/` for each transfer. Route both paths to the Rust server. Upload requests contain at most 4 MiB each; configure your proxy's request size limit to allow at least 4 MiB. Disable response buffering and caching for these endpoints, and allow long-running responses. Downloads include a fixed content length and `Cache-Control: no-store`.
+
+Directory listings use the session-bound `/api/v3/rac/files/list/` API. The `/api/v3/rac/file_transfers/` API prepares and controls transfers. These APIs send only bounded control messages to the Outpost that owns the active connection. File contents never enter Guacamole `blob`/`ack` streams or PostgreSQL channel messages. Update both the server and RAC Outpost images together.
+
+Every server process must share the existing authentik cache and channel layer. Sticky sessions and a shared filesystem are not required. By default, the Rust internal transfer listener binds to `127.0.0.1:9823` and advertises `http://127.0.0.1:9823` for a single server instance. In a multi-replica deployment, set `AUTHENTIK_RAC_BULK_LISTEN` and `AUTHENTIK_RAC_BULK_ADVERTISE` on each server instance to an internal address reachable by the other server instances. Keep this listener on a private network and do not expose its port to browsers. Servers authenticate instance-to-instance streams with short-lived HMAC signatures derived from the shared authentik secret key.
+
+### Transfer limits and troubleshooting
+
+- A transfer belongs to the current user, login session, and RAC connection. Reconnecting, logging out, revoking the session, or reaching the connection token's expiry invalidates its transfers. Consuming a single-use token during connection setup does not invalidate that active connection.
+- Files upload sequentially in chunks of at most 4 MiB. Failed or interrupted chunks are not retried automatically. The Outpost removes an unfinished temporary file; start a new upload after a failure.
+- Up to 16 transfers can be active on one connection. A transfer with no progress for 60 seconds fails. Slow clients apply backpressure with a maximum of 512 KiB of unacknowledged content on the dedicated WebSocket.
+- Transfer errors do not normally disconnect the desktop. There is no fallback that buffers a complete file in a JavaScript Blob. Browser download policies and reverse proxy settings can prevent a download from starting.
+- The RAC Outpost requires a writable `/tmp/connection` directory owned by its runtime user, with mode `0700`. The official image creates it after cleaning `/tmp`. If your deployment mounts a new filesystem over `/tmp`, provision this directory with the same ownership and permissions in that filesystem.
+- Redirected files use temporary Outpost storage. Size it for your workloads; this feature does not impose a disk quota. Uploads replace an existing ordinary file atomically after the full content arrives. Directories, symbolic links, and special files are rejected as transfer targets.
