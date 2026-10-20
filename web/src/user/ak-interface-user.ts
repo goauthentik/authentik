@@ -136,7 +136,7 @@ class UserInterface extends WithLicenseSummary(
     }
 
     protected renderNavTabs(): SlottedTemplateResult {
-        const licensed = this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed;
+        const licensed = this.licenseSummary && this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed;
         const { requests, agents } = this.uiConfig.enabledFeatures;
 
         // Capabilities can resolve after the feature flags settle, so they must be part of the guard's dependencies.
