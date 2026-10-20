@@ -132,7 +132,7 @@ export class ArrayInput<T>
             this.#rowElements().map((element) =>
                 element instanceof ReactiveElement ? element.updateComplete : true,
             ),
-        ).then(() => this.#syncFormValue());
+        ).then(() => this.#syncValidity());
     }
 
     protected override async getUpdateComplete(): Promise<boolean> {
@@ -176,38 +176,34 @@ export class ArrayInput<T>
         );
     }
 
-    #syncFormValue(): void {
+    #syncValidity(): void {
         const values = this.toJSON();
+        const rowElements = this.#rowElements();
 
         this.internals.setFormValue(JSON.stringify(values));
 
-        if (this.validate) {
-            const invalidRow = this.#rowElements().find((element) => element.valid === false);
+        let message: string | undefined;
+        let anchor: HTMLElement | undefined;
+        const flags: ValidityStateFlags = {};
 
-            if (invalidRow || (this.validator && !this.validator(values))) {
-                this.setValidity(
-                    { customError: true },
-                    msg("One or more entries are invalid.", {
-                        id: "array-input.validation.invalid-entry",
-                    }),
-                    invalidRow ?? this.#rowElements()[0],
-                );
+        const invalidRow = this.validate
+            ? rowElements.find((element) => element.valid === false)
+            : undefined;
 
-                return;
-            }
+        if (this.validate && (invalidRow || (this.validator && !this.validator(values)))) {
+            message = msg("One or more entries are invalid.", {
+                id: "array-input.validation.invalid-entry",
+            });
+
+            flags.customError = true;
+            anchor = invalidRow ?? rowElements[0];
+        } else if (this.required && !values.length) {
+            message = msg("This field is required.");
+            flags.valueMissing = true;
+            anchor = this.renderRoot.querySelector<HTMLElement>("button.pf-m-link") ?? undefined;
         }
 
-        if (this.required && !values.length) {
-            this.setValidity(
-                { valueMissing: true },
-                msg("This field is required."),
-                this.renderRoot.querySelector<HTMLElement>("button.pf-m-link") ?? undefined,
-            );
-
-            return;
-        }
-
-        this.setValidity({});
+        this.internals.setValidity(flags, message, anchor);
     }
 
     #dispatchChange(): void {
