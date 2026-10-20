@@ -10,7 +10,6 @@ import { createRef } from "lit-html/directives/ref.js";
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 const USER_KEY = "ak:remember_me:user";
-const SESSION_KEY = "ak:remember_me:session";
 const LEGACY_USER_KEY = "authentik-remember-me-user";
 const LEGACY_SESSION_KEY = "authentik-remember-me-session";
 
@@ -18,11 +17,6 @@ const localStorage = new MemoryStorage();
 
 vi.stubGlobal("self", { localStorage });
 vi.stubGlobal("localStorage", localStorage);
-
-// The session ID is derived from the CSRF cookie, which unit tests don't have.
-vi.mock("#common/api/csrf", () => ({
-    readCSRFToken: () => "CSRFTOKEN",
-}));
 
 // Imported lazily so that the storage stubs above are in place when the module's
 // `StorageAccessor` instances are created.
@@ -83,12 +77,26 @@ describe("RememberMeController", () => {
         expect(localStorage.getItem(LEGACY_USER_KEY)).toBeNull();
     });
 
-    it("moves the session ID written by earlier versions to the current key", () => {
-        localStorage.setItem(LEGACY_SESSION_KEY, "CSRFTOKE");
+    it("keeps the remembered username despite a stale legacy session ID", () => {
+        // Earlier versions invalidated the username whenever the stored session ID -- derived from
+        // the CSRF token, which Django rotates on every successful login -- failed to match. The
+        // username must now survive that leftover value.
+        localStorage.setItem(USER_KEY, "user@example.com");
+        localStorage.setItem(LEGACY_SESSION_KEY, "OLDTOKEN");
+
+        const { controller } = createController();
+
+        expect(controller.defaultUserIdentification).toBe("user@example.com");
+        expect(controller.defaultChecked).toBe(true);
+        expect(localStorage.getItem(USER_KEY)).toBe("user@example.com");
+    });
+
+    it("discards the legacy session ID written by earlier versions", () => {
+        localStorage.setItem(USER_KEY, "user@example.com");
+        localStorage.setItem(LEGACY_SESSION_KEY, "OLDTOKEN");
 
         createController();
 
-        expect(localStorage.getItem(SESSION_KEY)).toBe("CSRFTOKE");
         expect(localStorage.getItem(LEGACY_SESSION_KEY)).toBeNull();
     });
 

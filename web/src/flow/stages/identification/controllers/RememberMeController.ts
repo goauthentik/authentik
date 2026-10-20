@@ -1,4 +1,3 @@
-import { readCSRFToken } from "#common/api/csrf";
 import { StorageAccessor } from "#common/storage/accessor";
 import type { PersistenceKey } from "#common/storage/shared";
 
@@ -20,25 +19,21 @@ const LEGACY_SESSION_KEY = "authentik-remember-me-session" as PersistenceKey;
 
 export class RememberMeStorage {
     static readonly user = StorageAccessor.local("ak:remember_me:user");
-    static readonly session = StorageAccessor.local("ak:remember_me:session");
     static reset = () => {
         this.user.delete();
-        this.session.delete();
     };
 
     /**
-     * Carry over state written by earlier versions to its current keys.
+     * Carry over state written by earlier versions. The username moves to its current key, and
+     * the CSRF-derived session ID that was used to invalidate it is discarded: Django rotates the
+     * CSRF token on every successful login, so that value can never match on a subsequent visit.
      *
      * TODO: Remove in 2027.2 or later. See #27036
      */
     static migrate = () => {
         this.user.migrateFrom(LEGACY_USER_KEY);
-        this.session.migrateFrom(LEGACY_SESSION_KEY);
+        StorageAccessor.local(LEGACY_SESSION_KEY).delete();
     };
-}
-
-function readSessionID() {
-    return readCSRFToken().substring(0, 8);
 }
 
 export interface RememberMeControllerInit {
@@ -57,10 +52,9 @@ export interface RememberMeControllerInit {
  *   device." When active, it will attempt to find the user's claimed identity in the device &
  *   domain localstorage. If claimed identity is present: automatically forward the user to the
  *   "prove your identity" phase. If not present: record the username as it is typed in, and store
- *   it when the user proceeds to the next phase. Uses a "we've been here before during the current
- *   session" heuristic to determine if the user came back to this view after reaching the identity
- *   proof phase, indicating they pressed the "not you?" link, at which point it begins again to
- *   record the username as it is typed in.
+ *   it when the user proceeds to the next phase. The stored username is only cleared by an explicit
+ *   user action: switching the toggle off, or following the "Not you?" link, which calls
+ *   {@linkcode RememberMeStorage.reset}.
  */
 export class RememberMeController implements ReactiveController {
     static readonly styles = [
@@ -83,7 +77,6 @@ export class RememberMeController implements ReactiveController {
 
     protected logger = ConsoleLogger.prefix("controller/remember-me");
     protected autoSubmitAttempts = 0;
-    protected currentSessionID = readSessionID();
 
     constructor(
         protected host: ReactiveElementHost<IdentificationStage>,
@@ -98,13 +91,6 @@ export class RememberMeController implements ReactiveController {
         this.identificationFieldID = identificationFieldID;
 
         RememberMeStorage.migrate();
-
-        const persistedSessionID = RememberMeStorage.session.read();
-
-        if (persistedSessionID && persistedSessionID !== this.currentSessionID) {
-            this.logger.debug("Session ID mismatch, clearing remembered username");
-            RememberMeStorage.user.delete();
-        }
 
         const persistedUserIdentifier = RememberMeStorage.user.read();
 
@@ -183,7 +169,6 @@ export class RememberMeController implements ReactiveController {
         this.logger.debug("Enabling remember me for user");
 
         RememberMeStorage.user.write(usernameField.value);
-        RememberMeStorage.session.write(this.currentSessionID);
 
         usernameField.addEventListener("input", this.inputListener, {
             passive: true,

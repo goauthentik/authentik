@@ -6,7 +6,6 @@ import { GOOD_USERNAME } from "#e2e/fixtures/SessionFixture";
 import type { Page } from "@playwright/test";
 
 const REMEMBER_ME_USER_KEY = "ak:remember_me:user" satisfies PersistenceKey;
-const REMEMBER_ME_SESSION_KEY = "ak:remember_me:session" satisfies PersistenceKey;
 
 // Keys written by earlier versions, which the controller migrates on load.
 // TODO: Remove in 2027.2 or later. See #27036
@@ -23,7 +22,7 @@ test.describe("Session Lifecycle", () => {
             (keys) => {
                 for (const key of keys) localStorage.removeItem(key);
             },
-            [REMEMBER_ME_USER_KEY, REMEMBER_ME_SESSION_KEY, ...LEGACY_REMEMBER_ME_KEYS],
+            [REMEMBER_ME_USER_KEY, ...LEGACY_REMEMBER_ME_KEYS],
         );
 
         await page.reload();
