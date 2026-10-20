@@ -51,7 +51,7 @@ metadata:
     namespace: <namespace>
 spec:
     instances: 3
-    imageName: ghcr.io/cloudnative-pg/postgresql:18-minimal-trixie
+    imageName: ghcr.io/cloudnative-pg/postgresql:<postgresql_version>-minimal-trixie
     bootstrap:
         initdb:
             database: authentik
@@ -63,7 +63,7 @@ spec:
         size: <storage_size>
 ```
 
-See [Capacity and connection pooling](#capacity-and-connection-pooling) for `max_connections`.
+Set `<postgresql_version>` to a specific minor release, such as `18.6`, rather than a major version alone; CNPG recommends against floating image tags in production. See [Capacity and connection pooling](#capacity-and-connection-pooling) for `max_connections`.
 
 ### Primary endpoint
 
@@ -104,7 +104,7 @@ postgresql:
     enabled: false
 ```
 
-Kubernetes only resolves `secretKeyRef` within the pod's namespace. If authentik runs in a different namespace from the CNPG cluster, copy the Secret into authentik's namespace or provide the credentials another way.
+Kubernetes only resolves `secretKeyRef` and Secret volumes within the pod's namespace. This example and the TLS example below assume that authentik runs in the same namespace as the CNPG cluster. Otherwise, copy the Secrets into authentik's namespace and keep the copies in sync, or provide the values another way.
 
 Pods read these values when they start. If the credentials change, for example after a password rotation, restart the server and worker Deployments.
 
@@ -132,13 +132,13 @@ global:
           value: /postgresql-ca/ca.crt
 ```
 
-CNPG's operator-managed server certificate covers `<cluster_name>-rw`, `<cluster_name>-rw.<namespace>`, `<cluster_name>-rw.<namespace>.svc`, and the same name with the cluster domain, so `verify-full` works with the host from the previous example. If you supply your own certificates, mount the CA Secret named in `spec.certificates.serverCASecret` instead, and make sure the server certificate covers the hostname that authentik connects to.
+CNPG's operator-managed server certificate covers `<cluster_name>-rw`, `<cluster_name>-rw.<namespace>`, `<cluster_name>-rw.<namespace>.svc`, and the same name with the cluster domain, so `verify-full` works with the host from the previous example. CNPG renews the operator-managed CA, so a copy of `ca.crt` in another namespace must be updated when that happens. If you supply your own certificates, mount the CA Secret named in `spec.certificates.serverCASecret` instead, and make sure the server certificate covers the hostname that authentik connects to.
 
 ## Migrate from the chart's bundled PostgreSQL
 
 If authentik uses the PostgreSQL database bundled with the Helm chart, CNPG can import that database while it creates the new cluster. The [`microservice` import](https://cloudnative-pg.io/docs/current/database_import) runs `pg_dump` against the old database and restores the result into the new cluster's application database, owned by the `initdb.owner` role. The new cluster must run the same or a newer PostgreSQL major version than the bundled database.
 
-1. Stop authentik so that nothing writes to the database during the import. Scale the server and worker Deployments to zero, and leave the bundled PostgreSQL running.
+1. Stop authentik so that nothing writes to the database during the import. In your `values.yaml`, set `server.replicas` and `worker.replicas` to `0`, disable `server.autoscaling` and `worker.autoscaling` if you use them, and upgrade the Helm release. Leave the bundled PostgreSQL running.
 2. Create the cluster with an import source. The password Secret must be in the CNPG cluster's namespace:
 
     ```yaml title="cluster.yaml"
@@ -149,7 +149,7 @@ If authentik uses the PostgreSQL database bundled with the Helm chart, CNPG can 
         namespace: <namespace>
     spec:
         instances: 3
-        imageName: ghcr.io/cloudnative-pg/postgresql:18-minimal-trixie
+        imageName: ghcr.io/cloudnative-pg/postgresql:<postgresql_version>-minimal-trixie
         bootstrap:
             initdb:
                 database: authentik
@@ -169,14 +169,19 @@ If authentik uses the PostgreSQL database bundled with the Helm chart, CNPG can 
               password:
                   name: <release_name>-postgresql
                   key: password
+        postgresql:
+            parameters:
+                max_connections: "500"
         storage:
             size: <storage_size>
     ```
 
-3. Wait until `kubectl get cluster <cluster_name> --namespace <namespace>` reports the cluster as healthy.
-4. Update your `values.yaml` with the connection settings from [Database identity and credentials](#database-identity-and-credentials), set `postgresql.enabled: false`, and upgrade the Helm release. This also scales authentik back up.
+    `<release_name>-postgresql` is the default name of the bundled database's Service and Secret. If you set `postgresql.auth.existingSecret` or override the chart's names, use your names instead.
 
-Disabling the bundled database removes its StatefulSet but not its PersistentVolumeClaim. Keep the claim until you have confirmed that authentik works on CNPG, then delete it.
+3. Wait until `kubectl get clusters.postgresql.cnpg.io <cluster_name> --namespace <namespace>` reports the cluster as healthy.
+4. Update your `values.yaml` with the connection settings from [Database identity and credentials](#database-identity-and-credentials), set `postgresql.enabled: false`, restore your previous `replicas` and `autoscaling` values, and upgrade the Helm release.
+
+Disabling the bundled database removes its StatefulSet but not its PersistentVolumeClaim. Keep the claim until you have confirmed that authentik works on CNPG, then delete it. The import only runs when CNPG creates the cluster, so you can also remove the `import` and `externalClusters` entries from the `Cluster` afterwards.
 
 ## Capacity and connection pooling
 
@@ -186,9 +191,11 @@ Connection pooling is optional. authentik can connect directly to CNPG's read-wr
 
 To use a CNPG `Pooler`, point `AUTHENTIK_POSTGRESQL__HOST` at the Pooler's Service instead of `<cluster_name>-rw`. A `Pooler` uses `poolMode: session` by default, which authentik supports without further configuration. Some authentik operations need to keep using the same PostgreSQL connection, but `poolMode: transaction` can switch connections between transactions. Disabling server-side cursors alone does not address this requirement. Follow authentik's [connection pooler guidance](./configuration/configuration.mdx#using-a-postgresql-connection-pooler) for the additional configuration.
 
+By default, a `Pooler` presents the cluster's server certificate, which does not cover the Pooler's Service. To use `verify-full` through a `Pooler`, add the Pooler's hostnames to `spec.certificates.serverAltDNSNames` in the `Cluster`, or use `verify-ca`.
+
 ## Backups and ongoing operations
 
-Replication also copies accidental deletions and unwanted changes; it is not a backup. Configure [scheduled base backups and WAL archiving](https://cloudnative-pg.io/docs/current/backup) for point-in-time recovery. CNPG 1.26 deprecated its built-in object store backups (`barmanObjectStore`) in favor of the [Barman Cloud Plugin](https://cloudnative-pg.io/plugin-barman-cloud/), so use the plugin or volume snapshots for new clusters. Keep backups outside the database cluster's failure domain and test restoration regularly.
+Replication also copies accidental deletions and unwanted changes; it is not a backup. Configure [scheduled base backups and WAL archiving](https://cloudnative-pg.io/docs/current/backup) for point-in-time recovery. CNPG 1.26 deprecated its built-in object store backups (`barmanObjectStore`) in favor of the [Barman Cloud Plugin](https://cloudnative-pg.io/plugin-barman-cloud/), Point-in-time recovery needs WAL archiving to an object store, so use the plugin for new clusters. Volume snapshots can take base backups, but they do not replace WAL archiving. Keep backups outside the database cluster's failure domain and test restoration regularly.
 
 Database backups do not cover every Kubernetes Secret or authentik file. Include credentials, deployment configuration, and external files in your [authentik recovery plan](../sys-mgmt/ops/backup-restore.mdx).
 
