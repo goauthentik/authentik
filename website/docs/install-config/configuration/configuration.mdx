@@ -150,6 +150,8 @@ Use these settings when your PostgreSQL server requires TLS/SSL or mutual TLS.
 
 For more detail, see [Django's PostgreSQL documentation](https://docs.djangoproject.com/en/stable/ref/databases/#postgresql-connection-settings) and the [PostgreSQL `libpq` SSL documentation](https://www.postgresql.org/docs/current/libpq-ssl.html#LIBPQ-SSL-PROTECTION).
 
+To check whether authentik's database connection uses TLS, open the system info API endpoint at https://authentik.company/api/v3/admin/system/ while logged in as an administrator. Its `postgresql` section shows `ssl`, `ssl_version`, and `ssl_cipher` for authentik's PostgreSQL session. If authentik connects through a connection pooler, these values describe the pooler's connection to PostgreSQL, not authentik's connection to the pooler.
+
 ### Connection management
 
 These settings control connection persistence and behavior, which is particularly important when using a connection pooler like PgBouncer or Pgpool.
