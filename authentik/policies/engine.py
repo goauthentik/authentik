@@ -241,15 +241,7 @@ class PolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
 
     request: PolicyRequest
 
-    def __init__(
-        self,
-        pbm: T,
-        user: User,
-        request: HttpRequest = None,
-        bindings: list[PolicyBinding] | None = None,
-    ):
-        """`bindings` optionally passes already-loaded enabled bindings of `pbm` (ordered, with
-        `policy`, `user` and `group` loaded) so evaluating many PBMs doesn't query per PBM."""
+    def __init__(self, pbm: T, user: User, request: HttpRequest = None):
         self._init_defaults(pbm)
         if not isinstance(pbm, PolicyBindingModel):  # pragma: no cover
             raise PolicyEngineException(f"{pbm} is not instance of PolicyBindingModel")
@@ -263,53 +255,13 @@ class PolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
             self.request.set_http_request(request)
         self.__binding_results: list[PolicyResult] = []
         self.__static_result: PolicyResult | None = None
-        self.__prefetched_bindings = bindings
 
     def bindings(self) -> QuerySet[PolicyBinding] | Iterable[PolicyBinding]:
         """Make sure all Policies are their respective classes"""
-        if self.__prefetched_bindings is not None:
-            return self.__prefetched_bindings
         return self._bindings_for(self.__pbm)
 
-    def _count_static_bindings(self, bindings: list[PolicyBinding]) -> dict[str, int]:
-        """In-memory equivalent of the aggregate in `compute_static_bindings`, for
-        prefetched bindings."""
-        user = self.request.user
-        counts = {
-            "total": sum(
-                1
-                for b in bindings
-                if (b.group_id or b.user_id) and not b.policy_id and not b.dry_run
-            )
-        }
-        # Without user/group bindings "passing" can only be 0, skip resolving groups
-        if not user.pk or not any(b.group_id or b.user_id for b in bindings):
-            return counts
-        # Memoized on the user instance, so evaluating several PBMs for the same
-        # user resolves the group hierarchy once.
-        if "_all_group_pks" not in user.__dict__:
-            user.__dict__["_all_group_pks"] = set(user.all_groups().values_list("pk", flat=True))
-        group_pks = user.__dict__["_all_group_pks"]
-        passing = 0
-        for b in bindings:
-            if not b.enabled or b.dry_run or b.is_expired:
-                continue
-            if b.negate:
-                matches = (b.user_id and b.user_id != user.pk) or (
-                    b.group_id and b.group_id not in group_pks
-                )
-            else:
-                matches = b.user_id == user.pk or b.group_id in group_pks
-            if matches:
-                passing += 1
-        counts["passing"] = passing
-        return counts
-
-    def compute_static_bindings(self, bindings: QuerySet[PolicyBinding] | list[PolicyBinding]):
+    def compute_static_bindings(self, bindings: QuerySet[PolicyBinding]):
         """Check static bindings if possible"""
-        if not isinstance(bindings, QuerySet):
-            self._apply_static_counts(self._count_static_bindings(bindings))
-            return
         aggrs = {
             "total": Count(
                 "pk",
@@ -339,9 +291,7 @@ class PolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
                     dry_run=False,
                 ),
             )
-        self._apply_static_counts(bindings.aggregate(**aggrs))
-
-    def _apply_static_counts(self, matched_bindings: dict[str, int]):
+        matched_bindings = bindings.aggregate(**aggrs)
         passing = False
         if matched_bindings["total"] == 0 and matched_bindings.get("passing", 0) == 0:
             # If we didn't find any static bindings, do nothing
@@ -376,15 +326,13 @@ class PolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
             span.set_data("request", self.request)
             bindings = self.bindings()
             policy_bindings = bindings
-            # Generators (e.g. PromptValidationPolicyEngine) only carry policy bindings
-            has_static = isinstance(bindings, QuerySet) or self.__prefetched_bindings is not None
-            if has_static:
+            if isinstance(bindings, QuerySet):
                 self.compute_static_bindings(bindings)
-                policy_bindings = [x for x in bindings if x.policy_id]
+                policy_bindings = [x for x in bindings if x.policy]
             self.__binding_results = self._evaluate_dynamic_bindings(
                 list(policy_bindings), self.request
             )
-            if has_static:
+            if isinstance(bindings, QuerySet):
                 for binding in bindings:
                     if binding.dry_run and not binding.policy_id:
                         result = binding.passes(self.request)
