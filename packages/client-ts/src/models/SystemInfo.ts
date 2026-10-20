@@ -56,7 +56,7 @@ export interface SystemInfo {
      * Configured external base URL. Can be empty
      */
     readonly baseUrl: string;
-    postgresql: SystemInfoPostgresql;
+    postgresql: SystemInfoPostgresql | null;
 }
 
 /**

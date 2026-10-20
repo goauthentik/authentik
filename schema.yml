@@ -59399,6 +59399,7 @@ components:
           - ssl_version
           - version
           readOnly: true
+          nullable: true
       required:
       - base_url
       - brand
