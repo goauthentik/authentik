@@ -13,6 +13,7 @@ from authentik.flows.views.executor import (
     ToDefaultFlow,
 )
 from authentik.flows.views.inspector import FlowInspectorView
+from authentik.lib.utils.urls import hot_path
 
 urlpatterns = [
     path(
@@ -37,7 +38,7 @@ api_urlpatterns = [
     ("flows/instances", FlowViewSet),
     ("flows/bindings", FlowStageBindingViewSet),
     ("stages/all", StageViewSet),
-    path(
+    hot_path(
         "flows/executor/<slug:flow_slug>/",
         FlowExecutorView.as_view(),
         name="flow-executor",
