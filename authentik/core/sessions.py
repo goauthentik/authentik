@@ -24,6 +24,8 @@ class SessionStore(SessionBase):
             "last_user_agent": last_user_agent,
         }
         self.expiry_extended = False
+        # Set when the session was superseded by a newer login in the same browser.
+        self.superseded = False
 
     def extend_expiry(self):
         """Extend the session's expiry without saving its data.
@@ -77,6 +79,7 @@ class SessionStore(SessionBase):
             )
             if not self._is_current(session):
                 LOGGER.info("Session denied: superseded by a newer login")
+                self.superseded = True
                 self._session_key = None
                 return None
             return session
@@ -97,6 +100,7 @@ class SessionStore(SessionBase):
             )
             if not self._is_current(session):
                 LOGGER.info("Session denied: superseded by a newer login")
+                self.superseded = True
                 self._session_key = None
                 return None
             return session

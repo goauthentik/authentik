@@ -119,14 +119,17 @@ class SessionMiddleware(UpstreamSessionMiddleware):
             modified = request.session.modified or settings.SESSION_SAVE_EVERY_REQUEST
             expiry_extended = request.session.expiry_extended
             empty = request.session.is_empty()
+            superseded = getattr(request.session, "superseded", False)
         except AttributeError:
             return response
         # Set SameSite based on whether or not the request is secure
         secure = SessionMiddleware.is_secure(request)
         same_site = "None" if secure else "Lax"
         # First check if we need to delete this cookie.
-        # The session should be deleted only if the session is entirely empty.
-        if settings.SESSION_COOKIE_NAME in request.COOKIES and empty:
+        # The session should be deleted only if the session is entirely empty. A superseded
+        # session's cookie is left alone: the browser already holds the newer login's cookie,
+        # which a request still in flight with the old one would otherwise delete.
+        if settings.SESSION_COOKIE_NAME in request.COOKIES and empty and not superseded:
             response.delete_cookie(
                 settings.SESSION_COOKIE_NAME,
                 path=settings.SESSION_COOKIE_PATH,
