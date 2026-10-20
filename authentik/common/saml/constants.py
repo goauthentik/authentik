@@ -73,3 +73,15 @@ DIGEST_ALGORITHM_TRANSLATION_MAP = {
     SHA384: xmlsec.constants.TransformSha384,
     SHA512: xmlsec.constants.TransformSha512,
 }
+
+AES128_CBC = "http://www.w3.org/2001/04/xmlenc#aes128-cbc"
+AES256_CBC = "http://www.w3.org/2001/04/xmlenc#aes256-cbc"
+AES128_GCM = "http://www.w3.org/2009/xmlenc11#aes128-gcm"
+AES256_GCM = "http://www.w3.org/2009/xmlenc11#aes256-gcm"
+
+ENCRYPTION_ALGORITHM_TRANSLATION_MAP = {
+    AES128_CBC: (xmlsec.constants.TransformAes128Cbc, 128),
+    AES256_CBC: (xmlsec.constants.TransformAes256Cbc, 256),
+    AES128_GCM: (xmlsec.constants.TransformAes128Gcm, 128),
+    AES256_GCM: (xmlsec.constants.TransformAes256Gcm, 256),
+}
