@@ -55,6 +55,7 @@ export class VersionDetails extends WithLicenseSummary(WithVersion(AKElement)) {
                 part="trigger"
                 type="button"
                 aria-haspopup="dialog"
+                data-ouia-id="version-details"
                 class="pf-c-button pf-m-plain"
                 @click=${AboutModal.open}
             >
