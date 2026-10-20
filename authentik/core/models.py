@@ -1452,9 +1452,7 @@ class UserSwitchingSession(models.Model):
         on_delete=models.SET_NULL,
         related_name="+",
     )
-    # The login that started "Add user" and hasn't finished it. Kept outside the session data,
-    # which a concurrent request saving a stale copy, or another flow taking the session's
-    # single plan slot, can erase.
+    # The login that started "Add user" and hasn't finished it.
     add_user_session = models.ForeignKey(
         "authentik_core.Session",
         null=True,

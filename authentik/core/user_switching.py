@@ -43,6 +43,9 @@ def _add_user_requests(request: HttpRequest) -> QuerySet[UserSwitchingSession]:
 
 def request_add_user(request: HttpRequest) -> None:
     """Record that the browser's current login is adding another user."""
+    # Restore the session's existing group if the browser lost its switching cookie.
+    if hasattr(request, "user_switching_token"):
+        reconcile_session(request)
     token = ensure_request_token(request)
     if token and request.session.session_key:
         UserSwitchingSession.objects.filter(token=token).update(

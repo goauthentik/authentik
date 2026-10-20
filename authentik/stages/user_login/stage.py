@@ -12,6 +12,7 @@ from jwt import PyJWTError, decode, encode
 from rest_framework.fields import BooleanField, CharField
 
 from authentik.core import user_switching
+from authentik.core.middleware import SESSION_KEY_IMPERSONATE_USER
 from authentik.core.models import AuthenticatedSession, Session, User, UserTypes
 from authentik.core.sessions import SessionStore
 from authentik.events.middleware import audit_ignore
@@ -199,8 +200,7 @@ class UserLoginStageView(ChallengeStageView):
         if not user.is_active:
             self.logger.warning("User is not active, login will not work.")
             return self.executor.stage_invalid()
-        # The plan can lose the add-user marker to another flow or a stale session save, so the
-        # browser's switching session records it too.
+        # The switching session records "Add user" too, in case the plan lost its marker.
         is_add_user = PLAN_CONTEXT_USER_SWITCH_ADD_USER in self.executor.plan.context or (
             user_switching.is_adding_user(self.request)
         )
@@ -216,8 +216,10 @@ class UserLoginStageView(ChallengeStageView):
         if is_add_user:
             user_switching.clear_add_user(self.request)
         user_switching_token = getattr(self.request, "user_switching_token", None)
-        if self.request.user.is_authenticated and self.request.user.pk != user.pk:
-            # Never carry another user's session data into this login.
+        if self.request.user.is_authenticated and (
+            self.request.user.pk != user.pk or SESSION_KEY_IMPERSONATE_USER in self.request.session
+        ):
+            # Start a new session for a different user, or to end an impersonation.
             previous_session_key = self.request.session.session_key
             self._start_new_session()
             if not is_user_switch_login:

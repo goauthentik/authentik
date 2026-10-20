@@ -42,6 +42,11 @@ const SECONDARY_PASSWORD = "e2e-user-switching-secondary";
  */
 const ADMIN_ENTRY_NAME = GOOD_USERNAME;
 
+/**
+ * Switching pre-fills identification with the target's username, not its email.
+ */
+const ADMIN_USERNAME = "akadmin";
+
 interface SecondaryUser {
     username: string;
     displayName: string;
@@ -282,7 +287,7 @@ test.describe("User switching", () => {
                 await expect(
                     session.$usernameField,
                     "Identification is pre-filled with the switch target",
-                ).not.toHaveValue("");
+                ).toHaveValue(ADMIN_USERNAME);
             } else {
                 await expect(
                     session.$passwordStage,

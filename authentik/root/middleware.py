@@ -126,9 +126,8 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         secure = SessionMiddleware.is_secure(request)
         same_site = "None" if secure else "Lax"
         # First check if we need to delete this cookie.
-        # The session should be deleted only if the session is entirely empty. A superseded
-        # session's cookie is left alone: the browser already holds the newer login's cookie,
-        # which a request still in flight with the old one would otherwise delete.
+        # The session should be deleted only if the session is entirely empty.
+        # A superseded session's cookie already belongs to a newer login.
         if settings.SESSION_COOKIE_NAME in request.COOKIES and empty and not superseded:
             response.delete_cookie(
                 settings.SESSION_COOKIE_NAME,

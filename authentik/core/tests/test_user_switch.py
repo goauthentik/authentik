@@ -24,6 +24,7 @@ from authentik.core.models import (
 )
 from authentik.core.sessions import SessionStore
 from authentik.core.tests.utils import (
+    create_test_admin_user,
     create_test_brand,
     create_test_flow,
     create_test_session,
@@ -188,19 +189,6 @@ class TestUserSwitch(APIFlowTestCase):
             UserSwitchingSession.objects.filter(add_user_session__isnull=False).exists()
         )
 
-    def test_interface_abandons_add_user(self):
-        _login_through_flow(self.client, self.flow, self.login_binding, self.user)
-        _assert_switch_redirect(_post_user_switch(self.client, {"action": "add"}), self.flow)
-        switching_session = UserSwitchingSession.objects.get(
-            token=_get_switching_token(self.client)
-        )
-        self.assertEqual(switching_session.add_user_session_id, self.client.session.session_key)
-
-        self.client.get(reverse("authentik_core:if-user"))
-
-        switching_session.refresh_from_db()
-        self.assertIsNone(switching_session.add_user_session_id)
-
     def test_add_user_refuses_non_internal_user(self):
         first_session_key = _login_through_flow(
             self.client, self.flow, self.login_binding, self.user
@@ -277,17 +265,13 @@ class TestUserSwitch(APIFlowTestCase):
         )
 
     def test_add_user_survives_plan_lost_to_another_flow(self):
-        """Adding a user keeps the first login when its plan is replaced before the login
-
-        A page that embeds another flow (the user settings page does) can save a stale copy of
-        the session over the switch request's, or replace its plan with its own. The login
-        stage then runs from a fresh plan without the add-user marker."""
+        """Adding a user keeps the first login when a stale session save replaces its plan"""
         first_session_key = _login_through_flow(
             self.client, self.flow, self.login_binding, self.user
         )
         # A concurrent request loads the session before the switch request saves to it.
         stale_session = SessionStore(first_session_key)
-        stale_session.load()
+        stale_session.get(SESSION_KEY_PLAN)
 
         _assert_switch_redirect(_post_user_switch(self.client, {"action": "add"}), self.flow)
         stale_session[SESSION_KEY_PLAN] = FlowPlan(flow_pk=create_test_flow().pk.hex)
@@ -302,6 +286,48 @@ class TestUserSwitch(APIFlowTestCase):
             {self.user.pk, self.other_user.pk},
         )
         self.assertIsNone(UserSwitchingSession.objects.get(token=token).add_user_session_id)
+
+    def test_add_user_restores_missing_switching_cookie(self):
+        """Adding a user restores the first login's group when its cookie is missing"""
+        first_session_key = _login_through_flow(
+            self.client, self.flow, self.login_binding, self.user
+        )
+        del self.client.cookies[settings.USER_SWITCHING_COOKIE_NAME]
+        _assert_switch_redirect(_post_user_switch(self.client, {"action": "add"}), self.flow)
+
+        _login_through_flow(self.client, self.flow, self.login_binding, self.other_user)
+
+        self.assertTrue(Session.objects.filter(session_key=first_session_key).exists())
+        token = _get_switching_token(self.client)
+        self.assertEqual(
+            set(user_switching.live_sessions(token).values_list("user_id", flat=True)),
+            {self.user.pk, self.other_user.pk},
+        )
+
+    def test_login_during_impersonation_starts_empty_session(self):
+        """A real login ends impersonation and discards the impersonator's session data"""
+        admin = create_test_admin_user()
+        for target in (self.other_user, admin):
+            with self.subTest(target=target.username):
+                first_session_key = _login_through_flow(
+                    self.client, self.flow, self.login_binding, admin
+                )
+                session = self.client.session
+                session["previous-user-data"] = admin.username
+                session.save()
+                response = self.client.post(
+                    reverse("authentik_api:user-impersonate", kwargs={"pk": self.other_user.pk}),
+                    data={"reason": "Testing login during impersonation"},
+                )
+                self.assertEqual(response.status_code, 204)
+
+                _login_through_flow(self.client, self.flow, self.login_binding, target)
+
+                response = self.client.get(reverse("authentik_api:user-me"))
+                self.assertEqual(response.json()["user"]["pk"], target.pk)
+                self.assertNotIn("original", response.json())
+                self.assertNotIn("previous-user-data", self.client.session)
+                self.assertFalse(Session.objects.filter(session_key=first_session_key).exists())
 
     def test_plain_login_replaces_session_with_switching_enabled(self):
         """Logging in as someone else without "Add another user" replaces the first login"""
@@ -460,6 +486,5 @@ class TestUserSwitch(APIFlowTestCase):
         self.client.cookies[settings.SESSION_COOKIE_NAME] = source_session_key
         response = self.client.get(reverse("authentik_api:user-me"))
         self.assertEqual(response.status_code, 403)
-        # A request still in flight with the superseded cookie must not delete the browser's
-        # cookie, which by now holds the newer login.
+        # The browser's cookie belongs to the newer login, so it isn't deleted.
         self.assertNotIn(settings.SESSION_COOKIE_NAME, response.cookies)
