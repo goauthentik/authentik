@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-09 00:16+0000\n"
+"POT-Creation-Date: 2026-10-15 00:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -790,6 +790,21 @@ msgstr ""
 
 #: authentik/core/tasks.py
 msgid "Remove temporary users created by SAML Sources."
+msgstr ""
+
+#: authentik/core/templates/base/noscript.html
+msgid "Cannot load this page without JavaScript"
+msgstr ""
+
+#: authentik/core/templates/base/noscript.html
+msgid ""
+"This application requires JavaScript to function. JavaScript may be\n"
+"                disabled in your browser settings or blocked by a browser\n"
+"                extension."
+msgstr ""
+
+#: authentik/core/templates/base/noscript.html
+msgid "Learn more &rsaquo;"
 msgstr ""
 
 #: authentik/core/templates/base/skeleton.html
