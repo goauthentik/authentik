@@ -1,5 +1,5 @@
 <!--
-👋 Hi there! Welcome. Please check the contributing guidelines: https://docs.goauthentik.io/docs/developer-docs/#how-can-i-contribute
+👋 Hi there! Welcome. Please check the contributing guidelines: https://docs.goauthentik.io/developer-docs/contributing/#how-can-i-contribute
 
 ⚠️ Open this PR from a feature branch, not from main: https://docs.goauthentik.io/developer-docs/contributing/#always-use-feature-branches
 
