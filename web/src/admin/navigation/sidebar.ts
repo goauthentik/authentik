@@ -1,3 +1,4 @@
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SidebarItemProperties } from "#elements/sidebar/SidebarItem";
 import { LitPropertyRecord } from "#elements/types";
 
@@ -8,15 +9,71 @@ import { html, nothing, TemplateResult } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { repeat } from "lit/directives/repeat.js";
 
+export const ENTERPRISE_PATH = "/enterprise/licenses";
+
+export type SidebarAttributes =
+    | LitPropertyRecord<SidebarItemProperties & { enterprise?: boolean }>
+    | string[]
+    | null;
+
 // A `string[]` in the attributes slot lists the route names that keep the entry active.
 export type SidebarEntry = [
     path: string | null,
     label: string,
-    attributes?: LitPropertyRecord<SidebarItemProperties> | string[] | null,
+    attributes?: SidebarAttributes,
     children?: SidebarEntry[],
 ];
 
 export type RouteNameResolver = (path: string) => string | null;
+
+export type SidebarLicenseFlags = { licensed: boolean; canEnterprise: boolean };
+
+const isEnterpriseEntry = (attr: SidebarAttributes | undefined) =>
+    attr !== null && !Array.isArray(attr) && typeof attr === "object" && attr.enterprise;
+
+/**
+ * Removes enterprise entries entirely if enterprise capability is not present, or marks them "as
+ * enterprise" if they are but the product is unlicensed.
+ */
+export function resolveSidebarEntries(
+    entries: SidebarEntry[],
+    { licensed, canEnterprise }: SidebarLicenseFlags,
+): SidebarEntry[] {
+    return (
+        entries
+            // A feature is always visible if it's not enterprise-only, or if the instance
+            // canEnterprise
+            .filter(
+                ([_path, _label, attributes, _children]) =>
+                    !isEnterpriseEntry(attributes) || canEnterprise,
+            )
+
+            .map(([path, label, attributes, children]) => {
+                const isEnterprise = isEnterpriseEntry(attributes);
+
+                // A feature's details are overriden with "Buy a license" messages if the instance
+                // canEnterprise, but the instance is not licensed.
+                if (!licensed && isEnterprise) {
+                    attributes = {
+                        ...attributes,
+                        pathOverride: toAdminInterface(ENTERPRISE_PATH),
+                        notice: msg("Enterprise only", {
+                            id: "sidebar.notice.enterprise-only",
+                        }),
+                    };
+                }
+
+                return children
+                    ? [
+                          path,
+                          label,
+                          attributes,
+                          resolveSidebarEntries(children, { licensed, canEnterprise }),
+                      ]
+                    : [path, label, attributes];
+            })
+    );
+}
 
 /**
  * Recursively renders a collection of sidebar entries.

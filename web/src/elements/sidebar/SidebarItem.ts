@@ -2,19 +2,11 @@ import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { AKElement } from "#elements/Base";
-import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import { WithLicenseSummary } from "#elements/mixins/license";
-import {
-    currentInterfacePath,
-    toAdminInterface,
-    toCurrentInterface,
-} from "#elements/router/core/interfaces";
+import { currentInterfacePath, toCurrentInterface } from "#elements/router/core/interfaces";
 import { RouterNavigateEvent } from "#elements/router/core/navigation";
 import { readSidebarExpansion, writeSidebarExpansion } from "#elements/sidebar/expansion";
 import Styles from "#elements/sidebar/SidebarItem.css";
 import { ifPresent } from "#elements/utils/attributes";
-
-import { CapabilitiesEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
@@ -23,14 +15,15 @@ import { createRef, ref } from "lit/directives/ref.js";
 
 export interface SidebarItemProperties {
     path?: string | null;
+    pathOverride: string | null;
+    notice?: string | TemplateResult | null;
     key?: string | null;
     activeWhen?: (path: string) => boolean;
     expanded?: boolean | null;
-    enterprise?: boolean;
 }
 
 @customElement("ak-sidebar-item")
-export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKElement)) {
+export class SidebarItem extends AKElement {
     protected static instanceCount = 0;
 
     public static styles: CSSResult[] = [
@@ -40,11 +33,19 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
         Styles,
     ];
 
+    // For passing URLs that the router understands
     @property({ type: String })
     public path: string | null = null;
 
+    @property({ type: String, attribute: "pathoverride" })
+    public pathOverride: string | null = null;
+
     @property({ type: String })
     public label: string | null = null;
+
+    // For passing extra details.
+    @property({ type: String })
+    notice: string | TemplateResult | null = null;
 
     /**
      * Stable identity for persisting this group's expansion across reloads.
@@ -75,9 +76,6 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
      * Per-instance id for the `aria-controls`/`id` pair.
      */
     #subnavID = `sidebar-subnav-${++SidebarItem.instanceCount}`;
-
-    @property({ type: Boolean })
-    public enterprise = false;
 
     public get childItems(): SidebarItem[] {
         const children = Array.from(this.querySelectorAll<SidebarItem>("ak-sidebar-item") || []);
@@ -287,31 +285,20 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
         </li>`;
     }
 
-    renderEnterpriseRequired() {
-        return html`<a href=${toAdminInterface("enterprise/licenses")} class="pf-c-nav__link">
-            ${this.label}
-            <span class="pf-c-nav__enterprise-notice">${msg("Enterprise only")}</span>
-        </a>`;
-    }
-
     renderWithPath() {
-        if (this.enterprise && !this.hasEnterpriseLicense) {
-            if (!this.can(CapabilitiesEnum.IsEnterprise)) return nothing;
-
-            return this.renderEnterpriseRequired();
-        }
-
         return html`
             <a
                 part="link ${this.current ? "current" : ""}"
                 id="sidebar-nav-link-${this.path}"
                 href="${
-                    this.isAbsoluteLink ? (this.path ?? "") : toCurrentInterface(this.path ?? "")
+                    this.pathOverride ??
+                    (this.isAbsoluteLink ? (this.path ?? "") : toCurrentInterface(this.path ?? ""))
                 }"
                 class="pf-c-nav__link ${this.current ? "pf-m-current" : ""}"
                 aria-current=${ifPresent(this.current ? "page" : undefined)}
             >
                 ${this.label}
+                ${this.notice ? html`<span part="notice" class="pf-c-nav__notice">${this.notice}</span>` : nothing}
             </a>
         `;
     }
