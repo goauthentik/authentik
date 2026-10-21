@@ -766,8 +766,6 @@ export interface StagesAuthenticatorSmsDestroyRequest {
 
 export interface StagesAuthenticatorSmsListRequest {
     accountSid?: string;
-    auth?: string;
-    authPassword?: string;
     authType?: AuthTypeEnum;
     configureFlow?: string;
     friendlyName?: string;
@@ -5214,14 +5212,6 @@ export class StagesApi extends runtime.BaseAPI {
 
         if (requestParameters["accountSid"] != null) {
             queryParameters["account_sid"] = requestParameters["accountSid"];
-        }
-
-        if (requestParameters["auth"] != null) {
-            queryParameters["auth"] = requestParameters["auth"];
-        }
-
-        if (requestParameters["authPassword"] != null) {
-            queryParameters["auth_password"] = requestParameters["authPassword"];
         }
 
         if (requestParameters["authType"] != null) {
