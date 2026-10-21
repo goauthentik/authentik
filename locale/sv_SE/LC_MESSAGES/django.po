@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-15 00:14+0000\n"
+"POT-Creation-Date: 2026-09-23 00:14+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Johan Davidsson, 2026\n"
 "Language-Team: Swedish (Sweden) (https://app.transifex.com/authentik/teams/119923/sv_SE/)\n"
@@ -23,10 +23,10 @@ msgstr ""
 "Language: sv_SE\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: authentik/admin/api/settings.py
+#: authentik/admin/files/api.py
 #, python-brace-format
-msgid "Value for flag {flag_key} needs to be of type {type}."
-msgstr "Värdet för flaggan {flag_key} måste ha typen {type}."
+msgid "File size ({file.size}B) exceeds maximum allowed "
+msgstr "Filstorleken ({file.size} B) överskrider högsta tillåtna storlek "
 
 #: authentik/admin/files/validation.py
 msgid "File name cannot be empty"
@@ -59,90 +59,16 @@ msgstr "Referenser till överordnad katalog (”..”) är inte tillåtna"
 msgid "Paths cannot start with '.'"
 msgstr "Sökvägar får inte börja med ”.”"
 
-#: authentik/admin/models.py
-msgid "Configure how authentik should show avatars for users."
-msgstr "Ställ in hur authentik ska visa användaravatarer."
+#: authentik/admin/files/validation.py
+#, python-brace-format
+msgid "File name too long (max {MAX_FILE_NAME_LENGTH} characters)"
+msgstr "Filnamnet är för långt (högst {MAX_FILE_NAME_LENGTH} tecken)"
 
-#: authentik/admin/models.py
-msgid "Enter a valid URL, for example https://authentik.company"
-msgstr "Ange en giltig URL, till exempel https://authentik.company"
-
-#: authentik/admin/models.py
-msgid ""
-"Configure the base URL under which this authentik instance is reachable, "
-"e.g. https://authentik.company"
+#: authentik/admin/files/validation.py
+#, python-brace-format
+msgid "Path component too long (max {MAX_PATH_COMPONENT_LENGTH} characters)"
 msgstr ""
-"Ställ in bas-URL:en där denna authentik-instans är åtkomlig, till exempel "
-"https://authentik.company"
-
-#: authentik/admin/models.py
-msgid "Enable the ability for users to change their name."
-msgstr "Tillåt användare att ändra sitt namn."
-
-#: authentik/admin/models.py
-msgid "Enable the ability for users to change their email address."
-msgstr "Tillåt användare att ändra sin e-postadress."
-
-#: authentik/admin/models.py
-msgid "Enable the ability for users to change their username."
-msgstr "Tillåt användare att ändra sitt användarnamn."
-
-#: authentik/admin/models.py
-msgid ""
-"Events will be deleted after this duration.(Format: "
-"weeks=3;days=2;hours=3,seconds=2)."
-msgstr ""
-"Händelser tas bort efter denna varaktighet (format: "
-"weeks=3;days=2;hours=3,seconds=2)."
-
-#: authentik/admin/models.py
-msgid "Reputation cannot decrease lower than this value. Zero or negative."
-msgstr "Anseendet kan inte sjunka under detta värde. Noll eller negativt."
-
-#: authentik/admin/models.py
-msgid "Reputation cannot increase higher than this value. Zero or positive."
-msgstr "Anseendet kan inte stiga över detta värde. Noll eller positivt."
-
-#: authentik/admin/models.py
-msgid "The option configures the footer links on the flow executor pages."
-msgstr "Alternativet ställer in sidfotslänkarna på flödeskörarens sidor."
-
-#: authentik/admin/models.py
-msgid ""
-"When enabled, all the events caused by a user will be deleted upon the "
-"user's deletion."
-msgstr ""
-"När alternativet är aktiverat tas alla händelser som orsakats av en "
-"användare bort när användaren tas bort."
-
-#: authentik/admin/models.py
-msgid "Globally enable/disable impersonation."
-msgstr "Aktivera eller inaktivera personifiering globalt."
-
-#: authentik/admin/models.py
-msgid "Require administrators to provide a reason for impersonating a user."
-msgstr ""
-"Kräv att administratörer anger en orsak till att personifiera en användare."
-
-#: authentik/admin/models.py
-msgid "Default token duration"
-msgstr "Standardvaraktighet för token"
-
-#: authentik/admin/models.py
-msgid "Default token length"
-msgstr "Standardlängd för token"
-
-#: authentik/admin/models.py
-msgid "Default page size for API responses, if no size was requested."
-msgstr "Standardstorlek på sidor i API-svar, om ingen storlek har begärts."
-
-#: authentik/admin/models.py
-msgid "Maximum page size"
-msgstr "Största sidstorlek"
-
-#: authentik/admin/models.py
-msgid "System settings"
-msgstr "Systeminställningar"
+"Sökvägskomponenten är för lång (högst {MAX_PATH_COMPONENT_LENGTH} tecken)"
 
 #: authentik/admin/models.py
 msgid "Version history"
@@ -346,14 +272,6 @@ msgstr ""
 msgid "User does not have access to application."
 msgstr "Användaren har inte åtkomst till programmet."
 
-#: authentik/core/api/application_entitlements.py
-msgid ""
-"Entitlements assigned to this user, directly or through a group, regardless "
-"of the user's access to the application."
-msgstr ""
-"Rättigheter som tilldelats denna användare, antingen direkt eller via en "
-"grupp, oavsett användarens åtkomst till applikationen."
-
 #: authentik/core/api/applications.py
 #, python-brace-format
 msgid "The slug '{slug}' is reserved and cannot be used for applications."
@@ -424,6 +342,14 @@ msgstr "Det går inte att ändra interna tjänstekontoanvändare"
 #: authentik/core/api/users.py
 msgid "This field is required."
 msgstr "Det här fältet är obligatoriskt."
+
+#: authentik/core/api/users.py
+msgid "filter: failed to parse JSON"
+msgstr "filter: det gick inte att tolka JSON"
+
+#: authentik/core/api/users.py
+msgid "filter: value must be key:value mapping"
+msgstr "filter: värdet måste vara en nyckel:värde-mappning"
 
 #: authentik/core/api/users.py
 msgid "No recovery flow set."
@@ -820,12 +746,6 @@ msgid "Policy behavior cannot be changed after creation."
 msgstr "Policybeteendet kan inte ändras efter att policyn har skapats."
 
 #: authentik/core/sources/flow_manager.py
-msgid "New users can't enroll while adding a user."
-msgstr ""
-"Nya användare kan inte registreras i samband med att en användare läggs "
-"till."
-
-#: authentik/core/sources/flow_manager.py
 #, python-brace-format
 msgid ""
 "Request to authenticate with {source} has been denied. Please authenticate "
@@ -863,24 +783,6 @@ msgstr "Ta bort utgångna objekt."
 #: authentik/core/tasks.py
 msgid "Remove temporary users created by SAML Sources."
 msgstr "Ta bort tillfälliga användare som har skapats av SAML-källor."
-
-#: authentik/core/templates/base/noscript.html
-msgid "Cannot load this page without JavaScript"
-msgstr "Det går inte att ladda den här sidan utan JavaScript"
-
-#: authentik/core/templates/base/noscript.html
-msgid ""
-"This application requires JavaScript to function. JavaScript may be\n"
-"                disabled in your browser settings or blocked by a browser\n"
-"                extension."
-msgstr ""
-"Den här applikationen kräver JavaScript för att fungera. JavaScript kan vara"
-" avstängt i dina webbläsarinställningar eller blockerat av ett "
-"webbläsartillägg."
-
-#: authentik/core/templates/base/noscript.html
-msgid "Learn more &rsaquo;"
-msgstr "Lär dig mer &rsaquo;"
 
 #: authentik/core/templates/base/skeleton.html
 msgid "Recovery session is active. Custom branding is disabled."
@@ -1106,22 +1008,6 @@ msgid "Apple Nonces"
 msgstr "Apple-noncer"
 
 #: authentik/endpoints/connectors/agent/models.py
-msgid "Apple Authorization Code"
-msgstr "Apple auktoriseringskod"
-
-#: authentik/endpoints/connectors/agent/models.py
-msgid "Apple Authorization Codes"
-msgstr "Apple auktoriseringskoder"
-
-#: authentik/endpoints/connectors/agent/models.py
-msgid "Apple Unlock Key"
-msgstr "Apple-upplåsningsnyckel"
-
-#: authentik/endpoints/connectors/agent/models.py
-msgid "Apple Unlock Keys"
-msgstr "Apple-upplåsningsnycklar"
-
-#: authentik/endpoints/connectors/agent/models.py
 msgid "Apple Independent Secure Enclave"
 msgstr "Apple Independent Secure Enclave"
 
@@ -1224,22 +1110,6 @@ msgstr "Enterprise krävs för att skapa eller uppdatera detta objekt."
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to use this endpoint."
 msgstr "Enterprise krävs för att använda denna ändpunkt."
-
-#: authentik/enterprise/api.py
-msgid "Count steps must have a positive duration."
-msgstr "Antal steg måste ha en positiv varaktighet."
-
-#: authentik/enterprise/api.py
-msgid "Start and end must be specified together."
-msgstr "Start och slut måste specificeras tillsammans."
-
-#: authentik/enterprise/api.py
-msgid "Start must be earlier than end."
-msgstr "Starten måste vara tidigare än slutet."
-
-#: authentik/enterprise/api.py
-msgid "Specify at least one count step or an absolute range."
-msgstr "Ange minst ett steg eller ett absolut intervall."
 
 #: authentik/enterprise/audit/apps.py
 msgid ""
@@ -1421,6 +1291,30 @@ msgstr "Granskad"
 #: authentik/enterprise/lifecycle/review/models.py
 msgid "Overdue"
 msgstr "Försenad"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Go to {self._get_model_name()}"
+msgstr "Gå till {self._get_model_name()}"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid ""
+"Access review is due for {self.content_type.name.lower()} {object_label}"
+msgstr ""
+"Åtkomstgranskning ska göras för {self.content_type.name.lower()} "
+"{object_label}"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid ""
+"Access review is overdue for {self.content_type.name} {str(self.object)}"
+msgstr ""
+"Åtkomstgranskning är försenad för {self.content_type.name} "
+"{str(self.object)}"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid ""
+"Access review completed for {self.content_type.name} {str(self.object)}"
+msgstr ""
+"Åtkomstgranskning slutförd för {self.content_type.name} {str(self.object)}"
 
 #: authentik/enterprise/lifecycle/review/tasks.py
 msgid "Dispatch tasks to apply lifecycle rules."
@@ -1791,16 +1685,17 @@ msgid "Data Exports"
 msgstr "Dataexporter"
 
 #: authentik/enterprise/reports/models.py
+#, python-brace-format
+msgid "{model_verbose_name} export generated successfully"
+msgstr "Exporten av {model_verbose_name} skapades"
+
+#: authentik/enterprise/reports/models.py
 msgid "Download"
 msgstr "Hämta"
 
 #: authentik/enterprise/reports/tasks.py
 msgid "Generate data export."
 msgstr "Skapa dataexport."
-
-#: authentik/enterprise/requests/api/grant_requests.py
-msgid "Successfully requested access!"
-msgstr "Åtkomst har begärts!"
 
 #: authentik/enterprise/requests/api/grant_requests.py
 msgid "Only agents can request access through this endpoint."
@@ -1813,12 +1708,6 @@ msgstr "Denna agent har ingen ägare som kan godkänna dess begäran."
 #: authentik/enterprise/requests/api/grant_requests.py
 msgid "Only agents with an expiry can request access."
 msgstr "Endast agenter med en utgångstid kan begära åtkomst."
-
-#: authentik/enterprise/requests/api/request_rules.py
-msgid "A request flow must either be set on this rule, or on the brand."
-msgstr ""
-"Ett förfrågningsflöde måste antingen ställas in på denna regel eller på "
-"varumärket."
 
 #: authentik/enterprise/requests/models.py
 msgid "Everyone who can approve"
@@ -2680,10 +2569,6 @@ msgid "Policy Binding Models"
 msgstr "Modeller för policybindning"
 
 #: authentik/policies/models.py
-msgid "Execute the policy but ignore its result."
-msgstr "Kör policyn men ignorera resultatet."
-
-#: authentik/policies/models.py
 msgid "Negates the outcome of the policy. Messages are unaffected."
 msgstr "Negerar resultatet av policyn. Meddelanden påverkas inte."
 
@@ -2785,10 +2670,6 @@ msgstr "Åtkomst nekad"
 #: authentik/policies/templates/policies/denied.html
 msgid "User's avatar"
 msgstr "Användarens avatar"
-
-#: authentik/policies/templates/policies/denied.html
-msgid "Username"
-msgstr "Användarnamn"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Not you?"
@@ -3402,22 +3283,6 @@ msgstr "Proxyleverantör"
 msgid "Proxy Providers"
 msgstr "Proxyleverantörer"
 
-#: authentik/providers/rac/models.py
-msgid ""
-"Only devices in this access group can be accessed through this provider. "
-"When left empty, every device the user has access to can be accessed."
-msgstr ""
-"Endast enheter i denna åtkomstgrupp kan nås via denna leverantör. Om fältet "
-"lämnas tomt kan alla enheter som användaren har åtkomst till nås."
-
-#: authentik/providers/rac/models.py
-msgid ""
-"Maximum concurrent connections to a single device. Can be set to -1 to "
-"disable the limit."
-msgstr ""
-"Maximalt antal samtidiga anslutningar till en enskild enhet. Kan ställas in "
-"på -1 för att inaktivera begränsningen."
-
 #: authentik/providers/rac/models.py authentik/stages/user_login/models.py
 msgid ""
 "Determines how long a session lasts. Default of 0 means that the sessions "
@@ -3439,24 +3304,28 @@ msgid "RAC Providers"
 msgstr "RAC-leverantörer"
 
 #: authentik/providers/rac/models.py
+msgid "RAC Endpoint"
+msgstr "RAC-ändpunkt"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Endpoints"
+msgstr "RAC-ändpunkter"
+
+#: authentik/providers/rac/models.py
+msgid "Endpoint Property Mapping"
+msgstr "Egenskapsmappning för ändpunkt"
+
+#: authentik/providers/rac/models.py
+msgid "Endpoint Property Mappings"
+msgstr "Egenskapsmappningar för ändpunkter"
+
+#: authentik/providers/rac/models.py
 msgid "RAC Provider Property Mapping"
 msgstr "Egenskapsmappning för RAC-leverantör"
 
 #: authentik/providers/rac/models.py
 msgid "RAC Provider Property Mappings"
 msgstr "Egenskapsmappningar för RAC-leverantörer"
-
-#: authentik/providers/rac/models.py
-msgid "Hostname/IP to connect to. Optionally specify the port."
-msgstr "Värdnamn/IP-adress att ansluta till. Ange port om du vill."
-
-#: authentik/providers/rac/models.py
-msgid "RAC Connection override"
-msgstr "Åsidosättande av RAC-anslutning"
-
-#: authentik/providers/rac/models.py
-msgid "RAC Connection overrides"
-msgstr "Åsidosättande av RAC-anslutningar"
 
 #: authentik/providers/rac/models.py
 msgid "RAC Connection token"
@@ -4663,6 +4532,10 @@ msgstr "Flöde som används före autentisering."
 #: authentik/sources/saml/models.py
 msgid "Also known as Entity ID. Defaults to the Metadata URL."
 msgstr "Kallas även Entity ID. Standardvärdet är metadata-URL:en."
+
+#: authentik/sources/saml/models.py
+msgid "Audience value this IdP sends for authentik."
+msgstr "Målgruppsvärde som IdP:n skickar för authentik."
 
 #: authentik/sources/saml/models.py
 msgid "SSO URL"
@@ -5965,10 +5838,6 @@ msgstr "Det finns ingen väntande användare att logga in."
 msgid "The selected session is no longer available. Please try again."
 msgstr "Den valda sessionen är inte längre tillgänglig. Försök igen."
 
-#: authentik/stages/user_login/stage.py
-msgid "Only internal users can be added to user switching."
-msgstr "Endast interna användare kan läggas till för användarbyte."
-
 #: authentik/stages/user_logout/models.py
 msgid "User Logout Stage"
 msgstr "Användarutloggningsfas"
@@ -6013,6 +5882,10 @@ msgid "Tasks that must complete for this task to run."
 msgstr "Uppgifter som måste slutföras för att denna uppgift ska köras."
 
 #: authentik/tasks/models.py
+msgid "Tenant this task belongs to"
+msgstr "Klientorganisation som denna uppgift tillhör"
+
+#: authentik/tasks/models.py
 msgid "Retry failed task"
 msgstr "Försök köra misslyckad uppgift igen"
 
@@ -6055,6 +5928,116 @@ msgstr "Utlös ett schema manuellt"
 #: authentik/tasks/tasks.py
 msgid "Remove old worker statuses."
 msgstr "Ta bort gamla arbetarstatusar."
+
+#: authentik/tenants/api/settings.py
+#, python-brace-format
+msgid "Value for flag {flag_key} needs to be of type {type}."
+msgstr "Värdet för flaggan {flag_key} måste ha typen {type}."
+
+#: authentik/tenants/models.py
+msgid ""
+"Schema name must start with t_, only contain lowercase letters and numbers "
+"and be less than 63 characters."
+msgstr ""
+"Schemanamnet måste börja med t_, endast innehålla gemener och siffror samt "
+"vara kortare än 63 tecken."
+
+#: authentik/tenants/models.py
+msgid "Configure how authentik should show avatars for users."
+msgstr "Ställ in hur authentik ska visa användaravatarer."
+
+#: authentik/tenants/models.py
+msgid "Enter a valid URL, for example https://authentik.company"
+msgstr "Ange en giltig URL, till exempel https://authentik.company"
+
+#: authentik/tenants/models.py
+msgid ""
+"Configure the base URL under which this authentik instance is reachable, "
+"e.g. https://authentik.company"
+msgstr ""
+"Ställ in bas-URL:en där denna authentik-instans är åtkomlig, till exempel "
+"https://authentik.company"
+
+#: authentik/tenants/models.py
+msgid "Enable the ability for users to change their name."
+msgstr "Tillåt användare att ändra sitt namn."
+
+#: authentik/tenants/models.py
+msgid "Enable the ability for users to change their email address."
+msgstr "Tillåt användare att ändra sin e-postadress."
+
+#: authentik/tenants/models.py
+msgid "Enable the ability for users to change their username."
+msgstr "Tillåt användare att ändra sitt användarnamn."
+
+#: authentik/tenants/models.py
+msgid ""
+"Events will be deleted after this duration.(Format: "
+"weeks=3;days=2;hours=3,seconds=2)."
+msgstr ""
+"Händelser tas bort efter denna varaktighet (format: "
+"weeks=3;days=2;hours=3,seconds=2)."
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot decrease lower than this value. Zero or negative."
+msgstr "Anseendet kan inte sjunka under detta värde. Noll eller negativt."
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot increase higher than this value. Zero or positive."
+msgstr "Anseendet kan inte stiga över detta värde. Noll eller positivt."
+
+#: authentik/tenants/models.py
+msgid "The option configures the footer links on the flow executor pages."
+msgstr "Alternativet ställer in sidfotslänkarna på flödeskörarens sidor."
+
+#: authentik/tenants/models.py
+msgid ""
+"When enabled, all the events caused by a user will be deleted upon the "
+"user's deletion."
+msgstr ""
+"När alternativet är aktiverat tas alla händelser som orsakats av en "
+"användare bort när användaren tas bort."
+
+#: authentik/tenants/models.py
+msgid "Globally enable/disable impersonation."
+msgstr "Aktivera eller inaktivera personifiering globalt."
+
+#: authentik/tenants/models.py
+msgid "Require administrators to provide a reason for impersonating a user."
+msgstr ""
+"Kräv att administratörer anger en orsak till att personifiera en användare."
+
+#: authentik/tenants/models.py
+msgid "Default token duration"
+msgstr "Standardvaraktighet för token"
+
+#: authentik/tenants/models.py
+msgid "Default token length"
+msgstr "Standardlängd för token"
+
+#: authentik/tenants/models.py
+msgid "Default page size for API responses, if no size was requested."
+msgstr "Standardstorlek på sidor i API-svar, om ingen storlek har begärts."
+
+#: authentik/tenants/models.py
+msgid "Maximum page size"
+msgstr "Största sidstorlek"
+
+#: authentik/tenants/models.py
+msgid "Tenant"
+msgstr "Klientorganisation"
+
+#: authentik/tenants/models.py
+msgid "Tenants"
+msgstr "Klientorganisationer"
+
+#: authentik/tenants/models.py
+msgid "Domain"
+msgstr "Domän"
+
+#: authentik/tenants/models.py
+msgid "Domains"
+msgstr "Domäner"
 
 #: packages/ak-guardian/guardian/models.py
 msgid "object ID"
