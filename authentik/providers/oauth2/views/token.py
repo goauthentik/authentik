@@ -20,7 +20,9 @@ from authentik.common.oauth.constants import (
     SCOPE_OFFLINE_ACCESS,
     TOKEN_TYPE,
 )
-from authentik.core.middleware import CTX_AUTH_VIA
+from authentik.core.middleware import CTX_AUTH_VIA, SESSION_KEY_IMPERSONATE_USER
+from authentik.events.activity import REFRESH_ACTIVITY_INTERVAL
+from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
 from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.time import timedelta_from_string
@@ -243,6 +245,34 @@ class TokenView(View):
             self.params.refresh_token.revoked = True
             self.params.refresh_token.save()
             response["refresh_token"] = refresh_token.token
+
+        # Record refreshes as their own action, not `login`, so GeoIP travel checks
+        # ignore them. Recorded at most once per user per interval; expiration adds
+        # the interval as an allowance.
+        from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
+        from authentik.flows.views.executor import SESSION_KEY_PLAN
+
+        user = self.params.refresh_token.user
+        # Skip when `from_http` would credit someone else (impersonation, or a flow
+        # for another user).
+        if SESSION_KEY_IMPERSONATE_USER in self.request.session:
+            return response
+        plan = self.request.session.get(SESSION_KEY_PLAN)
+        pending_user = plan.context.get(PLAN_CONTEXT_PENDING_USER) if plan else None
+        if pending_user is not None and pending_user.pk != user.pk:
+            return response
+        latest = (
+            Event.objects.filter(action=EventAction.TOKEN_REFRESH, user__pk=user.pk)
+            .order_by("-created")
+            .values_list("created", flat=True)
+            .first()
+        )
+        if latest is None or latest <= now - REFRESH_ACTIVITY_INTERVAL:
+            Event.new(
+                EventAction.TOKEN_REFRESH,
+                provider=self.provider,
+                grant_type=GRANT_TYPE_REFRESH_TOKEN,
+            ).from_http(self.request, user=user)
 
         return response
 
