@@ -3,6 +3,7 @@
 from unittest.mock import PropertyMock, patch
 
 from django.core import mail
+from django.core.exceptions import ValidationError
 from django.core.mail.backends.locmem import EmailBackend
 from django.test import TestCase
 from django.urls import reverse
@@ -11,12 +12,14 @@ from requests_mock import Mocker
 from authentik import authentik_full_version
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.crypto.models import CertificateKeyPair
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.events.api.notification_transports import NotificationTransportSerializer
 from authentik.events.models import (
     Event,
     Notification,
     NotificationSeverity,
     NotificationTransport,
+    NotificationTransportError,
     NotificationWebhookMapping,
     TransportMode,
 )
@@ -43,7 +46,7 @@ class TestEventTransports(TestCase):
         transport: NotificationTransport = NotificationTransport.objects.create(
             name=generate_id(),
             mode=TransportMode.WEBHOOK,
-            webhook_url="http://localhost:1234/test",
+            webhook_url_ref=create_test_secret("http://localhost:1234/test"),
         )
         with Mocker() as mocker:
             mocker.post("http://localhost:1234/test")
@@ -67,7 +70,7 @@ class TestEventTransports(TestCase):
         transport: NotificationTransport = NotificationTransport.objects.create(
             name=generate_id(),
             mode=TransportMode.WEBHOOK,
-            webhook_url="https://localhost:1234/test",
+            webhook_url_ref=create_test_secret("https://localhost:1234/test"),
         )
         with Mocker() as mocker:
             mocker.post("https://localhost:1234/test")
@@ -84,7 +87,7 @@ class TestEventTransports(TestCase):
         transport: NotificationTransport = NotificationTransport.objects.create(
             name=generate_id(),
             mode=TransportMode.WEBHOOK,
-            webhook_url="https://localhost:1234/test",
+            webhook_url_ref=create_test_secret("https://localhost:1234/test"),
             webhook_ca=kp,
         )
         with Mocker() as mocker:
@@ -104,7 +107,7 @@ class TestEventTransports(TestCase):
         transport: NotificationTransport = NotificationTransport.objects.create(
             name=generate_id(),
             mode=TransportMode.WEBHOOK,
-            webhook_url="http://localhost:1234/test",
+            webhook_url_ref=create_test_secret("http://localhost:1234/test"),
             webhook_mapping_body=mapping_body,
             webhook_mapping_headers=mapping_headers,
         )
@@ -130,7 +133,7 @@ class TestEventTransports(TestCase):
         transport: NotificationTransport = NotificationTransport.objects.create(
             name=generate_id(),
             mode=TransportMode.WEBHOOK_SLACK,
-            webhook_url="http://localhost:1234/test",
+            webhook_url_ref=create_test_secret("http://localhost:1234/test"),
             webhook_mapping_body=mapping_body,
             webhook_mapping_headers=mapping_headers,
         )
@@ -150,7 +153,7 @@ class TestEventTransports(TestCase):
         transport: NotificationTransport = NotificationTransport.objects.create(
             name=generate_id(),
             mode=TransportMode.WEBHOOK_SLACK,
-            webhook_url="http://localhost:1234/test",
+            webhook_url_ref=create_test_secret("http://localhost:1234/test"),
         )
         with Mocker() as mocker:
             mocker.post("http://localhost:1234/test")
@@ -272,3 +275,25 @@ class TestEventTransports(TestCase):
         for template in data:
             self.assertIn(template["name"], valid_choices)
             self.assertEqual(template["description"], valid_choices[template["name"]])
+
+    def test_webhook_secret_must_stay_a_url(self):
+        """Replacing or rotating a webhook URL secret can't break the transport."""
+        secret = create_test_secret("https://example.com/webhook")
+        NotificationTransport.objects.create(
+            name=generate_id(), mode=TransportMode.WEBHOOK, webhook_url_ref=secret
+        )
+        with self.assertRaises(ValidationError):
+            secret.replace_value("not a URL")
+        with self.assertRaises(ValidationError):
+            secret.rotate()
+        secret.refresh_from_db()
+        self.assertEqual(secret.secret_value, "https://example.com/webhook")
+        secret.replace_value("https://example.com/replacement")
+
+    def test_webhook_without_secret(self):
+        """Transports saved without a URL fail with a transport error."""
+        transport = NotificationTransport.objects.create(
+            name=generate_id(), mode=TransportMode.WEBHOOK
+        )
+        with self.assertRaises(NotificationTransportError):
+            transport.send(self.notification)
