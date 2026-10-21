@@ -38,6 +38,7 @@ func (ls *LDAPServer) getCertificates(info *tls.ClientHelloInfo) (*tls.Certifica
 
 func (ls *LDAPServer) StartLDAPTLSServer(listen string) error {
 	tlsConfig := utils.GetTLSConfig()
+	tlsConfig.ClientAuth = tls.RequestClientCert
 	tlsConfig.GetCertificate = ls.getCertificates
 
 	ln, err := net.Listen("tcp", listen)
