@@ -10,6 +10,7 @@ from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_user
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.lib.generators import generate_id
 from authentik.sources.ldap.api.sources import LDAPSourceSerializer
 from authentik.sources.ldap.models import (
@@ -184,7 +185,7 @@ class LDAPAPITests(APITestCase):
             data=self.source_data(
                 slug=" foo",
                 bind_cn="",
-                bind_password=generate_id(),
+                bind_password_ref=create_test_secret(generate_id()).pk,
                 sync_users_password=True,
             )
         )
@@ -196,14 +197,14 @@ class LDAPAPITests(APITestCase):
         LDAPSource.objects.create(
             **self.source_data(
                 bind_cn="",
-                bind_password=generate_id(),
+                bind_password_ref=create_test_secret(generate_id()),
                 sync_users_password=True,
             )
         )
         serializer = LDAPSourceSerializer(
             data=self.source_data(
                 bind_cn="",
-                bind_password=generate_id(),
+                bind_password_ref=create_test_secret(generate_id()).pk,
                 sync_users_password=True,
             )
         )
@@ -226,7 +227,7 @@ class LDAPAPITests(APITestCase):
             data=self.source_data(
                 slug=" foo",
                 bind_cn="",
-                bind_password=generate_id(),
+                bind_password_ref=create_test_secret(generate_id()).pk,
                 sync_users=True,
                 user_property_mappings=[],
             )
@@ -239,7 +240,7 @@ class LDAPAPITests(APITestCase):
             data=self.source_data(
                 slug=" foo",
                 bind_cn="",
-                bind_password=generate_id(),
+                bind_password_ref=create_test_secret(generate_id()).pk,
                 sync_groups=True,
                 group_property_mappings=[],
             )

@@ -7,6 +7,7 @@ from ldap3 import EXTERNAL, SASL, SIMPLE
 from ldap3.core.exceptions import LDAPConfigurationError
 
 from authentik.core.tests.utils import create_test_cert
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.lib.generators import generate_id
 from authentik.sources.ldap.models import LDAPSource, LDAPSourceBindMethod
 
@@ -60,7 +61,9 @@ class LDAPModelTests(TestCase):
 
     def test_simple_service_connection(self):
         """The default service connection preserves simple bind credentials."""
-        source = self.create_source(bind_cn="cn=service", bind_password="password")
+        source = self.create_source(
+            bind_cn="cn=service", bind_password_ref=create_test_secret("password")
+        )
         with patch.object(source, "_connect_and_bind") as connection:
             source.connection()
         connection.assert_called_once_with(
