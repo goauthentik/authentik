@@ -10,10 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { CapabilitiesEnum } from "./CapabilitiesEnum";
-import { CapabilitiesEnumFromJSON, CapabilitiesEnumToJSON } from "./CapabilitiesEnum";
-import type { ErrorReportingConfig } from "./ErrorReportingConfig";
-import { ErrorReportingConfigFromJSON, ErrorReportingConfigToJSON } from "./ErrorReportingConfig";
+import type { CapabilitiesEnum } from "./CapabilitiesEnum.js";
+import { CapabilitiesEnumFromJSON, CapabilitiesEnumToJSON } from "./CapabilitiesEnum.js";
+import type { ErrorReportingConfig } from "./ErrorReportingConfig.js";
+import {
+    ErrorReportingConfigFromJSON,
+    ErrorReportingConfigToJSON,
+} from "./ErrorReportingConfig.js";
 
 /**
  * Serialize authentik Config into DRF Object

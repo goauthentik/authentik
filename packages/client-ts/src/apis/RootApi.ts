@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import { type Config, ConfigFromJSON } from "../models/Config";
-import * as runtime from "../runtime";
+import { type Config, ConfigFromJSON } from "../models/Config.js";
+import * as runtime from "../runtime.js";
 
 export class RootApi extends runtime.BaseAPI {
     /**

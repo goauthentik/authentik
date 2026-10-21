@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { Connector } from "./Connector";
-import { ConnectorFromJSON, ConnectorToJSON } from "./Connector";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Connector } from "./Connector.js";
+import { ConnectorFromJSON, ConnectorToJSON } from "./Connector.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export
