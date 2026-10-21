@@ -54,13 +54,13 @@ export class AkSecretTextInput extends HorizontalLightComponent<string> {
         this.value = (ev.target as HTMLInputElement).value;
     };
 
-    #ref = createRef<HTMLInputElement>();
+    protected inputRef = createRef<HTMLInputElement | HTMLTextAreaElement>();
 
     public override updated(changedProperties: PropertyValues<this>): void {
         super.updated(changedProperties);
 
         if (changedProperties.has("revealed") && this.revealed) {
-            this.#ref.value?.focus();
+            this.inputRef.value?.focus();
         }
     }
 
@@ -112,7 +112,7 @@ export class AkSecretTextInput extends HorizontalLightComponent<string> {
         };
 
         return html`<input
-            ${ref(this.#ref)}
+            ${ref(this.inputRef)}
             type=${this.plaintext ? "text" : "password"}
             id=${this.fieldID}
             aria-describedby=${this.helpID}
