@@ -35,6 +35,14 @@ export function formatUsedByConsequence(usedBy: UsedBy, verboseName?: string): s
                 id: "used-by.consequence.set-null",
             }),
         )
+        .with(UsedByActionEnum.Protect, () => {
+            const relationName = usedBy.modelName || msg("Related object");
+
+            return msg(str`${relationName} still uses it, so it can't be deleted`, {
+                id: "used-by.consequence.protect",
+                desc: "Consequence of deletion, when a related object prevents the deletion.",
+            });
+        })
         .with(UsedByActionEnum.LeftDangling, () =>
             msg(str`${verboseName} will be left dangling (may cause errors)`, {
                 id: "used-by.consequence.left-dangling",
