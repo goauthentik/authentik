@@ -5,18 +5,17 @@ import "#elements/forms/Radio";
 import "#components/ak-text-input";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";
-
 import { aki } from "#common/api/client";
 import { DefaultUIConfig } from "#common/ui/config";
 
-import { ModelForm } from "#elements/forms/ModelForm";
 import { RadioOption } from "#elements/forms/Radio";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { CoreApi, Group, RbacApi, Role, User, UserTypeEnum } from "@goauthentik/api";
+import { ObjectAttributeModelForm } from "#admin/object-attributes/renderAttributes";
+
+import { CoreApi, Group, ModelEnum, RbacApi, Role, User, UserTypeEnum } from "@goauthentik/api";
 
 import { match } from "ts-pattern";
-import YAML from "yaml";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html } from "lit";
@@ -45,8 +44,11 @@ const UserTypeOptions: readonly RadioOption<UserTypeEnum>[] = [
         description: html`${msg("Machine-to-machine authentication or other automations.")}`,
     },
 ];
+
 @customElement("ak-user-form")
-export class UserForm extends ModelForm<User, number> {
+export class UserForm extends ObjectAttributeModelForm<User, number> {
+    public model = ModelEnum.AuthentikCoreUser;
+
     #coreAPI = aki(CoreApi);
     #rbacAPI = aki(RbacApi);
 
@@ -116,9 +118,11 @@ export class UserForm extends ModelForm<User, number> {
         if (this.instance) {
             return msg("User updated.");
         }
+
         if (this.targetGroup) {
             return msg(str`User created and added to group ${this.targetGroup.name}`);
         }
+
         if (this.targetRole) {
             return msg(str`User created and added to role ${this.targetRole.name}`);
         }
@@ -202,29 +206,33 @@ export class UserForm extends ModelForm<User, number> {
                 help=${msg("The user's display name.")}
             ></ak-text-input>
 
-            ${this.userType
-                ? null
-                : html`<ak-radio-input
-                      label=${msg("User type")}
-                      required
-                      name="type"
-                      .value=${this.instance?.type}
-                      .options=${[
-                          ...UserTypeOptions,
-                          ...(this.instance
-                              ? [
-                                    {
-                                        label: msg("Internal Service account"),
-                                        value: UserTypeEnum.InternalServiceAccount,
-                                        disabled: true,
-                                        description: html`${msg(
-                                            "Managed by authentik and cannot be assigned manually.",
-                                        )}`,
-                                    },
-                                ]
-                              : []),
-                      ] satisfies RadioOption<UserTypeEnum>[]}
-                  ></ak-radio-input>`}
+            ${
+                this.userType
+                    ? null
+                    : html`<ak-radio-input
+                          label=${msg("User type")}
+                          required
+                          name="type"
+                          .value=${this.instance?.type}
+                          .options=${
+                              [
+                                  ...UserTypeOptions,
+                                  ...(this.instance
+                                      ? [
+                                            {
+                                                label: msg("Internal Service account"),
+                                                value: UserTypeEnum.InternalServiceAccount,
+                                                disabled: true,
+                                                description: html`${msg(
+                                                    "Managed by authentik and cannot be assigned manually.",
+                                                )}`,
+                                            },
+                                        ]
+                                      : []),
+                              ] satisfies RadioOption<UserTypeEnum>[]
+                          }
+                      ></ak-radio-input>`
+            }
             <ak-text-input
                 name="email"
                 label=${msg("Email Address")}
@@ -243,7 +251,6 @@ export class UserForm extends ModelForm<User, number> {
                 )}
             >
             </ak-switch-input>
-
             <ak-text-input
                 name="path"
                 label=${msg("Path")}
@@ -264,18 +271,7 @@ export class UserForm extends ModelForm<User, number> {
                     </p>`}
             ></ak-text-input>
 
-            <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
-                <ak-codemirror
-                    mode="yaml"
-                    value="${YAML.stringify(
-                        this.instance?.attributes ?? UserForm.defaultUserAttributes,
-                    )}"
-                >
-                </ak-codemirror>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Set custom attributes using YAML or JSON.")}
-                </p>
-            </ak-form-element-horizontal>`;
+            ${this.renderObjectAttributes(this.objAttributes, this.instance)}`;
     }
 }
 

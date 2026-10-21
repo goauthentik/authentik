@@ -3,12 +3,14 @@
 import pickle  # nosec
 
 from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_KEY
+from django.contrib.sessions.backends.base import UpdateError
 from django.contrib.sessions.backends.db import SessionStore as SessionBase
 from django.core.exceptions import SuspiciousOperation
 from django.utils import timezone
 from django.utils.functional import cached_property
 from structlog.stdlib import get_logger
 
+from authentik.core.user_switching import activate_session
 from authentik.root.middleware import ClientIPMiddleware
 
 LOGGER = get_logger()
@@ -21,6 +23,32 @@ class SessionStore(SessionBase):
             "last_ip": last_ip or ClientIPMiddleware.default_ip,
             "last_user_agent": last_user_agent,
         }
+        self.expiry_extended = False
+
+    def extend_expiry(self):
+        """Extend the session's expiry without saving its data.
+
+        A full save writes back the data loaded at the start of the request, which erases
+        anything a concurrent request saved in the meantime, like a flow plan."""
+        self.expiry_extended = True
+
+    def save_expiry(self):
+        """Save only the session's expiry and last use, see `extend_expiry`."""
+        updated = self.model.objects.filter(session_key=self.session_key).update(
+            expires=self.get_expiry_date(),
+            last_used=timezone.now(),
+        )
+        if not updated:
+            raise UpdateError
+
+    def save_last_ip(self, ip: str):
+        """Save only the session's last IP.
+
+        Setting it as a session key marks the session as modified, and the full save at the
+        end of the request writes back the data loaded at its start. That erases anything a
+        concurrent request saved in the meantime, like a flow plan."""
+        self.model.objects.filter(session_key=self.session_key).update(last_ip=ip)
+        self._session[self.model.Keys.LAST_IP] = ip
 
     @classmethod
     def get_model_class(cls):
@@ -32,15 +60,26 @@ class SessionStore(SessionBase):
     def model_fields(self):
         return [k.value for k in self.model.Keys]
 
+    @staticmethod
+    def _is_current(session) -> bool:
+        authenticated_session = getattr(session, "authenticatedsession", None)
+        return authenticated_session is None or authenticated_session.is_current
+
     def _get_session_from_db(self):
         try:
-            return self.model.objects.select_related(
+            session = self.model.objects.select_related(
                 "authenticatedsession",
                 "authenticatedsession__user",
+                "authenticatedsession__user_switching_session",
             ).get(
                 session_key=self.session_key,
                 expires__gt=timezone.now(),
             )
+            if not self._is_current(session):
+                LOGGER.info("Session denied: superseded by a newer login")
+                self._session_key = None
+                return None
+            return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             if isinstance(exc, SuspiciousOperation):
                 LOGGER.warning(str(exc))
@@ -48,13 +87,19 @@ class SessionStore(SessionBase):
 
     async def _aget_session_from_db(self):
         try:
-            return await self.model.objects.select_related(
+            session = await self.model.objects.select_related(
                 "authenticatedsession",
                 "authenticatedsession__user",
+                "authenticatedsession__user_switching_session",
             ).aget(
                 session_key=self.session_key,
                 expires__gt=timezone.now(),
             )
+            if not self._is_current(session):
+                LOGGER.info("Session denied: superseded by a newer login")
+                self._session_key = None
+                return None
+            return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             if isinstance(exc, SuspiciousOperation):
                 LOGGER.warning(str(exc))
@@ -66,13 +111,17 @@ class SessionStore(SessionBase):
     def decode(self, session_data):
         try:
             return pickle.loads(session_data)  # nosec
-        except pickle.PickleError, AttributeError, TypeError:
+        except pickle.PickleError, AttributeError, TypeError, LookupError:
             # PickleError, ValueError - unpickling exceptions
             # AttributeError - can happen when Django model fields (e.g., FileField) are unpickled
             #                  and their descriptors fail to initialize (e.g., missing storage)
             # TypeError - can happen with incompatible pickled objects
-            # If any of these happen, just return an empty dictionary (an empty session)
-            LOGGER.warning("Failed to decode session data", exc_info=True)
+            # LookupError - Model that's referenced in the session no longer exists
+            # If any of these happen, return an empty dictionary (an empty session)
+            # and also delete the session (otherwise the user might be trapped in a
+            # broken session)
+            LOGGER.warning("Failed to decode session data, deleting session", exc_info=True)
+            self.delete()
             pass
         return {}
 
@@ -156,3 +205,4 @@ class SessionStore(SessionBase):
         if (authenticated_session := data.get("authenticatedsession")) is not None:
             authenticated_session.session_id = self.session_key
             authenticated_session.save(force_insert=True)
+            activate_session(self.session_key, authenticated_session.user_switching_session_id)

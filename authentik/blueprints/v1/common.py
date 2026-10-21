@@ -1,11 +1,12 @@
 """transfer common classes"""
 
 from collections import OrderedDict
-from collections.abc import Generator, Iterable, Mapping
+from collections.abc import Generator, Iterable, Mapping, Sequence
 from copy import copy
 from dataclasses import asdict, dataclass, field, is_dataclass
 from enum import Enum
 from functools import reduce
+from itertools import count
 from json import JSONDecodeError, loads
 from operator import ixor
 from os import getenv
@@ -14,15 +15,17 @@ from uuid import UUID
 
 from deepmerge import always_merger
 from django.apps import apps
-from django.db.models import Model, Q
+from django.db.models import CharField, Model, Q, TextField, UniqueConstraint
+from django.utils.text import slugify
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import Field
+from rest_framework.relations import ManyRelatedField, PrimaryKeyRelatedField
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 from yaml import SafeDumper, SafeLoader, ScalarNode, SequenceNode
 
 from authentik.lib.models import SerializerModel
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.policies.models import PolicyBindingModel
 
 LOGGER = get_logger()
@@ -32,7 +35,7 @@ class UNSET:
     """Used to test whether a key has not been set."""
 
 
-def get_attrs(obj: SerializerModel) -> dict[str, Any]:
+def get_attrs(obj: SerializerModel) -> tuple[dict[str, Any], dict[str, Field]]:
     """Get object's attributes via their serializer, and convert it to a normal dict"""
     serializer: Serializer = obj.serializer(obj)
     data = dict(serializer.data)
@@ -45,7 +48,151 @@ def get_attrs(obj: SerializerModel) -> dict[str, Any]:
             data.pop(field_name, None)
         if field_name.endswith("_set"):
             data.pop(field_name, None)
-    return data
+    return data, serializer.fields
+
+
+def _relation_target_model(ser_field: Field) -> type[Model] | None:
+    """Get the model a relational serializer field points to, if any"""
+    if isinstance(ser_field, ManyRelatedField):
+        ser_field = ser_field.child_relation
+    if isinstance(ser_field, PrimaryKeyRelatedField) and ser_field.queryset is not None:
+        return ser_field.queryset.model
+    return None
+
+
+def resolve_references(
+    attrs: dict[str, Any], fields: dict[str, Field], reference_index: ReferenceIndex
+) -> dict[str, Any]:
+    """Replace any attrs value that references another exported object with a `KeyOf` tag"""
+    for name, _field in fields.items():
+        if name not in attrs or attrs[name] is None:
+            continue
+        target_model = _relation_target_model(_field)
+        if target_model is None:
+            continue
+        if isinstance(_field, ManyRelatedField):
+            attrs[name] = [
+                (
+                    KeyOf(id_from=entry_id)
+                    if (entry_id := reference_index.lookup(value, target_model))
+                    else value
+                )
+                for value in attrs[name]
+            ]
+        else:
+            entry_id = reference_index.lookup(attrs[name], target_model)
+            if entry_id:
+                attrs[name] = KeyOf(id_from=entry_id)
+    return attrs
+
+
+def _stable_identifier_fields(model_class: type[Model]) -> list[str]:
+    """List the names of unique, non-relational text fields on a model (other than its
+    primary key) that could serve as stable identifiers, portable across authentik instances"""
+    return [
+        model_field.attname
+        for model_field in model_class._meta.fields
+        if not model_field.primary_key
+        and isinstance(model_field, CharField | TextField)
+        and model_field.unique
+    ]
+
+
+def _is_stable_value(value: Any) -> bool:
+    """A value is considered stable (portable across instances) if it's a non-empty
+    string that isn't a UUID, which is almost always instance-local (e.g. a random default)"""
+    if not value or not isinstance(value, str):
+        return False
+    try:
+        UUID(value)
+        return False
+    except ValueError:
+        return True
+
+
+def _readable_key(obj: Model) -> str | None:
+    """Find a unique, human-readable text field on `obj` (not a UUID) to make
+    a !KeyOf id easier to read than a bare counter, e.g. a slug or name."""
+    for field_name in _stable_identifier_fields(type(obj)):
+        value = getattr(obj, field_name, None)
+        if not _is_stable_value(value):
+            continue
+        slug = slugify(value)
+        if slug:
+            return slug
+    return None
+
+
+def _unique_together_groups(model_class: type[Model]) -> Iterable[tuple[str, ...]]:
+    """Field-name groups declared unique together on a model, via either the legacy
+    Meta.unique_together or a plain (unconditional) Meta.constraints UniqueConstraint"""
+    yield from model_class._meta.unique_together
+    for constraint in model_class._meta.constraints:
+        if not isinstance(constraint, UniqueConstraint):
+            continue
+        if not constraint.condition and constraint.fields:
+            yield constraint.fields
+
+
+def _composite_identifier_fields(
+    model_class: type[Model], all_attrs: dict[str, Any], fields: dict[str, Field]
+) -> list[str]:
+    """When no single field can serve as a stable identifier, fall back to a composite
+    of fields that together identify the instance: a declared unique-together group if
+    one is fully known, otherwise every populated relation to another exported object
+    (e.g. a binding's target and policy), mirroring how such join objects are naturally
+    keyed. Portable across instances, as relations are resolved to !KeyOf tags."""
+    for group in _unique_together_groups(model_class):
+        if all(name in all_attrs and all_attrs[name] is not None for name in group):
+            return list(group)
+    return [
+        name
+        for name, ser_field in fields.items()
+        if name in all_attrs
+        and all_attrs[name] is not None
+        and _relation_target_model(ser_field) is not None
+    ]
+
+
+class ReferenceIndex:
+    """Tracks exported model instances so relations between them can be
+    rewritten as !KeyOf references instead of raw primary keys."""
+
+    def __init__(self):
+        self._entries: dict[Any, tuple[type[Model], str]] = {}
+        self._used: set[str] = set()
+        self._seen_ids: set[str] = set()
+        self._counter = count(1)
+
+    def register(self, obj: Model) -> str:
+        """Register an exported model instance, returning the id assigned to it"""
+        readable_key = _readable_key(obj)
+        entry_id = f"{obj._meta.model_name}-{readable_key or next(self._counter)}"
+        if entry_id in self._seen_ids:
+            entry_id = f"{entry_id}-{next(self._counter)}"
+        self._seen_ids.add(entry_id)
+        self._entries[obj.pk] = (type(obj), entry_id)
+        return entry_id
+
+    def id_for(self, obj: Model) -> str | None:
+        """Get the id assigned to a previously registered model instance, if any"""
+        entry = self._entries.get(obj.pk)
+        return entry[1] if entry else None
+
+    def lookup(self, value: Any, target_model: type[Model]) -> str | None:
+        """Look up the id of a registered model instance by its primary key,
+        provided it is an instance of `target_model`"""
+        entry = self._entries.get(value)
+        if entry and issubclass(entry[0], target_model):
+            self._used.add(entry[1])
+            return entry[1]
+        return None
+
+    def clear_unused_ids(self, entries: Iterable[BlueprintEntry], objects: Iterable[Model]) -> None:
+        """Strip the id from any entry that is never referenced by a !KeyOf tag"""
+        for entry, obj in zip(entries, objects, strict=True):
+            if self.id_for(obj) not in self._used:
+                entry.id = None
 
 
 @dataclass
@@ -92,20 +239,39 @@ class BlueprintEntry:
         self.__tag_contexts: list[YAMLTagContext] = []
 
     @staticmethod
-    def from_model(model: SerializerModel, *extra_identifier_names: str) -> BlueprintEntry:
+    def from_model(
+        model: SerializerModel,
+        reference_index: ReferenceIndex | None = None,
+    ) -> BlueprintEntry:
         """Convert a SerializerModel instance to a blueprint Entry"""
-        identifiers = {
-            "pk": model.pk,
-        }
-        all_attrs = get_attrs(model)
+        all_attrs, fields = get_attrs(model)
+        if reference_index is not None:
+            all_attrs = resolve_references(all_attrs, fields, reference_index)
 
-        for extra_identifier_name in extra_identifier_names:
-            identifiers[extra_identifier_name] = all_attrs.pop(extra_identifier_name, None)
-        return BlueprintEntry(
+        identifier_names = [
+            field_name
+            for field_name in _stable_identifier_fields(type(model))
+            if field_name in all_attrs and _is_stable_value(all_attrs[field_name])
+        ]
+
+        if not identifier_names:
+            identifier_names = _composite_identifier_fields(type(model), all_attrs, fields)
+
+        identifiers = {}
+        for identifier_name in identifier_names:
+            identifiers[identifier_name] = all_attrs.pop(identifier_name, None)
+        # Only fall back to the (instance-local, non-portable) primary key when no other
+        # stable identifier could be found
+        if not identifiers:
+            identifiers["pk"] = model.pk
+        entry = BlueprintEntry(
             identifiers=identifiers,
             model=f"{model._meta.app_label}.{model._meta.model_name}",
             attrs=all_attrs,
         )
+        if reference_index is not None:
+            entry.id = reference_index.id_for(model)
+        return entry
 
     def get_tag_context(
         self,
@@ -208,7 +374,11 @@ class YAMLTag:
     """Base class for all YAML Tags"""
 
     def __repr__(self) -> str:
-        return str(self.resolve(BlueprintEntry(""), Blueprint()))
+        # resolve() may raise; a repr must never raise (called by the log sanitizer).
+        try:
+            return str(self.resolve(BlueprintEntry(""), Blueprint()))
+        except Exception as exc:  # noqa: BLE001 - a repr must never raise
+            return f"<{self.__class__.__name__}> (failed to resolve: {exc})"
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         """Implement yaml tag logic"""
@@ -228,9 +398,14 @@ class KeyOf(YAMLTag):
 
     id_from: str
 
-    def __init__(self, loader: BlueprintLoader, node: ScalarNode) -> None:
+    def __init__(
+        self,
+        loader: BlueprintLoader | None = None,
+        node: ScalarNode | None = None,
+        id_from: str | None = None,
+    ) -> None:
         super().__init__()
-        self.id_from = node.value
+        self.id_from = node.value if node is not None else id_from
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         for _entry in blueprint.iter_entries():
@@ -264,7 +439,11 @@ class Env(YAMLTag):
             self.default = loader.construct_object(node.value[1])
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
-        return getenv(self.key) or self.default
+        if env := getenv(self.key):
+            return env
+        if isinstance(self.default, YAMLTag):
+            return self.default.resolve(entry, blueprint)
+        return self.default
 
 
 class File(YAMLTag):
@@ -310,13 +489,47 @@ class Context(YAMLTag):
             self.key = loader.construct_object(node.value[0])
             self.default = loader.construct_object(node.value[1])
 
+    def _resolve(
+        self,
+        entry: BlueprintEntry,
+        blueprint: Blueprint,
+        context: Sequence | Mapping,
+        path: str,
+        _segment: str | int | None = None,
+    ) -> Any:
+        """Recursively resolve context"""
+        if _segment is not None:
+            context = context[_segment]
+
+        if isinstance(context, YAMLTag):
+            context = context.resolve(entry, blueprint)
+
+        value = UNSET
+
+        if isinstance(context, Sequence) and not isinstance(context, (str, bytes)):
+            if path.isdigit() and 0 <= int(path) < len(context):
+                value = context[int(path)]
+        elif path in context:
+            value = context[path]
+
+        if value is not UNSET:
+            if isinstance(value, YAMLTag):
+                value = value.resolve(entry, blueprint)
+            return value
+
+        if "." in path:
+            new_head, new_key = path.split(".", 1)
+
+            if isinstance(context, Sequence) and not isinstance(context, (str, bytes)):
+                if new_head.isdigit() and 0 <= int(new_head) < len(context):
+                    return self._resolve(entry, blueprint, context, new_key, int(new_head))
+            elif new_head in context:
+                return self._resolve(entry, blueprint, context, new_key, new_head)
+
+        return self.default
+
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
-        value = self.default
-        if self.key in blueprint.context:
-            value = blueprint.context[self.key]
-        if isinstance(value, YAMLTag):
-            return value.resolve(entry, blueprint)
-        return value
+        return self._resolve(entry, blueprint, blueprint.context, self.key)
 
 
 class ParseJSON(YAMLTag):
@@ -426,12 +639,14 @@ class FindObject(Find):
 class Condition(YAMLTag):
     """Convert all values to a single boolean"""
 
-    mode: Literal["AND", "NAND", "OR", "NOR", "XOR", "XNOR"]
+    mode: Literal["EQ", "NEQ", "AND", "NAND", "OR", "NOR", "XOR", "XNOR"]
     args: list[Any]
 
     _COMPARATORS = {
         # Using all and any here instead of from operator import iand, ior
         # to improve performance
+        "EQ": lambda args: all(x == args[0] for x in args),
+        "NEQ": lambda args: not all(x == args[0] for x in args),
         "AND": all,
         "NAND": lambda args: not all(args),
         "OR": any,
@@ -689,6 +904,9 @@ class BlueprintDumper(SafeDumper):
         self.add_representer(
             BlueprintEntryDesiredState, lambda self, data: self.represent_str(data.value)
         )
+        self.add_representer(
+            KeyOf, lambda self, data: self.represent_scalar("!KeyOf", data.id_from)
+        )
         self.add_representer(None, lambda self, data: self.represent_str(str(data)))
 
     def ignore_aliases(self, data):
@@ -732,7 +950,7 @@ class BlueprintLoader(SafeLoader):
         self.add_constructor("!ParseJSON", ParseJSON)
 
 
-class EntryInvalidError(SentryIgnoredException):
+class EntryInvalidError(TracingIgnoredException):
     """Error raised when an entry is invalid"""
 
     entry_model: str | None

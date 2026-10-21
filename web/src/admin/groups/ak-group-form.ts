@@ -1,21 +1,19 @@
 import "#admin/groups/ak-group-member-table";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
 import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-import "#components/ak-text-input";
-import "#components/ak-switch-input";
-
 import { aki } from "#common/api/client";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
-import { ModelForm } from "#elements/forms/ModelForm";
 
-import { CoreApi, Group, RbacApi, RelatedGroup, Role } from "@goauthentik/api";
+import { ObjectAttributeModelForm } from "#admin/object-attributes/renderAttributes";
 
-import YAML from "yaml";
+import { CoreApi, Group, ModelEnum, RbacApi, RelatedGroup, Role } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
@@ -25,12 +23,14 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export function coreGroupPair(item: Group | RelatedGroup): DualSelectPair {
     return [item.pk, html`<div class="selection-main">${item.name}</div>`, item.name];
 }
+
 export function rbacRolePair(item: Role): DualSelectPair {
     return [item.pk, html`<div class="selection-main">${item.name}</div>`, item.name];
 }
 
 @customElement("ak-group-form")
-export class GroupForm extends ModelForm<Group, string> {
+export class GroupForm extends ObjectAttributeModelForm<Group, string> {
+    public model = ModelEnum.AuthentikCoreGroup;
     static styles: CSSResult[] = [
         ...super.styles,
         css`
@@ -49,8 +49,8 @@ export class GroupForm extends ModelForm<Group, string> {
     #fetchGroups = (page: number, search?: string): Promise<DataProvision> => {
         return aki(CoreApi)
             .coreGroupsList({
-                page: page,
-                search: search,
+                page,
+                search,
             })
             .then((results) => {
                 return {
@@ -62,8 +62,8 @@ export class GroupForm extends ModelForm<Group, string> {
     #fetchRoles = (page: number, search?: string): Promise<DataProvision> => {
         return aki(RbacApi)
             .rbacRolesList({
-                page: page,
-                search: search,
+                page,
+                search,
             })
             .then((results) => {
                 return {
@@ -89,13 +89,16 @@ export class GroupForm extends ModelForm<Group, string> {
 
     async send(data: Group): Promise<Group> {
         data.attributes ??= {};
+
         if (this.instance?.pk) {
             return aki(CoreApi).coreGroupsPartialUpdate({
                 groupUuid: this.instance.pk,
                 patchedGroupRequest: data,
             });
         }
+
         data.users = [];
+
         return aki(CoreApi).coreGroupsCreate({
             groupRequest: data,
         });
@@ -144,16 +147,7 @@ export class GroupForm extends ModelForm<Group, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
-                <ak-codemirror
-                    mode="yaml"
-                    value="${YAML.stringify(this.instance?.attributes ?? {})}"
-                >
-                </ak-codemirror>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Set custom attributes using YAML or JSON.")}
-                </p>
-            </ak-form-element-horizontal>`;
+            ${this.renderObjectAttributes(this.objAttributes, this.instance)}`;
     }
 }
 

@@ -1,6 +1,6 @@
 import MermaidStyles from "./mermaid.css";
 
-import { DOM_PURIFY_STRICT } from "#common/purify";
+import { DOM_PURIFY_RELAXED } from "#common/purify";
 import { ResolvedUITheme } from "#common/theme";
 
 import { MermaidThemeAdapter } from "#elements/mermaid/theme";
@@ -23,7 +23,7 @@ export const DefaultMermaidConfig: Readonly<MermaidConfig> = {
     },
     theme: "base",
     securityLevel: "strict",
-    dompurifyConfig: DOM_PURIFY_STRICT,
+    dompurifyConfig: DOM_PURIFY_RELAXED,
 };
 
 let lastActiveTheme: ResolvedUITheme | null = null;
@@ -35,11 +35,11 @@ let mermaid: Mermaid | null = null;
  *
  * @remarks
  *
- * Mermaid is only loaded once and cached for subsequent calls. Note that
- * Mermaid is a singleton and does not support multiple instances with different
- * configurations. Re-initialization occurs only when the active theme changes.
- *
+ *   Mermaid is only loaded once and cached for subsequent calls. Note that
+ *   Mermaid is a singleton and does not support multiple instances with different
+ *   configurations. Re-initialization occurs only when the active theme changes.
  * @param uiTheme The resolved UI theme to derive Mermaid colors from.
+ *
  * @returns The initialized Mermaid singleton.
  */
 export async function loadMermaid(uiTheme: ResolvedUITheme): Promise<Mermaid> {

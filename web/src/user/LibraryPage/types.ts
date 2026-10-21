@@ -9,3 +9,8 @@ export type PageUIConfig = {
     background?: string;
     searchEnabled: boolean;
 };
+
+export enum ViewMode {
+    Grid = "grid",
+    List = "list",
+}

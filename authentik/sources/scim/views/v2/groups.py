@@ -72,8 +72,8 @@ class GroupsView(SCIMObjectView):
             if not connection:
                 raise SCIMNotFoundError("Group not found.")
             return Response(self.group_to_scim(connection))
-        connections = (
-            base_query.filter(source=self.source).order_by("pk").filter(self.filter_parse(request))
+        connections = self.filter_query(
+            request, base_query.filter(source=self.source).order_by("pk")
         )
         page = self.paginate_query(connections)
         return Response(

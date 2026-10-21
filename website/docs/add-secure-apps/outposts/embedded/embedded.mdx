@@ -12,7 +12,7 @@ You can access the embedded outpost on the same ports as authentik itself, `9000
 
 Use the embedded outpost when you are using the proxy provider and want the simplest deployment model. It is a good fit when authentik is already behind a reverse proxy and you want proxy provider traffic to be handled by the same authentik deployment, without a separate outpost deployment.
 
-Use a [managed outpost](../index.mdx) instead when you want authentik to deploy and update a separate outpost through the [Docker](../integrations/docker.md) or [Kubernetes](../integrations/kubernetes.md) integrations, or when you want the outpost lifecycle to be separate from the core server.
+Use a [managed outpost](../index.mdx) instead when you want authentik to deploy and update a separate outpost through the [Docker](../integrations/docker.mdx) or [Kubernetes](../integrations/kubernetes.mdx) integrations, or when you want the outpost lifecycle to be separate from the core server.
 
 If the embedded outpost does not fit your deployment, you can ignore it and use a [managed outpost](../index.mdx) instead.
 
@@ -28,7 +28,7 @@ Make sure that you set a full URL. A hostname or FQDN by itself does not work.
 
 Most other outpost configuration options also apply to the embedded outpost, except for items that are marked as `non-embedded`.
 
-import Configuration from "../_config.md";
+import Configuration from "../_config.mdx";
 
 <Configuration />
 

@@ -1,5 +1,4 @@
 import "#components/ak-event-info";
-
 import { SimpleEventTable } from "#admin/events/SimpleEventTable";
 
 import { EventsEventsListRequest } from "@goauthentik/api";

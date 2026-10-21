@@ -6,7 +6,7 @@ import type { VFile } from "vfile";
 /**
  * Remark plugin to process lists.
  */
-export const remarkLists: Plugin<[unknown], Root, VFile> = () => {
+export const remarkLists: Plugin<[], Root, VFile> = () => {
     return function transformer(tree) {
         const visitor = (node: List) => {
             node.data = node.data || {};

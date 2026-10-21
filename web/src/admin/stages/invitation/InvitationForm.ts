@@ -1,16 +1,21 @@
-import "#admin/common/ak-flow-search/ak-flow-search";
+import "#admin/stages/invitation/InvitationListLink";
 import "#components/ak-switch-input";
 import "#components/ak-slug-input";
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
+import { PFSize } from "#common/enums";
 import { dateTimeLocal } from "#common/temporal";
 
+import { renderDialog, renderModal } from "#elements/dialogs";
+import { AKFormSubmittedEvent } from "#elements/forms/events";
 import { ModelForm } from "#elements/forms/ModelForm";
+import type { SearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
 
-import { FlowDesignationEnum, Invitation, StagesApi } from "@goauthentik/api";
+import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
+import { InvitationEnrollmentFlowForm } from "#admin/stages/invitation/InvitationEnrollmentFlowForm";
+
+import { Flow, FlowDesignationEnum, Invitation, StagesApi } from "@goauthentik/api";
 
 import YAML from "yaml";
 
@@ -23,11 +28,14 @@ export class InvitationForm extends ModelForm<Invitation, string> {
     public static override verboseName = msg("Invitation");
     public static override verboseNamePlural = msg("Invitations");
 
-    loadInstance(pk: string): Promise<Invitation> {
-        return aki(StagesApi).stagesInvitationInvitationsRetrieve({
-            inviteUuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (inviteUuid: string) =>
+            aki(StagesApi).stagesInvitationInvitationsRetrieve({ inviteUuid }),
+        create: (invitationRequest: Invitation) =>
+            aki(StagesApi).stagesInvitationInvitationsCreate({ invitationRequest }),
+        update: (inviteUuid: string, invitationRequest: Invitation) =>
+            aki(StagesApi).stagesInvitationInvitationsUpdate({ inviteUuid, invitationRequest }),
+    };
 
     getSuccessMessage(): string {
         return this.instance
@@ -35,24 +43,106 @@ export class InvitationForm extends ModelForm<Invitation, string> {
             : msg("Successfully created invitation.");
     }
 
-    async send(data: Invitation): Promise<Invitation> {
-        if (this.instance) {
-            return aki(StagesApi).stagesInvitationInvitationsUpdate({
-                inviteUuid: this.instance.pk || "",
-                invitationRequest: data,
-            });
-        }
-        return aki(StagesApi).stagesInvitationInvitationsCreate({
-            invitationRequest: data,
+    /**
+     * Open a stacked modal to create a new enrollment flow with an invitation
+     * stage bound to it, without losing the current form state.
+     *
+     * Once created, the flow search refreshes its options and selects the new flow.
+     */
+    openNewEnrollmentFlowModal = (invocationEvent?: Event) => {
+        invocationEvent?.stopPropagation();
+
+        const enrollmentFlowForm = new InvitationEnrollmentFlowForm();
+
+        let createdFlow: Flow | null = null;
+
+        enrollmentFlowForm.addEventListener(AKFormSubmittedEvent.eventName, (event) => {
+            createdFlow = (event as AKFormSubmittedEvent<Flow>).response;
+        });
+
+        return renderModal(enrollmentFlowForm, {
+            invokerElement:
+                invocationEvent?.target instanceof HTMLElement ? invocationEvent.target : this,
+            size: PFSize.Medium,
+            onDispose: (disposeEvent) => {
+                const { target } = disposeEvent || {};
+
+                if (!(target instanceof HTMLDialogElement) || target.returnValue !== "submitted") {
+                    return;
+                }
+
+                const flowSearch = this.renderRoot.querySelector<SearchSelect<Flow>>(
+                    'ak-search-select[name="flow"]',
+                );
+
+                if (!flowSearch) {
+                    this.logger.error(
+                        "Failed to refresh flow search after creating new enrollment flow. No flow search found.",
+                    );
+
+                    return;
+                }
+
+                // Refresh the flow search and select the newly created flow.
+                if (!createdFlow) {
+                    this.logger.error(
+                        "Enrollment flow form closed as submitted, but no created flow was captured.",
+                    );
+
+                    return;
+                }
+
+                flowSearch.select(createdFlow);
+                flowSearch.refresh();
+            },
+        });
+    };
+
+    /**
+     * Close the confirmation modal via its footer button.
+     */
+    #confirmationCloseListener = (event: Event) => {
+        const target = event.target as HTMLElement;
+
+        target.closest("ak-modal")?.close("close");
+    };
+
+    protected override send(data: Invitation): Promise<unknown> {
+        const creating = this.instancePk === null;
+
+        return super.send(data).then((response) => {
+            if (creating) {
+                // Show the freshly created invitation's link so the user can copy
+                // it or send it via email right away.
+                renderDialog(
+                    html`<ak-modal headline=${msg("Invitation Details")} size=${PFSize.Medium}>
+                        <ak-stage-invitation-list-link
+                            .invitation=${response as Invitation}
+                        ></ak-stage-invitation-list-link>
+                        <button
+                            slot="actions"
+                            type="button"
+                            class="pf-c-button pf-m-primary"
+                            @click=${this.#confirmationCloseListener}
+                        >
+                            ${msg("Close")}
+                        </button>
+                    </ak-modal>`,
+                );
+            }
+
+            return response;
         });
     }
 
     protected override renderForm(): TemplateResult {
         return html`<ak-slug-input
                 label=${msg("Invitation Name")}
+                placeholder=${msg("e.g. my-invite")}
                 required
                 name="name"
                 value="${this.instance?.name || ""}"
+                autofocus
                 help=${msg(
                     "The name of an invitation must be a slug: only lower case letters, numbers, and the hyphen are permitted here.",
                 )}
@@ -63,20 +153,33 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                     data-type="datetime-local"
                     class="pf-c-form-control"
                     required
-                    value="${dateTimeLocal(this.instance?.expires ?? new Date())}"
+                    value="${dateTimeLocal(
+                        this.instance?.expires ?? new Date(Date.now() + 48 * 60 * 60 * 1000),
+                    )}"
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Flow")} name="flow">
-                <ak-flow-search
-                    flowType=${FlowDesignationEnum.Enrollment}
-                    .currentFlow=${this.instance?.flow}
-                ></ak-flow-search>
+            <ak-form-element-horizontal label=${msg("Flow")} required name="flow">
+                ${AKFlowSearch({
+                    name: "flow",
+                    label: msg("Flow"),
+                    flowType: FlowDesignationEnum.Enrollment,
+                    value: this.instance?.flow,
+                    required: true,
+                    actionLabel: msg("Create a new enrollment flow with invitation stage..."),
+                    onAction: this.openNewEnrollmentFlowModal,
+                })}
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "When selected, the invite will only be usable with the flow. By default the invite is accepted on all flows with invitation stages.",
+                        "The enrollment flow the invitation link will use. The flow should have an invitation stage bound to it for the invitation to be accepted.",
                     )}
                 </p>
             </ak-form-element-horizontal>
+            <ak-switch-input
+                name="singleUse"
+                label=${msg("Single use")}
+                ?checked=${this.instance?.singleUse ?? true}
+                help=${msg("When enabled, the invitation will be deleted after usage.")}
+            ></ak-switch-input>
             <ak-form-element-horizontal label=${msg("Custom attributes")} name="fixedData">
                 <ak-codemirror
                     mode="yaml"
@@ -88,13 +191,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                         "Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON.",
                     )}
                 </p>
-            </ak-form-element-horizontal>
-            <ak-switch-input
-                name="singleUse"
-                label=${msg("Single use")}
-                ?checked=${this.instance?.singleUse ?? true}
-                help=${msg("When enabled, the invitation will be deleted after usage.")}
-            ></ak-switch-input>`;
+            </ak-form-element-horizontal>`;
     }
 }
 

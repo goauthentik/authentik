@@ -1,7 +1,5 @@
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
@@ -9,18 +7,16 @@ import { Form } from "#elements/forms/Form";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { AKLabel } from "#components/ak-label";
+import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { groupSource, userSource } from "#admin/common/search-sources";
 
 import {
-    CoreApi,
-    CoreGroupsListRequest,
-    CoreUsersListRequest,
-    Group,
     ModelEnum,
     PropertyMapping,
     PropertymappingsApi,
     PropertyMappingTestRequest,
     PropertyMappingTestResult,
-    User,
 } from "@goauthentik/api";
 
 import YAML from "yaml";
@@ -82,30 +78,32 @@ export class PropertyMappingTestForm extends Form<PropertyMappingTestRequest> {
 
     protected renderResult(): SlottedTemplateResult {
         return html`<ak-form-element-horizontal>
-            ${this.result?.successful
-                ? html`${AKLabel(
-                          {
-                              slot: "label",
-                              className: "pf-c-form__group-label",
-                              htmlFor: "result",
-                          },
-                          msg("Result"),
-                      )}
+            ${
+                this.result?.successful
+                    ? html`${AKLabel(
+                              {
+                                  slot: "label",
+                                  className: "pf-c-form__group-label",
+                                  htmlFor: "result",
+                              },
+                              msg("Result"),
+                          )}
 
-                      <ak-codemirror
-                          id="result"
-                          mode="javascript"
-                          readonly
-                          value="${ifDefined(this.result?.result)}"
-                      >
-                      </ak-codemirror>`
-                : html`<div class="pf-c-form__group-label">
-                      <div class="c-form__horizontal-group">
-                          <span class="pf-c-form__label-text">
-                              <pre>${this.result?.result}</pre>
-                          </span>
-                      </div>
-                  </div>`}
+                          <ak-codemirror
+                              id="result"
+                              mode="javascript"
+                              readonly
+                              value="${ifDefined(this.result?.result)}"
+                          >
+                          </ak-codemirror>`
+                    : html`<div class="pf-c-form__group-label">
+                          <div class="c-form__horizontal-group">
+                              <span class="pf-c-form__label-text">
+                                  <pre>${this.result?.result}</pre>
+                              </span>
+                          </div>
+                      </div>`
+            }
         </ak-form-element-horizontal>`;
     }
 
@@ -179,59 +177,22 @@ export class PropertyMappingTestForm extends Form<PropertyMappingTestRequest> {
 
     protected override renderForm(): SlottedTemplateResult {
         return html`<ak-form-element-horizontal label=${msg("User")} name="user">
-                <ak-search-select
-                    placeholder=${msg("Select a user...")}
-                    blankable
-                    .fetchObjects=${async (query?: string): Promise<User[]> => {
-                        const args: CoreUsersListRequest = {
-                            ordering: "username",
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const users = await aki(CoreApi).coreUsersList(args);
-                        return users.results;
-                    }}
-                    .renderElement=${(user: User): string => {
-                        return user.username;
-                    }}
-                    .renderDescription=${(user: User): SlottedTemplateResult => {
-                        return html`${user.name}`;
-                    }}
-                    .value=${(user: User | undefined): number | undefined => {
-                        return user?.pk;
-                    }}
-                    .selected=${(user: User): boolean => {
-                        return this.request?.user?.toString() === user.pk.toString();
-                    }}
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "user",
+                    source: userSource,
+                    placeholder: msg("Select a user..."),
+                    value: this.request?.user?.toString(),
+                    blankable: true,
+                })}
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Group")} name="group">
-                <ak-search-select
-                    placeholder=${msg("Select a group...")}
-                    blankable
-                    .fetchObjects=${async (query?: string): Promise<Group[]> => {
-                        const args: CoreGroupsListRequest = {
-                            ordering: "name",
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const groups = await aki(CoreApi).coreGroupsList(args);
-                        return groups.results;
-                    }}
-                    .renderElement=${(group: Group): string => {
-                        return group.name;
-                    }}
-                    .value=${(group: Group | undefined): string | undefined => {
-                        return group?.pk;
-                    }}
-                    .selected=${(group: Group): boolean => {
-                        return this.request?.group?.toString() === group.pk.toString();
-                    }}
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "group",
+                    source: groupSource,
+                    placeholder: msg("Select a group..."),
+                    value: this.request?.group?.toString(),
+                    blankable: true,
+                })}
             </ak-form-element-horizontal>
             ${this.renderExampleButtons()}
 

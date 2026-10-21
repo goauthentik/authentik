@@ -10,7 +10,9 @@ import { SKIP, visit } from "unist-util-visit";
 
 /**
  * Remark plugin to transform relative links to docs to absolute URLs
- * @param {Iterable<[string, string]>} rewrites Map of urls to rewrite where the key is the prefix to check for and the value is the domain to add
+ *
+ * @param {Iterable<[string, string]>} rewrites Map of urls to rewrite where the key is the prefix
+ *   to check for and the value is the domain to add
  */
 export function remarkLinkRewrite(rewrites) {
     const map = new Map(rewrites);

@@ -3,7 +3,7 @@ authentik
 
 Making authentication simple.
 
-API version: 2026.8.0-rc1
+API version: 2026.11.0-rc1
 Contact: hello@goauthentik.io
 */
 
@@ -24,7 +24,7 @@ var _ MappedNullable = &PartialUser{}
 type PartialUser struct {
 	Pk int32 `json:"pk"`
 	// Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-	Username string `json:"username" validate:"regexp=^[\\\\w.@+-]+$"`
+	Username string `json:"username" validate:"regexp=^[\\w.@+-]+$"`
 	// User's display name.
 	Name string `json:"name"`
 	// Designates whether this user should be treated as active. Unselect this instead of deleting accounts.

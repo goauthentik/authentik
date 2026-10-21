@@ -29,10 +29,16 @@ export class AkTextInput extends HorizontalLightComponent<string> {
     public readOnly: boolean = false;
 
     @property({ type: String, attribute: "inputmode", useDefault: true })
-    inputMode: string = "text";
+    public inputMode: string = "text";
+
+    @property({ type: String, attribute: "control-title", useDefault: true })
+    public controlTitle: string = "";
 
     @property({ type: String })
     public type: "text" | "email" | "url" = "text";
+
+    @property({ type: String, useDefault: true })
+    public pattern: string = "";
 
     #inputListener(ev: InputEvent) {
         this.value = (ev.target as HTMLInputElement).value;
@@ -71,8 +77,10 @@ export class AkTextInput extends HorizontalLightComponent<string> {
             autocomplete=${ifPresent(code ? "off" : this.autocomplete)}
             spellcheck=${ifPresent(code ? "false" : this.spellcheck)}
             aria-describedby=${this.helpID}
+            pattern=${ifPresent(this.pattern)}
             placeholder=${ifPresent(this.#formatPlaceholder())}
             inputmode=${this.inputMode}
+            title=${ifPresent(this.controlTitle)}
             ?required=${this.required}
             ?readonly=${this.readOnly}
             ?autofocus=${this.autofocus}

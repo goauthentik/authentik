@@ -160,7 +160,7 @@ class UserSourceConnectionViewSet(
 class GroupSourceConnectionSerializer(SourceSerializer):
     """Group Source Connection"""
 
-    source_obj = SourceSerializer(read_only=True)
+    source_obj = SourceSerializer(read_only=True, source="source")
 
     class Meta:
         model = GroupSourceConnection

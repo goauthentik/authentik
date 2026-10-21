@@ -1,25 +1,16 @@
+import "#components/ak-text-input";
 import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 
 import { AKLabel } from "#components/ak-label";
 
-import { RenderFlowOption } from "#admin/flows/utils";
+import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
-import {
-    BackendsEnum,
-    Flow,
-    FlowDesignationEnum,
-    FlowsApi,
-    FlowsInstancesListRequest,
-    PasswordStage,
-    StagesApi,
-} from "@goauthentik/api";
+import { BackendsEnum, FlowDesignationEnum, PasswordStage, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -27,28 +18,19 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-password-form")
 export class PasswordStageForm extends BaseStageForm<PasswordStage> {
-    loadInstance(pk: string): Promise<PasswordStage> {
-        return aki(StagesApi).stagesPasswordRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: PasswordStage): Promise<PasswordStage> {
-        if (this.instance) {
-            return aki(StagesApi).stagesPasswordUpdate({
-                stageUuid: this.instance.pk || "",
-                passwordStageRequest: data,
-            });
-        }
-        return aki(StagesApi).stagesPasswordCreate({
-            passwordStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesPasswordRetrieve({ stageUuid }),
+        create: (passwordStageRequest: PasswordStage) =>
+            aki(StagesApi).stagesPasswordCreate({ passwordStageRequest }),
+        update: (stageUuid: string, passwordStageRequest: PasswordStage) =>
+            aki(StagesApi).stagesPasswordUpdate({ stageUuid, passwordStageRequest }),
+    };
 
     isBackendSelected(field: BackendsEnum): boolean {
         if (!this.instance) {
             return true;
         }
+
         return (
             this.instance.backends.filter((isField) => {
                 return field === isField;
@@ -79,14 +61,18 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
         return html` <span>
                 ${msg("Validate the user's password against the selected backend(s).")}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${this.instance?.name || ""}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal required name="backends">
@@ -116,41 +102,13 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                         required
                         name="configureFlow"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation: FlowDesignationEnum.StageConfiguration,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await aki(FlowsApi).flowsInstancesList(args);
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                let selected = this.instance?.configureFlow === flow.pk;
-                                if (
-                                    !this.instance?.pk &&
-                                    !this.instance?.configureFlow &&
-                                    flow.slug === "default-password-change"
-                                ) {
-                                    selected = true;
-                                }
-                                return selected;
-                            }}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKFlowSearch({
+                            name: "configureFlow",
+                            flowType: FlowDesignationEnum.StageConfiguration,
+                            value: this.instance?.configureFlow,
+                            blankable: true,
+                            defaultFlowSlug: this.instance?.pk ? null : "default-password-change",
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Flow used by an authenticated user to configure their password. If empty, user will not be able to change their password.",

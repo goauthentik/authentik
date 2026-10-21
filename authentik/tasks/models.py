@@ -16,7 +16,6 @@ from authentik.events.logs import LogEvent
 from authentik.events.utils import sanitize_item
 from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.errors import exception_to_dict
-from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
 
@@ -47,12 +46,6 @@ class Task(InternallyManagedMixin, SerializerModel, TaskBase):
         through_fields=("task", "dependency"),
     )
 
-    tenant = models.ForeignKey(
-        Tenant,
-        on_delete=models.CASCADE,
-        help_text=_("Tenant this task belongs to"),
-    )
-
     rel_obj_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
     rel_obj_id = models.TextField(null=True)
     rel_obj = GenericForeignKey("rel_obj_content_type", "rel_obj_id")
@@ -77,18 +70,19 @@ class Task(InternallyManagedMixin, SerializerModel, TaskBase):
                 operation=pgtrigger.Insert | pgtrigger.Update,
                 when=pgtrigger.Before,
                 func=f"""
-                    NEW.aggregated_status := CASE
-                        WHEN NEW.state != '{TaskState.DONE.value}' THEN NEW.state
-                        ELSE COALESCE((
-                            SELECT CASE
-                                WHEN bool_or(msg->>'log_level' = 'error') THEN 'error'
-                                WHEN bool_or(msg->>'log_level' = 'warning') THEN 'warning'
-                                WHEN bool_or(msg->>'log_level' = 'info') THEN 'info'
-                                ELSE '{TaskState.DONE.value}'
-                            END
-                            FROM jsonb_array_elements(NEW._messages) AS msg
-                        ), '{TaskState.DONE.value}')
-                    END;
+                    IF NEW.state != '{TaskState.DONE.value}' THEN
+                        NEW.aggregated_status := NEW.state;
+                    ELSE
+                        SELECT CASE
+                            WHEN bool_or(log_level = 'error') THEN 'error'
+                            WHEN bool_or(log_level = 'warning') THEN 'warning'
+                            WHEN bool_or(log_level = 'info') THEN 'info'
+                            ELSE '{TaskState.DONE.value}'
+                        END
+                        INTO NEW.aggregated_status
+                        FROM authentik_tasks_tasklog
+                        WHERE task_id = NEW.message_id AND NOT previous;
+                    END IF;
 
                     RETURN NEW;
                 """,  # nosec
@@ -123,9 +117,12 @@ class Task(InternallyManagedMixin, SerializerModel, TaskBase):
                 "exception": exception_to_dict(exc),
                 **attributes,
             }
-            message = str(message)
-            if not message and isinstance(exc, Retry):
-                message = "Task has encountered an error and will be retried"
+            message_prefix = (
+                "Task has encountered an error and will be retried"
+                if isinstance(exc, Retry)
+                else "Task has encountered an error"
+            )
+            message = f"{message_prefix}: {str(exc)}"
         return LogEvent(
             message,
             logger=logger,

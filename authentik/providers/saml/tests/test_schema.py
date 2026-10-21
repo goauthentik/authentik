@@ -38,7 +38,7 @@ class TestSchema(TestCase):
         )
         self.source = SAMLSource.objects.create(
             slug="provider",
-            issuer="authentik",
+            issuer_override="authentik",
             signing_kp=cert,
             pre_authentication_flow=create_test_flow(),
             binding_type=SAMLBindingTypes.POST,

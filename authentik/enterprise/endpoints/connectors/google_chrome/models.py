@@ -5,9 +5,11 @@ from typing import TYPE_CHECKING
 from django.db import models
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
+from google.auth.exceptions import GoogleAuthError
 from google.oauth2.service_account import Credentials
 from rest_framework.serializers import BaseSerializer
 
+from authentik.endpoints.controller import ConnectorSyncException
 from authentik.endpoints.models import Connector
 from authentik.flows.stage import StageView
 
@@ -23,11 +25,14 @@ class GoogleChromeConnector(Connector):
     credentials = models.JSONField()
 
     def google_credentials(self):
-        return {
-            "credentials": Credentials.from_service_account_info(
-                self.credentials, scopes=["https://www.googleapis.com/auth/verifiedaccess"]
-            ),
-        }
+        try:
+            return {
+                "credentials": Credentials.from_service_account_info(
+                    self.credentials, scopes=["https://www.googleapis.com/auth/verifiedaccess"]
+                ),
+            }
+        except GoogleAuthError as exc:
+            raise ConnectorSyncException from exc
 
     @property
     def icon_url(self):

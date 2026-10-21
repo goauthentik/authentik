@@ -12,12 +12,12 @@ from authentik.enterprise.endpoints.connectors.fleet.models import FleetConnecto
 from authentik.enterprise.stages.mtls.stage import PLAN_CONTEXT_CERTIFICATE
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_DEVICE
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 
 
-class FleetConnectorStageTests(FlowTestCase):
+class FleetConnectorStageTests(APIFlowTestCase):
     def setUp(self):
         super().setUp()
         self.connector = FleetConnector.objects.create(
@@ -31,11 +31,11 @@ class FleetConnectorStageTests(FlowTestCase):
                 text=load_fixture("fixtures/cond_acc_profile.mobileconfig"),
             )
             mock.get(
-                "http://localhost/api/v1/fleet/hosts?order_key=hardware_serial&page=0&per_page=50&device_mapping=true&populate_software=true&populate_users=true",
+                "http://localhost/api/v1/fleet/hosts?order_key=hardware_serial&page=0&per_page=1&device_mapping=true&populate_software=without_vulnerability_details&populate_users=true",
                 json={"hosts": [loads(load_fixture("fixtures/host_macos.json"))]},
             )
             mock.get(
-                "http://localhost/api/v1/fleet/hosts?order_key=hardware_serial&page=1&per_page=50&device_mapping=true&populate_software=true&populate_users=true",
+                "http://localhost/api/v1/fleet/hosts?order_key=hardware_serial&page=1&per_page=1&device_mapping=true&populate_software=without_vulnerability_details&populate_users=true",
                 json={"hosts": []},
             )
             controller.sync_endpoints()

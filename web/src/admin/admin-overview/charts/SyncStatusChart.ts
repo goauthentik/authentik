@@ -1,5 +1,4 @@
 import "#elements/forms/ConfirmationForm";
-
 import { aki } from "#common/api/client";
 
 import { AKChart } from "#elements/charts/Chart";
@@ -67,20 +66,24 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
         const objects = await listObjects().catch(() => {
             return emptyResponse;
         });
+
         const metrics: { [key: string]: number } = {
             healthy: 0,
             failed: 0,
             unsynced: 0,
         };
+
         await Promise.all(
             objects.results.map(async (element) => {
                 // Each source should have 3 successful tasks, so the worst task overwrites
                 let objectKey = "healthy";
+
                 try {
                     const status = await fetchSyncStatus(element);
 
                     const now = new Date().getTime();
-                    const maxDelta = 12 * 60 * 60 * 1000; // 12 hours
+                    // 12 hours in milliseconds.
+                    const maxDelta = 12 * 60 * 60 * 1000;
 
                     if (
                         status.lastSyncStatus === TaskAggregatedStatusEnum.Error ||
@@ -97,15 +100,17 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
                 } catch {
                     objectKey = "unsynced";
                 }
+
                 metrics[objectKey] += 1;
             }),
         );
+
         return {
             healthy: metrics.healthy,
             failed: metrics.failed,
             unsynced: objects.pagination.count === 0 ? 1 : metrics.unsynced,
             total: objects.pagination.count,
-            label: label,
+            label,
         };
     }
 
@@ -167,7 +172,9 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
                 msg("Kerberos Source"),
             ),
         ];
+
         this.centerText = statuses.reduce((total, el) => (total += el.total), 0).toString();
+
         return statuses;
     }
 

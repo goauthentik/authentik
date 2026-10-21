@@ -4,6 +4,7 @@ import "#elements/timestamp/ak-timestamp";
 import "#elements/buttons/Dropdown";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import Styles from "#admin/admin-overview/cards/RecentEventsCard.css";
 import { SimpleEventTable } from "#admin/events/SimpleEventTable";
@@ -13,8 +14,6 @@ import { EventsEventsListRequest } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 @customElement("ak-recent-events")
 export class RecentEventsCard extends SimpleEventTable {

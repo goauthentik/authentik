@@ -1,5 +1,4 @@
 import "#elements/Spinner";
-
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
@@ -31,6 +30,7 @@ export class SourceSettingsPlex extends BaseUserSettings {
             })
             .catch(async (error: unknown) => {
                 const parsedError = await parseAPIResponseError(error);
+
                 showMessage({
                     level: MessageLevel.error,
                     message: msg(
@@ -54,6 +54,7 @@ export class SourceSettingsPlex extends BaseUserSettings {
 
         PlexAPIClient.pinPoll(this.configureURL || "", authInfo.pin.id).then((token) => {
             authWindow?.close();
+
             aki(SourcesApi).sourcesPlexRedeemTokenAuthenticatedCreate({
                 plexTokenRedeemRequest: {
                     plexToken: token,

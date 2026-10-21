@@ -1,3 +1,9 @@
 # Headers for static files
 /*
   X-Frame-Options: DENY
+
+/*.md
+  Content-Type: text/plain; charset=utf-8
+  X-Content-Type-Options: nosniff
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: public, max-age=3600, must-revalidate

@@ -1,5 +1,4 @@
 import "#components/ak-page-navbar";
-
 import { DefaultBrand } from "#common/ui/config";
 
 import { AKPageNavbar } from "#components/ak-page-navbar";

@@ -21,10 +21,7 @@ class TestSourceSCIM(E2ETestCase):
         self.slug = generate_id()
         super().setUp()
         self.run_container(
-            image=(
-                "ghcr.io/suvera/scim2-compliance-test-utility@sha256:eca913bb73"
-                "c46892cd1fb2dfd2fef1c5881e6abc5cb0eec7e92fb78c1b933ece"
-            ),
+            image=self.pinned_image("scim2-compliance-test-utility", "e2e/compose.yml"),
             ports={"8080": "8080"},
             healthcheck=Healthcheck(
                 test=["CMD", "curl", "http://localhost:8080"],

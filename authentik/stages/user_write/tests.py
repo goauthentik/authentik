@@ -18,7 +18,7 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_key
@@ -27,7 +27,7 @@ from authentik.stages.user_write.models import UserCreationMode, UserWriteStage
 from authentik.stages.user_write.stage import PLAN_CONTEXT_GROUPS, UserWriteStageView
 
 
-class TestUserWriteStage(FlowTestCase):
+class TestUserWriteStage(APIFlowTestCase):
     """Write tests"""
 
     def setUp(self):
@@ -156,6 +156,43 @@ class TestUserWriteStage(FlowTestCase):
         self.assertTrue(user_qs.exists())
         self.assertTrue(user_qs.first().check_password(new_password))
         self.assertEqual(user_qs.first().attributes["foo"], time.isoformat()[:-6] + "Z")
+
+    def test_user_update_no_change(self):
+        """A write whose prompt data matches the existing user must not save the
+        user or emit a `model_updated` event, while group membership is still
+        reconciled (#23799)."""
+        user = User.objects.create(
+            username="unittest",
+            name="Test User",
+            email="test@goauthentik.io",
+        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = user
+        plan.context[PLAN_CONTEXT_PROMPT] = {
+            "username": "unittest",
+            "name": "Test User",
+            "email": "test@goauthentik.io",
+        }
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        # No unchanged-write should have been persisted as an event
+        self.assertFalse(
+            Event.objects.filter(
+                action=EventAction.MODEL_UPDATED,
+                context__model__model_name="user",
+                context__model__pk=str(user.pk),
+            ).exists()
+        )
+        # Group membership is still reconciled even when the user is unchanged
+        self.assertIn(self.group, user.groups.all())
 
     def test_user_update_source(self):
         """Test update of existing user with a source"""

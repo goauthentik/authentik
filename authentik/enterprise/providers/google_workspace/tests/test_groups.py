@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, patch
 
 from django.test import TestCase
 
+from authentik.admin.models import SystemSettings
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
 from authentik.core.tests.utils import create_test_user
@@ -18,7 +19,6 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.lib.tests.utils import load_fixture
-from authentik.tenants.models import Tenant
 
 domains_list_v1_mock = load_fixture("fixtures/domains_list_v1.json")
 
@@ -30,7 +30,7 @@ class GoogleWorkspaceGroupTests(TestCase):
     def setUp(self) -> None:
         # Delete all groups and groups as the mocked HTTP responses only return one ID
         # which will cause errors with multiple groups
-        Tenant.objects.update(avatars="none")
+        SystemSettings.objects.update(avatars="none")
         User.objects.all().exclude_anonymous().delete()
         Group.objects.all().delete()
         self.provider: GoogleWorkspaceProvider = GoogleWorkspaceProvider.objects.create(
@@ -331,7 +331,8 @@ class GoogleWorkspaceGroupTests(TestCase):
                 ).exists()
             )
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
-            self.assertEqual(len(http.requests()), 7)
+            # Full sync creates separate clients for user and group discovery.
+            self.assertEqual(len(http.requests()), 9)
 
     def test_sync_discover_multiple(self):
         """Test group discovery"""
@@ -372,7 +373,8 @@ class GoogleWorkspaceGroupTests(TestCase):
                 ).exists()
             )
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
-            self.assertEqual(len(http.requests()), 7)
+            # Full sync creates separate clients for user and group discovery.
+            self.assertEqual(len(http.requests()), 9)
             # Change response to trigger update
             http.add_response(
                 f"https://admin.googleapis.com/admin/directory/v1/groups?customer=my_customer&maxResults=500&orderBy=email&key={self.api_key}&alt=json",

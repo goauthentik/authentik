@@ -55,10 +55,15 @@ class AuthenticatorEmailChallengeResponse(ChallengeResponse):
     def validate(self, attrs: dict) -> dict:
         """Check"""
         if "code" not in attrs:
-            if "email" not in attrs:
-                raise ValidationError("email required")
-            self.device.email = attrs["email"]
-            self.stage.validate_and_send(attrs["email"])
+            # If the flow already established a destination address,
+            # use that address rather than one provided in the request
+            email = self.stage._has_email()
+            if email is None:
+                if "email" not in attrs:
+                    raise ValidationError("email required")
+                email = attrs["email"]
+            self.device.email = email
+            self.stage.validate_and_send(email)
             return super().validate(attrs)
         if not self.device.verify_token(str(attrs["code"])):
             raise ValidationError(_("Code does not match"))

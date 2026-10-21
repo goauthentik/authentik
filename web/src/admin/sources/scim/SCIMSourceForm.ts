@@ -4,7 +4,6 @@ import "#components/ak-switch-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMSourceFormHelpers.js";
 
 import { aki } from "#common/api/client";
@@ -21,27 +20,15 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-scim-form")
 export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
-    async loadInstance(pk: string): Promise<SCIMSource> {
-        return aki(SourcesApi)
-            .sourcesScimRetrieve({
-                slug: pk,
-            })
-            .then((source) => {
-                return source;
-            });
-    }
-
-    async send(data: SCIMSource): Promise<SCIMSource> {
-        if (this.instance?.slug) {
-            return aki(SourcesApi).sourcesScimPartialUpdate({
-                slug: this.instance.slug,
-                patchedSCIMSourceRequest: data,
-            });
-        }
-        return aki(SourcesApi).sourcesScimCreate({
-            sCIMSourceRequest: data as unknown as SCIMSourceRequest,
-        });
-    }
+    protected endpoints = {
+        load: (slug: string) => aki(SourcesApi).sourcesScimRetrieve({ slug }),
+        create: (sCIMSource: SCIMSource) =>
+            aki(SourcesApi).sourcesScimCreate({
+                sCIMSourceRequest: sCIMSource as unknown as SCIMSourceRequest,
+            }),
+        update: (slug: string, patchedSCIMSourceRequest: SCIMSource) =>
+            aki(SourcesApi).sourcesScimPartialUpdate({ slug, patchedSCIMSourceRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html`<ak-text-input
@@ -106,8 +93,9 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
                     <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
                         <input
                             type="text"
-                            value="${this.instance?.userPathTemplate ??
-                            "goauthentik.io/sources/%(slug)s"}"
+                            value="${
+                                this.instance?.userPathTemplate ?? "goauthentik.io/sources/%(slug)s"
+                            }"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">${placeholderHelperText}</p>

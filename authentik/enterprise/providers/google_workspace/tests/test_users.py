@@ -5,6 +5,7 @@ from unittest.mock import MagicMock, patch
 
 from django.test import TestCase
 
+from authentik.admin.models import SystemSettings
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
 from authentik.enterprise.providers.google_workspace.clients.test_http import MockHTTP
@@ -18,7 +19,6 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.lib.tests.utils import load_fixture
-from authentik.tenants.models import Tenant
 
 domains_list_v1_mock = load_fixture("fixtures/domains_list_v1.json")
 
@@ -30,7 +30,7 @@ class GoogleWorkspaceUserTests(TestCase):
     def setUp(self) -> None:
         # Delete all users and groups as the mocked HTTP responses only return one ID
         # which will cause errors with multiple users
-        Tenant.objects.update(avatars="none")
+        SystemSettings.objects.update(avatars="none")
         User.objects.all().exclude_anonymous().delete()
         Group.objects.all().delete()
         self.provider: GoogleWorkspaceProvider = GoogleWorkspaceProvider.objects.create(
@@ -309,7 +309,8 @@ class GoogleWorkspaceUserTests(TestCase):
                 ).exists()
             )
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
-            self.assertEqual(len(http.requests()), 7)
+            # Full sync creates separate clients for user and group discovery.
+            self.assertEqual(len(http.requests()), 9)
 
     def test_sync_discover_multiple(self):
         """Test user discovery, running multiple times"""
@@ -352,7 +353,8 @@ class GoogleWorkspaceUserTests(TestCase):
                 ).exists()
             )
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
-            self.assertEqual(len(http.requests()), 7)
+            # Full sync creates separate clients for user and group discovery.
+            self.assertEqual(len(http.requests()), 9)
             # Change response, which will trigger a discovery update
             http.add_response(
                 f"https://admin.googleapis.com/admin/directory/v1/users?customer=my_customer&maxResults=500&orderBy=email&key={self.api_key}&alt=json",

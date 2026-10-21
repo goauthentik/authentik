@@ -139,6 +139,8 @@ class PlexSource(ScheduledModel, Source):
 class PlexSourcePropertyMapping(PropertyMapping):
     """Map Plex properties to User of Group object attributes"""
 
+    expression_allowed_types = [dict]
+
     @property
     def component(self) -> str:
         return "ak-property-mapping-source-plex-form"

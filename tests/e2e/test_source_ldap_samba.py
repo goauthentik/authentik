@@ -23,7 +23,7 @@ class TestSourceLDAPSamba(E2ETestCase):
         self.admin_password = generate_key()
         super().setUp()
         self.samba = self.run_container(
-            image="ghcr.io/beryju/test-samba-dc:latest",
+            image=self.pinned_image("test-samba-dc", "e2e/compose.yml"),
             cap_add=["SYS_ADMIN"],
             ports={
                 "389": "389/tcp",

@@ -121,7 +121,7 @@ class EmailDevice(SerializerModel, ThrottlingMixin, SideChannelDevice):
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     email = models.EmailField()
-    stage = models.ForeignKey(AuthenticatorEmailStage, on_delete=models.CASCADE)
+    stage = models.ForeignKey(AuthenticatorEmailStage, on_delete=models.PROTECT)
     last_used = models.DateTimeField(auto_now=True)
 
     @property

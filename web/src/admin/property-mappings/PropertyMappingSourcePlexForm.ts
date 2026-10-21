@@ -1,6 +1,5 @@
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
-
 import { aki } from "#common/api/client";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
@@ -13,23 +12,19 @@ import { customElement } from "lit/decorators.js";
 export class PropertyMappingSourcePlexForm extends BasePropertyMappingForm<PlexSourcePropertyMapping> {
     protected override docLink = "/users-sources/sources/property-mappings/expressions";
 
-    loadInstance(pk: string): Promise<PlexSourcePropertyMapping> {
-        return aki(PropertymappingsApi).propertymappingsSourcePlexRetrieve({
-            pmUuid: pk,
-        });
-    }
-
-    async send(data: PlexSourcePropertyMapping): Promise<PlexSourcePropertyMapping> {
-        if (this.instance) {
-            return aki(PropertymappingsApi).propertymappingsSourcePlexUpdate({
-                pmUuid: this.instance.pk,
-                plexSourcePropertyMappingRequest: data,
-            });
-        }
-        return aki(PropertymappingsApi).propertymappingsSourcePlexCreate({
-            plexSourcePropertyMappingRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(PropertymappingsApi).propertymappingsSourcePlexRetrieve({ pmUuid: pk }),
+        create: (plexSourcePropertyMappingRequest: PlexSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourcePlexCreate({
+                plexSourcePropertyMappingRequest,
+            }),
+        update: (pk: string, plexSourcePropertyMappingRequest: PlexSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourcePlexUpdate({
+                pmUuid: pk,
+                plexSourcePropertyMappingRequest,
+            }),
+    };
 }
 
 declare global {

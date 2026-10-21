@@ -1,10 +1,10 @@
+import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
+
 import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
 import { css, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 
 @customElement("ak-loading")
 export class Loading extends AKElement {

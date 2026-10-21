@@ -1,41 +1,56 @@
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:26.3.1-trixie@sha256:3c05c2cf0f6a5795dfb7abefb2a4e31a78d6271a99962531c48315ced17d618a AS docs-builder
+# Tag must track the root package.json `packageManager` version. ${BUILDPLATFORM}
+# keeps the binary's arch aligned with the builder stage on cross-arch builds.
+FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:12.9.1@sha256:77123fd40a39db0eb8be6bddfcf0cea15e000122b9221ccce2e4415be29050f2 AS pnpm
+
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:26.12.0-trixie@sha256:1b84b89ada025e3b14543cbb837ffaa1c1b5273b841c5b94dd1a8f9c1d8cf7fe AS docs-builder
 
 ENV NODE_ENV=production
 
 WORKDIR /work
 
+COPY --from=pnpm /opt/pnpm /opt/pnpm
+ENV PATH="/opt/pnpm:${PATH}"
+
 RUN --mount=type=bind,target=/work/package.json,src=./package.json \
-    --mount=type=bind,target=/work/package-lock.json,src=./package-lock.json \
     --mount=type=bind,target=/work/scripts/node/,src=./scripts/node/ \
     --mount=type=bind,target=/work/packages/logger-js/,src=./packages/logger-js/ \
-    --mount=type=bind,target=/work/packages/tsconfig/,src=./packages/tsconfig/ \
-    --mount=type=bind,target=/work/packages/eslint-config/,src=./packages/eslint-config/ \
-    --mount=type=bind,target=/work/packages/prettier-config/,src=./packages/prettier-config/ \
-    --mount=type=bind,target=/work/packages/docusaurus-config/,src=./packages/docusaurus-config/ \
     --mount=type=bind,target=/work/website/package.json,src=./website/package.json \
-    --mount=type=bind,target=/work/website/package-lock.json,src=./website/package-lock.json \
-    node ./scripts/node/setup-corepack.mjs --force && \
-    node ./scripts/node/lint-runtime.mjs ./website
+    --mount=type=bind,target=/work/website/pnpm-lock.yaml,src=./website/pnpm-lock.yaml \
+    node ./scripts/node/lint-runtime.ts ./website
+
+# Hoisted root install so `@goauthentik/docusaurus-config` resolves its own deps
+# (e.g. `deepmerge-ts`) during the docs build. Its source, `@goauthentik/fonts`
+# and `@goauthentik/tsconfig` are copied rather than bind-mounted, so pnpm can
+# write the per-package node_modules it places workspace links in.
+COPY ./packages/tsconfig /work/packages/tsconfig/
+COPY ./packages/docusaurus-config /work/packages/docusaurus-config/
+COPY ./packages/fonts /work/packages/fonts/
 
 RUN --mount=type=bind,target=/work/.npmrc,src=./.npmrc \
     --mount=type=bind,target=/work/package.json,src=./package.json \
-    --mount=type=bind,target=/work/package-lock.json,src=./package-lock.json \
-    --mount=type=bind,target=/work/scripts/node/,src=./scripts/node/ \
-    --mount=type=bind,target=/work/packages/logger-js/,src=./packages/logger-js/ \
-    --mount=type=bind,target=/work/packages/tsconfig/,src=./packages/tsconfig/ \
-    --mount=type=bind,target=/work/packages/eslint-config/,src=./packages/eslint-config/ \
-    --mount=type=bind,target=/work/packages/prettier-config/,src=./packages/prettier-config/ \
-    --mount=type=bind,target=/work/packages/docusaurus-config/,src=./packages/docusaurus-config/ \
+    --mount=type=bind,target=/work/pnpm-lock.yaml,src=./pnpm-lock.yaml \
+    --mount=type=bind,target=/work/pnpm-workspace.yaml,src=./pnpm-workspace.yaml \
+    --mount=type=bind,target=/work/packages/esbuild-plugin-live-reload/package.json,src=./packages/esbuild-plugin-live-reload/package.json \
+    --mount=type=bind,target=/work/packages/oxlint-config/package.json,src=./packages/oxlint-config/package.json \
+    --mount=type=bind,target=/work/packages/logger-js/package.json,src=./packages/logger-js/package.json \
+    --mount=type=bind,target=/work/packages/oxfmt-config/package.json,src=./packages/oxfmt-config/package.json \
+    --mount=type=bind,target=/work/packages/tsconfig/package.json,src=./packages/tsconfig/package.json \
+    --mount=type=bind,target=/work/lifecycle/aws/package.json,src=./lifecycle/aws/package.json \
+    --mount=type=cache,id=pnpm-root,sharing=shared,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile --config.node-linker=hoisted \
+    --filter "@goauthentik/docusaurus-config"
+
+RUN --mount=type=bind,target=/work/.npmrc,src=./.npmrc \
     --mount=type=bind,target=/work/website/package.json,src=./website/package.json \
-    --mount=type=bind,target=/work/website/package-lock.json,src=./website/package-lock.json \
+    --mount=type=bind,target=/work/website/pnpm-lock.yaml,src=./website/pnpm-lock.yaml \
+    --mount=type=bind,target=/work/website/pnpm-workspace.yaml,src=./website/pnpm-workspace.yaml \
     --mount=type=bind,target=/work/website/vendored/detect-package-manager,src=./website/vendored/detect-package-manager \
     --mount=type=bind,target=/work/website/docusaurus-theme/package.json,src=./website/docusaurus-theme/package.json \
     --mount=type=bind,target=/work/website/api/package.json,src=./website/api/package.json \
     --mount=type=bind,target=/work/website/integrations/package.json,src=./website/integrations/package.json \
     --mount=type=bind,target=/work/website/docs/package.json,src=./website/docs/package.json \
-    --mount=type=cache,id=npm-website,sharing=shared,target=/root/.npm \
-    corepack npm ci && \
-    corepack npm ci --workspaces --include-workspace-root --prefix ./website
+    --mount=type=cache,id=pnpm-website,sharing=shared,target=/root/.local/share/pnpm/store \
+    pnpm --dir website install --frozen-lockfile
 
 WORKDIR /work/website
 
@@ -45,10 +60,9 @@ COPY ./schema.yml /work/
 COPY ./lifecycle/container/compose.yml /work/lifecycle/container/
 COPY ./SECURITY.md /work/
 
-RUN  --mount=type=bind,target=/work/packages/docusaurus-config/,src=./packages/docusaurus-config/ \
-    corepack npm run build -w docs
+RUN pnpm run build
 
-FROM docker.io/library/nginx:1.31.2-trixie@sha256:42f2d24ae18df9b5251d1cc45548085656d2335e9338fd150a24e415462d151f
+FROM docker.io/library/nginx:1.31.6-trixie@sha256:60f0d4e986561e08804f75c211dcaf7fc5455699eada29f42cbe8a0a7253dd86
 LABEL org.opencontainers.image.authors="Authentik Security Inc." \
     org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
     org.opencontainers.image.description="authentik product documentation" \

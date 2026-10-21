@@ -13,12 +13,20 @@ from psqlextra.types import ConflictAction
 from django_postgres_cache.models import CacheEntry
 
 
+def default_reverse_key_func(key: str) -> str:
+    """Inverse of django.core.cache.backends.base.default_key_func"""
+    return key.split(":", 2)[2]
+
+
 class DatabaseCache(BaseCache):
     pickle_protocol = pickle.HIGHEST_PROTOCOL
 
     def __init__(self, location: Any, params: dict[str, Any]) -> None:
         super().__init__(params)
-        self.reverse_key_func = get_key_func(params["REVERSE_KEY_FUNCTION"])
+        reverse_key_function = params.get("REVERSE_KEY_FUNCTION")
+        self.reverse_key_func = (
+            get_key_func(reverse_key_function) if reverse_key_function else default_reverse_key_func
+        )
 
     def _make_value(self, value: Any) -> str:
         pickled = pickle.dumps(value, self.pickle_protocol)

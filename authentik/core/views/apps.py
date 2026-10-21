@@ -76,6 +76,7 @@ class RedirectToAppStage(ChallengeStageView):
         return RedirectChallenge(
             instance={
                 "to": launch,
+                "final_redirect": True,
             }
         )
 

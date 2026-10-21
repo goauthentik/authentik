@@ -6,7 +6,7 @@ import json
 from cryptography.hazmat.backends import default_backend
 from cryptography.x509 import load_der_x509_certificate
 from django.urls.base import reverse
-from jwt import PyJWKSet
+from jwt import PyJWKSet, decode
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert, create_test_flow
@@ -92,6 +92,61 @@ class TestJWKS(OAuthTestCase):
         body = json.loads(response.content.decode())
         self.assertEqual(len(body["keys"]), 1)
         PyJWKSet.from_dict(body)
+
+    def test_eddsa(self):
+        """Test JWKS request with EdDSA, for both Edwards curves"""
+        for alg, crv in [(PrivateKeyAlg.ED25519, "Ed25519"), (PrivateKeyAlg.ED448, "Ed448")]:
+            with self.subTest(crv):
+                slug = generate_id()
+                provider = OAuth2Provider.objects.create(
+                    name=generate_id(),
+                    client_id=generate_id(),
+                    authorization_flow=create_test_flow(),
+                    redirect_uris=[
+                        RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")
+                    ],
+                    signing_key=create_test_cert(alg),
+                )
+                app = Application.objects.create(name=slug, slug=slug, provider=provider)
+                response = self.client.get(
+                    reverse(
+                        "authentik_providers_oauth2:jwks", kwargs={"application_slug": app.slug}
+                    )
+                )
+                body = json.loads(response.content.decode())
+                self.assertEqual(len(body["keys"]), 1)
+                key = body["keys"][0]
+                self.assertEqual(key["kty"], "OKP")
+                self.assertEqual(key["alg"], "EdDSA")
+                self.assertEqual(key["crv"], crv)
+                # PyJWKSet rejects a JWK that is missing key material, so this asserts the OKP
+                # key is actually usable by a relying party rather than merely well-shaped.
+                PyJWKSet.from_dict(body)
+
+    def test_eddsa_sign_verify(self):
+        """Test a token signed with EdDSA verifies against the published JWKS"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
+            signing_key=create_test_cert(PrivateKeyAlg.ED25519),
+        )
+        slug = generate_id()
+        app = Application.objects.create(name=slug, slug=slug, provider=provider)
+        token = provider.encode({"sub": "test"})
+
+        response = self.client.get(
+            reverse("authentik_providers_oauth2:jwks", kwargs={"application_slug": app.slug})
+        )
+        jwks = PyJWKSet.from_dict(json.loads(response.content.decode()))
+        decoded = decode(
+            token,
+            jwks.keys[0].key,
+            algorithms=["EdDSA"],
+            options={"verify_aud": False},
+        )
+        self.assertEqual(decoded["sub"], "test")
 
     def test_enc(self):
         """Test with JWE"""

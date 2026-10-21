@@ -13,21 +13,23 @@ on:
 
 jobs:
   test-container:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     strategy:
       fail-fast: false
       matrix:
         version:
           - docs
-          - version-2026-2
           - version-2026-5
+          - version-2026-8
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - run: |
           set -euo pipefail
-          current="$(pwd)"
           dir="/tmp/authentik/${{ matrix.version }}"
-          mkdir -p "${dir}/lifecycle/container"
+          wget "https://${{ matrix.version }}.goauthentik.io/compose.yml" -O /tmp/compose.yml
+          # Test the release that the compose file runs, with that release's own script
+          tag="$(grep -m1 -o 'AUTHENTIK_TAG:-[^}]*' /tmp/compose.yml)"
+          tag="${tag#AUTHENTIK_TAG:-}"
+          git clone --depth 1 --branch "version/${tag}" https://github.com/goauthentik/authentik.git "${dir}"
+          cp /tmp/compose.yml "${dir}/lifecycle/container/compose.yml"
           cd "${dir}"
-          wget "https://${{ matrix.version }}.goauthentik.io/compose.yml" -O "${dir}/lifecycle/container/compose.yml"
-          "${current}/scripts/test_docker.sh"
+          ./scripts/test_docker.sh

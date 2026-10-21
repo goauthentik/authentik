@@ -5,7 +5,6 @@ from uuid import UUID
 
 from cryptography.hazmat.primitives.serialization import Encoding
 from cryptography.x509 import load_der_x509_certificate
-from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from django.utils.translation import gettext as __
@@ -13,6 +12,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
+from webauthn.helpers.cose import COSEAlgorithmIdentifier
 from webauthn.helpers.exceptions import WebAuthnException
 from webauthn.helpers.options_to_json_dict import options_to_json_dict
 from webauthn.helpers.parse_attestation_object import parse_attestation_object
@@ -48,6 +48,18 @@ from authentik.stages.authenticator_webauthn.models import (
 )
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
 
+# TODO: Remove once py_webauthn adds ML-DSA to its default supported algorithms.
+# Offered in order of preference, so the post-quantum ML-DSA sets (FIPS 204) are only
+# chosen by an authenticator that supports none of the classical algorithms.
+SUPPORTED_PUB_KEY_ALGS = [
+    COSEAlgorithmIdentifier.EDDSA,
+    COSEAlgorithmIdentifier.ECDSA_SHA_256,
+    COSEAlgorithmIdentifier.RSASSA_PKCS1_v1_5_SHA_256,
+    COSEAlgorithmIdentifier.ML_DSA_44,
+    COSEAlgorithmIdentifier.ML_DSA_65,
+    COSEAlgorithmIdentifier.ML_DSA_87,
+]
+
 PLAN_CONTEXT_WEBAUTHN_CHALLENGE = "goauthentik.io/stages/authenticator_webauthn/challenge"
 PLAN_CONTEXT_WEBAUTHN_ATTEMPT = "goauthentik.io/stages/authenticator_webauthn/attempt"
 
@@ -55,7 +67,6 @@ PLAN_CONTEXT_WEBAUTHN_ATTEMPT = "goauthentik.io/stages/authenticator_webauthn/at
 @dataclass
 class VerifiedRegistrationData:
     registration: VerifiedRegistration
-    exists_query: Q
     attest_cert: str | None = None
     attest_cert_fingerprint: str | None = None
 
@@ -86,15 +97,17 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
                 expected_challenge=challenge,
                 expected_rp_id=get_rp_id(self.request),
                 expected_origin=get_origin(self.request),
+                supported_pub_key_algs=SUPPORTED_PUB_KEY_ALGS,
             )
-        except WebAuthnException as exc:
+        # py_webauthn does not wrap cryptography's ValueError when an attestation certificate
+        # fails to parse, which happens with authenticators that ship non-DER certificates
+        except (WebAuthnException, ValueError) as exc:
             self.stage.logger.warning("registration failed", exc=exc)
-            raise ValidationError(f"Registration failed. Error: {exc}") from None
+            raise ValidationError(
+                "Registration failed. Please contact your administrator."
+            ) from None
 
-        registration_data = VerifiedRegistrationData(
-            registration,
-            exists_query=Q(credential_id=bytes_to_base64url(registration.credential_id)),
-        )
+        registration_data = VerifiedRegistrationData(registration)
         stage: AuthenticatorWebAuthnStage = self.stage.executor.current_stage
 
         att_obj = parse_attestation_object(registration.attestation_object)
@@ -104,18 +117,21 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
             and att_obj.att_stmt.x5c is not None
             and len(att_obj.att_stmt.x5c) > 0
         ):
-            cert = load_der_x509_certificate(att_obj.att_stmt.x5c[0])
-            registration_data.attest_cert = cert.public_bytes(
-                encoding=Encoding.PEM,
-            ).decode("utf-8")
-            registration_data.attest_cert_fingerprint = fingerprint_sha256(cert)
-            if stage.prevent_duplicate_devices:
-                registration_data.exists_query |= Q(
-                    attestation_certificate_fingerprint=registration_data.attest_cert_fingerprint
-                )
+            # android-key attestation verifies with OpenSSL, which accepts certificates that
+            # cryptography rejects. The registration is valid, so only skip storing the certificate
+            try:
+                cert = load_der_x509_certificate(att_obj.att_stmt.x5c[0])
+            except ValueError as exc:
+                self.stage.logger.warning("failed to parse attestation certificate", exc=exc)
+            else:
+                registration_data.attest_cert = cert.public_bytes(
+                    encoding=Encoding.PEM,
+                ).decode("utf-8")
+                registration_data.attest_cert_fingerprint = fingerprint_sha256(cert)
 
-        credential_id_exists = WebAuthnDevice.objects.filter(registration_data.exists_query).first()
-        if credential_id_exists:
+        if WebAuthnDevice.objects.filter(
+            credential_id=bytes_to_base64url(registration.credential_id)
+        ).exists():
             raise ValidationError("Credential ID already exists.")
 
         aaguid = registration.aaguid
@@ -189,6 +205,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
             ),
             attestation=AttestationConveyancePreference.DIRECT,
             hints=hints,
+            supported_pub_key_algs=SUPPORTED_PUB_KEY_ALGS,
         )
 
         self.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = registration_options.challenge
@@ -225,28 +242,22 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         # Webauthn Challenge has already been validated
         webauthn_credential: VerifiedRegistrationData = response.validated_data["response"]
-        existing_device = WebAuthnDevice.objects.filter(webauthn_credential.exists_query).first()
-        if not existing_device:
-            name = "WebAuthn Device"
-            device_type = WebAuthnDeviceType.objects.filter(
-                aaguid=webauthn_credential.registration.aaguid
-            ).first()
-            if device_type and device_type.description:
-                name = device_type.description
-            WebAuthnDevice.objects.create(
-                name=name,
-                user=self.get_pending_user(),
-                public_key=bytes_to_base64url(
-                    webauthn_credential.registration.credential_public_key
-                ),
-                credential_id=bytes_to_base64url(webauthn_credential.registration.credential_id),
-                sign_count=webauthn_credential.registration.sign_count,
-                rp_id=get_rp_id(self.request),
-                device_type=device_type,
-                aaguid=webauthn_credential.registration.aaguid,
-                attestation_certificate_pem=webauthn_credential.attest_cert,
-                attestation_certificate_fingerprint=webauthn_credential.attest_cert_fingerprint,
-            )
-        else:
-            return self.executor.stage_invalid("Device with Credential ID already exists.")
+        name = "WebAuthn Device"
+        device_type = WebAuthnDeviceType.objects.filter(
+            aaguid=webauthn_credential.registration.aaguid
+        ).first()
+        if device_type and device_type.description:
+            name = device_type.description
+        WebAuthnDevice.objects.create(
+            name=name,
+            user=self.get_pending_user(),
+            public_key=bytes_to_base64url(webauthn_credential.registration.credential_public_key),
+            credential_id=bytes_to_base64url(webauthn_credential.registration.credential_id),
+            sign_count=webauthn_credential.registration.sign_count,
+            rp_id=get_rp_id(self.request),
+            device_type=device_type,
+            aaguid=webauthn_credential.registration.aaguid,
+            attestation_certificate_pem=webauthn_credential.attest_cert,
+            attestation_certificate_fingerprint=webauthn_credential.attest_cert_fingerprint,
+        )
         return self.executor.stage_ok()

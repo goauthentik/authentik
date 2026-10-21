@@ -10,6 +10,10 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.common.saml.constants import (
+    AES128_CBC,
+    AES128_GCM,
+    AES256_CBC,
+    AES256_GCM,
     DSA_SHA1,
     ECDSA_SHA1,
     ECDSA_SHA256,
@@ -19,6 +23,8 @@ from authentik.common.saml.constants import (
     RSA_SHA256,
     RSA_SHA384,
     RSA_SHA512,
+    SAML_BINDING_POST,
+    SAML_BINDING_REDIRECT,
     SHA1,
     SHA256,
     SHA384,
@@ -27,13 +33,17 @@ from authentik.common.saml.constants import (
 from authentik.core.api.object_types import CreatableType
 from authentik.core.models import (
     AuthenticatedSession,
-    ExpiringModel,
     PropertyMapping,
     Provider,
     User,
 )
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.models import DomainlessURLValidator, InternallyManagedMixin, SerializerModel
+from authentik.lib.models import (
+    DomainlessURLValidator,
+    ExpiringModel,
+    InternallyManagedMixin,
+    SerializerModel,
+)
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.saml.models import SAMLNameIDPolicy
 
@@ -45,6 +55,15 @@ class SAMLBindings(models.TextChoices):
 
     REDIRECT = "redirect"
     POST = "post"
+
+    @classmethod
+    def from_metadata_binding(cls, binding: str | None) -> SAMLBindings | None:
+        """Get the binding matching the `Binding` attribute `binding` of an endpoint in
+        SAML metadata, returns None for bindings authentik doesn't support."""
+        return {
+            SAML_BINDING_REDIRECT: cls.REDIRECT,
+            SAML_BINDING_POST: cls.POST,
+        }.get(binding)
 
 
 class SAMLLogoutMethods(models.TextChoices):
@@ -222,6 +241,16 @@ class SAMLProvider(Provider):
         on_delete=models.SET_NULL,
         verbose_name=_("Encryption Keypair"),
         related_name="+",
+    )
+    encryption_algorithm = models.TextField(
+        choices=(
+            (AES128_CBC, _("AES128-CBC")),
+            (AES256_CBC, _("AES256-CBC")),
+            (AES128_GCM, _("AES128-GCM")),
+            (AES256_GCM, _("AES256-GCM")),
+        ),
+        default=AES256_GCM,
+        help_text=_("Block cipher used to encrypt the assertion."),
     )
 
     default_relay_state = models.TextField(

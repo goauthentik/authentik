@@ -4,31 +4,18 @@ from django.urls import reverse
 from drf_spectacular.utils import extend_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, SerializerMethodField
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.groups import PartialUserSerializer
+from authentik.core.api.object_attributes import ContentTypeSerializer
 from authentik.core.api.utils import ModelSerializer
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.reports.models import DataExport
 from authentik.enterprise.reports.tasks import generate_export
 from authentik.rbac.permissions import HasPermission
-
-
-class ContentTypeSerializer(ModelSerializer):
-    app_label = CharField(read_only=True)
-    model = CharField(read_only=True)
-    verbose_name_plural = SerializerMethodField()
-
-    def get_verbose_name_plural(self, ct: ContentType) -> str:
-        return ct.model_class()._meta.verbose_name_plural
-
-    class Meta:
-        model = ContentType
-        fields = ("id", "app_label", "model", "verbose_name_plural")
 
 
 class DataExportSerializer(EnterpriseRequiredMixin, ModelSerializer):

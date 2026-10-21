@@ -1,10 +1,12 @@
 """Source stage models"""
 
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 
+from authentik.core.sources.matcher import MatchFailureReason
 from authentik.flows.models import Stage
 from authentik.lib.utils.time import timedelta_string_validator
 
@@ -22,6 +24,13 @@ class SourceStage(Stage):
             "Amount of time a user can take to return from the source to continue the flow "
             "(Format: hours=-1;minutes=-2;seconds=-3)"
         ),
+    )
+
+    resume_on_match_failures = ArrayField(
+        models.TextField(choices=MatchFailureReason.choices),
+        default=list,
+        blank=True,
+        help_text=_("Source matching failure reasons for which the flow should resume."),
     )
 
     @property

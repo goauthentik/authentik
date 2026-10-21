@@ -5,7 +5,6 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
@@ -52,6 +51,7 @@ export class PromptListPage extends TablePage<Prompt> {
 
     protected renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Prompt(s)")}
             .objects=${this.selectedElements}
@@ -83,7 +83,9 @@ export class PromptListPage extends TablePage<Prompt> {
             })}`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButton(PromptForm, item.pk, item.name, {
-                    size: PFSize.XLarge,
+                    modalProps: {
+                        size: PFSize.XLarge,
+                    },
                 })}
                 ${IconPermissionButton(item.name, {
                     model: ModelEnum.AuthentikStagesPromptPrompt,

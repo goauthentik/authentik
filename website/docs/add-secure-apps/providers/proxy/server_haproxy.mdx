@@ -1,0 +1,35 @@
+---
+title: HAProxy
+---
+
+import Placeholders from "./__placeholders.mdx";
+import HAProxyStandalone from "./_haproxy_standalone.mdx";
+
+Use this configuration to protect one HTTPS application with standalone HAProxy and authentik's **Forward auth (single application)** mode. HAProxy checks application requests with the outpost's nginx-compatible forward-auth endpoint and redirects unauthenticated users to sign in.
+
+## Prerequisites
+
+- Use a supported HAProxy release compiled with Lua support (`USE_LUA=1`).
+- Install [haproxy-auth-request](https://github.com/TimWolla/haproxy-auth-request), its [haproxy-lua-http](https://github.com/haproxytech/haproxy-lua-http) dependency, and a Lua `json` library.
+- [Create an application and proxy provider](./create-proxy-provider.mdx) with **Forward auth (single application)** mode and **External host** set to `https://app.company`. Assign the application to an embedded or deployed proxy outpost.
+- Ensure that HAProxy's address is included in authentik's [trusted proxy networks](../../../install-config/reverse-proxy.mdx#trusted-proxy-networks). The Lua module sends the application hostname in `X-Forwarded-Host`.
+
+:::warning
+The Lua module connects directly to the outpost over HTTP and does not support TLS for authorization subrequests. Keep this connection on a trusted network, and restrict direct access to the application backend to HAProxy.
+:::
+
+## Configuration
+
+<Placeholders />
+
+The example terminates TLS at HAProxy. Replace the certificate path, application hostname, and backend addresses with your own values. The certificate file must contain the certificate chain and private key in PEM format.
+
+Place `auth-request.lua` at `/usr/share/haproxy/auth-request.lua` and `http.lua` at `/usr/share/haproxy/haproxy-lua-http/http.lua`. Install the `json` library on HAProxy's Lua search path.
+
+<HAProxyStandalone />
+
+The template removes incoming `Authorization` headers and headers whose names contain underscores. Client-supplied bearer tokens and HTTP Basic credentials are therefore not available to authentik or the application.
+
+To use **Send HTTP-Basic Authentication** in the proxy provider, add `authorization` to the successful response-header allowlist, changing `x-authentik-*` to `x-authentik-*,authorization`.
+
+Validate the configuration with `haproxy -c -f /etc/haproxy/haproxy.cfg` before reloading HAProxy.

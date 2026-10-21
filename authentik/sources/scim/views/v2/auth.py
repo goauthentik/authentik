@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.core.models import Token, TokenIntents, User
+from authentik.lib.tracing import active_tracer
 from authentik.sources.scim.models import SCIMSource
 
 
@@ -44,6 +45,7 @@ class SCIMTokenAuth(BaseAuthentication):
         self.view.source = source
         return token
 
+    @active_tracer().instrument()
     def authenticate(self, request: Request) -> tuple[User, Any] | None:
         kwargs = request._request.resolver_match.kwargs
         source_slug = kwargs.get("source_slug", None)

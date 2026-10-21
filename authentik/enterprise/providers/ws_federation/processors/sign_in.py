@@ -7,7 +7,13 @@ from lxml import etree  # nosec
 from lxml.etree import Element, SubElement, _Element  # nosec
 
 from authentik.core.models import Application
-from authentik.enterprise.providers.ws_federation.models import WSFederationProvider
+from authentik.enterprise.providers.ws_federation.models import (
+    WSFederationProvider,
+    WSFederationSAMLVersion,
+)
+from authentik.enterprise.providers.ws_federation.processors.assertion_saml11 import (
+    SAML11AssertionProcessor,
+)
 from authentik.enterprise.providers.ws_federation.processors.constants import (
     NS_ADDRESSING,
     NS_MAP,
@@ -20,8 +26,11 @@ from authentik.enterprise.providers.ws_federation.processors.constants import (
     WS_FED_POST_KEY_ACTION,
     WS_FED_POST_KEY_CONTEXT,
     WS_FED_POST_KEY_RESULT,
+    WS_FED_QS_ACTION,
+    WS_FED_QS_REALM,
+    WS_FED_QS_REPLY,
     WSS_KEY_IDENTIFIER_SAML_ID,
-    WSS_TOKEN_TYPE_SAML2,
+    WSS_TOKEN_TYPE_BY_VERSION,
 )
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.utils import delete_none_values
@@ -39,28 +48,26 @@ class SignInRequest:
 
     @staticmethod
     def parse(request: HttpRequest) -> SignInRequest:
-        action = request.GET.get("wa")
-        if action != WS_FED_ACTION_SIGN_IN:
-            raise ValueError("Invalid action")
-        realm = request.GET.get("wtrealm")
-        if not realm:
-            raise ValueError("Missing Realm")
-
         req = SignInRequest(
-            wa=action,
-            wtrealm=realm,
-            wreply=request.GET.get("wreply"),
-            wctx=request.GET.get("wctx", ""),
+            wa=request.GET.get(WS_FED_QS_ACTION),
+            wtrealm=request.GET.get(WS_FED_QS_REALM),
+            wreply=request.GET.get(WS_FED_QS_REPLY),
+            wctx=request.GET.get(WS_FED_POST_KEY_CONTEXT, ""),
         )
+        return req
 
-        _, provider = req.get_app_provider()
-        if not req.wreply:
-            req.wreply = provider.acs_url
-        reply = urlparse(req.wreply)
+    def __post_init__(self):
+        if self.wa != WS_FED_ACTION_SIGN_IN:
+            raise ValueError("Invalid action")
+        if not self.wtrealm:
+            raise ValueError("Missing Realm")
+        _, provider = self.get_app_provider()
+        if not self.wreply:
+            self.wreply = provider.acs_url
+        reply = urlparse(self.wreply)
         configured = urlparse(provider.acs_url)
         if not (reply[:2] == configured[:2] and reply.path.startswith(configured.path)):
             raise ValueError("Invalid wreply")
-        return req
 
     def get_app_provider(self):
         provider: WSFederationProvider = get_object_or_404(
@@ -82,7 +89,12 @@ class SignInProcessor:
         self.provider = provider
         self.request = request
         self.sign_in_request = sign_in_request
-        self.saml_processor = AssertionProcessor(self.provider, self.request, AuthNRequest())
+        processor_cls = (
+            SAML11AssertionProcessor
+            if self.provider.saml_version == WSFederationSAMLVersion.SAML_1_1
+            else AssertionProcessor
+        )
+        self.saml_processor = processor_cls(self.provider, self.request, AuthNRequest())
         self.saml_processor.provider.audience = self.sign_in_request.wtrealm
         if self.provider.signing_kp:
             self.saml_processor.provider.sign_assertion = True
@@ -105,7 +117,7 @@ class SignInProcessor:
         )
 
         token_type = SubElement(root, f"{{{NS_WS_FED_TRUST}}}TokenType")
-        token_type.text = WSS_TOKEN_TYPE_SAML2
+        token_type.text = WSS_TOKEN_TYPE_BY_VERSION[self.provider.saml_version]
 
         request_type = SubElement(root, f"{{{NS_WS_FED_TRUST}}}RequestType")
         request_type.text = "http://schemas.xmlsoap.org/ws/2005/02/trust/Issue"
@@ -143,7 +155,9 @@ class SignInProcessor:
     def response_add_attached_reference(self, tag: str, value: str) -> _Element:
         ref = Element(f"{{{NS_WS_FED_TRUST}}}{tag}")
         sec_token_ref = SubElement(ref, f"{{{NS_WSS_SEC}}}SecurityTokenReference")
-        sec_token_ref.attrib[f"{{{NS_WSS_D3P1}}}TokenType"] = WSS_TOKEN_TYPE_SAML2
+        sec_token_ref.attrib[f"{{{NS_WSS_D3P1}}}TokenType"] = WSS_TOKEN_TYPE_BY_VERSION[
+            self.provider.saml_version
+        ]
 
         key_identifier = SubElement(sec_token_ref, f"{{{NS_WSS_SEC}}}KeyIdentifier")
         key_identifier.attrib["ValueType"] = WSS_KEY_IDENTIFIER_SAML_ID
@@ -152,7 +166,8 @@ class SignInProcessor:
 
     def response(self) -> dict[str, str]:
         root = self.create_response_token()
-        assertion = root.xpath("//saml:Assertion", namespaces=NS_MAP)[0]
+        # match by local name, since "saml" may be bound to the 1.1 or 2.0 namespace here
+        assertion = root.xpath("//*[local-name()='Assertion']")[0]
         if self.provider.signing_kp:
             self.saml_processor._sign(assertion)
         str_token = etree.tostring(root).decode("utf-8")  # nosec

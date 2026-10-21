@@ -2,17 +2,24 @@
 
 from base64 import urlsafe_b64encode
 from binascii import hexlify
+from functools import lru_cache
 from hashlib import md5, sha512
 from ssl import PEM_FOOTER, PEM_HEADER
 from textwrap import wrap
 from uuid import uuid4
 
+from cryptography.exceptions import InternalError, UnsupportedAlgorithm
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric.dsa import DSAPublicKey
 from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePublicKey
 from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PublicKey
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
+from cryptography.hazmat.primitives.asymmetric.mldsa import (
+    MLDSA44PublicKey,
+    MLDSA65PublicKey,
+    MLDSA87PublicKey,
+)
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes, PublicKeyTypes
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
@@ -28,6 +35,22 @@ from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 LOGGER = get_logger()
 
 
+@lru_cache(maxsize=128)
+def _load_certificate(certificate_data: str) -> Certificate:
+    """Load a PEM certificate."""
+    return load_pem_x509_certificate(certificate_data.encode("utf-8"), default_backend())
+
+
+@lru_cache(maxsize=128)
+def _load_private_key(key_data: str) -> PrivateKeyTypes:
+    """Load and validate a normalized PEM private key."""
+    return load_pem_private_key(
+        key_data.encode("utf-8"),
+        password=None,
+        backend=default_backend(),
+    )
+
+
 def format_cert(raw_pam: str) -> str:
     """Format a PEM certificate that is either missing its header/footer or is in a single line"""
     return "\n".join([PEM_HEADER, *wrap(raw_pam.replace("\n", ""), 64), PEM_FOOTER])
@@ -41,6 +64,9 @@ class KeyType(models.TextChoices):
     DSA = "dsa", _("DSA")
     ED25519 = "ed25519", _("Ed25519")
     ED448 = "ed448", _("Ed448")
+    MLDSA44 = "mldsa44", _("ML-DSA-44")
+    MLDSA65 = "mldsa65", _("ML-DSA-65")
+    MLDSA87 = "mldsa87", _("ML-DSA-87")
 
 
 def fingerprint_sha256(cert: Certificate) -> str:
@@ -62,6 +88,12 @@ def detect_key_type(certificate: Certificate) -> str | None:
             return KeyType.ED25519
         if isinstance(public_key, Ed448PublicKey):
             return KeyType.ED448
+        if isinstance(public_key, MLDSA44PublicKey):
+            return KeyType.MLDSA44
+        if isinstance(public_key, MLDSA65PublicKey):
+            return KeyType.MLDSA65
+        if isinstance(public_key, MLDSA87PublicKey):
+            return KeyType.MLDSA87
     except (ValueError, TypeError, AttributeError) as exc:
         LOGGER.warning("Failed to detect key type", exc=exc)
     return None
@@ -146,9 +178,7 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
     def certificate(self) -> Certificate:
         """Get python cryptography Certificate instance"""
         if not self._cert:
-            self._cert = load_pem_x509_certificate(
-                self.certificate_data.encode("utf-8"), default_backend()
-            )
+            self._cert = _load_certificate(self.certificate_data)
         return self._cert
 
     @property
@@ -165,13 +195,14 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
         """Get python cryptography PrivateKey instance"""
         if not self._private_key and self.key_data != "":
             try:
-                self._private_key = load_pem_private_key(
-                    str.encode("\n".join([x.strip() for x in self.key_data.split("\n")])),
-                    password=None,
-                    backend=default_backend(),
+                self._private_key = _load_private_key(
+                    "\n".join(x.strip() for x in self.key_data.split("\n"))
                 )
-            except ValueError as exc:
-                LOGGER.warning(exc)
+            except (ValueError, InternalError, UnsupportedAlgorithm) as exc:
+                # InternalError/UnsupportedAlgorithm: OpenSSL has no implementation for the key's
+                # algorithm in the current configuration (e.g. ML-DSA under a FIPS provider that
+                # predates it), so treat the key as unusable rather than failing the caller
+                LOGGER.warning("Failed to load private key", exc=exc)
                 return None
         return self._private_key
 

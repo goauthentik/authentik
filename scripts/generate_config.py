@@ -26,7 +26,7 @@ def generate_local_config() -> dict[str, Any]:
         "blueprints_dir": "./blueprints",
         "cert_discovery_dir": "./certs",
         "events": {
-            "processors": {
+            "context_processors": {
                 "geoip": "tests/geoip/GeoLite2-City-Test.mmdb",
                 "asn": "tests/geoip/GeoLite2-ASN-Test.mmdb",
             }
@@ -45,6 +45,9 @@ def generate_local_config() -> dict[str, Any]:
         "tenants": {
             "enabled": False,
             "api_key": generate_id(),
+        },
+        "web": {
+            "base_url": "http://localhost:9000",
         },
         "worker": {
             "processes": 1,

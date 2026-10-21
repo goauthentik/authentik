@@ -2,22 +2,18 @@ import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
-
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 import { ModelForm } from "#elements/forms/ModelForm";
 
-import {
-    InitialPermissions,
-    Permission,
-    RbacApi,
-    RbacRolesListRequest,
-    Role,
-} from "@goauthentik/api";
+import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { roleSource } from "#admin/common/search-sources";
+
+import { InitialPermissions, Permission, RbacApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -28,6 +24,7 @@ export function rbacPermissionPair(item: Permission): DualSelectPair {
     const appLabel = item.appLabelVerbose || item.appLabel || "";
     const modelLabel = item.modelVerbose || item.model || "";
     const descriptor = `${appLabel} / ${modelLabel} (${item.codename})`;
+
     return [
         item.id.toString(),
         html`<div class="selection-main">${item.name}</div>
@@ -43,28 +40,26 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
 
     public override size = PFSize.XLarge;
 
-    loadInstance(pk: string): Promise<InitialPermissions> {
-        return aki(RbacApi).rbacInitialPermissionsRetrieve({
-            id: Number(pk),
-        });
-    }
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(RbacApi).rbacInitialPermissionsRetrieve({
+                id: Number(pk),
+            }),
+        create: (initialPermissionsRequest: InitialPermissions) =>
+            aki(RbacApi).rbacInitialPermissionsCreate({
+                initialPermissionsRequest,
+            }),
+        update: (pk: string, patchedInitialPermissionsRequest: InitialPermissions) =>
+            aki(RbacApi).rbacInitialPermissionsPartialUpdate({
+                id: Number(pk),
+                patchedInitialPermissionsRequest,
+            }),
+    };
 
     getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated initial permissions.")
             : msg("Successfully created initial permissions.");
-    }
-
-    async send(data: InitialPermissions): Promise<InitialPermissions> {
-        if (this.instance?.pk) {
-            return aki(RbacApi).rbacInitialPermissionsPartialUpdate({
-                id: this.instance.pk,
-                patchedInitialPermissionsRequest: data,
-            });
-        }
-        return aki(RbacApi).rbacInitialPermissionsCreate({
-            initialPermissionsRequest: data,
-        });
     }
 
     protected override renderForm(): TemplateResult {
@@ -78,32 +73,13 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
             >
             </ak-text-input>
             <ak-form-element-horizontal label=${msg("Role")} required name="role">
-                <ak-search-select
-                    placeholder=${msg("Select a role...")}
-                    .fetchObjects=${async (query?: string): Promise<Role[]> => {
-                        const args: RbacRolesListRequest = {
-                            ordering: "name",
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const roles = await aki(RbacApi).rbacRolesList(args);
-                        return roles.results;
-                    }}
-                    .renderElement=${(role: Role): string => {
-                        return role.name;
-                    }}
-                    .renderDescription=${(role: Role): TemplateResult => {
-                        return html`${role.name}`;
-                    }}
-                    .value=${(role: Role | undefined): string | undefined => {
-                        return role?.pk;
-                    }}
-                    .selected=${(role: Role): boolean => {
-                        return this.instance?.role === role.pk;
-                    }}
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "role",
+                    source: roleSource,
+                    placeholder: msg("Select a role..."),
+                    value: this.instance?.role,
+                    blankable: false,
+                })}
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         "When a user with the selected Role creates an object, the Initial Permissions will be applied to that object.",
@@ -115,8 +91,8 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
                     .provider=${(page: number, search?: string): Promise<DataProvision> => {
                         return aki(RbacApi)
                             .rbacPermissionsList({
-                                page: page,
-                                search: search,
+                                page,
+                                search,
                             })
                             .then((results) => {
                                 return {

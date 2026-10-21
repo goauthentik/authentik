@@ -1,7 +1,6 @@
 """Enterprise license tests"""
 
 from datetime import timedelta
-from time import mktime
 from unittest.mock import MagicMock, patch
 
 from django.test import TestCase
@@ -18,35 +17,20 @@ from authentik.enterprise.models import (
     LicenseUsage,
     LicenseUsageStatus,
 )
-from authentik.lib.generators import generate_id
-
-# Valid license expiry
-expiry_valid = int(mktime((now() + timedelta(days=3000)).timetuple()))
-# Valid license expiry, expires soon
-expiry_soon = int(mktime((now() + timedelta(hours=10)).timetuple()))
-# Invalid license expiry, recently expired
-expiry_expired = int(mktime((now() - timedelta(hours=10)).timetuple()))
-# Invalid license expiry, expired longer ago
-expiry_expired_read_only = int(
-    mktime((now() - timedelta(weeks=THRESHOLD_READ_ONLY_WEEKS + 1)).timetuple())
+from authentik.enterprise.tests import (
+    enterprise_test,
+    expiry_expired,
+    expiry_expired_read_only,
+    expiry_soon,
+    expiry_valid,
 )
+from authentik.lib.generators import generate_id
 
 
 class TestEnterpriseLicense(TestCase):
     """Enterprise license tests"""
 
-    @patch(
-        "authentik.enterprise.license.LicenseKey.validate",
-        MagicMock(
-            return_value=LicenseKey(
-                aud="",
-                exp=expiry_valid,
-                name=generate_id(),
-                internal_users=100,
-                external_users=100,
-            )
-        ),
-    )
+    @enterprise_test()
     def test_valid(self):
         """Check license verification"""
         lic = License.objects.create(key=generate_id())
@@ -58,18 +42,7 @@ class TestEnterpriseLicense(TestCase):
         with self.assertRaises(ValidationError):
             License.objects.create(key=generate_id())
 
-    @patch(
-        "authentik.enterprise.license.LicenseKey.validate",
-        MagicMock(
-            return_value=LicenseKey(
-                aud="",
-                exp=expiry_valid,
-                name=generate_id(),
-                internal_users=100,
-                external_users=100,
-            )
-        ),
-    )
+    @enterprise_test(create_key=False)
     def test_valid_multiple(self):
         """Check license verification"""
         lic = License.objects.create(key=generate_id(), expiry=expiry_valid)
@@ -82,18 +55,7 @@ class TestEnterpriseLicense(TestCase):
         self.assertEqual(total.exp, expiry_valid)
         self.assertTrue(total.status().is_valid)
 
-    @patch(
-        "authentik.enterprise.license.LicenseKey.validate",
-        MagicMock(
-            return_value=LicenseKey(
-                aud="",
-                exp=expiry_valid,
-                name=generate_id(),
-                internal_users=100,
-                external_users=100,
-            )
-        ),
-    )
+    @enterprise_test()
     @patch(
         "authentik.enterprise.license.LicenseKey.get_internal_user_count",
         MagicMock(return_value=1000),
@@ -108,7 +70,6 @@ class TestEnterpriseLicense(TestCase):
     )
     def test_limit_exceeded_read_only(self):
         """Check license verification"""
-        License.objects.create(key=generate_id())
         usage = LicenseUsage.objects.create(
             internal_user_count=100,
             external_user_count=100,
@@ -118,18 +79,7 @@ class TestEnterpriseLicense(TestCase):
         usage.save(update_fields=["record_date"])
         self.assertEqual(LicenseKey.get_total().summary().status, LicenseUsageStatus.READ_ONLY)
 
-    @patch(
-        "authentik.enterprise.license.LicenseKey.validate",
-        MagicMock(
-            return_value=LicenseKey(
-                aud="",
-                exp=expiry_valid,
-                name=generate_id(),
-                internal_users=100,
-                external_users=100,
-            )
-        ),
-    )
+    @enterprise_test()
     @patch(
         "authentik.enterprise.license.LicenseKey.get_internal_user_count",
         MagicMock(return_value=1000),
@@ -144,7 +94,6 @@ class TestEnterpriseLicense(TestCase):
     )
     def test_limit_exceeded_user_warning(self):
         """Check license verification"""
-        License.objects.create(key=generate_id())
         usage = LicenseUsage.objects.create(
             internal_user_count=100,
             external_user_count=100,
@@ -156,18 +105,7 @@ class TestEnterpriseLicense(TestCase):
             LicenseKey.get_total().summary().status, LicenseUsageStatus.LIMIT_EXCEEDED_USER
         )
 
-    @patch(
-        "authentik.enterprise.license.LicenseKey.validate",
-        MagicMock(
-            return_value=LicenseKey(
-                aud="",
-                exp=expiry_valid,
-                name=generate_id(),
-                internal_users=100,
-                external_users=100,
-            )
-        ),
-    )
+    @enterprise_test()
     @patch(
         "authentik.enterprise.license.LicenseKey.get_internal_user_count",
         MagicMock(return_value=1000),
@@ -182,7 +120,6 @@ class TestEnterpriseLicense(TestCase):
     )
     def test_limit_exceeded_admin_warning(self):
         """Check license verification"""
-        License.objects.create(key=generate_id())
         usage = LicenseUsage.objects.create(
             internal_user_count=100,
             external_user_count=100,
@@ -194,39 +131,16 @@ class TestEnterpriseLicense(TestCase):
             LicenseKey.get_total().summary().status, LicenseUsageStatus.LIMIT_EXCEEDED_ADMIN
         )
 
-    @patch(
-        "authentik.enterprise.license.LicenseKey.validate",
-        MagicMock(
-            return_value=LicenseKey(
-                aud="",
-                exp=expiry_expired_read_only,
-                name=generate_id(),
-                internal_users=100,
-                external_users=100,
-            )
-        ),
-    )
+    @enterprise_test(expiry=expiry_expired_read_only)
     @patch(
         "authentik.enterprise.license.LicenseKey.record_usage",
         MagicMock(),
     )
     def test_expiry_read_only(self):
         """Check license verification"""
-        License.objects.create(key=generate_id())
         self.assertEqual(LicenseKey.get_total().summary().status, LicenseUsageStatus.READ_ONLY)
 
-    @patch(
-        "authentik.enterprise.license.LicenseKey.validate",
-        MagicMock(
-            return_value=LicenseKey(
-                aud="",
-                exp=expiry_expired,
-                name=generate_id(),
-                internal_users=100,
-                external_users=100,
-            )
-        ),
-    )
+    @enterprise_test(expiry=expiry_expired)
     @patch(
         "authentik.enterprise.license.LicenseKey.record_usage",
         MagicMock(),
@@ -238,23 +152,11 @@ class TestEnterpriseLicense(TestCase):
         License.objects.create(key=generate_id(), expiry=expiry_expired)
         self.assertEqual(LicenseKey.get_total().summary().status, LicenseUsageStatus.EXPIRED)
 
-    @patch(
-        "authentik.enterprise.license.LicenseKey.validate",
-        MagicMock(
-            return_value=LicenseKey(
-                aud="",
-                exp=expiry_soon,
-                name=generate_id(),
-                internal_users=100,
-                external_users=100,
-            )
-        ),
-    )
+    @enterprise_test(expiry=expiry_soon)
     @patch(
         "authentik.enterprise.license.LicenseKey.record_usage",
         MagicMock(),
     )
     def test_expiry_soon(self):
         """Check license verification"""
-        License.objects.create(key=generate_id())
         self.assertEqual(LicenseKey.get_total().summary().status, LicenseUsageStatus.EXPIRY_SOON)

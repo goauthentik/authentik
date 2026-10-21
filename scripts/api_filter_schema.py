@@ -98,7 +98,9 @@ def filter_schema(schema: dict[str, Any], operation_ids: set[str]) -> dict[str, 
     # Resolve transitive component references
     resolve_component_refs(schema, all_refs)
 
-    result = {key: schema[key] for key in ("openapi", "info", "servers") if key in schema}
+    result: dict[str, Any] = {
+        key: schema[key] for key in ("openapi", "info", "servers") if key in schema
+    }
     result["paths"] = filtered_paths
 
     filtered_components = filter_components(schema, all_refs)

@@ -32,7 +32,7 @@ class TestProviderWSFed(SeleniumTestCase):
             + "?download"
         )
         self.run_container(
-            image="ghcr.io/beryju/wsfed-test-sp:v0.1.2",
+            image=self.pinned_image("wsfed-test-sp", "e2e/compose.yml"),
             ports={
                 "8080": "8080",
             },

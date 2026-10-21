@@ -9,7 +9,7 @@ from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
 from authentik.api.search.ql import BaseSchema
-from authentik.events.models import Event, EventAction
+from authentik.events.models import Event, event_actions
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
 
@@ -24,7 +24,7 @@ class EventMatcherPolicy(Policy):
         default=None,
     )
     action = models.TextField(
-        choices=EventAction.choices,
+        choices=event_actions,
         null=True,
         default=None,
         help_text=_(

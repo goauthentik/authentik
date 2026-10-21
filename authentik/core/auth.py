@@ -88,4 +88,4 @@ class TokenBackend(InbuiltBackend):
             return None
         token = tokens.first()
         self.set_method("token", request, token=token)
-        return token.user
+        return token.user if self.user_can_authenticate(token.user) else None

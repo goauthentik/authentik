@@ -14,32 +14,37 @@
 
     (function () {
         try {
+          const { documentElement } = document;
+
             /* Ignore older theme names */
             let locallyStoredTheme = window.localStorage?.getItem("theme") || null;
+
             if (typeof locallyStoredTheme === "string") {
                 locallyStoredTheme = locallyStoredTheme.trim();
             }
             if (!(["auto", "light", "dark"].includes(locallyStoredTheme))) {
                 locallyStoredTheme = null;
             }
-            
+
             const initialThemeChoice =
                 new URLSearchParams(window.location.search).get("theme") || locallyStoredTheme;
 
             const themeChoice =
-                initialThemeChoice || document.documentElement.dataset.themeChoice || "auto";
+                initialThemeChoice || documentElement.dataset.themeChoice || "auto";
 
-            document.documentElement.dataset.themeChoice = themeChoice;
+            documentElement.dataset.themeChoice = themeChoice;
 
             if (themeChoice === "auto") {
-                document.documentElement.dataset.theme = window.matchMedia(
+                documentElement.dataset.theme = window.matchMedia(
                     "(prefers-color-scheme: dark)",
                 ).matches
                     ? "dark"
                     : "light";
             } else {
-                document.documentElement.dataset.theme = themeChoice;
+                documentElement.dataset.theme = themeChoice;
             }
+
+            documentElement.classList.toggle("pf-theme-dark", documentElement.dataset.theme === "dark");
         } catch (e) {
             console.error("Failed to apply theme", e);
         }

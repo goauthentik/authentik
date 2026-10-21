@@ -1,47 +1,42 @@
-/* eslint-disable no-console */
 /**
+ * @import {
+ *   LoadContext,
+ *   Plugin
+ * } from "@docusaurus/types"
+ * @import {RedirectEntry} from "./index.mjs"
  * @file Docusaurus client-side redirects plugin.
- *
- * @import { LoadContext, Plugin } from "@docusaurus/types"
- * @import { RedirectEntry } from "./index.mjs"
+ *   Exposes parsed redirect entries as Docusaurus global data, allowing the
+ *   client-side router to follow redirects when it hits a missing page
+ *   (see `theme/NotFound`).
  */
 
-const PLUGIN_NAME = "ak-redirects-plugin";
+import { REDIRECTS_PLUGIN_NAME } from "./index.mjs";
 
 /**
  * @typedef {object} AKRedirectsPluginOptions
- * @property {RedirectEntry[]} redirects parsed redirect entries
+ * @property {RedirectEntry[]} redirects Parsed redirect entries
  */
 
 /**
- * @typedef {object} AKRedirectsPluginData
- * @property {RedirectEntry[]} redirects parsed redirect entries
+ * @typedef {AKRedirectsPluginOptions} AKRedirectsPluginData
  */
 
 /**
  * @param {LoadContext} _loadContext
  * @param {AKRedirectsPluginOptions} options
- * @returns {Promise<Plugin<AKRedirectsPluginData>>}
+ *
+ * @returns {Plugin<AKRedirectsPluginData>}
  */
-async function akRedirectsPlugin(_loadContext, { redirects }) {
+function akRedirectsPlugin(_loadContext, { redirects }) {
     return {
-        name: PLUGIN_NAME,
+        name: REDIRECTS_PLUGIN_NAME,
 
-        async loadContent() {
-            console.log(`🚀 ${PLUGIN_NAME} loaded`);
-
-            /**
-             * @type {AKRedirectsPluginData}
-             */
-            const content = { redirects };
-
-            return content;
+        loadContent() {
+            return { redirects };
         },
 
         contentLoaded({ content, actions }) {
-            const { setGlobalData } = actions;
-
-            setGlobalData(content);
+            actions.setGlobalData(content);
         },
     };
 }

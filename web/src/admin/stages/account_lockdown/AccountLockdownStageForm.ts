@@ -1,13 +1,12 @@
 import "#elements/forms/HorizontalFormElement";
-import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
-
 import { aki } from "#common/api/client";
 
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
+import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import { AccountLockdownStage, StagesApi } from "@goauthentik/api";
@@ -18,24 +17,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-account-lockdown-form")
 export class AccountLockdownStageForm extends BaseStageForm<AccountLockdownStage> {
-    #api = aki(StagesApi);
-
-    protected override loadInstance(pk: string): Promise<AccountLockdownStage> {
-        return this.#api.stagesAccountLockdownRetrieve({ stageUuid: pk });
-    }
-
-    protected override async send(data: AccountLockdownStage): Promise<AccountLockdownStage> {
-        if (this.instance) {
-            return this.#api.stagesAccountLockdownUpdate({
-                stageUuid: this.instance.pk || "",
-                accountLockdownStageRequest: data,
-            });
-        }
-
-        return this.#api.stagesAccountLockdownCreate({
-            accountLockdownStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesAccountLockdownRetrieve({ stageUuid }),
+        create: (accountLockdownStageRequest: AccountLockdownStage) =>
+            aki(StagesApi).stagesAccountLockdownCreate({ accountLockdownStageRequest }),
+        update: (stageUuid: string, accountLockdownStageRequest: AccountLockdownStage) =>
+            aki(StagesApi).stagesAccountLockdownUpdate({ stageUuid, accountLockdownStageRequest }),
+    };
 
     protected override renderForm(): SlottedTemplateResult {
         return html`<span>
@@ -44,8 +32,12 @@ export class AccountLockdownStageForm extends BaseStageForm<AccountLockdownStage
                 )}
             </span>
             <ak-text-input
-                label=${msg("Stage Name")}
-                placeholder=${msg("Type a name for this stage...")}
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
                 required
                 name="name"
                 value=${ifPresent(this.instance?.name || "")}
@@ -97,10 +89,7 @@ export class AccountLockdownStageForm extends BaseStageForm<AccountLockdownStage
                         label=${msg("Completion flow")}
                         name="selfServiceCompletionFlow"
                     >
-                        <ak-flow-search
-                            placeholder=${msg("Select a completion flow...")}
-                            .currentFlow=${this.instance?.selfServiceCompletionFlow}
-                        ></ak-flow-search>
+                        ${AKFlowSearch({ name: "selfServiceCompletionFlow", placeholder: msg("Select a completion flow..."), value: this.instance?.selfServiceCompletionFlow })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Flow to redirect users to after self-service lockdown. This flow must not require authentication since the user's session is deleted.",
