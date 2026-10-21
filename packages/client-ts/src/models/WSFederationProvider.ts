@@ -10,22 +10,28 @@
  * Do not edit the class manually.
  */
 
-import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum";
-import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum";
-import type { EncryptionAlgorithmEnum } from "./EncryptionAlgorithmEnum";
+import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum.js";
+import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum.js";
+import type { EncryptionAlgorithmEnum } from "./EncryptionAlgorithmEnum.js";
 import {
     EncryptionAlgorithmEnumFromJSON,
     EncryptionAlgorithmEnumToJSON,
-} from "./EncryptionAlgorithmEnum";
-import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum";
-import { SAMLNameIDPolicyEnumFromJSON, SAMLNameIDPolicyEnumToJSON } from "./SAMLNameIDPolicyEnum";
-import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum";
+} from "./EncryptionAlgorithmEnum.js";
+import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum.js";
+import {
+    SAMLNameIDPolicyEnumFromJSON,
+    SAMLNameIDPolicyEnumToJSON,
+} from "./SAMLNameIDPolicyEnum.js";
+import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum.js";
 import {
     SignatureAlgorithmEnumFromJSON,
     SignatureAlgorithmEnumToJSON,
-} from "./SignatureAlgorithmEnum";
-import type { WSFedSAMLVersionEnum } from "./WSFedSAMLVersionEnum";
-import { WSFedSAMLVersionEnumFromJSON, WSFedSAMLVersionEnumToJSON } from "./WSFedSAMLVersionEnum";
+} from "./SignatureAlgorithmEnum.js";
+import type { WSFedSAMLVersionEnum } from "./WSFedSAMLVersionEnum.js";
+import {
+    WSFedSAMLVersionEnumFromJSON,
+    WSFedSAMLVersionEnumToJSON,
+} from "./WSFedSAMLVersionEnum.js";
 
 /**
  * WSFederationProvider Serializer
