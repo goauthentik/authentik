@@ -57,7 +57,7 @@ import {
 
 import Styles from "#admin/ak-interface-admin.css";
 import { DEFAULT_PATH, ROUTES } from "#admin/Routes";
-import { createAdminSidebarEntries } from "#admin/sidebar/constants";
+import { createAdminSidebarEntries, resolveSidebarEntries } from "#admin/sidebar/constants";
 
 import { CapabilitiesEnum } from "@goauthentik/api";
 
@@ -104,7 +104,12 @@ export class AdminInterface extends WithLicenseSummary(
     protected get navigationEntries(): readonly SidebarEntry[] {
         const canEnterprise = this.can(CapabilitiesEnum.IsEnterprise);
 
-        return createAdminSidebarEntries(canEnterprise);
+        const entries = createAdminSidebarEntries(canEnterprise);
+
+        return resolveSidebarEntries(entries, {
+            canEnterprise,
+            licensed: this.hasEnterpriseLicense,
+        });
     }
 
     //#endregion
@@ -186,10 +191,6 @@ export class AdminInterface extends WithLicenseSummary(
                 (children ?? []).flatMap(([path, childLabel, attributes]) => {
                     const enterpriseOnly =
                         !Array.isArray(attributes) && attributes?.enterprise === true;
-
-                    if (enterpriseOnly && !this.can(CapabilitiesEnum.IsEnterprise)) {
-                        return [];
-                    }
 
                     const command: PaletteCommandDefinitionInit = {
                         namespace: PaletteCommandNamespace.Navigation,

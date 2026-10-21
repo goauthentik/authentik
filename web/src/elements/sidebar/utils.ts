@@ -7,11 +7,16 @@ import { html, TemplateResult } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { repeat } from "lit/directives/repeat.js";
 
+export type SidebarAttributes =
+    | LitPropertyRecord<SidebarItemProperties & { enterprise?: boolean }>
+    | string[]
+    | null;
+
 // A `string[]` in the attributes slot lists the route names that keep the entry active.
 export type SidebarEntry = [
     path: string | null,
     label: string,
-    attributes?: LitPropertyRecord<SidebarItemProperties> | string[] | null,
+    attributes?: SidebarAttributes,
     children?: SidebarEntry[],
 ];
 

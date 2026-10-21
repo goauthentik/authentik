@@ -1,6 +1,58 @@
-import { SidebarEntry } from "#elements/sidebar/utils";
+import { toAdminInterface } from "#elements/router/core/interfaces";
+import { SidebarAttributes, SidebarEntry } from "#elements/sidebar/utils";
 
 import { msg } from "@lit/localize";
+
+export const ENTERPRISE_PATH = "/enterprise/licenses";
+
+export type SidebarLicenseFlags = { licensed: boolean; canEnterprise: boolean };
+
+const isEnterpriseEntry = (attr: SidebarAttributes | undefined) =>
+    attr !== null && !Array.isArray(attr) && typeof attr === "object" && attr.enterprise;
+
+/**
+ * Removes enterprise entries entirely if enterprise capability is not present, or marks them "as
+ * enterprise" if they are but the product is unlicensed.
+ */
+export function resolveSidebarEntries(
+    entries: readonly SidebarEntry[],
+    { licensed, canEnterprise }: SidebarLicenseFlags,
+): SidebarEntry[] {
+    return (
+        entries
+            // A feature is always visible if it's not enterprise-only, or if the instance
+            // canEnterprise
+            .filter(
+                ([_path, _label, attributes, _children]) =>
+                    !isEnterpriseEntry(attributes) || canEnterprise,
+            )
+
+            .map(([path, label, attributes, children]) => {
+                const isEnterprise = isEnterpriseEntry(attributes);
+
+                // A feature's details are overridden with "Buy a license" messages if the instance
+                // canEnterprise, but the instance is not licensed.
+                if (!licensed && isEnterprise) {
+                    attributes = {
+                        ...attributes,
+                        pathOverride: toAdminInterface(ENTERPRISE_PATH),
+                        notice: msg("Enterprise only", {
+                            id: "sidebar.notice.enterprise-only",
+                        }),
+                    };
+                }
+
+                return children
+                    ? [
+                          path,
+                          label,
+                          attributes,
+                          resolveSidebarEntries(children, { licensed, canEnterprise }),
+                      ]
+                    : [path, label, attributes];
+            })
+    );
+}
 
 // prettier-ignore
 export const initAdminSidebarEntries = (): readonly SidebarEntry[] => [
