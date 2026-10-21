@@ -182,7 +182,53 @@ RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
     --mount=type=cache,id=uv-python-deps-$TARGETARCH$TARGETVARIANT,target=/root/.cache/uv \
     uv sync --locked --no-install-project --no-dev
 
+# Stage: Test kit
+# Test-only files that scripts/test_docker.sh mounts into the unchanged final image
+# Build it with --target test-kit and an output, like scripts/test_docker.sh does
+
+# MIT KDC tools for the Kerberos tests.
+FROM python-base AS test-kit-kdc
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends krb5-kdc krb5-admin-server krb5-user busybox-static
+
+# Wrappers that run the tools from where the filesystem is mounted, /test-kit/krb5/root
+RUN libdir="$(dirname "$(readlink -f /usr/lib/*/libkrb5.so.3)")" && \
+    loader="$(readlink -f /lib*/ld-linux*.so.*)" && \
+    mkdir -p /kit/bin /kit/plugins && \
+    # k5test loads the database module from <plugins>/kdc
+    ln -s "../root$libdir/krb5/plugins/kdb" /kit/plugins/kdc && \
+    for tool in krb5kdc kadmind kdb5_util kadmin.local kadmin kprop kinit klist; do \
+    # readlink resolves Debian's alternatives, whose absolute links would point into the image
+    printf '#!/test-kit/krb5/root%s sh\nexec /test-kit/krb5/root%s --library-path /test-kit/krb5/root%s /test-kit/krb5/root%s "$@"\n' \
+    "$(readlink -f "$(command -v busybox)")" "$loader" "$libdir" "$(readlink -f "$(command -v $tool)")" > /kit/bin/$tool; \
+    done && \
+    chmod 755 /kit/bin/*
+
+FROM python-base AS test-kit-build
+
+# The dev-only Python packages: the dev group minus every package the image ships
+RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
+    --mount=type=bind,target=uv.lock,src=uv.lock \
+    uv export --frozen --no-hashes --no-emit-project --no-emit-workspace --no-header --no-annotate \
+    --no-dev --output-file /tmp/shipped.txt && \
+    uv export --frozen --no-hashes --no-emit-project --no-emit-workspace --no-header --no-annotate \
+    --only-group dev --output-file /tmp/dev.txt && \
+    # Compare names, the environment markers can differ between the two
+    awk -F'[ =;]' 'NR == FNR { shipped[$1]; next } !($1 in shipped)' /tmp/shipped.txt /tmp/dev.txt > /tmp/dev-only.txt && \
+    uv pip install --no-deps --target /kit/devdeps -r /tmp/dev-only.txt
+
+COPY --from=test-kit-kdc / /kit/krb5/root/
+COPY --from=test-kit-kdc /kit/ /kit/krb5/
+COPY ./tests/container/sitecustomize.py /kit/sc/sitecustomize.py
+COPY ./tests/container/check_dev_imports.py /kit/check_dev_imports.py
+
+FROM scratch AS test-kit
+
+COPY --from=test-kit-build /kit/ /
+
 # Stage: Run
+# The default target, so it has to stay last
 FROM python-base AS final
 
 ARG VERSION
