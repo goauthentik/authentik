@@ -241,11 +241,11 @@ class Flow(SerializerModel, PolicyBindingModel):
         """Check if the flow inspector is accessible for this flow, permission-wise"""
         if settings.DEBUG:
             return True
-        if not request.user.is_authenticated:
+        if not request.user.is_authenticated or not request.user.pk:
             return False
-        return request.user.has_perm(
-            "authentik_flows.inspect_flow", self
-        ) or request.user.has_perm("authentik_flows.inspect_flow")
+        return request.user.has_perm("authentik_flows.inspect_flow", self) or request.user.has_perm(
+            "authentik_flows.inspect_flow"
+        )
 
     def __str__(self) -> str:
         return f"Flow {self.name} ({self.slug})"
