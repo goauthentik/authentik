@@ -10,12 +10,12 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { OffboardingActionEnum } from "./OffboardingActionEnum";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { OffboardingActionEnum } from "./OffboardingActionEnum.js";
 import {
     OffboardingActionEnumFromJSON,
     OffboardingActionEnumToJSON,
-} from "./OffboardingActionEnum";
+} from "./OffboardingActionEnum.js";
 
 /**
  * Mixin to validate that a valid enterprise license

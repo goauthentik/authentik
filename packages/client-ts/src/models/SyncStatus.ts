@@ -10,12 +10,12 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { TaskAggregatedStatusEnum } from "./TaskAggregatedStatusEnum";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { TaskAggregatedStatusEnum } from "./TaskAggregatedStatusEnum.js";
 import {
     TaskAggregatedStatusEnumFromJSON,
     TaskAggregatedStatusEnumToJSON,
-} from "./TaskAggregatedStatusEnum";
+} from "./TaskAggregatedStatusEnum.js";
 
 /**
  * Provider/source sync status

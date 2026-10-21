@@ -10,26 +10,26 @@
  * Do not edit the class manually.
  */
 
-import { type BlueprintFile, BlueprintFileFromJSON } from "../models/BlueprintFile";
+import { type BlueprintFile, BlueprintFileFromJSON } from "../models/BlueprintFile.js";
 import {
     type BlueprintImportResult,
     BlueprintImportResultFromJSON,
-} from "../models/BlueprintImportResult";
-import { type BlueprintInstance, BlueprintInstanceFromJSON } from "../models/BlueprintInstance";
+} from "../models/BlueprintImportResult.js";
+import { type BlueprintInstance, BlueprintInstanceFromJSON } from "../models/BlueprintInstance.js";
 import {
     type BlueprintInstanceRequest,
     BlueprintInstanceRequestToJSON,
-} from "../models/BlueprintInstanceRequest";
+} from "../models/BlueprintInstanceRequest.js";
 import {
     type PaginatedBlueprintInstanceList,
     PaginatedBlueprintInstanceListFromJSON,
-} from "../models/PaginatedBlueprintInstanceList";
+} from "../models/PaginatedBlueprintInstanceList.js";
 import {
     type PatchedBlueprintInstanceRequest,
     PatchedBlueprintInstanceRequestToJSON,
-} from "../models/PatchedBlueprintInstanceRequest";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import * as runtime from "../runtime";
+} from "../models/PatchedBlueprintInstanceRequest.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
+import * as runtime from "../runtime.js";
 
 export interface ManagedBlueprintsApplyCreateRequest {
     /**

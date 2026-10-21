@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { EventRequest } from "./EventRequest";
-import { EventRequestFromJSON, EventRequestToJSON } from "./EventRequest";
+import type { EventRequest } from "./EventRequest.js";
+import { EventRequestFromJSON, EventRequestToJSON } from "./EventRequest.js";
 
 /**
  * Notification Serializer
