@@ -60,7 +60,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "GEOIPUPDATE_LICENSE_KEY_FILE=/run/secrets/GEOIPUPDATE_LICENSE_KEY /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage: download Rust toolchain
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:ed780d7d3d789d7056855e8c7e3c37d21368ea42f39305fe431c19ae2e08d6a3 AS rust-toolchain
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:b97a9f4f34c7d1ea350e394bb0cd14f2f5bfc39517bc442534bf6005ff2bc084 AS rust-toolchain
 
 ARG TARGETARCH
 ARG TARGETVARIANT
@@ -72,7 +72,8 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     # Required for installing pip packages
     apt-get install -y --no-install-recommends \
     # Build essentials
-    build-essential && \
+    build-essential \
+    curl ca-certificates && \
     curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain none && \
     rustup install && \
     rustup default "$(sed -n 's/channel = "\(.*\)"/\1/p' rust-toolchain.toml)" && \
@@ -82,7 +83,7 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
 # Stage: Download uv
 FROM ghcr.io/astral-sh/uv:0.13.4@sha256:9f130421e930bfbdc563c00740466603f8723158e90297d07957c2294640262b AS uv
 # Stage: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.14.8-slim-trixie-fips@sha256:19b6198b9e05ca1e86a15ffca22d0a0d12cbe06f88e7c0e95c7aa3dd03c9abae AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.14.8-slim-trixie-fips@sha256:3eb2e00a86a2247398b272c300ee78a6e1eab17172e0546e92ad5d8f34b9acff AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
@@ -183,7 +184,7 @@ RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
     uv sync --locked --no-install-project --no-dev
 
 # Stage: Test kit
-# Test-only files that scripts/test_docker.sh mounts into the unchanged final image
+# Test-only files that scripts/test_docker.sh mounts into the unchanged final or distroless image
 # Build it with --target test-kit and an output, like scripts/test_docker.sh does
 
 # MIT KDC tools for the Kerberos tests.
@@ -227,9 +228,9 @@ FROM scratch AS test-kit
 
 COPY --from=test-kit-build /kit/ /
 
-# Stage: Run
-# The default target, so it has to stay last
-FROM python-base AS final
+# Stage: assemble the runtime filesystem
+# Shared by the distroless image and the final image
+FROM python-base AS runtime-assemble
 
 ARG VERSION
 ARG GIT_BUILD_HASH
@@ -285,6 +286,74 @@ COPY --from=python-deps /ak-root/.venv /ak-root/.venv
 COPY --from=node-builder /work/web/dist/ /web/dist/
 COPY --from=node-builder /work/web/authentik/ /web/authentik/
 COPY --from=geoip /usr/share/GeoIP /geoip
+
+# Stage: distroless root filesystem
+# prune.sh copies the files the distroless image needs into /out
+FROM runtime-assemble AS distroless-rootfs
+
+RUN --mount=type=bind,target=/tmp/prune.sh,src=./lifecycle/container/prune.sh \
+    --mount=type=bind,target=/tmp/runtime-packages.txt,src=./lifecycle/container/runtime-packages.txt \
+    --mount=type=bind,target=/tmp/runtime-paths.txt,src=./lifecycle/container/runtime-paths.txt \
+    --mount=type=bind,target=/tmp/runtime-drop.txt,src=./lifecycle/container/runtime-drop.txt \
+    bash /tmp/prune.sh /tmp/runtime-packages.txt /tmp/runtime-paths.txt /tmp/runtime-drop.txt
+
+# Stage: Run, distroless
+# Contains only what's needed at runtime and nothing more
+# Build it with --target distroless as it is not the default
+FROM scratch AS distroless
+
+ARG VERSION
+ARG GIT_BUILD_HASH
+ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
+
+LABEL org.opencontainers.image.authors="Authentik Security Inc." \
+    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
+    org.opencontainers.image.description="goauthentik.io Main server image, see https://goauthentik.io for more info." \
+    org.opencontainers.image.documentation="https://docs.goauthentik.io" \
+    org.opencontainers.image.licenses="https://github.com/goauthentik/authentik/blob/main/LICENSE" \
+    org.opencontainers.image.revision=${GIT_BUILD_HASH} \
+    org.opencontainers.image.title="authentik server image (distroless)" \
+    org.opencontainers.image.url="https://goauthentik.io" \
+    org.opencontainers.image.vendor="Authentik Security Inc." \
+    org.opencontainers.image.version=${VERSION}
+
+# The copies are split so a rebuild does not invalidate unchanged layers
+# /out-root holds the merged-usr symlinks (bin, lib, lib64, sbin), /tmp and the top level files, trailing slash required!
+COPY --from=distroless-rootfs /out-root/ /
+COPY --from=distroless-rootfs /out/usr /usr
+COPY --from=distroless-rootfs /out/etc /etc
+COPY --from=distroless-rootfs /out/var /var
+COPY --from=distroless-rootfs /out/run /run
+COPY --from=distroless-rootfs /out/geoip /geoip
+COPY --from=distroless-rootfs /out/ak-root /ak-root
+COPY --from=distroless-rootfs /out/web /web
+COPY --from=distroless-rootfs /out/locale /locale
+COPY --from=distroless-rootfs /out/schemas /schemas
+COPY --from=distroless-rootfs /out/blueprints /blueprints
+COPY --from=distroless-rootfs /out/lifecycle /lifecycle
+COPY --from=distroless-rootfs /out/authentik /authentik
+COPY --chown=1000:1000 --from=distroless-rootfs /out/certs /certs
+COPY --chown=1000:1000 --from=distroless-rootfs /out/data /data
+COPY --chown=1000:1000 --from=distroless-rootfs /out/media /media
+
+WORKDIR /
+USER 1000
+
+ENV PATH="/lifecycle:/ak-root/.venv/bin:/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin" \
+    VENV_PATH="/ak-root/.venv" \
+    TMPDIR=/dev/shm/ \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    GOFIPS=1 \
+    RUST_BACKTRACE=full
+
+HEALTHCHECK --interval=30s --timeout=30s --start-period=120s --retries=3 CMD [ "ak", "healthcheck" ]
+
+ENTRYPOINT [ "dumb-init", "--", "ak" ]
+
+# Stage: Run
+# The default target, so it has to stay last
+FROM runtime-assemble AS final
 
 USER 1000
 
