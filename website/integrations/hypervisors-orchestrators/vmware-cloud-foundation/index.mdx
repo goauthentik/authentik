@@ -24,6 +24,10 @@ This documentation lists only the settings that you need to change from their de
 
 This guide requires VMware Cloud Foundation 9.0 or later. VCF Single Sign-On is configured in VCF Operations and uses the VCF Identity Broker to authenticate users across the VCF fleet. Before starting, verify that VCF Operations can reach authentik's OIDC endpoints and review the VCF Single Sign-On prerequisites.
 
+:::info
+A full, licensed deployment of VCF 9 is required for VCF SSO.
+::
+
 ## authentik configuration
 
 To support the integration of VMware Cloud Foundation with authentik, you need to create a [scope mapping](/docs/add-secure-apps/providers/oauth2/#scope-mappings) and an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) in authentik. VCF requires a `domain` claim that identifies the domain users log in with, which authentik does not send by default.
