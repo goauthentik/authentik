@@ -3,6 +3,7 @@
 from asyncio import run
 from dataclasses import asdict
 from typing import Any
+from urllib.parse import urlsplit
 
 from httpx import HTTPError
 from kiota_abstractions.api_error import APIError
@@ -20,7 +21,7 @@ from structlog.stdlib import get_logger
 
 from authentik.events.utils import sanitize_item
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
-from authentik.sources.oauth.models import AuthorizationCodeAuthMethod
+from authentik.sources.oauth.models import AuthorizationCodeAuthMethod, OAuthSource
 from authentik.sources.oauth.types.oidc import OpenIDConnectOAuth2Callback
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.redirect import OAuthRedirect
@@ -40,12 +41,18 @@ def entity_as_dict(entity: Entity) -> dict:
     )
 
 
+def get_graph_base_url(source: OAuthSource) -> str:
+    """Use the configured profile's origin for Graph scopes and API requests."""
+    profile_url = source.profile_url or EntraIDType.profile_url
+    return urlsplit(profile_url)._replace(path="", query="", fragment="").geturl()
+
+
 class EntraIDOAuthRedirect(OAuthRedirect):
     """Entra ID OAuth2 Redirect"""
 
-    def get_additional_parameters(self, source):  # pragma: no cover
+    def get_additional_parameters(self, source):
         return {
-            "scope": ["openid", "https://graph.microsoft.com/User.Read"],
+            "scope": ["openid", f"{get_graph_base_url(source)}/User.Read"],
         }
 
 
@@ -54,7 +61,9 @@ class EntraIDClient(UserprofileHeaderAuthClient):
 
     def get_profile_info(self, token):
         profile_data = super().get_profile_info(token)
-        if "https://graph.microsoft.com/GroupMember.Read.All" not in self.source.additional_scopes:
+        group_scope = f"{get_graph_base_url(self.source)}/GroupMember.Read.All"
+        scopes = self.source.additional_scopes.removeprefix("*").split()
+        if profile_data is None or group_scope not in scopes:
             return profile_data
         try:
             profile_data["raw_groups"] = run(self.get_groups(token))
@@ -71,9 +80,9 @@ class EntraIDClient(UserprofileHeaderAuthClient):
         async with GraphClientFactory.create_with_default_middleware(
             options=options, client=KiotaClientFactory.get_default_client()
         ) as http_client:
-            client = GraphServiceClient(
-                request_adapter=GraphRequestAdapter(AnonymousAuthenticationProvider(), http_client)
-            )
+            adapter = GraphRequestAdapter(AnonymousAuthenticationProvider(), http_client)
+            adapter.base_url = f"{get_graph_base_url(self.source)}/v1.0"
+            client = GraphServiceClient(request_adapter=adapter)
             groups = []
             request = client.me.member_of
             while request:

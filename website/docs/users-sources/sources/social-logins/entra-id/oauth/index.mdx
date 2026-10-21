@@ -91,6 +91,20 @@ For instructions on how to display the new source on the authentik login page, r
 For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source/).
 :::
 
+### National clouds
+
+For a national cloud tenant, configure the authorization, token, and JWKS URLs for that cloud. Set **Profile URL** to the cloud's Microsoft Graph `/v1.0/me` endpoint and use the matching Graph host in **Scopes**:
+
+| Cloud                       | Login host                 | Profile URL                                       | Group membership scope                                         |
+| --------------------------- | -------------------------- | ------------------------------------------------- | -------------------------------------------------------------- |
+| US Government L4 (GCC High) | `login.microsoftonline.us` | `https://graph.microsoft.us/v1.0/me`              | `https://graph.microsoft.us/GroupMember.Read.All`              |
+| US Government L5 (DoD)      | `login.microsoftonline.us` | `https://dod-graph.microsoft.us/v1.0/me`          | `https://dod-graph.microsoft.us/GroupMember.Read.All`          |
+| China operated by 21Vianet  | `login.chinacloudapi.cn`   | `https://microsoftgraph.chinacloudapi.cn/v1.0/me` | `https://microsoftgraph.chinacloudapi.cn/GroupMember.Read.All` |
+
+authentik derives the default `User.Read` scope and the group membership API endpoint from **Profile URL**. You do not need a `*` scope override to replace the commercial default. If you already use an override, include `openid` and the cloud-specific `User.Read` scope as well as the group membership scope.
+
+Microsoft 365 GCC uses the worldwide endpoints. See [Microsoft Graph national cloud deployments](https://learn.microsoft.com/en-us/graph/deployments) for cloud-specific endpoints. Grant admin consent for the **delegated** `GroupMember.Read.All` permission; the application permission with the same name does not authorize this login flow.
+
 ### Machine-to-machine authentication
 
 If using [Machine-to-Machine](../../../../../add-secure-apps/providers/oauth2/machine_to_machine.mdx#jwt-authentication) authentication, some specific steps need to be considered.
