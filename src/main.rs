@@ -16,6 +16,8 @@ mod metrics;
 #[cfg(feature = "proxy")]
 pub(crate) mod outpost;
 #[cfg(feature = "core")]
+mod python;
+#[cfg(feature = "core")]
 mod server;
 #[cfg(feature = "core")]
 mod worker;
@@ -34,6 +36,8 @@ enum Command {
     AllInOne(AllInOne),
     #[cfg(feature = "core")]
     Server(server::Cli),
+    #[cfg(feature = "core")]
+    ServerPrefork(server::prefork::Cli),
     #[cfg(feature = "core")]
     Worker(worker::Cli),
     #[cfg(feature = "proxy")]
@@ -79,6 +83,8 @@ fn main() -> Result<()> {
             Mode::set(Mode::Server)?;
         }
         #[cfg(feature = "core")]
+        Command::ServerPrefork(args) => return server::prefork::run(args, tracing_crude),
+        #[cfg(feature = "core")]
         Command::Worker(_) => {
             boot::bootstrap()?;
             Mode::set(Mode::Worker)?;
@@ -109,7 +115,7 @@ fn main() -> Result<()> {
     #[cfg(feature = "core")]
     if Mode::is_core() {
         trace!("initializing Python");
-        pyo3::Python::initialize();
+        python::initialize()?;
         trace!("Python initialized");
     }
 
@@ -170,6 +176,7 @@ fn main() -> Result<()> {
                 // We're checking for these before starting anything else
                 #[cfg(feature = "core")]
                 Command::Manage(_)
+                | Command::ServerPrefork(_)
                 | Command::TestAll(_)
                 | Command::DumpConfig(_)
                 | Command::Bash(_)

@@ -36,8 +36,8 @@ class AuthentikCoreConfig(ManagedAppConfig):
     def ready(self) -> None:
         if CONFIG.get_bool("error_reporting.enabled", False):
             setup_pre_fork()
-            # Under gunicorn's preload_app, some backends must finish initializing after
-            # the fork instead (see lifecycle/gunicorn.conf.py's post_fork hook)
+            # The server preloads the app before forking, some backends must finish
+            # initializing after the fork instead (see lifecycle/server.py's post_fork)
             if not os.environ.get(TRACER_DEFER_POSTFORK_ENV_VAR):
                 setup_post_fork()
         return super().ready()

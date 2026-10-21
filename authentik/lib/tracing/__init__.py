@@ -46,7 +46,7 @@ def setup_post_fork() -> None:
 
 
 def init() -> None:
-    """Full init for single-process entrypoints that never fork afterwards. Gunicorn's
+    """Full init for single-process entrypoints that never fork afterwards. The
     preloaded web server calls setup_pre_fork()/setup_post_fork() separately instead"""
     setup_pre_fork()
     setup_post_fork()

@@ -287,7 +287,7 @@ pub(super) fn build_router(server: &Arc<Server>) -> eyre::Result<Router> {
     // Static files
     let static_router = wrap_router(super::r#static::build_router(), true);
     // Router for endpoints handled in Python
-    let gunicorn_router = wrap_router(
+    let python_router = wrap_router(
         Router::new()
             .fallback(forward_request)
             .with_state(Arc::clone(server)),
@@ -298,7 +298,7 @@ pub(super) fn build_router(server: &Arc<Server>) -> eyre::Result<Router> {
     let router = Router::new()
         .nest("/-/", monitoring_router.clone())
         .merge(static_router)
-        .merge(gunicorn_router);
+        .merge(python_router);
 
     let web_path = &config::get().web.path;
     let router = if web_path == "/" {
@@ -350,7 +350,7 @@ mod tests {
     }
 }
 
-mod websockets {
+pub(super) mod websockets {
     use std::path::Path;
 
     use ak_axum::error::{AppError, Result};
@@ -378,7 +378,7 @@ mod websockets {
     };
     use tracing::{debug, trace, warn};
 
-    pub(super) fn is_websocket_upgrade(headers: &HeaderMap<HeaderValue>) -> bool {
+    pub(in crate::server) fn is_websocket_upgrade(headers: &HeaderMap<HeaderValue>) -> bool {
         let has_upgrade = headers
             .get(UPGRADE)
             .and_then(|v| v.to_str().ok())
