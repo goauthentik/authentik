@@ -23,6 +23,17 @@ from authentik.tasks.middleware import CurrentTask
 LOGGER = get_logger()
 
 
+class PrefetchedPolicyEngine(PolicyEngine):
+    """Policy engine evaluating a pre-fetched list of bindings instead of querying them"""
+
+    def __init__(self, pbm: NotificationRule, user: User, bindings: list[PolicyBinding]):
+        super().__init__(pbm, user)
+        self.__bindings = bindings
+
+    def bindings(self):
+        return self.__bindings
+
+
 @actor(description=_("Dispatch new event notifications."))
 def event_trigger_dispatch(event_uuid: UUID):
     """Check all NotificationRules against an event in one pass"""
@@ -82,7 +93,7 @@ def _evaluate_rules(event_uuid: UUID, rules: QuerySet[NotificationRule]):
     count = 0
     for trigger in rules:
         LOGGER.debug("e(trigger): checking if trigger applies", trigger=trigger)
-        policy_engine = PolicyEngine(trigger, user, bindings=trigger.enabled_bindings)
+        policy_engine = PrefetchedPolicyEngine(trigger, user, trigger.enabled_bindings)
         policy_engine.mode = PolicyEngineMode.MODE_ANY
         policy_engine.empty_result = False
         policy_engine.use_cache = False
