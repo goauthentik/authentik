@@ -12,6 +12,8 @@ To create a provider along with the corresponding application that uses it for a
 5. On the **Configure Provider** page, provide the required configuration settings.
 6. Click **Create Application** to create both the application and the provider.
 
+A confidential client's client secret is stored as a [secret](../../../sys-mgmt/secrets/index.mdx). If you don't select one, authentik creates a secret with a generated value. To share a client secret between providers, select the same secret on each. When you [rotate the secret](../../../sys-mgmt/secrets/manage-secrets.mdx#rotate-a-secret), clients that still use the old value are rejected, and if the provider has no signing key, ID tokens signed with the old value no longer validate. Update every client after rotating.
+
 :::info
 Optionally, configure the provider with the `offline_access` scope mapping. By default, applications only receive an access token. To receive a refresh token, applications and authentik must be configured to request the `offline_access` scope. Do this in the Scope mapping area on the **Configure OAuth2/OpenID Provider** page.
 :::
