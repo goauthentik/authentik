@@ -8,7 +8,7 @@ import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
 
 ## What is VMware Cloud Foundation 9?
 
-> VMware Cloud Foundation 9 (VCF 9) is a private cloud platform that combines vSphere compute, vSAN storage, NSX networking, and cloud management into a single integrated stack.
+> VMware Cloud Foundation is a full-stack IaaS platform that delivers software-defined compute, storage, networking, security, and management.
 >
 > -- https://www.vmware.com/products/cloud-infrastructure/vmware-cloud-foundation
 
@@ -22,11 +22,7 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-This guide requires VMware Cloud Foundation 9.0 or later. VCF Single Sign-On is configured in VCF Operations and uses the VCF Identity Broker to authenticate users across the VCF fleet. Before starting, verify that VCF Operations can reach authentik's OIDC endpoints and review the VCF Single Sign-On prerequisites.
-
-:::info VCF 9 Prerequisites
-A full, licensed deployment of VCF 9 is required for VCF SSO.
-::
+VCF Single Sign-On requires a full, licensed deployment of VMware Cloud Foundation 9.0 or later. VCF Single Sign-On is configured in VCF Operations and uses the VCF Identity Broker to authenticate users across the VCF fleet. Before starting, verify that VCF Operations can reach authentik's OIDC endpoints and review the VCF Single Sign-On prerequisites.
 
 ## authentik configuration
 
@@ -74,8 +70,8 @@ To support the integration of VMware Cloud Foundation with authentik, you need t
 1. Log in to VCF Operations as an administrator.
 2. In the top navigation bar, click **Manage**, then navigate to **Fleet Management** > **Identity & Access**.
 3. Open **VCF SSO Overview**. If you are creating the first VCF SSO configuration:
-    1. Open the **Get Started with SSO** tab and click **Prerequisites**, then confirm each checkbox and click **Submit**.
-    1. Open the **Get Started with SSO** tab and click **Configure SSO**.
+    1. Open the **Get Started with SSO** tab, click **Prerequisites**, confirm each checkbox, and click **Submit**.
+    2. On the **Get Started with SSO** tab, click **Configure SSO**.
     3. On the **Configure VCF SSO** page, click **Start** next to **Choose deployment mode**, select a deployment mode, and click **Configure**.
 4. On the **Configure VCF SSO** page, click **Start** next to **Configure Identity Provider**.
 5. Select **Generic OIDC** from the list and click **Next**.
