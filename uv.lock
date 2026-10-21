@@ -203,7 +203,7 @@ wheels = [
 
 [[package]]
 name = "authentik"
-version = "2026.5.7"
+version = "2026.5.8"
 source = { editable = "." }
 dependencies = [
     { name = "ak-guardian" },
