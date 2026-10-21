@@ -79,10 +79,7 @@ describe("resolveSidebarEntries", () => {
 
         expect(logs).toEqual(["/events/log", "Logs", ["event-view"]]);
 
-        // The path stays the entry's identity: it keys `repeat`, forms the link's
-        // `id`, and drives `aria-current`. Only the link target moves.
         expect(lifecycleRules?.[0]).toBe("/events/lifecycle-rules");
-
         expect(lifecycleRules?.[2]).toEqual({
             enterprise: true,
             pathOverride: toAdminInterface("/enterprise/licenses"),
@@ -91,7 +88,6 @@ describe("resolveSidebarEntries", () => {
     });
 
     it("does not mutate the entries it is given", () => {
-        // The interface resolves the same entry list on every render.
         resolveSidebarEntries(entries, { canEnterprise: true, licensed: false });
 
         expect(childrenOf(entries)[1]?.[2]).toEqual({ enterprise: true });
