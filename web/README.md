@@ -6,7 +6,7 @@ for awhile, but at least let's get started.
 # Setup
 
 The package manager is **pnpm**, pinned by the `packageManager` field in `package.json`. We
-currently require Node.js 24 or newer.
+currently require Node.js 24.22.1 or newer.
 
 Install from the project root (not the `./web` folder!):
 
