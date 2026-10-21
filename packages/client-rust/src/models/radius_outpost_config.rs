@@ -25,9 +25,8 @@ pub struct RadiusOutpostConfig {
     /// match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
     #[serde(rename = "client_networks", skip_serializing_if = "Option::is_none")]
     pub client_networks: Option<String>,
-    /// Shared secret between clients and server to hash packets.
-    #[serde(rename = "shared_secret", skip_serializing_if = "Option::is_none")]
-    pub shared_secret: Option<String>,
+    #[serde(rename = "shared_secret")]
+    pub shared_secret: String,
     /// When enabled, code-based multi-factor authentication can be used by appending a semicolon
     /// and the TOTP code to the password. This should only be enabled if all users that will bind
     /// to this provider have a TOTP device configured, as otherwise a password may incorrectly be
@@ -50,6 +49,7 @@ impl RadiusOutpostConfig {
         name: String,
         application_slug: String,
         auth_flow_slug: String,
+        shared_secret: String,
     ) -> RadiusOutpostConfig {
         RadiusOutpostConfig {
             pk,
@@ -57,7 +57,7 @@ impl RadiusOutpostConfig {
             application_slug,
             auth_flow_slug,
             client_networks: None,
-            shared_secret: None,
+            shared_secret,
             mfa_support: None,
             certificate: None,
         }
