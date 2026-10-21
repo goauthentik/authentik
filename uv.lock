@@ -1,5 +1,5 @@
 version = 1
-revision = 5
+revision = 3
 requires-python = "==3.14.*"
 resolution-markers = [
     "platform_python_implementation == 'PyPy' and sys_platform == 'win32'",
@@ -455,7 +455,7 @@ requires-dist = [
     { name = "opentelemetry-propagator-b3", specifier = "==1.45.1" },
     { name = "opentelemetry-sdk", specifier = "==1.44.0" },
     { name = "packaging", specifier = "==26.3" },
-    { name = "paramiko", specifier = "==5.0.0" },
+    { name = "paramiko", specifier = "==5.0.1" },
     { name = "psycopg", extras = ["c", "pool"], specifier = "==3.3.6" },
     { name = "pydantic", specifier = "==2.14.1" },
     { name = "pydantic-scim", specifier = "==0.0.8" },
@@ -2924,7 +2924,7 @@ wheels = [
 
 [[package]]
 name = "paramiko"
-version = "5.0.0"
+version = "5.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "bcrypt" },
@@ -2932,9 +2932,9 @@ dependencies = [
     { name = "invoke" },
     { name = "pynacl" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/62/93/dcc25d52f49022ae6175d15e6bd751f1acc99b98bc61fc55e5155a7be2e7/paramiko-5.0.0.tar.gz", hash = "sha256:36763b5b95c2a0dcfdf1abc48e48156ee425b21efe2f0e787c2dd5a95c0e5e79", size = 1548586, upload-time = "2026-05-09T18:28:52.256Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/3b/ec/d00e282ee3be1e13b789a5e85ca5a26758e3afd1cc4d84300cfc23ed2b34/paramiko-5.0.1.tar.gz", hash = "sha256:5c2d9e6293a221f8bb39a65de198a8ce3350390cbd4578a559c1bc016c1d7f2d", size = 1579876, upload-time = "2026-10-18T01:50:10.274Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/82/5b/eadf6d45de38d30ab603f49393b6cd2cbe7e233af8cf90197e32782b68a9/paramiko-5.0.0-py3-none-any.whl", hash = "sha256:b7044611c30140d9a75261653210e2002977b71a0497ff3ba0d98d7edbf62f7c", size = 208919, upload-time = "2026-05-09T18:28:50.295Z" },
+    { url = "https://files.pythonhosted.org/packages/4a/aa/ca045ce603b8f91efb1e6a3cb8a49293148abd15825687dcc4438e04134d/paramiko-5.0.1-py3-none-any.whl", hash = "sha256:126ff26677a7cb1504c4ea5a5a7a168b14abee3972ac72657e31efca68977f03", size = 209106, upload-time = "2026-10-18T01:50:08.887Z" },
 ]
 
 [[package]]
