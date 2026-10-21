@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/authentik",
-    "version": "2026.8.4",
+    "version": "2026.8.5",
     "private": true,
     "scripts": {
         "check-types": "tsc -b",
