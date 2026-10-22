@@ -148,8 +148,8 @@ disable_update_check: false
 disable_startup_analytics: false
 events:
   context_processors:
-    geoip: "/geoip/GeoLite2-City.mmdb"
-    asn: "/geoip/GeoLite2-ASN.mmdb"
+    geoip: "/geoip/dbip-city-lite.mmdb"
+    asn: "/geoip/dbip-asn-lite.mmdb"
 compliance:
   fips:
     enabled: false
