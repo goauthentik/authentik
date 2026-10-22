@@ -15928,7 +15928,7 @@
                         "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
                     ],
                     "title": "Name id policy",
-                    "description": "NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent."
+                    "description": "Format of the NameID Policy sent to the IdP. Select Unspecified to let the IdP choose the format of the NameID it returns."
                 },
                 "binding_type": {
                     "type": "string",

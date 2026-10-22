@@ -357,6 +357,15 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                             >
                                 ${msg("Transient")}
                             </option>
+                            <option
+                                value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatUnspecified}
+                                ?selected=${
+                                    this.instance?.nameIdPolicy ===
+                                    SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatUnspecified
+                                }
+                            >
+                                ${msg("Unspecified")}
+                            </option>
                         </select>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">

@@ -400,6 +400,15 @@ export function renderForm({
                         >
                             ${msg("Transient")}
                         </option>
+                        <option
+                            value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatUnspecified}
+                            ?selected=${
+                                provider?.defaultNameIdPolicy ===
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatUnspecified
+                            }
+                        >
+                            ${msg("Unspecified")}
+                        </option>
                     </select>
                     <p class="pf-c-form__helper-text">
                         ${msg(
