@@ -5,9 +5,7 @@ import {
     SidebarEntry,
 } from "./sidebar.js";
 
-import {
-    toAdminInterface
-} from "#elements/router/core/interfaces";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 
 import { ROUTES } from "#admin/Routes";
 
@@ -44,10 +42,10 @@ describe("resolveSidebarEntries", () => {
         ],
     ];
 
-    const childrenOf = (resolved: readonly SidebarEntry[]) => resolved[0]?.[3] ?? [];
+    const getChildren = (resolved: readonly SidebarEntry[]) => resolved[0]?.[3] ?? [];
 
-    it("passes entries through when the build is enterprise and licensed", () => {
-        const children = childrenOf(
+    it("includes entries through when the build is enterprise and licensed", () => {
+        const children = getChildren(
             resolveSidebarEntries(entries, { canEnterprise: true, licensed: true }),
         );
 
@@ -66,9 +64,9 @@ describe("resolveSidebarEntries", () => {
     });
 
     it.each([false, true])(
-        "drops enterprise entries when the build lacks the enterprise app (licensed: %s)",
+        "skips enterprise entries when the build lacks the enterprise app (licensed: %s)",
         (licensed) => {
-            const children = childrenOf(
+            const children = getChildren(
                 resolveSidebarEntries(entries, { canEnterprise: false, licensed }),
             );
 
@@ -77,13 +75,14 @@ describe("resolveSidebarEntries", () => {
     );
 
     it("routes unlicensed entries to Licenses with a badge, keeping their path", () => {
-        const [logs, lifecycleRules] = childrenOf(
+        const [logs, lifecycleRules] = getChildren(
             resolveSidebarEntries(entries, { canEnterprise: true, licensed: false }),
         );
 
         expect(logs).toEqual(["/events/log", "Logs", ["event-view"]]);
 
         expect(lifecycleRules?.[0]).toBe("/events/lifecycle-rules");
+
         expect(lifecycleRules?.[2]).toEqual({
             enterprise: true,
             pathOverride: toAdminInterface("/enterprise/licenses"),
@@ -91,19 +90,19 @@ describe("resolveSidebarEntries", () => {
         });
     });
 
-    it("does not mutate the entries it is given", () => {
+    it("honors readonly on entries it is given", () => {
         resolveSidebarEntries(entries, { canEnterprise: true, licensed: false });
 
-        expect(childrenOf(entries)[1]?.[2]).toEqual({ enterprise: true });
+        expect(getChildren(entries)[1]?.[2]).toEqual({ enterprise: true });
 
-        const children = childrenOf(entries);
+        const children = getChildren(entries);
 
         expect(children[1]?.[2]).not.toHaveProperty("pathOverride");
     });
 
-    it("keeps locked sibling paths distinct across the admin entries", () => {
-        const resolved = resolveSidebarEntries(createAdminSidebarEntries(), {
-            isEnterprise: true,
+    it("keeps enterprise-only sibling paths distinct across the admin entries", () => {
+        const resolved = resolveSidebarEntries(createAdminSidebarEntries(false), {
+            canEnterprise: true,
             licensed: false,
         });
 

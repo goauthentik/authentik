@@ -36,7 +36,7 @@ const isEnterpriseEntry = (attr: SidebarAttributes | undefined) =>
  * enterprise" if they are but the product is unlicensed.
  */
 export function resolveSidebarEntries(
-    entries: SidebarEntry[],
+    entries: readonly SidebarEntry[],
     { licensed, canEnterprise }: SidebarLicenseFlags,
 ): SidebarEntry[] {
     return (
@@ -203,33 +203,10 @@ export const initAdminSidebarEnterpriseEntries = (): readonly SidebarEntry[] => 
     ],
 ]];
 
-/*
-export function validateRoutes(entries: readonly SidebarEntry[]) {
-    const paths: string[] = entries
-        .map((level1: SidebarEntry) =>
-            (level1[3] ?? [])
-                .filter((level2: SidebarEntry) => level2[0]?.startsWith("/"))
-                .map((level2: SidebarEntry) => level2[0]),
-        )
-        .flat()
-        .filter((path) => typeof path === "string");
-
-    for (const path of paths) {
-        const matchingRoute = ROUTES.find((route) => route.test(path));
-
-        if (!matchingRoute) {
-            throw new Error("SidebarEntry contains a route that does not resolve.");
-        }
-    }
-}
- */
-
 export function createAdminSidebarEntries(needsEnterprise: boolean) {
     const entries = needsEnterprise
         ? [...initAdminSidebarEntries(), ...initAdminSidebarEnterpriseEntries()]
         : initAdminSidebarEntries();
-
-    // validateRoutes(entries);
 
     return entries;
 }

@@ -104,22 +104,12 @@ export class AdminInterface extends WithLicenseSummary(
 
     protected get navigationEntries(): readonly SidebarEntry[] {
         const canEnterprise = this.can(CapabilitiesEnum.IsEnterprise);
+        const entries = createAdminSidebarEntries(canEnterprise);
 
-        const entries = [
-            ...this.entries,
-            ...(canEnterprise ? createAdminSidebarEnterpriseEntries() : []),
-        ];
-
-<<<<<<< HEAD
         return resolveSidebarEntries(entries, {
             canEnterprise,
             licensed: this.hasEnterpriseLicense,
         });
-||||||| 9d68c4ec89
-        return [...this.entries, ...createAdminSidebarEnterpriseEntries()];
-=======
-        return createAdminSidebarEntries(canEnterprise);
->>>>>>> web/elements/sidebar-footer-dependency
     }
 
     //#endregion
