@@ -1,4 +1,6 @@
-import { createAdminSidebarEntries, findSidebarSectionByRoute } from "./sidebar.js";
+import { createAdminSidebarEntries, findSidebarSectionByRoute, SidebarEntry } from "./sidebar.js";
+
+import { ROUTES } from "#admin/Routes";
 
 import { describe, expect, it } from "vitest";
 
@@ -20,5 +22,23 @@ describe("findSidebarSectionByRoute", () => {
         expect(findSidebarSectionByRoute(entries, "outposts")).toBeNull();
         expect(findSidebarSectionByRoute(entries, "stage-prompts")).toBeNull();
         expect(findSidebarSectionByRoute(entries, null)).toBeNull();
+    });
+});
+
+describe("validate Sidebar routes exist", () => {
+    it("has a matching route in Routes for each sidebar entry", () => {
+        const paths: string[] = createAdminSidebarEntries(true)
+            .map((level1: SidebarEntry) =>
+                (level1[3] ?? [])
+                    .filter((level2: SidebarEntry) => level2[0]?.startsWith("/"))
+                    .map((level2: SidebarEntry) => level2[0]),
+            )
+            .flat()
+            .filter((path) => typeof path === "string");
+
+        for (const path of paths) {
+            const matchingRoute = ROUTES.find((route) => route.test(path));
+            expect(matchingRoute).not.toBeFalsy();
+        }
     });
 });
