@@ -10,11 +10,14 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { SystemInfoPostgresql } from "./SystemInfoPostgresql";
-import { SystemInfoPostgresqlFromJSON, SystemInfoPostgresqlToJSON } from "./SystemInfoPostgresql";
-import type { SystemInfoRuntime } from "./SystemInfoRuntime";
-import { SystemInfoRuntimeFromJSON, SystemInfoRuntimeToJSON } from "./SystemInfoRuntime";
+import { parseDateTime } from "../runtime.js";
+import type { SystemInfoPostgresql } from "./SystemInfoPostgresql.js";
+import {
+    SystemInfoPostgresqlFromJSON,
+    SystemInfoPostgresqlToJSON,
+} from "./SystemInfoPostgresql.js";
+import type { SystemInfoRuntime } from "./SystemInfoRuntime.js";
+import { SystemInfoRuntimeFromJSON, SystemInfoRuntimeToJSON } from "./SystemInfoRuntime.js";
 
 /**
  * Get system information.

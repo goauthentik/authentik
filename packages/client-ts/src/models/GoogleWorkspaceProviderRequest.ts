@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 
-import type { OutgoingSyncDeleteAction } from "./OutgoingSyncDeleteAction";
+import type { OutgoingSyncDeleteAction } from "./OutgoingSyncDeleteAction.js";
 import {
     OutgoingSyncDeleteActionFromJSON,
     OutgoingSyncDeleteActionToJSON,
-} from "./OutgoingSyncDeleteAction";
+} from "./OutgoingSyncDeleteAction.js";
 
 /**
  * GoogleWorkspaceProvider Serializer
