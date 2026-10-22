@@ -115,7 +115,7 @@ class InitiateView(View):
         try:
             saml_request = nice64(auth_n_req.build_auth_n())
         except InternalError as exc:
-            LOGGER.warning("Failed to build SAML request", source=source.slug, exc=str(exc))
+            LOGGER.warning("Failed to build SAML request", source=source.slug, exc=exc)
             return bad_request_message(request, _("Failed to build the SAML request."))
         injected_stages = []
         plan_kwargs = {
@@ -147,12 +147,7 @@ class ACSView(View):
 
     def error_response(self, source: SAMLSource, exc: Exception) -> HttpResponse:
         """Log the full error for administrators and show the user a generic message"""
-        LOGGER.warning(
-            "Failed to process SAML response",
-            source=source.slug,
-            exc_type=type(exc).__name__,
-            exc=str(exc),
-        )
+        LOGGER.warning("Failed to process SAML response", source=source.slug, exc=exc)
         if isinstance(exc, SAMLException):
             message = exc.default_message
         else:
