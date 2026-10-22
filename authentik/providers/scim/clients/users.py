@@ -14,9 +14,17 @@ from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.exceptions import ObjectExistsSyncException, StopSync
 from authentik.policies.utils import delete_none_values
 from authentik.providers.scim.clients.base import SCIMClient
-from authentik.providers.scim.clients.schema import SCIM_USER_SCHEMA
+from authentik.providers.scim.clients.schema import (
+    SCIM_USER_SCHEMA,
+    PatchOp,
+    PatchOperation,
+    PatchRequest,
+)
 from authentik.providers.scim.clients.schema import User as SCIMUserSchema
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderUser
+
+# Read-only or structural attributes, and externalId, which some service providers refuse to change
+PATCH_IGNORED_ATTRIBUTES = ("id", "schemas", "meta", "externalId")
 
 
 class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
@@ -113,13 +121,48 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
         if not self.diff(payload, connection):
             self.logger.debug("Skipping user write as data has not changed")
             return
+        if self._config.patch.supported:
+            return self._update_patch(payload, connection)
         response = self._request(
             "PUT",
             f"/Users/{connection.scim_id}",
             json=payload,
         )
-        connection.attributes = response
-        connection.save()
+        self._record_written_state(connection, payload, response)
+
+    def _update_patch(self, payload: dict[str, Any], connection: SCIMProviderUser):
+        """Update a user via PATCH request, sending only the attributes that changed"""
+        operations = [
+            (
+                PatchOperation(op=PatchOp.remove, path=path)
+                if value is None
+                else PatchOperation(op=PatchOp.replace, path=path, value=value)
+            )
+            for path, value in self._changed_attributes(payload, connection)
+        ]
+        if not operations:
+            self.logger.debug("Skipping user write as no patchable attribute has changed")
+            return
+        response = self._request(
+            "PATCH",
+            f"/Users/{connection.scim_id}",
+            json=PatchRequest(Operations=operations).model_dump(mode="json", exclude_none=True),
+        )
+        self._record_written_state(connection, payload, response)
+
+    def _changed_attributes(self, payload: dict[str, Any], connection: SCIMProviderUser):
+        """Yield the path and value of each attribute that differs from what we last wrote.
+        Attributes of schema extensions are yielded individually, as a path cannot consist
+        of only the extension's URN"""
+        for key, value in payload.items():
+            if key in PATCH_IGNORED_ATTRIBUTES:
+                continue
+            if key.startswith("urn:") and isinstance(value, dict):
+                for sub_key, sub_value in value.items():
+                    if self.diff({key: {sub_key: sub_value}}, connection):
+                        yield f"{key}:{sub_key}", sub_value
+            elif self.diff({key: value}, connection):
+                yield key, value
 
     def discover(self):
         for user in self.paginate_resources("/Users"):
