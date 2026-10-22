@@ -55,6 +55,17 @@ const highlightThemeOptions: HighlightOptions = {
  */
 export type Replacer = (input: string) => string;
 
+/**
+ * The syntax a source is compiled as.
+ *
+ * - `mdx` additionally parses JSX, expressions (`{...}`) and ESM
+ *   imports/exports, all of which are evaluated when the compiled module runs.
+ * - `md` is CommonMark only, i.e. no part of the source is evaluated.
+ *
+ * @see {@linkcode https://mdxjs.com/packages/mdx/#optionsformat}
+ */
+type ContentFormat = "md" | "mdx";
+
 @customElement("ak-mdx")
 export class AKMDX extends AKElement {
     // HACK: Fixes Lit Analyzer's parsing of TSX files with decorators.
@@ -97,16 +108,26 @@ export class AKMDX extends AKElement {
                 this.url.slice(this.url.indexOf("/assets"));
 
             nextMDXModule = await fetchMDXModule(pathname);
-        } else {
-            nextMDXModule = {
-                content: `${BrandedHTMLPolicy.createHTML(this.content || "")}`,
-            };
+
+            // Documentation is authored in-tree and bundled with the web
+            // interface, so it may use the full MDX syntax.
+            return this.delegateRender(nextMDXModule, "mdx");
         }
 
-        return this.delegateRender(nextMDXModule);
+        nextMDXModule = {
+            content: `${BrandedHTMLPolicy.createHTML(this.content || "")}`,
+        };
+
+        // `content` is supplied through the API — user and group notes, and
+        // blueprint descriptions — and is therefore compiled as CommonMark, so
+        // that no part of it is evaluated at runtime.
+        return this.delegateRender(nextMDXModule, "md");
     }
 
-    protected async delegateRender(mdxModule: MDXModule): Promise<void> {
+    protected async delegateRender(
+        mdxModule: MDXModule,
+        format: ContentFormat = "mdx",
+    ): Promise<void> {
         if (!this.#reactRoot) return;
 
         const normalized = this.replacers.reduce(
@@ -117,6 +138,7 @@ export class AKMDX extends AKElement {
         const { activeTheme } = this;
 
         const mdx = await compileMDX(normalized, {
+            format,
             outputFormat: "function-body",
             remarkPlugins: [
                 remarkParse,
