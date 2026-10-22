@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage: Build webui
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:24-trixie-slim@sha256:735dd688da64d22ebd9dd374b3e7e5a874635668fd2a6ec20ca1f99264294086 AS node-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:26.12.1-trixie-slim@sha256:1653c74b30c27b26f68c2d21279be12139d2ba723e3a682c425ec4bfb6070422 AS node-builder
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
