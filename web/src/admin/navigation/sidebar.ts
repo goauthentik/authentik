@@ -1,5 +1,6 @@
 import { SidebarItemProperties } from "#elements/sidebar/SidebarItem";
 import { LitPropertyRecord } from "#elements/types";
+
 import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
@@ -144,7 +145,6 @@ export const initAdminSidebarEnterpriseEntries = (): readonly SidebarEntry[] => 
         ["/enterprise/licenses", msg("Licenses"), null]
     ],
 ]];
-
 
 /*
 export function validateRoutes(entries: readonly SidebarEntry[]) {
