@@ -102,7 +102,7 @@ class KerberosSync:
                 connection.save()
             elif action in (Action.AUTH, Action.LINK):
                 user = connection.user
-                user.update_attributes(defaults)
+                user.update_attributes(self._source.drop_enrollment_only_user_properties(defaults))
                 connection.save()
             else:
                 return False
