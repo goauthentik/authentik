@@ -106,7 +106,7 @@ describe("MMDBWriter", () => {
             many.insert(`10.0.${index}.0/24`, { org: "Example Networks Inc." });
         }
         const repeated = many.toBytes().length - single.toBytes().length;
-        // Each extra network costs tree nodes only, not another copy of the record.
+        // Extra networks add tree nodes only.
         expect(repeated).toBeLessThan(256 * 6 * 2);
         expect(read(many).get("10.0.200.1")).toEqual({ org: "Example Networks Inc." });
     });

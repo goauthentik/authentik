@@ -6,14 +6,13 @@
 type IntegerType = "uint16" | "uint32" | "uint64" | "uint128" | "int32";
 
 /**
- * An integer pinned to a specific MMDB type. Plain numbers encode as `uint32` (or `double` when
- * fractional), which is wrong for metadata fields readers type-check.
+ * An integer encoded as a specific MMDB type. Plain numbers encode as `uint32` or `double`.
  */
 export class MMDBInteger {
-    readonly type: IntegerType;
-    readonly value: bigint;
+    public readonly type: IntegerType;
+    public readonly value: bigint;
 
-    constructor(type: IntegerType, value: number | bigint) {
+    public constructor(type: IntegerType, value: number | bigint) {
         this.type = type;
         this.value = BigInt(value);
     }
@@ -62,7 +61,9 @@ const INTEGER_MAX_BYTES: Record<IntegerType, number> = {
     int32: 4,
 };
 
-/** A stable string identity for a value, used to deduplicate records and data. */
+/**
+ * A stable string identity for a value, used to deduplicate records and data.
+ */
 export function valueKey(value: MMDBValue): string {
     return JSON.stringify(value, (_key, item: unknown) =>
         item instanceof MMDBInteger ? `${item.type}:${item.value}` : item,
@@ -71,7 +72,9 @@ export function valueKey(value: MMDBValue): string {
 
 const utf8 = new TextEncoder();
 
-/** Strings shorter than a pointer aren't worth deduplicating. */
+/**
+ * Strings shorter than a pointer are cheaper to repeat.
+ */
 const MIN_POINTER_STRING_BYTES = 4;
 
 /**
@@ -84,24 +87,23 @@ export class DataSection {
     #offsets = new Map<string, number>();
     readonly #deduplicate: boolean;
 
-    constructor({ deduplicate = true } = {}) {
+    public constructor({ deduplicate = true } = {}) {
         this.#deduplicate = deduplicate;
     }
 
-    get length(): number {
+    public get length(): number {
         return this.#length;
     }
 
-    toBytes(): Uint8Array {
+    public toBytes(): Uint8Array {
         return this.#buffer.subarray(0, this.#length);
     }
 
     /**
-     * Write a value and return the offset of its encoding. A value that was written before returns
-     * the earlier offset without writing anything, so the result always points at real data rather
-     * than at a pointer.
+     * Write a value and return the offset of its encoding. A value written before returns its
+     * earlier offset.
      */
-    add(value: MMDBValue): number {
+    public add(value: MMDBValue): number {
         const key = this.#cacheKey(value);
         const existing = key === null ? undefined : this.#offsets.get(key);
         if (existing !== undefined) {
@@ -115,7 +117,9 @@ export class DataSection {
         return offset;
     }
 
-    /** Write a nested value, as a pointer when it was written before. */
+    /**
+     * Write a nested value, as a pointer when it was written before.
+     */
     #encode(value: MMDBValue): void {
         const key = this.#cacheKey(value);
         const existing = key === null ? undefined : this.#offsets.get(key);

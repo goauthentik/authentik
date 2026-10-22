@@ -4,33 +4,38 @@
  */
 
 import { DataSection, type MMDBValue, uint16, uint32, uint64, valueKey } from "./data.ts";
-import { bitAt, type Network, parseNetwork } from "./network.ts";
+import { bitAt, IPV4_OFFSET_BITS, type Network, parseNetwork } from "./network.ts";
 
 export interface MMDBWriterOptions {
-    /** Readers match on this, e.g. geoip2 requires `GeoLite2-ASN` somewhere in it for ASN lookups. */
+    /**
+     * Readers check this, e.g. geoip2's ASN lookups require `GeoLite2-ASN` in it.
+     */
     databaseType: string;
     description?: Record<string, string>;
     languages?: string[];
-    /** Seconds since the epoch. Defaults to now. */
+
+    /**
+     * Seconds since the epoch. Defaults to now.
+     */
     buildEpoch?: number;
 }
 
 const METADATA_MARKER = Uint8Array.of(0xab, 0xcd, 0xef, ...new TextEncoder().encode("MaxMind.com"));
 const DATA_SECTION_SEPARATOR = 16;
 
-/** IPv6 ranges that map onto the IPv4 subtree, as MaxMind's own databases alias them. */
+/**
+ * IPv6 ranges that MaxMind's databases point at the IPv4 subtree.
+ */
 const IPV4_ALIASES = ["::ffff:0:0/96", "2002::/16"].map(parseNetwork);
 
 /**
- * Child slots hold `0` for "no data", a positive node index, or `-(record + 1)` for a data record.
- * The root is node 0, which no slot can point back to, so `0` is free to mean empty.
+ * A child slot with no data. Other slots hold a node index, or `-(record + 1)` for a record.
  */
 const EMPTY = 0;
 
 /**
- * Builds an IPv6 MMDB with IPv4 stored under `::/96`. Insert less specific networks first: an
- * insert replaces everything below its prefix, so a later, more specific network carves a hole in
- * an earlier one.
+ * Builds an IPv6 MMDB with IPv4 under `::/96`. An insert replaces everything below its prefix.
+ * Insert less specific networks first.
  */
 export class MMDBWriter {
     readonly #options: MMDBWriterOptions;
@@ -39,11 +44,11 @@ export class MMDBWriter {
     #records: MMDBValue[] = [];
     #recordIndex = new Map<string, number>();
 
-    constructor(options: MMDBWriterOptions) {
+    public constructor(options: MMDBWriterOptions) {
         this.#options = options;
     }
 
-    insert(network: Network | string, record: MMDBValue): void {
+    public insert(network: Network | string, record: MMDBValue): void {
         const { address, bits } = typeof network === "string" ? parseNetwork(network) : network;
         if (bits === 0) {
             throw new RangeError("Cannot insert the default route");
@@ -61,7 +66,9 @@ export class MMDBWriter {
         return id;
     }
 
-    /** Point the slot for `address/bits` at `value`, splitting any record it currently sits inside. */
+    /**
+     * Point the slot for `address/bits` at `value`, splitting any record above it.
+     */
     #set(address: Uint8Array, bits: number, value: number): void {
         let node = 0;
         for (let depth = 0; depth < bits - 1; depth++) {
@@ -89,7 +96,9 @@ export class MMDBWriter {
         return this.#nodeCount++;
     }
 
-    /** Collapse nodes whose two halves hold the same record into that record. */
+    /**
+     * Collapse nodes whose two halves hold the same record into that record.
+     */
     #collapse(node: number): number {
         for (const side of [0, 1]) {
             const child = this.#children[node * 2 + side]!;
@@ -102,18 +111,19 @@ export class MMDBWriter {
         return left <= 0 && left === right ? left : node;
     }
 
-    /** The slot value at the root of `::/96`, where IPv4 lives. */
+    /**
+     * The slot value at the root of the IPv4 subtree.
+     */
     #ipv4Root(): number {
         let value = 0;
-        for (let depth = 0; depth < 96; depth++) {
+        for (let depth = 0; depth < IPV4_OFFSET_BITS; depth++) {
             value = this.#children[value * 2]!;
             if (value <= 0) return value;
         }
         return value;
     }
 
-    toBytes(): Uint8Array {
-        // The root itself is kept even when both halves collapse to one record.
+    public toBytes(): Uint8Array {
         this.#collapse(0);
         const ipv4Root = this.#ipv4Root();
         if (ipv4Root !== EMPTY) {
@@ -122,7 +132,7 @@ export class MMDBWriter {
             }
         }
 
-        // Number reachable nodes breadth first; aliases make the IPv4 subtree reachable twice.
+        // The IPv4 aliases reach the same subtree twice.
         const order = new Int32Array(this.#nodeCount).fill(-1);
         const queue = [0];
         order[0] = 0;

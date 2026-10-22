@@ -1,7 +1,6 @@
 # syntax=docker/dockerfile:1
 
-# Carries the generated GeoIP databases. The server image copies them from
-# here with `COPY --from=ghcr.io/goauthentik/geoip`.
+# The server image copies the generated GeoIP databases from this image.
 FROM scratch
 
 LABEL org.opencontainers.image.authors="Authentik Security Inc." \
