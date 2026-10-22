@@ -2,7 +2,7 @@
  * @file Parsers for the public data the ASN database is built from.
  */
 
-import { type Network, parseNetwork } from "../mmdb/network.ts";
+import { type Network, toNetwork } from "../mmdb/network.ts";
 
 import ipaddr from "ipaddr.js";
 
@@ -11,8 +11,15 @@ export const RIS_DUMP_IPV6 = "https://www.ris.ripe.net/dumps/riswhoisdump.IPv6.g
 export const AS_NAMES = "https://ftp.ripe.net/ripe/asnames/asn.txt";
 
 export interface Route {
+    /**
+     * The announced prefix in CIDR notation.
+     */
     readonly prefix: string;
     readonly network: Network;
+
+    /**
+     * Number of the autonomous system that announces the prefix.
+     */
     readonly origin: number;
 
     /**
@@ -23,20 +30,30 @@ export interface Route {
 
 export interface RouteFilter {
     /**
-     * Routes fewer peers see are dropped as leaks.
+     * Minimum number of RIS peers that must see a route. Routes fewer peers see are usually leaks.
      */
     minPeers: number;
 
     /**
-     * Shorter prefixes are bogus aggregates, e.g. `2000::/6`.
+     * Shortest accepted IPv4 prefix length. Shorter prefixes are default routes or bogus
+     * aggregates.
      */
     minIPv4Bits: number;
+
+    /**
+     * Shortest accepted IPv6 prefix length. Shorter prefixes are default routes or bogus aggregates
+     * like `2000::/6`.
+     */
     minIPv6Bits: number;
 
     /**
-     * Longer prefixes are filtered by most networks.
+     * Longest accepted IPv4 prefix length. Most networks filter longer prefixes.
      */
     maxIPv4Bits: number;
+
+    /**
+     * Longest accepted IPv6 prefix length. Most networks filter longer prefixes.
+     */
     maxIPv6Bits: number;
 }
 
@@ -49,9 +66,23 @@ export const DEFAULT_ROUTE_FILTER: RouteFilter = {
 };
 
 /**
- * `ipaddr.js` ranges that carry public routing data. The rest are special-purpose (RFC 6890).
+ * `ipaddr.js` range names for publicly routed addresses. Routes in other ranges are dropped as
+ * special-purpose (RFC 6890).
  */
 const ROUTABLE_RANGES = new Set(["unicast", "as112", "as112v6", "amt"]);
+
+/**
+ * Parse a CIDR prefix with its family's parser, or return `null` when it is malformed.
+ */
+function parseCIDR(prefix: string): [ipaddr.IPv4 | ipaddr.IPv6, number] | null {
+    const family = prefix.includes(":") ? ipaddr.IPv6 : ipaddr.IPv4;
+
+    try {
+        return family.parseCIDR(prefix);
+    } catch {
+        return null;
+    }
+}
 
 /**
  * Pick one origin per prefix from RIS whois dump lines (`<origin>\t<prefix>\t<peers>`). When
@@ -66,13 +97,17 @@ export function selectRoutes(lines: Iterable<string>, options: Partial<RouteFilt
 
         // AS sets like `{64496,64497}` have no single origin.
         if (!originField || !/^\d+$/.test(originField)) continue;
-        if (!prefix || !peersField || !ipaddr.isValidCIDR(prefix)) continue;
+        if (!prefix || !peersField) continue;
 
-        const peers = Number(peersField);
+        const peers = parseInt(peersField, 10);
 
         if (peers < filter.minPeers) continue;
 
-        const [address, bits] = ipaddr.parseCIDR(prefix);
+        const parsed = parseCIDR(prefix);
+
+        if (!parsed) continue;
+
+        const [address, bits] = parsed;
         const ipv4 = address.kind() === "ipv4";
 
         if (bits < (ipv4 ? filter.minIPv4Bits : filter.minIPv6Bits)) continue;
@@ -84,8 +119,8 @@ export function selectRoutes(lines: Iterable<string>, options: Partial<RouteFilt
         if (!current || peers > current.peers) {
             best.set(prefix, {
                 prefix,
-                network: parseNetwork(prefix),
-                origin: Number(originField),
+                network: toNetwork(address, bits),
+                origin: parseInt(originField, 10),
                 peers,
             });
         }
@@ -112,7 +147,7 @@ export function parseASNames(lines: Iterable<string>): Map<number, string> {
         const dash = rest.indexOf(" - ");
         const name = dash === -1 ? rest.slice(rest.indexOf(" ") + 1) : rest.slice(dash + 3);
 
-        names.set(Number(asn), (name || rest).trim());
+        names.set(parseInt(asn, 10), (name || rest).trim());
     }
 
     return names;
