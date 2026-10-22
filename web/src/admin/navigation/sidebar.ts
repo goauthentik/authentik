@@ -52,7 +52,7 @@ const enterpriseOnly = () =>
  * enterprise" if they are but the product is unlicensed.
  */
 export function resolveSidebarEntries(
-    entries: SidebarEntry[],
+    entries: readonly SidebarEntry[],
     { licensed, canEnterprise }: SidebarLicenseFlags,
 ): SidebarItem[] {
     const visibleEntries = entries
@@ -150,7 +150,7 @@ export function findSidebarSectionByRoute(
 }
 
 // prettier-ignore
-export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
+export const initAdminSidebarEntries = (): readonly SidebarEntry[] => [
     [null, msg("Dashboards"), { key: "dashboards", "?expanded": true }, [
         ["/administration/overview", msg("Overview")],
         ["/administration/dashboard/users", msg("User Statistics")],
@@ -209,8 +209,16 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
 ];
 
 // prettier-ignore
-export const createAdminSidebarEnterpriseEntries = (): readonly SidebarEntry[] => [
+export const initAdminSidebarEnterpriseEntries = (): readonly SidebarEntry[] => [
     [null, msg("Enterprise"), { key: "enterprise" }, [
         ["/enterprise/licenses", msg("Licenses"), null]
     ],
 ]];
+
+export function createAdminSidebarEntries(needsEnterprise: boolean) {
+    const entries = needsEnterprise
+        ? [...initAdminSidebarEntries(), ...initAdminSidebarEnterpriseEntries()]
+        : initAdminSidebarEntries();
+
+    return entries;
+}

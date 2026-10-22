@@ -10,42 +10,45 @@
  * Do not edit the class manually.
  */
 
-import { type LifecycleIteration, LifecycleIterationFromJSON } from "../models/LifecycleIteration";
+import {
+    type LifecycleIteration,
+    LifecycleIterationFromJSON,
+} from "../models/LifecycleIteration.js";
 import {
     type LifecycleIterationRequest,
     LifecycleIterationRequestToJSON,
-} from "../models/LifecycleIterationRequest";
-import { type LifecycleRule, LifecycleRuleFromJSON } from "../models/LifecycleRule";
+} from "../models/LifecycleIterationRequest.js";
+import { type LifecycleRule, LifecycleRuleFromJSON } from "../models/LifecycleRule.js";
 import {
     type LifecycleRuleRequest,
     LifecycleRuleRequestToJSON,
-} from "../models/LifecycleRuleRequest";
-import { type OffboardingActionEnum } from "../models/OffboardingActionEnum";
-import { type OffboardingStatusEnum } from "../models/OffboardingStatusEnum";
+} from "../models/LifecycleRuleRequest.js";
+import { type OffboardingActionEnum } from "../models/OffboardingActionEnum.js";
+import { type OffboardingStatusEnum } from "../models/OffboardingStatusEnum.js";
 import {
     type PaginatedLifecycleIterationList,
     PaginatedLifecycleIterationListFromJSON,
-} from "../models/PaginatedLifecycleIterationList";
+} from "../models/PaginatedLifecycleIterationList.js";
 import {
     type PaginatedLifecycleRuleList,
     PaginatedLifecycleRuleListFromJSON,
-} from "../models/PaginatedLifecycleRuleList";
+} from "../models/PaginatedLifecycleRuleList.js";
 import {
     type PaginatedUserOffboardingList,
     PaginatedUserOffboardingListFromJSON,
-} from "../models/PaginatedUserOffboardingList";
+} from "../models/PaginatedUserOffboardingList.js";
 import {
     type PatchedLifecycleRuleRequest,
     PatchedLifecycleRuleRequestToJSON,
-} from "../models/PatchedLifecycleRuleRequest";
-import { type Review, ReviewFromJSON } from "../models/Review";
-import { type ReviewRequest, ReviewRequestToJSON } from "../models/ReviewRequest";
-import { type UserOffboarding, UserOffboardingFromJSON } from "../models/UserOffboarding";
+} from "../models/PatchedLifecycleRuleRequest.js";
+import { type Review, ReviewFromJSON } from "../models/Review.js";
+import { type ReviewRequest, ReviewRequestToJSON } from "../models/ReviewRequest.js";
+import { type UserOffboarding, UserOffboardingFromJSON } from "../models/UserOffboarding.js";
 import {
     type UserOffboardingRequest,
     UserOffboardingRequestToJSON,
-} from "../models/UserOffboardingRequest";
-import * as runtime from "../runtime";
+} from "../models/UserOffboardingRequest.js";
+import * as runtime from "../runtime.js";
 
 export interface LifecycleIterationsCreateRequest {
     lifecycleIterationRequest: LifecycleIterationRequest;
