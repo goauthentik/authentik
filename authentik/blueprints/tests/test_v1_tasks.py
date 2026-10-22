@@ -8,7 +8,7 @@ from unittest.mock import patch
 from django.db import DEFAULT_DB_ALIAS, OperationalError, connection, connections
 from django.test import TransactionTestCase
 from django.utils.crypto import salted_hmac
-from watchdog.events import FileCreatedEvent, FileModifiedEvent
+from watchdog.events import FileModifiedEvent
 from yaml import dump
 
 from authentik.blueprints.models import BlueprintInstance, BlueprintInstanceStatus
@@ -21,7 +21,6 @@ from authentik.blueprints.v1.tasks import (
 from authentik.events.logs import capture_logs
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
-from authentik.tasks.schedules.models import Schedule
 
 TMP = mkdtemp("authentik-blueprints")
 
@@ -441,28 +440,37 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
         terminator = connections.create_connection(DEFAULT_DB_ALIAS)
         try:
             with terminator.cursor() as cursor:
-                cursor.execute("SELECT pg_terminate_backend(%s)", [pid])
+                # Wait for the backend to exit so the next query cannot race the termination
+                cursor.execute("SELECT pg_terminate_backend(%s, 5000)", [pid])
         finally:
             terminator.close()
 
     @CONFIG.patch("blueprints_dir", TMP)
     def test_watcher_dead_connection(self):
         """Test the file watcher survives a persistent connection that died while idle"""
-        conn_max_age = connection.settings_dict["CONN_MAX_AGE"]
-        connection.settings_dict["CONN_MAX_AGE"] = None
-        self.addCleanup(connection.settings_dict.__setitem__, "CONN_MAX_AGE", conn_max_age)
+        # A persistent connection without health checks, so nothing replaces it before the query
+        self.enterContext(
+            patch.dict(
+                connection.settings_dict, {"CONN_MAX_AGE": None, "CONN_HEALTH_CHECKS": False}
+            )
+        )
         self.addCleanup(connection.close)
         connection.close()
+        instance = BlueprintInstance.objects.create(
+            name=generate_id(),
+            path="watcher.yaml",
+            enabled=True,
+        )
         self._terminate_connection()
         handler = BlueprintEventHandler()
-        event = FileCreatedEvent(str(Path(TMP) / "watcher.yaml"))
-        with patch.object(Schedule, "dispatch_by_actor") as dispatch:
+        event = FileModifiedEvent(str(Path(TMP) / "watcher.yaml"))
+        with patch.object(apply_blueprint, "send_with_options") as send:
             with capture_logs() as logs:
-                handler.on_created(event)
-            self.assertFalse(dispatch.called)
+                handler.on_modified(event)
+            send.assert_not_called()
             self.assertTrue(any("Failed to process file event" in log.event for log in logs))
-            handler.on_created(event)
-            self.assertTrue(dispatch.called)
+            handler.on_modified(event)
+            send.assert_called_once_with(args=(instance.pk,), rel_obj=instance)
 
     @CONFIG.patch("blueprints_dir", TMP)
     def test_watcher_database_error(self):
