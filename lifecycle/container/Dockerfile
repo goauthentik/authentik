@@ -46,18 +46,14 @@ COPY ./website /work/website/
 RUN pnpm run build && \
     pnpm run build:sfe
 
-# Stage: MaxMind GeoIP
-FROM --platform=${BUILDPLATFORM} ghcr.io/maxmind/geoipupdate:v8.0.0@sha256:51e70dd6f16cd3e4d845ac02d09940b10772a75b9d741427d235a78570923c1d AS geoip
+# Stage: DB-IP Lite GeoIP databases (CC BY 4.0, https://db-ip.com)
+FROM --platform=${BUILDPLATFORM} docker.io/library/alpine:3.22@sha256:822614ea121e1d40a33655081af10ef85f0aa2ab9e61f649ceaf0c651822433c AS geoip
 
-ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-City GeoLite2-ASN"
-ENV GEOIPUPDATE_VERBOSE="1"
-ENV GEOIPUPDATE_ACCOUNT_ID_FILE="/run/secrets/GEOIPUPDATE_ACCOUNT_ID"
+# Edition to download, as YYYY-MM. CI passes the current month so the cached layer refreshes monthly.
+ARG GEOIP_MONTH
 
-USER root
-RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
-    --mount=type=secret,id=GEOIPUPDATE_LICENSE_KEY \
-    mkdir -p /usr/share/GeoIP && \
-    /bin/sh -c "GEOIPUPDATE_LICENSE_KEY_FILE=/run/secrets/GEOIPUPDATE_LICENSE_KEY /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
+RUN --mount=type=bind,target=/tmp/geoip.sh,src=./lifecycle/container/geoip.sh \
+    sh /tmp/geoip.sh /geoip "${GEOIP_MONTH}"
 
 # Stage: download Rust toolchain
 FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:d363011346c52a8db30fb88769af5f81aefd2e506942b44a4d8aa9cb60238003 AS rust-toolchain
@@ -282,7 +278,7 @@ RUN ln -s /ak-root/packages /packages && \
 COPY --from=python-deps /ak-root/.venv /ak-root/.venv
 COPY --from=node-builder /work/web/dist/ /web/dist/
 COPY --from=node-builder /work/web/authentik/ /web/authentik/
-COPY --from=geoip /usr/share/GeoIP /geoip
+COPY --from=geoip /geoip /geoip
 
 # Stage: distroless root filesystem
 # prune.sh copies the files the distroless image needs into /out
