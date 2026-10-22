@@ -23,6 +23,7 @@ var _ MappedNullable = &Role{}
 type Role struct {
 	Pk                   string `json:"pk"`
 	Name                 string `json:"name"`
+	UserCount            int32  `json:"user_count"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -32,10 +33,11 @@ type _Role Role
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRole(pk string, name string) *Role {
+func NewRole(pk string, name string, userCount int32) *Role {
 	this := Role{}
 	this.Pk = pk
 	this.Name = name
+	this.UserCount = userCount
 	return &this
 }
 
@@ -95,6 +97,30 @@ func (o *Role) SetName(v string) {
 	o.Name = v
 }
 
+// GetUserCount returns the UserCount field value
+func (o *Role) GetUserCount() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.UserCount
+}
+
+// GetUserCountOk returns a tuple with the UserCount field value
+// and a boolean to check if the value has been set.
+func (o *Role) GetUserCountOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.UserCount, true
+}
+
+// SetUserCount sets field value
+func (o *Role) SetUserCount(v int32) {
+	o.UserCount = v
+}
+
 func (o Role) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -107,6 +133,7 @@ func (o Role) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["pk"] = o.Pk
 	toSerialize["name"] = o.Name
+	toSerialize["user_count"] = o.UserCount
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -122,6 +149,7 @@ func (o *Role) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"pk",
 		"name",
+		"user_count",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -153,6 +181,7 @@ func (o *Role) UnmarshalJSON(data []byte) (err error) {
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "pk")
 		delete(additionalProperties, "name")
+		delete(additionalProperties, "user_count")
 		o.AdditionalProperties = additionalProperties
 	}
 
