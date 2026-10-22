@@ -330,7 +330,7 @@ dependencies = [
  "pem 4.0.0",
  "percent-encoding",
  "pyo3",
- "pyo3-build-config",
+ "pyo3-build-config 0.30.1",
  "rand 0.10.3",
  "rcgen",
  "regex",
@@ -3061,7 +3061,7 @@ dependencies = [
  "libc",
  "once_cell",
  "portable-atomic",
- "pyo3-build-config",
+ "pyo3-build-config 0.29.0",
  "pyo3-ffi",
  "pyo3-macros",
 ]
@@ -3076,13 +3076,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "pyo3-build-config"
+version = "0.30.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "70130e2b6dd1ee589a8788026a429561ca5c40fa7a2fa7914c2282eddae24700"
+dependencies = [
+ "target-lexicon",
+]
+
+[[package]]
 name = "pyo3-ffi"
 version = "0.29.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ca85c467da1bbc8d866eea5deff9cf29ea5f7785054a17da36e65bda9c05845b"
 dependencies = [
  "libc",
- "pyo3-build-config",
+ "pyo3-build-config 0.29.0",
 ]
 
 [[package]]
