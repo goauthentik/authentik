@@ -149,7 +149,7 @@ disable_startup_analytics: false
 events:
   context_processors:
     geoip: "/geoip/dbip-city-lite.mmdb"
-    asn: "/geoip/dbip-asn-lite.mmdb"
+    asn: "/geoip/authentik-asn.mmdb"
 compliance:
   fips:
     enabled: false
