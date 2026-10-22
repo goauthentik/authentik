@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
-import type { LogoutURL } from "./LogoutURL";
-import { LogoutURLFromJSON, LogoutURLToJSON } from "./LogoutURL";
+import type { ContextualFlowInfo } from "./ContextualFlowInfo.js";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo.js";
+import type { ErrorDetail } from "./ErrorDetail.js";
+import type { LogoutURL } from "./LogoutURL.js";
+import { LogoutURLFromJSON, LogoutURLToJSON } from "./LogoutURL.js";
 
 /**
  * Challenge for iframe logout

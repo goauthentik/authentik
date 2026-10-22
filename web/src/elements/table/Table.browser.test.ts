@@ -1,10 +1,12 @@
-import { type PaginatedResponse } from "#common/api/responses";
+import { createPaginatedResponse, type PaginatedResponse } from "#common/api/responses";
 
 import { StaticTable } from "#elements/table/StaticTable";
 import { TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { afterEach, describe, expect, it, vi } from "vitest";
+
+import { html } from "lit";
 
 interface Row {
     pk: string;
@@ -29,9 +31,44 @@ class InstrumentedTable extends StaticTable<Row> {
 
 customElements.define("ak-test-instrumented-table", InstrumentedTable);
 
+/**
+ * A table whose requests resolve only when the test says so, recording the search each was sent
+ * with.
+ */
+class ControlledTable extends StaticTable<Row> {
+    public requests: { search: string | undefined; resolve: () => void }[] = [];
+
+    protected override searchEnabled = true;
+
+    protected override columns: TableColumn[] = [["Name"]];
+
+    protected override row(item: Row): SlottedTemplateResult[] {
+        return [item.name];
+    }
+
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return html`<button>New Row</button>`;
+    }
+
+    protected override async apiEndpoint(): Promise<PaginatedResponse<Row, object>> {
+        const { search } = this;
+
+        const response = createPaginatedResponse(
+            this.items.filter((item) => !search || item.name.includes(search)),
+        );
+
+        return new Promise((resolve) => {
+            this.requests.push({ search, resolve: () => resolve(response) });
+        });
+    }
+}
+
+customElements.define("ak-test-controlled-table", ControlledTable);
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-test-instrumented-table": InstrumentedTable;
+        "ak-test-controlled-table": ControlledTable;
     }
 }
 
@@ -121,5 +158,58 @@ describe("Table refetching", () => {
         await settleFrames();
 
         expect(table.fetchCount, "A scroll round trip should not trigger a fetch").toBe(1);
+    });
+});
+
+describe("Table fetch ordering", () => {
+    function createControlledTable(): ControlledTable {
+        const table = document.createElement("ak-test-controlled-table");
+        table.items = rows;
+        document.body.append(table);
+
+        return table;
+    }
+
+    it("does not render the empty state while the first fetch is deferred", async () => {
+        const table = document.createElement("ak-test-controlled-table");
+        table.items = rows;
+        document.body.append(createSpacer(), table);
+
+        await table.updateComplete;
+        await settleFrames();
+
+        expect(table.visible, "The table below the fold starts invisible").toBe(false);
+        expect(table.requests, "An invisible table defers its fetch").toHaveLength(0);
+
+        expect(
+            table.shadowRoot?.querySelector('ak-empty-state [slot="primary"]'),
+            "The empty state's create button is not rendered before any data arrives",
+        ).toBeNull();
+    });
+
+    it("runs a search requested during an in-flight fetch once that fetch settles", async () => {
+        const table = createControlledTable();
+
+        await vi.waitFor(() => expect(table.requests).toHaveLength(1));
+
+        // Two searches typed while the first page is still loading collapse into one follow-up.
+        table.search = "bar";
+        const first = table.fetch();
+        table.search = "barney";
+        const second = table.fetch();
+
+        expect(table.requests, "Nothing is sent while a request is in flight").toHaveLength(1);
+
+        table.requests[0]!.resolve();
+
+        await vi.waitFor(() => expect(table.requests).toHaveLength(2));
+
+        expect(table.requests[1]!.search, "The follow-up uses the latest search").toBe("barney");
+
+        table.requests[1]!.resolve();
+        await Promise.all([first, second]);
+
+        expect(table.data?.results.map((row) => row.name)).toEqual(["barney"]);
+        expect(table.requests, "Only one follow-up request is sent").toHaveLength(2);
     });
 });
