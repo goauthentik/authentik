@@ -2,7 +2,7 @@
     "name": "@goauthentik/geo",
     "version": "1.0.1",
     "private": true,
-    "description": "Hexworld basemap archive generator for authentik",
+    "description": "Geo data generators for authentik: the hexworld basemap and the ASN database",
     "license": "MIT",
     "repository": {
         "type": "git",
@@ -11,6 +11,7 @@
     },
     "type": "module",
     "scripts": {
+        "asn:build": "node scripts/build-asn.ts",
         "build:types": "tsc -p . --noEmit && tsc -p scripts && tsc -p test",
         "hexworld:build": "node scripts/build-hexworld.ts",
         "fix": "run-s lint format",
@@ -34,6 +35,7 @@
         "@mapbox/vector-tile": "^3.0.0",
         "@types/geojson": "^7946.0.16",
         "@types/node": "catalog:",
+        "mmdb-lib": "^3.0.3",
         "npm-run-all": "^4.1.5",
         "oxfmt": "catalog:",
         "oxlint": "catalog:",

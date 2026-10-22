@@ -222,7 +222,7 @@ target/
 local.env.yml
 
 media/
-*mmdb
+*.mmdb
 
 .idea/
 data/
