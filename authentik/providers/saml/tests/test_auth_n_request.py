@@ -791,7 +791,7 @@ class TestAuthNRequest(TestCase):
             AuthNRequestParser(self.provider).parse(b64encode(request.encode()).decode())
         # The user-facing message is generic; the parser's reason only goes to the detail
         self.assertEqual(str(ctx.exception), str(ERROR_CANNOT_DECODE_REQUEST))
-        self.assertIn("XML document contains a DOCTYPE declaration", ctx.exception.detail)
+        self.assertIn("XML document contains a DOCTYPE declaration", str(ctx.exception.detail))
 
     def test_invalid_base64(self):
         """Test that a SAMLRequest that is not valid base64 is rejected, not a server error"""
@@ -802,7 +802,7 @@ class TestAuthNRequest(TestCase):
             with self.assertRaises(CannotHandleAssertion) as ctx:
                 parse()
             self.assertEqual(str(ctx.exception), str(ERROR_CANNOT_DECODE_REQUEST))
-            self.assertIn("base64", ctx.exception.detail)
+            self.assertIn("base64", str(ctx.exception.detail))
 
     def test_acs_url_mismatch(self):
         """Test that a mismatched ACS URL is rejected without echoing either URL to the user"""

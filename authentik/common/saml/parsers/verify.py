@@ -26,7 +26,7 @@ def verify_enveloped_signature(
     try:
         root = lxml_from_string(raw_xml)
     except UnsafeXML as exc:
-        raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST, detail=str(exc)) from exc
+        raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST, detail=exc) from exc
     xmlsec.tree.add_ids(root, ["ID"])
     signature_nodes = root.xpath(xpath, namespaces=NS_MAP)
     if not isinstance(signature_nodes, list) or len(signature_nodes) < 1:
@@ -44,7 +44,7 @@ def verify_enveloped_signature(
         )
         ctx.verify(signature_node)
     except xmlsec.Error as exc:
-        raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY, detail=str(exc)) from exc
+        raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY, detail=exc) from exc
 
 
 def verify_detached_signature(  # noqa: PLR0913
@@ -83,4 +83,4 @@ def verify_detached_signature(  # noqa: PLR0913
             b64decode(signature),
         )
     except xmlsec.Error as exc:
-        raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY, detail=str(exc)) from exc
+        raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY, detail=exc) from exc

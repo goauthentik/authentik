@@ -17,6 +17,7 @@ from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
 from authentik.flows.views.executor import SESSION_KEY_POST
+from authentik.lib.utils.errors import exception_to_dict
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView
 from authentik.providers.saml.models import SAMLBindings, SAMLProvider
@@ -63,10 +64,16 @@ class SAMLSSOView(PolicyAccessView):
     def saml_request_error(self, exc: CannotHandleAssertion) -> HttpResponse:
         """Record the full error for administrators and show the user only the safe message"""
         message = str(exc)
+        context = {}
+        if isinstance(exc.detail, Exception):
+            context["exception"] = exception_to_dict(exc.detail)
+        elif exc.detail:
+            context["detail"] = str(exc.detail)
         Event.new(
             EventAction.CONFIGURATION_ERROR,
             provider=self.provider,
-            message=f"{message} {exc.detail}" if exc.detail else message,
+            message=message,
+            **context,
         ).save()
         LOGGER.info(
             "Failed to process SAML request",

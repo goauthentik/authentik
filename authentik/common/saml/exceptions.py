@@ -19,8 +19,9 @@ class CannotHandleAssertion(TracingIgnoredException):
     """This processor does not handle this assertion.
 
     `message` is shown to the user and must not contain request contents or internals.
-    `detail` is only logged and recorded in events for administrators."""
+    `detail` is only logged and recorded in events for administrators; pass the underlying
+    exception when there is one."""
 
-    def __init__(self, message: str | Promise, detail: str | None = None):
+    def __init__(self, message: str | Promise, detail: str | Promise | Exception | None = None):
         super().__init__(message)
         self.detail = detail
