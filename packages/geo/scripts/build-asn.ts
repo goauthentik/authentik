@@ -36,7 +36,9 @@ async function fetchSource(url: string, cacheDir: string, refresh: boolean): Pro
     return (url.endsWith(".gz") ? gunzipSync(raw) : raw).toString("utf8");
 }
 
-/** Lookups that must hold in any sane build, so a broken one is never published. */
+/**
+ * Lookups every valid build resolves.
+ */
 const EXPECTED_ORIGINS: Record<string, number> = {
     "8.8.8.8": 15169,
     "1.1.1.1": 13335,

@@ -395,6 +395,9 @@ importers:
       h3-js:
         specifier: ^4.5.0
         version: 4.5.0
+      ipaddr.js:
+        specifier: ^2.4.0
+        version: 2.4.0
       pmtiles:
         specifier: ^4.4.1
         version: 4.5.0

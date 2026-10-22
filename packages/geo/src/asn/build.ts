@@ -6,7 +6,9 @@ import { uint32 } from "../mmdb/data.ts";
 import { MMDBWriter } from "../mmdb/writer.ts";
 import type { Route } from "./sources.ts";
 
-/** geoip2's `Reader.asn()` only accepts databases whose type contains `GeoLite2-ASN`. */
+/**
+ * geoip2's `Reader.asn()` requires `GeoLite2-ASN` in the database type.
+ */
 export const ASN_DATABASE_TYPE = "authentik-ASN (compat=GeoLite2-ASN)";
 
 export const ASN_ATTRIBUTION =
