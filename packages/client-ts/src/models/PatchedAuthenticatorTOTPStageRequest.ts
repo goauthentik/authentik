@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { DigitsEnum } from "./DigitsEnum";
-import { DigitsEnumFromJSON, DigitsEnumToJSON } from "./DigitsEnum";
+import type { DigitsEnum } from "./DigitsEnum.js";
+import { DigitsEnumFromJSON, DigitsEnumToJSON } from "./DigitsEnum.js";
 
 /**
  * AuthenticatorTOTPStage Serializer

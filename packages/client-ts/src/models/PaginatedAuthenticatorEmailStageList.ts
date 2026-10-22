@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { AuthenticatorEmailStage } from "./AuthenticatorEmailStage";
+import type { AuthenticatorEmailStage } from "./AuthenticatorEmailStage.js";
 import {
     AuthenticatorEmailStageFromJSON,
     AuthenticatorEmailStageToJSON,
-} from "./AuthenticatorEmailStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./AuthenticatorEmailStage.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

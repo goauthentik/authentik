@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { ConsentModeEnum } from "./ConsentModeEnum";
-import { ConsentModeEnumFromJSON, ConsentModeEnumToJSON } from "./ConsentModeEnum";
+import type { ConsentModeEnum } from "./ConsentModeEnum.js";
+import { ConsentModeEnumFromJSON, ConsentModeEnumToJSON } from "./ConsentModeEnum.js";
 
 /**
  * ConsentStage Serializer

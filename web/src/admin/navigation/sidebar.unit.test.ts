@@ -5,12 +5,16 @@ import {
     SidebarEntry,
 } from "./sidebar.js";
 
-import { toAdminInterface } from "#elements/router/core/interfaces";
+import {
+    toAdminInterface
+} from "#elements/router/core/interfaces";
+
+import { ROUTES } from "#admin/Routes";
 
 import { describe, expect, it } from "vitest";
 
 describe("findSidebarSectionByRoute", () => {
-    const entries = createAdminSidebarEntries();
+    const entries = createAdminSidebarEntries(true);
 
     it.each([
         ["outpost-view", "Outposts"],
@@ -108,6 +112,24 @@ describe("resolveSidebarEntries", () => {
 
             expect(new Set(paths).size, `${label} has duplicate paths`).toBe(paths.length);
             expect(paths, `${label} rewrote a path`).not.toContain("/enterprise/licenses");
+        }
+    });
+});
+
+describe("validate Sidebar routes exist", () => {
+    it("has a matching route in Routes for each sidebar entry", () => {
+        const paths: string[] = createAdminSidebarEntries(true)
+            .map((level1: SidebarEntry) =>
+                (level1[3] ?? [])
+                    .filter((level2: SidebarEntry) => level2[0]?.startsWith("/"))
+                    .map((level2: SidebarEntry) => level2[0]),
+            )
+            .flat()
+            .filter((path) => typeof path === "string");
+
+        for (const path of paths) {
+            const matchingRoute = ROUTES.find((route) => route.test(path));
+            expect(matchingRoute).not.toBeFalsy();
         }
     });
 });
