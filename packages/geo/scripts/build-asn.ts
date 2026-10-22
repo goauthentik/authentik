@@ -18,6 +18,8 @@ import {
     selectRoutes,
 } from "../src/asn/sources.ts";
 
+import { type AsnResponse, Reader } from "mmdb-lib";
+
 async function fetchSource(url: string, cacheDir: string, refresh: boolean): Promise<string> {
     const path = resolve(cacheDir, basename(url));
     if (refresh || !existsSync(path)) {
@@ -32,6 +34,27 @@ async function fetchSource(url: string, cacheDir: string, refresh: boolean): Pro
     }
     const raw = await readFile(path);
     return (url.endsWith(".gz") ? gunzipSync(raw) : raw).toString("utf8");
+}
+
+/** Lookups that must hold in any sane build, so a broken one is never published. */
+const EXPECTED_ORIGINS: Record<string, number> = {
+    "8.8.8.8": 15169,
+    "1.1.1.1": 13335,
+    "2001:4860:4860::8888": 15169,
+};
+const MIN_ROUTES = 1_000_000;
+
+function verify(database: Uint8Array, routes: number): void {
+    if (routes < MIN_ROUTES) {
+        throw new Error(`Only ${routes} routes, expected at least ${MIN_ROUTES}`);
+    }
+    const reader = new Reader<AsnResponse>(Buffer.from(database));
+    for (const [ip, origin] of Object.entries(EXPECTED_ORIGINS)) {
+        const found = reader.get(ip)?.autonomous_system_number;
+        if (found !== origin) {
+            throw new Error(`${ip} resolved to AS${found}, expected AS${origin}`);
+        }
+    }
 }
 
 async function main() {
@@ -54,6 +77,7 @@ async function main() {
     const routes = [ipv4!, ipv6!].flatMap((dump) => selectRoutes(dump.split("\n"), filter));
     const names = parseASNames(asNames!.split("\n"));
     const database = buildASNDatabase(routes, names);
+    verify(database, routes.length);
 
     mkdirSync(resolve(values.out, ".."), { recursive: true });
     await writeFile(values.out, database);
