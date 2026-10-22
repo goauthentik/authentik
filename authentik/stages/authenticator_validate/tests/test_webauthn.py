@@ -654,7 +654,9 @@ class AuthenticatorValidateStageWebAuthnTests(APIFlowTestCase):
                 self.user,
             )
 
-    def _validate_unavailable_algorithm(self, alg: COSEAlgorithmIdentifier, public_key_class: str):
+    def _validate_unavailable_algorithm(
+        self, alg: COSEAlgorithmIdentifier, public_key_class: str, fips_enabled: bool
+    ) -> str:
         """Authenticate with a credential whose public key cryptography refuses to load, as it
         does for Ed25519 and ML-DSA under the validated OpenSSL FIPS provider"""
         credential = SoftwareCredential(rp_id="localhost", origin="http://localhost:9000", alg=alg)
@@ -686,27 +688,51 @@ class AuthenticatorValidateStageWebAuthnTests(APIFlowTestCase):
                 "from_public_bytes",
                 side_effect=ValueError(f"An {public_key_class} is 32 bytes long"),
             ),
+            patch(
+                "authentik.stages.authenticator_validate.challenge.backend._fips_enabled",
+                fips_enabled,
+            ),
             self.assertRaises(ValidationError) as cm,
         ):
             validate_challenge_webauthn(
                 credential.assertion_response(challenge), stage_view, self.user
             )
-        self.assertIn("not available on the server", str(cm.exception.detail[0]))
-        self.assertTrue(
-            Event.objects.filter(
-                action=EventAction.LOGIN_FAILED, context__stage__pk=stage.pk.hex
-            ).exists()
+        # The user sees a generic error; the details go to the log and the event
+        self.assertEqual(
+            str(cm.exception.detail[0]),
+            "Invalid security key. Please re-register or contact an administrator.",
         )
+        event = Event.objects.filter(
+            action=EventAction.LOGIN_FAILED, context__stage__pk=stage.pk.hex
+        ).first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.context["fips_enabled"], fips_enabled)
+        self.assertIn(event.context["algorithm"], ("EdDSA (Ed25519)", "ML-DSA-44"))
         device.refresh_from_db()
         self.assertEqual(device.sign_count, 0)
+        return event.context["message"]
 
     def test_validate_challenge_unavailable_algorithm_eddsa(self):
-        """cryptography raises its misleading key-length ValueError directly for Ed25519"""
-        self._validate_unavailable_algorithm(COSEAlgorithmIdentifier.EDDSA, "Ed25519PublicKey")
+        """cryptography raises its misleading key-length ValueError directly for Ed25519;
+        with FIPS enabled the event names the key type and FIPS"""
+        detail = self._validate_unavailable_algorithm(
+            COSEAlgorithmIdentifier.EDDSA, "Ed25519PublicKey", fips_enabled=True
+        )
+        self.assertEqual(
+            detail, "Cannot log in with EdDSA (Ed25519) security key while FIPS mode is enabled"
+        )
 
     def test_validate_challenge_unavailable_algorithm_mldsa(self):
-        """py_webauthn wraps the ML-DSA failure in its own UnsupportedPublicKey"""
-        self._validate_unavailable_algorithm(COSEAlgorithmIdentifier.ML_DSA_44, "MLDSA44PublicKey")
+        """py_webauthn wraps the ML-DSA failure in its own UnsupportedPublicKey; without FIPS
+        the event still names the key type"""
+        detail = self._validate_unavailable_algorithm(
+            COSEAlgorithmIdentifier.ML_DSA_44, "MLDSA44PublicKey", fips_enabled=False
+        )
+        self.assertEqual(
+            detail,
+            "Cannot log in with ML-DSA-44 security key: the key type is not available in the "
+            "current OpenSSL configuration",
+        )
 
     def test_validate_challenge_mldsa(self):
         """Test webauthn authentication with an ML-DSA-44 (FIPS 204) credential"""

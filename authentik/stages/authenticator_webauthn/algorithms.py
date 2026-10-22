@@ -14,6 +14,7 @@ from cryptography.hazmat.primitives.asymmetric.mldsa import (
 )
 from structlog.stdlib import get_logger
 from webauthn.helpers.cose import COSEAlgorithmIdentifier
+from webauthn.helpers.decode_credential_public_key import decode_credential_public_key
 
 LOGGER = get_logger()
 
@@ -28,6 +29,28 @@ PREFERRED_PUB_KEY_ALGS = [
     COSEAlgorithmIdentifier.ML_DSA_65,
     COSEAlgorithmIdentifier.ML_DSA_87,
 ]
+
+KEY_TYPE_NAMES = {
+    COSEAlgorithmIdentifier.EDDSA: "EdDSA (Ed25519)",
+    COSEAlgorithmIdentifier.ECDSA_SHA_256: "ES256",
+    COSEAlgorithmIdentifier.RSASSA_PKCS1_v1_5_SHA_256: "RS256",
+    COSEAlgorithmIdentifier.ML_DSA_44: "ML-DSA-44",
+    COSEAlgorithmIdentifier.ML_DSA_65: "ML-DSA-65",
+    COSEAlgorithmIdentifier.ML_DSA_87: "ML-DSA-87",
+}
+
+
+def credential_key_type(cose_public_key: bytes) -> str:
+    """Human-readable key type of a stored COSE credential public key, for logs and errors"""
+    try:
+        alg = int(decode_credential_public_key(cose_public_key).alg)
+    except Exception:  # noqa: BLE001
+        return "unknown"
+    try:
+        identifier = COSEAlgorithmIdentifier(alg)
+    except ValueError:
+        return f"COSE algorithm {alg}"
+    return KEY_TYPE_NAMES.get(identifier, identifier.name)
 
 
 def _probe(private_key_class, public_key_class) -> None:
