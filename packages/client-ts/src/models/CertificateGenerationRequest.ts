@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { AlgEnum } from "./AlgEnum";
-import { AlgEnumFromJSON, AlgEnumToJSON } from "./AlgEnum";
+import type { AlgEnum } from "./AlgEnum.js";
+import { AlgEnumFromJSON, AlgEnumToJSON } from "./AlgEnum.js";
 
 /**
  * Certificate generation parameters
