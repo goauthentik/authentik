@@ -1,5 +1,4 @@
 import "#elements/Spinner";
-
 import { aki } from "#common/api/client";
 import { formatElapsedTime } from "#common/temporal";
 
@@ -35,6 +34,7 @@ export class OutpostHealthSimpleElement extends AKElement {
 
         if (event) {
             if (!this.lastRefreshedAt) return;
+
             if (!event.table.renderRoot.contains(this)) return;
         }
 

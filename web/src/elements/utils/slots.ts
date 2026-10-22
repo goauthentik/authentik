@@ -21,6 +21,7 @@ export function findSlottedInstance<T>(
  * @param element The element to check for an assigned slot.
  * @param name The slot name to match. Pass `null` to match any named slot
  *   (excluding the default slot). If omitted, matches the default slot.
+ *
  * @returns The matching assigned slot, or `null` if none is found.
  */
 export function findAssignedSlot(

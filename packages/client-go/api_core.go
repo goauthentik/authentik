@@ -3,7 +3,7 @@ authentik
 
 Making authentication simple.
 
-API version: 2026.8.0-rc1
+API version: 2026.11.0-rc1
 Contact: hello@goauthentik.io
 */
 
@@ -41,8 +41,10 @@ type ApiCoreBrandsListRequest struct {
 	flowInvalidation              *string
 	flowLockdown                  *string
 	flowRecovery                  *string
+	flowRequest                   *string
 	flowUnenrollment              *string
 	flowUserSettings              *string
+	flowUserSwitch                *string
 	ordering                      *string
 	page                          *int32
 	pageSize                      *int32
@@ -115,6 +117,11 @@ func (r ApiCoreBrandsListRequest) FlowRecovery(flowRecovery string) ApiCoreBrand
 	return r
 }
 
+func (r ApiCoreBrandsListRequest) FlowRequest(flowRequest string) ApiCoreBrandsListRequest {
+	r.flowRequest = &flowRequest
+	return r
+}
+
 func (r ApiCoreBrandsListRequest) FlowUnenrollment(flowUnenrollment string) ApiCoreBrandsListRequest {
 	r.flowUnenrollment = &flowUnenrollment
 	return r
@@ -122,6 +129,11 @@ func (r ApiCoreBrandsListRequest) FlowUnenrollment(flowUnenrollment string) ApiC
 
 func (r ApiCoreBrandsListRequest) FlowUserSettings(flowUserSettings string) ApiCoreBrandsListRequest {
 	r.flowUserSettings = &flowUserSettings
+	return r
+}
+
+func (r ApiCoreBrandsListRequest) FlowUserSwitch(flowUserSwitch string) ApiCoreBrandsListRequest {
+	r.flowUserSwitch = &flowUserSwitch
 	return r
 }
 
@@ -242,11 +254,17 @@ func (a *CoreAPIService) CoreBrandsListExecute(r ApiCoreBrandsListRequest) (*Pag
 	if r.flowRecovery != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_recovery", r.flowRecovery, "form", "")
 	}
+	if r.flowRequest != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_request", r.flowRequest, "form", "")
+	}
 	if r.flowUnenrollment != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_unenrollment", r.flowUnenrollment, "form", "")
 	}
 	if r.flowUserSettings != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_user_settings", r.flowUserSettings, "form", "")
+	}
+	if r.flowUserSwitch != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_user_switch", r.flowUserSwitch, "form", "")
 	}
 	if r.ordering != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "ordering", r.ordering, "form", "")
@@ -341,7 +359,6 @@ func (a *CoreAPIService) CoreBrandsListExecute(r ApiCoreBrandsListRequest) (*Pag
 type ApiCoreGroupsListRequest struct {
 	ctx                   context.Context
 	ApiService            *CoreAPIService
-	attributes            *string
 	includeChildren       *bool
 	includeInheritedRoles *bool
 	includeParents        *bool
@@ -354,12 +371,6 @@ type ApiCoreGroupsListRequest struct {
 	page                  *int32
 	pageSize              *int32
 	search                *string
-}
-
-// Attributes
-func (r ApiCoreGroupsListRequest) Attributes(attributes string) ApiCoreGroupsListRequest {
-	r.attributes = &attributes
-	return r
 }
 
 func (r ApiCoreGroupsListRequest) IncludeChildren(includeChildren bool) ApiCoreGroupsListRequest {
@@ -468,9 +479,6 @@ func (a *CoreAPIService) CoreGroupsListExecute(r ApiCoreGroupsListRequest) (*Pag
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if r.attributes != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "attributes", r.attributes, "form", "")
-	}
 	if r.includeChildren != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_children", r.includeChildren, "form", "")
 	} else {
@@ -617,7 +625,6 @@ func (a *CoreAPIService) CoreGroupsListExecute(r ApiCoreGroupsListRequest) (*Pag
 type ApiCoreUsersListRequest struct {
 	ctx             context.Context
 	ApiService      *CoreAPIService
-	attributes      *string
 	dateJoined      *time.Time
 	dateJoinedGt    *time.Time
 	dateJoinedLt    *time.Time
@@ -647,12 +654,6 @@ type ApiCoreUsersListRequest struct {
 	type_           *[]UserTypeEnum
 	username        *string
 	uuid            *string
-}
-
-// Attributes
-func (r ApiCoreUsersListRequest) Attributes(attributes string) ApiCoreUsersListRequest {
-	r.attributes = &attributes
-	return r
 }
 
 func (r ApiCoreUsersListRequest) DateJoined(dateJoined time.Time) ApiCoreUsersListRequest {
@@ -845,9 +846,6 @@ func (a *CoreAPIService) CoreUsersListExecute(r ApiCoreUsersListRequest) (*Pagin
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if r.attributes != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "attributes", r.attributes, "form", "")
-	}
 	if r.dateJoined != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "date_joined", r.dateJoined, "form", "")
 	}

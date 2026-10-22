@@ -39,6 +39,8 @@ class SCIMProviderSerializer(
             "verify_certificates",
             "token",
             "auth_mode",
+            "auth_basic_user",
+            "auth_basic_password",
             "auth_oauth",
             "auth_oauth_params",
             "auth_oauth_token_last_updated",
@@ -50,10 +52,14 @@ class SCIMProviderSerializer(
             "exclude_users_service_account",
             "sync_page_size",
             "sync_page_timeout",
+            "discovery_enabled",
             "group_filters",
             "dry_run",
         ]
-        extra_kwargs = {}
+        extra_kwargs = {
+            "token": {"write_only": True},
+            "auth_basic_password": {"write_only": True},
+        }
 
 
 class SCIMProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelViewSet):

@@ -3,7 +3,7 @@ authentik
 
 Making authentication simple.
 
-API version: 2026.8.0-rc1
+API version: 2026.11.0-rc1
 Contact: hello@goauthentik.io
 */
 
@@ -23,20 +23,24 @@ var _ MappedNullable = &Brand{}
 type Brand struct {
 	BrandUuid string `json:"brand_uuid"`
 	// Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` and `ba.b`
-	Domain                        string         `json:"domain"`
-	Default                       *bool          `json:"default,omitempty"`
-	BrandingTitle                 *string        `json:"branding_title,omitempty"`
-	BrandingLogo                  *string        `json:"branding_logo,omitempty"`
-	BrandingFavicon               *string        `json:"branding_favicon,omitempty"`
-	BrandingCustomCss             *string        `json:"branding_custom_css,omitempty"`
-	BrandingDefaultFlowBackground *string        `json:"branding_default_flow_background,omitempty"`
-	FlowAuthentication            NullableString `json:"flow_authentication,omitempty"`
-	FlowInvalidation              NullableString `json:"flow_invalidation,omitempty"`
-	FlowRecovery                  NullableString `json:"flow_recovery,omitempty"`
-	FlowUnenrollment              NullableString `json:"flow_unenrollment,omitempty"`
-	FlowUserSettings              NullableString `json:"flow_user_settings,omitempty"`
-	FlowDeviceCode                NullableString `json:"flow_device_code,omitempty"`
-	FlowLockdown                  NullableString `json:"flow_lockdown,omitempty"`
+	Domain                        string  `json:"domain"`
+	Default                       *bool   `json:"default,omitempty"`
+	BrandingTitle                 *string `json:"branding_title,omitempty"`
+	BrandingLogo                  *string `json:"branding_logo,omitempty"`
+	BrandingFavicon               *string `json:"branding_favicon,omitempty"`
+	BrandingCustomCss             *string `json:"branding_custom_css,omitempty"`
+	BrandingDefaultFlowBackground *string `json:"branding_default_flow_background,omitempty"`
+	// URL template for the vector tile source used by the events map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
+	BrandingMapTiles   *string        `json:"branding_map_tiles,omitempty"`
+	FlowAuthentication NullableString `json:"flow_authentication,omitempty"`
+	FlowUserSwitch     NullableString `json:"flow_user_switch,omitempty"`
+	FlowInvalidation   NullableString `json:"flow_invalidation,omitempty"`
+	FlowRecovery       NullableString `json:"flow_recovery,omitempty"`
+	FlowUnenrollment   NullableString `json:"flow_unenrollment,omitempty"`
+	FlowUserSettings   NullableString `json:"flow_user_settings,omitempty"`
+	FlowDeviceCode     NullableString `json:"flow_device_code,omitempty"`
+	FlowLockdown       NullableString `json:"flow_lockdown,omitempty"`
+	FlowRequest        NullableString `json:"flow_request,omitempty"`
 	// When set, external users will be redirected to this application after authenticating.
 	DefaultApplication NullableString `json:"default_application,omitempty"`
 	// Web Certificate used by the authentik Core webserver.
@@ -308,6 +312,38 @@ func (o *Brand) SetBrandingDefaultFlowBackground(v string) {
 	o.BrandingDefaultFlowBackground = &v
 }
 
+// GetBrandingMapTiles returns the BrandingMapTiles field value if set, zero value otherwise.
+func (o *Brand) GetBrandingMapTiles() string {
+	if o == nil || IsNil(o.BrandingMapTiles) {
+		var ret string
+		return ret
+	}
+	return *o.BrandingMapTiles
+}
+
+// GetBrandingMapTilesOk returns a tuple with the BrandingMapTiles field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Brand) GetBrandingMapTilesOk() (*string, bool) {
+	if o == nil || IsNil(o.BrandingMapTiles) {
+		return nil, false
+	}
+	return o.BrandingMapTiles, true
+}
+
+// HasBrandingMapTiles returns a boolean if a field has been set.
+func (o *Brand) HasBrandingMapTiles() bool {
+	if o != nil && !IsNil(o.BrandingMapTiles) {
+		return true
+	}
+
+	return false
+}
+
+// SetBrandingMapTiles gets a reference to the given string and assigns it to the BrandingMapTiles field.
+func (o *Brand) SetBrandingMapTiles(v string) {
+	o.BrandingMapTiles = &v
+}
+
 // GetFlowAuthentication returns the FlowAuthentication field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *Brand) GetFlowAuthentication() string {
 	if o == nil || IsNil(o.FlowAuthentication.Get()) {
@@ -349,6 +385,49 @@ func (o *Brand) SetFlowAuthenticationNil() {
 // UnsetFlowAuthentication ensures that no value is present for FlowAuthentication, not even an explicit nil
 func (o *Brand) UnsetFlowAuthentication() {
 	o.FlowAuthentication.Unset()
+}
+
+// GetFlowUserSwitch returns the FlowUserSwitch field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Brand) GetFlowUserSwitch() string {
+	if o == nil || IsNil(o.FlowUserSwitch.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.FlowUserSwitch.Get()
+}
+
+// GetFlowUserSwitchOk returns a tuple with the FlowUserSwitch field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Brand) GetFlowUserSwitchOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.FlowUserSwitch.Get(), o.FlowUserSwitch.IsSet()
+}
+
+// HasFlowUserSwitch returns a boolean if a field has been set.
+func (o *Brand) HasFlowUserSwitch() bool {
+	if o != nil && o.FlowUserSwitch.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetFlowUserSwitch gets a reference to the given NullableString and assigns it to the FlowUserSwitch field.
+func (o *Brand) SetFlowUserSwitch(v string) {
+	o.FlowUserSwitch.Set(&v)
+}
+
+// SetFlowUserSwitchNil sets the value for FlowUserSwitch to be an explicit nil
+func (o *Brand) SetFlowUserSwitchNil() {
+	o.FlowUserSwitch.Set(nil)
+}
+
+// UnsetFlowUserSwitch ensures that no value is present for FlowUserSwitch, not even an explicit nil
+func (o *Brand) UnsetFlowUserSwitch() {
+	o.FlowUserSwitch.Unset()
 }
 
 // GetFlowInvalidation returns the FlowInvalidation field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -609,6 +688,49 @@ func (o *Brand) UnsetFlowLockdown() {
 	o.FlowLockdown.Unset()
 }
 
+// GetFlowRequest returns the FlowRequest field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Brand) GetFlowRequest() string {
+	if o == nil || IsNil(o.FlowRequest.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.FlowRequest.Get()
+}
+
+// GetFlowRequestOk returns a tuple with the FlowRequest field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Brand) GetFlowRequestOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.FlowRequest.Get(), o.FlowRequest.IsSet()
+}
+
+// HasFlowRequest returns a boolean if a field has been set.
+func (o *Brand) HasFlowRequest() bool {
+	if o != nil && o.FlowRequest.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetFlowRequest gets a reference to the given NullableString and assigns it to the FlowRequest field.
+func (o *Brand) SetFlowRequest(v string) {
+	o.FlowRequest.Set(&v)
+}
+
+// SetFlowRequestNil sets the value for FlowRequest to be an explicit nil
+func (o *Brand) SetFlowRequestNil() {
+	o.FlowRequest.Set(nil)
+}
+
+// UnsetFlowRequest ensures that no value is present for FlowRequest, not even an explicit nil
+func (o *Brand) UnsetFlowRequest() {
+	o.FlowRequest.Unset()
+}
+
 // GetDefaultApplication returns the DefaultApplication field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *Brand) GetDefaultApplication() string {
 	if o == nil || IsNil(o.DefaultApplication.Get()) {
@@ -789,8 +911,14 @@ func (o Brand) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.BrandingDefaultFlowBackground) {
 		toSerialize["branding_default_flow_background"] = o.BrandingDefaultFlowBackground
 	}
+	if !IsNil(o.BrandingMapTiles) {
+		toSerialize["branding_map_tiles"] = o.BrandingMapTiles
+	}
 	if o.FlowAuthentication.IsSet() {
 		toSerialize["flow_authentication"] = o.FlowAuthentication.Get()
+	}
+	if o.FlowUserSwitch.IsSet() {
+		toSerialize["flow_user_switch"] = o.FlowUserSwitch.Get()
 	}
 	if o.FlowInvalidation.IsSet() {
 		toSerialize["flow_invalidation"] = o.FlowInvalidation.Get()
@@ -809,6 +937,9 @@ func (o Brand) ToMap() (map[string]interface{}, error) {
 	}
 	if o.FlowLockdown.IsSet() {
 		toSerialize["flow_lockdown"] = o.FlowLockdown.Get()
+	}
+	if o.FlowRequest.IsSet() {
+		toSerialize["flow_request"] = o.FlowRequest.Get()
 	}
 	if o.DefaultApplication.IsSet() {
 		toSerialize["default_application"] = o.DefaultApplication.Get()
@@ -874,13 +1005,16 @@ func (o *Brand) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "branding_favicon")
 		delete(additionalProperties, "branding_custom_css")
 		delete(additionalProperties, "branding_default_flow_background")
+		delete(additionalProperties, "branding_map_tiles")
 		delete(additionalProperties, "flow_authentication")
+		delete(additionalProperties, "flow_user_switch")
 		delete(additionalProperties, "flow_invalidation")
 		delete(additionalProperties, "flow_recovery")
 		delete(additionalProperties, "flow_unenrollment")
 		delete(additionalProperties, "flow_user_settings")
 		delete(additionalProperties, "flow_device_code")
 		delete(additionalProperties, "flow_lockdown")
+		delete(additionalProperties, "flow_request")
 		delete(additionalProperties, "default_application")
 		delete(additionalProperties, "web_certificate")
 		delete(additionalProperties, "client_certificates")

@@ -124,10 +124,10 @@ class AgentConnectorViewSet(
         token: EnrollmentToken = request.auth
         data = EnrollSerializer(data=request.data)
         data.is_valid(raise_exception=True)
-        device, _ = Device.objects.get_or_create(
+        device = Device.get_or_create(
             identifier=data.validated_data["device_serial"],
+            name=data.validated_data["device_name"],
             defaults={
-                "name": data.validated_data["device_name"],
                 "expiring": False,
                 "access_group": token.device_group,
             },

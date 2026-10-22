@@ -1,0 +1,155 @@
+---
+title: Log in with Discord
+sidebar_label: Discord
+tags:
+    - source
+    - discord
+---
+
+This source lets users authenticate with their Discord credentials by configuring Discord as a federated identity provider with OAuth 2.0.
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+
+## Discord configuration
+
+To integrate Discord with authentik, create an OAuth application in the Discord Developer Portal.
+
+1. Log in to the [Discord Developer Portal](https://discord.com/developers/applications).
+2. Navigate to **Applications** and click **New Application**.
+3. Provide a name for the application, accept the terms, and then click **Create**.
+4. Select **OAuth2** in the sidebar.
+5. Under **Client Secret**, click **Reset Secret** and follow the steps.
+6. Take note of the **Client ID** and **Client Secret**. They will be required in the next section.
+7. Click **Add Redirect** and enter `https://authentik.company/source/oauth/callback/discord/`.
+
+## authentik configuration
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
+    - **Select type**: select **Discord OAuth Source** as the source type.
+    - **Create Discord OAuth Source**: provide a name, a slug that must match the slug used in the Discord `Redirect URI` (e.g. `discord`), and the following required configurations:
+        - Under **Protocol Settings**:
+            - **Consumer key**: set the Client ID from Discord.
+            - **Consumer secret**: set the Client Secret from Discord.
+            - **Scopes** _(optional)_: if you need authentik to sync guild membership information from Discord, add the `guilds guilds.members.read` scope.
+
+3. Click **Save**.
+
+:::info Display new source on login screen
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.mdx#add-sources-to-default-login-page).
+:::
+
+:::info Embed new source in flow :ak-enterprise
+For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../add-secure-apps/flows-stages/stages/source/).
+:::
+
+## Optional additional configuration
+
+### Sync Discord roles and avatars to authentik
+
+This mapping reads the user's role IDs in one Discord guild, links matching authentik groups, and stores an avatar URL. authentik reconciles source-linked group memberships after successful logins.
+
+Before creating the mapping, add `guilds guilds.members.read` under **Protocol settings** > **Scopes** on the Discord OAuth source. For each authentik group to link, set an attribute named `discord_role_id` to its Discord role ID under **Directory** > **Groups** > **Your group** > **Attributes**. Enable Discord developer mode to copy the guild and role IDs.
+
+1. In the authentik Admin interface, navigate to **Customization** > **Property Mappings**.
+2. Click **Create**, select **OAuth Source Property Mapping**, and then click **Next**.
+3. Provide a name for the mapping and enter this expression. Replace the guild ID with your own.
+
+```python
+from authentik.core.models import Group
+
+guild_id = "123456789123456789"
+guild_url = f"https://discord.com/api/v10/users/@me/guilds/{guild_id}/member"
+response = client.do_request("GET", guild_url, token=token)
+if response.status_code == 404:
+    is_member = False
+    role_ids = []
+else:
+    response.raise_for_status()
+    is_member = True
+    role_ids = response.json()["roles"]
+
+groups = Group.objects.filter(attributes__discord_role_id__in=role_ids)
+avatar_url = None
+if info.get("avatar"):
+    avatar_url = (
+        f"https://cdn.discordapp.com/avatars/{info['id']}/{info['avatar']}.png?size=128"
+    )
+
+return {
+    "name": info.get("global_name") or info.get("username"),
+    "groups": list(groups.values_list("name", flat=True)),
+    "attributes": {
+        "discord": {
+            "id": info.get("id"),
+            "username": info.get("username"),
+            "guild_id": guild_id,
+            "is_member": is_member,
+            "role_ids": role_ids,
+        },
+        "avatar": avatar_url,
+    },
+}
+```
+
+4. Click **Finish**.
+5. Edit the Discord OAuth source under **Directory** > **Federation and Social login**. Set **Group matching mode** to **Link to a group with identical name**.
+6. Under **OAuth Attribute mapping** > **User Property Mappings**, add the mapping to **Selected User Property Mappings**, and then click **Update**.
+
+Only existing authentik groups with a matching `discord_role_id` are linked. Use distinct group names, because **Link to a group with identical name** can link a group created for another source. A Discord 404 result leaves the role list empty; other API errors stop the login rather than clearing membership.
+
+To display the stored avatar, set the [avatar configuration](../../../../sys-mgmt/settings.mdx#avatars) to `attributes.avatar`.
+
+### Check Discord guild membership
+
+To deny login to users outside the guild, create an **Expression Policy** under **Customization** > **Policies** with this expression. It reads the result of the source property mapping above, so the policy does not call Discord again.
+
+```python
+from authentik.sources.oauth.models import OAuthSource
+
+source = request.context.get("source")
+if not isinstance(source, OAuthSource) or source.provider_type != "discord":
+    return True
+
+discord = request.context.get("prompt_data", {}).get("attributes", {}).get("discord", {})
+if not discord.get("is_member"):
+    ak_message("You are not a member of the required Discord guild.")
+    return False
+return True
+```
+
+Click **Finish**, then bind the policy to both the Discord source's enrollment and authentication flows. See [policy bindings and evaluation](../../../../customize/policies/bindings.mdx).
+
+### Check Discord guild role membership
+
+To require a specific Discord role, create another **Expression Policy** with this expression. Set `required_role_id` to the role ID copied from Discord.
+
+```python
+from authentik.sources.oauth.models import OAuthSource
+
+required_role_id = "123456789123456789"
+source = request.context.get("source")
+if not isinstance(source, OAuthSource) or source.provider_type != "discord":
+    return True
+
+discord = request.context.get("prompt_data", {}).get("attributes", {}).get("discord", {})
+if required_role_id not in discord.get("role_ids", []):
+    ak_message("You do not have the required Discord role.")
+    return False
+return True
+```
+
+Click **Finish**, then bind the policy to both the Discord source's enrollment and authentication flows.
+
+The mapping must be attached to the source before either policy is bound. If the mapping has not run, both policies deny Discord users because their mapped membership data is missing.
+
+If a policy denies a returning user, the group update stage does not run. Any group membership from an earlier successful login remains until that user logs in successfully again or you remove it separately. Use the policy result, not the synchronized group, when you need to enforce current Discord membership at login.
+
+## Resources
+
+- [Discord Developer Documentation](https://discord.com/developers/docs/intro)
+- [Discord Developer Documentation - OAuth2](https://discord.com/developers/docs/topics/oauth2#oauth2)

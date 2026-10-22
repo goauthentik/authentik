@@ -1,5 +1,4 @@
 import "./styles.css";
-
 import styles from "./styles.module.css";
 
 import { pluckPathnameAffixes, useRedirectEntries } from "#theme/NotFound/Content/utils.ts";

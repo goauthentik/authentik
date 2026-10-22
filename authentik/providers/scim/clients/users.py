@@ -71,11 +71,13 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
             except ObjectExistsSyncException as exc:
                 if not self._config.filter.supported:
                     raise exc
-                users = self._request(
-                    "GET",
-                    f"/Users?{urlencode({'filter': f'userName eq "{scim_user.userName}"'})}",
+                users = self.lower_case_keys(
+                    self._request(
+                        "GET",
+                        f"/Users?{urlencode({'filter': f'userName eq "{scim_user.userName}"'})}",
+                    )
                 )
-                users_res = users.get("Resources", [])
+                users_res = users.get("resources", [])
                 if len(users_res) < 1:
                     raise exc
                 return SCIMProviderUser.objects.create(
@@ -120,19 +122,11 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
         connection.save()
 
     def discover(self):
-        res = self._request("GET", "/Users")
-        seen_items = 0
-        expected_items = int(res["totalResults"])
-        while True:
-            for user in res["Resources"]:
-                try:
-                    self._discover_user_single(user)
-                except ValidationError:
-                    self.logger.warning("failed to discover user", scim_user=user.get("externalId"))
-                seen_items += 1
-            if seen_items >= expected_items:
-                break
-            res = self._request("GET", f"/Users?startIndex={seen_items + 1}")
+        for user in self.paginate_resources("/Users"):
+            try:
+                self._discover_user_single(user)
+            except ValidationError:
+                self.logger.warning("failed to discover user", scim_user=user.get("externalId"))
 
     def _discover_user_single(self, user: dict):
         scim_user = SCIMUserSchema.model_validate(user)

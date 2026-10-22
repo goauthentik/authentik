@@ -5,10 +5,10 @@ from typing import TYPE_CHECKING, TypedDict
 from django.http import HttpRequest
 from geoip2.errors import GeoIP2Error
 from geoip2.models import ASN
-from sentry_sdk import start_span
 
 from authentik.events.context_processors.mmdb import MMDBContextProcessor
 from authentik.lib.config import CONFIG
+from authentik.lib.tracing import active_tracer
 from authentik.root.middleware import ClientIPMiddleware
 
 if TYPE_CHECKING:
@@ -48,7 +48,7 @@ class ASNContextProcessor(MMDBContextProcessor):
 
     def asn(self, ip_address: str) -> ASN | None:
         """Wrapper for Reader.asn"""
-        with start_span(
+        with active_tracer().start_span(
             op="authentik.events.asn.asn",
             name=ip_address,
         ):

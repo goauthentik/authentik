@@ -18,7 +18,8 @@ import { property } from "lit/decorators.js";
  *
  * @remarks
  *
- * This style sheet **must** be included before any other styles that depend on Patternfly variables.
+ *   This style sheet **must** be included before any other styles that depend on Patternfly
+ *   variables.
  */
 const $PFBase = createStyleSheetUnsafe(PFBase);
 
@@ -43,8 +44,8 @@ export class AKElement extends LitElement implements AKElementProps {
      *
      * @remarks
      *
-     * This is useful if the element is a wrapper around a third-party component
-     * that requires styles to be applied to the host, such as Patternfly's modals.
+     *   This is useful if the element is a wrapper around a third-party component
+     *   that requires styles to be applied to the host, such as Patternfly's modals.
      */
     public static get hostStyles(): CSSResultOrNative[] {
         return this.hostStyleSheets ?? [];
@@ -60,9 +61,8 @@ export class AKElement extends LitElement implements AKElementProps {
      *
      * **You should not need to interact with this property directly.**
      *
-     * @see {@linkcode hostStyles} for the public API for this property.
-     *
      * @protected
+     * @see {@linkcode hostStyles} for the public API for this property.
      */
     protected static hostStyleSheets: CSSStyleSheet[] | null = null;
 
@@ -79,6 +79,7 @@ export class AKElement extends LitElement implements AKElementProps {
         // Remove duplicates in reverse order to preserve last-insert-wins semantics of CSS. See:
         // https://github.com/lit/lit/blob/main/packages/reactive-element/src/reactive-element.ts#L945
         const elementSet = new Set(elementStyles.reverse());
+
         // Reverse again because the return type is an array, and process as a CSSResult
         return Array.from(elementSet).reverse().map(createCSSResult);
     }
@@ -131,6 +132,7 @@ export class AKElement extends LitElement implements AKElementProps {
                 for (const element of unregisteredElements) {
                     console.debug("Unregistered custom element found in the DOM", element);
                 }
+
                 throw new TypeError(
                     `${unregisteredElements.length} unregistered custom elements found in the DOM. See console for details.`,
                 );
@@ -150,6 +152,7 @@ export class AKElement extends LitElement implements AKElementProps {
 
             const hint =
                 this.ownerDocument.documentElement.dataset.theme || globalAK().brand.uiTheme;
+
             const preferredColorScheme = resolveUITheme(hint);
 
             this.activeTheme = preferredColorScheme;
@@ -195,11 +198,9 @@ export class AKElement extends LitElement implements AKElementProps {
      *
      * @remarks
      *
-     * This property is lazy-initialized when the element is connected.
-     *
-     * Unlike the browser's current color scheme, this is a value that can be
-     * resolved to a specific theme, i.e. dark or light.
-     *
+     *   This property is lazy-initialized when the element is connected.
+     *   Unlike the browser's current color scheme, this is a value that can be
+     *   resolved to a specific theme, i.e. dark or light.
      * @attr ("light" | "dark") activeTheme
      */
     public activeTheme!: ResolvedUITheme;
@@ -211,12 +212,10 @@ export class AKElement extends LitElement implements AKElementProps {
     /**
      * A custom CSS style sheet to apply to the element.
      *
-     * @deprecated Use CSS parts and custom properties instead.
-     *
      * @remarks
-     * The use of injected style sheets may result in brittle styles that are hard to
-     * maintain across authentik versions.
-     *
+     *   The use of injected style sheets may result in brittle styles that are hard to
+     *   maintain across authentik versions.
+     * @deprecated Use CSS parts and custom properties instead.
      */
     readonly #customCSSStyleSheet: CSSStyleSheet | null;
 
@@ -263,10 +262,12 @@ export class AKElement extends LitElement implements AKElementProps {
     }
 
     /**
-     * Finds a slotted element by name, ensuring that it is not nested within another slotted element.
+     * Finds a slotted element by name, ensuring that it is not nested within another slotted
+     * element.
      *
      * @param slotName The name of the slot to find. Omit to find elements in the default slot.
-     * @return The slotted element, or `null` if no matching element is found.
+     *
+     * @returns The slotted element, or `null` if no matching element is found.
      */
     protected findSlotted<T extends Element = Element>(slotName?: string): T | null {
         const isNotNestedSlot = (start: Element) => {
@@ -276,6 +277,7 @@ export class AKElement extends LitElement implements AKElementProps {
                 if (node instanceof Element && node.hasAttribute("slot")) {
                     return null;
                 }
+
                 node = node.parentNode;
             }
 
@@ -288,6 +290,7 @@ export class AKElement extends LitElement implements AKElementProps {
                 ? [...this.querySelectorAll(`[slot="${slotName}"]`)]
                 : [...this.children].filter((child) => {
                       const slotAttr = child.getAttribute("slot");
+
                       return !slotAttr || slotAttr === "";
                   });
 

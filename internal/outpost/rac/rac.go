@@ -60,6 +60,10 @@ func (rs *RACServer) wsHandler(ctx context.Context, msg ak.Event) error {
 	if err != nil {
 		return err
 	}
+	if err := sshCertificate(wsm.Params); err != nil {
+		rs.log.WithError(err).Warning("failed to create ssh certificate")
+		return err
+	}
 	config := guac.NewGuacamoleConfiguration()
 	config.Protocol = wsm.Protocol
 	config.Parameters = wsm.Params

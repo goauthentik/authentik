@@ -27,7 +27,7 @@ class FreeIPA(BaseLDAPSynchronizer):
         """Check krbLastPwdChange"""
         if "krbLastPwdChange" not in attributes:
             return
-        pwd_last_set: datetime = attributes.get("krbLastPwdChange", datetime.now())
+        pwd_last_set: datetime = flatten(attributes.get("krbLastPwdChange", datetime.now()))
         pwd_last_set = pwd_last_set.replace(tzinfo=UTC)
         if created or pwd_last_set >= user.password_change_date:
             self._task.info(f"'{user.username}': Reset user's password")

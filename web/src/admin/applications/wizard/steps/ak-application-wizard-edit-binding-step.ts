@@ -5,34 +5,29 @@ import "#components/ak-text-input";
 import "#elements/ToggleGroup";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/ak-search-select-ez";
-import "#elements/forms/SearchSelect/index";
-
-import { aki } from "#common/api/client";
 import {
     createPassFailOptions,
     PolicyBindingCheckTarget,
     PolicyObjectKeys,
 } from "#common/policies/utils";
-import { groupBy } from "#common/utils";
 
-import { ISearchSelectConfig } from "#elements/forms/SearchSelect/ak-search-select-ez";
-import { type SearchSelectBase } from "#elements/forms/SearchSelect/SearchSelect";
-import { withQuery } from "#elements/forms/SearchSelect/utils";
+import type { SearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
 import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
+import { AKSearchSelect } from "#components/ak-search-select-field";
 import { type NavigableButton, type WizardButton } from "#components/ak-wizard/shared";
 
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
+import { groupSource, policySource, userSource } from "#admin/common/search-sources";
 
-import { CoreApi, Group, PoliciesApi, Policy, PolicyBinding, User } from "@goauthentik/api";
+import { Group, Policy, PolicyBinding, User } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 
 /**
- * @prop wizard - The current state of the application wizard, shared across all steps.
+ * @property wizard - The current state of the application wizard, shared across all steps.
  */
 @customElement("ak-application-wizard-edit-binding-step")
 export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<PolicyBinding> {
@@ -44,8 +39,8 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
         return this.renderRoot.querySelector("form#bindingform");
     }
 
-    @query(".policy-search-select")
-    searchSelect!: SearchSelectBase<Policy> | SearchSelectBase<Group> | SearchSelectBase<User>;
+    @query("ak-search-select")
+    searchSelect!: SearchSelect<Policy> | SearchSelect<Group> | SearchSelect<User>;
 
     @state()
     policyGroupUser: PolicyBindingCheckTarget = PolicyBindingCheckTarget.Policy;
@@ -68,6 +63,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
 
             const policyObject = this.searchSelect.selectedObject;
             const policyKey = PolicyObjectKeys[this.policyGroupUser];
+
             const newBinding: PolicyBinding = {
                 ...this.formValues,
                 [policyKey]: policyObject,
@@ -92,79 +88,48 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
         return super.handleButton(button);
     }
 
-    // The search select configurations for the three different types of fetches that we care about,
-    // policy, user, and group, all using the SearchSelectEZ protocol.
-    searchSelectConfigs(
-        kind: PolicyBindingCheckTarget,
-    ): ISearchSelectConfig<Policy> | ISearchSelectConfig<Group> | ISearchSelectConfig<User> {
-        switch (kind) {
-            case PolicyBindingCheckTarget.Policy:
-                return {
-                    fetchObjects: async (query) => {
-                        const policies = await aki(PoliciesApi).policiesAllList(
-                            withQuery(query, {
-                                ordering: "name",
-                            }),
-                        );
-
-                        return policies.results;
-                    },
-                    groupBy: (items) => groupBy(items, (policy) => policy.verboseNamePlural),
-                    renderElement: (policy): string => policy.name,
-                    value: (policy) => policy?.pk ?? "",
-                    selected: (policy) => policy.pk === this.instance?.policy,
-                } satisfies ISearchSelectConfig<Policy>;
-
-            case PolicyBindingCheckTarget.Group:
-                return {
-                    fetchObjects: async (query) => {
-                        const groups = await aki(CoreApi).coreGroupsList(
-                            withQuery(query, {
-                                ordering: "name",
-                                includeUsers: false,
-                            }),
-                        );
-
-                        return groups.results;
-                    },
-                    renderElement: (group) => group.name,
-                    value: (group) => group?.pk ?? "",
-                    selected: (group) => group.pk === this.instance?.group,
-                } satisfies ISearchSelectConfig<Group>;
-            case PolicyBindingCheckTarget.User:
-                return {
-                    fetchObjects: async (query) => {
-                        const users = await aki(CoreApi).coreUsersList(
-                            withQuery(query, {
-                                ordering: "username",
-                            }),
-                        );
-
-                        return users.results;
-                    },
-                    renderElement: (user): string => user.username,
-                    renderDescription: (user) => html`${user.name}`,
-                    value: (user) => String(user?.pk ?? ""),
-                    selected: (user) => user.pk === this.instance?.user,
-                } satisfies ISearchSelectConfig<User>;
-
-            default:
-                throw new Error(`Unrecognized policy binding target ${kind}`);
-        }
-    }
-
     protected renderSearch(title: string, policyKind: PolicyBindingCheckTarget) {
         if (policyKind !== this.policyGroupUser) {
             return nothing;
         }
 
+        const { instance } = this;
+        const placeholder = msg(str`Select a ${title}...`);
+
+        const search = (() => {
+            switch (policyKind) {
+                case PolicyBindingCheckTarget.Policy:
+                    return AKSearchSelect({
+                        name: policyKind,
+                        source: policySource,
+                        value: instance?.policy,
+                        selectedObject: instance?.policyObj,
+                        label: title,
+                        placeholder,
+                    });
+                case PolicyBindingCheckTarget.Group:
+                    return AKSearchSelect({
+                        name: policyKind,
+                        source: groupSource,
+                        value: instance?.group,
+                        selectedObject: instance?.groupObj,
+                        label: title,
+                        placeholder,
+                    });
+                case PolicyBindingCheckTarget.User:
+                    return AKSearchSelect({
+                        name: policyKind,
+                        source: userSource,
+                        value: instance?.user?.toString(),
+                        selectedObject: instance?.userObj,
+                        label: title,
+                        placeholder,
+                    });
+            }
+        })();
+
         return html`<ak-form-element-horizontal label=${title} name=${policyKind}>
-            <ak-search-select-ez
-                .config=${this.searchSelectConfigs(policyKind)}
-                class="policy-search-select"
-                blankable
-                placeholder=${msg(str`Select a ${title}...`)}
-            ></ak-search-select-ez>
+            ${search}
         </ak-form-element-horizontal>`;
     }
 

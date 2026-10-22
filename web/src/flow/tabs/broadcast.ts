@@ -1,3 +1,5 @@
+import type { PersistenceKey } from "#common/storage/shared";
+
 import { AKMultiTabEvent, AKMultiTabExitEvent } from "#flow/tabs/events";
 import { BroadcastMessage, BroadcastMessageType } from "#flow/tabs/messages";
 import { TabID } from "#flow/tabs/TabID";
@@ -8,7 +10,7 @@ import { match } from "ts-pattern";
 
 export class Broadcast extends BroadcastChannel implements Disposable {
     public static readonly ChannelName = "authentik";
-    public static readonly SessionStorageKey = "authentik_tab_resume_id";
+    public static readonly SessionStorageKey = "ak:tab_resume_id" satisfies PersistenceKey;
 
     public static readonly shared = new Broadcast();
 
@@ -16,13 +18,13 @@ export class Broadcast extends BroadcastChannel implements Disposable {
     protected shouldSuppressExit = false;
 
     protected logger: Logger;
-    protected storageKey: string;
+    protected storageKey: PersistenceKey;
 
     //#region Lifecycle
 
     constructor(
         channelName: string = Broadcast.ChannelName,
-        storageKey: string = Broadcast.SessionStorageKey,
+        storageKey: PersistenceKey = Broadcast.SessionStorageKey,
     ) {
         super(channelName);
 
@@ -73,6 +75,7 @@ export class Broadcast extends BroadcastChannel implements Disposable {
                 if (target !== TabID.shared.current) {
                     return;
                 }
+
                 if (typeof resumeID === "string") {
                     sessionStorage.setItem(this.storageKey, resumeID);
                 }
@@ -151,10 +154,11 @@ export class Broadcast extends BroadcastChannel implements Disposable {
     }
 
     /**
-     * Suppresses the next exit event that would be sent when the tab is closed or navigated away from.
+     * Suppresses the next exit event that would be sent when the tab is closed or navigated away
+     * from.
      *
-     * This is useful for cases where the tab is being programmatically closed or navigated away from,
-     * and we don't want to notify other tabs of the exit.
+     * This is useful for cases where the tab is being programmatically closed or navigated away
+     * from, and we don't want to notify other tabs of the exit.
      *
      * This method should be called before the tab is closed or navigated away from,
      * and it will prevent the exit event from being sent to other tabs.

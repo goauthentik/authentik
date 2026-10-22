@@ -1,6 +1,6 @@
 import { TargetLanguageTag } from "#common/ui/locale/definitions";
 import { formatLocaleDisplayNames } from "#common/ui/locale/format";
-import { setSessionLocale } from "#common/ui/locale/utils";
+import { applyLocaleChange } from "#common/ui/locale/persist";
 
 import { AKElement } from "#elements/Base";
 import { listen } from "#elements/decorators/listen";
@@ -11,9 +11,10 @@ import { WithLocale } from "#elements/mixins/locale";
 
 import { CapabilitiesEnum } from "@goauthentik/api";
 
+import { guard } from "lit-html/directives/guard.js";
+
 import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize";
 import { html, PropertyValues } from "lit";
-import { guard } from "lit-html/directives/guard.js";
 import { customElement, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
@@ -33,7 +34,8 @@ export class AKLocaleSelect extends WithLocale(WithCapabilitiesConfig(AKElement)
     /**
      * An event listener for when the user selects a different locale from the dropdown.
      *
-     * Note that their choice may not be immediately reflected in the UI.
+     * Locale is fixed per page load: persist the choice and reload so the whole UI —
+     * including server-rendered strings — comes back in the new locale.
      */
     protected localeChangeListener = (event: Event) => {
         const select = event.target as HTMLSelectElement;
@@ -41,12 +43,9 @@ export class AKLocaleSelect extends WithLocale(WithCapabilitiesConfig(AKElement)
 
         this.blur();
 
-        requestAnimationFrame(() => {
-            this.#previousActiveLanguageTag = this.activeLanguageTag;
-            this.activeLanguageTag = nextActiveLanguageTag;
+        if (nextActiveLanguageTag === this.activeLanguageTag) return;
 
-            setSessionLocale(nextActiveLanguageTag);
-        });
+        applyLocaleChange(nextActiveLanguageTag);
     };
 
     @listen(LOCALE_STATUS_EVENT, { target: window })
@@ -67,9 +66,9 @@ export class AKLocaleSelect extends WithLocale(WithCapabilitiesConfig(AKElement)
     };
 
     /**
-     * An event listener which only reacts to the locale being ready.
-     * This is used to delay showing the select until the locale is loaded,
-     * preventing a flash of unlocalized content and avoiding expensive localization operations during initial render.
+     * An event listener which only reacts to the locale being ready. This is used to delay showing
+     * the select until the locale is loaded, preventing a flash of unlocalized content and avoiding
+     * expensive localization operations during initial render.
      */
     protected localeReadyStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
         if (event.detail.status !== "ready") {
@@ -109,9 +108,9 @@ export class AKLocaleSelect extends WithLocale(WithCapabilitiesConfig(AKElement)
      *
      * @remarks
      *
-     * This avoids showing the select before the locale is initialized,
-     * preventing a flash of unlocalized content and avoiding expensive localization
-     * operations during initial render.
+     *   This avoids showing the select before the locale is initialized,
+     *   preventing a flash of unlocalized content and avoiding expensive localization
+     *   operations during initial render.
      */
     @state()
     protected ready = false;

@@ -17,19 +17,24 @@ export class OutpostHealthList extends StaticTable<OutpostHealth> {
 
     protected row(item: OutpostHealth): SlottedTemplateResult[] {
         let versionString = item.version;
+
         if (item.buildHash) {
             versionString = msg(str`${versionString} (build ${item.buildHash.substring(0, 8)})`);
         }
+
         if (item.fipsEnabled) {
             versionString = msg(str`${versionString} (FIPS)`);
         }
+
         return [
             html`${item.hostname}`,
-            html`${item.versionOutdated
-                ? html`<ak-label status="danger" compact
-                      >${msg(str`${item.version}, should be ${item.versionShould}`)}
-                  </ak-label>`
-                : html`<ak-label status="success" compact>${versionString} </ak-label>`}`,
+            html`${
+                item.versionOutdated
+                    ? html`<ak-label status="danger" compact
+                          >${msg(str`${item.version}, should be ${item.versionShould}`)}
+                      </ak-label>`
+                    : html`<ak-label status="success" compact>${versionString} </ak-label>`
+            }`,
             html`<ak-label status="success" compact>
                 ${msg(
                     str`${formatElapsedTime(item.lastSeen)} (${item.lastSeen?.toLocaleTimeString()})`,

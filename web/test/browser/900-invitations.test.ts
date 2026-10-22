@@ -12,7 +12,7 @@ test.describe("Invitation form", () => {
         invitationNames.set(testId, `invite-${seed}`);
 
         await test.step("Authenticate", () =>
-            session.login({ to: "/if/admin/#/flow/stages/invitations" }));
+            session.login({ to: "/if/admin/flow/stages/invitations" }));
     });
 
     test.afterEach("Verify invitation was created", async ({ form }, { testId }) => {
@@ -28,7 +28,7 @@ test.describe("Invitation form", () => {
     // CodeMirror editor must not block submission.
     test("Create invitation with custom attributes", async ({ page, form, pointer }, testInfo) => {
         const name = invitationNames.get(testInfo.testId)!;
-        const { fill } = form;
+        const { fill, selectSearchValue } = form;
         const { click } = pointer;
 
         const $dialog = page.getByRole("dialog", { name: "New Invitation" });
@@ -46,8 +46,7 @@ test.describe("Invitation form", () => {
         await test.step("Fill invitation details", async () => {
             await fill("Invitation Name", name, $dialog);
 
-            await $dialog.getByPlaceholder("Select a flow...").click();
-            await page.getByRole("option", { name: /default-source-enrollment/ }).click();
+            await selectSearchValue("Flow", /default-source-enrollment/, $dialog);
         });
 
         await test.step("Edit custom attributes (#22637)", async () => {
@@ -62,7 +61,7 @@ test.describe("Invitation form", () => {
             await expect(
                 page.getByText("Successfully created invitation."),
                 "Success message confirms the invitation was created",
-            ).toBeVisible({ timeout: 10_000 });
+            ).toBeVisible();
         });
 
         await test.step("Success modal presents the invitation link", async () => {
@@ -89,9 +88,13 @@ test.describe("Invitation form", () => {
         form,
         pointer,
     }, testInfo) => {
+        // The blueprint import in the middle of this test eats most of the default
+        // budget on its own; the remaining steps still need room after it.
+        test.setTimeout(90_000);
+
         const name = invitationNames.get(testInfo.testId)!;
         const seed = name.replace("invite-", "");
-        const { fill } = form;
+        const { fill, selectSearchValue } = form;
         const { click } = pointer;
 
         const $dialog = page.getByRole("dialog", { name: "New Invitation" });
@@ -105,26 +108,34 @@ test.describe("Invitation form", () => {
         });
 
         await test.step("Open the stacked enrollment flow form via the flow select", async () => {
-            await $dialog.getByPlaceholder("Select a flow...").click();
-
-            await page.getByRole("option", { name: "Create a new enrollment flow" }).click();
+            await selectSearchValue("Flow", /Create a new enrollment flow/, $dialog);
 
             await expect($flowDialog, "Enrollment flow form opens on top").toBeVisible();
         });
 
         await test.step("Create the enrollment flow and invitation stage", async () => {
             await fill("Flow Name", `Invite Flow ${seed}`, $flowDialog);
+            // Seed the slug too. It defaults to a fixed `enrollment-with-invitation`, and
+            // the blueprint import upserts by slug — so without this every run targets the
+            // same flow record and the assertion below reads back a previous run's name.
+            await fill("Flow Slug", `invite-flow-${seed}`, $flowDialog);
             await fill("Invitation Stage Name", `invite-stage-${seed}`, $flowDialog);
 
             await click("Create Enrollment Flow", "button", $flowDialog);
 
-            await expect($flowDialog, "Flow form closes after creation").toBeHidden();
+            // Creating the flow posts a blueprint import, which builds the flow, the
+            // invitation stage, and the binding between them in one synchronous request.
+            // That runs well past the 5s default.
+            await expect($flowDialog, "Flow form closes after creation").toBeHidden({
+                timeout: 20_000,
+            });
+
             await expect($dialog, "Invitation form is still open underneath").toBeVisible();
         });
 
         await test.step("The newly created flow is selected", async () => {
             await expect(
-                $dialog.getByPlaceholder("Select a flow..."),
+                $dialog.getByRole("combobox", { name: "Flow" }),
                 "Flow search adopts the newly created flow",
             ).toHaveValue(new RegExp(seed));
         });
@@ -134,7 +145,77 @@ test.describe("Invitation form", () => {
 
             await click("Create Invitation", "button", $dialog);
 
-            await expect($successDialog, "Success modal opens").toBeVisible({ timeout: 10_000 });
+            await expect($successDialog, "Success modal opens").toBeVisible();
+
+            await $successDialog.getByRole("button", { name: "Close", exact: true }).click();
+        });
+    });
+
+    test("Create enrollment flow from the flow select after a search", async ({
+        page,
+        form,
+        pointer,
+    }, testInfo) => {
+        test.setTimeout(90_000);
+
+        const name = invitationNames.get(testInfo.testId)!;
+        const seed = name.replace("invite-", "");
+        const { fill } = form;
+        const { click } = pointer;
+
+        const $dialog = page.getByRole("dialog", { name: "New Invitation" });
+        const $flowDialog = page.getByRole("dialog", { name: "New Enrollment Flow" });
+        const $successDialog = page.getByRole("dialog", { name: "Invitation Details" });
+        const $flowSearch = $dialog.locator('ak-search-select[name="flow"]');
+        const $flowInput = $flowSearch.getByRole("combobox");
+
+        await test.step("Open the invitation form", async () => {
+            await click("New Invitation", "button");
+
+            await expect($dialog, "Form opens").toBeVisible();
+        });
+
+        await test.step("Search for a flow that does not exist", async () => {
+            await $flowInput.click();
+            await $flowInput.fill(`no-such-flow-${seed}`);
+        });
+
+        await test.step("Open the stacked enrollment flow form from the action", async () => {
+            await $flowSearch.getByRole("option", { name: /Create a new enrollment flow/ }).click();
+
+            await expect($flowDialog, "Enrollment flow form opens on top").toBeVisible();
+        });
+
+        await test.step("Create the enrollment flow and invitation stage", async () => {
+            await fill("Flow Name", `Invite Flow ${seed}`, $flowDialog);
+            await fill("Flow Slug", `invite-flow-${seed}`, $flowDialog);
+            await fill("Invitation Stage Name", `invite-stage-${seed}`, $flowDialog);
+
+            await click("Create Enrollment Flow", "button", $flowDialog);
+
+            await expect($flowDialog, "Flow form closes after creation").toBeHidden({
+                timeout: 20_000,
+            });
+        });
+
+        await test.step("The newly created flow is selected by name", async () => {
+            await expect(
+                $flowInput,
+                "Flow search shows the new flow's label, not the stale search text or a UUID",
+            ).toHaveValue(new RegExp(seed));
+
+            await expect(
+                $flowInput,
+                "Flow search does not show the stale search text",
+            ).not.toHaveValue(/no-such-flow/);
+        });
+
+        await test.step("Create the invitation", async () => {
+            await fill("Invitation Name", name, $dialog);
+
+            await click("Create Invitation", "button", $dialog);
+
+            await expect($successDialog, "Success modal opens").toBeVisible();
 
             await $successDialog.getByRole("button", { name: "Close", exact: true }).click();
         });

@@ -1,5 +1,4 @@
 import "../ak-hidden-textarea-input.js";
-
 import {
     type AkHiddenTextAreaInput,
     type AkHiddenTextAreaInputProps,

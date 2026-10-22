@@ -28,6 +28,10 @@ SAML_ATTRIBUTES_GROUP = "http://schemas.xmlsoap.org/claims/Group"
 SAML_BINDING_POST = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
 SAML_BINDING_REDIRECT = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
 
+# Bindings authentik supports. Metadata commonly advertises further bindings
+# (SOAP, HTTP-Artifact, PAOS, ...) which we can't use.
+SAML_BINDINGS_SUPPORTED = (SAML_BINDING_REDIRECT, SAML_BINDING_POST)
+
 SAML_STATUS_SUCCESS = "urn:oasis:names:tc:SAML:2.0:status:Success"
 
 DEFAULT_ISSUER = "authentik"
@@ -68,4 +72,16 @@ DIGEST_ALGORITHM_TRANSLATION_MAP = {
     SHA256: xmlsec.constants.TransformSha256,
     SHA384: xmlsec.constants.TransformSha384,
     SHA512: xmlsec.constants.TransformSha512,
+}
+
+AES128_CBC = "http://www.w3.org/2001/04/xmlenc#aes128-cbc"
+AES256_CBC = "http://www.w3.org/2001/04/xmlenc#aes256-cbc"
+AES128_GCM = "http://www.w3.org/2009/xmlenc11#aes128-gcm"
+AES256_GCM = "http://www.w3.org/2009/xmlenc11#aes256-gcm"
+
+ENCRYPTION_ALGORITHM_TRANSLATION_MAP = {
+    AES128_CBC: (xmlsec.constants.TransformAes128Cbc, 128),
+    AES256_CBC: (xmlsec.constants.TransformAes256Cbc, 256),
+    AES128_GCM: (xmlsec.constants.TransformAes128Gcm, 128),
+    AES256_GCM: (xmlsec.constants.TransformAes256Gcm, 256),
 }

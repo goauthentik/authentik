@@ -1,5 +1,6 @@
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 import { aki } from "#common/api/client";
 
@@ -11,8 +12,6 @@ import { CoreApi, Group } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-user-group-table")
 export class UserGroupTable extends Table<Group> {

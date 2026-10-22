@@ -150,5 +150,13 @@ class ConsentStageView(ChallengeStageView):
             consent.expiring = False
         if current_stage.mode == ConsentMode.EXPIRING:
             consent.expires = now() + timedelta_from_string(current_stage.consent_expire_in)
+        # Expired consents are hidden from the default manager but might not have been
+        # cleaned up yet, in which case they'd conflict with the unique constraint
+        UserConsent.objects.including_expired().filter(
+            user=consent.user,
+            application=application,
+            expiring=True,
+            expires__lt=now(),
+        ).exclude(pk=consent.pk).delete()
         consent.save()
         return self.executor.stage_ok()

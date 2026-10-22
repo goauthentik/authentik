@@ -18,10 +18,11 @@
  */
 
 @import "#styles/global/vendor/patternfly.css" layer(vendor);
-@import "#fonts/RedHat/faces.css" layer(vendor);
-@import "#fonts/FontAwesome/faces.css" layer(vendor);
+@import "@goauthentik/fonts/faces.css" layer(vendor);
+@import "@goauthentik/fonts/icons.css" layer(vendor);
 
 @import "#styles/global/theme/variables.css" layer(theme);
+@import "#styles/global/theme/generated/theme.css" layer(theme);
 @import "#styles/global/reset/scrollbars.css" layer(reset);
 
 @import "#styles/global/reset/globals.css" layer(reset);
@@ -35,6 +36,7 @@
 @import "#elements/Label_impl/Label.root.css" layer(components);
 @import "#elements/Progress_impl/Progress.root.css" layer(components);
 @import "#elements/Tooltip_impl/Tooltip.root.css" layer(components);
+@import "#elements/Paginator_impl/Paginator.root.css" layer(components);
 @import "#styles/global/locales/ja/globals.css" layer(components);
 @import "#styles/global/locales/ko/globals.css" layer(components);
 @import "#styles/global/locales/zh/globals.css" layer(components);

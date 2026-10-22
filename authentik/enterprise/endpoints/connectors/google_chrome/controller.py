@@ -59,12 +59,7 @@ class GoogleChromeController(BaseController[GoogleChromeConnector]):
         # Remove deprecated string representation of deviceSignals
         response.pop("deviceSignal", None)
         signals = DeviceSignals(response["deviceSignals"])
-        device, _ = Device.objects.update_or_create(
-            identifier=signals["serialNumber"],
-            defaults={
-                "name": signals["hostname"],
-            },
-        )
+        device = Device.get_or_create(identifier=signals["serialNumber"], name=signals["hostname"])
         conn, _ = DeviceConnection.objects.update_or_create(
             device=device,
             connector=self.connector,

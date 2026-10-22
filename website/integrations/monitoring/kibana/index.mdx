@@ -1,0 +1,143 @@
+---
+title: Integrate with Kibana
+sidebar_label: Kibana
+support_level: community
+---
+
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+
+## What is Kibana?
+
+> Explore and visualize data stored in Elasticsearch with Kibana. Build dashboards, run queries, set alerts, and manage your deployment — all in one UI.
+>
+> -- https://www.elastic.co/kibana
+
+Kibana signs users in through an OpenID Connect realm in Elasticsearch, so this guide configures both. It covers self-managed deployments. For Elastic Cloud organizations, refer to the [Elastic Cloud integration guide](../../platforms/elastic-cloud/).
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `kibana.company` is the FQDN of the Kibana installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::info Elastic subscription
+OpenID Connect authentication requires a Platinum or Enterprise license. Under a Basic license, Elasticsearch disables the OpenID Connect realm. You can evaluate this integration with a [trial license](https://www.elastic.co/docs/deploy-manage/license/manage-your-license-in-self-managed-cluster).
+:::
+
+## authentik configuration
+
+To support the integration of Kibana with authentik, you need to create an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) and [application entitlements](/docs/add-secure-apps/applications/manage_apps/#application-entitlements) in authentik.
+
+### Create an application and provider
+
+<RedirectURI20265Note />
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it is required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they are required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://kibana.company/api/security/oidc/callback`.
+        - Add a **Redirect URI** of type `Strict` `Post Logout` as `https://kibana.company/security/logged_out`.
+        - Select any available **Signing Key**.
+        - Under **Advanced protocol settings** > **Selected Scopes**, add `authentik default OAuth Mapping: Application Entitlements`.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+3. Click **Submit** to save the new application and provider.
+
+### Create application entitlements
+
+Elasticsearch reads the entitlement names from the `entitlements` claim as groups, and role mappings grant Elasticsearch roles to those groups.
+
+1. Open the application that you created in the authentik Admin interface.
+2. Click the **Application entitlements** tab.
+3. Create an entitlement for each level of access, such as `kibana-admin`.
+4. Bind the users or groups that should receive that access to each entitlement.
+
+## Kibana configuration
+
+### Add an OpenID Connect realm to Elasticsearch
+
+The OpenID Connect realm uses the Elasticsearch token service, which requires [TLS on the Elasticsearch HTTP layer](https://www.elastic.co/docs/deploy-manage/security/secure-cluster-communications). The authentik URLs must use HTTPS.
+
+1. Add the following realm to `elasticsearch.yml` on every node. Keep your existing realms, and give the OpenID Connect realm a higher `order` than the native realm that Kibana's own user signs in with.
+
+    ```yaml title="config/elasticsearch.yml"
+    xpack.security.authc.token.enabled: true
+    xpack.security.authc.realms.oidc.authentik:
+        order: 2
+        rp.client_id: <Client ID from authentik>
+        rp.response_type: code
+        rp.redirect_uri: https://kibana.company/api/security/oidc/callback
+        rp.post_logout_redirect_uri: https://kibana.company/security/logged_out
+        rp.requested_scopes: [profile, email, entitlements]
+        op.issuer: https://authentik.company/application/o/<application_slug>/
+        op.authorization_endpoint: https://authentik.company/application/o/authorize/
+        op.token_endpoint: https://authentik.company/application/o/token/
+        op.userinfo_endpoint: https://authentik.company/application/o/userinfo/
+        op.endsession_endpoint: https://authentik.company/application/o/<application_slug>/end-session/
+        op.jwkset_path: https://authentik.company/application/o/<application_slug>/jwks/
+        claims.principal: preferred_username
+        claims.groups: entitlements
+        claims.mail: email
+        claims.name: name
+    ```
+
+    If the authentik certificate is not signed by a public CA, add `ssl.certificate_authorities` with the path of the CA certificate, relative to the Elasticsearch configuration directory, to the realm.
+
+2. Add the client secret to the Elasticsearch keystore on every node:
+
+    ```shell
+    bin/elasticsearch-keystore add xpack.security.authc.realms.oidc.authentik.rp.client_secret
+    ```
+
+3. Restart Elasticsearch.
+
+### Map entitlements to roles
+
+Create a role mapping for each entitlement. For example, the following request grants the `superuser` role to users with the `kibana-admin` entitlement. Run it in Kibana under **Dev Tools** > **Console**, or with any Elasticsearch client, as a user with the `manage_security` privilege.
+
+```http
+PUT /_security/role_mapping/authentik-kibana-admin
+{
+    "roles": ["superuser"],
+    "enabled": true,
+    "rules": {
+        "all": [
+            { "field": { "realm.name": "authentik" } },
+            { "field": { "groups": "kibana-admin" } }
+        ]
+    }
+}
+```
+
+Users who sign in without any mapped entitlement are authenticated but receive no roles, and Kibana refuses them.
+
+### Configure Kibana
+
+Add the OpenID Connect provider to `kibana.yml` and restart Kibana. The `basic` provider keeps the username and password login available as a second option.
+
+```yaml title="config/kibana.yml"
+server.publicBaseUrl: https://kibana.company
+xpack.security.authc.providers:
+    oidc.authentik:
+        order: 0
+        realm: authentik
+        description: Log in with authentik
+    basic.basic1:
+        order: 1
+```
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Kibana, open Kibana and click **Log in with authentik**. After you log in to authentik, Kibana opens. Click the user menu and select **Edit profile** to confirm the roles that your entitlements granted.
+
+## Resources
+
+- [Elastic documentation - OpenID Connect authentication](https://www.elastic.co/docs/deploy-manage/users-roles/cluster-or-deployment-auth/openid-connect)
+- [Elastic documentation - Mapping users and groups to roles](https://www.elastic.co/docs/deploy-manage/users-roles/cluster-or-deployment-auth/mapping-users-groups-to-roles)

@@ -5,9 +5,9 @@
 This document describes how the CSS is built in our current system, and what we can do to make that
 process less challenging and fraught with difficulties:
 
-## styleLoaderPlugin (./bundler/style-loader-pluging/node.js)
+## styleLoaderPlugin (./bundler/style-loader-plugin/node.js)
 
-All of our CSS is complied together by this ESBuild plug.
+All of our CSS is compiled together by this ESBuild plugin.
 
 ## ./scripts/build-web.mjs
 
@@ -35,7 +35,7 @@ The `interface.global.css` file is almost entirely imports:
 3. @patternfly/.../patternfly-themes.css — dark-theme token reassignments
 4. @patternfly/.../patternfly-fa-icons.css, patternfly-pf-icons.css — icon @font-face + classes
 5. @patternfly/.../components/Spinner/spinner.css
-6. #fonts/RedHat/faces.css — RedHat @font-face
+6. @goauthentik/fonts/faces.css — RedHat @font-face
 7. ./base/fonts.css
 8. ./base/variables.css, which in turn loads:
     - colors

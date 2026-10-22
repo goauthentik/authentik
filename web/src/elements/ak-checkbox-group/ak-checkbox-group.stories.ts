@@ -1,6 +1,5 @@
 import "#elements/messages/MessageContainer";
 import "./ak-checkbox-group.js";
-
 import { CheckboxGroup as AkCheckboxGroup } from "./ak-checkbox-group.js";
 
 import { Meta } from "@storybook/web-components";

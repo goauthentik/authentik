@@ -2,6 +2,12 @@
 /*
   X-Frame-Options: DENY
 
+/*.md
+  Content-Type: text/plain; charset=utf-8
+  X-Content-Type-Options: nosniff
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: public, max-age=3600, must-revalidate
+
 /releases.gen.json
   Access-Control-Allow-Origin: *
   Access-Control-Allow-Headers: *

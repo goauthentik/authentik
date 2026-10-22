@@ -1,14 +1,34 @@
-use std::{collections::HashMap, net::SocketAddr, num::NonZeroUsize};
+use std::{
+    collections::HashMap, fmt::Display, net::SocketAddr, num::NonZeroUsize, path::PathBuf,
+    str::FromStr,
+};
 
 use ipnet::IpNet;
 use serde::{Deserialize, Deserializer, Serialize, de::Error as _};
 
-pub(super) const KEYS_TO_PARSE_AS_LIST: [&str; 4] = [
+pub(super) const KEYS_TO_PARSE_AS_LIST: [&str; 5] = [
     "listen.http",
+    "listen.https",
     "listen.metrics",
     "listen.trusted_proxy_cidrs",
     "log.http_headers",
 ];
+
+/// Deserialize a list, ignoring empty entries.
+///
+/// The environment source splits values on `,`, so an empty variable
+/// yields a single empty entry rather than an empty list.
+fn deserialize_list<'de, D, T>(deserializer: D) -> Result<Vec<T>, D::Error>
+where
+    D: Deserializer<'de>,
+    T: FromStr<Err: Display>,
+{
+    Vec::<String>::deserialize(deserializer)?
+        .iter()
+        .filter(|entry| !entry.is_empty())
+        .map(|entry| entry.parse().map_err(D::Error::custom))
+        .collect()
+}
 
 fn deserialize_optional_u64<'de, D>(deserializer: D) -> Result<Option<u64>, D::Error>
 where
@@ -131,6 +151,8 @@ pub struct Config {
 
     #[serde(deserialize_with = "deserialize_str_or_bool")]
     pub debug: bool,
+    #[serde(deserialize_with = "deserialize_str_or_bool")]
+    pub debugger: bool,
     #[serde(default)]
     pub secret_key: String,
 
@@ -145,8 +167,13 @@ pub struct Config {
 
     pub worker: WorkerConfig,
 
+    pub storage: StorageConfig,
+
+    pub outposts: OutpostConfig,
+
     // Outpost specific fields
     pub host: Option<String>,
+    pub host_browser: Option<String>,
     pub token: Option<String>,
     #[serde(default, deserialize_with = "deserialize_optional_str_or_bool")]
     pub insecure: Option<bool>,
@@ -176,14 +203,20 @@ pub struct PostgreSQLConfig {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ListenConfig {
+    #[serde(deserialize_with = "deserialize_list")]
     pub http: Vec<SocketAddr>,
+    #[serde(deserialize_with = "deserialize_list")]
+    pub https: Vec<SocketAddr>,
+    #[serde(deserialize_with = "deserialize_list")]
     pub metrics: Vec<SocketAddr>,
     pub debug_tokio: Option<SocketAddr>,
+    #[serde(deserialize_with = "deserialize_list")]
     pub trusted_proxy_cidrs: Vec<IpNet>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LogConfig {
+    #[serde(deserialize_with = "deserialize_list")]
     pub http_headers: Vec<String>,
     pub rust_log: HashMap<String, String>,
 }
@@ -224,4 +257,33 @@ pub struct WebConfig {
 pub struct WorkerConfig {
     #[serde(deserialize_with = "deserialize_str_or_num")]
     pub processes: NonZeroUsize,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct StorageConfig {
+    pub backend: String,
+    pub file: StorageFileConfig,
+    pub media: Option<StorageOverrideConfig>,
+    pub reports: Option<StorageOverrideConfig>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct StorageFileConfig {
+    pub path: PathBuf,
+}
+
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+pub struct StorageOverrideConfig {
+    pub backend: Option<String>,
+    pub file: Option<StorageFileOverrideConfig>,
+}
+
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+pub struct StorageFileOverrideConfig {
+    pub path: Option<PathBuf>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OutpostConfig {
+    pub disable_embedded_outpost: bool,
 }

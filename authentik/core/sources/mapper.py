@@ -90,14 +90,6 @@ class SourceMapper:
                 )
                 raise exc
 
-            if not value or not isinstance(value, dict):
-                LOGGER.debug(
-                    "Mapping evaluated to None or is not a dict. Skipping",
-                    source=self,
-                    mapping=mapping,
-                )
-                continue
-
             MERGE_LIST_UNIQUE.merge(properties, value)
 
         return delete_none_values(properties)

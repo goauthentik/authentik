@@ -92,6 +92,7 @@ class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerial
             "signature_algorithm",
             "signing_kp",
             "encryption_kp",
+            "encryption_algorithm",
             "sign_assertion",
             "sign_logout_request",
             "default_name_id_policy",
@@ -99,7 +100,7 @@ class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerial
             "url_wsfed",
             "url_issuer",
         ]
-        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
+        extra_kwargs = ProviderSerializer.Meta.extra_write_kwargs
 
 
 class WSFederationProviderViewSet(SAMLProviderViewSet):

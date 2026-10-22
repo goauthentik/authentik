@@ -21,6 +21,8 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik import authentik_full_version
+from authentik.admin.models import SystemSettings
+from authentik.admin.utils import get_system_settings
 from authentik.brands.models import Brand
 from authentik.brands.utils import DEFAULT_BRAND
 from authentik.core.middleware import (
@@ -29,6 +31,7 @@ from authentik.core.middleware import (
 )
 from authentik.core.models import Group, PropertyMapping, User
 from authentik.crypto.models import CertificateKeyPair
+from authentik.events.consumer import build_user_group
 from authentik.events.context_processors.base import get_context_processors
 from authentik.events.utils import (
     cleanse_dict,
@@ -43,19 +46,16 @@ from authentik.lib.models import (
     SerializerModel,
     SimpleThroughModel,
 )
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.outposts.docker_tls import DockerInlineTLS
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
-from authentik.root.ws.consumer import build_user_group
 from authentik.stages.email.models import EmailTemplates
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tasks.models import TasksModel
-from authentik.tenants.models import Tenant
-from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 DISCORD_FIELD_LIMIT = 25
@@ -66,9 +66,9 @@ def default_event_duration():
     """Default duration an Event is saved.
     This is used as a fallback when no brand is available"""
     try:
-        tenant = get_current_tenant(only=["event_retention"])
-        return now() + timedelta_from_string(tenant.event_retention)
-    except Tenant.DoesNotExist:
+        settings = get_system_settings()
+        return now() + timedelta_from_string(settings.event_retention)
+    except SystemSettings.DoesNotExist:
         return now() + timedelta(days=365)
 
 
@@ -83,7 +83,7 @@ def django_app_names() -> list[str]:
     return [x.name for x in apps.app_configs.values()]
 
 
-class NotificationTransportError(SentryIgnoredException):
+class NotificationTransportError(TracingIgnoredException):
     """Error raised when a notification fails to be delivered"""
 
 
@@ -135,6 +135,11 @@ class EventAction(models.TextChoices):
     REVIEW_OVERDUE = "review_overdue"
     REVIEW_ATTESTED = "review_attested"
     REVIEW_COMPLETED = "review_completed"
+
+    ACCESS_REQUEST_CREATED = "access_request_created"
+    ACCESS_REQUEST_APPROVED = "access_request_approved"
+    ACCESS_REQUEST_DENIED = "access_request_denied"
+    ACCESS_REQUEST_REVOKED = "access_request_revoked"
 
     CUSTOM_PREFIX = "custom_"
 
