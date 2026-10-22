@@ -19,7 +19,7 @@ license-file = "LICENSE"
 publish = false
 
 [workspace.dependencies]
-arc-swap = "= 1.9.2"
+arc-swap = "= 1.9.3"
 argh = "= 0.1.19"
 askama = "= 0.16.1"
 axum-server = { version = "= 0.8.0", features = ["tls-rustls-no-provider"] }
