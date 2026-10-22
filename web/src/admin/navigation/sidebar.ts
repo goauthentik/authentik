@@ -1,8 +1,5 @@
 import { SidebarItemProperties } from "#elements/sidebar/SidebarItem";
 import { LitPropertyRecord } from "#elements/types";
-
-import { ROUTES } from "#admin/Routes";
-
 import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
@@ -148,6 +145,8 @@ export const initAdminSidebarEnterpriseEntries = (): readonly SidebarEntry[] => 
     ],
 ]];
 
+
+/*
 export function validateRoutes(entries: readonly SidebarEntry[]) {
     const paths: string[] = entries
         .map((level1: SidebarEntry) =>
@@ -166,6 +165,7 @@ export function validateRoutes(entries: readonly SidebarEntry[]) {
         }
     }
 }
+ */
 
 export function createAdminSidebarEntries(needsEnterprise: boolean) {
     const entries = needsEnterprise
