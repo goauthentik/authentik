@@ -81,7 +81,7 @@ export function findSidebarSectionByRoute(
 }
 
 // prettier-ignore
-export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
+export const initAdminSidebarEntries = (): readonly SidebarEntry[] => [
     [null, msg("Dashboards"), { key: "dashboards", "?expanded": true }, [
         ["/administration/overview", msg("Overview")],
         ["/administration/dashboard/users", msg("User Statistics")],
@@ -140,8 +140,39 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
 ];
 
 // prettier-ignore
-export const createAdminSidebarEnterpriseEntries = (): readonly SidebarEntry[] => [
+export const initAdminSidebarEnterpriseEntries = (): readonly SidebarEntry[] => [
     [null, msg("Enterprise"), { key: "enterprise" }, [
         ["/enterprise/licenses", msg("Licenses"), null]
     ],
 ]];
+
+/*
+export function validateRoutes(entries: readonly SidebarEntry[]) {
+    const paths: string[] = entries
+        .map((level1: SidebarEntry) =>
+            (level1[3] ?? [])
+                .filter((level2: SidebarEntry) => level2[0]?.startsWith("/"))
+                .map((level2: SidebarEntry) => level2[0]),
+        )
+        .flat()
+        .filter((path) => typeof path === "string");
+
+    for (const path of paths) {
+        const matchingRoute = ROUTES.find((route) => route.test(path));
+
+        if (!matchingRoute) {
+            throw new Error("SidebarEntry contains a route that does not resolve.");
+        }
+    }
+}
+ */
+
+export function createAdminSidebarEntries(needsEnterprise: boolean) {
+    const entries = needsEnterprise
+        ? [...initAdminSidebarEntries(), ...initAdminSidebarEnterpriseEntries()]
+        : initAdminSidebarEntries();
+
+    // validateRoutes(entries);
+
+    return entries;
+}

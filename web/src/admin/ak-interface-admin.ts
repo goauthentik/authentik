@@ -10,7 +10,6 @@ import "#components/notifications/NotificationDrawer";
 import "#components/ak-page-navbar";
 import "#admin/navigation/VersionDetails";
 import {
-    createAdminSidebarEnterpriseEntries,
     createAdminSidebarEntries,
     findSidebarSectionByRoute,
     renderSidebarItems,
@@ -102,15 +101,10 @@ export class AdminInterface extends WithLicenseSummary(
     @property({ type: Boolean, reflect: true, attribute: "sidebar" })
     public sidebarOpen = false;
 
-    @property({ type: Array })
-    public entries: readonly SidebarEntry[] = createAdminSidebarEntries();
-
     protected get navigationEntries(): readonly SidebarEntry[] {
-        if (!this.can(CapabilitiesEnum.IsEnterprise)) {
-            return this.entries;
-        }
+        const canEnterprise = this.can(CapabilitiesEnum.IsEnterprise);
 
-        return [...this.entries, ...createAdminSidebarEnterpriseEntries()];
+        return createAdminSidebarEntries(canEnterprise);
     }
 
     //#endregion
@@ -119,11 +113,6 @@ export class AdminInterface extends WithLicenseSummary(
 
     public toggleSidebar = () => {
         this.sidebarOpen = !this.sidebarOpen;
-    };
-
-    public synchronizeSidebarEntries = () => {
-        this.logger.debug("Synchronizing sidebar entries with current locale");
-        this.entries = createAdminSidebarEntries();
     };
 
     //#endregion
@@ -164,7 +153,7 @@ export class AdminInterface extends WithLicenseSummary(
     @listen(LOCALE_STATUS_EVENT, { target: window })
     localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
         if (event.detail.status === "ready") {
-            this.synchronizeSidebarEntries();
+            this.requestUpdate();
         }
     };
 
