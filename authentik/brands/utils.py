@@ -30,7 +30,7 @@ def session_safe_mode(request: HttpRequest) -> bool:
 
 
 @in_memory_cache(
-    key=lambda request: request.get_host(), timeout=CONFIG.get_int("cache.timeout_brand", 30)
+    key=lambda request: request.get_host(), timeout=CONFIG.get_int("cache.timeout_brands", 30)
 )
 def get_brand_for_request(request: HttpRequest) -> Brand:
     """Get brand object for current request"""
