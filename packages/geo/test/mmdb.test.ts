@@ -121,6 +121,22 @@ describe("MMDBWriter", () => {
         expect(read(split).getWithPrefixLength("10.0.0.200")).toEqual([{ name: "a" }, 24]);
     });
 
+    test("points at values written far into the data section", () => {
+        const writer = new MMDBWriter({ databaseType: "Test" });
+
+        for (let index = 0; index < 4; index++) {
+            writer.insert(`10.0.${index}.0/24`, { pad: `${index}`.padEnd(200_000, "x") });
+        }
+
+        writer.insert("10.1.0.0/24", { shared: { org: "Example Networks Inc." } });
+        writer.insert("10.2.0.0/24", { other: { org: "Example Networks Inc." } });
+
+        const reader = read(writer);
+
+        expect(reader.get("10.1.0.1")).toEqual({ shared: { org: "Example Networks Inc." } });
+        expect(reader.get("10.2.0.1")).toEqual({ other: { org: "Example Networks Inc." } });
+    });
+
     test("switches to larger record sizes as the database grows", () => {
         const writer = new MMDBWriter({ databaseType: "Test" });
         for (let index = 0; index < 1100; index++) {

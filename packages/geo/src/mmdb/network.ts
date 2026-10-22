@@ -22,23 +22,27 @@ export interface Network {
 }
 
 /**
+ * Convert a parsed address and prefix length to a network, clearing the host bits.
+ */
+export function toNetwork(address: ipaddr.IPv4 | ipaddr.IPv6, bits: number): Network {
+    const ipv4 = address.kind() === "ipv4";
+    const mask = ipv4
+        ? ipaddr.IPv4.subnetMaskFromPrefixLength(bits)
+        : ipaddr.IPv6.subnetMaskFromPrefixLength(bits);
+    const maskBytes = mask.toByteArray();
+    const bytes = address.toByteArray().map((byte, index) => byte & maskBytes[index]!);
+    const mapped = new Uint8Array(16);
+
+    mapped.set(bytes, ipv4 ? 12 : 0);
+
+    return { address: mapped, bits: ipv4 ? bits + IPV4_OFFSET_BITS : bits };
+}
+
+/**
  * Parse a CIDR network and clear its host bits.
  */
 export function parseNetwork(cidr: string): Network {
-    const [address, bits] = ipaddr.parseCIDR(cidr);
-
-    if (address.kind() === "ipv4") {
-        const mapped = new Uint8Array(16);
-
-        mapped.set(ipaddr.IPv4.networkAddressFromCIDR(cidr).toByteArray(), 12);
-
-        return { address: mapped, bits: bits + IPV4_OFFSET_BITS };
-    }
-
-    return {
-        address: Uint8Array.from(ipaddr.IPv6.networkAddressFromCIDR(cidr).toByteArray()),
-        bits,
-    };
+    return toNetwork(...ipaddr.parseCIDR(cidr));
 }
 
 /**

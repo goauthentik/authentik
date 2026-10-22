@@ -7,13 +7,20 @@ import { MMDBWriter } from "../mmdb/writer.ts";
 import type { Route } from "./sources.ts";
 
 /**
- * geoip2's `Reader.asn()` requires `GeoLite2-ASN` in the database type.
+ * Database type stored in the ASN database's metadata. It contains `GeoLite2-ASN`, which geoip2's
+ * `Reader.asn()` requires before it reads a database.
  */
 export const ASN_DATABASE_TYPE = "authentik-ASN (compat=GeoLite2-ASN)";
 
+/**
+ * Source credit stored in the database's description, required by RIPE NCC's terms.
+ */
 export const ASN_ATTRIBUTION =
     "Routing data from RIPE NCC's Routing Information Service (RIS), https://www.ripe.net/ris";
 
+/**
+ * Encode routes as an MMDB that maps each prefix to its origin AS number and organization name.
+ */
 export function buildASNDatabase(
     routes: Iterable<Route>,
     names: ReadonlyMap<number, string>,
