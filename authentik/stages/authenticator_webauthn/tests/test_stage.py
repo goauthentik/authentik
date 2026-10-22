@@ -17,10 +17,7 @@ from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
-from authentik.stages.authenticator_webauthn.algorithms import (
-    PREFERRED_PUB_KEY_ALGS,
-    supported_pub_key_algs,
-)
+from authentik.stages.authenticator_webauthn.algorithms import PREFERRED_PUB_KEY_ALGS
 from authentik.stages.authenticator_webauthn.models import (
     UNKNOWN_DEVICE_TYPE_AAGUID,
     AuthenticatorWebAuthnStage,
@@ -660,23 +657,17 @@ class TestAuthenticatorWebAuthnStage(APIFlowTestCase):
         self.assertEqual([p["alg"] for p in params], [int(alg) for alg in PREFERRED_PUB_KEY_ALGS])
         self.assertEqual([p["alg"] for p in params][-3:], [-48, -49, -50])
 
-    def _make_algorithm_unavailable(self, alg: COSEAlgorithmIdentifier):
-        """Make `alg` fail its availability probe, as it does under the OpenSSL FIPS provider"""
-
-        def probe():
-            raise ValueError("An Ed25519 public key is 32 bytes long")
-
-        patcher = patch.dict(
-            "authentik.stages.authenticator_webauthn.algorithms._PROBES", {alg: probe}
+    def _enable_fips(self):
+        """Pretend the OpenSSL FIPS provider is active, which has neither Ed25519 nor ML-DSA"""
+        patcher = patch(
+            "authentik.stages.authenticator_webauthn.algorithms.backend._fips_enabled", True
         )
         patcher.start()
         self.addCleanup(patcher.stop)
-        supported_pub_key_algs.cache_clear()
-        self.addCleanup(supported_pub_key_algs.cache_clear)
 
-    def test_registration_options_algorithms_unavailable(self):
-        """Algorithms the OpenSSL configuration cannot verify are not offered"""
-        self._make_algorithm_unavailable(COSEAlgorithmIdentifier.EDDSA)
+    def test_registration_options_algorithms_fips(self):
+        """With FIPS enabled only the algorithms the FIPS provider can verify are offered"""
+        self._enable_fips()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
@@ -687,7 +678,7 @@ class TestAuthenticatorWebAuthnStage(APIFlowTestCase):
         )
         self.assertEqual(response.status_code, 200)
         params = response.json()["registration"]["pubKeyCredParams"]
-        self.assertEqual([p["alg"] for p in params], [-7, -257, -48, -49, -50])
+        self.assertEqual([p["alg"] for p in params], [-7, -257])
 
     def _register_software_credential(self, credential: SoftwareCredential):
         challenge = b"\x01" * 64
@@ -718,10 +709,10 @@ class TestAuthenticatorWebAuthnStage(APIFlowTestCase):
         device = WebAuthnDevice.objects.get(user=self.user)
         self.assertEqual(device.public_key, bytes_to_base64url(credential.cose_public_key))
 
-    def test_register_unavailable_algorithm(self):
+    def test_register_unavailable_algorithm_fips(self):
         """An authenticator that ignores the offered algorithms and creates a credential the
-        OpenSSL configuration cannot verify is rejected at registration, not at first login"""
-        self._make_algorithm_unavailable(COSEAlgorithmIdentifier.EDDSA)
+        FIPS provider cannot verify is rejected at registration, not at first login"""
+        self._enable_fips()
         credential = SoftwareCredential(
             rp_id="localhost", origin="http://localhost:9000", alg=COSEAlgorithmIdentifier.EDDSA
         )

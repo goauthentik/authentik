@@ -52,7 +52,7 @@ Use **Authenticator Attachment** when the flow should prefer either removable au
 
 Registration accepts EdDSA, ES256, and RS256 credentials, and the post-quantum ML-DSA-44, ML-DSA-65, and ML-DSA-87 algorithms (FIPS 204). Authenticators pick the first algorithm they support, so ML-DSA is only used by devices that offer nothing else. No shipping authenticator supports ML-DSA yet.
 
-authentik only offers algorithms that its OpenSSL configuration can verify. The validated OpenSSL FIPS provider does not implement Ed25519 or ML-DSA, so when FIPS compliance mode (`AUTHENTIK_COMPLIANCE__FIPS__ENABLED`) is turned on, authenticators are offered ES256 and RS256 only. A credential that was registered with an unavailable algorithm cannot be used to log in and must be registered again.
+The validated OpenSSL FIPS provider does not implement Ed25519 or ML-DSA, so when FIPS compliance mode (`AUTHENTIK_COMPLIANCE__FIPS__ENABLED`) is turned on, authenticators are offered ES256 and RS256 only. A credential that was registered with another algorithm cannot be used to log in while FIPS mode is enabled and must be registered again.
 
 This controls the `authenticatorAttachment` parameter sent to the browser during WebAuthn registration:
 
