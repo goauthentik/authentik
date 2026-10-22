@@ -3,7 +3,7 @@ import { createAdminSidebarEntries, findSidebarSectionByRoute } from "./sidebar.
 import { describe, expect, it } from "vitest";
 
 describe("findSidebarSectionByRoute", () => {
-    const entries = createAdminSidebarEntries();
+    const entries = createAdminSidebarEntries(true);
 
     it.each([
         ["outpost-view", "Outposts"],
