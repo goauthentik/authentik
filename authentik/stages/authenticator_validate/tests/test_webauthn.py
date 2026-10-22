@@ -1,13 +1,16 @@
 """Test validator stage"""
 
 from time import sleep
+from unittest.mock import patch
 
 from django.urls.base import reverse
 from rest_framework.serializers import ValidationError
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
+from webauthn.helpers.cose import COSEAlgorithmIdentifier
 
 from authentik.core.tests.utils import RequestFactory, create_test_admin_user, create_test_flow
+from authentik.events.models import Event, EventAction
 from authentik.flows.models import FlowStageBinding, NotConfiguredAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import StageView
@@ -32,7 +35,7 @@ from authentik.stages.authenticator_webauthn.models import (
 )
 from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
 from authentik.stages.authenticator_webauthn.tasks import webauthn_mds_import
-from authentik.stages.authenticator_webauthn.tests.mldsa import MLDSACredential
+from authentik.stages.authenticator_webauthn.tests.credentials import SoftwareCredential
 from authentik.stages.identification.models import IdentificationStage, UserFields
 from authentik.stages.user_login.models import UserLoginStage
 
@@ -651,9 +654,63 @@ class AuthenticatorValidateStageWebAuthnTests(APIFlowTestCase):
                 self.user,
             )
 
+    def _validate_unavailable_algorithm(self, alg: COSEAlgorithmIdentifier, public_key_class: str):
+        """Authenticate with a credential whose public key cryptography refuses to load, as it
+        does for Ed25519 and ML-DSA under the validated OpenSSL FIPS provider"""
+        credential = SoftwareCredential(rp_id="localhost", origin="http://localhost:9000", alg=alg)
+        device = WebAuthnDevice.objects.create(
+            user=self.user,
+            public_key=bytes_to_base64url(credential.cose_public_key),
+            credential_id=bytes_to_base64url(credential.credential_id),
+            sign_count=0,
+            rp_id="localhost",
+        )
+        flow = create_test_flow()
+        stage = AuthenticatorValidateStage.objects.create(
+            name=generate_id(),
+            not_configured_action=NotConfiguredAction.CONFIGURE,
+            device_classes=[DeviceClasses.WEBAUTHN],
+        )
+        challenge = b"\x03" * 64
+        plan = FlowPlan(flow.pk.hex)
+        plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = challenge
+        request = self.request_factory.get("/")
+        request.META["SERVER_NAME"] = "localhost"
+        request.META["SERVER_PORT"] = "9000"
+        stage_view = AuthenticatorValidateStageView(
+            FlowExecutorView(flow=flow, current_stage=stage, plan=plan), request=request
+        )
+        with (
+            patch(
+                f"webauthn.helpers.decoded_public_key_to_cryptography.{public_key_class}."
+                "from_public_bytes",
+                side_effect=ValueError(f"An {public_key_class} is 32 bytes long"),
+            ),
+            self.assertRaises(ValidationError) as cm,
+        ):
+            validate_challenge_webauthn(
+                credential.assertion_response(challenge), stage_view, self.user
+            )
+        self.assertIn("not available on the server", str(cm.exception.detail[0]))
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.LOGIN_FAILED, context__stage__pk=stage.pk.hex
+            ).exists()
+        )
+        device.refresh_from_db()
+        self.assertEqual(device.sign_count, 0)
+
+    def test_validate_challenge_unavailable_algorithm_eddsa(self):
+        """cryptography raises its misleading key-length ValueError directly for Ed25519"""
+        self._validate_unavailable_algorithm(COSEAlgorithmIdentifier.EDDSA, "Ed25519PublicKey")
+
+    def test_validate_challenge_unavailable_algorithm_mldsa(self):
+        """py_webauthn wraps the ML-DSA failure in its own UnsupportedPublicKey"""
+        self._validate_unavailable_algorithm(COSEAlgorithmIdentifier.ML_DSA_44, "MLDSA44PublicKey")
+
     def test_validate_challenge_mldsa(self):
         """Test webauthn authentication with an ML-DSA-44 (FIPS 204) credential"""
-        credential = MLDSACredential(rp_id="localhost", origin="http://localhost:9000")
+        credential = SoftwareCredential(rp_id="localhost", origin="http://localhost:9000")
         device = WebAuthnDevice.objects.create(
             user=self.user,
             public_key=bytes_to_base64url(credential.cose_public_key),
