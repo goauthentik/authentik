@@ -60,10 +60,8 @@ For cloud-only users whose authentik email address matches their Microsoft Entra
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
-
     - **Select type**: select **SAML Provider Property Mapping**.
     - **Configure the SAML Provider Property Mapping**: provide a descriptive name, such as `Microsoft Entra Immutable ID`.
-
         - **SAML Attribute Name**: `ImmutableID`
         - **Expression**: use the expression that matches your user source.
 
@@ -90,10 +88,8 @@ Microsoft Entra ID uses the `IDPEmail` claim to identify the user's UPN.
 
 1. In the authentik Admin interface, navigate to **Customization** > **Property Mappings** and click **Create**.
 2. Configure the mapping:
-
     - **Select type**: select **SAML Provider Property Mapping**.
     - **Configure the SAML Provider Property Mapping**: provide a descriptive name, such as `Microsoft Entra IDPEmail`.
-
         - **SAML Attribute Name**: `IDPEmail`
         - **Expression**:
 
@@ -116,10 +112,8 @@ The mapping in this section unconditionally tells Microsoft Entra ID that authen
 
 1. In the authentik Admin interface, navigate to **Customization** > **Property Mappings** and click **Create**.
 2. Configure the mapping:
-
     - **Select type**: select **SAML Provider Property Mapping**.
     - **Configure the SAML Provider Property Mapping**: provide a descriptive name, such as `Microsoft Entra MFA authentication method`.
-
         - **SAML Attribute Name**: `AuthnContextClassRef`
         - **Expression**:
 
@@ -133,7 +127,6 @@ The mapping in this section unconditionally tells Microsoft Entra ID that authen
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it is required later.
     - **Choose a Provider type**: select **WS-Federation Provider**.
     - **Configure the Provider**: provide a name, select an authorization flow, and configure the following settings:
