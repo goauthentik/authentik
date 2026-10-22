@@ -1,8 +1,10 @@
 import { toAdminInterface } from "#elements/router/core/interfaces";
-import { SidebarItemProperties } from "#elements/sidebar/SidebarItem";
+import { readSidebarExpansionState } from "#elements/sidebar/expansion";
+import { SidebarItem } from "#elements/sidebar/types";
 import { LitPropertyRecord } from "#elements/types";
 
 import { spread } from "@open-wc/lit-helpers";
+import { kebabCase } from "change-case";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
@@ -11,10 +13,19 @@ import { repeat } from "lit/directives/repeat.js";
 
 export const ENTERPRISE_PATH = "/enterprise/licenses";
 
-export type SidebarAttributes =
-    | LitPropertyRecord<SidebarItemProperties & { enterprise?: boolean }>
-    | string[]
-    | null;
+const slugify = (s: string) => kebabCase(s, { suffixCharacters: "-" });
+
+export interface SidebarEntryProperties {
+    key?: string;
+    enterprise?: boolean;
+}
+
+type SidebarAttributeObject = LitPropertyRecord<SidebarEntryProperties & { "?expanded": boolean }>
+
+export type SidebarAttributes = SidebarAttributeObject | string[] | null;
+
+const isSidebarAttributeObject = (a: unknown): a is SidebarAttributeObject =>
+    a !== null && !Array.isArray(a) && typeof a === "object";
 
 // A `string[]` in the attributes slot lists the route names that keep the entry active.
 export type SidebarEntry = [
@@ -31,6 +42,11 @@ export type SidebarLicenseFlags = { licensed: boolean; canEnterprise: boolean };
 const isEnterpriseEntry = (attr: SidebarAttributes | undefined) =>
     attr !== null && !Array.isArray(attr) && typeof attr === "object" && attr.enterprise;
 
+const enterpriseOnly = () =>
+    msg("Enterprise only", {
+        id: "sidebar.notice.enterprise-only",
+    });
+
 /**
  * Removes enterprise entries entirely if enterprise capability is not present, or marks them "as
  * enterprise" if they are but the product is unlicensed.
@@ -38,41 +54,37 @@ const isEnterpriseEntry = (attr: SidebarAttributes | undefined) =>
 export function resolveSidebarEntries(
     entries: SidebarEntry[],
     { licensed, canEnterprise }: SidebarLicenseFlags,
-): SidebarEntry[] {
-    return (
-        entries
-            // A feature is always visible if it's not enterprise-only, or if the instance
-            // canEnterprise
-            .filter(
-                ([_path, _label, attributes, _children]) =>
-                    !isEnterpriseEntry(attributes) || canEnterprise,
-            )
+): SidebarItem[] {
+    const visibleEntries = entries
+        // A feature is always visible if it's not enterprise-only, or if the instance
+        // canEnterprise
+        .filter(
+            ([_path, _label, attributes, _children]) =>
+                !isEnterpriseEntry(attributes) || canEnterprise,
+        );
 
-            .map(([path, label, attributes, children]) => {
-                const isEnterprise = isEnterpriseEntry(attributes);
+    return visibleEntries.map(([path, label, attributes, children]) => {
+        const override = !licensed && isEnterpriseEntry(attributes);
+        const notice = override ? { notice: enterpriseOnly() } : {};
+        const key = isSidebarAttributeObject(attributes) ? attributes.key : slugify(path ?? "");
 
-                // A feature's details are overriden with "Buy a license" messages if the instance
-                // canEnterprise, but the instance is not licensed.
-                if (!licensed && isEnterprise) {
-                    attributes = {
-                        ...attributes,
-                        pathOverride: toAdminInterface(ENTERPRISE_PATH),
-                        notice: msg("Enterprise only", {
-                            id: "sidebar.notice.enterprise-only",
-                        }),
-                    };
-                }
+        if (!key || key.trim().length === 0)
+            throw new Error("An entry must have either a path or a key");
 
-                return children
-                    ? [
-                          path,
-                          label,
-                          attributes,
-                          resolveSidebarEntries(children, { licensed, canEnterprise }),
-                      ]
-                    : [path, label, attributes];
-            })
-    );
+        return {
+            label,
+            path: path ? toAdminInterface(override ? ENTERPRISE_PATH : (path ?? undefined)) : null,
+            key,
+            children,
+            ...notice,
+        };
+    });
+}
+
+export function resolveSidebarExpanded() {
+    return Object.entries(readSidebarExpansionState())
+        .filter(([_key, state]) => state)
+        .map(([key, _state]) => key);
 }
 
 /**
@@ -159,7 +171,7 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
     [null, msg("Events"), { key: "events" }, [
         ["/events/log", msg("Logs"), ["event-view"]],
         ["/events/rules", msg("Notification Rules")],
-        ["/events/transports", msg("Notification Transports")],
+        ["/events/transports", msg("Notiyfication Transports")],
         ["/events/lifecycle-rules", msg("Lifecycle Rules"), {enterprise:true}],
         ["/events/lifecycle-reviews", msg("Reviews"), {enterprise:true}],
         ["/events/offboardings", msg("Offboardings"), {enterprise:true}],

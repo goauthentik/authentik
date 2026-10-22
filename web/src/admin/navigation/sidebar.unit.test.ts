@@ -80,6 +80,7 @@ describe("resolveSidebarEntries", () => {
         expect(logs).toEqual(["/events/log", "Logs", ["event-view"]]);
 
         expect(lifecycleRules?.[0]).toBe("/events/lifecycle-rules");
+
         expect(lifecycleRules?.[2]).toEqual({
             enterprise: true,
             pathOverride: toAdminInterface("/enterprise/licenses"),
