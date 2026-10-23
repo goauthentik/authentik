@@ -266,6 +266,7 @@ class SAMLProviderSerializer(ProviderSerializer):
             "logout_method",
             "default_relay_state",
             "default_name_id_policy",
+            "jwt_federation_providers",
             "url_download_metadata",
             "url_issuer",
             "url_unified",

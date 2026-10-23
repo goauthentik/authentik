@@ -17,6 +17,11 @@ import {
     retrieveSignatureAlgorithm,
 } from "./SAMLProviderOptions.js";
 
+import {
+    oauth2ProvidersProvider,
+    oauth2ProvidersSelector,
+} from "#admin/providers/oauth2/OAuth2ProvidersProvider";
+
 import { RadioOption } from "#elements/forms/Radio";
 import type { SearchSelectChangeEvent } from "#elements/forms/SearchSelect/events";
 
@@ -463,6 +468,27 @@ export function renderForm({
                             `;
                         })}
                     </select>
+                </ak-form-element-horizontal>
+            </div>
+        </ak-form-group>
+
+        <ak-form-group label="${msg("Machine-to-Machine authentication settings")}">
+            <div class="pf-c-form">
+                <ak-form-element-horizontal
+                    label=${msg("Federated OAuth2/OpenID Providers")}
+                    name="jwtFederationProviders"
+                >
+                    <ak-dual-select-dynamic-selected
+                        .provider=${oauth2ProvidersProvider}
+                        .selector=${oauth2ProvidersSelector(provider.jwtFederationProviders)}
+                        available-label=${msg("Available Providers")}
+                        selected-label=${msg("Selected Providers")}
+                    ></ak-dual-select-dynamic-selected>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Selected providers can exchange their JWTs for a SAML Response of this provider via token exchange.",
+                        )}
+                    </p>
                 </ak-form-element-horizontal>
             </div>
         </ak-form-group>`;
