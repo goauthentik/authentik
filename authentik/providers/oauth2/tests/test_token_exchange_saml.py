@@ -118,6 +118,15 @@ class TestTokenExchangeSAML(OAuthTestCase):
         response = self._exchange(subject_token=subject_token)
         self.assertEqual(response.status_code, 200, response.content)
 
+    def test_audience_slug(self):
+        """test that the SAML provider can be looked up by its application's slug"""
+        response = self._exchange(audience=self.saml_app.slug)
+        self.assertEqual(response.status_code, 200, response.content)
+
+    def test_audience_unknown(self):
+        """test an audience that matches no SAML application"""
+        self.assert_error(self._exchange(audience="urn:amazon:webservices"), "invalid_target")
+
     def test_missing_audience(self):
         """test that a SAML Response requires an audience"""
         self.assert_error(self._exchange(audience=[]), "invalid_target")

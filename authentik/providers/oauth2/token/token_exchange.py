@@ -1,6 +1,7 @@
 from typing import Any
 from uuid import UUID
 
+from django.db.models import Q
 from django.http import HttpRequest
 
 from authentik.common.oauth.constants import (
@@ -26,22 +27,20 @@ MAX_ACT_DEPTH = 10
 class TokenExchangeTokenRequest(FederatedTokenRequest):
 
     def resolve_saml_audience(self, audiences: list[str]) -> None:
-        """A SAML Response is requested for the SAML provider whose application's
+        """A SAML Response is requested for the SAML provider whose application's `slug` or
         `pbm_uuid` is the `audience`, which must federate with the requesting provider."""
-        if len(audiences) != 1:
+        if len(audiences) != 1 or not audiences[0]:
             self.logger.warning("SAML token exchange requires exactly one audience")
             raise TokenExchangeError("invalid_target").with_cause("saml_audience_required")
+        audience = audiences[0]
+        query = Q(application__slug=audience)
         try:
-            pbm_uuid = UUID(audiences[0])
+            query |= Q(application__pbm_uuid=UUID(audience))
         except ValueError:
-            pbm_uuid = None
-        target = (
-            SAMLProvider.objects.filter(application__pbm_uuid=pbm_uuid).first()
-            if pbm_uuid
-            else None
-        )
+            pass
+        target = SAMLProvider.objects.filter(query).first()
         if not target:
-            self.logger.warning("Audience does not match any provider", audience=audiences[0])
+            self.logger.warning("Audience does not match any provider", audience=audience)
             raise TokenExchangeError("invalid_target").with_cause("unknown_target")
         if not target.jwt_federation_providers.filter(pk=self.provider.pk).exists():
             self.logger.warning("Audience does not federate with the requesting provider")
