@@ -42,6 +42,11 @@ const SECONDARY_PASSWORD = "e2e-user-switching-secondary";
  */
 const ADMIN_ENTRY_NAME = GOOD_USERNAME;
 
+/**
+ * Switching pre-fills identification with the target's username, not its email.
+ */
+const ADMIN_USERNAME = "akadmin";
+
 interface SecondaryUser {
     username: string;
     displayName: string;
@@ -273,14 +278,22 @@ test.describe("User switching", () => {
             await switcher.select(adminEntry);
 
             await expect(
-                session.$passwordStage,
-                "Switching opens on the password stage, identification having been skipped",
+                session.$passwordField,
+                "Switching asks for the switch target's password",
             ).toBeVisible({ timeout: 15_000 });
 
-            await expect(
-                session.$identificationStage,
-                "Identification is not asked again for a known switch target",
-            ).toBeHidden();
+            if (await session.$identificationStage.isVisible()) {
+                // A password embedded in the identification stage keeps the flow there.
+                await expect(
+                    session.$usernameField,
+                    "Identification is pre-filled with the switch target",
+                ).toHaveValue(ADMIN_USERNAME);
+            } else {
+                await expect(
+                    session.$passwordStage,
+                    "Switching opens on the password stage, identification having been skipped",
+                ).toBeVisible();
+            }
 
             await session.completePassword({ to: "if/user/library" });
         });

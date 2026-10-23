@@ -165,7 +165,8 @@ export class SessionFixture extends PageFixture {
     }: CompletePasswordInit = {}): Promise<void> {
         this.logger.info("Completing password stage...");
 
-        await this.$passwordStage.waitFor({ state: "visible" });
+        // Either the password stage, or a password embedded in the identification stage.
+        await this.$passwordField.waitFor({ state: "visible" });
 
         await this.$passwordField.fill(password);
         await this.$submitButton.click();
