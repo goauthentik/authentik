@@ -25,9 +25,6 @@ MAX_ACT_DEPTH = 10
 
 class TokenExchangeTokenRequest(FederatedTokenRequest):
 
-    # Set when a SAML Response is requested, the provider issuing it
-    saml_provider: SAMLProvider | None = None
-
     def resolve_saml_audience(self, audiences: list[str]) -> None:
         """A SAML Response is requested for the SAML provider whose application's
         `pbm_uuid` is the `audience`, which must federate with the requesting provider."""

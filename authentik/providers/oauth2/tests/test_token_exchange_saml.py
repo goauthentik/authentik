@@ -106,6 +106,18 @@ class TestTokenExchangeSAML(OAuthTestCase):
         self.assertTrue(root.xpath("//ds:Signature", namespaces=NS_MAP))
         self.assertFalse(AccessToken.objects.filter(provider=self.provider).exists())
 
+    def test_subject_token_from_self(self):
+        """test that the requesting provider's own token is accepted, as the SAML provider
+        federates with it"""
+        subject_token = self.provider.encode(
+            {"sub": "foo", "exp": datetime.now() + timedelta(hours=2)}
+        )
+        AccessToken.objects.create(
+            provider=self.provider, token=subject_token, user=self.user, auth_time=now()
+        )
+        response = self._exchange(subject_token=subject_token)
+        self.assertEqual(response.status_code, 200, response.content)
+
     def test_missing_audience(self):
         """test that a SAML Response requires an audience"""
         self.assert_error(self._exchange(audience=[]), "invalid_target")
