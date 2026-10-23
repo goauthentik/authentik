@@ -24,6 +24,7 @@ To integrate Entra ID with authentik, you need to create an app registration in 
 1. Log in to [Entra ID](https://entra.microsoft.com) using a [global administrator](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference#global-administrator) account.
 2. Navigate to **Applications** > **App registrations**.
 3. Click **New registration** and set the following required configurations:
+
     - **Name**: provide a descriptive name (e.g. `authentik`).
     - Under **Supported account types**: select the account type that applies to your use case (e.g. `Accounts in this organizational directory only (Default Directory only - Single tenant)`).
     - Under **Redirect URI**:
@@ -55,8 +56,11 @@ To support the integration of Entra ID with authentik, you need to create an Ent
 
 ### Create Entra ID OAuth source
 
+For a national cloud tenant, use the [national cloud settings](#configure-a-source-for-a-national-cloud) instead of the worldwide endpoints and scopes below.
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
+
     - **Select type**: select **Entra ID OAuth Source** as the source type.
     - **Create Entra ID OAuth Source**: provide a name, a slug that must match the slug used in the Entra ID `Redirect URI`, and the following required configurations:
         - Under **Protocol Settings**:
@@ -91,17 +95,23 @@ For instructions on how to display the new source on the authentik login page, r
 For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source/).
 :::
 
-### Configure national clouds
+### Configure a source for a national cloud
 
-For a national cloud tenant, configure **Authorization URL**, **Access token URL**, and **OIDC JWKS URL** for that cloud. Set **Profile URL** to the cloud's Microsoft Graph `/v1.0/me` endpoint and add the matching group membership scope to **Scopes**:
+If your Entra ID tenant is in a national cloud, use the endpoints in the table below. Microsoft 365 GCC tenants use the worldwide endpoints and do not need these changes.
 
-- US Government L4 (GCC High): use the login host `login.microsoftonline.us`, set **Profile URL** to `https://graph.microsoft.us/v1.0/me`, and add `https://graph.microsoft.us/GroupMember.Read.All` to **Scopes**.
-- US Government L5 (DoD): use the login host `login.microsoftonline.us`, set **Profile URL** to `https://dod-graph.microsoft.us/v1.0/me`, and add `https://dod-graph.microsoft.us/GroupMember.Read.All` to **Scopes**.
-- China operated by 21Vianet: use the login host `login.chinacloudapi.cn`, set **Profile URL** to `https://microsoftgraph.chinacloudapi.cn/v1.0/me`, and add `https://microsoftgraph.chinacloudapi.cn/GroupMember.Read.All` to **Scopes**.
+The following endpoints are listed in Microsoft's [national cloud deployments documentation](https://learn.microsoft.com/en-us/graph/deployments):
 
-authentik derives the default `User.Read` scope and the group membership API endpoint from **Profile URL**. You do not need a `*` scope override to replace the commercial default. If you already use an override, include `openid` and the cloud-specific `User.Read` scope as well as the group membership scope.
+| National cloud              | Entra ID endpoint                | Microsoft Graph endpoint                |
+| --------------------------- | -------------------------------- | --------------------------------------- |
+| US Government L4 (GCC High) | https://login.microsoftonline.us | https://graph.microsoft.us              |
+| US Government L5 (DoD)      | https://login.microsoftonline.us | https://dod-graph.microsoft.us          |
+| China operated by 21Vianet  | https://login.chinacloudapi.cn   | https://microsoftgraph.chinacloudapi.cn |
 
-Microsoft 365 GCC uses the worldwide endpoints. See [Microsoft Graph national cloud deployments](https://learn.microsoft.com/en-us/graph/deployments) for cloud-specific endpoints. Grant admin consent for the _delegated_ `GroupMember.Read.All` permission; the application permission with the same name does not authorize this login flow.
+1. In **Authorization URL**, **Access token URL**, and **OIDC JWKS URL**, replace https://login.microsoftonline.com with your cloud's mathcing Entra ID endpoint. Keep the tenant and path portions of each URL unchanged.
+2. Set **Profile URL** to your cloud's matching Microsoft Graph endpoint followed by `/v1.0/me`. For example, for US Government L4, use `https://graph.microsoft.us/v1.0/me`.
+3. If you need to sync group memberships, add your cloud's Microsoft Graph endpoint followed by `/GroupMember.Read.All` to **Scopes**. For example, for US Government L4, use `https://graph.microsoft.us/GroupMember.Read.All`. In the Entra ID app registration, grant administrator consent for the **Delegated permissions** entry `GroupMember.Read.All`. This login flow uses `/me/memberOf`, which [requires delegated permissions](https://learn.microsoft.com/en-us/graph/api/user-list-memberof?view=graph-rest-1.0#permissions). The application permission with the same name does not authorize this request.
+
+authentik uses **Profile URL** to determine the default `User.Read` scope and the group membership API endpoint. You do not need to override the default scopes for a national cloud. If your **Scopes** value starts with `*`, it replaces the defaults. Include `openid` and your cloud's Microsoft Graph endpoint followed by `/User.Read` in that value. If you sync group memberships, also include the cloud-specific `GroupMember.Read.All` scope.
 
 ### Machine-to-machine authentication
 
