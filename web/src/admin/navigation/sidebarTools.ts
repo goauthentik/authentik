@@ -19,6 +19,43 @@ const enterpriseOnly = () =>
         id: "sidebar.notice.enterprise-only",
     });
 
+
+function makeSidebarEntry(entry: SidebarEntry, licensed: boolean, canEnterprise: boolean) {
+    const [path, label, attributes, children]: SidebarEntry = entry;
+    const enterprise = Boolean(!licensed && isEnterpriseEntry(attributes));
+    const key = isSidebarAttributeObject(attributes) && attributes.key ? attributes.key : path;
+
+    if (!key || key.trim().length === 0) {
+        console.log(path, label, attributes, children);
+
+        throw new Error("An entry must have either a path or a key");
+    }
+
+    const item: ExtendedSidebarItem = {
+        label,
+        key,
+        path: path
+            ? toAdminInterface(enterprise ? ENTERPRISE_PATH : (path ?? undefined))
+            : null,
+        enterprise,
+    };
+
+    if (enterprise) {
+        item.notice = enterpriseOnly();
+    }
+
+    if (children) {
+        item.children = resolveSidebarEntries(children ?? [], { licensed, canEnterprise });
+    }
+
+    if (Array.isArray(attributes) && attributes.length > 0) {
+        item.route = attributes[0];
+    }
+
+    return item;
+}
+
+
 /**
  * Removes enterprise entries entirely if enterprise capability is not present, or marks them "as
  * enterprise" if they are but the product is unlicensed.
@@ -27,47 +64,9 @@ export function resolveSidebarEntries(
     entries: readonly SidebarEntry[],
     { licensed, canEnterprise }: SidebarLicenseFlags,
 ): ExtendedSidebarItem[] {
-    const visibleEntries = entries
-        // A feature is always visible if it's not enterprise-only, or if the instance
-        // canEnterprise
-        .filter(
-            ([_path, _label, attributes, _children]) =>
-                !isEnterpriseEntry(attributes) || canEnterprise,
-        );
-
-    return visibleEntries.map(([path, label, attributes, children]): ExtendedSidebarItem => {
-        const enterprise = Boolean(!licensed && isEnterpriseEntry(attributes));
-        const key = isSidebarAttributeObject(attributes) && attributes.key ? attributes.key : path;
-
-        if (!key || key.trim().length === 0) {
-            console.log(path, label, attributes, children);
-
-            throw new Error("An entry must have either a path or a key");
-        }
-
-        const item: ExtendedSidebarItem = {
-            label,
-            key,
-            path: path
-                ? toAdminInterface(enterprise ? ENTERPRISE_PATH : (path ?? undefined))
-                : null,
-            enterprise,
-        };
-
-        if (enterprise) {
-            item.notice = enterpriseOnly();
-        }
-
-        if (children) {
-            item.children = resolveSidebarEntries(children ?? [], { licensed, canEnterprise });
-        }
-
-        if (Array.isArray(attributes) && attributes.length > 0) {
-            item.route = attributes[0];
-        }
-
-        return item;
-    });
+    const isVisible = ([, , attributes]: SidebarEntry) => canEnterprise || !isEnterpriseEntry(attributes);
+    const visibleEntries = entries.filter(isVisible)
+    return visibleEntries.map((entry) => makeSidebarEntry(entry, licensed, canEnterprise));
 }
 
 /**
