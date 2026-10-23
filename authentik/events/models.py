@@ -99,6 +99,8 @@ class EventAction(models.TextChoices):
     SUSPICIOUS_REQUEST = "suspicious_request"
     PASSWORD_SET = "password_set"  # noqa # nosec
 
+    REQUIRED_ACTION_COMPLETED = "required_action_completed"
+
     SECRET_VIEW = "secret_view"  # noqa # nosec
     SECRET_ROTATE = "secret_rotate"  # noqa # nosec
 
