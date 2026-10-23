@@ -46,7 +46,9 @@ COPY ./website /work/website/
 RUN pnpm run build && \
     pnpm run build:sfe
 
-# Stage: DB-IP Lite GeoIP databases (CC BY 4.0, https://db-ip.com)
+# Stage: GeoIP databases
+# City: DB-IP Lite (CC BY 4.0, https://db-ip.com)
+# ASN: built weekly from RIPE NCC RIS data by .github/workflows/gen-geoip-asn.yml
 FROM --platform=${BUILDPLATFORM} docker.io/library/alpine:3.22@sha256:822614ea121e1d40a33655081af10ef85f0aa2ab9e61f649ceaf0c651822433c AS geoip
 
 # Edition to download, as YYYY-MM. CI passes the current month so the cached layer refreshes monthly.
@@ -54,6 +56,9 @@ ARG GEOIP_MONTH
 
 RUN --mount=type=bind,target=/tmp/geoip.sh,src=./lifecycle/container/geoip.sh \
     sh /tmp/geoip.sh /geoip "${GEOIP_MONTH}"
+
+# Unpinned on purpose: the tag moves weekly, and BuildKit re-resolves it on every build.
+COPY --from=ghcr.io/goauthentik/geoip:latest /authentik-asn.mmdb /geoip/authentik-asn.mmdb
 
 # Stage: download Rust toolchain
 FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:b97a9f4f34c7d1ea350e394bb0cd14f2f5bfc39517bc442534bf6005ff2bc084 AS rust-toolchain
