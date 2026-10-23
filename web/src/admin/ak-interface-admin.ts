@@ -13,6 +13,7 @@ import {
     createAdminSidebarEntries,
     findSidebarSectionByRoute,
     renderSidebarItems,
+    resolveSidebarEntries,
     SidebarEntry,
 } from "./navigation/sidebar.js";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -103,8 +104,12 @@ export class AdminInterface extends WithLicenseSummary(
 
     protected get navigationEntries(): readonly SidebarEntry[] {
         const canEnterprise = this.can(CapabilitiesEnum.IsEnterprise);
+        const entries = createAdminSidebarEntries(canEnterprise);
 
-        return createAdminSidebarEntries(canEnterprise);
+        return resolveSidebarEntries(entries, {
+            canEnterprise,
+            licensed: this.hasEnterpriseLicense,
+        });
     }
 
     //#endregion
@@ -186,10 +191,6 @@ export class AdminInterface extends WithLicenseSummary(
                 (children ?? []).flatMap(([path, childLabel, attributes]) => {
                     const enterpriseOnly =
                         !Array.isArray(attributes) && attributes?.enterprise === true;
-
-                    if (enterpriseOnly && !this.can(CapabilitiesEnum.IsEnterprise)) {
-                        return [];
-                    }
 
                     const command: PaletteCommandDefinitionInit = {
                         namespace: PaletteCommandNamespace.Navigation,
