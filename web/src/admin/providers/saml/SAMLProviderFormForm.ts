@@ -17,11 +17,6 @@ import {
     retrieveSignatureAlgorithm,
 } from "./SAMLProviderOptions.js";
 
-import {
-    oauth2ProvidersProvider,
-    oauth2ProvidersSelector,
-} from "#admin/providers/oauth2/OAuth2ProvidersProvider";
-
 import { RadioOption } from "#elements/forms/Radio";
 import type { SearchSelectChangeEvent } from "#elements/forms/SearchSelect/events";
 
@@ -36,6 +31,10 @@ import {
     AKAuthnContextClassRefMappingField,
     AKNameIDMappingField,
 } from "#admin/providers/components/saml-property-mapping-fields";
+import {
+    oauth2ProvidersProvider,
+    oauth2ProvidersSelector,
+} from "#admin/providers/oauth2/OAuth2ProvidersProvider";
 
 import {
     KeyTypeEnum,
