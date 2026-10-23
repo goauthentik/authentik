@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { DeviceChallenge } from "./DeviceChallenge";
-import { DeviceChallengeFromJSON, DeviceChallengeToJSON } from "./DeviceChallenge";
-import type { ErrorDetail } from "./ErrorDetail";
-import type { SelectableStage } from "./SelectableStage";
-import { SelectableStageFromJSON, SelectableStageToJSON } from "./SelectableStage";
+import type { ContextualFlowInfo } from "./ContextualFlowInfo.js";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo.js";
+import type { DeviceChallenge } from "./DeviceChallenge.js";
+import { DeviceChallengeFromJSON, DeviceChallengeToJSON } from "./DeviceChallenge.js";
+import type { ErrorDetail } from "./ErrorDetail.js";
+import type { SelectableStage } from "./SelectableStage.js";
+import { SelectableStageFromJSON, SelectableStageToJSON } from "./SelectableStage.js";
 
 /**
  * Authenticator challenge

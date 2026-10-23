@@ -14,6 +14,7 @@ from structlog.stdlib import get_logger
 
 from authentik.common.saml.constants import (
     DIGEST_ALGORITHM_TRANSLATION_MAP,
+    ENCRYPTION_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
     NS_SAML_ASSERTION,
     NS_SAML_PROTOCOL,
@@ -427,13 +428,16 @@ class AssertionProcessor:
 
         manager.add_key(key)
         encryption_context = xmlsec.EncryptionContext(manager)
+        transform, key_bits = ENCRYPTION_ALGORITHM_TRANSLATION_MAP[
+            self.provider.encryption_algorithm
+        ]
         encryption_context.key = xmlsec.Key.generate(
-            xmlsec.constants.KeyDataAes, 128, xmlsec.constants.KeyDataTypeSession
+            xmlsec.constants.KeyDataAes, key_bits, xmlsec.constants.KeyDataTypeSession
         )
 
         container = SubElement(parent, f"{{{NS_SAML_ASSERTION}}}EncryptedAssertion")
         enc_data = xmlsec.template.encrypted_data_create(
-            container, xmlsec.Transform.AES128, type=xmlsec.EncryptionType.ELEMENT, ns="xenc"
+            container, transform, type=xmlsec.EncryptionType.ELEMENT, ns="xenc"
         )
         xmlsec.template.encrypted_data_ensure_cipher_value(enc_data)
         key_info = xmlsec.template.encrypted_data_ensure_key_info(enc_data, ns="ds")
