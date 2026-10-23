@@ -18,15 +18,6 @@ ak-page-navbar {
     grid-area: header;
 }
 
-ak-sidebar-item:active ak-sidebar-item::part(list-item),
-ak-sidebar-item:hover ak-sidebar-item::part(list-item) {
-    --pf-c-nav__link--after--BorderColor: var(--pf-global--BorderColor--200);
-}
-
-ak-sidebar-item:active ak-sidebar-item::part(list-item) {
-    --pf-c-nav__link--active--after--BorderColor: var(--ak-accent);
-}
-
 .pf-c-drawer__panel {
     background-color: transparent !important;
 }

@@ -1,7 +1,6 @@
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
 import "#elements/sidebar/Sidebar";
-import "#elements/sidebar/SidebarItem";
 import "#elements/router/core/RouterView";
 import "#elements/commands/ak-command-palette";
 import "#elements/commands/ak-command-palette-user-modal";
@@ -9,13 +8,13 @@ import "#components/notifications/APIDrawer";
 import "#components/notifications/NotificationDrawer";
 import "#components/ak-page-navbar";
 import "#admin/navigation/VersionDetails";
+import { createAdminSidebarEntries } from "./navigation/sidebarEntries";
 import {
-    createAdminSidebarEntries,
     findSidebarSectionByRoute,
-    renderSidebarItems,
     resolveSidebarEntries,
-    SidebarEntry,
-} from "./navigation/sidebar.js";
+    ExtendedSidebarItem,
+    findCurrentSidebarKey,
+} from "./navigation/sidebarTools";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
@@ -48,6 +47,7 @@ import {
 import { matchRoute } from "#elements/router/core/matcher";
 import { navigate, RouterNavigateEvent } from "#elements/router/core/navigation";
 import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { AKDrawerChangeEvent } from "#components/notifications/events";
 import {
@@ -102,7 +102,7 @@ export class AdminInterface extends WithLicenseSummary(
     @property({ type: Boolean, reflect: true, attribute: "sidebar" })
     public sidebarOpen = false;
 
-    protected get navigationEntries(): readonly SidebarEntry[] {
+    protected get navigationEntries(): readonly ExtendedSidebarItem[] {
         const canEnterprise = this.can(CapabilitiesEnum.IsEnterprise);
         const entries = createAdminSidebarEntries(canEnterprise);
 
@@ -187,24 +187,13 @@ export class AdminInterface extends WithLicenseSummary(
                     ),
                 group: msg("Applications"),
             },
-            ...this.navigationEntries.flatMap(([, label, , children]) =>
-                (children ?? []).flatMap(([path, childLabel, attributes]) => {
-                    const enterpriseOnly =
-                        !Array.isArray(attributes) && attributes?.enterprise === true;
-
+            ...this.navigationEntries.flatMap(({ label, children }: ExtendedSidebarItem) =>
+                (children ?? []).flatMap(({ path, label: childLabel }: ExtendedSidebarItem) => {
                     const command: PaletteCommandDefinitionInit = {
                         namespace: PaletteCommandNamespace.Navigation,
                         label: childLabel,
                         group: label,
-                        action: () => {
-                            navigate(
-                                toAdminInterface(
-                                    enterpriseOnly && !this.hasEnterpriseLicense
-                                        ? "/enterprise/licenses"
-                                        : path!,
-                                ),
-                            );
-                        },
+                        action: () => navigate(path!),
                     };
 
                     return [command];
@@ -286,6 +275,10 @@ export class AdminInterface extends WithLicenseSummary(
             return html`<slot></slot>`;
         }
 
+        const path = currentInterfacePath(this.pathname);
+        const routeName = routeNameForPath(path);
+        const entries = this.navigationEntries;
+
         const sidebarClasses = {
             "pf-c-page__sidebar": true,
             "pf-m-expanded": this.sidebarOpen,
@@ -300,12 +293,7 @@ export class AdminInterface extends WithLicenseSummary(
         };
 
         return html`<div class="pf-c-page">
-                <ak-page-navbar
-                    .section=${findSidebarSectionByRoute(
-                        this.navigationEntries,
-                        routeNameForPath(currentInterfacePath(this.pathname)),
-                    )}
-                >
+                <ak-page-navbar .section=${findSidebarSectionByRoute(entries, routeName)}>
                     <button
                         slot="toggle"
                         aria-controls="global-nav"
@@ -328,7 +316,9 @@ export class AdminInterface extends WithLicenseSummary(
                     id="global-nav"
                     ?hidden=${!this.sidebarOpen}
                     class="${classMap(sidebarClasses)}"
-                    >${renderSidebarItems(this.navigationEntries, routeNameForPath)}
+                    .entries=${entries}
+                    current=${ifPresent(findCurrentSidebarKey(entries, path, routeName))}
+                >
                     <ak-version-details slot="footer"></ak-version-details>
                 </ak-sidebar>
 
