@@ -1,3 +1,4 @@
+import { SidebarReloadController } from "./SidebarReloadController";
 import type { SidebarItem } from "./types";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -29,18 +30,22 @@ export class Sidebar extends AKElement {
     @property({ type: String })
     current: string | null = null;
 
-    #open: Set<string> = new Set();
-
-    @property({ type: Array })
-    expanded: string[] = [];
+    public expanded: Map<string, boolean> = new Map();
 
     protected slots = new SlotController(this, {
         slots: [null, "footer"],
     });
 
+    protected sidebarController = new SidebarReloadController(this);
+
     willUpdate(changed: PropertyValues<this>) {
-        if (changed.has("expanded")) {
-            this.#open = new Set(this.expanded);
+        if (changed.has("current")) {
+            const old = changed.get("current");
+
+            if (typeof old === "string" && typeof this.current === "string") {
+                this.expanded.set(old, false);
+                this.expanded.set(this.current, true);
+            }
         }
     }
 
@@ -84,22 +89,20 @@ export class Sidebar extends AKElement {
             return nothing;
         }
 
-        const open = this.#open.has(key);
+        const open = this.expanded.get(key);
 
         return html`
             <li
                 part="level1 list-item list-item-expandable"
                 aria-label=${label}
-                class="pf-c-nav__item pf-m-expandable ${classMap({ "pf-m-expanded": open })}"
+                class="pf-c-nav__item pf-m-expandable ${classMap({ "pf-m-expanded": Boolean(open) })}"
                 data-value=${ifPresent(key)}
             >
                 ${path ? nothing : label}
                 <button
                     part="button button-with-children"
                     class="pf-c-nav__link"
-                    aria-label=${
-                        this.expanded ? msg(str`Collapse ${label}`) : msg(str`Expand ${label}`)
-                    }
+                    aria-label=${open ? msg(str`Collapse ${label}`) : msg(str`Expand ${label}`)}
                     aria-expanded=${open ? "true" : "false"}
                     aria-controls=${ifPresent(key)}
                     type="button"

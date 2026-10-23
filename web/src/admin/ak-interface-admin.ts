@@ -1,7 +1,6 @@
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
 import "#elements/sidebar/Sidebar";
-import "#elements/sidebar/SidebarItem";
 import "#elements/router/core/RouterView";
 import "#elements/commands/ak-command-palette";
 import "#elements/commands/ak-command-palette-user-modal";
@@ -9,13 +8,12 @@ import "#components/notifications/APIDrawer";
 import "#components/notifications/NotificationDrawer";
 import "#components/ak-page-navbar";
 import "#admin/navigation/VersionDetails";
+import { createAdminSidebarEntries } from "./navigation/sidebarEntries";
 import {
-    createAdminSidebarEntries,
     findSidebarSectionByRoute,
-    renderSidebarItems,
     resolveSidebarEntries,
-    SidebarEntry,
-} from "./navigation/sidebar.js";
+    ExtendedSidebarItem,
+} from "./navigation/sidebarTools";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
@@ -67,6 +65,7 @@ import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { guard } from "lit/directives/guard.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 let lastRoutePath: string | null = null;
 let lastRouteName: string | null = null;
@@ -102,7 +101,7 @@ export class AdminInterface extends WithLicenseSummary(
     @property({ type: Boolean, reflect: true, attribute: "sidebar" })
     public sidebarOpen = false;
 
-    protected get navigationEntries(): readonly SidebarEntry[] {
+    protected get navigationEntries(): readonly ExtendedSidebarItem[] {
         const canEnterprise = this.can(CapabilitiesEnum.IsEnterprise);
         const entries = createAdminSidebarEntries(canEnterprise);
 
@@ -187,28 +186,27 @@ export class AdminInterface extends WithLicenseSummary(
                     ),
                 group: msg("Applications"),
             },
-            ...this.navigationEntries.flatMap(([, label, , children]) =>
-                (children ?? []).flatMap(([path, childLabel, attributes]) => {
-                    const enterpriseOnly =
-                        !Array.isArray(attributes) && attributes?.enterprise === true;
+            ...this.navigationEntries.flatMap(({ label, children }: ExtendedSidebarItem) =>
+                (children ?? []).flatMap(
+                    ({ path, label: childLabel, enterprise }: ExtendedSidebarItem) => {
+                        const command: PaletteCommandDefinitionInit = {
+                            namespace: PaletteCommandNamespace.Navigation,
+                            label: childLabel,
+                            group: label,
+                            action: () => {
+                                navigate(
+                                    toAdminInterface(
+                                        enterprise && !this.hasEnterpriseLicense
+                                            ? "/enterprise/licenses"
+                                            : path!,
+                                    ),
+                                );
+                            },
+                        };
 
-                    const command: PaletteCommandDefinitionInit = {
-                        namespace: PaletteCommandNamespace.Navigation,
-                        label: childLabel,
-                        group: label,
-                        action: () => {
-                            navigate(
-                                toAdminInterface(
-                                    enterpriseOnly && !this.hasEnterpriseLicense
-                                        ? "/enterprise/licenses"
-                                        : path!,
-                                ),
-                            );
-                        },
-                    };
-
-                    return [command];
-                }),
+                        return [command];
+                    },
+                ),
             ),
             {
                 namespace: PaletteCommandNamespace.Search,
@@ -328,7 +326,9 @@ export class AdminInterface extends WithLicenseSummary(
                     id="global-nav"
                     ?hidden=${!this.sidebarOpen}
                     class="${classMap(sidebarClasses)}"
-                    >${renderSidebarItems(this.navigationEntries, routeNameForPath)}
+                    .entries=${this.navigationEntries}
+                    current=${ifDefined(currentInterfacePath(this.pathname))}
+                >
                     <ak-version-details slot="footer"></ak-version-details>
                 </ak-sidebar>
 
