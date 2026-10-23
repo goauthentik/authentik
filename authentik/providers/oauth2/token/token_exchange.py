@@ -8,6 +8,7 @@ from authentik.common.oauth.constants import (
     TOKEN_EXCHANGE_TOKEN_TYPES,
     TOKEN_TYPE_URI_ACCESS_TOKEN,
     TOKEN_TYPE_URI_AUTHENTIK_TOKEN,
+    TOKEN_TYPE_URI_SAML2,
 )
 from authentik.core.models import Actor, Application, Token, TokenIntents
 from authentik.events.models import Event, EventAction
@@ -15,6 +16,7 @@ from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.providers.oauth2.errors import TokenExchangeError
 from authentik.providers.oauth2.models import OAuth2Provider
 from authentik.providers.oauth2.token.base_fed import FederatedTokenRequest
+from authentik.providers.saml.models import SAMLProvider
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 # Upper bound on nested `act` claims, so repeated exchanges can't grow tokens unbounded
@@ -22,6 +24,29 @@ MAX_ACT_DEPTH = 10
 
 
 class TokenExchangeTokenRequest(FederatedTokenRequest):
+
+    def resolve_saml_audience(self, audiences: list[str]) -> None:
+        """A SAML Response is requested for the SAML provider whose application's
+        `pbm_uuid` is the `audience`, which must federate with the requesting provider."""
+        if len(audiences) != 1:
+            self.logger.warning("SAML token exchange requires exactly one audience")
+            raise TokenExchangeError("invalid_target").with_cause("saml_audience_required")
+        try:
+            pbm_uuid = UUID(audiences[0])
+        except ValueError:
+            pbm_uuid = None
+        target = (
+            SAMLProvider.objects.filter(application__pbm_uuid=pbm_uuid).first()
+            if pbm_uuid
+            else None
+        )
+        if not target:
+            self.logger.warning("Audience does not match any provider", audience=audiences[0])
+            raise TokenExchangeError("invalid_target").with_cause("unknown_target")
+        if not target.jwt_federation_providers.filter(pk=self.provider.pk).exists():
+            self.logger.warning("Audience does not federate with the requesting provider")
+            raise TokenExchangeError("invalid_target").with_cause("target_not_federated")
+        self.saml_provider = target
 
     def resolve_audience(self, request: HttpRequest) -> None:
         """RFC 8693 §2.1 `audience`: the provider the issued token is for, named by its
@@ -32,6 +57,8 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
             self.logger.warning("Resource indicators are not supported")
             raise TokenExchangeError("invalid_target").with_cause("target_unsupported")
         audiences = request.POST.getlist("audience")
+        if request.POST.get("requested_token_type") == TOKEN_TYPE_URI_SAML2:
+            return self.resolve_saml_audience(audiences)
         if not audiences:
             return
         # Multi-provider tokens are not supported.
@@ -72,7 +99,10 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
             raise TokenExchangeError("invalid_request").with_cause("unsupported_subject_token_type")
         if self.requested_token_type is None:
             self.requested_token_type = TOKEN_TYPE_URI_ACCESS_TOKEN
-        if self.requested_token_type not in TOKEN_EXCHANGE_TOKEN_TYPES:
+        if (
+            self.requested_token_type not in TOKEN_EXCHANGE_TOKEN_TYPES
+            and self.requested_token_type != TOKEN_TYPE_URI_SAML2
+        ):
             self.logger.warning(
                 "Unsupported requested token type", token_type=self.requested_token_type
             )
@@ -106,6 +136,10 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
                 self.logger.info("Audience provider has no application")
                 raise TokenExchangeError("invalid_target").with_cause("target_without_application")
             self.check_policy_access(target_app, request, oauth_jwt=federated_party.parsed_token)
+        if self.saml_provider:
+            self.check_policy_access(
+                self.saml_provider.application, request, oauth_jwt=federated_party.parsed_token
+            )
 
         self.prior_act = self.validate_prior_act(federated_party.parsed_token.get("act"))
         self.post_init_token_exchange_actor(request)
@@ -118,6 +152,8 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
         }
         if self.audience_provider:
             method_args["audience"] = self.audience_provider.client_id
+        if self.saml_provider:
+            method_args["audience"] = str(self.saml_provider.application.pbm_uuid)
         # The validated delegation chain the subject token carried; the new actor (if any)
         # is recorded as the event's user.
         if self.prior_act:
