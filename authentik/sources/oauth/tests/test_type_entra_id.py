@@ -3,7 +3,7 @@
 from json import dumps
 from unittest.mock import patch
 
-from django.test import RequestFactory, SimpleTestCase, TestCase
+from django.test import RequestFactory, TestCase
 from httpx import Response
 from requests_mock import Mocker
 
@@ -62,7 +62,7 @@ class TestTypeAzureAD(TestCase):
         self.assertEqual(EntraIDOAuthCallback().get_user_id(EID_USER), EID_USER["id"])
 
 
-class TestEntraIDClient(SimpleTestCase):
+class TestEntraIDClient(TestCase):
     """Entra ID group pagination"""
 
     def setUp(self):
