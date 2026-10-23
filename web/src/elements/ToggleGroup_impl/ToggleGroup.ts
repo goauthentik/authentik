@@ -4,7 +4,9 @@
 
 import Styles from "./ToggleGroup.styles";
 
-import { html, LitElement } from "lit";
+import { AKElement } from "#elements/Base";
+
+import { html } from "lit";
 import { property } from "lit/decorators.js";
 
 type Option = [string, string, { disabled?: boolean }];
@@ -28,7 +30,7 @@ export class ToggleGroupEvent<T = string> extends Event {
  * @element ak-toggle-group
  */
 
-export class ToggleGroup extends LitElement {
+export class ToggleGroup extends AKElement {
     static styles = [Styles];
 
     /**
@@ -45,6 +47,9 @@ export class ToggleGroup extends LitElement {
 
     @property({ type: String })
     separator = ",";
+
+    @property({ type: Boolean, attribute: "form-input", reflect: true })
+    formInput = false;
 
     protected optionsObserver: MutationObserver | null = null;
 
@@ -91,6 +96,7 @@ export class ToggleGroup extends LitElement {
 
         const mkClick = (v: string) => () => {
             this.dispatchEvent(new ToggleGroupEvent(v));
+            this.value = v;
         };
 
         return html` <div role=${this.multi ? "group" : "radiogroup"} part="toggle-group">
