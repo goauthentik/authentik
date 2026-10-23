@@ -41,10 +41,10 @@ def entity_as_dict(entity: Entity) -> dict:
     )
 
 
-def get_graph_base_url(source: OAuthSource) -> str:
+def get_graph_url(source: OAuthSource, path: str) -> str:
     """Use the configured profile's origin for Graph scopes and API requests."""
     profile_url = source.profile_url or EntraIDType.profile_url
-    return urlsplit(profile_url)._replace(path="", query="", fragment="").geturl()
+    return urlsplit(profile_url)._replace(path=path, query="", fragment="").geturl()
 
 
 class EntraIDOAuthRedirect(OAuthRedirect):
@@ -52,7 +52,7 @@ class EntraIDOAuthRedirect(OAuthRedirect):
 
     def get_additional_parameters(self, source):
         return {
-            "scope": ["openid", f"{get_graph_base_url(source)}/User.Read"],
+            "scope": ["openid", get_graph_url(source, "/User.Read")],
         }
 
 
@@ -61,7 +61,7 @@ class EntraIDClient(UserprofileHeaderAuthClient):
 
     def get_profile_info(self, token):
         profile_data = super().get_profile_info(token)
-        group_scope = f"{get_graph_base_url(self.source)}/GroupMember.Read.All"
+        group_scope = get_graph_url(self.source, "/GroupMember.Read.All")
         scopes = self.source.additional_scopes.removeprefix("*").split()
         if profile_data is None or group_scope not in scopes:
             return profile_data
@@ -81,7 +81,7 @@ class EntraIDClient(UserprofileHeaderAuthClient):
             options=options, client=KiotaClientFactory.get_default_client()
         ) as http_client:
             adapter = GraphRequestAdapter(AnonymousAuthenticationProvider(), http_client)
-            adapter.base_url = f"{get_graph_base_url(self.source)}/v1.0"
+            adapter.base_url = get_graph_url(self.source, "/v1.0")
             client = GraphServiceClient(request_adapter=adapter)
             groups = []
             request = client.me.member_of
