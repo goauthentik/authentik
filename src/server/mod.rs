@@ -44,7 +44,7 @@ use tokio::{
     time::{Duration, Instant, interval},
 };
 use tower::ServiceExt as _;
-use tracing::{info, instrument, trace, warn};
+use tracing::{debug, info, instrument, trace, warn};
 
 use crate::{
     brands::tls::BrandCertResolver,
@@ -69,6 +69,26 @@ pub(super) static GUNICORN_READY: AtomicBool = AtomicBool::new(false);
 
 pub(crate) fn socket_path() -> PathBuf {
     temp_dir().join("authentik.sock")
+}
+
+/// Returns `true` when `err` (or any error in its source chain) is an
+/// `io::Error` with `ErrorKind::NotFound`, indicating the Unix socket does
+/// not exist yet.  This is the expected condition during startup and should
+/// not be logged at `warn` level.
+pub(crate) fn is_connect_not_found(err: &dyn std::error::Error) -> bool {
+    // `source()` returns `&(dyn Error + 'static)`, so downcast_ref is valid on
+    // every link after the first.  The io::Error sits below the top-level
+    // hyper_util connect error, so iterating sources is sufficient.
+    let mut source = err.source();
+    while let Some(e) = source {
+        if let Some(io_err) = e.downcast_ref::<std::io::Error>() {
+            if io_err.kind() == std::io::ErrorKind::NotFound {
+                return true;
+            }
+        }
+        source = e.source();
+    }
+    false
 }
 
 #[derive(Debug)]
@@ -176,7 +196,13 @@ impl Server {
             .client
             .request(req)
             .await
-            .inspect_err(|err| warn!(?err, "failed to send health live request to server"))?
+            .inspect_err(|err| {
+                if is_connect_not_found(err) {
+                    debug!(?err, "upstream socket not yet ready (health live)");
+                } else {
+                    warn!(?err, "failed to send health live request to server");
+                }
+            })?
             .status()
             .is_success())
     }
