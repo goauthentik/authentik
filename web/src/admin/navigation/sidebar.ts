@@ -1,5 +1,5 @@
-import { SidebarItemProperties } from "#elements/sidebar/SidebarItem";
-import { LitPropertyRecord } from "#elements/types";
+import type { SidebarItemProperties } from "#elements/sidebar/SidebarItem";
+import type { LitPropertyRecord } from "#elements/types";
 
 import { spread } from "@open-wc/lit-helpers";
 
@@ -82,24 +82,24 @@ export function findSidebarSectionByRoute(
 
 // prettier-ignore
 export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
-    [null, msg("Dashboards"), { key: "dashboards", "?expanded": true }, [
+    [null, msg("Dashboards"), { key: "dashboards", "?expanded": true, icon: "fas fa-chart-pie"  }, [
         ["/administration/overview", msg("Overview")],
         ["/administration/dashboard/users", msg("User Statistics")],
         ["/administration/system-tasks", msg("System Tasks"), ["system-tasks"]]]
     ],
-    [null, msg("Applications"), { key: "applications" }, [
+    [null, msg("Applications"), { key: "applications", icon: "pf-icon pf-icon-application" }, [
         ["/core/applications", msg("Applications"), ["application-view"]],
         ["/core/providers", msg("Providers"), ["provider-view"]],
         ["/outpost/outposts", msg("Outposts"), ["outpost-view"]],
         ["/requests/rules", msg("Request Rules"), {enterprise:true}],
         ["/requests/access-requests", msg("Access Requests"), {enterprise:true}],]
     ],
-    [null, msg("Endpoint Devices"), { key: "endpoint-devices" }, [
+    [null, msg("Endpoint Devices"), { key: "endpoint-devices", icon: "fas fa-laptop" }, [
         ["/endpoints/devices", msg("Devices"), ["device-view"]],
         ["/endpoints/groups", msg("Device access groups")],
         ["/endpoints/connectors", msg("Connectors"), ["connector-view"]],
     ]],
-    [null, msg("Events"), { key: "events" }, [
+    [null, msg("Events"), { key: "events", icon: "pf-icon pf-icon-catalog" }, [
         ["/events/log", msg("Logs"), ["event-view"]],
         ["/events/rules", msg("Notification Rules")],
         ["/events/transports", msg("Notification Transports")],
@@ -108,19 +108,19 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
         ["/events/offboardings", msg("Offboardings"), {enterprise:true}],
         ["/events/exports", msg("Data Exports"), {enterprise:true}]]
     ],
-    [null, msg("Customization"), { key: "customization" }, [
+    [null, msg("Customization"), { key: "customization", icon: "pf-icon pf-icon-infrastructure" }, [
         ["/policy/policies", msg("Policies")],
         ["/core/property-mappings", msg("Property Mappings")],
         ["/blueprints/instances", msg("Blueprints")],
         ["/files", msg("Files")],
         ["/policy/reputation", msg("Reputation scores")]],
     ],
-    [null, msg("Flows and Stages"), { key: "flows-stages" }, [
+    [null, msg("Flows and Stages"), { key: "flows-stages", icon: "pf-icon pf-icon-process-automation" }, [
         ["/flow/flows", msg("Flows"), ["flow-view"]],
         ["/flow/stages", msg("Stages")],
         ["/flow/stages/prompts", msg("Prompts")]]
     ],
-    [null, msg("Directory"), { key: "directory" }, [
+    [null, msg("Directory"), { key: "directory", icon: "fas fa-address-book" }, [
         ["/identity/users", msg("Users"), ["user-view"]],
         ["/identity/groups", msg("Groups"), ["group-view"]],
         ["/identity/roles", msg("Roles"), ["role-view"]],
@@ -131,7 +131,7 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
         ["/core/tokens", msg("Tokens and App passwords")],
         ["/flow/stages/invitations", msg("Invitations")]]
     ],
-    [null, msg("System"), { key: "system" }, [
+    [null, msg("System"), { key: "system", icon: "fas fa-cog" }, [
         ["/core/brands", msg("Brands")],
         ["/crypto/certificates", msg("Certificates")],
         ["/outpost/integrations", msg("Outpost Integrations")],
@@ -141,7 +141,7 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
 
 // prettier-ignore
 export const createAdminSidebarEnterpriseEntries = (): readonly SidebarEntry[] => [
-    [null, msg("Enterprise"), { key: "enterprise" }, [
+    [null, msg("Enterprise"), { key: "enterprise", icon: "fas fa-building" }, [
         ["/enterprise/licenses", msg("Licenses"), null]
     ],
 ]];
