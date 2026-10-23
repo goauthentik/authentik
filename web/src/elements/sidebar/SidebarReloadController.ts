@@ -3,8 +3,6 @@ import { type Sidebar } from "./Sidebar";
 
 import { ReactiveController } from "lit";
 
-type SidebarEntry = [string, boolean | undefined];
-
 export class SidebarReloadController implements ReactiveController {
     constructor(protected host: Sidebar) {
         host.addController(this);

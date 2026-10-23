@@ -270,7 +270,7 @@ export class AdminInterface extends WithLicenseSummary(
 
     //#region Rendering
 
-    protected override render(): TemplateResult{
+    protected override render(): TemplateResult {
         if (!isAPIResultReady(this.session) || !canAccessAdmin(this.session.user)) {
             return html`<slot></slot>`;
         }

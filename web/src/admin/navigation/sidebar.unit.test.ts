@@ -58,7 +58,7 @@ describe("resolveSidebarEntries", () => {
         for (const { notice } of children.slice(1)) {
             expect(notice).toBeUndefined();
         }
-    });mag
+    });
 
     it.each([false, true])(
         "skips enterprise entries when the build lacks the enterprise app (licensed: %s)",
