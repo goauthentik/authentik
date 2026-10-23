@@ -7,12 +7,9 @@ import { ReactiveController } from "lit";
 type SidebarEntry = [string, boolean | undefined];
 
 export class SidebarReloadController implements ReactiveController {
-    public host: Sidebar;
     protected persisted: SidebarExpansionState = {};
 
-    constructor(host: Sidebar) {
-        this.host = host;
-    }
+    constructor(protected host: Sidebar) { }
 
     hostConnected() {
         const persisted = SidebarExpansion.readState() ?? {};
