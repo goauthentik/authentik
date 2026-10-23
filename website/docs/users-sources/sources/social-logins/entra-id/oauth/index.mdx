@@ -107,7 +107,7 @@ The following endpoints are listed in Microsoft's [national cloud deployments do
 | US Government L5 (DoD)      | https://login.microsoftonline.us | https://dod-graph.microsoft.us          |
 | China operated by 21Vianet  | https://login.chinacloudapi.cn   | https://microsoftgraph.chinacloudapi.cn |
 
-1. In **Authorization URL**, **Access token URL**, and **OIDC JWKS URL**, replace https://login.microsoftonline.com with your cloud's mathcing Entra ID endpoint. Keep the tenant and path portions of each URL unchanged.
+1. In **Authorization URL**, **Access token URL**, and **OIDC JWKS URL**, replace https://login.microsoftonline.com with your cloud's matching Entra ID endpoint. Keep the tenant and path portions of each URL unchanged.
 2. Set **Profile URL** to your cloud's matching Microsoft Graph endpoint followed by `/v1.0/me`. For example, for US Government L4, use `https://graph.microsoft.us/v1.0/me`.
 3. If you need to sync group memberships, add your cloud's Microsoft Graph endpoint followed by `/GroupMember.Read.All` to **Scopes**. For example, for US Government L4, use `https://graph.microsoft.us/GroupMember.Read.All`. In the Entra ID app registration, grant administrator consent for the **Delegated permissions** entry `GroupMember.Read.All`. This login flow uses `/me/memberOf`, which [requires delegated permissions](https://learn.microsoft.com/en-us/graph/api/user-list-memberof?view=graph-rest-1.0#permissions). The application permission with the same name does not authorize this request.
 
