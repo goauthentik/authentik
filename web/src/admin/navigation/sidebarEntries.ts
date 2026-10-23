@@ -1,9 +1,10 @@
 import { SidebarEntry } from "./types";
+
 import { msg } from "@lit/localize";
 
 // prettier-ignore
 export const initAdminSidebarEntries = (): readonly SidebarEntry[] => [
-    [null, msg("Dashboards"), { key: "dashboards", "?expanded": true }, [
+    [null, msg("Dashboards"), { key: "dashboards", expanded: true }, [
         ["/administration/overview", msg("Overview")],
         ["/administration/dashboard/users", msg("User Statistics")],
         ["/administration/system-tasks", msg("System Tasks"), ["system-tasks"]]]
@@ -23,7 +24,7 @@ export const initAdminSidebarEntries = (): readonly SidebarEntry[] => [
     [null, msg("Events"), { key: "events" }, [
         ["/events/log", msg("Logs"), ["event-view"]],
         ["/events/rules", msg("Notification Rules")],
-        ["/events/transports", msg("Notiyfication Transports")],
+        ["/events/transports", msg("Notification Transports")],
         ["/events/lifecycle-rules", msg("Lifecycle Rules"), {enterprise:true}],
         ["/events/lifecycle-reviews", msg("Reviews"), {enterprise:true}],
         ["/events/offboardings", msg("Offboardings"), {enterprise:true}],

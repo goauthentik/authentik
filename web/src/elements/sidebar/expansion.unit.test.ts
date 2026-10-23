@@ -2,7 +2,7 @@ import * as SidebarState from "./expansion.js";
 
 import { describe, expect, test } from "vitest";
 
-describe("parseSidebarExpansionState", () => {
+describe("parseState", () => {
     test("keeps boolean entries", () => {
         expect(SidebarState.parseState({ directory: true, system: false })).toEqual({
             directory: true,
@@ -15,15 +15,13 @@ describe("parseSidebarExpansionState", () => {
         // A record written by an older version, or edited by hand, must not surface as expansion state.
 
         for (const value of [null, undefined, "a string", 42, ["directory"]]) {
-            expect(SidebarState.parseState(value), `discards ${JSON.stringify(value)}`).toEqual(
-                {},
-            );
+            expect(SidebarState.parseState(value), `discards ${JSON.stringify(value)}`).toEqual({});
         }
     });
 
     test("discards non-boolean entries while keeping usable ones", () => {
-        expect(
-            SidebarState.parseState({ directory: true, events: "yes", system: null }),
-        ).toEqual({ directory: true });
+        expect(SidebarState.parseState({ directory: true, events: "yes", system: null })).toEqual({
+            directory: true,
+        });
     });
 });

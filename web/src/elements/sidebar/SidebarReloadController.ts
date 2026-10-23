@@ -1,4 +1,3 @@
-import { type SidebarExpansionState } from "./expansion";
 import * as SidebarExpansion from "./expansion.ts";
 import { type Sidebar } from "./Sidebar";
 
@@ -7,31 +6,28 @@ import { ReactiveController } from "lit";
 type SidebarEntry = [string, boolean | undefined];
 
 export class SidebarReloadController implements ReactiveController {
-    protected persisted: SidebarExpansionState = {};
+    constructor(protected host: Sidebar) {
+        host.addController(this);
+    }
 
-    constructor(protected host: Sidebar) { }
+    #save = () => {
+        SidebarExpansion.writeState(Object.fromEntries(this.host.expanded));
+    };
 
     hostConnected() {
-        const persisted = SidebarExpansion.readState() ?? {};
-        this.host.expanded = new Map<string, boolean>(Object.entries(persisted));
-        this.host.requestUpdate();
-    }
+        for (const [key, open] of Object.entries(SidebarExpansion.readState())) {
+            this.host.expanded.set(key, open);
+        }
 
-    writeState() {
-        const persisted = Array.from(this.host.expanded.entries()).reduce(
-            (acc: SidebarExpansionState, [key, value]: SidebarEntry): SidebarExpansionState =>
-                typeof value === "undefined" ? acc : { ...acc, [key]: value },
-            {},
-        );
-
-        SidebarExpansion.writeState(persisted);
-    }
-
-    hostUpdated() {
-        this.writeState();
+        window.addEventListener("pagehide", this.#save);
     }
 
     hostDisconnected() {
-        this.writeState();
+        window.removeEventListener("pagehide", this.#save);
+        this.#save();
+    }
+
+    hostUpdated() {
+        this.#save();
     }
 }

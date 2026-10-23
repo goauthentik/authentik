@@ -5,6 +5,7 @@ import { TemplateResult } from "lit";
 export interface SidebarItem {
     label: string;
     key: string;
+    expanded?: boolean;
     path?: string | null;
     notice?: string | TemplateResult | null;
     children?: SidebarItem[];

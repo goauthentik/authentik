@@ -10,12 +10,30 @@ import { ifPresent } from "#elements/utils/attributes";
 import { SlotController } from "@patternfly/pfe-core/controllers/slot-controller.js";
 import { kebabCase } from "change-case";
 
-import { msg, str } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 const slugify = (s: string) => kebabCase(s, { suffixCharacters: "-" });
+
+export function findParentKeys(entries: readonly SidebarItem[], key: string): string[] | null {
+    for (const entry of entries) {
+        // Recursion end-state: We're not actually looking for the key we passed in. We know that
+        // one already.
+        if (entry.key === key) {
+            return [];
+        }
+
+        const found = entry.children ? findParentKeys(entry.children, key) : null;
+
+        if (found) {
+            return [entry.key, ...found];
+        }
+    }
+
+    return null;
+}
 
 @customElement("ak-sidebar")
 export class Sidebar extends AKElement {
@@ -27,6 +45,7 @@ export class Sidebar extends AKElement {
     @property({ type: Array })
     entries: SidebarItem[] = [];
 
+    /** The {@linkcode SidebarItem.key} */
     @property({ type: String })
     current: string | null = null;
 
@@ -36,40 +55,59 @@ export class Sidebar extends AKElement {
         slots: [null, "footer"],
     });
 
+    // Optional; delete or comment out and the sidebar still works, it just doesn't remember it's
+    // settings on reload.
     protected sidebarController = new SidebarReloadController(this);
 
-    willUpdate(changed: PropertyValues<this>) {
-        if (changed.has("current")) {
-            const old = changed.get("current");
+    #scrollTarget: string | null = null;
+    #scrollBehavior: ScrollBehavior = "instant";
 
-            if (typeof old === "string" && typeof this.current === "string") {
-                this.expanded.set(old, false);
-                this.expanded.set(this.current, true);
+    #isOpen({ key, expanded }: SidebarItem) {
+        return this.expanded.get(key) ?? expanded ?? false;
+    }
+
+    #toggleExpanded(key: string, open: boolean) {
+        this.expanded.set(key, open);
+
+        if (open) {
+            this.#scrollTarget = key;
+        }
+
+        this.requestUpdate();
+    }
+
+    public override willUpdate(changed: PropertyValues<this>) {
+        super.willUpdate(changed);
+
+        if (changed.has("current") && this.current) {
+            for (const key of findParentKeys(this.entries, this.current) ?? []) {
+                this.expanded.set(key, true);
             }
+
+            this.#scrollTarget = this.current;
         }
     }
 
-    renderLevel2 = (entry: SidebarItem) => {
-        const { path, label, key, notice } = entry;
+    get scrollTarget() {
+        return this.#scrollTarget
+            ? this.renderRoot.querySelector(`[data-key="${CSS.escape(this.#scrollTarget)}"]`)
+            : null;
+    }
+
+    protected renderLink({ key, label, path, notice }: SidebarItem) {
         const current = key === this.current;
 
-        return html`<li
-            part="lever2 list-item"
-            role="presentation"
-            aria-label=${ifPresent(label)}
-            class="pf-c-nav__item"
-        >
+        return html`<li class="pf-c-nav__item" part="list-item" data-key=${key}>
             ${
                 path
                     ? html` <a
-                          part="link ${this.current ? "current" : ""}"
-                          id="sidebar-nav-link-${slugify(key ?? path ?? label)}"
-                          href="${path}"
+                          id="sidebar-nav-link-${slugify(key)}"
+                          part=${current ? "link current" : ""}
+                          href=${path}
                           class="pf-c-nav__link ${classMap({ "pf-m-current": current })}"
                           aria-current=${ifPresent(current ? "page" : undefined)}
                       >
-                          ${label}
-                          ${
+                          ${label}${
                               notice
                                   ? html`<span part="notice" class="pf-c-nav__notice"
                                         >${notice}</span
@@ -80,68 +118,70 @@ export class Sidebar extends AKElement {
                     : html`<span class="pf-c-nav__link"> ${label}</span>`
             }
         </li>`;
-    };
+    }
 
-    renderLevel1 = (entry: SidebarItem) => {
-        const { path, label, key, children } = entry;
+    protected renderItem(entry: SidebarItem): TemplateResult {
+        const { key, label, children } = entry;
 
-        if (!children || !key || children.length === 0) {
-            return nothing;
+        if (!children?.length) {
+            return this.renderLink(entry);
         }
 
-        const open = this.expanded.get(key);
+        const open = this.#isOpen(entry);
+        const id = slugify(key);
 
-        return html`
-            <li
-                part="level1 list-item list-item-expandable"
-                aria-label=${label}
-                class="pf-c-nav__item pf-m-expandable ${classMap({ "pf-m-expanded": Boolean(open) })}"
-                data-value=${ifPresent(key)}
+        return html`<li
+            class="pf-c-nav__item pf-m-expandable ${classMap({ "pf-m-expanded": open })}"
+            part="list-item list-item-expandable"
+            data-key=${key}
+        >
+            <button
+                id="sidebar-toggle-${id}"
+                type="button"
+                class="pf-c-nav__link"
+                part="button"
+                aria-expanded=${open ? "true" : "false"}
+                aria-controls="sidebar-subnav-${id}"
+                @click=${() => this.#toggleExpanded(key, !open)}
             >
-                ${path ? nothing : label}
-                <button
-                    part="button button-with-children"
-                    class="pf-c-nav__link"
-                    aria-label=${open ? msg(str`Collapse ${label}`) : msg(str`Expand ${label}`)}
-                    aria-expanded=${open ? "true" : "false"}
-                    aria-controls=${ifPresent(key)}
-                    type="button"
-                >
-                    ${path ? label : nothing}
-                    <span class="pf-c-nav__toggle">
-                        <span class="pf-c-nav__toggle-icon">
-                            <i class="fas fa-angle-right" aria-hidden="true"></i>
-                        </span>
+                ${label}
+                <span class="pf-c-nav__toggle">
+                    <span class="pf-c-nav__toggle-icon">
+                        <i class="fas fa-angle-right" aria-hidden="true"></i>
                     </span>
-                </button>
-                <div class="pf-c-nav__subnav" ?hidden=${!open}>
-                    <ul
-                        role="navigation"
-                        aria-label=${msg(str`${label} navigation`)}
-                        class="pf-c-nav__list"
-                    >
-                        ${children.map(this.renderLevel2)}
-                    </ul>
-                </div>
-            </li>
-        `;
-    };
+                </span>
+            </button>
+            <div id="sidebar-subnav-${id}" class="pf-c-nav__subnav" ?hidden=${!open}>
+                <ul class="pf-c-nav__list" aria-labelledby="sidebar-toggle-${id}">
+                    ${children.map((child) => this.renderItem(child))}
+                </ul>
+            </div>
+        </li>`;
+    }
 
     render(): TemplateResult {
         return html`<nav aria-label=${msg("Global navigation")} part="nav" class="pf-c-nav">
             <ul
-                id="global-nav"
-                ?hidden=${this.hidden}
-                role="navigation"
-                class="pf-c-nav__list ak-m-thin-scrollbar ak-m-scroll-shadows"
                 part="list"
+                class="pf-c-nav__list ak-m-thin-scrollbar ak-m-scroll-shadows"
+                ?hidden=${this.hidden}
             >
-                ${this.entries.map(this.renderLevel1)}
+                ${this.entries.map((entry) => this.renderItem(entry))}
             </ul>
             <div ?hidden=${!this.slots.hasSlotted("footer")} part="footer">
                 <slot name="footer"></slot>
             </div>
         </nav>`;
+    }
+
+    public override updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+
+        if (this.scrollTarget) {
+            this.scrollTarget.scrollIntoView({ block: "nearest", behavior: this.#scrollBehavior });
+            this.#scrollTarget = null;
+            this.#scrollBehavior = "smooth";
+        }
     }
 }
 

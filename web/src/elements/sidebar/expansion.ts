@@ -46,29 +46,3 @@ export function readState(): SidebarExpansionState {
 export function writeState(state: SidebarExpansionState): boolean {
     return getAccessor().writeJSON(state);
 }
-
-/**
- * The persisted expansion for a single key, or `null` when it has never been toggled.
- */
-export function readOne(key: string): boolean | null {
-    const expanded = readState()[key];
-
-    return typeof expanded === "boolean" ? expanded : null;
-}
-
-/**
- * Record an explicit toggle.
- */
-export function writeOne(key: string, expanded: boolean): boolean {
-    return getAccessor().writeJSON({
-        ...readState(),
-        [key]: expanded,
-    });
-}
-
-/**
- * Forget every recorded toggle.
- */
-export function clearState(): boolean {
-    return getAccessor().delete();
-}
