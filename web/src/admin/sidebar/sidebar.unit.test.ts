@@ -1,13 +1,16 @@
-import { toAdminInterface } from "#elements/router/core/interfaces";
-import { findSidebarSectionByRoute, type SidebarEntry } from "#elements/sidebar/utils";
+import { createAdminSidebarEntries } from "./constants";
+import { findSidebarSectionByRoute, resolveSidebarEntries } from "./sidebarTools";
+import { type SidebarEntry, ExtendedSidebarItem } from "./types";
 
 import { ROUTES } from "#admin/Routes";
-import { createAdminSidebarEntries, resolveSidebarEntries } from "#admin/sidebar/constants";
 
 import { describe, expect, it } from "vitest";
 
 describe("findSidebarSectionByRoute", () => {
-    const entries = createAdminSidebarEntries(true);
+    const entries = resolveSidebarEntries(createAdminSidebarEntries(true), {
+        licensed: false,
+        canEnterprise: false,
+    });
 
     it.each([
         ["outpost-view", "Outposts"],
@@ -37,24 +40,23 @@ describe("resolveSidebarEntries", () => {
         ],
     ];
 
-    const getChildren = (resolved: readonly SidebarEntry[]) => resolved[0]?.[3] ?? [];
+    const getChildren = (resolved: readonly ExtendedSidebarItem[]) => resolved[0].children ?? [];
 
     it("includes entries through when the build is enterprise and licensed", () => {
         const children = getChildren(
             resolveSidebarEntries(entries, { canEnterprise: true, licensed: true }),
         );
 
-        expect(children.map(([path]) => path)).toEqual([
-            "/events/log",
-            "/events/lifecycle-rules",
-            "/events/exports",
+        expect(children.map(({ path }) => path)).toEqual([
+            "/if/admin/events/log",
+            "/if/admin/events/lifecycle-rules",
+            "/if/admin/events/exports",
         ]);
 
-        expect(children[0]?.[2]).toEqual(["event-view"]);
+        expect(children[0]?.routes).toEqual(["event-view"]);
 
-        for (const [, , attributes] of children.slice(1)) {
-            expect(attributes).not.toHaveProperty("pathOverride");
-            expect(attributes).not.toHaveProperty("badge");
+        for (const { notice } of children.slice(1)) {
+            expect(notice).toBeUndefined();
         }
     });
 
@@ -65,7 +67,7 @@ describe("resolveSidebarEntries", () => {
                 resolveSidebarEntries(entries, { canEnterprise: false, licensed }),
             );
 
-            expect(children.map(([path]) => path)).toEqual(["/events/log"]);
+            expect(children.map(({ path }) => path)).toEqual(["/if/admin/events/log"]);
         },
     );
 
@@ -74,25 +76,24 @@ describe("resolveSidebarEntries", () => {
             resolveSidebarEntries(entries, { canEnterprise: true, licensed: false }),
         );
 
-        expect(logs).toEqual(["/events/log", "Logs", ["event-view"]]);
-
-        expect(lifecycleRules?.[0]).toBe("/events/lifecycle-rules");
-
-        expect(lifecycleRules?.[2]).toEqual({
-            enterprise: true,
-            pathOverride: toAdminInterface("/enterprise/licenses"),
-            notice: "Enterprise only",
+        expect(logs).toEqual({
+            enterprise: false,
+            key: "/events/log",
+            label: "Logs",
+            path: "/if/admin/events/log",
+            routes: ["event-view"],
         });
+
+        expect(lifecycleRules?.path).toBe("/if/admin/enterprise/licenses");
+        expect(lifecycleRules?.notice).toBe("Enterprise only");
     });
 
     it("honors readonly on entries it is given", () => {
-        resolveSidebarEntries(entries, { canEnterprise: true, licensed: false });
+        const resolved = resolveSidebarEntries(entries, { canEnterprise: true, licensed: false });
 
-        expect(getChildren(entries)[1]?.[2]).toEqual({ enterprise: true });
-
-        const children = getChildren(entries);
-
-        expect(children[1]?.[2]).not.toHaveProperty("pathOverride");
+        expect(getChildren(resolved)[1].notice).toBe("Enterprise only");
+        const children = getChildren(resolved);
+        expect(children[1]?.path).not.toBe("/if/admin/events/lifecycle-rules");
     });
 
     it("keeps enterprise-only sibling paths distinct across the admin entries", () => {
@@ -101,11 +102,10 @@ describe("resolveSidebarEntries", () => {
             licensed: false,
         });
 
-        for (const [, label, , children = []] of resolved) {
-            const paths = children.map(([path]) => path);
-
-            expect(new Set(paths).size, `${label} has duplicate paths`).toBe(paths.length);
-            expect(paths, `${label} rewrote a path`).not.toContain("/enterprise/licenses");
+        for (const { label, children = [] } of resolved) {
+            const keys = children.map(({ key }) => key);
+            expect(new Set(keys).size, `${label} has duplicate paths`).toBe(keys.length);
+            expect(keys, `${label} rewrote a path`).not.toContain("/enterprise/licenses");
         }
     });
 });
