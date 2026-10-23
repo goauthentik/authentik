@@ -7,6 +7,7 @@ from typing import Any
 from authentik.core.models import User
 from authentik.sources.ldap.models import flatten
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
+from authentik.stages.password.models import PasswordDevice
 
 
 class FreeIPA(BaseLDAPSynchronizer):
@@ -37,8 +38,7 @@ class FreeIPA(BaseLDAPSynchronizer):
                 created=created,
                 pwd_last_set=pwd_last_set,
             )
-            user.set_unusable_password()
-            user.save()
+            PasswordDevice.set_unusable_password(user)
 
     def check_nsaccountlock(self, attributes: dict[str, Any], user: User):
         """https://www.port389.org/docs/389ds/howto/howto-account-inactivation.html"""

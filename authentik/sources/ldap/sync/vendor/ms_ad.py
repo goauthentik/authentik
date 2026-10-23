@@ -7,6 +7,7 @@ from typing import Any
 
 from authentik.core.models import User
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
+from authentik.stages.password.models import PasswordDevice
 
 
 class UserAccountControl(IntFlag):
@@ -67,8 +68,7 @@ class MicrosoftActiveDirectory(BaseLDAPSynchronizer):
                 created=created,
                 pwd_last_set=pwd_last_set,
             )
-            user.set_unusable_password()
-            user.save()
+            PasswordDevice.set_unusable_password(user)
 
     def ms_check_uac(self, attributes: dict[str, Any], user: User):
         """Check userAccountControl"""

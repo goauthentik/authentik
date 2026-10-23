@@ -20,6 +20,7 @@ from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.sync.outgoing.signals import sync_outgoing_inhibit_dispatch
 from authentik.lib.utils.reflection import class_to_path
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.stages.password.models import PasswordDevice
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 PLAN_CONTEXT_LOCKDOWN_REASON = "lockdown_reason"
@@ -85,20 +86,21 @@ class AccountLockdownStageView(StageView):
 
     def _apply_lockdown_actions(self, stage: AccountLockdownStage, user: User) -> None:
         """Apply the configured account changes to the target user."""
-        if stage.deactivate_user:
-            user.is_active = False
-        if stage.set_unusable_password:
-            user.set_unusable_password()
-        if stage.deactivate_user:
-            with (
-                sync_outgoing_inhibit_dispatch(),
-                deactivation_inhibit_cleanup(
-                    sessions=not stage.delete_sessions, tokens=not stage.revoke_tokens
-                ),
-            ):
-                user.save()
+        if not stage.deactivate_user:
+            if stage.set_unusable_password:
+                PasswordDevice.set_unusable_password(user)
             return
-        user.save()
+        # Removing the password saves the user too, so it also needs the inhibitors.
+        with (
+            sync_outgoing_inhibit_dispatch(),
+            deactivation_inhibit_cleanup(
+                sessions=not stage.delete_sessions, tokens=not stage.revoke_tokens
+            ),
+        ):
+            if stage.set_unusable_password:
+                PasswordDevice.set_unusable_password(user)
+            user.is_active = False
+            user.save()
 
     def _sync_deactivated_user_to_outgoing_providers(self, user: User) -> None:
         """Synchronize a deactivated user to outgoing sync providers."""

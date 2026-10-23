@@ -45,6 +45,7 @@ from authentik.sources.ldap.tests.mock_slapd import (
     user_in_slapd_cn,
     user_in_slapd_uid,
 )
+from authentik.stages.password.models import PasswordDevice
 from authentik.tasks.models import Task
 
 LDAP_PASSWORD = generate_key()
@@ -497,8 +498,7 @@ class LDAPSyncTests(TestCase):
         connection = MagicMock(return_value=mock_freeipa_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             user = User.objects.create(username=generate_id())
-            user.set_password("test-password")
-            user.save()
+            PasswordDevice.set_password(user, "test-password")
 
             freeipa_sync = FreeIPA(self.source, Task())
             freeipa_sync.check_pwd_last_set(

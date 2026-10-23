@@ -12,6 +12,7 @@ from authentik.sources.kerberos.models import (
     Krb5ConfContext,
     UserKerberosSourceConnection,
 )
+from authentik.stages.password.models import PasswordDevice
 
 LOGGER = get_logger()
 
@@ -75,10 +76,12 @@ class KerberosBackend(InbuiltBackend):
                         source=user_source_connection.source,
                         user=user_source_connection.user,
                     )
-                    user_source_connection.user.set_password(
-                        password, sender=user_source_connection.source, request=request
+                    PasswordDevice.set_password(
+                        user_source_connection.user,
+                        password,
+                        sender=user_source_connection.source,
+                        request=request,
                     )
-                    user_source_connection.user.save()
                 return user_source_connection.user, user_source_connection.source
             # Password doesn't match, onto next source
             LOGGER.debug(

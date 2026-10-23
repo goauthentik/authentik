@@ -35,6 +35,7 @@ from authentik.lib.models import InheritanceForeignKey, SerializerModel, SimpleT
 from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.lib.utils.time import fqdn_rand
 from authentik.outposts.controllers.k8s.utils import get_namespace
+from authentik.stages.password.models import PasswordDevice
 from authentik.tasks.schedules.common import ScheduleSpec
 from authentik.tasks.schedules.models import ScheduledModel
 
@@ -387,11 +388,10 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
             if getattr(user, key) != value:
                 dirty = True
                 setattr(user, key, value)
-        if user.has_usable_password():
-            user.set_unusable_password()
-            dirty = True
         if dirty:
             user.save()
+        if user.has_usable_password():
+            PasswordDevice.set_unusable_password(user)
         if user_created:
             self.build_user_permissions(user)
         return user
