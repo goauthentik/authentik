@@ -30,6 +30,8 @@ export interface Config {
     cacheTimeout: number;
     cacheTimeoutFlows: number;
     cacheTimeoutPolicies: number;
+    cacheTimeoutBrands: number;
+    cacheTimeoutSystemSettings: number;
 }
 
 /**
@@ -65,6 +67,20 @@ export function instanceOfConfig(value: object): value is Config {
             (value as Record<string, any>)["cache_timeout_policies"] === undefined)
     )
         return false;
+    if (
+        (!("cacheTimeoutBrands" in (value as Record<string, any>)) &&
+            !("cache_timeout_brands" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["cacheTimeoutBrands"] === undefined &&
+            (value as Record<string, any>)["cache_timeout_brands"] === undefined)
+    )
+        return false;
+    if (
+        (!("cacheTimeoutSystemSettings" in (value as Record<string, any>)) &&
+            !("cache_timeout_system_settings" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["cacheTimeoutSystemSettings"] === undefined &&
+            (value as Record<string, any>)["cache_timeout_system_settings"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -82,6 +98,8 @@ export function ConfigFromJSONTyped(json: any, ignoreDiscriminator: boolean): Co
         cacheTimeout: json["cache_timeout"],
         cacheTimeoutFlows: json["cache_timeout_flows"],
         cacheTimeoutPolicies: json["cache_timeout_policies"],
+        cacheTimeoutBrands: json["cache_timeout_brands"],
+        cacheTimeoutSystemSettings: json["cache_timeout_system_settings"],
     };
 }
 
@@ -103,5 +121,7 @@ export function ConfigToJSONTyped(
         cache_timeout: value["cacheTimeout"],
         cache_timeout_flows: value["cacheTimeoutFlows"],
         cache_timeout_policies: value["cacheTimeoutPolicies"],
+        cache_timeout_brands: value["cacheTimeoutBrands"],
+        cache_timeout_system_settings: value["cacheTimeoutSystemSettings"],
     };
 }
