@@ -192,7 +192,8 @@ class DatabaseCache(BaseCache):
             )
 
     def clear(self) -> None:
-        CacheEntry.objects.truncate()
+        with self._cursor(write=True) as cursor:
+            cursor.execute("TRUNCATE django_postgres_cache_cacheentry")
 
     def keys(self, keys_pattern: str, version: int | None = None) -> list[str]:
         """Return cache keys matching a glob pattern (``*`` wildcard).
