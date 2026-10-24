@@ -15,6 +15,7 @@ from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.models import InternallyManagedMixin, SerializerModel, SimpleThroughModel
 from authentik.stages.authenticator.models import Device
+from authentik.stages.authenticator_webauthn.utils import validate_webauthn_origin
 
 UNKNOWN_DEVICE_TYPE_AAGUID = "00000000-0000-0000-0000-000000000000"
 
@@ -113,6 +114,13 @@ class AuthenticatorWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
     )
 
     max_attempts = models.PositiveIntegerField(default=0)
+
+    additional_accepted_origins = ArrayField(
+        models.TextField(validators=[validate_webauthn_origin]),
+        default=list,
+        blank=True,
+        help_text=_("Additional trusted origins for WebAuthn registration. Matched exactly."),
+    )
 
     @property
     def serializer(self) -> type[BaseSerializer]:
