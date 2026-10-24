@@ -11,9 +11,9 @@ import { legacyRedirects } from "./legacy-redirects.mjs";
 
 import { createDocusaurusConfig, DocusaurusURL } from "@goauthentik/docusaurus-config";
 import {
-    createAlgoliaConfig,
     createClassicPreset,
     createLLMSPlugin,
+    createSearchPlugin,
     extendConfig,
 } from "@goauthentik/docusaurus-theme/config";
 import { createRedirectPlugins } from "@goauthentik/docusaurus-theme/redirects/node";
@@ -81,6 +81,8 @@ export default /** @type {import("@docusaurus/types").Config} */ (
                     ],
                 }),
 
+                createSearchPlugin({ site: "integrations" }),
+
                 ...redirectPlugins,
             ],
             scripts: [
@@ -98,9 +100,6 @@ export default /** @type {import("@docusaurus/types").Config} */ (
             themes: ["@goauthentik/docusaurus-theme", "@docusaurus/theme-mermaid"],
             favicon: "https://goauthentik.io/img/icon.png",
             themeConfig: /** @type {UserThemeConfig & UserThemeConfigExtra} */ ({
-                algolia: createAlgoliaConfig({
-                    externalUrlRegex: /^(?:https?:\/\/)(?!integrations\.goauthentik.io)/.source,
-                }),
                 image: "https://goauthentik.io/img/social.png",
                 navbarReplacements: {
                     INTEGRATIONS_URL: "/",

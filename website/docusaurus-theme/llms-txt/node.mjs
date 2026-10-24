@@ -233,7 +233,7 @@ function findMatchingRoute(routesPaths, tail) {
  *
  * @returns {string}
  */
-function collapseMatchingTrailingSegment(urlPath) {
+export function collapseMatchingTrailingSegment(urlPath) {
     const segments = urlPath.split("/");
     if (segments.length >= 2) {
         const last = segments[segments.length - 1];
