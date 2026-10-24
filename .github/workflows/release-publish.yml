@@ -198,6 +198,7 @@ jobs:
       - name: Upload template
         run: |
           aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.${{ github.ref }}.yaml
+<<<<<<< HEAD
           aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.latest.yaml
   test-release:
     needs:
@@ -215,6 +216,12 @@ jobs:
           docker compose -f lifecycle/container/compose.yml up --no-start
           docker compose -f lifecycle/container/compose.yml start postgresql
           docker compose -f lifecycle/container/compose.yml run -u root server test-all
+=======
+          aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.${{ needs.metadata.outputs.tag-name }}.yaml
+          if [ "$(gh release list --json tagName,isLatest --jq '.[] | select(.tagName=="${{ needs.metadata.outputs.tag-name }}") | .isLatest')" = "true" ]; then
+            aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.latest.yaml
+          fi
+>>>>>>> 6ec9c9586 (ci: fix latest CloudFormation template not being uploaded on release (#26954))
   sentry-release:
     needs:
       - build-server
