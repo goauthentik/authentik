@@ -10,6 +10,7 @@
 
 # Generated files
 .docusaurus
+.wrangler
 .cache-loader
 cache-output.json
 

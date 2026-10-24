@@ -239,7 +239,7 @@ Moving a documentation page to a new location requires updating a `sidebar.mjs` 
 
 The search box on every documentation site is self-hosted. Each site's build reads the MDX sources of all three sites and writes a compressed search index into the site's `static/search/` directory, so a search on one site also finds pages on the others. Nothing is sent to a third party.
 
-The index is rebuilt by every production build and by every Netlify Deploy Preview, so a new or renamed page is searchable in the preview. When you run a local dev server, the index is built once when the server starts; restart the server to make a new page searchable.
+The index is rebuilt by every production build and by every Netlify Deploy Preview, so a new or renamed page is searchable in the preview. When the build environment sets `AK_DOCS_SEARCH_ENDPOINT`, the published site sends each query to that hosted endpoint instead and keeps the browser-side index as a fallback; without the variable, the site searches entirely in the browser. When you run a local dev server, the index is built once when the server starts; restart the server to make a new page searchable.
 
 To build the combined index on its own, without building a site, run the following command from the `website` directory:
 

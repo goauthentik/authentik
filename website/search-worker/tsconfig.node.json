@@ -1,0 +1,10 @@
+{
+    "extends": "@goauthentik/tsconfig/node",
+    "compilerOptions": {
+        "allowJs": true,
+        "checkJs": true,
+        "module": "esnext",
+        "moduleResolution": "bundler"
+    },
+    "include": ["scripts/**/*.ts", "test/**/*.ts"]
+}
