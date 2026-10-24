@@ -1,3 +1,5 @@
+import Styles from "./Timestamp.styles";
+
 import { formatElapsedTime } from "#common/temporal";
 
 import { AKElement } from "#elements/Base";
@@ -5,28 +7,16 @@ import { intersectionObserver } from "#elements/decorators/intersection-observer
 import { ifPresent } from "#elements/utils/attributes";
 import { dateProperty } from "#elements/utils/properties";
 
+import { msg } from "@lit/localize";
 import { html, nothing, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+/** Re-render interval when not in "per-seconds" mode */
+const ELAPSED_REFRESH_SECONDS = 60;
+
 @customElement("ak-timestamp")
 export class AKTimestamp extends AKElement {
-    /**
-     * The interval at which the timestamp updates (in milliseconds).
-     */
-    public static updateInterval = 1000 * 60;
-
-    /**
-     * A lazy-loaded media query list for detecting reduced motion preferences.
-     *
-     * @remarks
-     *   This is initialized only when needed to avoid:
-     *
-     *   - Multiple media query list instances across all timestamp elements.
-     *   - Initialization before the element is visible.
-     */
-    protected static reducedMotionMediaQuery: MediaQueryList | null = null;
-
-    #timestamp: Date | null = null;
+    static readonly styles = [Styles];
 
     @property(dateProperty)
     public get timestamp(): Date | null {
@@ -34,33 +24,43 @@ export class AKTimestamp extends AKElement {
     }
 
     public set timestamp(value: string | Date | number | null) {
-        this.#timestamp = value ? (value instanceof Date ? value : new Date(value)) : null;
+        const date = value ? (value instanceof Date ? value : new Date(value)) : null;
+
+        // An unparseable value returns an Invalid Date, which is truthy but still can't be formatted.
+        this.#timestamp = date && !Number.isNaN(date.getTime()) ? date : null;
     }
 
     @intersectionObserver()
     public visible = false;
 
-    @property({ type: Boolean })
-    public elapsed: boolean = true;
+    @property({ type: Boolean, attribute: "hide-elapsed" })
+    public hideElapsed: boolean = false;
 
-    @property({ type: Boolean, useDefault: true })
+    @property({ type: Boolean })
     public datetime: boolean = false;
 
-    @property({ type: Boolean, useDefault: true })
+    @property({ type: Boolean })
     public dateOnly: boolean = false;
 
-    @property({ type: Boolean, useDefault: true })
+    @property({ type: Boolean })
     public refresh: boolean = false;
+
+    protected static reducedMotionMediaQuery: MediaQueryList | null = null;
+
+    #timestamp: Date | null = null;
 
     #interval = -1;
     #animationFrameID = -1;
 
     public connectedCallback(): void {
         super.connectedCallback();
+        document.addEventListener("visibilitychange", this.startInterval);
     }
 
     public disconnectedCallback(): void {
         super.disconnectedCallback();
+        document.removeEventListener("visibilitychange", this.startInterval);
+        AKTimestamp.reducedMotionMediaQuery?.removeEventListener("change", this.startInterval);
         this.stopInterval();
         cancelAnimationFrame(this.#animationFrameID);
     }
@@ -96,9 +96,12 @@ export class AKTimestamp extends AKElement {
             );
         }
 
+        AKTimestamp.reducedMotionMediaQuery.addEventListener("change", this.startInterval);
+
         const moment = this.timestamp.getTime();
         const start = Date.now();
-        const { updateInterval, reducedMotionMediaQuery } = AKTimestamp;
+        const { reducedMotionMediaQuery } = AKTimestamp;
+        const updateInterval = ELAPSED_REFRESH_SECONDS * 1000;
 
         const startWithinInterval =
             start >= moment - updateInterval && start <= moment + updateInterval;
@@ -130,7 +133,7 @@ export class AKTimestamp extends AKElement {
 
     public render() {
         if (!this.timestamp || this.timestamp.getTime() === 0) {
-            return html`<span role="time" aria-label="None">-</span>`;
+            return html`<span role="time" aria-label=${msg("None")}>-</span>`;
         }
 
         const elapsed = formatElapsedTime(this.timestamp);
@@ -138,12 +141,12 @@ export class AKTimestamp extends AKElement {
         return html` <time
             datetime=${this.timestamp.toISOString()}
             aria-labelledby="timestamp-label"
-            aria-describedby=${ifPresent(this.elapsed, "elapsed")}
+            aria-describedby=${ifPresent(!this.hideElapsed, "elapsed")}
         >
             <div part="label" id="timestamp-label">
                 <slot></slot>
             </div>
-            ${this.elapsed ? html`<div part="elapsed" id="elapsed">${elapsed}</div>` : nothing}
+            ${!this.hideElapsed ? html`<div part="elapsed" id="elapsed">${elapsed}</div>` : nothing}
             ${
                 this.datetime
                     ? html`<small part="datetime" id="datetime"
