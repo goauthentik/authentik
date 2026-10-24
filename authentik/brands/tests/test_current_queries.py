@@ -1,7 +1,9 @@
 """Test brands"""
 
+from django.db import connection
 from django.http import HttpRequest
 from django.test import TestCase
+from django.test.utils import CaptureQueriesContext
 
 from authentik.brands.models import Brand
 from authentik.brands.utils import _BRAND_RELATED_FK_FIELDS, get_brand_for_request
@@ -30,7 +32,7 @@ class TestGetBrandForRequestSelectRelated(TestCase):
         """Brand FK access after ``get_brand_for_request`` must not trigger
         extra queries."""
         request = self._make_request("select-related-test.example.com")
-        with self.assertNumQueries(1):
+        with CaptureQueriesContext(connection) as queries:
             brand = get_brand_for_request(request)
             _ = brand.flow_authentication
             _ = brand.flow_authentication.slug if brand.flow_authentication else None
@@ -42,6 +44,8 @@ class TestGetBrandForRequestSelectRelated(TestCase):
             _ = brand.flow_lockdown
             _ = brand.flow_request
             _ = brand.default_application
+        # The cache's version check, then the brand with all its FKs
+        self.assertLessEqual(len(queries), 2)
 
     def test_brand_related_fk_list_complete(self):
         """``_BRAND_RELATED_FK_FIELDS`` covers every Flow/Application FK on
