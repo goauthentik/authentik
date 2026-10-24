@@ -1,10 +1,12 @@
 import "#flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";
+import { FlowExecutor } from "#flow/FlowExecutor";
 import { StageHost } from "#flow/types";
 
 import {
     AuthenticatorValidationChallenge,
     DeviceChallenge,
     DeviceClassesEnum,
+    FlowsApi,
 } from "@goauthentik/api";
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -20,6 +22,7 @@ function challengeOf(
     overrides: Partial<AuthenticatorValidationChallenge> = {},
 ): AuthenticatorValidationChallenge {
     return {
+        component: "ak-stage-authenticator-validate",
         pendingUser: "akadmin",
         pendingUserAvatar: "",
         deviceChallenges: [deviceChallenge],
@@ -58,10 +61,12 @@ function assertionOf(): PublicKeyCredential {
 const mounted: HTMLElement[] = [];
 
 let submit: ReturnType<typeof vi.fn>;
+let refresh: ReturnType<typeof vi.fn>;
 let credentialsGet: ReturnType<typeof vi.fn>;
 
 beforeEach(() => {
     submit = vi.fn().mockResolvedValue(true);
+    refresh = vi.fn().mockResolvedValue(true);
     credentialsGet = vi.fn().mockResolvedValue(assertionOf());
 
     vi.stubGlobal("navigator", {
@@ -71,6 +76,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+    vi.restoreAllMocks();
     vi.unstubAllGlobals();
 
     for (const element of mounted.splice(0)) {
@@ -81,7 +87,7 @@ afterEach(() => {
 function createStage() {
     const stage = document.createElement("ak-stage-authenticator-validate-webauthn");
 
-    stage.host = { submit } as unknown as StageHost;
+    stage.host = { submit, refresh } as unknown as StageHost;
     stage.deviceChallenge = deviceChallenge;
 
     document.body.append(stage);
@@ -140,7 +146,7 @@ describe("AuthenticatorValidateStageWebAuthn", () => {
         expect(submit).not.toHaveBeenCalled();
     });
 
-    it("starts a single new ceremony per retry click", async () => {
+    it("waits for a fresh server challenge before starting a single retry ceremony", async () => {
         credentialsGet.mockRejectedValue(new DOMException("denied", "NotAllowedError"));
 
         const stage = createStage();
@@ -151,11 +157,25 @@ describe("AuthenticatorValidateStageWebAuthn", () => {
 
         credentialsGet.mockReturnValue(new Promise(() => {}));
 
-        retryButton(stage)!.click();
+        const retry = retryButton(stage)!;
+        retry.click();
+        retry.click();
         await stage.updateComplete;
-        retryButton(stage)?.click();
+
+        expect(refresh).toHaveBeenCalledOnce();
+        expect(credentialsGet).toHaveBeenCalledOnce();
+
+        stage.deviceChallenge = {
+            ...deviceChallenge,
+            challenge: { challenge: "AQ==" },
+        };
+
+        stage.challenge = challengeOf({ deviceChallenges: [stage.deviceChallenge] });
+        await stage.updateComplete;
 
         expect(credentialsGet).toHaveBeenCalledTimes(2);
+
+        expect(credentialsGet.mock.calls[1][0].publicKey.challenge).toEqual(Uint8Array.from([1]));
     });
 
     it("renders a response error instead of re-running the ceremony", async () => {
@@ -171,6 +191,95 @@ describe("AuthenticatorValidateStageWebAuthn", () => {
         expect(retryButton(stage)).toBeDefined();
         expect(credentialsGet).not.toHaveBeenCalled();
     });
+
+    it("allows retrying a failed challenge refresh without reusing the old challenge", async () => {
+        credentialsGet.mockRejectedValue(new DOMException("denied", "NotAllowedError"));
+        refresh.mockRejectedValueOnce(new Error("Network unavailable"));
+
+        const stage = createStage();
+        stage.challenge = challengeOf();
+        await vi.waitFor(() => expect(retryButton(stage)).toBeDefined());
+
+        retryButton(stage)!.click();
+
+        await vi.waitFor(() =>
+            expect(stage.shadowRoot?.textContent).toContain("Network unavailable"),
+        );
+
+        expect(spinning(stage)).toBe(false);
+        expect(credentialsGet).toHaveBeenCalledOnce();
+        retryButton(stage)!.click();
+        expect(refresh).toHaveBeenCalledTimes(2);
+    });
+
+    it.each(["cancellation", "server rejection"])(
+        "refreshes the flow and uses the new device challenge after %s",
+        async (failure) => {
+            const initialChallenge = challengeOf();
+
+            const freshChallenge = challengeOf({
+                deviceChallenges: [{ ...deviceChallenge, challenge: { challenge: "AQ==" } }],
+            });
+
+            const get = vi
+                .spyOn(FlowsApi.prototype, "flowsExecutorGet")
+                .mockResolvedValueOnce(initialChallenge)
+                .mockResolvedValueOnce(freshChallenge);
+
+            const solve = vi.spyOn(FlowsApi.prototype, "flowsExecutorSolve").mockResolvedValue(
+                challengeOf({
+                    responseErrors: {
+                        webauthn: [{ code: "invalid", string: "Invalid assertion" }],
+                    },
+                }),
+            );
+
+            if (failure === "cancellation") {
+                credentialsGet.mockRejectedValueOnce(new DOMException("denied", "NotAllowedError"));
+            }
+
+            const executor = new FlowExecutor();
+            executor.flowSlug = "test-webauthn-retry";
+            document.body.append(executor);
+            mounted.push(executor);
+
+            const currentStage = () =>
+                executor.shadowRoot
+                    ?.querySelector("ak-stage-authenticator-validate")
+                    ?.shadowRoot?.querySelector("ak-stage-authenticator-validate-webauthn");
+
+            await vi.waitFor(() =>
+                expect(currentStage() && retryButton(currentStage()!)).toBeDefined(),
+            );
+
+            expect(credentialsGet).toHaveBeenCalledOnce();
+            credentialsGet.mockReturnValue(new Promise(() => {}));
+
+            const selectionRequests = () =>
+                solve.mock.calls.filter(
+                    ([request]) => "selectedChallenge" in request.flowChallengeResponseRequest,
+                );
+
+            expect(selectionRequests()).toHaveLength(1);
+
+            retryButton(currentStage()!)!.click();
+            await vi.waitFor(() => expect(credentialsGet).toHaveBeenCalledTimes(2));
+
+            expect(get).toHaveBeenCalledTimes(2);
+
+            expect(get).toHaveBeenLastCalledWith({
+                flowSlug: "test-webauthn-retry",
+                query: window.location.search.substring(1),
+            });
+
+            expect(credentialsGet.mock.calls[1][0].publicKey.challenge).toEqual(
+                Uint8Array.from([1]),
+            );
+
+            expect(selectionRequests()).toHaveLength(1);
+            expect(retryButton(currentStage()!)).toBeUndefined();
+        },
+    );
 
     it("falls back to a generic message for an empty response error", async () => {
         const stage = createStage();

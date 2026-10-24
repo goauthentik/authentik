@@ -200,7 +200,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         } satisfies FlowErrorChallenge as ChallengeTypes;
     }
 
-    protected refresh = async () => {
+    public refresh = async () => {
         if (!this.flowSlug) {
             this.#logger.debug("Skipping refresh, no flow slug provided");
 
