@@ -3,6 +3,8 @@
 from typing import TYPE_CHECKING
 from urllib.parse import urlencode
 
+from cryptography.exceptions import InternalError, UnsupportedAlgorithm
+from cryptography.hazmat.backends.openssl.backend import backend
 from django.db import transaction
 from django.http import HttpRequest
 from django.http.response import Http404
@@ -16,7 +18,12 @@ from webauthn.authentication.generate_authentication_options import generate_aut
 from webauthn.authentication.verify_authentication_response import verify_authentication_response
 from webauthn.helpers import parse_authentication_credential_json
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
-from webauthn.helpers.exceptions import InvalidAuthenticationResponse, InvalidJSONStructure
+from webauthn.helpers.exceptions import (
+    InvalidJSONStructure,
+    UnsupportedPublicKey,
+    WebAuthnException,
+)
+from webauthn.helpers.exceptions import UnsupportedAlgorithm as WebAuthnUnsupportedAlgorithm
 from webauthn.helpers.options_to_json_dict import options_to_json_dict
 from webauthn.helpers.structs import PublicKeyCredentialType, UserVerificationRequirement
 
@@ -36,6 +43,7 @@ from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, Duo
 from authentik.stages.authenticator_email.models import EmailDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
+from authentik.stages.authenticator_webauthn.algorithms import credential_key_type
 from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnDevice
 from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
@@ -264,8 +272,41 @@ def validate_challenge_webauthn(
             credential_current_sign_count=device.sign_count,
             require_user_verification=stage.webauthn_user_verification == UserVerification.REQUIRED,
         )
-    except InvalidAuthenticationResponse as exc:
-        LOGGER.warning("Assertion failed", exc=exc)
+    except (WebAuthnException, ValueError, InternalError, UnsupportedAlgorithm) as exc:
+        error = __("Assertion failed")
+        event_context = {}
+        if isinstance(
+            exc,
+            ValueError
+            | InternalError
+            | UnsupportedAlgorithm
+            | UnsupportedPublicKey
+            | WebAuthnUnsupportedAlgorithm,
+        ):
+            # TODO: Remove when OpenSSL/FIPS is updated
+            # The credential's public key could not be loaded or used because its algorithm has
+            # no implementation in the current OpenSSL configuration, for example an Ed25519 or
+            # ML-DSA credential under the validated FIPS provider. cryptography reports a missing
+            # Ed25519 implementation as a key-length ValueError; py_webauthn wraps the ML-DSA
+            # failure in UnsupportedPublicKey.
+            key_type = credential_key_type(base64url_to_bytes(device.public_key))
+            fips_enabled = backend._fips_enabled
+            if fips_enabled:
+                detail = f"Cannot log in with {key_type} security key while FIPS mode is enabled"
+            else:
+                detail = (
+                    f"Cannot log in with {key_type} security key: the key type is not available "
+                    "in the current OpenSSL configuration"
+                )
+            LOGGER.warning(
+                detail, key_type=key_type, fips_enabled=fips_enabled, device=device, exc=exc
+            )
+            # The user gets a generic error; the details are for administrators in the log and
+            # event. Event context keys containing "key" are masked, hence "algorithm".
+            error = __("Invalid security key. Please re-register or contact an administrator.")
+            event_context = {"message": detail, "algorithm": key_type, "fips_enabled": fips_enabled}
+        else:
+            LOGGER.warning("Assertion failed", exc=exc)
         login_failed.send(
             sender=__name__,
             credentials={"username": user.username},
@@ -277,9 +318,10 @@ def validate_challenge_webauthn(
                     "device_class": DeviceClasses.WEBAUTHN.value,
                     "device_type": device.device_type,
                 },
+                **event_context,
             },
         )
-        raise ValidationError("Assertion failed") from exc
+        raise ValidationError(error) from exc
 
     with audit_ignore():
         device.set_sign_count(authentication_verification.new_sign_count)
