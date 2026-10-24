@@ -1,0 +1,30 @@
+---
+# -- Provide a name in place of `authentik`. Prefer using global.nameOverride if possible
+nameOverride: ""
+# -- String to fully override `"authentik.fullname"`. Prefer using global.fullnameOverride if possible
+fullnameOverride: ""
+# -- Override the Kubernetes version, which is used to evaluate certain manifests
+kubeVersionOverride: ""
+
+## Globally shared configuration for authentik components.
+global:
+  # -- Provide a name in place of `authentik`
+  nameOverride: ""
+  # -- String to fully override `"authentik.fullname"`
+  fullnameOverride: ""
+  # -- A custom namespace to override the default namespace for the deployed resources.
+  namespaceOverride: ""
+  # -- Common labels for all resources.
+  additionalLabels: {}
+    # app: authentik
+
+# -- Annotations to apply to all resources
+annotations: {}
+
+serviceAccountSecret:
+  # -- Create a secret with the service account credentials
+  enabled: true
+
+clusterRole:
+  # -- Create a clusterole in addition to a namespaced role.
+  enabled: true

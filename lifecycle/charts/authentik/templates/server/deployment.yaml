@@ -1,0 +1,237 @@
+{{- if .Values.server.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "authentik.server.fullname" . }}
+  namespace: {{ include "authentik.namespace" . | quote }}
+  labels:
+    {{- include "authentik.labels" (dict "context" . "component" .Values.server.name) | nindent 4 }}
+  {{- with (mergeOverwrite (deepCopy .Values.global.deploymentAnnotations) .Values.server.deploymentAnnotations) }}
+  annotations:
+    {{- range $key, $value := . }}
+    {{ $key}}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  {{- with include "authentik.strategy" (mergeOverwrite (deepCopy .Values.global.deploymentStrategy) .Values.server.deploymentStrategy) }}
+  strategy:
+    {{- trim . | nindent 4 }}
+  {{- end }}
+  {{- if not .Values.server.autoscaling.enabled }}
+  replicas: {{ .Values.server.replicas }}
+  {{- end }}
+  revisionHistoryLimit: {{ .Values.global.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      {{- include "authentik.selectorLabels" (dict "context" . "component" .Values.server.name) | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "authentik.labels" (dict "context" . "component" .Values.server.name) | nindent 8 }}
+        {{- with (mergeOverwrite (deepCopy .Values.global.podLabels) .Values.server.podLabels) }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- with (mergeOverwrite (deepCopy .Values.global.podAnnotations) .Values.server.podAnnotations) }}
+        {{- range $key, $value := . }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
+    spec:
+      {{- with .Values.server.imagePullSecrets | default .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.server.serviceAccountName }}
+      serviceAccountName: {{ . }}
+      {{- if kindIs "bool" $.Values.server.automountServiceAccountToken }}
+      automountServiceAccountToken: {{ $.Values.server.automountServiceAccountToken }}
+      {{- end }}
+      {{- end }}
+      {{- with .Values.global.hostAliases }}
+      hostAliases:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with (mergeOverwrite (deepCopy .Values.global.securityContext) .Values.server.securityContext) }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.server.priorityClassName | default .Values.global.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
+      {{- if .Values.server.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.server.terminationGracePeriodSeconds }}
+      {{- end }}
+      {{- with .Values.server.initContainers }}
+      initContainers:
+        {{- tpl (toYaml . ) $ | nindent 6 }}
+      {{- end }}
+      containers:
+        - name: {{ .Values.server.name }}
+          image: {{ default .Values.global.image.repository .Values.server.image.repository }}:{{ default (include "authentik.defaultTag" .) .Values.server.image.tag }}{{- if (default .Values.global.image.digest .Values.server.image.digest) -}}@{{ default .Values.global.image.digest .Values.server.image.digest }}{{- end }}
+          imagePullPolicy: {{ default .Values.global.image.pullPolicy .Values.server.image.pullPolicy }}
+          args:
+            - server
+          env:
+            {{- with (concat .Values.global.env .Values.server.env) }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+          envFrom:
+            {{- if or .Values.authentik.enabled .Values.authentik.existingSecret.secretName }}
+            - secretRef:
+                name: {{ template "authentik.secret.name" . }}
+            {{- end }}
+            {{- with (concat .Values.global.envFrom .Values.server.envFrom) }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- if or .Values.geoip.enabled .Values.global.volumeMounts .Values.server.volumeMounts }}
+          volumeMounts:
+            {{- with .Values.global.volumeMounts }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- with .Values.server.volumeMounts }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- if .Values.geoip.enabled }}
+            - name: geoip-db
+              mountPath: /geoip
+            {{- end }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.server.containerPorts.http }}
+              protocol: TCP
+            - name: https
+              containerPort: {{ .Values.server.containerPorts.https }}
+              protocol: TCP
+            - name: metrics
+              containerPort: {{ .Values.server.containerPorts.metrics }}
+              protocol: TCP
+          {{- with .Values.server.livenessProbe }}
+          livenessProbe:
+            {{ tpl (toYaml .) $ | nindent 12 }}
+          {{- end }}
+          {{- with .Values.server.readinessProbe }}
+          readinessProbe:
+            {{ tpl (toYaml .) $ | nindent 12 }}
+          {{- end }}
+          {{- with .Values.server.startupProbe }}
+          startupProbe:
+            {{ tpl (toYaml .) $ | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.server.resources | nindent 12 }}
+          {{- with .Values.server.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.server.lifecycle }}
+          lifecycle:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- if .Values.geoip.enabled }}
+        - name: geoip
+          image: {{ .Values.geoip.image.repository }}:{{ .Values.geoip.image.tag }}{{- if .Values.geoip.image.digest -}}@{{ .Values.geoip.image.digest }}{{- end }}
+          imagePullPolicy: {{ .Values.geoip.image.pullPolicy }}
+          env:
+            {{- with .Values.geoip.env }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+            - name: GEOIPUPDATE_FREQUENCY
+              value: {{ .Values.geoip.updateInterval | quote }}
+            - name: GEOIPUPDATE_PRESERVE_FILE_TIMES
+              value: "1"
+            {{- if not .Values.geoip.existingSecret.secretName }}
+            - name: GEOIPUPDATE_ACCOUNT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "authentik.fullname" . }}
+                  key: GEOIPUPDATE_ACCOUNT_ID
+            - name: GEOIPUPDATE_LICENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "authentik.fullname" . }}
+                  key: GEOIPUPDATE_LICENSE_KEY
+            {{- else }}
+            - name: GEOIPUPDATE_ACCOUNT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.geoip.existingSecret.secretName }}
+                  key: {{ .Values.geoip.existingSecret.accountId }}
+            - name: GEOIPUPDATE_LICENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.geoip.existingSecret.secretName }}
+                  key: {{ .Values.geoip.existingSecret.licenseKey }}
+            {{- end }}
+            - name: GEOIPUPDATE_EDITION_IDS
+              value: {{ required "geoip edition id required" .Values.geoip.editionIds | quote }}
+          {{- with .Values.geoip.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            {{- with .Values.geoip.volumeMounts }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+            - name: geoip-db
+              mountPath: /usr/share/GeoIP
+          resources:
+            {{- toYaml .Values.geoip.resources | nindent 12 }}
+          {{- with .Values.geoip.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- end }}
+        {{- with .Values.server.extraContainers }}
+          {{- tpl (toYaml . ) $ | nindent 8 }}
+        {{- end }}
+      {{- with include "authentik.affinity" (dict "context" . "component" .Values.server) }}
+      affinity:
+        {{- trim . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.server.nodeSelector | default .Values.global.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.server.tolerations | default .Values.global.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.server.topologySpreadConstraints | default .Values.global.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- range $constraint := . }}
+      - {{ toYaml $constraint | nindent 8 | trim }}
+        {{- if not $constraint.labelSelector }}
+        labelSelector:
+          matchLabels:
+            {{- include "authentik.selectorLabels" (dict "context" $ "component" $.Values.server.name) | nindent 12 }}
+        {{- end }}
+        {{- end }}
+      {{- end }}
+      {{- if or .Values.geoip.enabled .Values.global.volumes .Values.server.volumes }}
+      volumes:
+      {{- with .Values.global.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.server.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.geoip.enabled }}
+        - name: geoip-db
+          emptyDir: {}
+      {{- end }}
+      {{- end }}
+      enableServiceLinks: true
+      {{- if .Values.server.hostNetwork }}
+      hostNetwork: {{ .Values.server.hostNetwork }}
+      {{- end }}
+      {{- with .Values.server.dnsConfig }}
+      dnsConfig:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.server.dnsPolicy }}
+      dnsPolicy: {{ .Values.server.dnsPolicy }}
+      {{- end }}
+{{- end }}

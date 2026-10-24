@@ -16,6 +16,7 @@
         "redhat.vscode-yaml",
         "rust-lang.rust-analyzer",
         "Tobermory.es6-string-html",
-        "unifiedjs.vscode-mdx"
+        "unifiedjs.vscode-mdx",
+        "Tim-Koehler.helm-intellisense"
     ]
 }

@@ -1,0 +1,71 @@
+{{- if .Values.server.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "authentik.server.fullname" . }}
+  namespace: {{ include "authentik.namespace" . | quote }}
+  labels:
+    {{- include "authentik.labels" (dict "context" . "component" .Values.server.name) | nindent 4 }}
+    {{- with .Values.server.service.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.server.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.server.service.type }}
+  ports:
+    - name: {{ .Values.server.service.servicePortHttpName }}
+      protocol: TCP
+      port: {{ .Values.server.service.servicePortHttp }}
+      targetPort: {{ .Values.server.containerPorts.http }}
+      {{- if eq .Values.server.service.type "NodePort" }}
+      nodePort: {{ .Values.server.service.nodePortHttp }}
+      {{- end }}
+      {{- with .Values.server.service.servicePortHttpAppProtocol }}
+      appProtocol: {{ . }}
+      {{- end }}
+    - name: {{ .Values.server.service.servicePortHttpsName }}
+      protocol: TCP
+      port: {{ .Values.server.service.servicePortHttps }}
+      targetPort: {{ .Values.server.containerPorts.https }}
+      {{- if eq .Values.server.service.type "NodePort" }}
+      nodePort: {{ .Values.server.service.nodePortHttps }}
+      {{- end }}
+      {{- with .Values.server.service.servicePortHttpsAppProtocol }}
+      appProtocol: {{ . }}
+      {{- end }}
+  selector:
+    {{- include "authentik.selectorLabels" (dict "context" . "component" .Values.server.name) | nindent 4 }}
+  {{- if eq .Values.server.service.type "LoadBalancer" }}
+  {{- if .Values.server.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.server.service.loadBalancerIP | quote }}
+  {{- end }}
+  {{- if .Values.server.service.externalIPs }}
+  externalIPs: {{ .Values.server.service.externalIPs }}
+  {{- end }}
+  {{- if .Values.server.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{ toYaml .Values.server.service.loadBalancerSourceRanges | indent 4 }}
+  {{- end }}
+  {{- end -}}
+  {{- if eq .Values.server.service.type "ClusterIP" }}
+  {{- if .Values.server.service.clusterIP }}
+  clusterIP: {{ .Values.server.service.clusterIP | quote }}
+  {{- end }}
+  {{- end -}}
+  {{- with .Values.server.service.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ . }}
+  {{- end }}
+  {{- with .Values.server.service.sessionAffinity }}
+  sessionAffinity: {{ . }}
+  {{- end }}
+  {{- with .Values.server.service.sessionAffinityConfig }}
+  sessionAffinityConfig:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.server.service.publishNotReadyAddresses }}
+  publishNotReadyAddresses: {{ . }}
+  {{- end }}
+{{- end }}

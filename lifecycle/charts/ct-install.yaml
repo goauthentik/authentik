@@ -1,0 +1,13 @@
+---
+remote: origin
+target-branch: main
+chart-dirs:
+  - charts
+chart-repos:
+  - authentik=https://charts.goauthentik.io
+helm-extra-args: --timeout 600s
+check-version-increment: false
+validate-maintainers: false
+validate-yaml: true
+exclude-deprecated: true
+excluded-charts: []

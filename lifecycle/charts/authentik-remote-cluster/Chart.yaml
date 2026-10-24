@@ -1,0 +1,40 @@
+apiVersion: v2
+version: 2.1.0
+appVersion: 2025.4.0
+name: authentik-remote-cluster
+description: RBAC required for a remote cluster to be connected to authentik.
+type: application
+home: https://goauthentik.io
+sources:
+  - https://goauthentik.io/docs/
+  - https://github.com/goauthentik/authentik
+keywords:
+  - authentication
+  - directory
+  - identity
+  - idp
+  - ldap
+  - oauth
+  - oidc
+  - proxy
+  - saml
+  - scim
+  - single-sign-on
+  - sp
+  - sso
+icon: https://goauthentik.io/img/icon.png
+maintainers:
+  - name: authentik Team
+    email: hello@goauthentik.io
+    url: https://goauthentik.io
+annotations:
+  artifacthub.io/license: MIT
+  artifacthub.io/links: |
+    - name: Github
+      url: https://github.com/goauthentik/authentik
+    - name: Docs
+      url: https://goauthentik.io/docs/
+  artifacthub.io/maintainers: |
+    - name: authentik Team
+      email: hello@goauthentik.io
+      url: https://goauthentik.io
