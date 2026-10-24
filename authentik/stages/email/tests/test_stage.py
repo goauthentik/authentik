@@ -262,6 +262,31 @@ class TestEmailStage(APIFlowTestCase):
             self.assertEqual(response.status_code, 200)
             self.assertStageResponse(response, component="ak-stage-access-denied")
 
+    @patch(
+        "authentik.stages.email.models.EmailStage.backend_class",
+        PropertyMock(return_value=EmailBackend),
+    )
+    def test_token_session_lost(self):
+        """Test submitting the email link prompt without the session that rendered it"""
+        self.test_pending_user()
+        token: FlowToken = FlowToken.objects.get(user=self.user)
+        url = reverse(
+            "authentik_api:flow-executor",
+            kwargs={"flow_slug": self.flow.slug},
+        )
+        url += f"?query={urlencode({QS_KEY_TOKEN: token.key})}"
+
+        response = self.client.get(url)
+        self.assertStageResponse(response, self.flow, component="ak-stage-consent")
+        consent_token = self.get_flow_plan().context[PLAN_CONTEXT_CONSENT_TOKEN]
+
+        # Drop the session, like a browser that blocks the session cookie
+        self.client.cookies.clear()
+        response = self.client.post(url, data={"token": consent_token})
+        self.assertStageResponse(response, component="ak-stage-access-denied")
+        # The link was not used up and can be opened again
+        self.assertTrue(FlowToken.objects.filter(pk=token.pk).exists())
+
     def test_url_no_params(self):
         """Test generation of the URL in the EMail"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
