@@ -38,7 +38,8 @@ import {
 } from "./UserMatchingModeEnum.js";
 
 /**
- * SAMLSource Serializer
+ * SAMLSource Serializer. When a metadata URL is given, the IdP settings are filled in
+ * from the metadata and the SSO URL does not have to be provided.
  *
  * @export
  * @interface PatchedSAMLSourceRequest
@@ -87,6 +88,11 @@ export interface PatchedSAMLSourceRequest {
      * Also known as Entity ID. Defaults to the Metadata URL.
      */
     issuerOverride?: string;
+    /**
+     * URL of the Identity Provider's metadata. When set, the source's settings are periodically
+     * updated from this metadata.
+     */
+    metadataUrl?: string;
     /**
      * URL that the initial Login request is sent to.
      */
@@ -194,6 +200,7 @@ export function PatchedSAMLSourceRequestFromJSONTyped(
         preAuthenticationFlow:
             json["pre_authentication_flow"] == null ? undefined : json["pre_authentication_flow"],
         issuerOverride: json["issuer_override"] == null ? undefined : json["issuer_override"],
+        metadataUrl: json["metadata_url"] == null ? undefined : json["metadata_url"],
         ssoUrl: json["sso_url"] == null ? undefined : json["sso_url"],
         sloUrl:
             json["slo_url"] === undefined
@@ -275,6 +282,7 @@ export function PatchedSAMLSourceRequestToJSONTyped(
         group_matching_mode: GroupMatchingModeEnumToJSON(value["groupMatchingMode"]),
         pre_authentication_flow: value["preAuthenticationFlow"],
         issuer_override: value["issuerOverride"],
+        metadata_url: value["metadataUrl"],
         sso_url: value["ssoUrl"],
         slo_url: value["sloUrl"],
         allow_idp_initiated: value["allowIdpInitiated"],

@@ -1128,6 +1128,7 @@ export interface SourcesSamlListRequest {
     forceAuthn?: boolean;
     issuerOverride?: string;
     managed?: string;
+    metadataUrl?: string;
     name?: string;
     nameIdPolicy?: SAMLNameIDPolicyEnum;
     /**
@@ -8306,6 +8307,10 @@ export class SourcesApi extends runtime.BaseAPI {
 
         if (requestParameters["managed"] != null) {
             queryParameters["managed"] = requestParameters["managed"];
+        }
+
+        if (requestParameters["metadataUrl"] != null) {
+            queryParameters["metadata_url"] = requestParameters["metadataUrl"];
         }
 
         if (requestParameters["name"] != null) {

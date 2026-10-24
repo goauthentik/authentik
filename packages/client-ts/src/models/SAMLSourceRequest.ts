@@ -38,7 +38,8 @@ import {
 } from "./UserMatchingModeEnum.js";
 
 /**
- * SAMLSource Serializer
+ * SAMLSource Serializer. When a metadata URL is given, the IdP settings are filled in
+ * from the metadata and the SSO URL does not have to be provided.
  *
  * @export
  * @interface SAMLSourceRequest
@@ -88,9 +89,14 @@ export interface SAMLSourceRequest {
      */
     issuerOverride?: string;
     /**
+     * URL of the Identity Provider's metadata. When set, the source's settings are periodically
+     * updated from this metadata.
+     */
+    metadataUrl?: string;
+    /**
      * URL that the initial Login request is sent to.
      */
-    ssoUrl: string;
+    ssoUrl?: string;
     /**
      * Optional URL if your IDP supports Single-Logout.
      */
@@ -148,13 +154,6 @@ export function instanceOfSAMLSourceRequest(value: object): value is SAMLSourceR
             (value as Record<string, any>)["pre_authentication_flow"] === undefined)
     )
         return false;
-    if (
-        (!("ssoUrl" in (value as Record<string, any>)) &&
-            !("sso_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["ssoUrl"] === undefined &&
-            (value as Record<string, any>)["sso_url"] === undefined)
-    )
-        return false;
     return true;
 }
 
@@ -207,7 +206,8 @@ export function SAMLSourceRequestFromJSONTyped(
                 : GroupMatchingModeEnumFromJSON(json["group_matching_mode"]),
         preAuthenticationFlow: json["pre_authentication_flow"],
         issuerOverride: json["issuer_override"] == null ? undefined : json["issuer_override"],
-        ssoUrl: json["sso_url"],
+        metadataUrl: json["metadata_url"] == null ? undefined : json["metadata_url"],
+        ssoUrl: json["sso_url"] == null ? undefined : json["sso_url"],
         sloUrl:
             json["slo_url"] === undefined
                 ? undefined
@@ -288,6 +288,7 @@ export function SAMLSourceRequestToJSONTyped(
         group_matching_mode: GroupMatchingModeEnumToJSON(value["groupMatchingMode"]),
         pre_authentication_flow: value["preAuthenticationFlow"],
         issuer_override: value["issuerOverride"],
+        metadata_url: value["metadataUrl"],
         sso_url: value["ssoUrl"],
         slo_url: value["sloUrl"],
         allow_idp_initiated: value["allowIdpInitiated"],
