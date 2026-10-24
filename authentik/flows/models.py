@@ -21,7 +21,12 @@ from authentik.core.models import Token
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.challenge import FlowLayout
 from authentik.lib.config import CONFIG
-from authentik.lib.models import InheritanceForeignKey, InternallyManagedMixin, SerializerModel
+from authentik.lib.models import (
+    CreatedUpdatedModel,
+    InheritanceForeignKey,
+    InternallyManagedMixin,
+    SerializerModel,
+)
 from authentik.lib.utils.reflection import class_to_path
 from authentik.policies.models import PolicyBindingModel
 
@@ -135,7 +140,7 @@ def in_memory_stage(view: type[StageView], **kwargs) -> Stage:
     return stage
 
 
-class Flow(SerializerModel, PolicyBindingModel):
+class Flow(CreatedUpdatedModel, SerializerModel, PolicyBindingModel):
     """Flow describes how a series of Stages should be executed to authenticate/enroll/recover
     a user. Additionally, policies can be applied, to specify which users
     have access to this flow."""

@@ -12,9 +12,11 @@ from authentik import authentik_full_version
 from authentik.admin.models import SystemSettings
 from authentik.admin.utils import get_system_settings
 from authentik.brands.models import _BRAND_RELATED_FK_FIELDS, SESSION_KEY_BRAND_SAFE_MODE, Brand
+from authentik.core.models import Application
+from authentik.flows.models import Flow
 from authentik.lib.config import CONFIG
 from authentik.lib.tracing import active_tracer
-from authentik.root.cache import in_memory_cache
+from authentik.root.cache import in_memory_cache, models_version
 
 _q_default = Q(default=True)
 DEFAULT_BRAND = Brand(domain="fallback")
@@ -30,7 +32,10 @@ def session_safe_mode(request: HttpRequest) -> bool:
 
 
 @in_memory_cache(
-    key=lambda request: request.get_host(), timeout=CONFIG.get_int("cache.timeout_brands", 30)
+    key=lambda request: request.get_host(),
+    # Cached brands carry their flows and default application (see _BRAND_RELATED_FK_FIELDS)
+    version=lambda: models_version(Brand, Flow, Application),
+    timeout=CONFIG.get_int("cache.timeout_brands", 30),
 )
 def get_brand_for_request(request: HttpRequest) -> Brand:
     """Get brand object for current request"""

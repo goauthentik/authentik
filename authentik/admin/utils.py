@@ -2,10 +2,14 @@
 
 from authentik.admin.models import SystemSettings
 from authentik.lib.config import CONFIG
-from authentik.root.cache import in_memory_cache
+from authentik.root.cache import in_memory_cache, models_version
 
 
-@in_memory_cache(key=lambda: None, timeout=CONFIG.get_int("cache.timeout_system_settings", 30))
+@in_memory_cache(
+    key=lambda: None,
+    version=lambda: models_version(SystemSettings),
+    timeout=CONFIG.get_int("cache.timeout_system_settings", 30),
+)
 def get_system_settings() -> SystemSettings:
     """Get the system settings. The returned object is shared, don't mutate it."""
     return SystemSettings.objects.get(pk=True)

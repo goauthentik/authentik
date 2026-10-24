@@ -2,10 +2,12 @@
 
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import IntegrityError, models
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.lib.models import (
+    CreatedUpdatedModel,
     DomainlessURLValidator,
     InternallyManagedMixin,
     SerializerModel,
@@ -23,12 +25,14 @@ class SystemSettingsQuerySet(models.QuerySet):
         # Queryset updates skip post_save, so drop the cached settings here too
         from authentik.admin.utils import get_system_settings
 
+        # and auto_now, which other processes' caches rely on to notice the change
+        kwargs.setdefault("last_updated", now())
         rows = super().update(**kwargs)
         get_system_settings.cache_clear()
         return rows
 
 
-class SystemSettings(InternallyManagedMixin, SerializerModel):
+class SystemSettings(CreatedUpdatedModel, InternallyManagedMixin, SerializerModel):
     """Global settings for this authentik instance"""
 
     id = models.BooleanField(primary_key=True, default=True)

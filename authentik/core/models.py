@@ -749,7 +749,7 @@ class ApplicationQuerySet(QuerySet):
         return qs
 
 
-class Application(RequestableModel, SerializerModel, PolicyBindingModel):
+class Application(CreatedUpdatedModel, RequestableModel, SerializerModel, PolicyBindingModel):
     """Every Application which uses authentik for authentication/identification/authorization
     needs an Application record. Other authentication types can subclass this Model to
     add custom fields and other properties"""

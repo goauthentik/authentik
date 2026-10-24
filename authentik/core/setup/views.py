@@ -6,6 +6,7 @@ from django.db import transaction
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.utils.timezone import now
 from django.views import View
 from structlog.stdlib import get_logger
 
@@ -89,6 +90,8 @@ class PostSetupStageView(StageView):
             ).update(enabled=False)
             # Make flow inaccessible
             Flow.objects.filter(slug="initial-setup").update(
-                authentication=FlowAuthenticationRequirement.REQUIRE_SUPERUSER
+                authentication=FlowAuthenticationRequirement.REQUIRE_SUPERUSER,
+                # Queryset updates skip auto_now, which cached brands rely on
+                last_updated=now(),
             )
         return self.executor.stage_ok()

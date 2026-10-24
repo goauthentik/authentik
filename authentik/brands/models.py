@@ -13,7 +13,7 @@ from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.usage import FileUsage
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
-from authentik.lib.models import SerializerModel, SimpleThroughModel
+from authentik.lib.models import CreatedUpdatedModel, SerializerModel, SimpleThroughModel
 
 LOGGER = get_logger()
 
@@ -37,7 +37,7 @@ _BRAND_RELATED_FK_FIELDS = (
 )
 
 
-class Brand(SerializerModel):
+class Brand(CreatedUpdatedModel, SerializerModel):
     """Single brand"""
 
     brand_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)

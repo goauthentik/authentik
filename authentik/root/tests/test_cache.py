@@ -4,16 +4,17 @@ from unittest.mock import patch
 
 from django.test import TestCase
 
-from authentik.root.cache import in_memory_cache
+from authentik.admin.models import SystemSettings
+from authentik.root.cache import in_memory_cache, models_version
 
 
 class TestInMemoryCache(TestCase):
-    def test_stale_while_revalidate(self):
-        """Fresh values are cached, stale values are served while refreshed in the background"""
+    def test_version_check(self):
+        """Fresh values are cached, expired ones are only refetched when the version changed"""
         calls = []
-        cache = in_memory_cache(key=lambda x: x, timeout=10)
+        version = [1]
 
-        @cache
+        @in_memory_cache(key=lambda x: x, version=lambda: version[0], timeout=10)
         def counter(x):
             calls.append(x)
             return len(calls)
@@ -22,12 +23,19 @@ class TestInMemoryCache(TestCase):
             self.assertEqual(counter(1), 1)
             self.assertEqual(counter(1), 1)
         with patch("authentik.root.cache.monotonic", return_value=100):
-            # stale value returned immediately, refreshed once in the background
+            # expired, but unchanged version keeps the value
             self.assertEqual(counter(1), 1)
-            counter(1)
-            # single worker runs tasks in order, so this waits for queued refreshes
-            cache._executor.submit(lambda: None).result()
+        version[0] = 2
+        with patch("authentik.root.cache.monotonic", return_value=200):
             self.assertEqual(counter(1), 2)
-            self.assertEqual(len(calls), 2)
         counter.cache_clear()
         self.assertEqual(counter(1), 3)
+
+    def test_models_version(self):
+        """models_version changes on save and on queryset updates"""
+        before = models_version(SystemSettings)
+        SystemSettings.objects.get(pk=True).save()
+        after_save = models_version(SystemSettings)
+        self.assertNotEqual(before, after_save)
+        SystemSettings.objects.update(avatars="none")
+        self.assertNotEqual(after_save, models_version(SystemSettings))
