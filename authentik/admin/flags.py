@@ -46,6 +46,7 @@ class Flag[T]:
     @classmethod
     def set(cls, value: T, settings: SystemSettings | None = None) -> T | None:
         from authentik.admin.models import SystemSettings
+        from authentik.admin.signals import flag_set
         from authentik.admin.utils import clear_system_settings_cache, get_system_settings
 
         if not settings:
@@ -60,6 +61,7 @@ class Flag[T]:
             )
         )
         clear_system_settings_cache()
+        flag_set.send_robust(sender=cls, value=value)
 
     def get_default(self) -> T | None:
         return self.default
