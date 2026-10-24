@@ -550,7 +550,9 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 return self.handle_no_permission()
         # If prompt=login, we need to re-authenticate the user regardless
         # Check if we're not already doing the re-authentication
-        if PROMPT_LOGIN in self.params.prompt:
+        # The provider can be configured to ignore the parameter, in which case the
+        # existing session is used as if prompt=login had not been set.
+        if PROMPT_LOGIN in self.params.prompt and self.provider.honor_prompt_login:
             # No previous login UID saved, so save the current uid and trigger
             # re-login, or previous login UID matches current one, so no re-login happened yet
             if (

@@ -434,6 +434,14 @@ export function renderForm({
                         "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.",
                     )}
                 ></ak-switch-input>
+                <ak-switch-input
+                    name="honorPromptLogin"
+                    label=${msg("Honor prompt=login")}
+                    ?checked=${provider.honorPromptLogin ?? true}
+                    help=${msg(
+                        "When enabled, an authorization request with prompt=login requires the user to re-authenticate. When disabled, the parameter is ignored and an existing session is used.",
+                    )}
+                ></ak-switch-input>
                 <ak-radio-input
                     name="issuerMode"
                     label=${msg("Issuer mode")}
