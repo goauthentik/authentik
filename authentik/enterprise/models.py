@@ -62,7 +62,7 @@ class License(SerializerModel):
 
 
 class LicenseUsageStatus(models.TextChoices):
-    """License states an instance/tenant can be in"""
+    """License states an instance can be in"""
 
     UNLICENSED = "unlicensed"
     VALID = "valid"

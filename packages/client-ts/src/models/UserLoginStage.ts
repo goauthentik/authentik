@@ -10,12 +10,12 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { GeoipBindingEnum } from "./GeoipBindingEnum";
-import { GeoipBindingEnumFromJSON, GeoipBindingEnumToJSON } from "./GeoipBindingEnum";
-import type { NetworkBindingEnum } from "./NetworkBindingEnum";
-import { NetworkBindingEnumFromJSON, NetworkBindingEnumToJSON } from "./NetworkBindingEnum";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
+import type { GeoipBindingEnum } from "./GeoipBindingEnum.js";
+import { GeoipBindingEnumFromJSON, GeoipBindingEnumToJSON } from "./GeoipBindingEnum.js";
+import type { NetworkBindingEnum } from "./NetworkBindingEnum.js";
+import { NetworkBindingEnumFromJSON, NetworkBindingEnumToJSON } from "./NetworkBindingEnum.js";
 
 /**
  * UserLoginStage Serializer

@@ -169,7 +169,7 @@ async fn forward_request(
             .join(",");
         request
             .headers_mut()
-            .insert("X_FORWARDED_CLIENT_CERT", HeaderValue::from_str(&xfcc)?);
+            .insert(X_FORWARDED_CLIENT_CERT, HeaderValue::from_str(&xfcc)?);
     }
 
     match server.client.request(request).await {

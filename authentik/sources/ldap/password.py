@@ -18,8 +18,10 @@ from authentik.sources.ldap.models import LDAPSource
 LOGGER = get_logger()
 
 NON_ALPHA = r"~!@#$%^&*_-+=`|\(){}[]:;\"'<>,.?/"
-RE_DISPLAYNAME_SEPARATORS = r",\.–—_\s#\t"
+RE_DISPLAYNAME_SEPARATORS = r"[,._ #\t-]+"
 MIN_TOKEN_SIZE = 3
+# Defined in RFC 3062 Section 2
+PASSWD_MODIFY_OID = "1.3.6.1.4.1.4203.1.11.1"
 
 
 class PwdProperties(IntFlag):
@@ -94,6 +96,14 @@ class LDAPPasswordChanger:
 
         return False
 
+    def supports_password_modify_extension(self) -> bool:
+        info = self._connection.server.info
+        if info is None:
+            return True
+        return any(
+            extension[0] == PASSWD_MODIFY_OID for extension in info.supported_extensions or []
+        )
+
     def change_password(self, user: User, password: str):
         """Change user's password"""
         user_dn = user.attributes.get(LDAP_DISTINGUISHED_NAME, None)
@@ -103,6 +113,8 @@ class LDAPPasswordChanger:
         try:
             self._connection.extend.microsoft.modify_password(user_dn, password)
         except LDAPAttributeError, LDAPUnwillingToPerformResult, LDAPNoSuchAttributeResult:
+            if not self.supports_password_modify_extension():
+                raise
             self._connection.extend.standard.modify_password(user_dn, new_password=password)
 
     def _ad_check_password_existing(self, password: str, user_dn: str) -> bool:
@@ -118,14 +130,18 @@ class LDAPPasswordChanger:
         if len(users) != 1:
             raise AssertionError()
         user_attributes = users[0]["attributes"]
-        # If sAMAccountName is longer than 3 chars, check if its contained in password
+        # If sAMAccountName is at least 3 chars, check if it is contained in the password
         if len(user_attributes["sAMAccountName"]) >= MIN_TOKEN_SIZE:
-            if password.lower() in user_attributes["sAMAccountName"].lower():
+            if user_attributes["sAMAccountName"].lower() in password.lower():
                 return False
+        # displayName is either a string or a list of strings
+        display_names = user_attributes["displayName"]
+        if isinstance(display_names, str):
+            display_names = [display_names]
         # No display name set, can't check any further
-        if len(user_attributes["displayName"]) < 1:
+        if len(display_names) < 1:
             return True
-        for display_name in user_attributes["displayName"]:
+        for display_name in display_names:
             display_name_tokens = split(RE_DISPLAYNAME_SEPARATORS, display_name)
             for token in display_name_tokens:
                 # Ignore tokens under 3 chars

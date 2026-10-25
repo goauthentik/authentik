@@ -15,7 +15,6 @@
  */
 export const AppEnum = {
     AuthentikCommands: "authentik.commands",
-    AuthentikTenants: "authentik.tenants",
     AuthentikTasks: "authentik.tasks",
     AuthentikAdmin: "authentik.admin",
     AuthentikApi: "authentik.api",
@@ -75,6 +74,7 @@ export const AppEnum = {
     AuthentikStagesUserLogout: "authentik.stages.user_logout",
     AuthentikStagesUserWrite: "authentik.stages.user_write",
     AuthentikTasksSchedules: "authentik.tasks.schedules",
+    AuthentikTenants: "authentik.tenants",
     AuthentikBrands: "authentik.brands",
     AuthentikBlueprints: "authentik.blueprints",
     AuthentikEnterpriseAgents: "authentik.enterprise.agents",

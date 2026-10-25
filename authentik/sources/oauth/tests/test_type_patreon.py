@@ -1,51 +1,25 @@
 """Patreon Type tests"""
 
-from django.test import TestCase
+from copy import deepcopy
+from urllib.parse import parse_qs, urlparse
+
+from django.test import RequestFactory, TestCase
+from django.urls import reverse
+from requests_mock import Mocker
 
 from authentik.sources.oauth.models import OAuthSource
-from authentik.sources.oauth.types.patreon import PatreonType
+from authentik.sources.oauth.types.patreon import PatreonOAuthCallback, PatreonType
 
 PATREON_USER = {
     "data": {
         "attributes": {
-            "about": None,
-            "created": "2017-10-20T21:36:23+00:00",
-            "discord_id": None,
             "email": "corgi@example.com",
-            "facebook": None,
-            "facebook_id": None,
-            "first_name": "Corgi",
             "full_name": "Corgi The Dev",
-            "gender": 0,
-            "has_password": True,
-            "image_url": "https://c8.patreon.com/2/400/0000000",
-            "is_deleted": False,
-            "is_email_verified": False,
-            "is_nuked": False,
-            "is_suspended": False,
-            "last_name": "The Dev",
-            "social_connections": {
-                "deviantart": None,
-                "discord": None,
-                "facebook": None,
-                "reddit": None,
-                "spotify": None,
-                "twitch": None,
-                "twitter": None,
-                "youtube": None,
-            },
-            "thumb_url": "https://c8.patreon.com/2/100/0000000",
-            "twitch": None,
-            "twitter": None,
-            "url": "https://www.patreon.com/corgithedev",
             "vanity": "corgithedev",
-            "youtube": None,
         },
         "id": "0000000",
-        "relationships": {"pledges": {"data": []}},
         "type": "user",
     },
-    "links": {"self": "https://www.patreon.com/api/user/0000000"},
 }
 
 
@@ -56,8 +30,9 @@ class TestTypePatreon(TestCase):
         self.source = OAuthSource.objects.create(
             name="test",
             slug="test",
-            provider_type="Patreon",
+            provider_type="patreon",
         )
+        self.callback = PatreonOAuthCallback(request=RequestFactory().get("/"))
 
     def test_enroll_context(self):
         """Test Patreon Enrollment context"""
@@ -65,3 +40,64 @@ class TestTypePatreon(TestCase):
         self.assertEqual(ak_context["username"], PATREON_USER["data"]["attributes"]["vanity"])
         self.assertEqual(ak_context["email"], PATREON_USER["data"]["attributes"]["email"])
         self.assertEqual(ak_context["name"], PATREON_USER["data"]["attributes"]["full_name"])
+
+    def test_enroll_context_without_vanity(self):
+        """Patrons without a vanity name still have a stable username."""
+        for vanity in [None, ""]:
+            with self.subTest(vanity=vanity):
+                info = deepcopy(PATREON_USER)
+                info["data"]["attributes"]["vanity"] = vanity
+                context = PatreonType().get_base_user_properties(info=info)
+                self.assertEqual(context["username"], PATREON_USER["data"]["id"])
+        info = deepcopy(PATREON_USER)
+        del info["data"]["attributes"]["vanity"]
+        context = PatreonType().get_base_user_properties(info=info)
+        self.assertEqual(context["username"], PATREON_USER["data"]["id"])
+
+    def test_user_id(self):
+        """Keep the Patreon user ID used by existing source connections."""
+        self.assertEqual(self.callback.get_user_id(PATREON_USER), PATREON_USER["data"]["id"])
+
+    def test_redirect_scopes(self):
+        """Request both the v2 identity and email permissions."""
+        response = self.client.get(
+            reverse("authentik_sources_oauth:oauth-client-login", kwargs={"source_slug": "test"})
+        )
+        self.assertEqual(response.status_code, 302)
+        query = parse_qs(urlparse(response.url).query)
+        self.assertEqual(set(query["scope"][0].split()), {"identity", "identity[email]"})
+
+    def test_profile(self):
+        """Fetch explicit v2 fields and send the access token only in the header."""
+        with Mocker() as mocker:
+            mocker.get(
+                "https://www.patreon.com/api/oauth2/v2/identity"
+                "?fields%5Buser%5D=vanity,email,full_name",
+                complete_qs=True,
+                request_headers={"Authorization": "Bearer test-token"},
+                json=PATREON_USER,
+            )
+            client = self.callback.get_client(self.source)
+            profile = client.get_profile_info(
+                {"access_token": "test-token", "token_type": "Bearer"}
+            )
+        self.assertEqual(profile, PATREON_USER)
+        self.assertEqual(self.callback.get_user_id(profile), "0000000")
+        context = PatreonType().get_base_user_properties(info=profile)
+        self.assertEqual(
+            context,
+            {"username": "corgithedev", "email": "corgi@example.com", "name": "Corgi The Dev"},
+        )
+
+    def test_profile_failure(self):
+        """Do not treat a rejected v2 token as a user profile."""
+        with Mocker() as mocker:
+            mocker.get(
+                "https://www.patreon.com/api/oauth2/v2/identity",
+                status_code=401,
+                json={"errors": [{"status": "401"}]},
+            )
+            client = self.callback.get_client(self.source)
+            self.assertIsNone(
+                client.get_profile_info({"access_token": "invalid-token", "token_type": "Bearer"})
+            )

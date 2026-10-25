@@ -14,10 +14,11 @@ from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 from authentik.sources.saml.models import SAMLSource
 
-GOOGLE_ACS_URL = "https://127.0.0.1:9443/source/saml/google/acs/"
 
-
-@patch.object(SAMLSource, "build_full_url", MagicMock(return_value=GOOGLE_ACS_URL))
+@patch(
+    "authentik.sources.saml.processors.response.reverse",
+    MagicMock(return_value="https://127.0.0.1:9443/source/saml/google/acs/"),
+)
 class TestViews(TestCase):
     """Test SAML Views"""
 
@@ -26,7 +27,7 @@ class TestViews(TestCase):
         self.source = SAMLSource.objects.create(
             name=generate_id(),
             slug=generate_id(),
-            issuer_override="authentik",
+            issuer_override="https://accounts.google.com/o/saml2?idpid=",
             allow_idp_initiated=True,
             pre_authentication_flow=create_test_flow(),
         )
@@ -76,6 +77,29 @@ class TestViews(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn(b"The SAML assertion is not valid yet or has expired.", response.content)
+
+    def test_error_status_generic_message(self):
+        """An unsuccessful IdP status shows the user a generic message, not the IdP's details"""
+        response = self.client.post(
+            reverse(
+                "authentik_sources_saml:acs",
+                kwargs={
+                    "source_slug": self.source.slug,
+                },
+            ),
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_error_with_detail.xml").encode()
+                ).decode()
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            b"The identity provider did not complete the authentication request.",
+            response.content,
+        )
+        self.assertNotIn(b"User account is disabled", response.content)
+        self.assertNotIn(b"Authentication failed", response.content)
 
     @freeze_time("2022-10-14T14:15:00")
     def test_enroll_redirect(self):

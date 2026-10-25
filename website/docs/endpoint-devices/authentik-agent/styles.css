@@ -1,0 +1,16 @@
+.ak-agent-downloads {
+    margin: 1.25rem 0 2rem;
+}
+
+/* Infima buttons are inline-block, which baseline-aligns the logo instead of centering it. */
+.ak-agent-downloads .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+}
+
+.ak-agent-downloads svg {
+    width: 1.25em;
+    height: 1.25em;
+    flex-shrink: 0;
+}

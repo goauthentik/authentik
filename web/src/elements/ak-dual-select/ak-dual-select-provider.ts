@@ -1,10 +1,11 @@
 import "./ak-dual-select.js";
 import { AkDualSelect } from "./ak-dual-select.js";
+import { DualSelectEvent } from "./events.js";
 import { type DataProvider, DualSelectEventType, type DualSelectPair } from "./types.js";
 
 import { AKControlElement } from "#elements/ControlElement";
+import { listen } from "#elements/decorators/listen";
 import { toPaginator, PageChangeEvent } from "#elements/Paginator";
-import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
 import type { Pagination } from "@goauthentik/api";
 
@@ -23,7 +24,7 @@ import { createRef, ref } from "lit/directives/ref.js";
  * about authentik at all and could be dropped into Gravity unchanged.)
  */
 @customElement("ak-dual-select-provider")
-export class AkDualSelectProvider extends CustomListenerElement(AKControlElement) {
+export class AkDualSelectProvider extends AKControlElement<Array<string | number>> {
     //#region Properties
 
     /**
@@ -146,8 +147,6 @@ export class AkDualSelectProvider extends CustomListenerElement(AKControlElement
             signal: this.abortController.signal,
         });
 
-        this.addCustomListener(DualSelectEventType.Change, this.#changeListener);
-        this.addCustomListener(DualSelectEventType.Search, this.#searchListener);
         this.#fetch(1);
     }
 
@@ -203,12 +202,14 @@ export class AkDualSelectProvider extends CustomListenerElement(AKControlElement
         this.#fetch(page, this.#previousSearchValue);
     };
 
-    #changeListener = (event: CustomEvent<{ value: DualSelectPair[] }>) => {
+    @listen(DualSelectEventType.Change)
+    protected changeListener = (event: DualSelectEvent<typeof DualSelectEventType.Change>) => {
         this.#selected = event.detail.value;
         this.selected = this.#selected;
     };
 
-    #searchListener = (event: CustomEvent<string>) => {
+    @listen(DualSelectEventType.Search)
+    protected searchListener = (event: DualSelectEvent<typeof DualSelectEventType.Search>) => {
         this.#doSearch(event.detail);
     };
 

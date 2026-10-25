@@ -159,10 +159,10 @@ export function decideInterception(ctx: AnchorClickContext, scope: InterceptScop
 
     if (url.origin !== scope.origin) return null;
 
-    // A URL that matches the current path and query differs at most by fragment
-    // (`#section`), or is identical/empty (native reload). Either way the
-    // browser owns it: claiming would suppress the native fragment scroll.
-    if (url.pathname === scope.currentPathname && url.search === scope.currentSearch) return null;
+    // Let the browser handle same-page fragment links (e.g. `#section`)
+    if (url.pathname === scope.currentPathname && url.search === scope.currentSearch && url.hash) {
+        return null;
+    }
 
     const prefix = formatInterfacePrefix(scope.base, scope.interfaceName);
 

@@ -1,4 +1,5 @@
 import { globalAK } from "#common/global";
+import type { PersistenceKey } from "#common/storage/shared";
 import { ascii_letters, digits, randomString } from "#common/utils";
 
 import { Broadcast } from "#flow/tabs/broadcast";
@@ -28,7 +29,7 @@ import { ConsoleLogger } from "#logger/browser";
  * re-entry).
  */
 
-const lockKey = "authentik-tab-locked";
+const lockKey = "ak:tab_locked" satisfies PersistenceKey;
 const logger = ConsoleLogger.prefix("mtab/orchestrate");
 
 // How often to poll for a follower that hasn't sent its exit event yet.
@@ -119,7 +120,7 @@ function waitForTabExit(tabID: string, resumeID: string): Promise<void> {
 }
 
 export async function multiTabOrchestrateResume() {
-    if (!globalAK().brand.flags.flowsContinuousLogin) {
+    if (!globalAK().brand.flags.flowsContinuousLogin || !localStorage) {
         return;
     }
 

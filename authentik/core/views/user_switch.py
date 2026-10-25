@@ -71,4 +71,6 @@ def start_user_switch_flow(request: HttpRequest, user_pk: int | None) -> HttpRes
         plan = planner.plan(request, context)
     except FlowNonApplicableException:
         return HttpResponseNotFound()
+    if user_pk is None:
+        request.session[user_switching.SESSION_KEY_ADD_USER] = True
     return plan.to_redirect(request, flow)

@@ -1,0 +1,17 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "allowImportingTsExtensions": true,
+        "composite": false,
+        "declaration": false,
+        "declarationMap": false,
+        "erasableSyntaxOnly": true,
+        "incremental": false,
+        "noEmit": true,
+        "resolveJsonModule": true,
+        "sourceMap": false,
+        "types": ["node"],
+        "verbatimModuleSyntax": true
+    }
+}

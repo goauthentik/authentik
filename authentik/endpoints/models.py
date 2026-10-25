@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from django.core.cache import cache
 from django.db import models, transaction
-from django.db.models import OuterRef, Q, Subquery
+from django.db.models import Case, OuterRef, Q, Subquery, When
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
@@ -31,6 +31,8 @@ if TYPE_CHECKING:
 
 LOGGER = get_logger()
 DEVICE_FACTS_CACHE_TIMEOUT = 3600
+# Addresses which are never usable to reach a device from the outside
+LOCAL_ADDRESS_PREFIXES = ("127.", "::1", "169.254.", "fe80:")
 
 
 class Device(InternallyManagedMixin, ExpiringModel, AttributesMixin, PolicyBindingModel):
@@ -47,10 +49,21 @@ class Device(InternallyManagedMixin, ExpiringModel, AttributesMixin, PolicyBindi
     @transaction.atomic
     def get_or_create(identifier: str, name: str, defaults: dict[str, Any] | None = None) -> Device:
         defaults = defaults or {}
-        try:
-            return Device.objects.get(Q(identifier=identifier) | Q(name=name))
-        except Device.DoesNotExist:
-            return Device.objects.create(name=name, identifier=identifier, **defaults)
+        query = Q()
+        if identifier:
+            query |= Q(identifier=identifier)
+        if name:
+            query |= Q(name=name)
+        if query:
+            # Identifier and name can match different devices; the identifier match wins
+            device = (
+                Device.objects.filter(query)
+                .order_by(Case(When(identifier=identifier, then=0), default=1))
+                .first()
+            )
+            if device:
+                return device
+        return Device.objects.create(name=name, identifier=identifier, **defaults)
 
     @property
     def cache_key_facts(self):
@@ -80,6 +93,30 @@ class Device(InternallyManagedMixin, ExpiringModel, AttributesMixin, PolicyBindi
             MERGE_LIST_UNIQUE.merge(data, snapshot_data)
             last_updated = max(last_updated, snapshort_created)
         return DeviceFactSnapshot(data=data, created=last_updated)
+
+    @property
+    def facts_data(self) -> dict[str, Any]:
+        """Facts of this device, or an empty dict when there are none (yet)"""
+        try:
+            return self.cached_facts.data or {}
+        except KeyError, AttributeError:
+            return {}
+
+    @property
+    def address(self) -> str | None:
+        """Best-effort address to reach this device on, from its most recent facts.
+        The reported hostname is preferred over an interface address."""
+        network = self.facts_data.get("network") or {}
+        if hostname := network.get("hostname"):
+            return hostname
+        for interface in network.get("interfaces") or []:
+            for raw_address in interface.get("ip_addresses") or []:
+                # Interface addresses may carry a prefix length
+                address = raw_address.partition("/")[0]
+                if address.startswith(LOCAL_ADDRESS_PREFIXES):
+                    continue
+                return address
+        return None
 
     @property
     def primary_user_binding(self) -> DeviceUserBinding | None:

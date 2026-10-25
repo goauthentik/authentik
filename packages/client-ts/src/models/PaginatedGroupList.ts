@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { Group } from "./Group";
-import { GroupFromJSON, GroupToJSON } from "./Group";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Group } from "./Group.js";
+import { GroupFromJSON, GroupToJSON } from "./Group.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

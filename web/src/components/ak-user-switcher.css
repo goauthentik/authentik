@@ -37,11 +37,13 @@
     align-items: center;
     gap: 0;
     min-height: 2rem;
-    padding-block: 0;
+    padding-block: 2px;
     padding-inline: var(--pf-global--spacer--sm);
     font-size: var(--pf-global--FontSize--md);
     line-height: 1;
     vertical-align: middle;
+    /* Ensures that tooltip doesn't overflow the toggle container */
+    overflow: hidden;
 
     &:hover {
         --ak-c-avatar--BoxShadowColor: var(--pf-global--Color--100);

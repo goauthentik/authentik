@@ -1,7 +1,9 @@
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import type { NamedEntityElementConstructor } from "#common/api/entities";
+
 import { modalInvoker } from "#elements/dialogs/directives";
 import type { ModalTemplate } from "#elements/dialogs/invokers";
-import type { DialogInit, NamedEntityElementConstructor } from "#elements/dialogs/shared";
+import type { DialogInit } from "#elements/dialogs/shared";
 import type { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 
 import { msg, str } from "@lit/localize";

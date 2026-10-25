@@ -2,10 +2,10 @@
 
 # Tag must track the root package.json `packageManager` version. ${BUILDPLATFORM}
 # keeps the binary's arch aligned with the builder stage on cross-arch builds.
-FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:12.4.0@sha256:4fcb6db39468ecafef34f3e866730df106f7639ba4512e42885d80f868ccb257 AS pnpm
+FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:12.9.1@sha256:77123fd40a39db0eb8be6bddfcf0cea15e000122b9221ccce2e4415be29050f2 AS pnpm
 
 # Stage: Build webui
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:26-trixie-slim@sha256:d82e1d091233ff0f771fc6c22837fa64c1019806ae2ac76cf5345cbc1e01668a AS node-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:26.12.1-trixie-slim@sha256:1653c74b30c27b26f68c2d21279be12139d2ba723e3a682c425ec4bfb6070422 AS node-builder
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
@@ -60,7 +60,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "GEOIPUPDATE_LICENSE_KEY_FILE=/run/secrets/GEOIPUPDATE_LICENSE_KEY /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage: download Rust toolchain
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:ed780d7d3d789d7056855e8c7e3c37d21368ea42f39305fe431c19ae2e08d6a3 AS rust-toolchain
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:b97a9f4f34c7d1ea350e394bb0cd14f2f5bfc39517bc442534bf6005ff2bc084 AS rust-toolchain
 
 ARG TARGETARCH
 ARG TARGETVARIANT
@@ -72,7 +72,8 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     # Required for installing pip packages
     apt-get install -y --no-install-recommends \
     # Build essentials
-    build-essential && \
+    build-essential \
+    curl ca-certificates && \
     curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain none && \
     rustup install && \
     rustup default "$(sed -n 's/channel = "\(.*\)"/\1/p' rust-toolchain.toml)" && \
@@ -80,9 +81,9 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     cargo --version
 
 # Stage: Download uv
-FROM ghcr.io/astral-sh/uv:0.12.18@sha256:3adc3706091ce7c2fe595e669628caedd6d951551b92b258b7e7dbe06d9440bc AS uv
+FROM ghcr.io/astral-sh/uv:0.13.5@sha256:32a7bb39b496babbd997b0a39a4d66c126bdaf5661b302bf6f06abda8deca6ff AS uv
 # Stage: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.14.7-slim-trixie-fips@sha256:db124ee8da053e2344a260ae14f8903c7caa33b6de98fcca69d0793f7327754d AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.14.8-slim-trixie-fips@sha256:3eb2e00a86a2247398b272c300ee78a6e1eab17172e0546e92ad5d8f34b9acff AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
@@ -182,8 +183,54 @@ RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
     --mount=type=cache,id=uv-python-deps-$TARGETARCH$TARGETVARIANT,target=/root/.cache/uv \
     uv sync --locked --no-install-project --no-dev
 
-# Stage: Run
-FROM python-base AS final-image
+# Stage: Test kit
+# Test-only files that scripts/test_docker.sh mounts into the unchanged final or distroless image
+# Build it with --target test-kit and an output, like scripts/test_docker.sh does
+
+# MIT KDC tools for the Kerberos tests.
+FROM python-base AS test-kit-kdc
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends krb5-kdc krb5-admin-server krb5-user busybox-static
+
+# Wrappers that run the tools from where the filesystem is mounted, /test-kit/krb5/root
+RUN libdir="$(dirname "$(readlink -f /usr/lib/*/libkrb5.so.3)")" && \
+    loader="$(readlink -f /lib*/ld-linux*.so.*)" && \
+    mkdir -p /kit/bin /kit/plugins && \
+    # k5test loads the database module from <plugins>/kdc
+    ln -s "../root$libdir/krb5/plugins/kdb" /kit/plugins/kdc && \
+    for tool in krb5kdc kadmind kdb5_util kadmin.local kadmin kprop kinit klist; do \
+    # readlink resolves Debian's alternatives, whose absolute links would point into the image
+    printf '#!/test-kit/krb5/root%s sh\nexec /test-kit/krb5/root%s --library-path /test-kit/krb5/root%s /test-kit/krb5/root%s "$@"\n' \
+    "$(readlink -f "$(command -v busybox)")" "$loader" "$libdir" "$(readlink -f "$(command -v $tool)")" > /kit/bin/$tool; \
+    done && \
+    chmod 755 /kit/bin/*
+
+FROM python-base AS test-kit-build
+
+# The dev-only Python packages: the dev group minus every package the image ships
+RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
+    --mount=type=bind,target=uv.lock,src=uv.lock \
+    uv export --frozen --no-hashes --no-emit-project --no-emit-workspace --no-header --no-annotate \
+    --no-dev --output-file /tmp/shipped.txt && \
+    uv export --frozen --no-hashes --no-emit-project --no-emit-workspace --no-header --no-annotate \
+    --only-group dev --output-file /tmp/dev.txt && \
+    # Compare names, the environment markers can differ between the two
+    awk -F'[ =;]' 'NR == FNR { shipped[$1]; next } !($1 in shipped)' /tmp/shipped.txt /tmp/dev.txt > /tmp/dev-only.txt && \
+    uv pip install --no-deps --target /kit/devdeps -r /tmp/dev-only.txt
+
+COPY --from=test-kit-kdc / /kit/krb5/root/
+COPY --from=test-kit-kdc /kit/ /kit/krb5/
+COPY ./tests/container/sitecustomize.py /kit/sc/sitecustomize.py
+COPY ./tests/container/check_dev_imports.py /kit/check_dev_imports.py
+
+FROM scratch AS test-kit
+
+COPY --from=test-kit-build /kit/ /
+
+# Stage: assemble the runtime filesystem
+# Shared by the distroless image and the final image
+FROM python-base AS runtime-assemble
 
 ARG VERSION
 ARG GIT_BUILD_HASH
@@ -233,11 +280,80 @@ COPY ./lifecycle/ /lifecycle
 COPY ./authentik/sources/kerberos/krb5.conf /etc/krb5.conf
 COPY --from=rust-builder /bin/authentik /bin/authentik
 COPY ./packages/ /ak-root/packages
-RUN  ln -s /ak-root/packages /packages
+RUN ln -s /ak-root/packages /packages && \
+    ln -s ak.py /lifecycle/ak
 COPY --from=python-deps /ak-root/.venv /ak-root/.venv
 COPY --from=node-builder /work/web/dist/ /web/dist/
 COPY --from=node-builder /work/web/authentik/ /web/authentik/
 COPY --from=geoip /usr/share/GeoIP /geoip
+
+# Stage: distroless root filesystem
+# prune.sh copies the files the distroless image needs into /out
+FROM runtime-assemble AS distroless-rootfs
+
+RUN --mount=type=bind,target=/tmp/prune.sh,src=./lifecycle/container/prune.sh \
+    --mount=type=bind,target=/tmp/runtime-packages.txt,src=./lifecycle/container/runtime-packages.txt \
+    --mount=type=bind,target=/tmp/runtime-paths.txt,src=./lifecycle/container/runtime-paths.txt \
+    --mount=type=bind,target=/tmp/runtime-drop.txt,src=./lifecycle/container/runtime-drop.txt \
+    bash /tmp/prune.sh /tmp/runtime-packages.txt /tmp/runtime-paths.txt /tmp/runtime-drop.txt
+
+# Stage: Run, distroless
+# Contains only what's needed at runtime and nothing more
+# Build it with --target distroless as it is not the default
+FROM scratch AS distroless
+
+ARG VERSION
+ARG GIT_BUILD_HASH
+ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
+
+LABEL org.opencontainers.image.authors="Authentik Security Inc." \
+    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
+    org.opencontainers.image.description="goauthentik.io Main server image, see https://goauthentik.io for more info." \
+    org.opencontainers.image.documentation="https://docs.goauthentik.io" \
+    org.opencontainers.image.licenses="https://github.com/goauthentik/authentik/blob/main/LICENSE" \
+    org.opencontainers.image.revision=${GIT_BUILD_HASH} \
+    org.opencontainers.image.title="authentik server image (distroless)" \
+    org.opencontainers.image.url="https://goauthentik.io" \
+    org.opencontainers.image.vendor="Authentik Security Inc." \
+    org.opencontainers.image.version=${VERSION}
+
+# The copies are split so a rebuild does not invalidate unchanged layers
+# /out-root holds the merged-usr symlinks (bin, lib, lib64, sbin), /tmp and the top level files, trailing slash required!
+COPY --from=distroless-rootfs /out-root/ /
+COPY --from=distroless-rootfs /out/usr /usr
+COPY --from=distroless-rootfs /out/etc /etc
+COPY --from=distroless-rootfs /out/var /var
+COPY --from=distroless-rootfs /out/run /run
+COPY --from=distroless-rootfs /out/geoip /geoip
+COPY --from=distroless-rootfs /out/ak-root /ak-root
+COPY --from=distroless-rootfs /out/web /web
+COPY --from=distroless-rootfs /out/locale /locale
+COPY --from=distroless-rootfs /out/schemas /schemas
+COPY --from=distroless-rootfs /out/blueprints /blueprints
+COPY --from=distroless-rootfs /out/lifecycle /lifecycle
+COPY --from=distroless-rootfs /out/authentik /authentik
+COPY --chown=1000:1000 --from=distroless-rootfs /out/certs /certs
+COPY --chown=1000:1000 --from=distroless-rootfs /out/data /data
+COPY --chown=1000:1000 --from=distroless-rootfs /out/media /media
+
+WORKDIR /
+USER 1000
+
+ENV PATH="/lifecycle:/ak-root/.venv/bin:/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin" \
+    VENV_PATH="/ak-root/.venv" \
+    TMPDIR=/dev/shm/ \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    GOFIPS=1 \
+    RUST_BACKTRACE=full
+
+HEALTHCHECK --interval=30s --timeout=30s --start-period=120s --retries=3 CMD [ "ak", "healthcheck" ]
+
+ENTRYPOINT [ "dumb-init", "--", "ak" ]
+
+# Stage: Run
+# The default target, so it has to stay last
+FROM runtime-assemble AS final
 
 USER 1000
 

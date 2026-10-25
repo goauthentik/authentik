@@ -197,6 +197,26 @@ class TestFlowPlanner(TestCase):
         key = cache_key(flow, user)
         self.assertTrue(cache.get(key) is not None)
 
+    def test_dry_run_policy_does_not_block_plan(self):
+        """A failing dry-run policy does not block flow planning."""
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        stage_binding = FlowStageBinding.objects.create(
+            target=flow,
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=0,
+        )
+        policy = DummyPolicy.objects.create(
+            name=generate_id(), result=False, wait_min=0, wait_max=1
+        )
+        PolicyBinding.objects.create(target=flow, policy=policy, order=0, dry_run=True)
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+
+        plan = FlowPlanner(flow).plan(request)
+
+        self.assertEqual(plan.bindings, [stage_binding])
+
     def test_planner_marker_reevaluate(self):
         """Test that the planner creates the proper marker"""
         flow = create_test_flow()

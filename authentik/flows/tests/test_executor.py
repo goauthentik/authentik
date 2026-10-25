@@ -25,7 +25,7 @@ from authentik.flows.models import (
 )
 from authentik.flows.planner import FlowPlan, FlowPlanner
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageView
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import (
     NEXT_ARG_NAME,
     QS_KEY_TOKEN,
@@ -65,7 +65,7 @@ def const_authenticator_factory(user: User) -> type[BaseAuthentication]:
     return ConstAuthenticator
 
 
-class TestFlowExecutor(FlowTestCase):
+class TestFlowExecutor(APIFlowTestCase):
     """Test executor"""
 
     def setUp(self):

@@ -32,6 +32,12 @@ class InvalidTime(SAMLException):
     default_message = "The SAML assertion is not valid yet or has expired."
 
 
+class MismatchedAudience(SAMLException):
+    """Exception raised when none of the assertion's audiences match the source's entity ID."""
+
+    default_message = "The SAML assertion audience does not match the entity ID of this source."
+
+
 class MismatchedRequestID(SAMLException):
     """Exception raised when the returned request ID doesn't match the saved ID."""
 
@@ -44,10 +50,22 @@ class MismatchedBinding(SAMLException):
     default_message = "The SAML Response is not addressed to this Source."
 
 
+class MissingNameID(SAMLException):
+    """Exception raised when the assertion has no Subject NameID to identify the user by."""
+
+    default_message = "The SAML assertion does not contain a NameID."
+
+
 class MissingSAMLResponse(SAMLException):
     """Exception raised when request does not contain SAML Response."""
 
     default_message = "Request does not contain a SAML response."
+
+
+class UnsuccessfulStatus(SAMLException):
+    """Exception raised when the SAML Response carries a non-success Status."""
+
+    default_message = "The identity provider did not complete the authentication request."
 
 
 class UnsupportedNameIDFormat(SAMLException):
