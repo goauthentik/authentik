@@ -4,12 +4,13 @@ from typing import Any
 
 from django.http import Http404
 from django.urls import reverse
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic import RedirectView
 from structlog.stdlib import get_logger
 
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
-from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.views.base import OAuthClientMixin
 
@@ -46,6 +47,19 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
             params["login_hint"] = identifier
         return params
 
+    def _save_next_param(self):
+        """When the source is linked to directly (outside of a flow), the flow executor never
+        stores the `next` query parameter in the session, so the source flow manager would
+        fall back to the user interface after authentication. Only relative URLs are accepted,
+        as the value ends up as the plan's redirect."""
+        next_param = self.request.GET.get(NEXT_ARG_NAME)
+        if not next_param:
+            return
+        if not url_has_allowed_host_and_scheme(next_param, allowed_hosts=None):
+            LOGGER.warning("Ignoring absolute next URL", next=next_param)
+            return
+        self.request.session[SESSION_KEY_GET] = {NEXT_ARG_NAME: next_param}
+
     def get_redirect_url(self, **kwargs) -> str:
         "Build redirect url for a given source."
         slug = kwargs.get("source_slug", "")
@@ -64,4 +78,5 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
             else:
                 params["scope"] += source.additional_scopes.split(" ")
         params.update(self._try_login_hint_extract())
+        self._save_next_param()
         return client.get_redirect_url(params)
