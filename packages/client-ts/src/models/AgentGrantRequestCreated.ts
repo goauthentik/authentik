@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { GrantRequest } from "./GrantRequest";
-import { GrantRequestFromJSON } from "./GrantRequest";
+import type { GrantRequest } from "./GrantRequest.js";
+import { GrantRequestFromJSON } from "./GrantRequest.js";
 
 /**
  * Response to an agent's access request: the request it created, plus the URL to hand to

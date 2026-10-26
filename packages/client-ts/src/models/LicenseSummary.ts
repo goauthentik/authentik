@@ -10,14 +10,14 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { LicenseFlagsEnum } from "./LicenseFlagsEnum";
-import { LicenseFlagsEnumFromJSON, LicenseFlagsEnumToJSON } from "./LicenseFlagsEnum";
-import type { LicenseSummaryStatusEnum } from "./LicenseSummaryStatusEnum";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { LicenseFlagsEnum } from "./LicenseFlagsEnum.js";
+import { LicenseFlagsEnumFromJSON, LicenseFlagsEnumToJSON } from "./LicenseFlagsEnum.js";
+import type { LicenseSummaryStatusEnum } from "./LicenseSummaryStatusEnum.js";
 import {
     LicenseSummaryStatusEnumFromJSON,
     LicenseSummaryStatusEnumToJSON,
-} from "./LicenseSummaryStatusEnum";
+} from "./LicenseSummaryStatusEnum.js";
 
 /**
  * Serializer for license status

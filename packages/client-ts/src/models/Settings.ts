@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 
-import type { PatchedSettingsRequestFlags } from "./PatchedSettingsRequestFlags";
+import type { PatchedSettingsRequestFlags } from "./PatchedSettingsRequestFlags.js";
 import {
     PatchedSettingsRequestFlagsFromJSON,
     PatchedSettingsRequestFlagsToJSON,
-} from "./PatchedSettingsRequestFlags";
+} from "./PatchedSettingsRequestFlags.js";
 
 /**
  * Settings Serializer

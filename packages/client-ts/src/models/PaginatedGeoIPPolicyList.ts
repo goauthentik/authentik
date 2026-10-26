@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { GeoIPPolicy } from "./GeoIPPolicy";
-import { GeoIPPolicyFromJSON, GeoIPPolicyToJSON } from "./GeoIPPolicy";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { GeoIPPolicy } from "./GeoIPPolicy.js";
+import { GeoIPPolicyFromJSON, GeoIPPolicyToJSON } from "./GeoIPPolicy.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

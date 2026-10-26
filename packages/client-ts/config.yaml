@@ -7,3 +7,4 @@ additionalProperties:
     fileContentDataType: Blob
     enumUnknownDefaultCase: true
     useObjectParameters: true
+    importFileExtension: ".js"
