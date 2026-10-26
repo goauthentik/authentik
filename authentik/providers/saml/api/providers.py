@@ -256,6 +256,7 @@ class SAMLProviderSerializer(ProviderSerializer):
             "signing_kp",
             "verification_kp",
             "encryption_kp",
+            "encryption_algorithm",
             "sign_assertion",
             "sign_response",
             "sign_logout_request",

@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { Secret } from "./Secret";
-import { SecretFromJSON, SecretToJSON } from "./Secret";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { Secret } from "./Secret.js";
+import { SecretFromJSON, SecretToJSON } from "./Secret.js";
 
 /**
  * @export

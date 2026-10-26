@@ -18,10 +18,22 @@ DEFAULT_REPUTATION_LOWER_LIMIT = -5
 DEFAULT_REPUTATION_UPPER_LIMIT = 5
 
 
+class SystemSettingsQuerySet(models.QuerySet):
+    def update(self, **kwargs) -> int:
+        # Queryset updates skip post_save, so drop the cached settings here too
+        from authentik.admin.utils import get_system_settings
+
+        rows = super().update(**kwargs)
+        get_system_settings.cache_clear()
+        return rows
+
+
 class SystemSettings(InternallyManagedMixin, SerializerModel):
     """Global settings for this authentik instance"""
 
     id = models.BooleanField(primary_key=True, default=True)
+
+    objects = SystemSettingsQuerySet.as_manager()
 
     avatars = models.TextField(
         help_text=_("Configure how authentik should show avatars for users."),

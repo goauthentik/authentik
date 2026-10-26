@@ -10,9 +10,9 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { CertificateKeyPairKeyTypeEnum } from "./CertificateKeyPairKeyTypeEnum";
-import { CertificateKeyPairKeyTypeEnumFromJSON } from "./CertificateKeyPairKeyTypeEnum";
+import { parseDateTime } from "../runtime.js";
+import type { CertificateKeyPairKeyTypeEnum } from "./CertificateKeyPairKeyTypeEnum.js";
+import { CertificateKeyPairKeyTypeEnumFromJSON } from "./CertificateKeyPairKeyTypeEnum.js";
 
 /**
  * CertificateKeyPair Serializer

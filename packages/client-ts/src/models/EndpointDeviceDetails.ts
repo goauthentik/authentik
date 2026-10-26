@@ -10,20 +10,20 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { DeviceAccessGroup } from "./DeviceAccessGroup";
-import { DeviceAccessGroupFromJSON, DeviceAccessGroupToJSON } from "./DeviceAccessGroup";
-import type { DeviceConnection } from "./DeviceConnection";
-import { DeviceConnectionFromJSON, DeviceConnectionToJSON } from "./DeviceConnection";
-import type { DeviceFactSnapshot } from "./DeviceFactSnapshot";
-import { DeviceFactSnapshotFromJSON } from "./DeviceFactSnapshot";
-import type { DeviceUserBinding } from "./DeviceUserBinding";
-import { DeviceUserBindingFromJSON } from "./DeviceUserBinding";
-import type { RACConnectionOverride } from "./RACConnectionOverride";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { DeviceAccessGroup } from "./DeviceAccessGroup.js";
+import { DeviceAccessGroupFromJSON, DeviceAccessGroupToJSON } from "./DeviceAccessGroup.js";
+import type { DeviceConnection } from "./DeviceConnection.js";
+import { DeviceConnectionFromJSON, DeviceConnectionToJSON } from "./DeviceConnection.js";
+import type { DeviceFactSnapshot } from "./DeviceFactSnapshot.js";
+import { DeviceFactSnapshotFromJSON } from "./DeviceFactSnapshot.js";
+import type { DeviceUserBinding } from "./DeviceUserBinding.js";
+import { DeviceUserBindingFromJSON } from "./DeviceUserBinding.js";
+import type { RACConnectionOverride } from "./RACConnectionOverride.js";
 import {
     RACConnectionOverrideFromJSON,
     RACConnectionOverrideToJSON,
-} from "./RACConnectionOverride";
+} from "./RACConnectionOverride.js";
 
 /**
  * @export
