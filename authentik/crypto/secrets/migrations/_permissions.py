@@ -13,6 +13,9 @@ def preserve_permissions(apps, schema_editor, app_label, model_name, *, value_pe
     `<value_permission>_<model>`, also get `view_secret_value`. Initial
     permissions are extended the same way, so secrets created together with a new
     object stay visible to its creator.
+
+    Keep in sync with `GeneratedSecretsMixin.grant_generated_secret`, which applies the
+    same grants to secrets generated for new objects.
     """
     alias = schema_editor.connection.alias
     ContentType = apps.get_model("contenttypes", "ContentType")

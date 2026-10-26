@@ -224,6 +224,7 @@ class OAuth2Provider(GeneratedSecretsMixin, WebfingerProvider, Provider):
     """OAuth2 Provider for generic OAuth and OpenID Connect Applications."""
 
     generated_secrets = {"client_secret_ref": ("client secret", generate_client_secret)}
+    secret_value_permission = "change"
 
     client_type = models.CharField(
         max_length=30,

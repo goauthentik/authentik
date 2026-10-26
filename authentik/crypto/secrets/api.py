@@ -15,14 +15,25 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.blueprints.api import ManagedSerializer
+from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_CREATED, SERIALIZER_CONTEXT_USER
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
+from authentik.core.models import User
 from authentik.crypto.secrets.models import Secret, SecretType, generate_secret_value
 from authentik.events.models import Event, EventAction
 from authentik.rbac.decorators import permission_required
 
 # Long enough for any credential, short enough not to be abused to store large values.
 MAX_GENERATED_LENGTH = 1024
+
+
+def acting_user(context: dict) -> User | None:
+    """The user whose permissions apply: the request's, or the user importing a blueprint.
+
+    Blueprints that authentik applies itself have neither, and aren't checked.
+    """
+    request = context.get("request")
+    return request.user if request else context.get(SERIALIZER_CONTEXT_USER)
 
 
 class SecretReferenceField(PrimaryKeyRelatedField):
@@ -41,13 +52,16 @@ class SecretReferenceField(PrimaryKeyRelatedField):
 
     def to_internal_value(self, data):
         secret = super().to_internal_value(data)
-        request = self.context.get("request")
+        user = acting_user(self.context)
         instance = self.parent.instance
         unchanged = instance and getattr(instance, f"{self.source}_id") == secret.pk
+        # Creating a secret in the same blueprint already chose its value.
+        created = (Secret, secret.pk) in self.context.get(SERIALIZER_CONTEXT_CREATED, ())
         if (
-            request
+            user
             and not unchanged
-            and not request.user.has_perm("authentik_crypto_secrets.view_secret_value", secret)
+            and not created
+            and not user.has_perm("authentik_crypto_secrets.view_secret_value", secret)
         ):
             raise PermissionDenied(_("You do not have permission to use this secret."))
         if secret.type not in self.allowed_types:
@@ -82,10 +96,8 @@ class SecretSerializer(ManagedSerializer, ModelSerializer):
         instance = self.instance
         if not instance:
             return value
-        request = self.context.get("request")
-        if request and not request.user.has_perm(
-            "authentik_crypto_secrets.rotate_secret", instance
-        ):
+        user = acting_user(self.context)
+        if user and not user.has_perm("authentik_crypto_secrets.rotate_secret", instance):
             raise PermissionDenied(_("You do not have permission to replace this value."))
         return value
 
