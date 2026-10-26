@@ -228,7 +228,9 @@ export function renderForm({ provider = {}, errors = {}, args }: ProxyProviderFo
         ${AKAuthorizationFlowField({ value: provider.authorizationFlow })}
 
         <div class="pf-c-card pf-m-selectable pf-m-selected">
-            <div class="pf-c-card__body">${renderModeSelector(mode, onSetMode)}</div>
+            <div class="pf-c-card__body pf-u-text-align-center">
+                ${renderModeSelector(mode, onSetMode)}
+            </div>
             <div class="pf-c-card__footer">${renderSettings(provider, mode)}</div>
         </div>
 

@@ -23,6 +23,7 @@ from authentik.flows.planner import (
 )
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_GET, SESSION_KEY_PLAN
+from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.install_id import get_install_id
 from authentik.root.middleware import ClientIPMiddleware
@@ -232,7 +233,13 @@ class UserLoginStageView(ChallengeStageView):
         )
         # the `user_logged_in` signal will update the user to write the `last_login` field
         # which we don't want to log as we already have a dedicated login event
-        with audit_ignore():
+        with (
+            audit_ignore(),
+            active_tracer().start_span(
+                op="authentik.stages.user_login.login",
+                name="User login",
+            ),
+        ):
             login(
                 self.request,
                 user,

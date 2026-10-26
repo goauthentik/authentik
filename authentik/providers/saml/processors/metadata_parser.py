@@ -8,7 +8,11 @@ from cryptography.x509 import InvalidVersion, load_pem_x509_certificate
 from lxml import etree  # nosec
 from structlog.stdlib import get_logger
 
-from authentik.common.saml.constants import NS_MAP, NS_SAML_METADATA
+from authentik.common.saml.constants import (
+    ENCRYPTION_ALGORITHM_TRANSLATION_MAP,
+    NS_MAP,
+    NS_SAML_METADATA,
+)
 from authentik.crypto.models import CertificateKeyPair, format_cert
 from authentik.flows.models import Flow
 from authentik.lib.xml import lxml_from_string
@@ -38,6 +42,7 @@ class ServiceProviderMetadata:
 
     signing_keypair: CertificateKeyPair | None = None
     encryption_keypair: CertificateKeyPair | None = None
+    encryption_algorithm: str | None = None
 
     # Single Logout Service (optional)
     sls_binding: str | None = None
@@ -68,6 +73,8 @@ class ServiceProviderMetadata:
             self.encryption_keypair.name = f"Provider {name} - SAML Encryption Certificate"
             self.encryption_keypair.save()
             provider.encryption_kp = self.encryption_keypair
+            if self.encryption_algorithm:
+                provider.encryption_algorithm = self.encryption_algorithm
         if self.assertion_signed:
             provider.signing_kp = CertificateKeyPair.objects.exclude(key_data__iexact="").first()
         # Set all auto-generated Property-mappings as defaults
@@ -115,6 +122,22 @@ class ServiceProviderMetadataParser:
         return CertificateKeyPair(
             certificate_data=raw_cert,
         )
+
+    def get_encryption_algorithm(self, root: etree.Element) -> str | None:
+        """Extract the SP's preferred encryption algorithm from its metadata, when given.
+
+        The SAML V2.0 Metadata Profile for Algorithm Support advertises supported
+        algorithms as `<md:EncryptionMethod>` elements in the SP's order of preference.
+        We honor that order and return the first block cipher we support."""
+        algorithms = root.xpath(
+            '//md:SPSSODescriptor/md:KeyDescriptor[@use="encryption"]'
+            "/md:EncryptionMethod/@Algorithm",
+            namespaces=NS_MAP,
+        )
+        for algorithm in algorithms:
+            if algorithm in ENCRYPTION_ALGORITHM_TRANSLATION_MAP:
+                return algorithm
+        return None
 
     def select_endpoint(
         self, endpoints: list[etree.Element]
@@ -203,6 +226,7 @@ class ServiceProviderMetadataParser:
         if signing_keypair:
             self.check_signature(root, signing_keypair)
         encryption_keypair = self.get_encryption_cert(root)
+        encryption_algorithm = self.get_encryption_algorithm(root)
 
         # Use the first NameIDFormat we support, formats we don't know are skipped
         name_id_policy = SAMLNameIDPolicy.UNSPECIFIED
@@ -224,6 +248,7 @@ class ServiceProviderMetadataParser:
             assertion_signed=assertion_signed,
             signing_keypair=signing_keypair,
             encryption_keypair=encryption_keypair,
+            encryption_algorithm=encryption_algorithm,
             name_id_policy=name_id_policy,
             sls_binding=sls_binding,
             sls_location=sls_location,

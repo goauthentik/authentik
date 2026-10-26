@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { RACDeviceProtocol } from "./RACDeviceProtocol";
-import { RACDeviceProtocolFromJSON } from "./RACDeviceProtocol";
+import type { RACDeviceProtocol } from "./RACDeviceProtocol.js";
+import { RACDeviceProtocolFromJSON } from "./RACDeviceProtocol.js";
 
 /**
  * Device as it can be launched through a RAC provider. Deliberately does not

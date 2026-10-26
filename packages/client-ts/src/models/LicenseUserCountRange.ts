@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
 /**
  * Counts of active users added within a date range.
  *
