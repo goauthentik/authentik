@@ -68,20 +68,32 @@ export class ArrayInput<T> extends AKControlElement<T[]> implements IArrayInput<
 
     #items: Keyed<T>[] = [];
 
+    /**
+     * The last list the parent assigned, serialized. Lit re-assigns it on every parent render.
+     */
+    #assignedItems: string | null = null;
+
     // This magic creates a semi-reliable key on which Lit's `repeat` directive can control its
     // interaction. Without it, we get undefined behavior in the re-rendering of the array.
     @property({ type: Array, attribute: false })
     public set items(nextItems: T[]) {
-        const previousItems = new Map(
-            (this.#items ?? []).map((key, item) => [JSON.stringify(item), key]),
-        );
+        const assignedItems = JSON.stringify(nextItems);
 
-        const resolvedItems = nextItems.map((item) => ({
+        if (assignedItems === this.#assignedItems) return;
+
+        this.#assignedItems = assignedItems;
+
+        const previousKeys = new Map<string, string[]>();
+
+        for (const { item, key } of this.#items) {
+            const serialized = JSON.stringify(item);
+            previousKeys.set(serialized, [...(previousKeys.get(serialized) ?? []), key]);
+        }
+
+        this.#items = nextItems.map((item) => ({
             item,
-            key: previousItems.get(JSON.stringify(item))?.key ?? randomId(),
+            key: previousKeys.get(JSON.stringify(item))?.shift() ?? randomId(),
         }));
-
-        this.#items = resolvedItems;
     }
 
     get items() {
@@ -134,13 +146,28 @@ export class ArrayInput<T> extends AKControlElement<T[]> implements IArrayInput<
         this.dispatchEvent(new Event("change", { composed: true, bubbles: true }));
     }
 
+    /**
+     * Read the rows' current values and keep their keys.
+     */
+    #syncFromDOM(): Keyed<T>[] {
+        const values = this.itemsFromDOM();
+
+        return this.#items.map((entry, idx) => ({ ...entry, item: values[idx] ?? entry.item }));
+    }
+
+    #setKeyedItems(nextItems: Keyed<T>[]) {
+        const previousItems = this.items;
+        this.#items = nextItems;
+        this.requestUpdate("items", previousItems);
+    }
+
     protected changeListener = () => {
-        this.items = this.itemsFromDOM();
+        this.#setKeyedItems(this.#syncFromDOM());
         this.dispatchChangeEvent();
     };
 
     protected addNewGroup = () => {
-        this.items = [...this.itemsFromDOM(), this.newItem()];
+        this.#setKeyedItems([...this.#syncFromDOM(), { key: randomId(), item: this.newItem() }]);
         this.dispatchChangeEvent();
 
         requestAnimationFrame(() => {
@@ -156,9 +183,9 @@ export class ArrayInput<T> extends AKControlElement<T[]> implements IArrayInput<
         }
     }
 
-    protected renderDeleteButton(idx: number): SlottedTemplateResult {
+    protected renderDeleteButton(key: string): SlottedTemplateResult {
         const deleteOneGroup = () => {
-            this.items = [...this.items.slice(0, idx), ...this.items.slice(idx + 1)];
+            this.#setKeyedItems(this.#syncFromDOM().filter((entry) => entry.key !== key));
             this.dispatchChangeEvent();
         };
 
@@ -174,7 +201,7 @@ export class ArrayInput<T> extends AKControlElement<T[]> implements IArrayInput<
                 (item: Keyed<T>) => item.key,
                 (item: Keyed<T>, idx) =>
                     html` <div class="ak-input-group" @change=${() => this.changeListener()}>
-                        ${this.row(item.item, idx)}${this.renderDeleteButton(idx)}
+                        ${this.row(item.item, idx)}${this.renderDeleteButton(item.key)}
                     </div>`,
             )}
             <button class="pf-c-button pf-m-link" type="button" @click=${this.addNewGroup}>

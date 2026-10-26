@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { SAMLProvider } from "./SAMLProvider";
-import { SAMLProviderFromJSON, SAMLProviderToJSON } from "./SAMLProvider";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { SAMLProvider } from "./SAMLProvider.js";
+import { SAMLProviderFromJSON, SAMLProviderToJSON } from "./SAMLProvider.js";
 
 /**
  * @export
