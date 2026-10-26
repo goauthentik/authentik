@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { TelegramSource } from "./TelegramSource";
-import { TelegramSourceFromJSON, TelegramSourceToJSON } from "./TelegramSource";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { TelegramSource } from "./TelegramSource.js";
+import { TelegramSourceFromJSON, TelegramSourceToJSON } from "./TelegramSource.js";
 
 /**
  * @export

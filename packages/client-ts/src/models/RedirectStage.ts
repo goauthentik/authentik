@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { RedirectStageModeEnum } from "./RedirectStageModeEnum";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
+import type { RedirectStageModeEnum } from "./RedirectStageModeEnum.js";
 import {
     RedirectStageModeEnumFromJSON,
     RedirectStageModeEnumToJSON,
-} from "./RedirectStageModeEnum";
+} from "./RedirectStageModeEnum.js";
 
 /**
  * RedirectStage Serializer

@@ -12,15 +12,14 @@ import { parseCWD, reportAndExit } from "./utils/commands.ts";
 import { resolveRepoRoot } from "./utils/git.ts";
 import type { PackageJSON } from "./utils/node.ts";
 import {
-    compareVersions,
     findNPMPackage,
     formatPackageManager,
     loadJSON,
     node,
     parsePackageManager,
-    parseRange,
     pnpm,
     resolvePackageManagerHash,
+    satisfiesRange,
 } from "./utils/node.ts";
 
 import { ConsoleLogger } from "#logger";
@@ -71,11 +70,8 @@ async function main() {
     if (requiredPnpmVersion && pnpmVersion) {
         logger.info(`package.json pnpm ${requiredPnpmVersion}`);
 
-        const { operator, version: required } = parseRange(requiredPnpmVersion);
-        const result = compareVersions(pnpmVersion, required);
-
         assert.ok(
-            operator === ">=" ? result >= 0 : result === 0,
+            satisfiesRange(pnpmVersion, requiredPnpmVersion),
             `pnpm version ${pnpmVersion} does not satisfy required version ${requiredPnpmVersion}`,
         );
     }
@@ -83,11 +79,8 @@ async function main() {
     if (requiredNodeVersion) {
         logger.info(`package.json node ${requiredNodeVersion}`);
 
-        const { operator, version: required } = parseRange(requiredNodeVersion);
-        const result = compareVersions(nodeVersion, required);
-
         assert.ok(
-            operator === ">=" ? result >= 0 : result === 0,
+            satisfiesRange(nodeVersion, requiredNodeVersion),
             `Node.js version ${nodeVersion} does not satisfy required version ${requiredNodeVersion}`,
         );
     }
@@ -113,11 +106,8 @@ async function lintPackageManager(packageManager: string, requiredPnpmVersion?: 
     const spec = parsePackageManager(packageManager);
 
     if (requiredPnpmVersion && spec.name === "pnpm") {
-        const { operator, version: required } = parseRange(requiredPnpmVersion);
-        const result = compareVersions(spec.version, required);
-
         assert.ok(
-            operator === ">=" ? result >= 0 : result === 0,
+            satisfiesRange(spec.version, requiredPnpmVersion),
             `packageManager pins pnpm ${spec.version}, which does not satisfy engines.pnpm ${requiredPnpmVersion}`,
         );
     }

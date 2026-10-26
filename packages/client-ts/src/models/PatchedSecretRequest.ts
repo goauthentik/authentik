@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { SecretTypeEnum } from "./SecretTypeEnum";
-import { SecretTypeEnumFromJSON, SecretTypeEnumToJSON } from "./SecretTypeEnum";
+import type { SecretTypeEnum } from "./SecretTypeEnum.js";
+import { SecretTypeEnumFromJSON, SecretTypeEnumToJSON } from "./SecretTypeEnum.js";
 
 /**
  * Create and configure a secret without exposing its value.
