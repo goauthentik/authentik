@@ -185,11 +185,11 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                                       : msg(
                                             html`API keys can be obtained from the
                                             ${html`<a
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                href=${keyURL}
-                                                >${formatAPISource()}</a
-                                            >.`}`,
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    href=${keyURL}
+                                                    >${formatAPISource()}</a
+                                                >.`}`,
                                             {
                                                 id: "captcha.provider-link",
                                                 desc: "Supplementary help text with link to provider dashboard.",
@@ -365,28 +365,30 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                         )}
                     </p>
                 </ak-form-element-horizontal>
-                ${this.selectedProvider === "cap"
-                    ? html`
-                          <ak-text-input
-                              label=${msg("Cap WASM URL")}
-                              name="capWasmUrl"
-                              type="url"
-                              value="${ifDefined(formValues.capWasmUrl)}"
-                              help=${msg(
-                                  "Optional override for window.CAP_CUSTOM_WASM_URL when self-hosting Cap assets.",
-                              )}
-                          ></ak-text-input>
-                          <ak-text-input
-                              label=${msg("Cap HashWX WASM URL")}
-                              name="capHashwxWasmUrl"
-                              type="url"
-                              value="${ifDefined(formValues.capHashwxWasmUrl)}"
-                              help=${msg(
-                                  "Optional override for window.CAP_CUSTOM_HASHWX_URL for Cap versions with HashWX support.",
-                              )}
-                          ></ak-text-input>
-                      `
-                    : nothing}
+                ${
+                    this.selectedProvider === "cap"
+                        ? html`
+                              <ak-text-input
+                                  label=${msg("Cap WASM URL")}
+                                  name="capWasmUrl"
+                                  type="url"
+                                  value="${ifDefined(formValues.capWasmUrl)}"
+                                  help=${msg(
+                                      "Optional override for window.CAP_CUSTOM_WASM_URL when self-hosting Cap assets.",
+                                  )}
+                              ></ak-text-input>
+                              <ak-text-input
+                                  label=${msg("Cap HashWX WASM URL")}
+                                  name="capHashwxWasmUrl"
+                                  type="url"
+                                  value="${ifDefined(formValues.capHashwxWasmUrl)}"
+                                  help=${msg(
+                                      "Optional override for window.CAP_CUSTOM_HASHWX_URL for Cap versions with HashWX support.",
+                                  )}
+                              ></ak-text-input>
+                          `
+                        : nothing
+                }
             </div>
         </ak-form-group>`;
     }
