@@ -7,11 +7,12 @@ from django.test import RequestFactory
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
 from authentik.crypto.secrets.models import Secret, SecretType
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import OAuth2Provider
 from authentik.providers.oauth2.utils import provider_from_request
+from authentik.providers.proxy.models import ProxyProvider
 
 
 class TestProviderSecret(APITestCase):
@@ -161,3 +162,47 @@ class TestProviderSecret(APITestCase):
             self.assertEqual(
                 loaded.client_secret_ref.secret_value, provider.client_secret_ref.secret_value
             )
+
+    def test_generated_secret_access(self):
+        """Roles that may change every provider can read secrets generated for new ones,
+        without initial permissions, like they could before credentials moved to secrets."""
+        user = create_test_user()
+        user.assign_perms_to_managed_role(
+            [
+                "authentik_providers_oauth2.add_oauth2provider",
+                "authentik_providers_oauth2.view_oauth2provider",
+                "authentik_providers_oauth2.change_oauth2provider",
+            ]
+        )
+        viewer = create_test_user()
+        viewer.assign_perms_to_managed_role("authentik_providers_oauth2.view_oauth2provider")
+        self.client.force_login(user)
+        response = self.client.post(
+            reverse("authentik_api:oauth2provider-list"),
+            data={
+                "name": generate_id(),
+                "authorization_flow": create_test_flow().pk,
+                "invalidation_flow": create_test_flow().pk,
+                "redirect_uris": [],
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 201, response.content)
+        secret = OAuth2Provider.objects.get(pk=response.json()["pk"]).client_secret_ref
+        response = self.client.get(
+            reverse("authentik_api:secret-view-value", kwargs={"pk": secret.pk})
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response.json()["value"], secret.secret_value)
+        self.assertTrue(viewer.has_perm("authentik_crypto_secrets.view_secret", secret))
+        self.assertFalse(viewer.has_perm("authentik_crypto_secrets.view_secret_value", secret))
+
+        # Proxy providers are OAuth2 providers, so their client secrets follow the same
+        # permissions, and their cookie secrets follow proxy provider permissions.
+        proxy = ProxyProvider.objects.create(name=generate_id())
+        self.assertTrue(
+            user.has_perm("authentik_crypto_secrets.view_secret_value", proxy.client_secret_ref)
+        )
+        self.assertFalse(
+            user.has_perm("authentik_crypto_secrets.view_secret", proxy.cookie_secret_ref)
+        )

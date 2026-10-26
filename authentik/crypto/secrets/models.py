@@ -6,9 +6,11 @@ from json import JSONDecodeError, dumps, loads
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, models, transaction
 from django.utils.translation import gettext_lazy as _
+from guardian.models import RoleModelPermission
 from yaml import YAMLError, safe_load
 
 from authentik.admin.utils import get_system_settings
@@ -165,10 +167,14 @@ class GeneratedSecretsMixin:
     """Create the secrets a model needs when it is saved without them.
 
     `generated_secrets` maps each reference field to the suffix of the secret's name and
-    the function that generates its value.
+    the function that generates its value. `secret_value_permission` is the permission
+    on the model that declares a field, "view" or "change", that let roles read the
+    credential through the API before it moved to a secret. It matches `value_permission`
+    in that model's migration.
     """
 
     generated_secrets: dict[str, tuple[str, Callable[[], str]]] = {}
+    secret_value_permission: str | None = None
 
     def save(self, *args, **kwargs):
         missing = [
@@ -178,7 +184,33 @@ class GeneratedSecretsMixin:
             for field in missing:
                 label, generate = self.generated_secrets[field]
                 secret = create_named_secret(f"{self.name} {label}", secret_value=generate())
+                self.grant_generated_secret(field, secret)
                 setattr(self, field, secret)
             if missing and (update_fields := kwargs.get("update_fields")) is not None:
                 kwargs["update_fields"] = {*update_fields, *missing}
             return super().save(*args, **kwargs)
+
+    def grant_generated_secret(self, field: str, secret: Secret) -> None:
+        """Give roles with access to every object of the model that declares `field` the
+        access to a new secret that the credential migrations gave them on existing secrets.
+
+        The migrations go by the declaring model, so a proxy provider's client secret follows
+        OAuth2 provider permissions. Keep in sync with `preserve_permissions` in
+        migrations/_permissions.py. Initial permissions cover the user who creates the object.
+        """
+        owner = self._meta.get_field(field).model
+        model_name = owner._meta.model_name
+        grants = {f"view_{model_name}": ["view_secret"], f"change_{model_name}": ["view_secret"]}
+        if owner.secret_value_permission:
+            grants[f"{owner.secret_value_permission}_{model_name}"].append("view_secret_value")
+        for granted in RoleModelPermission.objects.filter(
+            content_type=ContentType.objects.get_for_model(owner),
+            permission__codename__in=grants,
+        ).select_related("role", "permission"):
+            granted.role.assign_perms(
+                [
+                    f"authentik_crypto_secrets.{perm}"
+                    for perm in grants[granted.permission.codename]
+                ],
+                secret,
+            )

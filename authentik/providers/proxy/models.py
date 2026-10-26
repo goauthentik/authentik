@@ -78,6 +78,8 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         **OAuth2Provider.generated_secrets,
         "cookie_secret_ref": ("cookie secret", get_cookie_secret),
     }
+    # Only outposts read cookie secrets, so no role gets access to their values.
+    secret_value_permission = None
 
     internal_host = models.TextField(
         validators=[DomainlessURLValidator(schemes=("http", "https"))],
