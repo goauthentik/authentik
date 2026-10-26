@@ -10,15 +10,15 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { ContentTypeEnum } from "./ContentTypeEnum";
-import { ContentTypeEnumFromJSON, ContentTypeEnumToJSON } from "./ContentTypeEnum";
-import type { LifecycleIterationStateEnum } from "./LifecycleIterationStateEnum";
-import { LifecycleIterationStateEnumFromJSON } from "./LifecycleIterationStateEnum";
-import type { RelatedRule } from "./RelatedRule";
-import { RelatedRuleFromJSON } from "./RelatedRule";
-import type { Review } from "./Review";
-import { ReviewFromJSON } from "./Review";
+import { parseDateTime } from "../runtime.js";
+import type { ContentTypeEnum } from "./ContentTypeEnum.js";
+import { ContentTypeEnumFromJSON, ContentTypeEnumToJSON } from "./ContentTypeEnum.js";
+import type { LifecycleIterationStateEnum } from "./LifecycleIterationStateEnum.js";
+import { LifecycleIterationStateEnumFromJSON } from "./LifecycleIterationStateEnum.js";
+import type { RelatedRule } from "./RelatedRule.js";
+import { RelatedRuleFromJSON } from "./RelatedRule.js";
+import type { Review } from "./Review.js";
+import { ReviewFromJSON } from "./Review.js";
 
 /**
  * Mixin to validate that a valid enterprise license

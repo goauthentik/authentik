@@ -13,18 +13,18 @@
 import {
     type PaginatedSecretList,
     PaginatedSecretListFromJSON,
-} from "../models/PaginatedSecretList";
+} from "../models/PaginatedSecretList.js";
 import {
     type PatchedSecretRequest,
     PatchedSecretRequestToJSON,
-} from "../models/PatchedSecretRequest";
-import { type RotatedSecret, RotatedSecretFromJSON } from "../models/RotatedSecret";
-import { type Secret, SecretFromJSON } from "../models/Secret";
-import { type SecretRequest, SecretRequestToJSON } from "../models/SecretRequest";
-import { type SecretTypeEnum } from "../models/SecretTypeEnum";
-import { type SecretValue, SecretValueFromJSON } from "../models/SecretValue";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import * as runtime from "../runtime";
+} from "../models/PatchedSecretRequest.js";
+import { type RotatedSecret, RotatedSecretFromJSON } from "../models/RotatedSecret.js";
+import { type Secret, SecretFromJSON } from "../models/Secret.js";
+import { type SecretRequest, SecretRequestToJSON } from "../models/SecretRequest.js";
+import { type SecretTypeEnum } from "../models/SecretTypeEnum.js";
+import { type SecretValue, SecretValueFromJSON } from "../models/SecretValue.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
+import * as runtime from "../runtime.js";
 
 export interface SecretsSecretsCreateRequest {
     secretRequest: SecretRequest;

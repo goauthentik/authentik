@@ -10,12 +10,12 @@
  * Do not edit the class manually.
  */
 
-import type { AuthTypeEnum } from "./AuthTypeEnum";
-import { AuthTypeEnumFromJSON, AuthTypeEnumToJSON } from "./AuthTypeEnum";
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { ProviderEnum } from "./ProviderEnum";
-import { ProviderEnumFromJSON, ProviderEnumToJSON } from "./ProviderEnum";
+import type { AuthTypeEnum } from "./AuthTypeEnum.js";
+import { AuthTypeEnumFromJSON, AuthTypeEnumToJSON } from "./AuthTypeEnum.js";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
+import type { ProviderEnum } from "./ProviderEnum.js";
+import { ProviderEnumFromJSON, ProviderEnumToJSON } from "./ProviderEnum.js";
 
 /**
  * AuthenticatorSMSStage Serializer

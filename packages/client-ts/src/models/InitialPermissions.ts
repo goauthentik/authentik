@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { Permission } from "./Permission";
-import { PermissionFromJSON } from "./Permission";
+import type { Permission } from "./Permission.js";
+import { PermissionFromJSON } from "./Permission.js";
 
 /**
  * InitialPermissions serializer
