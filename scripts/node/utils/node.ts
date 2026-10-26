@@ -125,19 +125,29 @@ export const node = $.bind("node");
 export const pnpm = $.bind("pnpm");
 
 /**
- * Parses a version range string, stripping any leading >= and normalizing to three parts.
+ * Checks a version against a range of `||`-separated comparators.
+ *
+ * Supports `>=1.2.3`, `^1.2.3`, and exact versions; missing parts count as zero.
  */
-export function parseRange(range: string): { operator: ">=" | "="; version: string } {
-    const hasGte = range.startsWith(">=");
-    const raw = hasGte ? range.slice(2) : range;
-    const parts = raw.split(".").map(Number);
+export function satisfiesRange(version: string, range: string): boolean {
+    return range.split("||").some((part) => {
+        const comparator = part.trim();
 
-    while (parts.length < 3) parts.push(0);
+        if (comparator.startsWith(">=")) {
+            return compareVersions(version, comparator.slice(2)) >= 0;
+        }
 
-    return {
-        operator: hasGte ? ">=" : "=",
-        version: parts.join("."),
-    };
+        if (comparator.startsWith("^")) {
+            const required = comparator.slice(1);
+
+            return (
+                version.split(".")[0] === required.split(".")[0] &&
+                compareVersions(version, required) >= 0
+            );
+        }
+
+        return compareVersions(version, comparator) === 0;
+    });
 }
 
 //#endregion

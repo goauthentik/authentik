@@ -7,7 +7,7 @@ import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminS
 
 import { P4Disposition } from "#styles/patternfly/constants";
 
-import { AdminApi, OutpostsApi, SystemInfo } from "@goauthentik/api";
+import { AdminApi, SystemInfo } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
@@ -25,41 +25,8 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
 
     async getPrimaryValue(): Promise<SystemInfo> {
         this.now = new Date();
-        let status = await aki(AdminApi).adminSystemRetrieve();
 
-        if (
-            !status.embeddedOutpostDisabled &&
-            (status.embeddedOutpostHost === "" || !status.embeddedOutpostHost.includes("http"))
-        ) {
-            // First install, ensure the embedded outpost host is set
-            // also run when outpost host does not contain http
-            // (yes it's called host and requires a URL, i know)
-            // TODO: Improve this in OOB flow
-            await this.setOutpostHost();
-            status = await aki(AdminApi).adminSystemRetrieve();
-        }
-
-        return status;
-    }
-
-    // Called on fresh installations and whenever the embedded outpost is deleted
-    // automatically send the login URL when the user first visits the admin dashboard.
-    async setOutpostHost(): Promise<void> {
-        const outposts = await aki(OutpostsApi).outpostsInstancesList({
-            managedIexact: "goauthentik.io/outposts/embedded",
-        });
-
-        if (outposts.results.length < 1) {
-            return;
-        }
-
-        const outpost = outposts.results[0];
-        outpost.config.authentik_host = window.location.origin;
-
-        await aki(OutpostsApi).outpostsInstancesUpdate({
-            uuid: outpost.pk,
-            outpostRequest: outpost,
-        });
+        return await aki(AdminApi).adminSystemRetrieve();
     }
 
     getStatus(value: SystemInfo): Promise<AdminStatus> {

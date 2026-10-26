@@ -11,20 +11,8 @@ const FIXTURE = resolve(__dirname, "__fixtures__", "site");
 
 const ROUTES = ["/", "/releases/2026.5/", "/topic-a/", "/topic-a/page-one/", "/topic-b/page-two/"];
 
-test("assignGroup uses first segment for topic grouping", () => {
-    const doc = { path: "topic-a/page-one" };
-    assert.equal(assignGroup(doc, { groupBy: "topic" }), "topic-a");
-});
-
-test("assignGroup returns the slug for category grouping (not the label)", () => {
-    const doc = { path: "cloud-providers/aws" };
-    assert.equal(
-        assignGroup(doc, {
-            groupBy: "category",
-            categories: [["cloud-providers", "Cloud Providers"]],
-        }),
-        "cloud-providers",
-    );
+test("assignGroup returns the first path segment (slug), not the category label", () => {
+    assert.equal(assignGroup({ path: "cloud-providers/aws" }), "cloud-providers");
 });
 
 test("groupLabel resolves the display label from the slug", () => {
