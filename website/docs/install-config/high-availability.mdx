@@ -15,6 +15,8 @@ authentik supports high availability in several ways:
 
 authentik server and worker instances are stateless. All session state and configuration data is stored in the database. This statelessness makes it easy to horizontally scale authentik deployments by adding more server and worker instances, ensuring resilience and fault tolerance.
 
+Persistent files require separate storage. When using the file backend, share the configured storage directories for uploaded media and generated reports as writable persistent storage across all server and worker replicas that access them. Alternatively, configure S3-compatible storage for each of those usages. See [File storage requirements](../customize/files.mdx#storage-requirements).
+
 If a server or worker instance goes offline, another instance can continue to serve traffic. If these instances are distributed among multiple hosts, it can provide even higher levels of resilience and fault tolerance.
 
 ## PostgreSQL high availability
