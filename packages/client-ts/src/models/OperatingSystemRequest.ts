@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { DeviceFactsOSFamily } from "./DeviceFactsOSFamily";
-import { DeviceFactsOSFamilyFromJSON, DeviceFactsOSFamilyToJSON } from "./DeviceFactsOSFamily";
+import type { DeviceFactsOSFamily } from "./DeviceFactsOSFamily.js";
+import { DeviceFactsOSFamilyFromJSON, DeviceFactsOSFamilyToJSON } from "./DeviceFactsOSFamily.js";
 
 /**
  * For example:

@@ -48,8 +48,10 @@ from authentik.sources.saml.exceptions import (
     MismatchedAudience,
     MismatchedBinding,
     MismatchedRequestID,
+    MissingNameID,
     MissingSAMLResponse,
     SAMLException,
+    UnsuccessfulStatus,
     UnsupportedNameIDFormat,
 )
 from authentik.sources.saml.models import (
@@ -127,7 +129,7 @@ class ResponseProcessor:
 
         encrypted_assertion = self._root.find(f".//{{{NS_SAML_ASSERTION}}}EncryptedAssertion")
         if encrypted_assertion is None:
-            raise InvalidEncryption()
+            raise InvalidEncryption("Response does not contain an EncryptedAssertion element.")
         # Register Id attributes so a KeyInfo RetrievalMethod referencing a sibling
         # EncryptedKey by #Id can be resolved by xmlsec
         xmlsec.tree.add_ids(encrypted_assertion, ["Id"])
@@ -137,7 +139,7 @@ class ResponseProcessor:
         try:
             decrypted_assertion = encryption_context.decrypt(encrypted_data)
         except xmlsec.Error as exc:
-            raise InvalidEncryption() from exc
+            raise InvalidEncryption(f"Failed to decrypt assertion: {exc}") from exc
 
         index_of = self._root.index(encrypted_assertion)
         self._root.remove(encrypted_assertion)
@@ -351,16 +353,31 @@ class ResponseProcessor:
         if status is None:
             return
         status_code = status.find(f"{{{NS_SAML_PROTOCOL}}}StatusCode")
+        status_value = status_code.attrib.get("Value") if status_code is not None else None
+        # The second-level StatusCode carries the actual reason (e.g. RequestDenied, AuthnFailed);
+        # the top-level code only says which party is at fault
+        nested_status_code = (
+            status_code.find(f"{{{NS_SAML_PROTOCOL}}}StatusCode")
+            if status_code is not None
+            else None
+        )
+        nested_value = (
+            nested_status_code.attrib.get("Value") if nested_status_code is not None else None
+        )
         message = status.find(f"{{{NS_SAML_PROTOCOL}}}StatusMessage")
         message_text = message.text if message is not None else None
         detail = status.find(f"{{{NS_SAML_PROTOCOL}}}StatusDetail")
         detail_text = etree.tostring(detail, encoding="unicode") if detail is not None else None
-        if status_code.attrib.get("Value") != SAML_STATUS_SUCCESS:
-            if detail_text and message_text:
-                raise ValueError(f"{message_text}: {detail_text}")
-            raise ValueError(
-                detail_text or message_text or f"SAML Status: {status_code.attrib.get('Value')}"
+        if status_value != SAML_STATUS_SUCCESS:
+            LOGGER.warning(
+                "SAML Response has an unsuccessful status",
+                status_code=status_value,
+                nested_status_code=nested_value,
+                message=message_text,
+                detail=detail_text,
             )
+            parts = [nested_value or status_value or "SAML Status", message_text, detail_text]
+            raise UnsuccessfulStatus(": ".join(part for part in parts if part))
         if message_text or detail_text:
             LOGGER.debug("SAML Status message", message=message_text, detail=detail_text)
 
@@ -414,13 +431,13 @@ class ResponseProcessor:
         """Get NameID Element"""
         assertion = self.get_assertion()
         if assertion is None:
-            raise ValueError("Assertion element not found")
+            raise MissingNameID("Assertion element not found")
         subject = assertion.find(f"{{{NS_SAML_ASSERTION}}}Subject")
         if subject is None:
-            raise ValueError("Subject element not found")
+            raise MissingNameID("Subject element not found")
         name_id = subject.find(f"{{{NS_SAML_ASSERTION}}}NameID")
         if name_id is None:
-            raise ValueError("NameID element not found")
+            raise MissingNameID("NameID element not found")
         return name_id, get_element_text(name_id)
 
     def _get_name_id_filter(self) -> dict[str, str]:
