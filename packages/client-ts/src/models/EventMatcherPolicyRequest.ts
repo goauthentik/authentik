@@ -10,12 +10,12 @@
  * Do not edit the class manually.
  */
 
-import type { AppEnum } from "./AppEnum";
-import { AppEnumFromJSON, AppEnumToJSON } from "./AppEnum";
-import type { EventActions } from "./EventActions";
-import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
-import type { ModelEnum } from "./ModelEnum";
-import { ModelEnumFromJSON, ModelEnumToJSON } from "./ModelEnum";
+import type { AppEnum } from "./AppEnum.js";
+import { AppEnumFromJSON, AppEnumToJSON } from "./AppEnum.js";
+import type { EventActions } from "./EventActions.js";
+import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions.js";
+import type { ModelEnum } from "./ModelEnum.js";
+import { ModelEnumFromJSON, ModelEnumToJSON } from "./ModelEnum.js";
 
 /**
  * Event Matcher Policy Serializer
