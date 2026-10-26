@@ -48,9 +48,11 @@ def pytest_runtest_setup(item: Item):
     """In-memory caches outlive each test's transaction rollback, so start every test empty"""
     from authentik.admin.utils import get_system_settings
     from authentik.brands.utils import get_brand_for_request
+    from authentik.enterprise.license import LicenseKey
 
     get_brand_for_request.cache_clear()
     get_system_settings.cache_clear()
+    LicenseKey.cached_summary.cache_clear()
 
 
 def pytest_collection_modifyitems(config: Config, items: list[Item]) -> None:
