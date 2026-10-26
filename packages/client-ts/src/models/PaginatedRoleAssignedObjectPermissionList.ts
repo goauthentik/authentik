@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { RoleAssignedObjectPermission } from "./RoleAssignedObjectPermission";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { RoleAssignedObjectPermission } from "./RoleAssignedObjectPermission.js";
 import {
     RoleAssignedObjectPermissionFromJSON,
     RoleAssignedObjectPermissionToJSON,
-} from "./RoleAssignedObjectPermission";
+} from "./RoleAssignedObjectPermission.js";
 
 /**
  * @export

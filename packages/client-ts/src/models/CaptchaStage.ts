@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { RequestContentTypeEnum } from "./RequestContentTypeEnum";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
+import type { RequestContentTypeEnum } from "./RequestContentTypeEnum.js";
 import {
     RequestContentTypeEnumFromJSON,
     RequestContentTypeEnumToJSON,
-} from "./RequestContentTypeEnum";
+} from "./RequestContentTypeEnum.js";
 
 /**
  * CaptchaStage Serializer

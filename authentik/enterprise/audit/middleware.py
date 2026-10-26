@@ -104,11 +104,11 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
         **_,
     ):
         if not self.is_current_request(request):
-            return
-        if not self.enabled:
-            return super().post_save_handler(request, sender, instance, created, thread_kwargs, **_)
+            return None
         if not should_log_model(instance):
             return None
+        if not self.enabled:
+            return super().post_save_handler(request, sender, instance, created, thread_kwargs, **_)
         thread_kwargs = {}
         if hasattr(instance, "_previous_state") or created:
             prev_state = getattr(instance, "_previous_state", {})
