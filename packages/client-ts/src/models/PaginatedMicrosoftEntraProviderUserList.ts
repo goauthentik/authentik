@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { MicrosoftEntraProviderUser } from "./MicrosoftEntraProviderUser";
+import type { MicrosoftEntraProviderUser } from "./MicrosoftEntraProviderUser.js";
 import {
     MicrosoftEntraProviderUserFromJSON,
     MicrosoftEntraProviderUserToJSON,
-} from "./MicrosoftEntraProviderUser";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./MicrosoftEntraProviderUser.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

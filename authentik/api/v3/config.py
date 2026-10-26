@@ -61,6 +61,8 @@ class ConfigSerializer(PassiveSerializer):
     cache_timeout = IntegerField(required=True)
     cache_timeout_flows = IntegerField(required=True)
     cache_timeout_policies = IntegerField(required=True)
+    cache_timeout_brands = IntegerField(required=True)
+    cache_timeout_system_settings = IntegerField(required=True)
 
 
 class ConfigView(APIView):
@@ -106,6 +108,8 @@ class ConfigView(APIView):
                 "cache_timeout": CONFIG.get_int("cache.timeout"),
                 "cache_timeout_flows": CONFIG.get_int("cache.timeout_flows"),
                 "cache_timeout_policies": CONFIG.get_int("cache.timeout_policies"),
+                "cache_timeout_brands": CONFIG.get_int("cache.timeout_brands"),
+                "cache_timeout_system_settings": CONFIG.get_int("cache.timeout_system_settings"),
             }
         )
 
