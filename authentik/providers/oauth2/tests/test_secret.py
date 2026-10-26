@@ -1,6 +1,9 @@
 """Test OAuth2 provider secret handling"""
 
+from base64 import b64encode
+
 from django.core.exceptions import ValidationError
+from django.test import RequestFactory
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
@@ -8,6 +11,7 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.crypto.secrets.models import Secret, SecretType
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import OAuth2Provider
+from authentik.providers.oauth2.utils import provider_from_request
 
 
 class TestProviderSecret(APITestCase):
@@ -146,3 +150,14 @@ class TestProviderSecret(APITestCase):
         """Generated client secrets don't depend on the default token length setting."""
         provider = OAuth2Provider.objects.create(name=generate_id())
         self.assertEqual(len(provider.client_secret_ref.secret_value), 128)
+
+    def test_client_auth_loads_secret(self):
+        """Authenticating a client reads its secret without another query."""
+        provider = OAuth2Provider.objects.create(name=generate_id())
+        credentials = b64encode(f"{provider.client_id}:secret".encode()).decode()
+        request = RequestFactory().post("/", HTTP_AUTHORIZATION=f"Basic {credentials}")
+        loaded, _, _ = provider_from_request(request)
+        with self.assertNumQueries(0):
+            self.assertEqual(
+                loaded.client_secret_ref.secret_value, provider.client_secret_ref.secret_value
+            )
