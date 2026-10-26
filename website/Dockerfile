@@ -62,7 +62,7 @@ COPY ./SECURITY.md /work/
 
 RUN pnpm run build
 
-FROM docker.io/library/nginx:1.31.6-trixie@sha256:60f0d4e986561e08804f75c211dcaf7fc5455699eada29f42cbe8a0a7253dd86
+FROM docker.io/library/nginx:1.31.8-trixie@sha256:6e67f8eaac94fc456588d4ff6c470d984841f5b5dc4279863d5cbe6ec5a60def
 LABEL org.opencontainers.image.authors="Authentik Security Inc." \
     org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
     org.opencontainers.image.description="authentik product documentation" \
