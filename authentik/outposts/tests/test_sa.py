@@ -2,6 +2,7 @@
 
 from concurrent.futures import ThreadPoolExecutor
 from threading import Barrier
+from unittest.mock import patch
 
 from django.apps import apps
 from django.contrib.auth.management import create_permissions
@@ -9,6 +10,7 @@ from django.db import close_old_connections, transaction
 from django.test import TestCase, TransactionTestCase
 
 from authentik.core.tests.utils import create_test_cert, create_test_flow
+from authentik.events.models import Event, EventAction
 from authentik.outposts.models import Outpost, OutpostType
 from authentik.providers.proxy.models import ProxyProvider
 
@@ -100,6 +102,30 @@ class OutpostTests(TestCase):
             set(user.get_all_model_perms_on_managed_role().values_list("pk", flat=True)),
             model_rows,
         )
+
+    def test_service_account_permissions_missing(self):
+        """Test that a missing permission keeps the existing permissions"""
+        outpost: Outpost = Outpost.objects.create(
+            name="test",
+            type=OutpostType.PROXY,
+        )
+        user = outpost.user
+        rows = set(user.get_all_obj_perms_on_managed_role().values_list("pk", flat=True))
+        model_rows = set(user.get_all_model_perms_on_managed_role().values_list("pk", flat=True))
+        with patch.object(
+            Outpost,
+            "get_required_objects",
+            return_value=["authentik_outposts.missing_permission", outpost],
+        ):
+            outpost.build_user_permissions(user)
+        self.assertEqual(
+            set(user.get_all_obj_perms_on_managed_role().values_list("pk", flat=True)), rows
+        )
+        self.assertEqual(
+            set(user.get_all_model_perms_on_managed_role().values_list("pk", flat=True)),
+            model_rows,
+        )
+        self.assertTrue(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
 
 
 class OutpostPermissionConcurrencyTests(TransactionTestCase):
