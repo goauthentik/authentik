@@ -7,7 +7,7 @@ support_level: community
 
 ## What is Claude Code?
 
-[Claude Code](https://code.claude.com/) is Anthropic's coding agent. This guide covers its local command-line interface.
+[Claude Code](https://code.claude.com/) is Anthropic's coding agent. This guide covers command-line use, locally or over SSH.
 
 This guide configures the authentik Agent to authenticate Claude Code using Workload Identity Federation (WIF). The Agent exchanges a signed JSON Web Token (JWT) for a short-lived Anthropic access token, which Claude Code retrieves through its `apiKeyHelper` setting.
 
@@ -15,7 +15,7 @@ This integration allows administrators to centrally manage which developers can 
 
 The integration uses one existing or new authentik OAuth2/OpenID Connect application, a group of authorized developers, one shared Anthropic service account, and one federation rule per workspace. Developers share the helper configuration, but each signs in to their own authentik Agent profile.
 
-For authentication of non-interactive workloads, see [Integrate with Anthropic Workload Identity Federation](../../platforms/anthropic-workload-identity-federation/index.mdx).
+The helper can also be used for non-interactive workloads. For an alternative machine-to-machine setup without the Agent, see [Integrate with Anthropic Workload Identity Federation](../../platforms/anthropic-workload-identity-federation/index.mdx).
 
 ## Preparation
 
@@ -177,7 +177,7 @@ The CLI prints only the Anthropic access token to stdout, without JSON or a `Bea
 
 The Agent separately caches the authentik JWT and Anthropic access token. The Anthropic cache uses the exchange response's actual `expires_in`; current cache handling rejects credentials within five seconds of expiration. Reinvoking the helper does not necessarily contact authentik or Anthropic.
 
-Developers do not need to configure an Anthropic API key. If they use multiple authentik profiles, select the intended profile before starting Claude Code, or add `--profile <profile_name>` before `auth` in the helper command.```
+Developers do not need to configure an Anthropic API key. If they use multiple authentik profiles, select the intended profile before starting Claude Code, or add `--profile <profile_name>` before `auth` in the helper command.
 
 ### Configure token refresh
 
