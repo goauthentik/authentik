@@ -56,9 +56,6 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
 
 preload_app = True
 
-max_requests = CONFIG.get_int("web.max_requests", 1000)
-max_requests_jitter = CONFIG.get_int("web.max_requests_jitter", 50)
-
 # Match the value in packages/ak-common/src/arbiter.rs for graceful shutdown
 timeout = 30
 graceful_timeout = 30
