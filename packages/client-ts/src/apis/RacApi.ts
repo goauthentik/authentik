@@ -10,25 +10,25 @@
  * Do not edit the class manually.
  */
 
-import { type ConnectionToken, ConnectionTokenFromJSON } from "../models/ConnectionToken";
+import { type ConnectionToken, ConnectionTokenFromJSON } from "../models/ConnectionToken.js";
 import {
     type ConnectionTokenRequest,
     ConnectionTokenRequestToJSON,
-} from "../models/ConnectionTokenRequest";
+} from "../models/ConnectionTokenRequest.js";
 import {
     type PaginatedConnectionTokenList,
     PaginatedConnectionTokenListFromJSON,
-} from "../models/PaginatedConnectionTokenList";
+} from "../models/PaginatedConnectionTokenList.js";
 import {
     type PaginatedRACDeviceList,
     PaginatedRACDeviceListFromJSON,
-} from "../models/PaginatedRACDeviceList";
+} from "../models/PaginatedRACDeviceList.js";
 import {
     type PatchedConnectionTokenRequest,
     PatchedConnectionTokenRequestToJSON,
-} from "../models/PatchedConnectionTokenRequest";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import * as runtime from "../runtime";
+} from "../models/PatchedConnectionTokenRequest.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
+import * as runtime from "../runtime.js";
 
 export interface RacConnectionTokensDestroyRequest {
     /**
