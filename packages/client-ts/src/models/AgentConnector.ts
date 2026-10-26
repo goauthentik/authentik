@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,22 +11,12 @@
  */
 
 /**
- *
  * @export
  * @interface AgentConnector
  */
 export interface AgentConnector {
-    /**
-     *
-     */
     connectorUuid?: string;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     enabled?: boolean;
     /**
      * Get object component so that we know how to edit the object
@@ -46,49 +34,16 @@ export interface AgentConnector {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     snapshotExpiry?: string;
-    /**
-     *
-     */
     authSessionDuration?: string;
-    /**
-     *
-     */
     authTerminateSessionOnExpiry?: boolean;
-    /**
-     *
-     */
     refreshInterval?: string;
-    /**
-     *
-     */
     authorizationFlow?: string | null;
-    /**
-     *
-     */
     nssUidOffset?: number;
-    /**
-     *
-     */
     nssGidOffset?: number;
-    /**
-     *
-     */
     challengeKey?: string | null;
-    /**
-     *
-     */
     challengeIdleTimeout?: string;
-    /**
-     *
-     */
     challengeTriggerCheckIn?: boolean;
-    /**
-     *
-     */
     jwtFederationProviders?: Array<number>;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,28 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { GrantRequest } from "./GrantRequest";
-import { GrantRequestFromJSON, GrantRequestToJSON } from "./GrantRequest";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { GrantRequest } from "./GrantRequest.js";
+import { GrantRequestFromJSON, GrantRequestToJSON } from "./GrantRequest.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedGrantRequestList
  */
 export interface PaginatedGrantRequestList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<GrantRequest>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

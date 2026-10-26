@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,31 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { GroupSAMLSourceConnection } from "./GroupSAMLSourceConnection";
+import type { GroupSAMLSourceConnection } from "./GroupSAMLSourceConnection.js";
 import {
     GroupSAMLSourceConnectionFromJSON,
     GroupSAMLSourceConnectionToJSON,
-} from "./GroupSAMLSourceConnection";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./GroupSAMLSourceConnection.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedGroupSAMLSourceConnectionList
  */
 export interface PaginatedGroupSAMLSourceConnectionList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<GroupSAMLSourceConnection>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

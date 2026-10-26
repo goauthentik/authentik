@@ -1,5 +1,4 @@
 import "#elements/forms/DeleteBulkForm";
-
 import { aki } from "#common/api/client";
 
 import { WithLocale } from "#elements/mixins/locale";
@@ -65,6 +64,7 @@ export class AuthenticatedSessionList extends WithLocale(Table<AuthenticatedSess
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Session(s)")}
             .objects=${this.selectedElements}
@@ -93,15 +93,18 @@ export class AuthenticatedSessionList extends WithLocale(Table<AuthenticatedSess
 
     row(item: AuthenticatedSession): SlottedTemplateResult[] {
         const location = this.formatLocation(item.geoIp);
+
         const device = [item.userAgent.userAgent?.family, item.userAgent.os?.family]
             .filter(Boolean)
             .join(", ");
 
         return [
             html`<div>
-                    ${item.geoIp?.country
-                        ? html`${getUnicodeFlagIcon(item.geoIp.country)}&nbsp;`
-                        : nothing}
+                    ${
+                        item.geoIp?.country
+                            ? html`${getUnicodeFlagIcon(item.geoIp.country)}&nbsp;`
+                            : nothing
+                    }
                     ${item.current ? html`${msg("(Current session)")}&nbsp;` : nothing}
                     ${item.lastIp}
                 </div>

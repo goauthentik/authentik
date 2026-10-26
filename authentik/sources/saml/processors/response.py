@@ -11,6 +11,7 @@ import xmlsec
 from django.core.cache import cache
 from django.core.exceptions import SuspiciousOperation
 from django.http import HttpRequest
+from django.urls import reverse
 from django.utils.timezone import now
 from lxml import etree  # nosec
 from lxml.etree import _Element  # nosec
@@ -23,6 +24,7 @@ from authentik.common.saml.constants import (
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_PERSISTENT,
     SAML_NAME_ID_FORMAT_TRANSIENT,
+    SAML_NAME_ID_FORMAT_UNSPECIFIED,
     SAML_NAME_ID_FORMAT_WINDOWS,
     SAML_NAME_ID_FORMAT_X509,
     SAML_STATUS_SUCCESS,
@@ -42,10 +44,14 @@ from authentik.lib.xml import lxml_from_string
 from authentik.sources.saml.exceptions import (
     InvalidEncryption,
     InvalidSignature,
+    InvalidTime,
+    MismatchedAudience,
     MismatchedBinding,
     MismatchedRequestID,
+    MissingNameID,
     MissingSAMLResponse,
     SAMLException,
+    UnsuccessfulStatus,
     UnsupportedNameIDFormat,
 )
 from authentik.sources.saml.models import (
@@ -123,7 +129,7 @@ class ResponseProcessor:
 
         encrypted_assertion = self._root.find(f".//{{{NS_SAML_ASSERTION}}}EncryptedAssertion")
         if encrypted_assertion is None:
-            raise InvalidEncryption()
+            raise InvalidEncryption("Response does not contain an EncryptedAssertion element.")
         # Register Id attributes so a KeyInfo RetrievalMethod referencing a sibling
         # EncryptedKey by #Id can be resolved by xmlsec
         xmlsec.tree.add_ids(encrypted_assertion, ["Id"])
@@ -133,7 +139,7 @@ class ResponseProcessor:
         try:
             decrypted_assertion = encryption_context.decrypt(encrypted_data)
         except xmlsec.Error as exc:
-            raise InvalidEncryption() from exc
+            raise InvalidEncryption(f"Failed to decrypt assertion: {exc}") from exc
 
         index_of = self._root.index(encrypted_assertion)
         self._root.remove(encrypted_assertion)
@@ -151,11 +157,29 @@ class ResponseProcessor:
         before = conditions.attrib.get("NotBefore")
         if before:
             if datetime.fromisoformat(before).replace(tzinfo=UTC) > _now:
-                raise SAMLException("Assertion is not valid yet or expired.")
+                raise InvalidTime()
         on_or_after = conditions.attrib.get("NotOnOrAfter")
         if on_or_after:
             if datetime.fromisoformat(on_or_after).replace(tzinfo=UTC) < _now:
-                raise SAMLException("Assertion is not valid yet or expired.")
+                raise InvalidTime()
+        self._verify_audience(conditions)
+
+    def _verify_audience(self, conditions: _Element):
+        """Verify that our entity ID is listed as an audience of the assertion. Each
+        AudienceRestriction is evaluated independently and must contain a matching Audience."""
+        entity_id = self._source.get_issuer(self._http_request)
+        for restriction in conditions.findall(f"{{{NS_SAML_ASSERTION}}}AudienceRestriction"):
+            audiences = [
+                get_element_text(audience).strip()
+                for audience in restriction.findall(f"{{{NS_SAML_ASSERTION}}}Audience")
+            ]
+            if entity_id not in audiences:
+                LOGGER.warning(
+                    "Assertion audience does not match source entity ID",
+                    entity_id=entity_id,
+                    audiences=audiences,
+                )
+                raise MismatchedAudience()
 
     def _verify_signature(self, signature_node: _Element, target: _Element):
         """Verify a single signature node against the given target element."""
@@ -254,7 +278,9 @@ class ResponseProcessor:
         destination = self._root.attrib.get("Destination")
         if not destination:
             return
-        acs_url = self._source.build_full_url(self._http_request)
+        acs_url = self._http_request.build_absolute_uri(
+            reverse("authentik_sources_saml:acs", kwargs={"source_slug": self._source.slug})
+        )
         if destination.lower() != acs_url.lower():
             LOGGER.warning(
                 "Destination of Response does not match ACS URL",
@@ -284,7 +310,9 @@ class ResponseProcessor:
         """Check one SubjectConfirmationData"""
         recipient = data.attrib.get("Recipient")
         if recipient:
-            acs_url = self._source.build_full_url(self._http_request)
+            acs_url = self._http_request.build_absolute_uri(
+                reverse("authentik_sources_saml:acs", kwargs={"source_slug": self._source.slug})
+            )
             if recipient.lower() != acs_url.lower():
                 LOGGER.warning(
                     "Recipient of assertion does not match ACS URL",
@@ -295,7 +323,7 @@ class ResponseProcessor:
         on_or_after = data.attrib.get("NotOnOrAfter")
         if on_or_after:
             if datetime.fromisoformat(on_or_after).replace(tzinfo=UTC) < now():
-                raise SAMLException("Assertion is not valid yet or expired.")
+                raise InvalidTime()
         in_response_to = data.attrib.get("InResponseTo")
         if in_response_to and not self._source.allow_idp_initiated:
             if in_response_to != self._http_request.session.get(SESSION_KEY_REQUEST_ID):
@@ -325,16 +353,31 @@ class ResponseProcessor:
         if status is None:
             return
         status_code = status.find(f"{{{NS_SAML_PROTOCOL}}}StatusCode")
+        status_value = status_code.attrib.get("Value") if status_code is not None else None
+        # The second-level StatusCode carries the actual reason (e.g. RequestDenied, AuthnFailed);
+        # the top-level code only says which party is at fault
+        nested_status_code = (
+            status_code.find(f"{{{NS_SAML_PROTOCOL}}}StatusCode")
+            if status_code is not None
+            else None
+        )
+        nested_value = (
+            nested_status_code.attrib.get("Value") if nested_status_code is not None else None
+        )
         message = status.find(f"{{{NS_SAML_PROTOCOL}}}StatusMessage")
         message_text = message.text if message is not None else None
         detail = status.find(f"{{{NS_SAML_PROTOCOL}}}StatusDetail")
         detail_text = etree.tostring(detail, encoding="unicode") if detail is not None else None
-        if status_code.attrib.get("Value") != SAML_STATUS_SUCCESS:
-            if detail_text and message_text:
-                raise ValueError(f"{message_text}: {detail_text}")
-            raise ValueError(
-                detail_text or message_text or f"SAML Status: {status_code.attrib.get('Value')}"
+        if status_value != SAML_STATUS_SUCCESS:
+            LOGGER.warning(
+                "SAML Response has an unsuccessful status",
+                status_code=status_value,
+                nested_status_code=nested_value,
+                message=message_text,
+                detail=detail_text,
             )
+            parts = [nested_value or status_value or "SAML Status", message_text, detail_text]
+            raise UnsuccessfulStatus(": ".join(part for part in parts if part))
         if message_text or detail_text:
             LOGGER.debug("SAML Status message", message=message_text, detail=detail_text)
 
@@ -388,13 +431,13 @@ class ResponseProcessor:
         """Get NameID Element"""
         assertion = self.get_assertion()
         if assertion is None:
-            raise ValueError("Assertion element not found")
+            raise MissingNameID("Assertion element not found")
         subject = assertion.find(f"{{{NS_SAML_ASSERTION}}}Subject")
         if subject is None:
-            raise ValueError("Subject element not found")
+            raise MissingNameID("Subject element not found")
         name_id = subject.find(f"{{{NS_SAML_ASSERTION}}}NameID")
         if name_id is None:
-            raise ValueError("NameID element not found")
+            raise MissingNameID("NameID element not found")
         return name_id, get_element_text(name_id)
 
     def _get_name_id_filter(self) -> dict[str, str]:
@@ -402,7 +445,7 @@ class ResponseProcessor:
         name_id_el, name_id = self._get_name_id()
         if not name_id:
             raise UnsupportedNameIDFormat("Subject's NameID is empty.")
-        _format = name_id_el.attrib["Format"]
+        _format = name_id_el.attrib.get("Format", SAML_NAME_ID_FORMAT_UNSPECIFIED)
         if _format == SAML_NAME_ID_FORMAT_EMAIL:
             return {"email": name_id}
         if _format == SAML_NAME_ID_FORMAT_PERSISTENT:
@@ -421,15 +464,17 @@ class ResponseProcessor:
     def prepare_flow_manager(self) -> SourceFlowManager:
         """Prepare flow plan depending on whether or not the user exists"""
         name_id_el, name_id = self._get_name_id()
+        # The Format attribute is optional, and defaults to unspecified
+        name_id_format = name_id_el.attrib.get("Format", SAML_NAME_ID_FORMAT_UNSPECIFIED)
         # Sanity check, show a warning if NameIDPolicy doesn't match what we go
-        if self._source.name_id_policy != name_id_el.attrib["Format"]:
+        if self._source.name_id_policy != name_id_format:
             LOGGER.warning(
                 "NameID from IdP doesn't match our policy",
                 expected=self._source.name_id_policy,
-                got=name_id_el.attrib["Format"],
+                got=name_id_format,
             )
         # transient NameIDs are handled separately as they don't have to go through flows.
-        if name_id_el.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
+        if name_id_format == SAML_NAME_ID_FORMAT_TRANSIENT:
             return self._handle_name_id_transient()
 
         return SAMLSourceFlowManager(

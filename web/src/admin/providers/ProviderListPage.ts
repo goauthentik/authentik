@@ -13,7 +13,6 @@ import "#admin/providers/wsfed/WSFederationProviderForm";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName } from "#elements/dialogs";

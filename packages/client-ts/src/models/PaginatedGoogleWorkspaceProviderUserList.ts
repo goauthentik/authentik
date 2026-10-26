@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,31 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { GoogleWorkspaceProviderUser } from "./GoogleWorkspaceProviderUser";
+import type { GoogleWorkspaceProviderUser } from "./GoogleWorkspaceProviderUser.js";
 import {
     GoogleWorkspaceProviderUserFromJSON,
     GoogleWorkspaceProviderUserToJSON,
-} from "./GoogleWorkspaceProviderUser";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./GoogleWorkspaceProviderUser.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedGoogleWorkspaceProviderUserList
  */
 export interface PaginatedGoogleWorkspaceProviderUserList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<GoogleWorkspaceProviderUser>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

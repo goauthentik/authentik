@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,31 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { DockerServiceConnection } from "./DockerServiceConnection";
+import type { DockerServiceConnection } from "./DockerServiceConnection.js";
 import {
     DockerServiceConnectionFromJSON,
     DockerServiceConnectionToJSON,
-} from "./DockerServiceConnection";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./DockerServiceConnection.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedDockerServiceConnectionList
  */
 export interface PaginatedDockerServiceConnectionList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<DockerServiceConnection>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

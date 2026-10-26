@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,29 +12,15 @@
 
 /**
  * Identification challenge
+ *
  * @export
  * @interface IdentificationChallengeResponseRequest
  */
 export interface IdentificationChallengeResponseRequest {
-    /**
-     *
-     */
     component?: string;
-    /**
-     *
-     */
     uidField?: string | null;
-    /**
-     *
-     */
     password?: string | null;
-    /**
-     *
-     */
     captchaToken?: string | null;
-    /**
-     *
-     */
     passkey?: { [key: string]: any } | null;
 }
 

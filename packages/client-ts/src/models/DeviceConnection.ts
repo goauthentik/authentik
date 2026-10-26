@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,32 +10,19 @@
  * Do not edit the class manually.
  */
 
-import type { Connector } from "./Connector";
-import { ConnectorFromJSON } from "./Connector";
-import type { DeviceFactSnapshot } from "./DeviceFactSnapshot";
-import { DeviceFactSnapshotFromJSON } from "./DeviceFactSnapshot";
+import type { Connector } from "./Connector.js";
+import { ConnectorFromJSON } from "./Connector.js";
+import type { DeviceFactSnapshot } from "./DeviceFactSnapshot.js";
+import { DeviceFactSnapshotFromJSON } from "./DeviceFactSnapshot.js";
 
 /**
- *
  * @export
  * @interface DeviceConnection
  */
 export interface DeviceConnection {
-    /**
-     *
-     */
     device: string;
-    /**
-     *
-     */
     connector: string;
-    /**
-     *
-     */
     readonly connectorObj: Connector;
-    /**
-     *
-     */
     readonly latestSnapshot: DeviceFactSnapshot | null;
 }
 

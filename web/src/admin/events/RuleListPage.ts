@@ -10,7 +10,6 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 import { severityToLabel } from "#common/labels";
 
@@ -65,6 +64,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
 
     protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Notification rule(s)")}
             .objects=${this.selectedElements}
@@ -87,15 +87,19 @@ export class RuleListPage extends TablePage<NotificationRule> {
 
     protected override row(item: NotificationRule): SlottedTemplateResult[] {
         const enabled = !!item.destinationGroupObj || item.destinationEventUser;
+
         return [
             html`<ak-status-label ?good=${enabled}></ak-status-label>`,
             html`${item.name}`,
             html`${severityToLabel(item.severity)}`,
-            html`${item.destinationGroupObj
-                ? html`<a href=${toAdminInterface(`identity/groups/${item.destinationGroupObj.pk}`)}
-                      >${item.destinationGroupObj.name}</a
-                  >`
-                : msg("-")}`,
+            html`${
+                item.destinationGroupObj
+                    ? html`<a
+                          href=${toAdminInterface(`identity/groups/${item.destinationGroupObj.pk}`)}
+                          >${item.destinationGroupObj.name}</a
+                      >`
+                    : msg("-")
+            }`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButton(RuleForm, item.pk, item.name)}
 

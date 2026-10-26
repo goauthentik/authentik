@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,17 +12,12 @@
 
 /**
  * Password challenge response
+ *
  * @export
  * @interface PasswordChallengeResponseRequest
  */
 export interface PasswordChallengeResponseRequest {
-    /**
-     *
-     */
     component?: string;
-    /**
-     *
-     */
     password: string;
 }
 

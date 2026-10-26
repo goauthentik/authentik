@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,59 +10,27 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { BlueprintInstanceStatusEnum } from "./BlueprintInstanceStatusEnum";
-import { BlueprintInstanceStatusEnumFromJSON } from "./BlueprintInstanceStatusEnum";
+import { parseDateTime } from "../runtime.js";
+import type { BlueprintInstanceStatusEnum } from "./BlueprintInstanceStatusEnum.js";
+import { BlueprintInstanceStatusEnumFromJSON } from "./BlueprintInstanceStatusEnum.js";
 
 /**
  * Info about a single blueprint instance file
+ *
  * @export
  * @interface BlueprintInstance
  */
 export interface BlueprintInstance {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     path?: string;
-    /**
-     *
-     */
     context?: { [key: string]: any };
-    /**
-     *
-     */
     readonly lastApplied: Date;
-    /**
-     *
-     */
     readonly lastAppliedHash: string;
-    /**
-     *
-     */
     readonly status: BlueprintInstanceStatusEnum;
-    /**
-     *
-     */
     enabled?: boolean;
-    /**
-     *
-     */
     readonly managedModels: Array<string>;
-    /**
-     *
-     */
     readonly metadata: { [key: string]: any };
-    /**
-     *
-     */
     content?: string;
 }
 

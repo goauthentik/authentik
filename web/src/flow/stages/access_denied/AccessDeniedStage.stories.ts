@@ -1,5 +1,4 @@
 import "./AccessDeniedStage.js";
-
 import { flowFactory } from "#stories/flow-interface";
 
 export default {

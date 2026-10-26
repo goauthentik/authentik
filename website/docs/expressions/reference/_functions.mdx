@@ -164,14 +164,18 @@ Example:
 jwt = ak_create_jwt_raw("my-oauth2-provider-name", my_claim="my_value")
 ```
 
-### `ak_send_email(address: str | list[str], subject: str, body: str = None, stage: EmailStage = None, template: str = None, context: dict = None, cc: str | list[str] = None, bcc: str | list[str] = None) -> bool`:ak-version[2025.10]
+### `ak_send_email(address: str | tuple[str, str] | list[str | tuple[str, str]], subject: str, body: str = None, stage: EmailStage = None, template: str = None, context: dict = None, cc: str | tuple[str, str] | list[str | tuple[str, str]] = None, bcc: str | tuple[str, str] | list[str | tuple[str, str]] = None) -> bool`:ak-version[2025.10]
 
 Send an email using authentik's email system.
 
 The `address` parameter specifies the recipient email address(es). It can be:
 
 - A single email address as a string: `"user@example.com"`
-- A list of email addresses: `["user1@example.com", "user2@example.com"]`
+- A formatted address string that includes a display name: `"John Doe <user@example.com>"`:ak-version[2026.11]
+- A `(name, email)` tuple: `("John Doe", "user@example.com")`:ak-version[2026.11]
+- A list of any of the above: `["user1@example.com", ("Jane Doe", "user2@example.com")]`
+
+When a display name is provided, it is included in the `To` or `CC` header of the email, matching the format used by the Email stage. Recipients in `bcc` are never written to a header, so their display name is only used for the delivery address.
 
 :::info
 When using multiple recipients in the `address` or `cc` fields, all email addresses will be visible to all recipients. Use `bcc` to send to multiple recipients without revealing addresses to each other.
@@ -196,6 +200,10 @@ Examples:
 ```python
 # Send email with plain body to single recipient
 ak_send_email("user@example.com", "Welcome!", body="Welcome to our platform!")
+
+# Send email with a display name
+ak_send_email((request.user.name, request.user.email), "Welcome!", body="Welcome to our platform!")
+ak_send_email("John Doe <user@example.com>", "Welcome!", body="Welcome to our platform!")
 
 # Send email to multiple recipients
 ak_send_email(

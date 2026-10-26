@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,31 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { UserTelegramSourceConnection } from "./UserTelegramSourceConnection";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { UserTelegramSourceConnection } from "./UserTelegramSourceConnection.js";
 import {
     UserTelegramSourceConnectionFromJSON,
     UserTelegramSourceConnectionToJSON,
-} from "./UserTelegramSourceConnection";
+} from "./UserTelegramSourceConnection.js";
 
 /**
- *
  * @export
  * @interface PaginatedUserTelegramSourceConnectionList
  */
 export interface PaginatedUserTelegramSourceConnectionList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<UserTelegramSourceConnection>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

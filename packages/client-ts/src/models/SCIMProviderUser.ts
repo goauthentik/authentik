@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,38 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
 
 /**
  * SCIMProviderUser Serializer
+ *
  * @export
  * @interface SCIMProviderUser
  */
 export interface SCIMProviderUser {
-    /**
-     *
-     */
     readonly id: string;
-    /**
-     *
-     */
     scimId: string;
-    /**
-     *
-     */
     user: number;
-    /**
-     *
-     */
     readonly userObj: PartialUser;
-    /**
-     *
-     */
     provider: number;
-    /**
-     *
-     */
     readonly attributes: { [key: string]: any };
 }
 

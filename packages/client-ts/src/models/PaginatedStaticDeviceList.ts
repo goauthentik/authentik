@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,28 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { StaticDevice } from "./StaticDevice";
-import { StaticDeviceFromJSON, StaticDeviceToJSON } from "./StaticDevice";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { StaticDevice } from "./StaticDevice.js";
+import { StaticDeviceFromJSON, StaticDeviceToJSON } from "./StaticDevice.js";
 
 /**
- *
  * @export
  * @interface PaginatedStaticDeviceList
  */
 export interface PaginatedStaticDeviceList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<StaticDevice>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

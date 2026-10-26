@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,26 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
-import type { Provider } from "./Provider";
-import { ProviderFromJSON } from "./Provider";
-import type { ThemedUrls } from "./ThemedUrls";
-import { ThemedUrlsFromJSON } from "./ThemedUrls";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
+import type { Provider } from "./Provider.js";
+import { ProviderFromJSON } from "./Provider.js";
+import type { ThemedUrls } from "./ThemedUrls.js";
+import { ThemedUrlsFromJSON } from "./ThemedUrls.js";
 
 /**
  * Application Serializer
+ *
  * @export
  * @interface Application
  */
 export interface Application {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     readonly pbmUuid: string;
     /**
      * Application's display Name.
@@ -41,21 +34,9 @@ export interface Application {
      * Internal application name, used in URLs.
      */
     slug: string;
-    /**
-     *
-     */
     provider?: number | null;
-    /**
-     *
-     */
     readonly providerObj: Provider | null;
-    /**
-     *
-     */
     backchannelProviders?: Array<number>;
-    /**
-     *
-     */
     readonly backchannelProvidersObj: Array<Provider>;
     /**
      * Allow formatting of launch URL
@@ -65,37 +46,16 @@ export interface Application {
      * Open launch URL in a new browser tab or window.
      */
     openInNewTab?: boolean;
-    /**
-     *
-     */
     metaLaunchUrl?: string;
-    /**
-     *
-     */
     metaIcon?: string;
     /**
      * Get the URL to the App Icon image
      */
     readonly metaIconUrl: string | null;
-    /**
-     *
-     */
     readonly metaIconThemedUrls: ThemedUrls | null;
-    /**
-     *
-     */
     metaDescription?: string;
-    /**
-     *
-     */
     metaPublisher?: string;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
-    /**
-     *
-     */
     group?: string;
     /**
      * Hide this application from the user's My applications page.

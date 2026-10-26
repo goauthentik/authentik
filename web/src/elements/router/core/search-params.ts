@@ -1,9 +1,8 @@
 /**
  * @file Search-parameter accessors for path-based routing.
- *
- * Drop-in replacements for the legacy hash-suffix `getURLParams`/`getURLParam`/
- * `updateURLParams` (`#elements/router/RouteMatch`), reading and writing real
- * `?` search parameters instead of the `#;{json}` suffix.
+ *   Drop-in replacements for the legacy hash-suffix `getURLParams`/`getURLParam`/
+ *   `updateURLParams` (`#elements/router/RouteMatch`), reading and writing real
+ *   `?` search parameters instead of the `#;{json}` suffix.
  */
 
 import { navigate } from "#elements/router/core/navigation";

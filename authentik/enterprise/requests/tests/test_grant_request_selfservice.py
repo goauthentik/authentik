@@ -12,12 +12,12 @@ from authentik.enterprise.requests.models import (
     RequestStatus,
 )
 from authentik.flows.models import Flow, FlowDesignation
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
 
 
-class GrantRequestsSelfServiceTests(FlowTestCase):
+class GrantRequestsSelfServiceTests(APIFlowTestCase):
     """Requesters and reviewers should be able to use the API against their own
     requests without needing any explicitly, globally-assigned RBAC permission."""
 
@@ -50,7 +50,7 @@ class GrantRequestsSelfServiceTests(FlowTestCase):
         # Follow through to the flow executor, exactly as the frontend does when it
         # opens the returned link, and check the final stage actually completes.
         res = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}), follow=True
         )
         self.assertStageResponse(res, component="xak-flow-redirect")
 

@@ -1,8 +1,7 @@
 /**
- * @file Remark plugin to transform `ak-preview` directives into preview badges.
- *
  * @import { Root } from "mdast";
  * @import {} from "mdast-util-directive";
+ * @file Remark plugin to transform `ak-preview` directives into preview badges.
  */
 
 import { h } from "hastscript";

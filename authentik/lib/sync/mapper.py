@@ -48,6 +48,7 @@ class PropertyMappingManager:
             evaluator = PropertyMappingEvaluator(
                 mapping, **{key: None for key in self.context_keys}
             )
+            evaluator.allowed_types = mapping.expression_allowed_types
             evaluator._globals.update(self.globals)
             # Compile and cache expression
             evaluator.compile()

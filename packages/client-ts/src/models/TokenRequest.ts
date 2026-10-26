@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,43 +10,28 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { IntentEnum } from "./IntentEnum";
-import { IntentEnumFromJSON, IntentEnumToJSON } from "./IntentEnum";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { IntentEnum } from "./IntentEnum.js";
+import { IntentEnumFromJSON, IntentEnumToJSON } from "./IntentEnum.js";
 
 /**
  * Token Serializer
+ *
  * @export
  * @interface TokenRequest
  */
 export interface TokenRequest {
     /**
-     * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+     * Objects that are managed by authentik. These objects are created and updated automatically.
+     * This flag only indicates that an object can be overwritten by migrations. You can still
+     * modify the objects via the API, but expect changes to be overwritten in a later update.
      */
     managed?: string | null;
-    /**
-     *
-     */
     identifier: string;
-    /**
-     *
-     */
     intent?: IntentEnum;
-    /**
-     *
-     */
     user?: number;
-    /**
-     *
-     */
     description?: string;
-    /**
-     *
-     */
     expires?: Date | null;
-    /**
-     *
-     */
     expiring?: boolean;
 }
 

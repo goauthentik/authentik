@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,16 +12,15 @@
 
 /**
  * Base serializer class which doesn't implement create/update methods
+ *
  * @export
  * @interface GrantRequestCreateRequest
  */
 export interface GrantRequestCreateRequest {
-    /**
-     *
-     */
     pbms: Array<string>;
     /**
-     * Optional override for how long the grant should last once approved. Clamped to the granting rule binding(s)' expiry_granted_max.
+     * Optional override for how long the grant should last once approved. Clamped to the granting
+     * rule binding(s)' expiry_granted_max.
      */
     expiry?: string;
 }

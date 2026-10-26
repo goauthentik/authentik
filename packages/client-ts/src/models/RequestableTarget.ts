@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,14 +10,15 @@
  * Do not edit the class manually.
  */
 
-import type { Application } from "./Application";
-import { ApplicationFromJSON } from "./Application";
+import type { Application } from "./Application.js";
+import { ApplicationFromJSON } from "./Application.js";
 
 /**
  * Generic representation of a single request target: whatever was actually
  * requested (an Application, an Application Entitlement, ...), always paired with the
  * parent it belongs to, so the UI/audit trail has that context even when the
  * request itself was scoped narrower than the whole app.
+ *
  * @export
  * @interface RequestableTarget
  */
@@ -36,17 +35,8 @@ export interface RequestableTarget {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly pbmUuid: string;
-    /**
-     *
-     */
     readonly label: string;
-    /**
-     *
-     */
     readonly parent: Application | null;
 }
 

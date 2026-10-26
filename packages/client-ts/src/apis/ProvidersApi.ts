@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,255 +10,265 @@
  * Do not edit the class manually.
  */
 
-import { type ClientTypeEnum } from "../models/ClientTypeEnum";
-import { type DigestAlgorithmEnum } from "../models/DigestAlgorithmEnum";
-import { type ForceBindingEnum } from "../models/ForceBindingEnum";
+import { type ClientTypeEnum } from "../models/ClientTypeEnum.js";
+import { type DigestAlgorithmEnum } from "../models/DigestAlgorithmEnum.js";
+import { type EncryptionAlgorithmEnum } from "../models/EncryptionAlgorithmEnum.js";
+import { type ForceBindingEnum } from "../models/ForceBindingEnum.js";
 import {
     type GoogleWorkspaceProvider,
     GoogleWorkspaceProviderFromJSON,
-} from "../models/GoogleWorkspaceProvider";
+} from "../models/GoogleWorkspaceProvider.js";
 import {
     type GoogleWorkspaceProviderGroup,
     GoogleWorkspaceProviderGroupFromJSON,
-} from "../models/GoogleWorkspaceProviderGroup";
+} from "../models/GoogleWorkspaceProviderGroup.js";
 import {
     type GoogleWorkspaceProviderGroupRequest,
     GoogleWorkspaceProviderGroupRequestToJSON,
-} from "../models/GoogleWorkspaceProviderGroupRequest";
+} from "../models/GoogleWorkspaceProviderGroupRequest.js";
 import {
     type GoogleWorkspaceProviderRequest,
     GoogleWorkspaceProviderRequestToJSON,
-} from "../models/GoogleWorkspaceProviderRequest";
+} from "../models/GoogleWorkspaceProviderRequest.js";
 import {
     type GoogleWorkspaceProviderUser,
     GoogleWorkspaceProviderUserFromJSON,
-} from "../models/GoogleWorkspaceProviderUser";
+} from "../models/GoogleWorkspaceProviderUser.js";
 import {
     type GoogleWorkspaceProviderUserRequest,
     GoogleWorkspaceProviderUserRequestToJSON,
-} from "../models/GoogleWorkspaceProviderUserRequest";
-import { type IssuerModeEnum } from "../models/IssuerModeEnum";
-import { type LDAPProvider, LDAPProviderFromJSON } from "../models/LDAPProvider";
-import { type LDAPProviderRequest, LDAPProviderRequestToJSON } from "../models/LDAPProviderRequest";
+} from "../models/GoogleWorkspaceProviderUserRequest.js";
+import { type IssuerModeEnum } from "../models/IssuerModeEnum.js";
+import { type LDAPProvider, LDAPProviderFromJSON } from "../models/LDAPProvider.js";
+import {
+    type LDAPProviderRequest,
+    LDAPProviderRequestToJSON,
+} from "../models/LDAPProviderRequest.js";
 import {
     type MicrosoftEntraProvider,
     MicrosoftEntraProviderFromJSON,
-} from "../models/MicrosoftEntraProvider";
+} from "../models/MicrosoftEntraProvider.js";
 import {
     type MicrosoftEntraProviderGroup,
     MicrosoftEntraProviderGroupFromJSON,
-} from "../models/MicrosoftEntraProviderGroup";
+} from "../models/MicrosoftEntraProviderGroup.js";
 import {
     type MicrosoftEntraProviderGroupRequest,
     MicrosoftEntraProviderGroupRequestToJSON,
-} from "../models/MicrosoftEntraProviderGroupRequest";
+} from "../models/MicrosoftEntraProviderGroupRequest.js";
 import {
     type MicrosoftEntraProviderRequest,
     MicrosoftEntraProviderRequestToJSON,
-} from "../models/MicrosoftEntraProviderRequest";
+} from "../models/MicrosoftEntraProviderRequest.js";
 import {
     type MicrosoftEntraProviderUser,
     MicrosoftEntraProviderUserFromJSON,
-} from "../models/MicrosoftEntraProviderUser";
+} from "../models/MicrosoftEntraProviderUser.js";
 import {
     type MicrosoftEntraProviderUserRequest,
     MicrosoftEntraProviderUserRequestToJSON,
-} from "../models/MicrosoftEntraProviderUserRequest";
+} from "../models/MicrosoftEntraProviderUserRequest.js";
 import {
     type OAuth2DynamicClientRegistration,
     OAuth2DynamicClientRegistrationFromJSON,
-} from "../models/OAuth2DynamicClientRegistration";
+} from "../models/OAuth2DynamicClientRegistration.js";
 import {
     type OAuth2DynamicClientRegistrationRequest,
     OAuth2DynamicClientRegistrationRequestToJSON,
-} from "../models/OAuth2DynamicClientRegistrationRequest";
-import { type OAuth2Provider, OAuth2ProviderFromJSON } from "../models/OAuth2Provider";
+} from "../models/OAuth2DynamicClientRegistrationRequest.js";
+import { type OAuth2Provider, OAuth2ProviderFromJSON } from "../models/OAuth2Provider.js";
 import {
     type OAuth2ProviderRequest,
     OAuth2ProviderRequestToJSON,
-} from "../models/OAuth2ProviderRequest";
+} from "../models/OAuth2ProviderRequest.js";
 import {
     type OAuth2ProviderSetupURLs,
     OAuth2ProviderSetupURLsFromJSON,
-} from "../models/OAuth2ProviderSetupURLs";
+} from "../models/OAuth2ProviderSetupURLs.js";
 import {
     type PaginatedGoogleWorkspaceProviderGroupList,
     PaginatedGoogleWorkspaceProviderGroupListFromJSON,
-} from "../models/PaginatedGoogleWorkspaceProviderGroupList";
+} from "../models/PaginatedGoogleWorkspaceProviderGroupList.js";
 import {
     type PaginatedGoogleWorkspaceProviderList,
     PaginatedGoogleWorkspaceProviderListFromJSON,
-} from "../models/PaginatedGoogleWorkspaceProviderList";
+} from "../models/PaginatedGoogleWorkspaceProviderList.js";
 import {
     type PaginatedGoogleWorkspaceProviderUserList,
     PaginatedGoogleWorkspaceProviderUserListFromJSON,
-} from "../models/PaginatedGoogleWorkspaceProviderUserList";
+} from "../models/PaginatedGoogleWorkspaceProviderUserList.js";
 import {
     type PaginatedLDAPProviderList,
     PaginatedLDAPProviderListFromJSON,
-} from "../models/PaginatedLDAPProviderList";
+} from "../models/PaginatedLDAPProviderList.js";
 import {
     type PaginatedMicrosoftEntraProviderGroupList,
     PaginatedMicrosoftEntraProviderGroupListFromJSON,
-} from "../models/PaginatedMicrosoftEntraProviderGroupList";
+} from "../models/PaginatedMicrosoftEntraProviderGroupList.js";
 import {
     type PaginatedMicrosoftEntraProviderList,
     PaginatedMicrosoftEntraProviderListFromJSON,
-} from "../models/PaginatedMicrosoftEntraProviderList";
+} from "../models/PaginatedMicrosoftEntraProviderList.js";
 import {
     type PaginatedMicrosoftEntraProviderUserList,
     PaginatedMicrosoftEntraProviderUserListFromJSON,
-} from "../models/PaginatedMicrosoftEntraProviderUserList";
+} from "../models/PaginatedMicrosoftEntraProviderUserList.js";
 import {
     type PaginatedOAuth2DynamicClientRegistrationList,
     PaginatedOAuth2DynamicClientRegistrationListFromJSON,
-} from "../models/PaginatedOAuth2DynamicClientRegistrationList";
+} from "../models/PaginatedOAuth2DynamicClientRegistrationList.js";
 import {
     type PaginatedOAuth2ProviderList,
     PaginatedOAuth2ProviderListFromJSON,
-} from "../models/PaginatedOAuth2ProviderList";
+} from "../models/PaginatedOAuth2ProviderList.js";
 import {
     type PaginatedProviderList,
     PaginatedProviderListFromJSON,
-} from "../models/PaginatedProviderList";
+} from "../models/PaginatedProviderList.js";
 import {
     type PaginatedProxyProviderList,
     PaginatedProxyProviderListFromJSON,
-} from "../models/PaginatedProxyProviderList";
+} from "../models/PaginatedProxyProviderList.js";
 import {
     type PaginatedRACProviderList,
     PaginatedRACProviderListFromJSON,
-} from "../models/PaginatedRACProviderList";
+} from "../models/PaginatedRACProviderList.js";
 import {
     type PaginatedRadiusProviderList,
     PaginatedRadiusProviderListFromJSON,
-} from "../models/PaginatedRadiusProviderList";
+} from "../models/PaginatedRadiusProviderList.js";
 import {
     type PaginatedSAMLProviderList,
     PaginatedSAMLProviderListFromJSON,
-} from "../models/PaginatedSAMLProviderList";
+} from "../models/PaginatedSAMLProviderList.js";
 import {
     type PaginatedSCIMProviderGroupList,
     PaginatedSCIMProviderGroupListFromJSON,
-} from "../models/PaginatedSCIMProviderGroupList";
+} from "../models/PaginatedSCIMProviderGroupList.js";
 import {
     type PaginatedSCIMProviderList,
     PaginatedSCIMProviderListFromJSON,
-} from "../models/PaginatedSCIMProviderList";
+} from "../models/PaginatedSCIMProviderList.js";
 import {
     type PaginatedSCIMProviderUserList,
     PaginatedSCIMProviderUserListFromJSON,
-} from "../models/PaginatedSCIMProviderUserList";
+} from "../models/PaginatedSCIMProviderUserList.js";
 import {
     type PaginatedSSFProviderList,
     PaginatedSSFProviderListFromJSON,
-} from "../models/PaginatedSSFProviderList";
+} from "../models/PaginatedSSFProviderList.js";
 import {
     type PaginatedWSFederationProviderList,
     PaginatedWSFederationProviderListFromJSON,
-} from "../models/PaginatedWSFederationProviderList";
+} from "../models/PaginatedWSFederationProviderList.js";
 import {
     type PatchedGoogleWorkspaceProviderRequest,
     PatchedGoogleWorkspaceProviderRequestToJSON,
-} from "../models/PatchedGoogleWorkspaceProviderRequest";
+} from "../models/PatchedGoogleWorkspaceProviderRequest.js";
 import {
     type PatchedLDAPProviderRequest,
     PatchedLDAPProviderRequestToJSON,
-} from "../models/PatchedLDAPProviderRequest";
+} from "../models/PatchedLDAPProviderRequest.js";
 import {
     type PatchedMicrosoftEntraProviderRequest,
     PatchedMicrosoftEntraProviderRequestToJSON,
-} from "../models/PatchedMicrosoftEntraProviderRequest";
+} from "../models/PatchedMicrosoftEntraProviderRequest.js";
 import {
     type PatchedOAuth2DynamicClientRegistrationRequest,
     PatchedOAuth2DynamicClientRegistrationRequestToJSON,
-} from "../models/PatchedOAuth2DynamicClientRegistrationRequest";
+} from "../models/PatchedOAuth2DynamicClientRegistrationRequest.js";
 import {
     type PatchedOAuth2ProviderRequest,
     PatchedOAuth2ProviderRequestToJSON,
-} from "../models/PatchedOAuth2ProviderRequest";
+} from "../models/PatchedOAuth2ProviderRequest.js";
 import {
     type PatchedProxyProviderRequest,
     PatchedProxyProviderRequestToJSON,
-} from "../models/PatchedProxyProviderRequest";
+} from "../models/PatchedProxyProviderRequest.js";
 import {
     type PatchedRACProviderRequest,
     PatchedRACProviderRequestToJSON,
-} from "../models/PatchedRACProviderRequest";
+} from "../models/PatchedRACProviderRequest.js";
 import {
     type PatchedRadiusProviderRequest,
     PatchedRadiusProviderRequestToJSON,
-} from "../models/PatchedRadiusProviderRequest";
+} from "../models/PatchedRadiusProviderRequest.js";
 import {
     type PatchedSAMLProviderRequest,
     PatchedSAMLProviderRequestToJSON,
-} from "../models/PatchedSAMLProviderRequest";
+} from "../models/PatchedSAMLProviderRequest.js";
 import {
     type PatchedSCIMProviderRequest,
     PatchedSCIMProviderRequestToJSON,
-} from "../models/PatchedSCIMProviderRequest";
+} from "../models/PatchedSCIMProviderRequest.js";
 import {
     type PatchedSSFProviderRequest,
     PatchedSSFProviderRequestToJSON,
-} from "../models/PatchedSSFProviderRequest";
+} from "../models/PatchedSSFProviderRequest.js";
 import {
     type PatchedWSFederationProviderRequest,
     PatchedWSFederationProviderRequestToJSON,
-} from "../models/PatchedWSFederationProviderRequest";
+} from "../models/PatchedWSFederationProviderRequest.js";
 import {
     type PropertyMappingPreview,
     PropertyMappingPreviewFromJSON,
-} from "../models/PropertyMappingPreview";
-import { type Provider, ProviderFromJSON } from "../models/Provider";
-import { type ProxyProvider, ProxyProviderFromJSON } from "../models/ProxyProvider";
+} from "../models/PropertyMappingPreview.js";
+import { type Provider, ProviderFromJSON } from "../models/Provider.js";
+import { type ProxyProvider, ProxyProviderFromJSON } from "../models/ProxyProvider.js";
 import {
     type ProxyProviderRequest,
     ProxyProviderRequestToJSON,
-} from "../models/ProxyProviderRequest";
-import { type RACProvider, RACProviderFromJSON } from "../models/RACProvider";
-import { type RACProviderRequest, RACProviderRequestToJSON } from "../models/RACProviderRequest";
-import { type RadiusProvider, RadiusProviderFromJSON } from "../models/RadiusProvider";
+} from "../models/ProxyProviderRequest.js";
+import { type RACProvider, RACProviderFromJSON } from "../models/RACProvider.js";
+import { type RACProviderRequest, RACProviderRequestToJSON } from "../models/RACProviderRequest.js";
+import { type RadiusProvider, RadiusProviderFromJSON } from "../models/RadiusProvider.js";
 import {
     type RadiusProviderRequest,
     RadiusProviderRequestToJSON,
-} from "../models/RadiusProviderRequest";
-import { type SAMLBindingsEnum } from "../models/SAMLBindingsEnum";
-import { type SAMLLogoutMethods } from "../models/SAMLLogoutMethods";
-import { type SAMLMetadata, SAMLMetadataFromJSON } from "../models/SAMLMetadata";
-import { type SAMLNameIDPolicyEnum } from "../models/SAMLNameIDPolicyEnum";
-import { type SAMLProvider, SAMLProviderFromJSON } from "../models/SAMLProvider";
-import { type SAMLProviderRequest, SAMLProviderRequestToJSON } from "../models/SAMLProviderRequest";
-import { type SCIMProvider, SCIMProviderFromJSON } from "../models/SCIMProvider";
-import { type SCIMProviderGroup, SCIMProviderGroupFromJSON } from "../models/SCIMProviderGroup";
+} from "../models/RadiusProviderRequest.js";
+import { type SAMLBindingsEnum } from "../models/SAMLBindingsEnum.js";
+import { type SAMLLogoutMethods } from "../models/SAMLLogoutMethods.js";
+import { type SAMLMetadata, SAMLMetadataFromJSON } from "../models/SAMLMetadata.js";
+import { type SAMLNameIDPolicyEnum } from "../models/SAMLNameIDPolicyEnum.js";
+import { type SAMLProvider, SAMLProviderFromJSON } from "../models/SAMLProvider.js";
+import {
+    type SAMLProviderRequest,
+    SAMLProviderRequestToJSON,
+} from "../models/SAMLProviderRequest.js";
+import { type SCIMProvider, SCIMProviderFromJSON } from "../models/SCIMProvider.js";
+import { type SCIMProviderGroup, SCIMProviderGroupFromJSON } from "../models/SCIMProviderGroup.js";
 import {
     type SCIMProviderGroupRequest,
     SCIMProviderGroupRequestToJSON,
-} from "../models/SCIMProviderGroupRequest";
-import { type SCIMProviderRequest, SCIMProviderRequestToJSON } from "../models/SCIMProviderRequest";
-import { type SCIMProviderUser, SCIMProviderUserFromJSON } from "../models/SCIMProviderUser";
+} from "../models/SCIMProviderGroupRequest.js";
+import {
+    type SCIMProviderRequest,
+    SCIMProviderRequestToJSON,
+} from "../models/SCIMProviderRequest.js";
+import { type SCIMProviderUser, SCIMProviderUserFromJSON } from "../models/SCIMProviderUser.js";
 import {
     type SCIMProviderUserRequest,
     SCIMProviderUserRequestToJSON,
-} from "../models/SCIMProviderUserRequest";
-import { type SignatureAlgorithmEnum } from "../models/SignatureAlgorithmEnum";
-import { type SSFProvider, SSFProviderFromJSON } from "../models/SSFProvider";
-import { type SSFProviderRequest, SSFProviderRequestToJSON } from "../models/SSFProviderRequest";
-import { type SubModeEnum } from "../models/SubModeEnum";
-import { type SyncObjectRequest, SyncObjectRequestToJSON } from "../models/SyncObjectRequest";
-import { type SyncObjectResult, SyncObjectResultFromJSON } from "../models/SyncObjectResult";
-import { type SyncStatus, SyncStatusFromJSON } from "../models/SyncStatus";
-import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
+} from "../models/SCIMProviderUserRequest.js";
+import { type SignatureAlgorithmEnum } from "../models/SignatureAlgorithmEnum.js";
+import { type SSFProvider, SSFProviderFromJSON } from "../models/SSFProvider.js";
+import { type SSFProviderRequest, SSFProviderRequestToJSON } from "../models/SSFProviderRequest.js";
+import { type SubModeEnum } from "../models/SubModeEnum.js";
+import { type SyncObjectRequest, SyncObjectRequestToJSON } from "../models/SyncObjectRequest.js";
+import { type SyncObjectResult, SyncObjectResultFromJSON } from "../models/SyncObjectResult.js";
+import { type SyncStatus, SyncStatusFromJSON } from "../models/SyncStatus.js";
+import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
 import {
     type WSFederationProvider,
     WSFederationProviderFromJSON,
-} from "../models/WSFederationProvider";
+} from "../models/WSFederationProvider.js";
 import {
     type WSFederationProviderRequest,
     WSFederationProviderRequestToJSON,
-} from "../models/WSFederationProviderRequest";
-import { type WSFedSAMLVersionEnum } from "../models/WSFedSAMLVersionEnum";
-import * as runtime from "../runtime";
+} from "../models/WSFederationProviderRequest.js";
+import { type WSFedSAMLVersionEnum } from "../models/WSFedSAMLVersionEnum.js";
+import * as runtime from "../runtime.js";
 
 export interface ProvidersAllDestroyRequest {
     /**
@@ -270,12 +278,10 @@ export interface ProvidersAllDestroyRequest {
 }
 
 export interface ProvidersAllListRequest {
-    /**
-     *
-     */
     applicationIsnull?: boolean;
     /**
-     * When not set all providers are returned. When set to true, only backchannel providers are returned. When set to false, backchannel providers are excluded
+     * When not set all providers are returned. When set to true, only backchannel providers are
+     * returned. When set to false, backchannel providers are excluded
      */
     backchannel?: boolean;
     /**
@@ -311,9 +317,6 @@ export interface ProvidersAllUsedByListRequest {
 }
 
 export interface ProvidersGoogleWorkspaceCreateRequest {
-    /**
-     *
-     */
     googleWorkspaceProviderRequest: GoogleWorkspaceProviderRequest;
 }
 
@@ -325,9 +328,6 @@ export interface ProvidersGoogleWorkspaceDestroyRequest {
 }
 
 export interface ProvidersGoogleWorkspaceGroupsCreateRequest {
-    /**
-     *
-     */
     googleWorkspaceProviderGroupRequest: GoogleWorkspaceProviderGroupRequest;
 }
 
@@ -339,13 +339,7 @@ export interface ProvidersGoogleWorkspaceGroupsDestroyRequest {
 }
 
 export interface ProvidersGoogleWorkspaceGroupsListRequest {
-    /**
-     *
-     */
     groupGroupUuid?: string;
-    /**
-     *
-     */
     groupName?: string;
     /**
      * Which field to use when ordering the results.
@@ -359,9 +353,6 @@ export interface ProvidersGoogleWorkspaceGroupsListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     providerId?: number;
     /**
      * A search term.
@@ -384,21 +375,9 @@ export interface ProvidersGoogleWorkspaceGroupsUsedByListRequest {
 }
 
 export interface ProvidersGoogleWorkspaceListRequest {
-    /**
-     *
-     */
     delegatedSubject?: string;
-    /**
-     *
-     */
     excludeUsersServiceAccount?: boolean;
-    /**
-     *
-     */
     filterGroup?: string;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -423,9 +402,6 @@ export interface ProvidersGoogleWorkspacePartialUpdateRequest {
      * A unique integer value identifying this Google Workspace Provider.
      */
     id: number;
-    /**
-     *
-     */
     patchedGoogleWorkspaceProviderRequest?: PatchedGoogleWorkspaceProviderRequest;
 }
 
@@ -441,9 +417,6 @@ export interface ProvidersGoogleWorkspaceSyncObjectCreateRequest {
      * A unique integer value identifying this Google Workspace Provider.
      */
     id: number;
-    /**
-     *
-     */
     syncObjectRequest: SyncObjectRequest;
 }
 
@@ -459,9 +432,6 @@ export interface ProvidersGoogleWorkspaceUpdateRequest {
      * A unique integer value identifying this Google Workspace Provider.
      */
     id: number;
-    /**
-     *
-     */
     googleWorkspaceProviderRequest: GoogleWorkspaceProviderRequest;
 }
 
@@ -473,9 +443,6 @@ export interface ProvidersGoogleWorkspaceUsedByListRequest {
 }
 
 export interface ProvidersGoogleWorkspaceUsersCreateRequest {
-    /**
-     *
-     */
     googleWorkspaceProviderUserRequest: GoogleWorkspaceProviderUserRequest;
 }
 
@@ -499,21 +466,12 @@ export interface ProvidersGoogleWorkspaceUsersListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     providerId?: number;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     userId?: number;
-    /**
-     *
-     */
     userUsername?: string;
 }
 
@@ -532,9 +490,6 @@ export interface ProvidersGoogleWorkspaceUsersUsedByListRequest {
 }
 
 export interface ProvidersLdapCreateRequest {
-    /**
-     *
-     */
     lDAPProviderRequest: LDAPProviderRequest;
 }
 
@@ -546,33 +501,12 @@ export interface ProvidersLdapDestroyRequest {
 }
 
 export interface ProvidersLdapListRequest {
-    /**
-     *
-     */
     applicationIsnull?: boolean;
-    /**
-     *
-     */
     authorizationFlowSlugIexact?: string;
-    /**
-     *
-     */
     baseDnIexact?: string;
-    /**
-     *
-     */
     certificateKpUuidIexact?: string;
-    /**
-     *
-     */
     certificateNameIexact?: string;
-    /**
-     *
-     */
     gidStartNumberIexact?: number;
-    /**
-     *
-     */
     nameIexact?: string;
     /**
      * Which field to use when ordering the results.
@@ -590,13 +524,7 @@ export interface ProvidersLdapListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     tlsServerNameIexact?: string;
-    /**
-     *
-     */
     uidStartNumberIexact?: number;
 }
 
@@ -605,9 +533,6 @@ export interface ProvidersLdapPartialUpdateRequest {
      * A unique integer value identifying this LDAP Provider.
      */
     id: number;
-    /**
-     *
-     */
     patchedLDAPProviderRequest?: PatchedLDAPProviderRequest;
 }
 
@@ -623,9 +548,6 @@ export interface ProvidersLdapUpdateRequest {
      * A unique integer value identifying this LDAP Provider.
      */
     id: number;
-    /**
-     *
-     */
     lDAPProviderRequest: LDAPProviderRequest;
 }
 
@@ -637,9 +559,6 @@ export interface ProvidersLdapUsedByListRequest {
 }
 
 export interface ProvidersMicrosoftEntraCreateRequest {
-    /**
-     *
-     */
     microsoftEntraProviderRequest: MicrosoftEntraProviderRequest;
 }
 
@@ -651,9 +570,6 @@ export interface ProvidersMicrosoftEntraDestroyRequest {
 }
 
 export interface ProvidersMicrosoftEntraGroupsCreateRequest {
-    /**
-     *
-     */
     microsoftEntraProviderGroupRequest: MicrosoftEntraProviderGroupRequest;
 }
 
@@ -665,13 +581,7 @@ export interface ProvidersMicrosoftEntraGroupsDestroyRequest {
 }
 
 export interface ProvidersMicrosoftEntraGroupsListRequest {
-    /**
-     *
-     */
     groupGroupUuid?: string;
-    /**
-     *
-     */
     groupName?: string;
     /**
      * Which field to use when ordering the results.
@@ -685,9 +595,6 @@ export interface ProvidersMicrosoftEntraGroupsListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     providerId?: number;
     /**
      * A search term.
@@ -710,17 +617,8 @@ export interface ProvidersMicrosoftEntraGroupsUsedByListRequest {
 }
 
 export interface ProvidersMicrosoftEntraListRequest {
-    /**
-     *
-     */
     excludeUsersServiceAccount?: boolean;
-    /**
-     *
-     */
     filterGroup?: string;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -745,9 +643,6 @@ export interface ProvidersMicrosoftEntraPartialUpdateRequest {
      * A unique integer value identifying this Microsoft Entra Provider.
      */
     id: number;
-    /**
-     *
-     */
     patchedMicrosoftEntraProviderRequest?: PatchedMicrosoftEntraProviderRequest;
 }
 
@@ -763,9 +658,6 @@ export interface ProvidersMicrosoftEntraSyncObjectCreateRequest {
      * A unique integer value identifying this Microsoft Entra Provider.
      */
     id: number;
-    /**
-     *
-     */
     syncObjectRequest: SyncObjectRequest;
 }
 
@@ -781,9 +673,6 @@ export interface ProvidersMicrosoftEntraUpdateRequest {
      * A unique integer value identifying this Microsoft Entra Provider.
      */
     id: number;
-    /**
-     *
-     */
     microsoftEntraProviderRequest: MicrosoftEntraProviderRequest;
 }
 
@@ -795,9 +684,6 @@ export interface ProvidersMicrosoftEntraUsedByListRequest {
 }
 
 export interface ProvidersMicrosoftEntraUsersCreateRequest {
-    /**
-     *
-     */
     microsoftEntraProviderUserRequest: MicrosoftEntraProviderUserRequest;
 }
 
@@ -821,21 +707,12 @@ export interface ProvidersMicrosoftEntraUsersListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     providerId?: number;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     userId?: number;
-    /**
-     *
-     */
     userUsername?: string;
 }
 
@@ -854,16 +731,10 @@ export interface ProvidersMicrosoftEntraUsersUsedByListRequest {
 }
 
 export interface ProvidersOauth2CreateRequest {
-    /**
-     *
-     */
     oAuth2ProviderRequest: OAuth2ProviderRequest;
 }
 
 export interface ProvidersOauth2DcrCreateRequest {
-    /**
-     *
-     */
     oAuth2DynamicClientRegistrationRequest: OAuth2DynamicClientRegistrationRequest;
 }
 
@@ -887,9 +758,6 @@ export interface ProvidersOauth2DcrListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     provider?: number;
     /**
      * A search term.
@@ -902,9 +770,6 @@ export interface ProvidersOauth2DcrPartialUpdateRequest {
      * A UUID string identifying this OAuth2 Dynamic Client Registration.
      */
     pbmUuid: string;
-    /**
-     *
-     */
     patchedOAuth2DynamicClientRegistrationRequest?: PatchedOAuth2DynamicClientRegistrationRequest;
 }
 
@@ -920,9 +785,6 @@ export interface ProvidersOauth2DcrUpdateRequest {
      * A UUID string identifying this OAuth2 Dynamic Client Registration.
      */
     pbmUuid: string;
-    /**
-     *
-     */
     oAuth2DynamicClientRegistrationRequest: OAuth2DynamicClientRegistrationRequest;
 }
 
@@ -934,41 +796,14 @@ export interface ProvidersOauth2DestroyRequest {
 }
 
 export interface ProvidersOauth2ListRequest {
-    /**
-     *
-     */
     accessCodeValidity?: string;
-    /**
-     *
-     */
     accessTokenValidity?: string;
-    /**
-     *
-     */
     application?: string;
-    /**
-     *
-     */
     authorizationFlow?: string;
-    /**
-     *
-     */
     clientId?: string;
-    /**
-     *
-     */
     clientType?: ClientTypeEnum;
-    /**
-     *
-     */
     includeClaimsInIdToken?: boolean;
-    /**
-     *
-     */
     issuerMode?: IssuerModeEnum;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -982,25 +817,13 @@ export interface ProvidersOauth2ListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     propertyMappings?: Array<string>;
-    /**
-     *
-     */
     refreshTokenValidity?: string;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     signingKey?: string;
-    /**
-     *
-     */
     subMode?: SubModeEnum;
 }
 
@@ -1009,9 +832,6 @@ export interface ProvidersOauth2PartialUpdateRequest {
      * A unique integer value identifying this OAuth2/OpenID Provider.
      */
     id: number;
-    /**
-     *
-     */
     patchedOAuth2ProviderRequest?: PatchedOAuth2ProviderRequest;
 }
 
@@ -1020,9 +840,6 @@ export interface ProvidersOauth2PreviewUserRetrieveRequest {
      * A unique integer value identifying this OAuth2/OpenID Provider.
      */
     id: number;
-    /**
-     *
-     */
     forUser?: number;
 }
 
@@ -1045,9 +862,6 @@ export interface ProvidersOauth2UpdateRequest {
      * A unique integer value identifying this OAuth2/OpenID Provider.
      */
     id: number;
-    /**
-     *
-     */
     oAuth2ProviderRequest: OAuth2ProviderRequest;
 }
 
@@ -1059,9 +873,6 @@ export interface ProvidersOauth2UsedByListRequest {
 }
 
 export interface ProvidersProxyCreateRequest {
-    /**
-     *
-     */
     proxyProviderRequest: ProxyProviderRequest;
 }
 
@@ -1073,57 +884,18 @@ export interface ProvidersProxyDestroyRequest {
 }
 
 export interface ProvidersProxyListRequest {
-    /**
-     *
-     */
     applicationIsnull?: boolean;
-    /**
-     *
-     */
     authorizationFlowSlugIexact?: string;
-    /**
-     *
-     */
     basicAuthEnabledIexact?: boolean;
-    /**
-     *
-     */
     basicAuthPasswordAttributeIexact?: string;
-    /**
-     *
-     */
     basicAuthUserAttributeIexact?: string;
-    /**
-     *
-     */
     certificateKpUuidIexact?: string;
-    /**
-     *
-     */
     certificateNameIexact?: string;
-    /**
-     *
-     */
     cookieDomainIexact?: string;
-    /**
-     *
-     */
     externalHostIexact?: string;
-    /**
-     *
-     */
     internalHostIexact?: string;
-    /**
-     *
-     */
     internalHostSslValidationIexact?: boolean;
-    /**
-     *
-     */
     modeIexact?: string;
-    /**
-     *
-     */
     nameIexact?: string;
     /**
      * Which field to use when ordering the results.
@@ -1137,17 +909,11 @@ export interface ProvidersProxyListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     propertyMappingsIexact?: Array<string>;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     skipPathRegexIexact?: string;
 }
 
@@ -1156,9 +922,6 @@ export interface ProvidersProxyPartialUpdateRequest {
      * A unique integer value identifying this Proxy Provider.
      */
     id: number;
-    /**
-     *
-     */
     patchedProxyProviderRequest?: PatchedProxyProviderRequest;
 }
 
@@ -1174,9 +937,6 @@ export interface ProvidersProxyUpdateRequest {
      * A unique integer value identifying this Proxy Provider.
      */
     id: number;
-    /**
-     *
-     */
     proxyProviderRequest: ProxyProviderRequest;
 }
 
@@ -1188,9 +948,6 @@ export interface ProvidersProxyUsedByListRequest {
 }
 
 export interface ProvidersRacCreateRequest {
-    /**
-     *
-     */
     rACProviderRequest: RACProviderRequest;
 }
 
@@ -1202,13 +959,7 @@ export interface ProvidersRacDestroyRequest {
 }
 
 export interface ProvidersRacListRequest {
-    /**
-     *
-     */
     applicationIsnull?: boolean;
-    /**
-     *
-     */
     nameIexact?: string;
     /**
      * Which field to use when ordering the results.
@@ -1233,9 +984,6 @@ export interface ProvidersRacPartialUpdateRequest {
      * A unique integer value identifying this RAC Provider.
      */
     id: number;
-    /**
-     *
-     */
     patchedRACProviderRequest?: PatchedRACProviderRequest;
 }
 
@@ -1251,9 +999,6 @@ export interface ProvidersRacUpdateRequest {
      * A unique integer value identifying this RAC Provider.
      */
     id: number;
-    /**
-     *
-     */
     rACProviderRequest: RACProviderRequest;
 }
 
@@ -1265,9 +1010,6 @@ export interface ProvidersRacUsedByListRequest {
 }
 
 export interface ProvidersRadiusCreateRequest {
-    /**
-     *
-     */
     radiusProviderRequest: RadiusProviderRequest;
 }
 
@@ -1279,21 +1021,9 @@ export interface ProvidersRadiusDestroyRequest {
 }
 
 export interface ProvidersRadiusListRequest {
-    /**
-     *
-     */
     applicationIsnull?: boolean;
-    /**
-     *
-     */
     authorizationFlowSlugIexact?: string;
-    /**
-     *
-     */
     clientNetworksIexact?: string;
-    /**
-     *
-     */
     nameIexact?: string;
     /**
      * Which field to use when ordering the results.
@@ -1318,9 +1048,6 @@ export interface ProvidersRadiusPartialUpdateRequest {
      * A unique integer value identifying this Radius Provider.
      */
     id: number;
-    /**
-     *
-     */
     patchedRadiusProviderRequest?: PatchedRadiusProviderRequest;
 }
 
@@ -1336,9 +1063,6 @@ export interface ProvidersRadiusUpdateRequest {
      * A unique integer value identifying this Radius Provider.
      */
     id: number;
-    /**
-     *
-     */
     radiusProviderRequest: RadiusProviderRequest;
 }
 
@@ -1350,9 +1074,6 @@ export interface ProvidersRadiusUsedByListRequest {
 }
 
 export interface ProvidersSamlCreateRequest {
-    /**
-     *
-     */
     sAMLProviderRequest: SAMLProviderRequest;
 }
 
@@ -1364,96 +1085,31 @@ export interface ProvidersSamlDestroyRequest {
 }
 
 export interface ProvidersSamlImportMetadataCreateRequest {
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     authorizationFlow: string;
-    /**
-     *
-     */
     invalidationFlow: string;
-    /**
-     *
-     */
     file: Blob;
 }
 
 export interface ProvidersSamlListRequest {
-    /**
-     *
-     */
     acsUrl?: string;
-    /**
-     *
-     */
     assertionValidNotBefore?: string;
-    /**
-     *
-     */
     assertionValidNotOnOrAfter?: string;
-    /**
-     *
-     */
     audience?: string;
-    /**
-     *
-     */
     authenticationFlow?: string;
-    /**
-     *
-     */
     authnContextClassRefMapping?: string;
-    /**
-     *
-     */
     authorizationFlow?: string;
-    /**
-     *
-     */
     backchannelApplication?: string;
-    /**
-     *
-     */
     defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
-    /**
-     *
-     */
     defaultRelayState?: string;
-    /**
-     *
-     */
     digestAlgorithm?: DigestAlgorithmEnum;
-    /**
-     *
-     */
+    encryptionAlgorithm?: EncryptionAlgorithmEnum;
     encryptionKp?: string;
-    /**
-     *
-     */
     invalidationFlow?: string;
-    /**
-     *
-     */
     isBackchannel?: boolean;
-    /**
-     *
-     */
     issuerOverride?: string;
-    /**
-     *
-     */
     logoutMethod?: SAMLLogoutMethods;
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     nameIdMapping?: string;
     /**
      * Which field to use when ordering the results.
@@ -1467,57 +1123,21 @@ export interface ProvidersSamlListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     propertyMappings?: Array<string>;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     sessionValidNotOnOrAfter?: string;
-    /**
-     *
-     */
     signAssertion?: boolean;
-    /**
-     *
-     */
     signLogoutRequest?: boolean;
-    /**
-     *
-     */
     signLogoutResponse?: boolean;
-    /**
-     *
-     */
     signResponse?: boolean;
-    /**
-     *
-     */
     signatureAlgorithm?: SignatureAlgorithmEnum;
-    /**
-     *
-     */
     signingKp?: string;
-    /**
-     *
-     */
     slsBinding?: SAMLBindingsEnum;
-    /**
-     *
-     */
     slsUrl?: string;
-    /**
-     *
-     */
     spBinding?: SAMLBindingsEnum;
-    /**
-     *
-     */
     verificationKp?: string;
 }
 
@@ -1526,13 +1146,7 @@ export interface ProvidersSamlMetadataRetrieveRequest {
      * A unique integer value identifying this SAML Provider.
      */
     id: number;
-    /**
-     *
-     */
     download?: boolean;
-    /**
-     *
-     */
     forceBinding?: ForceBindingEnum;
 }
 
@@ -1541,9 +1155,6 @@ export interface ProvidersSamlPartialUpdateRequest {
      * A unique integer value identifying this SAML Provider.
      */
     id: number;
-    /**
-     *
-     */
     patchedSAMLProviderRequest?: PatchedSAMLProviderRequest;
 }
 
@@ -1552,9 +1163,6 @@ export interface ProvidersSamlPreviewUserRetrieveRequest {
      * A unique integer value identifying this SAML Provider.
      */
     id: number;
-    /**
-     *
-     */
     forUser?: number;
 }
 
@@ -1570,9 +1178,6 @@ export interface ProvidersSamlUpdateRequest {
      * A unique integer value identifying this SAML Provider.
      */
     id: number;
-    /**
-     *
-     */
     sAMLProviderRequest: SAMLProviderRequest;
 }
 
@@ -1584,9 +1189,6 @@ export interface ProvidersSamlUsedByListRequest {
 }
 
 export interface ProvidersScimCreateRequest {
-    /**
-     *
-     */
     sCIMProviderRequest: SCIMProviderRequest;
 }
 
@@ -1598,9 +1200,6 @@ export interface ProvidersScimDestroyRequest {
 }
 
 export interface ProvidersScimGroupsCreateRequest {
-    /**
-     *
-     */
     sCIMProviderGroupRequest: SCIMProviderGroupRequest;
 }
 
@@ -1612,13 +1211,7 @@ export interface ProvidersScimGroupsDestroyRequest {
 }
 
 export interface ProvidersScimGroupsListRequest {
-    /**
-     *
-     */
     groupGroupUuid?: string;
-    /**
-     *
-     */
     groupName?: string;
     /**
      * Which field to use when ordering the results.
@@ -1632,9 +1225,6 @@ export interface ProvidersScimGroupsListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     providerId?: number;
     /**
      * A search term.
@@ -1657,17 +1247,8 @@ export interface ProvidersScimGroupsUsedByListRequest {
 }
 
 export interface ProvidersScimListRequest {
-    /**
-     *
-     */
     excludeUsersServiceAccount?: boolean;
-    /**
-     *
-     */
     groupFilters?: Array<string>;
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -1685,9 +1266,6 @@ export interface ProvidersScimListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     url?: string;
 }
 
@@ -1696,9 +1274,6 @@ export interface ProvidersScimPartialUpdateRequest {
      * A unique integer value identifying this SCIM Provider.
      */
     id: number;
-    /**
-     *
-     */
     patchedSCIMProviderRequest?: PatchedSCIMProviderRequest;
 }
 
@@ -1714,9 +1289,6 @@ export interface ProvidersScimSyncObjectCreateRequest {
      * A unique integer value identifying this SCIM Provider.
      */
     id: number;
-    /**
-     *
-     */
     syncObjectRequest: SyncObjectRequest;
 }
 
@@ -1732,9 +1304,6 @@ export interface ProvidersScimUpdateRequest {
      * A unique integer value identifying this SCIM Provider.
      */
     id: number;
-    /**
-     *
-     */
     sCIMProviderRequest: SCIMProviderRequest;
 }
 
@@ -1746,9 +1315,6 @@ export interface ProvidersScimUsedByListRequest {
 }
 
 export interface ProvidersScimUsersCreateRequest {
-    /**
-     *
-     */
     sCIMProviderUserRequest: SCIMProviderUserRequest;
 }
 
@@ -1772,21 +1338,12 @@ export interface ProvidersScimUsersListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     providerId?: number;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     userId?: number;
-    /**
-     *
-     */
     userUsername?: string;
 }
 
@@ -1805,9 +1362,6 @@ export interface ProvidersScimUsersUsedByListRequest {
 }
 
 export interface ProvidersSsfCreateRequest {
-    /**
-     *
-     */
     sSFProviderRequest: SSFProviderRequest;
 }
 
@@ -1819,13 +1373,7 @@ export interface ProvidersSsfDestroyRequest {
 }
 
 export interface ProvidersSsfListRequest {
-    /**
-     *
-     */
     applicationIsnull?: boolean;
-    /**
-     *
-     */
     nameIexact?: string;
     /**
      * Which field to use when ordering the results.
@@ -1850,9 +1398,6 @@ export interface ProvidersSsfPartialUpdateRequest {
      * A unique integer value identifying this Shared Signals Framework Provider.
      */
     id: number;
-    /**
-     *
-     */
     patchedSSFProviderRequest?: PatchedSSFProviderRequest;
 }
 
@@ -1868,9 +1413,6 @@ export interface ProvidersSsfUpdateRequest {
      * A unique integer value identifying this Shared Signals Framework Provider.
      */
     id: number;
-    /**
-     *
-     */
     sSFProviderRequest: SSFProviderRequest;
 }
 
@@ -1882,9 +1424,6 @@ export interface ProvidersSsfUsedByListRequest {
 }
 
 export interface ProvidersWsfedCreateRequest {
-    /**
-     *
-     */
     wSFederationProviderRequest: WSFederationProviderRequest;
 }
 
@@ -1896,77 +1435,24 @@ export interface ProvidersWsfedDestroyRequest {
 }
 
 export interface ProvidersWsfedListRequest {
-    /**
-     *
-     */
     acsUrl?: string;
-    /**
-     *
-     */
     assertionValidNotBefore?: string;
-    /**
-     *
-     */
     assertionValidNotOnOrAfter?: string;
-    /**
-     *
-     */
     audience?: string;
-    /**
-     *
-     */
     authenticationFlow?: string;
-    /**
-     *
-     */
     authnContextClassRefMapping?: string;
-    /**
-     *
-     */
     authorizationFlow?: string;
-    /**
-     *
-     */
     backchannelApplication?: string;
-    /**
-     *
-     */
     defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
-    /**
-     *
-     */
     defaultRelayState?: string;
-    /**
-     *
-     */
     digestAlgorithm?: DigestAlgorithmEnum;
-    /**
-     *
-     */
+    encryptionAlgorithm?: EncryptionAlgorithmEnum;
     encryptionKp?: string;
-    /**
-     *
-     */
     invalidationFlow?: string;
-    /**
-     *
-     */
     isBackchannel?: boolean;
-    /**
-     *
-     */
     issuerOverride?: string;
-    /**
-     *
-     */
     logoutMethod?: SAMLLogoutMethods;
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     nameIdMapping?: string;
     /**
      * Which field to use when ordering the results.
@@ -1980,61 +1466,22 @@ export interface ProvidersWsfedListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     propertyMappings?: Array<string>;
-    /**
-     *
-     */
     samlVersion?: WSFedSAMLVersionEnum;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     sessionValidNotOnOrAfter?: string;
-    /**
-     *
-     */
     signAssertion?: boolean;
-    /**
-     *
-     */
     signLogoutRequest?: boolean;
-    /**
-     *
-     */
     signLogoutResponse?: boolean;
-    /**
-     *
-     */
     signResponse?: boolean;
-    /**
-     *
-     */
     signatureAlgorithm?: SignatureAlgorithmEnum;
-    /**
-     *
-     */
     signingKp?: string;
-    /**
-     *
-     */
     slsBinding?: SAMLBindingsEnum;
-    /**
-     *
-     */
     slsUrl?: string;
-    /**
-     *
-     */
     spBinding?: SAMLBindingsEnum;
-    /**
-     *
-     */
     verificationKp?: string;
 }
 
@@ -2043,13 +1490,7 @@ export interface ProvidersWsfedMetadataRetrieveRequest {
      * A unique integer value identifying this WS-Federation Provider.
      */
     id: number;
-    /**
-     *
-     */
     download?: boolean;
-    /**
-     *
-     */
     forceBinding?: ForceBindingEnum;
 }
 
@@ -2058,9 +1499,6 @@ export interface ProvidersWsfedPartialUpdateRequest {
      * A unique integer value identifying this WS-Federation Provider.
      */
     id: number;
-    /**
-     *
-     */
     patchedWSFederationProviderRequest?: PatchedWSFederationProviderRequest;
 }
 
@@ -2069,9 +1507,6 @@ export interface ProvidersWsfedPreviewUserRetrieveRequest {
      * A unique integer value identifying this WS-Federation Provider.
      */
     id: number;
-    /**
-     *
-     */
     forUser?: number;
 }
 
@@ -2087,9 +1522,6 @@ export interface ProvidersWsfedUpdateRequest {
      * A unique integer value identifying this WS-Federation Provider.
      */
     id: number;
-    /**
-     *
-     */
     wSFederationProviderRequest: WSFederationProviderRequest;
 }
 
@@ -2100,9 +1532,6 @@ export interface ProvidersWsfedUsedByListRequest {
     id: number;
 }
 
-/**
- *
- */
 export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersAllDestroy without sending the request
@@ -2207,7 +1636,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/all/`;
+        const urlPath = `/providers/all/`;
 
         return {
             path: urlPath,
@@ -2321,7 +1750,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/all/types/`;
+        const urlPath = `/providers/all/types/`;
 
         return {
             path: urlPath,
@@ -2444,7 +1873,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/google_workspace/`;
+        const urlPath = `/providers/google_workspace/`;
 
         return {
             path: urlPath,
@@ -2576,7 +2005,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/google_workspace_groups/`;
+        const urlPath = `/providers/google_workspace_groups/`;
 
         return {
             path: urlPath,
@@ -2727,7 +2156,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/google_workspace_groups/`;
+        const urlPath = `/providers/google_workspace_groups/`;
 
         return {
             path: urlPath,
@@ -2768,7 +2197,8 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersGoogleWorkspaceGroupsRetrieve without sending the request
+     * Creates request options for providersGoogleWorkspaceGroupsRetrieve without sending the
+     * request
      */
     async providersGoogleWorkspaceGroupsRetrieveRequestOpts(
         requestParameters: ProvidersGoogleWorkspaceGroupsRetrieveRequest,
@@ -2835,7 +2265,8 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersGoogleWorkspaceGroupsUsedByList without sending the request
+     * Creates request options for providersGoogleWorkspaceGroupsUsedByList without sending the
+     * request
      */
     async providersGoogleWorkspaceGroupsUsedByListRequestOpts(
         requestParameters: ProvidersGoogleWorkspaceGroupsUsedByListRequest,
@@ -2951,7 +2382,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/google_workspace/`;
+        const urlPath = `/providers/google_workspace/`;
 
         return {
             path: urlPath,
@@ -3131,7 +2562,8 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersGoogleWorkspaceSyncObjectCreate without sending the request
+     * Creates request options for providersGoogleWorkspaceSyncObjectCreate without sending the
+     * request
      */
     async providersGoogleWorkspaceSyncObjectCreateRequestOpts(
         requestParameters: ProvidersGoogleWorkspaceSyncObjectCreateRequest,
@@ -3208,7 +2640,8 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersGoogleWorkspaceSyncStatusRetrieve without sending the request
+     * Creates request options for providersGoogleWorkspaceSyncStatusRetrieve without sending the
+     * request
      */
     async providersGoogleWorkspaceSyncStatusRetrieveRequestOpts(
         requestParameters: ProvidersGoogleWorkspaceSyncStatusRetrieveRequest,
@@ -3245,7 +2678,7 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider\'s sync status
+     * Get provider's sync status
      */
     async providersGoogleWorkspaceSyncStatusRetrieveRaw(
         requestParameters: ProvidersGoogleWorkspaceSyncStatusRetrieveRequest,
@@ -3259,7 +2692,7 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider\'s sync status
+     * Get provider's sync status
      */
     async providersGoogleWorkspaceSyncStatusRetrieve(
         requestParameters: ProvidersGoogleWorkspaceSyncStatusRetrieveRequest,
@@ -3444,7 +2877,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/google_workspace_users/`;
+        const urlPath = `/providers/google_workspace_users/`;
 
         return {
             path: urlPath,
@@ -3595,7 +3028,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/google_workspace_users/`;
+        const urlPath = `/providers/google_workspace_users/`;
 
         return {
             path: urlPath,
@@ -3703,7 +3136,8 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersGoogleWorkspaceUsersUsedByList without sending the request
+     * Creates request options for providersGoogleWorkspaceUsersUsedByList without sending the
+     * request
      */
     async providersGoogleWorkspaceUsersUsedByListRequestOpts(
         requestParameters: ProvidersGoogleWorkspaceUsersUsedByListRequest,
@@ -3795,7 +3229,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/ldap/`;
+        const urlPath = `/providers/ldap/`;
 
         return {
             path: urlPath,
@@ -3966,7 +3400,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/ldap/`;
+        const urlPath = `/providers/ldap/`;
 
         return {
             path: urlPath,
@@ -4293,7 +3727,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/microsoft_entra/`;
+        const urlPath = `/providers/microsoft_entra/`;
 
         return {
             path: urlPath,
@@ -4425,7 +3859,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/microsoft_entra_groups/`;
+        const urlPath = `/providers/microsoft_entra_groups/`;
 
         return {
             path: urlPath,
@@ -4576,7 +4010,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/microsoft_entra_groups/`;
+        const urlPath = `/providers/microsoft_entra_groups/`;
 
         return {
             path: urlPath,
@@ -4684,7 +4118,8 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersMicrosoftEntraGroupsUsedByList without sending the request
+     * Creates request options for providersMicrosoftEntraGroupsUsedByList without sending the
+     * request
      */
     async providersMicrosoftEntraGroupsUsedByListRequestOpts(
         requestParameters: ProvidersMicrosoftEntraGroupsUsedByListRequest,
@@ -4796,7 +4231,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/microsoft_entra/`;
+        const urlPath = `/providers/microsoft_entra/`;
 
         return {
             path: urlPath,
@@ -4975,7 +4410,8 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersMicrosoftEntraSyncObjectCreate without sending the request
+     * Creates request options for providersMicrosoftEntraSyncObjectCreate without sending the
+     * request
      */
     async providersMicrosoftEntraSyncObjectCreateRequestOpts(
         requestParameters: ProvidersMicrosoftEntraSyncObjectCreateRequest,
@@ -5052,7 +4488,8 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersMicrosoftEntraSyncStatusRetrieve without sending the request
+     * Creates request options for providersMicrosoftEntraSyncStatusRetrieve without sending the
+     * request
      */
     async providersMicrosoftEntraSyncStatusRetrieveRequestOpts(
         requestParameters: ProvidersMicrosoftEntraSyncStatusRetrieveRequest,
@@ -5089,7 +4526,7 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider\'s sync status
+     * Get provider's sync status
      */
     async providersMicrosoftEntraSyncStatusRetrieveRaw(
         requestParameters: ProvidersMicrosoftEntraSyncStatusRetrieveRequest,
@@ -5103,7 +4540,7 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider\'s sync status
+     * Get provider's sync status
      */
     async providersMicrosoftEntraSyncStatusRetrieve(
         requestParameters: ProvidersMicrosoftEntraSyncStatusRetrieveRequest,
@@ -5288,7 +4725,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/microsoft_entra_users/`;
+        const urlPath = `/providers/microsoft_entra_users/`;
 
         return {
             path: urlPath,
@@ -5439,7 +4876,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/microsoft_entra_users/`;
+        const urlPath = `/providers/microsoft_entra_users/`;
 
         return {
             path: urlPath,
@@ -5547,7 +4984,8 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersMicrosoftEntraUsersUsedByList without sending the request
+     * Creates request options for providersMicrosoftEntraUsersUsedByList without sending the
+     * request
      */
     async providersMicrosoftEntraUsersUsedByListRequestOpts(
         requestParameters: ProvidersMicrosoftEntraUsersUsedByListRequest,
@@ -5639,7 +5077,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/oauth2/`;
+        const urlPath = `/providers/oauth2/`;
 
         return {
             path: urlPath,
@@ -5704,7 +5142,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/oauth2-dcr/`;
+        const urlPath = `/providers/oauth2-dcr/`;
 
         return {
             path: urlPath,
@@ -5845,7 +5283,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/oauth2-dcr/`;
+        const urlPath = `/providers/oauth2-dcr/`;
 
         return {
             path: urlPath,
@@ -6248,7 +5686,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/oauth2/`;
+        const urlPath = `/providers/oauth2/`;
 
         return {
             path: urlPath,
@@ -6719,7 +6157,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/proxy/`;
+        const urlPath = `/providers/proxy/`;
 
         return {
             path: urlPath,
@@ -6919,7 +6357,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/proxy/`;
+        const urlPath = `/providers/proxy/`;
 
         return {
             path: urlPath,
@@ -7251,7 +6689,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/rac/`;
+        const urlPath = `/providers/rac/`;
 
         return {
             path: urlPath,
@@ -7389,7 +6827,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/rac/`;
+        const urlPath = `/providers/rac/`;
 
         return {
             path: urlPath,
@@ -7710,7 +7148,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/radius/`;
+        const urlPath = `/providers/radius/`;
 
         return {
             path: urlPath,
@@ -7859,7 +7297,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/radius/`;
+        const urlPath = `/providers/radius/`;
 
         return {
             path: urlPath,
@@ -8192,7 +7630,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/saml/`;
+        const urlPath = `/providers/saml/`;
 
         return {
             path: urlPath,
@@ -8365,7 +7803,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             formParams.append("file", requestParameters["file"] as any);
         }
 
-        let urlPath = `/providers/saml/import_metadata/`;
+        const urlPath = `/providers/saml/import_metadata/`;
 
         return {
             path: urlPath,
@@ -8460,6 +7898,10 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         if (requestParameters["digestAlgorithm"] != null) {
             queryParameters["digest_algorithm"] = requestParameters["digestAlgorithm"];
+        }
+
+        if (requestParameters["encryptionAlgorithm"] != null) {
+            queryParameters["encryption_algorithm"] = requestParameters["encryptionAlgorithm"];
         }
 
         if (requestParameters["encryptionKp"] != null) {
@@ -8566,7 +8008,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/saml/`;
+        const urlPath = `/providers/saml/`;
 
         return {
             path: urlPath,
@@ -9039,7 +8481,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/scim/`;
+        const urlPath = `/providers/scim/`;
 
         return {
             path: urlPath,
@@ -9164,7 +8606,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/scim_groups/`;
+        const urlPath = `/providers/scim_groups/`;
 
         return {
             path: urlPath,
@@ -9308,7 +8750,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/scim_groups/`;
+        const urlPath = `/providers/scim_groups/`;
 
         return {
             path: urlPath,
@@ -9527,7 +8969,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/scim/`;
+        const urlPath = `/providers/scim/`;
 
         return {
             path: urlPath,
@@ -9807,7 +9249,7 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider\'s sync status
+     * Get provider's sync status
      */
     async providersScimSyncStatusRetrieveRaw(
         requestParameters: ProvidersScimSyncStatusRetrieveRequest,
@@ -9821,7 +9263,7 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider\'s sync status
+     * Get provider's sync status
      */
     async providersScimSyncStatusRetrieve(
         requestParameters: ProvidersScimSyncStatusRetrieveRequest,
@@ -9996,7 +9438,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/scim_users/`;
+        const urlPath = `/providers/scim_users/`;
 
         return {
             path: urlPath,
@@ -10140,7 +9582,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/scim_users/`;
+        const urlPath = `/providers/scim_users/`;
 
         return {
             path: urlPath,
@@ -10332,7 +9774,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/ssf/`;
+        const urlPath = `/providers/ssf/`;
 
         return {
             path: urlPath,
@@ -10470,7 +9912,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/ssf/`;
+        const urlPath = `/providers/ssf/`;
 
         return {
             path: urlPath,
@@ -10791,7 +10233,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/wsfed/`;
+        const urlPath = `/providers/wsfed/`;
 
         return {
             path: urlPath,
@@ -10946,6 +10388,10 @@ export class ProvidersApi extends runtime.BaseAPI {
             queryParameters["digest_algorithm"] = requestParameters["digestAlgorithm"];
         }
 
+        if (requestParameters["encryptionAlgorithm"] != null) {
+            queryParameters["encryption_algorithm"] = requestParameters["encryptionAlgorithm"];
+        }
+
         if (requestParameters["encryptionKp"] != null) {
             queryParameters["encryption_kp"] = requestParameters["encryptionKp"];
         }
@@ -11054,7 +10500,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/wsfed/`;
+        const urlPath = `/providers/wsfed/`;
 
         return {
             path: urlPath,

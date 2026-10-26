@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,13 +12,11 @@
 
 /**
  * Pseudo class for static response
+ *
  * @export
  * @interface AuthenticatorStaticChallengeResponseRequest
  */
 export interface AuthenticatorStaticChallengeResponseRequest {
-    /**
-     *
-     */
     component?: string;
 }
 

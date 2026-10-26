@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,31 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { AuthenticatorStaticStage } from "./AuthenticatorStaticStage";
+import type { AuthenticatorStaticStage } from "./AuthenticatorStaticStage.js";
 import {
     AuthenticatorStaticStageFromJSON,
     AuthenticatorStaticStageToJSON,
-} from "./AuthenticatorStaticStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./AuthenticatorStaticStage.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedAuthenticatorStaticStageList
  */
 export interface PaginatedAuthenticatorStaticStageList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<AuthenticatorStaticStage>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,29 +10,17 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-
+import { parseDateTime, serializeDateTime } from "../runtime.js";
 /**
  * User source connection
+ *
  * @export
  * @interface UserOAuthSourceConnectionRequest
  */
 export interface UserOAuthSourceConnectionRequest {
-    /**
-     *
-     */
     source: string;
-    /**
-     *
-     */
     identifier: string;
-    /**
-     *
-     */
     accessToken?: string | null;
-    /**
-     *
-     */
     expires?: Date;
 }
 

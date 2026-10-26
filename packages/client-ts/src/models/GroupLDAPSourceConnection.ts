@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,49 +10,26 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { PartialGroup } from "./PartialGroup";
-import { PartialGroupFromJSON } from "./PartialGroup";
-import type { Source } from "./Source";
-import { SourceFromJSON } from "./Source";
+import { parseDateTime } from "../runtime.js";
+import type { PartialGroup } from "./PartialGroup.js";
+import { PartialGroupFromJSON } from "./PartialGroup.js";
+import type { Source } from "./Source.js";
+import { SourceFromJSON } from "./Source.js";
 
 /**
  * Group Source Connection
+ *
  * @export
  * @interface GroupLDAPSourceConnection
  */
 export interface GroupLDAPSourceConnection {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     readonly group: string;
-    /**
-     *
-     */
     source: string;
-    /**
-     *
-     */
     readonly sourceObj: Source;
-    /**
-     *
-     */
     identifier: string;
-    /**
-     *
-     */
     readonly created: Date;
-    /**
-     *
-     */
     readonly lastUpdated: Date;
-    /**
-     *
-     */
     readonly groupObj: PartialGroup;
 }
 

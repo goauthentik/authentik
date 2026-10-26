@@ -1,5 +1,4 @@
 import "../LoadingOverlay.js";
-
 import { akLoadingOverlay, type ILoadingOverlay } from "../LoadingOverlay.js";
 
 import { ifPresent } from "#elements/utils/attributes";

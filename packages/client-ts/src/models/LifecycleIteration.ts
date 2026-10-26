@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,70 +10,35 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { ContentTypeEnum } from "./ContentTypeEnum";
-import { ContentTypeEnumFromJSON, ContentTypeEnumToJSON } from "./ContentTypeEnum";
-import type { LifecycleIterationStateEnum } from "./LifecycleIterationStateEnum";
-import { LifecycleIterationStateEnumFromJSON } from "./LifecycleIterationStateEnum";
-import type { RelatedRule } from "./RelatedRule";
-import { RelatedRuleFromJSON } from "./RelatedRule";
-import type { Review } from "./Review";
-import { ReviewFromJSON } from "./Review";
+import { parseDateTime } from "../runtime.js";
+import type { ContentTypeEnum } from "./ContentTypeEnum.js";
+import { ContentTypeEnumFromJSON, ContentTypeEnumToJSON } from "./ContentTypeEnum.js";
+import type { LifecycleIterationStateEnum } from "./LifecycleIterationStateEnum.js";
+import { LifecycleIterationStateEnumFromJSON } from "./LifecycleIterationStateEnum.js";
+import type { RelatedRule } from "./RelatedRule.js";
+import { RelatedRuleFromJSON } from "./RelatedRule.js";
+import type { Review } from "./Review.js";
+import { ReviewFromJSON } from "./Review.js";
 
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface LifecycleIteration
  */
 export interface LifecycleIteration {
-    /**
-     *
-     */
     readonly id: string;
-    /**
-     *
-     */
     contentType: ContentTypeEnum;
-    /**
-     *
-     */
     readonly objectId: string;
-    /**
-     *
-     */
     readonly objectVerbose: string;
-    /**
-     *
-     */
     readonly objectAdminUrl: string;
-    /**
-     *
-     */
     readonly state: LifecycleIterationStateEnum;
-    /**
-     *
-     */
     readonly openedOn: Date;
-    /**
-     *
-     */
     readonly gracePeriodEnd: Date;
-    /**
-     *
-     */
     readonly nextReviewDate: Date;
-    /**
-     *
-     */
     readonly reviews: Array<Review>;
-    /**
-     *
-     */
     readonly rule: RelatedRule;
-    /**
-     *
-     */
     readonly userCanReview: boolean;
 }
 

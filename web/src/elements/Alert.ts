@@ -1,3 +1,5 @@
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+
 import { AKElement } from "#elements/Base";
 import { type SlottedTemplateResult, type Spread } from "#elements/types";
 
@@ -7,8 +9,6 @@ import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
-import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
-
 export enum Level {
     Warning = "pf-m-warning",
     Info = "pf-m-info",
@@ -17,6 +17,7 @@ export enum Level {
 }
 
 export const levelNames = ["warning", "info", "success", "danger"];
+
 export type Levels = (typeof levelNames)[number];
 
 export interface IAlert {
@@ -97,6 +98,7 @@ export class AKAlert extends AKElement implements IAlert {
 
 export function akAlert(properties: IAlert, content: SlottedTemplateResult = nothing) {
     const message = typeof content === "string" ? html`<span>${content}</span>` : content;
+
     return html`<ak-alert ${spread(properties as Spread)}>${message}</ak-alert>`;
 }
 

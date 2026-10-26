@@ -26,13 +26,14 @@ export const CommandNamespaceSymbol = {
 } satisfies Record<PaletteCommandNamespace, string>;
 
 /**
- * A set of all command namespace symbols, used to quickly check if a user input contains a namespace symbol.
+ * A set of all command namespace symbols, used to quickly check if a user input contains a
+ * namespace symbol.
  */
 export const CommandNamespaceSymbolIndex = new Set(Object.values(CommandNamespaceSymbol));
 
 /**
- * Given a user input, attempt to resolve it to a command namespace.
- * This is used to determine which commands to show in the command palette based on the user's input.
+ * Given a user input, attempt to resolve it to a command namespace. This is used to determine which
+ * commands to show in the command palette based on the user's input.
  */
 export function resolveCommandNamespace(
     value: string,
@@ -118,6 +119,7 @@ export class CommandPaletteState<D = unknown> {
 
     public set(nextCommandsInit: PaletteCommandDefinitionInit<D>[] | null): void {
         const previousCommands = this.#commands;
+
         const nextCommands: PaletteCommandDefinition<D>[] = (nextCommandsInit ?? []).map(
             (command) => ({
                 namespace: command.namespace ?? PaletteCommandNamespace.Action,
@@ -157,7 +159,10 @@ export function createCommonCommands(): PaletteCommandDefinitionInit<unknown>[] 
             label: msg("About authentik", {
                 id: "command-palette.about-authentik",
             }),
-            action: AboutModal.open,
+            action: () => {
+                // AboutModal.open resolves when About closes, so don't return its promise.
+                AboutModal.open();
+            },
             prefix: msg("View", { id: "command-palette.prefix.view" }),
             group: msg("authentik"),
         },

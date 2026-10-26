@@ -2,7 +2,6 @@ import "#components/ak-radio-input";
 import "#components/ak-slug-input";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
-
 import { aki } from "#common/api/client";
 
 import { Form } from "#elements/forms/Form";
@@ -102,23 +101,25 @@ export class InvitationEnrollmentFlowForm extends Form<InvitationEnrollmentFlowF
             <ak-radio-input
                 label=${msg("User type")}
                 name="userType"
-                .options=${[
-                    {
-                        label: msg("External"),
-                        default: true,
-                        value: "external",
-                        description: msg(
-                            "Enrolled users are created as external (e.g. customers, guests). New users will be placed under users/external.",
-                        ),
-                    },
-                    {
-                        label: msg("Internal"),
-                        value: "internal",
-                        description: msg(
-                            "Enrolled users are created as internal (e.g. employees). New users will be placed under users/internal.",
-                        ),
-                    },
-                ] satisfies RadioOption<UserTypeEnum>[]}
+                .options=${
+                    [
+                        {
+                            label: msg("External"),
+                            default: true,
+                            value: "external",
+                            description: msg(
+                                "Enrolled users are created as external (e.g. customers, guests). New users will be placed under users/external.",
+                            ),
+                        },
+                        {
+                            label: msg("Internal"),
+                            value: "internal",
+                            description: msg(
+                                "Enrolled users are created as internal (e.g. employees). New users will be placed under users/internal.",
+                            ),
+                        },
+                    ] satisfies RadioOption<UserTypeEnum>[]
+                }
             ></ak-radio-input>
             <ak-switch-input
                 label=${msg("Continue flow without invitation")}

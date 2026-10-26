@@ -1,0 +1,41 @@
+---
+name: "Comment on PR"
+description: "Upserts one section of the shared CI comment on a pull request"
+
+inputs:
+  section:
+    description: "Slug of the section to replace. Every other section is left alone."
+    required: true
+  body:
+    description: "Markdown for the section"
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+      env:
+        SECTION: "${{ inputs.section }}"
+        BODY: "${{ inputs.body }}"
+      with:
+        script: |
+          const marker = "<!-- ci-comment -->";
+          const { SECTION, BODY } = process.env;
+          const issue = { ...context.repo, issue_number: context.issue.number };
+
+          // Every CI job writes into the same comment, so find it by its marker and splice in
+          // only this job's section, leaving the sections other jobs own untouched.
+          // ponytail: read-modify-write, so two jobs finishing at the same instant can drop one
+          // section update; the next push rewrites it. Retry on a changed body if that bites.
+          const comments = await github.paginate(github.rest.issues.listComments, issue);
+          const existing = comments.find(({ body }) => body?.startsWith(marker));
+
+          const section = new RegExp(`<!-- section:${SECTION} -->[\\s\\S]*?<!-- /section:${SECTION} -->`);
+          const block = `<!-- section:${SECTION} -->\n${BODY.trim()}\n<!-- /section:${SECTION} -->`;
+          const previous = existing?.body?.trim() || marker;
+          const body = section.test(previous)
+            ? previous.replace(section, () => block)
+            : `${previous}\n\n${block}`;
+
+          await (existing
+            ? github.rest.issues.updateComment({ ...issue, comment_id: existing.id, body })
+            : github.rest.issues.createComment({ ...issue, body }));

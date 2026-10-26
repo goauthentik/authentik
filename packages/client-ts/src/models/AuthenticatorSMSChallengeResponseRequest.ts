@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,13 @@
 
 /**
  * SMS Challenge response, device is set by get_response_instance
+ *
  * @export
  * @interface AuthenticatorSMSChallengeResponseRequest
  */
 export interface AuthenticatorSMSChallengeResponseRequest {
-    /**
-     *
-     */
     component?: string;
-    /**
-     *
-     */
     code?: string;
-    /**
-     *
-     */
     phoneNumber?: string;
 }
 

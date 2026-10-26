@@ -1,9 +1,10 @@
 /**
+ * @import {
+ *   LogFn,
+ *   Logger
+ * } from "pino"
  * @file Playwright configuration.
- *
  * @see https://playwright.dev/docs/test-configuration
- *
- * @import { LogFn, Logger } from "pino"
  */
 
 import { ConsoleLogger } from "#logger/node";
@@ -35,12 +36,15 @@ export default defineConfig({
         timeout: 15_000,
     },
     maxFailures: CI ? 5 : 2,
+    // These load CAPTCHA widgets from their vendors' servers, which CI can't rely on reaching.
+    grepInvert: CI ? /@vendor-network/ : undefined,
     reporter: CI
         ? [
               // ---
               ["github"],
               ["html", { open: "never", outputFolder: "playwright-report" }],
-              ["json", { outputFile: "playwright-report/results.json" }],
+              // Codecov test analytics ingests JUnit XML, not Playwright's JSON.
+              ["junit", { outputFile: "playwright-report/results.xml" }],
           ]
         : [
               // ---
@@ -66,6 +70,7 @@ export default defineConfig({
                         logger = ConsoleLogger.child({
                             name: `Playwright ${name.toUpperCase()}`,
                         });
+
                         LoggerCache.set(name, logger);
                     }
 

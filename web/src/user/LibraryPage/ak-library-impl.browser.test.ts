@@ -1,5 +1,4 @@
 import "#user/LibraryPage/ak-library-impl";
-
 import { type Application } from "@goauthentik/api";
 
 import { describe, expect, it } from "vitest";

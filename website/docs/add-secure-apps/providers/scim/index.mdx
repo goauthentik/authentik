@@ -14,14 +14,19 @@ For instructions on creating a SCIM provider, refer to the [Create a SCIM provid
 
 ## Authentication modes
 
-In authentik, there are two ways to authenticate SCIM requests:
+In authentik, there are three ways to authenticate SCIM requests:
 
 - **Static token** provided by the application. This is the default authentication mode.
+- **Basic** authentication, using a username and password provided by the application.
 - **OAuth token** that authentik retrieves from a specified source and uses for authentication.
 
 ### Static token
 
 When the authentication mode is set to **Static token**, authentik sends the token provided by the application with outgoing SCIM requests to authenticate each request.
+
+### Basic
+
+When the authentication mode is set to **Basic**, authentik sends the username and password provided by the application as an [HTTP Basic](https://www.rfc-editor.org/rfc/rfc7617) `Authorization` header with each outgoing SCIM request. Use this mode for applications that do not accept a bearer token.
 
 ### OAuth token :ak-enterprise {#oauth-token}
 

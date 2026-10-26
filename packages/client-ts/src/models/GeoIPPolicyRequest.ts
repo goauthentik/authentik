@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,54 +10,29 @@
  * Do not edit the class manually.
  */
 
-import type { CountryCodeEnum } from "./CountryCodeEnum";
-import { CountryCodeEnumFromJSON, CountryCodeEnumToJSON } from "./CountryCodeEnum";
+import type { CountryCodeEnum } from "./CountryCodeEnum.js";
+import { CountryCodeEnumFromJSON, CountryCodeEnumToJSON } from "./CountryCodeEnum.js";
 
 /**
  * GeoIP Policy Serializer
+ *
  * @export
  * @interface GeoIPPolicyRequest
  */
 export interface GeoIPPolicyRequest {
-    /**
-     *
-     */
     name: string;
     /**
-     * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+     * When this option is enabled, all executions of this policy will be logged. By default, only
+     * execution errors are logged.
      */
     executionLogging?: boolean;
-    /**
-     *
-     */
     asns?: Array<number>;
-    /**
-     *
-     */
     countries: Array<CountryCodeEnum>;
-    /**
-     *
-     */
     checkHistoryDistance?: boolean;
-    /**
-     *
-     */
     historyMaxDistanceKm?: number;
-    /**
-     *
-     */
     distanceToleranceKm?: number;
-    /**
-     *
-     */
     historyLoginCount?: number;
-    /**
-     *
-     */
     checkImpossibleTravel?: boolean;
-    /**
-     *
-     */
     impossibleToleranceKm?: number;
 }
 

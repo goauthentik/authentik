@@ -1,5 +1,4 @@
 import "#components/ak-text-input";
-
 import { aki } from "#common/api/client";
 import { APIMessage, MessageLevel } from "#common/messages";
 
@@ -30,6 +29,7 @@ export class UserImpersonateForm extends Form<ImpersonationRequest> {
             this.requireReason = settings.impersonationRequireReason ?? false;
         } catch (error) {
             console.error("Failed to fetch impersonation settings:", error);
+
             // fallback to reason not required as the backend will still validate it
             this.requireReason = false;
         }

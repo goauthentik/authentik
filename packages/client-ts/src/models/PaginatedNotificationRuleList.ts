@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,28 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { NotificationRule } from "./NotificationRule";
-import { NotificationRuleFromJSON, NotificationRuleToJSON } from "./NotificationRule";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { NotificationRule } from "./NotificationRule.js";
+import { NotificationRuleFromJSON, NotificationRuleToJSON } from "./NotificationRule.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedNotificationRuleList
  */
 export interface PaginatedNotificationRuleList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<NotificationRule>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

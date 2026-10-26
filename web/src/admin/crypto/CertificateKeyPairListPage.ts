@@ -6,6 +6,7 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
 
@@ -23,8 +24,6 @@ import { CertificateKeyPair, CryptoApi, ModelEnum } from "@goauthentik/api";
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-crypto-certificate-list")
 export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
@@ -61,6 +60,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
         const count = this.selectedElements.length;
+
         return html`<ak-forms-delete-bulk
             object-label=${count === 1 ? msg("Certificate-Key Pair") : msg("Certificate-Key Pairs")}
             .objects=${this.selectedElements}
@@ -89,21 +89,27 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
 
     protected override row(item: CertificateKeyPair): SlottedTemplateResult[] {
         let managedSubText = msg("Managed by authentik");
+
         if (item.managed && item.managed.startsWith("goauthentik.io/crypto/discovered")) {
             managedSubText = msg("Managed by authentik (Discovered)");
         }
+
         let color = PFColor.Green;
+
         if (item.certExpiry) {
             const now = new Date();
             const inAMonth = new Date();
             inAMonth.setDate(inAMonth.getDate() + 30);
+
             if (item.certExpiry <= inAMonth) {
                 color = PFColor.Orange;
             }
+
             if (item.certExpiry <= now) {
                 color = PFColor.Red;
             }
         }
+
         return [
             html`<div>${item.name}</div>
                 ${item.managed ? html`<small>${managedSubText}</small>` : nothing}`,
@@ -178,15 +184,17 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                         >
                             ${msg("Download Certificate")}
                         </a>
-                        ${item.privateKeyAvailable
-                            ? html`<a
-                                  class="pf-c-button pf-m-secondary"
-                                  target="_blank"
-                                  href=${item.privateKeyDownloadUrl}
-                              >
-                                  ${msg("Download Private key")}
-                              </a>`
-                            : nothing}
+                        ${
+                            item.privateKeyAvailable
+                                ? html`<a
+                                      class="pf-c-button pf-m-secondary"
+                                      target="_blank"
+                                      href=${item.privateKeyDownloadUrl}
+                                  >
+                                      ${msg("Download Private key")}
+                                  </a>`
+                                : nothing
+                        }
                     </div>
                 </dd>
             </div>

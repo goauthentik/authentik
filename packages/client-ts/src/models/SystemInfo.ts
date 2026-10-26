@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,12 +10,18 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { SystemInfoRuntime } from "./SystemInfoRuntime";
-import { SystemInfoRuntimeFromJSON, SystemInfoRuntimeToJSON } from "./SystemInfoRuntime";
+import { parseDateTime } from "../runtime.js";
+import type { SystemInfoPostgresql } from "./SystemInfoPostgresql.js";
+import {
+    SystemInfoPostgresqlFromJSON,
+    SystemInfoPostgresqlToJSON,
+} from "./SystemInfoPostgresql.js";
+import type { SystemInfoRuntime } from "./SystemInfoRuntime.js";
+import { SystemInfoRuntimeFromJSON, SystemInfoRuntimeToJSON } from "./SystemInfoRuntime.js";
 
 /**
  * Get system information.
+ *
  * @export
  * @interface SystemInfo
  */
@@ -34,9 +38,6 @@ export interface SystemInfo {
      * Get HTTP Secure flag
      */
     readonly httpIsSecure: boolean;
-    /**
-     *
-     */
     runtime: SystemInfoRuntime;
     /**
      * Currently active brand
@@ -58,6 +59,7 @@ export interface SystemInfo {
      * Configured external base URL. Can be empty
      */
     readonly baseUrl: string;
+    postgresql: SystemInfoPostgresql | null;
 }
 
 /**
@@ -115,6 +117,7 @@ export function instanceOfSystemInfo(value: object): value is SystemInfo {
             (value as Record<string, any>)["base_url"] === undefined)
     )
         return false;
+    if (!("postgresql" in value) || value["postgresql"] === undefined) return false;
     return true;
 }
 
@@ -137,6 +140,7 @@ export function SystemInfoFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         embeddedOutpostDisabled: json["embedded_outpost_disabled"],
         embeddedOutpostHost: json["embedded_outpost_host"],
         baseUrl: json["base_url"],
+        postgresql: SystemInfoPostgresqlFromJSON(json["postgresql"]),
     };
 }
 
@@ -164,5 +168,6 @@ export function SystemInfoToJSONTyped(
 
     return {
         runtime: SystemInfoRuntimeToJSON(value["runtime"]),
+        postgresql: SystemInfoPostgresqlToJSON(value["postgresql"]),
     };
 }

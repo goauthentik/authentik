@@ -277,6 +277,7 @@ class _PostgresConsumer(Consumer):
 
         # Override because dramatiq doesn't allow us setting this manually
         self.timeout = Conf().worker["consumer_listen_timeout"]
+        self._next_pending_reconciliation = time.monotonic() + self.timeout
 
         self.task_purge_interval = timedelta(seconds=Conf().task_purge_interval)
         self.task_purge_last_run = timezone.now() - self.task_purge_interval
@@ -394,6 +395,10 @@ class _PostgresConsumer(Consumer):
         )
         return {str(message_id) for message_id in pending}
 
+    def _reconcile_pending_messages(self) -> None:
+        self.pending.update(self._fetch_pending_messages())
+        self._next_pending_reconciliation = time.monotonic() + self.timeout
+
     def _poll_for_notify(self) -> set[str]:
         self.logger.debug("Polling for message notifications", queue=self.queue_name)
         with self.listen_connection.cursor() as cursor:
@@ -410,36 +415,61 @@ class _PostgresConsumer(Consumer):
             self.logger.debug("Message already consumed by self", message_id=message_id)
             return None
 
+        table = sql.Identifier(self.query_set.model._meta.db_table)
+        consumable = sql.SQL("""
+            {table}.{message_id} = %(message_id)s
+            AND
+            {table}.{state} = ANY(%(consumable_states)s)
+            AND
+            ({table}.{eta} < %(maximum_eta)s OR {table}.{eta} IS NULL)
+        """).format(
+            table=table,
+            message_id=sql.Identifier("message_id"),
+            state=sql.Identifier("state"),
+            eta=sql.Identifier("eta"),
+        )
+        consumable_params: dict[str, Any] = {
+            "message_id": message_id,
+            "consumable_states": [state.value for state in CONSUMABLE_TASK_STATES],
+            "maximum_eta": timezone.now() + timedelta(seconds=self.timeout),
+        }
+
         with self.locks_connection.cursor() as cursor:
+            # Every consumer is notified of every message, so most attempts lose the race to
+            # another consumer. Unlocking a lock that isn't held logs a "you don't own a lock"
+            # warning in PostgreSQL, so we only unlock locks we acquired.
+            # The lock is only attempted for a consumable message: no row means the message is
+            # done, rejected or not due yet, and no lock was taken.
             cursor.execute(
-                sql.SQL("""
-                    UPDATE {table}
-                    SET {state} = %(state)s, {mtime} = %(mtime)s
-                    WHERE
-                        {table}.{message_id} = %(message_id)s
-                        AND
-                        {table}.{state} = ANY(%(consumable_states)s)
-                        AND
-                        ({table}.{eta} < %(maximum_eta)s OR {table}.{eta} IS NULL)
-                        AND
-                        pg_try_advisory_lock(%(lock_id)s)
-                    """).format(
-                    table=sql.Identifier(self.query_set.model._meta.db_table),
+                sql.SQL(
+                    "SELECT pg_try_advisory_lock(%(lock_id)s) FROM {table} WHERE {consumable}"
+                ).format(
+                    table=table,
+                    consumable=consumable,
+                ),
+                {**consumable_params, "lock_id": self._get_message_lock_id(message_id)},
+            )
+            row = cursor.fetchone()
+            if row is None or not row[0]:
+                return None
+
+            cursor.execute(
+                sql.SQL(
+                    "UPDATE {table} SET {state} = %(state)s, {mtime} = %(mtime)s WHERE {consumable}"
+                ).format(
+                    table=table,
                     state=sql.Identifier("state"),
                     mtime=sql.Identifier("mtime"),
-                    message_id=sql.Identifier("message_id"),
-                    eta=sql.Identifier("eta"),
+                    consumable=consumable,
                 ),
                 {
+                    **consumable_params,
                     "state": TaskState.CONSUMED.value,
                     "mtime": timezone.now(),
-                    "message_id": message_id,
-                    "consumable_states": [state.value for state in CONSUMABLE_TASK_STATES],
-                    "maximum_eta": timezone.now() + timedelta(seconds=self.timeout),
-                    "lock_id": self._get_message_lock_id(message_id),
                 },
             )
             if cursor.rowcount != 1:
+                # The message changed between the lock and the update, release our lock.
                 self._unlock_message(message_id)
                 return None
 
@@ -477,7 +507,7 @@ class _PostgresConsumer(Consumer):
         if self._listen_connection is None and not self.pending:
             # We might miss a notification between the initial query and the first time we wait for
             # notifications, it doesn't matter because we re-fetch for missed messages later on.
-            self.pending = self._fetch_pending_messages()
+            self._reconcile_pending_messages()
             # Force creation of listen connection
             _ = self.listen_connection
 
@@ -496,11 +526,15 @@ class _PostgresConsumer(Consumer):
         else:
             self.misses = 0
 
+        # A continuous notification stream can otherwise prevent the fallback query from running.
+        if time.monotonic() >= self._next_pending_reconciliation:
+            self._reconcile_pending_messages()
+
         if not self.pending:
             self.pending = self._poll_for_notify()
 
         if not self.pending:
-            self.pending = self._fetch_pending_messages()
+            self._reconcile_pending_messages()
 
         if not self.pending:
             self._backlog_waiting_for_dependencies()

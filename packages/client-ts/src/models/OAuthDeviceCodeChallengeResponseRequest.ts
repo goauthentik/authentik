@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,17 +12,12 @@
 
 /**
  * Response that includes the user-entered device code
+ *
  * @export
  * @interface OAuthDeviceCodeChallengeResponseRequest
  */
 export interface OAuthDeviceCodeChallengeResponseRequest {
-    /**
-     *
-     */
     component?: string;
-    /**
-     *
-     */
     code: string;
 }
 

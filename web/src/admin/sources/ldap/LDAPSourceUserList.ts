@@ -1,7 +1,6 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#admin/sources/ldap/LDAPSourceUserForm";
-
 import { aki } from "#common/api/client";
 
 import { toAdminInterface } from "#elements/router/core/interfaces";
@@ -26,6 +25,7 @@ export class LDAPSourceUserList extends Table<UserLDAPSourceConnection> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("LDAP User(s)")}
             .objects=${this.selectedElements}

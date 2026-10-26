@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,29 +10,36 @@
  * Do not edit the class manually.
  */
 
-import type { BindingTypeEnum } from "./BindingTypeEnum";
-import { BindingTypeEnumFromJSON, BindingTypeEnumToJSON } from "./BindingTypeEnum";
-import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum";
-import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum";
-import type { GroupMatchingModeEnum } from "./GroupMatchingModeEnum";
+import type { BindingTypeEnum } from "./BindingTypeEnum.js";
+import { BindingTypeEnumFromJSON, BindingTypeEnumToJSON } from "./BindingTypeEnum.js";
+import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum.js";
+import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum.js";
+import type { GroupMatchingModeEnum } from "./GroupMatchingModeEnum.js";
 import {
     GroupMatchingModeEnumFromJSON,
     GroupMatchingModeEnumToJSON,
-} from "./GroupMatchingModeEnum";
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
-import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum";
-import { SAMLNameIDPolicyEnumFromJSON, SAMLNameIDPolicyEnumToJSON } from "./SAMLNameIDPolicyEnum";
-import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum";
+} from "./GroupMatchingModeEnum.js";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
+import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum.js";
+import {
+    SAMLNameIDPolicyEnumFromJSON,
+    SAMLNameIDPolicyEnumToJSON,
+} from "./SAMLNameIDPolicyEnum.js";
+import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum.js";
 import {
     SignatureAlgorithmEnumFromJSON,
     SignatureAlgorithmEnumToJSON,
-} from "./SignatureAlgorithmEnum";
-import type { UserMatchingModeEnum } from "./UserMatchingModeEnum";
-import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./UserMatchingModeEnum";
+} from "./SignatureAlgorithmEnum.js";
+import type { UserMatchingModeEnum } from "./UserMatchingModeEnum.js";
+import {
+    UserMatchingModeEnumFromJSON,
+    UserMatchingModeEnumToJSON,
+} from "./UserMatchingModeEnum.js";
 
 /**
  * SAMLSource Serializer
+ *
  * @export
  * @interface PatchedSAMLSourceRequest
  */
@@ -47,12 +52,10 @@ export interface PatchedSAMLSourceRequest {
      * Internal source name, used in URLs.
      */
     slug?: string;
-    /**
-     *
-     */
     enabled?: boolean;
     /**
-     * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
+     * When enabled, this source will be displayed as a prominent button on the login page, instead
+     * of a small icon.
      */
     promoted?: boolean;
     /**
@@ -63,29 +66,14 @@ export interface PatchedSAMLSourceRequest {
      * Flow to use when enrolling new users.
      */
     enrollmentFlow?: string | null;
-    /**
-     *
-     */
     userPropertyMappings?: Array<string>;
-    /**
-     *
-     */
     groupPropertyMappings?: Array<string>;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
      */
     userMatchingMode?: UserMatchingModeEnum;
-    /**
-     *
-     */
     userPathTemplate?: string;
-    /**
-     *
-     */
     icon?: string;
     /**
      * How the source determines if an existing group should be used or a new group created.
@@ -108,7 +96,8 @@ export interface PatchedSAMLSourceRequest {
      */
     sloUrl?: string | null;
     /**
-     * Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.
+     * Allows authentication flows initiated by the IdP. This can be a security risk, as no
+     * validation of the request ID is done.
      */
     allowIdpInitiated?: boolean;
     /**
@@ -119,41 +108,30 @@ export interface PatchedSAMLSourceRequest {
      * NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
      */
     nameIdPolicy?: SAMLNameIDPolicyEnum;
-    /**
-     *
-     */
     bindingType?: BindingTypeEnum;
     /**
-     * When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.
+     * When selected, incoming assertion's Signatures will be validated against this certificate. To
+     * allow unsigned Requests, leave on default.
      */
     verificationKp?: string | null;
     /**
      * Keypair used to sign outgoing Responses going to the Identity Provider.
      */
     signingKp?: string | null;
-    /**
-     *
-     */
     digestAlgorithm?: DigestAlgorithmEnum;
-    /**
-     *
-     */
     signatureAlgorithm?: SignatureAlgorithmEnum;
     /**
-     * Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3).
+     * Time offset when temporary users should be deleted. This only applies if your IDP uses the
+     * NameID Format 'transient', and the user doesn't log out manually. (Format:
+     * hours=1;minutes=2;seconds=3).
      */
     temporaryUserDeleteAfter?: string;
     /**
-     * When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
+     * When selected, incoming assertions are encrypted by the IdP using the public key of the
+     * encryption keypair. The assertion is decrypted by the SP using the the private key.
      */
     encryptionKp?: string | null;
-    /**
-     *
-     */
     signedAssertion?: boolean;
-    /**
-     *
-     */
     signedResponse?: boolean;
 }
 

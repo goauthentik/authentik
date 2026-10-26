@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,17 +12,12 @@
 
 /**
  * Result of a Property-mapping test
+ *
  * @export
  * @interface PropertyMappingTestResult
  */
 export interface PropertyMappingTestResult {
-    /**
-     *
-     */
     readonly result: string;
-    /**
-     *
-     */
     readonly successful: boolean;
 }
 

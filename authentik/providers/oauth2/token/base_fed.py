@@ -51,6 +51,8 @@ class FederatedTokenRequest(TokenRequest):
     # response builders, so it must exist on every request type.
     user: User | None = None
     actor: Actor | None = None
+    # RFC 8693 §4.1 delegation chain carried by the subject_token's own `act` claim
+    prior_act: dict | None = None
     requested_token_type: str | None = None
 
     def validate_jwt(self, assertion: str) -> FederatedParty | None:
@@ -121,9 +123,10 @@ class FederatedTokenRequest(TokenRequest):
         if federated_token:
             _key, _alg = federated_token.provider.jwt_key
             try:
+                verification_key = _key if isinstance(_key, str) else _key.public_key()
                 token = decode(
                     assertion,
-                    _key.public_key(),
+                    verification_key,
                     algorithms=[_alg],
                     options={
                         "verify_aud": False,

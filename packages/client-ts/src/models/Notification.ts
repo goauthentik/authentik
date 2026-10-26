@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,49 +10,26 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { Event } from "./Event";
-import { EventFromJSON, EventToJSON } from "./Event";
-import type { SeverityEnum } from "./SeverityEnum";
-import { SeverityEnumFromJSON } from "./SeverityEnum";
+import { parseDateTime } from "../runtime.js";
+import type { Event } from "./Event.js";
+import { EventFromJSON, EventToJSON } from "./Event.js";
+import type { SeverityEnum } from "./SeverityEnum.js";
+import { SeverityEnumFromJSON } from "./SeverityEnum.js";
 
 /**
  * Notification Serializer
+ *
  * @export
  * @interface Notification
  */
 export interface Notification {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     readonly severity: SeverityEnum;
-    /**
-     *
-     */
     readonly body: string;
-    /**
-     *
-     */
     hyperlink?: string | null;
-    /**
-     *
-     */
     hyperlinkLabel?: string | null;
-    /**
-     *
-     */
     readonly created: Date;
-    /**
-     *
-     */
     event?: Event;
-    /**
-     *
-     */
     seen?: boolean;
 }
 

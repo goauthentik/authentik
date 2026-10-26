@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,75 +10,38 @@
  * Do not edit the class manually.
  */
 
-import type { ContentTypeEnum } from "./ContentTypeEnum";
-import { ContentTypeEnumFromJSON, ContentTypeEnumToJSON } from "./ContentTypeEnum";
-import type { PartialGroup } from "./PartialGroup";
-import { PartialGroupFromJSON } from "./PartialGroup";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
+import type { ContentTypeEnum } from "./ContentTypeEnum.js";
+import { ContentTypeEnumFromJSON, ContentTypeEnumToJSON } from "./ContentTypeEnum.js";
+import type { PartialGroup } from "./PartialGroup.js";
+import { PartialGroupFromJSON } from "./PartialGroup.js";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
 
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface LifecycleRule
  */
 export interface LifecycleRule {
-    /**
-     *
-     */
     readonly id: string;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     contentType: ContentTypeEnum;
-    /**
-     *
-     */
     objectId?: string | null;
-    /**
-     *
-     */
     interval?: string;
-    /**
-     *
-     */
     gracePeriod?: string;
-    /**
-     *
-     */
     reviewerGroups?: Array<string>;
-    /**
-     *
-     */
     readonly reviewerGroupsObj: Array<PartialGroup>;
-    /**
-     *
-     */
     minReviewers?: number;
-    /**
-     *
-     */
     minReviewersIsPerGroup?: boolean;
-    /**
-     *
-     */
     reviewers: Array<string>;
-    /**
-     *
-     */
     readonly reviewersObj: Array<PartialUser>;
     /**
-     * Select which transports should be used to notify the reviewers. If none are selected, the notification will only be shown in the authentik UI.
+     * Select which transports should be used to notify the reviewers. If none are selected, the
+     * notification will only be shown in the authentik UI.
      */
     notificationTransports?: Array<string>;
-    /**
-     *
-     */
     readonly targetVerbose: string;
 }
 

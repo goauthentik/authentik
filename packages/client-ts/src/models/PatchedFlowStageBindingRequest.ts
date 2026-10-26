@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,27 +10,22 @@
  * Do not edit the class manually.
  */
 
-import type { InvalidResponseActionEnum } from "./InvalidResponseActionEnum";
+import type { InvalidResponseActionEnum } from "./InvalidResponseActionEnum.js";
 import {
     InvalidResponseActionEnumFromJSON,
     InvalidResponseActionEnumToJSON,
-} from "./InvalidResponseActionEnum";
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+} from "./InvalidResponseActionEnum.js";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
 
 /**
  * FlowStageBinding Serializer
+ *
  * @export
  * @interface PatchedFlowStageBindingRequest
  */
 export interface PatchedFlowStageBindingRequest {
-    /**
-     *
-     */
     target?: string;
-    /**
-     *
-     */
     stage?: string;
     /**
      * Evaluate policies during the Flow planning process.
@@ -42,16 +35,13 @@ export interface PatchedFlowStageBindingRequest {
      * Evaluate policies when the Stage is presented to the user.
      */
     reEvaluatePolicies?: boolean;
-    /**
-     *
-     */
     order?: number;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
     /**
-     * Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.
+     * Configure how the flow executor should handle an invalid response to a challenge. RETRY
+     * returns the error message and a similar challenge to the executor. RESTART restarts the flow
+     * from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current
+     * context.
      */
     invalidResponseAction?: InvalidResponseActionEnum;
 }

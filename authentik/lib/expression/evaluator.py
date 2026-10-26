@@ -24,7 +24,7 @@ from authentik.events.models import Event
 from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.tracing import Span, active_tracer
 from authentik.lib.utils.dict import get_path_from_dict
-from authentik.lib.utils.email import normalize_addresses
+from authentik.lib.utils.email import Address, normalize_addresses
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import Policy, PolicyBinding
@@ -252,21 +252,23 @@ class BaseEvaluator:
 
     def expr_send_email(  # noqa: PLR0913, PLR0917
         self,
-        address: str | list[str],
+        address: Address,
         subject: str,
         body: str | None = None,
         stage: EmailStage | None = None,
         template: str | None = None,
         context: dict | None = None,
-        cc: str | list[str] | None = None,
-        bcc: str | list[str] | None = None,
+        cc: Address = None,
+        bcc: Address = None,
     ) -> bool:
         """Send an email using authentik's email system
 
         Args:
             address: Email address(es) to send to. Can be:
                 - Single email: "user@example.com"
-                - List of emails: ["user1@example.com", "user2@example.com"]
+                - Formatted address: "John Doe <user@example.com>"
+                - (name, email) tuple: ("John Doe", "user@example.com")
+                - List of any of the above
             subject: Email subject
             body: Email body (plain text/HTML). Mutually exclusive with template.
             stage: EmailStage instance to use for settings. If None, uses global settings.

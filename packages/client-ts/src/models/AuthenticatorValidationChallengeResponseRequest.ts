@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,41 +10,24 @@
  * Do not edit the class manually.
  */
 
-import type { DeviceChallengeRequest } from "./DeviceChallengeRequest";
+import type { DeviceChallengeRequest } from "./DeviceChallengeRequest.js";
 import {
     DeviceChallengeRequestFromJSON,
     DeviceChallengeRequestToJSON,
-} from "./DeviceChallengeRequest";
+} from "./DeviceChallengeRequest.js";
 
 /**
  * Challenge used for Code-based and WebAuthn authenticators
+ *
  * @export
  * @interface AuthenticatorValidationChallengeResponseRequest
  */
 export interface AuthenticatorValidationChallengeResponseRequest {
-    /**
-     *
-     */
     component?: string;
-    /**
-     *
-     */
     selectedChallenge?: DeviceChallengeRequest;
-    /**
-     *
-     */
     selectedStage?: string;
-    /**
-     *
-     */
     code?: string;
-    /**
-     *
-     */
     webauthn?: { [key: string]: any };
-    /**
-     *
-     */
     duo?: number;
 }
 

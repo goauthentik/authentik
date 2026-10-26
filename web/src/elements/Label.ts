@@ -1,3 +1,5 @@
+import PFLabel from "@patternfly/patternfly/components/Label/label.css";
+
 import { AKElement } from "#elements/Base";
 import type { SlottedTemplateResult, Spread } from "#elements/types";
 
@@ -6,8 +8,6 @@ import { spread } from "@open-wc/lit-helpers";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-
-import PFLabel from "@patternfly/patternfly/components/Label/label.css";
 
 export enum PFColor {
     Green = "pf-m-green",
@@ -18,9 +18,11 @@ export enum PFColor {
 }
 
 export const levelNames = ["warning", "info", "success", "danger"];
+
 export type Level = (typeof levelNames)[number];
 
 type Chrome = [Level, PFColor, string, string];
+
 const chromeList: Chrome[] = [
     ["danger", PFColor.Red, "pf-m-red", "fa-times"],
     ["warning", PFColor.Orange, "pf-m-orange", "fa-exclamation-triangle"],
@@ -81,6 +83,7 @@ export class Label extends AKElement implements ILabel {
 
 export function akLabel(properties: ILabel, content: SlottedTemplateResult = nothing) {
     const message = typeof content === "string" ? html`<span>${content}</span>` : content;
+
     return html`<ak-label ${spread(properties as Spread)}>${message}</ak-label>`;
 }
 

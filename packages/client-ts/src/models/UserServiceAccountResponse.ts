@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,30 +11,14 @@
  */
 
 /**
- *
  * @export
  * @interface UserServiceAccountResponse
  */
 export interface UserServiceAccountResponse {
-    /**
-     *
-     */
     username: string;
-    /**
-     *
-     */
     token: string;
-    /**
-     *
-     */
     userUid: string;
-    /**
-     *
-     */
     userPk: number;
-    /**
-     *
-     */
     groupPk?: string;
 }
 

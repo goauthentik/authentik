@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,17 +12,12 @@
 
 /**
  * Validate captcha token
+ *
  * @export
  * @interface CaptchaChallengeResponseRequest
  */
 export interface CaptchaChallengeResponseRequest {
-    /**
-     *
-     */
     component?: string;
-    /**
-     *
-     */
     token: string;
 }
 

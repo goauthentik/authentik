@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,23 +10,18 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { CertificateKeyPairKeyTypeEnum } from "./CertificateKeyPairKeyTypeEnum";
-import { CertificateKeyPairKeyTypeEnumFromJSON } from "./CertificateKeyPairKeyTypeEnum";
+import { parseDateTime } from "../runtime.js";
+import type { CertificateKeyPairKeyTypeEnum } from "./CertificateKeyPairKeyTypeEnum.js";
+import { CertificateKeyPairKeyTypeEnumFromJSON } from "./CertificateKeyPairKeyTypeEnum.js";
 
 /**
  * CertificateKeyPair Serializer
+ *
  * @export
  * @interface CertificateKeyPair
  */
 export interface CertificateKeyPair {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * SHA256 fingerprint of the certificate
@@ -63,7 +56,9 @@ export interface CertificateKeyPair {
      */
     readonly privateKeyDownloadUrl: string;
     /**
-     * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+     * Objects that are managed by authentik. These objects are created and updated automatically.
+     * This flag only indicates that an object can be overwritten by migrations. You can still
+     * modify the objects via the API, but expect changes to be overwritten in a later update.
      */
     readonly managed: string | null;
 }

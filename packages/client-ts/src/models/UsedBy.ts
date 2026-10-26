@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,20 @@
  * Do not edit the class manually.
  */
 
-import type { UsedByActionEnum } from "./UsedByActionEnum";
-import { UsedByActionEnumFromJSON, UsedByActionEnumToJSON } from "./UsedByActionEnum";
+import type { UsedByActionEnum } from "./UsedByActionEnum.js";
+import { UsedByActionEnumFromJSON, UsedByActionEnumToJSON } from "./UsedByActionEnum.js";
 
 /**
  * A list of all objects referencing the queried object
+ *
  * @export
  * @interface UsedBy
  */
 export interface UsedBy {
-    /**
-     *
-     */
     app: string;
-    /**
-     *
-     */
     modelName: string;
-    /**
-     *
-     */
     pk: string;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     action: UsedByActionEnum;
 }
 

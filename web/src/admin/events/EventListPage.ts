@@ -4,6 +4,7 @@ import "#admin/reports/ExportButton";
 import "#components/ak-event-info";
 import "#elements/Tabs";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
 import { EventWithContext } from "#common/events";
@@ -23,8 +24,6 @@ import { Event, EventsApi, EventsEventsExportCreateRequest } from "@goauthentik/
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-event-list")
 export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
@@ -91,6 +90,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
                 ></ak-events-map>
             </div>`;
         }
+
         return html`<div class="pf-c-page__main-section pf-m-no-padding-bottom">
             <ak-events-volume-chart
                 .query=${{

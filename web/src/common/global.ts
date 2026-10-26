@@ -1,10 +1,9 @@
 /**
  * @file Reader for the values the server injects into the interface documents.
- *
- * The server renders them as data — two `json_script` blocks and a handful of
- * `<meta>` tags — rather than as an executable `window.authentik` assignment,
- * so the interface pages can eventually be served under a strict CSP. See
- * `authentik/core/templates/base/header_js.html`.
+ *   The server renders them as data — two `json_script` blocks and a handful of
+ *   `<meta>` tags — rather than as an executable `window.authentik` assignment,
+ *   so the interface pages can eventually be served under a strict CSP. See
+ *   `authentik/core/templates/base/header_js.html`.
  */
 
 import { TargetLanguageTag } from "#common/ui/locale/definitions";

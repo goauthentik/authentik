@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,20 +12,16 @@
 
 /**
  * Provider Serializer
+ *
  * @export
  * @interface Provider
  */
 export interface Provider {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     name: string;
     /**
-     * Flow used for authentication when the associated application is accessed by an un-authenticated user.
+     * Flow used for authentication when the associated application is accessed by an
+     * un-authenticated user.
      */
     authenticationFlow?: string | null;
     /**
@@ -38,9 +32,6 @@ export interface Provider {
      * Flow used ending the session from a provider.
      */
     invalidationFlow?: string | null;
-    /**
-     *
-     */
     propertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object

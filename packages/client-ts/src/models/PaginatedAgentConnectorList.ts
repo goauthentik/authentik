@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,28 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { AgentConnector } from "./AgentConnector";
-import { AgentConnectorFromJSON, AgentConnectorToJSON } from "./AgentConnector";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { AgentConnector } from "./AgentConnector.js";
+import { AgentConnectorFromJSON, AgentConnectorToJSON } from "./AgentConnector.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedAgentConnectorList
  */
 export interface PaginatedAgentConnectorList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<AgentConnector>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

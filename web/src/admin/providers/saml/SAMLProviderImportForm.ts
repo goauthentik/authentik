@@ -18,11 +18,13 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
 
     async send(data: SAMLProvider): Promise<unknown> {
         const file = this.files().get("file");
+
         if (!file) {
             throw new SentryIgnoredError("No form data");
         }
+
         return aki(ProvidersApi).providersSamlImportMetadataCreate({
-            file: file,
+            file,
             name: data.name,
             authorizationFlow: data.authorizationFlow || "",
             invalidationFlow: data.invalidationFlow || "",

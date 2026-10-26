@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,26 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { TransportModeEnum } from "./TransportModeEnum";
-import { TransportModeEnumFromJSON, TransportModeEnumToJSON } from "./TransportModeEnum";
+import type { TransportModeEnum } from "./TransportModeEnum.js";
+import { TransportModeEnumFromJSON, TransportModeEnumToJSON } from "./TransportModeEnum.js";
 
 /**
  * NotificationTransport Serializer
+ *
  * @export
  * @interface PatchedNotificationTransportRequest
  */
 export interface PatchedNotificationTransportRequest {
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     mode?: TransportModeEnum;
-    /**
-     *
-     */
     webhookUrl?: string;
     /**
      * When set, the selected certificate is used to validate the certificate of the webhook server.
@@ -42,16 +32,11 @@ export interface PatchedNotificationTransportRequest {
      */
     webhookMappingBody?: string | null;
     /**
-     * Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs
+     * Configure additional headers to be sent. Mapping should return a dictionary of key-value
+     * pairs
      */
     webhookMappingHeaders?: string | null;
-    /**
-     *
-     */
     emailSubjectPrefix?: string;
-    /**
-     *
-     */
     emailTemplate?: string;
     /**
      * Only send notification once, for example when sending a webhook into a chat channel.

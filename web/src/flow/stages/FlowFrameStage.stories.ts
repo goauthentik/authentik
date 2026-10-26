@@ -1,7 +1,6 @@
 import "@patternfly/patternfly/components/Login/login.css";
 import "../../stories/flow-interface.js";
 import "./FlowErrorStage.js";
-
 import { ContextualFlowInfoLayoutEnum, FrameChallenge, UiThemeEnum } from "@goauthentik/api";
 
 import type { StoryObj } from "@storybook/web-components";
@@ -21,7 +20,7 @@ function flowFrameFactory(challenge: FrameChallenge): StoryObj {
         },
         args: {
             theme: "automatic",
-            challenge: challenge,
+            challenge,
         },
         argTypes: {
             theme: {

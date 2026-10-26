@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,31 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { ApplicationEntitlement } from "./ApplicationEntitlement";
+import type { ApplicationEntitlement } from "./ApplicationEntitlement.js";
 import {
     ApplicationEntitlementFromJSON,
     ApplicationEntitlementToJSON,
-} from "./ApplicationEntitlement";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./ApplicationEntitlement.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedApplicationEntitlementList
  */
 export interface PaginatedApplicationEntitlementList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<ApplicationEntitlement>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

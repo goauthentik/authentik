@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,13 +12,11 @@
 
 /**
  * Serializer for Endpoint authenticator devices
+ *
  * @export
  * @interface GoogleEndpointDeviceRequest
  */
 export interface GoogleEndpointDeviceRequest {
-    /**
-     *
-     */
     pk?: string;
     /**
      * The human-readable name of this device.

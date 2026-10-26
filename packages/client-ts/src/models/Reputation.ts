@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,41 +10,20 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-
+import { parseDateTime } from "../runtime.js";
 /**
  * Reputation Serializer
+ *
  * @export
  * @interface Reputation
  */
 export interface Reputation {
-    /**
-     *
-     */
     pk?: string;
-    /**
-     *
-     */
     identifier: string;
-    /**
-     *
-     */
     ip: string;
-    /**
-     *
-     */
     ipGeoData?: { [key: string]: any };
-    /**
-     *
-     */
     ipAsnData?: { [key: string]: any };
-    /**
-     *
-     */
     score?: number;
-    /**
-     *
-     */
     readonly updated: Date;
 }
 

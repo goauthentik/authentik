@@ -16,20 +16,20 @@ import { customElement, property } from "lit/decorators.js";
  * Automatically pushes tokens to the clipboard, if the clipboard is available; otherwise displays
  * them in the notifications.
  *
- * @element ak-token-copy-button
- *
- * @slot - The label for the button
- *
  * @fires ak-button-click - When the button is first clicked.
  * @fires ak-button-success - When the async process succeeds
  * @fires ak-button-failure - When the async process fails
  * @fires ak-button-reset - When the button is reset after the async process completes
+ * @element ak-token-copy-button
+ *
+ * @slot - The label for the button
  */
 
 @customElement("ak-token-copy-button")
 export class AKTokenCopyButton extends BaseTaskButton<null> {
     /**
      * The identifier key associated with this token.
+     *
      * @attr
      */
     @property({ type: String })

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,41 +10,24 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { Application } from "./Application";
-import { ApplicationFromJSON, ApplicationToJSON } from "./Application";
-import type { User } from "./User";
-import { UserFromJSON, UserToJSON } from "./User";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { Application } from "./Application.js";
+import { ApplicationFromJSON, ApplicationToJSON } from "./Application.js";
+import type { User } from "./User.js";
+import { UserFromJSON, UserToJSON } from "./User.js";
 
 /**
  * UserConsent Serializer
+ *
  * @export
  * @interface UserConsent
  */
 export interface UserConsent {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     expires?: Date | null;
-    /**
-     *
-     */
     expiring?: boolean;
-    /**
-     *
-     */
     user: User;
-    /**
-     *
-     */
     application: Application;
-    /**
-     *
-     */
     permissions?: string;
 }
 

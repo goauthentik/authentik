@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,61 +10,32 @@
  * Do not edit the class manually.
  */
 
-import type { OutgoingSyncDeleteAction } from "./OutgoingSyncDeleteAction";
+import type { OutgoingSyncDeleteAction } from "./OutgoingSyncDeleteAction.js";
 import {
     OutgoingSyncDeleteActionFromJSON,
     OutgoingSyncDeleteActionToJSON,
-} from "./OutgoingSyncDeleteAction";
+} from "./OutgoingSyncDeleteAction.js";
 
 /**
  * GoogleWorkspaceProvider Serializer
+ *
  * @export
  * @interface PatchedGoogleWorkspaceProviderRequest
  */
 export interface PatchedGoogleWorkspaceProviderRequest {
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     propertyMappings?: Array<string>;
     /**
      * Property mappings used for group creation/updating.
      */
     propertyMappingsGroup?: Array<string>;
-    /**
-     *
-     */
     delegatedSubject?: string;
-    /**
-     *
-     */
     credentials?: { [key: string]: any };
-    /**
-     *
-     */
     scopes?: string;
-    /**
-     *
-     */
     excludeUsersServiceAccount?: boolean;
-    /**
-     *
-     */
     filterGroup?: string | null;
-    /**
-     *
-     */
     userDeleteAction?: OutgoingSyncDeleteAction;
-    /**
-     *
-     */
     groupDeleteAction?: OutgoingSyncDeleteAction;
-    /**
-     *
-     */
     defaultGroupEmailDomain?: string;
     /**
      * Controls the number of objects synced in a single task

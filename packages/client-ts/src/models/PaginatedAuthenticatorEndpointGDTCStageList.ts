@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,31 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { AuthenticatorEndpointGDTCStage } from "./AuthenticatorEndpointGDTCStage";
+import type { AuthenticatorEndpointGDTCStage } from "./AuthenticatorEndpointGDTCStage.js";
 import {
     AuthenticatorEndpointGDTCStageFromJSON,
     AuthenticatorEndpointGDTCStageToJSON,
-} from "./AuthenticatorEndpointGDTCStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./AuthenticatorEndpointGDTCStage.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedAuthenticatorEndpointGDTCStageList
  */
 export interface PaginatedAuthenticatorEndpointGDTCStageList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<AuthenticatorEndpointGDTCStage>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

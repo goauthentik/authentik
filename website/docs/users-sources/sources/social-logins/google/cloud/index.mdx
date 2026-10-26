@@ -87,30 +87,24 @@ For instructions on embedding the new source within a flow, such as an authoriza
 
 ### Username mapping
 
-Google does not support usernames as a distinct field, so authentik prompts the user for a username when they first enroll through a Google source. To change this behavior and automatically use the email address as the username, create an expression policy to set the username to the email address and bind it to the enrollment flow.
+Google does not provide a separate username. By default, authentik prompts new users to choose one. To use the Google email address as the username, add an OAuth source property mapping. This sets the username before authentik starts the enrollment flow.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Policies**.
-3. Click **Create**, select **Expression Policy** and then **Next**.
-4. Provide a name for the policy and set the following expression:
+2. Navigate to **Customization** > **Property Mappings**.
+3. Click **Create**, select **OAuth Source Property Mapping**, and then click **Next**.
+4. Provide a name for the mapping and enter this expression:
 
 ```python
-email = request.context["prompt_data"]["email"]
-# Direct set username to email
-
-request.context["prompt_data"]["username"] = email
-# Set username to email without domain
-# request.context["prompt_data"]["username"] = email.split("@")[0]
-return False
+return {"username": info.get("email")}
 ```
 
-5. Click **Finish**. You can now bind this policy to the chosen enrollment flow of the Google OAuth source.
-6. Navigate to **Flows and Stages** > **Flows** and click the name of the flow in question.
-7. Open the **Stage Bindings** tab, expand the policies bound to the first stage and click **Bind existing policy/group/user**.
-8. Select the policy that you previously created and click **Create Policy Binding**.
+5. Click **Finish**.
+6. Navigate to **Directory** > **Federation and Social login** and edit the Google OAuth source.
+7. Under **OAuth Attribute mapping** > **User Property Mappings**, add the mapping to **Selected User Property Mappings**.
+8. Click **Update**.
 
-:::note
-If using the default enrollment flow the policy should be bound to the **default-source-enrollment-prompt** stage. Ensure that the policy comes before **default-source-enrollment-if-username**.
-:::
+The source's default `email` value remains unchanged. If Google does not return an email address, this mapping cannot set a username and the enrollment flow still asks the user for one.
 
-Afterward, any new logins will automatically use the user's Google email address as their username. This can be combined with disallowing users from changing their usernames; see [Configuration](../../../../../sys-mgmt/settings.mdx#allow-users-to-change-username).
+This mapping also runs on later logins and can update an existing user's username. To control whether users can change their usernames themselves, see [Configuration](../../../../../sys-mgmt/settings.mdx#allow-users-to-change-username).
+
+For other fields available to OAuth source mappings, see [OAuth source property mappings](../../../protocols/oauth/index.mdx#oauth-source-property-mappings).

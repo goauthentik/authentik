@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,31 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { AppleIndependentSecureEnclave } from "./AppleIndependentSecureEnclave";
+import type { AppleIndependentSecureEnclave } from "./AppleIndependentSecureEnclave.js";
 import {
     AppleIndependentSecureEnclaveFromJSON,
     AppleIndependentSecureEnclaveToJSON,
-} from "./AppleIndependentSecureEnclave";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./AppleIndependentSecureEnclave.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedAppleIndependentSecureEnclaveList
  */
 export interface PaginatedAppleIndependentSecureEnclaveList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<AppleIndependentSecureEnclave>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

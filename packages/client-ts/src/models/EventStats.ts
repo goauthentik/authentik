@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,17 +12,12 @@
 
 /**
  * Count of unique users in events and aggregated counts per specified deltas
+ *
  * @export
  * @interface EventStats
  */
 export interface EventStats {
-    /**
-     *
-     */
     uniqueUsers: number;
-    /**
-     *
-     */
     countStep: { [key: string]: any };
 }
 

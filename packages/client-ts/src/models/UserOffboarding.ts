@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,43 +10,32 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { OffboardingActionEnum } from "./OffboardingActionEnum";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { OffboardingActionEnum } from "./OffboardingActionEnum.js";
 import {
     OffboardingActionEnumFromJSON,
     OffboardingActionEnumToJSON,
-} from "./OffboardingActionEnum";
-import type { OffboardingStatusEnum } from "./OffboardingStatusEnum";
-import { OffboardingStatusEnumFromJSON } from "./OffboardingStatusEnum";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
+} from "./OffboardingActionEnum.js";
+import type { OffboardingStatusEnum } from "./OffboardingStatusEnum.js";
+import { OffboardingStatusEnumFromJSON } from "./OffboardingStatusEnum.js";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
 
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface UserOffboarding
  */
 export interface UserOffboarding {
-    /**
-     *
-     */
     readonly id: string;
-    /**
-     *
-     */
     user: number;
-    /**
-     *
-     */
     readonly userObj: PartialUser;
     /**
      * Absolute time at which the offboarding action is executed.
      */
     scheduledAt: Date;
-    /**
-     *
-     */
     action?: OffboardingActionEnum;
     /**
      * Revoke all of the user's sessions when offboarding.
@@ -58,21 +45,9 @@ export interface UserOffboarding {
      * Revoke all of the user's tokens when offboarding.
      */
     revokeTokens?: boolean;
-    /**
-     *
-     */
     readonly status: OffboardingStatusEnum;
-    /**
-     *
-     */
     readonly createdByObj: PartialUser;
-    /**
-     *
-     */
     readonly createdAt: Date;
-    /**
-     *
-     */
     readonly executedAt: Date | null;
 }
 

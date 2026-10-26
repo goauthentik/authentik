@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,28 +10,24 @@
  * Do not edit the class manually.
  */
 
-import type { ResumeOnMatchFailuresEnum } from "./ResumeOnMatchFailuresEnum";
+import type { ResumeOnMatchFailuresEnum } from "./ResumeOnMatchFailuresEnum.js";
 import {
     ResumeOnMatchFailuresEnumFromJSON,
     ResumeOnMatchFailuresEnumToJSON,
-} from "./ResumeOnMatchFailuresEnum";
+} from "./ResumeOnMatchFailuresEnum.js";
 
 /**
  * SourceStage Serializer
+ *
  * @export
  * @interface SourceStageRequest
  */
 export interface SourceStageRequest {
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     source: string;
     /**
-     * Amount of time a user can take to return from the source to continue the flow (Format: hours=-1;minutes=-2;seconds=-3)
+     * Amount of time a user can take to return from the source to continue the flow (Format:
+     * hours=-1;minutes=-2;seconds=-3)
      */
     resumeTimeout?: string;
     /**

@@ -24,17 +24,25 @@ class OpenIDConnectOAuthRedirect(OAuthRedirect):
 class OpenIDConnectClient(UserprofileHeaderAuthClient):
     def get_access_token_args(self, callback: str, code: str) -> dict[str, Any]:
         args = super().get_access_token_args(callback, code)
+        client_id = self.get_client_id()
+        client_secret = self.get_client_secret()
         if self.source.authorization_code_auth_method == AuthorizationCodeAuthMethod.POST_BODY:
-            args["client_id"] = self.get_client_id()
-            args["client_secret"] = self.get_client_secret()
-        else:
+            args["client_id"] = client_id
+            if client_secret:
+                args["client_secret"] = client_secret
+        elif client_secret:
+            # Basic auth, credentials are sent in the header
             args.pop("client_id", None)
             args.pop("client_secret", None)
         return args
 
     def get_access_token_auth(self) -> AuthBase | None:
-        if self.source.authorization_code_auth_method == AuthorizationCodeAuthMethod.BASIC_AUTH:
-            return HTTPBasicAuth(self.get_client_id(), self.get_client_secret())
+        client_secret = self.get_client_secret()
+        if (
+            self.source.authorization_code_auth_method == AuthorizationCodeAuthMethod.BASIC_AUTH
+            and client_secret
+        ):
+            return HTTPBasicAuth(self.get_client_id(), client_secret)
         return None
 
     def get_profile_info(self, token: dict[str, str]) -> dict[str, Any] | None:
@@ -80,6 +88,7 @@ class OpenIDConnectType(SourceType):
     name = "openidconnect"
 
     urls_customizable = True
+    requires_client_secret = False
 
     def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
         return {

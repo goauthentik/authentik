@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,33 +12,16 @@
 
 /**
  * Role permission with additional object-related data
+ *
  * @export
  * @interface ExtraRoleObjectPermission
  */
 export interface ExtraRoleObjectPermission {
-    /**
-     *
-     */
     readonly id: number;
-    /**
-     *
-     */
     readonly codename: string;
-    /**
-     *
-     */
     readonly model: string;
-    /**
-     *
-     */
     readonly appLabel: string;
-    /**
-     *
-     */
     objectPk: string;
-    /**
-     *
-     */
     readonly name: string;
     /**
      * Get app label from permission's model

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,22 +10,17 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
 
 /**
  * AuthenticatorDuoStage Serializer
+ *
  * @export
  * @interface AuthenticatorDuoStage
  */
 export interface AuthenticatorDuoStage {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
@@ -45,29 +38,15 @@ export interface AuthenticatorDuoStage {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly flowSet: Array<FlowSet>;
     /**
-     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able
+     * to configure this stage.
      */
     configureFlow?: string | null;
-    /**
-     *
-     */
     friendlyName?: string;
-    /**
-     *
-     */
     clientId: string;
-    /**
-     *
-     */
     apiHostname: string;
-    /**
-     *
-     */
     adminIntegrationKey?: string;
 }
 

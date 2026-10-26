@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,41 +10,24 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
-import type { WebAuthnDeviceType } from "./WebAuthnDeviceType";
-import { WebAuthnDeviceTypeFromJSON } from "./WebAuthnDeviceType";
+import { parseDateTime } from "../runtime.js";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
+import type { WebAuthnDeviceType } from "./WebAuthnDeviceType.js";
+import { WebAuthnDeviceTypeFromJSON } from "./WebAuthnDeviceType.js";
 
 /**
  * Serializer for WebAuthn authenticator devices
+ *
  * @export
  * @interface WebAuthnDevice
  */
 export interface WebAuthnDevice {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     readonly createdOn: Date;
-    /**
-     *
-     */
     readonly deviceType: WebAuthnDeviceType | null;
-    /**
-     *
-     */
     readonly aaguid: string;
-    /**
-     *
-     */
     readonly user: PartialUser;
 }
 

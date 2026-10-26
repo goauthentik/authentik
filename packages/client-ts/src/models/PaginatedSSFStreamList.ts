@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,28 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { SSFStream } from "./SSFStream";
-import { SSFStreamFromJSON, SSFStreamToJSON } from "./SSFStream";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { SSFStream } from "./SSFStream.js";
+import { SSFStreamFromJSON, SSFStreamToJSON } from "./SSFStream.js";
 
 /**
- *
  * @export
  * @interface PaginatedSSFStreamList
  */
 export interface PaginatedSSFStreamList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<SSFStream>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

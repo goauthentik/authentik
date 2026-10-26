@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,13 +12,11 @@
 
 /**
  * Pseudo class for duo response
+ *
  * @export
  * @interface AuthenticatorDuoChallengeResponseRequest
  */
 export interface AuthenticatorDuoChallengeResponseRequest {
-    /**
-     *
-     */
     component?: string;
 }
 

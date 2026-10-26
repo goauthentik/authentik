@@ -2,7 +2,7 @@ import "#components/ak-switch-input";
 import "#elements/ToggleGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-import "#elements/forms/SearchSelect/index";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 import { aki } from "#common/api/client";
 import {
@@ -10,30 +10,21 @@ import {
     PolicyBindingCheckTarget,
     PolicyBindingCheckTargetToLabel,
 } from "#common/policies/utils";
-import { groupBy } from "#common/utils";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
-import {
-    CoreApi,
-    CoreGroupsListRequest,
-    CoreUsersListRequest,
-    Group,
-    PoliciesAllListRequest,
-    PoliciesApi,
-    Policy,
-    PolicyBinding,
-    User,
-} from "@goauthentik/api";
+import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { groupSource, policySource, userSource } from "#admin/common/search-sources";
+
+import { Group, PoliciesApi, PolicyBinding, User } from "@goauthentik/api";
 
 import { match, P } from "ts-pattern";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 export type PolicyBindingNotice = { type: PolicyBindingCheckTarget; notice: string };
 
@@ -65,6 +56,7 @@ export function cleanBindingForSend(
             data.group = null;
             break;
     }
+
     return data;
 }
 
@@ -81,7 +73,9 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         const binding = await aki(PoliciesApi).policiesBindingsRetrieve({
             policyBindingUuid: pk,
         });
+
         this.policyGroupUser = pickPolicyGroupUser(binding, this.policyGroupUser);
+
         return binding as T;
     }
 
@@ -115,6 +109,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         if (this.instance?.pk) {
             return msg("Successfully updated binding.");
         }
+
         return msg("Successfully created binding.");
     }
 
@@ -138,6 +133,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                 policyBindingRequest: data,
             });
         }
+
         return aki(PoliciesApi).policiesBindingsCreate({
             policyBindingRequest: data,
         });
@@ -147,13 +143,17 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         if (this.instance?.pk) {
             return this.instance.order;
         }
+
         const bindings = await aki(PoliciesApi).policiesBindingsList({
             target: this.targetPk || "",
         });
+
         const orders = bindings.results.map((binding) => binding.order);
+
         if (orders.length < 1) {
             return 0;
         }
+
         return Math.max(...orders) + 1;
     }
 
@@ -170,6 +170,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                         ${PolicyBindingCheckTargetToLabel(ct)}
                     </option>`;
                 }
+
                 return nothing;
             })}
         </ak-toggle-group>`;
@@ -181,33 +182,13 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                 name="policy"
                 ?hidden=${this.policyGroupUser !== PolicyBindingCheckTarget.Policy}
             >
-                <ak-search-select
-                    .groupBy=${(items: Policy[]) => {
-                        return groupBy(items, (policy) => policy.verboseNamePlural);
-                    }}
-                    .fetchObjects=${async (query?: string): Promise<Policy[]> => {
-                        const args: PoliciesAllListRequest = {
-                            ordering: "name",
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const policies = await aki(PoliciesApi).policiesAllList(args);
-                        const selectedPolicy = this.instance?.policyObj;
-                        if (
-                            selectedPolicy &&
-                            !policies.results.some((policy) => policy.pk === selectedPolicy.pk)
-                        ) {
-                            return [selectedPolicy, ...policies.results];
-                        }
-                        return policies.results;
-                    }}
-                    .renderElement=${(policy: Policy) => policy.name}
-                    .value=${(policy: Policy | null) => policy?.pk}
-                    .selected=${(policy: Policy) => policy.pk === this.instance?.policy}
-                    blankable
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "policy",
+                    source: policySource,
+                    value: this.instance?.policy,
+                    selectedObject: this.instance?.policyObj,
+                    blankable: true,
+                })}
                 ${this.typeNotices
                     .filter(({ type }) => type === PolicyBindingCheckTarget.Policy)
                     .map((msg) => {
@@ -219,33 +200,13 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                 name="group"
                 ?hidden=${this.policyGroupUser !== PolicyBindingCheckTarget.Group}
             >
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Group[]> => {
-                        const args: CoreGroupsListRequest = {
-                            ordering: "name",
-                            includeUsers: false,
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const groups = await aki(CoreApi).coreGroupsList(args);
-                        const selectedGroup = this.instance?.groupObj;
-                        if (
-                            selectedGroup &&
-                            !groups.results.some((group) => group.pk === selectedGroup.pk)
-                        ) {
-                            return [selectedGroup as Group, ...groups.results];
-                        }
-                        return groups.results;
-                    }}
-                    .renderElement=${(group: Group): string => {
-                        return group.name;
-                    }}
-                    .value=${(group: Group | null) => String(group?.pk ?? "")}
-                    .selected=${(group: Group) => group.pk === this.instance?.group}
-                    blankable
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "group",
+                    source: groupSource,
+                    value: this.instance?.group,
+                    selectedObject: this.instance?.groupObj as Group | null | undefined,
+                    blankable: true,
+                })}
                 ${this.typeNotices
                     .filter(({ type }) => type === PolicyBindingCheckTarget.Group)
                     .map((msg) => {
@@ -257,31 +218,13 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                 name="user"
                 ?hidden=${this.policyGroupUser !== PolicyBindingCheckTarget.User}
             >
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<User[]> => {
-                        const args: CoreUsersListRequest = {
-                            ordering: "username",
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const users = await aki(CoreApi).coreUsersList(args);
-                        const selectedUser = this.instance?.userObj;
-                        if (
-                            selectedUser &&
-                            !users.results.some((user) => user.pk === selectedUser.pk)
-                        ) {
-                            return [selectedUser as User, ...users.results];
-                        }
-                        return users.results;
-                    }}
-                    .renderElement=${(user: User) => user.username}
-                    .renderDescription=${(user: User) => html`${user.name}`}
-                    .value=${(user: User | null) => user?.pk}
-                    .selected=${(user: User) => user.pk === this.instance?.user}
-                    blankable
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "user",
+                    source: userSource,
+                    value: this.instance?.user?.toString(),
+                    selectedObject: this.instance?.userObj as User | null | undefined,
+                    blankable: true,
+                })}
                 ${this.typeNotices
                     .filter(({ type }) => type === PolicyBindingCheckTarget.User)
                     .map((msg) => {
@@ -291,12 +234,14 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
     }
 
     protected override renderForm(): TemplateResult {
-        return html`${this.allowedTypes.length > 1
-                ? html`<div class="pf-c-card pf-m-selectable pf-m-selected">
-                      <div class="pf-c-card__body">${this.renderModeSelector()}</div>
-                      <div class="pf-c-card__footer">${this.renderTarget()}</div>
-                  </div>`
-                : this.renderTarget()}
+        return html`${
+                this.allowedTypes.length > 1
+                    ? html`<div class="pf-c-card pf-m-selectable pf-m-selected">
+                          <div class="pf-c-card__body">${this.renderModeSelector()}</div>
+                          <div class="pf-c-card__footer">${this.renderTarget()}</div>
+                      </div>`
+                    : this.renderTarget()
+            }
             <ak-switch-input
                 name="enabled"
                 label=${msg("Enabled")}

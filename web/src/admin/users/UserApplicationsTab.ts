@@ -1,4 +1,5 @@
 import "#admin/users/UserApplicationTable";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { AKElement } from "#elements/Base";
 
@@ -6,8 +7,6 @@ import { User } from "@goauthentik/api";
 
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 @customElement("ak-user-applications-tab")
 export class UserApplicationsTab extends AKElement {

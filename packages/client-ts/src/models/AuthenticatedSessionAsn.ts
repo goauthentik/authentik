@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,13 @@
 
 /**
  * Get ASN Data
+ *
  * @export
  * @interface AuthenticatedSessionAsn
  */
 export interface AuthenticatedSessionAsn {
-    /**
-     *
-     */
     asn: number | null;
-    /**
-     *
-     */
     asOrg: string | null;
-    /**
-     *
-     */
     network: string | null;
 }
 

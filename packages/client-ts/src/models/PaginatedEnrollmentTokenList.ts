@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,28 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { EnrollmentToken } from "./EnrollmentToken";
-import { EnrollmentTokenFromJSON, EnrollmentTokenToJSON } from "./EnrollmentToken";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { EnrollmentToken } from "./EnrollmentToken.js";
+import { EnrollmentTokenFromJSON, EnrollmentTokenToJSON } from "./EnrollmentToken.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedEnrollmentTokenList
  */
 export interface PaginatedEnrollmentTokenList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<EnrollmentToken>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

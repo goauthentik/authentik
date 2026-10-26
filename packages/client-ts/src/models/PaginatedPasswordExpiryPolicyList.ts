@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,28 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { PasswordExpiryPolicy } from "./PasswordExpiryPolicy";
-import { PasswordExpiryPolicyFromJSON, PasswordExpiryPolicyToJSON } from "./PasswordExpiryPolicy";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { PasswordExpiryPolicy } from "./PasswordExpiryPolicy.js";
+import {
+    PasswordExpiryPolicyFromJSON,
+    PasswordExpiryPolicyToJSON,
+} from "./PasswordExpiryPolicy.js";
 
 /**
- *
  * @export
  * @interface PaginatedPasswordExpiryPolicyList
  */
 export interface PaginatedPasswordExpiryPolicyList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<PasswordExpiryPolicy>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

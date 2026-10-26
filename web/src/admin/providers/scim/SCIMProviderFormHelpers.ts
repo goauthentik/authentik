@@ -14,6 +14,7 @@ export async function propertyMappingsProvider(page = 1, search = "") {
         search: search.trim(),
         page,
     });
+
     return {
         pagination: propertyMappings.pagination,
         options: propertyMappings.results.map(mappingToSelect),
@@ -34,6 +35,7 @@ export function propertyMappingsSelector(
 
     return async () => {
         const pm = aki(PropertymappingsApi);
+
         const mappings = await Promise.allSettled(
             instanceMappings.map((instanceId) =>
                 pm.propertymappingsProviderScimRetrieve({ pmUuid: instanceId }),
@@ -55,6 +57,7 @@ export async function groupsProvider(page = 1, search = "") {
         search: search.trim(),
         page,
     });
+
     return {
         pagination: groups.pagination,
         options: groups.results.map(groupToSelect),

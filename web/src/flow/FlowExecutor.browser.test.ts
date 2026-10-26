@@ -15,6 +15,7 @@ it("preserves and disables the current stage during autosubmit navigation", asyn
         url: "https://example.com/sso",
         attrs: { SAMLResponse: "response" },
     });
+
     const formSubmit = vi
         .spyOn(HTMLFormElement.prototype, "submit")
         .mockImplementation(function submit(this: HTMLFormElement) {
@@ -22,9 +23,11 @@ it("preserves and disables the current stage during autosubmit navigation", asyn
         });
 
     const executor = new FlowExecutor();
+
     const currentChallenge = {
         component: "ak-stage-authenticator-validate",
     } as ChallengeTypes;
+
     executor.flowSlug = "test-flow";
     executor.challenge = currentChallenge;
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,99 +10,50 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { PartialGroup } from "./PartialGroup";
-import { PartialGroupFromJSON } from "./PartialGroup";
-import type { Role } from "./Role";
-import { RoleFromJSON } from "./Role";
-import type { UserTypeEnum } from "./UserTypeEnum";
-import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { PartialGroup } from "./PartialGroup.js";
+import { PartialGroupFromJSON } from "./PartialGroup.js";
+import type { Role } from "./Role.js";
+import { RoleFromJSON } from "./Role.js";
+import type { UserTypeEnum } from "./UserTypeEnum.js";
+import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum.js";
 
 /**
  * User Serializer
+ *
  * @export
  * @interface User
  */
 export interface User {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     username: string;
     /**
      * User's display name.
      */
     name: string;
     /**
-     * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+     * Designates whether this user should be treated as active. Unselect this instead of deleting
+     * accounts.
      */
     isActive?: boolean;
-    /**
-     *
-     */
     lastLogin?: Date | null;
-    /**
-     *
-     */
     readonly dateJoined: Date;
-    /**
-     *
-     */
     readonly isSuperuser: boolean;
-    /**
-     *
-     */
     groups?: Array<string>;
-    /**
-     *
-     */
     readonly groupsObj: Array<PartialGroup> | null;
-    /**
-     *
-     */
     roles?: Array<string>;
-    /**
-     *
-     */
     readonly rolesObj: Array<Role> | null;
-    /**
-     *
-     */
     email?: string;
     /**
      * User's avatar, either a http/https URL or a data URI
      */
     readonly avatar: string;
-    /**
-     *
-     */
     attributes?: { [key: string]: any };
-    /**
-     *
-     */
     readonly uid: string;
-    /**
-     *
-     */
     path?: string;
-    /**
-     *
-     */
     type?: UserTypeEnum;
-    /**
-     *
-     */
     readonly uuid: string;
-    /**
-     *
-     */
     readonly passwordChangeDate: Date;
-    /**
-     *
-     */
     readonly lastUpdated: Date;
 }
 

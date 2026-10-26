@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,28 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { DummyPolicy } from "./DummyPolicy";
-import { DummyPolicyFromJSON, DummyPolicyToJSON } from "./DummyPolicy";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { DummyPolicy } from "./DummyPolicy.js";
+import { DummyPolicyFromJSON, DummyPolicyToJSON } from "./DummyPolicy.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedDummyPolicyList
  */
 export interface PaginatedDummyPolicyList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<DummyPolicy>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

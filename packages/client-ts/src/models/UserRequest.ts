@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,55 +10,33 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { UserTypeEnum } from "./UserTypeEnum";
-import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { UserTypeEnum } from "./UserTypeEnum.js";
+import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum.js";
 
 /**
  * User Serializer
+ *
  * @export
  * @interface UserRequest
  */
 export interface UserRequest {
-    /**
-     *
-     */
     username: string;
     /**
      * User's display name.
      */
     name: string;
     /**
-     * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+     * Designates whether this user should be treated as active. Unselect this instead of deleting
+     * accounts.
      */
     isActive?: boolean;
-    /**
-     *
-     */
     lastLogin?: Date | null;
-    /**
-     *
-     */
     groups?: Array<string>;
-    /**
-     *
-     */
     roles?: Array<string>;
-    /**
-     *
-     */
     email?: string;
-    /**
-     *
-     */
     attributes?: { [key: string]: any };
-    /**
-     *
-     */
     path?: string;
-    /**
-     *
-     */
     type?: UserTypeEnum;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,28 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { SAMLPropertyMapping } from "./SAMLPropertyMapping";
-import { SAMLPropertyMappingFromJSON, SAMLPropertyMappingToJSON } from "./SAMLPropertyMapping";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { SAMLPropertyMapping } from "./SAMLPropertyMapping.js";
+import { SAMLPropertyMappingFromJSON, SAMLPropertyMappingToJSON } from "./SAMLPropertyMapping.js";
 
 /**
- *
  * @export
  * @interface PaginatedSAMLPropertyMappingList
  */
 export interface PaginatedSAMLPropertyMappingList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<SAMLPropertyMapping>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

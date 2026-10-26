@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,43 +10,23 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { EventActions } from "./EventActions";
-import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { EventActions } from "./EventActions.js";
+import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions.js";
 
 /**
  * Event Serializer
+ *
  * @export
  * @interface PatchedEventRequest
  */
 export interface PatchedEventRequest {
-    /**
-     *
-     */
     user?: { [key: string]: any };
-    /**
-     *
-     */
     action?: EventActions;
-    /**
-     *
-     */
     app?: string;
-    /**
-     *
-     */
     context?: { [key: string]: any };
-    /**
-     *
-     */
     clientIp?: string | null;
-    /**
-     *
-     */
     expires?: Date;
-    /**
-     *
-     */
     brand?: { [key: string]: any };
 }
 

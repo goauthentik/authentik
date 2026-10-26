@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,31 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { GoogleChromeConnector } from "./GoogleChromeConnector";
+import type { GoogleChromeConnector } from "./GoogleChromeConnector.js";
 import {
     GoogleChromeConnectorFromJSON,
     GoogleChromeConnectorToJSON,
-} from "./GoogleChromeConnector";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./GoogleChromeConnector.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedGoogleChromeConnectorList
  */
 export interface PaginatedGoogleChromeConnectorList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<GoogleChromeConnector>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

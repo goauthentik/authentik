@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,29 +12,15 @@
 
 /**
  * Config for error reporting
+ *
  * @export
  * @interface ErrorReportingConfig
  */
 export interface ErrorReportingConfig {
-    /**
-     *
-     */
     readonly enabled: boolean;
-    /**
-     *
-     */
     readonly sentryDsn: string;
-    /**
-     *
-     */
     readonly environment: string;
-    /**
-     *
-     */
     readonly sendPii: boolean;
-    /**
-     *
-     */
     readonly tracesSampleRate: number;
 }
 

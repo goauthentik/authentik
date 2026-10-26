@@ -163,7 +163,7 @@ test.describe("Passkeys", () => {
             await assertionSubmitted;
 
             await expect(
-                page.getByRole("button", { name: "Switch user" }),
+                page.getByRole("button", { name: "Toggle user navigation menu" }),
                 "Enrollee is authenticated after the passkey challenge",
             ).toBeVisible();
         });

@@ -34,6 +34,7 @@ export class NotificationsContextController extends ReactiveContextController<No
         super();
 
         this.host = host;
+
         this.context = new ContextProvider(this.host, {
             context: NotificationsContext,
             initialValue: { loading: true, error: null },
@@ -47,11 +48,13 @@ export class NotificationsContextController extends ReactiveContextController<No
 
         if (!isAPIResultReady(session)) {
             this.logger.info("Session not ready, skipping notifications refresh");
+
             return Promise.resolve(fallback);
         }
 
         if (session.error) {
             this.logger.warn("Session error, skipping notifications refresh");
+
             return Promise.resolve(fallback);
         }
 
@@ -122,14 +125,20 @@ export class NotificationsContextController extends ReactiveContextController<No
             level: MessageLevel.info,
             message: actionToLabel(notification.event?.action) ?? notification.body,
             description: html`${notification.body}
-            ${notification.hyperlink
-                ? html`<br /><a href=${notification.hyperlink}>${notification.hyperlinkLabel}</a>`
-                : nothing}
-            ${notification.event
-                ? html`<br /><a href=${toAdminInterface(`events/log/${notification.event.pk}`)}
-                          >${msg("View details...")}</a
-                      >`
-                : nothing}`,
+            ${
+                notification.hyperlink
+                    ? html`<br /><a href=${notification.hyperlink}
+                              >${notification.hyperlinkLabel}</a
+                          >`
+                    : nothing
+            }
+            ${
+                notification.event
+                    ? html`<br /><a href=${toAdminInterface(`events/log/${notification.event.pk}`)}
+                              >${msg("View details...")}</a
+                          >`
+                    : nothing
+            }`,
         });
 
         const currentNotifications = this.context.value;

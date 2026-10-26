@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,6 +12,7 @@
 
 /**
  * Brand Serializer
+ *
  * @export
  * @interface PatchedBrandRequest
  */
@@ -22,69 +21,27 @@ export interface PatchedBrandRequest {
      * Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` and `ba.b`
      */
     domain?: string;
-    /**
-     *
-     */
     _default?: boolean;
-    /**
-     *
-     */
     brandingTitle?: string;
-    /**
-     *
-     */
     brandingLogo?: string;
-    /**
-     *
-     */
     brandingFavicon?: string;
-    /**
-     *
-     */
     brandingCustomCss?: string;
-    /**
-     *
-     */
     brandingDefaultFlowBackground?: string;
     /**
-     * URL template for the vector tile source used by the events map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
+     * URL template for the vector tile source used by the events map. Supports XYZ templates with
+     * {z}, {x} and {y} placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the
+     * bundled hexworld basemap. This value is part of the brand information served to
+     * unauthenticated clients; do not embed API keys or other credentials in it.
      */
     brandingMapTiles?: string;
-    /**
-     *
-     */
     flowAuthentication?: string | null;
-    /**
-     *
-     */
     flowUserSwitch?: string | null;
-    /**
-     *
-     */
     flowInvalidation?: string | null;
-    /**
-     *
-     */
     flowRecovery?: string | null;
-    /**
-     *
-     */
     flowUnenrollment?: string | null;
-    /**
-     *
-     */
     flowUserSettings?: string | null;
-    /**
-     *
-     */
     flowDeviceCode?: string | null;
-    /**
-     *
-     */
     flowLockdown?: string | null;
-    /**
-     *
-     */
     flowRequest?: string | null;
     /**
      * When set, external users will be redirected to this application after authenticating.
@@ -98,9 +55,6 @@ export interface PatchedBrandRequest {
      * Certificates used for client authentication.
      */
     clientCertificates?: Array<string>;
-    /**
-     *
-     */
     attributes?: { [key: string]: any };
 }
 

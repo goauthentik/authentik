@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,28 +10,24 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { CountryCodeEnum } from "./CountryCodeEnum";
-import { CountryCodeEnumFromJSON, CountryCodeEnumToJSON } from "./CountryCodeEnum";
-import type { GeoIPPolicyCountriesObjInner } from "./GeoIPPolicyCountriesObjInner";
-import { GeoIPPolicyCountriesObjInnerFromJSON } from "./GeoIPPolicyCountriesObjInner";
+import { parseDateTime } from "../runtime.js";
+import type { CountryCodeEnum } from "./CountryCodeEnum.js";
+import { CountryCodeEnumFromJSON, CountryCodeEnumToJSON } from "./CountryCodeEnum.js";
+import type { GeoIPPolicyCountriesObjInner } from "./GeoIPPolicyCountriesObjInner.js";
+import { GeoIPPolicyCountriesObjInnerFromJSON } from "./GeoIPPolicyCountriesObjInner.js";
 
 /**
  * GeoIP Policy Serializer
+ *
  * @export
  * @interface GeoIPPolicy
  */
 export interface GeoIPPolicy {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
-     * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+     * When this option is enabled, all executions of this policy will be logged. By default, only
+     * execution errors are logged.
      */
     executionLogging?: boolean;
     /**
@@ -56,49 +50,16 @@ export interface GeoIPPolicy {
      * Return objects policy is bound to
      */
     readonly boundTo: number;
-    /**
-     *
-     */
     readonly lastUpdated: Date;
-    /**
-     *
-     */
     readonly created: Date;
-    /**
-     *
-     */
     asns?: Array<number>;
-    /**
-     *
-     */
     countries: Array<CountryCodeEnum>;
-    /**
-     *
-     */
     readonly countriesObj: Array<GeoIPPolicyCountriesObjInner>;
-    /**
-     *
-     */
     checkHistoryDistance?: boolean;
-    /**
-     *
-     */
     historyMaxDistanceKm?: number;
-    /**
-     *
-     */
     distanceToleranceKm?: number;
-    /**
-     *
-     */
     historyLoginCount?: number;
-    /**
-     *
-     */
     checkImpossibleTravel?: boolean;
-    /**
-     *
-     */
     impossibleToleranceKm?: number;
 }
 

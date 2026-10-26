@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,61 +10,29 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
-import type { SAMLBindingsEnum } from "./SAMLBindingsEnum";
-import { SAMLBindingsEnumFromJSON, SAMLBindingsEnumToJSON } from "./SAMLBindingsEnum";
+import type { ContextualFlowInfo } from "./ContextualFlowInfo.js";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo.js";
+import type { ErrorDetail } from "./ErrorDetail.js";
+import type { SAMLBindingsEnum } from "./SAMLBindingsEnum.js";
+import { SAMLBindingsEnumFromJSON, SAMLBindingsEnumToJSON } from "./SAMLBindingsEnum.js";
 
 /**
  * Challenge for native browser logout
+ *
  * @export
  * @interface NativeLogoutChallenge
  */
 export interface NativeLogoutChallenge {
-    /**
-     *
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     */
     component?: string;
-    /**
-     *
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     */
     providerName?: string;
-    /**
-     *
-     */
     isComplete?: boolean;
-    /**
-     *
-     */
     postUrl?: string;
-    /**
-     *
-     */
     redirectUrl?: string;
-    /**
-     *
-     */
     samlBinding?: SAMLBindingsEnum;
-    /**
-     *
-     */
     samlRequest?: string;
-    /**
-     *
-     */
     samlResponse?: string;
-    /**
-     *
-     */
     samlRelayState?: string;
 }
 

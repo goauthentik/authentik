@@ -2,6 +2,7 @@ import Styles from "./ak-map.css";
 import { type BasemapTheme, buildBasemapStyle, type FlavorName } from "./basemap-style.js";
 import { buildHexworldStyle, wedgeColors } from "./hexworld-style.js";
 import { binAtLocation, buildEventFeatures, type EventFeatureCollection } from "./wedges.js";
+import MaplibreStyles from "maplibre-gl/dist/maplibre-gl.css";
 
 import { EventActions } from "@goauthentik/api";
 
@@ -11,8 +12,6 @@ import { Protocol } from "pmtiles";
 
 import { LitElement, type PropertyValues, unsafeCSS } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import MaplibreStyles from "maplibre-gl/dist/maplibre-gl.css";
 
 export interface MapMarker {
     id: string;
@@ -253,6 +252,7 @@ export class AKMap extends LitElement {
 
             if (!bin) {
                 this.hidePopup();
+
                 return;
             }
 
@@ -520,6 +520,7 @@ export class AKMap extends LitElement {
                 source?.setData(data);
                 this.growColumns();
             });
+
             return;
         }
 
@@ -571,8 +572,10 @@ export class AKMap extends LitElement {
         const signature = this.markers
             .map((m) => `${m.id}:${m.lon}:${m.lat}:${m.action ?? ""}`)
             .join("|");
+
         if (signature === this.#markerSignature) return false;
         this.#markerSignature = signature;
+
         return true;
     }
 
@@ -599,6 +602,7 @@ declare global {
     interface HTMLElementTagNameMap {
         "ak-map": AKMap;
     }
+
     interface HTMLElementEventMap {
         "bin-select": CustomEvent<BinSelectDetail>;
     }

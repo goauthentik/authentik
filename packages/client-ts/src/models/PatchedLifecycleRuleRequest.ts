@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,54 +10,29 @@
  * Do not edit the class manually.
  */
 
-import type { ContentTypeEnum } from "./ContentTypeEnum";
-import { ContentTypeEnumFromJSON, ContentTypeEnumToJSON } from "./ContentTypeEnum";
+import type { ContentTypeEnum } from "./ContentTypeEnum.js";
+import { ContentTypeEnumFromJSON, ContentTypeEnumToJSON } from "./ContentTypeEnum.js";
 
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface PatchedLifecycleRuleRequest
  */
 export interface PatchedLifecycleRuleRequest {
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     contentType?: ContentTypeEnum;
-    /**
-     *
-     */
     objectId?: string | null;
-    /**
-     *
-     */
     interval?: string;
-    /**
-     *
-     */
     gracePeriod?: string;
-    /**
-     *
-     */
     reviewerGroups?: Array<string>;
-    /**
-     *
-     */
     minReviewers?: number;
-    /**
-     *
-     */
     minReviewersIsPerGroup?: boolean;
-    /**
-     *
-     */
     reviewers?: Array<string>;
     /**
-     * Select which transports should be used to notify the reviewers. If none are selected, the notification will only be shown in the authentik UI.
+     * Select which transports should be used to notify the reviewers. If none are selected, the
+     * notification will only be shown in the authentik UI.
      */
     notificationTransports?: Array<string>;
 }

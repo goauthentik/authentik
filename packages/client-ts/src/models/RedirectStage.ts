@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,27 +10,22 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { RedirectStageModeEnum } from "./RedirectStageModeEnum";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
+import type { RedirectStageModeEnum } from "./RedirectStageModeEnum.js";
 import {
     RedirectStageModeEnumFromJSON,
     RedirectStageModeEnumToJSON,
-} from "./RedirectStageModeEnum";
+} from "./RedirectStageModeEnum.js";
 
 /**
  * RedirectStage Serializer
+ *
  * @export
  * @interface RedirectStage
  */
 export interface RedirectStage {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
@@ -50,25 +43,10 @@ export interface RedirectStage {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly flowSet: Array<FlowSet>;
-    /**
-     *
-     */
     keepContext?: boolean;
-    /**
-     *
-     */
     mode: RedirectStageModeEnum;
-    /**
-     *
-     */
     targetStatic?: string;
-    /**
-     *
-     */
     targetFlow?: string | null;
 }
 

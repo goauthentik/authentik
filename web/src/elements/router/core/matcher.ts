@@ -1,9 +1,8 @@
 /**
  * @file Pure route matcher.
- *
- * First-match-wins linear scan over pre-compiled `URLPattern`s. No globals,
- * no side effects. Depends only on the structural shape of a route (a compiled
- * `pattern`), so it never imports `Route`.
+ *   First-match-wins linear scan over pre-compiled `URLPattern`s. No globals,
+ *   no side effects. Depends only on the structural shape of a route (a compiled
+ *   `pattern`), so it never imports `Route`.
  */
 
 /**
@@ -23,10 +22,11 @@ export interface RouteMatch<R extends RoutePatternLike> {
  * Match a pathname against a route table, first-match-wins.
  *
  * @param pathname The interface-relative pathname, beginning with `/`.
- * The interface root is `/`. Callers stripping the interface prefix from
- * `location.pathname` must keep (or restore) the leading slash:
- * `/if/admin/users/42` → `/users/42`, `/if/admin/` → `/`.
+ *   The interface root is `/`. Callers stripping the interface prefix from
+ *   `location.pathname` must keep (or restore) the leading slash:
+ *   `/if/admin/users/42` → `/users/42`, `/if/admin/` → `/`.
  * @param routes The route table, scanned in order.
+ *
  * @returns The first match, or `null` when nothing matches.
  */
 export function matchRoute<R extends RoutePatternLike>(
@@ -79,7 +79,9 @@ export function sameRouteMatch<R extends RoutePatternLike>(
     b: RouteMatch<R> | null,
 ): boolean {
     if (a === b) return true;
+
     if (a === null || b === null) return false;
+
     if (a.route !== b.route) return false;
 
     const aKeys = identifyingKeys(a.parameters);

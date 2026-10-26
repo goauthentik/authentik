@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,38 +11,16 @@
  */
 
 /**
- *
  * @export
  * @interface TelegramAuthRequest
  */
 export interface TelegramAuthRequest {
-    /**
-     *
-     */
     id: number;
-    /**
-     *
-     */
     firstName?: string;
-    /**
-     *
-     */
     lastName?: string;
-    /**
-     *
-     */
     username?: string;
-    /**
-     *
-     */
     photoUrl?: string;
-    /**
-     *
-     */
     authDate: number;
-    /**
-     *
-     */
     hash: string;
 }
 

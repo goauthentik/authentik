@@ -3,23 +3,18 @@ import "#components/ak-text-input";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 
-import { RenderFlowOption } from "#admin/flows/utils";
+import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
 import { deviceTypeRestrictionPair } from "#admin/stages/authenticator_webauthn/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
     AuthenticatorAttachmentEnum,
     AuthenticatorWebAuthnStage,
-    Flow,
     FlowDesignationEnum,
-    FlowsApi,
-    FlowsInstancesListRequest,
     StagesApi,
     UserVerificationEnum,
     WebAuthnHintEnum,
@@ -41,12 +36,14 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
         if (data.authenticatorAttachment?.toString() === "") {
             data.authenticatorAttachment = null;
         }
+
         if (this.instance) {
             return aki(StagesApi).stagesAuthenticatorWebauthnUpdate({
                 stageUuid: this.instance.pk || "",
                 authenticatorWebAuthnStageRequest: data,
             });
         }
+
         return aki(StagesApi).stagesAuthenticatorWebauthnCreate({
             authenticatorWebAuthnStageRequest: data,
         });
@@ -58,9 +55,11 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
             [WebAuthnHintEnum.ClientDevice, msg("Client device (e.g. Touch ID, Windows Hello)")],
             [WebAuthnHintEnum.Hybrid, msg("Hybrid (e.g. QR code, phone)")],
         ];
+
         const selectedHints: DualSelectPair[] = (this.instance?.hints ?? [])
             .map((hint) => allHints.find(([key]) => key === hint)!)
             .filter(Boolean);
+
         return html` <span>
                 ${msg(
                     "Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).",
@@ -227,8 +226,8 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                             .provider=${(page: number, search?: string): Promise<DataProvision> => {
                                 return aki(StagesApi)
                                     .stagesAuthenticatorWebauthnDeviceTypesList({
-                                        page: page,
-                                        search: search,
+                                        page,
+                                        search,
                                     })
                                     .then((results) => {
                                         return {
@@ -253,33 +252,12 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                         label=${msg("Configuration flow")}
                         name="configureFlow"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation: FlowDesignationEnum.StageConfiguration,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await aki(FlowsApi).flowsInstancesList(args);
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                return this.instance?.configureFlow === flow.pk;
-                            }}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKFlowSearch({
+                            name: "configureFlow",
+                            flowType: FlowDesignationEnum.StageConfiguration,
+                            value: this.instance?.configureFlow,
+                            blankable: true,
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.",

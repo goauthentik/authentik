@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,31 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { UserKerberosSourceConnection } from "./UserKerberosSourceConnection";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { UserKerberosSourceConnection } from "./UserKerberosSourceConnection.js";
 import {
     UserKerberosSourceConnectionFromJSON,
     UserKerberosSourceConnectionToJSON,
-} from "./UserKerberosSourceConnection";
+} from "./UserKerberosSourceConnection.js";
 
 /**
- *
  * @export
  * @interface PaginatedUserKerberosSourceConnectionList
  */
 export interface PaginatedUserKerberosSourceConnectionList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<UserKerberosSourceConnection>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

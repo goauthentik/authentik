@@ -1,5 +1,4 @@
 import "#elements/buttons/SpinnerButton/index";
-
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 import { formatDisambiguatedUserDisplayName } from "#common/users";
@@ -32,6 +31,7 @@ export class UserActivationToggleForm extends WithLocale(DestructiveModelForm<Us
         if (!this.instance) {
             return Promise.reject(new Error("No user instance provided"));
         }
+
         const nextActiveState = !this.instance.isActive;
 
         return this.coreAPI.coreUsersPartialUpdate({
@@ -74,13 +74,15 @@ export class UserActivationToggleForm extends WithLocale(DestructiveModelForm<Us
         const displayName = this.formatDisplayName();
 
         return html`<p class="pf-c-form__helper-text">
-            ${this.instance?.isActive
-                ? msg(html`Are you sure you want to deactivate <code>${displayName}</code>?`, {
-                      id: "user.activation.confirm.deactivate",
-                  })
-                : msg(html`Are you sure you want to activate <code>${displayName}</code>?`, {
-                      id: "user.activation.confirm.activate",
-                  })}
+            ${
+                this.instance?.isActive
+                    ? msg(html`Are you sure you want to deactivate <code>${displayName}</code>?`, {
+                          id: "user.activation.confirm.deactivate",
+                      })
+                    : msg(html`Are you sure you want to activate <code>${displayName}</code>?`, {
+                          id: "user.activation.confirm.activate",
+                      })
+            }
         </p>`;
     }
 }
@@ -100,6 +102,7 @@ export function ToggleUserActivationButton(
     { className = "" }: ToggleUserActivationButtonProps = {},
 ): SlottedTemplateResult {
     const label = user.isActive ? msg("Deactivate") : msg("Activate");
+
     const tooltip = user.isActive
         ? msg("Lock the user out of this system")
         : msg("Allow the user to log in and use this system");

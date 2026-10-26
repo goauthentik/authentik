@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,30 +11,14 @@
  */
 
 /**
- *
  * @export
  * @interface ContentType
  */
 export interface ContentType {
-    /**
-     *
-     */
     readonly id: number;
-    /**
-     *
-     */
     readonly appLabel: string;
-    /**
-     *
-     */
     readonly model: string;
-    /**
-     *
-     */
     readonly verboseNamePlural: string;
-    /**
-     *
-     */
     readonly fullyQualifiedModel: string;
 }
 

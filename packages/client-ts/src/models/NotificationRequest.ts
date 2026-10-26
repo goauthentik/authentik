@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,30 +10,19 @@
  * Do not edit the class manually.
  */
 
-import type { EventRequest } from "./EventRequest";
-import { EventRequestFromJSON, EventRequestToJSON } from "./EventRequest";
+import type { EventRequest } from "./EventRequest.js";
+import { EventRequestFromJSON, EventRequestToJSON } from "./EventRequest.js";
 
 /**
  * Notification Serializer
+ *
  * @export
  * @interface NotificationRequest
  */
 export interface NotificationRequest {
-    /**
-     *
-     */
     hyperlink?: string | null;
-    /**
-     *
-     */
     hyperlinkLabel?: string | null;
-    /**
-     *
-     */
     event?: EventRequest;
-    /**
-     *
-     */
     seen?: boolean;
 }
 

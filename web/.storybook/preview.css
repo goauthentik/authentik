@@ -2,10 +2,8 @@ html {
     color-scheme: light dark;
 }
 
-@media (prefers-color-scheme: dark) {
-    html {
-        color-scheme: dark light;
-    }
+html[data-theme="dark"] {
+    color-scheme: dark light;
 }
 
 .sbdocs.sbdocs-wrapper,
@@ -22,15 +20,13 @@ html {
 .sbdocs.sbdocs-preview {
     background: var(
         --ak-global--background-image,
-        var(--ak-docs-preview-background, , #fff)
+        var(--ak-docs-preview-background, #fff)
     ) !important;
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --ak-base-background: hsl(260 26% 5%);
-        --ak-docs-preview-background: var(--ak-global--background-image, #18191a);
-    }
+html[data-theme="dark"] {
+    --ak-base-background: hsl(260 26% 5%);
+    --ak-docs-preview-background: var(--ak-global--background-image, #18191a);
 
     .sb-preparing-docs {
         .sb-argstableBlock,

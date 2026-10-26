@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,13 +12,11 @@
 
 /**
  * AccountLockdownStage Serializer
+ *
  * @export
  * @interface AccountLockdownStageRequest
  */
 export interface AccountLockdownStageRequest {
-    /**
-     *
-     */
     name: string;
     /**
      * Deactivate the user account (set is_active to False)
@@ -39,7 +35,8 @@ export interface AccountLockdownStageRequest {
      */
     revokeTokens?: boolean;
     /**
-     * Flow to redirect users to after self-service lockdown. This flow should not require authentication since the user's session is deleted.
+     * Flow to redirect users to after self-service lockdown. This flow should not require
+     * authentication since the user's session is deleted.
      */
     selfServiceCompletionFlow?: string | null;
 }

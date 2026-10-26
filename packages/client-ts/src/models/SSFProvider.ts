@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,24 +10,19 @@
  * Do not edit the class manually.
  */
 
-import type { Provider } from "./Provider";
-import { ProviderFromJSON } from "./Provider";
-import type { Token } from "./Token";
-import { TokenFromJSON } from "./Token";
+import type { Provider } from "./Provider.js";
+import { ProviderFromJSON } from "./Provider.js";
+import type { Token } from "./Token.js";
+import { TokenFromJSON } from "./Token.js";
 
 /**
  * SSFProvider Serializer
+ *
  * @export
  * @interface SSFProvider
  */
 export interface SSFProvider {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object component so that we know how to edit the object
@@ -51,29 +44,11 @@ export interface SSFProvider {
      * Key used to sign the SSF Events.
      */
     signingKey: string;
-    /**
-     *
-     */
     readonly tokenObj: Token;
-    /**
-     *
-     */
     oidcAuthProviders?: Array<number>;
-    /**
-     *
-     */
     readonly oidcAuthProvidersObj: Array<Provider>;
-    /**
-     *
-     */
     readonly ssfUrl: string | null;
-    /**
-     *
-     */
     eventRetention?: string;
-    /**
-     *
-     */
     pushVerifyCertificates?: boolean;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,30 +10,26 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { AppEnum } from "./AppEnum";
-import { AppEnumFromJSON, AppEnumToJSON } from "./AppEnum";
-import type { EventActions } from "./EventActions";
-import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
-import type { ModelEnum } from "./ModelEnum";
-import { ModelEnumFromJSON, ModelEnumToJSON } from "./ModelEnum";
+import { parseDateTime } from "../runtime.js";
+import type { AppEnum } from "./AppEnum.js";
+import { AppEnumFromJSON, AppEnumToJSON } from "./AppEnum.js";
+import type { EventActions } from "./EventActions.js";
+import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions.js";
+import type { ModelEnum } from "./ModelEnum.js";
+import { ModelEnumFromJSON, ModelEnumToJSON } from "./ModelEnum.js";
 
 /**
  * Event Matcher Policy Serializer
+ *
  * @export
  * @interface EventMatcherPolicy
  */
 export interface EventMatcherPolicy {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
-     * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+     * When this option is enabled, all executions of this policy will be logged. By default, only
+     * execution errors are logged.
      */
     executionLogging?: boolean;
     /**
@@ -58,16 +52,11 @@ export interface EventMatcherPolicy {
      * Return objects policy is bound to
      */
     readonly boundTo: number;
-    /**
-     *
-     */
     readonly lastUpdated: Date;
-    /**
-     *
-     */
     readonly created: Date;
     /**
-     * Match created events with this action type. When left empty, all action types will be matched.
+     * Match created events with this action type. When left empty, all action types will be
+     * matched.
      */
     action?: EventActions | null;
     /**
@@ -79,12 +68,10 @@ export interface EventMatcherPolicy {
      */
     app?: AppEnum | null;
     /**
-     * Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+     * Match events created by selected model. When left empty, all models are matched. When an app
+     * is selected, all the application's models are matched.
      */
     model?: ModelEnum | null;
-    /**
-     *
-     */
     query?: string | null;
 }
 

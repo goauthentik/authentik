@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,25 +12,14 @@
 
 /**
  * ApplicationEntitlement Serializer
+ *
  * @export
  * @interface ApplicationEntitlement
  */
 export interface ApplicationEntitlement {
-    /**
-     *
-     */
     readonly pbmUuid: string;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     app: string;
-    /**
-     *
-     */
     attributes?: { [key: string]: any };
 }
 

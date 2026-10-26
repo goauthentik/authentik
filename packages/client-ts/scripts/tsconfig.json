@@ -1,0 +1,7 @@
+{
+    "extends": "@goauthentik/tsconfig/node",
+    "compilerOptions": {
+        "verbatimModuleSyntax": true,
+        "rewriteRelativeImportExtensions": true
+    }
+}

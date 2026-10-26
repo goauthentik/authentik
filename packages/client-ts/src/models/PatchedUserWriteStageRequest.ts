@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,24 +10,22 @@
  * Do not edit the class manually.
  */
 
-import type { UserCreationModeEnum } from "./UserCreationModeEnum";
-import { UserCreationModeEnumFromJSON, UserCreationModeEnumToJSON } from "./UserCreationModeEnum";
-import type { UserTypeEnum } from "./UserTypeEnum";
-import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
+import type { UserCreationModeEnum } from "./UserCreationModeEnum.js";
+import {
+    UserCreationModeEnumFromJSON,
+    UserCreationModeEnumToJSON,
+} from "./UserCreationModeEnum.js";
+import type { UserTypeEnum } from "./UserTypeEnum.js";
+import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum.js";
 
 /**
  * UserWriteStage Serializer
+ *
  * @export
  * @interface PatchedUserWriteStageRequest
  */
 export interface PatchedUserWriteStageRequest {
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     userCreationMode?: UserCreationModeEnum;
     /**
      * When set, newly created users are inactive and cannot login.
@@ -39,13 +35,7 @@ export interface PatchedUserWriteStageRequest {
      * Optionally add newly created users to this group.
      */
     createUsersGroup?: string | null;
-    /**
-     *
-     */
     userType?: UserTypeEnum;
-    /**
-     *
-     */
     userPathTemplate?: string;
 }
 

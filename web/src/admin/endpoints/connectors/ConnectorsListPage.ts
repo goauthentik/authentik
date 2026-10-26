@@ -4,7 +4,6 @@ import "#admin/endpoints/connectors/fleet/FleetConnectorForm";
 import "#admin/endpoints/connectors/gdtc/GoogleChromeConnectorForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-
 import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, ModalInvokerButton } from "#elements/dialogs";
@@ -64,6 +63,7 @@ export class ConnectorsListPage extends TablePage<Connector> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Connector(s)")}
             .objects=${this.selectedElements}

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,31 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { AuthenticatorEmailStage } from "./AuthenticatorEmailStage";
+import type { AuthenticatorEmailStage } from "./AuthenticatorEmailStage.js";
 import {
     AuthenticatorEmailStageFromJSON,
     AuthenticatorEmailStageToJSON,
-} from "./AuthenticatorEmailStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./AuthenticatorEmailStage.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedAuthenticatorEmailStageList
  */
 export interface PaginatedAuthenticatorEmailStageList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<AuthenticatorEmailStage>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

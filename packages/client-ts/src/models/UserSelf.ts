@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,22 +10,20 @@
  * Do not edit the class manually.
  */
 
-import type { UserSelfGroups } from "./UserSelfGroups";
-import { UserSelfGroupsFromJSON } from "./UserSelfGroups";
-import type { UserSelfRoles } from "./UserSelfRoles";
-import { UserSelfRolesFromJSON } from "./UserSelfRoles";
-import type { UserTypeEnum } from "./UserTypeEnum";
-import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
+import type { UserSelfGroups } from "./UserSelfGroups.js";
+import { UserSelfGroupsFromJSON } from "./UserSelfGroups.js";
+import type { UserSelfRoles } from "./UserSelfRoles.js";
+import { UserSelfRolesFromJSON } from "./UserSelfRoles.js";
+import type { UserTypeEnum } from "./UserTypeEnum.js";
+import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum.js";
 
 /**
  * User Serializer for information a user can retrieve about themselves
+ *
  * @export
  * @interface UserSelf
  */
 export interface UserSelf {
-    /**
-     *
-     */
     readonly pk: number;
     /**
      * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
@@ -38,44 +34,27 @@ export interface UserSelf {
      */
     name: string;
     /**
-     * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+     * Designates whether this user should be treated as active. Unselect this instead of deleting
+     * accounts.
      */
     readonly isActive: boolean;
-    /**
-     *
-     */
     readonly isSuperuser: boolean;
     /**
      * Return whether this user owns the current browser session.
      */
     readonly isCurrent: boolean;
-    /**
-     *
-     */
     readonly groups: Array<UserSelfGroups>;
-    /**
-     *
-     */
     readonly roles: Array<UserSelfRoles>;
-    /**
-     *
-     */
     email?: string;
     /**
      * User's avatar, either a http/https URL or a data URI
      */
     readonly avatar: string;
-    /**
-     *
-     */
     readonly uid: string;
     /**
      * Get user settings with brand and group settings applied
      */
     readonly settings: { [key: string]: any };
-    /**
-     *
-     */
     type?: UserTypeEnum;
     /**
      * Get all system permissions assigned to the user

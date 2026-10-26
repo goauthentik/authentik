@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,43 +10,27 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { LastTaskStatusEnum } from "./LastTaskStatusEnum";
-import { LastTaskStatusEnumFromJSON } from "./LastTaskStatusEnum";
+import { parseDateTime } from "../runtime.js";
+import type { LastTaskStatusEnum } from "./LastTaskStatusEnum.js";
+import { LastTaskStatusEnumFromJSON } from "./LastTaskStatusEnum.js";
 
 /**
- *
  * @export
  * @interface Schedule
  */
 export interface Schedule {
-    /**
-     *
-     */
     readonly id: string;
     /**
      * Unique schedule identifier
      */
     readonly identifier: string | null;
-    /**
-     *
-     */
     readonly uid: string;
     /**
      * Dramatiq actor to call
      */
     readonly actorName: string;
-    /**
-     *
-     */
     readonly relObjAppLabel: string;
-    /**
-     *
-     */
     readonly relObjModel: string;
-    /**
-     *
-     */
     relObjId?: string | null;
     /**
      * When to schedule tasks
@@ -58,17 +40,8 @@ export interface Schedule {
      * Pause this schedule
      */
     paused?: boolean;
-    /**
-     *
-     */
     readonly nextRun: Date;
-    /**
-     *
-     */
     readonly description: string | null;
-    /**
-     *
-     */
     readonly lastTaskStatus: LastTaskStatusEnum | null;
 }
 

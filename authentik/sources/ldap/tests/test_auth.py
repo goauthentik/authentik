@@ -9,7 +9,11 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
 from authentik.lib.generators import generate_key
 from authentik.sources.ldap.auth import LDAPBackend
-from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
+from authentik.sources.ldap.models import (
+    LDAPSource,
+    LDAPSourceBindMethod,
+    LDAPSourcePropertyMapping,
+)
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 from authentik.sources.ldap.tests.mock_slapd import mock_slapd_connection
@@ -47,22 +51,28 @@ class LDAPSyncTests(TestCase):
         bind_mock = Mock(wraps=raw_conn.bind)
         raw_conn.bind = bind_mock
         connection = MagicMock(return_value=raw_conn)
-        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+        user_connection = MagicMock(return_value=raw_conn)
+        with (
+            patch("authentik.sources.ldap.models.LDAPSource.connection", connection),
+            patch(
+                "authentik.sources.ldap.models.LDAPSource.connection_as_user",
+                user_connection,
+            ),
+        ):
             user_sync = UserLDAPSynchronizer(self.source, Task())
             user_sync.sync_full()
 
             user = User.objects.get(username="erin.h")
-            # auth_user_by_bind = Mock(return_value=user)
+            self.source.service_bind_method = LDAPSourceBindMethod.SASL_EXTERNAL
+            self.source.save()
             backend = LDAPBackend()
             self.assertEqual(
                 backend.authenticate(None, username="erin.h", password=LDAP_PASSWORD),
                 user,
             )
-            connection.assert_called_with(
-                connection_kwargs={
-                    "user": "CN=Erin M. Hagens,OU=ak-test,DC=t,DC=goauthentik,DC=io",
-                    "password": LDAP_PASSWORD,
-                }
+            user_connection.assert_called_once_with(
+                "CN=Erin M. Hagens,OU=ak-test,DC=t,DC=goauthentik,DC=io",
+                LDAP_PASSWORD,
             )
             bind_mock.assert_not_called()
 

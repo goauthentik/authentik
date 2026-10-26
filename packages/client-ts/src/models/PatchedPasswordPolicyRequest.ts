@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,61 +12,30 @@
 
 /**
  * Password Policy Serializer
+ *
  * @export
  * @interface PatchedPasswordPolicyRequest
  */
 export interface PatchedPasswordPolicyRequest {
-    /**
-     *
-     */
     name?: string;
     /**
-     * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+     * When this option is enabled, all executions of this policy will be logged. By default, only
+     * execution errors are logged.
      */
     executionLogging?: boolean;
     /**
      * Field key to check, field keys defined in Prompt stages are available.
      */
     passwordField?: string;
-    /**
-     *
-     */
     amountDigits?: number;
-    /**
-     *
-     */
     amountUppercase?: number;
-    /**
-     *
-     */
     amountLowercase?: number;
-    /**
-     *
-     */
     amountSymbols?: number;
-    /**
-     *
-     */
     lengthMin?: number;
-    /**
-     *
-     */
     symbolCharset?: string;
-    /**
-     *
-     */
     errorMessage?: string;
-    /**
-     *
-     */
     checkStaticRules?: boolean;
-    /**
-     *
-     */
     checkHaveIBeenPwned?: boolean;
-    /**
-     *
-     */
     checkZxcvbn?: boolean;
     /**
      * How many times the password hash is allowed to be on haveibeenpwned

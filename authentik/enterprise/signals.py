@@ -20,6 +20,9 @@ def monitoring_set_enterprise(sender, **kwargs):
     """set enterprise gauges"""
     summary = LicenseKey.cached_summary()
     if summary.status == LicenseUsageStatus.UNLICENSED:
+        GAUGE_LICENSE_USAGE.labels(user_type="internal").set(0)
+        GAUGE_LICENSE_USAGE.labels(user_type="external").set(0)
+        GAUGE_LICENSE_EXPIRY.set(0)
         return
     percentage_internal = (
         0
@@ -50,6 +53,7 @@ def pre_save_license(sender: type[License], instance: License, **_):
 def post_save_license(sender: type[License], instance: License, **_):
     """Trigger license usage calculation when license is saved"""
     cache.delete(CACHE_KEY_ENTERPRISE_LICENSE)
+    LicenseKey.cached_summary.cache_clear()
     Schedule.dispatch_by_actor(enterprise_update_usage)
 
 
@@ -57,3 +61,4 @@ def post_save_license(sender: type[License], instance: License, **_):
 def post_delete_license(sender: type[License], instance: License, **_):
     """Clear license cache when license is deleted"""
     cache.delete(CACHE_KEY_ENTERPRISE_LICENSE)
+    LicenseKey.cached_summary.cache_clear()
