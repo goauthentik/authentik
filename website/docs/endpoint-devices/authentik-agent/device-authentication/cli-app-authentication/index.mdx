@@ -7,7 +7,11 @@ authentik_version: "2025.12.0"
 
 import DocCardList from "@theme/DocCardList";
 
-The authentik Agent can authenticate to CLI applications such as [the AWS CLI `aws`](./aws.mdx) and [the kubernetes CLI `kubectl`](./k8s.mdx). It also provides a [Claude Code credential helper](/integrations/development/claude-code/) that exchanges a developer's authentik token for a short-lived Anthropic service-account token.
+The authentik Agent can authenticate to CLI applications such as:
+
+- [the AWS CLI (`aws`)](./aws.mdx)
+- [the Kubernetes CLI (`kubectl`)](./k8s.mdx)
+- [Claude Code](/integrations/development/claude-code/), by exchanging the developer's authentik token for a short-lived Anthropic access token
 
 ## How CLI authentication works
 

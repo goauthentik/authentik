@@ -7,283 +7,124 @@ support_level: community
 
 ## What is Claude Code?
 
-[Claude Code](https://code.claude.com/) is Anthropic's coding agent. This guide covers command-line use, locally or over SSH.
+> Claude Code is an agentic coding tool that reads your codebase, edits files, runs commands, and integrates with your development tools.
+>
+> -- https://code.claude.com/docs/en/overview
 
-This guide configures the authentik Agent to authenticate Claude Code using Workload Identity Federation (WIF). The Agent exchanges a signed JSON Web Token (JWT) for a short-lived Anthropic access token, which Claude Code retrieves through its `apiKeyHelper` setting.
+This guide configures the authentik Agent as the Claude Code credential helper. The `ak auth claude` command exchanges the developer's authentik token for a short-lived Anthropic access token through Anthropic Workload Identity Federation (WIF), so developers don't need Anthropic API keys. All developers share one Anthropic service account, and each signs in with their own authentik account.
 
-This integration allows administrators to centrally manage which developers can access Claude Code, without distributing long-lived Anthropic API keys.
-
-The integration uses one existing or new authentik OAuth2/OpenID Connect application, a group of authorized developers, one shared Anthropic service account, and one federation rule per workspace. Developers share the helper configuration, but each signs in to their own authentik Agent profile.
-
-The helper can also be used for non-interactive workloads. For an alternative machine-to-machine setup without the Agent, see [Integrate with Anthropic Workload Identity Federation](../../platforms/anthropic-workload-identity-federation/index.mdx).
+The helper works for the Claude Code CLI, locally or over SSH. Claude Desktop and Claude Code cloud sessions don't run credential helpers. To authenticate a machine workload without the authentik Agent, see [Integrate with Anthropic Workload Identity Federation](../../platforms/anthropic-workload-identity-federation/index.mdx).
 
 ## Preparation
 
-To complete this guide, you need:
-
-- An authentik deployment (2026.8 or later) with the [authentik Agent configured](/docs/endpoint-devices/authentik-agent/configuration/), including the device code flow and signed `authentik-cli` provider.
-- The authentik Agent and CLI (v0.72.4 or later) installed on developer devices.
-- A current [Claude Code CLI](https://code.claude.com/docs/en/setup) installed on developer devices.
-- An Anthropic organization where you have the admin, owner, or primary owner role to configure Workload Identity Federation and service accounts.
-- An Anthropic workspace for Claude Code usage.
-
 The following placeholders are used in this guide:
 
-- `authentik.company` is the FQDN of your authentik installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
-Anthropic must be able to retrieve the OpenID Connect (OIDC) discovery document and JSON Web Key Set (JWKS) over public HTTPS on port 443. If your authentik deployment is not publicly accessible, use Anthropic's inline JWKS mode and update its public keys when you rotate the signing key.
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+To complete this guide, you need:
+
+- authentik 2026.8 or later, with the [authentik Agent configured](/docs/endpoint-devices/authentik-agent/configuration/), including the `authentik-cli` provider.
+- The authentik Agent and CLI 0.72.4 or later, and the [Claude Code CLI](https://code.claude.com/docs/en/setup), on developer devices.
+- An Anthropic organization where you have the admin, owner, or primary owner role, and a workspace for Claude Code usage.
+
+Anthropic must be able to fetch the authentik OpenID configuration and JSON Web Key Set (JWKS) over public HTTPS on port 443. If your authentik instance is not publicly reachable, configure Anthropic with an inline JWKS instead of discovery.
 
 ## authentik configuration
 
+To support the integration of Claude Code with authentik, you need a group of authorized developers and an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) that accepts tokens from the `authentik-cli` provider.
+
 ### Create a group for Claude Code users
 
-Create a group to manage which developers are allowed to authenticate to Claude Code.
-
-1. Log in to authentik as an administrator.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Groups** and click **Create**.
-3. Set the group name to `claude-code-users`.
-4. Add the users who should have access to Claude Code as direct members. The default `profile` scope mapping used below includes direct group names, not inherited group membership.
+3. Set the name to `claude-code-users` and click **Create**.
+4. Click the name of the new group, and then switch to the **Users** tab.
+5. Click **Add Existing User**, select the developers who should have access to Claude Code, and click **Assign**. Add them as direct members, because the `groups` claim lists only the groups that a user is a direct member of.
 
-You can also use an existing group, including one synchronized from an external directory.
+You can use an existing group instead, including one synchronized from an external directory.
 
-### Create or reuse an application and provider
+### Create an application and provider in authentik
 
-You can reuse the OAuth2/OpenID Connect application and provider from the [Anthropic Workload Identity Federation integration](../../platforms/anthropic-workload-identity-federation/index.mdx), or create a new [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) for Claude Code. The SAML provider from the Anthropic user-login integration cannot be used for this JWT-based flow.
+Create a dedicated application and provider. Don't reuse the provider from the Anthropic Workload Identity Federation guide, because the group binding below would block that guide's workload.
 
-If you reuse a provider, take note of its existing application's **Slug** value, and the provider's **Client ID** and **Client Type**. Review the scope mappings, CLI federation trust, and group binding requirements below and apply them to the existing configuration. Provider settings and application bindings also affect existing workloads; use a separate application/provider pair if their access or token requirements differ.
-
-To create a new application and provider:
-
-1. Log in to authentik as an administrator.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name. Take note of the **Slug** value because it is required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set **Client Type** to **Public**.
+        - Take note of the **Client ID** value because it is required later.
+        - Under **Grant Types**, select only **Client credentials**.
+        - Select an RSA or EC **Signing Key**. Anthropic accepts only RSA and ECDSA signatures, and without a signing key authentik signs with `HS256`.
+        - Under **Machine-to-Machine authentication settings**, add the `authentik-cli` provider to **Federated OAuth2/OpenID Providers**.
+    - **Configure Bindings**: create a group binding to `claude-code-users`. authentik evaluates this binding every time the authentik Agent requests a token for Claude Code, not only when listing the application.
 
-    - **Application**: provide a descriptive name. Note the **Slug** value because it is required later.
-    - **Choose a Provider type**: select **OAuth2/OpenID Connect**.
-    - **Configure the Provider**: provide a descriptive name, select an authorization flow, and configure the following settings.
-        - Under **Protocol settings**:
-            - **Client Type**: select **Public**.
-            - Note the **Client ID** value because it is required later.
-            - **Grant Types**: select only **Client credentials**.
-            - **Redirect URIs/Origins (RegEx)**: leave empty.
-            - **Signing Key**: select an RSA signing key, which produces `RS256`. Anthropic requires asymmetric signing and a `kid` header matching the JWKS; the `HS256` fallback used without a signing key is not accepted.
-        - Under **Advanced protocol settings**:
-            - **Access Token Validity**: set `minutes=5` to limit the validity of the upstream bearer credential.
-            - **Selected Scopes**: include the default `openid`, `email`, and `profile` mappings. The default `profile` mapping supplies the `groups` claim.
-            - **Encryption Key**: leave empty; Anthropic expects a signed JWT, not an encrypted token.
-            - **Subject Mode**: keep **Based on the User's hashed ID**. Each developer has a distinct subject.
-            - **Include claims in id_token**: enable. This setting also includes mapped claims in the access token used by the CLI.
-            - **Issuer mode**: keep **Each provider has a different issuer, based on the application slug**.
-        - Under **Machine-to-Machine authentication settings**, add only the existing `authentik-cli` provider to **Federated OAuth2/OpenID Providers**. Leave **Federated OIDC Sources** empty.
-    - **Configure Bindings**: create an enabled group binding for `claude-code-users`. Do not negate it or enable dry-run mode. Use the application's **All** policy engine mode if you add other mandatory policies, and do not add a permissive alternative binding.
-
-3. Click **Submit** to create the application and provider.
-
-The group binding is an issuance authorization check, not just an application visibility setting. On a new server-side request, authentik evaluates the target application's bindings against the developer associated with the trusted CLI access token.
-
-Unlike the general Anthropic WIF guide, you do not need to create an authentik service account or configure a client secret. The authentik Agent uses each developer's authenticated user identity.
-
-The current Agent uses [client-credentials JWT federation](/docs/add-secure-apps/providers/oauth2/machine_to_machine/#jwt-authentication), not the RFC 8693 [Token exchange grant](/docs/add-secure-apps/providers/oauth2/token_exchange/). Enable **Client credentials** on the selected OAuth2/OpenID Connect provider and configure trust there, not in the opposite direction. Enabling **Token exchange** on `authentik-cli` does not replace these settings. Keep the `authentik-cli` provider's existing login and refresh configuration.
-
-## Anthropic configuration
-
-### Create a workload connection
-
-Follow Anthropic's [Connect workload walkthrough](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation#set-up-federation), using the values below. The wizard creates the issuer, service account, and federation rule together.
-
-If Anthropic already has an issuer for the reused authentik provider, reuse that issuer instead of creating another. Configure a separate developer federation rule with the restrictions in step 4; do not broaden an existing machine-workload rule.
-
-Multiple developers can federate to the same service account. Use a resource name such as `authentik-claude-code-developers`; Anthropic resource names allow lowercase letters, digits, and hyphens. Add the service account to the target workspace and use the developer organization role rather than administrator privileges.
-
-Anthropic issues credentials associated with this shared service account. Requests follow the selected workspace's rate limits and usage attribution. Do not assume individual developer attribution for API usage; the authentication history can identify the upstream developer at exchange time, which is a different audit boundary.
-
-1. Open the [Workload identity page](https://platform.claude.com/settings/workload-identity-federation) in Claude Console and click **Connect workload**.
-2. Select **Custom OIDC**.
-3. Configure the issuer:
-
-    - Use `authentik-claude-code` as its resource name.
-    - Set **Issuer URL** to `https://authentik.company/application/o/<application_slug>/`, using the selected application's **Slug**. The URL must match the JWT's `iss` exactly, including its trailing slash.
-    - For a publicly reachable provider, use discovery for the **JWKS source**. Set `discovery_base`, if needed, to `https://authentik.company/application/o/<application_slug>`. Confirm that discovery resolves to `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`.
-    - For a private provider, use inline JWKS instead. Supply the public JWK objects from the `keys` array at `https://authentik.company/application/o/<application_slug>/jwks/`; never supply a private key. Inline keys require manual updates on rotation.
-    - Keep the issuer's replay checking (`check_jti`) enabled.
-    - Set the issuer's maximum identity token lifetime (`max_jwt_lifetime_seconds`) to at least the JWT's full `exp - iat` lifetime: 300 seconds with the authentik configuration above. This is separate from the rule's access token lifetime.
-
-4. Create a federation rule that accepts tokens from the selected authentik application.
-
-    For an organization-wide deployment, the rule must accommodate different `sub` values because each developer has a separate authentik identity.
-
-    Configure the rule with:
-
-    - Use `authentik-claude-code-developers` as the rule name.
-    - Restrict the rule to the target workspace and shared service account. Do not enable it for all workspaces.
-    - Set the exact audience matcher to the provider's **Client ID** (`<client_id>`), not its application slug.
-    - Set the OAuth scope (`oauth_scope`) to `workspace:developer`. This grants workspace API-key-equivalent, non-administrative API access, not organization administration.
-    - Choose an access token lifetime (`token_lifetime_seconds`), such as 600 seconds. Anthropic's API default is 3,600 seconds; the wizard prefills 600. Actual token lifetime is capped by twice the remaining lifetime of the authentik JWT, with a 60-second minimum.
-
-    In addition to audience matching, require group membership using a Common Expression Language (CEL) condition. If you use a different group name, substitute it in the condition:
-
-    ```cel
-    "groups" in claims && "claude-code-users" in claims.groups
-    ```
-
-    Anthropic evaluates all configured matchers together. This condition accepts developers in the authorized group while allowing each developer to have a different subject. It uses the `groups` claim supplied by the default `profile` scope mapping configured above; no separate `groups` scope is required. Keep authentik's application group binding as the token-issuance control, and do not replace the condition with a wildcard or `claims.sub != ""`.
-
-5. Optionally click **Verify issuer** to check JWKS retrieval and parsing, then finish creating the connection.
-
-Record the following values from Anthropic:
-
-| Value              | Placeholder and format              |
-| ------------------ | ----------------------------------- |
-| Federation rule ID | `<federation_rule_id>` (`fdrl_...`) |
-| Organization ID    | `<organization_id>` (UUID)          |
-| Service account ID | `<service_account_id>` (`svac_...`) |
-| Workspace ID       | `<workspace_id>` (`wrkspc_...`)     |
-
-These values are shared by developers using the same federation configuration.
-
-Use the parameters shown by **Test connection** or the rule detail page, and obtain the organization UUID from the Console's [Organization page](https://platform.claude.com/settings/organization). The CLI requires all four IDs, including the workspace ID even for a single-workspace rule. IDs are shared configuration, not credentials.
-
-**Test connection** listens for a successful exchange for 15 minutes; it does not initiate the CLI request. Complete the developer setup below and trigger an exchange during that window. If it expires, the resources persist and you can rerun the test from the rule detail page.
+3. Click **Submit** to save the new application and provider.
 
 ## Claude Code configuration
 
+### Connect the workload in Claude Console
+
+1. Log in to the Claude Console as an Anthropic organization administrator.
+2. Open the [Workload identity page](https://platform.claude.com/settings/workload-identity-federation) and click **Connect workload**.
+3. Select **Custom OIDC** and configure the issuer:
+    - Set the issuer URL to `https://authentik.company/application/o/<application_slug>/`, including the trailing slash.
+    - Use discovery as the JWKS source. If a discovery base is requested, set it to `https://authentik.company/application/o/<application_slug>` without a trailing slash.
+    - If authentik is not publicly reachable, paste the public keys from the `keys` array at `https://authentik.company/application/o/<application_slug>/jwks/` instead, and update them when you rotate the signing key.
+4. Configure the federation rule:
+    - Restrict the rule to the workspace for Claude Code usage.
+    - Set the audience to the **Client ID** from authentik.
+    - Keep the token lifetime at the prefilled 600 seconds, or at least the 5 minutes that authentik access tokens are valid. With a shorter lifetime, the authentik Agent resends an authentik token that Anthropic already accepted, and Anthropic rejects it as a replay.
+    - Set the condition to the following Common Expression Language (CEL) expression. Each developer has a different `sub` claim, so the rule matches on group membership instead of the subject.
+
+        ```cel
+        "groups" in claims && "claude-code-users" in claims.groups
+        ```
+
+5. Click **Verify issuer** to confirm that Anthropic can retrieve the JWKS, then finish creating the connection.
+6. Take note of the federation rule ID (`fdrl_...`), service account ID (`svac_...`), and workspace ID (`wrkspc_...`) from the rule detail page, and the organization ID from the [Organization page](https://platform.claude.com/settings/organization). Developers share these IDs; they are not credentials.
+
+After the wizard finishes, it listens for 15 minutes for a successful token exchange. Complete the next section within that window to see the result, or rerun the test later from the rule detail page.
+
 ### Configure the API key helper
 
-Claude Code supports an [`apiKeyHelper` setting](https://code.claude.com/docs/en/settings-reference#apikeyhelper) that executes a shell command and caches its output as an authentication credential. An existing interactive Claude login is not required for helper authentication.
-
-The authentik CLI provides the `ak auth claude` command to obtain short-lived Anthropic access tokens.
-
-On a developer's device, open:
-
-```text
-~/.claude/settings.json
-```
-
-Add the following configuration, replacing all placeholders. The one-minute helper cache interval is explained under [Configure token refresh](#configure-token-refresh).
+Add the following to `~/.claude/settings.json` on a developer device, merging it into any existing settings:
 
 ```json title="~/.claude/settings.json"
 {
-    "apiKeyHelper": "ak auth claude --client-id <client_id> --federation-rule-id <federation_rule_id> --organization-id <organization_id> --service-account-id <service_account_id> --workspace-id <workspace_id>",
+    "apiKeyHelper": "ak auth claude --client-id <Client ID from authentik> --federation-rule-id <federation_rule_id> --organization-id <organization_id> --service-account-id <service_account_id> --workspace-id <workspace_id>",
     "env": {
         "CLAUDE_CODE_API_KEY_HELPER_TTL_MS": "60000"
     }
 }
 ```
 
-If the file already contains settings, merge `apiKeyHelper` and the helper cache lifetime setting into the existing JSON object, preserving other settings and `env` values.
+`ak auth claude` prints only the Anthropic access token and caches it until it expires. Claude Code caches the helper output for five minutes by default, and reruns the helper when a request fails with `401` or `403`. Setting `CLAUDE_CODE_API_KEY_HELPER_TTL_MS` to one minute makes Claude Code pick up a renewed token sooner, so fewer requests fail first.
 
-On a cache miss, the CLI obtains an authentik access token for the developer's active profile and the selected provider, then posts it to `https://api.anthropic.com/v1/oauth/token` using the JWT bearer grant. It sends `grant_type`, `assertion`, and the four Anthropic IDs as JSON. The scope comes from the federation rule, not a CLI option.
+When Claude Code first requests a token, the authentik Agent asks the developer to approve it, and remembers the approval for 30 minutes. On Linux, the prompt comes from polkit. A polkit rule can approve the `io.goauthentik.platform.token-exchange` action without a prompt, but the rule then applies to every program that runs as that user.
 
-The CLI prints only the Anthropic access token to stdout, without JSON or a `Bearer ` prefix. Claude Code sends helper output as both `X-Api-Key` and `Authorization: Bearer` headers. Do not wrap the command with a script that prints banners or diagnostics to stdout.
+If a developer uses multiple authentik profiles, add `--profile <profile_name>` before `auth` in the helper command.
 
-The Agent separately caches the authentik JWT and Anthropic access token. The Anthropic cache uses the exchange response's actual `expires_in`; current cache handling rejects credentials within five seconds of expiration. Reinvoking the helper does not necessarily contact authentik or Anthropic.
-
-Developers do not need to configure an Anthropic API key. If they use multiple authentik profiles, select the intended profile before starting Claude Code, or add `--profile <profile_name>` before `auth` in the helper command.
-
-### Configure token refresh
-
-Claude Code's default helper cache lifetime is five minutes. The configuration above sets `CLAUDE_CODE_API_KEY_HELPER_TTL_MS` to `60000`, making the helper output eligible for refresh after one minute. This controls Claude Code's cache, not Anthropic's token lifetime or the Agent's caches, and does not guarantee a new exchange every minute.
-
-Current Claude Code also reruns the active helper on qualifying `401` or `403` responses. Its JWT-expiration detection applies to helper output that is a JWT, not Anthropic's opaque `sk-ant-oat01-...` access tokens.
-
-Test requests across actual token expiration and after restarting Claude Code. See the [helper behavior reference](https://code.claude.com/docs/en/settings-reference#apikeyhelper) and [environment variables reference](https://code.claude.com/docs/en/env-vars).
-
-### Deploy the configuration across your organization
-
-After verifying the local configuration, including requests across token expiration, administrators can distribute the same helper command and `env` configuration through [managed Claude Code settings](https://code.claude.com/docs/en/managed-settings#deploy-a-managed-settings-file):
-
-- macOS: `/Library/Application Support/ClaudeCode/managed-settings.json`
-- Linux and WSL: `/etc/claude-code/managed-settings.json`
-- Windows: `C:\Program Files\ClaudeCode\managed-settings.json`
-
-Merge these settings into the existing organizational policy instead of overwriting it. Deploy the helper in the effective managed source; a higher-priority managed source can prevent a file's helper from being used. Check for conflicting `forceLoginMethod`, `forceLoginOrgUUID`, or gateway-only policies.
-
-Ensure that Claude Code can find `ak` in its launch environment's `PATH`, including when started from an IDE. If necessary, use the installed executable's absolute path in the command, quoting paths with spaces and escaping quotes and backslashes for JSON.
-
-The IDs and client configuration are shared. Each developer authenticates using their own authentik account; do not distribute an Agent profile or cached tokens.
+To deploy the configuration to all developers, add the same settings to [managed Claude Code settings](https://code.claude.com/docs/en/managed-settings#deploy-a-managed-settings-file). Managed `forceLoginMethod`, `forceLoginOrgUUID`, and `forceLoginGatewayUrl` settings block `apiKeyHelper`, so remove them from every managed settings source that applies to these developers. If Claude Code is launched from an IDE that doesn't have `ak` in its `PATH`, use the absolute path to `ak` in the helper command.
 
 ## Configuration verification
 
-After completing the configuration, verify the integration using at least two authorized developer accounts.
+1. Unset `ANTHROPIC_API_KEY`, `ANTHROPIC_AUTH_TOKEN`, `CLAUDE_CODE_USE_BEDROCK`, `CLAUDE_CODE_USE_VERTEX`, and `CLAUDE_CODE_USE_FOUNDRY` on the developer device, because Claude Code prefers them over `apiKeyHelper`.
+2. Start `claude`, run `/status`, and confirm that the active credential is the API key helper.
+3. Submit a prompt. If it fails, run `ak auth claude` with the same arguments in a terminal to see the error. A rejected exchange appears with its reason in the authentication history of the Anthropic federation rule.
+4. Remove a test developer from `claude-code-users`, wait for their cached tokens to expire, and confirm that their next prompt fails.
 
-On each developer's device:
-
-1. Confirm that the authentik CLI is authenticated:
-
-    ```bash
-    ak whoami
-    ```
-
-2. Confirm that the CLI supports Anthropic authentication:
-
-    ```bash
-    ak auth claude --help
-    ```
-
-3. In a dedicated test environment, remove competing credentials from the shell and settings-file `env` entries. Unset `ANTHROPIC_API_KEY` and `ANTHROPIC_AUTH_TOKEN` rather than setting them to empty strings. Remove cloud-provider selections and custom gateway routing. Sign out of an existing Claude login with `/logout` for an unambiguous test; do not sign back in through `/login`.
-
-    Current Claude Code prioritizes cloud-provider credentials, `ANTHROPIC_AUTH_TOKEN`, and `ANTHROPIC_API_KEY` above the helper. The helper precedes `CLAUDE_CODE_OAUTH_TOKEN`, Anthropic profiles/federation credentials, and normal subscription login credentials. A signed-in Claude apps gateway session has separate precedence. Review the [current authentication precedence](https://code.claude.com/docs/en/authentication#authentication-precedence) and managed login restrictions rather than assuming a successful prompt used this integration.
-
-4. Start Claude Code:
-
-    ```bash
-    claude
-    ```
-
-5. Run `/status` and confirm that the active credential source is the API key helper and that the expected settings source is loaded. `claude auth status` also reports the authentication method; expect `api_key_helper`.
-6. Submit a simple prompt, then inspect Anthropic's authentication history for a successful exchange using the intended rule and developer's `sub`. A cached Anthropic token does not produce a new exchange event.
-7. Repeat after token expiration and after restarting Claude Code. A first successful prompt does not establish correct refresh behavior.
-
-Both developers should be able to authenticate using the same integration configuration without sharing authentik credentials.
-
-To verify access restrictions, test a nonmember with an uncached profile first. Then remove an authorized test user from `claude-code-users`. After their cached authentik JWT expires, confirm that a new server-side request is denied; cached credentials can mask the result. Do not approve deployment if a nonmember obtains a fresh JWT or Anthropic credential.
-
-### Understand revocation boundaries
-
-Removing group membership blocks new authentik issuance when the server next evaluates the binding. Normal user deactivation removes authentik token records, but it does not recall signed JWTs or Anthropic tokens already held by a client. Ending an authentik browser session is not equivalent to revoking CLI refresh credentials, and profile expiry or deletion does not purge all derived caches.
-
-An already issued authentik JWT can remain acceptable to Anthropic until expiration if it has not already been consumed. An already minted Anthropic token has its own lifetime. Archiving the Anthropic federation rule stops new exchanges immediately, but [already minted tokens remain valid until expiration](https://platform.claude.com/docs/en/api/organization/federation/rules/archive). Anthropic requires live targeting rules to be archived before archiving a service account; its service-account archive documentation does not guarantee immediate revocation of existing tokens. Plan offboarding around these distinct boundaries, not an immediate-logout promise.
-
-## Troubleshooting
-
-### The authentik CLI cannot obtain a token
-
-Confirm that:
-
-- The developer is authenticated using the correct authentik profile.
-- The developer is a member of `claude-code-users`.
-- The Claude Code application's OAuth provider trusts `authentik-cli` under **Federated OAuth2/OpenID Providers**.
-- **Client credentials** is enabled on the selected OAuth2/OpenID Connect provider.
-- The **Client ID** matches the provider configuration.
-
-### Anthropic rejects the token exchange
-
-Verify that:
-
-- The authentik-issued JWT contains the expected `iss`, `sub`, `aud`, `iat`, `exp`, `jti`, and `groups` claims, with an accepted signing algorithm and matching `kid`.
-- The configured issuer URL exactly matches `iss`, including any trailing slash.
-- The Anthropic federation rule accepts the JWT's subject and other claims.
-- The service account is authorized for the selected workspace.
-- The supplied federation rule, organization, service account, and workspace IDs are correct.
-
-Use Anthropic's authentication history to find the denial reason and compare it with the issuer and federation rule settings.
-
-### Claude Code uses another authentication method
-
-Claude Code supports multiple authentication methods with different precedence.
-
-Check for existing credentials such as `ANTHROPIC_API_KEY` or `ANTHROPIC_AUTH_TOKEN`, which take precedence over `apiKeyHelper`.
-
-Follow the credential-isolation steps under [Configuration verification](#configuration-verification). Use `/status` to inspect both the active authentication method and settings sources. A managed `forceLoginMethod`, `forceLoginOrgUUID`, or gateway policy can block helper authentication; resolve the policy conflict with your administrator rather than bypassing it.
-
-### Authentication works initially but later fails
-
-Check the configured Anthropic token lifetime and the `CLAUDE_CODE_API_KEY_HELPER_TTL_MS` setting.
-
-Review Anthropic's authentication history for failed exchanges, and verify that the developer's Agent profile can still obtain new authentik tokens.
+:::warning Revoking access
+Removing a developer from `claude-code-users` stops authentik from issuing new tokens, but Anthropic access tokens that were already issued stay valid until they expire. Archiving the Anthropic federation rule stops new exchanges for all developers, and also doesn't revoke tokens that were already issued.
+:::
 
 ## Resources
 
-- [authentik Agent CLI commands](/docs/endpoint-devices/authentik-agent/authentik-cli/)
-- [Anthropic Workload Identity Federation](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation)
-- [Anthropic WIF reference](https://platform.claude.com/docs/en/manage-claude/wif-reference)
-- [Claude Code authentication](https://code.claude.com/docs/en/authentication)
+- [Anthropic documentation - Workload Identity Federation](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation)
+- [Anthropic documentation - WIF reference](https://platform.claude.com/docs/en/manage-claude/wif-reference)
+- [Claude Code documentation - `apiKeyHelper`](https://code.claude.com/docs/en/settings-reference#apikeyhelper)
+- [Claude Code documentation - Authentication precedence](https://code.claude.com/docs/en/authentication#authentication-precedence)
