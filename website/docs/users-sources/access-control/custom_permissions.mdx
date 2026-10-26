@@ -1,6 +1,6 @@
 ---
 title: "Custom permissions and permission checks"
-description: "Define your own custom permissions and use Python checks to control access to authentik’s API."
+description: "Define your own custom permissions and use Python checks to control access to authentik's API."
 authentik_version: "2026.11"
 authentik_preview: true
 sidebar_position: 3
@@ -8,7 +8,7 @@ sidebar_position: 3
 
 Custom permissions and permission checks extend [role-based access control (RBAC)](./index.mdx) when built-in permissions do not provide the access rules that you need:
 
-- A [custom permission](#custom-permissions)is a permission that you define for an authentik model, such as a user or group. You assign it to [roles](../roles/index.mdx) like any built-in permission. Creating or assigning a custom permission does not grant access by itself. Use a permission check to define what a custom permission allows.
+- A [custom permission](#custom-permissions) is a permission that you define for an authentik model, such as a user or group. You assign it to [roles](../roles/index.mdx) like any built-in permission. Creating or assigning a custom permission does not grant access by itself. Use a permission check to define what a custom permission allows.
 - A [permission check](#permission-checks) is Python code that defines access rules for one or more API endpoints. For example, a check can hide the `salary` attribute returned by `core/users:retrieve` unless the user has the `custom_read_salary` permission.
 
 ## Custom permissions
@@ -40,11 +40,9 @@ Permission checks execute Python code on the server and can override access cont
 2. Navigate to **Customization** > **Permission Checks** and click **Create**.
 3. Configure the following fields:
     - **Name**: Enter a descriptive name for the check.
-    - **Endpoints**: Select the API endpoints that the check applies to. Each entry lists the functions that the endpoint supports.
+    - **Endpoints**: Select the API endpoints that the check applies to. Endpoints are named `<path>:<action>`, such as `core/users:list` or `core/groups:add_user`, and each entry lists the functions that the endpoint supports. Each endpoint can be bound to only one check.
     - **Expression**: Enter Python code defining one or more of the [check functions](#permission-check-functions). See the [examples](#examples) below.
 4. Save the check and test it with a non-superuser account. Superusers bypass all permission checks.
-
-Each endpoint can be bound to only one check.
 
 :::warning Review checks after upgrades
 An authentik upgrade can rename or remove endpoints, or change the functions that they support. Checks no longer apply to endpoints or functions that are no longer available. The **Permission Checks** page marks endpoints that no longer exist. Review the release notes for API changes and retest your checks after upgrading.
@@ -62,34 +60,28 @@ An authentik upgrade can rename or remove endpoints, or change the functions tha
 | `hidden_fields(request, obj)`         | On supported list, detail, create, and update endpoints      | A set of paths the user cannot see                            |
 | `readonly_fields(request, obj)`       | On supported create and update endpoints                     | A set of paths the user cannot change                         |
 
-`has_permission` and `has_object_permission` work like permissions in Django REST framework.
+`has_permission` and `has_object_permission` work like permissions in Django REST framework, except that returning `True` keeps authentik's decision instead of granting access. To grant access that authentik would deny, raise `PermissionCheckSkipException` in either function. This does not bypass other permission decisions or validation inside the endpoint.
 
-Returning `True` from `has_permission` or `has_object_permission` keeps authentik's decision; returning `False` denies access. To override a denial, raise `PermissionCheckSkipException` in either function. This does not bypass other permission decisions or validation inside the endpoint. Any function can raise `PermissionDenied("<reason>")` to return an access-denied response with a message for the user.
+Any function can raise `PermissionDenied("<reason>")` to deny the request with a message for the user. If a function raises any other exception or returns the wrong type, authentik logs the failure. For `has_permission`, `has_object_permission`, `narrow_list`, and `widen_list`, it then denies the request; for `alter_response`, `hidden_fields`, and `readonly_fields`, the request fails with an error.
 
-Endpoints are identified as `<path>:<action>`, for example `core/users:list` or `core/groups:add_user`. The form lists each endpoint with the functions that it supports.
-
-A function that raises any other exception, or returns anything but the expected type, forbids the request, or fails it with an error for `alter_response`, `hidden_fields` and `readonly_fields`. Failures are logged.
-
-Besides the functions available to [expressions](../../customize/policies/types/expression/index.mdx), checks can use `endpoint`, which is the current endpoint being decided, e.g. `core/groups:add_user`. The data a request sends is in `request.data`.
-
-Superusers skip all permission checks.
+Besides the functions available to [expressions](../../customize/policies/types/expression/index.mdx), checks can use `endpoint`, the endpoint that the request is for, such as `core/groups:add_user`. The data that the request sends is in `request.data`.
 
 #### Lists and objects
 
-`narrow_list` can only remove objects from authentik's list, and `widen_list` can only add objects the endpoint could list. Objects left out of the result are not found on detail endpoints either, and requests cannot name them: a user added to or removed from a group must be in the requester's list of users.
+`narrow_list` can only remove objects from authentik's list, and `widen_list` can only add objects that the endpoint could list. Objects left out of the result are also not found on detail endpoints, and requests cannot reference them. For example, to add a user to a group or remove them from one, the user must be in the requester's `core/users:list` results.
 
 #### Field rules
 
-Paths start with a response field, such as `email`, and can continue into JSON fields and nested objects, such as `attributes.salary` or `users_obj.attributes.salary`. A path applies to every item in a list; `users_obj[42]` selects only the item whose `pk` is `42`. Unknown top-level fields are logged and reported in the check form when evaluated.
+Paths start with a response field, such as `email`, and can continue into JSON fields and nested objects, such as `attributes.salary` or `users_obj.attributes.salary`. A path applies to every item in a list; `users_obj[42]` selects only the item whose `pk` is `42`. If a path starts with a field that the endpoint does not have, authentik logs it and shows it on the check's form after the check runs.
 
-Field rules apply only to the endpoints to which the check is bound, so bind it to every endpoint that should follow them. For `hidden_fields`, the `obj=None` result must include every object-specific hidden path, after removing selectors. For example, `users_obj[42].attributes.salary` requires `users_obj.attributes.salary` in the `obj=None` result.
+Field rules apply only to the endpoints that the check is bound to, so bind the check to every endpoint that returns the protected fields. When `obj` is `None`, `hidden_fields` must return every path that it hides on any individual object, without selectors; otherwise the request fails. For example, if `hidden_fields` returns `users_obj[42].attributes.salary` for an object, it must return `users_obj.attributes.salary` when `obj` is `None`.
 
 | Operation | Hidden key, such as `attributes.salary` | Hidden field, such as `email`   | Read-only path   |
 | --------- | --------------------------------------- | ------------------------------- | ---------------- |
 | Reading   | Omitted                                 | Shown empty                     | Shown            |
 | Writing   | Ignored; stored value preserved         | Ignored; stored value preserved | Changes rejected |
 
-On endpoints using authentik's `QLSearch` backend, DjangoQL searches treat hidden JSON paths as absent keys. Explicit searches, filters, and ordering on hidden whole fields are rejected; free-text search excludes those fields. These protections do not cover separate JSON-key filter or ordering parameters, or necessarily apply to other search backends.
+On endpoints using authentik's `QLSearch` backend, DjangoQL searches treat hidden JSON paths as absent keys. Explicit searches, filters, and ordering on hidden whole fields are rejected; free-text search excludes those fields. These protections do not cover separate JSON-key filter or ordering parameters, and might not apply to other search backends.
 
 Hidden paths into read-only nested objects, and paths with selectors, affect response data only. They do not restrict writes or queries. Hidden attribute keys are excluded from [object attribute validation](../../sys-mgmt/object-attributes.mdx#validation).
 
@@ -99,13 +91,11 @@ Hidden paths into read-only nested objects, and paths with selectors, affect res
 
 ## Examples
 
-Each example names the custom permissions to create and the endpoints to bind. Combine the logic into one check if you need multiple examples on the same endpoint.
+Each example names the custom permissions to create and the endpoints to bind the check to. Because each endpoint can be bound to only one check, combine examples that share an endpoint into one check.
 
 ### Delegate service account creation
 
 Let holders of the custom permission `custom_add_service_account` on `authentik_core.user` create service accounts. Assign it globally and bind the check to `core/users:service_account`.
-
-**Example**:
 
 ```python
 def has_permission(request):
@@ -117,8 +107,6 @@ def has_permission(request):
 ### Let users leave groups
 
 Let users remove themselves from groups whose attributes contain `self_service_leave: true`. Bind the check to `core/users:list` and `core/groups:remove_user`. `widen_list` includes the requester in their own user list so that the removal request can reference them.
-
-**Example**:
 
 ```python
 def widen_list(request, queryset):
@@ -136,8 +124,6 @@ def has_object_permission(request, obj):
 ### Let managers add direct reports to groups
 
 Users whose `manager` attribute contains their manager's UUID are that manager's direct reports. Let managers see their reports and add them to groups whose attributes contain `managers_may_assign: true`. Bind the check to `core/users:list` and `core/groups:add_user`.
-
-**Example**:
 
 ```python
 def widen_list(request, queryset):
@@ -159,8 +145,6 @@ def has_object_permission(request, obj):
 Show users' `salary` attribute only to holders of the custom permission `custom_read_salary` on `authentik_core.user`. Changing a salary requires both `custom_read_salary` and `custom_change_salary`. Assign these permissions globally or on individual users.
 
 Bind the check to `core/users:list`, `core/users:retrieve`, `core/users:update`, and `core/users:partial_update`. Because group responses include member data, also bind it to `core/groups:list` and `core/groups:retrieve`. On group endpoints, `obj` is a group, and the check evaluates each member separately.
-
-**Example**:
 
 ```python
 def hidden_fields(request, obj):
@@ -184,9 +168,7 @@ def readonly_fields(request, obj):
 
 ### Trim system information
 
-Show the HTTP headers and runtime details of **System** only to holders of the custom permission `custom_view_runtime_details` on `authentik_rbac.systempermission`. Bind the check to both `admin/system:get` and `admin/system:post`, because both methods return this data.
-
-**Example**:
+Show the HTTP headers and runtime details from the system information endpoint only to holders of the custom permission `custom_view_runtime_details` on `authentik_rbac.systempermission`. Bind the check to both `admin/system:get` and `admin/system:post`, because both methods return this data.
 
 ```python
 def alter_response(request, data):

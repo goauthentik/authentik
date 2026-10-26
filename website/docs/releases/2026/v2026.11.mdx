@@ -84,7 +84,9 @@ authentik only changes `jit` while it has PostgreSQL's built-in default, and onl
 
 ### Custom permissions and permission checks :ak-preview
 
-Define your own permissions on authentik's models, and assign them to roles like built-in ones. A permission check is Python bound to API endpoints that has the final say on access: it can forbid or grant requests, narrow or widen access, hide fields or make them read-only, and change responses. For details, refer to [Custom permissions and permission checks](../../users-sources/access-control/custom_permissions.mdx).
+Define your own permissions on authentik's models and assign them to roles like built-in permissions. A permission check is Python code bound to API endpoints that has the final say on access: it can deny or grant requests, narrow or widen lists, hide fields or make them read-only, and change responses. Permission checks are disabled by default; enable them with the **Custom permissions** [setting](../../sys-mgmt/settings.mdx#custom-permissions). For details, refer to [Custom permissions and permission checks](../../users-sources/access-control/custom_permissions.mdx).
+
+**Initial Permissions** has moved from **Directory** to **Customization** in the Admin interface, next to **Custom Permissions** and **Permission Checks**.
 
 ## Upgrading
 
