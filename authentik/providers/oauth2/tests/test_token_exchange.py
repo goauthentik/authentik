@@ -754,7 +754,7 @@ class TestTokenExchange(OAuthTestCase):
             "grant_type": GRANT_TYPE_TOKEN_EXCHANGE,
             "scope": SCOPES,
             "client_id": self.provider.client_id,
-            "client_secret": self.provider.client_secret,
+            "client_secret": self.provider.client_secret_ref.secret_value,
             "subject_token": self.create_subject_token(self.user, act=prior_act),
             "subject_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
         }
