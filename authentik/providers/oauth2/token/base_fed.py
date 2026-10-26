@@ -4,7 +4,7 @@ from typing import Any
 from django.db.models import Q
 from django.http import HttpRequest
 from django.utils import timezone
-from jwt import PyJWK, PyJWT, PyJWTError, decode
+from jwt import PyJWT, PyJWTError, decode
 
 from authentik.core.models import (
     USER_ATTRIBUTE_EXPIRES,
@@ -17,6 +17,7 @@ from authentik.core.models import (
 )
 from authentik.core.sources.mapper import SourceMapper
 from authentik.events.middleware import audit_ignore
+from authentik.lib.jwt_mldsa import key_from_jwk
 from authentik.providers.oauth2.errors import TokenError
 from authentik.providers.oauth2.models import (
     AccessToken,
@@ -90,7 +91,7 @@ class FederatedTokenRequest(TokenRequest):
                     continue
                 self.logger.debug("verifying JWT with key", source=source.slug, key=key.get("kid"))
                 try:
-                    parsed_key = PyJWK.from_dict(key).key
+                    parsed_key, _ = key_from_jwk(key)
                     token = decode(
                         assertion,
                         parsed_key,
