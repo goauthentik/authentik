@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { UserOAuthSourceConnection } from "./UserOAuthSourceConnection";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { UserOAuthSourceConnection } from "./UserOAuthSourceConnection.js";
 import {
     UserOAuthSourceConnectionFromJSON,
     UserOAuthSourceConnectionToJSON,
-} from "./UserOAuthSourceConnection";
+} from "./UserOAuthSourceConnection.js";
 
 /**
  * @export

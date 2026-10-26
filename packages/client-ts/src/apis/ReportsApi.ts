@@ -10,12 +10,12 @@
  * Do not edit the class manually.
  */
 
-import { type DataExport, DataExportFromJSON } from "../models/DataExport";
+import { type DataExport, DataExportFromJSON } from "../models/DataExport.js";
 import {
     type PaginatedDataExportList,
     PaginatedDataExportListFromJSON,
-} from "../models/PaginatedDataExportList";
-import * as runtime from "../runtime";
+} from "../models/PaginatedDataExportList.js";
+import * as runtime from "../runtime.js";
 
 export interface ReportsExportsDestroyRequest {
     /**

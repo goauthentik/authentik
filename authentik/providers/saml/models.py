@@ -10,6 +10,10 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.common.saml.constants import (
+    AES128_CBC,
+    AES128_GCM,
+    AES256_CBC,
+    AES256_GCM,
     DSA_SHA1,
     ECDSA_SHA1,
     ECDSA_SHA256,
@@ -237,6 +241,16 @@ class SAMLProvider(Provider):
         on_delete=models.SET_NULL,
         verbose_name=_("Encryption Keypair"),
         related_name="+",
+    )
+    encryption_algorithm = models.TextField(
+        choices=(
+            (AES128_CBC, _("AES128-CBC")),
+            (AES256_CBC, _("AES256-CBC")),
+            (AES128_GCM, _("AES128-GCM")),
+            (AES256_GCM, _("AES256-GCM")),
+        ),
+        default=AES256_GCM,
+        help_text=_("Block cipher used to encrypt the assertion."),
     )
 
     default_relay_state = models.TextField(

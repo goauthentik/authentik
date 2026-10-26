@@ -19,7 +19,7 @@ license-file = "LICENSE"
 publish = false
 
 [workspace.dependencies]
-arc-swap = "= 1.9.2"
+arc-swap = "= 1.9.3"
 argh = "= 0.1.19"
 askama = "= 0.16.1"
 axum-server = { version = "= 0.8.0", features = ["tls-rustls-no-provider"] }
@@ -78,8 +78,8 @@ notify = "= 8.2.0"
 pem = "= 4.0.0"
 percent-encoding = "= 2.3.2"
 pin-project-lite = "= 0.2.17"
-pyo3 = "= 0.29.0"
-pyo3-build-config = "= 0.29.0"
+pyo3 = "= 0.30.1"
+pyo3-build-config = "= 0.30.1"
 rand = "= 0.10.3"
 rcgen = { version = "= 0.14.10", default-features = false, features = [
   "aws_lc_rs",

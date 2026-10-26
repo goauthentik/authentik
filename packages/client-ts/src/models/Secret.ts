@@ -10,9 +10,9 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { SecretTypeEnum } from "./SecretTypeEnum";
-import { SecretTypeEnumFromJSON, SecretTypeEnumToJSON } from "./SecretTypeEnum";
+import { parseDateTime } from "../runtime.js";
+import type { SecretTypeEnum } from "./SecretTypeEnum.js";
+import { SecretTypeEnumFromJSON, SecretTypeEnumToJSON } from "./SecretTypeEnum.js";
 
 /**
  * Create and configure a secret without exposing its value.

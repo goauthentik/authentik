@@ -8,6 +8,7 @@ from typing import TypedDict
 
 from cryptography.hazmat.backends.openssl.backend import backend
 from django.conf import settings
+from django.db import Error, connection
 from django.utils.timezone import now
 from django.views.debug import SafeExceptionReporterFilter
 from drf_spectacular.utils import extend_schema
@@ -48,6 +49,17 @@ class RuntimeDict(TypedDict):
     authentik_version: str
 
 
+class PostgreSQLDict(TypedDict):
+    """PostgreSQL information"""
+
+    version: str
+    jit: str
+    jit_source: str
+    ssl: bool
+    ssl_version: str | None
+    ssl_cipher: str | None
+
+
 class SystemInfoSerializer(PassiveSerializer):
     """Get system information."""
 
@@ -60,6 +72,7 @@ class SystemInfoSerializer(PassiveSerializer):
     embedded_outpost_disabled = SerializerMethodField()
     embedded_outpost_host = SerializerMethodField()
     base_url = SerializerMethodField()
+    postgresql = SerializerMethodField(allow_null=True)
 
     def get_http_headers(self, request: Request) -> dict[str, str]:
         """Get HTTP Request headers"""
@@ -119,6 +132,27 @@ class SystemInfoSerializer(PassiveSerializer):
     def get_base_url(self, request: Request) -> str:
         """Configured external base URL. Can be empty"""
         return get_system_settings().base_url
+
+    def get_postgresql(self, request: Request) -> PostgreSQLDict:
+        """PostgreSQL information for this request's database connection"""
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT current_setting('server_version'), setting, source, ssl, "
+                    "version, cipher FROM pg_settings, pg_stat_ssl WHERE name = 'jit' "
+                    "AND pid = pg_backend_pid()"
+                )
+                version, jit, jit_source, ssl, ssl_version, ssl_cipher = cursor.fetchone()
+        except Error:
+            return None
+        return {
+            "version": version,
+            "jit": jit,
+            "jit_source": jit_source,
+            "ssl": ssl,
+            "ssl_version": ssl_version,
+            "ssl_cipher": ssl_cipher,
+        }
 
 
 class SystemView(APIView):
