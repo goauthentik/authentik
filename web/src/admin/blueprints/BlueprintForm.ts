@@ -5,6 +5,7 @@ import "#elements/CodeMirror";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFAlignment from "@patternfly/patternfly/utilities/Alignment/alignment.css";
 
 import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
@@ -46,6 +47,8 @@ export const blueprintFileSource: SearchSelectSource<BlueprintFile> = {
 
 @customElement("ak-blueprint-form")
 export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
+    static styles: CSSResult[] = [...super.styles, PFAlignment, PFContent];
+
     public static override verboseName = msg("Blueprint");
     public static override verboseNamePlural = msg("Blueprints");
 
@@ -80,8 +83,6 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
             : msg("Successfully created instance.");
     }
 
-    static styles: CSSResult[] = [...super.styles, PFContent];
-
     async send(data: BlueprintInstance): Promise<BlueprintInstance> {
         if (this.instance?.pk) {
             return aki(ManagedApi).managedBlueprintsUpdate({
@@ -112,7 +113,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
             >
             </ak-switch-input>
             <div class="pf-c-card pf-m-selectable pf-m-selected">
-                <div class="pf-c-card__body">
+                <div class="pf-c-card__body pf-u-text-align-center">
                     <ak-toggle-group
                         value=${this.source}
                         @ak-toggle=${(ev: ToggleGroupEvent<BlueprintSource>) => {
