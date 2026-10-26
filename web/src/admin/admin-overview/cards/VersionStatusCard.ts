@@ -5,8 +5,6 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
 
-import { P4Disposition } from "#styles/patternfly/constants";
-
 import { AdminApi, Version } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
