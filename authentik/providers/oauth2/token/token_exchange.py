@@ -37,6 +37,7 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
         try:
             query |= Q(application__pbm_uuid=UUID(audience))
         except ValueError:
+            # Audience is not a UUID; keep slug-only lookup.
             pass
         target = SAMLProvider.objects.filter(query).first()
         if not target:
