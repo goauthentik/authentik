@@ -248,7 +248,7 @@ test.describe("Provider Wizard", () => {
         const { click } = pointer;
         const dialog = page.getByRole("dialog", { name: "New Provider Wizard" });
 
-        const $clientSecretInput = page.getByRole("textbox", { name: "Client Secret" });
+        const $clientSecretInput = page.getByRole("combobox", { name: "Client Secret" });
 
         await series(
             [click, "OAuth2/OpenID", "option"],
