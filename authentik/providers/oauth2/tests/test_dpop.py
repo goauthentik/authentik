@@ -4,13 +4,16 @@ import base64
 import hashlib
 import json
 import time
+from unittest.mock import patch
 
+from cryptography.exceptions import UnsupportedAlgorithm
 from cryptography.hazmat.primitives.asymmetric.ec import (
     SECP256K1,
     SECP256R1,
     EllipticCurvePrivateKey,
     generate_private_key,
 )
+from cryptography.hazmat.primitives.asymmetric.mldsa import MLDSA44PrivateKey, MLDSA65PrivateKey
 from cryptography.hazmat.primitives.asymmetric.rsa import generate_private_key as generate_rsa_key
 from django.core.cache import cache
 from django.test import TestCase
@@ -148,6 +151,47 @@ class RSAProofBuilder:
         return jwk_thumbprint(self.jwk)
 
 
+class MLDSAProofBuilder:
+    """Helper to build ML-DSA-signed DPoP proof JWTs (RFC 9964 AKP key) for testing"""
+
+    def __init__(self, alg: str = "ML-DSA-44"):
+        self.alg = alg
+        self.private_key = {"ML-DSA-44": MLDSA44PrivateKey, "ML-DSA-65": MLDSA65PrivateKey}[
+            alg
+        ].generate()
+        pub = self.private_key.public_key().public_bytes_raw()
+        self.jwk = {
+            "kty": "AKP",
+            "alg": alg,
+            "pub": base64.urlsafe_b64encode(pub).rstrip(b"=").decode(),
+        }
+
+    def build(
+        self,
+        htm: str = "POST",
+        htu: str = "https://server.example.com/token",
+        iat: int | None = None,
+        jti: str = "mldsa-jti-001",
+        jwk: dict | None = None,
+    ) -> str:
+        headers = {
+            "typ": "dpop+jwt",
+            "jwk": (jwk if jwk is not None else self.jwk).copy(),
+            "alg": self.alg,
+        }
+        payload = {
+            "htm": htm,
+            "htu": htu,
+            "iat": iat if iat is not None else int(time.time()),
+            "jti": jti,
+        }
+        return jwt_encode(payload, self.private_key, algorithm=self.alg, headers=headers)
+
+    @property
+    def jkt(self) -> str:
+        return jwk_thumbprint(self.jwk)
+
+
 class TestJWKThumbprint(TestCase):
     """Test JWK thumbprint computation"""
 
@@ -180,6 +224,19 @@ class TestJWKThumbprint(TestCase):
         thumbprint = jwk_thumbprint(jwk)
         self.assertIsInstance(thumbprint, str)
         self.assertGreater(len(thumbprint), 0)
+
+    def test_mldsa_thumbprint(self):
+        """AKP thumbprint is computed over alg, kty and pub (RFC 9964 Section 6)"""
+        builder = MLDSAProofBuilder()
+        canonical = json.dumps(
+            {"alg": "ML-DSA-44", "kty": "AKP", "pub": builder.jwk["pub"]}, separators=(",", ":")
+        ).encode()
+        expected = base64.urlsafe_b64encode(hashlib.sha256(canonical).digest()).rstrip(b"=")
+        self.assertEqual(jwk_thumbprint(builder.jwk), expected.decode())
+        # Extra members must not change the thumbprint
+        self.assertEqual(
+            jwk_thumbprint({**builder.jwk, "kid": "x", "use": "sig"}), expected.decode()
+        )
 
     def test_unsupported_kty(self):
         """Test unsupported key type — jwcrypto may accept it but DPoP validator rejects it"""
@@ -462,6 +519,86 @@ class TestDPoPValidator(TestCase):
         with self.assertRaises(DPoPError) as cm:
             self.validator.validate(proof, expected_htm="POST", expected_htu=self.htu)
         self.assertIn("signature", str(cm.exception).lower())
+
+    def test_mldsa_proof_accepted(self):
+        """A DPoP proof signed with ML-DSA-44 and an AKP JWK validates; cnf is the canonical key"""
+        builder = MLDSAProofBuilder()
+        proof = builder.build(htu=self.htu)
+        result = self.validator.validate(
+            proof, expected_htm="POST", expected_htu=self.htu, expected_jkt=builder.jkt
+        )
+        self.assertEqual(result, {"alg": "ML-DSA-44", "kty": "AKP", "pub": builder.jwk["pub"]})
+
+    def test_mldsa65_proof_accepted(self):
+        """ML-DSA-65 is accepted as well"""
+        builder = MLDSAProofBuilder("ML-DSA-65")
+        result = self.validator.validate(
+            builder.build(htu=self.htu), expected_htm="POST", expected_htu=self.htu
+        )
+        self.assertEqual(result["alg"], "ML-DSA-65")
+
+    def test_mldsa_alg_jwk_mismatch_rejected(self):
+        """The proof's alg must name the same parameter set as the AKP key"""
+        builder = MLDSAProofBuilder()
+        proof = builder.build(htu=self.htu)
+        # Re-label the protected header's alg; the mismatch is caught before signature checks
+        header_b64, rest = proof.split(".", 1)
+        header = json.loads(base64.urlsafe_b64decode(header_b64 + "=="))
+        header["alg"] = "ML-DSA-65"
+        header_b64 = (
+            base64.urlsafe_b64encode(json.dumps(header, separators=(",", ":")).encode())
+            .rstrip(b"=")
+            .decode()
+        )
+        proof = f"{header_b64}.{rest}"
+        with self.assertRaises(DPoPError) as cm:
+            self.validator.validate(proof, expected_htm="POST", expected_htu=self.htu)
+        self.assertIn("does not match", str(cm.exception))
+
+    def test_mldsa_wrong_key_rejected(self):
+        """A proof whose AKP key is not the signing key fails signature verification"""
+        builder = MLDSAProofBuilder()
+        other = MLDSAProofBuilder()
+        proof = builder.build(htu=self.htu, jwk=other.jwk)
+        with self.assertRaises(DPoPError) as cm:
+            self.validator.validate(proof, expected_htm="POST", expected_htu=self.htu)
+        self.assertIn("signature", str(cm.exception).lower())
+
+    def test_mldsa_private_material_rejected(self):
+        """An AKP JWK carrying the private seed (priv) must be rejected"""
+        builder = MLDSAProofBuilder()
+        proof = builder.build(htu=self.htu, jwk={**builder.jwk, "priv": "AAAA"})
+        with self.assertRaises(DPoPError) as cm:
+            self.validator.validate(proof, expected_htm="POST", expected_htu=self.htu)
+        self.assertIn("private key material", str(cm.exception))
+
+    def test_mldsa_unsupported_akp_alg_rejected(self):
+        """AKP keys for algorithms other than ML-DSA are rejected before loading"""
+        builder = MLDSAProofBuilder()
+        with self.assertRaises(DPoPError) as cm:
+            self.validator._validate_jwk({**builder.jwk, "alg": "SLH-DSA-SHA2-128s"})
+        self.assertIn("Unsupported AKP algorithm", str(cm.exception))
+
+    def test_mldsa_key_unavailable_fails_closed(self):
+        """An AKP key OpenSSL cannot load (ML-DSA under a FIPS provider that predates it) is a
+        DPoP error, not an unhandled exception"""
+
+        class UnavailablePublicKey:
+            @staticmethod
+            def from_public_bytes(_data: bytes):
+                raise UnsupportedAlgorithm("ML-DSA is not supported by this version of OpenSSL")
+
+        builder = MLDSAProofBuilder()
+        proof = builder.build(htu=self.htu)
+        with (
+            patch.dict(
+                "authentik.lib.jwt_mldsa.MLDSA_ALGORITHMS",
+                {"ML-DSA-44": (MLDSA44PrivateKey, UnavailablePublicKey)},
+            ),
+            self.assertRaises(DPoPError) as cm,
+        ):
+            self.validator.validate(proof, expected_htm="POST", expected_htu=self.htu)
+        self.assertIn("Invalid AKP JWK", str(cm.exception))
 
     def test_rsa_proof_accepted(self):
         """A valid 2048-bit RSA DPoP proof should validate."""
