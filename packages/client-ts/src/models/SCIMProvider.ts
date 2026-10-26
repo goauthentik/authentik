@@ -46,14 +46,10 @@ export interface SCIMProvider {
     readonly assignedApplicationSlug: string | null;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof SCIMProvider
      */
     readonly assignedApplicationName: string | null;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof SCIMProvider
      */
     readonly assignedBackchannelApplicationSlug: string | null;
     /**
