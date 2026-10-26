@@ -1,6 +1,6 @@
 """Managed secret API tests."""
 
-from unittest.mock import PropertyMock, patch
+from unittest.mock import MagicMock, PropertyMock, patch
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
@@ -9,6 +9,7 @@ from rest_framework.test import APITestCase
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.crypto.secrets.api import SecretSerializer
 from authentik.crypto.secrets.models import Secret, SecretType
+from authentik.crypto.secrets.signals import secret_value_validating
 from authentik.events.models import Event, EventAction
 
 
@@ -207,6 +208,20 @@ entries:
         self.secret.refresh_from_db()
         self.assertEqual(self.secret.secret_value, "replacement")
         self.assertTrue(Event.objects.filter(action=EventAction.SECRET_ROTATE).exists())
+
+    def test_replace_value_validates_once(self):
+        receiver = MagicMock()
+        secret_value_validating.connect(receiver, sender=Secret)
+        self.addCleanup(secret_value_validating.disconnect, receiver, sender=Secret)
+        self.client.force_login(self.admin)
+        response = self.client.patch(
+            reverse("authentik_api:secret-detail", kwargs={"pk": self.secret.pk}),
+            {"value": "replacement"},
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        receiver.assert_called_once()
+        self.secret.refresh_from_db()
+        self.assertEqual(self.secret.secret_value, "replacement")
 
     def test_file_validation_and_rotation(self):
         self.client.force_login(self.admin)

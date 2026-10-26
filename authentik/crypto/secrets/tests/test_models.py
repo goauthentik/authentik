@@ -8,6 +8,7 @@ from django.test import TestCase
 
 from authentik.admin.models import DEFAULT_TOKEN_LENGTH
 from authentik.admin.utils import get_system_settings
+from authentik.crypto.secrets.api import SecretSerializer
 from authentik.crypto.secrets.models import Secret, SecretType, create_named_secret
 from authentik.events.models import Event, EventAction
 
@@ -97,8 +98,8 @@ class TestSecret(TestCase):
 
     def test_invalid_file_replacement_preserves_value(self):
         secret = Secret.objects.create(name="file", type=SecretType.FILE, secret_value="aGk=")
-        with self.assertRaises(ValidationError):
-            secret.replace_value("not base64")
+        serializer = SecretSerializer(instance=secret, data={"value": "not base64"}, partial=True)
+        self.assertFalse(serializer.is_valid())
         self.assertEqual(secret.secret_value, "aGk=")
         secret.refresh_from_db()
         self.assertEqual(secret.secret_value, "aGk=")

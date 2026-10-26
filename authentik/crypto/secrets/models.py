@@ -100,10 +100,9 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
             secret_value_validating.send(sender=Secret, secret=self, value=value)
 
     def replace_value(self, value: str, request: Request | None = None) -> None:
-        """Replace and audit the value, then signal consumers."""
+        """Replace and audit a value that `validate_value` accepted, then signal consumers."""
         if value == self.secret_value:
             return
-        self.validate_value(value)
         with transaction.atomic():
             self.secret_value = value
             with audit_ignore():
@@ -126,6 +125,7 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
         value = generate_secret_value(
             max(len(self.secret_value), get_system_settings().default_token_length)
         )
+        self.validate_value(value)
         self.replace_value(value, request)
         return value
 
