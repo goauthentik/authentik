@@ -58,9 +58,10 @@ class TestSecret(TestCase):
 
     def test_collision_safe_name(self):
         first = create_named_secret("consumer")
-        second = create_named_secret("consumer")
         self.assertEqual(first.name, "consumer")
-        self.assertEqual(second.name, "consumer (2)")
+        others = [create_named_secret("consumer") for _ in range(100)]
+        self.assertTrue(all(other.name.startswith("consumer (") for other in others))
+        self.assertEqual(Secret.objects.filter(name__startswith="consumer").count(), 101)
 
     def test_json_values(self):
         for value in ['{"token": "value"}', "token: value\n"]:
