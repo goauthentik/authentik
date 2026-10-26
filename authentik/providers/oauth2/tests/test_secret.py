@@ -110,7 +110,7 @@ class TestProviderSecret(APITestCase):
                 )
                 self.assertEqual(response.status_code, 400, response.content)
                 with self.assertRaises(ValidationError):
-                    secret.replace_value(value)
+                    secret.validate_value(value)
                 self.assertEqual(secret.secret_value, original)
                 secret.refresh_from_db()
                 self.assertEqual(secret.secret_value, original)

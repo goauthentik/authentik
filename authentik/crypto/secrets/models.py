@@ -101,10 +101,9 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
             secret_value_validating.send(sender=Secret, secret=self, value=value)
 
     def replace_value(self, value: str, request: Request | None = None) -> None:
-        """Replace and audit the value, then signal consumers."""
+        """Replace and audit a value that `validate_value` accepted, then signal consumers."""
         if value == self.secret_value:
             return
-        self.validate_value(value)
         with transaction.atomic():
             self.secret_value = value
             with audit_ignore():
@@ -127,6 +126,7 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
         value = generate_secret_value(
             max(len(self.secret_value), get_system_settings().default_token_length)
         )
+        self.validate_value(value)
         self.replace_value(value, request)
         return value
 
@@ -149,15 +149,16 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
 
 
 def create_named_secret(name: str, **fields) -> Secret:
-    """Create a secret with a readable, collision-safe name."""
-    for suffix in range(1, 100):
-        candidate = name if suffix == 1 else f"{name} ({suffix})"
-        try:
-            with transaction.atomic():
-                return Secret.objects.create(name=candidate, **fields)
-        except IntegrityError:
-            continue
-    raise IntegrityError(f"Could not allocate a name for {name!r}")
+    """Create a secret called `name`, with a random suffix when that name is taken.
+
+    Generated secrets outlive the objects they were created for, so a name can be taken
+    any number of times, for example by a client that registers again after being deleted.
+    """
+    try:
+        with transaction.atomic():
+            return Secret.objects.create(name=name, **fields)
+    except IntegrityError:
+        return Secret.objects.create(name=f"{name} ({generate_id(8)})", **fields)
 
 
 class GeneratedSecretsMixin:
