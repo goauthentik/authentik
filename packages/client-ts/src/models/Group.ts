@@ -10,12 +10,12 @@
  * Do not edit the class manually.
  */
 
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
-import type { RelatedGroup } from "./RelatedGroup";
-import { RelatedGroupFromJSON } from "./RelatedGroup";
-import type { Role } from "./Role";
-import { RoleFromJSON } from "./Role";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
+import type { RelatedGroup } from "./RelatedGroup.js";
+import { RelatedGroupFromJSON } from "./RelatedGroup.js";
+import type { Role } from "./Role.js";
+import { RoleFromJSON } from "./Role.js";
 
 /**
  * Group Serializer

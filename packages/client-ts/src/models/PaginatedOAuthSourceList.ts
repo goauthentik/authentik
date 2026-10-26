@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { OAuthSource } from "./OAuthSource";
-import { OAuthSourceFromJSON, OAuthSourceToJSON } from "./OAuthSource";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { OAuthSource } from "./OAuthSource.js";
+import { OAuthSourceFromJSON, OAuthSourceToJSON } from "./OAuthSource.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

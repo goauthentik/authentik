@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { UpdateVersionReason } from "./UpdateVersionReason";
-import { UpdateVersionReasonFromJSON, UpdateVersionReasonToJSON } from "./UpdateVersionReason";
+import type { UpdateVersionReason } from "./UpdateVersionReason.js";
+import { UpdateVersionReasonFromJSON, UpdateVersionReasonToJSON } from "./UpdateVersionReason.js";
 
 /**
  * @export

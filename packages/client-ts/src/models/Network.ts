@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { NetworkInterface } from "./NetworkInterface";
-import { NetworkInterfaceFromJSON, NetworkInterfaceToJSON } from "./NetworkInterface";
+import type { NetworkInterface } from "./NetworkInterface.js";
+import { NetworkInterfaceFromJSON, NetworkInterfaceToJSON } from "./NetworkInterface.js";
 
 /**
  * @export

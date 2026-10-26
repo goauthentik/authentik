@@ -13,18 +13,18 @@
 import {
     type ExpiringBaseGrantModel,
     ExpiringBaseGrantModelFromJSON,
-} from "../models/ExpiringBaseGrantModel";
+} from "../models/ExpiringBaseGrantModel.js";
 import {
     type PaginatedExpiringBaseGrantModelList,
     PaginatedExpiringBaseGrantModelListFromJSON,
-} from "../models/PaginatedExpiringBaseGrantModelList";
+} from "../models/PaginatedExpiringBaseGrantModelList.js";
 import {
     type PaginatedTokenModelList,
     PaginatedTokenModelListFromJSON,
-} from "../models/PaginatedTokenModelList";
-import { type TokenModel, TokenModelFromJSON } from "../models/TokenModel";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import * as runtime from "../runtime";
+} from "../models/PaginatedTokenModelList.js";
+import { type TokenModel, TokenModelFromJSON } from "../models/TokenModel.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
+import * as runtime from "../runtime.js";
 
 export interface Oauth2AccessTokensDestroyRequest {
     /**

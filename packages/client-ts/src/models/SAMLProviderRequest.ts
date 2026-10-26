@@ -10,24 +10,27 @@
  * Do not edit the class manually.
  */
 
-import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum";
-import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum";
-import type { EncryptionAlgorithmEnum } from "./EncryptionAlgorithmEnum";
+import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum.js";
+import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum.js";
+import type { EncryptionAlgorithmEnum } from "./EncryptionAlgorithmEnum.js";
 import {
     EncryptionAlgorithmEnumFromJSON,
     EncryptionAlgorithmEnumToJSON,
-} from "./EncryptionAlgorithmEnum";
-import type { SAMLBindingsEnum } from "./SAMLBindingsEnum";
-import { SAMLBindingsEnumFromJSON, SAMLBindingsEnumToJSON } from "./SAMLBindingsEnum";
-import type { SAMLLogoutMethods } from "./SAMLLogoutMethods";
-import { SAMLLogoutMethodsFromJSON, SAMLLogoutMethodsToJSON } from "./SAMLLogoutMethods";
-import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum";
-import { SAMLNameIDPolicyEnumFromJSON, SAMLNameIDPolicyEnumToJSON } from "./SAMLNameIDPolicyEnum";
-import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum";
+} from "./EncryptionAlgorithmEnum.js";
+import type { SAMLBindingsEnum } from "./SAMLBindingsEnum.js";
+import { SAMLBindingsEnumFromJSON, SAMLBindingsEnumToJSON } from "./SAMLBindingsEnum.js";
+import type { SAMLLogoutMethods } from "./SAMLLogoutMethods.js";
+import { SAMLLogoutMethodsFromJSON, SAMLLogoutMethodsToJSON } from "./SAMLLogoutMethods.js";
+import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum.js";
+import {
+    SAMLNameIDPolicyEnumFromJSON,
+    SAMLNameIDPolicyEnumToJSON,
+} from "./SAMLNameIDPolicyEnum.js";
+import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum.js";
 import {
     SignatureAlgorithmEnumFromJSON,
     SignatureAlgorithmEnumToJSON,
-} from "./SignatureAlgorithmEnum";
+} from "./SignatureAlgorithmEnum.js";
 
 /**
  * SAMLProvider Serializer
