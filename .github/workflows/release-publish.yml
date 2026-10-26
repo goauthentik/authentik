@@ -41,12 +41,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name:
-          - server
-          - proxy
-          - ldap
-          - radius
-          - rac
+        include:
+          - name: server
+          - name: server
+            tag-suffix: -distroless
+          - name: proxy
+          - name: ldap
+          - name: radius
+          - name: rac
     needs:
       - metadata
     env:
@@ -63,18 +65,18 @@ jobs:
           password: "${{ secrets.DOCKER_CORP_PASSWORD }}"
       - name: Download release container artifact
         run: |
-          gh release download "${{ needs.metadata.outputs.tag-name }}" --pattern "${{ matrix.name }}.oci.tar"
-          gh attestation verify "${{ matrix.name }}.oci.tar" --owner goauthentik
+          gh release download "${{ needs.metadata.outputs.tag-name }}" --pattern "${{ matrix.name }}${{ matrix.tag-suffix }}.oci.tar"
+          gh attestation verify "${{ matrix.name }}${{ matrix.tag-suffix }}.oci.tar" --owner goauthentik
       - id: publish
         name: Publish container
         run: |
-          regctl image import "ocidir://${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}.oci.tar"
+          regctl image import "ocidir://${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}${{ matrix.tag-suffix }}.oci.tar"
           echo "digest=$(regctl image digest "ocidir://${{ matrix.name }}:${{ needs.metadata.outputs.version }}")" >> "$GITHUB_OUTPUT"
-          regctl image import "ghcr.io/goauthentik/${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}.oci.tar"
-          regctl image import "docker.io/authentik/${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}.oci.tar"
+          regctl image import "ghcr.io/goauthentik/${{ matrix.name }}:${{ needs.metadata.outputs.version }}${{ matrix.tag-suffix }}" "${{ matrix.name }}${{ matrix.tag-suffix }}.oci.tar"
+          regctl image import "docker.io/authentik/${{ matrix.name }}:${{ needs.metadata.outputs.version }}${{ matrix.tag-suffix }}" "${{ matrix.name }}${{ matrix.tag-suffix }}.oci.tar"
           if [ "${{ needs.metadata.outputs.release-reason }}" != "prerelease" ]; then
-            regctl image import "ghcr.io/goauthentik/${{ matrix.name }}:${{ needs.metadata.outputs.version-family }}" "${{ matrix.name }}.oci.tar"
-            regctl image import "docker.io/authentik/${{ matrix.name }}:${{ needs.metadata.outputs.version-family }}" "${{ matrix.name }}.oci.tar"
+            regctl image import "ghcr.io/goauthentik/${{ matrix.name }}:${{ needs.metadata.outputs.version-family }}${{ matrix.tag-suffix }}" "${{ matrix.name }}${{ matrix.tag-suffix }}.oci.tar"
+            regctl image import "docker.io/authentik/${{ matrix.name }}:${{ needs.metadata.outputs.version-family }}${{ matrix.tag-suffix }}" "${{ matrix.name }}${{ matrix.tag-suffix }}.oci.tar"
           fi
       # we need to re-login for the attestation to go through
       - uses: docker/login-action@v4

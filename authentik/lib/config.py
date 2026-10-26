@@ -477,12 +477,14 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
 
     conn_max_age = config.get_optional_int("postgresql.conn_max_age", UNSET)
     disable_server_side_cursors = config.get_bool("postgresql.disable_server_side_cursors", UNSET)
-    if config.get_bool("postgresql.use_pgpool", False):
+    use_pgpool = config.get_bool("postgresql.use_pgpool", False)
+    use_pgbouncer = config.get_bool("postgresql.use_pgbouncer", False)
+    if use_pgpool:
         db["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
         if disable_server_side_cursors is not UNSET:
             db["default"]["DISABLE_SERVER_SIDE_CURSORS"] = disable_server_side_cursors
 
-    if config.get_bool("postgresql.use_pgbouncer", False):
+    if use_pgbouncer:
         # https://docs.djangoproject.com/en/4.0/ref/databases/#transaction-pooling-server-side-cursors
         db["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
         # https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
@@ -491,6 +493,12 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
             db["default"]["DISABLE_SERVER_SIDE_CURSORS"] = disable_server_side_cursors
         if conn_max_age is not UNSET:
             db["default"]["CONN_MAX_AGE"] = conn_max_age
+
+    # Django runs `SET TimeZone` on every new connection unless the server reports exactly
+    # "UTC" (Postgres defaults to "GMT"), so set it at connect time instead. Poolers reject
+    # the `options` startup parameter; a user-provided `options` takes precedence.
+    if not use_pgpool and not use_pgbouncer:
+        db["default"]["OPTIONS"].setdefault("options", "-c TimeZone=UTC")
 
     all_replica_conn_options = config.get_dict_from_b64_json(
         "postgresql.replica_conn_options",
