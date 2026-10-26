@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { UpdateVersionInfo } from "./UpdateVersionInfo";
-import { UpdateVersionInfoFromJSON } from "./UpdateVersionInfo";
+import type { UpdateVersionInfo } from "./UpdateVersionInfo.js";
+import { UpdateVersionInfoFromJSON } from "./UpdateVersionInfo.js";
 
 /**
  * Get running and latest version.

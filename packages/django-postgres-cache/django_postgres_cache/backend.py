@@ -6,9 +6,9 @@ from typing import Any
 
 from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT, BaseCache, get_key_func
-from django.db import DatabaseError
+from django.db import DatabaseError, connections, router
+from django.db.backends.utils import CursorWrapper
 from django.utils.timezone import now
-from psqlextra.types import ConflictAction
 
 from django_postgres_cache.models import CacheEntry
 
@@ -27,6 +27,12 @@ class DatabaseCache(BaseCache):
         self.reverse_key_func = (
             get_key_func(reverse_key_function) if reverse_key_function else default_reverse_key_func
         )
+
+    def _cursor(self, write: bool = False) -> CursorWrapper:
+        # Raw SQL instead of the ORM: cache calls are on nearly every request, and
+        # compiling the equivalent queryset costs more CPU than the query itself
+        alias = router.db_for_write(CacheEntry) if write else router.db_for_read(CacheEntry)
+        return connections[alias].cursor()
 
     def _make_value(self, value: Any) -> str:
         pickled = pickle.dumps(value, self.pickle_protocol)
@@ -57,26 +63,36 @@ class DatabaseCache(BaseCache):
         version: int | None = None,
     ) -> bool:
         key = self.make_and_validate_key(key, version=version)
-        value = self._make_value(value)
-        expiry = self._make_expiry(timeout)
-        # No need for a transaction here, since old values get deleted
-        CacheEntry.objects.filter(cache_key=key, expires__lte=now()).delete()
         try:
-            CacheEntry.objects.create(cache_key=key, value=value, expires=expiry)
-            return True
+            with self._cursor(write=True) as cursor:
+                # Only replaces an existing row if it has expired
+                cursor.execute(
+                    "INSERT INTO django_postgres_cache_cacheentry AS entry "
+                    "(cache_key, value, expires) "
+                    "VALUES (%s, %s, %s) ON CONFLICT (cache_key) "
+                    "DO UPDATE SET value = EXCLUDED.value, expires = EXCLUDED.expires "
+                    "WHERE entry.expires < %s",
+                    [key, self._make_value(value), self._make_expiry(timeout), now()],
+                )
+                return bool(cursor.rowcount)
         except DatabaseError:
-            # Any error, including integrity error and we didn't insert the row
             return False
 
     def get(self, key: Any, default: Any | None = None, version: int | None = None) -> Any:
         key = self.make_and_validate_key(key, version=version)
         try:
-            entry = CacheEntry.objects.filter(cache_key=key, expires__gte=now()).first()
+            with self._cursor() as cursor:
+                cursor.execute(
+                    "SELECT value FROM django_postgres_cache_cacheentry "
+                    "WHERE cache_key = %s AND expires >= %s",
+                    [key, now()],
+                )
+                row = cursor.fetchone()
         except DatabaseError:
-            entry = None
-        if entry is None:
+            row = None
+        if row is None:
             return default
-        return self._unmake_value(entry.value)
+        return self._unmake_value(row[0])
 
     def set(
         self,
@@ -86,16 +102,14 @@ class DatabaseCache(BaseCache):
         version: int | None = None,
     ) -> None:
         key = self.make_and_validate_key(key, version=version)
-        value = self._make_value(value)
-        expiry = self._make_expiry(timeout)
-        CacheEntry.objects.on_conflict(
-            ["cache_key"],
-            ConflictAction.UPDATE,
-        ).insert(
-            cache_key=key,
-            value=value,
-            expires=expiry,
-        )
+        with self._cursor(write=True) as cursor:
+            cursor.execute(
+                "INSERT INTO django_postgres_cache_cacheentry (cache_key, value, expires) "
+                "VALUES (%s, %s, %s) "
+                "ON CONFLICT (cache_key) "
+                "DO UPDATE SET value = EXCLUDED.value, expires = EXCLUDED.expires",
+                [key, self._make_value(value), self._make_expiry(timeout)],
+            )
 
     def touch(
         self,
@@ -104,25 +118,43 @@ class DatabaseCache(BaseCache):
         version: int | None = None,
     ) -> bool:
         key = self.make_and_validate_key(key, version=version)
-        expiry = self._make_expiry(timeout)
-        return bool(CacheEntry.objects.filter(cache_key=key).update(expires=expiry))
+        with self._cursor(write=True) as cursor:
+            cursor.execute(
+                "UPDATE django_postgres_cache_cacheentry SET expires = %s WHERE cache_key = %s",
+                [self._make_expiry(timeout), key],
+            )
+            return bool(cursor.rowcount)
 
     def delete(self, key: Any, version: int | None = None) -> bool:
         key = self.make_and_validate_key(key, version=version)
-        count, _ = CacheEntry.objects.filter(cache_key=key).delete()
-        return bool(count)
+        with self._cursor(write=True) as cursor:
+            cursor.execute(
+                "DELETE FROM django_postgres_cache_cacheentry WHERE cache_key = %s", [key]
+            )
+            return bool(cursor.rowcount)
 
     def get_many(self, keys: Iterable[Any], version: int | None = None) -> dict[Any, Any]:
         key_map = {self.make_and_validate_key(key, version=version): key for key in keys}
-        entries = CacheEntry.objects.filter(cache_key__in=key_map.keys(), expires__gte=now())
-        result = {}
-        for entry in entries:
-            result[key_map[entry.cache_key]] = self._unmake_value(entry.value)
-        return result
+        if not key_map:
+            return {}
+        with self._cursor() as cursor:
+            cursor.execute(
+                "SELECT cache_key, value FROM django_postgres_cache_cacheentry "
+                "WHERE cache_key = ANY(%s) AND expires >= %s",
+                [list(key_map), now()],
+            )
+            rows = cursor.fetchall()
+        return {key_map[key]: self._unmake_value(value) for key, value in rows}
 
     def has_key(self, key: Any, version: int | None = None) -> bool:
         key = self.make_and_validate_key(key, version=version)
-        return bool(CacheEntry.objects.filter(cache_key=key, expires__gte=now()).exists())
+        with self._cursor() as cursor:
+            cursor.execute(
+                "SELECT 1 FROM django_postgres_cache_cacheentry "
+                "WHERE cache_key = %s AND expires >= %s",
+                [key, now()],
+            )
+            return cursor.fetchone() is not None
 
     def set_many(
         self,
@@ -130,29 +162,38 @@ class DatabaseCache(BaseCache):
         timeout: float | None = DEFAULT_TIMEOUT,
         version: int | None = None,
     ) -> list[Any]:
+        if not data:
+            return []
         expiry = self._make_expiry(timeout)
-        CacheEntry.objects.on_conflict(
-            ["cache_key"],
-            ConflictAction.UPDATE,
-        ).bulk_insert(
-            [
-                dict(
-                    cache_key=self.make_and_validate_key(key, version=version),
-                    value=self._make_value(value),
-                    expires=expiry,
-                )
-                for key, value in data.items()
-            ]
-        )
+        with self._cursor(write=True) as cursor:
+            cursor.executemany(
+                "INSERT INTO django_postgres_cache_cacheentry (cache_key, value, expires) "
+                "VALUES (%s, %s, %s) "
+                "ON CONFLICT (cache_key) "
+                "DO UPDATE SET value = EXCLUDED.value, expires = EXCLUDED.expires",
+                [
+                    [
+                        self.make_and_validate_key(key, version=version),
+                        self._make_value(value),
+                        expiry,
+                    ]
+                    for key, value in data.items()
+                ],
+            )
         return []
 
     def delete_many(self, keys: Iterable[Any], version: int | None = None) -> None:
-        CacheEntry.objects.filter(
-            cache_key__in=[self.make_and_validate_key(key, version=version) for key in keys]
-        ).delete()
+        keys = [self.make_and_validate_key(key, version=version) for key in keys]
+        if not keys:
+            return
+        with self._cursor(write=True) as cursor:
+            cursor.execute(
+                "DELETE FROM django_postgres_cache_cacheentry WHERE cache_key = ANY(%s)", [keys]
+            )
 
     def clear(self) -> None:
-        CacheEntry.objects.truncate()
+        with self._cursor(write=True) as cursor:
+            cursor.execute("TRUNCATE django_postgres_cache_cacheentry")
 
     def keys(self, keys_pattern: str, version: int | None = None) -> list[str]:
         """Return cache keys matching a glob pattern (``*`` wildcard).
