@@ -2,10 +2,13 @@
 
 from datetime import datetime, timedelta
 from json import loads
+from unittest.mock import patch
 
+from cryptography.exceptions import UnsupportedAlgorithm
+from cryptography.hazmat.primitives.asymmetric.mldsa import MLDSA44PrivateKey
 from django.test import RequestFactory
 from django.urls import reverse
-from jwt import decode
+from jwt import decode, encode
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.common.oauth.constants import (
@@ -17,7 +20,10 @@ from authentik.common.oauth.constants import (
 )
 from authentik.core.models import USERNAME_MAX_LENGTH, Application, Group, User
 from authentik.core.tests.utils import create_test_cert, create_test_flow
+from authentik.crypto.builder import PrivateKeyAlg
+from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_id
+from authentik.lib.jwt_mldsa import MLDSAAlgorithm
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import (
     GrantType,
@@ -29,6 +35,14 @@ from authentik.providers.oauth2.models import (
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.views.jwks import JWKSView
 from authentik.sources.oauth.models import OAuthSource, OAuthSourcePropertyMapping
+
+
+def mldsa_jwk(cert: CertificateKeyPair) -> dict:
+    """Public AKP JWK (RFC 9964) for an ML-DSA certificate, as an upstream IdP would publish it"""
+    jwk = MLDSAAlgorithm.to_jwk(cert.private_key.public_key(), as_dict=True)
+    jwk["kid"] = cert.kid
+    jwk["use"] = "sig"
+    return jwk
 
 
 class TestTokenClientCredentialsJWTSource(OAuthTestCase):
@@ -337,3 +351,74 @@ class TestTokenClientCredentialsJWTSource(OAuthTestCase):
         self.assertEqual(jwt["email"], "test-user@example.com")
         self.assertEqual(jwt["given_name"], "Mapped Test User")
         self.assertEqual(jwt["preferred_username"], test_username)
+
+    def test_successful_mldsa_source(self):
+        """test successful with a client assertion signed by an ML-DSA key (RFC 9964 AKP JWK)"""
+        mldsa_cert = create_test_cert(PrivateKeyAlg.MLDSA44)
+        jwk = mldsa_jwk(mldsa_cert)
+        self.assertEqual(jwk["kty"], "AKP")
+        self.assertEqual(jwk["alg"], "ML-DSA-44")
+        self.source.oidc_jwks = {"keys": [jwk]}
+        self.source.save()
+        token = encode(
+            {
+                "sub": "foo",
+                "exp": datetime.now() + timedelta(hours=2),
+            },
+            key=mldsa_cert.private_key,
+            algorithm="ML-DSA-44",
+            headers={"kid": mldsa_cert.kid},
+        )
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            {
+                "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
+                "scope": f"{SCOPE_OPENID} {SCOPE_OPENID_EMAIL} {SCOPE_OPENID_PROFILE}",
+                "client_id": self.provider.client_id,
+                "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+                "client_assertion": token,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNotNone(User.objects.filter(username=f"{self.provider.name}-foo").first())
+
+    def test_successful_mldsa_key_unavailable(self):
+        """An AKP key in the source's JWKS that OpenSSL cannot load (ML-DSA under a FIPS provider
+        that predates it) is skipped, and the remaining keys are still tried"""
+
+        class UnavailablePublicKey:
+            @staticmethod
+            def from_public_bytes(_data: bytes):
+                raise UnsupportedAlgorithm("ML-DSA is not supported by this version of OpenSSL")
+
+        mldsa_cert = create_test_cert(PrivateKeyAlg.MLDSA44)
+        unavailable_jwk = mldsa_jwk(mldsa_cert)
+        # Without a kid, the key is not skipped by the kid match and must actually be loaded
+        del unavailable_jwk["kid"]
+        helper_jwk = JWKSView().get_jwk_for_key(self.other_cert, "sig")
+        self.source.oidc_jwks = {"keys": [unavailable_jwk, helper_jwk]}
+        self.source.save()
+        token = self.helper_provider.encode(
+            {
+                "sub": "foo",
+                "exp": datetime.now() + timedelta(hours=2),
+            }
+        )
+        with patch.dict(
+            "authentik.lib.jwt_mldsa.MLDSA_ALGORITHMS",
+            {"ML-DSA-44": (MLDSA44PrivateKey, UnavailablePublicKey)},
+        ):
+            response = self.client.post(
+                reverse("authentik_providers_oauth2:token"),
+                {
+                    "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
+                    "scope": f"{SCOPE_OPENID} {SCOPE_OPENID_EMAIL} {SCOPE_OPENID_PROFILE}",
+                    "client_id": self.provider.client_id,
+                    "client_assertion_type": (
+                        "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
+                    ),
+                    "client_assertion": token,
+                },
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNotNone(User.objects.filter(username=f"{self.provider.name}-foo").first())
