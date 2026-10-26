@@ -18,6 +18,7 @@ class RadiusProvider(GeneratedSecretsMixin, OutpostModel, Provider):
     """Allow applications to authenticate against authentik's users using Radius."""
 
     generated_secrets = {"shared_secret_ref": ("shared secret", generate_id)}
+    secret_value_permission = "change"
 
     # Legacy column, kept for downgrades. Remove in 2027.2.
     shared_secret = models.TextField(
