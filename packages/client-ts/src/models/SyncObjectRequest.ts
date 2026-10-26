@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { SyncObjectModelEnum } from "./SyncObjectModelEnum";
-import { SyncObjectModelEnumFromJSON, SyncObjectModelEnumToJSON } from "./SyncObjectModelEnum";
+import type { SyncObjectModelEnum } from "./SyncObjectModelEnum.js";
+import { SyncObjectModelEnumFromJSON, SyncObjectModelEnumToJSON } from "./SyncObjectModelEnum.js";
 
 /**
  * Sync object serializer

@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { AuthenticatorSMSStage } from "./AuthenticatorSMSStage";
+import type { AuthenticatorSMSStage } from "./AuthenticatorSMSStage.js";
 import {
     AuthenticatorSMSStageFromJSON,
     AuthenticatorSMSStageToJSON,
-} from "./AuthenticatorSMSStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./AuthenticatorSMSStage.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

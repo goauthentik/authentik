@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { FlowStageBinding } from "./FlowStageBinding";
-import { FlowStageBindingFromJSON } from "./FlowStageBinding";
+import type { FlowStageBinding } from "./FlowStageBinding.js";
+import { FlowStageBindingFromJSON } from "./FlowStageBinding.js";
 
 /**
  * Serializer for an active FlowPlan
