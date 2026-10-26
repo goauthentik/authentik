@@ -53,6 +53,7 @@ def pre_save_license(sender: type[License], instance: License, **_):
 def post_save_license(sender: type[License], instance: License, **_):
     """Trigger license usage calculation when license is saved"""
     cache.delete(CACHE_KEY_ENTERPRISE_LICENSE)
+    LicenseKey.cached_summary.cache_clear()
     Schedule.dispatch_by_actor(enterprise_update_usage)
 
 
@@ -60,3 +61,4 @@ def post_save_license(sender: type[License], instance: License, **_):
 def post_delete_license(sender: type[License], instance: License, **_):
     """Clear license cache when license is deleted"""
     cache.delete(CACHE_KEY_ENTERPRISE_LICENSE)
+    LicenseKey.cached_summary.cache_clear()

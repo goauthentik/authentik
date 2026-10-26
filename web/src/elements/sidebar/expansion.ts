@@ -2,7 +2,8 @@
  * @file Session-scoped persistence for sidebar group expansion.
  */
 
-import { StorageAccessor } from "#common/storage";
+import { StorageAccessor } from "#common/storage/accessor";
+import type { PersistenceKey } from "#common/storage/shared";
 
 /**
  * Expansion keyed by {@linkcode SidebarItem.key}. A missing entry means "never
@@ -11,11 +12,13 @@ import { StorageAccessor } from "#common/storage";
  */
 export type SidebarExpansionState = Record<string, boolean>;
 
-const STORAGE_KEY = "authentik/sidebar/expansion";
+const STORAGE_KEY = "ak:sidebar:expansion" satisfies PersistenceKey;
 
-let accessor: StorageAccessor | null = null;
+type StorageAccessorType = StorageAccessor<typeof STORAGE_KEY>;
 
-function retrieveStorageAccessor(): StorageAccessor {
+let accessor: StorageAccessorType | null = null;
+
+function retrieveStorageAccessor(): StorageAccessorType {
     return (accessor ??= StorageAccessor.session(STORAGE_KEY));
 }
 

@@ -10,12 +10,15 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { UserCreationModeEnum } from "./UserCreationModeEnum";
-import { UserCreationModeEnumFromJSON, UserCreationModeEnumToJSON } from "./UserCreationModeEnum";
-import type { UserTypeEnum } from "./UserTypeEnum";
-import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
+import type { UserCreationModeEnum } from "./UserCreationModeEnum.js";
+import {
+    UserCreationModeEnumFromJSON,
+    UserCreationModeEnumToJSON,
+} from "./UserCreationModeEnum.js";
+import type { UserTypeEnum } from "./UserTypeEnum.js";
+import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum.js";
 
 /**
  * UserWriteStage Serializer

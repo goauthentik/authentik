@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { FlowStageBinding } from "./FlowStageBinding";
-import { FlowStageBindingFromJSON, FlowStageBindingToJSON } from "./FlowStageBinding";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { FlowStageBinding } from "./FlowStageBinding.js";
+import { FlowStageBindingFromJSON, FlowStageBindingToJSON } from "./FlowStageBinding.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export
