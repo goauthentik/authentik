@@ -14,6 +14,7 @@ import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { toUserInterface } from "#elements/router/core/interfaces";
+import { setPageDetails } from "#elements/router/meta";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { AccessRequestFulfillForm } from "#user/requests/AccessRequestFulfillForm";
@@ -37,6 +38,8 @@ export class AccessRequestsPage extends AKElement {
 
     override async connectedCallback(): Promise<void> {
         super.connectedCallback();
+
+        setPageDetails({ header: msg("Discover") });
 
         try {
             this.toReview = await aki(RequestsApi).requestsGrantRequestsPendingReviewList({});
@@ -67,8 +70,9 @@ export class AccessRequestsPage extends AKElement {
                 ${
                     (this.toReview?.pagination.count || 0) > 0
                         ? html`<div class="pf-c-banner pf-m-info">
-                              ${msg("Requests to review: ")}
-                              <a href=${toUserInterface("requests/for-review")}>${msg("Review")}</a>
+                              <a href=${toUserInterface("requests/for-review")}
+                                  >${msg("You have access requests to review")}</a
+                              >
                           </div>`
                         : nothing
                 }

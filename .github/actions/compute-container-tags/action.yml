@@ -35,7 +35,7 @@ runs:
         branch_name = os.environ["GITHUB_REF"]
         if os.environ.get("GITHUB_HEAD_REF", "") != "":
             branch_name = os.environ["GITHUB_HEAD_REF"]
-        safe_branch_name = re.sub(r"[^a-zA-Z0-9-]", "-", branch_name.replace("refs/heads/", ""))
+        safe_branch_name = re.sub(r"[^a-zA-Z0-9-.]", "-", branch_name.replace("refs/heads/", ""))
 
         tag_full = f"gh-{sha}"
         tag_branch = f"gh-{safe_branch_name}"

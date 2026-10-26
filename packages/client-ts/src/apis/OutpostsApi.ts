@@ -13,76 +13,76 @@
 import {
     type DockerServiceConnection,
     DockerServiceConnectionFromJSON,
-} from "../models/DockerServiceConnection";
+} from "../models/DockerServiceConnection.js";
 import {
     type DockerServiceConnectionRequest,
     DockerServiceConnectionRequestToJSON,
-} from "../models/DockerServiceConnectionRequest";
+} from "../models/DockerServiceConnectionRequest.js";
 import {
     type KubernetesServiceConnection,
     KubernetesServiceConnectionFromJSON,
-} from "../models/KubernetesServiceConnection";
+} from "../models/KubernetesServiceConnection.js";
 import {
     type KubernetesServiceConnectionRequest,
     KubernetesServiceConnectionRequestToJSON,
-} from "../models/KubernetesServiceConnectionRequest";
-import { type LDAPCheckAccess, LDAPCheckAccessFromJSON } from "../models/LDAPCheckAccess";
-import { type Outpost, OutpostFromJSON } from "../models/Outpost";
+} from "../models/KubernetesServiceConnectionRequest.js";
+import { type LDAPCheckAccess, LDAPCheckAccessFromJSON } from "../models/LDAPCheckAccess.js";
+import { type Outpost, OutpostFromJSON } from "../models/Outpost.js";
 import {
     type OutpostDefaultConfig,
     OutpostDefaultConfigFromJSON,
-} from "../models/OutpostDefaultConfig";
-import { type OutpostHealth, OutpostHealthFromJSON } from "../models/OutpostHealth";
-import { type OutpostRequest, OutpostRequestToJSON } from "../models/OutpostRequest";
+} from "../models/OutpostDefaultConfig.js";
+import { type OutpostHealth, OutpostHealthFromJSON } from "../models/OutpostHealth.js";
+import { type OutpostRequest, OutpostRequestToJSON } from "../models/OutpostRequest.js";
 import {
     type PaginatedDockerServiceConnectionList,
     PaginatedDockerServiceConnectionListFromJSON,
-} from "../models/PaginatedDockerServiceConnectionList";
+} from "../models/PaginatedDockerServiceConnectionList.js";
 import {
     type PaginatedKubernetesServiceConnectionList,
     PaginatedKubernetesServiceConnectionListFromJSON,
-} from "../models/PaginatedKubernetesServiceConnectionList";
+} from "../models/PaginatedKubernetesServiceConnectionList.js";
 import {
     type PaginatedLDAPOutpostConfigList,
     PaginatedLDAPOutpostConfigListFromJSON,
-} from "../models/PaginatedLDAPOutpostConfigList";
+} from "../models/PaginatedLDAPOutpostConfigList.js";
 import {
     type PaginatedOutpostList,
     PaginatedOutpostListFromJSON,
-} from "../models/PaginatedOutpostList";
+} from "../models/PaginatedOutpostList.js";
 import {
     type PaginatedProxyOutpostConfigList,
     PaginatedProxyOutpostConfigListFromJSON,
-} from "../models/PaginatedProxyOutpostConfigList";
+} from "../models/PaginatedProxyOutpostConfigList.js";
 import {
     type PaginatedRadiusOutpostConfigList,
     PaginatedRadiusOutpostConfigListFromJSON,
-} from "../models/PaginatedRadiusOutpostConfigList";
+} from "../models/PaginatedRadiusOutpostConfigList.js";
 import {
     type PaginatedServiceConnectionList,
     PaginatedServiceConnectionListFromJSON,
-} from "../models/PaginatedServiceConnectionList";
+} from "../models/PaginatedServiceConnectionList.js";
 import {
     type PatchedDockerServiceConnectionRequest,
     PatchedDockerServiceConnectionRequestToJSON,
-} from "../models/PatchedDockerServiceConnectionRequest";
+} from "../models/PatchedDockerServiceConnectionRequest.js";
 import {
     type PatchedKubernetesServiceConnectionRequest,
     PatchedKubernetesServiceConnectionRequestToJSON,
-} from "../models/PatchedKubernetesServiceConnectionRequest";
+} from "../models/PatchedKubernetesServiceConnectionRequest.js";
 import {
     type PatchedOutpostRequest,
     PatchedOutpostRequestToJSON,
-} from "../models/PatchedOutpostRequest";
-import { type RadiusCheckAccess, RadiusCheckAccessFromJSON } from "../models/RadiusCheckAccess";
-import { type ServiceConnection, ServiceConnectionFromJSON } from "../models/ServiceConnection";
+} from "../models/PatchedOutpostRequest.js";
+import { type RadiusCheckAccess, RadiusCheckAccessFromJSON } from "../models/RadiusCheckAccess.js";
+import { type ServiceConnection, ServiceConnectionFromJSON } from "../models/ServiceConnection.js";
 import {
     type ServiceConnectionState,
     ServiceConnectionStateFromJSON,
-} from "../models/ServiceConnectionState";
-import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import * as runtime from "../runtime";
+} from "../models/ServiceConnectionState.js";
+import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
+import * as runtime from "../runtime.js";
 
 export interface OutpostsInstancesCreateRequest {
     outpostRequest: OutpostRequest;

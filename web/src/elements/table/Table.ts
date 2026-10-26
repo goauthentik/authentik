@@ -16,7 +16,8 @@ import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 
-import { type PaginatedResponse } from "#common/api/responses";
+import type { NamedEntityElement } from "#common/api/entities";
+import type { PaginatedResponse } from "#common/api/responses";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { AKRefreshEvent } from "#common/events";
 import { truncateWords } from "#common/strings";
@@ -26,7 +27,6 @@ import { AKElement } from "#elements/Base";
 import { intersectionObserver } from "#elements/decorators/intersection-observer";
 import {
     isTransclusionParentElement,
-    NamedEntityElement,
     type TransclusionChildElement,
     TransclusionChildSymbol,
 } from "#elements/dialogs/shared";
@@ -336,6 +336,14 @@ export abstract class Table<T extends object, D = T>
     public page = 1;
 
     /**
+     * Method to convert an object into a string or number as a unique key the table can use to
+     * communicate objects back to client code. Provide or override when <T>.pk exists but may not
+     * be unique.
+     */
+    @property({ type: Object })
+    public makeItemKey = (i: T) => (hasPrimaryKey(i) ? i.pk : JSON.stringify(i));
+
+    /**
      * Set if your `selectedElements` use of the selection box is to enable bulk-delete,
      * so that stale data is cleared out when the API returns a new list minus the deleted entries.
      *
@@ -570,6 +578,16 @@ export abstract class Table<T extends object, D = T>
     }
 
     /**
+     * The fetch currently in flight, if any.
+     */
+    #inFlightFetch: Promise<void> | null = null;
+
+    /**
+     * A fetch requested while another was in flight, run once that one settles.
+     */
+    #queuedFetch: Promise<void> | null = null;
+
+    /**
      * Fetch data from the API endpoint.
      *
      * @see {@linkcode apiEndpoint}
@@ -589,13 +607,20 @@ export abstract class Table<T extends object, D = T>
             return Promise.resolve();
         }
 
-        if (this.loading) {
-            return Promise.resolve();
+        if (this.#inFlightFetch) {
+            // Rerun with the latest parameters, e.g. a search typed during the first load.
+            this.#queuedFetch ??= this.#inFlightFetch.then(() => {
+                this.#queuedFetch = null;
+
+                return this.fetch();
+            });
+
+            return this.#queuedFetch;
         }
 
         this.loading = true;
 
-        return this.apiEndpoint()
+        this.#inFlightFetch = this.apiEndpoint()
             .then((data) => {
                 this.data = data;
                 this.error = null;
@@ -606,8 +631,7 @@ export abstract class Table<T extends object, D = T>
                 const nextExpanded = new Set<string | number>();
 
                 for (const result of data.results) {
-                    const itemKey = hasPrimaryKey(result) ? result.pk : JSON.stringify(result);
-
+                    const itemKey = this.makeItemKey(result);
                     this.#itemKeys.set(result, itemKey);
 
                     if (this.expandedElements.has(itemKey)) {
@@ -636,11 +660,14 @@ export abstract class Table<T extends object, D = T>
                 this.error = await parseAPIResponseError(error);
             })
             .finally(() => {
+                this.#inFlightFetch = null;
                 this.loading = false;
                 this.lastRefreshedAt = new Date();
                 this.#deferredRefreshRequestAt = null;
                 this.requestUpdate();
             });
+
+        return this.#inFlightFetch;
     }
 
     //#region Render
@@ -740,7 +767,8 @@ export abstract class Table<T extends object, D = T>
             return this.renderEmpty(this.renderError());
         }
 
-        if (this.loading && this.data === null) {
+        // No response yet, including while the first fetch is deferred until the table is visible.
+        if (this.data === null) {
             return this.renderLoading();
         }
 

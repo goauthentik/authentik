@@ -194,7 +194,7 @@ class TestProviderLDAP(ChannelsE2ETestCase):
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
     )
-    @reconcile_app("authentik_tenants")
+    @reconcile_app("authentik_admin")
     @reconcile_app("authentik_outposts")
     def test_ldap_bind_search(self):
         """Test simple bind + search"""
@@ -335,7 +335,7 @@ class TestProviderLDAP(ChannelsE2ETestCase):
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
     )
-    @reconcile_app("authentik_tenants")
+    @reconcile_app("authentik_admin")
     @reconcile_app("authentik_outposts")
     def test_ldap_bind_search_no_perms(self):
         """Test simple bind + search"""
@@ -409,7 +409,7 @@ class TestProviderLDAP(ChannelsE2ETestCase):
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
     )
-    @reconcile_app("authentik_tenants")
+    @reconcile_app("authentik_admin")
     @reconcile_app("authentik_outposts")
     def test_ldap_schema(self):
         """Test LDAP Schema"""
@@ -431,7 +431,7 @@ class TestProviderLDAP(ChannelsE2ETestCase):
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
     )
-    @reconcile_app("authentik_tenants")
+    @reconcile_app("authentik_admin")
     @reconcile_app("authentik_outposts")
     def test_ldap_search_attrs_filter(self):
         """Test search with attributes filtering"""
@@ -502,7 +502,7 @@ class TestProviderLDAP(ChannelsE2ETestCase):
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
     )
-    @reconcile_app("authentik_tenants")
+    @reconcile_app("authentik_admin")
     @reconcile_app("authentik_outposts")
     def test_ldap_bind_logout_search(self):
         """Test bind + session deletion -> failed search"""

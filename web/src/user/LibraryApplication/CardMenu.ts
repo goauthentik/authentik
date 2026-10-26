@@ -1,5 +1,5 @@
 import "#elements/AppIcon";
-import "#user/LibraryApplication/RACLaunchEndpointModal";
+import "#user/LibraryApplication/RACLaunchDeviceModal";
 import "#elements/buttons/Dropdown";
 import "#elements/Divider";
 import { truncateWords } from "#common/strings";

@@ -11,6 +11,7 @@ import { navigate, RouterNavigateEvent } from "#elements/router/core/navigation"
 import { getSearchParams, updateSearchParams } from "#elements/router/core/search-params";
 import Styles from "#elements/Tabs.css" with { type: "bundled-text" };
 import { routedTabBaseContext } from "#elements/tabs/tab-context";
+import { ActiveTabChangeEvent } from "#elements/tabs/tab-events";
 import { activeSlotForPath, tabHref } from "#elements/tabs/tab-path";
 import { ifPresent } from "#elements/utils/attributes";
 import { isFocusable } from "#elements/utils/focus";
@@ -173,6 +174,21 @@ export class Tabs extends AKElement {
 
     //#region Navigation
 
+    #activeTabLabel: string | null | undefined;
+
+    /**
+     * Dispatch an event with the active tab's label when it changes.
+     */
+    #dispatchActiveTab(): void {
+        const label = this.findActiveTabPanel()?.getAttribute("aria-label") || null;
+
+        if (label === this.#activeTabLabel) return;
+
+        this.#activeTabLabel = label;
+
+        window.dispatchEvent(new ActiveTabChangeEvent(label));
+    }
+
     /**
      * The active slot for the current location, or `null` when the tabs are not
      * yet known. Falls back to the first tab when the path names no known tab.
@@ -261,6 +277,10 @@ export class Tabs extends AKElement {
 
         if (changedProperties.has("visible")) {
             this.#updateCommands();
+        }
+
+        if (this.#pathMode) {
+            this.#dispatchActiveTab();
         }
     }
 

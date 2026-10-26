@@ -2,22 +2,21 @@
 
 from sys import exit as sys_exit
 
-from django.core.management.base import no_translations
+from django.core.management.base import BaseCommand, no_translations
 from rest_framework.exceptions import ValidationError
 from structlog.stdlib import get_logger
 
 from authentik.crypto.api import CertificateKeyPairSerializer
 from authentik.crypto.models import CertificateKeyPair
-from authentik.tenants.management import TenantCommand
 
 LOGGER = get_logger()
 
 
-class Command(TenantCommand):
+class Command(BaseCommand):
     """Import certificate"""
 
     @no_translations
-    def handle_per_tenant(self, *args, **options):
+    def handle(self, *args, **options):
         """Import certificate"""
         keypair = CertificateKeyPair.objects.filter(name=options["name"]).first()
         dirty = False
