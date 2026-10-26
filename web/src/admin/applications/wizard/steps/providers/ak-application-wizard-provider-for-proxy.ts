@@ -1,3 +1,5 @@
+import PFAlignment from "@patternfly/patternfly/utilities/Alignment/alignment.css";
+
 import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
 import { WizardUpdateEvent } from "#components/ak-wizard/events";
@@ -18,6 +20,8 @@ import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-application-wizard-provider-for-proxy")
 export class ApplicationWizardProxyProviderForm extends ApplicationWizardProviderForm<ProxyProvider> {
+    static styles = [...super.styles, PFAlignment];
+
     label = msg("Configure Proxy Provider");
 
     @state()
