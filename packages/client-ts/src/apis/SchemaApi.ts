@@ -10,9 +10,9 @@
  * Do not edit the class manually.
  */
 
-import { type FormatEnum } from "../models/FormatEnum";
-import { type LangEnum } from "../models/LangEnum";
-import * as runtime from "../runtime";
+import { type FormatEnum } from "../models/FormatEnum.js";
+import { type LangEnum } from "../models/LangEnum.js";
+import * as runtime from "../runtime.js";
 
 export interface SchemaRetrieveRequest {
     format?: FormatEnum;

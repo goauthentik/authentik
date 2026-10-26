@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 
-import type { ResumeOnMatchFailuresEnum } from "./ResumeOnMatchFailuresEnum";
+import type { ResumeOnMatchFailuresEnum } from "./ResumeOnMatchFailuresEnum.js";
 import {
     ResumeOnMatchFailuresEnumFromJSON,
     ResumeOnMatchFailuresEnumToJSON,
-} from "./ResumeOnMatchFailuresEnum";
+} from "./ResumeOnMatchFailuresEnum.js";
 
 /**
  * SourceStage Serializer
