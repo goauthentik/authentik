@@ -68,6 +68,47 @@ def clear_source_flow_session(request: HttpRequest) -> None:
         request.session.pop(key, None)
 
 
+SOURCE_LOGIN_RESUME_TIMEOUT = "minutes=10"
+
+
+def prepare_source_login_from_flow(request: HttpRequest) -> None:
+    """Stash the active flow plan before redirecting to an external source login."""
+    from uuid import uuid4
+
+    from django.utils.text import slugify
+    from django.utils.timezone import now
+    from guardian.shortcuts import get_anonymous_user
+
+    from authentik.flows.models import Flow, FlowToken, in_memory_stage
+    from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+    from authentik.flows.views.executor import SESSION_KEY_PLAN
+    from authentik.core.sources.stage import ResumeParentFlowStage
+    from authentik.lib.utils.time import timedelta_from_string
+
+    if request.session.get(SESSION_KEY_OVERRIDE_FLOW_TOKEN):
+        return
+    plan: FlowPlan | None = request.session.get(SESSION_KEY_PLAN)
+    if not plan:
+        return
+    flow = Flow.objects.filter(pk=plan.flow_pk).first()
+    if not flow:
+        return
+    pending_user = plan.context.get(PLAN_CONTEXT_PENDING_USER)
+    token_user = request.user
+    if not token_user.is_authenticated or not token_user.pk:
+        token_user = pending_user if pending_user and pending_user.pk else get_anonymous_user()
+    identifier = slugify(f"ak-source-login-{uuid4()}")
+    resume_token = FlowToken.objects.create(
+        expires=now() + timedelta_from_string(SOURCE_LOGIN_RESUME_TIMEOUT),
+        user=token_user,
+        identifier=identifier,
+        flow=flow,
+        _plan=FlowToken.pickle(plan),
+    )
+    request.session[SESSION_KEY_OVERRIDE_FLOW_TOKEN] = resume_token
+    request.session[SESSION_KEY_SOURCE_FLOW_STAGES] = [in_memory_stage(ResumeParentFlowStage)]
+
+
 @dataclass(frozen=True)
 class MatchFailureConfig:
 

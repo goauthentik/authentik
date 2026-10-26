@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.views.generic import RedirectView
 from structlog.stdlib import get_logger
 
+from authentik.core.sources.flow_manager import prepare_source_login_from_flow
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.views.executor import SESSION_KEY_PLAN
@@ -55,6 +56,7 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
             raise Http404(f"Unknown OAuth source '{slug}'.") from None
         if not source.enabled:
             raise Http404(f"source {slug} is not enabled.")
+        prepare_source_login_from_flow(self.request)
         client = self.get_client(source, callback=self.get_callback_url(source))
         params = self.get_additional_parameters(source)
         params.setdefault("scope", [])

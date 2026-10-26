@@ -34,6 +34,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import ChallengeStageView
+from authentik.core.sources.flow_manager import prepare_source_login_from_flow
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
 from authentik.providers.saml.utils.encoding import nice64
@@ -98,6 +99,7 @@ class InitiateView(View):
         source: SAMLSource = get_object_or_404(SAMLSource, slug=source_slug)
         if not source.enabled:
             raise Http404
+        prepare_source_login_from_flow(request)
         relay_state = request.GET.get("next", "")
         auth_n_req = RequestProcessor(source, request, relay_state)
         # If the source is configured for Redirect bindings, we can just redirect there
