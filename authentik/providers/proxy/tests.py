@@ -47,8 +47,8 @@ class ProxyProviderTests(APITestCase):
         secret = provider.cookie_secret_ref
         self.assertEqual(len(secret.secret_value), 32)
         with self.assertRaises(ValidationError):
-            secret.replace_value("too-short")
-        secret.replace_value("x" * 32)
+            secret.validate_value("too-short")
+        secret.validate_value("x" * 32)
 
     def test_basic_auth(self):
         """Test basic_auth_enabled"""
