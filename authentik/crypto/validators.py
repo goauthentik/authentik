@@ -7,9 +7,17 @@ from rest_framework.utils.representation import smart_repr
 from authentik.crypto.models import CertificateKeyPair, KeyType
 
 # Key types that can be signed with via JOSE/JWT. Bounded by JWTAlgorithms.from_private_key, which
-# maps RSA to RS256, EC to ES256/384/512, and both Edwards curves to EdDSA (RFC 8037). DSA has no
-# JWA signature algorithm at all.
-JWT_SIGNING_KEY_TYPES = [KeyType.RSA, KeyType.EC, KeyType.ED25519, KeyType.ED448]
+# maps RSA to RS256, EC to ES256/384/512, both Edwards curves to EdDSA (RFC 8037) and the ML-DSA
+# parameter sets to ML-DSA-44/65/87 (RFC 9964). DSA has no JWA signature algorithm at all.
+JWT_SIGNING_KEY_TYPES = [
+    KeyType.RSA,
+    KeyType.EC,
+    KeyType.ED25519,
+    KeyType.ED448,
+    KeyType.MLDSA44,
+    KeyType.MLDSA65,
+    KeyType.MLDSA87,
+]
 
 # Key types that can be encrypted to via JOSE/JWE. OAuth2Provider.encrypt hardcodes the
 # RSA-OAEP-256 key management algorithm, which has no non-RSA counterpart.
@@ -20,8 +28,7 @@ XML_SIGNING_KEY_TYPES = [KeyType.RSA, KeyType.EC, KeyType.DSA]
 
 # Key types the Rust server and the Go outposts can serve TLS with. Ed448 will never be supported
 # (see https://github.com/golang/go/issues/29390#issuecomment-614175576). ML-DSA (FIPS 204)
-# certificates are served by both rustls (AWS-LC) and Go 1.27's crypto/tls in TLS 1.3, and have
-# no support in SAML or JOSE yet, so TLS is currently their only use.
+# certificates are served by both rustls (AWS-LC) and Go 1.27's crypto/tls in TLS 1.3.
 TLS_KEY_TYPES = [
     KeyType.RSA,
     KeyType.EC,
