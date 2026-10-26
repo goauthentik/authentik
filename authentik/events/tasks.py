@@ -69,7 +69,7 @@ def _evaluate_rules(event_uuid: UUID, rules: QuerySet[NotificationRule]):
             # If policy that caused this event to be created is attached
             # to *any* NotificationRule, we return early.
             # This is the most effective way to prevent infinite loops.
-            LOGGER.debug("e(trigger): attempting to prevent infinite loop", event=event)
+            LOGGER.debug("e(trigger): attempting to prevent infinite loop", event_uuid=event_uuid)
             return
 
     rules = rules.prefetch_related(
