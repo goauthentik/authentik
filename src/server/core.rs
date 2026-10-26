@@ -12,8 +12,11 @@ use axum::{
     body::Body,
     extract::{OriginalUri, Request, State},
     http::{
-        HeaderName, HeaderValue, Method, StatusCode, Uri,
-        header::{ACCEPT, CONTENT_TYPE, HOST, LOCATION, RETRY_AFTER},
+        HeaderMap, HeaderName, HeaderValue, Method, StatusCode, Uri,
+        header::{
+            ACCEPT, CONNECTION, CONTENT_TYPE, HOST, LOCATION, PROXY_AUTHENTICATE,
+            PROXY_AUTHORIZATION, RETRY_AFTER, TE, TRAILER, TRANSFER_ENCODING, UPGRADE,
+        },
     },
     response::{IntoResponse as _, Response},
     routing::any,
@@ -82,6 +85,41 @@ const FORWARD_REMOVED_HEADERS_IF_UNTRUSTED: [HeaderName; 3] = [
     HeaderName::from_static("x-forwarded-tls-client-cert"), // traefik
     X_FORWARDED_CLIENT_CERT,                    // envoy
 ];
+/// Hop-by-hop headers describe the client's connection to us, not ours to the
+/// application (RFC 9110, section 7.6.1). The Go server's
+/// `httputil.ReverseProxy` removed the same set.
+const HOP_BY_HOP_HEADERS: [HeaderName; 9] = [
+    CONNECTION,
+    HeaderName::from_static("keep-alive"),
+    PROXY_AUTHENTICATE,
+    PROXY_AUTHORIZATION,
+    HeaderName::from_static("proxy-connection"),
+    TE,
+    TRAILER,
+    TRANSFER_ENCODING,
+    UPGRADE,
+];
+
+/// Removes hop-by-hop headers, including any the `Connection` header names.
+///
+/// Forwarding `Connection: Close` made uvicorn before 0.53 keep the upstream
+/// connection open and silently drop the next request sent on it.
+fn remove_hop_by_hop_headers(headers: &mut HeaderMap) {
+    #[expect(
+        clippy::needless_collect,
+        reason = "The names borrow from the map that is changed below"
+    )]
+    let listed = headers
+        .get_all(CONNECTION)
+        .iter()
+        .filter_map(|value| value.to_str().ok())
+        .flat_map(|value| value.split(','))
+        .filter_map(|name| HeaderName::from_bytes(name.trim().as_bytes()).ok())
+        .collect::<Vec<_>>();
+    for header_name in listed.into_iter().chain(HOP_BY_HOP_HEADERS) {
+        headers.remove(header_name);
+    }
+}
 
 fn startup_response(accept_header: &str) -> Response {
     let response = if accept_header.contains("application/json") {
@@ -130,6 +168,14 @@ async fn forward_request(
         .build()?;
     *request.uri_mut() = uri;
 
+    // The upgrade handshake needs `Connection` and `Upgrade`, so only strip
+    // hop-by-hop headers from plain requests. Strip them before adding our own
+    // headers, which `Connection` could otherwise name.
+    let is_websocket = is_websocket_upgrade(request.headers());
+    if !is_websocket {
+        remove_hop_by_hop_headers(request.headers_mut());
+    }
+
     for header_name in FORWARD_ALWAYS_REMOVED_HEADERS {
         request.headers_mut().remove(header_name);
     }
@@ -150,7 +196,7 @@ async fn forward_request(
         .headers_mut()
         .insert(X_FORWARDED_PROTO, HeaderValue::from_str(scheme.as_ref())?);
 
-    if is_websocket_upgrade(request.headers()) {
+    if is_websocket {
         return handle_websocket_upgrade(request, &server.socket_path).await;
     }
 
@@ -321,9 +367,17 @@ pub(super) fn build_router(server: &Arc<Server>) -> eyre::Result<Router> {
 
 #[cfg(test)]
 mod tests {
-    use axum::http::Method;
+    use axum::http::{HeaderMap, HeaderValue, Method};
 
-    use super::is_django_http_method;
+    use super::{is_django_http_method, remove_hop_by_hop_headers};
+
+    fn headers(pairs: &[(&'static str, &'static str)]) -> HeaderMap {
+        let mut headers = HeaderMap::new();
+        for (name, value) in pairs {
+            headers.append(*name, HeaderValue::from_static(value));
+        }
+        headers
+    }
 
     #[test]
     fn django_http_methods_are_allowed() {
@@ -347,6 +401,47 @@ mod tests {
         assert!(!is_django_http_method(
             &Method::from_bytes(b"PROPFIND").expect("method")
         ));
+    }
+
+    /// uvicorn before 0.53 only treated lowercase `close` as closing, so a
+    /// forwarded `Connection: Close` made it drop the next request on the
+    /// connection.
+    #[test]
+    fn hop_by_hop_headers_are_removed() {
+        let mut headers = headers(&[
+            ("connection", "Close"),
+            ("keep-alive", "timeout=5"),
+            ("proxy-connection", "keep-alive"),
+            ("proxy-authorization", "Basic Zm9vOmJhcg=="),
+            ("te", "trailers"),
+            ("trailer", "expires"),
+            ("transfer-encoding", "chunked"),
+            ("upgrade", "h2c"),
+            ("authorization", "Bearer token"),
+            ("content-length", "4"),
+        ]);
+
+        remove_hop_by_hop_headers(&mut headers);
+
+        let mut remaining = headers.keys().map(|name| name.as_str()).collect::<Vec<_>>();
+        remaining.sort_unstable();
+        assert_eq!(remaining, ["authorization", "content-length"]);
+    }
+
+    #[test]
+    fn headers_named_by_connection_are_removed() {
+        let mut headers = headers(&[
+            ("connection", "keep-alive, X-Custom-Hop"),
+            ("connection", "x-other-hop"),
+            ("x-custom-hop", "1"),
+            ("x-other-hop", "2"),
+            ("x-end-to-end", "3"),
+        ]);
+
+        remove_hop_by_hop_headers(&mut headers);
+
+        assert_eq!(headers.len(), 1);
+        assert!(headers.contains_key("x-end-to-end"));
     }
 }
 
