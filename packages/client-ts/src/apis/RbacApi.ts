@@ -10,54 +10,57 @@
  * Do not edit the class manually.
  */
 
-import { type InitialPermissions, InitialPermissionsFromJSON } from "../models/InitialPermissions";
+import {
+    type InitialPermissions,
+    InitialPermissionsFromJSON,
+} from "../models/InitialPermissions.js";
 import {
     type InitialPermissionsRequest,
     InitialPermissionsRequestToJSON,
-} from "../models/InitialPermissionsRequest";
+} from "../models/InitialPermissionsRequest.js";
 import {
     type PaginatedExtraRoleObjectPermissionList,
     PaginatedExtraRoleObjectPermissionListFromJSON,
-} from "../models/PaginatedExtraRoleObjectPermissionList";
+} from "../models/PaginatedExtraRoleObjectPermissionList.js";
 import {
     type PaginatedInitialPermissionsList,
     PaginatedInitialPermissionsListFromJSON,
-} from "../models/PaginatedInitialPermissionsList";
+} from "../models/PaginatedInitialPermissionsList.js";
 import {
     type PaginatedPermissionList,
     PaginatedPermissionListFromJSON,
-} from "../models/PaginatedPermissionList";
+} from "../models/PaginatedPermissionList.js";
 import {
     type PaginatedRoleAssignedObjectPermissionList,
     PaginatedRoleAssignedObjectPermissionListFromJSON,
-} from "../models/PaginatedRoleAssignedObjectPermissionList";
-import { type PaginatedRoleList, PaginatedRoleListFromJSON } from "../models/PaginatedRoleList";
+} from "../models/PaginatedRoleAssignedObjectPermissionList.js";
+import { type PaginatedRoleList, PaginatedRoleListFromJSON } from "../models/PaginatedRoleList.js";
 import {
     type PatchedInitialPermissionsRequest,
     PatchedInitialPermissionsRequestToJSON,
-} from "../models/PatchedInitialPermissionsRequest";
+} from "../models/PatchedInitialPermissionsRequest.js";
 import {
     type PatchedPermissionAssignRequest,
     PatchedPermissionAssignRequestToJSON,
-} from "../models/PatchedPermissionAssignRequest";
-import { type PatchedRoleRequest, PatchedRoleRequestToJSON } from "../models/PatchedRoleRequest";
-import { type Permission, PermissionFromJSON } from "../models/Permission";
+} from "../models/PatchedPermissionAssignRequest.js";
+import { type PatchedRoleRequest, PatchedRoleRequestToJSON } from "../models/PatchedRoleRequest.js";
+import { type Permission, PermissionFromJSON } from "../models/Permission.js";
 import {
     type PermissionAssignRequest,
     PermissionAssignRequestToJSON,
-} from "../models/PermissionAssignRequest";
+} from "../models/PermissionAssignRequest.js";
 import {
     type PermissionAssignResult,
     PermissionAssignResultFromJSON,
-} from "../models/PermissionAssignResult";
-import { type Role, RoleFromJSON } from "../models/Role";
-import { type RoleRequest, RoleRequestToJSON } from "../models/RoleRequest";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
+} from "../models/PermissionAssignResult.js";
+import { type Role, RoleFromJSON } from "../models/Role.js";
+import { type RoleRequest, RoleRequestToJSON } from "../models/RoleRequest.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
 import {
     type UserAccountSerializerForRoleRequest,
     UserAccountSerializerForRoleRequestToJSON,
-} from "../models/UserAccountSerializerForRoleRequest";
-import * as runtime from "../runtime";
+} from "../models/UserAccountSerializerForRoleRequest.js";
+import * as runtime from "../runtime.js";
 
 export interface RbacInitialPermissionsCreateRequest {
     initialPermissionsRequest: InitialPermissionsRequest;
