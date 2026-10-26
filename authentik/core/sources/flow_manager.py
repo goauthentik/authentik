@@ -79,10 +79,10 @@ def prepare_source_login_from_flow(request: HttpRequest) -> None:
     from django.utils.timezone import now
     from guardian.shortcuts import get_anonymous_user
 
+    from authentik.core.sources.stage import ResumeParentFlowStage
     from authentik.flows.models import Flow, FlowToken, in_memory_stage
     from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
     from authentik.flows.views.executor import SESSION_KEY_PLAN
-    from authentik.core.sources.stage import ResumeParentFlowStage
     from authentik.lib.utils.time import timedelta_from_string
 
     if request.session.get(SESSION_KEY_OVERRIDE_FLOW_TOKEN):
