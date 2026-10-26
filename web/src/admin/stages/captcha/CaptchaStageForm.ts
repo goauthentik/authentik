@@ -185,11 +185,11 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                                       : msg(
                                             html`API keys can be obtained from the
                                             ${html`<a
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    href=${keyURL}
-                                                    >${formatAPISource()}</a
-                                                >.`}`,
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                href=${keyURL}
+                                                >${formatAPISource()}</a
+                                            >.`}`,
                                             {
                                                 id: "captcha.provider-link",
                                                 desc: "Supplementary help text with link to provider dashboard.",
