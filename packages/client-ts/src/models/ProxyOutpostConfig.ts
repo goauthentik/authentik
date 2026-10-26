@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { OpenIDConnectConfiguration } from "./OpenIDConnectConfiguration";
-import { OpenIDConnectConfigurationFromJSON } from "./OpenIDConnectConfiguration";
-import type { ProxyMode } from "./ProxyMode";
-import { ProxyModeFromJSON, ProxyModeToJSON } from "./ProxyMode";
+import type { OpenIDConnectConfiguration } from "./OpenIDConnectConfiguration.js";
+import { OpenIDConnectConfigurationFromJSON } from "./OpenIDConnectConfiguration.js";
+import type { ProxyMode } from "./ProxyMode.js";
+import { ProxyModeFromJSON, ProxyModeToJSON } from "./ProxyMode.js";
 
 /**
  * Proxy provider serializer for outposts

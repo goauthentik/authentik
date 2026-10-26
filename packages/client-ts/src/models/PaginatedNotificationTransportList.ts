@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { NotificationTransport } from "./NotificationTransport";
+import type { NotificationTransport } from "./NotificationTransport.js";
 import {
     NotificationTransportFromJSON,
     NotificationTransportToJSON,
-} from "./NotificationTransport";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./NotificationTransport.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

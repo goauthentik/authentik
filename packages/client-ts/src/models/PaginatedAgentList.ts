@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { Agent } from "./Agent";
-import { AgentFromJSON, AgentToJSON } from "./Agent";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Agent } from "./Agent.js";
+import { AgentFromJSON, AgentToJSON } from "./Agent.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export
