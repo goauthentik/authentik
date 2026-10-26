@@ -100,10 +100,21 @@ export function transformCredentialCreateOptions(
     user.id = u8arr(b64enc(u8arr(stringId)));
     const challenge = u8arr(credentialCreateOptions.challenge.toString());
 
+    // The server sends already-registered credential IDs as base64url strings; the browser
+    // requires byte arrays, otherwise `navigator.credentials.create()` rejects with a TypeError.
+    const excludeCredentials = (credentialCreateOptions.excludeCredentials || []).map(
+        (credentialDescriptor) => {
+            const id = u8arr(credentialDescriptor.id.toString());
+
+            return Object.assign({}, credentialDescriptor, { id });
+        },
+    );
+
     return {
         ...credentialCreateOptions,
         challenge,
         user,
+        excludeCredentials,
     };
 }
 
