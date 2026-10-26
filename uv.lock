@@ -4097,10 +4097,10 @@ wheels = [
 
 [[package]]
 name = "ua-parser-builtins"
-version = "202606"
+version = "202610"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/51/a3/f26edd95a2ce2ffbf559da432e5ff544e8dcda3673d1c775f71afffb18b7/ua_parser_builtins-202606-py3-none-any.whl", hash = "sha256:13b483eb12a5419c1094ce02b7df705fefc6b5d869764b3ffbf6c940c6d014cb", size = 90676, upload-time = "2026-06-01T22:40:53.008Z" },
+    { url = "https://files.pythonhosted.org/packages/97/e4/16e330a5cc8b2fa66d01f1a71c21750693a60fe9fc02751c0d1f43a0269c/ua_parser_builtins-202610-py3-none-any.whl", hash = "sha256:ed4b7c4c665323a5f4b2f118af86369412a9bb92e349a120f58f210127e30586", size = 90695, upload-time = "2026-10-02T00:02:46.242Z" },
 ]
 
 [[package]]
