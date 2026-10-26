@@ -2,6 +2,7 @@
 
 from unittest.mock import PropertyMock, patch
 
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
@@ -160,6 +161,52 @@ class TestSecretsAPI(APITestCase):
         self.assertEqual(response.status_code, 200, response.content)
         self.secret.refresh_from_db()
         self.assertEqual(self.secret.secret_value, "replacement")
+
+    def test_blueprint_replace_value_requires_rotate_permission(self):
+        """Importing a blueprint checks the importing user's permissions, like the API."""
+        self.user.assign_perms_to_managed_role(
+            [
+                "authentik_blueprints.add_blueprintinstance",
+                "authentik_crypto_secrets.add_secret",
+                "authentik_crypto_secrets.change_secret",
+                "authentik_crypto_secrets.delete_secret",
+            ]
+        )
+        self.client.force_login(self.user)
+        blueprint = """
+version: 1
+entries:
+  - model: authentik_crypto_secrets.secret
+    identifiers:
+      name: test
+    attrs:
+      value: replacement
+"""
+
+        def import_blueprint():
+            return self.client.post(
+                reverse("authentik_api:blueprintinstance-import"),
+                {"file": SimpleUploadedFile("blueprint.yaml", blueprint.encode())},
+                format="multipart",
+            )
+
+        response = import_blueprint()
+        self.assertEqual(
+            response.json(), {"detail": "You do not have permission to replace this value."}
+        )
+        self.secret.refresh_from_db()
+        self.assertNotEqual(self.secret.secret_value, "replacement")
+        self.assertFalse(Event.objects.filter(action=EventAction.SECRET_ROTATE).exists())
+
+        self.user.assign_perms_to_managed_role(
+            "authentik_crypto_secrets.rotate_secret", self.secret
+        )
+        response = import_blueprint()
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertTrue(response.json()["imported"])
+        self.secret.refresh_from_db()
+        self.assertEqual(self.secret.secret_value, "replacement")
+        self.assertTrue(Event.objects.filter(action=EventAction.SECRET_ROTATE).exists())
 
     def test_file_validation_and_rotation(self):
         self.client.force_login(self.admin)
