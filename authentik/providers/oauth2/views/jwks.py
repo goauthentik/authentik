@@ -25,6 +25,7 @@ from jwt.utils import base64url_encode
 
 from authentik.core.models import Application
 from authentik.crypto.models import CertificateKeyPair
+from authentik.lib.jwt_mldsa import is_mldsa_key
 from authentik.providers.oauth2.models import JWTAlgorithms, OAuth2Provider
 
 # See https://notes.salrahman.com/generate-es256-es384-es512-private-keys/
@@ -97,6 +98,12 @@ def _jwks_from_private_key(private_key: PrivateKeyTypes, cert: Certificate, kid:
         key_data["use"] = use
         key_data["crv"] = "Ed25519" if isinstance(private_key, Ed25519PrivateKey) else "Ed448"
         key_data["x"] = base64url_encode(public_key.public_bytes_raw()).decode()
+    elif is_mldsa_key(private_key):
+        # RFC 9964: ML-DSA keys use the AKP key type with the raw public key in `pub`
+        key_data["kid"] = kid
+        key_data["kty"] = "AKP"
+        key_data["use"] = use
+        key_data["pub"] = base64url_encode(private_key.public_key().public_bytes_raw()).decode()
     else:
         return key_data
     key_data["x5c"] = [b64encode(cert.public_bytes(Encoding.DER)).decode("utf-8")]
