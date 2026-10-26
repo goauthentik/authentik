@@ -1,0 +1,137 @@
+---
+title: Integrate with filex
+sidebar_label: filex
+support_level: community
+---
+
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+## What is filex?
+
+> filex is a self-hosted file manager. It connects local disks, NAS shares, S3 buckets, SFTP and WebDAV servers into one web interface, with a desktop sync app and share links.
+>
+> -- https://filex.sh
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `filex.company` is the FQDN of the filex installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+This guide requires filex 0.50 or later.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+<RedirectURI20265Note />
+
+To support the integration of filex with authentik, you need to create an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) in authentik.
+
+### Email verification
+
+filex trusts the email address that it receives from authentik only when the `email_verified` claim is `true`. The default authentik email scope mapping always returns `false`. With the default settings, filex therefore creates each new account switched off until an administrator approves it under **People** > **Users**, and it does not link an existing filex account that has the same email address.
+
+Choose one of the following:
+
+- If authentik verifies your users' email addresses, create a custom email scope mapping as described in [Email scope verification](/docs/add-secure-apps/providers/oauth2/#email-scope-verification), and select it instead of the default email mapping when you create the provider.
+- If every email address in authentik is set by an administrator, enable **Trust this provider's email addresses** when you [configure filex](#filex-configuration).
+- Otherwise, keep the defaults and approve each new account in filex.
+
+### Create an application and provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it will be required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add three **Redirect URIs**:
+            - `Strict` `Authorization` `https://filex.company/api/auth/oidc/callback`
+            - `Strict` `Post Logout` `https://filex.company/admin/login?signed_out=1`
+            - `Strict` `Post Logout` `https://filex.company/drive/login?signed_out=1`
+        - Select any available signing key.
+        - _(Optional)_ Under **Advanced flow settings**, set **Invalidation flow** to `default-invalidation-flow`. With the default provider invalidation flow, signing out of filex keeps the authentik session open, and the next click on **Sign in with SSO** signs the user back in without asking for credentials.
+        - _(Optional)_ If you created a custom email scope mapping, go to **Advanced protocol settings** > **Scopes**, add it to **Selected Scopes**, and remove `authentik default OAuth Mapping: OpenID 'email'`.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+### Create an administrators group _(optional)_
+
+filex can give the administrator role to members of an authentik group. The `groups` claim of the default profile scope carries the names of the user's groups.
+
+1. Navigate to **Directory** > **Groups** and create a group named `filex-admins`.
+2. Add the users who should administer filex to the group.
+
+## filex configuration
+
+filex can read the OIDC settings from environment variables or from its Admin interface.
+
+<Tabs
+  defaultValue="env"
+  values={[
+    { label: "Environment variables", value: "env" },
+    { label: "Admin interface", value: "admin" },
+  ]}
+>
+  <TabItem value="env">
+
+Add the following environment variables to your filex deployment and restart filex:
+
+```shell
+FILEX_PUBLIC_URL=https://filex.company
+FILEX_AUTH_DRIVERS=local,oidc
+FILEX_OIDC_ISSUER=https://authentik.company/application/o/<application_slug>/
+FILEX_OIDC_CLIENT_ID=<Client ID from authentik>
+FILEX_OIDC_CLIENT_SECRET=<Client Secret from authentik>
+```
+
+Optional settings:
+
+```shell
+# Give the administrator role to members of the filex-admins group
+FILEX_OIDC_ROLE_CLAIM=groups
+FILEX_OIDC_ADMIN_GROUP=filex-admins
+# Treat every email address that authentik sends as verified
+FILEX_OIDC_TRUST_EMAIL=true
+```
+
+Keep `local` in `FILEX_AUTH_DRIVERS` to keep password sign-in next to the **Sign in with SSO** button.
+
+  </TabItem>
+  <TabItem value="admin">
+
+filex stores the client secret encrypted, so `FILEX_SECRET_KEY` must be set on the filex server before you can save the provider here.
+
+1. Log in to filex as an administrator and open the Admin interface at `https://filex.company/admin`.
+2. Navigate to **Settings** > **Identity providers**, open the **OIDC** tab, and click **OIDC (Keycloak, Auth0, Authentik…)**.
+3. Configure the following settings:
+    - **Enabled**: on
+    - **Issuer URL**: `https://authentik.company/application/o/<application_slug>/`
+    - **Client ID**: `<Client ID from authentik>`
+    - **Client secret**: `<Client Secret from authentik>`
+    - **Role claim** _(optional)_: `groups`
+    - **Admin group / role** _(optional)_: `filex-admins`
+    - **Trust this provider's email addresses** _(optional)_: see [Email verification](#email-verification).
+4. Click **Test now**. filex fetches the discovery document and checks the issuer, the endpoints, and the client credentials.
+5. Click **Save and apply**. The change takes effect without a restart.
+
+  </TabItem>
+</Tabs>
+
+## Configuration verification
+
+To confirm that authentik is properly configured with filex, open `https://filex.company/drive/login` and click **Sign in with SSO**. You should be redirected to authentik for authentication and then redirected back to filex. In the filex Admin interface, navigate to **People** > **Users** and confirm that the account is listed with the **SSO** source.
+
+To verify sign-out, sign out of filex. You should be redirected through authentik and land on the filex sign-in page with the message **You are signed out.**
+
+## Resources
+
+- [filex single sign-on (OIDC) documentation](https://docs.filex.sh/SSO)
+- [filex configuration reference](https://docs.filex.sh/CONFIGURATION)
