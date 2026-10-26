@@ -177,7 +177,7 @@ The CLI prints only the Anthropic access token to stdout, without JSON or a `Bea
 
 The Agent separately caches the authentik JWT and Anthropic access token. The Anthropic cache uses the exchange response's actual `expires_in`; current cache handling rejects credentials within five seconds of expiration. Reinvoking the helper does not necessarily contact authentik or Anthropic.
 
-Developers do not need to configure an Anthropic API key. If they use multiple authentik profiles, select the intended profile before starting Claude Code, or add `--profile <profile_name>` before `auth` in the helper command. Do not reuse a profile name for another developer or authentik deployment: the derived credential caches are keyed by profile name and are not automatically purged when replacing or deleting a profile.
+Developers do not need to configure an Anthropic API key. If they use multiple authentik profiles, select the intended profile before starting Claude Code, or add `--profile <profile_name>` before `auth` in the helper command.```
 
 ### Configure token refresh
 
