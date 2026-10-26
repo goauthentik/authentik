@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { IdentificationStage } from "./IdentificationStage";
-import { IdentificationStageFromJSON, IdentificationStageToJSON } from "./IdentificationStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { IdentificationStage } from "./IdentificationStage.js";
+import { IdentificationStageFromJSON, IdentificationStageToJSON } from "./IdentificationStage.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export
