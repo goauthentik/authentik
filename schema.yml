@@ -37841,6 +37841,10 @@ components:
           type: string
         js_url:
           type: string
+        cap_wasm_url:
+          type: string
+        cap_hashwx_wasm_url:
+          type: string
         interactive:
           type: boolean
       required:
@@ -37901,6 +37905,10 @@ components:
           type: string
         api_url:
           type: string
+        cap_wasm_url:
+          type: string
+        cap_hashwx_wasm_url:
+          type: string
         request_content_type:
           $ref: '#/components/schemas/RequestContentTypeEnum'
         interactive:
@@ -37948,6 +37956,10 @@ components:
         api_url:
           type: string
           minLength: 1
+        cap_wasm_url:
+          type: string
+        cap_hashwx_wasm_url:
+          type: string
         request_content_type:
           $ref: '#/components/schemas/RequestContentTypeEnum'
         interactive:
@@ -50442,6 +50454,10 @@ components:
         api_url:
           type: string
           minLength: 1
+        cap_wasm_url:
+          type: string
+        cap_hashwx_wasm_url:
+          type: string
         request_content_type:
           $ref: '#/components/schemas/RequestContentTypeEnum'
         interactive:

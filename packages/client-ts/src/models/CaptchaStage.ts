@@ -50,6 +50,8 @@ export interface CaptchaStage {
     publicKey: string;
     jsUrl?: string;
     apiUrl?: string;
+    capWasmUrl?: string;
+    capHashwxWasmUrl?: string;
     requestContentType?: RequestContentTypeEnum;
     interactive?: boolean;
     scoreMinThreshold?: number;
@@ -126,6 +128,9 @@ export function CaptchaStageFromJSONTyped(json: any, ignoreDiscriminator: boolea
         publicKey: json["public_key"],
         jsUrl: json["js_url"] == null ? undefined : json["js_url"],
         apiUrl: json["api_url"] == null ? undefined : json["api_url"],
+        capWasmUrl: json["cap_wasm_url"] == null ? undefined : json["cap_wasm_url"],
+        capHashwxWasmUrl:
+            json["cap_hashwx_wasm_url"] == null ? undefined : json["cap_hashwx_wasm_url"],
         requestContentType:
             json["request_content_type"] == null
                 ? undefined
@@ -160,6 +165,8 @@ export function CaptchaStageToJSONTyped(
         public_key: value["publicKey"],
         js_url: value["jsUrl"],
         api_url: value["apiUrl"],
+        cap_wasm_url: value["capWasmUrl"],
+        cap_hashwx_wasm_url: value["capHashwxWasmUrl"],
         request_content_type: RequestContentTypeEnumToJSON(value["requestContentType"]),
         interactive: value["interactive"],
         score_min_threshold: value["scoreMinThreshold"],

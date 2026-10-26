@@ -33,7 +33,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, PropertyValues } from "lit";
+import { html, nothing, PropertyValues } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -365,6 +365,28 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                         )}
                     </p>
                 </ak-form-element-horizontal>
+                ${this.selectedProvider === "cap"
+                    ? html`
+                          <ak-text-input
+                              label=${msg("Cap WASM URL")}
+                              name="capWasmUrl"
+                              type="url"
+                              value="${ifDefined(formValues.capWasmUrl)}"
+                              help=${msg(
+                                  "Optional override for window.CAP_CUSTOM_WASM_URL when self-hosting Cap assets.",
+                              )}
+                          ></ak-text-input>
+                          <ak-text-input
+                              label=${msg("Cap HashWX WASM URL")}
+                              name="capHashwxWasmUrl"
+                              type="url"
+                              value="${ifDefined(formValues.capHashwxWasmUrl)}"
+                              help=${msg(
+                                  "Optional override for window.CAP_CUSTOM_HASHWX_URL for Cap versions with HashWX support.",
+                              )}
+                          ></ak-text-input>
+                      `
+                    : nothing}
             </div>
         </ak-form-group>`;
     }

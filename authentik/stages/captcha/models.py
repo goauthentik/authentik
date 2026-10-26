@@ -37,6 +37,8 @@ class CaptchaStage(Stage):
 
     js_url = models.TextField(default="https://www.recaptcha.net/recaptcha/api.js")
     api_url = models.TextField(default="https://www.recaptcha.net/recaptcha/api/siteverify")
+    cap_wasm_url = models.TextField(blank=True, default="")
+    cap_hashwx_wasm_url = models.TextField(blank=True, default="")
     request_content_type = models.TextField(
         choices=CaptchaRequestContentType.choices,
         default=CaptchaRequestContentType.FORM,
