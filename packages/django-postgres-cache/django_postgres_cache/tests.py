@@ -1,6 +1,5 @@
 """Tests for django_postgres_cache.backend"""
 
-from django.core.cache import cache
 from django.test import SimpleTestCase, TestCase, override_settings
 from django.utils.timezone import is_aware, is_naive
 
@@ -24,7 +23,8 @@ def _cache() -> DatabaseCache:
 class KeysCountTests(TestCase):
     """Counts use the same matching and expiry rules as key listing."""
 
-    def test_matching_keys(self):
+    def test_matching_keys(self) -> None:
+        cache = _cache()
         cache.set_many({"count/first": 1, "count/last": 2}, version=7)
         cache.set("count/expired", 3, timeout=0, version=7)
         cache.set("count/other-version", 4, version=8)
