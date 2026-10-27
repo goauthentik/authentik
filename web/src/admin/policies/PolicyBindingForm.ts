@@ -9,6 +9,7 @@ import {
     createPassFailOptions,
     PolicyBindingCheckTarget,
     PolicyBindingCheckTargetToLabel,
+    renderDryRunHelp,
 } from "#common/policies/utils";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -97,6 +98,8 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
 
     @state()
     protected defaultOrder = 0;
+
+    protected supportsDryRun = true;
 
     public override reset(): void {
         super.reset();
@@ -248,16 +251,16 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                 ?checked=${this.instance?.enabled ?? true}
             >
             </ak-switch-input>
-            <ak-switch-input
-                name="dryRun"
-                label=${msg("Dry-run", { id: "policies.bindings.dry-run.label" })}
-                ?checked=${this.instance?.dryRun ?? false}
-                help=${msg(
-                    "Evaluate this binding without including its result or messages in the final decision. Results are recorded in the Event Log. Policy side effects are not prevented.",
-                    { id: "policies.bindings.dry-run.description" },
-                )}
-            >
-            </ak-switch-input>
+            ${
+                this.supportsDryRun
+                    ? html`<ak-switch-input
+                          name="dryRun"
+                          label=${msg("Dry-run", { id: "policies.bindings.dry-run.label" })}
+                          ?checked=${this.instance?.dryRun ?? false}
+                          .help=${renderDryRunHelp()}
+                      ></ak-switch-input>`
+                    : nothing
+            }
             <ak-switch-input
                 name="negate"
                 label=${msg("Negate Result")}

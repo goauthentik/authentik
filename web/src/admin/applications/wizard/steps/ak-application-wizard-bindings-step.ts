@@ -1,4 +1,5 @@
 import "#elements/EmptyState";
+import "#elements/Label";
 import "#components/ak-radio-input";
 import "#components/ak-slug-input";
 import "#components/ak-status-label";
@@ -27,7 +28,7 @@ const COLUMNS = [
     [msg("Order"), "order"],
     [msg("Binding")],
     [msg("Enabled"), "enabled"],
-    [msg("Dry-run", { id: "policies.bindings.dry-run.label" })],
+    [msg("Mode", { id: "policies.bindings.mode.label" })],
     [msg("Timeout"), "timeout"],
     [msg("Actions"), null, msg("Row Actions")],
 ];
@@ -76,7 +77,13 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
                     order,
                     policy,
                     html`<ak-status-label type="warning" ?good=${enabled}></ak-status-label>`,
-                    html`<ak-status-label type="neutral" ?good=${dryRun}></ak-status-label>`,
+                    dryRun
+                        ? html`<ak-label color="pf-m-blue" icon="fa-vial">
+                              ${msg("Dry-run", { id: "policies.bindings.dry-run.label" })}
+                          </ak-label>`
+                        : html`<ak-label icon="fa-shield-alt">
+                              ${msg("Enforced", { id: "policies.bindings.enforced.label" })}
+                          </ak-label>`,
                     timeout,
                     makeEditButton(msg("Edit"), index, (ev: CustomEvent<number>) =>
                         this.onBindingEvent(ev.detail),

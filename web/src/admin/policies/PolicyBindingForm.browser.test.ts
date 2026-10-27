@@ -1,8 +1,15 @@
 import { PolicyBindingCheckTarget } from "#common/policies/utils";
 
+import { DeviceUserBindingForm } from "#admin/endpoints/devices/DeviceUserBindingForm";
 import { PolicyBindingForm } from "#admin/policies/PolicyBindingForm";
 
-import { CoreApi, PoliciesApi, type PolicyBinding } from "@goauthentik/api";
+import {
+    CoreApi,
+    type DeviceUserBinding,
+    EndpointsApi,
+    PoliciesApi,
+    type PolicyBinding,
+} from "@goauthentik/api";
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -55,6 +62,52 @@ async function mount(instance: PolicyBinding | null = null) {
 }
 
 describe("PolicyBindingForm", () => {
+    it.each([false, true])(
+        "omits dry-run controls and values for device bindings (existing: %s)",
+        async (existing) => {
+            const create = vi
+                .spyOn(EndpointsApi.prototype, "endpointsDeviceBindingsCreate")
+                .mockResolvedValue({} as DeviceUserBinding);
+
+            const update = vi
+                .spyOn(EndpointsApi.prototype, "endpointsDeviceBindingsUpdate")
+                .mockResolvedValue({} as DeviceUserBinding);
+
+            const form = new DeviceUserBindingForm();
+            form.targetPk = "device";
+            form.allowedTypes = [PolicyBindingCheckTarget.User];
+
+            form.instance = existing
+                ? ({ pk: "binding", dryRun: true } as DeviceUserBinding)
+                : null;
+
+            document.body.append(form);
+            await form.updateComplete;
+
+            await expect
+                .poll(() => form.renderRoot.querySelector('ak-switch-input[name="enabled"]'))
+                .not.toBeNull();
+
+            const enabled = form.renderRoot.querySelector<HTMLElementTagNameMap["ak-switch-input"]>(
+                'ak-switch-input[name="enabled"]',
+            );
+
+            expect(enabled).not.toBeNull();
+            await enabled!.updateComplete;
+
+            expect(form.renderRoot.querySelector('[name="dryRun"]')).toBeNull();
+            expect(form.toJSON()).not.toHaveProperty("dryRun");
+            await form.send({ ...form.toJSON(), user: 1 });
+
+            const request = existing
+                ? update.mock.calls[0][0].deviceUserBindingRequest
+                : create.mock.calls[0][0].deviceUserBindingRequest;
+
+            expect(request).toMatchObject({ target: "device", user: 1 });
+            expect(request).not.toHaveProperty("dryRun");
+        },
+    );
+
     it.each([PolicyBindingCheckTarget.User, PolicyBindingCheckTarget.Group])(
         "offers and preserves dry-run for a %s binding",
         async (target) => {

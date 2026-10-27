@@ -5,6 +5,7 @@ import "#admin/rbac/ObjectPermissionModal";
 import "#admin/users/UserForm";
 import "#components/ak-status-label";
 import "#elements/Tabs";
+import "#elements/Label";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
@@ -113,7 +114,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         [msg("Order"), "order"],
         [this.allowedTypesLabel],
         [msg("Enabled"), "enabled"],
-        [msg("Dry-run", { id: "policies.bindings.dry-run.label" })],
+        [msg("Mode", { id: "policies.bindings.mode.label" })],
         [msg("Expiring"), "expires"],
         [msg("Timeout"), "timeout"],
         [msg("Actions"), null, msg("Row Actions")],
@@ -135,7 +136,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         return null;
     }
 
-    protected getDryRunEventsButton(item: PolicyBinding): SlottedTemplateResult {
+    protected renderDryRunEventsButton(item: PolicyBinding): SlottedTemplateResult {
         if (!item.dryRun) {
             return nothing;
         }
@@ -232,7 +233,13 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             html`<pre>${item.order}</pre>`,
             html`${getPolicyUserGroupRow(item)}`,
             html`<ak-status-label type="warning" ?good=${item.enabled}></ak-status-label>`,
-            html`<ak-status-label type="neutral" ?good=${item.dryRun}></ak-status-label>`,
+            item.dryRun
+                ? html`<ak-label color="pf-m-blue" icon="fa-vial">
+                      ${msg("Dry-run", { id: "policies.bindings.dry-run.label" })}
+                  </ak-label>`
+                : html`<ak-label icon="fa-shield-alt">
+                      ${msg("Enforced", { id: "policies.bindings.enforced.label" })}
+                  </ak-label>`,
             item.expiring ? Timestamp(item.expires) : "-",
             html`${item.timeout}`,
             html`<div class="ak-c-table__actions">
@@ -250,7 +257,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                     model: ModelEnum.AuthentikPoliciesPolicybinding,
                     objectPk: item.pk,
                 })}
-                ${this.getDryRunEventsButton(item)}
+                ${this.renderDryRunEventsButton(item)}
             </div>`,
         ];
     }

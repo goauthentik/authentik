@@ -11,6 +11,7 @@ import {
     createPassFailOptions,
     PolicyBindingCheckTarget,
     PolicyObjectKeys,
+    renderDryRunHelp,
 } from "#common/policies/utils";
 
 import type { SearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
@@ -172,10 +173,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
                     name="dryRun"
                     ?checked=${instance?.dryRun ?? false}
                     label=${msg("Dry-run", { id: "policies.bindings.dry-run.label" })}
-                    help=${msg(
-                        "Evaluate this binding without including its result or messages in the final decision. Results are recorded in the Event Log. Policy side effects are not prevented.",
-                        { id: "policies.bindings.dry-run.description" },
-                    )}
+                    .help=${renderDryRunHelp()}
                 ></ak-switch-input>
                 <ak-switch-input
                     name="negate"

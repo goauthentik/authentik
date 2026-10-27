@@ -1,9 +1,9 @@
 import "#elements/Expand";
+import "#elements/Label";
 import "#elements/Spinner";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFLabel from "@patternfly/patternfly/components/Label/label.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
@@ -88,7 +88,6 @@ export class EventInfo extends AKElement {
         PFButton,
         PFFlex,
         PFCard,
-        PFLabel,
         PFTable,
         PFList,
         PFSplit,
@@ -514,13 +513,11 @@ ${JSON.stringify(value.new_value, null, 4)}</pre>`;
                         ${msg("Result")}
                         ${
                             dryRun
-                                ? html`<span class="pf-c-label pf-m-blue">
-                                      <span class="pf-c-label__content">
-                                          ${msg("Dry-run", {
-                                              id: "policies.bindings.dry-run.label",
-                                          })}
-                                      </span>
-                                  </span>`
+                                ? html`<ak-label color="pf-m-blue" icon="fa-vial">
+                                      ${msg("Dry-run", {
+                                          id: "policies.bindings.dry-run.label",
+                                      })}
+                                  </ak-label>`
                                 : nothing
                         }
                     </div>

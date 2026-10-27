@@ -2,9 +2,9 @@ import "#admin/events/EventMap";
 import "#admin/events/EventVolumeChart";
 import "#admin/reports/ExportButton";
 import "#components/ak-event-info";
+import "#elements/Label";
 import "#elements/Tabs";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-import PFLabel from "@patternfly/patternfly/components/Label/label.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
@@ -43,7 +43,6 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     static styles: CSSResult[] = [
         ...TablePage.styles,
         PFGrid,
-        PFLabel,
         css`
             .pf-m-no-padding-bottom {
                 padding-bottom: 0;
@@ -109,13 +108,11 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
                     ${actionToLabel(item.action)}
                     ${
                         item.context.dry_run === true
-                            ? html`<span class="pf-c-label pf-m-blue">
-                                  <span class="pf-c-label__content">
-                                      ${msg("Dry-run", {
-                                          id: "policies.bindings.dry-run.label",
-                                      })}
-                                  </span>
-                              </span>`
+                            ? html`<ak-label color="pf-m-blue" icon="fa-vial">
+                                  ${msg("Dry-run", {
+                                      id: "policies.bindings.dry-run.label",
+                                  })}
+                              </ak-label>`
                             : nothing
                     }
                 </div>
