@@ -7,6 +7,7 @@ requires-python = "==3.14.*"
 dependencies = [
   "ak-guardian==3.2.0",
   "argon2-cffi==25.1.0",
+  "bcrypt==5.0.0",
   "cachetools==7.2.4",
   "certifi==2026.10.23",
   "channels==4.3.2",

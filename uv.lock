@@ -285,6 +285,7 @@ source = { editable = "." }
 dependencies = [
     { name = "ak-guardian" },
     { name = "argon2-cffi" },
+    { name = "bcrypt" },
     { name = "cachetools" },
     { name = "certifi" },
     { name = "channels" },
@@ -406,6 +407,7 @@ dev = [
 requires-dist = [
     { name = "ak-guardian", editable = "packages/ak-guardian" },
     { name = "argon2-cffi", specifier = "==25.1.0" },
+    { name = "bcrypt", specifier = "==5.0.0" },
     { name = "cachetools", specifier = "==7.2.4" },
     { name = "certifi", specifier = "==2026.10.23" },
     { name = "channels", specifier = "==4.3.2" },
