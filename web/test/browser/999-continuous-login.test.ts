@@ -58,8 +58,21 @@ test.describe("Continuous login", () => {
         const follower = await context.newPage();
 
         await test.step("Open both tabs on the identification stage", async () => {
-            await leader.goto(FLOW_WITH_NEXT);
-            await follower.goto(FLOW_WITH_NEXT);
+            // System settings are cached per server process, so a tab may render with the flag
+            // still off for a while after it's saved. Reload until each tab sees it.
+            for (const tab of [leader, follower]) {
+                await expect(async () => {
+                    await tab.goto(FLOW_WITH_NEXT);
+
+                    const flags = await tab.evaluate(
+                        () =>
+                            JSON.parse(document.getElementById("ak-brand")?.textContent ?? "{}")
+                                .flags,
+                    );
+
+                    expect(flags?.flows_continuous_login).toBe(true);
+                }, "Tab renders with continuous login enabled").toPass({ timeout: 35_000 });
+            }
 
             // The follower must be fully mounted before the leader completes, or it won't answer
             // the leader's tab-discovery broadcast and would never be resumed.
