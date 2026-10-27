@@ -80,6 +80,12 @@ For backward compatibility with older browsers that do not support hints, authen
 - Only **Client device** hints: `platform`
 - If both client-device and cross-platform hints are selected, no value is inferred
 
+### Credential transports
+
+authentik stores the transport information reported by the browser during registration and includes it in subsequent credential lists. This helps browsers find the appropriate authenticator, such as a security key connected by USB or a phone reached through hybrid authentication.
+
+Credentials enrolled before transport information was stored remain usable. Their credential lists omit transport information so clients can continue trying available authenticators.
+
 ### Duplicate devices
 
 During registration, authentik sends the user's already-enrolled credentials in the `excludeCredentials` parameter. An authenticator that already holds a credential for the account refuses to create another one, and the user is told that the device is already registered. Because the list only contains the current user's credentials, the same authenticator can still be enrolled by different users.

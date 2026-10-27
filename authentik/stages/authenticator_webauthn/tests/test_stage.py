@@ -102,8 +102,8 @@ class TestAuthenticatorWebAuthnStage(APIFlowTestCase):
             },
         )
 
-    def test_register(self):
-        """Test registration"""
+    def _register(self, registration: dict):
+        """Submit a registration response using the fixture's challenge and origin."""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = b64decode(
@@ -112,19 +112,24 @@ class TestAuthenticatorWebAuthnStage(APIFlowTestCase):
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
-        response = self.client.post(
+        return self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             data={
                 "component": "ak-stage-authenticator-webauthn",
-                "response": loads(load_fixture("fixtures/register.json")),
+                "response": registration,
             },
             SERVER_NAME="localhost",
             SERVER_PORT="9000",
         )
+
+    def test_register(self):
+        """Test registration without transport information from older clients"""
+        response = self._register(loads(load_fixture("fixtures/register.json")))
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         device = WebAuthnDevice.objects.filter(user=self.user).first()
         self.assertIsNotNone(device)
+        self.assertEqual(device.transports, [])
         self.assertEqual(
             device.credential_id, "f7wv8mP-poSxh-567eWxZntzCBDW8hWlvzf92QJkT--Y2oBRz4IEAZ6M2PI9_KEQ"
         )
@@ -133,12 +138,50 @@ class TestAuthenticatorWebAuthnStage(APIFlowTestCase):
             "3e:28:fc:df:45:19:bb:94:0a:0c:90:98:f2:08:72:53:2a:9e:e2:76:13:02:3e:69:61:4a:d9:90:49:80:3d:34",
         )
 
+    def test_register_transports(self):
+        """Store the complete reported transport list, including unknown values."""
+        for transports in [
+            [],
+            ["hybrid"],
+            ["usb", "nfc"],
+            ["internal", "hybrid"],
+            ["future-transport"],
+        ]:
+            with self.subTest(transports=transports):
+                WebAuthnDevice.objects.filter(user=self.user).delete()
+                registration = loads(load_fixture("fixtures/register.json"))
+                registration["response"]["transports"] = transports
+
+                response = self._register(registration)
+
+                self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+                self.assertEqual(WebAuthnDevice.objects.get(user=self.user).transports, transports)
+
+    def test_register_invalid_transports(self):
+        """Reject transport metadata that is not a list of strings."""
+        for transports in [None, "hybrid", {"hybrid": True}, [1], [None], [["hybrid"]]]:
+            with self.subTest(transports=transports):
+                registration = loads(load_fixture("fixtures/register.json"))
+                registration["response"]["transports"] = transports
+
+                response = self._register(registration)
+
+                self.assertEqual(response.status_code, 200)
+                self.assertIn("Invalid credential transports.", response.content.decode())
+                self.assertFalse(WebAuthnDevice.objects.filter(user=self.user).exists())
+
     def test_registration_options_exclude_credentials(self):
         """Test that already registered credentials are excluded from registration options"""
         device = WebAuthnDevice.objects.create(
             user=self.user,
             name=generate_id(),
             credential_id=bytes_to_base64url(b"existing-credential"),
+            rp_id="testserver",
+            transports=["hybrid", "future-transport"],
+        )
+        legacy_device = WebAuthnDevice.objects.create(
+            user=self.user,
+            credential_id=bytes_to_base64url(b"legacy-credential"),
             rp_id="testserver",
         )
         # Devices of other users, devices registered for a different RP, and unconfirmed devices
@@ -176,7 +219,14 @@ class TestAuthenticatorWebAuthnStage(APIFlowTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             loads(response.content)["registration"]["excludeCredentials"],
-            [{"id": device.credential_id, "type": "public-key"}],
+            [
+                {
+                    "id": device.credential_id,
+                    "type": "public-key",
+                    "transports": ["hybrid", "future-transport"],
+                },
+                {"id": legacy_device.credential_id, "type": "public-key"},
+            ],
         )
 
     def test_register_shared_attestation_certificate(self):

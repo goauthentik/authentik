@@ -106,7 +106,6 @@ def get_webauthn_challenge(
 
     authentication_options = generate_authentication_options(
         rp_id=get_rp_id(stage_view.request),
-        allow_credentials=allowed_credentials,
         user_verification=UserVerificationRequirement(stage.webauthn_user_verification),
     )
 
@@ -115,6 +114,8 @@ def get_webauthn_challenge(
     )
 
     options_dict = options_to_json_dict(authentication_options)
+    # Keep transport strings unknown to py_webauthn in the JSON descriptors.
+    options_dict["allowCredentials"] = allowed_credentials
     if stage.webauthn_hints:
         options_dict["hints"] = list(stage.webauthn_hints)
     return options_dict
