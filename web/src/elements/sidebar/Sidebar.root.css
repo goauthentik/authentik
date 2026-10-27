@@ -1,0 +1,62 @@
+:root {
+    --ak-c-sidebar--Transition: 0 !important;
+    --ak-c-sidebar__row--Gap: var(--pf-global--spacer--sm);
+    --ak-c-sidebar--gutter: var(--pf-global--spacer--md);
+    --ak-c-sidebar--icon-size: 1.25rem;
+    --ak-c-sidebar--indicator-width: 3px;
+
+    /* x-coordinate of the icon's centerline; rail indicators have to match */
+    --ak-c-sidebar__rail: calc(
+        var(--ak-c-sidebar--gutter) + var(--ak-c-sidebar--icon-size) / 2
+    );
+    --ak-c-sidebar__rail--BackgroundColor: var(
+        --pf-global--BackgroundColor--light-400
+    );
+    --ak-c-sidebar__rail--BackgroundColor--hover: var(
+        --pf-global--BackgroundColor--dork-300
+    );
+    --ak-c-sidebar__rail--BackgroundColor--active: var(--ak-accent);
+    --ak-c-sidebar__rail--Width: 1px;
+    --ak-c-sidebar__rail--Width--hover: 1px;
+    --ak-c-sidebar__rail--Width--active: 3px;
+
+    --ak-c-sidebar--depth0--FontSize: var(--pf-global--FontSize--md);
+    --ak-c-sidebar--depth1--FontSize: var(--pf-global--FontSize--sm);
+    --ak-c-sidebar--depth2--FontSize: var(--pf-global--FontSize--xs);
+
+    --ak-c-sidebar__item--BorderColor: var(--pf-global--BorderColor--100);
+    --ak-c-sidebar__subnav__link--hover--after--BorderColor: var(--ak-accent);
+
+    --ak-c-sidebar__link--xl--PaddingLeft: var(--pf-global--spacer--md);
+    --ak-c-sidebar__link--hover--before--BorderBottomWidth: 1px;
+    --ak-c-sidebar__link--before--BorderColor: transparent;
+
+    --ak-c-sidebar__link--PaddingTop: var(--pf-global--spacer--sm);
+    --ak-c-sidebar__link--PaddingRight: var(--pf-global--spacer--sm);
+    --ak-c-sidebar__link--PaddingBottom: var(--pf-global--spacer--sm);
+
+    --ak-c-sidebar__label--PaddingLeft: var(--pf-global--spacer--sm);
+
+    --ak-c-sidebar__row__toggle-icon--Rotate: 0;
+    --ak-c-sidebar__row--m-expanded__toggle-icon--Rotate: 90deg;
+    --ak-c-sidebar__toggle-icon--Transition: var(
+        --pf-global--TransitionDuration
+    );
+
+    --ak-c-sidebar__link--BackgroundColor: transparent;
+    --ak-c-sidebar__link--hover--BackgroundColor: var(
+        --pf-global--BackgroundColor--light-300
+    );
+    --ak-c-sidebar__link--focus--BackgroundColor: var(
+        --pf-global--BackgroundColor--light-300
+    );
+    --ak-c-sidebar__link--active--BackgroundColor: var(
+        --pf-global--BackgroundColor--light-300
+    );
+
+    --ak-c-sidebar__subnav__link--PaddingLeft: var(--pf-global--spacer--md);
+    --ak-c-sidebar__subnav--PaddingBottom: var(--pf-global--spacer--sm);
+    --ak-c-sidebar__item--before--BorderColor: transparent;
+    --ak-c-sidebar__link--after--BorderColor: var(--pf-global--BorderColor--300);
+    --ak-c-sidebar__link--m-current--Color: var(--ak-accent);
+}

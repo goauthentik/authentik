@@ -4,6 +4,7 @@ export interface SidebarEntryProperties {
     key?: string;
     enterprise?: boolean;
     expanded?: boolean;
+    icon?: string;
 }
 
 export type ExtendedSidebarItem = SidebarItem & {

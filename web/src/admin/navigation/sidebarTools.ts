@@ -51,8 +51,14 @@ function makeSidebarEntry(entry: SidebarEntry, licensed: boolean, canEnterprise:
         item.children = resolveSidebarEntries(children ?? [], { licensed, canEnterprise });
     }
 
-    if (isSidebarAttributeObject(attributes) && attributes.expanded !== undefined) {
-        item.expanded = attributes.expanded;
+    if (isSidebarAttributeObject(attributes)) {
+        if (attributes.expanded !== undefined) {
+            item.expanded = attributes.expanded;
+        }
+
+        if (attributes.icon !== undefined) {
+            item.icon = attributes.icon;
+        }
     }
 
     if (Array.isArray(attributes)) {
