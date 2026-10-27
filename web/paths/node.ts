@@ -82,15 +82,15 @@ export const EntryPoint = {
         out: resolve(DistDirectory, "poly"),
     },
     InterfaceStyles: {
-        in: resolve(PackageRoot, "src", "styles", "interface.global.css"),
+        in: resolve(PackageRoot, "src", "styles", "if", "authenticated", "index.global.css"),
         out: resolve(DistDirectory, "styles", "interface"),
     },
     StaticStyles: {
-        in: resolve(PackageRoot, "src", "styles", "static.global.css"),
+        in: resolve(PackageRoot, "src", "styles", "if", "shared", "static.global.css"),
         out: resolve(DistDirectory, "styles", "static"),
     },
     FlowStyles: {
-        in: resolve(PackageRoot, "src", "styles", "flows.global.css"),
+        in: resolve(PackageRoot, "src", "styles", "if", "flow", "index.global.css"),
         out: resolve(DistDirectory, "styles", "flow"),
     },
 } as const satisfies Record<string, EntryPointTarget>;
