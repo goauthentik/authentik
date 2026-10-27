@@ -93,6 +93,10 @@ def post_fork(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
 
     from authentik.lib.debug import start_pyroscope
 
+    # debugpy threads in the master make forked workers abort on macOS, so attach per worker
+    if worker._worker_id == 1:
+        start_debug_server()
+
     start_pyroscope("server", worker_id=str(worker._worker_id))
 
     # OTel's real TracerProvider is created here rather than before the fork above, since
@@ -182,5 +186,3 @@ if not CONFIG.get_bool("disable_startup_analytics", False):
 
         except Exception:  # nosec # noqa
             pass
-
-start_debug_server()
