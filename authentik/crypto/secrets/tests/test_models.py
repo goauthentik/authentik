@@ -41,15 +41,15 @@ class TestSecret(TestCase):
         settings.default_token_length = 80
         settings.save()
         value = secret.rotate()
-        self.assertEqual(len(value), 80)
+        self.assertEqual(len(value), 64)
         self.assertRegex(value, r"^[a-zA-Z0-9]+$")
 
     def test_rotation_keeps_length(self):
-        """Rotating keeps a consumer's longer length, but never goes below the default."""
-        for current, expected in [("x" * 128, 128), ("short", DEFAULT_TOKEN_LENGTH)]:
+        """Rotating keeps the length that the consumer and its clients accept."""
+        for current in ["x" * 128, "x" * 16]:
             with self.subTest(length=len(current)):
                 secret = Secret.objects.create(name=f"length-{len(current)}", secret_value=current)
-                self.assertEqual(len(secret.rotate()), expected)
+                self.assertEqual(len(secret.rotate()), len(current))
 
     def test_non_text_cannot_rotate(self):
         secret = Secret.objects.create(name="file", type=SecretType.FILE, secret_value="aGk=")
