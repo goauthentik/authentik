@@ -1,4 +1,4 @@
-import * as SidebarState from "./expansion.js";
+import * as SidebarState from "#elements/sidebar/expansion";
 
 import { describe, expect, test } from "vitest";
 

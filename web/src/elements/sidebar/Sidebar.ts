@@ -1,10 +1,10 @@
-import { SidebarReloadController } from "./SidebarReloadController";
-import type { SidebarItem } from "./types";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { AKElement } from "#elements/Base";
 import Styles from "#elements/sidebar/Sidebar.css";
+import { SidebarReloadController } from "#elements/sidebar/SidebarReloadController";
+import type { SidebarItem } from "#elements/sidebar/types";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { SlotController } from "@patternfly/pfe-core/controllers/slot-controller.js";

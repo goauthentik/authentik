@@ -1,12 +1,12 @@
+import { toAdminInterface } from "#elements/router/core/interfaces";
+
 import {
     SidebarEntry,
     ExtendedSidebarItem,
     SidebarLicenseFlags,
     isSidebarAttributeObject,
     isEnterpriseEntry,
-} from "./types";
-
-import { toAdminInterface } from "#elements/router/core/interfaces";
+} from "#admin/sidebar/types";
 
 import { msg } from "@lit/localize";
 

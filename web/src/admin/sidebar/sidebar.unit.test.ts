@@ -1,8 +1,7 @@
-import { createAdminSidebarEntries } from "./constants";
-import { findSidebarSectionByRoute, resolveSidebarEntries } from "./sidebarTools";
-import { type SidebarEntry, ExtendedSidebarItem } from "./types";
-
 import { ROUTES } from "#admin/Routes";
+import { createAdminSidebarEntries } from "#admin/sidebar/constants";
+import { findSidebarSectionByRoute, resolveSidebarEntries } from "#admin/sidebar/sidebarTools";
+import { type SidebarEntry, ExtendedSidebarItem } from "#admin/sidebar/types";
 
 import { describe, expect, it } from "vitest";
 

@@ -1,4 +1,4 @@
-import { SidebarEntry } from "./types";
+import { SidebarEntry } from "#admin/sidebar/types";
 
 import { msg } from "@lit/localize";
 
