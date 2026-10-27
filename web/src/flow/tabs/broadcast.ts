@@ -17,6 +17,11 @@ export class Broadcast extends BroadcastChannel implements Disposable {
     protected discoveredTabIDs = new Set<string>();
     protected shouldSuppressExit = false;
 
+    /**
+     * Whether another tab has left to sign in through a source, and this tab should wait for it.
+     */
+    public awaitingSignIn = false;
+
     protected logger: Logger;
     protected storageKey: PersistenceKey;
 
@@ -63,10 +68,18 @@ export class Broadcast extends BroadcastChannel implements Disposable {
                 this.dispatchMessage({
                     type: BroadcastMessageType.DiscoverReply,
                     sender: TabID.shared.current,
+                    awaitingSignIn: this.awaitingSignIn,
                 });
             })
-            .with({ type: BroadcastMessageType.DiscoverReply }, ({ sender }) => {
+            .with({ type: BroadcastMessageType.DiscoverReply }, ({ sender, awaitingSignIn }) => {
                 this.discoveredTabIDs.add(sender);
+
+                if (awaitingSignIn) {
+                    this.awaitingSignIn = true;
+                }
+            })
+            .with({ type: BroadcastMessageType.SignInStarted }, () => {
+                this.awaitingSignIn = true;
             })
             .with({ type: BroadcastMessageType.Exit }, ({ sender, resumeID }) => {
                 window.dispatchEvent(new AKMultiTabExitEvent(sender, resumeID));
@@ -138,6 +151,16 @@ export class Broadcast extends BroadcastChannel implements Disposable {
             sender: TabID.shared.current,
             target: tabID,
             resumeID,
+        });
+    }
+
+    /**
+     * Sends a message to all other tabs to notify them that this tab is leaving to sign in.
+     */
+    public announceSignIn(): void {
+        this.dispatchMessage({
+            type: BroadcastMessageType.SignInStarted,
+            sender: TabID.shared.current,
         });
     }
 
