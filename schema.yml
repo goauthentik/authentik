@@ -19982,6 +19982,14 @@ paths:
         schema:
           type: string
       - in: query
+        name: jwt_federation_providers
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
+      - in: query
         name: logout_method
         schema:
           allOf:
@@ -21148,6 +21156,14 @@ paths:
         name: issuer_override
         schema:
           type: string
+      - in: query
+        name: jwt_federation_providers
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
       - in: query
         name: logout_method
         schema:
@@ -53525,6 +53541,12 @@ components:
           description: Default relay_state value for IDP-initiated logins
         default_name_id_policy:
           $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
+          description: OAuth2 providers which can exchange their JWTs for a SAML Response
+            of this provider via token exchange.
     PatchedSAMLSourcePropertyMappingRequest:
       type: object
       description: SAMLSourcePropertyMapping Serializer
@@ -57502,6 +57524,12 @@ components:
           description: Default relay_state value for IDP-initiated logins
         default_name_id_policy:
           $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
+          description: OAuth2 providers which can exchange their JWTs for a SAML Response
+            of this provider via token exchange.
         url_download_metadata:
           type: string
           description: Get metadata download URL
@@ -57717,6 +57745,12 @@ components:
           description: Default relay_state value for IDP-initiated logins
         default_name_id_policy:
           $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
+          description: OAuth2 providers which can exchange their JWTs for a SAML Response
+            of this provider via token exchange.
       required:
       - acs_url
       - authorization_flow

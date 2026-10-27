@@ -6,7 +6,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
 from authentik.crypto.secrets.models import Secret
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import Outpost, OutpostType
@@ -101,3 +101,16 @@ class TestProviderSecret(APITestCase):
         results = response.json()["results"]
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]["shared_secret"], provider.shared_secret_ref.secret_value)
+
+    def test_generated_secret_access(self):
+        """Roles that may change every RADIUS provider can read generated shared secrets."""
+        editor = create_test_user()
+        editor.assign_perms_to_managed_role("authentik_providers_radius.change_radiusprovider")
+        viewer = create_test_user()
+        viewer.assign_perms_to_managed_role("authentik_providers_radius.view_radiusprovider")
+        secret = RadiusProvider.objects.create(
+            name=generate_id(), authorization_flow=create_test_flow()
+        ).shared_secret_ref
+        self.assertTrue(editor.has_perm("authentik_crypto_secrets.view_secret_value", secret))
+        self.assertTrue(viewer.has_perm("authentik_crypto_secrets.view_secret", secret))
+        self.assertFalse(viewer.has_perm("authentik_crypto_secrets.view_secret_value", secret))

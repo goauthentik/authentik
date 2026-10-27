@@ -5,7 +5,7 @@
 FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:12.9.1@sha256:77123fd40a39db0eb8be6bddfcf0cea15e000122b9221ccce2e4415be29050f2 AS pnpm
 
 # Stage: Build webui
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:26.12.1-trixie-slim@sha256:1653c74b30c27b26f68c2d21279be12139d2ba723e3a682c425ec4bfb6070422 AS node-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:26.12.1-trixie-slim@sha256:36793bcbb160a6a16cede1e62b93f84e26b78a972a8a4c0b879c1c12f22761ec AS node-builder
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
