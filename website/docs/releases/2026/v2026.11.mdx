@@ -68,6 +68,12 @@ The **Base URL** [system setting](../../sys-mgmt/settings.mdx#base-url), introdu
 
 To list the applications a user can access based on policy bindings, as shown on the **Application Dashboard**, use the new `GET /core/applications/@accessible/` endpoint. It accepts the `for_user` and `only_with_launch_url` parameters. Update API clients and scripts that relied on the previous behavior of `/core/applications/`.
 
+### Password hash import settings
+
+Bootstrap and API password hash imports now enforce the [password hash import settings](../../core/password-hashes.mdx#password-hash-import-settings). Existing stored hashes and blueprint imports are unchanged.
+
+Generate a replacement hash with the target authentik version. API clients can use the override for another supported hash, but bootstrap imports do not support an override.
+
 ## New features and improvements
 
 - **Display names in `ak_send_email` recipients**: The `address`, `cc`, and `bcc` parameters of `ak_send_email` now accept `(name, email)` tuples and `"Name <email>"` strings, so emails sent from expressions can include a display name in the `To` and `CC` headers, matching the Email stage. See [`ak_send_email`](../../customize/policies/types/expression/reference.mdx).
