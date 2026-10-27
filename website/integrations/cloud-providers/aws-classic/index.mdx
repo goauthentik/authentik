@@ -46,7 +46,6 @@ Before creating the AWS role mapping, note your AWS account ID and choose the na
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
 3. Select **SAML Provider Property Mapping** and click **Next**.
 4. Configure the role mapping for application entitlement-based role assignment:
-
     - **Name**: provide a descriptive name, such as `AWS Role`.
     - **SAML Attribute Name**: `https://aws.amazon.com/SAML/Attributes/Role`
     - **Friendly Name**: leave blank.
@@ -67,7 +66,6 @@ Before creating the AWS role mapping, note your AWS account ID and choose the na
 
 5. Click **Finish**.
 6. Create another **SAML Provider Property Mapping** for the AWS role session name:
-
     - **Name**: provide a descriptive name, such as `AWS Role Session Name`.
     - **SAML Attribute Name**: `https://aws.amazon.com/SAML/Attributes/RoleSessionName`
     - **Friendly Name**: leave blank.
@@ -123,7 +121,6 @@ The value must be between 900 and 43200 seconds and cannot exceed the maximum se
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
