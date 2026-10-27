@@ -1,0 +1,84 @@
+---
+title: Integrate with Fluxer
+sidebar_label: Fluxer
+support_level: community
+---
+
+## What is Fluxer?
+
+> Open source chat for friends, groups and communities, with text chat, voice and video calls, screen sharing and self-hosting.
+>
+> -- https://fluxer.app/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `fluxer.company` is the FQDN of the Fluxer installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+To support the integration of Fluxer with authentik, you need to create an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) in authentik.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+        - Note the **slug** as it will be used later
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://fluxer.company/auth/sso/callback`
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+## Fluxer configuration
+
+1. Log in to Fluxer as an administrator and head to the admin panel via https://fluxer.company/admin
+
+2. On the admin panel page navigate to **Instance Config** by following **Menu** > **Configuration** > **Instance Config**
+
+3. On the **Instance Config** page scroll down to the **Access & accounts** section and locate the **Single Sign-on (SSO)** panel
+
+4. In the **Single Sign-on (SSO)** panel configure the following settings:
+
+    - **Enable SSO**: Checkmark the box to enable.
+    - **DISPLAY NAME**: authentik
+    - **ISSUER**: `https://authentik.company/application/o/<slug>/`
+    - **AUTHORIZATION URL**: `https://authentik.company/application/o/authorize/`
+    - **TOKEN URL**: `https://authentik.company/application/o/token/`
+    - **USER INFO URL**: `https://authentik.company/application/o/userinfo/`
+    - **JWKS URL**: `https://authentik.company/application/o/<slug>/jwks/`
+    - **CLIENT ID**: the Client ID from authentik
+    - **CLIENT SECRET**: the Client Secret from authentik
+    - **SCOPE**: `openid email profile`
+
+5. Click **Save SSO Settings**
+
+6. SSO Settings are immediately live once saved.
+
+## Optional settings
+
+### Disable Local Logins and Registration
+
+Checkmark the **Require SSO** box to disable local logins and registration. This will completely remove those buttons from the Fluxer login page.
+
+### Automatically Provision Accounts
+
+Checkmark the **Automatically provision users on first SSO login** to have Fluxer automatically create new accounts from authentik verified logins.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Fluxer, log out of Fluxer and log back in using the new **Continue with authentik** button.
+
+## Resources
+
+- [Fluxer Single sign-on](https://docs.fluxer.app/operator/sign-in/#single-sign-on)
+- [Fluxer OAuth2](https://docs.fluxer.app/http-api/oauth2/)
