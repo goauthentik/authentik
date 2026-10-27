@@ -1,0 +1,15 @@
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "authentik-docs-search",
+    "main": "src/index.ts",
+    "compatibility_date": "2026-10-01",
+    "observability": { "enabled": true },
+    "d1_databases": [
+        {
+            "binding": "DB",
+            "database_name": "authentik-docs-search",
+            // The id `wrangler d1 create authentik-docs-search` prints. See README.md.
+            "database_id": "00000000-0000-0000-0000-000000000000"
+        }
+    ]
+}
