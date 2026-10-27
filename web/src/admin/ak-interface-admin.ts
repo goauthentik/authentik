@@ -1,7 +1,6 @@
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
 import "#elements/sidebar/Sidebar";
-import "#elements/sidebar/SidebarItem";
 import "#elements/router/core/RouterView";
 import "#elements/commands/ak-command-palette";
 import "#elements/commands/ak-command-palette-user-modal";
@@ -40,12 +39,8 @@ import {
 } from "#elements/router/core/interfaces";
 import { matchRoute } from "#elements/router/core/matcher";
 import { navigate, RouterNavigateEvent } from "#elements/router/core/navigation";
-import {
-    findSidebarSectionByRoute,
-    renderSidebarItems,
-    SidebarEntry,
-} from "#elements/sidebar/utils";
 import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { AKDrawerChangeEvent } from "#components/notifications/events";
 import {
@@ -58,6 +53,12 @@ import {
 import Styles from "#admin/ak-interface-admin.css";
 import { DEFAULT_PATH, ROUTES } from "#admin/Routes";
 import { createAdminSidebarEntries } from "#admin/sidebar/constants";
+import {
+    ExtendedSidebarItem,
+    findCurrentSidebarKey,
+    findSidebarSectionByRoute,
+    resolveSidebarEntries,
+} from "#admin/sidebar/sidebarTools";
 
 import { CapabilitiesEnum } from "@goauthentik/api";
 
@@ -101,10 +102,16 @@ export class AdminInterface extends WithLicenseSummary(
     @property({ type: Boolean, reflect: true, attribute: "sidebar" })
     public sidebarOpen = false;
 
-    protected get navigationEntries(): readonly SidebarEntry[] {
+    protected get navigationEntries(): readonly ExtendedSidebarItem[] {
         const canEnterprise = this.can(CapabilitiesEnum.IsEnterprise);
 
-        return createAdminSidebarEntries(canEnterprise);
+        const entries = createAdminSidebarEntries(canEnterprise);
+
+        return resolveSidebarEntries(entries, {
+            canEnterprise,
+            // Assume licensed until the summary loads so the notice doesn't flash.
+            licensed: !this.licenseSummary || this.hasEnterpriseLicense,
+        });
     }
 
     //#endregion
@@ -182,28 +189,13 @@ export class AdminInterface extends WithLicenseSummary(
                     ),
                 group: msg("Applications"),
             },
-            ...this.navigationEntries.flatMap(([, label, , children]) =>
-                (children ?? []).flatMap(([path, childLabel, attributes]) => {
-                    const enterpriseOnly =
-                        !Array.isArray(attributes) && attributes?.enterprise === true;
-
-                    if (enterpriseOnly && !this.can(CapabilitiesEnum.IsEnterprise)) {
-                        return [];
-                    }
-
+            ...this.navigationEntries.flatMap(({ label, children }: ExtendedSidebarItem) =>
+                (children ?? []).flatMap(({ path, label: childLabel }: ExtendedSidebarItem) => {
                     const command: PaletteCommandDefinitionInit = {
                         namespace: PaletteCommandNamespace.Navigation,
                         label: childLabel,
                         group: label,
-                        action: () => {
-                            navigate(
-                                toAdminInterface(
-                                    enterpriseOnly && !this.hasEnterpriseLicense
-                                        ? "/enterprise/licenses"
-                                        : path!,
-                                ),
-                            );
-                        },
+                        action: () => navigate(path!),
                     };
 
                     return [command];
@@ -285,6 +277,10 @@ export class AdminInterface extends WithLicenseSummary(
             return html`<slot></slot>`;
         }
 
+        const path = currentInterfacePath(this.pathname);
+        const routeName = routeNameForPath(path);
+        const entries = this.navigationEntries;
+
         const sidebarClasses = {
             "pf-c-page__sidebar": true,
             "pf-m-expanded": this.sidebarOpen,
@@ -299,12 +295,7 @@ export class AdminInterface extends WithLicenseSummary(
         };
 
         return html`<div class="pf-c-page">
-                <ak-page-navbar
-                    .section=${findSidebarSectionByRoute(
-                        this.navigationEntries,
-                        routeNameForPath(currentInterfacePath(this.pathname)),
-                    )}
-                >
+                <ak-page-navbar .section=${findSidebarSectionByRoute(entries, routeName)}>
                     <button
                         slot="toggle"
                         aria-controls="global-nav"
@@ -327,7 +318,9 @@ export class AdminInterface extends WithLicenseSummary(
                     id="global-nav"
                     ?hidden=${!this.sidebarOpen}
                     class="${classMap(sidebarClasses)}"
-                    >${renderSidebarItems(this.navigationEntries, routeNameForPath)}
+                    .entries=${entries}
+                    current=${ifPresent(findCurrentSidebarKey(entries, path, routeName))}
+                >
                     <ak-version-details slot="footer"></ak-version-details>
                 </ak-sidebar>
 
