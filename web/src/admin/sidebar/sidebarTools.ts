@@ -1,12 +1,12 @@
+import { toAdminInterface } from "#elements/router/core/interfaces";
+
 import {
     SidebarEntry,
     ExtendedSidebarItem,
     SidebarLicenseFlags,
     isSidebarAttributeObject,
     isEnterpriseEntry,
-} from "./types";
-
-import { toAdminInterface } from "#elements/router/core/interfaces";
+} from "#admin/sidebar/types";
 
 import { msg } from "@lit/localize";
 
@@ -31,6 +31,10 @@ function makeSidebarEntry(entry: SidebarEntry, licensed: boolean, canEnterprise:
     const [path, label, attributes, children]: SidebarEntry = entry;
     const enterprise = Boolean(!licensed && isEnterpriseEntry(attributes));
     const key = isSidebarAttributeObject(attributes) && attributes.key ? attributes.key : path;
+
+    if (!key || key.trim().length === 0) {
+        throw new Error("An entry must have either a path or a key");
+    }
 
     if (!key || key.trim().length === 0) {
         throw new Error("An entry must have either a path or a key");

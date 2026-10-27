@@ -15,6 +15,8 @@ import {
     ExtendedSidebarItem,
     findCurrentSidebarKey,
 } from "./navigation/sidebarTools";
+import "#admin/sidebar/VersionDetails";
+
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
@@ -59,6 +61,13 @@ import {
 
 import Styles from "#admin/ak-interface-admin.css";
 import { DEFAULT_PATH, ROUTES } from "#admin/Routes";
+import { createAdminSidebarEntries } from "#admin/sidebar/constants";
+import {
+    ExtendedSidebarItem,
+    findCurrentSidebarKey,
+    findSidebarSectionByRoute,
+    resolveSidebarEntries,
+} from "#admin/sidebar/sidebarTools";
 
 import { CapabilitiesEnum } from "@goauthentik/api";
 
@@ -104,11 +113,13 @@ export class AdminInterface extends WithLicenseSummary(
 
     protected get navigationEntries(): readonly ExtendedSidebarItem[] {
         const canEnterprise = this.can(CapabilitiesEnum.IsEnterprise);
+
         const entries = createAdminSidebarEntries(canEnterprise);
 
         return resolveSidebarEntries(entries, {
             canEnterprise,
-            licensed: this.hasEnterpriseLicense,
+            // Assume licensed until the summary loads so the notice doesn't flash.
+            licensed: !this.licenseSummary || this.hasEnterpriseLicense,
         });
     }
 

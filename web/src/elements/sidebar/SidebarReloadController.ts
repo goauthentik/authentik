@@ -1,5 +1,5 @@
-import * as SidebarExpansion from "./expansion.ts";
-import { type Sidebar } from "./Sidebar";
+import * as SidebarExpansion from "#elements/sidebar/expansion";
+import { type Sidebar } from "#elements/sidebar/Sidebar";
 
 import { ReactiveController } from "lit";
 
