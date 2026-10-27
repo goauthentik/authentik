@@ -79,7 +79,7 @@
         pointer-events: none;
     }
 
-    @media (max-width: 35rem) or (max-height: 17.5rem) {
+    @media (width <= 36.25rem) or (height <= 27.5rem) {
         --ak-c-login--BackgroundColorOverlay: var(--ak-c-login__main--BackgroundColor);
     }
 }
@@ -156,7 +156,7 @@
         --ak-c-login__main--MinHeight: calc(var(--ak-c-login--MaxWidth) * 0.8);
     }
 
-    @media (max-width: 35rem) or (max-height: 17.5rem) {
+    @media (width <= 36.25rem) or (height <= 27.5rem) {
         --ak-c-login__main--BoxShadow: none;
     }
 }
@@ -256,7 +256,7 @@
     --ak-c-login__main--BoxShadow: none;
 }
 
-@media (min-width: 70rem) and (min-height: 17.5rem) {
+@media (width >= 70rem) and (height > 27.5rem) {
     .pf-c-login__main[data-layout^="sidebar"] {
         --ak-c-login__main--BoxShadow: none;
     }
@@ -381,11 +381,11 @@
 
     color: var(--ak-c-login__footer--Color);
 
-    @media (max-width: 35rem) {
+    @media (width <= 36.25rem) {
         --ak-c-login__footer--Color: var(--ak-c-login__main--Color);
     }
 
-    @media (min-width: 35rem) and (min-height: 17.5rem) {
+    @media (width > 36.25rem) and (height > 27.5rem) {
         filter: var(--ak-global--BackgroundContrastFilter);
     }
 }
@@ -397,7 +397,7 @@
   * even when the card is reduced in size and the background contrast is removed.
   */
 .pf-c-login__footer {
-    @media (max-width: 35rem) {
+    @media (width <= 36.25rem) {
         --pf-global--Color--100: var(--pf-global--Color--dark-100) !important;
         --pf-global--Color--200: var(--pf-global--Color--dark-200) !important;
     }
