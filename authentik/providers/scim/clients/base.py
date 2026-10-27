@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Any
 
 from django.core.cache import cache
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
+from django.utils.http import urlencode
 from msgspec.json import Encoder as JSONEncoder
 from pydantic import ValidationError
 from requests import JSONDecodeError, RequestException, Session
@@ -96,6 +97,29 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
     def lower_case_keys(self, raw: dict[str, Any]) -> dict[str, Any]:
         """Lowercase all keys in the dict to ignore casing"""
         return {k.lower(): v for k, v in raw.items()}
+
+    def find_conflicting(self, path: str, attribute: str, value: str) -> dict[str, Any] | None:
+        """Find the remote object that a create request conflicted with by its `attribute`, so
+        it can be linked. Returns None when the remote system can't be searched or has no
+        object with that value."""
+        if not self._config.filter.supported:
+            return None
+        try:
+            response = self._request(
+                "GET", f"{path}?{urlencode({'filter': f'{attribute} eq "{value}"'})}"
+            )
+        except (NotFoundSyncException, SCIMRequestException) as exc:
+            self.logger.warning("Failed to search for conflicting object", path=path, exc=exc)
+            return None
+        # A response that isn't a SCIM ListResponse, such as a bare JSON array, can't be matched
+        if not isinstance(response, dict):
+            return None
+        for resource in self.lower_case_keys(response).get("resources", []):
+            # Check the value, as remote systems that ignore the filter return other objects too
+            remote_value = self.lower_case_keys(resource).get(attribute.lower())
+            if str(remote_value).lower() == value.lower():
+                return resource
+        return None
 
     def get_service_provider_config(self):
         """Get Service provider config"""

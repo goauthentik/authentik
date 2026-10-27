@@ -5,7 +5,6 @@ from typing import Any
 
 from django.db import transaction
 from django.db.models import Q, QuerySet
-from django.utils.http import urlencode
 from pydantic import ValidationError
 
 from authentik.core.models import User
@@ -69,22 +68,14 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
                     ),
                 )
             except ObjectExistsSyncException as exc:
-                if not self._config.filter.supported:
-                    raise exc
-                users = self.lower_case_keys(
-                    self._request(
-                        "GET",
-                        f"/Users?{urlencode({'filter': f'userName eq "{scim_user.userName}"'})}",
-                    )
-                )
-                users_res = users.get("resources", [])
-                if len(users_res) < 1:
+                remote_user = self.find_conflicting("/Users", "userName", scim_user.userName)
+                if not remote_user:
                     raise exc
                 return SCIMProviderUser.objects.create(
                     provider=self.provider,
                     user=user,
-                    scim_id=users_res[0]["id"],
-                    attributes=users_res[0],
+                    scim_id=remote_user["id"],
+                    attributes=remote_user,
                 )
             else:
                 scim_id = response.get("id")
