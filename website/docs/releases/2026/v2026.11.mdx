@@ -62,13 +62,39 @@ The **Base URL** [system setting](../../sys-mgmt/settings.mdx#base-url), introdu
 - **Automated installs:** Set `AUTHENTIK_WEB__BASE_URL` along with the [bootstrap environment variables](../../install-config/automated-install.mdx). Without it, the automated install fails.
 - **API:** The `base_url` field of the system settings no longer accepts an empty value.
 
+### Applications API split into RBAC and policy access
+
+`GET /core/applications/` now lists applications the way other admin API endpoints do: it only returns applications the user has the `authentik_core.view_application` permission for, and does not evaluate policies. The `superuser_full_list`, `for_user`, and `only_with_launch_url` parameters have been removed from it.
+
+To list the applications a user can access based on policy bindings, as shown on the **Application Dashboard**, use the new `GET /core/applications/@accessible/` endpoint. It accepts the `for_user` and `only_with_launch_url` parameters. Update API clients and scripts that relied on the previous behavior of `/core/applications/`.
+
+### Password hash import settings
+
+Bootstrap and API password hash imports now enforce the [password hash import settings](../../core/password-hashes.mdx#password-hash-import-settings). Existing stored hashes and blueprint imports are unchanged.
+
+Generate a replacement hash with the target authentik version. API clients can use the override for another supported hash, but bootstrap imports do not support an override.
+
 ## New features and improvements
 
 - **Display names in `ak_send_email` recipients**: The `address`, `cc`, and `bcc` parameters of `ak_send_email` now accept `(name, email)` tuples and `"Name <email>"` strings, so emails sent from expressions can include a display name in the `To` and `CC` headers, matching the Email stage. See [`ak_send_email`](../../customize/policies/types/expression/reference.mdx).
+- **Configurable SAML assertion encryption algorithm**: SAML providers now support AES128-CBC, AES256-CBC, AES128-GCM, and AES256-GCM for assertion encryption. New providers default to AES256-GCM, while existing providers retain AES128-CBC for compatibility. When you import SP metadata, authentik selects the first supported algorithm in the SP's order of preference. See [Encryption algorithm](../../add-secure-apps/providers/saml/index.mdx#encryption-algorithm) for details and guidance on updating existing providers.
+- **SAML source metadata advertises encryption algorithms**: When an encryption keypair is configured, a SAML source's service provider metadata now advertises supported encryption algorithms in `<EncryptionMethod>` elements, with AES256-GCM listed first.
+
+- **Distroless server image**: The server image is now also published as a distroless variant, with the same name and a `-distroless` suffix on each tag, for example `ghcr.io/goauthentik/server:2026.11.0-distroless` or `ghcr.io/goauthentik/server:2026.11-distroless`. It contains only what authentik needs at runtime, without a shell or a package manager. To use it, set `AUTHENTIK_TAG=2026.11.0-distroless` in your `.env` file, or `global.image.tag: 2026.11.0-distroless` in your Helm values, and update the tag with each upgrade. The regular image stays the default, and debugging with `AUTHENTIK_DEBUGGER` needs it.
+
+### Duplicate WebAuthn enrollment prevented by the authenticator
+
+The [WebAuthn authenticator setup stage](../../add-secure-apps/flows-stages/stages/authenticator_webauthn/index.mdx) now sends the user's already-enrolled credentials in the `excludeCredentials` registration parameter. An authenticator that already holds a credential for the account refuses to create another one, so the same security key can no longer be enrolled twice on one account. This replaces the **Prevent duplicate devices** option that was removed in 2026.8.
 
 ### Single sign-on into devices managed by the authentik agent
 
 A RAC provider signs into devices which are enrolled through the authentik agent as the user who launched the connection, with no credentials configured for the device. authentik issues a token for the device, the RAC outpost turns it into an SSH certificate, and the agent validates the token before accepting the login. See [the RAC provider documentation](../../add-secure-apps/providers/rac/index.mdx#signing-in-with-the-authentik-agent).
+
+### PostgreSQL JIT compilation is disabled
+
+authentik now disables PostgreSQL's just-in-time (JIT) compilation for its own database user when it starts. In load tests, disabling JIT resolved a slowdown that built up over several hours. PostgreSQL 19 makes the same change to its default.
+
+authentik only changes `jit` while it has PostgreSQL's built-in default, and only for the user that authentik connects as, in the authentik database. If you have set `jit` explicitly, authentik leaves it unchanged. For details, including how to keep JIT enabled, see [authentik disables JIT compilation](../../troubleshooting/postgres/slow-queries.mdx#authentik-disables-jit-compilation).
 
 ## Upgrading
 

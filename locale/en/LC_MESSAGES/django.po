@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-09 00:16+0000\n"
+"POT-Creation-Date: 2026-10-27 00:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -306,6 +306,22 @@ msgstr ""
 msgid ""
 "Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
 "this method only if you have different UPN and Mail domains."
+msgstr ""
+
+#: authentik/common/saml/exceptions.py
+msgid "Cannot decode SAML request."
+msgstr ""
+
+#: authentik/common/saml/exceptions.py
+msgid "Verification Certificate configured, but request is not signed."
+msgstr ""
+
+#: authentik/common/saml/exceptions.py
+msgid "Failed to verify signature"
+msgstr ""
+
+#: authentik/common/saml/parsers/logout_response.py
+msgid "Cannot decode SAML response."
 msgstr ""
 
 #: authentik/core/api/application_entitlements.py
@@ -792,8 +808,27 @@ msgstr ""
 msgid "Remove temporary users created by SAML Sources."
 msgstr ""
 
+#: authentik/core/templates/base/noscript.html
+msgid "Cannot load this page without JavaScript"
+msgstr ""
+
+#: authentik/core/templates/base/noscript.html
+msgid ""
+"This application requires JavaScript to function. JavaScript may be\n"
+"                disabled in your browser settings or blocked by a browser\n"
+"                extension."
+msgstr ""
+
+#: authentik/core/templates/base/noscript.html
+msgid "Learn more &rsaquo;"
+msgstr ""
+
 #: authentik/core/templates/base/skeleton.html
 msgid "Recovery session is active. Custom branding is disabled."
+msgstr ""
+
+#: authentik/core/templates/base/spinner.html
+msgid "Loading..."
 msgstr ""
 
 #: authentik/core/templates/if/error.html
@@ -839,6 +874,10 @@ msgstr ""
 msgid "Subject-alt name"
 msgstr ""
 
+#: authentik/crypto/api.py
+msgid "The selected algorithm is not supported in the current configuration."
+msgstr ""
+
 #: authentik/crypto/builder.py
 msgid "rsa"
 msgstr ""
@@ -853,6 +892,18 @@ msgstr ""
 
 #: authentik/crypto/builder.py authentik/crypto/models.py
 msgid "Ed448"
+msgstr ""
+
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "ML-DSA-44"
+msgstr ""
+
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "ML-DSA-65"
+msgstr ""
+
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "ML-DSA-87"
 msgstr ""
 
 #: authentik/crypto/models.py
@@ -3410,7 +3461,33 @@ msgid "Encryption Keypair"
 msgstr ""
 
 #: authentik/providers/saml/models.py
+msgid "AES128-CBC"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "AES256-CBC"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "AES128-GCM"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "AES256-GCM"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "Block cipher used to encrypt the assertion."
+msgstr ""
+
+#: authentik/providers/saml/models.py
 msgid "Default relay_state value for IDP-initiated logins"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid ""
+"OAuth2 providers which can exchange their JWTs for a SAML Response of this "
+"provider via token exchange."
 msgstr ""
 
 #: authentik/providers/saml/models.py
@@ -3419,6 +3496,14 @@ msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "SAML Providers"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "SAML Provider JWT Federation Provider"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "SAML Provider JWT Federation Providers"
 msgstr ""
 
 #: authentik/providers/saml/models.py
@@ -4376,8 +4461,16 @@ msgid "Group SAML Source Connections"
 msgstr ""
 
 #: authentik/sources/saml/views.py
+msgid "Failed to build the SAML request."
+msgstr ""
+
+#: authentik/sources/saml/views.py
 #, python-brace-format
 msgid "Continue to {source_name}"
+msgstr ""
+
+#: authentik/sources/saml/views.py
+msgid "Failed to process the SAML response."
 msgstr ""
 
 #: authentik/sources/scim/models.py
