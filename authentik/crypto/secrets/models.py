@@ -161,6 +161,30 @@ def create_named_secret(name: str, **fields) -> Secret:
         return Secret.objects.create(name=f"{name} ({generate_id(8)})", **fields)
 
 
+def grant_secret_like_upgrade(
+    model: type[models.Model], secret: Secret, value_permission: str | None
+) -> None:
+    """Give roles with access to every object of `model` the access to a new secret of one of
+    its objects that the credential migrations gave them on existing secrets.
+
+    `value_permission` is the `value_permission` of the model's migration. Keep in sync with
+    `preserve_permissions` in migrations/_permissions.py. Initial permissions cover the user
+    who creates the object.
+    """
+    model_name = model._meta.model_name
+    grants = {f"view_{model_name}": ["view_secret"], f"change_{model_name}": ["view_secret"]}
+    if value_permission:
+        grants[f"{value_permission}_{model_name}"].append("view_secret_value")
+    for granted in RoleModelPermission.objects.filter(
+        content_type=ContentType.objects.get_for_model(model),
+        permission__codename__in=grants,
+    ).select_related("role", "permission"):
+        granted.role.assign_perms(
+            [f"authentik_crypto_secrets.{perm}" for perm in grants[granted.permission.codename]],
+            secret,
+        )
+
+
 class GeneratedSecretsMixin:
     """Create the secrets a model needs when it is saved without them.
 
@@ -182,33 +206,11 @@ class GeneratedSecretsMixin:
             for field in missing:
                 label, generate = self.generated_secrets[field]
                 secret = create_named_secret(f"{self.name} {label}", secret_value=generate())
-                self.grant_generated_secret(field, secret)
+                # The migrations go by the declaring model, so a proxy provider's client
+                # secret follows OAuth2 provider permissions.
+                owner = self._meta.get_field(field).model
+                grant_secret_like_upgrade(owner, secret, owner.secret_value_permission)
                 setattr(self, field, secret)
             if missing and (update_fields := kwargs.get("update_fields")) is not None:
                 kwargs["update_fields"] = {*update_fields, *missing}
             return super().save(*args, **kwargs)
-
-    def grant_generated_secret(self, field: str, secret: Secret) -> None:
-        """Give roles with access to every object of the model that declares `field` the
-        access to a new secret that the credential migrations gave them on existing secrets.
-
-        The migrations go by the declaring model, so a proxy provider's client secret follows
-        OAuth2 provider permissions. Keep in sync with `preserve_permissions` in
-        migrations/_permissions.py. Initial permissions cover the user who creates the object.
-        """
-        owner = self._meta.get_field(field).model
-        model_name = owner._meta.model_name
-        grants = {f"view_{model_name}": ["view_secret"], f"change_{model_name}": ["view_secret"]}
-        if owner.secret_value_permission:
-            grants[f"{owner.secret_value_permission}_{model_name}"].append("view_secret_value")
-        for granted in RoleModelPermission.objects.filter(
-            content_type=ContentType.objects.get_for_model(owner),
-            permission__codename__in=grants,
-        ).select_related("role", "permission"):
-            granted.role.assign_perms(
-                [
-                    f"authentik_crypto_secrets.{perm}"
-                    for perm in grants[granted.permission.codename]
-                ],
-                secret,
-            )
