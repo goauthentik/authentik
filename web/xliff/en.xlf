@@ -10325,6 +10325,18 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="permissions.delete.button">
   <source>Delete object permission</source>
 </trans-unit>
+<trans-unit id="s679140171e483ff5">
+  <source>Changes to system settings will take up to <x id="0" equiv-text="${formatted}"/> to become effective.</source>
+</trans-unit>
+<trans-unit id="se7820c791adf0953">
+  <source>Changes to brands will take up to <x id="0" equiv-text="${formatted}"/> to become effective.</source>
+</trans-unit>
+<trans-unit id="sde7cf26113f800fb">
+  <source>Selected providers can exchange their JWTs for a SAML Response of this provider via token exchange.</source>
+</trans-unit>
+<trans-unit id="s42cebc8c4e28982e">
+  <source>This security key is already registered on your account. Touch a different key to add it.</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
