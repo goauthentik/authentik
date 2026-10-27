@@ -567,8 +567,19 @@ class TestConfig(TestCase):
         config = ConfigLoader()
         config.set("postgresql.use_pool", True)
         conf = django_db_config(config)
-        self.assertTrue(conf["default"]["OPTIONS"]["pool"])
+        self.assertEqual(conf["default"]["OPTIONS"]["pool"], {"max_size": 10})
         self.assertEqual(conf["default"]["CONN_MAX_AGE"], 0)
+        # Long-lived connections (LISTEN, advisory locks) must not hold pool slots
+        self.assertTrue(postgresql_direct_db_enabled(config))
+        self.assertFalse(conf[DIRECT_DB_ALIAS]["OPTIONS"]["pool"])
+
+    def test_db_pool_worker_threads(self):
+        """Test DB Config with pool sized for worker threads"""
+        config = ConfigLoader()
+        config.set("postgresql.use_pool", True)
+        config.set("worker.threads", 16)
+        conf = django_db_config(config)
+        self.assertEqual(conf["default"]["OPTIONS"]["pool"], {"max_size": 17})
 
     def test_db_pool_options(self):
         """Test DB Config with pool options"""

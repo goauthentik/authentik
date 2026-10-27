@@ -181,6 +181,33 @@ These settings control connection persistence and behavior, which is particularl
 
     Set this to `true` when using transaction-based pooling, or when you encounter cursor-related errors behind a pooler. Server-side cursors maintain state across queries and are not compatible with transaction pooling. See [Django's documentation](https://docs.djangoproject.com/en/stable/ref/databases/#transaction-pooling-and-server-side-cursors).
 
+- `AUTHENTIK_POSTGRESQL__USE_POOL`
+
+    Enables a built-in connection pool in each authentik server and worker process.
+
+    Default: `false`
+
+    The pool can't be combined with persistent connections, so leave `CONN_MAX_AGE` at `0`. Long-lived connections used for notifications and locks bypass the pool and are opened separately. See [Django's documentation on connection pools](https://docs.djangoproject.com/en/stable/ref/databases/#postgresql-pool).
+
+- `AUTHENTIK_POSTGRESQL__POOL_OPTIONS`
+
+    Options for the connection pool, passed to [psycopg's `ConnectionPool`](https://www.psycopg.org/psycopg3/docs/api/pool.html#psycopg_pool.ConnectionPool), for example `min_size`, `max_size`, and `timeout`. The value must be a base64-encoded JSON dictionary.
+
+    Default: `max_size` set to 10, or to `AUTHENTIK_WORKER__THREADS` + 1 if that's larger. Other options use psycopg's defaults, such as `min_size` of 4 and `timeout` of 30 seconds.
+
+    Each server and worker process has its own pool, and these options apply to all of them. Size `max_size` for the role that needs the most connections:
+    - Server: the number of concurrent requests you expect per server process (`AUTHENTIK_WEB__WORKERS` processes per server).
+    - Worker: at least `AUTHENTIK_WORKER__THREADS` + 1 per worker process (`AUTHENTIK_WORKER__PROCESSES` processes per worker).
+
+    Make sure the total stays below PostgreSQL's `max_connections` (100 by default). Each server process also opens 1 connection outside the pool, and each worker process opens 2:
+
+    ```
+    server replicas × web workers × (max_size + 1)
+      + worker replicas × worker processes × (max_size + 2)
+    ```
+
+    If requests fail with `couldn't get a connection after 30.00 sec`, the pool is too small for the load. Increase `max_size`, keeping the total above within `max_connections`.
+
 ### Advanced Settings
 
 - `AUTHENTIK_POSTGRESQL__DEFAULT_SCHEMA`

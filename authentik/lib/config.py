@@ -337,9 +337,14 @@ def postgresql_direct_db_enabled(config: ConfigLoader | None = None) -> bool:
     state (LISTEN/NOTIFY, advisory locks) route through it so an operator can
     put a transaction-pooling pooler in front of ``postgresql.host`` without
     breaking them.
+
+    Also True when the connection pool is enabled: those long-lived connections would
+    otherwise permanently hold slots in the pool and starve it.
     """
     if not config:
         config = CONFIG
+    if config.get_bool("postgresql.use_pool", False):
+        return True
     return any(
         config.get(f"postgresql.direct.{key}", default=UNSET) is not UNSET
         for key in (
@@ -441,7 +446,9 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
     if use_pool:
         pool_options = config.get_dict_from_b64_json("postgresql.pool_options", True)
         if not pool_options:
-            pool_options = True
+            # psycopg's default max_size of 4 is too small for concurrent requests, and must
+            # be larger than the number of worker threads
+            pool_options = {"max_size": max(10, config.get_int("worker.threads", 2) + 1)}
 
     conn_options = config.get_dict_from_b64_json("postgresql.conn_options", default={})
 
