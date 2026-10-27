@@ -1,0 +1,39 @@
+version: 1
+metadata:
+    name: Test - Continuous login source
+entries:
+    # An unreachable source, so a tab that redirects to it never comes back.
+    - model: authentik_sources_oauth.oauthsource
+      id: source
+      identifiers:
+          slug: test-continuous-login-source
+      attrs:
+          name: Test continuous login source
+          provider_type: openidconnect
+          consumer_key: test
+          consumer_secret: test
+          authorization_url: http://127.0.0.1:9/authorize
+          access_token_url: http://127.0.0.1:9/token
+          profile_url: http://127.0.0.1:9/userinfo
+    # No user fields and a single source, so the identification stage redirects on its own.
+    - model: authentik_stages_identification.identificationstage
+      id: identification
+      identifiers:
+          name: test-continuous-login-source-identification
+      attrs:
+          user_fields: []
+          sources:
+              - !KeyOf source
+    - model: authentik_flows.flow
+      id: flow
+      identifiers:
+          slug: test-continuous-login-source
+      attrs:
+          name: Test continuous login source
+          title: Test continuous login source
+          designation: authentication
+    - model: authentik_flows.flowstagebinding
+      identifiers:
+          target: !KeyOf flow
+          stage: !KeyOf identification
+          order: 0
