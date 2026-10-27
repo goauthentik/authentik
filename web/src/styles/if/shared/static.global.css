@@ -1,6 +1,6 @@
 /* Entrypoint file for styles used by the static Django templates */
 
-@import "#styles/layers.css";
+@import "#styles/if/shared/layers.css";
 
 /*
  * The `static` imports apply only to the handful of older Django templates that do *not* use the
@@ -38,5 +38,5 @@
 @import "#elements/Progress_impl/Progress.root.css" layer(components);
 @import "#elements/ak-drawer/ak-drawer.root.css" layer(components);
 @import "#elements/locale/ak-locale-select.css" layer(components);
-@import "#styles/authentik/components/Login/login-tokens.css" layer(components);
-@import "#styles/authentik/components/Login/login-layout.css" layer(components);
+@import "#styles/if/flow/tokens.css" layer(components);
+@import "#styles/if/flow/layout.css" layer(components);

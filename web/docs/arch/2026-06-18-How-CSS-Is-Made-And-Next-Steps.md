@@ -19,16 +19,16 @@ This script is a top-level run via `npm run build`.
 
 ## The endpoint files:
 
-- `interface.global.css`: The top-level stylesheet that is used by the User and Admin applications.
-- `flows.global.css`: The top-level stylesheet that is used by the Flow application
-- `static.global.css`: The top-level stylesheet used by a handful of Django static pages
+- `if/authenticated/index.global.css`: The top-level stylesheet that is used by the User and Admin applications.
+- `if/flow/index.global.css`: The top-level stylesheet that is used by the Flow application
+- `if/shared/static.global.css`: The top-level stylesheet used by a handful of Django static pages
 
 Each endpoint file consists of a collection of imports and overrides. `static` is not a huge
 concern at the moment, but `interface` and `flows` matter:
 
 ## Interface load pattern:
 
-The `interface.global.css` file is almost entirely imports:
+The `if/authenticated/index.global.css` file is almost entirely imports:
 
 1. @patternfly/patternfly/base/patternfly-common.css — PF reset + base element rules + utilities
 2. @patternfly/.../patternfly-globals.css — the --pf-global--\* custom properties at :root
@@ -56,11 +56,11 @@ The `interface.global.css` file is almost entirely imports:
 
 ## Flow load pattern:
 
-The `flow.global.css` file duplicates (not imports!) the exact same files as `interface`, then adds:
+The `if/flow/index.global.css` file duplicates (not imports!) the exact same files as `if/authenticated/index.global.css`, then adds:
 
 14. #elements/ak-drawer/ak-drawer.root.css (after the base block)
 15. @patternfly/.../components/BackgroundImage/background-image.css
-16. #elements/locale/ak-locale-select.css — imported twice (flows.global.css:24-25)
+16. #elements/locale/ak-locale-select.css — imported twice (if/flow/index.global.css:24-25)
 17. #flow/FlowExecutor.css — which is also bundled into the shadow root via FlowExecutor.ts:11
 18. A large block of inline rules: the --ak-c-login--\* token system, the PF4 .pf-c-login overrides
     (with !important on container padding, flows.global.css:139-140), and the [name="flow-links"]

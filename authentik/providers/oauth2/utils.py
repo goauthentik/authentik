@@ -238,7 +238,11 @@ def provider_from_request(request: HttpRequest) -> tuple[OAuth2Provider | None, 
     client_id, client_secret = extract_client_auth(request)
     if client_id == client_secret == "":
         return None, "", ""
-    provider: OAuth2Provider | None = OAuth2Provider.objects.filter(client_id=client_id).first()
+    provider: OAuth2Provider | None = (
+        OAuth2Provider.objects.select_related("client_secret_ref")
+        .filter(client_id=client_id)
+        .first()
+    )
     return provider, client_id, client_secret
 
 

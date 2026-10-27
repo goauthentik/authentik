@@ -6,9 +6,11 @@ from json import JSONDecodeError, dumps, loads
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, models, transaction
 from django.utils.translation import gettext_lazy as _
+from guardian.models import RoleModelPermission
 from yaml import YAMLError, safe_load
 
 from authentik.admin.utils import get_system_settings
@@ -101,10 +103,9 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
             secret_value_validating.send(sender=Secret, secret=self, value=value)
 
     def replace_value(self, value: str, request: Request | None = None) -> None:
-        """Replace and audit the value, then signal consumers."""
+        """Replace and audit a value that `validate_value` accepted, then signal consumers."""
         if value == self.secret_value:
             return
-        self.validate_value(value)
         with transaction.atomic():
             self.secret_value = value
             with audit_ignore():
@@ -127,6 +128,7 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
         value = generate_secret_value(
             max(len(self.secret_value), get_system_settings().default_token_length)
         )
+        self.validate_value(value)
         self.replace_value(value, request)
         return value
 
@@ -149,25 +151,30 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
 
 
 def create_named_secret(name: str, **fields) -> Secret:
-    """Create a secret with a readable, collision-safe name."""
-    for suffix in range(1, 100):
-        candidate = name if suffix == 1 else f"{name} ({suffix})"
-        try:
-            with transaction.atomic():
-                return Secret.objects.create(name=candidate, **fields)
-        except IntegrityError:
-            continue
-    raise IntegrityError(f"Could not allocate a name for {name!r}")
+    """Create a secret called `name`, with a random suffix when that name is taken.
+
+    Generated secrets outlive the objects they were created for, so a name can be taken
+    any number of times, for example by a client that registers again after being deleted.
+    """
+    try:
+        with transaction.atomic():
+            return Secret.objects.create(name=name, **fields)
+    except IntegrityError:
+        return Secret.objects.create(name=f"{name} ({generate_id(8)})", **fields)
 
 
 class GeneratedSecretsMixin:
     """Create the secrets a model needs when it is saved without them.
 
     `generated_secrets` maps each reference field to the suffix of the secret's name and
-    the function that generates its value.
+    the function that generates its value. `secret_value_permission` is the permission
+    on the model that declares a field, "view" or "change", that let roles read the
+    credential through the API before it moved to a secret. It matches `value_permission`
+    in that model's migration.
     """
 
     generated_secrets: dict[str, tuple[str, Callable[[], str]]] = {}
+    secret_value_permission: str | None = None
 
     def save(self, *args, **kwargs):
         missing = [
@@ -177,7 +184,33 @@ class GeneratedSecretsMixin:
             for field in missing:
                 label, generate = self.generated_secrets[field]
                 secret = create_named_secret(f"{self.name} {label}", secret_value=generate())
+                self.grant_generated_secret(field, secret)
                 setattr(self, field, secret)
             if missing and (update_fields := kwargs.get("update_fields")) is not None:
                 kwargs["update_fields"] = {*update_fields, *missing}
             return super().save(*args, **kwargs)
+
+    def grant_generated_secret(self, field: str, secret: Secret) -> None:
+        """Give roles with access to every object of the model that declares `field` the
+        access to a new secret that the credential migrations gave them on existing secrets.
+
+        The migrations go by the declaring model, so a proxy provider's client secret follows
+        OAuth2 provider permissions. Keep in sync with `preserve_permissions` in
+        migrations/_permissions.py. Initial permissions cover the user who creates the object.
+        """
+        owner = self._meta.get_field(field).model
+        model_name = owner._meta.model_name
+        grants = {f"view_{model_name}": ["view_secret"], f"change_{model_name}": ["view_secret"]}
+        if owner.secret_value_permission:
+            grants[f"{owner.secret_value_permission}_{model_name}"].append("view_secret_value")
+        for granted in RoleModelPermission.objects.filter(
+            content_type=ContentType.objects.get_for_model(owner),
+            permission__codename__in=grants,
+        ).select_related("role", "permission"):
+            granted.role.assign_perms(
+                [
+                    f"authentik_crypto_secrets.{perm}"
+                    for perm in grants[granted.permission.codename]
+                ],
+                secret,
+            )
