@@ -5,8 +5,6 @@ import {
     type SidebarItem,
     type SidebarItemWithChildren,
 } from "./types";
-import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { AKElement } from "#elements/Base";
 import Styles from "#elements/sidebar/Sidebar.css";
@@ -209,7 +207,6 @@ export class Sidebar extends AKElement {
             .with(PKids, ({ children }) => this.renderWithChildren({ ...entry, children }, depth))
             .with(PPath, ({ path }) => this.renderPath({ ...entry, path }, depth))
             .otherwise(() => {
-            console.log(entry);
 
                 throw new Error("Sidebar entry without path or children should not happen.");
         });

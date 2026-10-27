@@ -7,16 +7,7 @@ import "#elements/commands/ak-command-palette-user-modal";
 import "#components/notifications/APIDrawer";
 import "#components/notifications/NotificationDrawer";
 import "#components/ak-page-navbar";
-import "#admin/navigation/VersionDetails";
-import { createAdminSidebarEntries } from "./navigation/sidebarEntries";
-import {
-    findSidebarSectionByRoute,
-    resolveSidebarEntries,
-    ExtendedSidebarItem,
-    findCurrentSidebarKey,
-} from "./navigation/sidebarTools";
 import "#admin/sidebar/VersionDetails";
-
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
@@ -115,7 +106,6 @@ export class AdminInterface extends WithLicenseSummary(
         const canEnterprise = this.can(CapabilitiesEnum.IsEnterprise);
 
         const entries = createAdminSidebarEntries(canEnterprise);
-
         return resolveSidebarEntries(entries, {
             canEnterprise,
             // Assume licensed until the summary loads so the notice doesn't flash.

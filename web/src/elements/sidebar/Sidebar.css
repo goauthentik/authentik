@@ -25,7 +25,6 @@
     --ak-c-sidebar__row__toggle-icon--Rotate: var(
         --ak-c-sidebar__row--m-expanded__toggle-icon--Rotate
     );
-
 }
 
 [part~="row"],
@@ -57,7 +56,9 @@
 
 :is(.ak-c-sidebar__row, [part~="row"]):hover {
     color: var(--pf-c-nav__link--hover--Color);
-    --ak-c-sidebar__link--BackgroundColor: var(--ak-c-sidebar__link--hover--BackgroundColor);
+    --ak-c-sidebar__link--BackgroundColor: var(
+        --ak-c-sidebar__link--hover--BackgroundColor
+    );
     --ak-c-sidebar__rail--BackgroundColor: var(
         --ak-c-sidebar__rail--BackgroundColor--hover
     );
@@ -93,7 +94,9 @@
 
 :is(.ak-c-sidebar__row, [part~="row"])[part~="current"] {
     color: var(--ak-c-sidebar__link--m-current--Color);
-    --ak-c-sidebar__link--BackgroundColor: var(--ak-c-sidebar__link--active--BackgroundColor);
+    --ak-c-sidebar__link--BackgroundColor: var(
+        --ak-c-sidebar__link--active--BackgroundColor
+    );
     --ak-c-sidebar__rail--BackgroundColor: var(
         --ak-c-sidebar__rail--BackgroundColor--active
     );
