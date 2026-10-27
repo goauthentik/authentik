@@ -43,6 +43,7 @@ from authentik.lib.models import (
     ExpiringModel,
     InternallyManagedMixin,
     SerializerModel,
+    SimpleThroughModel,
 )
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.saml.models import SAMLNameIDPolicy
@@ -265,6 +266,18 @@ class SAMLProvider(Provider):
     sign_logout_request = models.BooleanField(default=False)
     sign_logout_response = models.BooleanField(default=False)
 
+    jwt_federation_providers = models.ManyToManyField(
+        "authentik_providers_oauth2.OAuth2Provider",
+        blank=True,
+        default=None,
+        related_name="saml_federation_providers",
+        through="SAMLProviderJWTFederationProvider",
+        help_text=_(
+            "OAuth2 providers which can exchange their JWTs for a SAML Response "
+            "of this provider via token exchange."
+        ),
+    )
+
     @property
     def launch_url(self) -> str | None:
         """Use IDP-Initiated SAML flow as launch URL"""
@@ -296,6 +309,24 @@ class SAMLProvider(Provider):
     class Meta:
         verbose_name = _("SAML Provider")
         verbose_name_plural = _("SAML Providers")
+
+
+class SAMLProviderJWTFederationProvider(SimpleThroughModel):
+    saml_provider = models.ForeignKey(SAMLProvider, on_delete=models.CASCADE)
+    oauth2_provider = models.ForeignKey(
+        "authentik_providers_oauth2.OAuth2Provider", on_delete=models.CASCADE
+    )
+
+    class Meta:
+        unique_together = (("saml_provider", "oauth2_provider"),)
+        verbose_name = _("SAML Provider JWT Federation Provider")
+        verbose_name_plural = _("SAML Provider JWT Federation Providers")
+
+    def __str__(self):
+        return (
+            f"SAMLProviderJWTFederationProvider for SAMLProvider {self.saml_provider_id} "
+            f"and OAuth2Provider {self.oauth2_provider_id}."
+        )
 
 
 class SAMLPropertyMapping(PropertyMapping):
