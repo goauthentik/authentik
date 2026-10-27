@@ -51,9 +51,7 @@ The [Authenticator Validation stage](../../add-secure-apps/flows-stages/stages/a
 
 authentik can now bootstrap and import users with pre-hashed Django passwords, making automated installs and migrations safer by avoiding plaintext passwords in deployment workflows.
 
-Use [`AUTHENTIK_BOOTSTRAP_PASSWORD_HASH`](../../install-config/automated-install.mdx#authentik_bootstrap_password_hash) for the initial `akadmin` password, generate hashes with the new `hash_password` command, or import hashes later through blueprints and the user password-hash API.
-
-Hashed-password imports update authentik's local password verifier only. Because authentik never receives the raw password, these imports are not written back to LDAP or Kerberos sources.
+Use [`AUTHENTIK_BOOTSTRAP_PASSWORD_HASH`](../../install-config/automated-install.mdx#authentik_bootstrap_password_hash) for the initial `akadmin` password. Refer to [Password hashes](../../core/password-hashes.mdx) for hash generation and other import methods.
 
 ### Command Palette
 
