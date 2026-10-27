@@ -17,13 +17,15 @@ import {
     FlowLayoutEnum,
 } from "@goauthentik/api";
 
+export interface FlowMeta {
+    layout: FlowLayoutEnum;
+    title?: string;
+    background?: string;
+}
+
 export interface GlobalAuthentik {
     locale: TargetLanguageTag;
-    flow?: {
-        layout: FlowLayoutEnum;
-        title?: string;
-        background?: string;
-    };
+    flow?: FlowMeta;
     config: Config;
     brand: CurrentBrand;
     versionFamily: string;
