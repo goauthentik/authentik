@@ -8,7 +8,7 @@ authentik's document CSS is ordered with [cascade layers](https://developer.mozi
 
 ## The layer order
 
-One declaration, in `web/src/styles/layers.css`, defines the order for the whole document. It is the first import in every entrypoint:
+One declaration, in `web/src/styles/if/shared/layers.css`, defines the order for the whole document. It is the first import in every entrypoint:
 
 ```css
 @layer reset, vendor, components, theme, mode, brand;
@@ -32,8 +32,8 @@ Lowest precedence first:
 Layers are applied **only in the entrypoint files**, on the import itself:
 
 ```css
-/* web/src/styles/interface.global.css */
-@import "#styles/layers.css";
+/* web/src/styles/if/authenticated/index.global.css */
+@import "#styles/if/shared/layers.css";
 
 @import "#styles/global/vendor/patternfly.css" layer(vendor);
 @import "@goauthentik/fonts/faces.css" layer(vendor);
@@ -43,7 +43,7 @@ Layers are applied **only in the entrypoint files**, on the import itself:
 @import "#styles/authentik/components/Placeholder/placeholder.css" layer(components);
 ```
 
-The three entrypoints — `interface.global.css` (Admin and User), `flows.global.css` (Flow), and `static.global.css` (Django templates) — contain only `@import` statements. Individual stylesheets never wrap themselves in `@layer`, which keeps every precedence decision in one reviewable file per bundle.
+The three entrypoints — `if/authenticated/index.global.css` (Admin and User), `if/flow/index.global.css` (Flow), and `if/shared/static.global.css` (Django templates) — contain only `@import` statements. Individual stylesheets never wrap themselves in `@layer`, which keeps every precedence decision in one reviewable file per bundle.
 
 Import order still matters _within_ a single layer. Across layers it does not: a later layer always wins, regardless of import order or selector specificity.
 

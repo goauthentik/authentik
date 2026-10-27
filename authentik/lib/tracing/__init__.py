@@ -16,9 +16,14 @@ _enabled = CONFIG.get_bool("error_reporting.enabled", False)
 _otel_tracer = (
     OpenTelemetryTracer() if _enabled and CONFIG.get("error_reporting.otel_endpoint") else None
 )
-_sentry_tracer = SentryTracer() if _enabled and CONFIG.get("error_reporting.sentry_dsn") else None
 # Every configured backend gets exceptions; only one of them handles spans/tags, since
-# authentik only ever needs one trace tree and picking one avoids double request overhead
+# authentik only ever needs one trace tree and picking one avoids double request overhead.
+# With both configured, Sentry only reports errors and OTel does all tracing
+_sentry_tracer = (
+    SentryTracer(tracing=_otel_tracer is None)
+    if _enabled and CONFIG.get("error_reporting.sentry_dsn")
+    else None
+)
 _error_tracers: list[Tracer] = [t for t in (_otel_tracer, _sentry_tracer) if t is not None]
 _active_tracer: Tracer = _otel_tracer or _sentry_tracer or Tracer()
 

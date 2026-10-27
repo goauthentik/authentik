@@ -21,6 +21,7 @@ from authentik.common.oauth.constants import (
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import PermissionDict
+from authentik.lib.tracing import active_tracer
 from authentik.providers.oauth2.models import (
     BaseGrantModel,
     OAuth2Provider,
@@ -64,6 +65,7 @@ class UserInfoView(View):
                 )
         return scope_descriptions
 
+    @active_tracer().instrument()
     def get_claims(self, provider: OAuth2Provider, token: BaseGrantModel) -> dict[str, Any]:
         """Get a dictionary of claims from scopes that the token
         requires and are assigned to the provider."""

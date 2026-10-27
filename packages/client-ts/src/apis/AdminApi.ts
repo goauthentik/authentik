@@ -10,20 +10,20 @@
  * Do not edit the class manually.
  */
 
-import { type App, AppFromJSON } from "../models/App";
-import { type FileList, FileListFromJSON } from "../models/FileList";
+import { type App, AppFromJSON } from "../models/App.js";
+import { type FileList, FileListFromJSON } from "../models/FileList.js";
 import {
     type PatchedSettingsRequest,
     PatchedSettingsRequestToJSON,
-} from "../models/PatchedSettingsRequest";
-import { type Settings, SettingsFromJSON } from "../models/Settings";
-import { type SettingsRequest, SettingsRequestToJSON } from "../models/SettingsRequest";
-import { type SystemInfo, SystemInfoFromJSON } from "../models/SystemInfo";
-import { type UsageEnum } from "../models/UsageEnum";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import { type Version, VersionFromJSON } from "../models/Version";
-import { type VersionHistory, VersionHistoryFromJSON } from "../models/VersionHistory";
-import * as runtime from "../runtime";
+} from "../models/PatchedSettingsRequest.js";
+import { type Settings, SettingsFromJSON } from "../models/Settings.js";
+import { type SettingsRequest, SettingsRequestToJSON } from "../models/SettingsRequest.js";
+import { type SystemInfo, SystemInfoFromJSON } from "../models/SystemInfo.js";
+import { type UsageEnum } from "../models/UsageEnum.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
+import { type Version, VersionFromJSON } from "../models/Version.js";
+import { type VersionHistory, VersionHistoryFromJSON } from "../models/VersionHistory.js";
+import * as runtime from "../runtime.js";
 
 export interface AdminFileCreateRequest {
     file: Blob;
