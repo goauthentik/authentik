@@ -20,6 +20,8 @@
         "**.docusaurus",
         "**.netlify",
         "**.cache",
-        "**/reference/**/*.mdx"
+        "**/reference/**/*.mdx",
+        // The search plugin stages the sqlite-wasm runtime and its worker here on every build.
+        "**/static/search"
     ]
 }

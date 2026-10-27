@@ -1,3 +1,7 @@
 # Headers for static files
 /*
   X-Frame-Options: DENY
+
+# The sqlite-wasm runtime behind the search modal sits under a directory named for its version.
+/search/:runtime/*
+  Cache-Control: public, max-age=31536000, immutable

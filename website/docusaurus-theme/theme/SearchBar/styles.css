@@ -1,0 +1,56 @@
+/*
+ * The control and the modal are rendered with DocSearch's own markup and stylesheet, so they look
+ * as the Algolia modal did. The rules here are the ones the Algolia theme added on top of that
+ * stylesheet, plus the resets a native <dialog> needs to stand in for DocSearch's fixed container.
+ */
+
+:root {
+    --docsearch-primary-color: var(--ifm-color-primary);
+    --docsearch-text-color: var(--ifm-font-color-base);
+}
+
+.DocSearch-Button {
+    margin: 0;
+    transition: all var(--ifm-transition-fast) var(--ifm-transition-timing-default);
+}
+
+.DocSearch-Container {
+    z-index: calc(var(--ifm-z-index-fixed) + 1);
+}
+
+.DocSearch-Button-Key {
+    padding: 0;
+}
+
+/* The dialog paints the overlay itself, so the user agent's dialog box and backdrop go. */
+dialog.DocSearch-Container {
+    inset: 0;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    color: var(--docsearch-text-color);
+    border: 0;
+}
+
+dialog.DocSearch-Container::backdrop {
+    background: transparent;
+}
+
+/* The search input's own clear control stands in for DocSearch's "Clear the query" button. */
+.DocSearch-Input::-webkit-search-cancel-button {
+    display: block;
+    appearance: auto;
+    cursor: pointer;
+}
+
+/* The live region announces results without taking the place of the logo in the footer. */
+.DocSearch-Status {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    white-space: nowrap;
+    clip-path: inset(50%);
+}
