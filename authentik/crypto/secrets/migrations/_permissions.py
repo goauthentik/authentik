@@ -14,8 +14,8 @@ def preserve_permissions(apps, schema_editor, app_label, model_name, *, value_pe
     permissions are extended the same way, so secrets created together with a new
     object stay visible to its creator.
 
-    Keep in sync with `GeneratedSecretsMixin.grant_generated_secret`, which applies the
-    same grants to secrets generated for new objects.
+    Keep in sync with `grant_secret_like_upgrade` in models.py, which applies the same
+    grants to secrets authentik generates for new objects.
     """
     alias = schema_editor.connection.alias
     ContentType = apps.get_model("contenttypes", "ContentType")
