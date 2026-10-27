@@ -283,7 +283,7 @@ class TestEventTransports(TestCase):
             name=generate_id(), mode=TransportMode.WEBHOOK, webhook_url_ref=secret
         )
         with self.assertRaises(ValidationError):
-            secret.replace_value("not a URL")
+            secret.validate_value("not a URL")
         with self.assertRaises(ValidationError):
             secret.rotate()
         secret.refresh_from_db()
