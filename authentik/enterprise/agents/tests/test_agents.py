@@ -38,7 +38,7 @@ class AgentTests(APITestCase):
         )
         self.assertEqual(res.status_code, 403)
 
-        res = self.client.post(reverse("authentik_api:agent-list"), data={})
+        res = self.client.post(reverse("authentik_api:agent-list"), data={"parent": user.pk})
         self.assertEqual(res.status_code, 403)
 
     def test_self_service_create_for_self(self):
@@ -50,7 +50,7 @@ class AgentTests(APITestCase):
 
         res = self.client.post(
             reverse("authentik_api:agent-list"),
-            data={"label": "my-agent"},
+            data={"parent": user.pk, "label": "my-agent"},
         )
         self.assertEqual(res.status_code, 201, res.content)
         body = res.json()
@@ -99,7 +99,7 @@ class AgentTests(APITestCase):
         res = self.client.post(
             reverse("authentik_api:agent-list"),
             # Ask for the owner's access to be mirrored; self-service must ignore it
-            data={"policy_behavior": ActorPolicyInheritance.MIRROR},
+            data={"parent": user.pk, "policy_behavior": ActorPolicyInheritance.MIRROR},
         )
         self.assertEqual(res.status_code, 201, res.content)
         agent = Agent.objects.get(parent=user)
@@ -134,7 +134,7 @@ class AgentTests(APITestCase):
         res = self.client.post(
             reverse("authentik_api:agent-list"),
             # Attempt to create a standing, never-expiring identity
-            data={"expiring": False, "expires": "2099-01-01T00:00:00Z"},
+            data={"parent": user.pk, "expiring": False, "expires": "2099-01-01T00:00:00Z"},
         )
         self.assertEqual(res.status_code, 201, res.content)
         agent = Agent.objects.get(parent=user)
@@ -153,7 +153,7 @@ class AgentTests(APITestCase):
         res = self.client.post(
             reverse("authentik_api:agent-list"),
             # No parent -> owned by the requester; try to opt out of expiry
-            data={"expiring": False, "expires": "2099-01-01T00:00:00Z"},
+            data={"parent": admin.pk, "expiring": False, "expires": "2099-01-01T00:00:00Z"},
         )
         self.assertEqual(res.status_code, 201, res.content)
         agent = Agent.objects.get(parent=admin)
@@ -237,7 +237,7 @@ class AgentTests(APITestCase):
 
         res = self.client.post(
             reverse("authentik_api:agent-list"),
-            data={"label": "my-agent"},
+            data={"parent": user.pk, "label": "my-agent"},
         )
         self.assertEqual(res.status_code, 201, res.content)
         agent = Agent.objects.get(parent=user)
@@ -322,3 +322,19 @@ class AgentTests(APITestCase):
         user.delete()
         agent.refresh_from_db()
         self.assertIsNone(agent.parent)
+
+    def test_system_agent(self):
+        """Without a parent, an agent is a system agent, which only admins can create"""
+        user = create_test_user()
+        self._grant_self_service_perm(user)
+        self.client.force_login(user)
+        res = self.client.post(reverse("authentik_api:agent-list"), data={})
+        self.assertEqual(res.status_code, 403, res.content)
+
+        admin = create_test_admin_user()
+        self.client.force_login(admin)
+        res = self.client.post(
+            reverse("authentik_api:agent-list"), data={"parent": None}, format="json"
+        )
+        self.assertEqual(res.status_code, 201, res.content)
+        self.assertIsNone(Agent.objects.get(pk=res.json()["agent"]["pk"]).parent)

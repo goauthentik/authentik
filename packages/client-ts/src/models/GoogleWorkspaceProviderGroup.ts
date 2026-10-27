@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { PartialGroup } from "./PartialGroup";
-import { PartialGroupFromJSON } from "./PartialGroup";
+import type { PartialGroup } from "./PartialGroup.js";
+import { PartialGroupFromJSON } from "./PartialGroup.js";
 
 /**
  * GoogleWorkspaceProviderGroup Serializer

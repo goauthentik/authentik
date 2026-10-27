@@ -35,6 +35,8 @@
 
 #region Core
 /core/geoip                                                 /install-config/geoip/ 301!
+/core/glossary/*                                            / 301!
+/core/glossary                                              / 301!
 /installation/*                                             /install-config/:splat 301!
 #endregion
 

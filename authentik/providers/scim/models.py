@@ -308,6 +308,8 @@ class SCIMProviderGroupPropertyMapping(SimpleThroughModel):
 class SCIMMapping(PropertyMapping):
     """Map authentik data to outgoing SCIM requests"""
 
+    expression_allowed_types = [dict]
+
     @property
     def component(self) -> str:
         return "ak-property-mapping-provider-scim-form"

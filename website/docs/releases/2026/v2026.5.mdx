@@ -51,9 +51,7 @@ The [Authenticator Validation stage](../../add-secure-apps/flows-stages/stages/a
 
 authentik can now bootstrap and import users with pre-hashed Django passwords, making automated installs and migrations safer by avoiding plaintext passwords in deployment workflows.
 
-Use [`AUTHENTIK_BOOTSTRAP_PASSWORD_HASH`](../../install-config/automated-install.mdx#authentik_bootstrap_password_hash) for the initial `akadmin` password, generate hashes with the new `hash_password` command, or import hashes later through blueprints and the user password-hash API.
-
-Hashed-password imports update authentik's local password verifier only. Because authentik never receives the raw password, these imports are not written back to LDAP or Kerberos sources.
+Use [`AUTHENTIK_BOOTSTRAP_PASSWORD_HASH`](../../install-config/automated-install.mdx#authentik_bootstrap_password_hash) for the initial `akadmin` password. Refer to [Password hashes](../../core/password-hashes.mdx) for hash generation and other import methods.
 
 ### Command Palette
 
@@ -662,6 +660,17 @@ This release has been skipped.
 - web/flows: fix missing required flag on password input (cherry-pick #24831 to version-2026.5) (#24836)
 - web: preserve custom event action labels (cherry-pick #25655 to version-2026.5) (#25834)
 - worker: fix healthcheck paths (cherry-pick #24481 to version-2026.5) (#25677)
+
+## Fixed in 2026.5.8
+
+- core: bump rustls (cherry-pick #26142 to version-2026.5) (#26144)
+- lib/expression: fix PickleError due to resolver match when using ak_call_policy (cherry-pick #25763 to version-2026.5) (#26071)
+- packages/django-channels-postgres: refresh pool credentials on connection attempts (cherry-pick #26505 to version-2026.5) (#26549)
+- root: bump cert-related deps due to emudhra (cherry-pick #27068 to version-2026.5) (#27070)
+- root: don't fail websocket connections with non-UTF-8 headers (cherry-pick #26688 to version-2026.5) (#26707)
+- stages/consent: fix integrity error when re-consenting after consent expired (cherry-pick #26866 to version-2026.5) (#26871)
+- web/flows: check if localStorage is available for continuous login (cherry-pick #26267 to version-2026.5) (#26639)
+- web/source/flows: fix flicker after webauthn (cherry-pick #25454 to version-2026.5) (#25835)
 
 ## API Changes
 

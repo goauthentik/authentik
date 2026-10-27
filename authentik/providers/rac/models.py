@@ -175,6 +175,8 @@ class RACProvider(OutpostModel, Provider):
 class RACPropertyMapping(PropertyMapping):
     """Configure settings for remote access to devices."""
 
+    expression_allowed_types = [dict]
+
     static_settings = models.JSONField(default=dict)
 
     def evaluate(self, user: User | None, request: HttpRequest | None, **kwargs) -> Any:

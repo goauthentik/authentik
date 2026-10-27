@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { EventMatcherPolicy } from "./EventMatcherPolicy";
-import { EventMatcherPolicyFromJSON, EventMatcherPolicyToJSON } from "./EventMatcherPolicy";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { EventMatcherPolicy } from "./EventMatcherPolicy.js";
+import { EventMatcherPolicyFromJSON, EventMatcherPolicyToJSON } from "./EventMatcherPolicy.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export
