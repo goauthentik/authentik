@@ -114,3 +114,29 @@ class TestProviderSecret(APITestCase):
         self.assertTrue(editor.has_perm("authentik_crypto_secrets.view_secret_value", secret))
         self.assertTrue(viewer.has_perm("authentik_crypto_secrets.view_secret", secret))
         self.assertFalse(viewer.has_perm("authentik_crypto_secrets.view_secret_value", secret))
+
+    def test_secret_not_shared(self):
+        """The outpost tells providers apart by their shared secret, so they can't share one."""
+        provider = RadiusProvider.objects.create(
+            name=generate_id(), authorization_flow=create_test_flow()
+        )
+        other = RadiusProvider.objects.create(
+            name=generate_id(), authorization_flow=create_test_flow()
+        )
+        data = {
+            "name": generate_id(),
+            "authorization_flow": create_test_flow().pk,
+            "invalidation_flow": create_test_flow().pk,
+            "shared_secret_ref": str(provider.shared_secret_ref_id),
+        }
+        response = self.client.post(reverse("authentik_api:radiusprovider-list"), data)
+        self.assertEqual(response.status_code, 400, response.content)
+        self.assertIn("shared_secret_ref", response.json())
+        url = reverse("authentik_api:radiusprovider-detail", kwargs={"pk": other.pk})
+        response = self.client.patch(url, {"shared_secret_ref": data["shared_secret_ref"]})
+        self.assertEqual(response.status_code, 400, response.content)
+        url = reverse("authentik_api:radiusprovider-detail", kwargs={"pk": provider.pk})
+        response = self.client.patch(
+            url, {"name": generate_id(), "shared_secret_ref": data["shared_secret_ref"]}
+        )
+        self.assertEqual(response.status_code, 200, response.content)
