@@ -17,7 +17,6 @@ import { match, P } from "ts-pattern";
 import { msg } from "@lit/localize";
 import { html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { classMap } from "lit/directives/class-map.js";
 
 const slugify = (s: string) => kebabCase(s, { suffixCharacters: "-" });
 
@@ -127,11 +126,7 @@ export class Sidebar extends AKElement {
                 aria-current=${ifPresent(current ? "page" : undefined)}
                 ><div part="${waypoint ? "icon" : "rail"}">${waypoint ?? nothing}</div>
                 <span part="label"
-                    >${label}${
-                        notice
-                            ? html`<span part="notice" class="ak-c-nav__notice">${notice}</span>`
-                            : nothing
-                    }</span
+                    >${label}${notice ? html`<span part="notice">${notice}</span>` : nothing}</span
                 >
             </a>
         </li>`;
@@ -145,8 +140,8 @@ export class Sidebar extends AKElement {
         const waypoint = mkIcon(icon);
 
         return html`<li
-                class="pf-m-expandable ${classMap({ "pf-m-expanded": open })}"
                 part="list-item list-item-expandable"
+                aria-expanded=${open ? "true" : "false"}
                 data-key=${key}
             >
                 <button
@@ -154,11 +149,10 @@ export class Sidebar extends AKElement {
                     type="button"
                     part="button row"
                     data-depth=${depth}
-                    aria-expanded=${open ? "true" : "false"}
                     aria-controls="sidebar-subnav-${id}"
                     @click=${() => this.#toggleExpanded(key, !open)}
                 >
-                    <div part="waypoint ${icon ? "icon" : "rail"}">${waypoint}</div>
+                    <div part="waypoint ${icon ? "icon" : "rail"}">${waypoint ?? nothing}</div>
                     <span part="label">${label}</span>
                     <span part="toggle">
                         <span part="toggle-icon">
@@ -178,21 +172,25 @@ export class Sidebar extends AKElement {
         const waypoint = mkIcon(icon);
 
         return html`<li
-                class="pf-m-expandable ${classMap({ "pf-m-expanded": open })}"
                 part="list-item list-item-expandable"
+                aria-expanded=${open ? "true" : "false"}
                 data-key=${key}
             >
-                <button id="sidebar-toggle-${id}" type="button" part="button" data-depth=${depth}>
-                    <div part="waypoint ${icon ? "icon" : "rail"}">${waypoint}</div>
+                <button
+                    id="sidebar-toggle-${id}"
+                    type="button"
+                    part="button row"
+                    data-depth=${depth}
+                >
+                    <div part="waypoint ${icon ? "icon" : "rail"}">${waypoint ?? nothing}</div>
                     <span part="label">${label}</span>
                 </button>
                 <span
-                    class="pf-c-nav__toggle"
-                    aria-expanded=${open ? "true" : "false"}
+                    part="toggle"
                     aria-controls="sidebar-subnav-${id}"
                     @click=${() => this.#toggleExpanded(key, !open)}
                 >
-                    <span class="pf-c-nav__toggle-icon">
+                    <span part="toggle-icon">
                         <i class="fas fa-angle-right" aria-hidden="true"></i>
                     </span>
                 </span>

@@ -84,6 +84,7 @@ export function resolveSidebarEntries(
         canEnterprise || !isEnterpriseEntry(attributes);
 
     const visibleEntries = entries.filter(isVisible);
+
     return visibleEntries.map((entry) => makeSidebarEntry(entry, licensed, canEnterprise));
 }
 

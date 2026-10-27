@@ -106,6 +106,7 @@ export class AdminInterface extends WithLicenseSummary(
         const canEnterprise = this.can(CapabilitiesEnum.IsEnterprise);
 
         const entries = createAdminSidebarEntries(canEnterprise);
+
         return resolveSidebarEntries(entries, {
             canEnterprise,
             // Assume licensed until the summary loads so the notice doesn't flash.
