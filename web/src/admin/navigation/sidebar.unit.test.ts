@@ -2,6 +2,8 @@ import { createAdminSidebarEntries } from "./sidebarEntries";
 import { findSidebarSectionByRoute, resolveSidebarEntries } from "./sidebarTools";
 import { type SidebarEntry, ExtendedSidebarItem } from "./types";
 
+import { SidebarItem } from "#elements/sidebar/types";
+
 import { ROUTES } from "#admin/Routes";
 
 import { describe, expect, it } from "vitest";
@@ -125,5 +127,21 @@ describe("validate Sidebar routes exist", () => {
             const matchingRoute = ROUTES.find((route) => route.test(path));
             expect(matchingRoute).not.toBeFalsy();
         }
+    });
+});
+
+describe("validate Sidebar entries meet Sidebar requirement", () => {
+    it("has a path or children (or both) for every entry", () => {
+        const resolved = resolveSidebarEntries(createAdminSidebarEntries(true), {
+            canEnterprise: true,
+            licensed: true,
+        });
+
+        // Every entry must have a path or children, and if it has children, they must also meet
+        // that criteria.
+        const missing = ({ path, children }: SidebarItem) =>
+            (!path && !(children && children.length > 0)) || (children && children.find(missing));
+
+        expect(resolved.find(missing)).toBeFalsy();
     });
 });
