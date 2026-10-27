@@ -139,19 +139,18 @@ export class CheckboxGroup extends FormAssociatedElement<FormData | null, string
 
         this.internals.setFormValue(formData);
 
-        let message: string | undefined;
-        const flags: ValidityStateFlags = {};
-
         if (this.required && !this.values.length) {
-            message = msg("A selection is required");
-            flags.valueMissing = true;
+            this.internals.setValidity(
+                { valueMissing: true },
+                msg("A selection is required"),
+                this.renderRoot.querySelector<HTMLInputElement>('input[type="checkbox"]') ??
+                    undefined,
+            );
+
+            return;
         }
 
-        this.internals.setValidity(
-            flags,
-            message,
-            this.renderRoot.querySelector<HTMLInputElement>('input[type="checkbox"]') ?? undefined,
-        );
+        this.internals.setValidity({});
     }
 
     //#endregion
