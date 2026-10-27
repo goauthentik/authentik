@@ -10,27 +10,30 @@
  * Do not edit the class manually.
  */
 
-import { type CertificateData, CertificateDataFromJSON } from "../models/CertificateData";
+import { type CertificateData, CertificateDataFromJSON } from "../models/CertificateData.js";
 import {
     type CertificateGenerationRequest,
     CertificateGenerationRequestToJSON,
-} from "../models/CertificateGenerationRequest";
-import { type CertificateKeyPair, CertificateKeyPairFromJSON } from "../models/CertificateKeyPair";
+} from "../models/CertificateGenerationRequest.js";
+import {
+    type CertificateKeyPair,
+    CertificateKeyPairFromJSON,
+} from "../models/CertificateKeyPair.js";
 import {
     type CertificateKeyPairRequest,
     CertificateKeyPairRequestToJSON,
-} from "../models/CertificateKeyPairRequest";
-import { type KeyTypeEnum } from "../models/KeyTypeEnum";
+} from "../models/CertificateKeyPairRequest.js";
+import { type KeyTypeEnum } from "../models/KeyTypeEnum.js";
 import {
     type PaginatedCertificateKeyPairList,
     PaginatedCertificateKeyPairListFromJSON,
-} from "../models/PaginatedCertificateKeyPairList";
+} from "../models/PaginatedCertificateKeyPairList.js";
 import {
     type PatchedCertificateKeyPairRequest,
     PatchedCertificateKeyPairRequestToJSON,
-} from "../models/PatchedCertificateKeyPairRequest";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import * as runtime from "../runtime";
+} from "../models/PatchedCertificateKeyPairRequest.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
+import * as runtime from "../runtime.js";
 
 export interface CryptoCertificatekeypairsCreateRequest {
     certificateKeyPairRequest: CertificateKeyPairRequest;

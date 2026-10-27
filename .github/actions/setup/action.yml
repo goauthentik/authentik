@@ -42,12 +42,12 @@ runs:
         sudo rsync -a --delete /tmp/empty/ /usr/local/lib/android/
     - name: Install uv
       if: ${{ contains(inputs.dependencies, 'python') }}
-      uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v5
+      uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v5
       with:
         enable-cache: true
     - name: Setup python
       if: ${{ contains(inputs.dependencies, 'python') }}
-      uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v5
+      uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v5
       with:
         python-version-file: "${{ inputs.working-directory }}pyproject.toml"
     - name: Install Python deps
@@ -69,7 +69,7 @@ runs:
         rustflags: ""
     - name: Setup rust dependencies
       if: ${{ contains(inputs.dependencies, 'rust') }}
-      uses: taiki-e/install-action@ab6895351a88b908e96a4697860d4ffea5e57dbe # v2
+      uses: taiki-e/install-action@1e29709c0ec63babbe8f266397a465f29a825f91 # v2
       with:
         tool: cargo-deny cargo-machete cargo-llvm-cov nextest
     - name: Setup pnpm
@@ -85,7 +85,7 @@ runs:
         echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
     - name: Setup node (root, web)
       if: ${{ contains(inputs.dependencies, 'node') }}
-      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v4
+      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       with:
         node-version-file: ${{ inputs.working-directory }}package.json
         cache: pnpm

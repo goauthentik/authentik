@@ -12,7 +12,7 @@ from authentik.flows.challenge import PermissionDict
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.stages.consent.models import ConsentMode, ConsentStage, UserConsent
@@ -23,7 +23,7 @@ from authentik.stages.consent.stage import (
 )
 
 
-class TestConsentStage(FlowTestCase):
+class TestConsentStage(APIFlowTestCase):
     """Consent tests"""
 
     def setUp(self):

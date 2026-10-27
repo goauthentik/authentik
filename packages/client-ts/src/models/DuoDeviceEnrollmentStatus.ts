@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { DuoResponseEnum } from "./DuoResponseEnum";
-import { DuoResponseEnumFromJSON, DuoResponseEnumToJSON } from "./DuoResponseEnum";
+import type { DuoResponseEnum } from "./DuoResponseEnum.js";
+import { DuoResponseEnumFromJSON, DuoResponseEnumToJSON } from "./DuoResponseEnum.js";
 
 /**
  * @export

@@ -165,3 +165,48 @@ class TestEventsNotifications(APITestCase):
         response = self.client.post(reverse("authentik_api:notification-mark-all-seen"))
         self.assertEqual(response.status_code, 204)
         self.assertFalse(Notification.objects.filter(body="foo", seen=False).exists())
+
+    def test_trigger_multiple_rules(self):
+        """Test all rules are evaluated for one event, with policy, group, user and negated
+        bindings"""
+        NotificationRule.objects.all().delete()
+        other_group = Group.objects.create(name=generate_id())
+        transport = NotificationTransport.objects.create(name=generate_id())
+        matcher = EventMatcherPolicy.objects.create(
+            name=generate_id(), action=EventAction.CUSTOM_PREFIX
+        )
+        no_match = EventMatcherPolicy.objects.create(name=generate_id(), action=EventAction.LOGIN)
+
+        def rule(severity: NotificationSeverity, **binding) -> NotificationRule:
+            trigger = NotificationRule.objects.create(
+                name=generate_id(), destination_event_user=True, severity=severity
+            )
+            trigger.transports.add(transport)
+            if binding:
+                PolicyBinding.objects.create(target=trigger, order=0, **binding)
+            return trigger
+
+        rule(NotificationSeverity.ALERT, policy=matcher)
+        rule(NotificationSeverity.WARNING, group=self.group)
+        rule(NotificationSeverity.NOTICE, group=other_group, negate=True)
+        rule(NotificationSeverity.ALERT, user=self.user, negate=True)
+        rule(NotificationSeverity.ALERT, policy=no_match)
+        rule(NotificationSeverity.ALERT, group=other_group)
+        rule(NotificationSeverity.ALERT, policy=matcher, enabled=False)
+        rule(NotificationSeverity.ALERT)
+
+        execute_mock = MagicMock()
+        with patch("authentik.events.models.NotificationTransport.send", execute_mock):
+            Event.new(EventAction.CUSTOM_PREFIX).set_user(self.user).save()
+        self.assertEqual(
+            sorted(call[0][0].severity for call in execute_mock.call_args_list),
+            sorted(
+                [
+                    NotificationSeverity.ALERT,
+                    NotificationSeverity.WARNING,
+                    NotificationSeverity.NOTICE,
+                ]
+            ),
+        )
+        for call in execute_mock.call_args_list:
+            self.assertEqual(call[0][0].user, self.user)

@@ -21,12 +21,14 @@ var _ MappedNullable = &Config{}
 
 // Config Serialize authentik Config into DRF Object
 type Config struct {
-	ErrorReporting       ErrorReportingConfig `json:"error_reporting"`
-	Capabilities         []CapabilitiesEnum   `json:"capabilities"`
-	CacheTimeout         int32                `json:"cache_timeout"`
-	CacheTimeoutFlows    int32                `json:"cache_timeout_flows"`
-	CacheTimeoutPolicies int32                `json:"cache_timeout_policies"`
-	AdditionalProperties map[string]interface{}
+	ErrorReporting             ErrorReportingConfig `json:"error_reporting"`
+	Capabilities               []CapabilitiesEnum   `json:"capabilities"`
+	CacheTimeout               int32                `json:"cache_timeout"`
+	CacheTimeoutFlows          int32                `json:"cache_timeout_flows"`
+	CacheTimeoutPolicies       int32                `json:"cache_timeout_policies"`
+	CacheTimeoutBrands         int32                `json:"cache_timeout_brands"`
+	CacheTimeoutSystemSettings int32                `json:"cache_timeout_system_settings"`
+	AdditionalProperties       map[string]interface{}
 }
 
 type _Config Config
@@ -35,13 +37,15 @@ type _Config Config
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewConfig(errorReporting ErrorReportingConfig, capabilities []CapabilitiesEnum, cacheTimeout int32, cacheTimeoutFlows int32, cacheTimeoutPolicies int32) *Config {
+func NewConfig(errorReporting ErrorReportingConfig, capabilities []CapabilitiesEnum, cacheTimeout int32, cacheTimeoutFlows int32, cacheTimeoutPolicies int32, cacheTimeoutBrands int32, cacheTimeoutSystemSettings int32) *Config {
 	this := Config{}
 	this.ErrorReporting = errorReporting
 	this.Capabilities = capabilities
 	this.CacheTimeout = cacheTimeout
 	this.CacheTimeoutFlows = cacheTimeoutFlows
 	this.CacheTimeoutPolicies = cacheTimeoutPolicies
+	this.CacheTimeoutBrands = cacheTimeoutBrands
+	this.CacheTimeoutSystemSettings = cacheTimeoutSystemSettings
 	return &this
 }
 
@@ -173,6 +177,54 @@ func (o *Config) SetCacheTimeoutPolicies(v int32) {
 	o.CacheTimeoutPolicies = v
 }
 
+// GetCacheTimeoutBrands returns the CacheTimeoutBrands field value
+func (o *Config) GetCacheTimeoutBrands() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.CacheTimeoutBrands
+}
+
+// GetCacheTimeoutBrandsOk returns a tuple with the CacheTimeoutBrands field value
+// and a boolean to check if the value has been set.
+func (o *Config) GetCacheTimeoutBrandsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CacheTimeoutBrands, true
+}
+
+// SetCacheTimeoutBrands sets field value
+func (o *Config) SetCacheTimeoutBrands(v int32) {
+	o.CacheTimeoutBrands = v
+}
+
+// GetCacheTimeoutSystemSettings returns the CacheTimeoutSystemSettings field value
+func (o *Config) GetCacheTimeoutSystemSettings() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.CacheTimeoutSystemSettings
+}
+
+// GetCacheTimeoutSystemSettingsOk returns a tuple with the CacheTimeoutSystemSettings field value
+// and a boolean to check if the value has been set.
+func (o *Config) GetCacheTimeoutSystemSettingsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CacheTimeoutSystemSettings, true
+}
+
+// SetCacheTimeoutSystemSettings sets field value
+func (o *Config) SetCacheTimeoutSystemSettings(v int32) {
+	o.CacheTimeoutSystemSettings = v
+}
+
 func (o Config) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -188,6 +240,8 @@ func (o Config) ToMap() (map[string]interface{}, error) {
 	toSerialize["cache_timeout"] = o.CacheTimeout
 	toSerialize["cache_timeout_flows"] = o.CacheTimeoutFlows
 	toSerialize["cache_timeout_policies"] = o.CacheTimeoutPolicies
+	toSerialize["cache_timeout_brands"] = o.CacheTimeoutBrands
+	toSerialize["cache_timeout_system_settings"] = o.CacheTimeoutSystemSettings
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -206,6 +260,8 @@ func (o *Config) UnmarshalJSON(data []byte) (err error) {
 		"cache_timeout",
 		"cache_timeout_flows",
 		"cache_timeout_policies",
+		"cache_timeout_brands",
+		"cache_timeout_system_settings",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -240,6 +296,8 @@ func (o *Config) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "cache_timeout")
 		delete(additionalProperties, "cache_timeout_flows")
 		delete(additionalProperties, "cache_timeout_policies")
+		delete(additionalProperties, "cache_timeout_brands")
+		delete(additionalProperties, "cache_timeout_system_settings")
 		o.AdditionalProperties = additionalProperties
 	}
 
