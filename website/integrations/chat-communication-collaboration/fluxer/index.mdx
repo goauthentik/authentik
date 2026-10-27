@@ -4,9 +4,11 @@ sidebar_label: Fluxer
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+
 ## What is Fluxer?
 
-> Open source chat for friends, groups and communities, with text chat, voice and video calls, screen sharing and self-hosting.
+> Fluxer is a free and open source chat platform for friends, groups, and communities, with text chat, voice and video calls, screen sharing, and self-hosting.
 >
 > -- https://fluxer.app/
 
@@ -23,62 +25,86 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Fluxer with authentik, you need to create an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) in authentik.
 
-### Create an application and provider in authentik
+### Create an email scope mapping
+
+Fluxer rejects SSO logins with an unverified email address when the instance uses email sign-in, or when **Allowed Email Domains** is set in Fluxer's SSO settings. authentik's default email scope mapping returns `email_verified: false`. In either case, create a custom email scope mapping that returns `email_verified: true`. Fluxer shows the instance's sign-in method in the admin panel under **Configuration** > **Instance Config** > **Sign-in Method**.
+
+:::warning Email ownership
+Fluxer links an SSO login to the existing Fluxer account with the same email address. With this mapping, an authentik user who changes their email address in authentik can sign in to the Fluxer account that uses that address. Make sure that users cannot change their own email address in authentik, for example by removing the email field from the user settings flow.
+:::
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **New Property Mapping**.
+    - **Select type**: select **Scope Mapping**.
+    - **Configure the Scope Mapping**: provide a descriptive name (e.g. `Fluxer Email Scope`) and an optional description.
+        - **Scope name**: `email`
+        - **Expression**:
+
+        ```python showLineNumbers
+        return {
+            "email": request.user.email,
+            "email_verified": True
+        }
+        ```
+
+3. Click **Create** to save the property mapping.
+
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-        - Note the **slug** as it will be used later
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it will be required later.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID** and **Client Secret** values because they will be required later.
-        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://fluxer.company/auth/sso/callback`
+        - Add a **Redirect URI** of type `Strict` `Authorization` with a value of `https://fluxer.company/auth/sso/callback`.
+        - Select any available signing key.
+        - If you created the custom email scope mapping, under **Advanced protocol settings**, remove the `authentik default OAuth Mapping: OpenID 'email'` scope mapping and add the custom scope mapping.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ## Fluxer configuration
 
-1. Log in to Fluxer as an administrator and head to the admin panel via https://fluxer.company/admin
+### Configure SSO
 
-2. On the admin panel page navigate to **Instance Config** by following **Menu** > **Configuration** > **Instance Config**
+:::info Private addresses
+Fluxer only accepts identity provider URLs that use HTTPS and resolve to a public address. If `authentik.company` resolves to a private address, allow private addresses before you configure SSO. On an instance that rexctl manages, run the following command:
 
-3. On the **Instance Config** page scroll down to the **Access & accounts** section and locate the **Single Sign-on (SSO)** panel
+```sh
+rexctl config set FLUXER_SSO_ALLOW_PRIVATE_ADDRESSES true
+```
 
-4. In the **Single Sign-on (SSO)** panel configure the following settings:
+On other installations, set `FLUXER_SSO_ALLOW_PRIVATE_ADDRESSES=true` in Fluxer's environment and restart Fluxer.
+:::
 
-    - **Enable SSO**: Checkmark the box to enable.
-    - **DISPLAY NAME**: authentik
-    - **ISSUER**: `https://authentik.company/application/o/<slug>/`
-    - **AUTHORIZATION URL**: `https://authentik.company/application/o/authorize/`
-    - **TOKEN URL**: `https://authentik.company/application/o/token/`
-    - **USER INFO URL**: `https://authentik.company/application/o/userinfo/`
-    - **JWKS URL**: `https://authentik.company/application/o/<slug>/jwks/`
-    - **CLIENT ID**: the Client ID from authentik
-    - **CLIENT SECRET**: the Client Secret from authentik
-    - **SCOPE**: `openid email profile`
+1. Log in to the Fluxer admin panel at `https://fluxer.company/admin` as an administrator.
+2. Navigate to **Configuration** > **Instance Config** and locate the **Single Sign-On (SSO)** card.
+3. Configure the following settings:
+    - **Enable SSO**: select this option.
+    - **Automatically provision users on first SSO login**: select this option to create a Fluxer account for an authentik user on their first login.
+    - **Display Name**: `authentik`
+    - **Issuer**: `https://authentik.company/application/o/<application_slug>/`
+    - **Client ID**: Client ID from authentik
+    - **Client Secret**: Client Secret from authentik
+4. Confirm that the **Redirect URI** field shows `https://fluxer.company/auth/sso/callback`.
+5. Click **Save SSO Settings**.
 
-5. Click **Save SSO Settings**
+On an instance that uses email sign-in, Fluxer links an SSO login to the existing Fluxer account with the same email address. On an instance that uses username sign-in, Fluxer cannot link existing accounts, so a user's first SSO login creates a new account when automatic provisioning is enabled.
 
-6. SSO Settings are immediately live once saved.
+### Require SSO _(optional)_
 
-## Optional settings
-
-### Disable Local Logins and Registration
-
-Checkmark the **Require SSO** box to disable local logins and registration. This will completely remove those buttons from the Fluxer login page.
-
-### Automatically Provision Accounts
-
-Checkmark the **Automatically provision users on first SSO login** to have Fluxer automatically create new accounts from authentik verified logins.
+To disable password and passkey login and local registration, select **Require SSO** in the **Single Sign-On (SSO)** card and click **Save SSO Settings**. Before you enable this setting, confirm that at least one Fluxer administrator can log in through authentik. On an instance that uses username sign-in, an administrator's first SSO login creates a new account without administrator rights. Grant that account administrator rights, for example with `rexctl admins add <username>`.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Fluxer, log out of Fluxer and log back in using the new **Continue with authentik** button.
+To confirm that authentik is properly configured with Fluxer, log out of Fluxer, open Fluxer, and click **Continue with authentik**. You should be redirected to authentik and then returned to Fluxer after a successful login.
 
 ## Resources
 
-- [Fluxer Single sign-on](https://docs.fluxer.app/operator/sign-in/#single-sign-on)
-- [Fluxer OAuth2](https://docs.fluxer.app/http-api/oauth2/)
+- [Fluxer documentation - Single sign-on](https://docs.fluxer.app/operator/sign-in/#single-sign-on)
+- [Fluxer documentation - Instance admin API](https://docs.fluxer.app/admin-api/instance/)
