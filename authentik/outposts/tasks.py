@@ -17,7 +17,11 @@ from kubernetes.config.incluster_config import SERVICE_TOKEN_FILENAME
 from kubernetes.config.kube_config import KUBE_CONFIG_DEFAULT_LOCATION
 from structlog.stdlib import get_logger
 
-from authentik.crypto.secrets.models import SecretType, create_named_secret
+from authentik.crypto.secrets.models import (
+    SecretType,
+    create_named_secret,
+    grant_secret_like_upgrade,
+)
 from authentik.lib.config import CONFIG
 from authentik.outposts.consumer import build_outpost_group
 from authentik.outposts.controllers.base import BaseController, ControllerException
@@ -184,13 +188,15 @@ def outpost_connection_discovery():
         if not KubernetesServiceConnection.objects.filter(name=kubeconfig_local_name).exists():
             self.info("Creating kubeconfig Service Connection")
             with kubeconfig_path.open("r", encoding="utf8") as _kubeconfig, transaction.atomic():
+                kubeconfig = create_named_secret(
+                    f"{kubeconfig_local_name} kubeconfig",
+                    type=SecretType.JSON,
+                    secret_value=_kubeconfig.read(),
+                )
+                # Matches the value permission of the outposts managed secrets migration.
+                grant_secret_like_upgrade(KubernetesServiceConnection, kubeconfig, "change")
                 KubernetesServiceConnection.objects.create(
-                    name=kubeconfig_local_name,
-                    kubeconfig_ref=create_named_secret(
-                        f"{kubeconfig_local_name} kubeconfig",
-                        type=SecretType.JSON,
-                        secret_value=_kubeconfig.read(),
-                    ),
+                    name=kubeconfig_local_name, kubeconfig_ref=kubeconfig
                 )
     unix_socket_path = urlparse(DEFAULT_UNIX_SOCKET).path
     socket = Path(unix_socket_path)
