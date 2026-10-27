@@ -108,7 +108,8 @@ export class AdminInterface extends WithLicenseSummary(
 
         return resolveSidebarEntries(entries, {
             canEnterprise,
-            licensed: this.hasEnterpriseLicense,
+            // Assume licensed until the summary loads so the notice doesn't flash.
+            licensed: !this.licenseSummary || this.hasEnterpriseLicense,
         });
     }
 
