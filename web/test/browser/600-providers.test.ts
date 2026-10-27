@@ -51,11 +51,17 @@ test.describe("Provider Wizard", () => {
         });
     });
 
-    test.afterEach("Verification", async ({ form }, { testId }) => {
+    test.afterEach("Verification", async ({ form, page }, { testId }) => {
         //#region Confirm provider
 
         const providerName = providerNames.get(testId)!;
         const { search } = form;
+
+        // The modal makes the table inert, so searching early types into the wizard instead.
+        await expect(
+            page.getByRole("dialog", { name: "New Provider Wizard" }),
+            "Dialog closes after creation",
+        ).toBeHidden();
 
         const $provider = await test.step("Find provider via search", () => search(providerName));
 
