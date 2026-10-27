@@ -57,7 +57,7 @@ dependencies = [
   "opentelemetry-propagator-b3==1.45.1",
   "opentelemetry-sdk==1.44.0",
   "packaging==26.3",
-  "paramiko==5.1.0",
+  "paramiko==5.0.1",
   "psycopg[c,pool]==3.3.6",
   "pydantic-scim==0.0.8",
   "pydantic==2.14.1",
