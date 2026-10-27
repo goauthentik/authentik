@@ -1,4 +1,4 @@
-import { refreshServerContext } from "#common/global";
+import { injectBrand } from "#common/brand";
 
 import { Broadcast } from "#flow/tabs/broadcast";
 import { BroadcastMessage, BroadcastMessageType } from "#flow/tabs/messages";
@@ -10,24 +10,6 @@ const lockName = "ak:tab_locked";
 
 // Longer than any follower wait, so these tests don't depend on the orchestrator's timeouts.
 const EVENTUALLY_MS = 10 * 60_000;
-
-/**
- * Inject the brand the server would render into the document, with continuous login enabled.
- */
-function enableContinuousLogin(): void {
-    const script = document.createElement("script");
-
-    script.type = "application/json";
-    script.id = "ak-brand";
-
-    script.textContent = JSON.stringify({
-        ui_footer_links: [],
-        flags: { flows_continuous_login: true },
-    });
-
-    document.head.append(script);
-    refreshServerContext();
-}
 
 /**
  * A broadcast that answers every discovery round with the given tab IDs, without a real channel.
@@ -68,15 +50,16 @@ async function withSharedBroadcast(
 }
 
 beforeEach(() => {
-    enableContinuousLogin();
+    injectBrand({
+        flags: {
+            flowsContinuousLogin: true,
+        },
+    });
 });
 
 afterEach(() => {
     vi.useRealTimers();
     vi.restoreAllMocks();
-
-    document.getElementById("ak-brand")?.remove();
-    refreshServerContext();
 });
 
 describe("multiTabOrchestrateResume", () => {

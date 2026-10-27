@@ -1,4 +1,4 @@
-import { refreshServerContext } from "#common/global";
+import { injectBrand } from "#common/brand";
 
 import { RedirectStage } from "#flow/stages/RedirectStage";
 import { Broadcast } from "#flow/tabs/broadcast";
@@ -14,26 +14,6 @@ const mounted: HTMLElement[] = [];
 
 let navigate: ReturnType<typeof vi.spyOn>;
 
-/**
- * Inject the brand the server would render into the document.
- */
-function injectBrand(continuousLogin: boolean): void {
-    document.getElementById("ak-brand")?.remove();
-
-    const script = document.createElement("script");
-
-    script.type = "application/json";
-    script.id = "ak-brand";
-
-    script.textContent = JSON.stringify({
-        ui_footer_links: [],
-        flags: { flows_continuous_login: continuousLogin },
-    });
-
-    document.head.append(script);
-    refreshServerContext();
-}
-
 function createStage(challenge: RedirectChallenge): RedirectStage {
     const stage = document.createElement("ak-stage-redirect");
 
@@ -46,7 +26,11 @@ function createStage(challenge: RedirectChallenge): RedirectStage {
 }
 
 beforeEach(() => {
-    injectBrand(true);
+    injectBrand({
+        flags: {
+            flowsContinuousLogin: true,
+        },
+    });
 
     navigate = vi.spyOn(RedirectStage.prototype, "navigate").mockImplementation(() => {});
 });
@@ -58,9 +42,6 @@ afterEach(() => {
     for (const element of mounted.splice(0)) {
         element.remove();
     }
-
-    document.getElementById("ak-brand")?.remove();
-    refreshServerContext();
 });
 
 describe("RedirectStage", () => {
@@ -86,5 +67,29 @@ describe("RedirectStage", () => {
         createStage({ component: "xak-flow-redirect", to: acsURL, finalRedirect: true });
 
         await vi.waitFor(() => expect(navigate).toHaveBeenCalledWith(acsURL));
+    });
+
+    it("redirects without resuming other tabs when continuous login is disabled", async () => {
+        injectBrand({ flags: { flowsContinuousLogin: false } });
+
+        const discoverTabs = vi.spyOn(Broadcast.prototype, "discoverTabs");
+
+        createStage({ component: "xak-flow-redirect", to: resumeURL, finalRedirect: true });
+
+        await vi.waitFor(() => expect(navigate).toHaveBeenCalledWith(resumeURL));
+
+        expect(discoverTabs).not.toHaveBeenCalled();
+    });
+
+    it("redirects intermediate hops without resuming other tabs", async () => {
+        const discoverTabs = vi.spyOn(Broadcast.prototype, "discoverTabs");
+
+        createStage({ component: "xak-flow-redirect", to: "/source/oauth/login/test-source/" });
+
+        await vi.waitFor(() =>
+            expect(navigate).toHaveBeenCalledWith("/source/oauth/login/test-source/"),
+        );
+
+        expect(discoverTabs).not.toHaveBeenCalled();
     });
 });
