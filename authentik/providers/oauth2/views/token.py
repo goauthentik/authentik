@@ -1,5 +1,7 @@
 """authentik OAuth2 Token views"""
 
+from base64 import b64encode
+from copy import copy
 from typing import Any
 
 from django.http import HttpRequest, HttpResponse
@@ -19,6 +21,7 @@ from authentik.common.oauth.constants import (
     JWT_TYPE_DPOP_ID_TOKEN,
     SCOPE_OFFLINE_ACCESS,
     TOKEN_TYPE,
+    TOKEN_TYPE_URI_SAML2,
 )
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.events.signals import get_login_event
@@ -43,6 +46,8 @@ from authentik.providers.oauth2.utils import (
     cors_allow,
     extract_client_auth,
 )
+from authentik.providers.saml.processors.assertion import AssertionProcessor
+from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
 
 LOGGER = get_logger()
 
@@ -70,7 +75,11 @@ class TokenView(View):
                 op="authentik.providers.oauth2.post.parse",
             ):
                 client_id, client_secret = extract_client_auth(request)
-                self.provider = self.provider_class.objects.filter(client_id=client_id).first()
+                self.provider = (
+                    self.provider_class.objects.select_related("client_secret_ref")
+                    .filter(client_id=client_id)
+                    .first()
+                )
                 if not self.provider:
                     LOGGER.warning("OAuth2Provider does not exist", client_id=client_id)
                     raise TokenError("invalid_client")
@@ -334,8 +343,28 @@ class TokenView(View):
         self.params.device_code.delete()
         return response
 
+    def create_saml_token_exchange_response(self) -> dict[str, Any]:
+        """IdP-initiated SAML Response for the federated SAML provider, base64-encoded
+        like the SAMLResponse form field, so it can be passed on as-is
+        (e.g. to AWS STS AssumeRoleWithSAML)."""
+        provider = self.params.saml_provider
+        request = copy(self.request)
+        request.user = self.params.user
+        response = AssertionProcessor(provider, request, AuthNRequest()).build_response()
+        return {
+            "access_token": b64encode(response.encode()).decode(),
+            "issued_token_type": TOKEN_TYPE_URI_SAML2,
+            # RFC 8693 §2.2.1: the issued token is not an OAuth access token
+            "token_type": "N_A",
+            "expires_in": int(
+                timedelta_from_string(provider.assertion_valid_not_on_or_after).total_seconds()
+            ),
+        }
+
     def create_token_exchange_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc8693#section-2.2.1"""
+        if self.params.saml_provider:
+            return self.create_saml_token_exchange_response()
         # Issued on the `audience` target, else on the client's own provider
         provider = self.params.token_provider
         now = timezone.now()

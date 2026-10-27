@@ -53,7 +53,7 @@ class TestKubeconfigSecret(APITestCase):
                 )
                 self.assertEqual(response.status_code, 400, response.content)
                 with self.assertRaises(ValidationError):
-                    self.secret.replace_value(value)
+                    self.secret.validate_value(value)
         self.secret.refresh_from_db()
         self.assertEqual(self.secret.secret_value, KUBECONFIG)
 
