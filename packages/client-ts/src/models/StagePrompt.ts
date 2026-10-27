@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { PromptChoice } from "./PromptChoice";
-import { PromptChoiceFromJSON, PromptChoiceToJSON } from "./PromptChoice";
-import type { PromptTypeEnum } from "./PromptTypeEnum";
-import { PromptTypeEnumFromJSON, PromptTypeEnumToJSON } from "./PromptTypeEnum";
+import type { PromptChoice } from "./PromptChoice.js";
+import { PromptChoiceFromJSON, PromptChoiceToJSON } from "./PromptChoice.js";
+import type { PromptTypeEnum } from "./PromptTypeEnum.js";
+import { PromptTypeEnumFromJSON, PromptTypeEnumToJSON } from "./PromptTypeEnum.js";
 
 /**
  * Serializer for a single Prompt field

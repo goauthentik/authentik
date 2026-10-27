@@ -217,11 +217,25 @@ export class FormFixture extends PageFixture {
 
         await combobox.click();
 
-        if (typeof pattern === "string") {
-            await combobox.fill(pattern);
+        // Search selects only load their first page of options, so filter whenever the pattern
+        // is plain text. Otherwise accumulated test data can push the option out of the list.
+        const filter = typeof pattern === "string" ? pattern : literalPattern(pattern);
+
+        if (filter) {
+            await combobox.fill(filter);
         }
 
         const option = host.getByRole("option", { name: pattern }).first();
+
+        if (filter && typeof pattern !== "string") {
+            // Options the server doesn't search, such as the blank choice, only show unfiltered.
+            const filtered = await option
+                .waitFor({ timeout: 5_000 })
+                .then(() => true)
+                .catch(() => false);
+
+            if (!filtered) await combobox.fill("");
+        }
 
         await expect(option, `Search select option (${pattern}) should be visible`).toBeVisible();
 
@@ -272,4 +286,13 @@ export class FormFixture extends PageFixture {
     }
 
     //#endregion
+}
+
+/**
+ * The text a regular expression matches, if it is plain text with no special characters.
+ */
+function literalPattern(pattern: RegExp): string | null {
+    const unescaped = pattern.source.replace(/\\([-/ ])/g, "$1");
+
+    return /[\\^$.|?*+()[\]{}]/.test(unescaped) ? null : unescaped;
 }

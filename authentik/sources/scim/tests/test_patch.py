@@ -1,3 +1,4 @@
+from copy import deepcopy
 from unittest.mock import Mock, patch
 
 from rest_framework.test import APITestCase
@@ -217,6 +218,43 @@ class TestSCIMPatchProcessor(APITestCase):
         self.assertEqual(result, self.sample_data)
         # Ensure original data is not modified
         self.assertIsNot(result, self.sample_data)
+
+    def test_apply_patches_does_not_mutate_input(self):
+        """apply_patches must not mutate its input
+
+        The SCIM source views decide whether to persist a patched resource by
+        comparing the patched data against the stored attributes, so a nested
+        mutation that leaks into the input dict is silently dropped: the
+        comparison can no longer see a difference. The input must stay
+        untouched (regression test for #26896).
+        """
+        data = {
+            "userName": "john.doe",
+            "name": {"givenName": "John", "familyName": "Doe"},
+            "emails": [
+                {"value": "john@example.com", "type": "work", "primary": True},
+            ],
+        }
+        before = deepcopy(data)
+        patches = [
+            PatchOperation(op=PatchOp.replace, path="name.givenName", value="Johnny"),
+            PatchOperation(
+                op=PatchOp.replace,
+                path='emails[type eq "work"].value',
+                value="john.new@example.com",
+            ),
+            PatchOperation(op=PatchOp.remove, path="name.familyName"),
+        ]
+
+        result = self.processor.apply_patches(data, patches)
+
+        # the patched data carries the new values
+        self.assertEqual(result["name"]["givenName"], "Johnny")
+        self.assertNotIn("familyName", result["name"])
+        self.assertEqual(result["emails"][0]["value"], "john.new@example.com")
+        # the input dict is not modified, and the change remains visible to the caller
+        self.assertEqual(data, before)
+        self.assertNotEqual(result, data)
 
     def test_apply_patches_with_validation(self):
         """Test that patches are validated using PatchOperation.model_validate"""
