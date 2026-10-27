@@ -12,6 +12,7 @@ from authentik.lib.generators import generate_id
 from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
 from authentik.sources.ldap.password import LDAPPasswordChanger
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
+from authentik.stages.password.models import PasswordDevice
 
 LDAP_CONNECTION_PATCH = MagicMock(return_value=mock_ad_connection())
 
@@ -143,7 +144,7 @@ class LDAPPasswordTests(TestCase):
             ),
             self.assertRaises(ValidationError),
         ):
-            user.set_password(generate_id())
+            PasswordDevice.set_password(user, generate_id())
 
         event = Event.objects.filter(
             action=EventAction.CONFIGURATION_ERROR, user__pk=user.pk

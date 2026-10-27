@@ -326,12 +326,19 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
 
         if (!activeStepElement) return false;
 
+        // A second activation while the step is saving would submit it twice.
+        if (this.loading) return false;
+
         if (activeStepElement.nextCallback) {
             this.loading = true;
 
-            const completedStep = await activeStepElement.nextCallback(event);
+            let completedStep: boolean;
 
-            this.loading = false;
+            try {
+                completedStep = await activeStepElement.nextCallback(event);
+            } finally {
+                this.loading = false;
+            }
 
             if (!completedStep) return false;
 
@@ -590,7 +597,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                     html`<button
                         data-test-id="wizard-navigation-next"
                         class="pf-c-button pf-m-primary"
-                        ?disabled=${!this.valid}
+                        ?disabled=${!this.valid || this.loading}
                         type="button"
                         @click=${this.navigateNext}
                     >
