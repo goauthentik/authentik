@@ -2591,10 +2591,6 @@
   <source>authentik was unable to complete this process.</source>
   <target>authentik не удалось завершить этот процесс.</target>
 </trans-unit>
-<trans-unit id="s71c5d51d5a357dbd">
-  <source>Don't show this message again.</source>
-  <target>Больше не показывать это сообщение.</target>
-</trans-unit>
 <trans-unit id="sd1a5560fde6f2271">
   <source>Successfully imported provider.</source>
   <target>Провайдер успешно импортирован.</target>
@@ -8894,22 +8890,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Outpost configuration</source>
   <target>Конфигурация внешнего компонента</target>
 </trans-unit>
-<trans-unit id="s11a2ac9f2bd811d8">
-  <source>Delete Object Permission</source>
-  <target>Удалить разрешение объекта</target>
-</trans-unit>
-<trans-unit id="s78aa910bcb26034d">
-  <source>Global and object permission</source>
-  <target>Глобальное разрешение и разрешение объекта</target>
-</trans-unit>
-<trans-unit id="sc8f73affccb6ae4d">
-  <source>Global permission</source>
-  <target>Глобальное разрешение</target>
-</trans-unit>
-<trans-unit id="scf9ebad133d2d561">
-  <source>Object permission</source>
-  <target>Разрешение объекта</target>
-</trans-unit>
 <trans-unit id="sa84d68ec57e21b0f">
   <source>Permissions on this object</source>
   <target>Разрешения для этого объекта</target>
@@ -13708,6 +13688,78 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sbf0ff47d8bff9545">
   <source>Click here for the changelog.</source>
+</trans-unit>
+<trans-unit id="crypto.generate.alg.ml-dsa-44.label">
+  <source>ML-DSA-44</source>
+</trans-unit>
+<trans-unit id="crypto.generate.alg.ml-dsa-65.label">
+  <source>ML-DSA-65</source>
+</trans-unit>
+<trans-unit id="crypto.generate.alg.ml-dsa-87.label">
+  <source>ML-DSA-87</source>
+</trans-unit>
+<trans-unit id="sfdcaa7f363be0c81">
+  <source>Encryption algorithm</source>
+</trans-unit>
+<trans-unit id="s53b68dd0954af12d">
+  <source>Block cipher used to encrypt the assertion.</source>
+</trans-unit>
+<trans-unit id="permissions.aria.universal">
+  <source>Global and object permission</source>
+</trans-unit>
+<trans-unit id="permissions.kind.universal">
+  <source>object + global</source>
+</trans-unit>
+<trans-unit id="permissions.aria.global">
+  <source>Global permission</source>
+</trans-unit>
+<trans-unit id="permissions.kind.global">
+  <source>global</source>
+</trans-unit>
+<trans-unit id="permissions.aria.object">
+  <source>Object permission</source>
+</trans-unit>
+<trans-unit id="permissions.kind.object">
+  <source>object</source>
+</trans-unit>
+<trans-unit id="permissions.table-column.role">
+  <source>Role</source>
+</trans-unit>
+<trans-unit id="permissions.table-column.permissions">
+  <source>Permissions</source>
+</trans-unit>
+<trans-unit id="permission.sort.by-name">
+  <source>By name</source>
+</trans-unit>
+<trans-unit id="permissions.sort.assigned-first">
+  <source>Assigned first</source>
+</trans-unit>
+<trans-unit id="permissions.sort.assigned-only">
+  <source>Assigned only</source>
+</trans-unit>
+<trans-unit id="permissions.filter.show-assigned">
+  <source>Sort and filter</source>
+</trans-unit>
+<trans-unit id="permissions.delete.label">
+  <source>Permission(s)</source>
+</trans-unit>
+<trans-unit id="permissions.delete.meta-data">
+  <source>Permission</source>
+</trans-unit>
+<trans-unit id="permissions.delete.button">
+  <source>Delete object permission</source>
+</trans-unit>
+<trans-unit id="s679140171e483ff5">
+  <source>Changes to system settings will take up to <x id="0" equiv-text="${formatted}"/> to become effective.</source>
+</trans-unit>
+<trans-unit id="se7820c791adf0953">
+  <source>Changes to brands will take up to <x id="0" equiv-text="${formatted}"/> to become effective.</source>
+</trans-unit>
+<trans-unit id="sde7cf26113f800fb">
+  <source>Selected providers can exchange their JWTs for a SAML Response of this provider via token exchange.</source>
+</trans-unit>
+<trans-unit id="s42cebc8c4e28982e">
+  <source>This security key is already registered on your account. Touch a different key to add it.</source>
 </trans-unit>
 </body>
 </file>

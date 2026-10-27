@@ -11,7 +11,7 @@ from authentik.core.tests.utils import RequestFactory, create_test_admin_user, c
 from authentik.flows.models import FlowStageBinding, NotConfiguredAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import StageView
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.generators import generate_id
 from authentik.stages.authenticator_validate.challenge import (
@@ -37,7 +37,7 @@ from authentik.stages.identification.models import IdentificationStage, UserFiel
 from authentik.stages.user_login.models import UserLoginStage
 
 
-class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
+class AuthenticatorValidateStageWebAuthnTests(APIFlowTestCase):
     """Test validator stage"""
 
     def setUp(self) -> None:

@@ -207,6 +207,7 @@ class TestConfig(TestCase):
                     "NAME": "foo",
                     "OPTIONS": {
                         "pool": False,
+                        "options": "-c TimeZone=UTC",
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -258,6 +259,7 @@ class TestConfig(TestCase):
                     "NAME": "foo",
                     "OPTIONS": {
                         "pool": False,
+                        "options": "-c TimeZone=UTC",
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -277,6 +279,7 @@ class TestConfig(TestCase):
                     "NAME": "foo",
                     "OPTIONS": {
                         "pool": False,
+                        "options": "-c TimeZone=UTC",
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -448,6 +451,7 @@ class TestConfig(TestCase):
                     "NAME": "foo",
                     "OPTIONS": {
                         "pool": False,
+                        "options": "-c TimeZone=UTC",
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -467,6 +471,7 @@ class TestConfig(TestCase):
                     "NAME": "foo",
                     "OPTIONS": {
                         "pool": False,
+                        "options": "-c TimeZone=UTC",
                         "sslcert": "bar",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -504,6 +509,21 @@ class TestConfig(TestCase):
             "10",
         )
         self.assertNotIn("connect_timeout", conf["replica_0"]["OPTIONS"])
+
+    def test_db_timezone_option(self):
+        """Test TimeZone connect option is skipped for poolers and doesn't override user options"""
+        for pooler in ("postgresql.use_pgbouncer", "postgresql.use_pgpool"):
+            config = ConfigLoader()
+            config.set(pooler, True)
+            self.assertNotIn("options", django_db_config(config)["default"]["OPTIONS"])
+        config = ConfigLoader()
+        config.set(
+            "postgresql.conn_options",
+            base64.b64encode(dumps({"options": "-c search_path=foo"}).encode()).decode(),
+        )
+        self.assertEqual(
+            django_db_config(config)["default"]["OPTIONS"]["options"], "-c search_path=foo"
+        )
 
     def test_db_conn_options_read_replicas(self):
         config = ConfigLoader()

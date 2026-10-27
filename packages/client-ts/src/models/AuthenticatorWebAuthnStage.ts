@@ -10,19 +10,22 @@
  * Do not edit the class manually.
  */
 
-import type { AuthenticatorAttachmentEnum } from "./AuthenticatorAttachmentEnum";
+import type { AuthenticatorAttachmentEnum } from "./AuthenticatorAttachmentEnum.js";
 import {
     AuthenticatorAttachmentEnumFromJSON,
     AuthenticatorAttachmentEnumToJSON,
-} from "./AuthenticatorAttachmentEnum";
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { UserVerificationEnum } from "./UserVerificationEnum";
-import { UserVerificationEnumFromJSON, UserVerificationEnumToJSON } from "./UserVerificationEnum";
-import type { WebAuthnDeviceType } from "./WebAuthnDeviceType";
-import { WebAuthnDeviceTypeFromJSON } from "./WebAuthnDeviceType";
-import type { WebAuthnHintEnum } from "./WebAuthnHintEnum";
-import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHintEnum";
+} from "./AuthenticatorAttachmentEnum.js";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
+import type { UserVerificationEnum } from "./UserVerificationEnum.js";
+import {
+    UserVerificationEnumFromJSON,
+    UserVerificationEnumToJSON,
+} from "./UserVerificationEnum.js";
+import type { WebAuthnDeviceType } from "./WebAuthnDeviceType.js";
+import { WebAuthnDeviceTypeFromJSON } from "./WebAuthnDeviceType.js";
+import type { WebAuthnHintEnum } from "./WebAuthnHintEnum.js";
+import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHintEnum.js";
 
 /**
  * AuthenticatorWebAuthnStage Serializer

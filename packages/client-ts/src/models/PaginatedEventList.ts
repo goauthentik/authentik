@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { Event } from "./Event";
-import { EventFromJSON, EventToJSON } from "./Event";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Event } from "./Event.js";
+import { EventFromJSON, EventToJSON } from "./Event.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

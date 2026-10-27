@@ -431,7 +431,8 @@ class FlowExecutorView(APIView):
         )
         if isinstance(self.current_stage_view, StageView):
             self.current_stage_view.cleanup()
-        self.request.session.get(SESSION_KEY_HISTORY, []).append(deepcopy(self.plan))
+        if self.flow.inspector_accessible(self.request):
+            self.request.session.get(SESSION_KEY_HISTORY, []).append(deepcopy(self.plan))
         self.plan.pop()
         self.request.session[SESSION_KEY_PLAN] = self.plan
         if self.plan.bindings:

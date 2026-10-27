@@ -315,7 +315,7 @@ class PolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
         with (
             active_tracer().start_span(
                 op="authentik.policy.engine.build",
-                name=self.__pbm,
+                name=class_to_path(self.__pbm.__class__),
             ) as span,
             HIST_POLICIES_ENGINE_TOTAL_TIME.labels(
                 obj_type=class_to_path(self.__pbm.__class__),
@@ -396,7 +396,7 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
         with (
             active_tracer().start_span(
                 op="authentik.policy.engine_filter.build",
-                name=self.__pbm,
+                name=class_to_path(self.__pbm.__class__),
             ),
             HIST_POLICIES_ENGINE_TOTAL_TIME.labels(
                 obj_type=class_to_path(self.__pbm.__class__),

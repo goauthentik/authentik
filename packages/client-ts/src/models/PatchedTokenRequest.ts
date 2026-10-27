@@ -10,9 +10,9 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { IntentEnum } from "./IntentEnum";
-import { IntentEnumFromJSON, IntentEnumToJSON } from "./IntentEnum";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { IntentEnum } from "./IntentEnum.js";
+import { IntentEnumFromJSON, IntentEnumToJSON } from "./IntentEnum.js";
 
 /**
  * Token Serializer
