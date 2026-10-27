@@ -1,16 +1,20 @@
 """Kubernetes service connections validate their kubeconfig secret."""
 
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 from django.core.exceptions import ValidationError
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.tests.utils import create_test_admin_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.crypto.secrets.models import SecretType
 from authentik.crypto.secrets.tests.utils import create_test_secret
+from authentik.lib.config import CONFIG
 from authentik.outposts.controllers.kubernetes import KubernetesClient
 from authentik.outposts.models import KubernetesServiceConnection
+from authentik.outposts.tasks import outpost_connection_discovery
 
 KUBECONFIG = """apiVersion: v1
 kind: Config
@@ -109,3 +113,17 @@ class TestKubeconfigSecret(APITestCase):
         ):
             self.secret.replace_value(KUBECONFIG.replace("cluster-token", "new-token"))
         monitor.assert_called_once_with(args=(self.connection.pk,), rel_obj=self.connection)
+
+    @CONFIG.patch("outposts.discover", True)
+    def test_discovered_kubeconfig_access(self):
+        """Roles that may change every connection can read a discovered kubeconfig, like
+        the kubeconfigs of connections that existed before the upgrade."""
+        editor = create_test_user()
+        editor.assign_perms_to_managed_role("authentik_outposts.change_kubernetesserviceconnection")
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "config"
+            path.write_text(KUBECONFIG)
+            with patch("authentik.outposts.tasks.KUBE_CONFIG_DEFAULT_LOCATION", str(path)):
+                outpost_connection_discovery.send()
+        secret = KubernetesServiceConnection.objects.get(name__startswith="k8s-").kubeconfig_ref
+        self.assertTrue(editor.has_perm("authentik_crypto_secrets.view_secret_value", secret))
