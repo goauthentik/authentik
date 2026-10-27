@@ -51,8 +51,8 @@ function makeSidebarEntry(entry: SidebarEntry, licensed: boolean, canEnterprise:
         item.notice = enterpriseOnly();
     }
 
-    if (children) {
-        item.children = resolveSidebarEntries(children ?? [], { licensed, canEnterprise });
+    if (Array.isArray(children)) {
+        item.children = resolveSidebarEntries(children, { licensed, canEnterprise });
     }
 
     if (isSidebarAttributeObject(attributes)) {
