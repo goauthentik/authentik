@@ -1,17 +1,12 @@
 /**
- * @file Continuous-login multi-tab coordination.
+ * @file Tests continuous login across two browser tabs. With `flows_continuous_login` enabled, one
+ *   tab can resume another tab in the same flow. The user enters credentials once. This test
+ *   authenticates in one tab and checks that the other completes. Both tabs share a
+ *   BroadcastChannel, Web Lock, and session cookie. **Isolation:** This is a global instance
+ *   setting, so enabling it affects concurrent tests.
  *
- * Continuous login (the `flows_continuous_login` feature flag) lets one authenticated tab resume
- * every other tab sitting in the same flow, so the user only enters credentials once. This suite
- * drives two real tabs in a single browser context — they share the BroadcastChannel, the Web Lock,
- * and the session cookie the orchestrator relies on — authenticates in the first, and asserts the
- * second completes on its own.
- *
- * ISOLATION: the flag is a GLOBAL instance setting, not per-brand, so enabling it perturbs the login
- * path for every concurrent test. This file therefore:
- *   - carries the highest numeric prefix, so it is ordered last, and
- *   - runs serially, enabling the flag in `beforeAll` and restoring it in `afterAll`.
- * In CI it should run in its own invocation, after the parallel suite. See ./AGENTS.md.
+ *   - Serial execution enables the flag in `beforeAll` and restores it in `afterAll`.
+ *   - In CI, run this file separately, after the parallel suite. See `./AGENTS.md`.
  */
 
 import { expect, test } from "#e2e";
