@@ -182,28 +182,33 @@ export class ArrayInput<T>
 
         this.internals.setFormValue(JSON.stringify(values));
 
-        let message: string | undefined;
-        let anchor: HTMLElement | undefined;
-        const flags: ValidityStateFlags = {};
-
         const invalidRow = this.validate
             ? rowElements.find((element) => element.valid === false)
             : undefined;
 
         if (this.validate && (invalidRow || (this.validator && !this.validator(values)))) {
-            message = msg("One or more entries are invalid.", {
-                id: "array-input.validation.invalid-entry",
-            });
+            this.internals.setValidity(
+                { customError: true },
+                msg("One or more entries are invalid.", {
+                    id: "array-input.validation.invalid-entry",
+                }),
+                invalidRow ?? rowElements[0],
+            );
 
-            flags.customError = true;
-            anchor = invalidRow ?? rowElements[0];
-        } else if (this.required && !values.length) {
-            message = msg("This field is required.");
-            flags.valueMissing = true;
-            anchor = this.renderRoot.querySelector<HTMLElement>("button.pf-m-link") ?? undefined;
+            return;
         }
 
-        this.internals.setValidity(flags, message, anchor);
+        if (this.required && !values.length) {
+            this.internals.setValidity(
+                { valueMissing: true },
+                msg("This field is required."),
+                this.renderRoot.querySelector<HTMLElement>("button.pf-m-link") ?? undefined,
+            );
+
+            return;
+        }
+
+        this.internals.setValidity({});
     }
 
     #dispatchChange(): void {
