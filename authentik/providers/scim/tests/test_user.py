@@ -198,6 +198,32 @@ class SCIMUserTests(TestCase):
             },
         )
 
+    def test_user_schema_merge_lists(self):
+        """Test that list values returned by several mappings are not duplicated"""
+        for extension in ["slack:profile", "enterprise"]:
+            self.provider.property_mappings.add(
+                SCIMMapping.objects.create(
+                    name=generate_id(),
+                    expression=f"""return {{
+                        "schemas": [
+                            "urn:ietf:params:scim:schemas:core:2.0:User",
+                            "urn:ietf:params:scim:schemas:extension:{extension}:2.0:User",
+                        ],
+                    }}""",
+                )
+            )
+        uid = generate_id()
+        user = User(username=uid, name=uid, email=f"{uid}@goauthentik.io")
+        scim_user = SCIMUserClient(self.provider).to_schema(user, None)
+        self.assertCountEqual(
+            scim_user.schemas,
+            [
+                "urn:ietf:params:scim:schemas:core:2.0:User",
+                "urn:ietf:params:scim:schemas:extension:slack:profile:2.0:User",
+                "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User",
+            ],
+        )
+
     @Mocker()
     def test_user_create_different_provider_same_id(self, mock: Mocker):
         """Test user creation with multiple providers that happen

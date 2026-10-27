@@ -74,6 +74,29 @@ class TestUserinfo(OAuthTestCase):
         )
         self.assertEqual(res.status_code, 200)
 
+    def test_userinfo_merge_lists(self):
+        """test that list claims returned by several scopes are not duplicated"""
+        groups = ScopeMapping.objects.create(
+            name=generate_id(),
+            scope_name="groups",
+            expression="""return {
+                "groups": [group.name for group in request.user.groups.all()] + ["extra"],
+            }""",
+        )
+        self.provider.property_mappings.add(groups)
+        self.token.scope = ["openid", "profile", "groups"]
+        self.token.save()
+
+        res = self.client.get(
+            reverse("authentik_providers_oauth2:userinfo"),
+            HTTP_AUTHORIZATION=f"Bearer {self.token.token}",
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(
+            res.json()["groups"],
+            [group.name for group in self.user.groups.all()] + ["extra"],
+        )
+
     def test_userinfo_invalid_scope(self):
         """test user info with a broken scope"""
         scope = ScopeMapping.objects.create(name="test", scope_name="openid", expression="q")

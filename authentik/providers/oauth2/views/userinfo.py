@@ -2,7 +2,6 @@
 
 from typing import Any
 
-from deepmerge import always_merger
 from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseBadRequest
 from django.utils.decorators import method_decorator
@@ -21,6 +20,7 @@ from authentik.common.oauth.constants import (
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import PermissionDict
+from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.tracing import active_tracer
 from authentik.providers.oauth2.models import (
     BaseGrantModel,
@@ -94,7 +94,7 @@ class UserInfoView(View):
                 LOGGER.warning("Failed to evaluate property mapping", exc=exc)
             if value is None:
                 continue
-            always_merger.merge(final_claims, value)
+            MERGE_LIST_UNIQUE.merge(final_claims, value)
             LOGGER.debug("updated scope", scope=scope)
         return final_claims
 
