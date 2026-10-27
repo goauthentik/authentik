@@ -302,21 +302,30 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
 
     async def group_add(self, group: str, channel: str) -> None:
         """
-        Adds the channel name to a group.
+        Adds the channel name to a group or refreshes its expiry.
         """
         # Check the inputs
         assert self.require_valid_group_name(group), "Group name not valid"  # nosec
         assert self.require_valid_channel_name(channel), "Channel name not valid"  # nosec
 
         group_key = self._group_key(group)
+        expires = now() + timedelta(seconds=self.group_expiry)
 
         async with await self.connection() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute(
                     sql.SQL("""
+                        WITH updated AS (
+                            UPDATE {table}
+                            SET {expires} = %s
+                            WHERE {table}.{group_key} = %s
+                              AND {table}.{channel} = %s
+                            RETURNING {id}
+                        )
                         INSERT INTO {table}
                         ({id}, {group_key}, {channel}, {expires})
-                        VALUES (%s, %s, %s, %s)
+                        SELECT %s, %s, %s, %s
+                        WHERE NOT EXISTS (SELECT FROM updated)
                         """).format(
                         table=sql.Identifier(GROUP_CHANNEL_TABLE),
                         id=sql.Identifier("id"),
@@ -325,10 +334,13 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
                         expires=sql.Identifier("expires"),
                     ),
                     (
+                        expires,
+                        group_key,
+                        channel,
                         uuid4(),
                         group_key,
                         channel,
-                        now() + timedelta(seconds=self.group_expiry),
+                        expires,
                     ),
                 )
 

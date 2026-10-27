@@ -1,6 +1,6 @@
 services:
   chromium:
-    image: ghcr.io/goauthentik/selenium:155.0-ak-0.72.3@sha256:0d56a75f24ecf21c61f273a749c89a7f2f2d5feca47c4a5ce186b9b1ca732394
+    image: ghcr.io/goauthentik/selenium:155.0-ak-0.72.4@sha256:3bef6ce1ec02caf39ce6544c369c386c1d844e7fa3e41b75adb0d5fab7dfdb21
     shm_size: 2g
     network_mode: host
     restart: always
@@ -64,7 +64,7 @@ services:
     image: ghcr.io/linuxserver/openssh-server:10.3_p1-r1-ls236
     profiles: [pin-only]
   platform-ssh:
-    image: ghcr.io/goauthentik/platform-ssh:26.04-ak-0.72.3@sha256:895fadd9ccdc22810d88f14cfd193dede16d390917135346901e2e7cfca0c9c5
+    image: ghcr.io/goauthentik/platform-ssh:26.04-ak-0.72.4@sha256:f17c8d728b77caa57631504450d631ebd32dd65ae30e85004653d86ef0e3279c
     profiles: [pin-only]
   traefik:
     image: docker.io/library/traefik:v3.7
