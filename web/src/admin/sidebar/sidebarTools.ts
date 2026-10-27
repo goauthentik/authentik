@@ -48,7 +48,7 @@ function makeSidebarEntry(entry: SidebarEntry, licensed: boolean, canEnterprise:
     }
 
     if (children) {
-        item.children = resolveSidebarEntries(children ?? [], { licensed, canEnterprise });
+        item.children = resolveSidebarEntries(children, { licensed, canEnterprise });
     }
 
     if (isSidebarAttributeObject(attributes) && attributes.expanded !== undefined) {
