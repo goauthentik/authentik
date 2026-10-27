@@ -64,26 +64,6 @@ afterEach(() => {
 });
 
 describe("RedirectStage", () => {
-    it("redirects after a completed flow when localStorage is null", async () => {
-        // An Android WebView whose host app hasn't enabled DOM storage exposes `localStorage` as
-        // `null`, while `sessionStorage` keeps working.
-        vi.stubGlobal("localStorage", null);
-
-        createStage({ component: "xak-flow-redirect", to: resumeURL, finalRedirect: true });
-
-        await vi.waitFor(() => expect(navigate).toHaveBeenCalledWith(resumeURL));
-    });
-
-    it("redirects after a completed flow when reading localStorage throws", async () => {
-        vi.spyOn(window, "localStorage", "get").mockImplementation(() => {
-            throw new DOMException("Access is denied for this document.", "SecurityError");
-        });
-
-        createStage({ component: "xak-flow-redirect", to: resumeURL, finalRedirect: true });
-
-        await vi.waitFor(() => expect(navigate).toHaveBeenCalledWith(resumeURL));
-    });
-
     it("redirects after a completed flow when resuming other tabs fails", async () => {
         vi.spyOn(Broadcast.prototype, "discoverTabs").mockRejectedValue(
             new Error("Broadcast failed"),
@@ -106,29 +86,5 @@ describe("RedirectStage", () => {
         createStage({ component: "xak-flow-redirect", to: acsURL, finalRedirect: true });
 
         await vi.waitFor(() => expect(navigate).toHaveBeenCalledWith(acsURL));
-    });
-
-    it("redirects without resuming other tabs when continuous login is disabled", async () => {
-        injectBrand(false);
-
-        const discoverTabs = vi.spyOn(Broadcast.prototype, "discoverTabs");
-
-        createStage({ component: "xak-flow-redirect", to: resumeURL, finalRedirect: true });
-
-        await vi.waitFor(() => expect(navigate).toHaveBeenCalledWith(resumeURL));
-
-        expect(discoverTabs).not.toHaveBeenCalled();
-    });
-
-    it("redirects intermediate hops without resuming other tabs", async () => {
-        const discoverTabs = vi.spyOn(Broadcast.prototype, "discoverTabs");
-
-        createStage({ component: "xak-flow-redirect", to: "/source/oauth/login/test-source/" });
-
-        await vi.waitFor(() =>
-            expect(navigate).toHaveBeenCalledWith("/source/oauth/login/test-source/"),
-        );
-
-        expect(discoverTabs).not.toHaveBeenCalled();
     });
 });

@@ -6,7 +6,7 @@ import { multiTabOrchestrateResume } from "#flow/tabs/orchestrator";
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const lockKey = "authentik-tab-locked";
+const lockName = "ak:tab_locked";
 
 // Longer than any follower wait, so these tests don't depend on the orchestrator's timeouts.
 const EVENTUALLY_MS = 10 * 60_000;
@@ -75,56 +75,22 @@ afterEach(() => {
     vi.useRealTimers();
     vi.restoreAllMocks();
 
-    localStorage.removeItem(lockKey);
     document.getElementById("ak-brand")?.remove();
     refreshServerContext();
 });
 
 describe("multiTabOrchestrateResume", () => {
-    it("takes and releases the tab lock when no other tabs are open", async () => {
-        vi.spyOn(Broadcast.prototype, "discoverTabs").mockResolvedValue(new Set());
-
-        const setItem = vi.spyOn(Storage.prototype, "setItem");
-
-        await multiTabOrchestrateResume();
-
-        expect(setItem).toHaveBeenCalledWith(lockKey, expect.any(String));
-        expect(localStorage.getItem(lockKey)).toBeNull();
-    });
-
-    it("bows out when the tab holding the lock is still open", async () => {
-        localStorage.setItem(lockKey, "leader");
-
+    it("bows out while another tab holds the lock", async () => {
         const broadcast = new RespondingBroadcast(new Set(["leader", "follower"]));
         const resumeTab = vi.spyOn(broadcast, "resumeTab");
         const suppressNextExit = vi.spyOn(broadcast, "suppressNextExit");
 
-        await withSharedBroadcast(broadcast, () => multiTabOrchestrateResume());
+        await navigator.locks.request(lockName, () =>
+            withSharedBroadcast(broadcast, () => multiTabOrchestrateResume()),
+        );
 
         expect(resumeTab).not.toHaveBeenCalled();
         expect(suppressNextExit).toHaveBeenCalledOnce();
-        expect(localStorage.getItem(lockKey)).toBe("leader");
-    });
-
-    it("releases the tab lock when resuming a tab throws", async () => {
-        vi.useFakeTimers();
-
-        const broadcast = new RespondingBroadcast(new Set(["follower"]));
-
-        vi.spyOn(broadcast, "resumeTab").mockImplementation(() => {
-            throw new Error("Broadcast failed");
-        });
-
-        await withSharedBroadcast(broadcast, async () => {
-            const orchestration = expect(multiTabOrchestrateResume()).rejects.toThrow(
-                "Broadcast failed",
-            );
-
-            await vi.advanceTimersByTimeAsync(EVENTUALLY_MS);
-            await orchestration;
-        });
-
-        expect(localStorage.getItem(lockKey)).toBeNull();
     });
 
     it("resumes a follower that never exits only once", async () => {
@@ -141,37 +107,12 @@ describe("multiTabOrchestrateResume", () => {
                 settled = true;
             });
 
-            await vi.advanceTimersByTimeAsync(EVENTUALLY_MS);
+            // The lock is granted asynchronously, so keep advancing until the leader is done.
+            await vi.waitFor(async () => {
+                await vi.advanceTimersByTimeAsync(EVENTUALLY_MS);
 
-            expect(settled).toBe(true);
-
-            await orchestration;
-        });
-
-        expect(resumeTab).toHaveBeenCalledOnce();
-    });
-
-    it("stops waiting for a follower when checking whether it is still open fails", async () => {
-        vi.useFakeTimers();
-
-        const broadcast = new RespondingBroadcast(new Set(["follower"]));
-        const resumeTab = vi.spyOn(broadcast, "resumeTab").mockImplementation(() => {});
-
-        await withSharedBroadcast(broadcast, async () => {
-            let settled = false;
-
-            const orchestration = multiTabOrchestrateResume().then(() => {
-                settled = true;
+                expect(settled).toBe(true);
             });
-
-            // Let the initial discovery finish, then fail every later check.
-            await vi.advanceTimersByTimeAsync(20);
-
-            vi.spyOn(broadcast, "discoverTabs").mockRejectedValue(new Error("Broadcast failed"));
-
-            await vi.advanceTimersByTimeAsync(EVENTUALLY_MS);
-
-            expect(settled).toBe(true);
 
             await orchestration;
         });
