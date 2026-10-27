@@ -8,13 +8,6 @@ import "#elements/commands/ak-command-palette-user-modal";
 import "#components/notifications/APIDrawer";
 import "#components/notifications/NotificationDrawer";
 import "#components/ak-page-navbar";
-import {
-    createAdminSidebarEnterpriseEntries,
-    createAdminSidebarEntries,
-    findSidebarSectionByRoute,
-    renderSidebarItems,
-    SidebarEntry,
-} from "./navigation/sidebar.js";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
@@ -46,6 +39,11 @@ import {
 } from "#elements/router/core/interfaces";
 import { matchRoute } from "#elements/router/core/matcher";
 import { navigate, RouterNavigateEvent } from "#elements/router/core/navigation";
+import {
+    findSidebarSectionByRoute,
+    renderSidebarItems,
+    SidebarEntry,
+} from "#elements/sidebar/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { AKDrawerChangeEvent } from "#components/notifications/events";
@@ -58,6 +56,7 @@ import {
 
 import Styles from "#admin/ak-interface-admin.css";
 import { DEFAULT_PATH, ROUTES } from "#admin/Routes";
+import { createAdminSidebarEntries } from "#admin/sidebar/constants";
 
 import { CapabilitiesEnum } from "@goauthentik/api";
 
@@ -101,15 +100,10 @@ export class AdminInterface extends WithLicenseSummary(
     @property({ type: Boolean, reflect: true, attribute: "sidebar" })
     public sidebarOpen = false;
 
-    @property({ type: Array })
-    public entries: readonly SidebarEntry[] = createAdminSidebarEntries();
-
     protected get navigationEntries(): readonly SidebarEntry[] {
-        if (!this.can(CapabilitiesEnum.IsEnterprise)) {
-            return this.entries;
-        }
+        const canEnterprise = this.can(CapabilitiesEnum.IsEnterprise);
 
-        return [...this.entries, ...createAdminSidebarEnterpriseEntries()];
+        return createAdminSidebarEntries(canEnterprise);
     }
 
     //#endregion
@@ -118,11 +112,6 @@ export class AdminInterface extends WithLicenseSummary(
 
     public toggleSidebar = () => {
         this.sidebarOpen = !this.sidebarOpen;
-    };
-
-    public synchronizeSidebarEntries = () => {
-        this.logger.debug("Synchronizing sidebar entries with current locale");
-        this.entries = createAdminSidebarEntries();
     };
 
     //#endregion
@@ -163,7 +152,7 @@ export class AdminInterface extends WithLicenseSummary(
     @listen(LOCALE_STATUS_EVENT, { target: window })
     localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
         if (event.detail.status === "ready") {
-            this.synchronizeSidebarEntries();
+            this.requestUpdate();
         }
     };
 

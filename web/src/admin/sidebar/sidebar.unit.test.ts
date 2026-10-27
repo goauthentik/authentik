@@ -1,9 +1,12 @@
-import { createAdminSidebarEntries, findSidebarSectionByRoute } from "./sidebar.js";
+import { findSidebarSectionByRoute, type SidebarEntry } from "#elements/sidebar/utils";
+
+import { ROUTES } from "#admin/Routes";
+import { createAdminSidebarEntries } from "#admin/sidebar/constants";
 
 import { describe, expect, it } from "vitest";
 
 describe("findSidebarSectionByRoute", () => {
-    const entries = createAdminSidebarEntries();
+    const entries = createAdminSidebarEntries(true);
 
     it.each([
         ["outpost-view", "Outposts"],
@@ -20,5 +23,17 @@ describe("findSidebarSectionByRoute", () => {
         expect(findSidebarSectionByRoute(entries, "outposts")).toBeNull();
         expect(findSidebarSectionByRoute(entries, "stage-prompts")).toBeNull();
         expect(findSidebarSectionByRoute(entries, null)).toBeNull();
+    });
+});
+
+describe("sidebar routes", () => {
+    const collectPaths = (entries: readonly SidebarEntry[]): string[] =>
+        entries.flatMap(([path, , , children]) => [
+            ...(path?.startsWith("/") ? [path] : []),
+            ...(children ? collectPaths(children) : []),
+        ]);
+
+    it.each(collectPaths(createAdminSidebarEntries(true)))("%s resolves to a route", (path) => {
+        expect(ROUTES.some((route) => route.test(path))).toBe(true);
     });
 });

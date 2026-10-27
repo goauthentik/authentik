@@ -1,87 +1,9 @@
-import { SidebarItemProperties } from "#elements/sidebar/SidebarItem";
-import { LitPropertyRecord } from "#elements/types";
-
-import { spread } from "@open-wc/lit-helpers";
+import { SidebarEntry } from "#elements/sidebar/utils";
 
 import { msg } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
-import { repeat } from "lit/directives/repeat.js";
-
-// A `string[]` in the attributes slot lists the route names that keep the entry active.
-export type SidebarEntry = [
-    path: string | null,
-    label: string,
-    attributes?: LitPropertyRecord<SidebarItemProperties> | string[] | null,
-    children?: SidebarEntry[],
-];
-
-export type RouteNameResolver = (path: string) => string | null;
-
-/**
- * Recursively renders a collection of sidebar entries.
- */
-export function renderSidebarItems(
-    entries: readonly SidebarEntry[],
-    resolveRouteName: RouteNameResolver,
-) {
-    return repeat(
-        entries,
-        ([path, label]) => path || label,
-        // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        (entry) => renderSidebarItem(entry, resolveRouteName),
-    );
-}
-
-/**
- * Recursively renders a sidebar entry.
- */
-export function renderSidebarItem(
-    [path, label, attributes, children]: SidebarEntry,
-    resolveRouteName: RouteNameResolver,
-): TemplateResult {
-    const properties = Array.isArray(attributes)
-        ? {
-              ".activeWhen": (activePath: string) =>
-                  attributes.includes(resolveRouteName(activePath) ?? ""),
-          }
-        : (attributes ?? {});
-
-    if (path) {
-        properties.path = path;
-    }
-
-    return html`<ak-sidebar-item
-        exportparts="list-item, link"
-        label=${ifDefined(label)}
-        ${spread(properties)}
-    >
-        ${children ? renderSidebarItems(children, resolveRouteName) : nothing}
-    </ak-sidebar-item>`;
-}
-
-/**
- * The label of the entry that lists the given route, e.g. "Providers" for `provider-view`.
- */
-export function findSidebarSectionByRoute(
-    entries: readonly SidebarEntry[],
-    routeName: string | null,
-): string | null {
-    if (!routeName) return null;
-
-    for (const [, label, attributes, children] of entries) {
-        if (Array.isArray(attributes) && attributes.includes(routeName)) return label;
-
-        const childLabel = children ? findSidebarSectionByRoute(children, routeName) : null;
-
-        if (childLabel) return childLabel;
-    }
-
-    return null;
-}
 
 // prettier-ignore
-export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
+export const initAdminSidebarEntries = (): readonly SidebarEntry[] => [
     [null, msg("Dashboards"), { key: "dashboards", "?expanded": true }, [
         ["/administration/overview", msg("Overview")],
         ["/administration/dashboard/users", msg("User Statistics")],
@@ -140,8 +62,16 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
 ];
 
 // prettier-ignore
-export const createAdminSidebarEnterpriseEntries = (): readonly SidebarEntry[] => [
+export const initAdminSidebarEnterpriseEntries = (): readonly SidebarEntry[] => [
     [null, msg("Enterprise"), { key: "enterprise" }, [
         ["/enterprise/licenses", msg("Licenses"), null]
     ],
 ]];
+
+export function createAdminSidebarEntries(needsEnterprise: boolean) {
+    const entries = needsEnterprise
+        ? [...initAdminSidebarEntries(), ...initAdminSidebarEnterpriseEntries()]
+        : initAdminSidebarEntries();
+
+    return entries;
+}
