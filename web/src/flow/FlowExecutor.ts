@@ -221,11 +221,11 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         } satisfies FlowErrorChallenge as ChallengeTypes;
     }
 
-    public refresh = async () => {
+    public refresh = async (): Promise<boolean> => {
         if (!this.flowSlug) {
             this.#logger.debug("Skipping refresh, no flow slug provided");
 
-            return Promise.resolve();
+            return false;
         }
 
         this.loading = true;

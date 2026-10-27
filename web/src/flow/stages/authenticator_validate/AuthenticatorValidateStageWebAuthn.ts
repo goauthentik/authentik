@@ -97,16 +97,16 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
         this.errorMessages = null;
         this.authenticating = true;
 
-        // Another tab may have replaced the session's WebAuthn challenge. Fetch the current
-        // stage again; its updated challenge will start the ceremony through the lifecycle.
-        try {
-            return await this.host?.refresh?.();
-        } catch (error: unknown) {
-            this.errorMessages = [await parseAPIResponseError(error)];
-            this.authenticating = false;
+        // Another tab may have replaced the session's challenge, so fetch a fresh one.
+        // The new challenge starts the ceremony in `willUpdate`.
+        const refreshed = await this.host?.refresh?.();
 
-            return false;
+        if (!refreshed) {
+            this.errorMessages = [msg("Failed to authenticate")];
+            this.authenticating = false;
         }
+
+        return refreshed;
     };
 
     // #region Lifecycle
