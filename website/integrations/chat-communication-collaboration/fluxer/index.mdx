@@ -29,29 +29,9 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of Fluxer with authentik, you need to create an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) in authentik.
 
-### Create an email scope mapping
+### Email verification
 
-Fluxer rejects SSO logins with an unverified email address when the instance uses email sign-in, or when **Allowed Email Domains** is set in Fluxer's SSO settings. authentik's default email scope mapping returns `email_verified: false`. In either case, create a custom email scope mapping that returns `email_verified: true`. Fluxer shows the instance's sign-in method in the admin panel under **Configuration** > **Instance Config** > **Sign-in Method**.
-
-:::warning Email ownership
-Fluxer links an SSO login to the existing Fluxer account with the same email address. With this mapping, an authentik user who changes their email address in authentik can sign in to the Fluxer account that uses that address. Make sure that users cannot change their own email address in authentik, for example by removing the email field from the user settings flow.
-:::
-
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings** and click **New Property Mapping**.
-    - **Select type**: select **Scope Mapping**.
-    - **Configure the Scope Mapping**: provide a descriptive name (e.g. `Fluxer Email Scope`) and an optional description.
-        - **Scope name**: `email`
-        - **Expression**:
-
-        ```python showLineNumbers
-        return {
-            "email": request.user.email,
-            "email_verified": True
-        }
-        ```
-
-3. Click **Create** to save the property mapping.
+Fluxer rejects SSO logins with an unverified email address when the instance uses email sign-in, or when **Allowed Email Domains** is set in Fluxer's SSO settings. The default authentik email scope mapping returns `email_verified: false`. In either case, create a custom email scope mapping as described in [Verify email addresses](/docs/add-secure-apps/providers/oauth2/verify-email-address). Fluxer shows the instance's sign-in method in the admin panel under **Configuration** > **Instance Config** > **Sign-in Method**.
 
 ### Create an application and provider
 
@@ -63,7 +43,7 @@ Fluxer links an SSO login to the existing Fluxer account with the same email add
         - Note the **Client ID** and **Client Secret** values because they will be required later.
         - Add a **Redirect URI** of type `Strict` `Authorization` with a value of `https://fluxer.company/auth/sso/callback`.
         - Select any available signing key.
-        - If you created the custom email scope mapping, under **Advanced protocol settings**, remove the `authentik default OAuth Mapping: OpenID 'email'` scope mapping and add the custom scope mapping.
+        - If you created a custom email scope mapping, open **Advanced protocol settings**, add it to **Selected Scopes**, and remove `authentik default OAuth Mapping: OpenID 'email'`.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
