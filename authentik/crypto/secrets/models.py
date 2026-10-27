@@ -13,7 +13,6 @@ from django.utils.translation import gettext_lazy as _
 from guardian.models import RoleModelPermission
 from yaml import YAMLError, safe_load
 
-from authentik.admin.utils import get_system_settings
 from authentik.blueprints.models import ManagedModel
 from authentik.core.models import default_token_key
 from authentik.crypto.secrets.signals import secret_value_changed, secret_value_validating
@@ -118,16 +117,15 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
             secret_value_changed.send(sender=Secret, secret=self)
 
     def rotate(self, request: Request | None = None) -> str:
-        """Generate and store a new text value.
+        """Generate and store a new text value with the same length as the current one.
 
-        The new value is at least as long as the current one, so a secret generated with a
-        consumer's own length, such as a 128 character OAuth2 client secret, keeps it.
+        Consumers and the clients they talk to may limit the length, such as RADIUS clients
+        that accept at most 16 characters, or expect their own, such as 128 character OAuth2
+        client secrets.
         """
         if self.type != SecretType.TEXT:
             raise ValueError("Only text secrets can be rotated.")
-        value = generate_secret_value(
-            max(len(self.secret_value), get_system_settings().default_token_length)
-        )
+        value = generate_secret_value(len(self.secret_value))
         self.validate_value(value)
         self.replace_value(value, request)
         return value
