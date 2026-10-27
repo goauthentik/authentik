@@ -3,7 +3,7 @@
 from rest_framework.fields import SerializerMethodField
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.providers import ProviderSerializer
+from authentik.core.api.providers import ProviderSerializer, ProviderUniqueSaveMixin
 from authentik.core.api.used_by import UsedByMixin
 from authentik.lib.sync.outgoing.api import OutgoingSyncProviderStatusMixin
 from authentik.lib.utils.reflection import ConditionalInheritance
@@ -62,7 +62,9 @@ class SCIMProviderSerializer(
         }
 
 
-class SCIMProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelViewSet):
+class SCIMProviderViewSet(
+    ProviderUniqueSaveMixin, OutgoingSyncProviderStatusMixin, UsedByMixin, ModelViewSet
+):
     """SCIMProvider Viewset"""
 
     queryset = SCIMProvider.objects.all()

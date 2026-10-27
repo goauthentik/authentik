@@ -29,7 +29,7 @@ from authentik.common.saml.constants import (
     SAML_BINDING_REDIRECT,
     SAML_BINDINGS_SUPPORTED,
 )
-from authentik.core.api.providers import ProviderSerializer
+from authentik.core.api.providers import ProviderSerializer, ProviderUniqueSaveMixin
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
@@ -303,7 +303,7 @@ class SAMLProviderImportSerializer(PassiveSerializer):
     file = FileField()
 
 
-class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
+class SAMLProviderViewSet(ProviderUniqueSaveMixin, UsedByMixin, ModelViewSet):
     """SAMLProvider Viewset"""
 
     queryset = SAMLProvider.objects.all()

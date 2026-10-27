@@ -9,7 +9,7 @@ from rest_framework.fields import CharField, ListField, ReadOnlyField, Serialize
 from rest_framework.mixins import ListModelMixin
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from authentik.core.api.providers import ProviderSerializer
+from authentik.core.api.providers import ProviderSerializer, ProviderUniqueSaveMixin
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.crypto.validators import TLS_KEY_TYPES, KeyTypeValidator
@@ -108,7 +108,7 @@ class ProxyProviderSerializer(ProviderSerializer):
         }
 
 
-class ProxyProviderViewSet(UsedByMixin, ModelViewSet):
+class ProxyProviderViewSet(ProviderUniqueSaveMixin, UsedByMixin, ModelViewSet):
     """ProxyProvider Viewset"""
 
     queryset = ProxyProvider.objects.all()
