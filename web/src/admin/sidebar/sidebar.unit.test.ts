@@ -1,6 +1,7 @@
-import { createAdminSidebarEntries, findSidebarSectionByRoute, SidebarEntry } from "./sidebar.js";
+import { findSidebarSectionByRoute, type SidebarEntry } from "#elements/sidebar/utils";
 
 import { ROUTES } from "#admin/Routes";
+import { createAdminSidebarEntries } from "#admin/sidebar/constants";
 
 import { describe, expect, it } from "vitest";
 
@@ -25,20 +26,14 @@ describe("findSidebarSectionByRoute", () => {
     });
 });
 
-describe("validate Sidebar routes exist", () => {
-    it("has a matching route in Routes for each sidebar entry", () => {
-        const paths: string[] = createAdminSidebarEntries(true)
-            .map((level1: SidebarEntry) =>
-                (level1[3] ?? [])
-                    .filter((level2: SidebarEntry) => level2[0]?.startsWith("/"))
-                    .map((level2: SidebarEntry) => level2[0]),
-            )
-            .flat()
-            .filter((path) => typeof path === "string");
+describe("sidebar routes", () => {
+    const collectPaths = (entries: readonly SidebarEntry[]): string[] =>
+        entries.flatMap(([path, , , children]) => [
+            ...(path?.startsWith("/") ? [path] : []),
+            ...(children ? collectPaths(children) : []),
+        ]);
 
-        for (const path of paths) {
-            const matchingRoute = ROUTES.find((route) => route.test(path));
-            expect(matchingRoute).not.toBeFalsy();
-        }
+    it.each(collectPaths(createAdminSidebarEntries(true)))("%s resolves to a route", (path) => {
+        expect(ROUTES.some((route) => route.test(path))).toBe(true);
     });
 });

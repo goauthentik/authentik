@@ -8,12 +8,6 @@ import "#elements/commands/ak-command-palette-user-modal";
 import "#components/notifications/APIDrawer";
 import "#components/notifications/NotificationDrawer";
 import "#components/ak-page-navbar";
-import {
-    createAdminSidebarEntries,
-    findSidebarSectionByRoute,
-    renderSidebarItems,
-    SidebarEntry,
-} from "./navigation/sidebar.js";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
@@ -45,6 +39,11 @@ import {
 } from "#elements/router/core/interfaces";
 import { matchRoute } from "#elements/router/core/matcher";
 import { navigate, RouterNavigateEvent } from "#elements/router/core/navigation";
+import {
+    findSidebarSectionByRoute,
+    renderSidebarItems,
+    SidebarEntry,
+} from "#elements/sidebar/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { AKDrawerChangeEvent } from "#components/notifications/events";
@@ -57,6 +56,7 @@ import {
 
 import Styles from "#admin/ak-interface-admin.css";
 import { DEFAULT_PATH, ROUTES } from "#admin/Routes";
+import { createAdminSidebarEntries } from "#admin/sidebar/constants";
 
 import { CapabilitiesEnum } from "@goauthentik/api";
 
