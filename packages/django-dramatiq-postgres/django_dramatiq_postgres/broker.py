@@ -76,6 +76,49 @@ def raise_broker_connection_error(func: Callable[P, R]) -> Callable[P, R]:  # no
     return wrapper
 
 
+def discard_interrupted_transactions() -> None:
+    """Replace the current thread's database connections that a task left in a transaction.
+
+    TimeLimitExceeded is raised asynchronously, so it can land in `Atomic.__enter__` after
+    the connection is marked as inside an atomic block, between the end of a
+    `with transaction.atomic()` body and its `__exit__`, or in `Atomic.__exit__` before the
+    mark is cleared or autocommit is turned back on. Nothing leaves that transaction
+    afterwards:
+
+    - Django never resets a connection it thinks is in an atomic block. `close()` only
+      marks it as closed in the transaction and keeps the closed connection, so every later
+      query on this thread fails with "the connection is closed", including the ack or nack
+      that dramatiq retries forever.
+    - With autocommit left off, later writes on this thread are never committed and are
+      rolled back when the connection is closed.
+
+    Between two messages, a worker or consumer thread is never legitimately in a
+    transaction, so close such a connection and drop the wrapper. The next query opens a
+    fresh connection. Tests process messages inside the test's own transaction, so this
+    does nothing there.
+    """
+    if Conf().test:
+        return
+    for conn in connections.all(initialized_only=True):
+        if not conn.in_atomic_block and (
+            conn.connection is None or conn.autocommit == conn.settings_dict["AUTOCOMMIT"]
+        ):
+            continue
+        logger.warning(
+            "Discarding database connection left in a transaction by an interrupted task",
+            alias=conn.alias,
+        )
+        try:
+            conn.close()
+        except DATABASE_ERRORS:
+            pass
+        del connections[conn.alias]
+        # django-tenants keeps the active tenant on the connection, and a new one starts on the
+        # public schema. Keep the task's tenant for the hooks that run after this.
+        if (tenant := getattr(conn, "tenant", None)) is not None:
+            connections[conn.alias].set_tenant(tenant, conn.include_public_schema)
+
+
 class PostgresBroker(Broker):
     queues: set[str]
 
@@ -109,6 +152,14 @@ class PostgresBroker(Broker):
     @property
     def connection(self) -> DatabaseWrapper:
         return cast(DatabaseWrapper, connections[self.db_alias])
+
+    def emit_after(self, signal: str, *args: Any, **kwargs: Any) -> None:
+        # Clean up before any after_process_message hook runs, otherwise their writes
+        # (task logs, events, the retry of the message) would go into the interrupted
+        # transaction and be lost with it.
+        if signal == "process_message":
+            discard_interrupted_transactions()
+        super().emit_after(signal, *args, **kwargs)
 
     @property
     def consumer_class(self) -> type[_PostgresConsumer]:
@@ -536,6 +587,10 @@ class _PostgresConsumer(Consumer):
 
     def _post_process_message(self, message: MessageProxy, state: TaskState) -> None:
         self.logger.debug("Post-processing message", message=message.message_id, state=state)
+        # dramatiq retries the ack or nack until it succeeds. An after_process_message hook
+        # can still leave a transaction behind after the check in PostgresBroker.emit_after,
+        # so check again here, or the retries would never get past it.
+        discard_interrupted_transactions()
         task = message.options.pop("task", None)
         try:
             m = b"" if state == TaskState.DONE else message.encode()
