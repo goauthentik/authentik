@@ -5,92 +5,297 @@ tags: [authentik Agent, authentik cli, aws, cli]
 authentik_version: "2025.12.0"
 ---
 
-You can use the authentik Agent to authenticate to the AWS CLI with authentik credentials.
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+You can use the authentik Agent to authenticate to the AWS CLI with authentik credentials through either of these methods:
+
+- **SAML federation**: reuse an existing AWS Classic IAM SAML application/provider configured for AWS console SSO.
+- **OIDC federation**: use a dedicated AWS OAuth2/OIDC application/provider.
+
+Both methods return temporary AWS credentials. The Agent can also authenticate `kubectl` to [Amazon EKS](#amazon-eks-authentication).
+
+:::info Version compatibility
+AWS SAML federation requires authentik 2026.11 or later.
+
+authentik Agent v0.72.4 or later is required for `aws-eks` integration.
+:::
 
 ## Prerequisites
 
-- The authentik Agent must be deployed on your device.
+- The authentik Agent must be deployed on your device with its [authentik-cli OAuth2 provider configured](../../configuration.mdx#create-an-application-and-provider-in-authentik-for-cli).
+
+SAML federation removes the need for an additional AWS-specific OAuth2/OIDC provider, not the `authentik-cli` OAuth2 provider used by the Agent itself.
 
 ## authentik configuration
 
-To support the integration of authentik Agent with AWS CLI, you need to create an application/provider pair in authentik.
+Choose SAML or OIDC for your integration.
 
-### Create an application and provider in authentik for AWS CLI
+<Tabs groupId="aws-federation" defaultValue="saml">
+<TabItem value="saml" label="SAML">
+
+### Configure the SAML provider
+
+If you already use authentik for AWS Classic IAM console SSO, reuse that application/provider. Otherwise, complete the [AWS Classic IAM integration guide](https://integrations.goauthentik.io/cloud-providers/aws-classic/) before continuing.
+
+This integration uses IAM SAML federation and AWS STS `AssumeRoleWithSAML`, not AWS IAM Identity Center.
+
+The required AWS role and role session name mappings are covered in [Create property mappings](https://integrations.goauthentik.io/cloud-providers/aws-classic/#create-property-mappings).
+
+Enable token exchange on the Agent's OAuth2 provider and authorize it on the SAML provider:
+
+1. In the authentik Admin interface, navigate to **Applications** > **Providers** and edit the `authentik-cli` OAuth2 provider used by the Agent.
+2. Under **Protocol settings** > **Grant Types**, select **Token exchange** and keep the existing grants selected.
+3. Save the provider.
+4. Edit the existing AWS SAML provider.
+5. Expand **Machine-to-Machine authentication settings**.
+6. Under **Federated OAuth2/OpenID Providers**, add the `authentik-cli` OAuth2 provider.
+7. Save the provider.
+
+Ensure that the SAML application's access bindings allow the user.
+
+</TabItem>
+<TabItem value="oidc" label="OIDC">
+
+This alternative uses AWS STS `AssumeRoleWithWebIdentity`. It requires a dedicated AWS OAuth2/OIDC application/provider in addition to the Agent's `authentik-cli` provider.
+
+### Configure the OIDC provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name (e.g. `authentik-aws-cli`), an optional group for the type of application, the policy engine mode, and optional UI settings.
+
+    - **Application**: provide a descriptive name, set the **Slug** to `authentik-aws-cli`, and configure an optional group, the policy engine mode, and optional UI settings.
     - **Choose a Provider Type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **Client Type** to `Public`.
         - Set the **Client ID** to `authentik-aws-cli`.
         - Select any available signing key.
-        - Under **Machine-to-Machine authentication settings** add the `authentik-cli` provider as a **Federated OIDC Provider**.
+        - Under **Machine-to-Machine authentication settings**, add the `authentik-cli` provider to **Federated OAuth2/OpenID Providers**.
     - **Configure Bindings** _(optional)_: you can create a [binding](../../../../add-secure-apps/bindings-overview/index.mdx) (policy, group, or user) to manage access to the application.
 
-3. Click **Submit** to save the new application and provider.
+3. Click **Create Application** to save the new application and provider.
+
+</TabItem>
+</Tabs>
 
 ## AWS configuration
 
-To support the integration of AWS with the authentik Agent, you need to configure authentik CLI as an IdP and set up permission roles in AWS.
+<Tabs groupId="aws-federation" defaultValue="saml">
+<TabItem value="saml" label="SAML">
 
-### Configure authentik CLI as an IDP in AWS
+### Configure the SAML identity provider
+
+Follow the [AWS Classic IAM integration guide](https://integrations.goauthentik.io/cloud-providers/aws-classic/) for the complete IAM and SAML configuration. If you already use this integration for AWS console SSO, reuse its IAM SAML identity provider and role.
+
+### Configure the IAM role for SAML federation
+
+1. Reuse an existing IAM role from your AWS Classic IAM integration, or [create an IAM role for SAML federation](https://integrations.goauthentik.io/cloud-providers/aws-classic/#create-iam-roles-for-saml-federation).
+2. Ensure that the role's permissions policies grant the intended AWS access.
+3. [Verify the role trust policy](https://integrations.goauthentik.io/cloud-providers/aws-classic/#verify-the-role-trust-policy). It must trust the IAM SAML identity provider for `sts:AssumeRoleWithSAML`.
+4. Ensure that the role ARN and SAML identity provider ARN pair is included in the authenticated user's SAML assertion.
+5. Record the IAM role ARN and SAML identity provider ARN for the AWS CLI configuration below.
+
+</TabItem>
+<TabItem value="oidc" label="OIDC">
+
+### Configure the OIDC identity provider
 
 1. Log in to the AWS Management Console as an administrator that has permissions to create IAM roles and identity providers.
 2. Open the [IAM Console](https://console.aws.amazon.com/iam/) and in the left sidebar under **Access Management**, click **Identity providers**.
 3. Click **Add provider** and configure the following fields:
     - **Provider type**: `OpenID Connect`
-    - **Provider URL**: `https://authentik.company/application/o/<application-slug>/`
+    - **Provider URL**: `https://authentik.company/application/o/authentik-aws-cli/`
     - **Audience**: `authentik-aws-cli`
-4. Click **Add provider**
+4. Click **Add provider**.
 5. On the **Identity providers** page, click on the name of the provider that you just added.
 
-### Configure permissions in AWS
+### Configure the IAM role for OIDC federation
 
 1. Log in to the AWS Management Console as an administrator that has permissions to create IAM roles and identity providers.
 2. Open the [IAM Console](https://console.aws.amazon.com/iam/) and in the left sidebar under **Access Management**, click **Roles**.
 3. Either create or edit a role that you want authentik users to be able to use.
 4. Open the **Trust relationships** tab.
-5. Click **Edit trust policy** and add the following, replacing `<account_id>` with your AWS Account ID:
+5. Click **Edit trust policy** and add the following, replacing `<account_id>` with your AWS account ID and `authentik.company` with your authentik hostname:
 
-```json
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Principal": {
-                "Federated": "arn:aws:iam::<account_id>:oidc-provider/authentik.company/application/o/authentik-aws-cli/"
-            },
-            "Action": "sts:AssumeRoleWithWebIdentity",
-            "Condition": {
-                "StringEquals": {
-                    "authentik.company/application/o/authentik-aws-cli/:aud": "authentik-aws-cli"
+    ```json
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Principal": {
+                    "Federated": "arn:aws:iam::<account_id>:oidc-provider/authentik.company/application/o/authentik-aws-cli/"
+                },
+                "Action": "sts:AssumeRoleWithWebIdentity",
+                "Condition": {
+                    "StringEquals": {
+                        "authentik.company/application/o/authentik-aws-cli/:aud": "authentik-aws-cli"
+                    }
                 }
             }
-        }
-    ]
-}
-```
+        ]
+    }
+    ```
 
 6. Click **Update policy**.
-7. Take note of the role ARN as it will be required in the next section.
+7. Ensure that the role's permissions policies grant the intended AWS access.
+8. Record the role ARN for the AWS CLI configuration below.
 
-### Configure AWS CLI to authenticate with authentik CLI
+</TabItem>
+</Tabs>
 
-On the device running AWS CLI, update the `~/.aws/credentials` file with the following, replacing `<role_arn>` with the ARN of the role above:
+## AWS CLI configuration
 
-```
-[default]
-credential_process = ak auth aws --client-id authentik-aws-cli --role-arn <role_arn>
-```
+On the device where you run the AWS CLI, configure an AWS profile to obtain temporary credentials from the authentik Agent using an [external credential process](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sourcing-external.html).
 
-To verify, run `aws sts get-caller-identity`, which should output something like this
+Replace `ak` in `credential_process` with the full path to your installed executable.
 
-```json
-{
-    "UserId": "xxxxxx",
-    "Account": "<account_id>",
-    "Arn": "arn:aws:sts::<account_id>:assumed-role/<role name>/<authentik username>"
-}
-```
+The profile's `region` sets the AWS CLI service region; the command's `--region` sets the Agent's STS region.
+
+<Tabs groupId="aws-federation" defaultValue="saml">
+<TabItem value="saml" label="SAML">
+
+### Configure AWS CLI for SAML federation
+
+1. Add the following profile to `~/.aws/config`:
+
+    ```ini title="~/.aws/config"
+    [profile authentik-saml]
+    region = <region>
+    credential_process = ak auth aws --audience <application_slug> --principal-arn arn:aws:iam::<account_id>:saml-provider/<saml_provider_name> --role-arn arn:aws:iam::<account_id>:role/<role_name> --region <region>
+    ```
+
+2. Replace the placeholders with your configuration:
+
+    | Setting           | Value                                                                                           |
+    | ----------------- | ----------------------------------------------------------------------------------------------- |
+    | `--audience`      | Slug or UUID of the authentik SAML application.                                                 |
+    | `--principal-arn` | ARN of the SAML identity provider configured in AWS IAM.                                        |
+    | `--role-arn`      | ARN of the IAM role to assume. It must match a role/provider pair in the user's SAML assertion. |
+    | `--region`        | AWS region to use for STS.                                                                      |
+    | `region`          | AWS CLI service region for the profile.                                                         |
+
+    The CLI's `--audience` identifies the authentik application. It is not the SAML provider's **Audience** value, which is typically `urn:amazon:webservices` for AWS.
+
+3. Verify authentication:
+
+    ```bash
+    aws sts get-caller-identity --profile authentik-saml
+    ```
+
+    Successful authentication returns the AWS account and assumed-role identity. This verifies credential acquisition, not permission to access AWS resources.
+
+    **Example**:
+
+    ```json
+    {
+        "UserId": "<role_id>:<session_name>",
+        "Account": "<account_id>",
+        "Arn": "arn:aws:sts::<account_id>:assumed-role/<role_name>/<session_name>"
+    }
+    ```
+
+    The session name comes from the SAML `RoleSessionName` mapping.
+
+</TabItem>
+<TabItem value="oidc" label="OIDC">
+
+### Configure AWS CLI for OIDC federation
+
+1. Add the following profile to `~/.aws/config`:
+
+    ```ini title="~/.aws/config"
+    [profile authentik-oidc]
+    region = <region>
+    credential_process = ak auth aws --client-id authentik-aws-cli --role-arn arn:aws:iam::<account_id>:role/<role_name> --region <region>
+    ```
+
+2. Replace the placeholders with your configuration:
+
+    | Setting       | Value                                                                                                            |
+    | ------------- | ---------------------------------------------------------------------------------------------------------------- |
+    | `--client-id` | Client ID of the authentik OAuth2/OIDC provider. Use `authentik-aws-cli` to match the provider configured above. |
+    | `--role-arn`  | ARN of the IAM role to assume. It must trust the OIDC identity provider configured above.                        |
+    | `--region`    | AWS region to use for STS.                                                                                       |
+    | `region`      | AWS CLI service region for the profile.                                                                          |
+
+3. Verify authentication:
+
+    ```bash
+    aws sts get-caller-identity --profile authentik-oidc
+    ```
+
+    Successful authentication returns the AWS account and assumed-role identity. This verifies credential acquisition, not permission to access AWS resources.
+
+    **Example**:
+
+    ```json
+    {
+        "UserId": "<role_id>:<session_name>",
+        "Account": "<account_id>",
+        "Arn": "arn:aws:sts::<account_id>:assumed-role/<role_name>/<session_name>"
+    }
+    ```
+
+    The session name comes from the authenticated user's `preferred_username`.
+
+</TabItem>
+</Tabs>
+
+## Amazon EKS authentication
+
+Use `ak auth aws-eks` as a kubectl exec credential plugin to authenticate to Amazon EKS through AWS IAM. Unlike the direct Kubernetes OIDC integration using `ak auth kubectl`, this does not require changing the Kubernetes API server's OIDC configuration.
+
+The command obtains AWS credentials through either SAML or OIDC federation, signs an STS `GetCallerIdentity` request using AWS Signature Version 4, and returns an EKS token as a Kubernetes `ExecCredential`.
+
+:::info Version compatibility
+The `aws-eks` command was introduced in [authentik Agent 0.72.4](https://github.com/goauthentik/platform/releases/tag/v0.72.4) with OIDC support.
+:::
+
+### Authorize the IAM role in EKS
+
+Assuming an IAM role authenticates you to AWS but does not automatically grant Kubernetes permissions. Authorize the IAM role for the EKS cluster using an [EKS access entry](https://docs.aws.amazon.com/eks/latest/userguide/access-entries.html). Access entries require the cluster's authentication mode to be `API` or `API_AND_CONFIG_MAP`. Associate an appropriately scoped EKS access policy or Kubernetes groups with suitable RBAC permissions. If ConfigMap authentication is enabled, an `aws-auth` ConfigMap role mapping is an alternative.
+
+Use the IAM role ARN, `arn:aws:iam::<account_id>:role/<role_name>`, rather than an STS assumed-role session ARN. Grant only the cluster permissions the user needs.
+
+### Configure kubectl for EKS
+
+For EKS, you do not need the AWS CLI `credential_process` configuration.
+
+1. Complete the [authentik configuration](#authentik-configuration) and [AWS configuration](#aws-configuration) above for your selected federation method, then authorize the selected IAM role for the cluster.
+2. Add a user entry to your kubeconfig, usually `~/.kube/config`. The following example uses SAML federation and is not a complete kubeconfig.
+
+    **Example**:
+
+    ```yaml
+    users:
+        - name: authentik-eks
+          user:
+              exec:
+                  apiVersion: client.authentication.k8s.io/v1
+                  command: ak
+                  args:
+                      - auth
+                      - aws-eks
+                      - --audience=<application_slug>
+                      - --principal-arn=arn:aws:iam::<account_id>:saml-provider/<saml_provider_name>
+                      - --role-arn=arn:aws:iam::<account_id>:role/<role_name>
+                      - --region=<region>
+                      - --cluster=<cluster_name>
+                  interactiveMode: IfAvailable
+    ```
+
+    Replace the SAML application slug, provider ARN, and role ARN placeholders as described above. Replace `<cluster_name>` with your EKS cluster name and `<region>` with its AWS region. The IAM role must be authorized for that cluster.
+
+    For OIDC federation, replace the `--audience` and `--principal-arn` arguments with `--client-id=authentik-aws-cli`, and use the appropriate OIDC-backed IAM role. Both modes require `--role-arn`, `--region`, and `--cluster`.
+
+    The command returns `client.authentication.k8s.io/v1` with an EKS token prefixed by `k8s-aws-v1.`. The [Kubernetes exec credential plugin specification](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#client-go-credential-plugins) requires a matching `apiVersion` and an `interactiveMode` value for this version.
+
+3. Select a kubeconfig context that associates this user entry with the appropriate EKS cluster. Keep that cluster's API server endpoint and certificate authority configuration.
+4. Verify access with a command permitted by the role's cluster permissions, for example:
+
+    ```bash
+    kubectl get namespaces
+    ```
+
+    Listing namespaces requires permission to list that cluster-scoped resource. A successful AWS role assumption alone does not grant this permission.

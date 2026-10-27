@@ -7,9 +7,13 @@ authentik_version: "2025.12.0"
 
 You can use the authentik Agent to authenticate to `kubectl` with authentik credentials.
 
+:::info Amazon EKS
+For Amazon EKS clusters, use `ak auth aws-eks` to authenticate through AWS IAM rather than configuring OIDC authentication directly on the Kubernetes API server. See [Amazon EKS authentication](./aws.mdx#amazon-eks-authentication) for configuration instructions.
+:::
+
 ## Prerequisites
 
-- The device that you're using must have the [authentik Agent deployed on it](../../agent-deployment/index.mdx).
+- The authentik Agent must be deployed on your device with its [authentik-cli OAuth2 provider configured](../../configuration.mdx#create-an-application-and-provider-in-authentik-for-cli).
 
 ## authentik configuration
 
@@ -19,6 +23,7 @@ To support the integration of authentik Agent with `kubectl`, you need to create
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+
     - **Application**: provide a descriptive name (e.g. `kubernetes-cluster`), an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider Type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
