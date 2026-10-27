@@ -107,7 +107,8 @@ export class Sidebar extends AKElement {
                           class="pf-c-nav__link ${classMap({ "pf-m-current": current })}"
                           aria-current=${ifPresent(current ? "page" : undefined)}
                       >
-                          ${label}${
+                          ${label}
+                          ${
                               notice
                                   ? html`<span part="notice" class="pf-c-nav__notice"
                                         >${notice}</span
