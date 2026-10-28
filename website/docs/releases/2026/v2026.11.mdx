@@ -6,12 +6,16 @@ draft: true
 
 ## Highlights
 
-- **Path-based URLs**: The Admin and User interfaces now use regular URL paths instead of `#/` fragments, and existing bookmarks are redirected automatically.
-- **Portable blueprint exports**: Exported blueprints and flows reference related objects by stable identifiers, so they can be imported into a different authentik instance.
-- **Editable flow diagrams**: Administrators can edit stages, policies, and their bindings directly from a flow's diagram.
+{/* @dominic-r TODO: drop the managed secrets, password lockout, and required actions highlights if #25415, #24794, or #24846 miss 2026.11. */}
+
+- **Managed secrets**: Store the credentials of providers, sources, and stages as secrets with their own permissions, audit trail, and rotation.
+- **Password lockout**: :ak-enterprise Lock password login after a configured number of consecutive failed attempts.
+- **Required actions**: :ak-enterprise Require users to complete flows, such as changing their password or setting up an authenticator, before they can continue.
+- **RAC for enrolled devices**: RAC providers connect to devices enrolled through the authentik Agent and sign users in without storing credentials for the device.
 - **macOS 27 Platform SSO**: :ak-enterprise The authentik Agent supports Platform SSO on macOS 27, including browser-based sign-in and unlocking the lock screen.
-- **Single sign-on into agent-managed devices**: RAC providers sign users into devices enrolled through the authentik Agent without storing any credentials for the device.
-- **More complete translations**: Switching languages no longer leaves pages half-translated, thousands of missing translations have been recovered, and Bengali and Slovak are now available.
+- **Dry-run policy bindings**: Test a new access rule against real traffic before it affects any access decision.
+- **Portable blueprint exports**: Exported blueprints and flows reference related objects by stable identifiers, so they can be imported into a different authentik instance.
+- **Post-quantum cryptography**: Generate ML-DSA certificates, and use a hybrid post-quantum key exchange for outpost TLS.
 
 ## Breaking changes
 
@@ -122,6 +126,18 @@ Password hashes imported with `AUTHENTIK_BOOTSTRAP_PASSWORD_HASH` or the `set_pa
 
 If a hash is rejected, [generate a new one](../../core/password-hashes.mdx#generate-a-password-hash) with the target authentik version. API clients can set `override=true` to import any other hash that authentik can decode; bootstrap imports have no override.
 
+### SAML providers verify logout signatures
+
+When a SAML provider has a verification certificate, logout requests and logout responses from the service provider must now be signed with it. Previously, unsigned logout messages were accepted. Before upgrading, check that service providers which sign their authentication requests also sign their logout messages.
+
+### Passwords are stored as authenticator devices
+
+{/* @dominic-r TODO: move the "Passwords stored as authenticator devices" section from #24801 here. */}
+
+### Credentials move to managed secrets
+
+{/* @dominic-r TODO: fill in from #26095–#26103. Old credential field names fail with an error that names the `<field>_ref` replacement; list the affected providers, sources, and stages, and the blueprint and API changes. */}
+
 ### API changes
 
 The following API changes may require updates to scripts and API clients:
@@ -130,9 +146,55 @@ The following API changes may require updates to scripts and API clients:
 - `/managed/blueprints/import/` now returns `success` when the blueprint is valid and a new `imported` field when it was applied. Check `imported` to confirm that an import succeeded.
 - `/flows/instances/{slug}/diagram/` returns the flow as `nodes` and `edges` instead of a Mermaid `diagram` string.
 - `/enterprise/license/forecast/` has been replaced by `/enterprise/license/user_counts/`.
+- `/admin/version/` returns `version_latest` as an object with the version, changelog, and release reason instead of a string, and `version_latest_valid` has been removed.
+- Tokens return their owner in `user_obj` as a partial user, without groups, roles, or computed fields. The same applies to `token_obj` in SCIM sources and SSF providers.
 - In the generated API clients, the WS-Federation provider's `SamlVersionEnum` type has been renamed to `WSFedSAMLVersionEnum`. The values sent over the API are unchanged.
 
 ## New features and improvements
+
+### Managed secrets
+
+{/* @dominic-r TODO: fill in from #25415 and its stack once merged, and link the docs. */}
+
+Credentials for providers, sources, and stages can be stored as managed secrets under **System** > **Secrets**. Viewing a secret's value and replacing or rotating it need separate permissions, and both are recorded in the audit log.
+
+### Password lockout :ak-enterprise
+
+{/* @dominic-r TODO: move the "Password lockout" section from #24801 here. */}
+
+### Required actions :ak-enterprise
+
+{/* @dominic-r TODO: move the "Required actions" section from #24848 here. */}
+
+### Single sign-on into devices managed by the authentik Agent
+
+A RAC provider can sign the user who launched a connection in to a device that is enrolled through the authentik Agent, without any credentials configured for the device. authentik issues a token for the device, the RAC outpost turns it into an SSH certificate, and the agent validates the token before accepting the login. For more details, refer to the [RAC provider documentation](../../add-secure-apps/providers/rac/index.mdx#signing-in-with-the-authentik-agent).
+
+### macOS 27 Platform SSO :ak-enterprise
+
+The authentik Agent supports Apple Platform SSO on macOS 27. Users sign in to their Mac through an authentik flow in the browser, and authentik provides the keys used to unlock the lock screen. For more details, refer to the [macOS deployment documentation](../../endpoint-devices/authentik-agent/agent-deployment/macos.mdx).
+
+### Dry-run policy bindings
+
+{/* @jsachs TODO: confirm the Admin interface toggle (#26621) and docs land before release, then add a doc link. */}
+
+Policy, user, and group bindings can be set to dry run. A dry-run binding is evaluated as usual, but its result does not affect the access decision. Instead, each evaluation is recorded as a policy execution event, even when execution logging is turned off, so administrators can test a new access rule against real traffic before enforcing it.
+
+Policies in a dry-run binding still run in full, so any side effects of an expression policy still happen.
+
+### Blueprints
+
+Blueprint and flow exports now reference related objects with `!KeyOf` and identify objects by stable fields, such as slugs and names, instead of primary keys. Exported blueprints can now be imported into a different authentik instance. Shared prompts are also exported only once. For more details, refer to the [blueprint export documentation](../../customize/blueprints/export.mdx).
+
+Blueprints can be checked without applying them by using the new `/managed/blueprints/validate/` endpoint. The `!Context` tag supports dot notation for nested values, such as `!Context network.dns.0`. For more details, refer to the [blueprint tags documentation](../../customize/blueprints/v1/tags.mdx).
+
+When a file that a blueprint references with `!File` changes, such as a rotated Kubernetes secret, the blueprint is now applied again at the next blueprint discovery, which runs hourly.
+
+### Post-quantum cryptography
+
+authentik can generate certificates that use ML-DSA, a post-quantum signature algorithm, in the ML-DSA-44, ML-DSA-65, and ML-DSA-87 parameter sets. Browsers and public certificate authorities do not support ML-DSA yet, so these certificates are limited to TLS between components that you control, such as outposts and mutual TLS with a private certificate authority. Outposts must run authentik 2026.11 or newer to verify them, and key generation is unavailable when FIPS mode is enabled. For more details, refer to [Supported key algorithms](../../sys-mgmt/certificates.mdx#supported-key-algorithms).
+
+Go outposts support the post-quantum hybrid key exchange `X25519MLKEM768` for TLS. The WebAuthn authenticator setup stage accepts ML-DSA credentials; because no authenticators support ML-DSA yet, it is offered last and only used by an authenticator that supports nothing else.
 
 ### Path-based URLs
 
@@ -146,33 +208,9 @@ Changing the language now reloads the page, so the entire interface, including f
 
 About 2,500 community translations that had not been included in previous releases have been recovered across 15 languages. Bengali and Slovak are now available.
 
-### Blueprints
-
-Blueprint and flow exports now reference related objects with `!KeyOf` and identify objects by stable fields, such as slugs and names, instead of primary keys. Exported blueprints can now be imported into a different authentik instance. Shared prompts are also exported only once. For more details, refer to the [blueprint export documentation](../../customize/blueprints/export.mdx).
-
-Blueprints can be checked without applying them by using the new `/managed/blueprints/validate/` endpoint. The `!Context` tag supports dot notation for nested values, such as `!Context network.dns.0`. For more details, refer to the [blueprint tags documentation](../../customize/blueprints/v1/tags.mdx).
-
-A blueprint is now applied again when a file that it references with `!File` changes, such as a rotated Kubernetes secret, and not only when the blueprint file itself changes.
-
-### Dry-run policy bindings
-
-{/* @jsachs TODO: confirm the Admin interface toggle (#26621) and docs land before release, then add a doc link. */}
-
-Policy, user, and group bindings can be set to dry run. A dry-run binding is evaluated as usual, but its result does not affect the access decision. Instead, each evaluation is recorded as a policy execution event, even when execution logging is turned off, so administrators can test a new access rule against real traffic before enforcing it.
-
-Policies in a dry-run binding still run in full, so any side effects of an expression policy still happen.
-
 ### Editable flow diagrams
 
 Each stage and policy in a flow diagram now has buttons to edit it and to manage its bindings, so administrators can change a flow without leaving the diagram. The diagram updates after each change.
-
-### macOS 27 Platform SSO :ak-enterprise
-
-The authentik Agent supports Apple Platform SSO on macOS 27. Users sign in to their Mac through an authentik flow in the browser, and authentik provides the keys used to unlock the lock screen. For more details, refer to the [macOS deployment documentation](../../endpoint-devices/authentik-agent/agent-deployment/macos.mdx).
-
-### Single sign-on into devices managed by the authentik Agent
-
-A RAC provider can sign the user who launched a connection in to a device that is enrolled through the authentik Agent, without any credentials configured for the device. authentik issues a token for the device, the RAC outpost turns it into an SSH certificate, and the agent validates the token before accepting the login. For more details, refer to the [RAC provider documentation](../../add-secure-apps/providers/rac/index.mdx#signing-in-with-the-authentik-agent).
 
 ### Reliable OpenID Connect logout
 
@@ -182,19 +220,13 @@ authentik now records every OpenID Connect application that a user signs in to d
 
 LDAP sources can authenticate to the directory with a TLS client certificate using SASL EXTERNAL instead of a bind DN and password. Set the source's **Service bind method** to use it for synchronization and password writeback. For more details, refer to the [LDAP source documentation](../../users-sources/sources/protocols/ldap/index.mdx).
 
-### Post-quantum cryptography
-
-authentik can generate certificates that use ML-DSA, a post-quantum signature algorithm, in the ML-DSA-44, ML-DSA-65, and ML-DSA-87 parameter sets. Browsers and public certificate authorities do not support ML-DSA yet, so these certificates are limited to TLS between components that you control, such as outposts and mutual TLS with a private certificate authority. Outposts must run authentik 2026.11 or newer to verify them, and key generation is unavailable when FIPS mode is enabled. For more details, refer to [Supported key algorithms](../../sys-mgmt/certificates.mdx#supported-key-algorithms).
-
-Go outposts support the post-quantum hybrid key exchange `X25519MLKEM768` for TLS. The WebAuthn authenticator setup stage accepts ML-DSA credentials; because no authenticators support ML-DSA yet, it is offered last and only used by an authenticator that supports nothing else.
-
 ### Performance
 
 The users list loads much faster in large directories; in testing with 10,000 users, pages that previously took more than 20 seconds load in under 100 milliseconds. Filtering users by type, looking up users by email, and listing tokens, OAuth2 providers, notifications, and files are also faster.
 
-Most requests make fewer database queries. Each server process now keeps brands, system settings, and the license summary in memory, so changes to brands and system settings can take up to 30 seconds to apply. The new `AUTHENTIK_CACHE__TIMEOUT_BRANDS` and `AUTHENTIK_CACHE__TIMEOUT_SYSTEM_SETTINGS` settings control this, with a default of 15 seconds each. The PostgreSQL cache backend uses plain SQL again, which makes cache reads more than twice as fast, and flow cache statistics are counted in the database. Each event's notification rules are evaluated in a single task instead of one task per rule.
+Most requests make fewer database queries. Each authentik process now keeps brands, system settings, and the license summary in memory, so changes to brands and system settings take about 15 seconds to reach other processes. The new `AUTHENTIK_CACHE__TIMEOUT_BRANDS` and `AUTHENTIK_CACHE__TIMEOUT_SYSTEM_SETTINGS` settings control this delay. The PostgreSQL cache backend uses plain SQL again, which makes cache reads more than twice as fast, and flow cache statistics are counted in the database. Each event's notification rules are evaluated in a single task instead of one task per rule.
 
-A fix to the audit middleware prevents workers from stalling under load, which could cause intermittent `503` errors and failed readiness checks in Kubernetes. When a recycled worker closes an idle connection, the server now retries `GET`, `HEAD`, `OPTIONS`, and `TRACE` requests once on a new connection instead of returning `503`. The `/-/health/live/` endpoint no longer queries the database and is no longer included in access logs and request metrics.
+A fix to the audit middleware prevents workers from stalling under load, which could cause intermittent `503` errors and failed readiness checks in Kubernetes. When a recycled worker closes an idle connection, the server now retries `GET`, `HEAD`, `OPTIONS`, and `TRACE` requests without a body once on a new connection instead of returning `503`. The `/-/health/live/` endpoint no longer queries the database and is no longer included in access logs and request metrics.
 
 ### PostgreSQL JIT compilation is disabled
 
@@ -208,18 +240,17 @@ The server image is now also published as a distroless variant, with the same na
 
 ### Small general improvements
 
-- **SCIM provider**: Providers can authenticate with HTTP Basic authentication. Discovery only links existing remote users and groups that are within the provider's synchronization scope, so cleanup no longer deletes remote accounts that authentik should not manage. For more details, refer to the [SCIM provider documentation](../../add-secure-apps/providers/scim/index.mdx).
+- **SCIM provider**: Providers can authenticate with HTTP Basic authentication. Discovery only links remote users and groups to authentik users and groups that are within the provider's synchronization scope, so cleanup no longer deletes remote accounts that authentik should not manage. For more details, refer to the [SCIM provider documentation](../../add-secure-apps/providers/scim/index.mdx).
 - **RADIUS provider**: Property mappings can return a dictionary of attributes, and the new `vendor_attribute()` helper defines vendor-specific attributes. A failing mapping is skipped instead of discarding every attribute. For more details, refer to the [RADIUS provider documentation](../../add-secure-apps/providers/radius/index.mdx).
 - **OAuth2 provider**: CORS checks apply regular-expression redirect URIs to the request's origin, so browser-based applications that use them can call the token endpoint.
-- **Token exchange**: An OAuth2 provider's JWT can be exchanged for a SAML response from a SAML provider that lists it in `jwt_federation_providers`, for example to call AWS `AssumeRoleWithSAML`. Exchanged tokens keep the subject token's chain of `act` claims, up to 10 levels deep.
-- **SAML provider**: Assertions can be encrypted with AES128-CBC, AES256-CBC, AES128-GCM, or AES256-GCM. New providers default to AES256-GCM, and existing providers keep AES128-CBC. Importing SP metadata selects the first algorithm in the SP's order of preference that authentik supports. For more details, including how to update existing providers, refer to [Encryption algorithm](../../add-secure-apps/providers/saml/index.mdx#encryption-algorithm).
-- **SAML provider logout**: When a provider has a verification certificate, logout requests and logout responses from the service provider must be signed with it.
+- **Token exchange**: An OAuth2 provider's JWT can be exchanged for a SAML response from a SAML provider that lists it under **Federated OAuth2/OpenID Providers**, for example to call AWS `AssumeRoleWithSAML`. Exchanged tokens keep the subject token's chain of `act` claims, up to 10 levels deep.
+- **SAML and WS-Federation providers**: Assertions can be encrypted with AES128-CBC, AES256-CBC, AES128-GCM, or AES256-GCM. New providers default to AES256-GCM, and existing providers keep AES128-CBC. Importing SP metadata selects the first algorithm in the SP's order of preference that authentik supports. For more details, including how to update existing providers, refer to [Encryption algorithm](../../add-secure-apps/providers/saml/index.mdx#encryption-algorithm).
 - **OpenID Connect sources**: Sources can be configured as public clients without a client secret when PKCE is enabled.
 - **Entra ID source**: Sources in national clouds, such as GCC High, DoD, and China, use the matching Microsoft Graph endpoint for scopes and group memberships, based on the **Profile URL**. For more details, refer to [Configure a source for a national cloud](../../users-sources/sources/social-logins/entra-id/oauth/index.mdx#configure-a-source-for-a-national-cloud).
 - **LDAP source**: Synchronization deactivates users whose Active Directory `accountExpires` date has passed and ends their sessions.
 - **SAML source**: When an encryption keypair is configured, the source's metadata lists the supported encryption algorithms in `<EncryptionMethod>` elements, with AES256-GCM first.
-- **WebAuthn authenticator setup stage**: The [stage](../../add-secure-apps/flows-stages/stages/authenticator_webauthn/index.mdx) sends the user's enrolled credentials in the `excludeCredentials` registration parameter, so an authenticator refuses to enroll the same security key twice on one account. This replaces the **Prevent duplicate devices** option that was removed in 2026.8.
-- **Authenticator validation stage**: Codes are only checked against the device types that the stage allows. Previously, a TOTP code could pass a stage that allowed only email codes.
+- **WebAuthn authenticator setup stage**: The stage sends the user's enrolled credentials in the `excludeCredentials` registration parameter, so an authenticator refuses to enroll the same security key twice on one account. This replaces the **Prevent duplicate devices** option that was removed in 2026.8. For more details, refer to the [WebAuthn authenticator setup stage documentation](../../add-secure-apps/flows-stages/stages/authenticator_webauthn/index.mdx).
+- **Authenticator validation stage**: Codes are only checked against the device types that the stage allows, and email and SMS codes only against the device that received them. Previously, a TOTP code could pass a stage that allowed only email codes.
 - **Email stage**: The rate limit also applies when the user restarts the flow, not only to the **Resend Email** button.
 - **Mutual TLS stage**: :ak-enterprise The client certificate's Subject Alternative Names are available in the flow context. For more details, refer to the [flow context documentation](../../add-secure-apps/flows-stages/flow/context/index.mdx).
 - **CAPTCHA stage**: CAPTCHA widgets render directly in the page instead of in an iframe, which fixes flows that use more than one CAPTCHA stage and reCAPTCHA Enterprise loading the wrong script.
@@ -228,7 +259,7 @@ The server image is now also published as a distroless variant, with the same na
 - **Application cache**: The new [`AUTHENTIK_CACHE__TIMEOUT_APPLICATION_POLICIES`](../../install-config/configuration/configuration.mdx#authentik_cache__timeout_application_policies) setting controls how long each user's list of applications is cached.
 - **Default brand**: Set `AUTHENTIK_DEFAULT_BRAND_ENABLED=false` to prevent the default brand blueprint from marking its brand as the default.
 - **Forms**: Search fields in Admin interface forms have been rebuilt for keyboard and screen reader use, and the current selection stays visible.
-- **Update banner**: When a security release is available, the Admin interface shows the update banner in red and labels the release as a security release.
+- **Update banner**: The Admin interface shows a banner when a newer version is available. For a security release, the banner is red and labels the release as a security release.
 - **Content Security Policy**: Rendered documentation in the Admin interface no longer requires `'unsafe-eval'`.
 
 ## New integration guides
