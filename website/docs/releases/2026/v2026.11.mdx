@@ -130,6 +130,8 @@ Run `SHOW server_encoding;` to check. Converting an existing database means dump
 
 ## Minor changes/fixes
 
+- [OAuth2 provider](../../add-secure-apps/providers/oauth2/index.mdx) authorization errors now honor the requested `response_mode`, preserve existing callback query parameters, and correctly encode `state` values containing special characters.
+
 <!-- _Insert the output of `make gen-changelog` here_ -->
 
 ## API Changes
