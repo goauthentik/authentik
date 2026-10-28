@@ -2,7 +2,9 @@
 
 from json import loads
 from tempfile import TemporaryFile
+from unittest import skipIf
 
+from cryptography.hazmat.backends.openssl.backend import backend
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
@@ -78,6 +80,7 @@ class TestSAMLProviderAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 201)
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no Ed25519")
     def test_create_validate_unsupported_key_type(self):
         """Test validation rejects unsupported key types (Ed25519)"""
 

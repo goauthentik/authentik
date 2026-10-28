@@ -4,7 +4,9 @@ import base64
 import hashlib
 import json
 import time
+from unittest import skipIf
 
+from cryptography.hazmat.backends.openssl.backend import backend
 from cryptography.hazmat.primitives.asymmetric.ec import (
     SECP256K1,
     SECP256R1,
@@ -470,6 +472,7 @@ class TestDPoPValidator(TestCase):
         result = self.validator.validate(proof, expected_htm="POST", expected_htu=self.htu)
         self.assertEqual(result["kty"], "RSA")
 
+    @skipIf(backend._fips_enabled, "FIPS mode can't sign with a 1024-bit RSA key")
     def test_rsa_key_too_small_rejected(self):
         """An RSA key below the minimum size (2048 bits) must be rejected."""
         builder = RSAProofBuilder(key_size=1024)
@@ -478,6 +481,7 @@ class TestDPoPValidator(TestCase):
             self.validator.validate(proof, expected_htm="POST", expected_htu=self.htu)
         self.assertIn("too small", str(cm.exception).lower())
 
+    @skipIf(backend._fips_enabled, "FIPS mode can't sign with secp256k1")
     def test_unsupported_ec_curve_rejected(self):
         """An EC key on a curve outside the supported set must be rejected."""
         priv = generate_private_key(SECP256K1())
