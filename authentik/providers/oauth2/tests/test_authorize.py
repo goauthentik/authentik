@@ -820,6 +820,60 @@ class TestAuthorize(OAuthTestCase):
         self.assertIn(auth_flow.slug, response.url)
         self.assertNotIn(global_auth.slug, response.url)
 
+    def _authorize_with_prompt_login(self, provider: OAuth2Provider):
+        """Send an authorization request with prompt=login from a logged-in session and
+        return the response."""
+        FlowStageBinding.objects.create(
+            target=provider.authorization_flow,
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=10,
+        )
+        FlowStageBinding.objects.create(
+            target=provider.authentication_flow,
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=10,
+        )
+        Application.objects.create(name="app", slug="app", provider=provider)
+        self.client.force_login(create_test_admin_user())
+        return self.client.get(
+            reverse("authentik_providers_oauth2:authorize"),
+            data={
+                "response_type": "code",
+                "client_id": "test",
+                "state": generate_id(),
+                "redirect_uri": "foo://localhost",
+                "prompt": "login",
+            },
+        )
+
+    def _prompt_login_provider(self, **kwargs) -> OAuth2Provider:
+        return OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=create_test_flow(),
+            authentication_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            access_code_validity="seconds=100",
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+            **kwargs,
+        )
+
+    def test_prompt_login_honored(self):
+        """Test that prompt=login triggers re-authentication by default"""
+        provider = self._prompt_login_provider()
+        response = self._authorize_with_prompt_login(provider)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(provider.authentication_flow.slug, response.url)
+        self.assertNotIn(provider.authorization_flow.slug, response.url)
+
+    def test_prompt_login_ignored(self):
+        """Test that prompt=login is ignored when the provider is configured to do so"""
+        provider = self._prompt_login_provider(honor_prompt_login=False)
+        response = self._authorize_with_prompt_login(provider)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(provider.authorization_flow.slug, response.url)
+        self.assertNotIn(provider.authentication_flow.slug, response.url)
+
     @apply_blueprint("default/flow-default-authentication-flow.yaml")
     def test_login_hint(self):
         """Login hint"""

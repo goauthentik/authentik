@@ -81,6 +81,11 @@ export interface PatchedOAuth2ProviderRequest {
      */
     includeClaimsInIdToken?: boolean;
     /**
+     * When enabled, an authorization request with prompt=login requires the user to
+     * re-authenticate. When disabled, the parameter is ignored and an existing session is used.
+     */
+    honorPromptLogin?: boolean;
+    /**
      * Key used to sign the tokens.
      */
     signingKey?: string | null;
@@ -159,6 +164,8 @@ export function PatchedOAuth2ProviderRequestFromJSONTyped(
             json["include_claims_in_id_token"] == null
                 ? undefined
                 : json["include_claims_in_id_token"],
+        honorPromptLogin:
+            json["honor_prompt_login"] == null ? undefined : json["honor_prompt_login"],
         signingKey:
             json["signing_key"] === undefined
                 ? undefined
@@ -220,6 +227,7 @@ export function PatchedOAuth2ProviderRequestToJSONTyped(
         refresh_token_validity: value["refreshTokenValidity"],
         refresh_token_threshold: value["refreshTokenThreshold"],
         include_claims_in_id_token: value["includeClaimsInIdToken"],
+        honor_prompt_login: value["honorPromptLogin"],
         signing_key: value["signingKey"],
         encryption_key: value["encryptionKey"],
         redirect_uris:
