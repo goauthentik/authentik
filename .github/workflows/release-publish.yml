@@ -41,12 +41,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name:
-          - server
-          - proxy
-          - ldap
-          - radius
-          - rac
+        include:
+          - name: server
+          - name: server
+            tag-suffix: -distroless
+          - name: proxy
+          - name: ldap
+          - name: radius
+          - name: rac
     needs:
       - metadata
     env:
@@ -63,18 +65,18 @@ jobs:
           password: "${{ secrets.DOCKER_CORP_PASSWORD }}"
       - name: Download release container artifact
         run: |
-          gh release download "${{ needs.metadata.outputs.tag-name }}" --pattern "${{ matrix.name }}.oci.tar"
-          gh attestation verify "${{ matrix.name }}.oci.tar" --owner goauthentik
+          gh release download "${{ needs.metadata.outputs.tag-name }}" --pattern "${{ matrix.name }}${{ matrix.tag-suffix }}.oci.tar"
+          gh attestation verify "${{ matrix.name }}${{ matrix.tag-suffix }}.oci.tar" --owner goauthentik
       - id: publish
         name: Publish container
         run: |
-          regctl image import "ocidir://${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}.oci.tar"
+          regctl image import "ocidir://${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}${{ matrix.tag-suffix }}.oci.tar"
           echo "digest=$(regctl image digest "ocidir://${{ matrix.name }}:${{ needs.metadata.outputs.version }}")" >> "$GITHUB_OUTPUT"
-          regctl image import "ghcr.io/goauthentik/${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}.oci.tar"
-          regctl image import "docker.io/authentik/${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}.oci.tar"
+          regctl image import "ghcr.io/goauthentik/${{ matrix.name }}:${{ needs.metadata.outputs.version }}${{ matrix.tag-suffix }}" "${{ matrix.name }}${{ matrix.tag-suffix }}.oci.tar"
+          regctl image import "docker.io/authentik/${{ matrix.name }}:${{ needs.metadata.outputs.version }}${{ matrix.tag-suffix }}" "${{ matrix.name }}${{ matrix.tag-suffix }}.oci.tar"
           if [ "${{ needs.metadata.outputs.release-reason }}" != "prerelease" ]; then
-            regctl image import "ghcr.io/goauthentik/${{ matrix.name }}:${{ needs.metadata.outputs.version-family }}" "${{ matrix.name }}.oci.tar"
-            regctl image import "docker.io/authentik/${{ matrix.name }}:${{ needs.metadata.outputs.version-family }}" "${{ matrix.name }}.oci.tar"
+            regctl image import "ghcr.io/goauthentik/${{ matrix.name }}:${{ needs.metadata.outputs.version-family }}${{ matrix.tag-suffix }}" "${{ matrix.name }}${{ matrix.tag-suffix }}.oci.tar"
+            regctl image import "docker.io/authentik/${{ matrix.name }}:${{ needs.metadata.outputs.version-family }}${{ matrix.tag-suffix }}" "${{ matrix.name }}${{ matrix.tag-suffix }}.oci.tar"
           fi
       # we need to re-login for the attestation to go through
       - uses: docker/login-action@v4
@@ -149,7 +151,7 @@ jobs:
         run: |
           aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.${{ github.ref }}.yaml
           aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.${{ needs.metadata.outputs.tag-name }}.yaml
-          if [ "$(gh release list --json tagName,isLatest --jq '.[] | select(.tagName=="${{ needs.metadata.outputs.tag-name }} ") | .isLatest')" = "true" ]; then
+          if [ "$(gh release list --json tagName,isLatest --jq '.[] | select(.tagName=="${{ needs.metadata.outputs.tag-name }}") | .isLatest')" = "true" ]; then
             aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.latest.yaml
           fi
   sentry-release:
@@ -165,7 +167,7 @@ jobs:
           container=$(docker container create "$image")
           docker cp ${container}:web/ .
       - name: Create a Sentry.io release
-        uses: getsentry/action-release@6fb9aeade7061441cf3864e34fbe11a1457ad7dc # v3
+        uses: getsentry/action-release@e6703d0b00208e0b3687ba660d18ab5af7892821 # v3
         continue-on-error: true
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
@@ -185,40 +187,20 @@ jobs:
     steps:
       - id: app-token
         name: Generate app token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v2
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v2
         with:
           client-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIV_KEY }}
           repositories: version
-      - id: get-user-id
-        name: Get GitHub app user ID
-        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
-        env:
-          GH_TOKEN: "${{ steps.app-token.outputs.token }}"
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
-        with:
-          repository: "${{ github.repository_owner }}/version"
-          token: "${{ steps.app-token.outputs.token }}"
       - name: Bump version
-        run: |
-          jq \
-            --arg version "${{ needs.metadata.outputs.version }}" \
-            --arg changelog "See ${{ needs.metadata.outputs.changelog-url }}" \
-            --arg changelog_url "${{ needs.metadata.outputs.changelog-url }}" \
-            --arg reason "${{ needs.metadata.outputs.release-reason }}" \
-            '.stable.version = $version | .stable.changelog = $changelog | .stable.changelog_url = $changelog_url | .stable.reason = $reason' version.json > version.new.json
-          mv version.new.json version.json
-      - name: Create pull request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v7
+        uses: goauthentik/version@main
         with:
-          token: "${{ steps.app-token.outputs.token }}"
-          branch: bump-${{ needs.metadata.outputs.version }}
-          commit-message: "version: bump to ${{ needs.metadata.outputs.version }}"
-          title: "version: bump to ${{ needs.metadata.outputs.version }}"
-          body: "See ${{ needs.metadata.outputs.changelog-url }}"
-          delete-branch: true
-          signoff: true
-          author: "${{ steps.app-token.outputs.app-slug }}[bot] <${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>"
+          product: authentik
+          new-version: ${{ needs.metadata.outputs.version }}
+          changelog-url: ${{ needs.metadata.outputs.changelog-url }}
+          reason: ${{ needs.metadata.outputs.release-reason }}
+          token: ${{ steps.app-token.outputs.token }}
+          github-app-slug: ${{ steps.app-token.outputs.app-slug }}
   bump-helm:
     name: Bump Helm version
     needs:
@@ -229,7 +211,7 @@ jobs:
     steps:
       - id: app-token
         name: Generate app token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v2
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v2
         with:
           client-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIV_KEY }}

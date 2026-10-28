@@ -14,9 +14,11 @@ use std::{
 use ak_common::config;
 use argh::FromArgs;
 use eyre::{Result, WrapErr as _, eyre};
+#[cfg(target_os = "linux")]
+use nix::unistd::setgroups;
 use nix::{
     fcntl::{AT_FDCWD, AtFlags},
-    unistd::{Gid, Group, Uid, User, getuid, setgid, setgroups, setuid},
+    unistd::{Gid, Group, Uid, User, getuid, setgid, setuid},
 };
 use tracing::{info, warn};
 
@@ -228,6 +230,7 @@ fn become_authentik(prometheus_dir: &Path) -> Result<PathBuf> {
     // 'certs' deliberately gets no owner write bit
     add_mode(Path::new("/certs"), 0o550)?;
 
+    #[cfg(target_os = "linux")]
     setgroups(&groups)?;
     setgid(user.gid)?;
     setuid(user.uid)?;
@@ -244,8 +247,14 @@ fn wait_for_db() -> Result<()> {
     Ok(())
 }
 
+fn run_migrations() -> Result<()> {
+    run(Command::new("python").args(["-m", "lifecycle.migrate"]))?;
+    info!("migrations completed");
+    Ok(())
+}
+
 /// Get the process ready to run the server or the worker.
-pub(crate) fn boot() -> Result<()> {
+pub(crate) fn bootstrap() -> Result<()> {
     let prometheus_dir = prometheus_dir()?;
     let mut env = Vec::new();
     if std::env::var_os(PROMETHEUS_MULTIPROC_DIR).as_deref() != Some(prometheus_dir.as_os_str()) {
@@ -264,7 +273,8 @@ pub(crate) fn boot() -> Result<()> {
         cmd.args(std::env::args_os().skip(1)).envs(env);
         return exec(cmd);
     }
-    wait_for_db()
+    wait_for_db()?;
+    run_migrations()
 }
 
 pub(crate) fn manage(args: &Manage) -> Result<()> {
