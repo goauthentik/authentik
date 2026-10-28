@@ -1,7 +1,12 @@
 # syntax=docker/dockerfile:1
 
+<<<<<<< HEAD
 # Stage 1: Build web
 FROM --platform=${BUILDPLATFORM} docker.io/library/node:24 AS web-builder
+=======
+# Stage: Build
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:b97a9f4f34c7d1ea350e394bb0cd14f2f5bfc39517bc442534bf6005ff2bc084 AS builder
+>>>>>>> 8b2496a4b (core: bump goauthentik/fips-debian from 7726387 to b97a9f4 in /lifecycle/container (#27306))
 
 ENV NODE_ENV=production
 WORKDIR /static
@@ -35,13 +40,31 @@ WORKDIR /go/src/goauthentik.io
 RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
     dpkg --add-architecture arm64 && \
     apt-get update && \
+<<<<<<< HEAD
     apt-get install -y --no-install-recommends crossbuild-essential-arm64 gcc-aarch64-linux-gnu
+=======
+    # Required for installing pip packages
+    apt-get install -y --no-install-recommends \
+    # Build essentials
+    build-essential \
+    curl \
+    # aws-lc deps
+    cmake clang golang && \
+    curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain none && \
+    rustup install && \
+    rustup default "$(sed -n 's/channel = "\(.*\)"/\1/p' rust-toolchain.toml)" && \
+    rustc --version && \
+    cargo --version
+# See https://github.com/aws/aws-lc-rs/issues/569
+ENV AWS_LC_FIPS_SYS_CC=clang
+>>>>>>> 8b2496a4b (core: bump goauthentik/fips-debian from 7726387 to b97a9f4 in /lifecycle/container (#27306))
 
 RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
     --mount=type=bind,target=/go/src/goauthentik.io/go.sum,src=./go.sum \
     --mount=type=cache,target=/go/pkg/mod \
     go mod download
 
+<<<<<<< HEAD
 COPY . .
 RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
@@ -51,6 +74,10 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
 
 # Stage 3: Run
 FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:7726387c78b5787d2146868c2ccc8948a3591d0a5a6436f7780c8c28acc76341
+=======
+# Stage: Run
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:b97a9f4f34c7d1ea350e394bb0cd14f2f5bfc39517bc442534bf6005ff2bc084
+>>>>>>> 8b2496a4b (core: bump goauthentik/fips-debian from 7726387 to b97a9f4 in /lifecycle/container (#27306))
 
 ARG VERSION
 ARG GIT_BUILD_HASH
