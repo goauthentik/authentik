@@ -60,7 +60,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "GEOIPUPDATE_LICENSE_KEY_FILE=/run/secrets/GEOIPUPDATE_LICENSE_KEY /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage: download Rust toolchain
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:b97a9f4f34c7d1ea350e394bb0cd14f2f5bfc39517bc442534bf6005ff2bc084 AS rust-toolchain
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:645e4cc081f1216ed76f1226dff0a25fea8f67edc84b6008f2ad0537fa2fdefd AS rust-toolchain
 
 ARG TARGETARCH
 ARG TARGETVARIANT
