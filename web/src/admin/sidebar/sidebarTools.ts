@@ -23,7 +23,7 @@ export { type ExtendedSidebarItem };
 export const ENTERPRISE_PATH = "/enterprise/licenses";
 
 const enterpriseOnly = () =>
-    msg("Enterprise only", {
+    msg("Enterprise", {
         id: "sidebar.notice.enterprise-only",
     });
 
