@@ -16,7 +16,7 @@ You can use the authentik Agent to authenticate to the AWS CLI with authentik cr
 Both methods also work for [Amazon EKS](#amazon-eks-authentication).
 
 :::info Version compatibility
-SAML federation requires authentik 2026.11 or later and an authentik Agent release newer than 0.72.4. The `aws-eks` command requires authentik Agent 0.72.4 or later.
+SAML federation requires authentik 2026.11 or later. [authentik Agent 0.72.5](https://github.com/goauthentik/platform/releases/tag/v0.72.5) or later is required for SAML federation and `aws-eks` authentication.
 :::
 
 ## Prerequisites
@@ -53,6 +53,7 @@ The SAML application's bindings must allow the user.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+
     - **Application**: provide a descriptive name, set the **Slug** to `authentik-aws-cli`, and configure an optional group, the policy engine mode, and optional UI settings.
     - **Choose a Provider Type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
@@ -146,7 +147,9 @@ credential_process = ak auth aws --audience <application_slug> --principal-arn a
 | `--principal-arn` | ARN of the SAML identity provider in AWS IAM.                                                       |
 | `--role-arn`      | ARN of the IAM role to assume. It must match a role and provider pair in the user's SAML assertion. |
 | `--region`        | AWS region that the Agent uses for STS.                                                             |
-| `region`          | AWS region that the AWS CLI uses for this profile.                                                  |
+| `region`          | Default AWS region that the AWS CLI uses for this profile.                                          |
+
+These settings are independent: `region` sets the AWS CLI's default region, while `--region` selects the region for the Agent's STS requests. The examples use the same value for both.
 
 `--audience` identifies the authentik application. It is not the SAML provider's **Audience** setting, which is `urn:amazon:webservices` for AWS.
 
@@ -164,7 +167,9 @@ credential_process = ak auth aws --client-id authentik-aws-cli --role-arn arn:aw
 | `--client-id` | Client ID of the authentik OAuth2/OpenID Connect provider for AWS, `authentik-aws-cli`. |
 | `--role-arn`  | ARN of the IAM role to assume. It must trust the OIDC identity provider.                |
 | `--region`    | AWS region that the Agent uses for STS.                                                 |
-| `region`      | AWS region that the AWS CLI uses for this profile.                                      |
+| `region`      | Default AWS region that the AWS CLI uses for this profile.                              |
+
+These settings are independent: `region` sets the AWS CLI's default region, while `--region` selects the region for the Agent's STS requests. The examples use the same value for both.
 
 </TabItem>
 </Tabs>
