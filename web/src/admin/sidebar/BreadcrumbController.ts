@@ -6,6 +6,7 @@ import { identifyingKeys } from "#elements/router/core/matcher";
 import { matchRoute, RouteMatch, sameRouteMatch } from "#elements/router/core/matcher";
 import { RouteLike } from "#elements/router/core/Route";
 import { PageDetailsUpdate } from "#elements/router/meta";
+import { SidebarItem } from "#elements/sidebar/types";
 import { ActiveTabChangeEvent } from "#elements/tabs/tab-events";
 
 import { type AdminInterface } from "#admin/ak-interface-admin";
@@ -15,11 +16,16 @@ import { findSidebarEntries, matchesPath } from "#admin/sidebar/sidebarTools";
 import { ContextProvider, createContext } from "@lit/context";
 import { ReactiveController } from "lit";
 
+export interface Crumb {
+    path: string | null;
+    label: string;
+}
+
 export interface BreadcrumbEntries {
     path: string;
     objectPath: string | null;
-    crumbs: string[];
-    fullCrumbs: string[];
+    crumbs: Crumb[];
+    fullCrumbs: Crumb[];
 }
 
 export interface BreadcrumbEntriesInit {
@@ -34,30 +40,37 @@ export const BreadcrumbContext = createContext<BreadcrumbEntries | null>(
     Symbol("authentik-breadcrumb-context"),
 );
 
-const sameTrail = (a: BreadcrumbEntries | null, b: BreadcrumbEntries) =>
+const sameEntries = (a: BreadcrumbEntries | null, b: BreadcrumbEntries) =>
     !!a &&
     a.path === b.path &&
     a.objectPath === b.objectPath &&
     a.crumbs.length === b.crumbs.length &&
-    a.fullCrumbs.join("\n") === b.fullCrumbs.join("\n");
+    JSON.stringify(a.fullCrumbs) === JSON.stringify(b.fullCrumbs);
 
 export function findBreadcrumbEntries(
     entries: readonly ExtendedSidebarItem[],
     { pathname, path, match, objectName, tabLabel }: BreadcrumbEntriesInit,
 ): BreadcrumbEntries {
-    const labels = findSidebarEntries(entries, matchesPath(path, match?.route.name ?? null)).map(
-        ({ label }) => label,
+    const sweepCrumbs = ({ label, path }: SidebarItem) => ({ label, path: path ?? null });
+
+    const sections = findSidebarEntries(entries, matchesPath(path, match?.route.name ?? null)).map(
+        sweepCrumbs,
     );
 
-    const isAkObject = !!match && identifyingKeys(match.parameters).length > 0;
     // Yeah, it's a string. Javascripts "arrays are just objects with funny keys" thing sucks.
     const tail = match?.parameters["0"] || null;
-    const crumbs = isAkObject && objectName ? [...labels, objectName] : labels;
-    const fullCrumbs = tail && tabLabel ? [...crumbs, tabLabel] : crumbs;
 
-    const objectPath = isAkObject
-        ? toAdminInterface(tail ? path.slice(0, -1 * (tail.length + 1)) : path)
-        : null;
+    const objectPath =
+        !!match && identifyingKeys(match.parameters).length > 0
+            ? toAdminInterface(tail ? path.slice(0, -1 * (tail.length + 1)) : path)
+            : null;
+
+    const crumbs =
+        objectPath && objectName
+            ? [...sections, { label: objectName, path: objectPath }]
+            : sections;
+
+    const fullCrumbs = tail && tabLabel ? [...crumbs, { label: tabLabel, path: null }] : crumbs;
 
     return { path: pathname, objectPath, crumbs, fullCrumbs };
 }
@@ -82,7 +95,6 @@ export class BreadcrumbController implements ReactiveController {
     }
 
     protected pageDetailsListener = (event: PageDetailsUpdate) => {
-        console.log(event);
         this.#objectName = event.header.header ?? null;
         this.publish();
     };
@@ -97,7 +109,7 @@ export class BreadcrumbController implements ReactiveController {
             return;
         }
 
-        const trail = findBreadcrumbEntries(this.host.navigationEntries, {
+        const entries = findBreadcrumbEntries(this.host.navigationEntries, {
             pathname: this.#pathname,
             path: currentInterfacePath(this.#pathname),
             match: this.#match,
@@ -105,8 +117,8 @@ export class BreadcrumbController implements ReactiveController {
             tabLabel: this.#tabLabel,
         });
 
-        if (!sameTrail(this.provider.value, trail)) {
-            this.provider.setValue(trail);
+        if (!sameEntries(this.provider.value, entries)) {
+            this.provider.setValue(entries);
         }
     }
 

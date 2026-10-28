@@ -1,4 +1,3 @@
-import "#elements/Breadcrumbs";
 import "#components/ak-nav-buttons";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -186,7 +185,18 @@ export class AKPageNavbar
                         <span id="page-navbar-heading">${this.header}</span>
                     </h1>
                 </div>
-                <ak-breadcrumbs class="items page-description pf-c-content"></ak-breadcrumbs>
+                ${
+                    this.description
+                        ? html`<div
+                              role="heading"
+                              aria-level="2"
+                              aria-label="${this.description}"
+                              class="items page-description pf-c-content"
+                          >
+                              <p>${this.description}</p>
+                          </div>`
+                        : nothing
+                }
 
                 <div class="items secondary">
                     <div class="pf-c-page__header-tools-group">

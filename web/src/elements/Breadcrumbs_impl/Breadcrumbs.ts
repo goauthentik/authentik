@@ -7,18 +7,39 @@ import styles from "./Breadcrumbs.styles";
 import { AKElement } from "#elements/Base";
 import { type ElementRest } from "#elements/types";
 
-import { BreadcrumbContext, BreadcrumbEntries } from "#admin/sidebar/BreadcrumbController";
-
 import { spread } from "@open-wc/lit-helpers";
 
-import { consume } from "@lit/context";
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { property } from "lit/decorators/property.js";
 
 export interface BreadcrumbItem {
     label: string;
-    url?: string;
+    path: string | null;
+}
+
+export function render(entries: BreadcrumbItem[] | null) {
+    if (!entries || entries.length === 0) {
+        return nothing;
+    }
+
+    const lastIndex = entries.length - 1;
+
+    return html`<nav part="breadcrumbs" aria-label=${msg("Breadcrumbs")}>
+        <ol part="list">
+            ${entries.map(({ label, path }, index) => {
+                const isLast = index === lastIndex;
+
+                return html`<li part="item">
+                    ${
+                        path && !isLast
+                            ? html`<a part="link" href="${path}">${label}</a>`
+                            : html`<span aria-current=${isLast ? "page" : nothing}>${label}</span>`
+                    }
+                </li>`;
+            })}
+        </ol>
+    </nav>`;
 }
 
 /**
@@ -27,37 +48,16 @@ export interface BreadcrumbItem {
 export class Breadcrumbs extends AKElement {
     static readonly styles = [styles];
 
-    @consume({ context: BreadcrumbContext, subscribe: true })
-    entries: BreadcrumbEntries | null = null;
-
     @property({ type: Array })
-    items: BreadcrumbItem[] = [];
+    public entries: BreadcrumbItem[] | null = null;
 
     public override render() {
-        if (!this.entries || this.entries.fullCrumbs.length === 0) {
-            return nothing;
-        }
-
-        console.log(this.entries);
-
-        const lastIndex = this.entries.fullCrumbs.length - 1;
-
-        return html`<nav part="breadcrumbs" aria-label=${msg("Breadcrumbs")}>
-            <ol part="list">
-                ${this.entries.fullCrumbs.map((label: string, index) => {
-                    const isLast = index === lastIndex;
-
-                    return html`<li part="item">
-                        <span aria-current=${isLast ? "page" : nothing}>${label}</span>
-                    </li>`;
-                })}
-            </ol>
-        </nav>`;
+        return render(this.entries);
     }
 }
 
-export type DividerProps = ElementRest & {
-    items?: BreadcrumbItem[];
+export type BreadcrumbProps = ElementRest & {
+    entries?: BreadcrumbItem[];
 };
 
 /**
@@ -66,8 +66,8 @@ export type DividerProps = ElementRest & {
  *
  * @see {@link Breadcrumbs} - The underlying web component
  */
-export function akBreadcrumbs(options: DividerProps = {}) {
-    const { items, ...rest } = options;
+export function akBreadcrumbs(options: BreadcrumbProps = {}) {
+    const { entries, ...rest } = options;
 
-    return html` <ak-breadcrumbs .item=${items ?? []} ${spread(rest)}></ak-breadcrumbs> `;
+    return html` <ak-breadcrumbs .entries=${entries ?? []} ${spread(rest)}></ak-breadcrumbs> `;
 }

@@ -112,7 +112,7 @@ export function findSidebarEntries(
 
         const found = entry.children ? findSidebarEntries(entry.children, predicate) : [];
 
-        if (found) {
+        if (found.length > 0) {
             return [entry, ...found];
         }
     }
