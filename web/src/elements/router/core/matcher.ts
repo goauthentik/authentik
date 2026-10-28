@@ -58,7 +58,7 @@ export function matchRoute<R extends RoutePatternLike>(
  */
 const WILDCARD_GROUP_KEY = /^\d+$/;
 
-function identifyingKeys(parameters: Record<string, string | undefined>): string[] {
+export function identifyingKeys(parameters: Record<string, string | undefined>): string[] {
     return Object.keys(parameters).filter((key) => !WILDCARD_GROUP_KEY.test(key));
 }
 

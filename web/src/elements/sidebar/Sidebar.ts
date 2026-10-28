@@ -126,7 +126,8 @@ export class Sidebar extends AKElement {
                 aria-current=${ifPresent(current ? "page" : undefined)}
                 ><div part="${waypoint ? "icon" : "rail"}">${waypoint ?? nothing}</div>
                 <span part="label"
-                    >${label}${notice ? html`<span part="notice">${notice}</span>` : nothing}</span
+                    ><span part="label-text">${label}</span
+                    >${notice ? html`<span part="notice">${notice}</span>` : nothing}</span
                 >
             </a>
         </li>`;
