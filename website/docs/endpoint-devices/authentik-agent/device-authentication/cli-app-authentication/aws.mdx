@@ -130,13 +130,13 @@ The role's permissions policies decide what the user can do in AWS.
 
 ## AWS CLI configuration
 
-On the device where you run the AWS CLI, add a profile to `~/.aws/config` that gets temporary credentials from the authentik Agent through an [external credential process](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sourcing-external.html). If `ak` is not on your `PATH`, use its full path in `credential_process`.
+On the device where you run the AWS CLI, configure the `default` profile in `~/.aws/config` to get temporary credentials from the authentik Agent through an [external credential process](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sourcing-external.html). If `ak` is not on your `PATH`, use its full path in `credential_process`.
 
 <Tabs groupId="aws-federation" defaultValue="saml">
 <TabItem value="saml" label="SAML">
 
 ```ini title="~/.aws/config"
-[profile authentik]
+[default]
 region = <region>
 credential_process = ak auth aws --audience <application_slug> --principal-arn arn:aws:iam::<account_id>:saml-provider/<saml_provider_name> --role-arn arn:aws:iam::<account_id>:role/<role_name> --region <region>
 ```
@@ -157,7 +157,7 @@ These settings are independent: `region` sets the AWS CLI's default region, whil
 <TabItem value="oidc" label="OIDC">
 
 ```ini title="~/.aws/config"
-[profile authentik]
+[default]
 region = <region>
 credential_process = ak auth aws --client-id authentik-aws-cli --role-arn arn:aws:iam::<account_id>:role/<role_name> --region <region>
 ```
@@ -177,7 +177,7 @@ These settings are independent: `region` sets the AWS CLI's default region, whil
 To verify, run:
 
 ```bash
-aws sts get-caller-identity --profile authentik
+aws sts get-caller-identity
 ```
 
 The command outputs the assumed role:
