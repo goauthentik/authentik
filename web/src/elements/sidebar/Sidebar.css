@@ -55,15 +55,24 @@
 
 [part~="row"]:is(:hover, :focus) {
     color: var(--ak-c-sidebar__link--hover--Color);
-    --ak-c-sidebar__link--BackgroundColor: var(--ak-c-sidebar__link--hover--BackgroundColor);
-    --ak-c-sidebar__rail--BackgroundColor: var(--ak-c-sidebar__rail--BackgroundColor--hover);
+    --ak-c-sidebar__link--BackgroundColor: var(
+        --ak-c-sidebar__link--hover--BackgroundColor
+    );
+    --ak-c-sidebar__rail--BackgroundColor: var(
+        --ak-c-sidebar__rail--BackgroundColor--hover
+    );
     --ak-c-sidebar__rail--Width: var(--ak-c-sidebar__rail--Width--hover);
 }
 
 [part="label"] {
-    display: inline-block;
-    padding: var(--ak-c-sidebar__link--PaddingTop) var(--ak-c-sidebar__link--PaddingRight)
-        var(--ak-c-sidebar__link--PaddingBottom) var(--ak-c-sidebar__label--PaddingLeft);
+    display: flex;
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    padding: var(--ak-c-sidebar__link--PaddingTop)
+        var(--ak-c-sidebar__link--PaddingRight)
+        var(--ak-c-sidebar__link--PaddingBottom)
+        var(--ak-c-sidebar__label--PaddingLeft);
 }
 
 [part~="row"][data-depth="1"] {
@@ -80,12 +89,18 @@
 }
 
 [part~="row"][data-depth="2"]::before {
-    inset-inline-start: calc(var(--ak-c-sidebar__rail) - var(--ak-c-sidebar--indicator-width) / 2);
+    inset-inline-start: calc(
+        var(--ak-c-sidebar__rail) - var(--ak-c-sidebar--indicator-width) / 2
+    );
 }
 
 [part~="row"][part~="current"] {
-    --ak-c-sidebar__link--BackgroundColor: var(--ak-c-sidebar__link--active--BackgroundColor);
-    --ak-c-sidebar__rail--BackgroundColor: var(--ak-c-sidebar__rail--BackgroundColor--active);
+    --ak-c-sidebar__link--BackgroundColor: var(
+        --ak-c-sidebar__link--active--BackgroundColor
+    );
+    --ak-c-sidebar__rail--BackgroundColor: var(
+        --ak-c-sidebar__rail--BackgroundColor--active
+    );
     --ak-c-sidebar__rail--Width: var(--ak-c-sidebar__rail--Width--active);
     color: var(--ak-c-sidebar__link--m-current--Color);
 }
@@ -127,7 +142,12 @@
     background-color: transparent;
 }
 
+[part="label-text"] {
+    flex: 1 0 auto;
+}
+
 [part="notice"] {
+    flex: 0 1 auto;
     color: var(--pf-global--Color--dark-200);
     background-color: var(--pf-global--Color--light-300);
     font-size: var(--pf-global--FontSize--xs);

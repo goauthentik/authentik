@@ -82,6 +82,7 @@ export class BreadcrumbController implements ReactiveController {
     }
 
     protected pageDetailsListener = (event: PageDetailsUpdate) => {
+        console.log(event);
         this.#objectName = event.header.header ?? null;
         this.publish();
     };

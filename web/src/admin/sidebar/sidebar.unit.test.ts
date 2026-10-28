@@ -29,6 +29,17 @@ describe("findCurrentSidebarSectionLabel", () => {
         expect(findCurrentSidebarSectionLabel(entries, "stage-prompts", "")).toBeNull();
         expect(findCurrentSidebarSectionLabel(entries, null, "")).toBeNull();
     });
+
+    it("matches Licenses by key when enterprise entries point at the licenses page", () => {
+        const unlicensed = resolveSidebarEntries(createAdminSidebarEntries(true), {
+            licensed: false,
+            canEnterprise: true,
+        });
+
+        expect(findCurrentSidebarSectionLabel(unlicensed, null, "/enterprise/licenses")).toBe(
+            "Licenses",
+        );
+    });
 });
 
 describe("resolveSidebarEntries", () => {
@@ -86,13 +97,13 @@ describe("resolveSidebarEntries", () => {
         });
 
         expect(lifecycleRules?.path).toBe("/if/admin/enterprise/licenses");
-        expect(lifecycleRules?.notice).toBe("Enterprise only");
+        expect(lifecycleRules?.notice).toBe("Enterprise");
     });
 
     it("honors readonly on entries it is given", () => {
         const resolved = resolveSidebarEntries(entries, { canEnterprise: true, licensed: false });
 
-        expect(getChildren(resolved)[1].notice).toBe("Enterprise only");
+        expect(getChildren(resolved)[1].notice).toBe("Enterprise");
         const children = getChildren(resolved);
         expect(children[1]?.path).not.toBe("/if/admin/events/lifecycle-rules");
     });

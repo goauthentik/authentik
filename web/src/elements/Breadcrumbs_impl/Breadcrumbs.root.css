@@ -1,0 +1,20 @@
+/**
+ * @file * @file Document-level CSS Custom Properties for Breadcrumbs components.
+ */
+
+:root {
+    --ak-c-breadcrumb__item--FontSize: var(--pf-global--FontSize--sm);
+    --ak-c-breadcrumb__item--LineHeight: var(--pf-global--LineHeight--sm);
+    --ak-c-breadcrumb__item--MarginRight: var(--pf-global--spacer--sm);
+    --ak-c-breadcrumb__item--Gap: var(--pf-global--spacer--xs);
+
+    --ak-c-breadcrumb__item-divider--Color: var(--pf-global--icon--Color--dark);
+    --ak-c-breadcrumb__item-divider--MarginRight: var(--pf-global--spacer--sm);
+    --ak-c-breadcrumb__item-divider--FontSize: var(--pf-global--FontSize--sm);
+    --ak-c-breadcrumb__link--Color: var(--pf-global--link--Color);
+    --ak-c-breadcrumb__link--TextDecoration: var(--pf-global--link--TextDecoration);
+    --ak-c-breadcrumb__link--hover--Color: var(--pf-global--link--Color--hover);
+    --ak-c-breadcrumb__link--hover--TextDecoration: var(--pf-global--link--TextDecoration--hover);
+    --ak-c-breadcrumb__link--m-current--Color: var(--pf-global--Color--100);
+    --ak-c-breadcrumb__link--BackgroundColor: transparent;
+}
