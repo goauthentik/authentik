@@ -36,19 +36,11 @@ jobs:
       - id: changelog-url
         run: |
           if [ "${{ inputs.release_reason }}" = "feature" ]; then
-<<<<<<< HEAD
-            changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.major_version }}"
+            changelog_url="https://docs.goauthentik.io/releases/${{ steps.check.outputs.major_version }}"
           elif [ "${{ inputs.release_reason }}" = "prerelease" ]; then
-            changelog_url="https://next.goauthentik.io/docs/releases/${{ steps.check.outputs.major_version }}"
+            changelog_url="https://next.goauthentik.io/releases/${{ steps.check.outputs.major_version }}"
           else
-            changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.major_version }}#fixed-in-$(echo -n ${{ inputs.version }} | sed 's/\.//g')"
-=======
-            changelog_url="https://docs.goauthentik.io/releases/${{ steps.check.outputs.version-family }}"
-          elif [ "${{ inputs.release_reason }}" = "prerelease" ]; then
-            changelog_url="https://next.goauthentik.io/releases/${{ steps.check.outputs.version-family }}"
-          else
-            changelog_url="https://docs.goauthentik.io/releases/${{ steps.check.outputs.version-family }}#fixed-in-$(echo -n "${{ steps.check.outputs.version }}" | sed 's/\.//g')"
->>>>>>> b579bb5c9 (ci: fix changelog URLs in release workflow (#27276))
+            changelog_url="https://docs.goauthentik.io/releases/${{ steps.check.outputs.major_version }}#fixed-in-$(echo -n ${{ inputs.version }} | sed 's/\.//g')"
           fi
           echo "changelog_url=${changelog_url}" >> "$GITHUB_OUTPUT"
     outputs:
