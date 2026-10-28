@@ -2,12 +2,12 @@ import { SidebarItem } from "#elements/sidebar/types";
 
 import { ROUTES } from "#admin/Routes";
 import { createAdminSidebarEntries } from "#admin/sidebar/constants";
-import { findSidebarSectionByRoute, resolveSidebarEntries } from "#admin/sidebar/sidebarTools";
+import { findCurrentSidebarSectionLabel, resolveSidebarEntries } from "#admin/sidebar/sidebarTools";
 import { type SidebarEntry, ExtendedSidebarItem } from "#admin/sidebar/types";
 
 import { describe, expect, it } from "vitest";
 
-describe("findSidebarSectionByRoute", () => {
+describe("findCurrentSidebarSectionLabel", () => {
     const entries = resolveSidebarEntries(createAdminSidebarEntries(true), {
         licensed: false,
         canEnterprise: false,
@@ -21,13 +21,13 @@ describe("findSidebarSectionByRoute", () => {
         ["flow-view", "Flows"],
         ["system-tasks", "System Tasks"],
     ])("names the entry that lists %s", (routeName, section) => {
-        expect(findSidebarSectionByRoute(entries, routeName)).toBe(section);
+        expect(findCurrentSidebarSectionLabel(entries, routeName, "")).toBe(section);
     });
 
     it("returns null for a route no entry lists", () => {
-        expect(findSidebarSectionByRoute(entries, "outposts")).toBeNull();
-        expect(findSidebarSectionByRoute(entries, "stage-prompts")).toBeNull();
-        expect(findSidebarSectionByRoute(entries, null)).toBeNull();
+        expect(findCurrentSidebarSectionLabel(entries, "outposts", "")).toBeNull();
+        expect(findCurrentSidebarSectionLabel(entries, "stage-prompts", "")).toBeNull();
+        expect(findCurrentSidebarSectionLabel(entries, null, "")).toBeNull();
     });
 });
 

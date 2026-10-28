@@ -98,46 +98,52 @@ export function resolveSidebarEntries(
 // |_| |_|_||_\__,_| |___/_\__,_\___|_.__/\__,_|_|   |___|_||_\__|_| |_\___/__/
 //
 
-function findSidebarEntry(
+/**
+ * Returns the matched entry _and_ all of its parents
+ */
+export function findSidebarEntries(
     entries: readonly ExtendedSidebarItem[],
     predicate: (entry: ExtendedSidebarItem) => boolean,
-): ExtendedSidebarItem | null {
+): ExtendedSidebarItem[] {
     for (const entry of entries) {
         if (predicate(entry)) {
-            return entry;
+            return [entry];
         }
 
-        const found = entry.children ? findSidebarEntry(entry.children, predicate) : null;
+        const found = entry.children ? findSidebarEntries(entry.children, predicate) : [];
 
         if (found) {
-            return found;
+            return [entry, ...found];
         }
     }
 
-    return null;
+    return [];
 }
+
+const findSidebarEntry = (
+    entries: readonly ExtendedSidebarItem[],
+    predicate: (entry: ExtendedSidebarItem) => boolean,
+) => findSidebarEntries(entries, predicate).at(-1) ?? null;
+
+export const matchesPath =
+    (path: string, routeName: string | null) =>
+    ({ key, routes }: ExtendedSidebarItem) =>
+        key === path || (!!routeName && !!routes?.includes(routeName));
 
 /**
  * The label of the entry that lists the given route, e.g. "Providers" for `provider-view`.
  */
-export function findSidebarSectionByRoute(
+export const findCurrentSidebarSectionLabel = (
     entries: readonly ExtendedSidebarItem[],
     routeName: string | null,
-) {
-    if (!routeName) {
-        return null;
-    }
+    path: string = "",
+) => findSidebarEntry(entries, matchesPath(path, routeName))?.label ?? null;
 
-    return findSidebarEntry(entries, ({ routes }) => !!routes?.includes(routeName))?.label ?? null;
-}
-
-export function findCurrentSidebarKey(
+/**
+ * The key of the entry that lists the given route
+ */
+export const findCurrentSidebarKey = (
     entries: readonly ExtendedSidebarItem[],
-    path: string,
     routeName: string | null,
-) {
-    const matches = ({ key, routes }: ExtendedSidebarItem) =>
-        key === path || (!!routeName && !!routes?.includes(routeName));
-
-    return findSidebarEntry(entries, matches)?.key ?? null;
-}
+    path: string = "",
+) => findSidebarEntry(entries, matchesPath(path, routeName))?.key ?? null;
