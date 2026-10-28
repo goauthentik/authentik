@@ -29,8 +29,14 @@ describe("findBreadcrumbEntries", () => {
         expect(trail("/flow/flows", name, null)).toEqual({
             path: "/if/admin/flow/flows",
             objectPath: null,
-            crumbs: ["Flows and Stages", "Flows"],
-            fullCrumbs: ["Flows and Stages", "Flows"],
+            crumbs: [
+                { label: "Flows and Stages", path: null },
+                { label: "Flows", path: "/if/admin/flow/flows" },
+            ],
+            fullCrumbs: [
+                { label: "Flows and Stages", path: null },
+                { label: "Flows", path: "/if/admin/flow/flows" },
+            ],
         });
     });
 
@@ -38,8 +44,22 @@ describe("findBreadcrumbEntries", () => {
         expect(trail(flow, name, "Flow Overview")).toEqual({
             path: `/if/admin${flow}`,
             objectPath: `/if/admin${flow}`,
-            crumbs: ["Flows and Stages", "Flows", name],
-            fullCrumbs: ["Flows and Stages", "Flows", name],
+            crumbs: [
+                { label: "Flows and Stages", path: null },
+                { label: "Flows", path: "/if/admin/flow/flows" },
+                {
+                    label: "Default authentication flow",
+                    path: "/if/admin/flow/flows/default-authentication-flow",
+                },
+            ],
+            fullCrumbs: [
+                { label: "Flows and Stages", path: null },
+                { label: "Flows", path: "/if/admin/flow/flows" },
+                {
+                    label: "Default authentication flow",
+                    path: "/if/admin/flow/flows/default-authentication-flow",
+                },
+            ],
         });
     });
 
@@ -47,8 +67,23 @@ describe("findBreadcrumbEntries", () => {
         expect(trail(`${flow}/permissions`, name, "Permissions")).toEqual({
             path: `/if/admin${flow}/permissions`,
             objectPath: `/if/admin${flow}`,
-            crumbs: ["Flows and Stages", "Flows", name],
-            fullCrumbs: ["Flows and Stages", "Flows", name, "Permissions"],
+            crumbs: [
+                { label: "Flows and Stages", path: null },
+                { label: "Flows", path: "/if/admin/flow/flows" },
+                {
+                    label: "Default authentication flow",
+                    path: "/if/admin/flow/flows/default-authentication-flow",
+                },
+            ],
+            fullCrumbs: [
+                { label: "Flows and Stages", path: null },
+                { label: "Flows", path: "/if/admin/flow/flows" },
+                {
+                    label: "Default authentication flow",
+                    path: "/if/admin/flow/flows/default-authentication-flow",
+                },
+                { label: "Permissions", path: null },
+            ],
         });
     });
 
@@ -56,8 +91,15 @@ describe("findBreadcrumbEntries", () => {
         expect(trail("/administration/system-tasks/schedules", null, "Schedules")).toEqual({
             path: "/if/admin/administration/system-tasks/schedules",
             objectPath: null,
-            crumbs: ["Dashboards", "System Tasks"],
-            fullCrumbs: ["Dashboards", "System Tasks", "Schedules"],
+            crumbs: [
+                { label: "Dashboards", path: null },
+                { label: "System Tasks", path: "/if/admin/administration/system-tasks" },
+            ],
+            fullCrumbs: [
+                { label: "Dashboards", path: null },
+                { label: "System Tasks", path: "/if/admin/administration/system-tasks" },
+                { label: "Schedules", path: null },
+            ],
         });
     });
 });
