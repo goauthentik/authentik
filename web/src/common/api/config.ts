@@ -18,10 +18,3 @@ export function withNext(
 
     return url.href;
 }
-
-/**
- * @deprecated Use {@linkcode withNext}, which keeps an existing query string intact.
- */
-export function AndNext(url: string): string {
-    return `?next=${encodeURIComponent(url)}`;
-}
