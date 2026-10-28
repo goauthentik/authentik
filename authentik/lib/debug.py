@@ -39,12 +39,14 @@ def start_pyroscope(component: str, **tags: str) -> bool:
     """Attempt to start the pyroscope profiler in the current process.
     Must be called *after* forking, the profiler's agent threads do not survive fork().
     Returns true if the profiler was started, otherwise false"""
-    return False
     server = environ.get("AUTHENTIK_PYROSCOPE_HOST")
     if not server:
         return False
 
-    import pyroscope
+    try:
+        import pyroscope
+    except ModuleNotFoundError:
+        return
 
     LOGGER.debug("Starting pyroscope profiler", server=server, component=component)
     pyroscope.configure(

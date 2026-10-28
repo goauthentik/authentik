@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-21 00:14+0000\n"
+"POT-Creation-Date: 2026-10-27 00:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -825,6 +825,10 @@ msgstr ""
 
 #: authentik/core/templates/base/skeleton.html
 msgid "Recovery session is active. Custom branding is disabled."
+msgstr ""
+
+#: authentik/core/templates/base/spinner.html
+msgid "Loading..."
 msgstr ""
 
 #: authentik/core/templates/if/error.html
@@ -3481,11 +3485,25 @@ msgid "Default relay_state value for IDP-initiated logins"
 msgstr ""
 
 #: authentik/providers/saml/models.py
+msgid ""
+"OAuth2 providers which can exchange their JWTs for a SAML Response of this "
+"provider via token exchange."
+msgstr ""
+
+#: authentik/providers/saml/models.py
 msgid "SAML Provider"
 msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "SAML Providers"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "SAML Provider JWT Federation Provider"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "SAML Provider JWT Federation Providers"
 msgstr ""
 
 #: authentik/providers/saml/models.py
@@ -4443,8 +4461,16 @@ msgid "Group SAML Source Connections"
 msgstr ""
 
 #: authentik/sources/saml/views.py
+msgid "Failed to build the SAML request."
+msgstr ""
+
+#: authentik/sources/saml/views.py
 #, python-brace-format
 msgid "Continue to {source_name}"
+msgstr ""
+
+#: authentik/sources/saml/views.py
+msgid "Failed to process the SAML response."
 msgstr ""
 
 #: authentik/sources/scim/models.py
