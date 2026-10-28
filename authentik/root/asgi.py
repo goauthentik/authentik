@@ -10,8 +10,8 @@ https://docs.djangoproject.com/en/3.0/howto/deployment/asgi/
 import django
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
-from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 
+from authentik.lib.tracing import sentry_enabled
 from authentik.root.setup import setup
 
 # DJANGO_SETTINGS_MODULE is set in gunicorn.conf.py
@@ -61,8 +61,19 @@ class RouteNotFoundMiddleware:
                 raise exc
 
 
-class AuthentikAsgi(SentryAsgiMiddleware):
+class AuthentikAsgi:
     """Root ASGI App wrapper"""
+
+    def __init__(self, app):
+        if sentry_enabled():
+            # Only import the Sentry SDK when it's configured
+            from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
+
+            app = SentryAsgiMiddleware(app)
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        return await self.app(scope, receive, send)
 
     def call_startup(self):
         from authentik.root.signals import post_startup, pre_startup, startup

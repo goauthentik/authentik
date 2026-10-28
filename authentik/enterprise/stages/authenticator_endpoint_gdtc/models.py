@@ -5,7 +5,6 @@ from uuid import uuid4
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from google.oauth2.service_account import Credentials
 from rest_framework.serializers import BaseSerializer, Serializer
 
 from authentik.core.types import UserSettingSerializer
@@ -21,6 +20,8 @@ class AuthenticatorEndpointGDTCStage(DeprecatedMixin, ConfigurableStage, Friendl
     credentials = models.JSONField()
 
     def google_credentials(self):
+        from google.oauth2.service_account import Credentials
+
         return {
             "credentials": Credentials.from_service_account_info(
                 self.credentials, scopes=["https://www.googleapis.com/auth/verifiedaccess"]
