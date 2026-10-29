@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-28 00:13+0000\n"
+"POT-Creation-Date: 2026-10-30 17:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4615,7 +4615,6 @@ msgid "Email Authenticator Setup Stages"
 msgstr ""
 
 #: authentik/stages/authenticator_email/models.py
-#: authentik/stages/authenticator_email/stage.py
 #: authentik/stages/email/stage.py
 msgid "Exception occurred while rendering E-mail template"
 msgstr ""
@@ -4674,9 +4673,8 @@ msgid "Hi %(username)s,"
 msgstr ""
 
 #: authentik/stages/authenticator_email/templates/email/email_otp.txt
-msgid ""
-"\n"
-"Email MFA code\n"
+#, python-format
+msgid "Your verification code is %(token)s."
 msgstr ""
 
 #: authentik/stages/authenticator_email/templates/email/email_otp.txt
