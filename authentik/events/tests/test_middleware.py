@@ -14,7 +14,6 @@ from authentik.core.models import Application, Group, Token, TokenIntents
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.enterprise.audit.middleware import EnterpriseAuditMiddleware
 from authentik.events.middleware import (
-    _CTX_REQUEST,
     AuditMiddleware,
     audit_ignore,
     audit_overwrite_user,
@@ -159,10 +158,10 @@ class TestEventsMiddleware(APITestCase):
 
 
 class TestAuditMiddlewareLifecycle(SimpleTestCase):
-    """Audit receivers belong to one request, including when it is cancelled."""
+    """Audit receivers are connected once and scoped to the current request."""
 
     def test_cancelled_request(self):
-        """Cancellation disconnects receivers and restores the outer context."""
+        """Cancellation restores the outer context and doesn't (dis)connect receivers."""
 
         async def cancelled_response(request):
             raise CancelledError
@@ -181,54 +180,16 @@ class TestAuditMiddlewareLifecycle(SimpleTestCase):
                 request = RequestFactory().get("/")
                 request.request_id = generate_id()
                 outer = RequestFactory().get("/")
-                token = _CTX_REQUEST.set(outer)
-                baseline = [len(signal.receivers) for signal in signals]
+                token = AuditMiddleware._current.set((Mock(), outer))
                 middleware = middleware_class(async_to_sync(cancelled_response))
                 try:
+                    # The enterprise post_init receiver is connected on first use
+                    with self.assertRaises(CancelledError):
+                        middleware(request)
+                    baseline = [len(signal.receivers) for signal in signals]
                     with self.assertRaises(CancelledError):
                         middleware(request)
                     self.assertEqual([len(signal.receivers) for signal in signals], baseline)
-                    self.assertIs(_CTX_REQUEST.get(), outer)
+                    self.assertIs(AuditMiddleware.current_request(), outer)
                 finally:
-                    middleware.disconnect(request)
-                    _CTX_REQUEST.reset(token)
-
-    def test_connect_failure(self):
-        """A partial connection must also be cleaned up."""
-        request = RequestFactory().get("/")
-        request.request_id = generate_id()
-        middleware = AuditMiddleware(Mock())
-        connect = middleware.connect
-        baseline = len(post_save.receivers)
-
-        def fail_connect(request):
-            connect(request)
-            raise RuntimeError("connect failed")
-
-        token = _CTX_REQUEST.set(None)
-        try:
-            with patch.object(middleware, "connect", side_effect=fail_connect):
-                with self.assertRaisesMessage(RuntimeError, "connect failed"):
-                    middleware(request)
-            self.assertEqual(len(post_save.receivers), baseline)
-            self.assertIsNone(_CTX_REQUEST.get())
-            middleware.get_response.assert_not_called()
-        finally:
-            middleware.disconnect(request)
-            _CTX_REQUEST.reset(token)
-
-    def test_disconnect_failure_restores_context(self):
-        """Cleanup errors must not leak the request into its caller's context."""
-        request = RequestFactory().get("/")
-        outer = RequestFactory().get("/")
-        token = _CTX_REQUEST.set(outer)
-        middleware = AuditMiddleware(Mock())
-        try:
-            with patch.object(
-                middleware, "disconnect", side_effect=RuntimeError("disconnect failed")
-            ):
-                with self.assertRaisesMessage(RuntimeError, "disconnect failed"):
-                    middleware(request)
-            self.assertIs(_CTX_REQUEST.get(), outer)
-        finally:
-            _CTX_REQUEST.reset(token)
+                    AuditMiddleware._current.reset(token)

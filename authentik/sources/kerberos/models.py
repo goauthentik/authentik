@@ -4,8 +4,8 @@ import os
 from base64 import b64decode
 from pathlib import Path
 from tempfile import gettempdir
+from typing import TYPE_CHECKING
 
-import gssapi
 import pglock
 from django.db import connection, models
 from django.http import HttpRequest
@@ -31,6 +31,9 @@ from authentik.lib.config import advisory_lock_db_alias
 from authentik.lib.sync.incoming.models import IncomingSyncSource
 from authentik.lib.utils.time import fqdn_rand
 from authentik.tasks.schedules.common import ScheduleSpec
+
+if TYPE_CHECKING:
+    import gssapi
 
 LOGGER = get_logger()
 
@@ -397,6 +400,8 @@ class KerberosSource(IncomingSyncSource):
 
     def get_gssapi_creds(self) -> gssapi.creds.Credentials | None:
         """Get GSSAPI credentials for this source"""
+        import gssapi
+
         try:
             name = None
             if self.spnego_server_name:
