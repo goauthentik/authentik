@@ -10,7 +10,7 @@ import { FooterLink } from "@goauthentik/api";
 import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
-import { css, html } from "lit";
+import { css, html, LitElement } from "lit";
 import { customElement, property, queryAll } from "lit/decorators.js";
 
 export interface IFooterLinkInput {
@@ -24,6 +24,8 @@ const hasLegalScheme = (url: string) =>
 
 @customElement("ak-admin-settings-footer-link")
 export class FooterLinkInput extends AKControlElement<FooterLink> {
+    static shadowRootOptions = { ...LitElement.shadowRootOptions, delegatesFocus: true };
+
     static styles = [
         PFInputGroup,
         PFFormControl,

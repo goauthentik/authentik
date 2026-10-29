@@ -68,6 +68,12 @@ The **Base URL** [system setting](../../sys-mgmt/settings.mdx#base-url), introdu
 
 To list the applications a user can access based on policy bindings, as shown on the **Application Dashboard**, use the new `GET /core/applications/@accessible/` endpoint. It accepts the `for_user` and `only_with_launch_url` parameters. Update API clients and scripts that relied on the previous behavior of `/core/applications/`.
 
+### Password hash import settings
+
+Bootstrap and API password hash imports now enforce the [password hash import settings](../../core/password-hashes.mdx#password-hash-import-settings). Existing stored hashes and blueprint imports are unchanged.
+
+Generate a replacement hash with the target authentik version. API clients can use the override for another supported hash, but bootstrap imports do not support an override.
+
 ## New features and improvements
 
 - **Display names in `ak_send_email` recipients**: The `address`, `cc`, and `bcc` parameters of `ak_send_email` now accept `(name, email)` tuples and `"Name <email>"` strings, so emails sent from expressions can include a display name in the `To` and `CC` headers, matching the Email stage. See [`ak_send_email`](../../customize/policies/types/expression/reference.mdx).
@@ -75,6 +81,10 @@ To list the applications a user can access based on policy bindings, as shown on
 - **SAML source metadata advertises encryption algorithms**: When an encryption keypair is configured, a SAML source's service provider metadata now advertises supported encryption algorithms in `<EncryptionMethod>` elements, with AES256-GCM listed first.
 
 - **Distroless server image**: The server image is now also published as a distroless variant, with the same name and a `-distroless` suffix on each tag, for example `ghcr.io/goauthentik/server:2026.11.0-distroless` or `ghcr.io/goauthentik/server:2026.11-distroless`. It contains only what authentik needs at runtime, without a shell or a package manager. To use it, set `AUTHENTIK_TAG=2026.11.0-distroless` in your `.env` file, or `global.image.tag: 2026.11.0-distroless` in your Helm values, and update the tag with each upgrade. The regular image stays the default, and debugging with `AUTHENTIK_DEBUGGER` needs it.
+
+### Duplicate WebAuthn enrollment prevented by the authenticator
+
+The [WebAuthn authenticator setup stage](../../add-secure-apps/flows-stages/stages/authenticator_webauthn/index.mdx) now sends the user's already-enrolled credentials in the `excludeCredentials` registration parameter. An authenticator that already holds a credential for the account refuses to create another one, so the same security key can no longer be enrolled twice on one account. This replaces the **Prevent duplicate devices** option that was removed in 2026.8.
 
 ### Single sign-on into devices managed by the authentik agent
 
@@ -129,6 +139,8 @@ authentik has required the PostgreSQL database to use the `UTF8` encoding [since
 Run `SHOW server_encoding;` to check. Converting an existing database means dumping it, re-creating it with `ENCODING 'UTF8'`, and restoring the dump.
 
 ## Minor changes/fixes
+
+- [OAuth2 provider](../../add-secure-apps/providers/oauth2/index.mdx) authorization errors now honor the requested `response_mode`, preserve existing callback query parameters, and correctly encode `state` values containing special characters.
 
 <!-- _Insert the output of `make gen-changelog` here_ -->
 
