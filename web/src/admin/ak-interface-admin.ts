@@ -9,6 +9,7 @@ import "#components/notifications/APIDrawer";
 import "#components/notifications/NotificationDrawer";
 import "#components/ak-page-navbar";
 import "#admin/sidebar/VersionDetails";
+import "#admin/sidebar/BreadcrumbWrapper";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
@@ -53,11 +54,7 @@ import {
 
 import Styles from "#admin/ak-interface-admin.css";
 import { DEFAULT_PATH, ROUTES } from "#admin/Routes";
-import {
-    BookmarkController,
-    BookmarkContext,
-    type Bookmark,
-} from "#admin/sidebar/Bookmarks/BookmarkController";
+import { BookmarkController } from "#admin/sidebar/Bookmarks/BookmarkController";
 import { bookmarksToSidebar } from "#admin/sidebar/Bookmarks/bookmarkToSidebar";
 import { BreadcrumbController } from "#admin/sidebar/BreadcrumbController";
 import { createAdminSidebarEntries } from "#admin/sidebar/constants";
@@ -70,7 +67,6 @@ import {
 
 import { CapabilitiesEnum } from "@goauthentik/api";
 
-import { consume } from "@lit/context";
 import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize";
 import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
@@ -328,6 +324,7 @@ export class AdminInterface extends WithLicenseSummary(
                     <ak-version-banner></ak-version-banner>
                     <ak-enterprise-status interface="admin"></ak-enterprise-status>
                     <ak-ui-bookmark slot="bookmark"></ak-ui-bookmark>
+                    <ak-ui-breadcrumbs slot="breadcrumbs"></ak-ui-breadcrumbs>
                 </ak-page-navbar>
 
                 <ak-sidebar

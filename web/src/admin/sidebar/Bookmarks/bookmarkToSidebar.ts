@@ -22,6 +22,8 @@ export function bookmarksToSidebar(
 
         return {
             bookmark,
+            // Keyed like every other entry, by interface path, so `findCurrentSidebarKey` can find it.
+            key: path,
             matches: matchesPath(path, matchRoute(path, ROUTES)?.route.name ?? null),
         };
     });
@@ -29,7 +31,7 @@ export function bookmarksToSidebar(
     const withBookmarks = (entry: ExtendedSidebarItem): ExtendedSidebarItem => {
         const marks = matchers
             .filter(({ matches }) => matches(entry))
-            .map(({ bookmark: { path, label } }) => ({ label, path, key: path, enterprise: false }))
+            .map(({ bookmark: { path, label }, key }) => ({ label, path, key, enterprise: false }))
             .sort((a, b) => a.label.localeCompare(b.label));
 
         return marks.length > 0

@@ -120,7 +120,7 @@ export class Sidebar extends AKElement {
         return html`<li part="list-item with-path" data-key=${key}>
             <a
                 id="sidebar-nav-link-${slugify(key)}"
-                part="row ${current ? "link current" : ""}"
+                part="row ${current ? "current" : ""}"
                 href=${path!}
                 data-depth=${depth}
                 aria-current=${ifPresent(current ? "page" : undefined)}

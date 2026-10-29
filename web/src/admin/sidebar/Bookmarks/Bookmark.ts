@@ -8,15 +8,17 @@ import { BreadcrumbContext, BreadcrumbEntries } from "#admin/sidebar/BreadcrumbC
 
 import { consume } from "@lit/context";
 import { PropertyValues } from "lit";
-import { customElement, query } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-ui-bookmark")
 export class AkBookmark extends BookmarkComponent {
     protected sendBookmarkEvent = (ev: Event) => {
         const crumb = this.crumbs?.crumbs.at(-1);
+
         if (!(crumb && crumb.path)) {
             return;
         }
+
         ev.stopPropagation();
 
         this.dispatchEvent(
