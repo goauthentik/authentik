@@ -17,7 +17,7 @@ type StorageAccessorType = StorageAccessor<typeof STORAGE_KEY>;
 let accessor: StorageAccessorType | null = null;
 
 function getAccessor(): StorageAccessorType {
-    return (accessor ??= StorageAccessor.session(STORAGE_KEY));
+    return (accessor ??= StorageAccessor.local(STORAGE_KEY));
 }
 
 /**
