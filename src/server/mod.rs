@@ -71,7 +71,7 @@ pub(crate) type ServerClient = Client<UnixSocketConnector<PathBuf>, Body>;
 
 /// How long uvicorn keeps an idle connection open. Match `keepalive` in
 /// lifecycle/gunicorn.conf.py.
-const GUNICORN_KEEPALIVE: Duration = Duration::from_secs(2);
+const GUNICORN_KEEPALIVE: Duration = Duration::from_secs(5);
 
 /// Reusing a connection uvicorn is closing resets the request after it was
 /// sent, and the client gets a 503. Drop idle connections a second before

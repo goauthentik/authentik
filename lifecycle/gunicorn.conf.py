@@ -66,7 +66,7 @@ dirty_graceful_timeout = 30
 
 # Uvicorn closes idle upstream connections after this many seconds. The server's upstream
 # client must drop them first, see GUNICORN_KEEPALIVE in src/server/mod.rs
-keepalive = 2
+keepalive = 5
 
 logconfig_dict = get_logger_config()
 
