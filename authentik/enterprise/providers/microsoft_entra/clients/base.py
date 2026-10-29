@@ -99,18 +99,20 @@ class MicrosoftEntraSyncClient[TModel: Model, TConnection: Model, TSchema: dict]
             return run(request)
         except ClientAuthenticationError as exc:
             raise StopSync(exc, None, None) from exc
-        except ODataError as exc:
-            raise StopSync(exc, None, None) from exc
         except (ServiceRequestError, ServiceResponseError) as exc:
             raise TransientSyncException("Failed to sent request") from exc
         except APIError as exc:
+            # Graph raises every error response as ODataError, a subclass of APIError
+            detail = exc
+            if isinstance(exc, ODataError) and exc.error and exc.error.message:
+                detail = exc.error.message
             if exc.response_status_code == HttpResponseNotFound.status_code:
-                raise NotFoundSyncException("Object not found") from exc
+                raise NotFoundSyncException(detail) from exc
             if exc.response_status_code == HttpResponseBadRequest.status_code:
-                raise BadRequestSyncException("Bad request", exc.response_headers) from exc
+                raise BadRequestSyncException(detail) from exc
             if exc.response_status_code == HTTP_CONFLICT:
-                raise ObjectExistsSyncException("Object exists", exc.response_headers) from exc
-            raise exc
+                raise ObjectExistsSyncException(detail) from exc
+            raise StopSync(exc, None, None) from exc
 
     def __prefetch_domains(self):
         self.domains = []
