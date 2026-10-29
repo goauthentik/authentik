@@ -36,27 +36,7 @@ use tokio::{
 };
 use tracing::{debug, info, instrument, trace, warn};
 
-use crate::server::socket_path;
-
-/// Returns `true` when `err` (or any error in its source chain) is an
-/// `io::Error` with `ErrorKind::NotFound`, indicating the Unix socket does
-/// not exist yet.  This is the expected condition during startup and should
-/// not be logged at `warn` level.
-pub(crate) fn is_connect_not_found(err: &dyn std::error::Error) -> bool {
-    // `source()` returns `&(dyn Error + 'static)`, so downcast_ref is valid on
-    // every link after the first.  The io::Error sits below the top-level
-    // hyper_util connect error, so iterating sources is sufficient.
-    let mut source = err.source();
-    while let Some(e) = source {
-        if let Some(io_err) = e.downcast_ref::<std::io::Error>() {
-            if io_err.kind() == std::io::ErrorKind::NotFound {
-                return true;
-            }
-        }
-        source = e.source();
-    }
-    false
-}
+use crate::server::{is_connect_not_found, socket_path};
 
 mod healthcheck;
 mod worker_status;
