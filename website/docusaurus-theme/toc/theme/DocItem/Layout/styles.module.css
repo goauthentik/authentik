@@ -27,9 +27,7 @@
     .docItemRow.withTOC {
         grid-template-columns: minmax(0, 1fr) var(--doc-sidebar-width);
         /* Include the TOC's inner padding when matching the outer article gutter. */
-        column-gap: calc(
-            var(--doc-article-gutter) - var(--doc-toc-inline-padding)
-        );
+        column-gap: calc(var(--doc-article-gutter) - var(--doc-toc-inline-padding));
     }
 
     .docItemRow > :global(.col) {

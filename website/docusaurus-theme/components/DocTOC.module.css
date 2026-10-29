@@ -61,6 +61,14 @@
     overflow-wrap: anywhere;
 }
 
+.desktop :global(.table-of-contents__link code),
+.mobile :global(.table-of-contents__link code) {
+    display: inline-block;
+    max-width: 100%;
+    line-height: inherit;
+    vertical-align: middle;
+}
+
 .desktop :global(.table-of-contents__link--active) {
     color: var(--ifm-link-color);
     font-weight: inherit;

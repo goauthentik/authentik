@@ -27,17 +27,10 @@ export default function DocItemLayout({ children }: Props): ReactNode {
     const windowSize = useWindowSize();
     const hidden = frontMatter.hide_table_of_contents;
     // Unlike the upstream layout, retain contribution links even without headings.
-    const desktop =
-        !hidden && (windowSize === "desktop" || windowSize === "ssr");
+    const desktop = !hidden && (windowSize === "desktop" || windowSize === "ssr");
 
     return (
-        <div
-            className={clsx(
-                "row",
-                styles.docItemRow,
-                !hidden && styles.withTOC,
-            )}
-        >
+        <div className={clsx("row", styles.docItemRow, !hidden && styles.withTOC)}>
             <div className="col">
                 <ContentVisibility metadata={metadata} />
                 <DocVersionBanner />
