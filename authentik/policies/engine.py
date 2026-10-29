@@ -7,7 +7,7 @@ from multiprocessing import Pipe, current_process
 from multiprocessing.connection import Connection
 
 from django.core.cache import cache
-from django.db.models import Count, Q, QuerySet
+from django.db.models import Q, QuerySet
 from django.http import HttpRequest
 from django.utils.timezone import now
 from structlog.stdlib import BoundLogger, get_logger
@@ -101,6 +101,20 @@ class _PolicyEngineBase:
             .select_related("user", "group")
             .order_by("order")
         )
+
+    @staticmethod
+    def _select_policies[B: Iterable[PolicyBinding]](bindings: B) -> B:
+        """Load all bound policies in their concrete type with a single query, instead of
+        `binding.policy` lazily querying each one with all subclass joins"""
+        policies = (
+            Policy.objects.filter(pk__in={b.policy_id for b in bindings if b.policy_id})
+            .select_subclasses()
+            .in_bulk()
+        )
+        for binding in bindings:
+            if binding.policy_id:
+                binding.policy = policies[binding.policy_id]
+        return bindings
 
     @staticmethod
     def _check_policy_type(binding: PolicyBinding):
@@ -262,40 +276,32 @@ class PolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
 
     def compute_static_bindings(self, bindings: QuerySet[PolicyBinding]):
         """Check static bindings if possible"""
-        aggrs = {
-            "total": Count(
-                "pk",
-                filter=Q(
-                    Q(group__isnull=False) | Q(user__isnull=False),
-                    policy=None,
-                    dry_run=False,
-                ),
-            ),
-        }
-        if self.request.user.pk:
-            all_groups = self.request.user.all_groups()
-            aggrs["passing"] = Count(
-                "pk",
-                filter=Q(
-                    Q(
-                        Q(user=self.request.user) | Q(group__in=all_groups),
-                        negate=False,
-                    )
-                    | Q(
-                        Q(~Q(user=self.request.user), user__isnull=False)
-                        | Q(~Q(group__in=all_groups), group__isnull=False),
-                        negate=True,
-                    ),
-                    Q(expiring=False) | Q(expiring=True, expires__gte=now()),
-                    enabled=True,
-                    dry_run=False,
-                ),
-            )
-        matched_bindings = bindings.aggregate(**aggrs)
-        passing = False
-        if matched_bindings["total"] == 0 and matched_bindings.get("passing", 0) == 0:
+        # Evaluated in Python on the bindings queryset, which is fetched (and cached) for the
+        # dynamic bindings anyway, so this costs at most one group lookup instead of an
+        # aggregate query that is expensive to build
+        static = [
+            binding
+            for binding in bindings
+            if (binding.group_id or binding.user_id)
+            and not binding.policy_id
+            and not binding.dry_run
+        ]
+        if not static:
             # If we didn't find any static bindings, do nothing
             return
+        matched_bindings = {"total": len(static)}
+        if self.request.user.pk:
+            group_pks = set()
+            if any(binding.group_id for binding in static):
+                group_pks = set(self.request.user.all_groups().values_list("pk", flat=True))
+            matched_bindings["passing"] = sum(
+                1
+                for binding in static
+                if (binding.user_id == self.request.user.pk or binding.group_id in group_pks)
+                != binding.negate
+                and (not binding.expiring or binding.expires >= now())
+            )
+        passing = False
         self.logger.debug("P_ENG: Found static bindings", **matched_bindings)
         if self.mode == PolicyEngineMode.MODE_ANY:
             if matched_bindings.get("passing", 0) > 0:
@@ -327,6 +333,7 @@ class PolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
             bindings = self.bindings()
             policy_bindings = bindings
             if isinstance(bindings, QuerySet):
+                self._select_policies(bindings)
                 self.compute_static_bindings(bindings)
                 policy_bindings = [x for x in bindings if x.policy]
             self.__binding_results = self._evaluate_dynamic_bindings(
@@ -404,7 +411,7 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
             ).time(),
         ):
             self._substitute_mirror_actors()
-            bindings = list(self.bindings())
+            bindings = self._select_policies(list(self.bindings()))
             for binding in bindings:
                 self._check_policy_type(binding)
 
@@ -632,19 +639,10 @@ class ListPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
                 .select_related("user", "group")
                 .order_by("target", "order")
             )
-            # Single expensive query to lookup all policies needed in their respective
-            # type, used instead of dynamically fetching the concrete type
-            policy_ids = {b.policy_id for b in bindings if b.policy_id is not None}
-            policies_by_pk = (
-                {p.pk: p for p in Policy.objects.filter(pk__in=policy_ids).select_subclasses()}
-                if policy_ids
-                else {}
-            )
+            self._select_policies(bindings)
             for binding in bindings:
                 pk = pk_by_target_key[binding.target_id]
                 binding.target = obj_by_pk[pk]
-                if binding.policy_id is not None:
-                    binding.policy = policies_by_pk[binding.policy_id]
                 self._check_policy_type(binding)
                 bindings_by_target[pk].append(binding)
 
