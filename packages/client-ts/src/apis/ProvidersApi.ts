@@ -10,256 +10,265 @@
  * Do not edit the class manually.
  */
 
-import { type ClientTypeEnum } from "../models/ClientTypeEnum";
-import { type DigestAlgorithmEnum } from "../models/DigestAlgorithmEnum";
-import { type EncryptionAlgorithmEnum } from "../models/EncryptionAlgorithmEnum";
-import { type ForceBindingEnum } from "../models/ForceBindingEnum";
+import { type ClientTypeEnum } from "../models/ClientTypeEnum.js";
+import { type DigestAlgorithmEnum } from "../models/DigestAlgorithmEnum.js";
+import { type EncryptionAlgorithmEnum } from "../models/EncryptionAlgorithmEnum.js";
+import { type ForceBindingEnum } from "../models/ForceBindingEnum.js";
 import {
     type GoogleWorkspaceProvider,
     GoogleWorkspaceProviderFromJSON,
-} from "../models/GoogleWorkspaceProvider";
+} from "../models/GoogleWorkspaceProvider.js";
 import {
     type GoogleWorkspaceProviderGroup,
     GoogleWorkspaceProviderGroupFromJSON,
-} from "../models/GoogleWorkspaceProviderGroup";
+} from "../models/GoogleWorkspaceProviderGroup.js";
 import {
     type GoogleWorkspaceProviderGroupRequest,
     GoogleWorkspaceProviderGroupRequestToJSON,
-} from "../models/GoogleWorkspaceProviderGroupRequest";
+} from "../models/GoogleWorkspaceProviderGroupRequest.js";
 import {
     type GoogleWorkspaceProviderRequest,
     GoogleWorkspaceProviderRequestToJSON,
-} from "../models/GoogleWorkspaceProviderRequest";
+} from "../models/GoogleWorkspaceProviderRequest.js";
 import {
     type GoogleWorkspaceProviderUser,
     GoogleWorkspaceProviderUserFromJSON,
-} from "../models/GoogleWorkspaceProviderUser";
+} from "../models/GoogleWorkspaceProviderUser.js";
 import {
     type GoogleWorkspaceProviderUserRequest,
     GoogleWorkspaceProviderUserRequestToJSON,
-} from "../models/GoogleWorkspaceProviderUserRequest";
-import { type IssuerModeEnum } from "../models/IssuerModeEnum";
-import { type LDAPProvider, LDAPProviderFromJSON } from "../models/LDAPProvider";
-import { type LDAPProviderRequest, LDAPProviderRequestToJSON } from "../models/LDAPProviderRequest";
+} from "../models/GoogleWorkspaceProviderUserRequest.js";
+import { type IssuerModeEnum } from "../models/IssuerModeEnum.js";
+import { type LDAPProvider, LDAPProviderFromJSON } from "../models/LDAPProvider.js";
+import {
+    type LDAPProviderRequest,
+    LDAPProviderRequestToJSON,
+} from "../models/LDAPProviderRequest.js";
 import {
     type MicrosoftEntraProvider,
     MicrosoftEntraProviderFromJSON,
-} from "../models/MicrosoftEntraProvider";
+} from "../models/MicrosoftEntraProvider.js";
 import {
     type MicrosoftEntraProviderGroup,
     MicrosoftEntraProviderGroupFromJSON,
-} from "../models/MicrosoftEntraProviderGroup";
+} from "../models/MicrosoftEntraProviderGroup.js";
 import {
     type MicrosoftEntraProviderGroupRequest,
     MicrosoftEntraProviderGroupRequestToJSON,
-} from "../models/MicrosoftEntraProviderGroupRequest";
+} from "../models/MicrosoftEntraProviderGroupRequest.js";
 import {
     type MicrosoftEntraProviderRequest,
     MicrosoftEntraProviderRequestToJSON,
-} from "../models/MicrosoftEntraProviderRequest";
+} from "../models/MicrosoftEntraProviderRequest.js";
 import {
     type MicrosoftEntraProviderUser,
     MicrosoftEntraProviderUserFromJSON,
-} from "../models/MicrosoftEntraProviderUser";
+} from "../models/MicrosoftEntraProviderUser.js";
 import {
     type MicrosoftEntraProviderUserRequest,
     MicrosoftEntraProviderUserRequestToJSON,
-} from "../models/MicrosoftEntraProviderUserRequest";
+} from "../models/MicrosoftEntraProviderUserRequest.js";
 import {
     type OAuth2DynamicClientRegistration,
     OAuth2DynamicClientRegistrationFromJSON,
-} from "../models/OAuth2DynamicClientRegistration";
+} from "../models/OAuth2DynamicClientRegistration.js";
 import {
     type OAuth2DynamicClientRegistrationRequest,
     OAuth2DynamicClientRegistrationRequestToJSON,
-} from "../models/OAuth2DynamicClientRegistrationRequest";
-import { type OAuth2Provider, OAuth2ProviderFromJSON } from "../models/OAuth2Provider";
+} from "../models/OAuth2DynamicClientRegistrationRequest.js";
+import { type OAuth2Provider, OAuth2ProviderFromJSON } from "../models/OAuth2Provider.js";
 import {
     type OAuth2ProviderRequest,
     OAuth2ProviderRequestToJSON,
-} from "../models/OAuth2ProviderRequest";
+} from "../models/OAuth2ProviderRequest.js";
 import {
     type OAuth2ProviderSetupURLs,
     OAuth2ProviderSetupURLsFromJSON,
-} from "../models/OAuth2ProviderSetupURLs";
+} from "../models/OAuth2ProviderSetupURLs.js";
 import {
     type PaginatedGoogleWorkspaceProviderGroupList,
     PaginatedGoogleWorkspaceProviderGroupListFromJSON,
-} from "../models/PaginatedGoogleWorkspaceProviderGroupList";
+} from "../models/PaginatedGoogleWorkspaceProviderGroupList.js";
 import {
     type PaginatedGoogleWorkspaceProviderList,
     PaginatedGoogleWorkspaceProviderListFromJSON,
-} from "../models/PaginatedGoogleWorkspaceProviderList";
+} from "../models/PaginatedGoogleWorkspaceProviderList.js";
 import {
     type PaginatedGoogleWorkspaceProviderUserList,
     PaginatedGoogleWorkspaceProviderUserListFromJSON,
-} from "../models/PaginatedGoogleWorkspaceProviderUserList";
+} from "../models/PaginatedGoogleWorkspaceProviderUserList.js";
 import {
     type PaginatedLDAPProviderList,
     PaginatedLDAPProviderListFromJSON,
-} from "../models/PaginatedLDAPProviderList";
+} from "../models/PaginatedLDAPProviderList.js";
 import {
     type PaginatedMicrosoftEntraProviderGroupList,
     PaginatedMicrosoftEntraProviderGroupListFromJSON,
-} from "../models/PaginatedMicrosoftEntraProviderGroupList";
+} from "../models/PaginatedMicrosoftEntraProviderGroupList.js";
 import {
     type PaginatedMicrosoftEntraProviderList,
     PaginatedMicrosoftEntraProviderListFromJSON,
-} from "../models/PaginatedMicrosoftEntraProviderList";
+} from "../models/PaginatedMicrosoftEntraProviderList.js";
 import {
     type PaginatedMicrosoftEntraProviderUserList,
     PaginatedMicrosoftEntraProviderUserListFromJSON,
-} from "../models/PaginatedMicrosoftEntraProviderUserList";
+} from "../models/PaginatedMicrosoftEntraProviderUserList.js";
 import {
     type PaginatedOAuth2DynamicClientRegistrationList,
     PaginatedOAuth2DynamicClientRegistrationListFromJSON,
-} from "../models/PaginatedOAuth2DynamicClientRegistrationList";
+} from "../models/PaginatedOAuth2DynamicClientRegistrationList.js";
 import {
     type PaginatedOAuth2ProviderList,
     PaginatedOAuth2ProviderListFromJSON,
-} from "../models/PaginatedOAuth2ProviderList";
+} from "../models/PaginatedOAuth2ProviderList.js";
 import {
     type PaginatedProviderList,
     PaginatedProviderListFromJSON,
-} from "../models/PaginatedProviderList";
+} from "../models/PaginatedProviderList.js";
 import {
     type PaginatedProxyProviderList,
     PaginatedProxyProviderListFromJSON,
-} from "../models/PaginatedProxyProviderList";
+} from "../models/PaginatedProxyProviderList.js";
 import {
     type PaginatedRACProviderList,
     PaginatedRACProviderListFromJSON,
-} from "../models/PaginatedRACProviderList";
+} from "../models/PaginatedRACProviderList.js";
 import {
     type PaginatedRadiusProviderList,
     PaginatedRadiusProviderListFromJSON,
-} from "../models/PaginatedRadiusProviderList";
+} from "../models/PaginatedRadiusProviderList.js";
 import {
     type PaginatedSAMLProviderList,
     PaginatedSAMLProviderListFromJSON,
-} from "../models/PaginatedSAMLProviderList";
+} from "../models/PaginatedSAMLProviderList.js";
 import {
     type PaginatedSCIMProviderGroupList,
     PaginatedSCIMProviderGroupListFromJSON,
-} from "../models/PaginatedSCIMProviderGroupList";
+} from "../models/PaginatedSCIMProviderGroupList.js";
 import {
     type PaginatedSCIMProviderList,
     PaginatedSCIMProviderListFromJSON,
-} from "../models/PaginatedSCIMProviderList";
+} from "../models/PaginatedSCIMProviderList.js";
 import {
     type PaginatedSCIMProviderUserList,
     PaginatedSCIMProviderUserListFromJSON,
-} from "../models/PaginatedSCIMProviderUserList";
+} from "../models/PaginatedSCIMProviderUserList.js";
 import {
     type PaginatedSSFProviderList,
     PaginatedSSFProviderListFromJSON,
-} from "../models/PaginatedSSFProviderList";
+} from "../models/PaginatedSSFProviderList.js";
 import {
     type PaginatedWSFederationProviderList,
     PaginatedWSFederationProviderListFromJSON,
-} from "../models/PaginatedWSFederationProviderList";
+} from "../models/PaginatedWSFederationProviderList.js";
 import {
     type PatchedGoogleWorkspaceProviderRequest,
     PatchedGoogleWorkspaceProviderRequestToJSON,
-} from "../models/PatchedGoogleWorkspaceProviderRequest";
+} from "../models/PatchedGoogleWorkspaceProviderRequest.js";
 import {
     type PatchedLDAPProviderRequest,
     PatchedLDAPProviderRequestToJSON,
-} from "../models/PatchedLDAPProviderRequest";
+} from "../models/PatchedLDAPProviderRequest.js";
 import {
     type PatchedMicrosoftEntraProviderRequest,
     PatchedMicrosoftEntraProviderRequestToJSON,
-} from "../models/PatchedMicrosoftEntraProviderRequest";
+} from "../models/PatchedMicrosoftEntraProviderRequest.js";
 import {
     type PatchedOAuth2DynamicClientRegistrationRequest,
     PatchedOAuth2DynamicClientRegistrationRequestToJSON,
-} from "../models/PatchedOAuth2DynamicClientRegistrationRequest";
+} from "../models/PatchedOAuth2DynamicClientRegistrationRequest.js";
 import {
     type PatchedOAuth2ProviderRequest,
     PatchedOAuth2ProviderRequestToJSON,
-} from "../models/PatchedOAuth2ProviderRequest";
+} from "../models/PatchedOAuth2ProviderRequest.js";
 import {
     type PatchedProxyProviderRequest,
     PatchedProxyProviderRequestToJSON,
-} from "../models/PatchedProxyProviderRequest";
+} from "../models/PatchedProxyProviderRequest.js";
 import {
     type PatchedRACProviderRequest,
     PatchedRACProviderRequestToJSON,
-} from "../models/PatchedRACProviderRequest";
+} from "../models/PatchedRACProviderRequest.js";
 import {
     type PatchedRadiusProviderRequest,
     PatchedRadiusProviderRequestToJSON,
-} from "../models/PatchedRadiusProviderRequest";
+} from "../models/PatchedRadiusProviderRequest.js";
 import {
     type PatchedSAMLProviderRequest,
     PatchedSAMLProviderRequestToJSON,
-} from "../models/PatchedSAMLProviderRequest";
+} from "../models/PatchedSAMLProviderRequest.js";
 import {
     type PatchedSCIMProviderRequest,
     PatchedSCIMProviderRequestToJSON,
-} from "../models/PatchedSCIMProviderRequest";
+} from "../models/PatchedSCIMProviderRequest.js";
 import {
     type PatchedSSFProviderRequest,
     PatchedSSFProviderRequestToJSON,
-} from "../models/PatchedSSFProviderRequest";
+} from "../models/PatchedSSFProviderRequest.js";
 import {
     type PatchedWSFederationProviderRequest,
     PatchedWSFederationProviderRequestToJSON,
-} from "../models/PatchedWSFederationProviderRequest";
+} from "../models/PatchedWSFederationProviderRequest.js";
 import {
     type PropertyMappingPreview,
     PropertyMappingPreviewFromJSON,
-} from "../models/PropertyMappingPreview";
-import { type Provider, ProviderFromJSON } from "../models/Provider";
-import { type ProxyProvider, ProxyProviderFromJSON } from "../models/ProxyProvider";
+} from "../models/PropertyMappingPreview.js";
+import { type Provider, ProviderFromJSON } from "../models/Provider.js";
+import { type ProxyProvider, ProxyProviderFromJSON } from "../models/ProxyProvider.js";
 import {
     type ProxyProviderRequest,
     ProxyProviderRequestToJSON,
-} from "../models/ProxyProviderRequest";
-import { type RACProvider, RACProviderFromJSON } from "../models/RACProvider";
-import { type RACProviderRequest, RACProviderRequestToJSON } from "../models/RACProviderRequest";
-import { type RadiusProvider, RadiusProviderFromJSON } from "../models/RadiusProvider";
+} from "../models/ProxyProviderRequest.js";
+import { type RACProvider, RACProviderFromJSON } from "../models/RACProvider.js";
+import { type RACProviderRequest, RACProviderRequestToJSON } from "../models/RACProviderRequest.js";
+import { type RadiusProvider, RadiusProviderFromJSON } from "../models/RadiusProvider.js";
 import {
     type RadiusProviderRequest,
     RadiusProviderRequestToJSON,
-} from "../models/RadiusProviderRequest";
-import { type SAMLBindingsEnum } from "../models/SAMLBindingsEnum";
-import { type SAMLLogoutMethods } from "../models/SAMLLogoutMethods";
-import { type SAMLMetadata, SAMLMetadataFromJSON } from "../models/SAMLMetadata";
-import { type SAMLNameIDPolicyEnum } from "../models/SAMLNameIDPolicyEnum";
-import { type SAMLProvider, SAMLProviderFromJSON } from "../models/SAMLProvider";
-import { type SAMLProviderRequest, SAMLProviderRequestToJSON } from "../models/SAMLProviderRequest";
-import { type SCIMProvider, SCIMProviderFromJSON } from "../models/SCIMProvider";
-import { type SCIMProviderGroup, SCIMProviderGroupFromJSON } from "../models/SCIMProviderGroup";
+} from "../models/RadiusProviderRequest.js";
+import { type SAMLBindingsEnum } from "../models/SAMLBindingsEnum.js";
+import { type SAMLLogoutMethods } from "../models/SAMLLogoutMethods.js";
+import { type SAMLMetadata, SAMLMetadataFromJSON } from "../models/SAMLMetadata.js";
+import { type SAMLNameIDPolicyEnum } from "../models/SAMLNameIDPolicyEnum.js";
+import { type SAMLProvider, SAMLProviderFromJSON } from "../models/SAMLProvider.js";
+import {
+    type SAMLProviderRequest,
+    SAMLProviderRequestToJSON,
+} from "../models/SAMLProviderRequest.js";
+import { type SCIMProvider, SCIMProviderFromJSON } from "../models/SCIMProvider.js";
+import { type SCIMProviderGroup, SCIMProviderGroupFromJSON } from "../models/SCIMProviderGroup.js";
 import {
     type SCIMProviderGroupRequest,
     SCIMProviderGroupRequestToJSON,
-} from "../models/SCIMProviderGroupRequest";
-import { type SCIMProviderRequest, SCIMProviderRequestToJSON } from "../models/SCIMProviderRequest";
-import { type SCIMProviderUser, SCIMProviderUserFromJSON } from "../models/SCIMProviderUser";
+} from "../models/SCIMProviderGroupRequest.js";
+import {
+    type SCIMProviderRequest,
+    SCIMProviderRequestToJSON,
+} from "../models/SCIMProviderRequest.js";
+import { type SCIMProviderUser, SCIMProviderUserFromJSON } from "../models/SCIMProviderUser.js";
 import {
     type SCIMProviderUserRequest,
     SCIMProviderUserRequestToJSON,
-} from "../models/SCIMProviderUserRequest";
-import { type SignatureAlgorithmEnum } from "../models/SignatureAlgorithmEnum";
-import { type SSFProvider, SSFProviderFromJSON } from "../models/SSFProvider";
-import { type SSFProviderRequest, SSFProviderRequestToJSON } from "../models/SSFProviderRequest";
-import { type SubModeEnum } from "../models/SubModeEnum";
-import { type SyncObjectRequest, SyncObjectRequestToJSON } from "../models/SyncObjectRequest";
-import { type SyncObjectResult, SyncObjectResultFromJSON } from "../models/SyncObjectResult";
-import { type SyncStatus, SyncStatusFromJSON } from "../models/SyncStatus";
-import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
+} from "../models/SCIMProviderUserRequest.js";
+import { type SignatureAlgorithmEnum } from "../models/SignatureAlgorithmEnum.js";
+import { type SSFProvider, SSFProviderFromJSON } from "../models/SSFProvider.js";
+import { type SSFProviderRequest, SSFProviderRequestToJSON } from "../models/SSFProviderRequest.js";
+import { type SubModeEnum } from "../models/SubModeEnum.js";
+import { type SyncObjectRequest, SyncObjectRequestToJSON } from "../models/SyncObjectRequest.js";
+import { type SyncObjectResult, SyncObjectResultFromJSON } from "../models/SyncObjectResult.js";
+import { type SyncStatus, SyncStatusFromJSON } from "../models/SyncStatus.js";
+import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
 import {
     type WSFederationProvider,
     WSFederationProviderFromJSON,
-} from "../models/WSFederationProvider";
+} from "../models/WSFederationProvider.js";
 import {
     type WSFederationProviderRequest,
     WSFederationProviderRequestToJSON,
-} from "../models/WSFederationProviderRequest";
-import { type WSFedSAMLVersionEnum } from "../models/WSFedSAMLVersionEnum";
-import * as runtime from "../runtime";
+} from "../models/WSFederationProviderRequest.js";
+import { type WSFedSAMLVersionEnum } from "../models/WSFedSAMLVersionEnum.js";
+import * as runtime from "../runtime.js";
 
 export interface ProvidersAllDestroyRequest {
     /**
@@ -1099,6 +1108,7 @@ export interface ProvidersSamlListRequest {
     invalidationFlow?: string;
     isBackchannel?: boolean;
     issuerOverride?: string;
+    jwtFederationProviders?: Array<number>;
     logoutMethod?: SAMLLogoutMethods;
     name?: string;
     nameIdMapping?: string;
@@ -1442,6 +1452,7 @@ export interface ProvidersWsfedListRequest {
     invalidationFlow?: string;
     isBackchannel?: boolean;
     issuerOverride?: string;
+    jwtFederationProviders?: Array<number>;
     logoutMethod?: SAMLLogoutMethods;
     name?: string;
     nameIdMapping?: string;
@@ -7911,6 +7922,11 @@ export class ProvidersApi extends runtime.BaseAPI {
             queryParameters["issuer_override"] = requestParameters["issuerOverride"];
         }
 
+        if (requestParameters["jwtFederationProviders"] != null) {
+            queryParameters["jwt_federation_providers"] =
+                requestParameters["jwtFederationProviders"];
+        }
+
         if (requestParameters["logoutMethod"] != null) {
             queryParameters["logout_method"] = requestParameters["logoutMethod"];
         }
@@ -10397,6 +10413,11 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         if (requestParameters["issuerOverride"] != null) {
             queryParameters["issuer_override"] = requestParameters["issuerOverride"];
+        }
+
+        if (requestParameters["jwtFederationProviders"] != null) {
+            queryParameters["jwt_federation_providers"] =
+                requestParameters["jwtFederationProviders"];
         }
 
         if (requestParameters["logoutMethod"] != null) {

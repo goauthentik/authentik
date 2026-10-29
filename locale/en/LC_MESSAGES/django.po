@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-21 00:14+0000\n"
+"POT-Creation-Date: 2026-10-28 00:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -391,6 +391,17 @@ msgstr ""
 
 #: authentik/core/api/users.py
 msgid "This field is required."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid ""
+"Import a valid password hash even when its parameters do not match "
+"authentik's current password hashing settings."
+msgstr ""
+
+#: authentik/core/api/users.py
+#, python-format
+msgid "%(reason)s Set \"override\" to true to import it anyway."
 msgstr ""
 
 #: authentik/core/api/users.py
@@ -825,6 +836,10 @@ msgstr ""
 
 #: authentik/core/templates/base/skeleton.html
 msgid "Recovery session is active. Custom branding is disabled."
+msgstr ""
+
+#: authentik/core/templates/base/spinner.html
+msgid "Loading..."
 msgstr ""
 
 #: authentik/core/templates/if/error.html
@@ -2270,10 +2285,6 @@ msgid "%(value)s is not in the correct format of 'hours=3;minutes=1'."
 msgstr ""
 
 #: authentik/lib/validators.py
-msgid "Invalid password hash format. Must be a valid Django password hash."
-msgstr ""
-
-#: authentik/lib/validators.py
 #, python-brace-format
 msgid "The fields {field_names} must be used together."
 msgstr ""
@@ -3481,11 +3492,25 @@ msgid "Default relay_state value for IDP-initiated logins"
 msgstr ""
 
 #: authentik/providers/saml/models.py
+msgid ""
+"OAuth2 providers which can exchange their JWTs for a SAML Response of this "
+"provider via token exchange."
+msgstr ""
+
+#: authentik/providers/saml/models.py
 msgid "SAML Provider"
 msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "SAML Providers"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "SAML Provider JWT Federation Provider"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "SAML Provider JWT Federation Providers"
 msgstr ""
 
 #: authentik/providers/saml/models.py
@@ -4443,8 +4468,16 @@ msgid "Group SAML Source Connections"
 msgstr ""
 
 #: authentik/sources/saml/views.py
+msgid "Failed to build the SAML request."
+msgstr ""
+
+#: authentik/sources/saml/views.py
 #, python-brace-format
 msgid "Continue to {source_name}"
+msgstr ""
+
+#: authentik/sources/saml/views.py
+msgid "Failed to process the SAML response."
 msgstr ""
 
 #: authentik/sources/scim/models.py

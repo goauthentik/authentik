@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { KerberosSource } from "./KerberosSource";
-import { KerberosSourceFromJSON, KerberosSourceToJSON } from "./KerberosSource";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { KerberosSource } from "./KerberosSource.js";
+import { KerberosSourceFromJSON, KerberosSourceToJSON } from "./KerberosSource.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { CaptchaStage } from "./CaptchaStage";
-import { CaptchaStageFromJSON, CaptchaStageToJSON } from "./CaptchaStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { CaptchaStage } from "./CaptchaStage.js";
+import { CaptchaStageFromJSON, CaptchaStageToJSON } from "./CaptchaStage.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

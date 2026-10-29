@@ -10,24 +10,27 @@
  * Do not edit the class manually.
  */
 
-import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum";
-import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum";
-import type { EncryptionAlgorithmEnum } from "./EncryptionAlgorithmEnum";
+import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum.js";
+import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum.js";
+import type { EncryptionAlgorithmEnum } from "./EncryptionAlgorithmEnum.js";
 import {
     EncryptionAlgorithmEnumFromJSON,
     EncryptionAlgorithmEnumToJSON,
-} from "./EncryptionAlgorithmEnum";
-import type { SAMLBindingsEnum } from "./SAMLBindingsEnum";
-import { SAMLBindingsEnumFromJSON, SAMLBindingsEnumToJSON } from "./SAMLBindingsEnum";
-import type { SAMLLogoutMethods } from "./SAMLLogoutMethods";
-import { SAMLLogoutMethodsFromJSON, SAMLLogoutMethodsToJSON } from "./SAMLLogoutMethods";
-import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum";
-import { SAMLNameIDPolicyEnumFromJSON, SAMLNameIDPolicyEnumToJSON } from "./SAMLNameIDPolicyEnum";
-import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum";
+} from "./EncryptionAlgorithmEnum.js";
+import type { SAMLBindingsEnum } from "./SAMLBindingsEnum.js";
+import { SAMLBindingsEnumFromJSON, SAMLBindingsEnumToJSON } from "./SAMLBindingsEnum.js";
+import type { SAMLLogoutMethods } from "./SAMLLogoutMethods.js";
+import { SAMLLogoutMethodsFromJSON, SAMLLogoutMethodsToJSON } from "./SAMLLogoutMethods.js";
+import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum.js";
+import {
+    SAMLNameIDPolicyEnumFromJSON,
+    SAMLNameIDPolicyEnumToJSON,
+} from "./SAMLNameIDPolicyEnum.js";
+import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum.js";
 import {
     SignatureAlgorithmEnumFromJSON,
     SignatureAlgorithmEnumToJSON,
-} from "./SignatureAlgorithmEnum";
+} from "./SignatureAlgorithmEnum.js";
 
 /**
  * SAMLProvider Serializer
@@ -136,6 +139,11 @@ export interface PatchedSAMLProviderRequest {
      */
     defaultRelayState?: string;
     defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
+    /**
+     * OAuth2 providers which can exchange their JWTs for a SAML Response of this provider via token
+     * exchange.
+     */
+    jwtFederationProviders?: Array<number>;
 }
 
 /**
@@ -248,6 +256,8 @@ export function PatchedSAMLProviderRequestFromJSONTyped(
             json["default_name_id_policy"] == null
                 ? undefined
                 : SAMLNameIDPolicyEnumFromJSON(json["default_name_id_policy"]),
+        jwtFederationProviders:
+            json["jwt_federation_providers"] == null ? undefined : json["jwt_federation_providers"],
     };
 }
 
@@ -293,5 +303,6 @@ export function PatchedSAMLProviderRequestToJSONTyped(
         logout_method: SAMLLogoutMethodsToJSON(value["logoutMethod"]),
         default_relay_state: value["defaultRelayState"],
         default_name_id_policy: SAMLNameIDPolicyEnumToJSON(value["defaultNameIdPolicy"]),
+        jwt_federation_providers: value["jwtFederationProviders"],
     };
 }
