@@ -116,7 +116,10 @@ class OpenTelemetryTracer(Tracer):
             else OTLPSpanExporter()
         )
         if environ.get("AUTHENTIK_PYROSCOPE_HOST"):
-            from pyroscope.otel import PyroscopeSpanProcessor
+            try:
+                from pyroscope.otel import PyroscopeSpanProcessor
+            except ModuleNotFoundError:
+                pass
 
             provider.add_span_processor(PyroscopeSpanProcessor())
         provider.add_span_processor(SimpleSpanProcessor(exporter))

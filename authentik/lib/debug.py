@@ -43,7 +43,10 @@ def start_pyroscope(component: str, **tags: str) -> bool:
     if not server:
         return False
 
-    import pyroscope
+    try:
+        import pyroscope
+    except ModuleNotFoundError:
+        return
 
     LOGGER.debug("Starting pyroscope profiler", server=server, component=component)
     pyroscope.configure(
