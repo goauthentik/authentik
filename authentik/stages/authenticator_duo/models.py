@@ -21,10 +21,29 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
     api_hostname = models.TextField()
 
     client_id = models.TextField()
+    # Legacy column, kept for downgrades. Remove in 2027.2.
     client_secret = models.TextField()
+    client_secret_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Client secret"),
+        on_delete=models.PROTECT,
+        null=True,
+        default=None,
+        related_name="duo_client_secret_stages",
+    )
 
     admin_integration_key = models.TextField(blank=True, default="")
+    # Legacy column, kept for downgrades. Remove in 2027.2.
     admin_secret_key = models.TextField(blank=True, default="")
+    admin_secret_key_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Admin secret key"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="duo_admin_secret_key_stages",
+    )
 
     @property
     def serializer(self) -> type[BaseSerializer]:
@@ -42,18 +61,18 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
         """Get an API Client to talk to duo"""
         return Auth(
             self.client_id,
-            self.client_secret,
+            self.client_secret_ref.secret_value,
             self.api_hostname,
             user_agent=authentik_user_agent(),
         )
 
     def admin_client(self) -> Admin:
         """Get an API Client to talk to duo"""
-        if self.admin_integration_key == "" or self.admin_secret_key == "":  # nosec
+        if self.admin_integration_key == "" or not self.admin_secret_key_ref:
             raise ValueError("Admin credentials not configured")
         client = Admin(
             self.admin_integration_key,
-            self.admin_secret_key,
+            self.admin_secret_key_ref.secret_value,
             self.api_hostname,
             user_agent=authentik_user_agent(),
         )

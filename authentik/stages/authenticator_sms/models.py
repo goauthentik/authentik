@@ -47,8 +47,27 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
     from_number = models.TextField()
 
     account_sid = models.TextField()
+    # Legacy column, kept for downgrades. Remove in 2027.2.
     auth = models.TextField()
+    auth_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Auth token"),
+        on_delete=models.PROTECT,
+        null=True,
+        default=None,
+        related_name="sms_auth_stages",
+    )
+    # Legacy column, kept for downgrades. Remove in 2027.2.
     auth_password = models.TextField(default="", blank=True)
+    auth_password_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Auth password"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="sms_auth_password_stages",
+    )
     auth_type = models.TextField(choices=SMSAuthTypes.choices, default=SMSAuthTypes.BASIC)
 
     verify_only = models.BooleanField(
@@ -82,7 +101,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
 
     def send_twilio(self, request: HttpRequest, token: str, device: SMSDevice):
         """send sms via twilio provider"""
-        client = Client(self.account_sid, self.auth)
+        client = Client(self.account_sid, self.auth_ref.secret_value)
         message_body = str(self.get_message(token))
         if self.mapping:
             payload = sanitize_item(
@@ -129,13 +148,16 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
             response = get_http_session().post(
                 self.account_sid,
                 json=payload,
-                headers={"Authorization": f"Bearer {self.auth}"},
+                headers={"Authorization": f"Bearer {self.auth_ref.secret_value}"},
             )
         elif self.auth_type == SMSAuthTypes.BASIC:
             response = get_http_session().post(
                 self.account_sid,
                 json=payload,
-                auth=(self.auth, self.auth_password),
+                auth=(
+                    self.auth_ref.secret_value,
+                    self.auth_password_ref.secret_value if self.auth_password_ref else "",
+                ),
             )
         else:
             raise ValueError(f"Invalid Auth type '{self.auth_type}'")
