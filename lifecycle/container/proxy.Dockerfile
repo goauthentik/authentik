@@ -62,6 +62,8 @@ LABEL org.opencontainers.image.authors="Authentik Security Inc." \
 
 RUN apt-get update && \
     apt-get upgrade -y && \
+    # The base image no longer ships curl and wget, keep them for this release
+    apt-get install -y --no-install-recommends curl wget && \
     apt-get clean && \
     rm -rf /tmp/* /var/lib/apt/lists/*
 
