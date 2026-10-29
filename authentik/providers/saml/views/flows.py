@@ -70,24 +70,16 @@ class SAMLFlowFinalView(ChallengeStageView):
             # Create SAMLSession to track this login
             auth_session = AuthenticatedSession.from_request(request, request.user)
             if auth_session:
-                # Since samlsessions should only exist uniquely for an active session and a provider
-                # any existing combination is likely an old, dead session
-                SAMLSession.objects.filter(
-                    session_index=processor.session_index, provider=provider
-                ).delete()
-
-                SAMLSession.objects.update_or_create(
+                SAMLSession.upsert(
                     session_index=processor.session_index,
                     provider=provider,
-                    defaults={
-                        "user": request.user,
-                        "session": auth_session,
-                        "name_id": processor.name_id,
-                        "name_id_format": processor.name_id_format,
-                        "issuer": processor.issuer,
-                        "expires": processor.session_not_on_or_after_datetime,
-                        "expiring": True,
-                    },
+                    user=request.user,
+                    session=auth_session,
+                    name_id=processor.name_id,
+                    name_id_format=processor.name_id_format,
+                    issuer=processor.issuer,
+                    expires=processor.session_not_on_or_after_datetime,
+                    expiring=True,
                 )
         except SAMLException as exc:
             Event.new(
