@@ -3,6 +3,7 @@
 from collections.abc import Iterable
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
+from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
@@ -34,7 +35,6 @@ from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey, SerializerModel, SimpleThroughModel
 from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.lib.utils.time import fqdn_rand
-from authentik.outposts.controllers.k8s.utils import get_namespace
 from authentik.tasks.schedules.common import ScheduleSpec
 from authentik.tasks.schedules.models import ScheduledModel
 
@@ -44,6 +44,15 @@ LOGGER = get_logger()
 
 USER_PATH_OUTPOSTS = USER_PATH_SYSTEM_PREFIX + "/outposts"
 USER_PREFIX_OUTPOSTS = "ak-outpost-"
+# Matches kubernetes.config.incluster_config, without importing the kubernetes client
+K8S_SERVICE_ACCOUNT_NAMESPACE = Path("/var/run/secrets/kubernetes.io/serviceaccount/namespace")
+
+
+def get_namespace() -> str:
+    """Get the namespace if we're running in a pod, otherwise default to default"""
+    if K8S_SERVICE_ACCOUNT_NAMESPACE.exists():
+        return K8S_SERVICE_ACCOUNT_NAMESPACE.read_text(encoding="utf8")
+    return "default"
 
 
 class ServiceConnectionInvalid(TracingIgnoredException):
