@@ -184,6 +184,7 @@
         "@open-wc/lit-helpers": "^0.7.0",
         "@patternfly/elements": "^4.4.0",
         "@patternfly/patternfly": "^4.224.5",
+        "@patternfly/pfe-core": "^6.0.0",
         "@playwright/test": "catalog:",
         "@protomaps/basemaps": "^5.7.2",
         "@sentry/browser": "^10.75.3",

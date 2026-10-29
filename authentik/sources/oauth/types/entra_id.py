@@ -2,21 +2,9 @@
 
 from asyncio import run
 from dataclasses import asdict
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urlsplit
 
-from httpx import HTTPError
-from kiota_abstractions.api_error import APIError
-from kiota_abstractions.authentication.anonymous_authentication_provider import (
-    AnonymousAuthenticationProvider,
-)
-from kiota_abstractions.base_request_configuration import RequestConfiguration
-from kiota_abstractions.headers_collection import HeadersCollection
-from kiota_http.kiota_client_factory import KiotaClientFactory
-from msgraph.generated.models.entity import Entity
-from msgraph.graph_request_adapter import GraphRequestAdapter, options
-from msgraph.graph_service_client import GraphServiceClient
-from msgraph_core import GraphClientFactory
 from structlog.stdlib import get_logger
 
 from authentik.events.utils import sanitize_item
@@ -25,6 +13,9 @@ from authentik.sources.oauth.models import AuthorizationCodeAuthMethod, OAuthSou
 from authentik.sources.oauth.types.oidc import OpenIDConnectOAuth2Callback
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.redirect import OAuthRedirect
+
+if TYPE_CHECKING:
+    from msgraph.generated.models.entity import Entity
 
 LOGGER = get_logger()
 
@@ -60,6 +51,10 @@ class EntraIDClient(UserprofileHeaderAuthClient):
     """Fetch EntraID group information"""
 
     def get_profile_info(self, token):
+        # The Graph SDK is heavy, only import it when an Entra ID source is used
+        from httpx import HTTPError
+        from kiota_abstractions.api_error import APIError
+
         profile_data = super().get_profile_info(token)
         group_scope = get_graph_url(self.source, "/GroupMember.Read.All")
         scopes = self.source.additional_scopes.removeprefix("*").split()
@@ -74,6 +69,16 @@ class EntraIDClient(UserprofileHeaderAuthClient):
 
     async def get_groups(self, token):
         """Fetch all memberships and convert Graph entities for property mappings."""
+        from kiota_abstractions.authentication.anonymous_authentication_provider import (
+            AnonymousAuthenticationProvider,
+        )
+        from kiota_abstractions.base_request_configuration import RequestConfiguration
+        from kiota_abstractions.headers_collection import HeadersCollection
+        from kiota_http.kiota_client_factory import KiotaClientFactory
+        from msgraph.graph_request_adapter import GraphRequestAdapter, options
+        from msgraph.graph_service_client import GraphServiceClient
+        from msgraph_core import GraphClientFactory
+
         # RequestConfiguration shares its default headers between instances
         config = RequestConfiguration(headers=HeadersCollection())
         config.headers.add("Authorization", f"{token['token_type']} {token['access_token']}")
