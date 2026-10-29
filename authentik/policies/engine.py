@@ -103,6 +103,20 @@ class _PolicyEngineBase:
         )
 
     @staticmethod
+    def _select_policies[B: Iterable[PolicyBinding]](bindings: B) -> B:
+        """Load all bound policies in their concrete type with a single query, instead of
+        `binding.policy` lazily querying each one with all subclass joins"""
+        policies = (
+            Policy.objects.filter(pk__in={b.policy_id for b in bindings if b.policy_id})
+            .select_subclasses()
+            .in_bulk()
+        )
+        for binding in bindings:
+            if binding.policy_id:
+                binding.policy = policies[binding.policy_id]
+        return bindings
+
+    @staticmethod
     def _check_policy_type(binding: PolicyBinding):
         """Check policy type, make sure it's not the root class as that has no logic implemented"""
         if binding.policy is not None and binding.policy.__class__ == Policy:
@@ -262,8 +276,9 @@ class PolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
 
     def compute_static_bindings(self, bindings: QuerySet[PolicyBinding]):
         """Check static bindings if possible"""
-        # Evaluated in Python on the (cached) bindings queryset, as an aggregate query
-        # is expensive to build and most objects have no static bindings at all
+        # Evaluated in Python on the bindings queryset, which is fetched (and cached) for the
+        # dynamic bindings anyway, so this costs at most one group lookup instead of an
+        # aggregate query that is expensive to build
         static = [
             binding
             for binding in bindings
@@ -318,6 +333,7 @@ class PolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
             bindings = self.bindings()
             policy_bindings = bindings
             if isinstance(bindings, QuerySet):
+                self._select_policies(bindings)
                 self.compute_static_bindings(bindings)
                 policy_bindings = [x for x in bindings if x.policy]
             self.__binding_results = self._evaluate_dynamic_bindings(
@@ -395,7 +411,7 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
             ).time(),
         ):
             self._substitute_mirror_actors()
-            bindings = list(self.bindings())
+            bindings = self._select_policies(list(self.bindings()))
             for binding in bindings:
                 self._check_policy_type(binding)
 
@@ -623,19 +639,10 @@ class ListPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
                 .select_related("user", "group")
                 .order_by("target", "order")
             )
-            # Single expensive query to lookup all policies needed in their respective
-            # type, used instead of dynamically fetching the concrete type
-            policy_ids = {b.policy_id for b in bindings if b.policy_id is not None}
-            policies_by_pk = (
-                {p.pk: p for p in Policy.objects.filter(pk__in=policy_ids).select_subclasses()}
-                if policy_ids
-                else {}
-            )
+            self._select_policies(bindings)
             for binding in bindings:
                 pk = pk_by_target_key[binding.target_id]
                 binding.target = obj_by_pk[pk]
-                if binding.policy_id is not None:
-                    binding.policy = policies_by_pk[binding.policy_id]
                 self._check_policy_type(binding)
                 bindings_by_target[pk].append(binding)
 
