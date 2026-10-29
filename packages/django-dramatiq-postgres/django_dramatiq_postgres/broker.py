@@ -110,8 +110,12 @@ def discard_interrupted_transactions() -> None:
         )
         try:
             conn.close()
-        except DATABASE_ERRORS:
-            pass
+        except DATABASE_ERRORS as exc:
+            logger.warning(
+                "Ignoring database error while closing interrupted transaction connection",
+                alias=conn.alias,
+                exc=exc,
+            )
         del connections[conn.alias]
 
 
