@@ -20,6 +20,7 @@
 
 [part~="list-item"] {
     margin-top: var(--ak-c-sidebar__item--MarginTop);
+    width: 100%;
 }
 
 [part~="list-item"][aria-expanded="true"] {
@@ -35,8 +36,9 @@
     gap: 0;
     grid-template-columns:
         [icon] var(--ak-c-sidebar--icon-size)
-        [label] 1fr [toggle] auto;
+        [label] 1fr [toggle] var(--ak-c-sidebar--icon-size);
     padding-inline-start: var(--ak-c-sidebar--gutter);
+    padding-inline-end: 0;
     white-space: nowrap;
     text-align: left;
     align-items: baseline;
@@ -53,11 +55,21 @@
     border-style: none;
 }
 
+[part~="path-and-children"]:is(:hover, :focus) {
+    --ak-c-sidebar__link--BackgroundColor: var(--ak-c-sidebar__link--hover--BackgroundColor);
+}
+
 [part~="row"]:is(:hover, :focus) {
     color: var(--ak-c-sidebar__link--hover--Color);
     --ak-c-sidebar__link--BackgroundColor: var(--ak-c-sidebar__link--hover--BackgroundColor);
     --ak-c-sidebar__rail--BackgroundColor: var(--ak-c-sidebar__rail--BackgroundColor--hover);
     --ak-c-sidebar__rail--Width: var(--ak-c-sidebar__rail--Width--hover);
+}
+
+[part~="path-and-children"] {
+    display: grid;
+    grid-template-columns: [anchor] 1fr [toggle] var(--ak-c-sidebar--icon-size);
+    align-items: baseline;
 }
 
 [part="label"] {
@@ -78,12 +90,14 @@
     padding-inline-start: calc(2 * var(--ak-c-sidebar--gutter));
 }
 
-[part~="row"][data-depth="2"] {
+
+[data-depth="2"] [part="label"] {
     font-size: var(--ak-c-sidebar--depth2--FontSize);
+    padding-inline-start: calc(3 * var(--ak-c-sidebar--gutter));
 }
 
-[part~="row"][data-depth="2"]::before {
-    inset-inline-start: calc(var(--ak-c-sidebar__rail) - var(--ak-c-sidebar--indicator-width) / 2);
+[part~="row"][data-depth="2"] {
+    font-size: var(--ak-c-sidebar--depth2--FontSize);
 }
 
 [part~="row"][part~="current"] {
@@ -146,8 +160,13 @@
 
 [part="toggle"] {
     line-height: 1;
+    justify-self: center;
     font-size: var(--ak-c-sidebar__toggle--FontSize);
-    padding-inline-end: var(--ak-c-sidebar__link--PaddingRight);
+    background-color: var(--ak-c-sidebar__link--BackgroundColor);
+}
+
+[data-depth="1"] > [part="toggle"] {
+    font-size: calc(0.85 * var(--ak-c-sidebar__toggle--FontSize));
 }
 
 [part="toggle-icon"] {
