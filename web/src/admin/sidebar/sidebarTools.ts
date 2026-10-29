@@ -146,4 +146,11 @@ export const findCurrentSidebarKey = (
     entries: readonly ExtendedSidebarItem[],
     routeName: string | null,
     path: string = "",
-) => findSidebarEntry(entries, matchesPath(path, routeName))?.key ?? null;
+) => {
+    const entry = findSidebarEntry(entries, matchesPath(path, routeName));
+
+    // A child keyed by its own object path (a bookmark) outranks the entry listing it, on any tab.
+    const child = entry?.children?.find(({ key }) => path === key || path.startsWith(`${key}/`));
+
+    return (child ?? entry)?.key ?? null;
+};
