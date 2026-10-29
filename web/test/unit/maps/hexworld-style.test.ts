@@ -11,7 +11,10 @@ import {
 import type { ExpressionSpecification, VectorSourceSpecification } from "maplibre-gl";
 import { expect, test } from "vitest";
 
-const style = buildHexworldStyle({ archiveURL: "/static/dist/assets/maps/hexworld.pmtiles" });
+const style = buildHexworldStyle({
+    archiveURL: "/static/dist/assets/maps/hexworld.pmtiles",
+    glyphsURL: "/static/dist/assets/maps/fonts/{fontstack}/{range}.pbf",
+});
 
 const hexworldSource = (spec = style) => spec.sources.hexworld as VectorSourceSpecification;
 
@@ -28,7 +31,7 @@ test("style uses the pmtiles protocol with promoted h3 ids", () => {
 });
 
 test("source maxzoom is overridable for a finer archive cut", () => {
-    const r5 = buildHexworldStyle({ archiveURL: "/x.pmtiles", maxzoom: 8 });
+    const r5 = buildHexworldStyle({ archiveURL: "/x.pmtiles", glyphsURL: "/x.pbf", maxzoom: 8 });
     expect(hexworldSource(r5).maxzoom).toBe(8);
 });
 
@@ -67,13 +70,22 @@ test("style has country + region border layers filtered by level", () => {
     expect((region.minzoom ?? 0) >= 3).toBeTruthy();
 });
 
-test("airgap: default style references no absolute URLs", () => {
+test("airgap: style references no absolute URLs", () => {
     const json = JSON.stringify(style);
     expect(!/https?:\/\//.test(json), "style must not reach external hosts").toBeTruthy();
 });
 
 test("dark theme swaps palette", () => {
+<<<<<<< HEAD
     const dark = buildHexworldStyle({ archiveURL: "/x.pmtiles", theme: "dark" });
+=======
+    const dark = buildHexworldStyle({
+        archiveURL: "/x.pmtiles",
+        glyphsURL: "/x.pbf",
+        theme: "dark",
+    });
+
+>>>>>>> c8585f523 (web: keep the web path in URLs the interfaces build (#27291))
     const bg = (spec: typeof style) =>
         paintOf(layerById(spec, "hexworld-background"))["background-color"];
     expect(bg(dark)).not.toBe(bg(style));
@@ -131,7 +143,12 @@ test("bandFadeOpacity cross-fades bands at their boundaries", () => {
 });
 
 test("hex and border layers use the band fade", () => {
+<<<<<<< HEAD
     const faded = buildHexworldStyle({ archiveURL: "/x.pmtiles" });
+=======
+    const faded = buildHexworldStyle({ archiveURL: "/x.pmtiles", glyphsURL: "/x.pbf" });
+
+>>>>>>> c8585f523 (web: keep the web path in URLs the interfaces build (#27291))
     const opacity = (id: string, property: string) =>
         (paintOf(layerById(faded, id))[property] as unknown[])[0];
     expect(opacity("hexworld-hex", "fill-opacity")).toBe("interpolate");
@@ -141,7 +158,7 @@ test("hex and border layers use the band fade", () => {
 });
 
 test("label layers sort collisions by population and regions start at z3", () => {
-    const spec = buildHexworldStyle({ archiveURL: "/x.pmtiles" });
+    const spec = buildHexworldStyle({ archiveURL: "/x.pmtiles", glyphsURL: "/x.pbf" });
     expect(layerById(spec, "hexworld-label-region").minzoom).toBe(3);
     for (const kind of ["country", "region", "locality"]) {
         const sort = layoutOf(layerById(spec, `hexworld-label-${kind}`))["symbol-sort-key"];

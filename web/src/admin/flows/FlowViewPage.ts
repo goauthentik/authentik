@@ -12,6 +12,11 @@ import { isResponseErrorLike } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
 import { modalInvoker } from "#elements/dialogs";
+<<<<<<< HEAD
+=======
+import { toFlowInterface } from "#elements/router/core/interfaces";
+import { setPageDetails } from "#elements/router/meta";
+>>>>>>> c8585f523 (web: keep the web path in URLs the interfaces build (#27291))
 import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
@@ -124,7 +129,13 @@ export class FlowViewPage extends AKElement {
                                                 )}
                                                 class="pf-c-button pf-m-block pf-m-primary"
                                                 @click=${() => {
-                                                    const finalURL = `${window.location.origin}/if/flow/${this.flow.slug}/${AndNext(`${window.location.pathname}#${window.location.hash}`)}`;
+                                                    const finalURL = toFlowInterface(
+                                                        this.flow.slug,
+                                                        {
+                                                            next: `${window.location.pathname}#${window.location.hash}`,
+                                                        },
+                                                    );
+
                                                     window.open(finalURL, "_blank");
                                                 }}
                                             >
