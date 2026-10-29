@@ -9,7 +9,7 @@
         var(--ak-c-login--PaddingMax)
     );
 
-    --ak-c-login--MaxWidth: 35rem;
+    --ak-c-login--MaxWidth: 36.25rem;
     --ak-c-login__main--BackgroundColor: var(--pf-global--BackgroundColor--light-100);
     --ak-c-login__main--Color: var(--pf-global--Color--dark-100);
 
@@ -63,7 +63,7 @@
             var(--ak-c-login__footer--ColumnGap)
     );
 
-    @media (width <= 35rem) {
+    @media (width <= 36.25rem) {
         --ak-c-login__footer--TrackWidth: 1fr;
         --ak-c-login__footer__list-item--FlexBasis: 100%;
     }
