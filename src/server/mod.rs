@@ -44,7 +44,7 @@ use tokio::{
     time::{Duration, Instant, interval},
 };
 use tower::ServiceExt as _;
-use tracing::{info, instrument, trace, warn};
+use tracing::{debug, info, instrument, trace, warn};
 
 use crate::{
     brands::tls::BrandCertResolver,
@@ -67,15 +67,34 @@ pub(crate) struct Cli {}
 
 pub(super) static GUNICORN_READY: AtomicBool = AtomicBool::new(false);
 
+pub(crate) type ServerClient = Client<UnixSocketConnector<PathBuf>, Body>;
+
 pub(crate) fn socket_path() -> PathBuf {
     temp_dir().join("authentik.sock")
+}
+
+/// Returns `true` when `err` (or any error in its source chain) is an
+/// `io::Error` with `ErrorKind::NotFound`
+pub(crate) fn is_connect_not_found(err: &dyn std::error::Error) -> bool {
+    let mut source = err.source();
+    while let Some(e) = source {
+        if let Some(io_err) = e.downcast_ref::<std::io::Error>()
+            && io_err.kind() == std::io::ErrorKind::NotFound
+        {
+            return true;
+        }
+        source = e.source();
+    }
+    false
 }
 
 #[derive(Debug)]
 pub(crate) struct Server {
     gunicorn: Mutex<Child>,
     socket_path: PathBuf,
-    pub(crate) client: Client<UnixSocketConnector<PathBuf>, Body>,
+    pub(crate) client: ServerClient,
+    /// Used to retry requests that failed on a pooled connection, see [`core::send_to_server`].
+    retry_client: ServerClient,
     pub(crate) workers: ArcSwapOption<Workers>,
     proxy_outpost: Arc<ArcSwapOption<ProxyOutpost>>,
     brand_cert_resolver: ArcSwapOption<BrandCertResolver>,
@@ -104,10 +123,16 @@ impl Server {
             .pool_idle_timeout(Duration::from_mins(1))
             .set_host(false)
             .build(UnixSocketConnector::new(socket_path.clone()));
+        // Keeps no idle connections, so a retry always gets a new one.
+        let retry_client = Client::builder(TokioExecutor::new())
+            .pool_max_idle_per_host(0)
+            .set_host(false)
+            .build(UnixSocketConnector::new(socket_path.clone()));
 
         Ok(Self {
             gunicorn: Mutex::new(gunicorn),
             client,
+            retry_client,
             socket_path,
             workers: ArcSwapOption::empty(),
             proxy_outpost: Arc::new(ArcSwapOption::empty()),
@@ -176,7 +201,13 @@ impl Server {
             .client
             .request(req)
             .await
-            .inspect_err(|err| warn!(?err, "failed to send health live request to server"))?
+            .inspect_err(|err| {
+                if is_connect_not_found(err) {
+                    debug!(?err, "upstream socket not yet ready (health live)");
+                } else {
+                    warn!(?err, "failed to send health live request to server");
+                }
+            })?
             .status()
             .is_success())
     }

@@ -62,7 +62,7 @@ class MicrosoftEntraGroupClient(
         with transaction.atomic():
             try:
                 response = self._request(self.client.groups.post(microsoft_group))
-            except ObjectExistsSyncException:
+            except ObjectExistsSyncException as exc:
                 # group already exists in microsoft entra, so we can connect them manually
                 # for groups we need to fetch the group from microsoft as we connect on
                 # ID and not group email
@@ -75,11 +75,8 @@ class MicrosoftEntraGroupClient(
                     )
                 )
                 group_data = self._request(self.client.groups.get(request_configuration))
-                if group_data.odata_count < 1 or len(group_data.value) < 1:
-                    self.logger.warning(
-                        "Group which could not be created also does not exist", group=group
-                    )
-                    return
+                if not group_data.value:
+                    raise exc
                 ms_group = group_data.value[0]
                 return MicrosoftEntraProviderGroup.objects.create(
                     provider=self.provider,
@@ -163,6 +160,10 @@ class MicrosoftEntraGroupClient(
                     )
             except ObjectExistsSyncException:
                 pass
+            except NotFoundSyncException:
+                # A user who isn't a member anymore doesn't need to be removed
+                if direction != Direction.remove:
+                    raise
             except TransientSyncException:
                 raise
 

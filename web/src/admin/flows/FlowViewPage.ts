@@ -18,6 +18,7 @@ import { isResponseErrorLike } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
 import { modalInvoker } from "#elements/dialogs";
+import { toFlowInterface } from "#elements/router/core/interfaces";
 import { setPageDetails } from "#elements/router/meta";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -124,7 +125,13 @@ export class FlowViewPage extends AKElement {
                                                 )}
                                                 class="pf-c-button pf-m-block pf-m-primary"
                                                 @click=${() => {
-                                                    const finalURL = `${window.location.origin}/if/flow/${this.flow.slug}/${AndNext(`${window.location.pathname}#${window.location.hash}`)}`;
+                                                    const finalURL = toFlowInterface(
+                                                        this.flow.slug,
+                                                        {
+                                                            next: `${window.location.pathname}#${window.location.hash}`,
+                                                        },
+                                                    );
+
                                                     window.open(finalURL, "_blank");
                                                 }}
                                             >
