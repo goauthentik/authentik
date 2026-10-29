@@ -4,9 +4,6 @@ from dataclasses import asdict
 
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
-from kubernetes.client.configuration import Configuration
-from kubernetes.config.config_exception import ConfigException
-from kubernetes.config.kube_config import load_kube_config_from_dict
 from rest_framework import mixins, serializers
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, ReadOnlyField
@@ -117,6 +114,10 @@ class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
                 )
             # Empty kubeconfig is valid
             return kubeconfig
+        from kubernetes.client.configuration import Configuration
+        from kubernetes.config.config_exception import ConfigException
+        from kubernetes.config.kube_config import load_kube_config_from_dict
+
         config = Configuration()
         try:
             load_kube_config_from_dict(kubeconfig, client_configuration=config)
