@@ -173,7 +173,7 @@ export class AKPageNavbar
                 ${this.renderBrand()}
                 <slot name="toggle"></slot>
 
-                <div class="items primary pf-c-content ${this.description ? "block-sibling" : ""}">
+                <div class="items primary pf-c-content block-sibling">
                     <h1 aria-labelledby="page-navbar-heading" class="page-title">
                         ${
                             this.hasIcon
@@ -182,21 +182,23 @@ export class AKPageNavbar
                                   >`
                                 : nothing
                         }
-                        <span id="page-navbar-heading">${this.header}</span>
+                        <span id="page-navbar-heading"
+                            >${this.header}<slot name="bookmark"></slot
+                        ></span>
                     </h1>
                 </div>
-                ${
-                    this.description
-                        ? html`<div
-                              role="heading"
-                              aria-level="2"
-                              aria-label="${this.description}"
-                              class="items page-description pf-c-content"
-                          >
-                              <p>${this.description}</p>
-                          </div>`
-                        : nothing
-                }
+                <div
+                    role="heading"
+                    aria-level="2"
+                    aria-label="${this.description ?? msg("breadcrumbs", { id: "page:navbar:breadcrumbs " })}"
+                    class="items page-description pf-c-content"
+                >
+                    ${
+                        this.description /* && false */
+                            ? html`<p>${this.description}</p>`
+                            : html`<p><slot name="breadcrumbs"></slot></p>`
+                    }
+                </div>
 
                 <div class="items secondary">
                     <div class="pf-c-page__header-tools-group">
