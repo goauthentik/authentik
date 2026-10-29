@@ -189,7 +189,7 @@ class TestFlowPlanner(TestCase):
         request = self.request_factory.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
-        plan = loads(dumps(FlowPlanner(flow).plan(request)))
+        plan = loads(dumps(FlowPlanner(flow).plan(request)))  # nosec
         with self.assertNumQueries(0):
             self.assertIsInstance(plan.bindings[0].stage, DummyStage)
 
