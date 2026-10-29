@@ -76,8 +76,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - id: geoip
-        run: echo "month=$(date -u +%Y-%m)" >> "$GITHUB_OUTPUT"
       - id: build
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
@@ -85,9 +83,7 @@ jobs:
           context: .
           file: "${{ inputs.image-dockerfile }}"
           target: "${{ inputs.image-target }}"
-          build-args: |
-            ${{ inputs.image-build-args }}
-            GEOIP_MONTH=${{ steps.geoip.outputs.month }}
+          build-args: ${{ inputs.image-build-args }}
           # outputs
           push: false
           cache-from: |

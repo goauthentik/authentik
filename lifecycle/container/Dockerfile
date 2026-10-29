@@ -46,15 +46,6 @@ COPY ./website /work/website/
 RUN pnpm run build && \
     pnpm run build:sfe
 
-# Stage: DB-IP Lite GeoIP databases (CC BY 4.0, https://db-ip.com)
-FROM --platform=${BUILDPLATFORM} docker.io/library/alpine:3.22@sha256:822614ea121e1d40a33655081af10ef85f0aa2ab9e61f649ceaf0c651822433c AS geoip
-
-# Edition to download, as YYYY-MM. CI passes the current month so the cached layer refreshes monthly.
-ARG GEOIP_MONTH
-
-RUN --mount=type=bind,target=/tmp/geoip.sh,src=./lifecycle/container/geoip.sh \
-    sh /tmp/geoip.sh /geoip "${GEOIP_MONTH}"
-
 # Stage: download Rust toolchain
 FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:d363011346c52a8db30fb88769af5f81aefd2e506942b44a4d8aa9cb60238003 AS rust-toolchain
 
@@ -278,7 +269,7 @@ RUN ln -s /ak-root/packages /packages && \
 COPY --from=python-deps /ak-root/.venv /ak-root/.venv
 COPY --from=node-builder /work/web/dist/ /web/dist/
 COPY --from=node-builder /work/web/authentik/ /web/authentik/
-COPY --from=geoip /geoip /geoip
+COPY --from=geoip:latest /geoip /geoip
 
 # Stage: distroless root filesystem
 # prune.sh copies the files the distroless image needs into /out
