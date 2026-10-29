@@ -5,22 +5,13 @@ from os.path import dirname, exists
 from shutil import rmtree
 from ssl import CERT_REQUIRED
 from tempfile import NamedTemporaryFile, mkdtemp
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse
 
 import pglock
 from django.db import connection, models
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
-from ldap3 import ALL, EXTERNAL, NONE, RANDOM, SASL, SIMPLE, Connection, Server, ServerPool, Tls
-from ldap3.core.exceptions import (
-    LDAPAdminLimitExceededResult,
-    LDAPAttributeError,
-    LDAPConfigurationError,
-    LDAPException,
-    LDAPInsufficientAccessRightsResult,
-    LDAPSchemaError,
-)
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -36,6 +27,9 @@ from authentik.lib.models import DomainlessURLValidator
 from authentik.lib.sync.incoming.models import IncomingSyncSource
 from authentik.lib.utils.time import fqdn_rand
 from authentik.tasks.schedules.common import ScheduleSpec
+
+if TYPE_CHECKING:
+    from ldap3 import Connection, Server, ServerPool
 
 LDAP_TIMEOUT = 15
 LDAP_UNIQUENESS = "ldap_uniq"
@@ -251,6 +245,9 @@ class LDAPSource(IncomingSyncSource):
 
     def server(self, **kwargs) -> ServerPool:
         """Get LDAP Server/ServerPool"""
+        # ldap3 is only imported when an LDAP source is used
+        from ldap3 import ALL, RANDOM, Server, ServerPool, Tls
+
         servers = []
         tls_kwargs = {}
         if self.peer_certificate:
@@ -292,6 +289,8 @@ class LDAPSource(IncomingSyncSource):
         connection_kwargs: dict | None = None,
     ) -> Connection:
         """Get a service connection for synchronization, searches, and writeback."""
+        from ldap3 import EXTERNAL, SASL
+
         connection_kwargs = dict(connection_kwargs or {})
         if self.service_bind_method == LDAPSourceBindMethod.SASL_EXTERNAL:
             self._validate_sasl_external_configuration()
@@ -311,6 +310,8 @@ class LDAPSource(IncomingSyncSource):
 
     def connection_as_user(self, user: str, password: str) -> Connection:
         """Bind as an LDAP user to verify their submitted password."""
+        from ldap3 import SIMPLE
+
         return self._connect_and_bind(
             connection_kwargs={
                 "user": user,
@@ -321,6 +322,8 @@ class LDAPSource(IncomingSyncSource):
 
     def _validate_sasl_external_configuration(self) -> None:
         """Ensure SASL EXTERNAL has a certificate-backed TLS transport."""
+        from ldap3.core.exceptions import LDAPConfigurationError
+
         if not self.client_certificate or not self.client_certificate.key_data:
             raise LDAPConfigurationError(
                 "SASL EXTERNAL requires a client certificate with a private key"
@@ -339,6 +342,15 @@ class LDAPSource(IncomingSyncSource):
         connection_kwargs: dict | None = None,
     ) -> Connection:
         """Create, secure, and bind an LDAP connection."""
+        from ldap3 import ALL, NONE, Connection
+        from ldap3.core.exceptions import (
+            LDAPAdminLimitExceededResult,
+            LDAPAttributeError,
+            LDAPException,
+            LDAPInsufficientAccessRightsResult,
+            LDAPSchemaError,
+        )
+
         server_kwargs = server_kwargs or {}
         connection_kwargs = connection_kwargs or {}
         conn = Connection(
@@ -401,6 +413,8 @@ class LDAPSource(IncomingSyncSource):
 
     def check_connection(self) -> dict[str, dict[str, str]]:
         """Check LDAP Connection"""
+        from ldap3.core.exceptions import LDAPException
+
         servers = self.server()
         server_info = {}
         # Check each individual server

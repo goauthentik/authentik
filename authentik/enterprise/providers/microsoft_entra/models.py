@@ -3,7 +3,6 @@
 from typing import Any, Self
 from uuid import uuid4
 
-from azure.identity.aio import ClientSecretCredential
 from django.db import models
 from django.db.models import QuerySet
 from django.templatetags.static import static
@@ -164,6 +163,8 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
         raise ValueError(f"Invalid type {type(obj)}")
 
     def microsoft_credentials(self):
+        from azure.identity.aio import ClientSecretCredential
+
         return {
             "credentials": ClientSecretCredential(
                 self.tenant_id, self.client_id, self.client_secret_ref.secret_value
