@@ -8,22 +8,21 @@ import { matchesPath } from "#admin/sidebar/sidebarTools";
 import { ExtendedSidebarItem } from "#admin/sidebar/types";
 
 /**
- * Attach each bookmark, as a third-tier child sorted by label, to the second-tier entry that
- * lists its object. Bookmarks whose route no entry lists are dropped.
+ * For each second-tier navigation entry that has one or more bookmarks, populate that tier's
+ * `children` field with synthetic SidebarItems linking to the bookmarked item.
  */
 export function bookmarksToSidebar(
     entries: ExtendedSidebarItem[],
     bookmarks: Bookmark[],
 ): ExtendedSidebarItem[] {
-    // Same route-name matching the breadcrumbs use, so `/flow/stages/prompts/…` can't land
-    // under "Stages" by prefix.
+    // Same route-name matching breadcrumbss, so `/flow/stages/prompts/...` will point to
+    // the prompts, and the stages object.
     const matchers = bookmarks.map((bookmark) => {
         const path = currentInterfacePath(bookmark.path);
 
         return {
             bookmark,
-            // Keyed like every other entry, by interface path, so `findCurrentSidebarKey` can find it.
-            key: path,
+            key: path, // We do this for other unkeyed things, it just needs to be unique.
             matches: matchesPath(path, matchRoute(path, ROUTES)?.route.name ?? null),
         };
     });

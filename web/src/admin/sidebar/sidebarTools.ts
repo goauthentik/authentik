@@ -149,7 +149,10 @@ export const findCurrentSidebarKey = (
 ) => {
     const entry = findSidebarEntry(entries, matchesPath(path, routeName));
 
-    // A child keyed by its own object path (a bookmark) outranks the entry listing it, on any tab.
+    // Bookmarks will be child entries, and their keys will be more targeted than the entry itself,
+    // so return it instead of the entry if we find one. This is pretty specific to authentik;
+    // the Sidebar is capable of being more general than this; don't take this as a sign the
+    // Sidebar is Admin-specific.
     const child = entry?.children?.find(({ key }) => path === key || path.startsWith(`${key}/`));
 
     return (child ?? entry)?.key ?? null;
