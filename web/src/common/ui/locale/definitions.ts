@@ -29,14 +29,17 @@ const sourceTargetModule: LocaleModule = {
  * @remarks
  *   The `import` statements **must** reference a locale module path,
  *   as this is how ESBuild identifies which files to include in the build.
+ *   The generated region comes from `locales.yaml`. Run `make gen-locales` after editing it.
  */
 export const LocaleLoaderRecord: Record<TargetLanguageTag, () => Promise<LocaleModule>> = {
     [SourceLanguageTag]: () => Promise.resolve(sourceTargetModule),
     [PseudoLanguageTag]: () => import("#locales/en-XA"),
+    // #region Generated locale loaders
     "ar": () => import("#locales/ar"),
     "bg-BG": () => import("#locales/bg-BG"),
     "bn-BD": () => import("#locales/bn-BD"),
     "cs-CZ": () => import("#locales/cs-CZ"),
+    "sk-SK": () => import("#locales/sk-SK"),
     "de-DE": () => import("#locales/de-DE"),
     "es-ES": () => import("#locales/es-ES"),
     "fi-FI": () => import("#locales/fi-FI"),
@@ -48,9 +51,9 @@ export const LocaleLoaderRecord: Record<TargetLanguageTag, () => Promise<LocaleM
     "nl-NL": () => import("#locales/nl-NL"),
     "pl-PL": () => import("#locales/pl-PL"),
     "pt-BR": () => import("#locales/pt-BR"),
-    "sk-SK": () => import("#locales/sk-SK"),
     "ru-RU": () => import("#locales/ru-RU"),
     "tr-TR": () => import("#locales/tr-TR"),
     "zh-Hans": () => import("#locales/zh-Hans"),
     "zh-Hant": () => import("#locales/zh-Hant"),
+    // #endregion
 };

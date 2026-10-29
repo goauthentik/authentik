@@ -308,6 +308,8 @@ class SAMLSource(Source):
 class SAMLSourcePropertyMapping(PropertyMapping):
     """Map SAML properties to User or Group object attributes"""
 
+    expression_allowed_types = [dict]
+
     @property
     def component(self) -> str:
         return "ak-property-mapping-source-saml-form"

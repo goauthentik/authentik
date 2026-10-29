@@ -84,6 +84,8 @@ class SCIMSource(Source):
 class SCIMSourcePropertyMapping(PropertyMapping):
     """Map SCIM properties to User or Group object attributes"""
 
+    expression_allowed_types = [dict]
+
     @property
     def component(self) -> str:
         return "ak-property-mapping-source-scim-form"

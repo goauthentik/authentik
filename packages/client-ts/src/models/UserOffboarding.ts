@@ -10,16 +10,16 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { OffboardingActionEnum } from "./OffboardingActionEnum";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { OffboardingActionEnum } from "./OffboardingActionEnum.js";
 import {
     OffboardingActionEnumFromJSON,
     OffboardingActionEnumToJSON,
-} from "./OffboardingActionEnum";
-import type { OffboardingStatusEnum } from "./OffboardingStatusEnum";
-import { OffboardingStatusEnumFromJSON } from "./OffboardingStatusEnum";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
+} from "./OffboardingActionEnum.js";
+import type { OffboardingStatusEnum } from "./OffboardingStatusEnum.js";
+import { OffboardingStatusEnumFromJSON } from "./OffboardingStatusEnum.js";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
 
 /**
  * Mixin to validate that a valid enterprise license

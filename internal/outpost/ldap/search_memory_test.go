@@ -33,9 +33,11 @@ const (
 
 // memDirectory is the mutable fixture set the fake authentik API serves.
 type memDirectory struct {
-	mu     sync.Mutex
-	users  []api.User
-	groups []api.Group
+	mu         sync.Mutex
+	users      []api.User
+	groups     []api.Group
+	failUsers  bool
+	failGroups bool
 }
 
 func (d *memDirectory) set(users []api.User, groups []api.Group) {
@@ -43,6 +45,21 @@ func (d *memDirectory) set(users []api.User, groups []api.Group) {
 	defer d.mu.Unlock()
 	d.users = users
 	d.groups = groups
+}
+
+// setFailing makes the fake API answer the users and/or groups list with a
+// server error.
+func (d *memDirectory) setFailing(users, groups bool) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	d.failUsers = users
+	d.failGroups = groups
+}
+
+func (d *memDirectory) failing() (bool, bool) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	return d.failUsers, d.failGroups
 }
 
 func (d *memDirectory) snapshot() ([]api.User, []api.Group) {
@@ -138,6 +155,10 @@ func memNewAPIClient(t *testing.T, dir *memDirectory) (*api.APIClient, func()) {
 	t.Helper()
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/v3/core/users/", func(w http.ResponseWriter, r *http.Request) {
+		if failUsers, _ := dir.failing(); failUsers {
+			http.Error(w, "unavailable", http.StatusServiceUnavailable)
+			return
+		}
 		users, _ := dir.snapshot()
 		w.Header().Set("Content-Type", "application/json")
 		if err := json.NewEncoder(w).Encode(api.PaginatedUserList{
@@ -149,6 +170,10 @@ func memNewAPIClient(t *testing.T, dir *memDirectory) (*api.APIClient, func()) {
 		}
 	})
 	mux.HandleFunc("/api/v3/core/groups/", func(w http.ResponseWriter, r *http.Request) {
+		if _, failGroups := dir.failing(); failGroups {
+			http.Error(w, "unavailable", http.StatusServiceUnavailable)
+			return
+		}
 		_, groups := dir.snapshot()
 		w.Header().Set("Content-Type", "application/json")
 		if err := json.NewEncoder(w).Encode(api.PaginatedGroupList{
@@ -280,4 +305,101 @@ func TestMemorySearcherRefreshesUserEntry(t *testing.T) {
 	// the per-DN flags, which pinned an entire stale copy for the process
 	// lifetime. The memory searcher must never populate it.
 	assert.Nil(t, pi.GetFlags(memTestAliceDN).UserInfo)
+}
+
+// TestMemorySearcherKeepsSnapshotOnFetchError pins that a refresh which fails
+// to fetch users or groups keeps serving the previous snapshot, instead of
+// replacing a known-good directory with an empty or partial one.
+func TestMemorySearcherKeepsSnapshotOnFetchError(t *testing.T) {
+	groupX := memPartialGroup(memTestGroupXPk, 10, "x")
+	groupY := memPartialGroup(memTestGroupYPk, 11, "y")
+
+	dir := &memDirectory{}
+	dir.set(
+		[]api.User{memAliceUser([]api.PartialGroup{groupX})},
+		[]api.Group{
+			memGroup(memTestGroupXPk, 10, "x", []api.PartialUser{memAlicePartial()}),
+			memGroup(memTestGroupYPk, 11, "y", []api.PartialUser{}),
+		},
+	)
+
+	client, closeServer := memNewAPIClient(t, dir)
+	defer closeServer()
+
+	pi := memProviderInstance(client)
+	pi.SetFlags(memTestAliceDN, &flags.UserFlags{UserPk: 1, CanSearch: false})
+
+	searcher := memory.NewMemorySearcher(pi, nil)
+	memAssertAttribute(t, memSelfSearch(t, searcher).Attributes, &ldap.EntryAttribute{
+		Name:   "memberOf",
+		Values: []string{pi.GetGroupDN("x")},
+	})
+
+	// Alice moves from group x to group y.
+	dir.set(
+		[]api.User{memAliceUser([]api.PartialGroup{groupY})},
+		[]api.Group{
+			memGroup(memTestGroupXPk, 10, "x", []api.PartialUser{}),
+			memGroup(memTestGroupYPk, 11, "y", []api.PartialUser{memAlicePartial()}),
+		},
+	)
+
+	for _, tc := range []struct {
+		name                  string
+		failUsers, failGroups bool
+	}{
+		{"users", true, false},
+		// The users fetch succeeds here, but must not be applied on its own.
+		{"groups", false, true},
+		{"both", true, true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			dir.setFailing(tc.failUsers, tc.failGroups)
+			searcher = memory.NewMemorySearcher(pi, searcher)
+			memAssertAttribute(t, memSelfSearch(t, searcher).Attributes, &ldap.EntryAttribute{
+				Name:   "memberOf",
+				Values: []string{pi.GetGroupDN("x")},
+			})
+		})
+	}
+
+	// Once the API recovers, the next refresh applies the new data.
+	dir.setFailing(false, false)
+	searcher = memory.NewMemorySearcher(pi, searcher)
+	memAssertAttribute(t, memSelfSearch(t, searcher).Attributes, &ldap.EntryAttribute{
+		Name:   "memberOf",
+		Values: []string{pi.GetGroupDN("y")},
+	})
+}
+
+// TestMemorySearcherFirstFetchError pins that when the very first fetch fails
+// partially, the searcher serves what it did get, and a later successful
+// refresh replaces it.
+func TestMemorySearcherFirstFetchError(t *testing.T) {
+	groupX := memPartialGroup(memTestGroupXPk, 10, "x")
+
+	dir := &memDirectory{}
+	dir.set(
+		[]api.User{memAliceUser([]api.PartialGroup{groupX})},
+		[]api.Group{
+			memGroup(memTestGroupXPk, 10, "x", []api.PartialUser{memAlicePartial()}),
+		},
+	)
+	dir.setFailing(false, true)
+
+	client, closeServer := memNewAPIClient(t, dir)
+	defer closeServer()
+
+	pi := memProviderInstance(client)
+	pi.SetFlags(memTestAliceDN, &flags.UserFlags{UserPk: 1, CanSearch: false})
+
+	searcher := memory.NewMemorySearcher(pi, nil)
+	assert.Equal(t, memTestAliceDN, memSelfSearch(t, searcher).DN)
+
+	dir.setFailing(false, false)
+	searcher = memory.NewMemorySearcher(pi, searcher)
+	memAssertAttribute(t, memSelfSearch(t, searcher).Attributes, &ldap.EntryAttribute{
+		Name:   "memberOf",
+		Values: []string{pi.GetGroupDN("x")},
+	})
 }

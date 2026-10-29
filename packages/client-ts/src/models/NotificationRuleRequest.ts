@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { SeverityEnum } from "./SeverityEnum";
-import { SeverityEnumFromJSON, SeverityEnumToJSON } from "./SeverityEnum";
+import type { SeverityEnum } from "./SeverityEnum.js";
+import { SeverityEnumFromJSON, SeverityEnumToJSON } from "./SeverityEnum.js";
 
 /**
  * NotificationRule Serializer

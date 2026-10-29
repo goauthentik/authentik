@@ -3,11 +3,14 @@ import "#components/ak-radio-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/FormGroup";
 import "#elements/utils/TimeDeltaHelp";
-import "#admin/endpoints/ak-endpoints-device-group-search";
 import "#elements/CodeMirror";
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+
+import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { deviceAccessGroupSource } from "#admin/common/search-sources";
 
 import { EndpointDevice, EndpointsApi, ProtocolEnum } from "@goauthentik/api";
 
@@ -88,9 +91,12 @@ export class EndpointDeviceForm extends ModelForm<EndpointDevice, string> {
             >
             </ak-radio-input>
             <ak-form-element-horizontal label=${msg("Device Group")} name="accessGroup">
-                <ak-endpoints-device-group-search
-                    .group=${this.instance?.accessGroup}
-                ></ak-endpoints-device-group-search>
+                ${AKSearchSelect({
+                    name: "accessGroup",
+                    source: deviceAccessGroupSource,
+                    value: this.instance?.accessGroup,
+                    placeholder: msg("Select a device access group..."),
+                })}
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                 <ak-codemirror

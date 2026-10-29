@@ -1,15 +1,14 @@
-import "#admin/common/ak-crypto-certificate-search";
-import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-text-input";
 import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
+import { AKAuthorizationFlowField } from "#admin/providers/components/flow-fields";
 import {
     propertyMappingsProvider,
     propertyMappingsSelector,
 } from "#admin/providers/rac/RACProviderFormHelpers";
 
-import { FlowDesignationEnum, type RACProvider } from "@goauthentik/api";
+import { type RACProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -31,20 +30,7 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
                     required
                 ></ak-text-input>
 
-                <ak-form-element-horizontal
-                    name="authorizationFlow"
-                    label=${msg("Authorization Flow")}
-                    required
-                >
-                    <ak-flow-search
-                        flowType=${FlowDesignationEnum.Authorization}
-                        .currentFlow=${provider.authorizationFlow}
-                        required
-                    ></ak-flow-search>
-                    <p class="pf-c-form__helper-text">
-                        ${msg("Flow used when authorizing this provider.")}
-                    </p>
-                </ak-form-element-horizontal>
+                ${AKAuthorizationFlowField({ value: provider.authorizationFlow })}
 
                 <ak-text-input
                     name="connectionExpiry"

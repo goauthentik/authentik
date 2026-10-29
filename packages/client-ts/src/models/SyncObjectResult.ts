@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { LogEvent } from "./LogEvent";
-import { LogEventFromJSON } from "./LogEvent";
+import type { LogEvent } from "./LogEvent.js";
+import { LogEventFromJSON } from "./LogEvent.js";
 
 /**
  * Result of a single object sync

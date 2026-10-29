@@ -1,15 +1,23 @@
 from os import getenv
 
+from django.core.exceptions import ImproperlyConfigured
 from django.dispatch import receiver
+from rest_framework.exceptions import ValidationError
 from structlog.stdlib import get_logger
 
+from authentik.admin.utils import get_system_settings
 from authentik.blueprints.models import BlueprintInstance
 from authentik.blueprints.v1.importer import Importer
 from authentik.core.apps import Setup
-from authentik.lib.validators import validate_password_hash
+from authentik.lib.validators import PasswordHashValidator
 from authentik.root.signals import post_startup
 
 BOOTSTRAP_BLUEPRINT = "system/bootstrap.yaml"
+BASE_URL_REQUIRED = (
+    "No base URL is configured. Set AUTHENTIK_WEB__BASE_URL to the URL under which "
+    "authentik is reachable, for example https://authentik.company. See "
+    "https://docs.goauthentik.io/install-config/configuration/#authentik_web__base_url"
+)
 
 LOGGER = get_logger()
 
@@ -31,7 +39,14 @@ def post_startup_setup_bootstrap(sender, **_):
         LOGGER.info("Instance is already setup, skipping")
         return
     if password_hash := getenv("AUTHENTIK_BOOTSTRAP_PASSWORD_HASH"):
-        validate_password_hash(password_hash)
+        try:
+            PasswordHashValidator()(password_hash)
+        except ValidationError as exc:
+            raise ImproperlyConfigured(
+                "AUTHENTIK_BOOTSTRAP_PASSWORD_HASH does not match authentik's current "
+                "password hashing settings. Generate a new hash with authentik's current "
+                "settings. See https://docs.goauthentik.io/core/password-hashes/."
+            ) from exc
     importer = Importer.from_string(content)
     valid, logs = importer.validate()
     if not valid:
@@ -43,3 +58,10 @@ def post_startup_setup_bootstrap(sender, **_):
         LOGGER.warning("Failed to apply bootstrap blueprint")
         return
     Setup.set(True)
+
+
+@receiver(post_startup)
+def post_startup_require_base_url(sender, **_):
+    """Refuse to start an instance that has been set up without a base URL"""
+    if Setup.get() and not get_system_settings().base_url:
+        raise ImproperlyConfigured(BASE_URL_REQUIRED)

@@ -24,6 +24,7 @@ from authentik.core.sources.stage import (
     PLAN_CONTEXT_SOURCES_CONNECTION,
     PostSourceStage,
 )
+from authentik.core.user_switching import SESSION_KEY_ADD_USER
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow, FlowToken, Stage, in_memory_stage
@@ -33,10 +34,12 @@ from authentik.flows.planner import (
     PLAN_CONTEXT_REDIRECT,
     PLAN_CONTEXT_SOURCE,
     PLAN_CONTEXT_SSO,
+    PLAN_CONTEXT_USER_SWITCH_ADD_USER,
     FlowPlanner,
 )
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET
+from authentik.lib.tracing import TracingIgnoredException
 from authentik.lib.views import bad_request_message
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.utils import delete_none_values
@@ -126,6 +129,9 @@ class SourceFlowManager:
         self.user_info = user_info
         self._logger = get_logger().bind(source=source, identifier=identifier)
         self.policy_context = policy_context
+        # The source was started from "Add user", so the login must add another user to this
+        # browser instead of linking to or replacing the current user.
+        self.is_user_switch_add_user = bool(request.session.pop(SESSION_KEY_ADD_USER, False))
 
         self.user_properties = self.mapper.build_object_properties(
             object_type=User, request=request, user=None, **self.user_info
@@ -178,7 +184,7 @@ class SourceFlowManager:
     def get_action(self, **kwargs) -> tuple[Action, UserSourceConnection | None]:  # noqa: PLR0911
         """decide which action should be taken"""
         # When request is authenticated, always link
-        if self.request.user.is_authenticated:
+        if self.request.user.is_authenticated and not self.is_user_switch_add_user:
             new_connection = self.user_connection_type(
                 source=self.source, identifier=self.identifier
             )
@@ -219,6 +225,12 @@ class SourceFlowManager:
                     self._logger.debug("Handling auth user")
                     return self.handle_auth(connection)
                 if action == Action.ENROLL:
+                    if self.is_user_switch_add_user:
+                        return self.error_handler(
+                            TracingIgnoredException(
+                                _("New users can't enroll while adding a user.")
+                            )
+                        )
                     self._logger.debug("Handling enrollment of new user")
                     return self.handle_enroll(connection)
             if action == Action.DENY and self.matcher.failure:
@@ -316,6 +328,8 @@ class SourceFlowManager:
         )
         flow_context.update(self.policy_context)
         flow_context.setdefault(PLAN_CONTEXT_REDIRECT, final_redirect)
+        if self.is_user_switch_add_user:
+            flow_context[PLAN_CONTEXT_USER_SWITCH_ADD_USER] = True
 
         if not flow:
             # We only check for the flow token here if we don't have a flow, otherwise we rely on
@@ -392,7 +406,7 @@ class SourceFlowManager:
         """Handler when the user was already authenticated and linked an external source
         to their account."""
         # When request isn't authenticated we jump straight to auth
-        if not self.request.user.is_authenticated:
+        if not self.request.user.is_authenticated or self.is_user_switch_add_user:
             return self.handle_auth(connection)
         # When an override flow token exists we actually still use a flow for link
         # to continue the existing flow we came from

@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage: Build
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:7726387c78b5787d2146868c2ccc8948a3591d0a5a6436f7780c8c28acc76341 AS builder
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:d363011346c52a8db30fb88769af5f81aefd2e506942b44a4d8aa9cb60238003 AS builder
 
 ARG TARGETARCH
 ARG TARGETVARIANT
@@ -16,6 +16,7 @@ RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/v
     apt-get install -y --no-install-recommends \
     # Build essentials
     build-essential \
+    curl \
     # aws-lc deps
     cmake clang golang && \
     curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain none && \
@@ -42,7 +43,7 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     cp ./target/release/authentik /bin/authentik
 
 # Stage: Run
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:7726387c78b5787d2146868c2ccc8948a3591d0a5a6436f7780c8c28acc76341
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:d363011346c52a8db30fb88769af5f81aefd2e506942b44a4d8aa9cb60238003
 
 ARG VERSION
 ARG GIT_BUILD_HASH

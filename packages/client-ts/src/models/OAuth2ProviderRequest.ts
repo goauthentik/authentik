@@ -10,21 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { ClientTypeEnum } from "./ClientTypeEnum";
-import { ClientTypeEnumFromJSON, ClientTypeEnumToJSON } from "./ClientTypeEnum";
-import type { GrantTypeEnum } from "./GrantTypeEnum";
-import { GrantTypeEnumFromJSON, GrantTypeEnumToJSON } from "./GrantTypeEnum";
-import type { IssuerModeEnum } from "./IssuerModeEnum";
-import { IssuerModeEnumFromJSON, IssuerModeEnumToJSON } from "./IssuerModeEnum";
-import type { OAuth2ProviderLogoutMethodEnum } from "./OAuth2ProviderLogoutMethodEnum";
+import type { ClientTypeEnum } from "./ClientTypeEnum.js";
+import { ClientTypeEnumFromJSON, ClientTypeEnumToJSON } from "./ClientTypeEnum.js";
+import type { GrantTypeEnum } from "./GrantTypeEnum.js";
+import { GrantTypeEnumFromJSON, GrantTypeEnumToJSON } from "./GrantTypeEnum.js";
+import type { IssuerModeEnum } from "./IssuerModeEnum.js";
+import { IssuerModeEnumFromJSON, IssuerModeEnumToJSON } from "./IssuerModeEnum.js";
+import type { OAuth2ProviderLogoutMethodEnum } from "./OAuth2ProviderLogoutMethodEnum.js";
 import {
     OAuth2ProviderLogoutMethodEnumFromJSON,
     OAuth2ProviderLogoutMethodEnumToJSON,
-} from "./OAuth2ProviderLogoutMethodEnum";
-import type { RedirectURIRequest } from "./RedirectURIRequest";
-import { RedirectURIRequestFromJSON, RedirectURIRequestToJSON } from "./RedirectURIRequest";
-import type { SubModeEnum } from "./SubModeEnum";
-import { SubModeEnumFromJSON, SubModeEnumToJSON } from "./SubModeEnum";
+} from "./OAuth2ProviderLogoutMethodEnum.js";
+import type { RedirectURIRequest } from "./RedirectURIRequest.js";
+import { RedirectURIRequestFromJSON, RedirectURIRequestToJSON } from "./RedirectURIRequest.js";
+import type { SubModeEnum } from "./SubModeEnum.js";
+import { SubModeEnumFromJSON, SubModeEnumToJSON } from "./SubModeEnum.js";
 
 /**
  * OAuth2Provider Serializer

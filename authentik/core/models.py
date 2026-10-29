@@ -347,13 +347,21 @@ class UserQuerySet(models.QuerySet):
         """Exclude anonymous user"""
         return self.exclude(**{User.USERNAME_FIELD: settings.ANONYMOUS_USER_NAME})
 
+    def filter_agents(self) -> Self:
+        """Include only agent users."""
+        from authentik.enterprise.agents.models import AgentUserQuerySet
 
-class UserManager(DjangoUserManager):
+        return AgentUserQuerySet.filter_agents(self)
+
+    def exclude_agents(self) -> Self:
+        """Exclude agent users."""
+        from authentik.enterprise.agents.models import AgentUserQuerySet
+
+        return AgentUserQuerySet.exclude_agents(self)
+
+
+class UserManager(DjangoUserManager.from_queryset(UserQuerySet)):
     """User manager that doesn't assign is_superuser and is_staff"""
-
-    def get_queryset(self):
-        """Create special user queryset"""
-        return UserQuerySet(self.model, using=self._db)
 
     def create_user(self, username, email=None, password=None, **extra_fields):
         """User manager that doesn't assign is_superuser and is_staff"""
@@ -575,7 +583,14 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         self.password_change_date = now()
         return super().set_password(raw_password)
 
-    def set_password_from_hash(self, password_hash: str, signal=True, sender=None, request=None):
+    def set_password_from_hash(
+        self,
+        password_hash: str,
+        signal=True,
+        sender=None,
+        request=None,
+        hasher_defaults_overridden: bool = False,
+    ):
         """Set password directly from a pre-hashed value.
 
         Unlike set_password(), this does not hash the input again. The provided value
@@ -589,7 +604,12 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
 
             if not sender:
                 sender = self
-            password_hash_changed.send(sender=sender, user=self, request=request)
+            password_hash_changed.send(
+                sender=sender,
+                user=self,
+                request=request,
+                hasher_defaults_overridden=hasher_defaults_overridden,
+            )
         self.password = password_hash
         self.password_change_date = now()
 
@@ -1247,6 +1267,9 @@ class PropertyMapping(SerializerModel, ManagedModel):
 
     objects = InheritanceManager()
 
+    # Types the expression may return (besides None); empty allows any type
+    expression_allowed_types: list[type] = []
+
     @property
     def component(self) -> str:
         """Return component used to edit this object"""
@@ -1268,6 +1291,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         from authentik.core.expression.evaluator import PropertyMappingEvaluator
 
         evaluator = PropertyMappingEvaluator(self, user, request, **kwargs)
+        evaluator.allowed_types = self.expression_allowed_types
         if globals:
             evaluator._globals.update(globals)
         try:

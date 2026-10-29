@@ -656,7 +656,7 @@
         <x id="0" equiv-text="${value.versionCurrent}"/></target>
 </trans-unit>
 <trans-unit id="s68a50b1ee6efee7b">
-  <source><x id="0" equiv-text="${value.versionLatest}"/> is available!</source>
+  <source><x id="0" equiv-text="${upstreamVersion}"/> is available!</source>
   <target>
         <x id="0" equiv-text="${value.versionLatest}"/>可用！</target>
 </trans-unit>
@@ -968,10 +968,6 @@
 <trans-unit id="se41af830054194bc">
   <source>Pause this schedule</source>
   <target>暂停这个定时任务</target>
-</trans-unit>
-<trans-unit id="sc0448bc8a76227cb">
-  <source>Failed to fetch objects: </source>
-  <target>拉取对象失败：</target>
 </trans-unit>
 <trans-unit id="sf485014051ad0cf7">
   <source>Successfully assigned permission.</source>
@@ -1732,10 +1728,6 @@
 <trans-unit id="s4c49d27de60a532b">
   <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
   <target>要允许任何重定向 URI，请设置模式为正则表达式，并将此值设置为 ".*"。请注意这可能带来的安全影响。</target>
-</trans-unit>
-<trans-unit id="s62f7c59b0606a8d6">
-  <source>Authorization flow</source>
-  <target>授权流程</target>
 </trans-unit>
 <trans-unit id="s69d33a50b908b96f">
   <source>Select an authorization flow...</source>
@@ -2591,10 +2583,6 @@
 <trans-unit id="se669a4b939be0891">
   <source>authentik was unable to complete this process.</source>
   <target>authentik 无法完成此操作。</target>
-</trans-unit>
-<trans-unit id="s71c5d51d5a357dbd">
-  <source>Don't show this message again.</source>
-  <target>不要再显示此消息。</target>
 </trans-unit>
 <trans-unit id="sd1a5560fde6f2271">
   <source>Successfully imported provider.</source>
@@ -4496,10 +4484,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sabaf0061f7e41b0b">
   <source>Consumer secret</source>
   <target>消费者 Secret</target>
-</trans-unit>
-<trans-unit id="sd46fd9b647cfea10">
-  <source>Also known as Client Secret.</source>
-  <target>也称为客户端密钥。</target>
 </trans-unit>
 <trans-unit id="sa61966cd83b4924c">
   <source>Additional scopes to be passed to the OAuth Provider, separated by space. To replace existing scopes, prefix with *.</source>
@@ -7941,18 +7925,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Enterprise</source>
   <target>企业版</target>
 </trans-unit>
-<trans-unit id="sd51d6a39208696cc">
-  <source>Collapse <x id="0" equiv-text="${this.label}"/></source>
-  <target>收起 <x id="0" equiv-text="${this.label}"/></target>
-</trans-unit>
-<trans-unit id="scce64bcfb0a73ad7">
-  <source>Expand <x id="0" equiv-text="${this.label}"/></source>
-  <target>展开 <x id="0" equiv-text="${this.label}"/></target>
-</trans-unit>
-<trans-unit id="sfe1fb536cab6c0f5">
-  <source><x id="0" equiv-text="${this.label}"/> navigation</source>
-  <target><x id="0" equiv-text="${this.label}"/> 导航</target>
-</trans-unit>
 <trans-unit id="s8849ece8c65e3a18">
   <source>Dashboards</source>
   <target>仪表板</target>
@@ -8065,20 +8037,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Notifications</source>
   <target>通知</target>
 </trans-unit>
-<trans-unit id="sf1a3d030efd11f28">
-  <source>Open about dialog</source>
-  <target>打开关于对话框</target>
-</trans-unit>
-<trans-unit id="s95b96d7ead27527f">
-  <source>Product name</source>
-  <target>产品名</target>
-</trans-unit>
-<trans-unit id="s68b6d404c3349b18">
-  <source>Product version</source>
-  <target>产品版本</target>
-</trans-unit>
 <trans-unit id="s358e08de4fbebf51">
-  <source>Version <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></source>
+  <source>Version <x id="0" equiv-text="${this.version?.versionCurrent}"/></source>
   <target>版本 <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></target>
 </trans-unit>
 <trans-unit id="se0d7715f3211d220">
@@ -8893,22 +8853,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sc47f8ab6162bb2bb">
   <source>Outpost configuration</source>
   <target>前哨配置</target>
-</trans-unit>
-<trans-unit id="s11a2ac9f2bd811d8">
-  <source>Delete Object Permission</source>
-  <target>删除对象权限</target>
-</trans-unit>
-<trans-unit id="s78aa910bcb26034d">
-  <source>Global and object permission</source>
-  <target>全局权限与对象权限</target>
-</trans-unit>
-<trans-unit id="sc8f73affccb6ae4d">
-  <source>Global permission</source>
-  <target>全局权限</target>
-</trans-unit>
-<trans-unit id="scf9ebad133d2d561">
-  <source>Object permission</source>
-  <target>对象权限</target>
 </trans-unit>
 <trans-unit id="sa84d68ec57e21b0f">
   <source>Permissions on this object</source>
@@ -10249,9 +10193,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="command-palette.prefix.reloads-page">
   <source>Reloads page</source>
 </trans-unit>
-<trans-unit id="s35ed5cf95b0c7262">
-  <source>authentik information</source>
-</trans-unit>
 <trans-unit id="s55402a876309f95b">
   <source>Landmark: <x id="0" equiv-text="${capitalCase(this.pageIdentifier)}"/></source>
 </trans-unit>
@@ -10884,9 +10825,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="se0bf7f662ec09302">
   <source>An error occurred while loading <x id="0" equiv-text="${this.verboseName}"/>.</source>
-</trans-unit>
-<trans-unit id="s4fd2fe9adfd426e9">
-  <source>Select an option...</source>
 </trans-unit>
 <trans-unit id="s195ea6447a6b5486">
   <source>Cancel wizard</source>
@@ -11655,9 +11593,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s82c71ab0a2d18257">
   <source>Type a name for the stage...</source>
 </trans-unit>
-<trans-unit id="s10dd794d4839378e">
-  <source>Select an enrollment flow.</source>
-</trans-unit>
 <trans-unit id="sece0e7e9d7ad08bf">
   <source>e.g. my-invite</source>
 </trans-unit>
@@ -11806,12 +11741,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="banner.dismiss.aria-label">
   <source>Dismiss banner</source>
-</trans-unit>
-<trans-unit id="settings.base-url.banner.action">
-  <source>Configure it in the system settings</source>
-</trans-unit>
-<trans-unit id="settings.base-url.banner.label">
-  <source>The base URL has not been configured.</source>
 </trans-unit>
 <trans-unit id="sf993bb199fefbe04">
   <source>All</source>
@@ -12775,6 +12704,129 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd685c85b245c6e9f">
   <source>Hide details</source>
+</trans-unit>
+<trans-unit id="s8e4a12c5930cf212">
+  <source>Also known as Client Secret. Can be left empty for public clients using PKCE.</source>
+</trans-unit>
+<trans-unit id="sfd44da578f6445a9">
+  <source>Failed to fetch objects:</source>
+</trans-unit>
+<trans-unit id="sa81413e2e309b882">
+  <source>No results found.</source>
+</trans-unit>
+<trans-unit id="s976733698fe1b0fe">
+  <source>No change vs previous week</source>
+</trans-unit>
+<trans-unit id="s7f4f31965f7198d7">
+  <source><x id="0" equiv-text="${diff &gt; 0 ? &quot;+&quot; : &quot;&quot;}${diff}"/> vs previous week</source>
+</trans-unit>
+<trans-unit id="s1c4aaab60097f5d0">
+  <source><x id="0" equiv-text="${diff &gt; 0 ? &quot;+&quot; : &quot;&quot;}${Math.round((diff / previous) * 100)}"/>% vs previous week</source>
+</trans-unit>
+<trans-unit id="sab5ab8f14efd1dbf">
+  <source>Successful logins</source>
+</trans-unit>
+<trans-unit id="sb7a30bbc1dcf6de9">
+  <source>Issues</source>
+</trans-unit>
+<trans-unit id="s07463520e4c6f064">
+  <source>A new version is available!</source>
+</trans-unit>
+<trans-unit id="s809b66661523bd3e">
+  <source>Danger banner:</source>
+</trans-unit>
+<trans-unit id="se9caa2b970300b67">
+  <source>Warning banner:</source>
+</trans-unit>
+<trans-unit id="sfd32828882e09561">
+  <source>Security release <x id="0" equiv-text="${v.version}"/> of <x id="1" equiv-text="${this.brandingTitle}"/> is available. Update now.</source>
+</trans-unit>
+<trans-unit id="s6bce0c6466a2cf53">
+  <source>Version <x id="0" equiv-text="${v.version}"/> of <x id="1" equiv-text="${this.brandingTitle}"/> is available.</source>
+</trans-unit>
+<trans-unit id="sbf0ff47d8bff9545">
+  <source>Click here for the changelog.</source>
+</trans-unit>
+<trans-unit id="crypto.generate.alg.ml-dsa-44.label">
+  <source>ML-DSA-44</source>
+</trans-unit>
+<trans-unit id="crypto.generate.alg.ml-dsa-65.label">
+  <source>ML-DSA-65</source>
+</trans-unit>
+<trans-unit id="crypto.generate.alg.ml-dsa-87.label">
+  <source>ML-DSA-87</source>
+</trans-unit>
+<trans-unit id="sfdcaa7f363be0c81">
+  <source>Encryption algorithm</source>
+</trans-unit>
+<trans-unit id="s53b68dd0954af12d">
+  <source>Block cipher used to encrypt the assertion.</source>
+</trans-unit>
+<trans-unit id="permissions.aria.universal">
+  <source>Global and object permission</source>
+</trans-unit>
+<trans-unit id="permissions.kind.universal">
+  <source>object + global</source>
+</trans-unit>
+<trans-unit id="permissions.aria.global">
+  <source>Global permission</source>
+</trans-unit>
+<trans-unit id="permissions.kind.global">
+  <source>global</source>
+</trans-unit>
+<trans-unit id="permissions.aria.object">
+  <source>Object permission</source>
+</trans-unit>
+<trans-unit id="permissions.kind.object">
+  <source>object</source>
+</trans-unit>
+<trans-unit id="permissions.table-column.role">
+  <source>Role</source>
+</trans-unit>
+<trans-unit id="permissions.table-column.permissions">
+  <source>Permissions</source>
+</trans-unit>
+<trans-unit id="permission.sort.by-name">
+  <source>By name</source>
+</trans-unit>
+<trans-unit id="permissions.sort.assigned-first">
+  <source>Assigned first</source>
+</trans-unit>
+<trans-unit id="permissions.sort.assigned-only">
+  <source>Assigned only</source>
+</trans-unit>
+<trans-unit id="permissions.filter.show-assigned">
+  <source>Sort and filter</source>
+</trans-unit>
+<trans-unit id="permissions.delete.label">
+  <source>Permission(s)</source>
+</trans-unit>
+<trans-unit id="permissions.delete.meta-data">
+  <source>Permission</source>
+</trans-unit>
+<trans-unit id="permissions.delete.button">
+  <source>Delete object permission</source>
+</trans-unit>
+<trans-unit id="s679140171e483ff5">
+  <source>Changes to system settings will take up to <x id="0" equiv-text="${formatted}"/> to become effective.</source>
+</trans-unit>
+<trans-unit id="se7820c791adf0953">
+  <source>Changes to brands will take up to <x id="0" equiv-text="${formatted}"/> to become effective.</source>
+</trans-unit>
+<trans-unit id="sde7cf26113f800fb">
+  <source>Selected providers can exchange their JWTs for a SAML Response of this provider via token exchange.</source>
+</trans-unit>
+<trans-unit id="s42cebc8c4e28982e">
+  <source>This security key is already registered on your account. Touch a different key to add it.</source>
+</trans-unit>
+<trans-unit id="sidebar.notice.enterprise-only">
+  <source>Enterprise only</source>
+</trans-unit>
+<trans-unit id="array-input.validation.invalid-entry">
+  <source>One or more entries are invalid.</source>
+</trans-unit>
+<trans-unit id="array-input.remove.aria-label">
+  <source>Remove entry</source>
 </trans-unit>
 </body>
 </file>

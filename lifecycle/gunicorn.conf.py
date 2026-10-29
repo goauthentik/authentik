@@ -20,7 +20,6 @@ from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.reflection import get_env
 from authentik.root.install_id import get_install_id_raw
 from authentik.root.setup import setup
-from lifecycle.migrate import run_migrations
 from lifecycle.worker import DjangoUvicornWorker
 
 if TYPE_CHECKING:
@@ -185,4 +184,3 @@ if not CONFIG.get_bool("disable_startup_analytics", False):
             pass
 
 start_debug_server()
-run_migrations()

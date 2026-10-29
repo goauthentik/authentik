@@ -1,7 +1,9 @@
-from unittest.mock import PropertyMock, patch
+from unittest.mock import Mock, PropertyMock, patch
 
 from django.apps import apps
 from django.conf import settings
+from django.db.models.signals import post_init
+from django.test import RequestFactory, SimpleTestCase
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
@@ -10,6 +12,7 @@ from authentik.core.models import Group, User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.enterprise.audit.apps import AuditIncludeExpandedDiff
 from authentik.enterprise.audit.middleware import EnterpriseAuditMiddleware
+from authentik.events.middleware import AuditMiddleware
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import sanitize_item
 from authentik.lib.generators import generate_id
@@ -288,3 +291,53 @@ class TestEnterpriseAudit(APITestCase):
             update_fields=["is_active"],
         )
         self.assertEqual(diff, {"is_active": {"new_value": True, "previous_value": False}})
+
+
+class TestEnterpriseAuditLifecycle(SimpleTestCase):
+    """Enterprise audit callbacks stay scoped to their request."""
+
+    def test_post_init_connected_lazily(self):
+        """post_init fires for every model instance, so only connect it once licensed"""
+        middleware = EnterpriseAuditMiddleware(Mock())
+        request = RequestFactory().get("/")
+        request.request_id = generate_id()
+        with (
+            patch.object(EnterpriseAuditMiddleware, "connect") as connect,
+            patch.object(
+                EnterpriseAuditMiddleware, "enabled", new_callable=PropertyMock, return_value=False
+            ) as enabled,
+        ):
+            middleware(request)
+            connect.assert_not_called()
+            enabled.return_value = True
+            middleware(request)
+            connect.assert_called_once_with(post_init, "post_init_handler")
+
+    def test_foreign_request_handlers(self):
+        """Another request's callbacks must not query licensing or serialize models."""
+        middleware = EnterpriseAuditMiddleware(Mock())
+        request = RequestFactory().get("/")
+        request.request_id = generate_id()
+        other = RequestFactory().get("/")
+        other.request_id = generate_id()
+        for current in (None, other):
+            with self.subTest(current=current):
+                token = AuditMiddleware._current.set((middleware, current) if current else None)
+                try:
+                    with (
+                        patch.object(
+                            EnterpriseAuditMiddleware,
+                            "enabled",
+                            new_callable=PropertyMock,
+                            return_value=False,
+                        ) as enabled,
+                        patch.object(middleware, "serialize_simple") as serialize,
+                    ):
+                        instance = Mock(spec=User)
+                        middleware.post_init_handler(request, User, instance)
+                        middleware.post_save_handler(request, User, instance, created=False)
+                        middleware.m2m_changed_handler(request, User, instance, "pre_add", set())
+                        enabled.assert_not_called()
+                        serialize.assert_not_called()
+                finally:
+                    AuditMiddleware._current.reset(token)

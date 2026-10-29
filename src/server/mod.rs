@@ -67,6 +67,8 @@ pub(crate) struct Cli {}
 
 pub(super) static GUNICORN_READY: AtomicBool = AtomicBool::new(false);
 
+pub(crate) type ServerClient = Client<UnixSocketConnector<PathBuf>, Body>;
+
 pub(crate) fn socket_path() -> PathBuf {
     temp_dir().join("authentik.sock")
 }
@@ -95,7 +97,9 @@ pub(crate) fn is_connect_not_found(err: &dyn std::error::Error) -> bool {
 pub(crate) struct Server {
     gunicorn: Mutex<Child>,
     socket_path: PathBuf,
-    pub(crate) client: Client<UnixSocketConnector<PathBuf>, Body>,
+    pub(crate) client: ServerClient,
+    /// Used to retry requests that failed on a pooled connection, see [`core::send_to_server`].
+    retry_client: ServerClient,
     pub(crate) workers: ArcSwapOption<Workers>,
     proxy_outpost: Arc<ArcSwapOption<ProxyOutpost>>,
     brand_cert_resolver: ArcSwapOption<BrandCertResolver>,
@@ -124,10 +128,16 @@ impl Server {
             .pool_idle_timeout(Duration::from_mins(1))
             .set_host(false)
             .build(UnixSocketConnector::new(socket_path.clone()));
+        // Keeps no idle connections, so a retry always gets a new one.
+        let retry_client = Client::builder(TokioExecutor::new())
+            .pool_max_idle_per_host(0)
+            .set_host(false)
+            .build(UnixSocketConnector::new(socket_path.clone()));
 
         Ok(Self {
             gunicorn: Mutex::new(gunicorn),
             client,
+            retry_client,
             socket_path,
             workers: ArcSwapOption::empty(),
             proxy_outpost: Arc::new(ArcSwapOption::empty()),
