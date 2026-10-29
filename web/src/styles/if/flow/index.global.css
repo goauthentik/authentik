@@ -1,6 +1,6 @@
 /* Entrypoint file for the CSS used by the Flow application */
 
-@import "#styles/layers.css";
+@import "#styles/if/shared/layers.css";
 
 /*
  * 2026-06-25: The `.global.css` suffix is currently *required* to trigger the correct
@@ -37,6 +37,7 @@
 @import "@patternfly/patternfly/components/BackgroundImage/background-image.css" layer(vendor);
 @import "@patternfly/patternfly/components/Alert/alert.css" layer(vendor);
 @import "#elements/locale/ak-locale-select.css" layer(components);
-@import "#styles/authentik/login.css" layer(components);
-@import "#styles/authentik/components/Login/login-tokens.css" layer(components);
-@import "#styles/authentik/components/Login/flow-loading.css" layer(components);
+@import "#styles/if/flow/login.css" layer(components);
+@import "#styles/if/flow/tokens.css" layer(components);
+@import "#styles/if/flow/pre-registration.css" layer(components);
+@import "#styles/if/flow/overlay.css" layer(components);

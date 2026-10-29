@@ -67,6 +67,8 @@ pub(crate) struct Cli {}
 
 pub(super) static GUNICORN_READY: AtomicBool = AtomicBool::new(false);
 
+pub(crate) type ServerClient = Client<UnixSocketConnector<PathBuf>, Body>;
+
 /// How long uvicorn keeps an idle connection open. Match `keepalive` in
 /// lifecycle/gunicorn.conf.py.
 const GUNICORN_KEEPALIVE: Duration = Duration::from_secs(2);
@@ -77,7 +79,7 @@ const GUNICORN_KEEPALIVE: Duration = Duration::from_secs(2);
 const UPSTREAM_POOL_IDLE_TIMEOUT: Duration =
     GUNICORN_KEEPALIVE.saturating_sub(Duration::from_secs(1));
 
-fn upstream_client(socket_path: PathBuf) -> Client<UnixSocketConnector<PathBuf>, Body> {
+fn upstream_client(socket_path: PathBuf) -> ServerClient {
     Client::builder(TokioExecutor::new())
         .pool_idle_timeout(UPSTREAM_POOL_IDLE_TIMEOUT)
         .set_host(false)
@@ -92,7 +94,9 @@ pub(crate) fn socket_path() -> PathBuf {
 pub(crate) struct Server {
     gunicorn: Mutex<Child>,
     socket_path: PathBuf,
-    pub(crate) client: Client<UnixSocketConnector<PathBuf>, Body>,
+    pub(crate) client: ServerClient,
+    /// Used to retry requests that failed on a pooled connection, see [`core::send_to_server`].
+    retry_client: ServerClient,
     pub(crate) workers: ArcSwapOption<Workers>,
     proxy_outpost: Arc<ArcSwapOption<ProxyOutpost>>,
     brand_cert_resolver: ArcSwapOption<BrandCertResolver>,
@@ -117,9 +121,16 @@ impl Server {
             .stderr(Stdio::inherit())
             .spawn()?;
 
+        // Keeps no idle connections, so a retry always gets a new one.
+        let retry_client = Client::builder(TokioExecutor::new())
+            .pool_max_idle_per_host(0)
+            .set_host(false)
+            .build(UnixSocketConnector::new(socket_path.clone()));
+
         Ok(Self {
             gunicorn: Mutex::new(gunicorn),
             client: upstream_client(socket_path.clone()),
+            retry_client,
             socket_path,
             workers: ArcSwapOption::empty(),
             proxy_outpost: Arc::new(ArcSwapOption::empty()),
@@ -442,7 +453,7 @@ mod tests {
         accepted
     }
 
-    async fn get(client: &Client<UnixSocketConnector<PathBuf>, Body>) {
+    async fn get(client: &ServerClient) {
         let request = Request::builder()
             .uri("http://localhost:8000/")
             .body(Body::empty())
